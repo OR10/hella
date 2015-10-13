@@ -9,6 +9,12 @@ php::phpunit: false
 php::fpm::config::log_level: notice
 php::composer::auto_update: true
 
+php::fpm::pools:
+  www:
+    listen: 127.0.0.1:9000
+    user: vagrant
+
+
 php::extensions:
   xdebug: {}
 
