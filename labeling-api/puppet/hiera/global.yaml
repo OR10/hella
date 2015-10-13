@@ -1,0 +1,14 @@
+php::ensure: latest
+php::manage_repos: true
+php::repo::ubuntu::ppa: "ondrej/php5-5.6"
+php::fpm: true
+php::dev: true
+php::composer: true
+php::pear: true
+php::phpunit: false
+php::fpm::config::log_level: notice
+php::composer::auto_update: true
+
+php::extensions:
+  xdebug: {}
+

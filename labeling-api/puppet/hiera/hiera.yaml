@@ -1,0 +1,8 @@
+---
+:backends:
+    - yaml
+:hierarchy:
+    - node/%{::fqdn}
+    - global
+:yaml:
+  :datadir: puppet/hiera
