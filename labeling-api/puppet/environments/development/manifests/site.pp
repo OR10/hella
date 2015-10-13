@@ -18,7 +18,7 @@ nginx::resource::vhost { "_":
 }
 
 exec { 'composer-install-labelstation':
-  command => '/usr/local/bin/composer install',
+  command => '/usr/local/bin/composer install --no-interaction',
   cwd     => '/vagrant',
   creates => '/vagrant/vendor',
   require => Class['php::composer'],
