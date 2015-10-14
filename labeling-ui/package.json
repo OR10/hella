@@ -1,0 +1,12 @@
+{
+  "name": "labeling-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "User interface of the HAGLA Labeling System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "crosscan GmbH",
+  "license": "UNLICENSED"
+}
