@@ -11,6 +11,12 @@ class labeling_api(
     $secret = 'ThisTokenIsNotSoSecretChangeIt'
 ) {
 
+  ::mysql::db { $database_name:
+    user     => $database_user,
+    password => $database_password,
+    host     => '%',
+  }
+
   file { '/vagrant/app/config/parameters.yml':
     ensure  => file,
     content => template('labeling_api/parameters.yml.erb'),

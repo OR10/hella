@@ -29,21 +29,7 @@ exec { 'composer-install-labelstation':
   require => Class['php::composer'],
 }
 
-class { '::mysql::server':
-  root_password           => 'xohx6aeS',
-  remove_default_accounts => true,
-  override_options        => {
-      'mysqld' => {
-          'bind-address' => '0.0.0.0',
-      }
-  }
-}
-
-::mysql::db { 'labeling_api':
-  user     => 'labeling_api',
-  password => 'pEid4oShu',
-  host     => '%',
-}
+class { '::mysql::server': }
 
 file { '/var/lib/couchdb_labeling_api': 
   ensure  => directory,
