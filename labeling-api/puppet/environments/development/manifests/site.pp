@@ -1,9 +1,3 @@
-class { 'apt':
-  update => {
-    frequency => 'daily',
-  },
-}
-
 class { 'nginx': }
 
 include php
