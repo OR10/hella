@@ -40,7 +40,20 @@ class { '::mysql::server':
 }
 
 ::mysql::db { 'labeling_api':
-    user     => 'labeling_api',
-    password => 'pEid4oShu',
-    host     => '%',
+  user     => 'labeling_api',
+  password => 'pEid4oShu',
+  host     => '%',
+}
+
+file { '/var/lib/couchdb_labeling_api': 
+  ensure  => directory,
+  owner   => 'couchdb',
+  recurse => true,
+  notify  => Service['couchdb'],
+  require => Package['couchdb'],
+}
+
+class { 'couchdb':
+    bind_address    => '0.0.0.0',
+    data_dir_prefix => '/var/lib/couchdb_labeling_api',
 }
