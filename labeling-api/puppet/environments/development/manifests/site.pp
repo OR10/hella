@@ -4,11 +4,21 @@ include php
 ensure_packages(["software-properties-common"])
 
 nginx::resource::vhost { "_":
-  ensure              => present,
-  www_root            => "/vagrant/web",
-  index_files     => ['app_dev.php'],
-  fastcgi     => '127.0.0.1:9000',
-  try_files   => ['$uri', '/app_dev.php$is_args$args'],
+  ensure      => present,
+  www_root    => "/vagrant/web",
+  index_files => ['app_dev.php'],
+  try_files   => ['$uri', '$uri/', '=404'],
+}
+
+nginx::resource::location { '~ \.php(/|$)':
+  ensure        => present,
+  www_root      => "/vagrant/web",
+  vhost         => '_',
+  index_files   => ['app_dev.php'],
+  fastcgi       => '127.0.0.1:9000',
+  fastcgi_param => {
+      'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
+  },
 }
 
 exec { 'composer-install-labelstation':
