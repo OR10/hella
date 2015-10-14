@@ -8,7 +8,7 @@ nginx::resource::vhost { "_":
   www_root            => "/vagrant/web",
   index_files     => ['app_dev.php'],
   fastcgi     => '127.0.0.1:9000',
-  try_files   => ['$uri', '/app.php$is_args$args'],
+  try_files   => ['$uri', '/app_dev.php$is_args$args'],
 }
 
 exec { 'composer-install-labelstation':
