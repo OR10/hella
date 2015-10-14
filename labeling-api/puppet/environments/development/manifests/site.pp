@@ -7,7 +7,7 @@ nginx::resource::vhost { "_":
   ensure      => present,
   www_root    => "/vagrant/web",
   index_files => ['app_dev.php'],
-  try_files   => ['$uri', '$uri/', '=404'],
+  try_files   => ['$uri', '/app_dev.php$is_args$args'],
 }
 
 nginx::resource::location { '~ \.php(/|$)':
