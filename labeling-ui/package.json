@@ -10,10 +10,29 @@
   "author": "crosscan GmbH",
   "license": "UNLICENSED",
   "devDependencies": {
+    "chalk": "^1.1.1",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-load-plugins": "^0.10.0",
+    "http-server": "^0.8.5",
     "jspm": "^0.16.12",
+    "moment": "^2.10.6",
+    "path": "^0.12.7",
     "run-sequence": "^1.1.4"
+  },
+  "jspm": {
+    "directories": {
+      "baseURL": "Application",
+      "packages": "Application/vendor"
+    },
+    "configFile": "Application/system.config.js",
+    "dependencies": {
+      "react": "npm:react@^0.14.0"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
   }
 }
