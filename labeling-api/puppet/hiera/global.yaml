@@ -18,3 +18,13 @@ php::fpm::pools:
 php::extensions:
   xdebug: {}
 
+labeling_api::database_host: '127.0.0.1'
+labeling_api::database_port: 'null'
+labeling_api::database_name: 'symfony'
+labeling_api::database_user: 'root'
+labeling_api::database_password: 'null'
+labeling_api::mailer_transport: 'smtp'
+labeling_api::mailer_host: '127.0.0.1'
+labeling_api::mailer_user: 'null'
+labeling_api::mailer_password: 'null'
+labeling_api::secret: 'ThisTokenIsNotSoSecretChangeIt'
