@@ -1,7 +1,8 @@
+Class['apt::update'] -> Package<| name != 'software-properties-common' |>
+
 class { 'nginx': }
 
 include php
-ensure_packages(["software-properties-common"])
 
 nginx::resource::vhost { "_":
   ensure      => present,
