@@ -25,6 +25,9 @@ mysql::server::override_options:
   mysqld:
       bind-address: '0.0.0.0'
 
+couchdb::bind_address: '0.0.0.0'
+couchdb::data_dir_prefix: '/var/lib/couchdb_labeling_api'
+
 labeling_api::database_host: '127.0.0.1'
 labeling_api::database_port: 'null'
 labeling_api::database_name: 'labeling_api'

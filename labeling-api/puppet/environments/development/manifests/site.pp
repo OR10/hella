@@ -39,10 +39,7 @@ file { '/var/lib/couchdb_labeling_api':
   require => Package['couchdb'],
 }
 
-class { 'couchdb':
-    bind_address    => '0.0.0.0',
-    data_dir_prefix => '/var/lib/couchdb_labeling_api',
-}
+class { 'couchdb': }
 
 class { 'annostation_base': }
 
