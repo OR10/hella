@@ -1,20 +1,20 @@
-/*eslint-env node */
-"use strict";
-
-var gulp = require("gulp");
-var $$ = require("gulp-load-plugins")();
-var del = require("del");
-var path = require("path");
+import gulp from "gulp";
+import gulpLoadPlugins from "gulp-load-plugins";
+import del from "del";
+import path from "path";
 
 import DevServer from './Support/DevServer';
 
-gulp.task("clean", function(next) {
+const $$ = gulpLoadPlugins();
+
+
+gulp.task("clean", (next) => {
   del([
     "Distribution/**/*"
   ], next);
 });
 
-gulp.task("serve", function() {
+gulp.task("serve", (next) => {
   const devServer = new DevServer({
     baseUrl: "Application/",
     buildOptions: {
@@ -25,7 +25,7 @@ gulp.task("serve", function() {
 
   devServer.serve();
 
-  gulp.watch("Application/**/*", (event) => {
+  gulp.watch("Application/**/*", event => {
     var relativePath = path.relative(__dirname + "/Application/", event.path);
     devServer.notifyChange(relativePath);
   });
