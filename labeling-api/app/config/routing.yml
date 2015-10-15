@@ -2,5 +2,12 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
 
+labeling_api:
+    resource: "\\AppBundle\\Controller\\ApiController"
+    type:     annotation
+    prefix: "api"
+    defaults:
+        _format: "json"
+
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
