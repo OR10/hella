@@ -16,6 +16,7 @@ php::fpm::pools:
 
 
 php::extensions:
+  mysql: {}
   xdebug: {}
 
 mysql::server::root_password: 'xohx6aeS'
