@@ -26,7 +26,7 @@ mysql::server::override_options:
       bind-address: '0.0.0.0'
 
 couchdb::bind_address: '0.0.0.0'
-couchdb::data_dir_prefix: '/var/lib/couchdb_labeling_api'
+couchdb::data_dir_prefix: '/var/lib'
 
 labeling_api::is_vagrant: true
 labeling_api::root_dir: '/vagrant'
