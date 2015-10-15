@@ -1,80 +1,92 @@
 var Builder = require("jspm").Builder;
 var chalk = require("chalk");
-var moment = require("moment");
 
-function IncrementalBuilder(baseUrl, systemConfigPath) {
-    this.invalidateFile = this.invalidateFile.bind(this);
+function IncrementalBuilder(baseUrl, systemConfigPath, entryPointExpression, buildOptions) {
+  this.invalidateFile = this.invalidateFile.bind(this);
 
-    this.baseUrl = baseUrl;
-    this.systemConfigPath = systemConfigPath;
+  this.baseUrl = baseUrl;
+  this.systemConfigPath = systemConfigPath;
+  this.entryPointExpression = entryPointExpression;
+  this.buildOptions = Object.assign({}, IncrementalBuilder.defaultOptions, buildOptions);
 
-    this.entrypointExpression = null;
-    this.outputFile = null;
-    this.buildOptions = null;
-
-    this.buildCache = {};
+  this.bundle = null;
+  this.buildingPromise = null;
+  this.buildCache = {};
 }
 
 IncrementalBuilder.defaultOptions = {
-    minify: false,
-    mangle: false,
-    sourceMaps: true,
-    sfx: false
+  minify: false,
+  mangle: false,
+  sourceMaps: true,
+  sfx: false
 };
 
+IncrementalBuilder.prototype.getBundle = function() {
+  if (this.buildingPromise) {
+    return this.buildingPromise;
+  }
 
-IncrementalBuilder.prototype.build = function(entrypointExpression, outputFile, buildOptions) {
-    this.entrypointExpression = entrypointExpression;
-    this.outputFile = outputFile;
-    this.buildOptions = Object.assign({}, IncrementalBuilder.defaultOptions, buildOptions);
+  this.buildingPromise = this.build();
 
-    this.builder = new Builder();
-    this.builder.setCache(this.buildCache);
-
-    this.build_()
+  return this.buildingPromise;
 };
 
-IncrementalBuilder.prototype.build_ = function() {
-    var startTime = Date.now();
-    this.log(chalk.yellow("Starting new build:"), this.entrypointExpression);
-
-    Promise.resolve().then(function() {
-        return this.builder.bundle(this.entrypointExpression, this.outputFile, this.buildOptions);
-    }.bind(this)).then(function() {
-        this.buildCache = this.builder.getCache();
-        var endTime = Date.now();
-        var duration = moment.duration(endTime - startTime).as("milliseconds");
-        this.log(chalk.yellow("Build finished after"), chalk.blue(duration, "ms"));
-    }.bind(this)).catch(function(error) {
-        this.log(chalk.red("Build failed:"), error.message, "\n", error.stack);
-    }.bind(this));
+IncrementalBuilder.prototype.setupBuilder = function() {
+  this.builder = new Builder(this.baseUrl, this.systemConfigPath);
+  this.builder.setCache(this.buildCache);
 };
 
+IncrementalBuilder.prototype.build = function() {
+  var startTime = Date.now();
 
+  this.setupBuilder();
 
-IncrementalBuilder.prototype.rebuild = function(changedFiles) {
-    if (changedFiles === undefined) {
-        changedFiles = [];
-    } else if (typeof changedFiles === "string") {
-        changedFiles = [changedFiles];
+  this.log(chalk.yellow("Starting new build:"), this.entryPointExpression);
+
+  return Promise.resolve().then(function() {
+    if (this.buildOptions.sfx) {
+      return this.builder.buildStatic(this.entryPointExpression, this.buildOptions);
     }
 
-    this.builder = new Builder();
-    this.builder.setCache(this.buildCache);
+    return this.builder.bundle(this.entryPointExpression, this.buildOptions);
+  }.bind(this)).then(function(output) {
+    this.buildCache = this.builder.getCache();
 
-    changedFiles.forEach(this.invalidateFile);
-    this.build_();
+    var endTime = Date.now();
+    var duration = endTime - startTime;
+    this.log(chalk.yellow("Build finished after"), chalk.blue(duration, "ms"));
+
+    return output;
+  }.bind(this)).catch(function(error) {
+    return Promise.reject(error);
+  }.bind(this));
+};
+
+IncrementalBuilder.prototype.rebuild = function(changedFiles) {
+  if (changedFiles === undefined) {
+    changedFiles = [];
+  } else if (typeof changedFiles === "string") {
+    changedFiles = [changedFiles];
+  }
+
+  this.setupBuilder();
+
+  changedFiles.forEach(this.invalidateFile);
+
+  this.buildingPromise = this.build();
+
+  return this.buildingPromise;
 };
 
 IncrementalBuilder.prototype.log = function(/** ...args **/) {
-    var args = Array.prototype.slice.apply(arguments);
+  var args = Array.prototype.slice.apply(arguments);
 
-    console.log.apply(console, args);
+  console.log.apply(console, args);
 };
 
 IncrementalBuilder.prototype.invalidateFile = function(filename) {
-    this.log(chalk.blue("Invalidating:"), filename);
-    console.log(this.builder.invalidate(filename));
+  this.log(chalk.blue("Invalidating:"), filename);
+  console.log(this.builder.invalidate(filename));
 };
 
 module.exports = IncrementalBuilder;
