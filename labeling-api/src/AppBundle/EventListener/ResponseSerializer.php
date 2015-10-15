@@ -36,12 +36,31 @@ class ResponseSerializer
         $format = $event->getRequest()->getRequestFormat();
         $controllerResult = $event->getControllerResult();
 
+        if ($format === 'html') {
+            $this->renderHtmlView($controllerResult, $event);
+            return;
+        }
+
         $serializedResult = $this->serializer->serialize($controllerResult, $format);
 
         $response = new Response(
             $serializedResult
         );
 
+        $event->setResponse($response);
+    }
+
+    public function renderHtmlView($controllerResult, GetResponseForControllerResultEvent $event)
+    {
+        $response = new Response(
+            $this->twig->render(
+                'AppBundle::debug.html.twig',
+                array(
+                    'json' => $this->serializer->serialize($controllerResult, 'json'),
+                    'xml'  => $this->serializer->serialize($controllerResult, 'xml')
+                )
+            )
+        );
         $event->setResponse($response);
     }
 }

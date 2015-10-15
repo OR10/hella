@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <pre><code class="xml">{{ xml }}</code></pre>
+    <pre><code id="json" class="json"></code></pre>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+
+            hljs.tabReplace = '    '; //4 spaces
+            hljs.initHighlightingOnLoad();
+
+            obj = JSON.parse('{{ json|raw }}');
+
+
+            document.getElementById("json").appendChild(document.createTextNode(JSON.stringify(obj, null, 4)));
+            hljs.highlightBlock(document.getElementById('json'));
+
+        })();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <style type="text/css">
+        .sf2-template-code {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/solarized_light.min.css">
+{% endblock %}

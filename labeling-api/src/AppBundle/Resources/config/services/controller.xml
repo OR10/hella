@@ -7,6 +7,11 @@
         <service
                 id="annostation.labeling_api.controller.default"
                 class="AppBundle\Controller\DefaultController">
+            <argument type="service" id="templating"/>
+        </service>
+        <service
+                id="annostation.labeling_api.controller.api"
+                class="AppBundle\Controller\ApiController">
         </service>
     </services>
 </container>
