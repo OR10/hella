@@ -6,6 +6,8 @@ import http from "http";
 import fs from "fs";
 import chalk from "chalk";
 import serveStatic from "serve-static";
+import {Server as TinyLrServer} from "tiny-lr";
+import request from "request-promise";
 
 import IncrementalBuilder from "./IncrementalBuilder";
 
@@ -33,7 +35,8 @@ export default class DevServer {
         host: '192.168.222.20',
         pathname: '/'
       },
-      port: 54321
+      port: 54321,
+      livereloadPort: 35729
     };
 
     return Object.assign({}, defaultConfig, config);
@@ -47,8 +50,25 @@ export default class DevServer {
   }
 
   notifyChange(changedFile) {
-      this.sourceCache.delete(changedFile);
-      return this.builder.rebuild(changedFile);
+    return Promise.all([
+      this.sourceCache.delete(changedFile),
+      this.builder.rebuild(changedFile),
+      this.notifyLiveReload(changedFile)
+    ]);
+  }
+
+  notifyLiveReload(changedFile) {
+    const {livereloadPort} = this.config;
+    return request(`http://localhost:${livereloadPort}/changed?files=${changedFile}`);
+  }
+
+  initializeLiveReload(port = 35729, options = {}) {
+    const livereload = new TinyLrServer(options);
+    return new Promise((resolve, reject) => {
+      livereload.listen(port, () => {
+        resolve();
+      })
+    });
   }
 
   augmentSourceMap(sourceMap) {
@@ -126,7 +146,7 @@ export default class DevServer {
   }
 
   serve() {
-    let {port, proxy: proxyConfig} = this.config;
+    let {port, livereloadPort, proxy: proxyConfig} = this.config;
 
     if (process.env.PORT) {
       port = process.env.PORT
@@ -136,7 +156,7 @@ export default class DevServer {
       .then(() => {
         return this.createStaticFileServeMiddleware();
       })
-      .then((staticMiddleware) => {
+      .then(staticMiddleware => {
         const app = connect();
         app.use(morgan("dev"));
         app.use(this.serveSystemJsBundle.bind(this));
@@ -144,19 +164,25 @@ export default class DevServer {
         app.use(proxy(proxyConfig));
         return app
       })
-      .then((app) => {
+      .then(app => {
         return this.createServer(app, port);
       })
-      .then((server) => {
+      .then(server => {
         console.log(chalk.green(`Server listening on port ${port}...`));
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(chalk.red("Error during server creation:"), error.message);
       })
-      .then((server) => {
+      .then(server => {
+        return this.initializeLiveReload(livereloadPort);
+      })
+      .then(server => {
+        console.log(chalk.green(`Livereload server initialized on port ${livereloadPort}...`));
+      })
+      .then(server => {
         this.builder.getBundle();
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(chalk.red("Initial bundle creation failed:"), error.message);
       });
   }
