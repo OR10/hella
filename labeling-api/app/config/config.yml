@@ -55,8 +55,16 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+        entity_managers:
+            default:
+                connection: ~
+                mappings:
+                    AppBundle:
+                        type: annotation
+                        is_bundle: true
+                        mapping: true
+                        prefix: "AppBundle\\Model"
+                        dir: "Model"
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -69,4 +77,4 @@ swiftmailer:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: AppBundle\Entity\User
+    user_class: AppBundle\Model\User
