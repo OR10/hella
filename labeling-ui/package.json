@@ -13,7 +13,6 @@
     "babel-core": "^5.8.25",
     "chalk": "^1.1.1",
     "connect": "^3.4.0",
-    "connect-static": "^1.5.1",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-load-plugins": "^0.10.0",
@@ -21,6 +20,7 @@
     "morgan": "^1.6.1",
     "path": "^0.12.7",
     "proxy-middleware": "^0.14.0",
+    "serve-static": "^1.10.0",
     "systemjs-builder": "^0.14.8"
   },
   "jspm": {

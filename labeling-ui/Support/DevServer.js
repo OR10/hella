@@ -1,11 +1,13 @@
-import IncrementalBuilder from "./IncrementalBuilder";
 import morgan from "morgan";
 import proxy from "proxy-middleware";
-import connectStatic from "connect-static";
 import connect from "connect";
 import path from "path";
 import http from "http";
 import fs from "fs";
+import chalk from "chalk";
+import serveStatic from "serve-static";
+
+import IncrementalBuilder from "./IncrementalBuilder";
 
 export default class DevServer {
   constructor(config) {
@@ -15,25 +17,13 @@ export default class DevServer {
 
     this.builder = new IncrementalBuilder(baseUrl, systemConfigPath, entryPointExpression, buildOptions);
 
-    this.staticFileServerOptions = {
-      dir: baseUrl,
-      aliases: [
-        ['/', '/index.html']
-      ],
-      ignoreFile: (fullPath) => {
-        var basename = path.basename(fullPath);
-        return /^\./.test(basename) || /~$/.test(basename);
-      },
-      followSymlinks: true,
-      cacheControlHeader: "max-age=0, must-revalidate"
-    };
-
     this.sourceCache = new Map();
   }
 
   initializeConfig(config) {
     const defaultConfig = {
       baseUrl: process.cwd(),
+      assetPath: `${process.cwd()}/Public`,
       systemConfigPath: "system.config.js",
       entryPointExpression: "main.js",
       buildOptions: {},
@@ -105,37 +95,69 @@ export default class DevServer {
     }
   }
 
+  createStaticFileServeMiddleware() {
+    const {assetPath} = this.config;
+
+    const options = {
+      dotfiles: "ignore",
+      etag: "true",
+      fallthrough: true,
+      index: ["index.html"],
+      redirect: false
+    }
+
+    return serveStatic(assetPath, options);
+  }
+
+  createServer(app, port) {
+    return new Promise((resolve, reject) => {
+      const server = http.createServer(app);
+
+      server.once('error', (error) => {
+        reject(error);
+      });
+
+      server.once('listening', () => {
+        resolve(server);
+      });
+
+      server.listen(port);
+    });
+  }
+
   serve() {
-    const app = connect();
     let {port, proxy: proxyConfig} = this.config;
 
     if (process.env.PORT) {
       port = process.env.PORT
     }
 
-    connectStatic(this.staticFileServerOptions, (err, staticMiddleware) => {
-      if (err) {
-        throw err;
-      }
-
-      app.use(morgan("dev"));
-      app.use(this.serveSystemJsBundle.bind(this));
-      app.use(staticMiddleware);
-      app.use(proxy(proxyConfig));
-
-      const server = http.createServer(app);
-
-      server.on('error', (error) => {
-        console.log(error);
+    Promise.resolve()
+      .then(() => {
+        return this.createStaticFileServeMiddleware();
+      })
+      .then((staticMiddleware) => {
+        const app = connect();
+        app.use(morgan("dev"));
+        app.use(this.serveSystemJsBundle.bind(this));
+        app.use(staticMiddleware);
+        app.use(proxy(proxyConfig));
+        return app
+      })
+      .then((app) => {
+        return this.createServer(app, port);
+      })
+      .then((server) => {
+        console.log(chalk.green(`Server listening on port ${port}...`));
+      })
+      .catch((error) => {
+        console.log(chalk.red("Error during server creation:"), error.message);
+      })
+      .then((server) => {
+        this.builder.getBundle();
+      })
+      .catch((error) => {
+        console.log(chalk.red("Initial bundle creation failed:"), error.message);
       });
-
-      server.on('listening', () => {
-        console.log("Server listening on port " + port);
-      });
-
-      server.listen(port);
-    });
-
-    this.builder.getBundle();
   }
 }
