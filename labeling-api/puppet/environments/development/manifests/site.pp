@@ -4,31 +4,6 @@ class { 'nginx': }
 
 include php
 
-nginx::resource::vhost { "_":
-  ensure      => present,
-  www_root    => "/vagrant/web",
-  index_files => ['app_dev.php'],
-  try_files   => ['$uri', '/app_dev.php$is_args$args'],
-}
-
-nginx::resource::location { '~ \.php(/|$)':
-  ensure        => present,
-  www_root      => "/vagrant/web",
-  vhost         => '_',
-  index_files   => ['app_dev.php'],
-  fastcgi       => '127.0.0.1:9000',
-  fastcgi_param => {
-      'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
-  },
-}
-
-exec { 'composer-install-labelstation':
-  command => '/usr/local/bin/composer install --no-interaction',
-  cwd     => '/vagrant',
-  creates => '/vagrant/vendor',
-  require => Class['php::composer'],
-}
-
 class { '::mysql::server': }
 
 file { '/var/lib/couchdb_labeling_api': 
