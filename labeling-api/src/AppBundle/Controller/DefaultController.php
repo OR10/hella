@@ -2,20 +2,19 @@
 
 namespace AppBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration;
+use Symfony\Component\HttpFoundation;
 
 /**
- * @Route("/", service="annostation.labeling_api.controller.default")
+ * @Configuration\Route("/", service="annostation.labeling_api.controller.default", defaults={"_format"="json"})
  */
 class DefaultController extends Base
 {
     /**
-     * @Route("/", name="homepage")
+     * @Configuration\Route("/")
      */
-    public function indexAction(Request $request)
+    public function indexAction(HttpFoundation\Request $request)
     {
-        return new Response('default');
+        return array('Hello' => 'World');
     }
 }

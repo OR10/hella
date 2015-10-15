@@ -6,4 +6,11 @@
     <imports>
         <import resource="services/controller.xml"/>
     </imports>
+    <services>
+        <service id="annostation.labeling_api.event_listener.response_serializer" class="AppBundle\EventListener\ResponseSerializer">
+            <argument type="service" id="jms_serializer" />
+            <argument type="service" id="templating" />
+            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="100" />
+        </service>
+    </services>
 </container>
