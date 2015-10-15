@@ -17,6 +17,8 @@ class labeling_api(
     host     => '%',
   }
 
+  ::couchdb::database { $database_name: }
+
   file { '/vagrant/app/config/parameters.yml':
     ensure  => file,
     content => template('labeling_api/parameters.yml.erb'),
