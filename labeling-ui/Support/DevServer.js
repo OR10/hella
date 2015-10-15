@@ -56,29 +56,48 @@ export default class DevServer {
     res.end("<h1>Build failed:</h1><pre>" + error.message + "</pre><pre>" + error.stack + "</pre>");
   }
 
-  notifyChange(changedFiles) {
-    this.builder.rebuild(changedFiles);
+  notifyChange(changedFile) {
+      this.sourceCache.delete(changedFile);
+      return this.builder.rebuild(changedFile);
+  }
+
+  augmentSourceMap(sourceMap) {
+    const {sources} = sourceMap;
+    const augmentedMap = Object.assign({}, sourceMap);
+    augmentedMap.sourcesContent = sources.map(file => this.getFileContents(file));
+    return augmentedMap;
+  }
+
+  getFileContents(file) {
+    const {baseUrl} = this.config;
+
+    if (!this.sourceCache.has(file)) {
+      this.sourceCache.set(
+        file,
+        fs.readFileSync(`${baseUrl}/${file}`, {encoding: "utf-8"})
+      );
+    }
+
+    return this.sourceCache.get(file);
   }
 
   serveSystemJsBundle(req, res, next) {
-    const {bundleTargetUrl, baseUrl} = this.config;
+    const {bundleTargetUrl} = this.config;
 
     if (req.url === bundleTargetUrl) {
       this.builder.getBundle()
         .then(output => {
-          var fullOutput = output.source + "\n//# sourceMappingURL=" + bundleTargetUrl + ".map\n";
-          res.end(fullOutput);
+          res.end(
+            `${output.source}\n//# sourceMappingURL=${bundleTargetUrl}.map\n`
+          );
         })
         .catch(this.handleBuildError.bind(this, res));
-    } else if (req.url === bundleTargetUrl + ".map") {
+    } else if (req.url === `${bundleTargetUrl}.map`) {
       this.builder.getBundle()
         .then(output => {
-          const sourceMapJson = JSON.parse(output.sourceMap);
-          const files = sourceMapJson.sources;
-
-          sourceMapJson.sourcesContent = files.map((file) => fs.readFileSync(`${baseUrl}/${file}`, {encoding: "utf-8"}));
-
-          res.end(JSON.stringify(sourceMapJson));
+          res.end(
+            JSON.stringify(this.augmentSourceMap(JSON.parse(output.sourceMap)))
+          );
         })
         .catch(this.handleBuildError.bind(this, res));
     } else {
@@ -93,8 +112,6 @@ export default class DevServer {
     if (process.env.PORT) {
       port = process.env.PORT
     }
-
-    this.builder.getBundle();
 
     connectStatic(this.staticFileServerOptions, (err, staticMiddleware) => {
       if (err) {
@@ -118,5 +135,7 @@ export default class DevServer {
 
       server.listen(port);
     });
+
+    this.builder.getBundle();
   }
 }
