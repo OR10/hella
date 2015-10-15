@@ -78,3 +78,19 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: AppBundle\Model\User
+
+doctrine_couch_db:
+    client:
+        dbname: labeling_api
+    odm:
+        document_managers:
+            default:
+                connection: ~
+                auto_mapping: true
+                mappings:
+                    AppBundle:
+                        type: annotation
+                        is_bundle: true
+                        mapping: true
+                        prefix: "AppBundle\\Model"
+                        dir: "Model"
