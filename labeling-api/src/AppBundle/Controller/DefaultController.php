@@ -29,7 +29,7 @@ class DefaultController extends Base
     {
         return new Response(
             $this->twigEngine->render(
-                'default/index.html.twig'
+                'AppBundle:default:index.html.twig'
             )
         );
     }
