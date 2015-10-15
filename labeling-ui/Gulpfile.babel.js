@@ -1,20 +1,24 @@
 import gulp from "gulp";
-import gulpLoadPlugins from "gulp-load-plugins";
 import del from "del";
 import path from "path";
+import gulpLoadPlugins from "gulp-load-plugins";
 
 import DevServer from './Support/DevServer';
 
 const $$ = gulpLoadPlugins();
 
-
-gulp.task("clean", (next) => {
+gulp.task("clean", next => {
   del([
     "Distribution/**/*"
   ], next);
 });
 
-gulp.task("serve", (next) => {
+gulp.task("serve", next => {
+  /**
+   * next is intentionally never called, as 'serve' is an endless task
+   * Do not remove the next from the function signature!
+   **/
+
   const devServer = new DevServer({
     baseUrl: "Application/",
     buildOptions: {
