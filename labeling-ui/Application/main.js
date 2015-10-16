@@ -3,5 +3,5 @@ import $ from "jquery";
 import angular from "angular";
 
 console.log(A);
-console.log("foox");
+console.log("foobar");
 
