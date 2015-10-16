@@ -1,9 +1,3 @@
-if (window.__crosscan_karma_env__ !== true) {
-  System.config({
-    baseURL: "/"
-  });
-}
-
 System.config({
   defaultJSExtensions: true,
   transpiler: "babel",
@@ -14,8 +8,8 @@ System.config({
     ]
   },
   paths: {
-    "github:*": "vendor/github/*",
-    "npm:*": "vendor/npm/*"
+    "github:*": "Application/vendor/github/*",
+    "npm:*": "Application/vendor/npm/*"
   },
 
   map: {

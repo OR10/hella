@@ -46,7 +46,6 @@
   },
   "jspm": {
     "directories": {
-      "baseURL": "Application",
       "packages": "Application/vendor"
     },
     "configFile": "Application/system.config.js",
