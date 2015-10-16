@@ -64,3 +64,13 @@ gulp.task("test-unit", next => {
 
   return karmaServer.start();
 });
+
+gulp.task('test-unit-continuous', function() {
+  const karmaServer = new KarmaServer({
+    singleRun: false,
+    autoWatch: true,
+    configFile: path.join(__dirname, '/karma.conf.js')
+  });
+
+  karmaServer.start();
+});
