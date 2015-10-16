@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @Configuration\Route("/", service="annostation.labeling_api.controller.default")
+ * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
  */
-class DefaultController extends Base
+class Index extends Base
 {
     /**
      * @var TwigEngine

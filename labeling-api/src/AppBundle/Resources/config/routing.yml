@@ -1,0 +1,14 @@
+default:
+    resource: "AppBundle\Controller\Index"
+    type: annotation
+
+api_videoupload:
+    resource: "AppBundle\Controller\Api\VideoUpload"
+    type: rest
+    name_prefix: app_api_videoupload_
+
+api_test:
+    resource: "AppBundle\Controller\Api\Test"
+    type: rest
+    name_prefix: app_api_test_
+

@@ -8,8 +8,8 @@
     </imports>
     <services>
         <service id="annostation.labeling_api.event_listener.response_serializer" class="AppBundle\EventListener\ResponseSerializer">
+            <argument type="service" id="fos_rest.view_handler" />
             <argument type="service" id="jms_serializer" />
-            <argument type="service" id="templating" />
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="100" />
         </service>
 
