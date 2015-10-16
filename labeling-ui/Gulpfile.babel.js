@@ -30,17 +30,17 @@ gulp.task("serve", next => {
    **/
 
   const devServer = new DevServer({
-    baseURL: "Application/",
+    baseURL: './',
     buildOptions: {
       sfx: true
     },
-    entryPointExpression: 'scripts/main.js'
+    entryPointExpression: 'Application/main.js'
   });
 
   devServer.serve();
 
   gulp.watch("Application/**/*", event => {
-    var relativePath = path.relative(__dirname + "/Application/", event.path);
+    var relativePath = path.relative(__dirname, event.path);
     devServer.notifyChange(relativePath);
   });
 });
