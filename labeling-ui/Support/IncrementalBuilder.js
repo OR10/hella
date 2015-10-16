@@ -2,10 +2,10 @@ import {Builder} from "jspm";
 import chalk from "chalk";
 
 export default class IncrementalBuilder {
-  constructor(baseUrl, systemConfigPath, entryPointExpression, buildOptions) {
+  constructor(baseURL, systemConfigPath, entryPointExpression, buildOptions) {
     this.invalidateFile = this.invalidateFile.bind(this);
 
-    this.baseUrl = baseUrl;
+    this.baseURL = baseURL;
     this.systemConfigPath = systemConfigPath;
     this.entryPointExpression = entryPointExpression;
     this.buildOptions = Object.assign({}, IncrementalBuilder.defaultOptions, buildOptions);
@@ -26,7 +26,7 @@ export default class IncrementalBuilder {
   }
 
   setupBuilder() {
-    this.builder = new Builder(this.baseUrl, this.systemConfigPath);
+    this.builder = new Builder(this.baseURL, this.systemConfigPath);
     this.builder.setCache(this.buildCache);
   }
 
