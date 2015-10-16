@@ -180,7 +180,7 @@ export default class DevServer {
         console.log(chalk.green(`Livereload server initialized on port ${livereloadPort}...`));
       })
       .then(server => {
-        this.builder.getBundle();
+        return this.builder.getBundle();
       })
       .catch(error => {
         console.log(chalk.red("Initial bundle creation failed:"), error.message);
