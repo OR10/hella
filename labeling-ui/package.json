@@ -28,7 +28,7 @@
     "karma-coverage": "^0.5.2",
     "karma-jasmine": "^0.3.6",
     "karma-json2js-preprocessor": "0.0.2",
-    "karma-jspm": "^2.0.1",
+    "karma-jspm": "git+https://github.com/Workiva/karma-jspm.git#4a3dd4b72c00e2dd69c509cf39555002bedef575",
     "karma-junit-reporter": "^0.3.7",
     "karma-ng-html2js-preprocessor": "^0.2.0",
     "karma-selenium-webdriver-launcher": "0.0.3",

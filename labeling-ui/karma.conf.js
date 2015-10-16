@@ -46,23 +46,26 @@ module.exports = function(config) {
         'Application/**/*.js',
         'Application/**/*.css'
       ],
-      urlRoot: '/'
+      urlRoot: '/',
+      meta: {
+        'Tests/unit/*': { format: 'register' }
+      }
     },
 
-    //proxies: {
+    proxies: {
     //  '/base/scripts/tests': '/base/tests',
     //  '/base/scripts': '/base/app/scripts',
     //  '/base/module': '/base/app/module',
     //  '/base/vendor': '/base/app/vendor',
-    //  '/base/scripts/app/vendor': '/base/app/vendor'
-    //},
+      '/base/vendor': '/base/Application/vendor'
+    },
 
     // list of files to exclude
     exclude: [],
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_WARN,
 
     ngHtml2JsPreprocessor: {
       // strip this from the file path
