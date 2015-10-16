@@ -22,6 +22,7 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['junit', 'progress', 'verbose', 'coverage'],
     junitReporter: {
+      outputDir: 'Logs/Unit',
       outputFile: 'test-unit-results.xml'
     },
 
@@ -91,7 +92,7 @@ module.exports = function(config) {
     // optionally, configure the reporter
     coverageReporter: {
       type: 'html',
-      dir: 'coverage/'
+      dir: 'Logs/Coverage'
     }
   };
 
