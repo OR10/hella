@@ -1,5 +1,5 @@
 export default class A {
     constructor() {
-        console.log("const! const!");
+        console.log("const! const!")
     }
 };

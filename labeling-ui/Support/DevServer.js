@@ -124,7 +124,7 @@ export default class DevServer {
       fallthrough: true,
       index: ["index.html"],
       redirect: false
-    }
+    };
 
     return serveStatic(assetPath, options);
   }

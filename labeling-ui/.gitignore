@@ -2,3 +2,5 @@ node_modules/
 .idea/
 Application/vendor/
 Distribution/
+Logs/*
+npm-debug.log

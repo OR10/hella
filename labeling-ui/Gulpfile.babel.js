@@ -2,10 +2,20 @@ import gulp from "gulp";
 import del from "del";
 import path from "path";
 import gulpLoadPlugins from "gulp-load-plugins";
+import {Server as KarmaServer} from "karma";
+import fs from "fs";
 
 import DevServer from './Support/DevServer';
 
 const $$ = gulpLoadPlugins();
+
+const paths = {
+  js: 'Application/scripts/**/*.js',
+  css: 'Application/styles/**/*.css',
+  tests: {
+    unit: 'Tests/unit/**/*.js'
+  }
+};
 
 gulp.task("clean", next => {
   del([
@@ -24,7 +34,7 @@ gulp.task("serve", next => {
     buildOptions: {
       sfx: true
     },
-    entryPointExpression: 'main.js'
+    entryPointExpression: 'scripts/main.js'
   });
 
   devServer.serve();
@@ -33,4 +43,24 @@ gulp.task("serve", next => {
     var relativePath = path.relative(__dirname + "/Application/", event.path);
     devServer.notifyChange(relativePath);
   });
+});
+
+gulp.task("eslint", next => {
+  return gulp.src([paths.js, paths.tests.unit])
+    .pipe($$.eslint())
+    .pipe($$.eslint.format());
+});
+
+gulp.task("eslint-checkstyle", next => {
+  return gulp.src([paths.js, paths.tests.unit])
+    .pipe($$.eslint())
+    .pipe($$.eslint.format('checkstyle', fs.createWriteStream("Logs/eslint.xml")));
+});
+
+gulp.task("test-unit", next => {
+  const karmaServer = new KarmaServer({
+    configFile: path.join(__dirname, '/karma.conf.js')
+  });
+
+  return karmaServer.start();
 });
