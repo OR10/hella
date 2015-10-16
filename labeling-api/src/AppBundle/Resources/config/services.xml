@@ -12,5 +12,34 @@
             <argument type="service" id="templating" />
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="100" />
         </service>
+
+        <service id="annostation.labeling_api.database.facade.user" class="AppBundle\Database\Facade\User">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="fos_user.user_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.video" class="AppBundle\Database\Facade\Video">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.prelabeled_frame" class="AppBundle\Database\Facade\PrelabeledFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeling_task" class="AppBundle\Database\Facade\LabelingTask">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_thing_in_frame" class="AppBundle\Database\Facade\LabeledThingInFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_thing" class="AppBundle\Database\Facade\LabeledThing">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_frame" class="AppBundle\Database\Facade\LabeledFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
     </services>
 </container>
