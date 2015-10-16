@@ -41,5 +41,10 @@
         <service id="annostation.labeling_api.database.facade.labeled_frame" class="AppBundle\Database\Facade\LabeledFrame">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
+
+        <service id="annostation.labeling_api.command.create_video_command" class="AppBundle\Command\CreateVideoCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
