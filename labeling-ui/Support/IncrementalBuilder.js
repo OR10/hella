@@ -37,13 +37,13 @@ export default class IncrementalBuilder {
 
     this.log(chalk.yellow("Starting new build:"), this.entryPointExpression);
 
-    return Promise.resolve().then(function () {
+    return Promise.resolve().then(() => {
       if (this.buildOptions.sfx) {
         return this.builder.buildStatic(this.entryPointExpression, this.buildOptions);
       }
 
       return this.builder.bundle(this.entryPointExpression, this.buildOptions);
-    }.bind(this)).then(function (output) {
+    }).then((output) => {
       this.buildCache = this.builder.getCache();
 
       var endTime = Date.now();
@@ -51,9 +51,7 @@ export default class IncrementalBuilder {
       this.log(chalk.yellow("Build finished after"), chalk.blue(duration, "ms"));
 
       return output;
-    }.bind(this)).catch(function (error) {
-      return Promise.reject(error);
-    }.bind(this));
+    }).catch(error => Promise.reject(error));
   }
 
   rebuild(changedFiles) {
