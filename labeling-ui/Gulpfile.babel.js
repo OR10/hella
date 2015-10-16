@@ -30,7 +30,7 @@ gulp.task("serve", next => {
    **/
 
   const devServer = new DevServer({
-    baseUrl: "Application/",
+    baseURL: "Application/",
     buildOptions: {
       sfx: true
     },

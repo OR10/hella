@@ -15,16 +15,16 @@ export default class DevServer {
   constructor(config) {
     this.config = this.initializeConfig(config);
 
-    const {baseUrl, systemConfigPath, entryPointExpression, buildOptions} = this.config;
+    const {baseURL, systemConfigPath, entryPointExpression, buildOptions} = this.config;
 
-    this.builder = new IncrementalBuilder(baseUrl, systemConfigPath, entryPointExpression, buildOptions);
+    this.builder = new IncrementalBuilder(baseURL, systemConfigPath, entryPointExpression, buildOptions);
 
     this.sourceCache = new Map();
   }
 
   initializeConfig(config) {
     const defaultConfig = {
-      baseUrl: process.cwd(),
+      baseURL: process.cwd(),
       assetPath: `${process.cwd()}/Public`,
       systemConfigPath: "system.config.js",
       entryPointExpression: "main.js",
@@ -79,12 +79,12 @@ export default class DevServer {
   }
 
   getFileContents(file) {
-    const {baseUrl} = this.config;
+    const {baseURL} = this.config;
 
     if (!this.sourceCache.has(file)) {
       this.sourceCache.set(
         file,
-        fs.readFileSync(`${baseUrl}/${file}`, {encoding: "utf-8"})
+        fs.readFileSync(`${baseURL}/${file}`, {encoding: "utf-8"})
       );
     }
 
