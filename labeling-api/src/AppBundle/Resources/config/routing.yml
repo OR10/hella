@@ -3,12 +3,12 @@ default:
     type: annotation
 
 api_videoupload:
-    resource: "AppBundle\Controller\Api\VideoUpload"
+    resource: "annostation.labeling_api.controller.api.video_upload"
     type: rest
     name_prefix: app_api_videoupload_
 
 api_test:
-    resource: "AppBundle\Controller\Api\Test"
+    resource: "annostation.labeling_api.controller.api.test"
     type: rest
     name_prefix: app_api_test_
 

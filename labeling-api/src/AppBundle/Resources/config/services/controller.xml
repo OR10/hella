@@ -13,5 +13,9 @@
                 id="annostation.labeling_api.controller.api.video_upload"
                 class="AppBundle\Controller\Api\VideoUpload">
         </service>
+        <service
+                id="annostation.labeling_api.controller.api.test"
+                class="AppBundle\Controller\Api\Test">
+        </service>
     </services>
 </container>
