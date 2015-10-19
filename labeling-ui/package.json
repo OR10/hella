@@ -46,7 +46,7 @@
   },
   "jspm": {
     "directories": {
-      "packages": "Application/vendor"
+      "packages": "Application/Vendor"
     },
     "configFile": "Application/system.config.js",
     "dependencies": {
