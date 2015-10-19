@@ -12,9 +12,17 @@ class Video
      */
     private $documentManager;
 
-    function __construct(CouchDB\DocumentManager $documentManager)
+    public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
+    }
+
+    public function findAll()
+    {
+        return $this->documentManager
+            ->createQuery('labeling_api', 'video')
+            ->onlyDocs(true)
+            ->execute();
     }
 
     public function getPrelabeledFrames(Model\Video $video)
