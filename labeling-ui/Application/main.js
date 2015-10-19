@@ -1,9 +1,9 @@
-import $ from "jquery";
-import "bootstrap";
-import angular from "angular";
+import $ from 'jquery';
+import 'bootstrap';
+import angular from 'angular';
 
-import A from "./a";
+import Application from './Application';
 
-console.log(A);
-console.log("foobar");
+const app = new Application();
+app.bootstrap(document);
 
