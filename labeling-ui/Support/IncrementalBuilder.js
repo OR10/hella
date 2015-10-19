@@ -73,7 +73,7 @@ export default class IncrementalBuilder {
   }
 
   log(...args) {
-    console.log.apply(console, args);
+    console.log.apply(console, args); // eslint-disable-line no-console
   }
 
 
