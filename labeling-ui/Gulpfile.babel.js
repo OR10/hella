@@ -4,6 +4,8 @@ import path from 'path';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import {Server as KarmaServer} from 'karma';
 import fs from 'fs';
+import {Builder} from 'jspm';
+import run from 'run-sequence';
 
 import DevServer from './Support/DevServer';
 
@@ -17,7 +19,9 @@ paths.dir = {
   'styles': 'Public/Styles',
   'tests': {
     'unit': 'Tests/Unit'
-  }
+  },
+  'distribution': 'Distribution',
+  'public': 'Public'
 };
 paths.files = {
   'js': `${paths.dir.js}/**/*.js`,
@@ -32,13 +36,14 @@ paths.files = {
   },
   'gulp': {
     'config': `Gulpfile.babel.js`
-  }
+  },
+  'public': `${paths.dir.public}/**/*`
 };
 
-gulp.task('clean', next => {
-  del([
-    'Distribution/**/*'
-  ], next);
+gulp.task('clean', () => {
+  return del([
+    `${paths.dir.distribution}/**/*`
+  ]);
 });
 
 gulp.task('serve', next => { //eslint-disable-line no-unused-vars
@@ -62,6 +67,53 @@ gulp.task('serve', next => { //eslint-disable-line no-unused-vars
     devServer.notifyChange(relativePath);
   });
 });
+
+gulp.task('build-javascript', () => {
+  const config = {
+    'baseURL': './',
+    'buildOptions': {
+      'minify': false,
+      'mangle': false,
+      'sourceMaps': true
+    },
+    'entryPointExpression': 'Application/main.js'
+  };
+
+  const builder = new Builder(config.baseURL, paths.files.system.config);
+  return builder.buildStatic(
+    config.entryPointExpression,
+    `${paths.dir.distribution}/lib/bundle.js`,
+    config.buildOptions
+  );
+});
+
+gulp.task('build-public', () => {
+  return gulp.src(paths.files.public)
+    .pipe(gulp.dest(paths.dir.distribution));
+});
+
+gulp.task('build', next => run(
+  ['build-javascript', 'build-public'],
+  next
+));
+
+gulp.task('optimize-javascript', () => {
+  return gulp.src(`${paths.dir.distribution}/lib/bundle.js`)
+  .pipe($$.uglifyjs({
+    mangle: true,
+    warning: true,
+    preserveComment: 'license',
+    outSourceMap: `bundle.min.js.map`,
+    inSourceMap: `${paths.dir.distribution}/lib/bundle.js.map`
+  }))
+  .pipe($$.if("*.js", $$.rename({extname: ".min.js"})))
+  .pipe(gulp.dest(`${paths.dir.distribution}/lib/`));
+});
+
+gulp.task('optimize', next => run(
+  'optimize-javascript',
+  next
+));
 
 gulp.task('eslint', () => {
   return gulp.src([
@@ -96,3 +148,10 @@ gulp.task('test-unit', () => {
 
   return karmaServer.start();
 });
+
+gulp.task('default', next => run(
+  'clean',
+  'build',
+  'optimize',
+  next
+));
