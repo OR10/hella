@@ -14,7 +14,7 @@ const $$ = gulpLoadPlugins();
 
 const paths = {};
 paths.dir = {
-  'js': 'Application',
+  'application': 'Application',
   'support': 'Support',
   'vendor': 'Application/Vendor',
   'sass': 'Styles',
@@ -26,7 +26,7 @@ paths.dir = {
   'public': 'Public',
 };
 paths.files = {
-  'js': `${paths.dir.js}/**/*.js`,
+  'js': `${paths.dir.application}/**/*.js`,
   'support': `${paths.dir.support}/**/*.js`,
   'vendor': `${paths.dir.vendor}/**/*`,
   'sass': {
@@ -38,7 +38,7 @@ paths.files = {
     'unit': `${paths.dir.tests.unit}/**/*.js`,
   },
   'system': {
-    'config': `${paths.dir.js}/system.config.js`,
+    'config': `${paths.dir.application}/system.config.js`,
   },
   'gulp': {
     'config': `Gulpfile.babel.js`,
@@ -73,7 +73,7 @@ gulp.task('serve', () => {
 
       devServer.serve();
 
-      gulp.watch(paths.files.js, event => {
+      gulp.watch(`${paths.dir.application}/**/*`, event => {
         const relativePath = path.relative(__dirname, event.path);
         devServer.notifyChange(relativePath);
       });
