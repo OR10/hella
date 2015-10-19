@@ -53,7 +53,7 @@ gulp.task('clean', () => {
   ]);
 });
 
-gulp.task('serve', ['sass'], next => { //eslint-disable-line no-unused-vars
+gulp.task('serve', next => { //eslint-disable-line no-unused-vars
   /**
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
@@ -100,7 +100,8 @@ gulp.task('build-public', () => {
 });
 
 gulp.task('build', next => run(
-  ['build-javascript', 'build-public'],
+  'build-public',
+  ['build-javascript', 'build-sass'],
   next
 ));
 
@@ -118,7 +119,7 @@ gulp.task('optimize-javascript', () => {
 });
 
 gulp.task('optimize', next => run(
-  'optimize-javascript',
+  ['optimize-javascript', 'optimize-css'],
   next
 ));
 
@@ -166,28 +167,30 @@ gulp.task('test-unit-continuous', function() {
   karmaServer.start();
 });
 
-gulp.task('sass', ['clean'], () => {
+gulp.task('build-sass', ['clean'], () => {
   return gulp.src(paths.files.sass)
     .pipe($$.sourcemaps.init())
     .pipe($$.sass({
       precision: 8,
       errLogToConsole: true,
-      functions: sassJspm.resolve_function('/Application/vendor/'),
+      functions: sassJspm.resolve_function('Application/vendor/'),
       importer: sassJspm.importer
     }))
     .pipe($$.autoprefixer())
-    .pipe($$.sourcemaps.write('.'))
+    .pipe($$.sourcemaps.write('./', {sourceRoot: null}))
     .pipe(gulp.dest(paths.dir.styles));
 });
 
-gulp.task('optimize-css', ['sass'], () => {
+gulp.task('optimize-css', () => {
   return gulp.src(paths.files.css)
-    .pipe($$.minifyCss())
-    .pipe($$.rename({
-      suffix: '.min'
+    .pipe($$.sourcemaps.init({loadMaps: true}))
+    .pipe($$.minifyCss({
+      sourceMapInlineSources: true
     }))
+    .pipe($$.rename({extname: '.min.css'}))
+    .pipe($$.sourcemaps.write('./'))
     .pipe(gulp.dest(paths.dir.styles));
-));
+});
 
 gulp.task('default', next => run(
   'clean',
