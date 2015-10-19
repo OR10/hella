@@ -32,7 +32,7 @@ class CreateVideoCommand extends ContainerAwareCommand
     {
         $this->setName('annostation:create:video')
             ->setDescription('Create random dummy video entry in the database')
-            ->addArgument('count', InputArgument::OPTIONAL, "How many users do you want to create?");
+            ->addArgument('count', InputArgument::OPTIONAL, "How many videos do you want to create?");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

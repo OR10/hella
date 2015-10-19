@@ -32,12 +32,13 @@ class CreateUserCommand extends ContainerAwareCommand
         $manipulator = $this->getContainer()->get('fos_user.util.user_manipulator');
         $knownLogin  = $input->getOption('known-login');
 
-        if ($knownLogin) {
-            $manipulator->create('user', 'password', 'foo@bar.baz', true, false);
-        }
-
         $count = $input->getArgument('count') ? $input->getArgument('count') : 1;
 
+        if ($knownLogin) {
+            $manipulator->create('user', 'password', 'foo@bar.baz', true, false);
+            $count--;
+        }
+        
         for ($i = 0; $i < $count; $i++) {
             $manipulator->create($faker->userName, $faker->password(), $faker->email, true, false);
         }
