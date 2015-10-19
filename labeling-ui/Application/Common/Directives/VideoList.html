@@ -1,0 +1,8 @@
+
+<div ng-if="vm.videos === null" class="alert alert-info">Loading Videos...</div>
+
+<div ng-if="vm.videos.length === 0" class="alert alert-warning">No videos available!</div>
+
+<ul class="list-group" ng-if="vm.videos.length > 0">
+    <li class="list-group-item" ng-repeat="video in vm.videos">{{video.id}}</li>
+</ul>
