@@ -73,7 +73,7 @@ gulp.task('serve', () => {
 
       devServer.serve();
 
-      gulp.watch('paths.files.js', event => {
+      gulp.watch(paths.files.js, event => {
         const relativePath = path.relative(__dirname, event.path);
         devServer.notifyChange(relativePath);
       });
