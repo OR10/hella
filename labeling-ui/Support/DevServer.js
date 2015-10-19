@@ -1,15 +1,14 @@
-import morgan from "morgan";
-import proxy from "proxy-middleware";
-import connect from "connect";
-import path from "path";
-import http from "http";
-import fs from "fs";
-import chalk from "chalk";
-import serveStatic from "serve-static";
-import {Server as TinyLrServer} from "tiny-lr";
-import request from "request-promise";
+import morgan from 'morgan';
+import proxy from 'proxy-middleware';
+import connect from 'connect';
+import http from 'http';
+import fs from 'fs';
+import chalk from 'chalk';
+import serveStatic from 'serve-static';
+import {Server as TinyLrServer} from 'tiny-lr';
+import request from 'request-promise';
 
-import IncrementalBuilder from "./IncrementalBuilder";
+import IncrementalBuilder from './IncrementalBuilder';
 
 export default class DevServer {
   constructor(config) {
@@ -26,34 +25,34 @@ export default class DevServer {
     const defaultConfig = {
       baseURL: process.cwd(),
       assetPath: `${process.cwd()}/Public`,
-      systemConfigPath: "system.config.js",
-      entryPointExpression: "main.js",
+      systemConfigPath: 'system.config.js',
+      entryPointExpression: 'main.js',
       buildOptions: {},
-      bundleTargetUrl: "/lib/bundle.js",
+      bundleTargetUrl: '/lib/bundle.js',
       proxy: {
         protocol: 'http:',
         host: '192.168.222.20',
-        pathname: '/'
+        pathname: '/',
       },
       port: 54321,
-      livereloadPort: 35729
+      livereloadPort: 35729,
     };
 
     return Object.assign({}, defaultConfig, config);
   }
 
   handleBuildError(res, error) {
-    console.log(chalk.red("Build failed:"), error.message, "\n", error.stack);
+    console.log(chalk.red('Build failed:'), error.message, '\n', error.stack); // eslint-disable-line no-console
 
     res.statusCode = 500;
-    res.end("<h1>Build failed:</h1><pre>" + error.message + "</pre><pre>" + error.stack + "</pre>");
+    res.end('<h1>Build failed:</h1><pre>' + error.message + '</pre><pre>' + error.stack + '</pre>');
   }
 
   notifyChange(changedFile) {
     return Promise.all([
       this.sourceCache.delete(changedFile),
       this.builder.rebuild(changedFile),
-      this.notifyLiveReload(changedFile)
+      this.notifyLiveReload(changedFile),
     ]);
   }
 
@@ -64,10 +63,10 @@ export default class DevServer {
 
   initializeLiveReload(port = 35729, options = {}) {
     const livereload = new TinyLrServer(options);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       livereload.listen(port, () => {
         resolve();
-      })
+      });
     });
   }
 
@@ -84,7 +83,7 @@ export default class DevServer {
     if (!this.sourceCache.has(file)) {
       this.sourceCache.set(
         file,
-        fs.readFileSync(`${baseURL}/${file}`, {encoding: "utf-8"})
+        fs.readFileSync(`${baseURL}/${file}`, {encoding: 'utf-8'})
       );
     }
 
@@ -119,11 +118,11 @@ export default class DevServer {
     const {assetPath} = this.config;
 
     const options = {
-      dotfiles: "ignore",
-      etag: "true",
+      dotfiles: 'ignore',
+      etag: 'true',
       fallthrough: true,
-      index: ["index.html"],
-      redirect: false
+      index: ['index.html'],
+      redirect: false,
     };
 
     return serveStatic(assetPath, options);
@@ -146,10 +145,11 @@ export default class DevServer {
   }
 
   serve() {
-    let {port, livereloadPort, proxy: proxyConfig} = this.config;
+    let {port} = this.config;
+    const {livereloadPort, proxy: proxyConfig} = this.config;
 
     if (process.env.PORT) {
-      port = process.env.PORT
+      port = process.env.PORT;
     }
 
     Promise.resolve()
@@ -158,32 +158,32 @@ export default class DevServer {
       })
       .then(staticMiddleware => {
         const app = connect();
-        app.use(morgan("dev"));
+        app.use(morgan('dev'));
         app.use(this.serveSystemJsBundle.bind(this));
         app.use(staticMiddleware);
         app.use(proxy(proxyConfig));
-        return app
+        return app;
       })
       .then(app => {
         return this.createServer(app, port);
       })
-      .then(server => {
-        console.log(chalk.green(`Server listening on port ${port}...`));
+      .then(() => {
+        console.log(chalk.green(`Server listening on port ${port}...`)); // eslint-disable-line no-console
       })
       .catch(error => {
-        console.log(chalk.red("Error during server creation:"), error.message);
+        console.log(chalk.red('Error during server creation:'), error.message); // eslint-disable-line no-console
       })
-      .then(server => {
+      .then(() => {
         return this.initializeLiveReload(livereloadPort);
       })
-      .then(server => {
-        console.log(chalk.green(`Livereload server initialized on port ${livereloadPort}...`));
+      .then(() => {
+        console.log(chalk.green(`Livereload server initialized on port ${livereloadPort}...`)); // eslint-disable-line no-console
       })
-      .then(server => {
+      .then(() => {
         return this.builder.getBundle();
       })
       .catch(error => {
-        console.log(chalk.red("Initial bundle creation failed:"), error.message);
+        console.log(chalk.red('Initial bundle creation failed:'), error.message); // eslint-disable-line no-console
       });
   }
 }

@@ -20,10 +20,10 @@ paths.dir = {
   'sass': 'Styles',
   'css': 'Distribution/Styles',
   'tests': {
-    'unit': 'Tests/Unit'
+    'unit': 'Tests/Unit',
   },
   'distribution': 'Distribution',
-  'public': 'Public'
+  'public': 'Public',
 };
 paths.files = {
   'js': `${paths.dir.js}/**/*.js`,
@@ -35,24 +35,24 @@ paths.files = {
   },
   'css': `${paths.dir.css}/**/*.css`,
   'tests': {
-    'unit': `${paths.dir.tests.unit}/*.js`
+    'unit': `${paths.dir.tests.unit}/**/*.js`,
   },
   'system': {
-    'config': `${paths.dir.js}/system.config.js`
+    'config': `${paths.dir.js}/system.config.js`,
   },
   'gulp': {
-    'config': `Gulpfile.babel.js`
+    'config': `Gulpfile.babel.js`,
   },
-  'public': `${paths.dir.public}/**/*`
+  'public': `${paths.dir.public}/**/*`,
 };
 
 gulp.task('clean', () => {
   return del([
-   `${paths.dir.distribution}/**/*`
+    `${paths.dir.distribution}/**/*`,
   ]);
 });
 
-gulp.task('serve', next => { //eslint-disable-line no-unused-vars
+gulp.task('serve', () => {
   /**
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
@@ -61,14 +61,14 @@ gulp.task('serve', next => { //eslint-disable-line no-unused-vars
     'clean',
     'build-public',
     'build-sass',
-    (next) => {
+    () => {
       const devServer = new DevServer({
         'baseURL': './',
         'assetPath': `${__dirname}/Distribution`,
         'buildOptions': {
-          'sfx': true
+          'sfx': true,
         },
-        'entryPointExpression': 'Application/main.js'
+        'entryPointExpression': 'Application/main.js',
       });
 
       devServer.serve();
@@ -103,9 +103,9 @@ gulp.task('build-javascript', () => {
     'buildOptions': {
       'minify': false,
       'mangle': false,
-      'sourceMaps': true
+      'sourceMaps': true,
     },
-    'entryPointExpression': 'Application/main.js'
+    'entryPointExpression': 'Application/main.js',
   };
 
   const builder = new Builder(config.baseURL, paths.files.system.config);
@@ -129,15 +129,15 @@ gulp.task('build', next => run(
 
 gulp.task('optimize-javascript', () => {
   return gulp.src(`${paths.dir.distribution}/lib/bundle.js`)
-  .pipe($$.uglifyjs({
-    mangle: true,
-    warning: true,
-    preserveComment: 'license',
-    outSourceMap: `bundle.min.js.map`,
-    inSourceMap: `${paths.dir.distribution}/lib/bundle.js.map`
-  }))
-  .pipe($$.if("*.js", $$.rename({extname: ".min.js"})))
-  .pipe(gulp.dest(`${paths.dir.distribution}/lib/`));
+    .pipe($$.uglifyjs({
+      mangle: true,
+      warning: true,
+      preserveComment: 'license',
+      outSourceMap: `bundle.min.js.map`,
+      inSourceMap: `${paths.dir.distribution}/lib/bundle.js.map`,
+    }))
+    .pipe($$.if('*.js', $$.rename({extname: '.min.js'})))
+    .pipe(gulp.dest(`${paths.dir.distribution}/lib/`));
 });
 
 gulp.task('optimize', next => run(
@@ -152,7 +152,7 @@ gulp.task('eslint', () => {
     paths.files.gulp.config,
     paths.files.support,
     paths.files.js,
-    paths.files.tests.unit
+    paths.files.tests.unit,
   ])
   .pipe($$.eslint())
   .pipe($$.eslint.format());
@@ -165,7 +165,7 @@ gulp.task('eslint-checkstyle', () => {
     paths.files.gulp.config,
     paths.files.support,
     paths.files.js,
-    paths.files.tests.unit
+    paths.files.tests.unit,
   ])
   .pipe($$.eslint())
   .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
@@ -173,17 +173,17 @@ gulp.task('eslint-checkstyle', () => {
 
 gulp.task('test-unit', () => {
   const karmaServer = new KarmaServer({
-    'configFile': path.join(__dirname, '/karma.conf.js')
+    'configFile': path.join(__dirname, '/karma.conf.js'),
   });
 
   return karmaServer.start();
 });
 
-gulp.task('test-unit-continuous', function() {
+gulp.task('test-unit-continuous', () => {
   const karmaServer = new KarmaServer({
     singleRun: false,
     autoWatch: true,
-    configFile: path.join(__dirname, '/karma.conf.js')
+    configFile: path.join(__dirname, '/karma.conf.js'),
   });
 
   karmaServer.start();
@@ -196,7 +196,7 @@ gulp.task('build-sass', () => {
       precision: 8,
       errLogToConsole: true,
       functions: sassJspm.resolve_function('Application/vendor/'),
-      importer: sassJspm.importer
+      importer: sassJspm.importer,
     }))
     .pipe($$.autoprefixer())
     .pipe($$.sourcemaps.write('./', {sourceRoot: null}))
@@ -207,7 +207,7 @@ gulp.task('optimize-css', () => {
   return gulp.src(paths.files.css)
     .pipe($$.sourcemaps.init({loadMaps: true}))
     .pipe($$.minifyCss({
-      sourceMapInlineSources: true
+      sourceMapInlineSources: true,
     }))
     .pipe($$.rename({extname: '.min.css'}))
     .pipe($$.sourcemaps.write('./'))

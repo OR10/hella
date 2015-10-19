@@ -1,5 +1,5 @@
-import {Builder} from "jspm";
-import chalk from "chalk";
+import {Builder} from 'jspm';
+import chalk from 'chalk';
 
 export default class IncrementalBuilder {
   constructor(baseURL, systemConfigPath, entryPointExpression, buildOptions) {
@@ -31,11 +31,11 @@ export default class IncrementalBuilder {
   }
 
   build() {
-    var startTime = Date.now();
+    const startTime = Date.now();
 
     this.setupBuilder();
 
-    this.log(chalk.yellow("Starting new build:"), this.entryPointExpression);
+    this.log(chalk.yellow('Starting new build:'), this.entryPointExpression);
 
     return Promise.resolve().then(() => {
       if (this.buildOptions.sfx) {
@@ -46,19 +46,21 @@ export default class IncrementalBuilder {
     }).then((output) => {
       this.buildCache = this.builder.getCache();
 
-      var endTime = Date.now();
-      var duration = endTime - startTime;
-      this.log(chalk.yellow("Build finished after"), chalk.blue(duration, "ms"));
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      this.log(chalk.yellow('Build finished after'), chalk.blue(duration, 'ms')); // eslint-disable-line no-console
 
       return output;
     }).catch(error => Promise.reject(error));
   }
 
-  rebuild(changedFiles) {
-    if (changedFiles === undefined) {
+  rebuild(changes) {
+    let changedFiles;
+
+    if (changes === undefined) {
       changedFiles = [];
-    } else if (typeof changedFiles === "string") {
-      changedFiles = [changedFiles];
+    } else if (typeof changes === 'string') {
+      changedFiles = [changes];
     }
 
     this.setupBuilder();
@@ -76,7 +78,7 @@ export default class IncrementalBuilder {
 
 
   invalidateFile(filename) {
-    this.log(chalk.blue("Invalidating:"), filename);
+    this.log(chalk.blue('Invalidating:'), filename);
     this.builder.invalidate(filename);
   }
 }
@@ -85,5 +87,5 @@ IncrementalBuilder.defaultOptions = {
   minify: false,
   mangle: false,
   sourceMaps: true,
-  sfx: false
+  sfx: false,
 };
