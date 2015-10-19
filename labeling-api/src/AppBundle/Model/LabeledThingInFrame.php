@@ -19,14 +19,47 @@ class LabeledThingInFrame
     /** @CouchDB\Field(type="mixed") */
     private $shapes;
 
-    /** @CouchDB\Field(type="integer") */
+    /** @CouchDB\Field(type="string") */
     private $labeledThingId;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLabeledThingId()
     {
         return $this->labeledThingId;
     }
+
+    /**
+     * @param int $frameNo
+     */
+    public function setFrameNo($frameNo)
+    {
+        $this->frameNo = $frameNo;
+    }
+
+    /**
+     * @param mixed $classes
+     */
+    public function setClasses($classes)
+    {
+        $this->classes = $classes;
+    }
+
+    /**
+     * @param mixed $shapes
+     */
+    public function setShapes($shapes)
+    {
+        $this->shapes = $shapes;
+    }
+
+    /**
+     * @param string $labeledThingId
+     */
+    public function setLabeledThingId($labeledThingId)
+    {
+        $this->labeledThingId = $labeledThingId;
+    }
+
 }

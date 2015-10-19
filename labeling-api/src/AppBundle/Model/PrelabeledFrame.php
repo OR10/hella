@@ -31,4 +31,30 @@ class PrelabeledFrame
     {
         $this->videoId = $video->getId();
     }
+
+    /**
+     * @param int $frameNo
+     */
+    public function setFrameNo($frameNo)
+    {
+        $this->frameNo = $frameNo;
+    }
+
+    /**
+     * @param mixed $classes
+     */
+    public function setClasses($classes)
+    {
+        $this->classes = $classes;
+    }
+
+    /**
+     * @param string $videoId
+     */
+    public function setVideoId($videoId)
+    {
+        $this->videoId = $videoId;
+    }
+
+
 }

@@ -13,11 +13,23 @@ class LabelingTask
     /** @CouchDB\Field(type="integer") */
     private $userId;
 
-    /** @CouchDB\Field(type="integer") */
+    /** @CouchDB\Field(type="string") */
     private $videoId;
 
-    public function getVideoId()
+    /**
+     * @param int $userId
+     */
+    public function setUserId($userId)
     {
-        return $this->videoId;
+        $this->userId = $userId;
     }
+
+    /**
+     * @param string $videoId
+     */
+    public function setVideoId($videoId)
+    {
+        $this->videoId = $videoId;
+    }
+
 }
