@@ -79,6 +79,13 @@ export default class IncrementalBuilder {
 
   invalidateFile(filename) {
     this.log(chalk.blue('Invalidating:'), filename);
+    //@HACK: Evil hack to ensure html templates are invalidated
+    //@TODO: Refactor to actually find the file inside the cache tree and
+    //invalidate it correctly no matter what loader was used to load it.
+    if (filename.match(/\.html$/)) {
+      filename = filename + "!";
+    }
+
     this.builder.invalidate(filename);
   }
 }
