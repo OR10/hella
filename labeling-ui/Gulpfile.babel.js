@@ -17,7 +17,8 @@ paths.dir = {
   'js': 'Application',
   'support': 'Support',
   'vendor': 'Application/Vendor',
-  'styles': 'Public/Styles',
+  'sass': 'Styles',
+  'css': 'Distribution/Styles',
   'tests': {
     'unit': 'Tests/Unit'
   },
@@ -28,11 +29,11 @@ paths.files = {
   'js': `${paths.dir.js}/**/*.js`,
   'support': `${paths.dir.support}/**/*.js`,
   'vendor': `${paths.dir.vendor}/**/*`,
-  'css': `${paths.dir.styles}/**/*.css`,
-  'sourcemaps': {
-    'css':`${paths.dir.styles}/**/*.css.map`
+  'sass': {
+    'all': `${paths.dir.sass}/**/*.{scss,sass}`,
+    'entrypoints': [`${paths.dir.sass}/**/*.{scss,sass}`, `!${paths.dir.sass}/**/_*.{scss,sass}`],
   },
-  'sass': [`${paths.dir.styles}/**/*.{scss,sass}`, `!${paths.dir.styles}/**/_*.{scss,sass}`],
+  'css': `${paths.dir.css}/**/*.css`,
   'tests': {
     'unit': `${paths.dir.tests.unit}/*.js`
   },
@@ -47,9 +48,7 @@ paths.files = {
 
 gulp.task('clean', () => {
   return del([
-   `${paths.dir.distribution}/**/*`,
-    paths.files.css,
-    paths.files.sourcemaps.css
+   `${paths.dir.distribution}/**/*`
   ]);
 });
 
@@ -58,21 +57,44 @@ gulp.task('serve', next => { //eslint-disable-line no-unused-vars
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
    **/
+  run(
+    'clean',
+    'build-public',
+    'build-sass',
+    (next) => {
+      const devServer = new DevServer({
+        'baseURL': './',
+        'assetPath': `${__dirname}/Distribution`,
+        'buildOptions': {
+          'sfx': true
+        },
+        'entryPointExpression': 'Application/main.js'
+      });
 
-  const devServer = new DevServer({
-    'baseURL': './',
-    'buildOptions': {
-      'sfx': true
-    },
-    'entryPointExpression': 'Application/main.js'
-  });
+      devServer.serve();
 
-  devServer.serve();
+      gulp.watch('paths.files.js', event => {
+        const relativePath = path.relative(__dirname, event.path);
+        devServer.notifyChange(relativePath);
+      });
 
-  gulp.watch('Application/**/*', event => {
-    const relativePath = path.relative(__dirname, event.path);
-    devServer.notifyChange(relativePath);
-  });
+      gulp.watch(paths.files.public, event => {
+        const relativePath = path.relative(__dirname, event.path);
+        run(
+          'build-public',
+          () => devServer.notifyChange(relativePath)
+        );
+      });
+
+      gulp.watch(paths.files.sass.all, event => {
+        const relativePath = path.relative(__dirname, event.path);
+        run(
+          'build-sass',
+          () => devServer.notifyChange(relativePath)
+        );
+      });
+    }
+  );
 });
 
 gulp.task('build-javascript', () => {
@@ -167,8 +189,8 @@ gulp.task('test-unit-continuous', function() {
   karmaServer.start();
 });
 
-gulp.task('build-sass', ['clean'], () => {
-  return gulp.src(paths.files.sass)
+gulp.task('build-sass', () => {
+  return gulp.src(paths.files.sass.entrypoints)
     .pipe($$.sourcemaps.init())
     .pipe($$.sass({
       precision: 8,
@@ -178,7 +200,7 @@ gulp.task('build-sass', ['clean'], () => {
     }))
     .pipe($$.autoprefixer())
     .pipe($$.sourcemaps.write('./', {sourceRoot: null}))
-    .pipe(gulp.dest(paths.dir.styles));
+    .pipe(gulp.dest(`${paths.dir.css}`));
 });
 
 gulp.task('optimize-css', () => {
@@ -189,7 +211,7 @@ gulp.task('optimize-css', () => {
     }))
     .pipe($$.rename({extname: '.min.css'}))
     .pipe($$.sourcemaps.write('./'))
-    .pipe(gulp.dest(paths.dir.styles));
+    .pipe(gulp.dest(paths.dir.css));
 });
 
 gulp.task('default', next => run(
