@@ -1,0 +1,79 @@
+{
+  "name": "labeling-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "User interface of the HAGLA Labeling System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "crosscan GmbH",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "babel-core": "^5.8.25",
+    "babel-eslint": "^4.1.3",
+    "chalk": "^1.1.1",
+    "connect": "^3.4.0",
+    "continuation-local-storage": "^3.1.4",
+    "del": "^2.0.2",
+    "eslint": "^1.7.1",
+    "eslint-config-airbnb": "^0.1.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-if": "^2.0.0",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglifyjs": "^0.6.2",
+    "ip": "^1.0.1",
+    "jasmine-core": "^2.3.4",
+    "jasmine-reporters": "^2.0.7",
+    "jspm": "^0.16.12",
+    "karma": "^0.13.11",
+    "karma-babel-preprocessor": "^5.2.2",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-coverage": "^0.5.2",
+    "karma-jasmine": "^0.3.6",
+    "karma-json2js-preprocessor": "0.0.2",
+    "karma-jspm": "git+https://github.com/Workiva/karma-jspm.git#4a3dd4b72c00e2dd69c509cf39555002bedef575",
+    "karma-junit-reporter": "^0.3.7",
+    "karma-ng-html2js-preprocessor": "^0.2.0",
+    "karma-selenium-webdriver-launcher": "0.0.3",
+    "karma-verbose-reporter": "0.0.3",
+    "karma-webdriver-launcher": "^1.0.4",
+    "livereload-js": "^2.2.2",
+    "morgan": "^1.6.1",
+    "path": "^0.12.7",
+    "proxy-middleware": "^0.14.0",
+    "request-promise": "^1.0.1",
+    "run-sequence": "^1.1.4",
+    "sass-jspm-importer": "0.0.6",
+    "selenium-webdriver": "^2.47.0",
+    "serve-static": "^1.10.0",
+    "systemjs-builder": "^0.14.8",
+    "tiny-lr": "^0.2.1"
+  },
+  "jspm": {
+    "directories": {
+      "packages": "Application/Vendor"
+    },
+    "configFile": "Application/system.config.js",
+    "dependencies": {
+      "angular": "github:angular/bower-angular@^1.4.7",
+      "angular-mocks": "github:angular/bower-angular-mocks@^1.4.7",
+      "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
+      "bootstrap": "github:twbs/bootstrap-sass@^3.3.5",
+      "css": "github:systemjs/plugin-css@^0.1.18",
+      "jquery": "github:components/jquery@^2.1.4"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4",
+      "html": "github:systemjs/plugin-text@^0.0.2"
+    }
+  }
+}
