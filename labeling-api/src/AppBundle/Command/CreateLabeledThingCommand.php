@@ -41,14 +41,14 @@ class CreateLabeledThingCommand extends ContainerAwareCommand
         $count = $input->getArgument('count') ? $input->getArgument('count') : 1;
 
         for ($i = 0; $i < $count; $i++) {
-            $classes = array();
+            $classes = [];
             for ($i = 0; $i < $faker->numberBetween(1, 5); $i++) {
                 $classes[] = $faker->word;
             }
 
             $labeledThing = new Model\LabeledThing();
             $labeledThing->setClasses($classes);
-            $labeledThing->setFrameRange(array($faker->numberBetween(0, 10), $faker->numberBetween(11, 20)));
+            $labeledThing->setFrameRange([$faker->numberBetween(0, 10), $faker->numberBetween(11, 20)]);
             $labeledThing->setLabelingTaskId($faker->numberBetween(1, 5));
 
             $this->labeledThingFacade->save($labeledThing);

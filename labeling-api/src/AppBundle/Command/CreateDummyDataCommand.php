@@ -32,15 +32,15 @@ class CreateDummyDataCommand extends ContainerAwareCommand
         $output->writeln('Finished!');
     }
 
-    private function callCommand($commandName, $count, $optionalParameters = array(), OutputInterface $output)
+    private function callCommand($commandName, $count, $optionalParameters = [], OutputInterface $output)
     {
         $command = $this->getApplication()->find($commandName);
 
         $userInput = new ArrayInput(
             array_merge(
-                array(
+                [
                     'count' => $count,
-                ),
+                ],
                 $optionalParameters
             )
         );

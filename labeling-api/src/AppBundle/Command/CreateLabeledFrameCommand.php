@@ -41,7 +41,7 @@ class CreateLabeledFrameCommand extends ContainerAwareCommand
         $count = $input->getArgument('count') ? $input->getArgument('count') : 1;
 
         for ($i = 0; $i < $count; $i++) {
-            $classes = array();
+            $classes = [];
             for ($i = 0; $i < $faker->numberBetween(1, 5); $i++) {
                 $classes[] = $faker->word;
             }

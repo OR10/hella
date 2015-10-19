@@ -38,7 +38,7 @@ class CreateUserCommand extends ContainerAwareCommand
             $manipulator->create('user', 'password', 'foo@bar.baz', true, false);
             $count--;
         }
-        
+
         for ($i = 0; $i < $count; $i++) {
             $manipulator->create($faker->userName, $faker->password(), $faker->email, true, false);
         }
