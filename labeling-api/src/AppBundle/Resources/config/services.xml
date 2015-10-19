@@ -46,5 +46,30 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.create_prelabeled_frame_command" class="AppBundle\Command\CreatePrelabeledFrameCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.prelabeled_frame" />
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.create_labeling_task_command" class="AppBundle\Command\CreateLabelingTaskCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.create_labeled_thing_in_frame_command" class="AppBundle\Command\CreateLabeledThingInFrameCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.create_labeled_thing_command" class="AppBundle\Command\CreateLabeledThingCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.create_labeled_frame_command" class="AppBundle\Command\CreateLabeledFrameCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

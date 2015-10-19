@@ -20,36 +20,33 @@ class CreateDummyDataCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->createUsers(5);
-        $this->createVideo(5);
+        $output->writeln('Starting...');
+        $this->callCommand('annostation:create:user', 5, ['--known-login' => true], $output);
+        $this->callCommand('annostation:create:video', 5, [], $output);
+        $this->callCommand('annostation:create:prelabeledframe', 5, [], $output);
+        $this->callCommand('annostation:create:labelingtask', 5, [], $output);
+        $this->callCommand('annostation:create:labeledframe', 5, [], $output);
+        $this->callCommand('annostation:create:labeledthing', 5, [], $output);
+        $this->callCommand('annostation:create:labeledthinginframe', 5, [], $output);
 
-        $output->writeln('Done!');
+        $output->writeln('Finished!');
     }
 
-    protected function createUsers($count)
+    private function callCommand($commandName, $count, $optionalParameters = array(), OutputInterface $output)
     {
-        $command = $this->getApplication()->find('annostation:create:user');
+        $command = $this->getApplication()->find($commandName);
 
         $userInput = new ArrayInput(
-            array(
-                'count'         => $count,
-                '--known-login' => true,
+            array_merge(
+                array(
+                    'count' => $count,
+                ),
+                $optionalParameters
             )
         );
 
+        $output->writeln('Calling: ' . $commandName);
         $command->run($userInput, new NullOutput());
-    }
-    protected function createVideo($count)
-    {
-        $command = $this->getApplication()->find('annostation:create:video');
-
-        $videoInput = new ArrayInput(
-            array(
-                'count'         => $count,
-            )
-        );
-
-        $command->run($videoInput, new NullOutput());
     }
 
 }
