@@ -14,6 +14,11 @@
                 class="AppBundle\Controller\Api\VideoUpload">
         </service>
         <service
+                id="annostation.labeling_api.controller.api.video"
+                class="AppBundle\Controller\Api\Video">
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
+        </service>
+        <service
                 id="annostation.labeling_api.controller.api.test"
                 class="AppBundle\Controller\Api\Test">
         </service>
