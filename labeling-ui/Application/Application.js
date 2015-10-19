@@ -27,11 +27,17 @@ export default class Application {
   }
 
   /**
+   * Register all the modules to be loaded by the application
+   */
+  registerModules() {
+    this.modules.push(new Common());
+  }
+
+  /**
    * Initializes the application by declaring and configuring modules
    */
   init() {
-    //this.modules.push(new CommissioningModule());
-    this.modules.push(new Common());
+    this.registerModules();
 
     this.modules.forEach((module) => module.registerWithAngular(angular));
 
