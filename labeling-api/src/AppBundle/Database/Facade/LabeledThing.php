@@ -23,7 +23,7 @@ class LabeledThing
 
     public function getlabelingTasks(Model\LabeledThing $labeledThing)
     {
-        $this->documentManager->find('AppBundle\Model\LabelingTask', $labeledThing->getLabelingTaskId());
+        $this->documentManager->find(Model\LabelingTask::class, $labeledThing->getLabelingTaskId());
     }
 
     public function save(Model\LabeledThing $labeledThing)

@@ -18,7 +18,7 @@ class LabelingTask
 
     public function getVideo(Model\LabelingTask $labelingTask)
     {
-        return $this->documentManager->find('AppBundle\Model\Video', $labelingTask->getVideoId());
+        return $this->documentManager->find(Model\Video::class, $labelingTask->getVideoId());
     }
 
     public function getLabeledFrames(Model\LabelingTask $labelingTask)

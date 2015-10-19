@@ -18,7 +18,7 @@ class LabeledThingInFrame
 
     public function getLabeledThings(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $this->documentManager->find('AppBundle\Model\LabeledThing', $labeledThingInFrame->getLabeledThingId());
+        $this->documentManager->find(Model\LabeledThing::class, $labeledThingInFrame->getLabeledThingId());
     }
 
     public function save(Model\LabeledThingInFrame $labeledThingInFrame)

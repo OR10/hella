@@ -18,7 +18,7 @@ class LabeledFrame
 
     public function getLabelingTask(Model\LabeledFrame $labeledFrame)
     {
-        return $this->documentManager->find('AppBundle\Model\LabelingTask', $labeledFrame->getLabelingTaskId());
+        return $this->documentManager->find(Model\LabelingTask::class, $labeledFrame->getLabelingTaskId());
     }
 
     public function save(Model\LabeledFrame $labeledFrame)

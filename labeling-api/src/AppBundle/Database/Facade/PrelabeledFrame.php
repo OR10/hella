@@ -18,7 +18,7 @@ class PrelabeledFrame
 
     public function getVideo(Model\PrelabeledFrame $prelabeledFrame)
     {
-        return $this->documentManager->find('AppBundle\Model\Video', $prelabeledFrame->getVideoId());
+        return $this->documentManager->find(Model\Video::class, $prelabeledFrame->getVideoId());
     }
 
     public function save(Model\PrelabeledFrame $prelabeledFrame)
