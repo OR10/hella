@@ -8,20 +8,13 @@ use FOS\UserBundle\Model as FosUserModel;
 class User
 {
     /**
-     * @var ORM\EntityManager
-     */
-    private $entityManager;
-    /**
      * @var FosUserModel\UserManager
      */
     private $userManager;
 
-    function __construct(
-        ORM\EntityManager $entityManager,
-        FosUserModel\UserManager $userManager
-    ) {
-        $this->entityManager = $entityManager;
-        $this->userManager   = $userManager;
+    function __construct(FosUserModel\UserManager $userManager)
+    {
+        $this->userManager = $userManager;
     }
 
     public function createUser($username, $email, $password)
