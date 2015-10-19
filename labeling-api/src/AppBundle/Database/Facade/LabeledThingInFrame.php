@@ -11,7 +11,7 @@ class LabeledThingInFrame
      */
     private $documentManager;
 
-    function __construct(CouchDB\DocumentManager $documentManager)
+    public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
     }

@@ -12,7 +12,7 @@ class User
      */
     private $userManager;
 
-    function __construct(FosUserModel\UserManager $userManager)
+    public function __construct(FosUserModel\UserManager $userManager)
     {
         $this->userManager = $userManager;
     }
