@@ -5,6 +5,7 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import {Server as KarmaServer} from 'karma';
 import fs from 'fs';
 import {Builder} from 'jspm';
+import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
 
 import DevServer from './Support/DevServer';
@@ -28,6 +29,10 @@ paths.files = {
   'support': `${paths.dir.support}/**/*.js`,
   'vendor': `${paths.dir.vendor}/**/*`,
   'css': `${paths.dir.styles}/**/*.css`,
+  'sourcemaps': {
+    'css':`${paths.dir.styles}/**/*.css.map`
+  },
+  'sass': [`${paths.dir.styles}/**/*.{scss,sass}`, `!${paths.dir.styles}/**/_*.{scss,sass}`],
   'tests': {
     'unit': `${paths.dir.tests.unit}/*.js`
   },
@@ -42,11 +47,13 @@ paths.files = {
 
 gulp.task('clean', () => {
   return del([
-    `${paths.dir.distribution}/**/*`
+   `${paths.dir.distribution}/**/*`,
+    paths.files.css,
+    paths.files.sourcemaps.css
   ]);
 });
 
-gulp.task('serve', next => { //eslint-disable-line no-unused-vars
+gulp.task('serve', ['sass'], next => { //eslint-disable-line no-unused-vars
   /**
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
@@ -148,6 +155,39 @@ gulp.task('test-unit', () => {
 
   return karmaServer.start();
 });
+
+gulp.task('test-unit-continuous', function() {
+  const karmaServer = new KarmaServer({
+    singleRun: false,
+    autoWatch: true,
+    configFile: path.join(__dirname, '/karma.conf.js')
+  });
+
+  karmaServer.start();
+});
+
+gulp.task('sass', ['clean'], () => {
+  return gulp.src(paths.files.sass)
+    .pipe($$.sourcemaps.init())
+    .pipe($$.sass({
+      precision: 8,
+      errLogToConsole: true,
+      functions: sassJspm.resolve_function('/Application/vendor/'),
+      importer: sassJspm.importer
+    }))
+    .pipe($$.autoprefixer())
+    .pipe($$.sourcemaps.write('.'))
+    .pipe(gulp.dest(paths.dir.styles));
+});
+
+gulp.task('optimize-css', ['sass'], () => {
+  return gulp.src(paths.files.css)
+    .pipe($$.minifyCss())
+    .pipe($$.rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(paths.dir.styles));
+));
 
 gulp.task('default', next => run(
   'clean',

@@ -17,7 +17,9 @@ System.config({
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "babel": "npm:babel-core@5.8.25",
     "babel-runtime": "npm:babel-runtime@5.8.25",
+    "bootstrap": "github:twbs/bootstrap-sass@3.3.5",
     "core-js": "npm:core-js@1.2.1",
+    "css": "github:systemjs/plugin-css@0.1.18",
     "jquery": "github:components/jquery@2.1.4",
     "github:angular/bower-angular-mocks@1.4.7": {
       "angular": "github:angular/bower-angular@1.4.7"
@@ -30,6 +32,9 @@ System.config({
     },
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
+    },
+    "github:twbs/bootstrap-sass@3.3.5": {
+      "bootstrap": "github:twbs/bootstrap-sass@3.3.5"
     },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"

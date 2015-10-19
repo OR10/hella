@@ -16,11 +16,15 @@
     "continuation-local-storage": "^3.1.4",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
     "gulp-eslint": "^1.0.0",
     "gulp-if": "^2.0.0",
     "gulp-load-plugins": "^0.10.0",
+    "gulp-minify-css": "^1.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-uglifyjs": "^0.6.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.6.0",
     "ip": "^1.0.1",
     "jasmine-core": "^2.3.4",
     "jasmine-reporters": "^2.0.7",
@@ -56,6 +60,8 @@
     "dependencies": {
       "angular": "github:angular/bower-angular@^1.4.7",
       "angular-mocks": "github:angular/bower-angular-mocks@^1.4.7",
+      "bootstrap": "github:twbs/bootstrap-sass@^3.3.5",
+      "css": "github:systemjs/plugin-css@^0.1.18",
       "jquery": "github:components/jquery@^2.1.4"
     },
     "devDependencies": {
@@ -63,5 +69,5 @@
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4"
     }
-  }
+  },
 }
