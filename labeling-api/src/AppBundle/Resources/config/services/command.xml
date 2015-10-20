@@ -34,10 +34,5 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="annostation.labeling_api.command.create_couchdb_views" class="AppBundle\Command\CreateCouchDbViews">
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
-            <tag name="console.command"/>
-        </service>
-
     </services>
 </container>
