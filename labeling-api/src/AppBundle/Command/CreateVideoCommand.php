@@ -41,8 +41,7 @@ class CreateVideoCommand extends ContainerAwareCommand
         $count = $input->getArgument('count') ? $input->getArgument('count') : 1;
 
         for ($i = 0; $i < $count; $i++) {
-            $video = new Model\Video();
-            //TODO: Set dummy data
+            $video = new Model\Video($faker->word);
             $this->videoFacade->save($video);
         }
     }
