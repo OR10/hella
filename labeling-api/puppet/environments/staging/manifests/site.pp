@@ -1,4 +1,3 @@
-
 Class['apt::update'] -> Package<| name != 'software-properties-common' |>
 
 class { 'nginx': }
@@ -11,6 +10,6 @@ class { 'couchdb': }
 
 class { 'annostation_base': }
 
-class { 'labeling_api':
-    require => Class['annostation_base'],
-}
+#class { 'labeling_api':
+#    require => Class['annostation_base'],
+#}
