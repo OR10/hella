@@ -34,5 +34,10 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="annostation.labeling_api.command.import_video_command" class="AppBundle\Command\ImportVideoCommand">
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
+            <tag name="console.command"/>
+        </service>
+
     </services>
 </container>
