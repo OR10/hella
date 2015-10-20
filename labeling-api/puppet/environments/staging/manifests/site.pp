@@ -10,6 +10,9 @@ class { 'couchdb': }
 
 class { 'annostation_base': }
 
-#class { 'labeling_api':
-#    require => Class['annostation_base'],
-#}
+class { 'labeling_api':
+}
+
+file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
+  ensure  => directory,
+}

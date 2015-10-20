@@ -6,16 +6,17 @@ php::fpm::pools:
 php::extensions:
   mysql: {}
 
-#labeling_api::is_vagrant: false
-#labeling_api::root_dir: '/var/www/AnnoStation/labeling-api'
-#labeling_api::data_dir: '/var/cache/labeling_api'
-#labeling_api::database_host: '127.0.0.1'
-#labeling_api::database_port: 'null'
-#labeling_api::database_name: 'labeling_api'
-#labeling_api::database_user: 'labeling_api'
-#labeling_api::database_password: 'pEid4oShu'
-#labeling_api::mailer_transport: 'smtp'
-#labeling_api::mailer_host: '127.0.0.1'
-#labeling_api::mailer_user: 'null'
-#labeling_api::mailer_password: 'null'
-#labeling_api::secret: 'saddassadasd'
+labeling_api::is_vagrant: false
+labeling_api::config_dir: '/etc/AnnoStation/labeling-api'
+labeling_api::root_dir: '/var/www/AnnoStation/labeling-api'
+labeling_api::data_dir: '/var/cache/labeling_api'
+labeling_api::database_host: '127.0.0.1'
+labeling_api::database_port: 'null'
+labeling_api::database_name: 'labeling_api'
+labeling_api::database_user: 'labeling_api'
+labeling_api::database_password: 'pEid4oShu'
+labeling_api::mailer_transport: 'smtp'
+labeling_api::mailer_host: '127.0.0.1'
+labeling_api::mailer_user: 'null'
+labeling_api::mailer_password: 'null'
+labeling_api::secret: 'saddassadasd'

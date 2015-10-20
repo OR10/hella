@@ -2,6 +2,7 @@ class labeling_api(
     $root_dir,
     $data_dir,
     $is_vagrant,
+    $config_dir = undef,
     $database_host = '127.0.0.1',
     $database_port = 'null',
     $database_name = 'symfony',
@@ -22,7 +23,14 @@ class labeling_api(
 
   ::couchdb::database { $database_name: }
 
-  file { "${root_dir}/app/config/parameters.yml":
+  if ($config_dir == undef) {
+    $config_file = "${root_dir}/app/config/parameters.yml"
+  } else {
+    $config_file = "${config_dir}/parameters.yml"
+  }
+
+
+  file { $config_file:
     ensure  => file,
     content => template('labeling_api/parameters.yml.erb'),
   }
