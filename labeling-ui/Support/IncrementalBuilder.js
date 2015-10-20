@@ -76,17 +76,17 @@ export default class IncrementalBuilder {
     console.log.apply(console, args); // eslint-disable-line no-console
   }
 
+  findFileInCache(filename) {
+    const filenameMatcher = new RegExp(`^${filename}(![^!]*)?$`);
+    const availableTargets = Object.keys(this.buildCache.trace);
+    return availableTargets.filter(target => target.match(filenameMatcher));
+  }
 
   invalidateFile(filename) {
     this.log(chalk.blue('Invalidating:'), filename);
-    //@HACK: Evil hack to ensure html templates are invalidated
-    //@TODO: Refactor to actually find the file inside the cache tree and
-    //invalidate it correctly no matter what loader was used to load it.
-    if (filename.match(/\.html$/)) {
-      filename = filename + "!";
-    }
 
-    this.builder.invalidate(filename);
+    const invalidationTargets = this.findFileInCache(filename);
+    invalidationTargets.forEach(target => this.builder.invalidate(target));
   }
 }
 
