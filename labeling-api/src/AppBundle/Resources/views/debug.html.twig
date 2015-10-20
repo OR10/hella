@@ -1,8 +1,12 @@
 {% extends 'AppBundle::base.html.twig' %}
 
 {% block body %}
-    <pre><code class="xml">{{ xml }}</code></pre>
-    <pre><code id="json" class="json"></code></pre>
+    <div class="container">
+        <h2>JSON</h2>
+        <pre><code id="json" class="json"></code></pre>
+        <h2>XML</h2>
+        <pre><code class="xml">{{ xml }}</code></pre>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
