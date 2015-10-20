@@ -12,6 +12,7 @@ php::extensions:
 
 labeling_api::is_vagrant: true
 labeling_api::root_dir: '/vagrant'
+labeling_api::data_dir: '/var/cache/labeling_api'
 labeling_api::database_host: '127.0.0.1'
 labeling_api::database_port: 'null'
 labeling_api::database_name: 'labeling_api'

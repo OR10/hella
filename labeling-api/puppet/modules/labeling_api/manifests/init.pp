@@ -1,5 +1,6 @@
 class labeling_api(
     $root_dir,
+    $data_dir,
     $is_vagrant,
     $database_host = '127.0.0.1',
     $database_port = 'null',
@@ -46,5 +47,10 @@ class labeling_api(
     fastcgi_param => {
         'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
     },
+  }
+
+  file { "${data_dir}":
+    ensure => "directory",
+    mode   => "777",
   }
 }
