@@ -4,7 +4,7 @@ import path from 'path';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import {Server as KarmaServer} from 'karma';
 import fs from 'fs';
-import {Builder} from 'jspm';
+import jspm, {Builder} from 'jspm';
 import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
 
@@ -19,6 +19,7 @@ paths.dir = {
   'vendor': 'Application/Vendor',
   'sass': 'Styles',
   'css': 'Distribution/Styles',
+  'fonts': 'Distribution/Fonts',
   'tests': {
     'unit': 'Tests/Unit',
   },
@@ -60,7 +61,7 @@ gulp.task('serve', () => {
   run(
     'clean',
     'build-public',
-    'build-sass',
+    ['build-sass', 'build-fonts'],
     () => {
       const devServer = new DevServer({
         'baseURL': './',
@@ -123,7 +124,7 @@ gulp.task('build-public', () => {
 
 gulp.task('build', next => run(
   'build-public',
-  ['build-javascript', 'build-sass'],
+  ['build-javascript', 'build-sass', 'build-fonts'],
   next
 ));
 
@@ -201,6 +202,18 @@ gulp.task('build-sass', () => {
     .pipe($$.autoprefixer())
     .pipe($$.sourcemaps.write('./', {sourceRoot: null}))
     .pipe(gulp.dest(`${paths.dir.css}`));
+});
+
+gulp.task('build-fonts', (next) => {
+  jspm.normalize("font-awesome").then((normalizedFile) => {
+    const normalizedPath = normalizedFile
+      .replace(/file:\/\//, '')
+      .replace(/\.js$/, '');
+
+    gulp.src(`${normalizedPath}/fonts/**/*`)
+      .pipe(gulp.dest(`${paths.dir.fonts}`))
+      .on('end', next);
+  });
 });
 
 gulp.task('optimize-css', () => {
