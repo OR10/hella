@@ -3,6 +3,7 @@ class labeling_api(
     $data_dir,
     $run_composer_install = false,
     $config_dir = undef,
+    $prepare_test_environment = false,
     $database_host = '127.0.0.1',
     $database_port = 'null',
     $database_name = 'symfony',
@@ -23,13 +24,16 @@ class labeling_api(
 
   ::couchdb::database { $database_name: }
 
-  ::mysql::db { "${database_name}_test":
-    user     => $database_user,
-    password => $database_password,
-    host     => '%',
-  }
 
-  ::couchdb::database { "${database_name}_test": }
+  if $prepare_test_environment {
+    ::mysql::db { "${database_name}_test":
+      user     => $database_user,
+      password => $database_password,
+      host     => '%',
+    }
+
+    ::couchdb::database { "${database_name}_test": }
+  }
 
   if ($config_dir == undef) {
     $config_file = "${root_dir}/app/config/parameters.yml"
