@@ -25,6 +25,7 @@ System.config({
     "html": "github:systemjs/plugin-text@0.0.2",
     "jquery": "github:components/jquery@2.1.4",
     "json": "github:systemjs/plugin-json@0.1.0",
+    "sinon": "npm:sinon@1.17.1",
     "github:angular-ui/ui-router@0.2.15": {
       "angular": "github:angular/bower-angular@1.4.7"
     },
@@ -57,11 +58,22 @@ System.config({
     "npm:font-awesome@4.4.0": {
       "css": "github:systemjs/plugin-css@0.1.19"
     },
+    "npm:formatio@1.1.1": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "samsam": "npm:samsam@1.1.2"
+    },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
     "npm:process@0.11.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0"
+    },
+    "npm:sinon@1.17.1": {
+      "formatio": "npm:formatio@1.1.1",
+      "lolex": "npm:lolex@1.3.2",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "samsam": "npm:samsam@1.1.2",
+      "util": "npm:util@0.10.3"
     },
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
