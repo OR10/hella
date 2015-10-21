@@ -47,7 +47,7 @@ class CreatePrelabeledFrameCommand extends ContainerAwareCommand
             }
 
             $prelabeledFrame = new Model\PrelabeledFrame();
-            $prelabeledFrame->setFrameNo($faker->numberBetween());
+            $prelabeledFrame->setFrameNumber($faker->numberBetween());
             $prelabeledFrame->setClasses($classes);
             $prelabeledFrame->setVideoId($faker->numberBetween(1, 5));
 
