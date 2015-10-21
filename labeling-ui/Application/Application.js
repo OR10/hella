@@ -43,7 +43,7 @@ export default class Application {
 
     this.app = angular.module(this.moduleName, [
       'ui.router',
-      ...this.modules.map(mod => mod.module.name)
+      ...this.modules.map(mod => mod.module.name),
     ]);
 
     this.setupRouting();
@@ -66,7 +66,7 @@ export default class Application {
       $urlRouterProvider.otherwise('/');
 
       // Now set up the states
-      //$stateProvider
+      // $stateProvider
       //  .state('home', {
       //    url: '/',
       //    views: {

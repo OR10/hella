@@ -1,5 +1,5 @@
-import jquery from 'jquery';
-import angular from 'angular';
+import 'jquery';
+import 'angular';
 import angularMocks from 'angular-mocks';
 
 import TaskFrameLocationService from 'Application/Frame/Services/TaskFrameLocationService';
@@ -26,7 +26,6 @@ describe('TaskFrameLocationService', () => {
     [0, 1, 0, 1],
     [23, 3, 23, 3],
   ], (offset, length, expectedOffset, expectedLength) => {
-
     let taskId;
     let type;
     let expectedUrl;

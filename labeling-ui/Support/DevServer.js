@@ -33,7 +33,7 @@ export default class DevServer {
         protocol: 'http:',
         host: '192.168.222.20',
         pathname: '/',
-        preserveHost: true
+        preserveHost: true,
       },
       port: 54321,
       livereloadPort: 35729,

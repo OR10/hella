@@ -1,5 +1,5 @@
-import jquery from 'jquery';
-import angular from 'angular';
+import 'jquery';
+import 'angular';
 import angularMocks from 'angular-mocks';
 import sinon from 'sinon';
 
