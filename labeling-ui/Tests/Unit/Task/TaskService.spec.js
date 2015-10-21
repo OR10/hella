@@ -14,7 +14,11 @@ describe('TaskService', () => {
     service = $injector.instantiate(TaskService);
   }));
 
-  it('Should load a list of tasks', (done) => {
+  it('should be instantiatable', () => {
+    expect(service instanceof TaskService).toBe(true);
+  });
+
+  it('should load a list of tasks', (done) => {
     const tasksResponse = {
       result: [
         {foo: 'bar'},
@@ -32,9 +36,18 @@ describe('TaskService', () => {
     $httpBackend.flush();
   });
 
-  it('Should load information for a single task', () => {
-    const tasksResponse = {
+  it('should load information for a single task', (done) => {
+    const taskResponse = {
+      result: {foo: 'bar'}
+    };
 
-    }
+    $httpBackend.expectGET('/api/task/123asdf').respond(taskResponse);
+
+    service.getTask('123asdf').then((task) => {
+      expect(task).toEqual(taskResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
   });
 });
