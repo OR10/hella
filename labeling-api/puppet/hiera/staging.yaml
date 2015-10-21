@@ -9,7 +9,7 @@ php::extensions:
 labeling_api::run_composer_install: false
 labeling_api::prepare_test_environment: false
 labeling_api::config_dir: '/etc/AnnoStation/labeling-api'
-labeling_api::root_dir: '/var/www/AnnoStation/labeling-api'
+labeling_api::root_dir: '/var/www/labeling-api/current'
 labeling_api::data_dir: '/var/cache/labeling_api'
 labeling_api::database_host: '127.0.0.1'
 labeling_api::database_port: 'null'
