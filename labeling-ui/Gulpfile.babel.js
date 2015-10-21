@@ -116,7 +116,7 @@ gulp.task('build-javascript', () => {
   const builder = new Builder(config.baseURL, paths.files.system.config);
   return builder.buildStatic(
     config.entryPointExpression,
-    `${paths.dir.distribution}/lib/bundle.js`,
+    `${paths.dir.distribution}/Library/bundle.js`,
     config.buildOptions
   );
 });
@@ -133,16 +133,16 @@ gulp.task('build', next => run(
 ));
 
 gulp.task('optimize-javascript', () => {
-  return gulp.src(`${paths.dir.distribution}/lib/bundle.js`)
+  return gulp.src(`${paths.dir.distribution}/Library/bundle.js`)
     .pipe($$.uglifyjs({
       mangle: true,
       warning: true,
       preserveComment: 'license',
       outSourceMap: `bundle.min.js.map`,
-      inSourceMap: `${paths.dir.distribution}/lib/bundle.js.map`,
+      inSourceMap: `${paths.dir.distribution}/Library/bundle.js.map`,
     }))
     .pipe($$.if('*.js', $$.rename({extname: '.min.js'})))
-    .pipe(gulp.dest(`${paths.dir.distribution}/lib/`));
+    .pipe(gulp.dest(`${paths.dir.distribution}/Library/`));
 });
 
 gulp.task('optimize', next => run(

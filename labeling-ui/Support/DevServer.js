@@ -28,7 +28,7 @@ export default class DevServer {
       systemConfigPath: 'system.config.js',
       entryPointExpression: 'main.js',
       buildOptions: {},
-      bundleTargetUrl: '/lib/bundle.js',
+      bundleTargetUrl: '/Library/bundle.js',
       proxy: {
         protocol: 'http:',
         host: '192.168.222.20',
