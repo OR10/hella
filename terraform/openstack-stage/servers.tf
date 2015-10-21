@@ -11,6 +11,10 @@ resource "openstack_compute_instance_v2" "app-server" {
   count = "${var.count}"
 
   name = "app-server-${count.index}"
+  network {
+    name = "external_network"
+    fixed_ip_v4 = "192.168.217.213"
+  }
   image_name = "trusty"
   flavor_name = "m1.small"
   key_pair = "cho"
