@@ -20,7 +20,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['junit', 'progress', 'verbose', 'coverage'],
+    reporters: ['junit', 'jasmine-diff', 'progress', 'verbose', 'coverage'],
     junitReporter: {
       outputDir: 'Logs/Unit',
       outputFile: 'test-unit-results.xml'
@@ -34,6 +34,12 @@ module.exports = function(config) {
     colors: true,
 
     files: [
+      {
+        pattern: 'Application/**/*.html',
+        watched: true,
+        included: false,
+        served: true,
+      }
       //'.workaround/jquery.js',
       //'.workaround/angular.js',
       //'tests/fixtures/**/*',
@@ -45,7 +51,7 @@ module.exports = function(config) {
       loadFiles: ['Tests/unit/**/*.spec.js'],
       serveFiles: [
         'Application/**/*.js',
-        'Application/**/*.css'
+        'Tests/Fixtures/**/*.json'
       ],
       urlRoot: '/',
       meta: {
@@ -68,13 +74,6 @@ module.exports = function(config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_WARN,
 
-    ngHtml2JsPreprocessor: {
-      // strip this from the file path
-      stripPrefix: 'app/',
-      prependPrefix: '/'
-    },
-
-
     babelPreprocessor: {
       options: {
         modules: "system"
@@ -84,8 +83,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'Tests/fixtures/**/*.json': ['json2js'],
-      'Application/**/*.html': ['ng-html2js'],
+      //'Tests/fixtures/**/*.json': ['json2js'],
       'Tests/unit/**/*.spec.js': ['babel', 'coverage']
     },
 

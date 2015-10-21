@@ -37,6 +37,7 @@
     "karma-chrome-launcher": "^0.2.1",
     "karma-coverage": "^0.5.2",
     "karma-jasmine": "^0.3.6",
+    "karma-jasmine-diff-reporter": "^0.3.1",
     "karma-json2js-preprocessor": "0.0.2",
     "karma-jspm": "git+https://github.com/Workiva/karma-jspm.git#4a3dd4b72c00e2dd69c509cf39555002bedef575",
     "karma-junit-reporter": "^0.3.7",
@@ -73,7 +74,8 @@
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4",
-      "html": "github:systemjs/plugin-text@^0.0.2"
+      "html": "github:systemjs/plugin-text@^0.0.2",
+      "json": "github:systemjs/plugin-json@^0.1.0"
     }
   }
 }

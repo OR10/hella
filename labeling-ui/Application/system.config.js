@@ -23,6 +23,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.18",
     "html": "github:systemjs/plugin-text@0.0.2",
     "jquery": "github:components/jquery@2.1.4",
+    "json": "github:systemjs/plugin-json@0.1.0",
     "github:angular-ui/ui-router@0.2.15": {
       "angular": "github:angular/bower-angular@1.4.7"
     },
