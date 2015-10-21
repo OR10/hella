@@ -1,6 +1,7 @@
 class labeling_api(
     $root_dir,
     $data_dir,
+    $configure_nginx = true,
     $run_composer_install = false,
     $app_main_script = 'app.php',
     $config_dir = undef,
@@ -63,22 +64,24 @@ class labeling_api(
       class { 'labeling_api::vagrant_composer_install': }
   }
 
-  nginx::resource::vhost { "_":
-    ensure      => present,
-    www_root    => "${root_dir}/web",
-    index_files => [$app_main_script],
-    try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
-  }
+  if $configure_nginx {
+    nginx::resource::vhost { "_":
+      ensure      => present,
+      www_root    => "${root_dir}/web",
+      index_files => [$app_main_script],
+      try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
+    }
 
-  nginx::resource::location { '~ \.php(/|$)':
-    ensure        => present,
-    www_root      => "${root_dir}/web",
-    vhost         => '_',
-    index_files   => [$app_main_script],
-    fastcgi       => '127.0.0.1:9000',
-    fastcgi_param => {
-        'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
-    },
+    nginx::resource::location { '~ \.php(/|$)':
+      ensure        => present,
+      www_root      => "${root_dir}/web",
+      vhost         => '_',
+      index_files   => [$app_main_script],
+      fastcgi       => '127.0.0.1:9000',
+      fastcgi_param => {
+          'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
+      },
+    }
   }
 
   file { "${data_dir}":
