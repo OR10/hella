@@ -1,7 +1,7 @@
 class labeling_api(
     $root_dir,
     $data_dir,
-    $is_vagrant,
+    $is_vagrant = false,
     $config_dir = undef,
     $database_host = '127.0.0.1',
     $database_port = 'null',
