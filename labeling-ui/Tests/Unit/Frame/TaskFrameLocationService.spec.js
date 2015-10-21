@@ -4,7 +4,7 @@ import angularMocks from 'angular-mocks';
 
 import TaskFrameLocationService from 'Application/Frame/Services/TaskFrameLocationService';
 
-fdescribe('TaskFrameLocationService', () => {
+describe('TaskFrameLocationService', () => {
   let $httpBackend;
   let $httpParamSerializer;
   let service;
