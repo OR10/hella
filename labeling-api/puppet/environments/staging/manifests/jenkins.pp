@@ -15,3 +15,8 @@ class { 'labeling_api':
 file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
   ensure  => directory,
 }
+
+class { 'ruby':
+  gems_version  => 'latest'
+}
+
