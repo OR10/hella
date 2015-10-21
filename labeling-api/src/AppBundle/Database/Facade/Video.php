@@ -12,9 +12,15 @@ class Video
      */
     private $documentManager;
 
-    public function __construct(CouchDB\DocumentManager $documentManager)
+    /**
+     * @var string
+     */
+    private $dataDirectory;
+
+    public function __construct(CouchDB\DocumentManager $documentManager, $dataDirectory)
     {
         $this->documentManager = $documentManager;
+        $this->dataDirectory   = $dataDirectory;
     }
 
     public function findAll()
@@ -35,9 +41,22 @@ class Video
         //TODO: implement
     }
 
-    public function save(Model\Video $videoModel)
+    public function save(Model\Video $video, $filename = null)
     {
-        $this->documentManager->persist($videoModel);
+        $this->documentManager->persist($video);
         $this->documentManager->flush();
+
+        $videoDirectory = $this->dataDirectory . DIRECTORY_SEPARATOR . $video->getId();
+        if (!mkdir($videoDirectory)) {
+            //TODO: implement better error handling
+            throw new \Exception("Error creating directory: {$videoDirectory}!");
+        }
+
+        if ($filename !== null) {
+            if (!copy($filename, $videoDirectory . DIRECTORY_SEPARATOR . 'raw')) {
+                //TODO: implement better error handling
+                throw new \Exception("Error copying filename as raw data!");
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@
     - yaml
 :hierarchy:
     - node/%{::fqdn}
+    - "%{::environment}"
     - global
 :yaml:
   :datadir: puppet/hiera
