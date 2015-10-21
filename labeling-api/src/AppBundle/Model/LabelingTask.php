@@ -4,16 +4,24 @@ namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
-/** @CouchDB\Document */
+/**
+ * @CouchDB\Document
+ */
 class LabelingTask
 {
-    /** @CouchDB\Id */
+    /**
+     * @CouchDB\Id
+     */
     private $id;
 
-    /** @CouchDB\Field(type="integer") */
+    /**
+     * @CouchDB\Field(type="integer")
+     */
     private $userId;
 
-    /** @CouchDB\Field(type="string") */
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $videoId;
 
     /**

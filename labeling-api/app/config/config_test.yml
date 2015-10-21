@@ -8,6 +8,14 @@ framework:
     profiler:
         collect: false
 
+doctrine:
+    dbal:
+        dbname:   "%database_name%_test"
+
+doctrine_couch_db:
+    client:
+        dbname: labeling_api_test
+
 web_profiler:
     toolbar: false
     intercept_redirects: false

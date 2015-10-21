@@ -4,13 +4,19 @@ namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
-/** @CouchDB\Document */
+/**
+ * @CouchDB\Document
+ */
 class Video
 {
-    /** @CouchDB\Id */
+    /**
+     * @CouchDB\Id
+     */
     private $id;
 
-    /** @CouchDB\Field(type="string") */
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $name;
 
     /**

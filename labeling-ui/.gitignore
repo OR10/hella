@@ -1,6 +1,6 @@
 node_modules/
 .idea/
-Application/vendor/
+Application/Vendor/
 Distribution/
 Logs/*
 npm-debug.log

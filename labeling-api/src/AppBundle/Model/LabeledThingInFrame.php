@@ -4,22 +4,34 @@ namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
-/** @CouchDB\Document */
+/**
+ * @CouchDB\Document
+ */
 class LabeledThingInFrame
 {
-    /** @CouchDB\Id */
+    /**
+     * @CouchDB\Id
+     */
     private $id;
 
-    /** @CouchDB\Field(type="integer") */
-    private $frameNo;
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $frameNumber;
 
-    /** @CouchDB\Field(type="mixed") */
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
     private $classes;
 
-    /** @CouchDB\Field(type="mixed") */
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
     private $shapes;
 
-    /** @CouchDB\Field(type="string") */
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $labeledThingId;
 
     /**
@@ -31,11 +43,11 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param int $frameNo
+     * @param int $frameNumber
      */
-    public function setFrameNo($frameNo)
+    public function setFrameNumber($frameNumber)
     {
-        $this->frameNo = $frameNo;
+        $this->frameNumber = $frameNumber;
     }
 
     /**

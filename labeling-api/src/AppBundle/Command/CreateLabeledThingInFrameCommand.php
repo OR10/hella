@@ -49,7 +49,7 @@ class CreateLabeledThingInFrameCommand extends ContainerAwareCommand
             }
 
             $labeledThingInFrame = new Model\LabeledThingInFrame();
-            $labeledThingInFrame->setFrameNo($faker->numberBetween());
+            $labeledThingInFrame->setFrameNumber($faker->numberBetween());
             $labeledThingInFrame->setClasses($classes);
             $labeledThingInFrame->setShapes($shapes);
             $labeledThingInFrame->setLabeledThingId($faker->numberBetween(1, 5));

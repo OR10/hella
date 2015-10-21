@@ -48,7 +48,7 @@ class CreateLabeledFrameCommand extends ContainerAwareCommand
 
             $labeledFrame = new Model\LabeledFrame();
             $labeledFrame->setClasses($classes);
-            $labeledFrame->setFrameNo($faker->numberBetween());
+            $labeledFrame->setFrameNumber($faker->numberBetween());
             $labeledFrame->setLabelingTaskId($faker->numberBetween(0, 5));
 
             $this->labeledFrameFacade->save($labeledFrame);

@@ -2,7 +2,9 @@ class labeling_api(
     $root_dir,
     $data_dir,
     $run_composer_install = false,
+    $app_main_script = 'app.php',
     $config_dir = undef,
+    $prepare_test_environment = false,
     $database_host = '127.0.0.1',
     $database_port = 'null',
     $database_name = 'symfony',
@@ -23,13 +25,16 @@ class labeling_api(
 
   ::couchdb::database { $database_name: }
 
-  ::mysql::db { "${database_name}_test":
-    user     => $database_user,
-    password => $database_password,
-    host     => '%',
-  }
 
-  ::couchdb::database { "${database_name}_test": }
+  if $prepare_test_environment {
+    ::mysql::db { "${database_name}_test":
+      user     => $database_user,
+      password => $database_password,
+      host     => '%',
+    }
+
+    ::couchdb::database { "${database_name}_test": }
+  }
 
   if ($config_dir == undef) {
     $config_file = "${root_dir}/app/config/parameters.yml"
@@ -49,15 +54,15 @@ class labeling_api(
   nginx::resource::vhost { "_":
     ensure      => present,
     www_root    => "${root_dir}/web",
-    index_files => ['app_dev.php'],
-    try_files   => ['$uri', '/app_dev.php$is_args$args'],
+    index_files => [$app_main_script],
+    try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
   }
 
   nginx::resource::location { '~ \.php(/|$)':
     ensure        => present,
     www_root      => "${root_dir}/web",
     vhost         => '_',
-    index_files   => ['app_dev.php'],
+    index_files   => [$app_main_script],
     fastcgi       => '127.0.0.1:9000',
     fastcgi_param => {
         'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
