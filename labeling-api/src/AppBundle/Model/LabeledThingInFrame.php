@@ -11,7 +11,7 @@ class LabeledThingInFrame
     private $id;
 
     /** @CouchDB\Field(type="integer") */
-    private $frameNo;
+    private $frameNumber;
 
     /** @CouchDB\Field(type="mixed") */
     private $classes;
@@ -31,11 +31,11 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param int $frameNo
+     * @param int $frameNumber
      */
-    public function setFrameNo($frameNo)
+    public function setFrameNumber($frameNumber)
     {
-        $this->frameNo = $frameNo;
+        $this->frameNumber = $frameNumber;
     }
 
     /**
