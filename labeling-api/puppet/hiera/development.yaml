@@ -10,6 +10,7 @@ php::extensions:
   mysql: {}
   xdebug: {}
 
+labeling_api::app_main_script: 'app_dev.php'
 labeling_api::run_composer_install: true
 labeling_api::prepare_test_environment: true
 labeling_api::root_dir: '/vagrant'

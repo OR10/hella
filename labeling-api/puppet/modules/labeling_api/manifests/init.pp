@@ -2,6 +2,7 @@ class labeling_api(
     $root_dir,
     $data_dir,
     $run_composer_install = false,
+    $app_main_script = 'app.php',
     $config_dir = undef,
     $prepare_test_environment = false,
     $database_host = '127.0.0.1',
@@ -53,15 +54,15 @@ class labeling_api(
   nginx::resource::vhost { "_":
     ensure      => present,
     www_root    => "${root_dir}/web",
-    index_files => ['app_dev.php'],
-    try_files   => ['$uri', '/app_dev.php$is_args$args'],
+    index_files => [$app_main_script],
+    try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
   }
 
   nginx::resource::location { '~ \.php(/|$)':
     ensure        => present,
     www_root      => "${root_dir}/web",
     vhost         => '_',
-    index_files   => ['app_dev.php'],
+    index_files   => [$app_main_script],
     fastcgi       => '127.0.0.1:9000',
     fastcgi_param => {
         'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
