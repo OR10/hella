@@ -7,8 +7,10 @@ import fs from 'fs';
 import jspm, {Builder} from 'jspm';
 import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
+import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor';
 
 import DevServer from './Support/DevServer';
+import ProtractorServer from './Tests/Support/ProtractorServer';
 
 const $$ = gulpLoadPlugins();
 
@@ -22,6 +24,7 @@ paths.dir = {
   'fonts': 'Distribution/Fonts',
   'tests': {
     'unit': 'Tests/Unit',
+    'e2e': 'Test/E2E',
   },
   'distribution': 'Distribution',
   'public': 'Public',
@@ -37,6 +40,7 @@ paths.files = {
   'css': `${paths.dir.css}/**/*.css`,
   'tests': {
     'unit': `${paths.dir.tests.unit}/**/*.js`,
+    'e2e': `${paths.dir.tests.e2e}/**/*.js`,
   },
   'system': {
     'config': `${paths.dir.application}/system.config.js`,
@@ -53,7 +57,7 @@ gulp.task('clean', () => {
   ]);
 });
 
-gulp.task('serve', () => {
+gulp.task('serve', (next) => {
   /**
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
@@ -188,6 +192,46 @@ gulp.task('test-unit-continuous', () => {
   });
 
   karmaServer.start();
+});
+
+gulp.task('webdriver-update', webdriverUpdate);
+
+gulp.task('test-e2e', ['webdriver-update'], (next) => {
+  var protractorConfig = {
+    configFile: "protractor.conf.js",
+    args: []
+  };
+
+  if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
+    protractorConfig.args.push('--baseUrl', 'http://' + ip.address() + ':52343');
+    protractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+  } else {
+    protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
+  }
+
+  run(
+    'clean',
+    'build',
+    'optimize',
+    () => {
+      const protractorServer = new ProtractorServer({
+        assetPath: 'Distribution',
+        port: 52343
+      });
+
+      protractorServer.serve();
+
+      gulp.src(paths.files.tests.e2e)
+        .pipe(protractor(protractorConfig))
+        .on('error', function(e) {
+          protractorServer.close();
+          throw e;
+        })
+        .on('end', function() {
+          protractorServer.close();
+        });
+    }
+  );
 });
 
 gulp.task('build-sass', () => {
