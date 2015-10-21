@@ -24,14 +24,6 @@ resource "openstack_compute_instance_v2" "app-server" {
 
 
   provisioner "file" {
-      source = "../../labeling-api"
-      destination = "/var/www/AnnoStation/labeling-api"
-      connection {
-          user = "ubuntu"
-      }
-  }
-
-  provisioner "file" {
       source = "../../labeling-api/puppet"
       destination = "/home/ubuntu/puppet"
       connection {
