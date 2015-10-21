@@ -1,6 +1,7 @@
 class labeling_api(
     $root_dir,
     $data_dir,
+    $configure_nginx = true,
     $run_composer_install = false,
     $app_main_script = 'app.php',
     $config_dir = undef,
@@ -34,6 +35,18 @@ class labeling_api(
     }
 
     ::couchdb::database { "${database_name}_test": }
+
+    if ($config_dir == undef) {
+      $test_config_file = "${root_dir}/app/config/parameters_test.yml"
+    } else {
+      $test_config_file = "${config_dir}/parameters_test.yml"
+    }
+
+    file { $test_config_file:
+      ensure  => file,
+      content => template('labeling_api/parameters_test.yml.erb'),
+    }
+
   }
 
   if ($config_dir == undef) {
@@ -51,22 +64,24 @@ class labeling_api(
       class { 'labeling_api::vagrant_composer_install': }
   }
 
-  nginx::resource::vhost { "_":
-    ensure      => present,
-    www_root    => "${root_dir}/web",
-    index_files => [$app_main_script],
-    try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
-  }
+  if $configure_nginx {
+    nginx::resource::vhost { "_":
+      ensure      => present,
+      www_root    => "${root_dir}/web",
+      index_files => [$app_main_script],
+      try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
+    }
 
-  nginx::resource::location { '~ \.php(/|$)':
-    ensure        => present,
-    www_root      => "${root_dir}/web",
-    vhost         => '_',
-    index_files   => [$app_main_script],
-    fastcgi       => '127.0.0.1:9000',
-    fastcgi_param => {
-        'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
-    },
+    nginx::resource::location { '~ \.php(/|$)':
+      ensure        => present,
+      www_root      => "${root_dir}/web",
+      vhost         => '_',
+      index_files   => [$app_main_script],
+      fastcgi       => '127.0.0.1:9000',
+      fastcgi_param => {
+          'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
+      },
+    }
   }
 
   file { "${data_dir}":
