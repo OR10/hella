@@ -20,6 +20,12 @@ class Video
     private $name;
 
     /**
+     * @var Video\MetaData
+     * @CouchDB\Field(type="mixed")
+     */
+    private $metaData;
+
+    /**
      * @param string $name The name of the video.
      */
     public function __construct($name)
@@ -51,5 +57,23 @@ class Video
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @param Video\MetaData
+     * @return Video
+     */
+    public function setMetaData(Video\MetaData $metaData)
+    {
+        $this->metaData = $metaData;
+        return $this;
+    }
+
+    /**
+     * @return Video\MetaData
+     */
+    public function getMetaData()
+    {
+        return $this->metaData;
     }
 }
