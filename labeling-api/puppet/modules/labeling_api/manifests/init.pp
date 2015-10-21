@@ -34,6 +34,18 @@ class labeling_api(
     }
 
     ::couchdb::database { "${database_name}_test": }
+
+    if ($config_dir == undef) {
+      $test_config_file = "${root_dir}/app/config/parameters_test.yml"
+    } else {
+      $test_config_file = "${config_dir}/parameters_test.yml"
+    }
+
+    file { $test_config_file:
+      ensure  => file,
+      content => template('labeling_api/parameters_test.yml.erb'),
+    }
+
   }
 
   if ($config_dir == undef) {
