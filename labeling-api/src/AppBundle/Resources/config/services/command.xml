@@ -35,9 +35,7 @@
         </service>
 
         <service id="annostation.labeling_api.command.import_video_command" class="AppBundle\Command\ImportVideoCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader" />
-            <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
+            <argument type="service" id="annostation.labeling_api.service.importer_service" />
             <tag name="console.command"/>
         </service>
 

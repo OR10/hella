@@ -10,38 +10,19 @@ use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use AppBundle\Model\Video\ImageType;
 
-
 class ImportVideoCommand extends Command\ContainerAwareCommand
 {
-    /**
-     * @var Facade\Video
-     */
-    private $videoFacade;
 
     /**
-     * @var Service\Video\MetaDataReader
+     * @var Service\ImporterService
      */
-    private $metaDataReader;
-    /**
-     * @var Service\Video\VideoFrameSplitter
-     */
-    private $frameCdnSplitter;
+    private $importerService;
 
-    /**
-     * ImportVideoCommand constructor.
-     *
-     * @param Facade\Video $videoFacade
-     * @param Service\Video\MetaDataReader $metaDataReader
-     */
     public function __construct(
-        Facade\Video $videoFacade,
-        Service\Video\MetaDataReader $metaDataReader,
-        Service\Video\VideoFrameSplitter $frameCdnSplitter
+        Service\ImporterService $importerService
     ) {
         parent::__construct();
-        $this->videoFacade    = $videoFacade;
-        $this->metaDataReader = $metaDataReader;
-        $this->frameCdnSplitter = $frameCdnSplitter;
+        $this->importerService = $importerService;
     }
 
     protected function configure()
@@ -56,13 +37,9 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
         $filename = $input->getArgument('file');
 
         try {
-            $video = new Model\Video(basename($filename));
-            $video->setMetaData($this->metaDataReader->readMetaData($filename));
-            $this->videoFacade->save($video, $filename);
-            $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create('source'));
+            $this->importerService->import($filename, ImageType\Base::create('source'));
             $output->writeln("<info>{$filename} successfully imported!</info>");
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $output->writeln("<error>Error importing {$filename}: {$e->getMessage()}</error>");
         }
     }
