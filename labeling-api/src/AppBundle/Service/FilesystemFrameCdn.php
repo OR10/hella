@@ -40,40 +40,42 @@ class FilesystemFrameCdn extends FrameCdn
     public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $path)
     {
         $cdnPath = vsprintf(
-            "%s/%s/%s.%s",
+            "%s/%s/%s/%s.%s",
             [
                 $this->frameCdnDir,
                 $video->getId(),
+                $imageType->getName(),
                 $frameNumber,
                 $path,
             ]
         );
 
-        if(!copy($path, $cdnPath)){
+        if (!copy($path, $cdnPath)) {
             throw new \Exception('Could not copy the file');
         }
     }
 
     /**
      * @param Model\LabelingTask $labeledFrame
-     * @param ImageType\Base     $type
+     * @param ImageType\Base     $imageType
      * @param int                $limit
      * @param int                $offset
      *
      * @return array
      */
-    public function getFrameLocations(Model\LabelingTask $labeledFrame, ImageType\Base $type, $limit, $offset = 0)
+    public function getFrameLocations(Model\LabelingTask $labeledFrame, ImageType\Base $imageType, $limit, $offset = 0)
     {
         // TODO: Frame range check against the labeling task?
         $urls = [];
         foreach (range($offset, $offset + $limit) as $id) {
             $urls[] = vsprintf(
-                "%s/%s/%s.%s",
+                "%s/%s/%s/%s.%s",
                 [
                     $this->frameCdnBaseUrl,
                     $labeledFrame->getVideoId(),
+                    $imageType->getName(),
                     $id,
-                    $type->getExtension(),
+                    $imageType->getExtension(),
                 ]
             );
         }

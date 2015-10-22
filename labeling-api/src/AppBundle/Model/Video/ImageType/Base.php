@@ -14,11 +14,18 @@ class Base
     ];
 
     /**
-     * File extension
+     * File type extension
      *
      * @var string $extension
      */
     protected $extension = '';
+
+    /**
+     * File type name
+     *
+     * @var string
+     */
+    protected $name = '';
 
     /**
      * Factory method to create the different image types
@@ -45,6 +52,11 @@ class Base
     public function getExtension()
     {
         return $this->extension;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
 }
