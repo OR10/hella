@@ -40,17 +40,26 @@ class FilesystemFrameCdn extends FrameCdn
     public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $path)
     {
         $cdnPath = vsprintf(
-            "%s/%s/%s/%s.%s",
+            "%s/%s/%s",
             [
                 $this->frameCdnDir,
                 $video->getId(),
-                $imageType->getName(),
-                $frameNumber,
-                $path,
+                $imageType->getName()
             ]
         );
 
-        if (!copy($path, $cdnPath)) {
+        if (!is_dir($cdnPath)) {
+            mkdir($cdnPath, 0777, true);
+        }
+
+        $filePath = sprintf(
+            '%s/%s.%s',
+            $cdnPath,
+            $frameNumber,
+            $imageType->getExtension()
+        );
+
+        if (!copy($path, $filePath)) {
             throw new \Exception('Could not copy the file');
         }
     }
