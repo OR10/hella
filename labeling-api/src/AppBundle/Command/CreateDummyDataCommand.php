@@ -28,6 +28,7 @@ class CreateDummyDataCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Starting...');
+
         $this->callCommand('annostation:create:user', 5, ['--known-login' => !$input->getOption('no-known-login')], $output);
         $this->callCommand('annostation:create:video', 5, [], $output);
         $this->callCommand('annostation:create:prelabeledframe', 5, [], $output);
@@ -52,7 +53,7 @@ class CreateDummyDataCommand extends ContainerAwareCommand
             )
         );
 
-        $output->writeln('Calling: ' . $commandName);
+        $output->writeln('<info>Calling: ' . $commandName . '</info>');
         $command->run($userInput, new NullOutput());
     }
 
