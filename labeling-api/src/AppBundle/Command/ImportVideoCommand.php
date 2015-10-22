@@ -8,6 +8,8 @@ use AppBundle\Service;
 use Symfony\Bundle\FrameworkBundle\Command;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
+use AppBundle\Model\Video\ImageType;
+
 
 class ImportVideoCommand extends Command\ContainerAwareCommand
 {
@@ -20,6 +22,10 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
      * @var Service\Video\MetaDataReader
      */
     private $metaDataReader;
+    /**
+     * @var Service\Video\VideoFrameSplitter
+     */
+    private $frameCdnSplitter;
 
     /**
      * ImportVideoCommand constructor.
@@ -29,11 +35,13 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
      */
     public function __construct(
         Facade\Video $videoFacade,
-        Service\Video\MetaDataReader $metaDataReader
+        Service\Video\MetaDataReader $metaDataReader,
+        Service\Video\VideoFrameSplitter $frameCdnSplitter
     ) {
         parent::__construct();
         $this->videoFacade    = $videoFacade;
         $this->metaDataReader = $metaDataReader;
+        $this->frameCdnSplitter = $frameCdnSplitter;
     }
 
     protected function configure()
@@ -51,6 +59,7 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
             $video = new Model\Video(basename($filename));
             $video->setMetaData($this->metaDataReader->readMetaData($filename));
             $this->videoFacade->save($video, $filename);
+            $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create('source'));
             $output->writeln("<info>{$filename} successfully imported!</info>");
         }
         catch (\Exception $e) {
