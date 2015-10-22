@@ -28,5 +28,17 @@
             <argument>%frame_cdn_dir%</argument>
             <argument>%frame_cdn_base_url%</argument>
         </service>
+
+        <service id="annostation.labeling_api.service.video.video_frame_splitter" class="AppBundle\Service\Video\VideoFrameSplitter">
+            <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem" />
+            <argument>%ffmpeg_executable%</argument>
+            <argument>%cache_dir%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.service.importer_service" class="AppBundle\Service\ImporterService">
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
+            <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader" />
+            <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
+        </service>
     </services>
 </container>
