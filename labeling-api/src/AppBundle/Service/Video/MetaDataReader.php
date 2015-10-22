@@ -36,8 +36,6 @@ class MetaDataReader
 
         $json = json_decode(shell_exec($command), true);
 
-        dump($json);
-
         $metaData = new Model\Video\MetaData();
 
         $metaData->format = $json['format']['format_name'];
