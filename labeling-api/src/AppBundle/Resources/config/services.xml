@@ -23,5 +23,10 @@
 
         <service id="annostation.labeling_api.service.frame_cdn" class="AppBundle\Service\FrameCdn">
         </service>
+
+        <service id="annostation.labeling_api.service.frame_cdn.filesystem" class="AppBundle\Service\FilesystemFrameCdn">
+            <argument>%frame_cdn_dir%</argument>
+            <argument>%frame_cdn_base_url%</argument>
+        </service>
     </services>
 </container>
