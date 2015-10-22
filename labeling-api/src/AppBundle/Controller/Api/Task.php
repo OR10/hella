@@ -2,12 +2,13 @@
 
 namespace AppBundle\Controller\Api;
 
-use AppBundle\Type\Video\Base;
+use AppBundle\Model\Video\ImageType;
 use Symfony\Component\HttpFoundation;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
+use AppBundle\Service;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -23,12 +24,12 @@ class Task extends Controller\Base
     /**
      * @var Facade\FrameCdn
      */
-    private $frameCdnFacade;
+    private $frameCdn;
 
-    public function __construct(Facade\LabelingTask $labelingTask, Facade\FrameCdn $frameCdn)
+    public function __construct(Facade\LabelingTask $labelingTask, Service\FrameCdn $frameCdn)
     {
         $this->labelingTaskFacade = $labelingTask;
-        $this->frameCdnFacade     = $frameCdn;
+        $this->frameCdn     = $frameCdn;
     }
 
     /**
@@ -76,10 +77,10 @@ class Task extends Controller\Base
      */
     public function showFrameLocationsAction($taskId, $type, HttpFoundation\Request $request)
     {
+        $task   = $this->labelingTaskFacade->find($taskId);
         $limit  = $request->query->getDigits('limit', 20);
         $offset = $request->query->getDigits('offset', 0);
-        $task   = $this->labelingTaskFacade->find($taskId);
-        $data   = $this->frameCdnFacade->getFrameLocations($task, new Base(), $limit, $offset);
+        $data   = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $limit, $offset);
 
         $result = [
             'result' => $data,

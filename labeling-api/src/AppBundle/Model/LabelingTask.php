@@ -40,4 +40,12 @@ class LabelingTask
         $this->videoId = $videoId;
     }
 
+    /**
+     * @return string
+     */
+    public function getVideoId()
+    {
+        return $this->videoId;
+    }
+
 }
