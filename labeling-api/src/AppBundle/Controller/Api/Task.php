@@ -78,8 +78,8 @@ class Task extends Controller\Base
      *       for details.
      *
      * @Rest\Get("/{taskId}/frameLocations/{type}")
-     * @param                        $taskId
-     * @param                        $type
+     * @param string                 $taskId
+     * @param string                 $type
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
