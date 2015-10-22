@@ -3,9 +3,11 @@
  */
 export default class TaskFrameLocationService {
   /**
+   * @param {ApiService} apiService
    * @param {angular.$http} $http
    */
-  constructor($http) {
+  constructor(apiService, $http) {
+    this.apiService = apiService;
     this.$http = $http;
   }
 
@@ -18,13 +20,17 @@ export default class TaskFrameLocationService {
    * @return {Promise<Array<FrameLocation>>}
    */
   getFrameLocations(taskId, type, offset = 0, length = 1) {
-    const url = `/api/task/${taskId}/frameLocations/${type}`;
-    const params = {offset, length};
-    return this.$http({method: 'GET', url, params})
+    return this.$http({
+      method: 'GET',
+      url: this.apiService.getApiUrl(
+        `/task/${taskId}/frameLocations/${type}`,
+        {offset, length}
+      ),
+    })
       .then(response => {
         return response.data.result;
       });
   }
 }
 
-TaskFrameLocationService.$inject = ['$http'];
+TaskFrameLocationService.$inject = ['ApiService', '$http'];
