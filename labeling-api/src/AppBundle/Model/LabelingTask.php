@@ -47,14 +47,6 @@ class LabelingTask
     }
 
     /**
-     * @param string $videoId
-     */
-    public function setVideoId($videoId)
-    {
-        $this->videoId = $videoId;
-    }
-
-    /**
      * @return string
      */
     public function getVideoId()

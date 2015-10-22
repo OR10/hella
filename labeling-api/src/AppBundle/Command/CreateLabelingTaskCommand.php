@@ -47,7 +47,6 @@ class CreateLabelingTaskCommand extends ContainerAwareCommand
                 new Model\FrameRange($faker->numberBetween(1, 10), $faker->numberBetween(11, 20))
             );
             $labelingTask->setUserId($faker->numberBetween(1, 5));
-            $labelingTask->setVideoId($faker->numberBetween(1, 5));
 
             $this->labelingTaskFacade->save($labelingTask);
         }
