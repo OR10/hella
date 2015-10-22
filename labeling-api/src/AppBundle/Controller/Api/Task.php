@@ -21,15 +21,20 @@ class Task extends Controller\Base
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
+
     /**
      * @var Facade\FrameCdn
      */
     private $frameCdn;
 
-    public function __construct(Facade\LabelingTask $labelingTask, Service\FrameCdn $frameCdn)
+    /**
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Service\FrameCdn    $frameCdn
+     */
+    public function __construct(Facade\LabelingTask $labelingTaskFacade, Service\FrameCdn $frameCdn)
     {
-        $this->labelingTaskFacade = $labelingTask;
-        $this->frameCdn     = $frameCdn;
+        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->frameCdn           = $frameCdn;
     }
 
     /**
@@ -92,5 +97,4 @@ class Task extends Controller\Base
 
         return View\View::create()->setData($result);
     }
-
 }
