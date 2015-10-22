@@ -41,7 +41,11 @@ class CreateLabelingTaskCommand extends ContainerAwareCommand
         $count = $input->getArgument('count') ? $input->getArgument('count') : 1;
 
         for ($i = 0; $i < $count; $i++) {
-            $labelingTask = new Model\LabelingTask();
+            $video = new Model\Video($faker->word);
+            $labelingTask = new Model\LabelingTask(
+                $video,
+                new Model\FrameRange($faker->numberBetween(1, 10), $faker->numberBetween(11, 20))
+            );
             $labelingTask->setUserId($faker->numberBetween(1, 5));
             $labelingTask->setVideoId($faker->numberBetween(1, 5));
 
