@@ -16,7 +16,7 @@ class labeling_api(
     $mailer_user = 'null',
     $mailer_password = 'null',
     $secret = 'ThisTokenIsNotSoSecretChangeIt',
-    $ffmpeg_executable = 'avconf',
+    $ffmpeg_executable = 'avconv',
     $ffprobe_executable = 'avprobe',
     $frame_cdn_dir = undef,
     $frame_cdn_scheme = "http",

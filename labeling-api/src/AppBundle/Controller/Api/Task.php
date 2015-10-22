@@ -78,8 +78,8 @@ class Task extends Controller\Base
      *       for details.
      *
      * @Rest\Get("/{taskId}/frameLocations/{type}")
-     * @param                        $taskId
-     * @param                        $type
+     * @param string                 $taskId
+     * @param string                 $type
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
@@ -87,14 +87,15 @@ class Task extends Controller\Base
     public function showFrameLocationsAction($taskId, $type, HttpFoundation\Request $request)
     {
         $task   = $this->labelingTaskFacade->find($taskId);
-        $limit  = $request->query->getDigits('limit', 20);
-        $offset = $request->query->getDigits('offset', 0);
-        $data   = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $limit, $offset);
+        $offset = $request->query->getDigits('offset');
+        $limit  = $request->query->getDigits('limit');
+        $data   = $this->frameCdn->getFrameLocations(
+            $task,
+            ImageType\Base::create($type),
+            $task->getFrameRange()->createSubRangeForOffsetAndLimit($offset, $limit)
+        );
 
-        $result = [
-            'result' => $data,
-        ];
-
-        return View\View::create()->setData($result);
+        return View\View::create()
+            ->setData(['result' => $data]);
     }
 }
