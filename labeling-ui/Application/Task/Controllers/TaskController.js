@@ -4,3 +4,5 @@ export default class TaskController {
   }
 }
 
+TaskController.$inject = ['task'];
+
