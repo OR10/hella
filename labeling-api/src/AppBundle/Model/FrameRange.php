@@ -2,6 +2,8 @@
 
 namespace AppBundle\Model;
 
+use AppBundle\Model\Exception;
+
 class FrameRange
 {
     /**
@@ -21,14 +23,19 @@ class FrameRange
     public function __construct($startFrameNumber, $endFrameNumber = null)
     {
         $this->startFrameNumber = (int) $startFrameNumber;
-        $this->endFrameNumber   = (int) $endFrameNumber ?: $startFrameNumber;
+
+        if (is_null($endFrameNumber)) {
+            $this->endFrameNumber = $this->startFrameNumber;
+        } else {
+            $this->endFrameNumber = (int) $endFrameNumber;
+        }
 
         if ($this->startFrameNumber < 1) {
-            throw new \Exception("Invalid start frame: {$this->startFrameNumber}");
+            throw new Exception\InvalidStartFrameNumber($this->startFrameNumber);
         }
 
         if ($this->startFrameNumber > $this->endFrameNumber) {
-            throw new \Exception("Range error: {$this->startFrameNumber} > {$this->endFrameNumber}");
+            throw new Exception\InvalidRange($this->startFrameNumber, $this->endFrameNumber);
         }
     }
 
@@ -90,7 +97,8 @@ class FrameRange
         }
 
         if ($offset > $this->getEndFrameNumber()) {
-            $offset = $this->getEndFrameNumber();
+            $offset = $this->getEndFrameNumber() - 1;
+            $limit  = max(1, $limit - $offset);
         }
 
         if (is_null($limit) || $limit > $this->getNumberOfFrames()) {
