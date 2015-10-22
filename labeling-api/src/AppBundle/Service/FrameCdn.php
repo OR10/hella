@@ -6,29 +6,30 @@ use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use Doctrine\ODM\CouchDB;
 
-class FrameCdn
+abstract class FrameCdn
 {
     /**
+     * @param Model\Video $video
+     * @param ImageType\Base $imageType
+     * @param int $frameNumber
+     * @param string $path
+     *
+     * @return mixed
+     */
+    abstract public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $path);
+
+    /**
      * @param Model\LabelingTask $labeledFrame
-     * @param ImageType\Base     $type
+     * @param ImageType\Base     $imageType
+     * @param int                $limit
+     * @param int                $offset
      *
      * @return array
      */
-    public function getFrameLocations(Model\LabelingTask $labeledFrame, ImageType\Base $type, $limit, $offset = 0)
-    {
-        $urls = [];
-        foreach (range($offset, $offset + $limit) as $id) {
-            $urls[] = vsprintf(
-                "%s/%s/%s.%s",
-                [
-                    "https://placehold.it/1280x720",
-                    $labeledFrame->getVideoId(),
-                    $id,
-                    $type->getExtension(),
-                ]
-            );
-        }
-
-        return $urls;
-    }
+    abstract public function getFrameLocations(
+        Model\LabelingTask $labeledFrame,
+        ImageType\Base $imageType,
+        $limit,
+        $offset = 0
+    );
 }

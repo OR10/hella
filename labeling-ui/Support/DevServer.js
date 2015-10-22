@@ -4,7 +4,8 @@ import connect from 'connect';
 import http from 'http';
 import fs from 'fs';
 import chalk from 'chalk';
-import serveStatic from 'serve-static';
+import send from 'send';
+import parseUrl from 'parseUrl';
 import {Server as TinyLrServer} from 'tiny-lr';
 import request from 'request-promise';
 
@@ -28,12 +29,14 @@ export default class DevServer {
       systemConfigPath: 'system.config.js',
       entryPointExpression: 'main.js',
       buildOptions: {},
-      bundleTargetUrl: '/Library/bundle.js',
+      bundleTargetUrl: '/labeling/Library/bundle.js',
       proxy: {
         protocol: 'http:',
         host: '192.168.222.20',
         pathname: '/',
         preserveHost: true,
+        cookieRewrite: true,
+        via: true,
       },
       port: 54321,
       livereloadPort: 35729,
@@ -115,18 +118,37 @@ export default class DevServer {
     }
   }
 
-  createStaticFileServeMiddleware() {
-    const {assetPath} = this.config;
+  createOneForAllTheThingzMiddleware(assetDirectory, target) {
+    return (req, res, next) => {
+      if (!req.url.match(/^\/labeling\//)) {
+        return next();
+      }
 
-    const options = {
-      dotfiles: 'ignore',
-      etag: 'true',
-      fallthrough: true,
-      index: ['index.html'],
-      redirect: false,
+      const originalUrl = parseUrl.original(req);
+      const pathname = parseUrl(req).pathname;
+      let path = pathname.replace(/\/labeling\//, '/');
+      if (path === '/' && originalUrl.pathname.substr(-1) !== '/') {
+        path = '';
+      }
+      const stream = send(req, path, {
+        root: assetDirectory,
+      });
+
+      stream.on('error', error => {
+        if (error.code !== 'ENOENT') {
+          return next(error);
+        }
+
+        fs.readFile(target, (err, content) => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/html');
+          res.setHeader('Content-Length', Buffer.byteLength(content));
+          res.end(content);
+        });
+      });
+
+      stream.pipe(res);
     };
-
-    return serveStatic(assetPath, options);
   }
 
   createServer(app, port) {
@@ -147,7 +169,7 @@ export default class DevServer {
 
   serve() {
     let {port} = this.config;
-    const {livereloadPort, proxy: proxyConfig} = this.config;
+    const {livereloadPort, assetPath, proxy: proxyConfig} = this.config;
 
     if (process.env.PORT) {
       port = process.env.PORT;
@@ -155,13 +177,10 @@ export default class DevServer {
 
     Promise.resolve()
       .then(() => {
-        return this.createStaticFileServeMiddleware();
-      })
-      .then(staticMiddleware => {
         const app = connect();
         app.use(morgan('dev'));
         app.use(this.serveSystemJsBundle.bind(this));
-        app.use(staticMiddleware);
+        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/index.html`));
         app.use(proxy(proxyConfig));
         return app;
       })

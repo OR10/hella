@@ -4,8 +4,9 @@
  * Service for retrieving information about Tasks
  */
 export default class TaskService {
-  constructor($http) {
+  constructor(apiService, $http) {
     this.$http = $http;
+    this.apiService = apiService;
   }
 
   /**
@@ -14,7 +15,8 @@ export default class TaskService {
    * @return {Promise<Task[]|Error>}
    */
   getTasks() {
-    return this.$http.get('/api/task')
+    const url = this.apiService.getApiUrl('/task');
+    return this.$http.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -30,7 +32,8 @@ export default class TaskService {
    * @return {Promise<Task|Error>}
    */
   getTask(id) {
-    return this.$http.get(`/api/task/${id}`)
+    const url = this.apiService.getApiUrl(`/task/${id}`);
+    return this.$http.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -39,4 +42,4 @@ export default class TaskService {
   }
 }
 
-TaskService.$inject = ['$http'];
+TaskService.$inject = ['ApiService', '$http'];

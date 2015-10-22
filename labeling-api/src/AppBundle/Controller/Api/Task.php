@@ -21,15 +21,20 @@ class Task extends Controller\Base
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
+
     /**
      * @var Facade\FrameCdn
      */
     private $frameCdn;
 
-    public function __construct(Facade\LabelingTask $labelingTask, Service\FrameCdn $frameCdn)
+    /**
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Service\FrameCdn    $frameCdn
+     */
+    public function __construct(Facade\LabelingTask $labelingTaskFacade, Service\FrameCdn $frameCdn)
     {
-        $this->labelingTaskFacade = $labelingTask;
-        $this->frameCdn     = $frameCdn;
+        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->frameCdn           = $frameCdn;
     }
 
     /**
@@ -68,6 +73,10 @@ class Task extends Controller\Base
     /**
      * Get the frame locations for the given task id and type
      *
+     * TODO: Maybe it's better to place nested routes into an own controller,
+     *       see http://symfony.com/doc/current/bundles/FOSRestBundle/6-automatic-route-generation_multiple-restful-controllers.html
+     *       for details.
+     *
      * @Rest\Get("/{taskId}/frameLocations/{type}")
      * @param                        $taskId
      * @param                        $type
@@ -88,6 +97,4 @@ class Task extends Controller\Base
 
         return View\View::create()->setData($result);
     }
-
 }
-// http://symfony.com/doc/current/bundles/FOSRestBundle/6-automatic-route-generation_multiple-restful-controllers.html

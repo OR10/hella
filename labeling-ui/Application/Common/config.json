@@ -1,5 +1,5 @@
 {
-  "backendPrefix": "/backend",
+  "backendPrefix": "/",
   "apiPrefix": "/api"
 }
 
