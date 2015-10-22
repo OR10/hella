@@ -1,5 +1,5 @@
 import 'jquery';
-import 'angular';
+import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
@@ -19,7 +19,7 @@ describe('TaskFrameLocationService', () => {
       $provide.value('applicationConfig', {
         common: {
           apiPrefix: '/api',
-          backendPrefix: '/backend'
+          backendPrefix: '/backend',
         },
       });
     });

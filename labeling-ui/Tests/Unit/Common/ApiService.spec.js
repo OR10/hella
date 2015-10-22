@@ -41,7 +41,7 @@ describe('ApiService', () => {
     ['/', '/'],
     ['', ''],
     ['/', ''],
-    ['', '/']
+    ['', '/'],
   ], (backendPrefix, apiPrefix) => {
     it('should work with two empty prefixes', () => {
       const service = getApiService({backendPrefix, apiPrefix});
@@ -72,25 +72,25 @@ describe('ApiService', () => {
     });
   });
 
-  it('should append given path', ()  => {
+  it('should append given path', () => {
     const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
     const apiUrl = service.getApiUrl('/some/path/I/specified');
     expect(apiUrl).toEqual('/some/path/I/specified');
   });
 
-  it('should encode and append given query string', ()  => {
+  it('should encode and append given query string', () => {
     const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
-    const apiUrl = service.getApiUrl('/', {param: "value"});
+    const apiUrl = service.getApiUrl('/', {param: 'value'});
     expect(apiUrl).toEqual('/?param=value');
   });
 
-  it('should properly handle empty query object', ()  => {
+  it('should properly handle empty query object', () => {
     const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
     const apiUrl = service.getApiUrl('/', {});
     expect(apiUrl).toEqual('/');
   });
 
-  it('should always create a deterministic order of query paramaters', ()  => {
+  it('should always create a deterministic order of query paramaters', () => {
     const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
     const firstApiUrl = service.getApiUrl('/', {a: 'foo', b: 'bar'});
     const secondApiUrl = service.getApiUrl('/', {b: 'bar', a: 'foo'});
