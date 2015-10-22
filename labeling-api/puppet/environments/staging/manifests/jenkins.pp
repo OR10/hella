@@ -17,6 +17,7 @@ file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
 }
 
 class { 'ruby':
-  gems_version  => 'latest'
+  version      => '2.0.0',
+  gems_version => 'latest'
 }
 

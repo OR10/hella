@@ -12,6 +12,11 @@ api_videoupload:
     type: rest
     name_prefix: app_api_videoupload_
 
+api_task:
+    resource: "annostation.labeling_api.controller.api.task"
+    type: rest
+    name_prefix: app_api_task_
+
 api_test:
     resource: "annostation.labeling_api.controller.api.test"
     type: rest

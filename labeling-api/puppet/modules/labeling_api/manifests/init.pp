@@ -16,6 +16,8 @@ class labeling_api(
     $mailer_user = 'null',
     $mailer_password = 'null',
     $secret = 'ThisTokenIsNotSoSecretChangeIt',
+    $ffmpeg_executable = 'avconf',
+    $ffprobe_executable = 'avprobe',
 ) {
 
   ::mysql::db { $database_name:

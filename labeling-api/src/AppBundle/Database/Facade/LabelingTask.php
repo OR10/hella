@@ -16,6 +16,19 @@ class LabelingTask
         $this->documentManager = $documentManager;
     }
 
+    public function find($id)
+    {
+        return $this->documentManager->find(Model\LabelingTask::class, $id);
+    }
+
+    public function findAll()
+    {
+        return $this->documentManager
+            ->createQuery('labeling_api', 'task_list')
+            ->onlyDocs(true)
+            ->execute();
+    }
+
     public function getVideo(Model\LabelingTask $labelingTask)
     {
         return $this->documentManager->find(Model\Video::class, $labelingTask->getVideoId());
@@ -36,4 +49,5 @@ class LabelingTask
         $this->documentManager->persist($labelingTask);
         $this->documentManager->flush();
     }
+
 }
