@@ -1,6 +1,7 @@
 import 'jquery';
 import 'angular';
-import angularMocks from 'angular-mocks';
+import {module, inject} from 'angular-mocks';
+import Common from 'Application/Common/Common';
 
 import TaskFrameLocationService from 'Application/Frame/Services/TaskFrameLocationService';
 
@@ -9,11 +10,26 @@ describe('TaskFrameLocationService', () => {
   let $httpParamSerializer;
   let service;
 
-  beforeEach(angularMocks.inject($injector => {
-    $httpBackend = $injector.get('$httpBackend');
-    $httpParamSerializer = $injector.get('$httpParamSerializer');
-    service = $injector.instantiate(TaskFrameLocationService);
-  }));
+  beforeEach(() => {
+    const commonModule = new Common();
+    commonModule.registerWithAngular(angular);
+    module('AnnoStation.Common');
+
+    module($provide => {
+      $provide.value('applicationConfig', {
+        common: {
+          apiPrefix: '/api',
+          backendPrefix: '/backend'
+        },
+      });
+    });
+
+    inject($injector => {
+      $httpBackend = $injector.get('$httpBackend');
+      $httpParamSerializer = $injector.get('$httpParamSerializer');
+      service = $injector.instantiate(TaskFrameLocationService);
+    });
+  });
 
   it('should be able to instantiate without non injected arguments', () => {
     expect(service instanceof TaskFrameLocationService).toEqual(true);
@@ -22,7 +38,7 @@ describe('TaskFrameLocationService', () => {
   it('should by default request offset 0 with 1 frame', (done) => {
     const taskId = 'someTaskId423';
     const type = 'source';
-    const path = `/api/task/${taskId}/frameLocations/${type}`;
+    const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
     const expectedQuery = $httpParamSerializer({offset: 0, length: 1});
     const expectedUrl = `${path}?${expectedQuery}`;
 
@@ -52,7 +68,7 @@ describe('TaskFrameLocationService', () => {
       taskId = 'someTaskId423';
       type = 'source';
 
-      const path = `/api/task/${taskId}/frameLocations/${type}`;
+      const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
       const expectedQuery = $httpParamSerializer({offset: expectedOffset, length: expectedLength});
 
       expectedUrl = `${path}?${expectedQuery}`;
@@ -99,7 +115,7 @@ describe('TaskFrameLocationService', () => {
 
     beforeEach(() => {
       taskId = 'someTaskId423';
-      const path = `/api/task/${taskId}/frameLocations/${type}`;
+      const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
       const expectedQuery = $httpParamSerializer({offset: 0, length: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
@@ -125,7 +141,7 @@ describe('TaskFrameLocationService', () => {
 
     beforeEach(() => {
       type = 'source';
-      const path = `/api/task/${taskId}/frameLocations/${type}`;
+      const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
       const expectedQuery = $httpParamSerializer({offset: 0, length: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
