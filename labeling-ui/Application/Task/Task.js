@@ -12,9 +12,6 @@ export default class Task extends Module {
 
   config($stateProvider) {
     const taskResolver = ($stateParams, taskService) => {
-      if (!$stateParams.taskId) {
-        // do smth
-      }
       return taskService.getTask($stateParams.taskId);
     };
 
