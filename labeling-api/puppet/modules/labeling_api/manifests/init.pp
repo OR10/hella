@@ -18,6 +18,12 @@ class labeling_api(
     $secret = 'ThisTokenIsNotSoSecretChangeIt',
     $ffmpeg_executable = 'avconf',
     $ffprobe_executable = 'avprobe',
+    $frame_cdn_dir = undef,
+    $frame_cdn_scheme = "http",
+    $frame_cdn_hostname = undef,
+    $frame_cdn_network_device = undef,
+    $frame_cdn_port = 81,
+    $frame_cdn_path = '',
 ) {
 
   ::mysql::db { $database_name:
@@ -49,6 +55,31 @@ class labeling_api(
       content => template('labeling_api/parameters_test.yml.erb'),
     }
 
+    if $frame_cdn_dir != undef {
+      file { ['/var', '/var/www', $frame_cdn_dir]:
+        ensure => directory,
+        mode   => '777',
+      }
+
+      if $frame_cdn_hostname == undef {
+        if $frame_cdn_network_device != undef {
+          $frame_cdn_real_hostname = $facts['networking']['interfaces'][$frame_cdn_network_device]['ip']
+        }
+      } else {
+        $frame_cdn_real_hostname = $frame_cdn_hostname
+      }
+
+      if $configure_nginx {
+        nginx::resource::vhost { "cdn":
+          ensure      => present,
+          www_root    => "${frame_cdn_dir}",
+          listen_port => "${frame_cdn_port}",
+          index_files => [],
+          try_files   => ['$uri', "=404"],
+          require     => File[$frame_cdn_dir],
+        }
+      }
+    }
   }
 
   if ($config_dir == undef) {
