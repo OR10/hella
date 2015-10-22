@@ -1,3 +1,8 @@
+/**
+ * @class TaskService
+ *
+ * Service for retrieving information about Tasks
+ */
 export default class TaskService {
   constructor(apiService, $http) {
     this.$http = $http;
@@ -5,6 +10,8 @@ export default class TaskService {
   }
 
   /**
+   * Returns the list of available tasks
+   *
    * @return {Promise<Task[]|Error>}
    */
   getTasks() {
@@ -18,6 +25,8 @@ export default class TaskService {
   }
 
   /**
+   * Returns the task identified by the given id
+   *
    * @param {String} id
    *
    * @return {Promise<Task|Error>}

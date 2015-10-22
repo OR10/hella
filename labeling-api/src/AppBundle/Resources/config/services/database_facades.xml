@@ -10,7 +10,7 @@
 
         <service id="annostation.labeling_api.database.facade.video" class="AppBundle\Database\Facade\Video">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
-            <argument>%data_dir%</argument>
+            <argument>%cache_dir%</argument>
         </service>
 
         <service id="annostation.labeling_api.database.facade.prelabeled_frame" class="AppBundle\Database\Facade\PrelabeledFrame">
@@ -30,10 +30,6 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.labeled_frame" class="AppBundle\Database\Facade\LabeledFrame">
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
-        </service>
-
-        <service id="annostation.labeling_api.database.facade.frame_cdn" class="AppBundle\Database\Facade\FrameCdn">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 

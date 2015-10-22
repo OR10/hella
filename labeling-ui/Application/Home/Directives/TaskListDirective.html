@@ -1,0 +1,5 @@
+<div ng-if="vm.tasks === null" class="alert alert-info">Loading Tasks...</div>
+<div ng-if="vm.tasks.length === 0" class="alert alert-warning">No tasks available!</div>
+<ul class="list-group" ng-if="vm.tasks.length > 0">
+    <li class="list-group-item" ng-repeat="task in vm.tasks"><i class="fa fa-video-camera"></i>&nbsp; &nbsp;<a href="" ui-sref="task({taskId: task.id})">{{task.id}}</a></li>
+</ul>

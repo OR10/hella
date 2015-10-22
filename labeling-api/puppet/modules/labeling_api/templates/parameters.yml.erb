@@ -1,6 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
-    data_dir: <%= @data_dir %>
+    cache_dir: <%= @cache_dir %>
     database_host: <%= @database_host %>
     database_port: <%= @database_port %>
     database_name: <%= @database_name %>
@@ -14,3 +14,6 @@ parameters:
 
     ffmpeg_executable: <%= @ffmpeg_executable %>
     ffprobe_executable: <%= @ffprobe_executable %>
+
+    frame_cdn_dir: <%= @frame_cdn_dir %>
+    frame_cdn_base_url: "<%= @frame_cdn_scheme %>://<%= @frame_cdn_real_hostname %>:<%= @frame_cdn_port %><%= @frame_cdn_path %>"

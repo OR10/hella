@@ -8,6 +8,7 @@ import jspm, {Builder} from 'jspm';
 import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
 import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
+import ip from 'ip';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';

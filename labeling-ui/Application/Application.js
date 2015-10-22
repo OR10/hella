@@ -1,7 +1,14 @@
 import angular from 'angular';
 import 'angular-ui-router';
 
-import Common from './Common/Common';
+import CommonModule from './Common/Common';
+import TaskModule from './Task/Task';
+import HomeModule from './Home/Home';
+import FrameModule from './Frame/Frame';
+
+// These imports need to be managed manually for now since jspm currently does not support
+// System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
+import commonModuleConfig from './Common/config.json!';
 
 /**
  * The Main Application class
@@ -30,7 +37,16 @@ export default class Application {
    * Register all the modules to be loaded by the application
    */
   registerModules() {
-    this.modules.push(new Common());
+    this.modules.push(new CommonModule());
+    this.modules.push(new TaskModule());
+    this.modules.push(new HomeModule());
+    this.modules.push(new FrameModule());
+  }
+
+  buildApplicationConfig() {
+    return Promise.resolve({
+      Common: commonModuleConfig,
+    });
   }
 
   /**
@@ -39,22 +55,30 @@ export default class Application {
   init() {
     this.registerModules();
 
-    this.modules.forEach((module) => module.registerWithAngular(angular));
+    return Promise.resolve()
+      .then(() => {
+        this.modules.forEach((module) => module.registerWithAngular(angular));
 
-    this.app = angular.module(this.moduleName, [
-      'ui.router',
-      ...this.modules.map(mod => mod.module.name),
-    ]);
+        this.app = angular.module(this.moduleName, [
+          'ui.router',
+          ...this.modules.map(mod => mod.module.name),
+        ]);
 
-    this.setupRouting();
+        this.setupRouting();
+
+        return this.buildApplicationConfig();
+      }).then((config) => {
+        this.app.constant('applicationConfig', config);
+      });
   }
 
   /**
    * @param {HTMLElement} element
    */
   bootstrap(element) {
-    this.init();
-    angular.bootstrap(element, [this.moduleName], {strictDi: true});
+    this.init().then(() => {
+      angular.bootstrap(element, [this.moduleName], {strictDi: true});
+    });
   }
 
   setupRouting() {

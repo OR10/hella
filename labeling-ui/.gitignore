@@ -4,5 +4,3 @@ Application/Vendor/
 Distribution/
 Logs/*
 npm-debug.log
-Public/Styles/**/*.css
-Public/Styles/**/*.css.map
