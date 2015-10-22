@@ -1,6 +1,6 @@
 import Module from '../Module';
-import FrameService from 'Services/FrameService';
-import TaskFrameLocationService from 'Services/TaskFrameLocationService';
+import FrameService from './Services/FrameService';
+import TaskFrameLocationService from './Services/TaskFrameLocationService';
 
 export default class Frame extends Module {
   registerWithAngular(angular) {
