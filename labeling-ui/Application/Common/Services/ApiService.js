@@ -18,7 +18,7 @@ export default class ApiService {
    * @param {Object} query
    * @returns {string}
    */
-  buildApiUrl(path, query = {}) {
+  getApiUrl(path, query = {}) {
     const {common: {backendPrefix, apiPrefix}} = this.configuration;
     const location = `${backendPrefix}/${apiPrefix}/${path}`.replace(/\/\/+/g, '/');
     const encodedQuery = this.$httpParamSerializer(query);
