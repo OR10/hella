@@ -1,6 +1,6 @@
 class labeling_api(
     $root_dir,
-    $data_dir,
+    $cache_dir,
     $configure_nginx = true,
     $run_composer_install = false,
     $app_main_script = 'app.php',
@@ -86,7 +86,7 @@ class labeling_api(
     }
   }
 
-  file { "${data_dir}":
+  file { "${cache_dir}":
     ensure => "directory",
     mode   => "777",
   }

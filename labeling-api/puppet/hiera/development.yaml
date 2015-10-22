@@ -14,7 +14,7 @@ labeling_api::app_main_script: 'app_dev.php'
 labeling_api::run_composer_install: true
 labeling_api::prepare_test_environment: true
 labeling_api::root_dir: '/vagrant'
-labeling_api::data_dir: '/var/cache/labeling_api'
+labeling_api::cache_dir: '/var/cache/labeling_api'
 labeling_api::database_host: '127.0.0.1'
 labeling_api::database_port: 'null'
 labeling_api::database_name: 'labeling_api'
