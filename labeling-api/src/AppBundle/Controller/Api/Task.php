@@ -34,7 +34,7 @@ class Task extends Controller\Base
     /**
      * List all labeling tasks
      *
-     * @Rest\Get("/")
+     * @Rest\Get("")
      *
      * @return \FOS\RestBundle\View\View
      */
