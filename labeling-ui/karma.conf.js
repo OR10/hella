@@ -39,7 +39,8 @@ module.exports = function(config) {
         watched: true,
         included: false,
         served: true,
-      }
+      },
+      'Tests/Support/Jasmine/DataProvider.js'
       //'.workaround/jquery.js',
       //'.workaround/angular.js',
       //'tests/fixtures/**/*',

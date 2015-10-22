@@ -4,19 +4,29 @@ namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
-/** @CouchDB\Document */
+/**
+ * @CouchDB\Document
+ */
 class LabeledThing
 {
-    /** @CouchDB\Id */
+    /**
+     * @CouchDB\Id
+     */
     private $id;
 
-    /** @CouchDB\Field(type="mixed") */
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
     private $frameRange;
 
-    /** @CouchDB\Field(type="mixed") */
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
     private $classes;
 
-    /** @CouchDB\Field(type="string") */
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $labelingTaskId;
 
     /**

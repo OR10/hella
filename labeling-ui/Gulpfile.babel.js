@@ -7,7 +7,7 @@ import fs from 'fs';
 import jspm, {Builder} from 'jspm';
 import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
-import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor';
+import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -57,7 +57,7 @@ gulp.task('clean', () => {
   ]);
 });
 
-gulp.task('serve', (next) => {
+gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
   /**
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
@@ -196,10 +196,10 @@ gulp.task('test-unit-continuous', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e', ['webdriver-update'], (next) => {
-  var protractorConfig = {
-    configFile: "protractor.conf.js",
-    args: []
+gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
+  const protractorConfig = {
+    configFile: 'protractor.conf.js',
+    args: [],
   };
 
   if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
@@ -216,20 +216,18 @@ gulp.task('test-e2e', ['webdriver-update'], (next) => {
     () => {
       const protractorServer = new ProtractorServer({
         assetPath: 'Distribution',
-        port: 52343
+        port: 52343,
       });
 
       protractorServer.serve();
 
       gulp.src(paths.files.tests.e2e)
         .pipe(protractor(protractorConfig))
-        .on('error', function(e) {
+        .on('error', (error) => {
           protractorServer.close();
-          throw e;
+          throw error;
         })
-        .on('end', function() {
-          protractorServer.close();
-        });
+        .on('end', () => protractorServer.close());
     }
   );
 });
@@ -249,7 +247,7 @@ gulp.task('build-sass', () => {
 });
 
 gulp.task('build-fonts', (next) => {
-  jspm.normalize("font-awesome").then((normalizedFile) => {
+  jspm.normalize('font-awesome').then((normalizedFile) => {
     const normalizedPath = normalizedFile
       .replace(/file:\/\//, '')
       .replace(/\.js$/, '');

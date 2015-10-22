@@ -14,7 +14,6 @@ function _normalizeConstructor(input) {
   var constructorFn;
 
   if (input.constructor === Array) {
-    //
     var injected = input.slice(0, input.length - 1);
     constructorFn = input[input.length - 1];
     constructorFn.$inject = injected;
@@ -112,31 +111,31 @@ class Module {
    * @param {function} constructorFn
    */
   registerDirective(name, constructorFn) {
-    constructorFn = _normalizeConstructor(constructorFn);
+    const normalizedConstructorFn = _normalizeConstructor(constructorFn);
 
-    if (!constructorFn.prototype.compile) {
+    if (!normalizedConstructorFn.prototype.compile) {
       // create an empty compile function if none was defined.
-      constructorFn.prototype.compile = () => {
+      normalizedConstructorFn.prototype.compile = () => {
       };
     }
 
-    const originalCompileFn = _cloneFunction(constructorFn.prototype.compile);
+    const originalCompileFn = _cloneFunction(normalizedConstructorFn.prototype.compile);
 
     // Decorate the compile method to automatically return the link method (if it exists)
     // and bind it to the context of the constructor (so `this` works correctly).
     // This gets around the problem of a non-lexical "this" which occurs when the directive class itself
     // returns `this.link` from within the compile function.
-    _override(constructorFn.prototype, 'compile', function() {
-      return function() {
+    _override(normalizedConstructorFn.prototype, 'compile', function compile() {
+      return function compiled() {
         originalCompileFn.apply(this, arguments);
 
-        if (constructorFn.prototype.link) {
-          return constructorFn.prototype.link.bind(this);
+        if (normalizedConstructorFn.prototype.link) {
+          return normalizedConstructorFn.prototype.link.bind(this);
         }
       };
     });
 
-    const factoryArray = _createFactoryArray(constructorFn);
+    const factoryArray = _createFactoryArray(normalizedConstructorFn);
     this.module.directive(name, factoryArray);
   }
 }

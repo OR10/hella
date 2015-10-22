@@ -53,9 +53,9 @@ class Video
         }
 
         if ($filename !== null) {
-            if (!copy($filename, $videoDirectory . DIRECTORY_SEPARATOR . 'raw')) {
+            if (!copy($filename, $videoDirectory . DIRECTORY_SEPARATOR . 'source')) {
                 //TODO: implement better error handling
-                throw new \Exception("Error copying filename as raw data!");
+                throw new \Exception("Error copying filename as source data!");
             }
         }
     }

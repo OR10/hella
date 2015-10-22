@@ -4,14 +4,26 @@ namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
-/** @CouchDB\Document */
+/**
+ * @CouchDB\Document
+ */
 class Video
 {
-    /** @CouchDB\Id */
+    /**
+     * @CouchDB\Id
+     */
     private $id;
 
-    /** @CouchDB\Field(type="string") */
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $name;
+
+    /**
+     * @var Video\MetaData
+     * @CouchDB\Field(type="mixed")
+     */
+    private $metaData;
 
     /**
      * @param string $name The name of the video.
@@ -45,5 +57,23 @@ class Video
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @param Video\MetaData
+     * @return Video
+     */
+    public function setMetaData(Video\MetaData $metaData)
+    {
+        $this->metaData = $metaData;
+        return $this;
+    }
+
+    /**
+     * @return Video\MetaData
+     */
+    public function getMetaData()
+    {
+        return $this->metaData;
     }
 }

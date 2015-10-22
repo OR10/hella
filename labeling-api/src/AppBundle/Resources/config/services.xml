@@ -16,5 +16,9 @@
             <argument type="service" id="jms_serializer" />
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="100" />
         </service>
+
+        <service id="annostation.labeling_api.service.video.meta_data_reader" class="AppBundle\Service\Video\MetaDataReader">
+            <argument>%ffprobe_executable%</argument>
+        </service>
     </services>
 </container>
