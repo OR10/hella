@@ -1,7 +1,6 @@
 import 'jquery';
 import 'angular';
 import angularMocks from 'angular-mocks';
-import sinon from 'sinon';
 
 import FrameService from 'Application/Frame/Services/FrameService';
 
@@ -22,8 +21,8 @@ describe('FrameService', () => {
 
       class ImageMockImpl {
         constructor() {
-          this.__srcSpy = sinon.spy();
-          this.addEventListener = sinon.spy((name, fn) => {
+          this.__srcSpy = jasmine.createSpy();
+          this.addEventListener = jasmine.createSpy().and.callFake((name, fn) => {
             if (name === 'load' && error !== true) {
               fn();
             } else if (name === 'error' && error === true) {
@@ -51,8 +50,8 @@ describe('FrameService', () => {
     const mock = createImageMock(false);
     service.getImage(frameLocation)
       .then((image) => {
-        expect(image.__srcSpy.calledOnce).toEqual(true);
-        expect(image.__srcSpy.calledWith(frameLocation.url)).toEqual(true);
+        expect(image.__srcSpy).toHaveBeenCalled();
+        expect(image.__srcSpy).toHaveBeenCalledWith(frameLocation.url);
         done();
       });
     mock.restore();
