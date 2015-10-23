@@ -1,4 +1,9 @@
-class annostation_base() {
+class annostation_base(
+  $nodejs = false,
+) {
+    if $nodejs {
+      include ::annostation_base::nodejs
+    }
 
     $packages = [
         'git',
