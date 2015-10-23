@@ -11,6 +11,7 @@ class Base
      */
     public static $imageTypes = [
         'source' => Source::class,
+        'thumbnail' => Thumbnail::class,
     ];
 
     /**

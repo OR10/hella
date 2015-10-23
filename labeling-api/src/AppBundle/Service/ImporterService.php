@@ -20,6 +20,7 @@ class ImporterService
      */
     CONST IMAGE_TYPES = [
         'source',
+        'thumbnail',
     ];
 
     /**
