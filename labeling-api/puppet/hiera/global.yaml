@@ -1,3 +1,5 @@
+annostation_base::nodejs: true
+
 php::ensure: latest
 php::manage_repos: true
 php::repo::ubuntu::ppa: "ondrej/php5-5.6"

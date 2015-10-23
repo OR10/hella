@@ -14,7 +14,3 @@ class { 'labeling_api':
     require => Class['annostation_base'],
 }
 
-
-class { 'nodejs':
-}
-
