@@ -76,7 +76,6 @@ class FilesystemFrameCdn extends FrameCdn
         ImageType\Base $imageType,
         Model\FrameRange $frameRange
     ) {
-        // TODO: Frame range check against the labeling task?
         $urls = [];
         foreach (range($frameRange->getStartFrameNumber(), $frameRange->getEndFrameNumber()) as $frameNumber) {
             $urls[] = [
