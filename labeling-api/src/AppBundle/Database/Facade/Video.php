@@ -14,22 +14,15 @@ class Video
     private $documentManager;
 
     /**
-     * @var string
-     */
-    private $dataDirectory;
-
-    /**
      * @var Flysystem\FileSystem
      */
     private $fileSystem;
 
     public function __construct(
         CouchDB\DocumentManager $documentManager,
-        $dataDirectory,
         Flysystem\FileSystem $fileSystem
     ) {
         $this->documentManager = $documentManager;
-        $this->dataDirectory   = $dataDirectory;
         $this->fileSystem      = $fileSystem;
     }
 
@@ -58,14 +51,14 @@ class Video
         $this->documentManager->persist($video);
         $this->documentManager->flush();
 
-        if (!$this->fileSystem->createDir($video->getId() . DIRECTORY_SEPARATOR . 'source')) {
+        if (!$this->fileSystem->createDir($video->getId())) {
             //TODO: implement better error handling
             throw new \Exception("Error creating directory: {$video->getId()}!");
         }
 
         if ($filename !== null) {
             $this->fileSystem->write(
-                $video->getId() . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . basename($filename),
+                $video->getId() . DIRECTORY_SEPARATOR . 'source',
                 file_get_contents($filename)
             );
         }
