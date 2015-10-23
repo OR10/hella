@@ -76,19 +76,22 @@ class FilesystemFrameCdn extends FrameCdn
         ImageType\Base $imageType,
         Model\FrameRange $frameRange
     ) {
-        // TODO: Frame range check against the labeling task?
         $urls = [];
         foreach (range($frameRange->getStartFrameNumber(), $frameRange->getEndFrameNumber()) as $frameNumber) {
-            $urls[] = vsprintf(
-                "%s/%s/%s/%s.%s",
-                [
-                    $this->frameCdnBaseUrl,
-                    $labelingTask->getVideoId(),
-                    $imageType->getName(),
-                    $frameNumber,
-                    $imageType->getExtension(),
-                ]
-            );
+            $urls[] = [
+                'id' => "{$labelingTask->getId()}-{$frameNumber}",
+                "frameNumber" => $frameNumber,
+                'url' => vsprintf(
+                    "%s/%s/%s/%s.%s",
+                    [
+                        $this->frameCdnBaseUrl,
+                        $labelingTask->getVideoId(),
+                        $imageType->getName(),
+                        $frameNumber,
+                        $imageType->getExtension(),
+                    ]
+                ),
+            ];
         }
 
         return $urls;
