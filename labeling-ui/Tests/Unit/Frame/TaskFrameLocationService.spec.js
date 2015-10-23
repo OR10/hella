@@ -17,7 +17,7 @@ describe('TaskFrameLocationService', () => {
 
     module($provide => {
       $provide.value('applicationConfig', {
-        common: {
+        Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
@@ -39,7 +39,7 @@ describe('TaskFrameLocationService', () => {
     const taskId = 'someTaskId423';
     const type = 'source';
     const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
-    const expectedQuery = $httpParamSerializer({offset: 0, length: 1});
+    const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
     const expectedUrl = `${path}?${expectedQuery}`;
 
     $httpBackend
@@ -58,7 +58,7 @@ describe('TaskFrameLocationService', () => {
     [42, undefined, 42, 1],
     [0, 1, 0, 1],
     [23, 3, 23, 3],
-  ], (offset, length, expectedOffset, expectedLength) => {
+  ], (offset, limit, expectedOffset, expectedLimit) => {
     let taskId;
     let type;
     let expectedUrl;
@@ -69,7 +69,7 @@ describe('TaskFrameLocationService', () => {
       type = 'source';
 
       const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
-      const expectedQuery = $httpParamSerializer({offset: expectedOffset, length: expectedLength});
+      const expectedQuery = $httpParamSerializer({offset: expectedOffset, limit: expectedLimit});
 
       expectedUrl = `${path}?${expectedQuery}`;
 
@@ -83,7 +83,7 @@ describe('TaskFrameLocationService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: expectedResult});
 
-      service.getFrameLocations(taskId, type, offset, length)
+      service.getFrameLocations(taskId, type, offset, limit)
         .then(done);
 
       $httpBackend.flush();
@@ -94,7 +94,7 @@ describe('TaskFrameLocationService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: expectedResult});
 
-      service.getFrameLocations(taskId, type, offset, length)
+      service.getFrameLocations(taskId, type, offset, limit)
         .then(result => {
           expect(result).toEqual(expectedResult);
           done();
@@ -116,7 +116,7 @@ describe('TaskFrameLocationService', () => {
     beforeEach(() => {
       taskId = 'someTaskId423';
       const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
-      const expectedQuery = $httpParamSerializer({offset: 0, length: 1});
+      const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
     it('should request type as specified', done => {
@@ -142,7 +142,7 @@ describe('TaskFrameLocationService', () => {
     beforeEach(() => {
       type = 'source';
       const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
-      const expectedQuery = $httpParamSerializer({offset: 0, length: 1});
+      const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
     it('should request taskId as specified', done => {

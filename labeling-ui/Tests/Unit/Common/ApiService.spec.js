@@ -11,7 +11,7 @@ describe('ApiService', () => {
     getApiService = (configuration = {}) => {
       let service;
       module($provide => {
-        $provide.value('applicationConfig', {common: configuration});
+        $provide.value('applicationConfig', {Common: configuration});
       });
       inject($injector => {
         service = $injector.instantiate(ApiService);
