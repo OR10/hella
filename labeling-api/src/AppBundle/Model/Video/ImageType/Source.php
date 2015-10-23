@@ -17,4 +17,11 @@ class Source extends Base
      * @var string
      */
     protected $name = 'source';
+
+    /**
+     * String with a additional command parameters
+     *
+     * @var string
+     */
+    protected $commandParameters = '-f image2 -v quiet';
 }

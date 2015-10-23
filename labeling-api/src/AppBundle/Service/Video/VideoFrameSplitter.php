@@ -79,9 +79,10 @@ class VideoFrameSplitter
     private function getCommand($sourceFileName, ImageType\Base $type, $tempDir)
     {
         return sprintf(
-            '%s -i %s -f image2 -v quiet %s/%s.%s',
+            '%s -i %s %s %s/%s.%s',
             $this->ffmpegExecutable,
             $sourceFileName,
+            $type->getCommandParameters(),
             $tempDir,
             '%d',
             $type->getExtension()
