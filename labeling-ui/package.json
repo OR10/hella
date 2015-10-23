@@ -74,8 +74,10 @@
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "bootstrap": "github:twbs/bootstrap-sass@^3.3.5",
       "css": "github:systemjs/plugin-css@^0.1.18",
+      "event-emitter": "github:Olical/EventEmitter@^4.3.0",
       "font-awesome": "npm:font-awesome@^4.4.0",
-      "jquery": "github:components/jquery@^2.1.4"
+      "jquery": "github:components/jquery@^2.1.4",
+      "paper": "npm:paper@^0.9.24"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",

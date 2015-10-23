@@ -1,4 +1,4 @@
-Class['apt::update'] -> Package<| name != 'software-properties-common' |>
+Class['apt::update'] -> Package<| title != 'apt-transport-https' and title != 'ca-certificates' |>
 
 class { 'nginx': }
 
@@ -13,3 +13,4 @@ class { 'annostation_base': }
 class { 'labeling_api':
     require => Class['annostation_base'],
 }
+

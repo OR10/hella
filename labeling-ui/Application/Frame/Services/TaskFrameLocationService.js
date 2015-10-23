@@ -16,15 +16,15 @@ export default class TaskFrameLocationService {
    * @param {string} taskId
    * @param {string} type
    * @param {number?} offset
-   * @param {number?} length
+   * @param {number?} limit
    * @return {Promise<Array<FrameLocation>>}
    */
-  getFrameLocations(taskId, type, offset = 0, length = 1) {
+  getFrameLocations(taskId, type, offset = 0, limit = 1) {
     return this.$http({
       method: 'GET',
       url: this.apiService.getApiUrl(
         `/task/${taskId}/frameLocations/${type}`,
-        {offset, length}
+        {offset, limit}
       ),
     })
       .then(response => {

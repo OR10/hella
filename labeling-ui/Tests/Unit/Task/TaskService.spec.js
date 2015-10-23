@@ -16,7 +16,7 @@ describe('TaskService', () => {
 
     module($provide => {
       $provide.value('applicationConfig', {
-        common: {
+        Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },

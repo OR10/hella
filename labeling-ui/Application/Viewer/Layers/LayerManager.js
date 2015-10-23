@@ -84,7 +84,7 @@ export default class LayerManager {
       throw new Error(`Layer could not be retrieved: Layer with name ${name} does not exist.`);
     }
 
-    return layer;
+    return layer.layer;
   }
 
   /**
@@ -96,7 +96,7 @@ export default class LayerManager {
    */
   _onNewDelegationEvent(delegator, event) {
     Object.values(this.layers)
-      .sort((a, b) => a.order - b.order)
-      .forEach(layer => delegator.dispatch(event, layer));
+      .sort((lhs, rhs) => lhs.order - rhs.order)
+      .forEach(layer => delegator.dispatch(event, layer.layer));
   }
 }

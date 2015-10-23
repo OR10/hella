@@ -1,5 +1,5 @@
 resource "openstack_compute_instance_v2" "jenkins" {
-  count = 1
+  count = 2
 
   name = "annostation-ci-slave-${count.index}"
   #image_name = "trusty"

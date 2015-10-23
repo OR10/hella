@@ -1,10 +1,11 @@
-import EventEmitter from "event-emitter";
+import EventEmitter from 'event-emitter';
 
 /**
  * Layer handling event delegation to other {@link Layer}s of the {@link Viewer}
  */
-export class EventDelegationLayer extends EventEmitter {
+export default class EventDelegationLayer extends EventEmitter {
   constructor() {
+    super();
     this._onDelegateEvent = this._onDelegateEvent.bind(this);
   }
 
@@ -13,7 +14,7 @@ export class EventDelegationLayer extends EventEmitter {
    *
    * All delegated events will be automatically registered on the container.
    *
-   * @param {DOMElement} element
+   * @param {Element} element
    */
   attachToDom(element) {
     [
@@ -51,8 +52,8 @@ export class EventDelegationLayer extends EventEmitter {
    * @private
    */
   _cloneEvent(event) {
-    switch (event.type) {
-    case 'MouseEvent':
+    switch (true) {
+    case event instanceof MouseEvent:
       return this._cloneMouseEvent(event);
     default:
       throw new Error(`Event cloning of type ${event.type} is not supported.`);
@@ -62,7 +63,8 @@ export class EventDelegationLayer extends EventEmitter {
   /**
    * Correctly clone MouseEvents
    *
-   * @param {MouseEvent}
+   * @param {MouseEvent} event
+   *
    * @returns {MouseEvent}
    * @private
    */
@@ -83,7 +85,7 @@ export class EventDelegationLayer extends EventEmitter {
       button: event.button,
       buttons: event.buttons,
       relatedTarget: event.relatedTarget,
-      region: event.region
+      region: event.region,
     });
   }
 
