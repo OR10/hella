@@ -67,7 +67,7 @@ class Task extends Controller\Base
     public function showAction($id)
     {
         return View\View::create()
-            ->setData($this->labelingTaskFacade->find($id));
+            ->setData(['result' => $this->labelingTaskFacade->find($id)]);
     }
 
     /**
