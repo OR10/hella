@@ -18,3 +18,4 @@ mysql::server::override_options:
 couchdb::bind_address: '0.0.0.0'
 couchdb::data_dir_prefix: '/var/lib'
 
+nodejs::repo_url_suffix: 'node_4.x'

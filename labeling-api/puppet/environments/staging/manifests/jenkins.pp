@@ -21,3 +21,6 @@ class { 'ruby':
   gems_version => 'latest'
 }
 
+class { 'nodejs':
+}
+
