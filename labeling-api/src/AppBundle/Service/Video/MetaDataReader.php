@@ -40,6 +40,7 @@ class MetaDataReader
         $metaData->width = $json['streams'][0]['width'];
         $metaData->height = $json['streams'][0]['height'];
         $metaData->duration = $json['streams'][0]['duration'];
+        $metaData->frames = $json['streams'][0]['nb_frames'];
         $metaData->raw = $json;
 
         return $metaData;
