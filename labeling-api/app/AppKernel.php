@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\CouchDBBundle\DoctrineCouchDBBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
+            new Oneup\FlysystemBundle\OneupFlysystemBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

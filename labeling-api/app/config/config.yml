@@ -100,3 +100,24 @@ fos_rest:
     routing_loader:
         default_format: json
         include_format: true
+
+oneup_flysystem:
+    adapters:
+            cache_adapter:
+                local:
+                    directory: %cache_dir%
+            frame_cdn_dir_adapter:
+                local:
+                    directory: %frame_cdn_dir%
+
+    filesystems:
+        cache:
+            adapter: cache_adapter
+            cache: ~
+            alias: ~
+            mount: ~
+        frame_cdn:
+            adapter: frame_cdn_dir_adapter
+            cache: ~
+            alias: ~
+            mount: ~

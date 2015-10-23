@@ -4,6 +4,7 @@ namespace AppBundle\Database\Facade;
 use AppBundle\Database\Facade\CouchDb as CouchDbBase;
 use AppBundle\Model;
 use Doctrine\ODM\CouchDB;
+use League\Flysystem;
 
 class Video
 {
@@ -17,10 +18,19 @@ class Video
      */
     private $dataDirectory;
 
-    public function __construct(CouchDB\DocumentManager $documentManager, $dataDirectory)
-    {
+    /**
+     * @var Flysystem\FileSystem
+     */
+    private $fileSystem;
+
+    public function __construct(
+        CouchDB\DocumentManager $documentManager,
+        $dataDirectory,
+        Flysystem\FileSystem $fileSystem
+    ) {
         $this->documentManager = $documentManager;
         $this->dataDirectory   = $dataDirectory;
+        $this->fileSystem      = $fileSystem;
     }
 
     public function findAll()
@@ -46,17 +56,16 @@ class Video
         $this->documentManager->persist($video);
         $this->documentManager->flush();
 
-        $videoDirectory = $this->dataDirectory . DIRECTORY_SEPARATOR . $video->getId();
-        if (!mkdir($videoDirectory)) {
+        if (!$this->fileSystem->createDir($video->getId() . DIRECTORY_SEPARATOR . 'source')) {
             //TODO: implement better error handling
-            throw new \Exception("Error creating directory: {$videoDirectory}!");
+            throw new \Exception("Error creating directory: {$video->getId()}!");
         }
 
         if ($filename !== null) {
-            if (!copy($filename, $videoDirectory . DIRECTORY_SEPARATOR . 'source')) {
-                //TODO: implement better error handling
-                throw new \Exception("Error copying filename as source data!");
-            }
+            $this->fileSystem->write(
+                $video->getId() . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . basename($filename),
+                file_get_contents($filename)
+            );
         }
     }
 }

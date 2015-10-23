@@ -6,6 +6,7 @@ use Symfony\Component\Process\Process;
 use AppBundle\Model\Video\ImageType;
 use AppBundle\Service;
 use AppBundle\Model;
+use League\Flysystem;
 
 class VideoFrameSplitter
 {
@@ -24,17 +25,28 @@ class VideoFrameSplitter
     private $filesystemFrameCdn;
 
     /**
+     * @var Flysystem\FileSystem
+     */
+    private $fileSystem;
+
+    /**
      * FrameCdnSplitter constructor.
      *
      * @param Service\FilesystemFrameCdn $filesystemFrameCdn
      * @param                            $ffmpegExecutable
      * @param                            $cacheDir
+     * @param Flysystem\FileSystem       $fileSystem
      */
-    public function __construct(Service\FilesystemFrameCdn $filesystemFrameCdn, $ffmpegExecutable, $cacheDir)
-    {
+    public function __construct(
+        Service\FilesystemFrameCdn $filesystemFrameCdn,
+        $ffmpegExecutable,
+        $cacheDir,
+        Flysystem\FileSystem $fileSystem
+    ) {
         $this->ffmpegExecutable   = $ffmpegExecutable;
         $this->cacheDir           = $cacheDir;
         $this->filesystemFrameCdn = $filesystemFrameCdn;
+        $this->fileSystem         = $fileSystem;
     }
 
     /**
@@ -50,7 +62,7 @@ class VideoFrameSplitter
         $command = $this->getCommand(
             $sourceFileFilename,
             $type,
-            $tempDir
+            $this->cacheDir . '/' . $tempDir
         );
 
         $process = new Process($command);
@@ -61,12 +73,18 @@ class VideoFrameSplitter
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        foreach (glob($tempDir . '/*.' . $type->getExtension()) as $filename) {
+        $pattern = sprintf(
+            '%s/%s/%s',
+            $this->cacheDir,
+            $tempDir,
+            $type->getExtension()
+        );
+        foreach (glob($pattern) as $filename) {
             $this->filesystemFrameCdn->save($video, $type, (int) basename($filename), $filename);
-            unlink(($filename));
+            $this->fileSystem->delete($tempDir . '/' . basename($filename));
         }
 
-        rmdir($tempDir);
+        $this->fileSystem->deleteDir($tempDir);
     }
 
     /**
@@ -97,26 +115,20 @@ class VideoFrameSplitter
     private function getTempDirectory(ImageType\Base $type)
     {
 
-        $prefix  = sprintf(
-            '%s_%s_',
+        $tempDir = sprintf(
+            '%s_%s_%s',
             'video',
-            $type->getName()
-        );
-        $tempDir = tempnam(
-            sprintf(
-                '%s',
-                $this->cacheDir
-            ),
-            $prefix
+            $type->getName(),
+            uniqid()
         );
 
-        if (is_file($tempDir)) {
-            unlink($tempDir);
+        if ($this->fileSystem->has(($tempDir))) {
+            $this->fileSystem->delete($tempDir);
         }
         if (is_dir($tempDir)) {
-            rmdir($tempDir);
+            $this->fileSystem->deleteDir($tempDir);
         }
-        mkdir($tempDir, 0777, true);
+        $this->fileSystem->createDir($tempDir);
 
         return $tempDir;
     }

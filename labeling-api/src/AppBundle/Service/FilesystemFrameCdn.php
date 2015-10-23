@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
+use League\Flysystem;
 
 class FilesystemFrameCdn extends FrameCdn
 {
@@ -15,17 +16,23 @@ class FilesystemFrameCdn extends FrameCdn
      * @var string
      */
     protected $frameCdnBaseUrl;
+    /**
+     * @var Flysystem\FileSystem
+     */
+    private $fileSystem;
 
     /**
      * FrameCdn constructor.
      *
-     * @param string $frameCdnDir
-     * @param string $frameCdnBaseUrl
+     * @param string               $frameCdnDir
+     * @param string               $frameCdnBaseUrl
+     * @param Flysystem\FileSystem $fileSystem
      */
-    public function __construct($frameCdnDir, $frameCdnBaseUrl)
+    public function __construct($frameCdnDir, $frameCdnBaseUrl, Flysystem\FileSystem $fileSystem)
     {
         $this->frameCdnDir     = $frameCdnDir;
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
+        $this->fileSystem = $fileSystem;
     }
 
     /**
@@ -40,16 +47,15 @@ class FilesystemFrameCdn extends FrameCdn
     public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $path)
     {
         $cdnPath = vsprintf(
-            "%s/%s/%s",
+            "%s/%s",
             [
-                $this->frameCdnDir,
                 $video->getId(),
                 $imageType->getName()
             ]
         );
 
-        if (!is_dir($cdnPath)) {
-            mkdir($cdnPath, 0777, true);
+        if (!$this->fileSystem->has($cdnPath)) {
+            $this->fileSystem->createDir($cdnPath);
         }
 
         $filePath = sprintf(
