@@ -11,6 +11,11 @@ use League\Flysystem;
 class VideoFrameSplitter
 {
     /**
+     * Commandline for running ffmpeg to extract images.
+     */
+    const COMMANDLINE = '%s -i %s %s -v quiet %s/%s.%s';
+
+    /**
      * @var string
      */
     private $ffmpegExecutable;
@@ -97,7 +102,7 @@ class VideoFrameSplitter
     private function getCommand($sourceFileName, ImageType\Base $type, $tempDir)
     {
         return sprintf(
-            '%s -i %s %s %s/%s.%s',
+            self::COMMANDLINE,
             $this->ffmpegExecutable,
             $sourceFileName,
             $type->getCommandParameters(),
