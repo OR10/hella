@@ -35,6 +35,11 @@ class MetaData
     public $sizeInBytes;
 
     /**
+     * @var integer
+     */
+    public $frames;
+
+    /**
      * Holds the raw meta data which was extracted during the import process.
      *
      * @var mixed
