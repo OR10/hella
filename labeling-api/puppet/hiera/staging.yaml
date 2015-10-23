@@ -1,3 +1,4 @@
+annostation_base::authorized_keys: true
 php::fpm::pools:
   www:
     listen: 127.0.0.1:9000
