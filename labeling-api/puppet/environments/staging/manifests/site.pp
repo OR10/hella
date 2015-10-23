@@ -1,4 +1,4 @@
-Class['apt::update'] -> Package<| name != 'software-properties-common' |>
+Class['apt::update'] -> Package<| title != 'apt-transport-https' and title != 'ca-certificates' |>
 
 class { 'nginx': }
 
@@ -15,8 +15,5 @@ class { 'labeling_api':
 
 file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
   ensure  => directory,
-}
-
-class { 'nodejs':
 }
 
