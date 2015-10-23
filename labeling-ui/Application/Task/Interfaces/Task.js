@@ -1,6 +1,7 @@
 /**
  * @interface Task
  *
+ * @property {String} id
  * @property {String} videoId
- * @property {String} labelerId
+ * @property {FrameRange} frameRange
  */

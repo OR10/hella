@@ -12,16 +12,4 @@ export default class ViewerControlsDirective {
       frameBackward: '&',
     };
   }
-
-  controller($rootScope, $scope) {
-    $scope.frameForward = () => {
-      $rootScope.$broadcast('viewer-controls:frame-forward');
-    };
-
-    $scope.frameBackward = () => {
-      $rootScope.$broadcast('viewer-controls:frame-backward');
-    };
-  }
 }
-
-ViewerControlsDirective.prototype.controller.$inject = ['$rootScope', '$scope'];

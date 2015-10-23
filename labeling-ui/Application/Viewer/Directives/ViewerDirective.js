@@ -14,6 +14,7 @@ export default class ViewerDirective {
 
     this.scope = {
       task: '=',
+      frameNumber: '=',
     };
   }
 }
