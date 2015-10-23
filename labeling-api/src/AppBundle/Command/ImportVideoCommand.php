@@ -37,8 +37,10 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
         $filename = $input->getArgument('file');
 
         try {
-            $this->importerService->import($filename, ImageType\Base::create('source'));
+            $task = $this->importerService->import($filename, ImageType\Base::create('source'));
             $output->writeln("<info>{$filename} successfully imported!</info>");
+            $output->writeln("Video: {$task->getVideoId()}");
+            $output->writeln("Task:  {$task->getId()}");
         } catch (\Exception $e) {
             $output->writeln("<error>Error importing {$filename}: {$e->getMessage()}</error>");
         }

@@ -49,13 +49,18 @@ class ImporterService
         $this->labelingTask     = $labelingTask;
     }
 
+    /**
+     * @return Model\LabelingTask
+     */
     public function import($filename, ImageType\Base $imageType)
     {
         $video = new Model\Video(basename($filename));
         $video->setMetaData($this->metaDataReader->readMetaData($filename));
         $this->videoFacade->save($video, $filename);
         $this->frameCdnSplitter->splitVideoInFrames($video, $filename, $imageType);
-        $this->addTask($video);
+        $task = $this->addTask($video);
+
+        return $task;
     }
 
     /**
