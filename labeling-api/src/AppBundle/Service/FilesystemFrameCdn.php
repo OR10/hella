@@ -65,25 +65,27 @@ class FilesystemFrameCdn extends FrameCdn
     }
 
     /**
-     * @param Model\LabelingTask $labeledFrame
+     * @param Model\LabelingTask $labelingTask
      * @param ImageType\Base     $imageType
-     * @param int                $limit
-     * @param int                $offset
+     * @param Model\FrameRange   $frameRange
      *
      * @return array
      */
-    public function getFrameLocations(Model\LabelingTask $labeledFrame, ImageType\Base $imageType, $limit, $offset = 0)
-    {
+    public function getFrameLocations(
+        Model\LabelingTask $labelingTask,
+        ImageType\Base $imageType,
+        Model\FrameRange $frameRange
+    ) {
         // TODO: Frame range check against the labeling task?
         $urls = [];
-        foreach (range($offset, $offset + $limit) as $id) {
+        foreach (range($range->getStartFrameNumber(), $range->getEndFrameNumber()) as $frameNumber) {
             $urls[] = vsprintf(
                 "%s/%s/%s/%s.%s",
                 [
                     $this->frameCdnBaseUrl,
                     $labeledFrame->getVideoId(),
                     $imageType->getName(),
-                    $id,
+                    $frameNumber,
                     $imageType->getExtension(),
                 ]
             );

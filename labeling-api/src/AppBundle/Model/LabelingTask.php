@@ -25,19 +25,25 @@ class LabelingTask
     private $videoId;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $frameRange;
+
+    /**
+     * @param FrameRange $frameRange
+     */
+    public function __construct(Video $video, FrameRange $frameRange)
+    {
+        $this->videoId    = $video->getId();
+        $this->frameRange = clone $frameRange;
+    }
+
+    /**
      * @param int $userId
      */
     public function setUserId($userId)
     {
         $this->userId = $userId;
-    }
-
-    /**
-     * @param string $videoId
-     */
-    public function setVideoId($videoId)
-    {
-        $this->videoId = $videoId;
     }
 
     /**
@@ -48,4 +54,11 @@ class LabelingTask
         return $this->videoId;
     }
 
+    /**
+     * @return FrameRange
+     */
+    public function getFrameRange()
+    {
+        return clone $this->frameRange;
+    }
 }
