@@ -9,12 +9,12 @@ class FrameRange
     /**
      * @var integer
      */
-    private $startFrameNumber;
+    public $startFrameNumber;
 
     /**
      * @var integer
      */
-    private $lastFrameNumber;
+    public $endFrameNumber;
 
     /**
      * @param integer      $startFrameNumber First frame number of this range.
