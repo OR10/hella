@@ -50,14 +50,16 @@ class ImporterService
     }
 
     /**
+     * @param string $filename
+     *
      * @return Model\LabelingTask
      */
-    public function import($filename, ImageType\Base $imageType)
+    public function import($filename)
     {
         $video = new Model\Video(basename($filename));
         $video->setMetaData($this->metaDataReader->readMetaData($filename));
         $this->videoFacade->save($video, $filename);
-        $this->frameCdnSplitter->splitVideoInFrames($video, $filename, $imageType);
+        $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create('source'));
         $task = $this->addTask($video);
 
         return $task;

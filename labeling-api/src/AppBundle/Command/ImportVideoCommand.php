@@ -8,7 +8,6 @@ use AppBundle\Service;
 use Symfony\Bundle\FrameworkBundle\Command;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
-use AppBundle\Model\Video\ImageType;
 
 class ImportVideoCommand extends Command\ContainerAwareCommand
 {
@@ -37,10 +36,13 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
         $filename = $input->getArgument('file');
 
         try {
-            $task = $this->importerService->import($filename, ImageType\Base::create('source'));
-            $output->writeln("<info>{$filename} successfully imported!</info>");
-            $output->writeln("Video: {$task->getVideoId()}");
-            $output->writeln("Task:  {$task->getId()}");
+            $task = $this->importerService->import($filename);
+
+            $output->writeln("<info>Video '{$filename}' successfully imported!</info>");
+            $output->writeln('');
+            $output->writeln("    <comment>Video:</comment> {$task->getVideoId()}");
+            $output->writeln("    <comment>Task: </comment> {$task->getId()}");
+            $output->writeln('');
         } catch (\Exception $e) {
             $output->writeln("<error>Error importing {$filename}: {$e->getMessage()}</error>");
         }
