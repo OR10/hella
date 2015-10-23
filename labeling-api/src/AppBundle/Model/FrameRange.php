@@ -3,16 +3,27 @@
 namespace AppBundle\Model;
 
 use AppBundle\Model\Exception;
+use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
+/**
+ * @CouchDB\Document
+ */
 class FrameRange
 {
     /**
+     * @CouchDB\Id
+     */
+    private $id;
+
+    /**
      * @var integer
+     * @CouchDB\Field(type="integer")
      */
     public $startFrameNumber;
 
     /**
      * @var integer
+     * @CouchDB\Field(type="integer")
      */
     public $endFrameNumber;
 

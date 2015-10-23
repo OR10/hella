@@ -25,12 +25,11 @@ class Video extends Controller\Base
     }
 
     /**
-     * @Rest\Get
+     * @Rest\Get("")
      */
     public function listAction()
     {
         return View\View::create()
-            ->setData($this->videoFacade->findAll());
-            //->setStatusCode(HttpFoundation\Response::HTTP_NOT_IMPLEMENTED);
+            ->setData(['result' => $this->videoFacade->findAll()]);
     }
 }

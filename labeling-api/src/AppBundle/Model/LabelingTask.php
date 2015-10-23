@@ -25,7 +25,7 @@ class LabelingTask
     private $videoId;
 
     /**
-     * @CouchDB\Field(type="mixed")
+     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
      */
     private $frameRange;
 
@@ -36,6 +36,14 @@ class LabelingTask
     {
         $this->videoId    = $video->getId();
         $this->frameRange = clone $frameRange;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
