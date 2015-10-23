@@ -1,4 +1,43 @@
 @import "bootstrap-custom";
 @import "font-awesome-custom";
 
-h1 {color: red;}
+h1 {
+  color: red;
+}
+
+.container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.viewer-container {
+  .viewer {
+    height: 620px;
+    width: 1024px;
+    margin: 0 auto;
+
+    .layer-container {
+      position: relative;
+
+      canvas.annotation-layer, canvas.background-layer, .event-delegation-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .event-delegation-layer {
+        width: 1024px;
+        height: 620px;
+      }
+    }
+  }
+}
+
+.viewer-controls-container {
+  margin: 0 auto;
+  .viewer-controls {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}

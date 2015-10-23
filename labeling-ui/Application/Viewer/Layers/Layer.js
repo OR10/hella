@@ -19,3 +19,10 @@
  * @param {Element} element
  */
 
+/**
+ * Dispatch an Event to the underlying DOM Elements
+ *
+ * @method dispatchDOMEvent
+ * @param {Event} event
+ */
+

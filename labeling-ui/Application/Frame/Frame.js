@@ -6,7 +6,7 @@ export default class Frame extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Frame', []);
 
-    this.module.service('FrameService', FrameService);
-    this.module.service('TaskFrameLocationService', TaskFrameLocationService);
+    this.module.service('frameService', FrameService);
+    this.module.service('taskFrameLocationService', TaskFrameLocationService);
   }
 }

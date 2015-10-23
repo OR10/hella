@@ -21,6 +21,8 @@ export default class TaskService {
         if (response.data && response.data.result) {
           return response.data.result;
         }
+
+        throw new Error('Failed loading task list');
       });
   }
 
@@ -38,6 +40,8 @@ export default class TaskService {
         if (response.data && response.data.result) {
           return response.data.result;
         }
+
+        throw new Error(`Failed loading task with id ${id}`);
       });
   }
 }
