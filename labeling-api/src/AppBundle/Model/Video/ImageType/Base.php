@@ -28,6 +28,13 @@ class Base
     protected $name = '';
 
     /**
+     * String with a additional command parameters
+     *
+     * @var string
+     */
+    protected $commandParameters = '';
+
+    /**
      * Factory method to create the different image types
      *
      * @param $imageType
@@ -54,9 +61,20 @@ class Base
         return $this->extension;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommandParameters()
+    {
+        return $this->commandParameters;
     }
 
 }
