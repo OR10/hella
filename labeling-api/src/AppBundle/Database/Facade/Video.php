@@ -35,10 +35,12 @@ class Video
 
     public function findAll()
     {
-        return $this->documentManager
+        $result = $this->documentManager
             ->createQuery('labeling_api', 'video')
             ->onlyDocs(true)
             ->execute();
+
+        return $result->toArray();
     }
 
     public function getPrelabeledFrames(Model\Video $video)
