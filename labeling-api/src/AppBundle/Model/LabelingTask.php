@@ -59,6 +59,6 @@ class LabelingTask
      */
     public function getFrameRange()
     {
-        return clone $this->frameRange;
+        return $this->frameRange ? clone $this->frameRange : null;
     }
 }

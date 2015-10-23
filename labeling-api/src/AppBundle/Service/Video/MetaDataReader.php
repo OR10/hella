@@ -35,12 +35,12 @@ class MetaDataReader
 
         $metaData = new Model\Video\MetaData();
 
-        $metaData->format = $json['format']['format_name'];
-        $metaData->sizeInBytes = $json['format']['size'];
-        $metaData->width = $json['streams'][0]['width'];
-        $metaData->height = $json['streams'][0]['height'];
-        $metaData->duration = $json['streams'][0]['duration'];
-        $metaData->frames = $json['streams'][0]['nb_frames'];
+        $metaData->format = $this->extractFormat($json);
+        $metaData->sizeInBytes = $this->extractSizeInBytes($json);
+        $metaData->width = $this->extractWidth($json);
+        $metaData->height = $this->extractHeight($json);
+        $metaData->duration = $this->extractDuration($json);
+        $metaData->numberOfFrames = $this->extractNumberOfFrames($json);
         $metaData->raw = $json;
 
         return $metaData;
@@ -49,12 +49,62 @@ class MetaDataReader
     /**
      * @param string $sourceFileFilename
      */
-    public function getCommand($sourceFileFilename)
+    private function getCommand($sourceFileFilename)
     {
         return sprintf(
             "%s -show_format -show_streams -of json -v quiet %s",
             $this->ffprobeExecutable,
             $sourceFileFilename
         );
+    }
+
+    private function extractFormat(array $json)
+    {
+        if (isset($json['format']['format_name'])) {
+            return $json['format']['format_name'];
+        }
+        return null;
+    }
+
+    private function extractSizeInBytes(array $json)
+    {
+        if (isset($json['format']['size'])) {
+            return $json['format']['size'];
+        }
+        return null;
+    }
+
+    private function extractWidth(array $json)
+    {
+        if (isset($json['streams'][0]['width'])) {
+            return (int) $json['streams'][0]['width'];
+        }
+        return null;
+    }
+
+    private function extractHeight(array $json)
+    {
+        if (isset($json['streams'][0]['height'])) {
+            return (int) $json['streams'][0]['height'];
+        }
+        return null;
+    }
+
+    private function extractNumberOfFrames(array $json)
+    {
+        if (isset($json['streams'][0]['nb_frames'])) {
+            return (int) $json['streams'][0]['nb_frames'];
+        }
+
+        throw new Exception\UnknownNumberOfFrames();
+    }
+
+    private function extractDuration(array $json)
+    {
+        if (isset($json['streams'][0]['duration'])) {
+            return (float) $json['streams'][0]['duration'];
+        }
+
+        throw new Exception\UnknownDuration();
     }
 }
