@@ -105,6 +105,13 @@ class labeling_api(
       try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
     }
 
+    nginx::resource::location { '/labeling':
+      ensure         => present,
+      vhost          => '_',
+      location_alias => '/var/www/labeling-ui',
+      index_files    => ['index.html'],
+    }
+
     nginx::resource::location { '~ \.php(/|$)':
       ensure        => present,
       www_root      => "${root_dir}/web",
@@ -113,7 +120,7 @@ class labeling_api(
       fastcgi       => '127.0.0.1:9000',
       fastcgi_param => {
           'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
-      },
+      }
     }
   }
 
