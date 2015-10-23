@@ -68,7 +68,7 @@ class ImporterService
     private function addTask(Model\Video $video)
     {
         $metadata     = $video->getMetaData();
-        $frameRange   = new Model\FrameRange(10, $metadata->numberOfFrames);
+        $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
         $labelingTask = new Model\LabelingTask($video, $frameRange);
         $this->labelingTask->save($labelingTask);
 
