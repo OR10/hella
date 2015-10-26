@@ -11,14 +11,15 @@ use League\Flysystem;
 class VideoFrameSplitter
 {
     /**
-     * @var string
+     * Commandline for running ffmpeg to extract images.
      */
-    private $ffmpegExecutable;
+    const COMMANDLINE = '%s -i %s %s -v quiet %s/%s.%s';
 
     /**
      * @var string
      */
-    private $cacheDir;
+    private $ffmpegExecutable;
+
     /**
      * @var Service\FilesystemFrameCdn
      */
@@ -34,17 +35,14 @@ class VideoFrameSplitter
      *
      * @param Service\FilesystemFrameCdn $filesystemFrameCdn
      * @param                            $ffmpegExecutable
-     * @param                            $cacheDir
      * @param Flysystem\FileSystem       $fileSystem
      */
     public function __construct(
         Service\FilesystemFrameCdn $filesystemFrameCdn,
         $ffmpegExecutable,
-        $cacheDir,
         Flysystem\FileSystem $fileSystem
     ) {
         $this->ffmpegExecutable   = $ffmpegExecutable;
-        $this->cacheDir           = $cacheDir;
         $this->filesystemFrameCdn = $filesystemFrameCdn;
         $this->fileSystem         = $fileSystem;
     }
@@ -59,11 +57,8 @@ class VideoFrameSplitter
     public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
     {
         $tempDir = $this->getTempDirectory($type);
-        $command = $this->getCommand(
-            $sourceFileFilename,
-            $type,
-            $this->cacheDir . '/' . $tempDir
-        );
+        $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
+        $command = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
         $process = new Process($command);
         $process->setTimeout(3600);
@@ -73,15 +68,9 @@ class VideoFrameSplitter
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        $pattern = sprintf(
-            '%s/%s/%s',
-            $this->cacheDir,
-            $tempDir,
-            $type->getExtension()
-        );
+        $pattern = sprintf('%s/*.%s', $prefixedTempDir, $type->getExtension());
         foreach (glob($pattern) as $filename) {
-            $this->filesystemFrameCdn->save($video, $type, (int) basename($filename), $filename);
-            $this->fileSystem->delete($tempDir . '/' . basename($filename));
+            $this->filesystemFrameCdn->save($video, $type, (int) basename($filename), file_get_contents($filename));
         }
 
         $this->fileSystem->deleteDir($tempDir);
@@ -97,7 +86,7 @@ class VideoFrameSplitter
     private function getCommand($sourceFileName, ImageType\Base $type, $tempDir)
     {
         return sprintf(
-            '%s -i %s %s %s/%s.%s',
+            self::COMMANDLINE,
             $this->ffmpegExecutable,
             $sourceFileName,
             $type->getCommandParameters(),
@@ -115,18 +104,12 @@ class VideoFrameSplitter
     private function getTempDirectory(ImageType\Base $type)
     {
 
-        $tempDir = sprintf(
-            '%s_%s_%s',
-            'video',
-            $type->getName(),
-            uniqid()
-        );
+        $tempDir = sprintf('%s_%s_%s', 'video', $type->getName(), uniqid());
 
         if ($this->fileSystem->has(($tempDir))) {
-            $this->fileSystem->delete($tempDir);
-        }
-        if (is_dir($tempDir)) {
-            $this->fileSystem->deleteDir($tempDir);
+            if (!$this->fileSystem->deleteDir($tempDir)) {
+                $this->fileSystem->delete($tempDir);
+            }
         }
         $this->fileSystem->createDir($tempDir);
 

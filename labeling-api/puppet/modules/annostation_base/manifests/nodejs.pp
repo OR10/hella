@@ -6,6 +6,7 @@ class annostation_base::nodejs() {
     'jspm',
     'gulp',
   ], {
-    'provider' => 'npm',
+    provider => 'npm',
+    require => Package['npm'],
   })
 }

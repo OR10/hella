@@ -48,8 +48,8 @@ class Task extends Controller\Base
     {
         $tasks  = $this->labelingTaskFacade->findAll();
         $result = [
-            'total_count' => $tasks->getTotalRows(),
-            'result'      => $tasks->toArray(),
+            'totalCount' => $tasks->getTotalRows(),
+            'result'     => $tasks->toArray(),
         ];
 
         return View\View::create()

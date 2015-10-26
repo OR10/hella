@@ -12,11 +12,11 @@ abstract class FrameCdn
      * @param Model\Video $video
      * @param ImageType\Base $imageType
      * @param int $frameNumber
-     * @param string $path
+     * @param string $imageData
      *
      * @return mixed
      */
-    abstract public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $path);
+    abstract public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $imageData);
 
     /**
      * @param Model\LabelingTask $labeledFrame
