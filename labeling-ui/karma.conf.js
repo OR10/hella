@@ -49,14 +49,14 @@ module.exports = function(config) {
 
     jspm: {
       config: 'Application/system.config.js',
-      loadFiles: ['Tests/unit/**/*.spec.js'],
+      loadFiles: ['Tests/Unit/**/*.spec.js'],
       serveFiles: [
         'Application/**/*.js',
         'Tests/Fixtures/**/*.json'
       ],
       urlRoot: '/',
       meta: {
-        'Tests/unit/*': { format: 'register' }
+        'Tests/Unit/*': { format: 'register' }
       }
     },
 
@@ -85,7 +85,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       //'Tests/fixtures/**/*.json': ['json2js'],
-      'Tests/unit/**/*.spec.js': ['babel', 'coverage']
+      'Tests/Unit/**/*.spec.js': ['babel', 'coverage']
     },
 
     // optionally, configure the reporter
