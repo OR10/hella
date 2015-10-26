@@ -1,34 +1,26 @@
 import paper from 'paper';
+import PaperLayer from './PaperLayer';
+import RectangleTool from '../Tools/RectangleTool';
 
 /**
  * @class AnnotationLayer
- * @implements {Layer}
  */
-export default class AnnotationLayer {
+export default class AnnotationLayer extends PaperLayer {
   constructor() {
-    /**
-     * @type {HTMLCanvasElement}
-     * @private
-     */
-    this._element = null;
+    super();
 
-    /**
-     * @type {paper.PaperScope}
-     * @private
-     */
-    this._paperScope = new paper.PaperScope();
+    this._rectangleTool = null;
   }
 
-  render() {
-    this._paperScope.view.draw();
+  _initializeComponents() {
+    this._rectangleTool = new RectangleTool();
   }
 
-  attachToDom(element) {
-    this._element = element;
-    this._paperScope.setup(this._element);
+  _render() {
+
   }
 
-  dispatchDOMEvent(event) {
+  _dispatchDOMEvent(event) {
     this._element.dispatchEvent(event);
   }
 }
