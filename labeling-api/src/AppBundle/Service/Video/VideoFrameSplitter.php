@@ -68,9 +68,18 @@ class VideoFrameSplitter
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        $pattern = sprintf('%s/*.%s', $prefixedTempDir, $type->getExtension());
-        foreach (glob($pattern) as $filename) {
-            $this->filesystemFrameCdn->save($video, $type, (int) basename($filename), file_get_contents($filename));
+        $files = array_filter(
+            $this->fileSystem->listContents($tempDir),
+            function($file) {
+                if ($file['extension'] === 'png') {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        foreach ($files as $file) {
+            $this->filesystemFrameCdn->save($video, $type, (int) $file['basename'], $this->fileSystem->read($file['path']));
         }
 
         $this->fileSystem->deleteDir($tempDir);
