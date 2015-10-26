@@ -99,10 +99,11 @@ class labeling_api(
 
   if $configure_nginx {
     nginx::resource::vhost { "_":
-      ensure      => present,
-      www_root    => "${root_dir}/web",
-      index_files => [$app_main_script],
-      try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
+      ensure               => present,
+      www_root             => "${root_dir}/web",
+      index_files          => [$app_main_script],
+      try_files            => ['$uri', "/${app_main_script}\$is_args\$args"],
+      client_max_body_size => '512M',
     }
 
     nginx::resource::location { '/labeling':
