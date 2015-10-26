@@ -1,17 +1,23 @@
 export default class TaskController {
+  /**
+   * @param {Task} task
+   */
   constructor(task) {
+    /**
+     * @type {Task}
+     */
     this.task = task;
     this.frameNumber = 1;
   }
 
   frameForward() {
-    if (this.frameNumber < this.task.frame_range.end_frame_number) {
+    if (this.frameNumber < this.task.frameRange.endFrameNumber) {
       this.frameNumber++;
     }
   }
 
   frameBackward() {
-    if (this.frameNumber > this.task.frame_range.start_frame_number) {
+    if (this.frameNumber > this.task.frameRange.startFrameNumber) {
       this.frameNumber--;
     }
   }
