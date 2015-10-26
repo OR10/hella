@@ -23,5 +23,5 @@ class Source extends Base
      *
      * @var string
      */
-    protected $commandParameters = '-f image2 -v quiet';
+    protected $commandParameters = '-f image2';
 }

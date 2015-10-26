@@ -5,7 +5,7 @@ import http from 'http';
 import fs from 'fs';
 import chalk from 'chalk';
 import send from 'send';
-import parseUrl from 'parseUrl';
+import parseUrl from 'parseurl';
 import {Server as TinyLrServer} from 'tiny-lr';
 import request from 'request-promise';
 

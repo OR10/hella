@@ -28,7 +28,7 @@ resource "openstack_compute_instance_v2" "app-server" {
 
 
   provisioner "file" {
-      source = "../../labeling-api/puppet"
+      source = "puppet"
       destination = "/home/ubuntu/puppet"
       connection {
           user = "ubuntu"

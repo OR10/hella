@@ -48,8 +48,7 @@ export default class ViewerController {
           this.task.id,
           'source',
           0,
-          // TODO fix snake case as soon as backend api is fixed
-          this.task.frame_range.end_frame_number - this.task.frame_range.start_frame_number
+          this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber
         );
       })
       .then(frameLocations => {

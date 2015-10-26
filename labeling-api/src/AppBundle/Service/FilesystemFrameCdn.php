@@ -11,10 +11,6 @@ class FilesystemFrameCdn extends FrameCdn
     /**
      * @var string
      */
-    protected $frameCdnDir;
-    /**
-     * @var string
-     */
     protected $frameCdnBaseUrl;
     /**
      * @var Flysystem\FileSystem
@@ -24,50 +20,31 @@ class FilesystemFrameCdn extends FrameCdn
     /**
      * FrameCdn constructor.
      *
-     * @param string               $frameCdnDir
      * @param string               $frameCdnBaseUrl
      * @param Flysystem\FileSystem $fileSystem
      */
-    public function __construct($frameCdnDir, $frameCdnBaseUrl, Flysystem\FileSystem $fileSystem)
+    public function __construct($frameCdnBaseUrl, Flysystem\FileSystem $fileSystem)
     {
-        $this->frameCdnDir     = $frameCdnDir;
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
-        $this->fileSystem = $fileSystem;
+        $this->fileSystem      = $fileSystem;
     }
 
     /**
      * @param Model\Video    $video
      * @param ImageType\Base $imageType
      * @param int            $frameNumber
-     * @param string         $path
+     * @param string         $imageData
      *
      * @return void
      * @throws \Exception
      */
-    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $path)
+    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $imageData)
     {
-        $cdnPath = vsprintf(
-            "%s/%s",
-            [
-                $video->getId(),
-                $imageType->getName()
-            ]
-        );
+        $cdnPath  = sprintf('%s/%s', $video->getId(), $imageType->getName());
+        $filePath = sprintf('%s/%s.%s', $cdnPath, $frameNumber, $imageType->getExtension());
 
-        if (!$this->fileSystem->has($cdnPath)) {
-            $this->fileSystem->createDir($cdnPath);
-        }
-
-        $filePath = sprintf(
-            '%s/%s.%s',
-            $cdnPath,
-            $frameNumber,
-            $imageType->getExtension()
-        );
-
-        if (!copy($path, $filePath)) {
-            throw new \Exception('Could not copy the file');
-        }
+        $this->fileSystem->createDir($cdnPath);
+        $this->fileSystem->write($filePath, $imageData);
     }
 
     /**
@@ -87,15 +64,13 @@ class FilesystemFrameCdn extends FrameCdn
             $urls[] = [
                 'id' => "{$labelingTask->getId()}-{$frameNumber}",
                 "frameNumber" => $frameNumber,
-                'url' => vsprintf(
-                    "%s/%s/%s/%s.%s",
-                    [
-                        $this->frameCdnBaseUrl,
-                        $labelingTask->getVideoId(),
-                        $imageType->getName(),
-                        $frameNumber,
-                        $imageType->getExtension(),
-                    ]
+                'url' => sprintf(
+                    '%s/%s/%s/%s.%s',
+                    $this->frameCdnBaseUrl,
+                    $labelingTask->getVideoId(),
+                    $imageType->getName(),
+                    $frameNumber,
+                    $imageType->getExtension()
                 ),
             ];
         }

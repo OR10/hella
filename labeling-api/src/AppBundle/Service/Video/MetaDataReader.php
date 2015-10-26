@@ -7,6 +7,8 @@ use Symfony\Component\Process;
 
 class MetaDataReader
 {
+    const COMMANDLINE = '%s -show_format -show_streams -of json -v quiet %s';
+
     /**
      * @var string
      */
@@ -27,23 +29,35 @@ class MetaDataReader
      */
     public function readMetaData($filename)
     {
-        $process = new Process\Process($this->getCommand($filename));
-        $process->setTimeout(10);
-        $process->run();
+        $json = json_decode($this->runCommand($this->getCommand($filename)), true);
 
-        $json = json_decode($process->getOutput(), true);
+        if (is_null($json)) {
+            throw new Exception\MetaDataReader('invalid json');
+        }
 
         $metaData = new Model\Video\MetaData();
 
-        $metaData->format = $this->extractFormat($json);
-        $metaData->sizeInBytes = $this->extractSizeInBytes($json);
-        $metaData->width = $this->extractWidth($json);
-        $metaData->height = $this->extractHeight($json);
-        $metaData->duration = $this->extractDuration($json);
+        $metaData->format         = $this->extractFormat($json);
+        $metaData->sizeInBytes    = $this->extractSizeInBytes($json);
+        $metaData->width          = $this->extractWidth($json);
+        $metaData->height         = $this->extractHeight($json);
+        $metaData->duration       = $this->extractDuration($json);
         $metaData->numberOfFrames = $this->extractNumberOfFrames($json);
-        $metaData->raw = $json;
+        $metaData->raw            = $json;
 
         return $metaData;
+    }
+
+    /**
+     * @param string $commandline
+     */
+    protected function runCommand($commandline)
+    {
+        $process = new Process\Process($commandline);
+        $process->setTimeout(10);
+        $process->mustRun();
+
+        return $process->getOutput();
     }
 
     /**
@@ -51,11 +65,7 @@ class MetaDataReader
      */
     private function getCommand($sourceFileFilename)
     {
-        return sprintf(
-            "%s -show_format -show_streams -of json -v quiet %s",
-            $this->ffprobeExecutable,
-            $sourceFileFilename
-        );
+        return sprintf(self::COMMANDLINE, $this->ffprobeExecutable, $sourceFileFilename);
     }
 
     private function extractFormat(array $json)
@@ -71,7 +81,8 @@ class MetaDataReader
         if (isset($json['format']['size'])) {
             return $json['format']['size'];
         }
-        return null;
+
+        throw new Exception\MetaDataReader('reading size in bytes');
     }
 
     private function extractWidth(array $json)
@@ -79,7 +90,8 @@ class MetaDataReader
         if (isset($json['streams'][0]['width'])) {
             return (int) $json['streams'][0]['width'];
         }
-        return null;
+
+        throw new Exception\MetaDataReader('reading width');
     }
 
     private function extractHeight(array $json)
@@ -87,7 +99,8 @@ class MetaDataReader
         if (isset($json['streams'][0]['height'])) {
             return (int) $json['streams'][0]['height'];
         }
-        return null;
+
+        throw new Exception\MetaDataReader('reading height');
     }
 
     private function extractNumberOfFrames(array $json)
@@ -96,7 +109,7 @@ class MetaDataReader
             return (int) $json['streams'][0]['nb_frames'];
         }
 
-        throw new Exception\UnknownNumberOfFrames();
+        throw new Exception\MetaDataReader('number of frames');
     }
 
     private function extractDuration(array $json)
@@ -105,6 +118,6 @@ class MetaDataReader
             return (float) $json['streams'][0]['duration'];
         }
 
-        throw new Exception\UnknownDuration();
+        throw new Exception\MetaDataReader('duration');
     }
 }

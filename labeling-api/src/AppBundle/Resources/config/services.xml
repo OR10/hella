@@ -21,11 +21,7 @@
             <argument>%ffprobe_executable%</argument>
         </service>
 
-        <service id="annostation.labeling_api.service.frame_cdn" class="AppBundle\Service\FrameCdn">
-        </service>
-
         <service id="annostation.labeling_api.service.frame_cdn.filesystem" class="AppBundle\Service\FilesystemFrameCdn">
-            <argument>%frame_cdn_dir%</argument>
             <argument>%frame_cdn_base_url%</argument>
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem" />
         </service>
@@ -33,7 +29,6 @@
         <service id="annostation.labeling_api.service.video.video_frame_splitter" class="AppBundle\Service\Video\VideoFrameSplitter">
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem" />
             <argument>%ffmpeg_executable%</argument>
-            <argument>%cache_dir%</argument>
             <argument type="service" id="oneup_flysystem.cache_filesystem"/>
         </service>
 
