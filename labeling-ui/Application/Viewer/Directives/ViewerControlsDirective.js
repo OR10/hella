@@ -1,4 +1,5 @@
 import viewerControlsTempate from './ViewerControlsDirective.html!';
+import ViewerControlsController from '../Controllers/ViewerControlsController';
 
 /**
  * @class ViewerControlsDirective
@@ -6,10 +7,14 @@ import viewerControlsTempate from './ViewerControlsDirective.html!';
  */
 export default class ViewerControlsDirective {
   constructor() {
+    this.controllerAs = 'vm';
+    this.controller = ViewerControlsController;
+    this.bindToController = true;
+
     this.template = viewerControlsTempate;
     this.scope = {
-      frameForward: '&',
-      frameBackward: '&',
+      task: '=',
+      frameNumber: '=',
     };
   }
 }

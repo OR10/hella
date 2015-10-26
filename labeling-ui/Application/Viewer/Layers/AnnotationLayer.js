@@ -6,8 +6,11 @@ import RectangleTool from '../Tools/RectangleTool';
  * @class AnnotationLayer
  */
 export default class AnnotationLayer extends PaperLayer {
-  constructor() {
-    super();
+  /**
+   * @param {PaperScopeService} paperScopeService
+   */
+  constructor(paperScopeService) {
+    super(paperScopeService);
 
     this._rectangleTool = null;
   }
