@@ -114,12 +114,13 @@ class labeling_api(
     }
 
     nginx::resource::location { '~ \.php(/|$)':
-      ensure        => present,
-      www_root      => "${root_dir}/web",
-      vhost         => '_',
-      index_files   => [$app_main_script],
-      fastcgi       => '127.0.0.1:9000',
-      fastcgi_param => {
+      ensure               => present,
+      www_root             => "${root_dir}/web",
+      vhost                => '_',
+      index_files          => [$app_main_script],
+      fastcgi              => '127.0.0.1:9000',
+      fastcgi_read_timeout => '900';
+      fastcgi_param        => {
           'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
       }
     }
