@@ -46,20 +46,15 @@ class Video
         //TODO: implement
     }
 
-    public function save(Model\Video $video, $filename = null)
+    public function save(Model\Video $video, $stream = null)
     {
         $this->documentManager->persist($video);
         $this->documentManager->flush();
 
-        if (!$this->fileSystem->createDir($video->getId())) {
-            //TODO: implement better error handling
-            throw new \Exception("Error creating directory: {$video->getId()}!");
-        }
-
-        if ($filename !== null) {
-            $this->fileSystem->write(
+        if ($stream !==  null) {
+            $this->fileSystem->writeStream(
                 $video->getId() . DIRECTORY_SEPARATOR . 'source',
-                file_get_contents($filename)
+                $stream
             );
         }
     }

@@ -52,13 +52,17 @@ class ImporterService
     /**
      * @param string $filename
      *
+     * @param        $stream
+     *
      * @return Model\LabelingTask
+     * @throws Video\Exception\MetaDataReader
+     * @throws \Exception
      */
-    public function import($filename)
+    public function import($filename, $stream)
     {
         $video = new Model\Video(basename($filename));
         $video->setMetaData($this->metaDataReader->readMetaData($filename));
-        $this->videoFacade->save($video, $filename);
+        $this->videoFacade->save($video, $stream);
         $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create('source'));
         $task = $this->addTask($video);
 

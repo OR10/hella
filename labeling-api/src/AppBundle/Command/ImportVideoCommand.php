@@ -34,9 +34,10 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
         $filename = $input->getArgument('file');
+        $stream   = fopen($filename, 'r+');
 
         try {
-            $task = $this->importerService->import($filename);
+            $task = $this->importerService->import($filename, $stream);
 
             $output->writeln("<info>Video '{$filename}' successfully imported!</info>");
             $output->writeln('');
