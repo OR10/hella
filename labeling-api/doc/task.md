@@ -88,6 +88,10 @@
 
 ### Get labeled things [GET]
 
+Each returned labeled thing contains a revision.
+A subsequent PUT request will only be accepted if the labeled thing still has
+the same revision.
+
 + Response 200 (application/json)
 
     + Body
@@ -124,6 +128,10 @@
             }
 
 ### Replace all labeled things [PUT]
+
+The labeled things have to contain the same revision of the GET request and the
+request will only be accepted if none of the revisions has changed during the
+GET request.
 
 + Request (application/json)
 
