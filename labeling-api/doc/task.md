@@ -79,7 +79,7 @@
             ]
         }
 
-## LabeledThingsInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
+## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
 
 + Parameters
 
