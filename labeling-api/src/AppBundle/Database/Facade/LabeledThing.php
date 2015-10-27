@@ -18,7 +18,12 @@ class LabeledThing
 
     public function getLabeledThingInFrames(Model\LabeledThing $labeledThing)
     {
-        //TODO: implement
+        return $this->documentManager
+            ->createQuery('labeling_api', 'labeled_thing_in_frame')
+            ->setStartKey($labeledThing->getId())
+            ->setEndKey($labeledThing->getId())
+            ->onlyDocs(true)
+            ->execute();
     }
 
     public function getlabelingTasks(Model\LabeledThing $labeledThing)
