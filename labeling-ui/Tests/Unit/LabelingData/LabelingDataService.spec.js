@@ -7,7 +7,6 @@ import LabelingDataService from 'Application/LabelingData/Services/LabelingDataS
 
 describe('LabelingDataService', () => {
   let $httpBackend;
-  let $httpParamSerializer;
   let service;
 
   beforeEach(() => {
@@ -26,7 +25,6 @@ describe('LabelingDataService', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      $httpParamSerializer = $injector.get('$httpParamSerializer');
       service = $injector.instantiate(LabelingDataService);
     });
   });
@@ -35,7 +33,7 @@ describe('LabelingDataService', () => {
     expect(service instanceof LabelingDataService).toEqual(true);
   });
 
-  it('should receive the extracted response', done => {
+  it('should receive the list of labeled thing in frame objects', done => {
     const task = {id: 'someTaskId234'};
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
@@ -48,7 +46,7 @@ describe('LabelingDataService', () => {
       .expect('GET', expectedUrl)
       .respond(200, {result: expectedResult});
 
-    service.getLabeledThingsInFrame(task, frameNumber)
+    service.listLabeledThingInFrame(task, frameNumber)
       .then(result => {
         expect(result).toEqual(expectedResult);
         done();
@@ -57,7 +55,26 @@ describe('LabelingDataService', () => {
     $httpBackend.flush();
   });
 
-  it('should save a labeling data object', done => {
+  it('should get a labeled thing in frame', done => {
+    const labeledThingInFrameId = '2';
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
+    const labeledThingInFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const expectedResult = {result: labeledThingInFrame};
+
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, expectedResult);
+
+    service.getLabeledThingInFrame(labeledThingInFrameId)
+      .then(result => {
+        expect(result).toEqual(labeledThingInFrame);
+        done();
+      });
+
+    $httpBackend.flush();
+  });
+
+  it('should create a labeled thing in frame', done => {
     const task = {id: 'someTaskId234'};
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
@@ -68,7 +85,7 @@ describe('LabelingDataService', () => {
       .expect('POST', expectedUrl)
       .respond(200, expectedResult);
 
-    service.createLabeledThingsInFrame(task, frameNumber, labeledThingInFrame)
+    service.createLabeledThingInFrame(task, frameNumber, labeledThingInFrame)
       .then(result => {
         expect(result).toEqual(labeledThingInFrame);
         done();
@@ -77,23 +94,37 @@ describe('LabelingDataService', () => {
     $httpBackend.flush();
   });
 
-  it('should update a labeling data objects', done => {
-    const task = {id: 'someTaskId234'};
-    const frameNumber = 2;
-    const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
-    const labeledThinIngFrameObjects = [
-      {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]},
-      {id: 'cde', rev: 'def', shapes: [{type: 'circle'}]},
-    ];
-    const expectedResult = {result: labeledThinIngFrameObjects};
+  it('should update a labeled thing in frame', done => {
+    const labeledThingInFrameId = '2';
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
+    const labeledThinIngFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const expectedResult = {result: labeledThinIngFrame};
 
     $httpBackend
       .expect('PUT', expectedUrl)
       .respond(200, expectedResult);
 
-    service.updateLabeledThingsInFrame(task, frameNumber, labeledThinIngFrameObjects)
+    service.updateLabeledThingInFrame(labeledThingInFrameId, labeledThinIngFrame)
       .then(result => {
-        expect(result).toEqual(labeledThinIngFrameObjects);
+        expect(result).toEqual(labeledThinIngFrame);
+        done();
+      });
+
+    $httpBackend.flush();
+  });
+
+  it('should delete a labeled thing in frame', done => {
+    const labeledThingInFrameId = '2';
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
+    const expectedResult = true;
+
+    $httpBackend
+      .expect('DELETE', expectedUrl)
+      .respond(200, expectedResult);
+
+    service.deleteLabeledThingInFrame(labeledThingInFrameId)
+      .then(result => {
+        expect(result).toEqual(expectedResult);
         done();
       });
 
@@ -109,12 +140,12 @@ describe('LabelingDataService', () => {
     const frameNumber = 1;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
 
-    it('should request the task as specified', done => {
+    it('should request the task id as specified', done => {
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.getLabeledThingsInFrame(task, frameNumber)
+      service.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
       $httpBackend.flush();
@@ -130,12 +161,32 @@ describe('LabelingDataService', () => {
     const task = {id: 'abc'};
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
 
-    it('should request the frame as specified', done => {
+    it('should request the frame number as specified', done => {
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.getLabeledThingsInFrame(task, frameNumber)
+      service.listLabeledThingInFrame(task, frameNumber)
+        .then(done);
+
+      $httpBackend.flush();
+    });
+  });
+
+  using([
+    ['1'],
+    ['2'],
+    ['3'],
+    ['4'],
+  ], (labeledThingInFrameId) => {
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
+
+    it('should request the labeled thing in frame id as specified', done => {
+      $httpBackend
+        .expect('GET', expectedUrl)
+        .respond(200, {result: []});
+
+      service.getLabeledThingInFrame(labeledThingInFrameId)
         .then(done);
 
       $httpBackend.flush();
