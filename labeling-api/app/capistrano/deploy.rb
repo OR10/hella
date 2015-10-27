@@ -41,7 +41,7 @@ set :log_level, :info
 
 before :deploy, :local_composer_install
 before 'deploy:publishing', :symlink_symfony_configuration
-after 'deploy:create_symlink', :reload_php_fpm
+#after 'deploy:create_symlink', :reload_php_fpm
 
 #set :file_permissions_paths, ["app/logs", "app/cache"]
 #set :file_permissions_users, ["www-data"]
@@ -62,11 +62,11 @@ task :symlink_symfony_configuration do
   end
 end
 
-task :reload_php_fpm do
-  on roles(:app) do
-    execute "sudo service php5-fpm reload"
-  end
-end
+#task :reload_php_fpm do
+#  on roles(:app) do
+#    execute "sudo service php5-fpm reload"
+#  end
+#end
 
 namespace :deploy do
 
