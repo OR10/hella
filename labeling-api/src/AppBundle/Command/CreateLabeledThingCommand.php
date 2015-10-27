@@ -46,10 +46,9 @@ class CreateLabeledThingCommand extends ContainerAwareCommand
                 $classes[] = $faker->word;
             }
 
-            $labeledThing = new Model\LabeledThing();
+            $labeledThing = new Model\LabeledThing($faker->numberBetween(1, 5));
             $labeledThing->setClasses($classes);
             $labeledThing->setFrameRange([$faker->numberBetween(0, 10), $faker->numberBetween(11, 20)]);
-            $labeledThing->setLabelingTaskId($faker->numberBetween(1, 5));
 
             $this->labeledThingFacade->save($labeledThing);
         }

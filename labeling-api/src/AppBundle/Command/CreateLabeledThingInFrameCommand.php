@@ -48,11 +48,10 @@ class CreateLabeledThingInFrameCommand extends ContainerAwareCommand
                 $shapes[]  = $faker->word;
             }
 
-            $labeledThingInFrame = new Model\LabeledThingInFrame();
+            $labeledThingInFrame = new Model\LabeledThingInFrame($faker->numberBetween(1, 5));
             $labeledThingInFrame->setFrameNumber($faker->numberBetween());
             $labeledThingInFrame->setClasses($classes);
             $labeledThingInFrame->setShapes($shapes);
-            $labeledThingInFrame->setLabeledThingId($faker->numberBetween(1, 5));
 
             $this->labeledThingInFrameFacade->save($labeledThingInFrame);
         }
