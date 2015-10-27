@@ -110,7 +110,9 @@ class labeling_api(
       ensure         => present,
       vhost          => '_',
       location_alias => '/var/www/labeling-ui',
-      try_files      => ['$uri', '/labeling/index.html'],
+      location_cfg_append => {
+          try_files => '$uri /labeling/index.html',
+      }
     }
 
     nginx::resource::location { '~ \.php(/|$)':
