@@ -13,4 +13,4 @@ clean:
 
 .PHONY: serve
 serve: api.md
-	aglio -t $(TEMPLATE) -i $< -s
+	aglio -t $(TEMPLATE) -i $< -s -h 0.0.0.0
