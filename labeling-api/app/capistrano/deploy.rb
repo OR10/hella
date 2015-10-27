@@ -62,8 +62,10 @@ task :symlink_symfony_configuration do
   end
 end
 
-task :reload_php_fpm, :roles => :app do
-  execute "sudo service php5-fpm reload"
+task :reload_php_fpm do
+  on roles(:app) do
+    execute "sudo service php5-fpm reload"
+  end
 end
 
 namespace :deploy do
