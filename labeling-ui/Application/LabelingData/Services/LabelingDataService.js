@@ -15,7 +15,7 @@ export default class LabelingDataService {
    * @param {Task} task
    * @param {Integer} frameNumber
    *
-   * @returns {Promise<LabelingData[]|Error>}
+   * @returns {Promise<LabeledThingInFrame[]|Error>}
    */
   getLabeledThingsInFrame(task, frameNumber) {
     const url = this.apiService.getApiUrl(
@@ -35,19 +35,19 @@ export default class LabelingDataService {
    * Creates the labeling data objects in the database
    *
    * @param {Task} task
-   * @param {LabelingData} labelingData
+   * @param {LabeledThingInFrame} data
    * @param {Integer} frameNumber
    *
-   * @returns {Promise<LabelingData[]|Error>}
+   * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  createLabeledThingsInFrame(task, frameNumber, labelingData) {
+  createLabeledThingsInFrame(task, frameNumber, data) {
     const url = this.apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.$http.post(url, labelingData)
+    return this.$http.post(url, data)
       .then(response => {
-        if (response.data && response.data.success) {
-          return response.data.success;
+        if (response.data && response.data.result) {
+          return response.data.result;
         }
 
         throw new Error('Failed creating labeling data object');
@@ -58,22 +58,22 @@ export default class LabelingDataService {
    * Updates the labeling data objects in the database
    *
    * @param {Task} task
-   * @param {LabelingData[]} labelingData
+   * @param {LabeledThingInFrame[]} data
    * @param {Integer} frameNumber
    *
-   * @returns {Promise<LabelingData[]|Error>}
+   * @returns {Promise<LabeledThingInFrame[]|Error>}
    */
-  updateLabeledThingsInFrame(task, frameNumber, labelingData) {
+  updateLabeledThingsInFrame(task, frameNumber, data) {
     const url = this.apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.$http.put(url, labelingData)
+    return this.$http.put(url, data)
       .then(response => {
-        if (response.data && response.data.success) {
-          return response.data.success;
+        if (response.data && response.data.result) {
+          return response.data.result;
         }
 
-        throw new Error('Failed creating labeling data list');
+        throw new Error('Failed updating labeling data');
       });
   }
 }

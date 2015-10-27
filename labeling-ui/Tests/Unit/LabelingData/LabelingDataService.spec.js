@@ -61,16 +61,16 @@ describe('LabelingDataService', () => {
     const task = {id: 'someTaskId234'};
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
-    const labelingDataObject = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
-    const expectedResult = {success: true};
+    const labeledThingInFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const expectedResult = {result: labeledThingInFrame};
 
     $httpBackend
       .expect('POST', expectedUrl)
       .respond(200, expectedResult);
 
-    service.createLabeledThingsInFrame(task, frameNumber, labelingDataObject)
+    service.createLabeledThingsInFrame(task, frameNumber, labeledThingInFrame)
       .then(result => {
-        expect(result).toEqual(true);
+        expect(result).toEqual(labeledThingInFrame);
         done();
       });
 
@@ -81,19 +81,19 @@ describe('LabelingDataService', () => {
     const task = {id: 'someTaskId234'};
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
-    const labelingDataObjects = [
+    const labeledThinIngFrameObjects = [
       {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]},
       {id: 'cde', rev: 'def', shapes: [{type: 'circle'}]},
     ];
-    const expectedResult = {success: true};
+    const expectedResult = {result: labeledThinIngFrameObjects};
 
     $httpBackend
       .expect('PUT', expectedUrl)
       .respond(200, expectedResult);
 
-    service.updateLabeledThingsInFrame(task, frameNumber, labelingDataObjects)
+    service.updateLabeledThingsInFrame(task, frameNumber, labeledThinIngFrameObjects)
       .then(result => {
-        expect(result).toEqual(true);
+        expect(result).toEqual(labeledThinIngFrameObjects);
         done();
       });
 
