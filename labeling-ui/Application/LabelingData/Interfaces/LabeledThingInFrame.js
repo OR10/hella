@@ -1,11 +1,11 @@
 /**
  * One specific LabelingData object
  *
- * @interface LabelingData
+ * @interface LabeledThingInFrame
  */
 
 /**
- * Unique id identifying this specific labeling data object
+ * Unique id identifying this specific labeled thing in frame
  *
  * @property {string} id
  */
@@ -17,7 +17,7 @@
  */
 
 /**
- * Array of shapes the labeling data object can consist of
+ * Array of shapes the labeled thing in frame can consist of.
  *
  * Different shapes exist, like rectangle, circle etc.
  *
