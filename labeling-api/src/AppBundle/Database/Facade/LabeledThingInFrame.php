@@ -16,9 +16,14 @@ class LabeledThingInFrame
         $this->documentManager = $documentManager;
     }
 
-    public function getLabeledThings(Model\LabeledThingInFrame $labeledThingInFrame)
+    /**
+     * @param $id
+     *
+     * @return Model\LabeledThingInFrame
+     */
+    public function find($id)
     {
-        $this->documentManager->find(Model\LabeledThing::class, $labeledThingInFrame->getLabeledThingId());
+        return $this->documentManager->find(Model\LabeledThingInFrame::class, $id);
     }
 
     public function save(Model\LabeledThingInFrame $labeledThingInFrame)
