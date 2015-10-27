@@ -2,7 +2,7 @@ import Module from '../Module';
 import ViewerDirective from './Directives/ViewerDirective';
 import ViewerStageDirective from './Directives/ViewerStageDirective';
 import ViewerControlsDirective from './Directives/ViewerControlsDirective';
-import PaperScopeServiceProvider from './Providers/PaperScopeServiceProvider';
+import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
 export default class Viewer extends Module {
   registerWithAngular(angular) {
@@ -11,6 +11,6 @@ export default class Viewer extends Module {
     this.registerDirective('viewerStage', ViewerStageDirective);
     this.registerDirective('viewerControls', ViewerControlsDirective);
 
-    this.module.provider('paperScopeService', PaperScopeServiceProvider);
+    this.module.provider('drawingContextService', DrawingContextServiceProvider);
   }
 }

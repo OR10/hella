@@ -6,6 +6,7 @@ import TaskModule from './Task/Task';
 import HomeModule from './Home/Home';
 import FrameModule from './Frame/Frame';
 import ViewerModule from './Viewer/Viewer';
+import LabelingDataModule from './LabelingData/LabelingData';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -43,6 +44,7 @@ export default class Application {
     this.modules.push(new HomeModule());
     this.modules.push(new FrameModule());
     this.modules.push(new ViewerModule());
+    this.modules.push(new LabelingDataModule());
   }
 
   buildApplicationConfig() {

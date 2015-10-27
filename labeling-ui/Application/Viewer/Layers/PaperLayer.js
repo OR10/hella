@@ -7,20 +7,14 @@ import paper from 'paper';
  */
 export default class PaperLayer {
   /**
-   * @param {PaperScopeService} paperScopeService
+   * @param {DrawingContextService} drawingContextService
    */
-  constructor(paperScopeService) {
+  constructor(drawingContextService) {
     /**
-     * @type {PaperScopeService}
-     * @private
+     * @type {DrawingContext}
+     * @protected
      */
-    this._paperScopeService = paperScopeService;
-
-    /**
-     * @type {paper.PaperScope}
-     * @private
-     */
-    this._paperScope = new paper.PaperScope();
+    this._context = drawingContextService.createContext();
 
     /**
      * @type {HTMLCanvasElement}
@@ -28,50 +22,49 @@ export default class PaperLayer {
      */
     this._element = null;
 
-    const oldScope = this._paperScopeService.activate(this._paperScope);
-    this._initializeComponents();
-    this._paperScopeService.activate(oldScope);
+    this._context.withScope(() => {
+      this.initializeComponentsInPaperScope();
+    });
   }
 
   /**
    * @abstract
    * @protected
    */
-  _initializeComponents() {
+  initializeComponentsInPaperScope() {
   }
 
   render() {
-    const oldScope = this._paperScopeService.activate(this._paperScope);
-    this._render();
-    this._paperScope.view.draw();
-    this._paperScopeService.activate(oldScope);
+    this._context.withScope(() => {
+      this.renderInPaperScope();
+    });
   }
 
   /**
    * @abstract
    * @protected
    */
-  _render() {
+  renderInPaperScope() {
   }
 
   attachToDom(element) {
     this._element = element;
-    this._paperScope.setup(this._element);
+    this._context.setup(element);
   }
 
   /**
    * @param event
    */
   dispatchDOMEvent(event) {
-    // TODO find better solution
-    this._dispatchDOMEvent(event);
   }
 
   /**
-   * @param event
-   * @abstract
-   * @protected
+   * Clears the layer removing all items
    */
-  _dispatchDOMEvent(event) {
+  clear() {
+    this._context.withScope(() => {
+      paper.project.clear();
+      paper.view.update();
+    });
   }
 }
