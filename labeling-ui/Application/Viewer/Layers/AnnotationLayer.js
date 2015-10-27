@@ -1,31 +1,45 @@
-import paper from 'paper';
+import PaperLayer from './PaperLayer';
+import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
+import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
  * @class AnnotationLayer
- * @implements {Layer}
  */
-export default class AnnotationLayer {
-  constructor() {
-    /**
-     * @type {HTMLCanvasElement}
-     * @private
-     */
-    this._element = null;
+export default class AnnotationLayer extends PaperLayer {
+  /**
+   * @param {DrawingContextService} drawingContextService
+   */
+  constructor(drawingContextService) {
+    super(drawingContextService);
 
-    /**
-     * @type {paper.PaperScope}
-     * @private
-     */
-    this._paperScope = new paper.PaperScope();
+    this._rectangleRenderer = new RectangleRenderer();
+
+    this._annotations = [];
+
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
+
+    this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
+      this._annotations.push({
+        shapes: [
+          {
+            topLeft: rectangle.bounds.topLeft,
+            bottomRight: rectangle.bounds.bottomRight,
+          },
+        ],
+      });
+    });
   }
 
-  render() {
-    this._paperScope.view.draw();
+  setAnnotations(annotations) {
+    this._annotations = annotations;
   }
 
-  attachToDom(element) {
-    this._element = element;
-    this._paperScope.setup(this._element);
+  getAnnotations() {
+    return this._annotations;
+  }
+
+  renderInPaperScope() {
+
   }
 
   dispatchDOMEvent(event) {

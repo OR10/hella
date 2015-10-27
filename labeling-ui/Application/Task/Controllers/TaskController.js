@@ -9,18 +9,6 @@ export default class TaskController {
     this.task = task;
     this.frameNumber = 1;
   }
-
-  frameForward() {
-    if (this.frameNumber < this.task.frameRange.endFrameNumber) {
-      this.frameNumber++;
-    }
-  }
-
-  frameBackward() {
-    if (this.frameNumber > this.task.frameRange.startFrameNumber) {
-      this.frameNumber--;
-    }
-  }
 }
 
 TaskController.$inject = ['task'];
