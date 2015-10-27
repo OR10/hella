@@ -26,4 +26,10 @@ class LabeledThingInFrame
         $this->documentManager->persist($labeledThingInFrame);
         $this->documentManager->flush();
     }
+
+    public function delete(Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $this->documentManager->remove($labeledThingInFrame);
+        $this->documentManager->flush();
+    }
 }
