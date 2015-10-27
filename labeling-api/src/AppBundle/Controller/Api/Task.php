@@ -73,7 +73,6 @@ class Task extends Controller\Base
 
         if ($task === null) {
             $response->setStatusCode(404);
-            $response->setData(['success' => 'false', 'msg' => 'Document not found']);
 
             return $response;
         }
