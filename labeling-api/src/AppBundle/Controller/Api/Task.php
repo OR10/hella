@@ -59,15 +59,17 @@ class Task extends Controller\Base
     /**
      * Return the labeling task with the given id
      *
-     * @Rest\Get("/{id}")
-     * @param $id
+     * @Rest\Get("/{taskId}")
+     * @param $taskId
      *
      * @return \FOS\RestBundle\View\View
+     * @internal param $id
+     *
      */
-    public function showAction($id)
+    public function getTaskAction($taskId)
     {
         return View\View::create()
-            ->setData(['result' => $this->labelingTaskFacade->find($id)]);
+            ->setData(['result' => $this->labelingTaskFacade->find($taskId)]);
     }
 
     /**

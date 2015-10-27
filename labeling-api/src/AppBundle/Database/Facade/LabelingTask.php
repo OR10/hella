@@ -41,7 +41,12 @@ class LabelingTask
 
     public function getLabeledThings(Model\LabelingTask $labelingTask)
     {
-        //TODO: implement
+        return $this->documentManager
+            ->createQuery('labeling_api', 'labeled_thing')
+            ->setStartKey($labelingTask->getId())
+            ->setEndKey($labelingTask->getId())
+            ->onlyDocs(true)
+            ->execute();
     }
 
     public function save(Model\LabelingTask $labelingTask)
