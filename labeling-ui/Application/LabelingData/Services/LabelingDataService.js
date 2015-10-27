@@ -17,7 +17,7 @@ export default class LabelingDataService {
    *
    * @returns {Promise<LabeledThingInFrame[]|Error>}
    */
-  getLabeledThingsInFrame(task, frameNumber) {
+  listLabeledThingInFrame(task, frameNumber) {
     const url = this.apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
@@ -27,12 +27,33 @@ export default class LabelingDataService {
           return response.data.result;
         }
 
-        throw new Error('Failed loading labeling data list');
+        throw new Error('Failed loading labeled thing in frame list');
       });
   }
 
   /**
-   * Creates the labeling data objects in the database
+   * Returns the labeled thing in frame object with the given id
+   *
+   * @param {String} labeledThingInFrameId
+   *
+   * @returns {Promise<LabeledThingInFrame|Error>}
+   */
+  getLabeledThingInFrame(labeledThingInFrameId) {
+    const url = this.apiService.getApiUrl(
+      `/labeledThingInFrame/${labeledThingInFrameId}`
+    );
+    return this.$http.get(url)
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error('Failed loading labeled thing in frame');
+      });
+  }
+
+  /**
+   * Creates a labeled thing in frame object in the database
    *
    * @param {Task} task
    * @param {LabeledThingInFrame} data
@@ -40,7 +61,7 @@ export default class LabelingDataService {
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  createLabeledThingsInFrame(task, frameNumber, data) {
+  createLabeledThingInFrame(task, frameNumber, data) {
     const url = this.apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
@@ -50,22 +71,20 @@ export default class LabelingDataService {
           return response.data.result;
         }
 
-        throw new Error('Failed creating labeling data object');
+        throw new Error('Failed creating labeled thing in frame');
       });
   }
 
   /**
-   * Updates the labeling data objects in the database
+   * Updates the labeled thing in frame with the given id in the database
    *
-   * @param {Task} task
-   * @param {LabeledThingInFrame[]} data
-   * @param {Integer} frameNumber
+   * @param {String} labeledThingInFrameId
    *
-   * @returns {Promise<LabeledThingInFrame[]|Error>}
+   * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  updateLabeledThingsInFrame(task, frameNumber, data) {
+  updateLabeledThingInFrame(labeledThingInFrameId, data) {
     const url = this.apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${frameNumber}`
+      `/labeledThingInFrame/${labeledThingInFrameId}`
     );
     return this.$http.put(url, data)
       .then(response => {
@@ -73,7 +92,28 @@ export default class LabelingDataService {
           return response.data.result;
         }
 
-        throw new Error('Failed updating labeling data');
+        throw new Error('Failed updating labeled thing in frame');
+      });
+  }
+
+  /**
+   * Deletes the labeled thing in frame object in the database
+   *
+   * @param {String} labeledThingInFrameId
+   *
+   * @returns {Promise<Boolean|Error>}
+   */
+  deleteLabeledThingInFrame(labeledThingInFrameId) {
+    const url = this.apiService.getApiUrl(
+      `/labeledThingInFrame/${labeledThingInFrameId}`
+    );
+    return this.$http.delete(url)
+      .then(response => {
+        if (response.data) {
+          return true;
+        }
+
+        throw new Error('Failed deleting labeled thing in frame');
       });
   }
 }
