@@ -15,3 +15,4 @@ If the backend does not understand the request or the request was malicious or
 broken a 400 status code should be returned.
 
 <!-- include(task.md) -->
+<!-- include(labeledThingInFrame.md) -->

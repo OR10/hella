@@ -79,7 +79,7 @@
             ]
         }
 
-## LabeledThingsInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
+## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
 
 + Parameters
 
@@ -117,33 +117,6 @@ the same revision.
             {
                 "shapes": [
                     ...
-                ]
-            }
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-            }
-
-### Replace all labeled things [PUT]
-
-The labeled things have to contain the same revision of the GET request and the
-request will only be accepted if none of the revisions has changed during the
-GET request.
-
-+ Request (application/json)
-
-    + Body
-
-            {
-                [
-                    "id": "...",
-                    "rev": ...",
-                    "shapes": [
-                        ...
-                    ]
                 ]
             }
 
