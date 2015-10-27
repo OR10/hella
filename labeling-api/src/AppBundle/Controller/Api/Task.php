@@ -68,8 +68,19 @@ class Task extends Controller\Base
      */
     public function getTaskAction($taskId)
     {
-        return View\View::create()
-            ->setData(['result' => $this->labelingTaskFacade->find($taskId)]);
+        $response = View\View::create();
+        $task     = $this->labelingTaskFacade->find($taskId);
+
+        if ($task === null) {
+            $response->setStatusCode(404);
+            $response->setData(['success' => 'false', 'msg' => 'Document not found']);
+
+            return $response;
+        }
+
+        $response->setData(['result' => $this->labelingTaskFacade->find($taskId)]);
+
+        return $response;
     }
 
     /**
