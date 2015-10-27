@@ -12,21 +12,10 @@ export default class AnnotationLayer extends PaperLayer {
   constructor(drawingContextService) {
     super(drawingContextService);
 
-    this._rectangleDrawingTool = null;
     this._rectangleRenderer = new RectangleRenderer();
 
     this._annotations = [];
-  }
 
-  setAnnotations(annotations) {
-    this._annotations = annotations;
-  }
-
-  getAnnotations() {
-    return this._annotations;
-  }
-
-  initializeComponentsInPaperScope() {
     this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
@@ -39,6 +28,14 @@ export default class AnnotationLayer extends PaperLayer {
         ],
       });
     });
+  }
+
+  setAnnotations(annotations) {
+    this._annotations = annotations;
+  }
+
+  getAnnotations() {
+    return this._annotations;
   }
 
   renderInPaperScope() {

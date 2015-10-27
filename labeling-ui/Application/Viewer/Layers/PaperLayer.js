@@ -21,17 +21,6 @@ export default class PaperLayer {
      * @private
      */
     this._element = null;
-
-    this._context.withScope(() => {
-      this.initializeComponentsInPaperScope();
-    });
-  }
-
-  /**
-   * @abstract
-   * @protected
-   */
-  initializeComponentsInPaperScope() {
   }
 
   render() {
@@ -62,9 +51,9 @@ export default class PaperLayer {
    * Clears the layer removing all items
    */
   clear() {
-    this._context.withScope(() => {
-      paper.project.clear();
-      paper.view.update();
+    this._context.withScope((scope) => {
+      scope.project.clear();
+      scope.view.update();
     });
   }
 }

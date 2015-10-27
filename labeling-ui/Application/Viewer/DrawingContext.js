@@ -45,13 +45,15 @@ export default class DrawingContext {
   /**
    * Execute the given operation within the scope of this drawing context
    *
+   * The scope will be passed to the given function
+   *
    * @param {Function} operation
    */
   withScope(operation) {
     const oldScope = this._activeScope;
 
     this._activateScope(this._scope);
-    operation();
+    operation(this._scope);
     this._activateScope(oldScope);
   }
 }
