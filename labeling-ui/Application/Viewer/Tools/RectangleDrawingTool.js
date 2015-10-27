@@ -63,19 +63,23 @@ export default class RectangleDrawingTool extends EventEmitter {
     this.emit('rectangle:update', this._rect);
   }
 
-  _completeRect(event) {
+  _completeRect() {
     this.emit('rectangle:complete', this._rect);
   }
 
   _getScaleAnchor(point) {
     if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
       return this._rect.bounds.topLeft;
-    } else if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
-      return this._rect.bounds.topRight;
-    } else if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
-      return this._rect.bounds.bottomRight;
-    } else {
-      return this._rect.bounds.bottomLeft;
     }
+
+    if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
+      return this._rect.bounds.topRight;
+    }
+
+    if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
+      return this._rect.bounds.bottomRight;
+    }
+
+    return this._rect.bounds.bottomLeft;
   }
 }

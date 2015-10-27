@@ -55,7 +55,7 @@ export default class PaperLayer {
   /**
    * @param event
    */
-  dispatchDOMEvent(event) {
+  dispatchDOMEvent(event) { // eslint-disable-line no-unused-vars
   }
 
   /**

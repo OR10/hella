@@ -1,4 +1,3 @@
-import paper from 'paper';
 import PaperLayer from './PaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
@@ -20,7 +19,7 @@ export default class AnnotationLayer extends PaperLayer {
   }
 
   setAnnotations(annotations) {
-
+    this._annotations = annotations;
   }
 
   getAnnotations() {
@@ -31,7 +30,6 @@ export default class AnnotationLayer extends PaperLayer {
     this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
-      console.log(rectangle);
       this._annotations.push({
         shapes: [
           {

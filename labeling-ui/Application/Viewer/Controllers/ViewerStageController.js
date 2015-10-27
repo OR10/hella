@@ -1,5 +1,3 @@
-import jquery from 'jquery';
-
 import LayerManager from '../Layers/LayerManager';
 import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import AnnotationLayer from '../Layers/AnnotationLayer';

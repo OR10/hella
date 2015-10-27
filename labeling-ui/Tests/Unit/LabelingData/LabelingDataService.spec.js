@@ -7,7 +7,6 @@ import LabelingDataService from 'Application/LabelingData/Services/LabelingDataS
 
 describe('LabelingDataService', () => {
   let $httpBackend;
-  let $httpParamSerializer;
   let service;
 
   beforeEach(() => {
@@ -26,7 +25,6 @@ describe('LabelingDataService', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      $httpParamSerializer = $injector.get('$httpParamSerializer');
       service = $injector.instantiate(LabelingDataService);
     });
   });

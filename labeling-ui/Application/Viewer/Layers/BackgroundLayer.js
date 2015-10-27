@@ -32,7 +32,7 @@ export default class BackgroundLayer {
     this._renderingContext = this._element.getContext('2d');
   }
 
-  dispatchDOMEvent(event) {
+  dispatchDOMEvent(event) { // eslint-disable-line no-unused-vars
     // This layer does not currently need to relay any events
   }
 
