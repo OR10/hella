@@ -41,6 +41,7 @@ set :log_level, :info
 
 before :deploy, :local_composer_install
 before 'deploy:publishing', :symlink_symfony_configuration
+after 'deploy:symlink:release', :reload_php_fpm
 
 #set :file_permissions_paths, ["app/logs", "app/cache"]
 #set :file_permissions_users, ["www-data"]
@@ -59,6 +60,10 @@ task :symlink_symfony_configuration do
     execute "cd '#{release_path}'; sudo chown -R www-data app/logs/"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod cache:clear"
   end
+end
+
+task :reload_php_fpm, :roles => :app do
+  execute "sudo service php5-fpm reload"
 end
 
 namespace :deploy do
