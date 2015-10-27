@@ -17,8 +17,13 @@ api_task:
     type: rest
     name_prefix: app_api_task_
 
-api_labeled_thing_in_frame:
+api_task_labeled_thing_in_frame:
     resource: "annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
+    type: rest
+    name_prefix: app_api_task_labeled_thing_in_frame_
+
+api_labeled_thing_in_frame:
+    resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
     type: rest
     name_prefix: app_api_labeled_thing_in_frame_
 

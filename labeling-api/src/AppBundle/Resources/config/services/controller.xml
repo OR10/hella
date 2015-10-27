@@ -33,6 +33,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
         </service>
         <service
+                id="annostation.labeling_api.controller.api.labeled_thing_in_frame"
+                class="AppBundle\Controller\Api\LabeledThingInFrame">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+        </service>
+        <service
                 id="annostation.labeling_api.controller.api.test"
                 class="AppBundle\Controller\Api\Test">
         </service>

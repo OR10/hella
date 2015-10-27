@@ -102,42 +102,6 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
-     *
-     * @Rest\Put("/{taskId}/labeledThingInFrame/{frameNumber}")
-     * @param $taskId
-     * @param $frameNumber
-     *
-     * @return \FOS\RestBundle\View\View
-     * @internal param HttpFoundation\Request $request
-     *
-     */
-    public function putLabeledThingInFrameAction($taskId, $frameNumber, HttpFoundation\Request $request)
-    {
-        $task          = $this->labelingTaskFacade->find($taskId);
-        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
-        foreach ($labeledThings as $labeledThing) {
-            foreach ($this->labeledThingFacade->getLabeledThingInFrames($labeledThing) as $labeledThingInFrame) {
-                if ($labeledThingInFrame->getFrameNumber() === (int) $frameNumber) {
-                    $this->labeledThingInFrameFacade->delete($labeledThingInFrame);
-                }
-            }
-        }
-
-        $labeledThingInFrames = array();
-        foreach ($request->request->getIterator() as $labeledThingInFrame) {
-            $labeledThingInFrames[] = $this->addLabeledThingAndLabeledThingInFrame(
-                $taskId,
-                $frameNumber,
-                $labeledThingInFrame['shapes'],
-                $labeledThingInFrame['classes']
-            );
-        }
-
-        return View\View::create()
-            ->setData(['result' => array('success' => true, 'data' => $labeledThingInFrames)]);
-    }
-
-    /**
      * @param $taskId
      * @param $frameNumber
      * @param $shapes

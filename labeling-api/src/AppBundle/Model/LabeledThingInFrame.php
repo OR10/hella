@@ -15,6 +15,11 @@ class LabeledThingInFrame
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $frameNumber;
@@ -88,5 +93,13 @@ class LabeledThingInFrame
     public function getFrameNumber()
     {
         return $this->frameNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRev()
+    {
+        return $this->rev;
     }
 }
