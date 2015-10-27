@@ -21,5 +21,5 @@
  *
  * Different shapes exist, like rectangle, circle etc.
  *
- * @propery {Shapes[]} shapes
+ * @property {Shape[]} shapes
  */
