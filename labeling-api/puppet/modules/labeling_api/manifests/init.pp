@@ -99,27 +99,31 @@ class labeling_api(
 
   if $configure_nginx {
     nginx::resource::vhost { "_":
-      ensure      => present,
-      www_root    => "${root_dir}/web",
-      index_files => [$app_main_script],
-      try_files   => ['$uri', "/${app_main_script}\$is_args\$args"],
+      ensure               => present,
+      www_root             => "${root_dir}/web",
+      index_files          => [$app_main_script],
+      try_files            => ['$uri', "/${app_main_script}\$is_args\$args"],
+      client_max_body_size => '512M',
     }
 
     nginx::resource::location { '/labeling':
       ensure         => present,
       vhost          => '_',
       location_alias => '/var/www/labeling-ui',
-      try_files   => ['$uri', '/labeling/index.html'],
+      try_files      => ['$uri', '/labeling/index.html'],
     }
 
     nginx::resource::location { '~ \.php(/|$)':
-      ensure        => present,
-      www_root      => "${root_dir}/web",
-      vhost         => '_',
-      index_files   => [$app_main_script],
-      fastcgi       => '127.0.0.1:9000',
-      fastcgi_param => {
+      ensure               => present,
+      www_root             => "${root_dir}/web",
+      vhost                => '_',
+      index_files          => [$app_main_script],
+      fastcgi              => '127.0.0.1:9000',
+      fastcgi_param        => {
           'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
+      },
+      location_cfg_append => {
+          fastcgi_read_timeout => '900',
       }
     }
   }

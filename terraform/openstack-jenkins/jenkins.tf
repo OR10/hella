@@ -15,7 +15,7 @@ resource "openstack_compute_instance_v2" "jenkins" {
 
 
   provisioner "file" {
-      source = "/Users/hco/src/AnnoStation/labeling-api/puppet"
+      source = "puppet"
       destination = "/home/ubuntu/puppet"
       connection {
           user = "ubuntu"

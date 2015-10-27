@@ -35,6 +35,14 @@ class LabeledThingInFrame
     private $labeledThingId;
 
     /**
+     * @param $labeledThingId
+     */
+    function __construct($labeledThingId)
+    {
+        $this->labeledThingId = $labeledThingId;
+    }
+
+    /**
      * @return string
      */
     public function getLabeledThingId()
@@ -74,4 +82,11 @@ class LabeledThingInFrame
         $this->labeledThingId = $labeledThingId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFrameNumber()
+    {
+        return $this->frameNumber;
+    }
 }

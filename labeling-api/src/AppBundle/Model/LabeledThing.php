@@ -30,6 +30,14 @@ class LabeledThing
     private $labelingTaskId;
 
     /**
+     * @param $labelingTaskId
+     */
+    function __construct($labelingTaskId)
+    {
+        $this->labelingTaskId = $labelingTaskId;
+    }
+
+    /**
      * @return string
      */
     public function getLabelingTaskId()
@@ -59,6 +67,14 @@ class LabeledThing
     public function setLabelingTaskId($labelingTaskId)
     {
         $this->labelingTaskId = $labelingTaskId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
 }

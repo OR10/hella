@@ -4,6 +4,11 @@ php::fpm::pools:
     listen: 127.0.0.1:9000
     user: www-data
 
+php::fpm::settings:
+  PHP/upload_max_filesize: 512M
+  PHP/post_max_size: 512M
+  PHP/default_socket_timeout: 900
+
 php::extensions:
   mysql: {}
 

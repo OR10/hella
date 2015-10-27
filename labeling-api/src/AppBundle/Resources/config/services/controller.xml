@@ -8,6 +8,7 @@
                 id="annostation.labeling_api.controller.index"
                 class="AppBundle\Controller\Index">
             <argument type="service" id="templating"/>
+            <argument type="service" id="annostation.labeling_api.service.importer_service"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.video_upload"
@@ -23,6 +24,13 @@
                 class="AppBundle\Controller\Api\Task">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem"/>
+        </service>
+        <service
+                id="annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
+                class="AppBundle\Controller\Api\Task\LabeledThingInFrame">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.test"
