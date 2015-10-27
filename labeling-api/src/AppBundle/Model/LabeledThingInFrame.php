@@ -40,11 +40,11 @@ class LabeledThingInFrame
     private $labeledThingId;
 
     /**
-     * @param $labeledThingId
+     * @param LabeledThing $labeledThing
      */
-    function __construct($labeledThingId)
+    function __construct(LabeledThing $labeledThing)
     {
-        $this->labeledThingId = $labeledThingId;
+        $this->labeledThingId = $labeledThing->getId();
     }
 
     /**

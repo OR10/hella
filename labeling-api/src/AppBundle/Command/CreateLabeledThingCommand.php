@@ -46,7 +46,11 @@ class CreateLabeledThingCommand extends ContainerAwareCommand
                 $classes[] = $faker->word;
             }
 
-            $labeledThing = new Model\LabeledThing($faker->numberBetween(1, 5));
+            $video        = new Model\Video('foobar');
+            $frameRange   = new Model\FrameRange($faker->numberBetween(1, 5), $faker->numberBetween(50, 100));
+            $task         = new Model\LabelingTask($video, $frameRange);
+
+            $labeledThing = new Model\LabeledThing($task);
             $labeledThing->setClasses($classes);
             $labeledThing->setFrameRange([$faker->numberBetween(0, 10), $faker->numberBetween(11, 20)]);
 

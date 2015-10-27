@@ -30,11 +30,11 @@ class LabeledThing
     private $labelingTaskId;
 
     /**
-     * @param $labelingTaskId
+     * @param LabelingTask $labelingTask
      */
-    function __construct($labelingTaskId)
+    function __construct(LabelingTask $labelingTask)
     {
-        $this->labelingTaskId = $labelingTaskId;
+        $this->labelingTaskId = $labelingTask->getId();
     }
 
     /**

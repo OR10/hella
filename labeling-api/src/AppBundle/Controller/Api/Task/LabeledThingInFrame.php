@@ -67,7 +67,7 @@ class LabeledThingInFrame extends Controller\Base
             return $response;
         }
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
-            $taskId,
+            $task,
             $frameNumber,
             $request->request->get('shapes'),
             $request->request->get('classes')
@@ -120,23 +120,23 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
-     * @param $taskId
-     * @param $frameNumber
-     * @param $shapes
-     * @param $classes
+     * @param Model\LabelingTask $task
+     * @param                    $frameNumber
+     * @param                    $shapes
+     * @param                    $classes
      *
      * @return Model\LabeledThingInFrame
      */
     private function addLabeledThingAndLabeledThingInFrame(
-        $taskId,
+        Model\LabelingTask $task,
         $frameNumber,
         $shapes,
         $classes
     ) {
-        $labeledThing = new Model\LabeledThing($taskId);
+        $labeledThing = new Model\LabeledThing($task);
         $this->labeledThingFacade->save($labeledThing);
 
-        $thingInFrame = new Model\LabeledThingInFrame($labeledThing->getId());
+        $thingInFrame = new Model\LabeledThingInFrame($labeledThing);
 
         $thingInFrame->setFrameNumber(
             $frameNumber
