@@ -80,8 +80,6 @@ export default class ViewerStageController {
     const annotationLayer = this._layerManager.getLayer('annotations');
     const annotations = annotationLayer.getAnnotations();
 
-    annotationLayer.clear();
-    /*
     let savingPromise;
 
     if (oldFrameNumber) {
@@ -98,16 +96,15 @@ export default class ViewerStageController {
           annotationLayer.render();
         });
       });
-      */
   }
 
   _saveFrameLabelingData(frameNumber, labelingData) {
     return Promise.all(labelingData.map((labeledThing) => {
       if (labeledThing.id) {
         return this._labelingDataService.updateLabeledThingInFrame(labeledThing.id, labeledThing);
-      } else {
-        return this._labelingDataService.createLabeledThingInFrame(this.task, frameNumber, labeledThing);
       }
+
+      return this._labelingDataService.createLabeledThingInFrame(this.task, frameNumber, labeledThing);
     }));
   }
 
@@ -122,5 +119,5 @@ ViewerStageController.$inject = [
   'taskFrameLocationService',
   'frameService',
   'drawingContextService',
-  'labelingDataService'
+  'labelingDataService',
 ];
