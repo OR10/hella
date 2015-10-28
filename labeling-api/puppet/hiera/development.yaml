@@ -32,3 +32,4 @@ labeling_api::mailer_host: '127.0.0.1'
 labeling_api::mailer_user: 'null'
 labeling_api::mailer_password: 'null'
 labeling_api::secret: 'ThisTokenIsNotSoSecretChangeIt'
+labeling_api::is_vagrant_vm: true
