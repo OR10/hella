@@ -28,7 +28,7 @@ class IndexTest extends Tests\WebTestCase
         $this->assertEquals('http://localhost/login', $response->headers->get('Location'));
     }
 
-    public function testIndexPageWithValidLogin()
+    public function testIndexPageWithValidLoginRedirectsToLabeling()
     {
         $client = $this->createClient();
 
@@ -38,6 +38,7 @@ class IndexTest extends Tests\WebTestCase
         ]);
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('http://localhost/labeling', $response->headers->get('Location'));
     }
 }
