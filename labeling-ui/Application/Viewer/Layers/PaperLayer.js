@@ -24,8 +24,8 @@ export default class PaperLayer {
   }
 
   render() {
-    this._context.withScope(() => {
-      this.renderInPaperScope();
+    this._context.withScope((scope) => {
+      this.renderInPaperScope(scope);
     });
   }
 
@@ -33,7 +33,7 @@ export default class PaperLayer {
    * @abstract
    * @protected
    */
-  renderInPaperScope() {
+  renderInPaperScope(scope) {
   }
 
   attachToDom(element) {

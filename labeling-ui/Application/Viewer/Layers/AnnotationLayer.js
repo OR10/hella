@@ -1,3 +1,5 @@
+import paper from 'paper';
+
 import PaperLayer from './PaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
@@ -20,10 +22,17 @@ export default class AnnotationLayer extends PaperLayer {
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
       this._annotations.push({
+        type: 'rectangle',
         shapes: [
           {
-            topLeft: rectangle.bounds.topLeft,
-            bottomRight: rectangle.bounds.bottomRight,
+            topLeft: {
+              x: rectangle.bounds.topLeft.x,
+              y: rectangle.bounds.topLeft.y,
+            },
+            bottomRight: {
+              x: rectangle.bounds.bottomRight.x,
+              y: rectangle.bounds.bottomRight.y,
+            },
           },
         ],
       });
@@ -38,8 +47,18 @@ export default class AnnotationLayer extends PaperLayer {
     return this._annotations;
   }
 
-  renderInPaperScope() {
+  renderInPaperScope(scope) {
+    this._annotations.forEach((annotation) => {
+      console.log(annotation);
+      const shape = annotation.shapes[0];
+      this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, {
+        strokeColor: 'red',
+        strokeWidth: 2,
+        fillColor: new paper.Color(0, 0, 0, 0),
+      });
+    });
 
+    scope.view.update();
   }
 
   dispatchDOMEvent(event) {

@@ -17,9 +17,12 @@ export default class ViewerStageController {
    * @param {LabelingDataService} labelingDataService
    */
   constructor($scope, $element, taskFrameLocationService, frameService, drawingContextService, labelingDataService) {
+    this._taskFrameLocationService = taskFrameLocationService;
     this._frameService = frameService;
     this._layerManager = new LayerManager();
     this._labelingDataService = labelingDataService;
+
+    this._labelingData = [];
 
     const eventDelegationLayer = new EventDelegationLayer();
     const annotationLayer = new AnnotationLayer(drawingContextService);
@@ -33,21 +36,25 @@ export default class ViewerStageController {
     this._layerManager.addLayer('annotations', annotationLayer);
     this._layerManager.addLayer('background', backgroundLayer);
 
-    this._initializeFrameLocations(taskFrameLocationService, frameService, backgroundLayer);
+    const frameLocationsPromise = this._initializeFrameLocations();
 
-    $scope.$watch('vm.frameNumber', (newValue, oldValue) => {
-      if (newValue !== oldValue) {
+    $scope.$watch('vm.frameNumber', (newFrameNumber, oldFrameNumber) => {
+      frameLocationsPromise.then(() => {
         this._setBackground();
+      });
 
-        this._updateAnnotations(oldValue, newValue);
+      if (newFrameNumber !== oldFrameNumber) {
+        this._updateAnnotations(newFrameNumber, oldFrameNumber);
+      } else {
+        this._updateAnnotations(newFrameNumber);
       }
     });
   }
 
-  _initializeFrameLocations(taskFrameLocationService, frameService, backgroundLayer) {
+  _initializeFrameLocations() {
     return Promise.resolve()
       .then(() => {
-        return taskFrameLocationService.getFrameLocations(
+        return this._taskFrameLocationService.getFrameLocations(
           this.task.id,
           'source',
           0,
@@ -56,13 +63,6 @@ export default class ViewerStageController {
       })
       .then(frameLocations => {
         this._frameLocations = frameLocations;
-      })
-      .then(() => {
-        return frameService.getImage(this._frameLocations[this.frameNumber - 1]);
-      })
-      .then(image => {
-        backgroundLayer.setBackgroundImage(image);
-        backgroundLayer.render();
       });
   }
 
@@ -76,32 +76,51 @@ export default class ViewerStageController {
       });
   }
 
-  _updateAnnotations(oldFrameNumber, newFrameNuber) {
+  _updateAnnotations(newFrameNumber, oldFrameNumber = null) {
     const annotationLayer = this._layerManager.getLayer('annotations');
     const annotations = annotationLayer.getAnnotations();
 
-    // TODO replace with LabeledThing model
-    const labelingData = annotations;
+    annotationLayer.clear();
+    /*
+    let savingPromise;
 
     if (oldFrameNumber) {
-      this._saveFrameLabelingData(oldFrameNumber, labelingData);
+      savingPromise = this._saveFrameLabelingData(oldFrameNumber, annotations)
+        .then(() => {annotationLayer.clear();});
+    } else {
+      savingPromise = Promise.resolve();
     }
 
-    annotationLayer.clear();
-
-    this._loadFrameLabelingData(newFrameNuber).then((frameLabelingData) => {
-      // TODO extract labeling annotations
-      annotationLayer.draw(frameLabelingData);
-    });
+    savingPromise
+      .then(() => {
+        this._loadFrameLabelingData(newFrameNumber).then((frameLabelingData) => {
+          annotationLayer.setAnnotations(frameLabelingData);
+          annotationLayer.render();
+        });
+      });
+      */
   }
 
   _saveFrameLabelingData(frameNumber, labelingData) {
-    return this._labelingDataService.updateLabeledThingsInFrame(this.task, frameNumber, labelingData);
+    return Promise.all(labelingData.map((labeledThing) => {
+      if (labeledThing.id) {
+        return this._labelingDataService.updateLabeledThingInFrame(labeledThing.id, labeledThing);
+      } else {
+        return this._labelingDataService.createLabeledThingInFrame(this.task, frameNumber, labeledThing);
+      }
+    }));
   }
 
   _loadFrameLabelingData(frameNumber) {
-    return this._labelingDataService.getLabeledThingsInFrame(this.task, frameNumber);
+    return this._labelingDataService.listLabeledThingInFrame(this.task, frameNumber);
   }
 }
 
-ViewerStageController.$inject = ['$scope', '$element', 'taskFrameLocationService', 'frameService', 'drawingContextService', 'labelingDataService'];
+ViewerStageController.$inject = [
+  '$scope',
+  '$element',
+  'taskFrameLocationService',
+  'frameService',
+  'drawingContextService',
+  'labelingDataService'
+];

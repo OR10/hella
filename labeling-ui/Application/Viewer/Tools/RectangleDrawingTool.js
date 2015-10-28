@@ -30,20 +30,21 @@ export default class RectangleDrawingTool extends EventEmitter {
   _startNewRect(event) {
     this._startPosition = event.point;
 
+    // PaperJs doesn't deal well with single point rectangles so we cheat a little on the first draw
+    const endPosition = new paper.Point(
+      this._startPosition.x + 1,
+      this._startPosition.y + 1
+    );
+
+    const drawingOptions = {
+      strokeColor: 'red',
+      strokeWidth: 2,
+      // Required to make rect clickable
+      fillColor: new paper.Color(0, 0, 0, 0),
+    };
+
     this._context.withScope(() => {
-      this._rect = this._renderer.drawRectangle(
-        this._startPosition,
-        new paper.Point(
-          this._startPosition.x + 1,
-          this._startPosition.y + 1
-        ),
-        {
-          strokeColor: 'red',
-          strokeWidth: 2,
-          // Required to make rect clickable
-          fillColor: new paper.Color(0, 0, 0, 0),
-        }
-      );
+      this._rect = this._renderer.drawRectangle(this._startPosition, endPosition, drawingOptions);
     });
 
     this.emit('rectangle:new', this._rect);
