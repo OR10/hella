@@ -34,6 +34,7 @@ export default class ViewerStageController {
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
     annotationLayer.on('annotation:new', this._onNewAnnotation.bind(this));
+    annotationLayer.on('annotation:update', this._onUpdatedAnnotation.bind(this));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', annotationLayer);
@@ -120,7 +121,7 @@ export default class ViewerStageController {
    * @private
    */
   _onUpdatedAnnotation(annotationId, annotation) {
-    this._labelingDataService.updateLabeledThingInFrame(this.task, this.frameNumber, annotation)
+    this._labelingDataService.updateLabeledThingInFrame(annotation.id, annotation)
       .then((labeledThingInFrame) => {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
