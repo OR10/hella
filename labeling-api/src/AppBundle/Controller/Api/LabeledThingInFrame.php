@@ -73,16 +73,14 @@ class LabeledThingInFrame extends Controller\Base
 
         if ($labeledThingInFrame === null) {
             $response->setStatusCode(404);
-            $response->setData(['result' => array('success' => false, 'msg' => 'Document not found')]);
         } elseif ($labeledThingInFrame->getRev() === $request->request->get('rev')) {
             $labeledThingInFrame->setClasses($request->request->get('classes'));
             $labeledThingInFrame->setShapes($request->request->get('shapes'));
             $labeledThingInFrame->setFrameNumber($request->request->get('frameNumber'));
             $this->labeledThingInFrameFacade->save($labeledThingInFrame);
-            $response->setData(['result' => array('success' => true, 'data' => $labeledThingInFrame)]);
+            $response->setData(['result' => $labeledThingInFrame]);
         } else {
             $response->setStatusCode(409);
-            $response->setData(['result' => array('success' => false, 'msg' => 'Document conflict')]);
         }
 
         return $response;
