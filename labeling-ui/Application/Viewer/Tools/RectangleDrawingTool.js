@@ -1,18 +1,18 @@
 import paper from 'paper';
-import EventEmitter from 'event-emitter';
+import Tool from './Tool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
  * @class RectangleDrawingTool
  */
-export default class RectangleDrawingTool extends EventEmitter {
+export default class RectangleDrawingTool extends Tool {
   /**
    * @param {DrawingContext} drawingContext
+   * @param {Object} options
    */
-  constructor(drawingContext) {
-    super();
+  constructor(drawingContext, options) {
+    super(drawingContext, options);
 
-    this._context = drawingContext;
     this._renderer = new RectangleRenderer();
 
     this._rect = null;

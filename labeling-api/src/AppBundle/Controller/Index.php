@@ -8,6 +8,7 @@ use Symfony\Bridge\Twig;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
@@ -34,11 +35,7 @@ class Index extends Base
      */
     public function indexAction(HttpFoundation\Request $request)
     {
-        return new Response(
-            $this->twigEngine->render(
-                'AppBundle:default:index.html.twig'
-            )
-        );
+        return new RedirectResponse('/labeling');
     }
 
     /**
