@@ -1,7 +1,14 @@
-<div class="viewer">
-    <div class="layer-container">
-        <canvas width="1024" height="620" class="background-layer"></canvas>
-        <canvas width="1024" height="620" class="annotation-layer"></canvas>
-        <div class="event-delegation-layer"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="viewer-container">
+            <viewer-stage frame-number="vm.frameNumber" task="vm.task"></viewer-stage>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="viewer-controls-container">
+            <viewer-controls frame-number="vm.frameNumber" task="vm.task"></viewer-controls>
+        </div>
     </div>
 </div>

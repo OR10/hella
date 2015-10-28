@@ -1,31 +1,64 @@
 import paper from 'paper';
 
+import PaperLayer from './PaperLayer';
+import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
+import RectangleRenderer from '../Renderer/RectangleRenderer';
+
 /**
  * @class AnnotationLayer
- * @implements {Layer}
  */
-export default class AnnotationLayer {
-  constructor() {
-    /**
-     * @type {HTMLCanvasElement}
-     * @private
-     */
-    this._element = null;
+export default class AnnotationLayer extends PaperLayer {
+  /**
+   * @param {DrawingContextService} drawingContextService
+   */
+  constructor(drawingContextService) {
+    super(drawingContextService);
 
-    /**
-     * @type {paper.PaperScope}
-     * @private
-     */
-    this._paperScope = new paper.PaperScope();
+    this._rectangleRenderer = new RectangleRenderer();
+
+    this._annotations = [];
+
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
+
+    this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
+      this._annotations.push({
+        type: 'rectangle',
+        shapes: [
+          {
+            topLeft: {
+              x: rectangle.bounds.topLeft.x,
+              y: rectangle.bounds.topLeft.y,
+            },
+            bottomRight: {
+              x: rectangle.bounds.bottomRight.x,
+              y: rectangle.bounds.bottomRight.y,
+            },
+          },
+        ],
+      });
+    });
   }
 
-  render() {
-    this._paperScope.view.draw();
+  setAnnotations(annotations) {
+    this._annotations = annotations;
   }
 
-  attachToDom(element) {
-    this._element = element;
-    this._paperScope.setup(this._element);
+  getAnnotations() {
+    return this._annotations;
+  }
+
+  renderInPaperScope(scope) {
+    this._annotations.forEach((annotation) => {
+      console.log(annotation);
+      const shape = annotation.shapes[0];
+      this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, {
+        strokeColor: 'red',
+        strokeWidth: 2,
+        fillColor: new paper.Color(0, 0, 0, 0),
+      });
+    });
+
+    scope.view.update();
   }
 
   dispatchDOMEvent(event) {

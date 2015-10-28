@@ -92,8 +92,8 @@ describe('ApiService', () => {
 
   it('should always create a deterministic order of query paramaters', () => {
     const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
-    const firstApiUrl = service.getApiUrl('/', {a: 'foo', b: 'bar'});
-    const secondApiUrl = service.getApiUrl('/', {b: 'bar', a: 'foo'});
+    const firstApiUrl = service.getApiUrl('/', {foo: 'foo', bar: 'bar'});
+    const secondApiUrl = service.getApiUrl('/', {bar: 'bar', foo: 'foo'});
     expect(firstApiUrl).toEqual(secondApiUrl);
   });
 });
