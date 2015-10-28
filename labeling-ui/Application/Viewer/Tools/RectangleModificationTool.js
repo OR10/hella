@@ -42,6 +42,9 @@ export default class RectangleModificationTool extends Tool {
   }
 
   _mouseUp() {
+    if (this._hitResult && this._hitResult.item) {
+      this.emit('rectangle:update', this._hitResult.item);
+    }
     this._hitResult = null;
   }
 
