@@ -24,6 +24,7 @@ class labeling_api(
     $frame_cdn_network_device = undef,
     $frame_cdn_port = 81,
     $frame_cdn_path = '',
+    $user_password = undef,
     $is_vagrant_vm = false,
 ) {
 
