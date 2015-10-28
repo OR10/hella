@@ -128,6 +128,7 @@ class labeling_api(
       www_root             => "${root_dir}/web",
       vhost                => '_',
       index_files          => [$app_main_script],
+      try_files            => ['$uri', '/labeling/index.html'],
       fastcgi              => '127.0.0.1:9000',
       fastcgi_param        => {
           'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',
