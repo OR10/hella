@@ -28,6 +28,9 @@ export default class RectangleModificationTool extends Tool {
         this._hitResult = hitResult;
 
         switch (this._hitResult.type) {
+          case 'bounds':
+            this._scaleAnchor = this._getScaleAnchor(event.point, this._hitResult.item);
+            break;
           case 'fill':
             this._hitResult.item.selected = true;
             this._offset = new paper.Point(
@@ -37,6 +40,11 @@ export default class RectangleModificationTool extends Tool {
             break;
           default:
         }
+      } else {
+        if (this._hitResult && this._hitResult.item) {
+          this._hitResult.item.selected = false;
+        }
+        this._hitResult = null;
       }
     });
   }
@@ -45,15 +53,17 @@ export default class RectangleModificationTool extends Tool {
     if (this._hitResult && this._hitResult.item) {
       this.emit('rectangle:update', this._hitResult.item);
     }
-    this._hitResult = null;
+    this._offset = null;
+    this._startPosition = null;
+    this._scaleAnchor = null;
   }
 
   _mouseDrag(event) {
     if (!this._hitResult) return;
 
     switch (this._hitResult.type) {
-      case 'segment':
-        console.log('segment');
+      case 'bounds':
+        this._scale(this._hitResult.item, event.point);
         break;
       case 'fill':
         this._moveTo(this._hitResult.item, event.point);
@@ -62,7 +72,40 @@ export default class RectangleModificationTool extends Tool {
     }
   }
 
-  _moveTo(item, point) {
-    item.position = point.add(this._offset);
+  _moveTo(item, centerPoint) {
+    item.position = centerPoint.add(this._offset);
+  }
+
+  /**
+   *TODO: If the drag handle is dragged fast over the scale anchor the scale anchor
+   * moves in the opposite of the drag direction.
+   * The movement size is speed dependent!
+   */
+  _scale(item, dragPoint) {
+    const width = Math.abs(dragPoint.x - this._scaleAnchor.x) || 1;
+    const height = Math.abs(dragPoint.y - this._scaleAnchor.y) || 1;
+
+    const scaleX = width / item.bounds.width || 1;
+    const scaleY = height / item.bounds.height || 1;
+
+    item.scale(scaleX, scaleY, this._scaleAnchor);
+
+    this._scaleAnchor = this._getScaleAnchor(dragPoint, item);
+  }
+
+  _getScaleAnchor(dragHandle, item) {
+    if (dragHandle.x > item.position.x && dragHandle.y > item.position.y) {
+      return this._hitResult.item.bounds.topLeft;
+    }
+
+    if (dragHandle.x <= item.position.x && dragHandle.y > item.position.y) {
+      return this._hitResult.item.bounds.topRight;
+    }
+
+    if (dragHandle.x <= item.position.x && dragHandle.y <= item.position.y) {
+      return this._hitResult.item.bounds.bottomRight;
+    }
+
+    return this._hitResult.item.bounds.bottomLeft;
   }
 }
