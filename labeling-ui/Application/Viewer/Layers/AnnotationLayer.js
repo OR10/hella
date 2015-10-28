@@ -2,6 +2,7 @@ import paper from 'paper';
 
 import PaperLayer from './PaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
+import RectangleModificationTool from '../Tools/RectangleModificationTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
@@ -18,6 +19,7 @@ export default class AnnotationLayer extends PaperLayer {
 
     this._annotations = [];
 
+    this._rectangleModificationTool = new RectangleModificationTool(this._context);
     this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
