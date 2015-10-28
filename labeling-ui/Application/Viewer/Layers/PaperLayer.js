@@ -1,13 +1,16 @@
+import EventEmitter from 'event-emitter';
+
 /**
  * @class PaperLayer
  *
  * @implements {Layer}
  */
-export default class PaperLayer {
+export default class PaperLayer extends EventEmitter {
   /**
    * @param {DrawingContextService} drawingContextService
    */
   constructor(drawingContextService) {
+    super();
     /**
      * @type {DrawingContext}
      * @protected

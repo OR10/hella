@@ -53,10 +53,10 @@ export default class EventDelegationLayer extends EventEmitter {
    */
   _cloneEvent(event) {
     switch (true) {
-    case event instanceof MouseEvent:
-      return this._cloneMouseEvent(event);
-    default:
-      throw new Error(`Event cloning of type ${event.type} is not supported.`);
+      case event instanceof MouseEvent:
+        return this._cloneMouseEvent(event);
+      default:
+        throw new Error(`Event cloning of type ${event.type} is not supported.`);
     }
   }
 

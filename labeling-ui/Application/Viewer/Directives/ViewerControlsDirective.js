@@ -15,6 +15,7 @@ export default class ViewerControlsDirective {
     this.scope = {
       task: '=',
       frameNumber: '=',
+      activeTool: '=',
     };
   }
 }

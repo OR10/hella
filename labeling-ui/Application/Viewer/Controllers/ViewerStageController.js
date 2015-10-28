@@ -17,6 +17,7 @@ export default class ViewerStageController {
    * @param {LabelingDataService} labelingDataService
    */
   constructor($scope, $element, taskFrameLocationService, frameService, drawingContextService, labelingDataService) {
+    this._$scope = $scope;
     this._taskFrameLocationService = taskFrameLocationService;
     this._frameService = frameService;
     this._layerManager = new LayerManager();
@@ -32,11 +33,19 @@ export default class ViewerStageController {
     annotationLayer.attachToDom($element.find('.annotation-layer')[0]);
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
+    annotationLayer.on('annotation:new', this._onNewAnnotation.bind(this));
+
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', annotationLayer);
     this._layerManager.addLayer('background', backgroundLayer);
 
     const frameLocationsPromise = this._initializeFrameLocations();
+
+    $scope.$watch('vm.activeTool', (newTool, oldTool) => {
+      if (newTool !== oldTool) {
+        annotationLayer.activateTool(newTool);
+      }
+    });
 
     $scope.$watch('vm.frameNumber', (newFrameNumber, oldFrameNumber) => {
       frameLocationsPromise.then(() => {
@@ -76,40 +85,46 @@ export default class ViewerStageController {
       });
   }
 
-  _updateAnnotations(newFrameNumber, oldFrameNumber = null) {
+  _updateAnnotations(newFrameNumber) {
     const annotationLayer = this._layerManager.getLayer('annotations');
-    const annotations = annotationLayer.getAnnotations();
 
-    let savingPromise;
-
-    if (oldFrameNumber) {
-      savingPromise = this._saveFrameLabelingData(oldFrameNumber, annotations)
-        .then(() => {annotationLayer.clear();});
-    } else {
-      savingPromise = Promise.resolve();
-    }
-
-    savingPromise
-      .then(() => {
-        this._loadFrameLabelingData(newFrameNumber).then((frameLabelingData) => {
-          annotationLayer.setAnnotations(frameLabelingData);
-          annotationLayer.render();
-        });
-      });
-  }
-
-  _saveFrameLabelingData(frameNumber, labelingData) {
-    return Promise.all(labelingData.map((labeledThing) => {
-      if (labeledThing.id) {
-        return this._labelingDataService.updateLabeledThingInFrame(labeledThing.id, labeledThing);
-      }
-
-      return this._labelingDataService.createLabeledThingInFrame(this.task, frameNumber, labeledThing);
-    }));
+    this._loadFrameLabelingData(newFrameNumber).then((frameLabelingData) => {
+      annotationLayer.setAnnotations(frameLabelingData);
+    });
   }
 
   _loadFrameLabelingData(frameNumber) {
     return this._labelingDataService.listLabeledThingInFrame(this.task, frameNumber);
+  }
+
+  /**
+   * @param {String} annotationId - Internal management id
+   * @param {LabeledThingInFrame} annotation
+   * @private
+   */
+  _onNewAnnotation(annotationId, annotation) {
+    this._$scope.$apply(() => {
+      this.activeTool = 'modification';
+    });
+
+    this._labelingDataService.createLabeledThingInFrame(this.task, this.frameNumber, annotation)
+      .then((labeledThingInFrame) => {
+        const annotationLayer = this._layerManager.getLayer('annotations');
+        annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
+      });
+  }
+
+  /**
+   * @param {String} annotationId - Internal management id
+   * @param {LabeledThingInFrame} annotation
+   * @private
+   */
+  _onUpdatedAnnotation(annotationId, annotation) {
+    this._labelingDataService.updateLabeledThingInFrame(this.task, this.frameNumber, annotation)
+      .then((labeledThingInFrame) => {
+        const annotationLayer = this._layerManager.getLayer('annotations');
+        annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
+      });
   }
 }
 

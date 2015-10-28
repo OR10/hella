@@ -1,4 +1,5 @@
 import angular from 'angular';
+import 'angular-hotkeys';
 import 'angular-ui-router';
 
 import CommonModule from './Common/Common';

@@ -2,8 +2,16 @@
  * @class ViewerControlsController
  */
 export default class ViewerControlsController {
-  constructor() {
+  constructor($scope, hotkeys) {
+    this._$scope = $scope;
 
+    hotkeys.add({
+      combo: 'd',
+      action: 'keydown',
+      callback: () => {
+        this.activeTool = 'drawing';
+      },
+    });
   }
 
   frameForward() {
@@ -17,4 +25,10 @@ export default class ViewerControlsController {
       this.frameNumber--;
     }
   }
+
+  activateDrawingMode() {
+    this.activeTool = 'drawing';
+  }
 }
+
+ViewerControlsController.$inject = ['$scope', 'hotkeys'];

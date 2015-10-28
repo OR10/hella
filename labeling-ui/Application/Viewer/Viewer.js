@@ -6,7 +6,8 @@ import DrawingContextServiceProvider from './Providers/DrawingContextServiceProv
 
 export default class Viewer extends Module {
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.Viewer', []);
+    this.module = angular.module('AnnoStation.Viewer', ['cfp.hotkeys']);
+
     this.registerDirective('viewer', ViewerDirective);
     this.registerDirective('viewerStage', ViewerStageDirective);
     this.registerDirective('viewerControls', ViewerControlsDirective);

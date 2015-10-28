@@ -15,6 +15,7 @@ export default class ViewerStageDirective {
     this.scope = {
       task: '=',
       frameNumber: '=',
+      activeTool: '=',
     };
   }
 }

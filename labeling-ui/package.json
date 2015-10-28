@@ -70,6 +70,7 @@
     "configFile": "Application/system.config.js",
     "dependencies": {
       "angular": "github:angular/bower-angular@^1.4.7",
+      "angular-hotkeys": "github:chieffancypants/angular-hotkeys@^1.6.0",
       "angular-mocks": "github:angular/bower-angular-mocks@^1.4.7",
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "bootstrap": "github:twbs/bootstrap-sass@^3.3.5",
