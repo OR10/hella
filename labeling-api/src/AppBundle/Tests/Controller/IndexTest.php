@@ -39,6 +39,6 @@ class IndexTest extends Tests\WebTestCase
         $response = $client->getResponse();
 
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals('http://localhost/labeling', $response->headers->get('Location'));
+        $this->assertEquals('/labeling', $response->headers->get('Location'));
     }
 }
