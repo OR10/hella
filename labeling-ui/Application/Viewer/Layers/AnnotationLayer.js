@@ -22,9 +22,9 @@ export default class AnnotationLayer extends PaperLayer {
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
       this._annotations.push({
-        type: 'rectangle',
         shapes: [
           {
+            type: 'rectangle',
             topLeft: {
               x: rectangle.bounds.topLeft.x,
               y: rectangle.bounds.topLeft.y,
