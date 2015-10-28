@@ -24,6 +24,8 @@ class labeling_api(
     $frame_cdn_network_device = undef,
     $frame_cdn_port = 81,
     $frame_cdn_path = '',
+    $user_password = undef,
+    $is_vagrant_vm = false,
 ) {
 
   ::mysql::db { $database_name:
@@ -106,6 +108,13 @@ class labeling_api(
       client_max_body_size => '512M',
     }
 
+    if $is_vagrant_vm {
+      file { '/var/www/labeling-ui':
+        ensure => 'link',
+        target => '/labeling-ui/Distribution',
+      }
+    }
+
     nginx::resource::location { '/labeling':
       ensure         => present,
       vhost          => '_',
@@ -120,6 +129,7 @@ class labeling_api(
       www_root             => "${root_dir}/web",
       vhost                => '_',
       index_files          => [$app_main_script],
+      try_files            => ['$uri', '/labeling/index.html'],
       fastcgi              => '127.0.0.1:9000',
       fastcgi_param        => {
           'SCRIPT_FILENAME' => '$document_root$fastcgi_script_name',

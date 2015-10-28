@@ -51,7 +51,6 @@ export default class AnnotationLayer extends PaperLayer {
 
   renderInPaperScope(scope) {
     this._annotations.forEach((annotation) => {
-      console.log(annotation);
       const shape = annotation.shapes[0];
       this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, {
         strokeColor: 'red',

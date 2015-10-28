@@ -114,7 +114,7 @@ class LabeledThingInFrame extends Controller\Base
             }
         );
 
-        $response->setData(['result' => $labeledThingsInFrames]);
+        $response->setData(['result' => array_values($labeledThingsInFrames)]);
 
         return $response;
     }

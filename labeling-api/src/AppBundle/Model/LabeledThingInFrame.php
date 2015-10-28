@@ -102,4 +102,12 @@ class LabeledThingInFrame
     {
         return $this->rev;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }

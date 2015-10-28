@@ -4,33 +4,12 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="annostation.labeling_api.command.create_video_command" class="AppBundle\Command\CreateVideoCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.create_prelabeled_frame_command" class="AppBundle\Command\CreatePrelabeledFrameCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.prelabeled_frame" />
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.create_labeling_task_command" class="AppBundle\Command\CreateLabelingTaskCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.create_labeled_thing_in_frame_command" class="AppBundle\Command\CreateLabeledThingInFrameCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.create_labeled_thing_command" class="AppBundle\Command\CreateLabeledThingCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.create_labeled_frame_command" class="AppBundle\Command\CreateLabeledFrameCommand">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame" />
+        <service id="annostation.labeling_api.command.init" class="AppBundle\Command\InitCommand">
+            <argument type="service" id="doctrine_couchdb.client.default_connection" />
+            <argument>%database_name%</argument>
+            <argument>%user_password%</argument>
+            <argument>%cache_dir%</argument>
+            <argument>%frame_cdn_dir%</argument>
             <tag name="console.command"/>
         </service>
 

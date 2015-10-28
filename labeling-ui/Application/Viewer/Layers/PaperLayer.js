@@ -1,5 +1,3 @@
-import paper from 'paper';
-
 /**
  * @class PaperLayer
  *
@@ -33,7 +31,7 @@ export default class PaperLayer {
    * @abstract
    * @protected
    */
-  renderInPaperScope(scope) {
+  renderInPaperScope(scope) { // eslint-disable-line no-unused-vars
   }
 
   attachToDom(element) {

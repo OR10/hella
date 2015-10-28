@@ -5,11 +5,10 @@ namespace AppBundle\Command;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
-use Symfony\Bundle\FrameworkBundle\Command;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 
-class ImportVideoCommand extends Command\ContainerAwareCommand
+class ImportVideoCommand extends BaseCommand
 {
 
     /**
@@ -34,18 +33,18 @@ class ImportVideoCommand extends Command\ContainerAwareCommand
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
         $filename = $input->getArgument('file');
-        $stream   = fopen($filename, 'r+');
+
+        $this->writeSection($output, "Importing video from file <comment>{$filename}</>");
 
         try {
+            $stream   = fopen($filename, 'r+');
             $task = $this->importerService->import($filename, $stream);
 
-            $output->writeln("<info>Video '{$filename}' successfully imported!</info>");
-            $output->writeln('');
-            $output->writeln("    <comment>Video:</comment> {$task->getVideoId()}");
-            $output->writeln("    <comment>Task: </comment> {$task->getId()}");
-            $output->writeln('');
+            $this->writeInfo($output, "VideoId: <comment>{$task->getVideoId()}</>");
+            $this->writeInfo($output, "TaskId:  <comment>{$task->getId()}</>");
+            $this->writeInfo($output, "<info>Video successfully imported!</info>");
         } catch (\Exception $e) {
-            $output->writeln("<error>Error importing {$filename}: {$e->getMessage()}</error>");
+            $this->writeError($output, "Error importing {$filename}: {$e->getMessage()}");
         }
     }
 }
