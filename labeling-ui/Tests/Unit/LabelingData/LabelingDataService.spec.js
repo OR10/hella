@@ -95,16 +95,15 @@ describe('LabelingDataService', () => {
   });
 
   it('should update a labeled thing in frame', done => {
-    const labeledThingInFrameId = '2';
-    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
     const labeledThinIngFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThinIngFrame.id}`;
     const expectedResult = {result: labeledThinIngFrame};
 
     $httpBackend
       .expect('PUT', expectedUrl)
       .respond(200, expectedResult);
 
-    service.updateLabeledThingInFrame(labeledThingInFrameId, labeledThinIngFrame)
+    service.updateLabeledThingInFrame(labeledThinIngFrame)
       .then(result => {
         expect(result).toEqual(labeledThinIngFrame);
         done();

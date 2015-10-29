@@ -78,15 +78,15 @@ export default class LabelingDataService {
   /**
    * Updates the labeled thing in frame with the given id in the database
    *
-   * @param {String} labeledThingInFrameId
+   * @param {LabeledThingInFrame} labeledThingInFrame
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  updateLabeledThingInFrame(labeledThingInFrameId, data) {
+  updateLabeledThingInFrame(labeledThingInFrame) {
     const url = this.apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrameId}`
+      `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
-    return this.$http.put(url, data)
+    return this.$http.put(url, labeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
