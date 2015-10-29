@@ -127,7 +127,7 @@ export default class ViewerStageController {
    * @private
    */
   _onUpdatedAnnotation(annotationId, annotation) {
-    this._labelingDataService.updateLabeledThingInFrame(annotation.id, annotation)
+    this._labelingDataService.updateLabeledThingInFrame(annotation)
       .then((labeledThingInFrame) => {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
