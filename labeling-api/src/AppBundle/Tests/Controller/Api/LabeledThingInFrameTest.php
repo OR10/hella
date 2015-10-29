@@ -73,7 +73,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $response = json_decode($client->getResponse()->getContent());
 
-        $this->assertEquals('newShape', $response->result->data->shapes);
+        $this->assertEquals('newShape', $response->result->shapes);
     }
 
     public function testDeleteLabeledThingInFrameDocument()
