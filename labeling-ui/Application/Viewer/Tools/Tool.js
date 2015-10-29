@@ -19,6 +19,13 @@ export default class Tool extends EventEmitter {
      * @protected
      */
     this._context = drawingContext;
+    /**
+     * Tool options
+     *
+     * @type {Object}
+     * @private
+     */
+    this._options = null;
 
     this._initializeOptions(options);
 

@@ -14,13 +14,6 @@ export default class RectangleModificationTool extends Tool {
   constructor(drawingContext, options) {
     super(drawingContext, options);
     /**
-     * Tool options
-     *
-     * @type {Object}
-     * @private
-     */
-    this._options = null;
-    /**
      * Hit test result
      *
      * @type {HitResult}
