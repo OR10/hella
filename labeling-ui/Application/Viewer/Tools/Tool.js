@@ -16,7 +16,7 @@ export default class Tool extends EventEmitter {
 
     /**
      * @type {DrawingContext}
-     * @private
+     * @protected
      */
     this._context = drawingContext;
 

@@ -13,6 +13,41 @@ export default class RectangleModificationTool extends Tool {
    */
   constructor(drawingContext, options) {
     super(drawingContext, options);
+    /**
+     * Tool options
+     *
+     * @type {Object}
+     * @private
+     */
+    this._options = null;
+    /**
+     * Hit test result
+     *
+     * @type {HitResult}
+     * @private
+     */
+    this._hitResult = null;
+    /**
+     * Mouse to center offset for moving a rectangle
+     *
+     * @type {Point}
+     * @private
+     */
+    this._offset = null;
+    /**
+     * Anchor point for scaling a rectangle
+     *
+     * @type {Point}
+     * @private
+     */
+    this._scaleAnchor = null;
+    /**
+     * Variable the holds the modified state of the current rectangle
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._modified = false;
 
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
@@ -20,21 +55,24 @@ export default class RectangleModificationTool extends Tool {
   }
 
   _mouseDown(event) {
+    this._deselectCurrentSelection();
+
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(event.point, {
         fill: true,
         bounds: true,
         tolerance: this._options.hitTestTolerance,
       });
+
       if (hitResult) {
         this._hitResult = hitResult;
+        this._hitResult.item.selected = true;
 
         switch (this._hitResult.type) {
           case 'bounds':
             this._scaleAnchor = this._getScaleAnchor(event.point, this._hitResult.item);
             break;
           case 'fill':
-            this._hitResult.item.selected = true;
             this._offset = new paper.Point(
               this._hitResult.item.position.x - event.point.x,
               this._hitResult.item.position.y - event.point.y
@@ -42,21 +80,22 @@ export default class RectangleModificationTool extends Tool {
             break;
           default:
         }
-      } else {
-        if (this._hitResult && this._hitResult.item) {
-          this._hitResult.item.selected = false;
-        }
-        this._hitResult = null;
       }
     });
   }
 
-  _mouseUp() {
+  _deselectCurrentSelection() {
     if (this._hitResult && this._hitResult.item) {
+      this._hitResult.item.selected = false;
+    }
+  }
+
+  _mouseUp() {
+    if (this._hitResult && this._hitResult.item && this._modified) {
       this.emit('rectangle:update', this._hitResult.item);
+      this._modified = false;
     }
     this._offset = null;
-    this._startPosition = null;
     this._scaleAnchor = null;
   }
 
@@ -65,9 +104,11 @@ export default class RectangleModificationTool extends Tool {
 
     switch (this._hitResult.type) {
       case 'bounds':
+        this._modified = true;
         this._scale(this._hitResult.item, event.point);
         break;
       case 'fill':
+        this._modified = true;
         this._moveTo(this._hitResult.item, event.point);
         break;
       default:
@@ -79,7 +120,7 @@ export default class RectangleModificationTool extends Tool {
   }
 
   /**
-   *TODO: If the drag handle is dragged fast over the scale anchor the scale anchor
+   * TODO: If the drag handle is dragged fast over the scale anchor the scale anchor
    * moves in the opposite of the drag direction.
    * The movement size is speed dependent!
    */
