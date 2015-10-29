@@ -56,15 +56,15 @@ module.exports = function(config) {
       ],
       urlRoot: '/',
       meta: {
-        'Tests/Unit/*': { format: 'register' }
+        'Tests/Unit/*': {format: 'register'}
       }
     },
 
     proxies: {
-    //  '/base/scripts/tests': '/base/tests',
-    //  '/base/scripts': '/base/app/scripts',
-    //  '/base/module': '/base/app/module',
-    //  '/base/vendor': '/base/app/vendor',
+      //  '/base/scripts/tests': '/base/tests',
+      //  '/base/scripts': '/base/app/scripts',
+      //  '/base/module': '/base/app/module',
+      //  '/base/vendor': '/base/app/vendor',
       '/base/vendor': '/base/Application/vendor'
     },
 
@@ -84,8 +84,17 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      //'Tests/fixtures/**/*.json': ['json2js'],
-      'Tests/Unit/**/*.spec.js': ['babel', 'coverage']
+      'Tests/Unit/**/*.spec.js': ['babel', 'coverage'],
+      'Tests/Support/**/*.js': ['babel_umd']
+    },
+
+    customPreprocessors: {
+      babel_umd: {
+        base: 'babel',
+        options: {
+          modules: 'umd'
+        }
+      }
     },
 
     // optionally, configure the reporter

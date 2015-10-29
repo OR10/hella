@@ -1,37 +1,37 @@
-((global) => {
-  const originalIt = global.it;
-  const originalFit = global.fit;
-  const originalXit = global.xit;
+const originalIt = window.it;
+const originalFit = window.fit;
+const originalXit = window.xit;
 
-  function installItOverride(it, fit, xit) {
-    global.it = it;
-    global.fit = fit;
-    global.xit = xit;
-  }
+function installItOverride(it, fit, xit) {
+  window.it = it;
+  window.fit = fit;
+  window.xit = xit;
+}
 
-  function removeOverride() {
-    global.it = originalIt;
-    global.fit = originalFit;
-    global.xit = originalXit;
-  }
+function removeOverride() {
+  window.it = originalIt;
+  window.fit = originalFit;
+  window.xit = originalXit;
+}
 
-  global.using = (dataset, testDefinitionFn) => {
-    dataset.forEach(args => {
-      const suffix = `(with ${args.join(', ')})`;
+window.using = (dataset, testDefinitionFn) => {
+  dataset.forEach(args => {
+    const suffix = `(with ${args.join(', ')})`;
 
-      function overrideIt(description, fn) {
-        originalIt(`${description} ${suffix}`, fn);
-      }
-      function overrideFit(description, fn) {
-        originalFit(`${description} ${suffix}`, fn);
-      }
-      function overrideXit(description, fn) {
-        originalXit(`${description} ${suffix}`, fn);
-      }
+    function overrideIt(description, fn) {
+      originalIt(`${description} ${suffix}`, fn);
+    }
 
-      installItOverride(overrideIt, overrideFit, overrideXit);
-      testDefinitionFn(...args);
-      removeOverride();
-    });
-  };
-})(this);
+    function overrideFit(description, fn) {
+      originalFit(`${description} ${suffix}`, fn);
+    }
+
+    function overrideXit(description, fn) {
+      originalXit(`${description} ${suffix}`, fn);
+    }
+
+    installItOverride(overrideIt, overrideFit, overrideXit);
+    testDefinitionFn(...args);
+    removeOverride();
+  });
+};
