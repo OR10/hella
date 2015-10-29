@@ -2,6 +2,8 @@ import paper from 'paper';
 import Tool from './Tool';
 
 /**
+ * A Tool for moving and resizing rectangular annotation shapes
+ *
  * @class RectangleModificationTool
  */
 export default class RectangleModificationTool extends Tool {

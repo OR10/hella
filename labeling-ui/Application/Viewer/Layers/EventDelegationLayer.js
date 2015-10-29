@@ -2,6 +2,8 @@ import EventEmitter from 'event-emitter';
 
 /**
  * Layer handling event delegation to other {@link Layer}s of the {@link Viewer}
+ *
+ * @class EventDelegationLayer
  */
 export default class EventDelegationLayer extends EventEmitter {
   constructor() {

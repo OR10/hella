@@ -1,7 +1,10 @@
 import paper from 'paper';
 
 /**
- * Abstraction class used to interact with PaperJs scopes
+ * Abstraction class used to interact with PaperJs scopes.
+ *
+ * Classes using a DrawingContext can use its DrawingContext#withScope method to execute
+ * code within the PaperJs scope associated with the context.
  *
  * @class DrawingContext
  */

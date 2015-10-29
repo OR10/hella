@@ -5,7 +5,6 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 
 /**
  * @class ViewerStageController
- *
  */
 export default class ViewerStageController {
   /**
@@ -22,8 +21,6 @@ export default class ViewerStageController {
     this._frameService = frameService;
     this._layerManager = new LayerManager();
     this._labelingDataService = labelingDataService;
-
-    this._labelingData = [];
 
     const eventDelegationLayer = new EventDelegationLayer();
     const annotationLayer = new AnnotationLayer(drawingContextService);
@@ -48,34 +45,32 @@ export default class ViewerStageController {
       }
     });
 
-    $scope.$watch('vm.frameNumber', (newFrameNumber, oldFrameNumber) => {
+    $scope.$watch('vm.frameNumber', (newFrameNumber) => {
       frameLocationsPromise.then(() => {
         this._setBackground();
       });
 
-      if (newFrameNumber !== oldFrameNumber) {
-        this._updateAnnotations(newFrameNumber, oldFrameNumber);
-      } else {
-        this._updateAnnotations(newFrameNumber);
-      }
+      this._updateAnnotations(newFrameNumber);
     });
   }
 
+  /**
+   * @private
+   *
+   * @returns {Promise}
+   */
   _initializeFrameLocations() {
-    return Promise.resolve()
-      .then(() => {
-        return this._taskFrameLocationService.getFrameLocations(
-          this.task.id,
-          'source',
-          0,
-          this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber
-        );
-      })
+    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber;
+
+    return this._taskFrameLocationService.getFrameLocations(this.task.id, 'source', 0, totalFrameCount)
       .then(frameLocations => {
         this._frameLocations = frameLocations;
       });
   }
 
+  /**
+   * @private
+   */
   _setBackground() {
     this._frameService.getImage(this._frameLocations[this.frameNumber - 1])
       .then(image => {
@@ -86,14 +81,25 @@ export default class ViewerStageController {
       });
   }
 
+  /**
+   * @param {int} newFrameNumber
+   * @private
+   */
   _updateAnnotations(newFrameNumber) {
     const annotationLayer = this._layerManager.getLayer('annotations');
 
+    annotationLayer.clear();
+
     this._loadFrameLabelingData(newFrameNumber).then((frameLabelingData) => {
-      annotationLayer.setAnnotations(frameLabelingData);
+      annotationLayer.addAnnotations(frameLabelingData);
     });
   }
 
+  /**
+   * @param {int} frameNumber
+   * @returns {Promise.<LabeledThingInFrame[]|Error>}
+   * @private
+   */
   _loadFrameLabelingData(frameNumber) {
     return this._labelingDataService.listLabeledThingInFrame(this.task, frameNumber);
   }

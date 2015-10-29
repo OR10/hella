@@ -6,6 +6,8 @@ import RectangleModificationTool from '../Tools/RectangleModificationTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
+ * A Layer used to draw labeling annotations within the viewer
+ *
  * @class AnnotationLayer
  */
 export default class AnnotationLayer extends PaperLayer {
@@ -15,10 +17,28 @@ export default class AnnotationLayer extends PaperLayer {
   constructor(drawingContextService) {
     super(drawingContextService);
 
+    /**
+     * Renderer used by this layer to draw labeling rectangles loaded from the backend
+     *
+     * @type {RectangleRenderer}
+     * @private
+     */
     this._rectangleRenderer = new RectangleRenderer();
 
+    /**
+     * Storage used to manage the currently displayed annotations
+     *
+     * @type {Map}
+     * @private
+     */
     this._annotations = new Map();
 
+    /**
+     * Tool for moving and resizing rectangles
+     *
+     * @type {RectangleModificationTool}
+     * @private
+     */
     this._rectangleModificationTool = new RectangleModificationTool(this._context);
 
     this._rectangleModificationTool.on('rectangle:update', (rectangle) => {
@@ -42,6 +62,12 @@ export default class AnnotationLayer extends PaperLayer {
       this.emit('annotation:update', rectangle.id, annotation);
     });
 
+    /**
+     * Tool for drawing rectangles
+     *
+     * @type {RectangleDrawingTool}
+     * @private
+     */
     this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
@@ -62,13 +88,20 @@ export default class AnnotationLayer extends PaperLayer {
         ],
       };
 
-      // TODO use item-idependent id since this won't work with multiple shapes per LabeledThingInFrame
+      // TODO use item-INdependent id since this won't work with multiple shapes per LabeledThingInFrame
       this.setAnnotation(rectangle.id, annotation);
 
       this.emit('annotation:new', rectangle.id, annotation);
     });
   }
 
+  /**
+   * Activates the tool identified by the given name
+   *
+   * @method AnnotationLayer#activateTool
+   *
+   * @param {String} toolName
+   */
   activateTool(toolName) {
     switch (toolName) {
       case 'drawing':
@@ -80,11 +113,13 @@ export default class AnnotationLayer extends PaperLayer {
   }
 
   /**
-   * @method AnnotationLayer#setAnnotations
+   * Adds the given annotations to this layer and draws their respective shapes
    *
-   * @param annotations
+   * @method AnnotationLayer#addAnnotations
+   *
+   * @param {LabeledThingInFrame[]} annotations
    */
-  setAnnotations(annotations) {
+  addAnnotations(annotations) {
     this._context.withScope((scope) => {
       annotations.forEach((annotation) => {
         const shape = annotation.shapes[0];
@@ -101,11 +136,22 @@ export default class AnnotationLayer extends PaperLayer {
     });
   }
 
-  setAnnotation(annotationId, annotation) {
-    this._annotations.set(annotationId, annotation);
+  /**
+   * Removes all annotations from the layer
+   *
+   * @method AnnotationLayer#clear
+   */
+  clear() {
+    super.clear();
+    this._annotations.clear();
   }
 
-  renderInPaperScope(scope) {
+  /**
+   * @param {String} annotationId - The annotation id used internally by this layer
+   * @param {LabeledThingInFrame} annotation
+   */
+  setAnnotation(annotationId, annotation) {
+    this._annotations.set(annotationId, annotation);
   }
 
   dispatchDOMEvent(event) {

@@ -4,6 +4,9 @@ import ViewerStageDirective from './Directives/ViewerStageDirective';
 import ViewerControlsDirective from './Directives/ViewerControlsDirective';
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
+/**
+ * @class Viewer
+ */
 export default class Viewer extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Viewer', ['cfp.hotkeys']);

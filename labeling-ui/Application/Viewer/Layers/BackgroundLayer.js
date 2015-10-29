@@ -1,4 +1,6 @@
 /**
+ * Layer responsible for displaying video material as a background for the viewer
+ *
  * @class BackgroundLayer
  * @implements {Layer}
  */
@@ -38,6 +40,7 @@ export default class BackgroundLayer {
 
   /**
    * Sets the background image to be displayed
+   *
    * @param {HTMLImageElement} image
    */
   setBackgroundImage(image) {

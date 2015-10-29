@@ -1,6 +1,8 @@
 import paper from 'paper';
 
 /**
+ * Renderer used to draw and manipulate rectangular shapes
+ *
  * @class RectangleRenderer
  */
 export default class RectangleRenderer {

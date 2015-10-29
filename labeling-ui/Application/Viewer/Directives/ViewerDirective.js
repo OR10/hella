@@ -2,6 +2,8 @@ import ViewerController from '../Controllers/ViewerController';
 import viewerTemplate from './ViewerDirective.html!';
 
 /**
+ * Directive encapsulating the whole viewer component
+ *
  * @class ViewerDirective
  */
 export default class ViewerDirective {

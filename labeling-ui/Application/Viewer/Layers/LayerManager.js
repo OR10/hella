@@ -1,3 +1,8 @@
+/**
+ * Management component to keep track of an access the different layers of the viewer
+ *
+ * @class LayerManager
+ */
 export default class LayerManager {
   constructor() {
     /**

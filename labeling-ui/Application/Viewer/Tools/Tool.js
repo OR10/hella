@@ -2,6 +2,8 @@ import paper from 'paper';
 import EventEmitter from 'event-emitter';
 
 /**
+ * Base class for Tools using the PaperJs tool concept
+ *
  * @class Tool
  */
 export default class Tool extends EventEmitter {
@@ -12,7 +14,12 @@ export default class Tool extends EventEmitter {
   constructor(drawingContext, options) {
     super();
 
+    /**
+     * @type {DrawingContext}
+     * @private
+     */
     this._context = drawingContext;
+
     this._initializeOptions(options);
 
     this._context.withScope(() => {
@@ -21,6 +28,10 @@ export default class Tool extends EventEmitter {
     });
   }
 
+  /**
+   * @param {Object} options
+   * @private
+   */
   _initializeOptions(options) {
     const defaultOptions = {
       minDistance: 1,

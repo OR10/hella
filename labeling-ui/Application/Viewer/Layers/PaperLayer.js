@@ -1,6 +1,8 @@
 import EventEmitter from 'event-emitter';
 
 /**
+ * Base class for all layers using PaperJs
+ *
  * @class PaperLayer
  *
  * @implements {Layer}
@@ -11,6 +13,7 @@ export default class PaperLayer extends EventEmitter {
    */
   constructor(drawingContextService) {
     super();
+
     /**
      * @type {DrawingContext}
      * @protected
