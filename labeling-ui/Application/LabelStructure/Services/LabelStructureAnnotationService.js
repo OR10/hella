@@ -1,8 +1,7 @@
-class LinearLabelStructureAnnotationService {
+export default class LinearLabelStructureAnnotationService {
   annotate(structure, annotation) {
     return [
-      {name: "weather", value: "foggy", metadata: {question: "Wie ist das Wetter?"}}
-      ...
-    ]
+      {name: "weather", value: "foggy", metadata: {question: "Wie ist das Wetter?"}},
+    ];
   }
 }
