@@ -11,6 +11,6 @@
  * Object holding arbitrary metadata annotations for a LabelStructure
  *
  * @interface AnnotatedLabelStructure
- * @property {Object} metadata
+ * @property {Object<string,*>} metadata
  **/
 

@@ -6,6 +6,8 @@
     "challenge": "Wie nebelig ist es denn so?",
     "response": "Nebel!!1111elf!"
   },
+"really-foggy": {"response": "London-style Nebel"},
+  "not-so-foggy": {"response": "völlig harmlos"},
   "solar-eclipse": {"response": "Alter! Totale Sonnenfinsternis!"},
   "country": {"challenge": "In welchem Land befinden wir uns?"},
   "germany": {"response": "Deutschland"},
