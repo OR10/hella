@@ -83,7 +83,7 @@ fos_user:
 
 doctrine_couch_db:
     client:
-        dbname: labeling_api
+        dbname: %database_name%
     odm:
         document_managers:
             default:
