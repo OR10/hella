@@ -38,5 +38,8 @@
             <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader" />
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
         </service>
+
+        <service id="annostation.labeling_api.authentication_handler" class="AppBundle\AuthenticationHandler">
+        </service>
     </services>
 </container>
