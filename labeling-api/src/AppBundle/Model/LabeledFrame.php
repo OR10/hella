@@ -2,6 +2,8 @@
 
 namespace AppBundle\Model;
 
+use AppBundle\Model;
+
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
 /**
@@ -13,6 +15,11 @@ class LabeledFrame
      * @CouchDB\Id
      */
     private $id;
+
+    /**
+     * @CouchDB\Version
+     */
+    private $rev;
 
     /**
      * @CouchDB\Field(type="integer")
@@ -28,6 +35,11 @@ class LabeledFrame
      * @CouchDB\Field(type="string")
      */
     private $labelingTaskId;
+
+    function __construct(Model\LabelingTask $task)
+    {
+        $this->labelingTaskId = $task->getId();
+    }
 
     /**
      * @return mixed
@@ -59,6 +71,22 @@ class LabeledFrame
     public function setLabelingTaskId($labelingTaskId)
     {
         $this->labelingTaskId = $labelingTaskId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRev()
+    {
+        return $this->rev;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFrameNumber()
+    {
+        return $this->frameNumber;
     }
 
 }

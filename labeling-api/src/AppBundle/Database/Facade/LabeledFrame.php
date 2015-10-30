@@ -11,19 +11,38 @@ class LabeledFrame
      */
     private $documentManager;
 
+    /**
+     * @param CouchDB\DocumentManager $documentManager
+     */
     public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
     }
 
-    public function getLabelingTask(Model\LabeledFrame $labeledFrame)
+    /**
+     * @param $id
+     * @return Model\LabeledFrame
+     */
+    public function find($id)
     {
-        return $this->documentManager->find(Model\LabelingTask::class, $labeledFrame->getLabelingTaskId());
+        return $this->documentManager->find(Model\LabeledFrame::class, $id);
     }
 
+    /**
+     * @param Model\LabeledFrame $labeledFrame
+     */
     public function save(Model\LabeledFrame $labeledFrame)
     {
         $this->documentManager->persist($labeledFrame);
+        $this->documentManager->flush();
+    }
+
+    /**
+     * @param Model\LabeledFrame $labeledFrame
+     */
+    public function delete(Model\LabeledFrame $labeledFrame)
+    {
+        $this->documentManager->remove($labeledFrame);
         $this->documentManager->flush();
     }
 }
