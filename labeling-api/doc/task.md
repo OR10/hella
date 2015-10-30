@@ -54,7 +54,7 @@
                 }
             }
 
-## Get frame locations of a task [/api/task/{taskId}/frameLocations/{type}]
+## Get frame locations of a task [/api/task/{taskId}/frameLocations/{type}{?offset,limit}]
 
 + Parameters
 
@@ -69,15 +69,15 @@
 
     + Body
 
-        {
-            "result": [
-                {
-                    "id": "05c1a74d8eda4a16a355519c0f002ee6-8",
-                    "frameNumber": 8,
-                    "url": "http:\/\/192.168.222.20:81\/\/source\/8.png"
-                }
-            ]
-        }
+            {
+                "result": [
+                    {
+                        "id": "05c1a74d8eda4a16a355519c0f002ee6-8",
+                        "frameNumber": 8,
+                        "url": "http:\/\/192.168.222.20:81\/\/source\/8.png"
+                    }
+                ]
+            }
 
 ## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
 
@@ -126,3 +126,56 @@ the same revision.
 
             {
             }
+
+## LabeledFrame [/api/task/{taskId}/labeledFrame/{frameNumber}]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + frameNumber: `3` (int, required) - The frame number for which the labeled things should be retrieved, added or replaced (int).
+
+### Get [GET]
+
+Return the labeled frame document for this frame number. If no document exists for this frame the api will return the next existing previous frame.
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": [
+                    {
+                        "id": "...",
+                        "rev": "...",
+                        "classes": [
+                            ...
+                        ]
+                    }
+                ]
+            }
+
+### Save or update [PUT]
+
+Save or update a labeled frame. If you want to update a document it is necessary to provide the current revision id.
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": [
+                    {
+                        "id": "...",
+                        "rev": "...",
+                        "classes": [
+                            ...
+                        ]
+                    }
+                ]
+            }
+
+### Delete [DELETE]
+
+Delete a labeled frame document
+
++ Response 200 (application/json)

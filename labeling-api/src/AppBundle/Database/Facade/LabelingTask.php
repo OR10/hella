@@ -16,6 +16,10 @@ class LabelingTask
         $this->documentManager = $documentManager;
     }
 
+    /**
+     * @param $id
+     * @return Model\LabelingTask
+     */
     public function find($id)
     {
         return $this->documentManager->find(Model\LabelingTask::class, $id);
@@ -34,9 +38,43 @@ class LabelingTask
         return $this->documentManager->find(Model\Video::class, $labelingTask->getVideoId());
     }
 
-    public function getLabeledFrames(Model\LabelingTask $labelingTask)
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param null               $startFrameNumber
+     * @param null               $endFrameNumber
+     * @return mixed
+     */
+    public function getLabeledFrames(
+        Model\LabelingTask $labelingTask,
+        $startFrameNumber = null,
+        $endFrameNumber = null
+    )
     {
-        //TODO: implement
+        $startKey = array(
+            $labelingTask->getId(),
+            0
+        );
+        $endKey   = array(
+            $labelingTask->getId(),
+            array()
+        );
+        if ($startFrameNumber !== null && $endFrameNumber !== null) {
+            $startKey = array(
+                $labelingTask->getId(),
+                (int)$startFrameNumber
+            );
+            $endKey   = array(
+                $labelingTask->getId(),
+                (int)$endFrameNumber
+            );
+        }
+
+        return $this->documentManager
+            ->createQuery('labeling_api', 'labeled_frame')
+            ->setStartKey($startKey)
+            ->setEndKey($endKey)
+            ->onlyDocs(true)
+            ->execute();
     }
 
     public function getLabeledThings(Model\LabelingTask $labelingTask)

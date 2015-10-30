@@ -11,6 +11,7 @@
 + Response 200 (application/json)
 
     + Body
+
             {
                 "id": "05c1a74d8eda4a16a355519c0f002ee6",
                 "rev": "1-f7136e3d4bca3ced9faa3c174c1c3d05",
