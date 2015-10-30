@@ -54,7 +54,7 @@
                 }
             }
 
-## Get frame locations of a task [/api/task/{taskId}/frameLocations/{type}]
+## Get frame locations of a task [/api/task/{taskId}/frameLocations/{type}{?offset,limit}]
 
 + Parameters
 
@@ -69,15 +69,15 @@
 
     + Body
 
-        {
-            "result": [
-                {
-                    "id": "05c1a74d8eda4a16a355519c0f002ee6-8",
-                    "frameNumber": 8,
-                    "url": "http:\/\/192.168.222.20:81\/\/source\/8.png"
-                }
-            ]
-        }
+            {
+                "result": [
+                    {
+                        "id": "05c1a74d8eda4a16a355519c0f002ee6-8",
+                        "frameNumber": 8,
+                        "url": "http:\/\/192.168.222.20:81\/\/source\/8.png"
+                    }
+                ]
+            }
 
 ## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
 
