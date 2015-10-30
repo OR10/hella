@@ -1,4 +1,4 @@
-{"children": [
+{"name": "root", "children": [
   {"name": "weather", "children": [
     {"name": "sunny"},
     {"name": "rainy-day"},
