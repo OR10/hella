@@ -116,6 +116,24 @@ export default class LabelingDataService {
         throw new Error('Failed deleting labeled thing in frame');
       });
   }
+
+  /**
+   * Adds classes to a labeled thing in frame object
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {String[]} classes
+   *
+   * @returns {Promise<LabeledThingInFrame|Error>}
+   */
+  addClassesToLabeledThingInFrame(labeledThingInFrame, classes) {
+    if (labeledThingInFrame.classes) {
+      labeledThingInFrame.classes = labeledThingInFrame.classes.concat(classes);
+    } else {
+      labeledThingInFrame.classes = classes;
+    }
+
+    return this.updateLabeledThingInFrame(labeledThingInFrame);
+  }
 }
 
 LabelingDataService.$inject = ['ApiService', '$http'];
