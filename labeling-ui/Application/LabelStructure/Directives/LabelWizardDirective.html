@@ -1,0 +1,15 @@
+<div class="label-wizard">
+    <uib-carousel template-url="LabelWizard/wizard-carousel.html" no-wrap="true">
+        <uib-slide ng-repeat="step in vm.steps">
+            <div class="label-wizard-challenge">
+                <p>{{step.metadata.challenge}}</p>
+                <div class="radio" ng-repeat="choice in step.children">
+                    <label>
+                        <input type="radio" value="{{choice.name}}" ng-model="step.metadata.value">
+                        {{choice.metadata.response}}
+                    </label>
+                </div>
+            </div>
+        </uib-slide>
+    </uib-carousel>
+</div>

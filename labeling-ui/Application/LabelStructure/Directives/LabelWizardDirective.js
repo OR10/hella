@@ -1,4 +1,4 @@
-import labelWizardTemplate from 'LabelWizardDirective.html';
+import labelWizardTemplate from './LabelWizardDirective.html!';
 import LabelWizardController from '../Controllers/LabelWizardController';
 
 /**
@@ -10,9 +10,11 @@ export default class LabelWizardDirective {
 
     this.scope = {
       labelState: '=',
+      offset: '=',
+      limit: '=',
     };
 
-    this.controller = LabelWizardController
+    this.controller = LabelWizardController;
     this.controllerAs = 'vm';
     this.bindToController = true;
   }

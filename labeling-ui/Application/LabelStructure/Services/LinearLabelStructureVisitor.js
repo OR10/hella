@@ -72,4 +72,3 @@ export default class LinearLabelStructureVisitor {
     return [linearNode, ...this._visitLabelStructure(selectedNode, context)];
   }
 }
-
