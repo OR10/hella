@@ -276,7 +276,7 @@ describe('LabelingDataGateway', () => {
         .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
         .respond(200, {result: expectedLabeldThingInFrame});
 
-      service.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
+      gateway.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
       $httpBackend.flush();
@@ -352,7 +352,7 @@ describe('LabelingDataGateway', () => {
         .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
         .respond(200, {result: expectedLabeldThingInFrame});
 
-      service.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
+      gateway.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
       $httpBackend.flush();
