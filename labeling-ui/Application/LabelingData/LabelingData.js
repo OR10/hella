@@ -1,10 +1,10 @@
 import Module from '../Module';
-import LabelingDataGateway from './Gateways/LabelingDataGateway';
+import LabeledThingInFrameGateway from './Gateways/LabeledThingInFrameGateway';
 
 export default class LabelingData extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.LabelingData', []);
 
-    this.module.service('labelingDataGateway', LabelingDataGateway);
+    this.module.service('labeledThingInFrameGateway', LabeledThingInFrameGateway);
   }
 }

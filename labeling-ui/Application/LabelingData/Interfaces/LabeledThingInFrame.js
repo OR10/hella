@@ -1,5 +1,5 @@
 /**
- * One specific LabelingData object
+ * One specific labeled thing in frame object
  *
  * @interface LabeledThingInFrame
  */
