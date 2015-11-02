@@ -49,7 +49,10 @@ module.exports = function(config) {
 
     jspm: {
       config: 'Application/system.config.js',
-      loadFiles: ['Tests/Unit/**/*.spec.js'],
+      loadFiles: [
+        'Application/Vendor/npm/core-js@*/shim.js',
+        'Tests/Unit/**/*.spec.js'
+      ],
       serveFiles: [
         'Application/**/*.js',
         'Tests/Fixtures/**/*.json'
@@ -77,7 +80,8 @@ module.exports = function(config) {
 
     babelPreprocessor: {
       options: {
-        modules: "system"
+        sourceMap: 'inline',
+        modules: 'system'
       }
     },
 
