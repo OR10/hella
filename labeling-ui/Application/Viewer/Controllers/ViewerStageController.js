@@ -13,14 +13,14 @@ export default class ViewerStageController {
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {DrawingContextService} drawingContextService
-   * @param {LabeledThingInFrameGateway} LabeledThingInFrameGateway
+   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    */
-  constructor($scope, $element, taskFrameLocationGateway, frameGateway, drawingContextService, LabeledThingInFrameGateway) {
+  constructor($scope, $element, taskFrameLocationGateway, frameGateway, drawingContextService, labeledThingInFrameGateway) {
     this._$scope = $scope;
     this._taskFrameLocationGateway = taskFrameLocationGateway;
     this._frameGateway = frameGateway;
     this._layerManager = new LayerManager();
-    this._labeledThingInFrameGateway = LabeledThingInFrameGateway;
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     const eventDelegationLayer = new EventDelegationLayer();
     const annotationLayer = new AnnotationLayer(drawingContextService);
@@ -141,5 +141,5 @@ ViewerStageController.$inject = [
   'taskFrameLocationGateway',
   'frameGateway',
   'drawingContextService',
-  'labelingDataGateway',
+  'labeledThingInFrameGateway',
 ];
