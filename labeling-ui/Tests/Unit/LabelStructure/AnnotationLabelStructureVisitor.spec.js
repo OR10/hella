@@ -1,5 +1,5 @@
 import AnnotationLabelStructureVisitor from 'Application/LabelStructure/Services/AnnotationLabelStructureVisitor.js';
-import annotationDictionaryFixture from 'Tests/Fixtures/label-structure-ui-annotation.json!';
+import annotationDictionaryFixture from 'Tests/Fixtures/meta-label-structure-ui-annotation.json!';
 
 describe('LabelStructureAnnotationVisitor', () => {
   let visitor;

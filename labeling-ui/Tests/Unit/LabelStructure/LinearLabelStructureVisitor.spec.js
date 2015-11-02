@@ -1,5 +1,5 @@
 import LinearLabelStructureVisitor from 'Application/LabelStructure/Services/LinearLabelStructureVisitor.js';
-import labelStructureFixture from 'Tests/Fixtures/label-structure.json!';
+import labelStructureFixture from 'Tests/Fixtures/meta-label-structure.json!';
 
 
 describe('LinearLabelStructureVisitor', () => {
