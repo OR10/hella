@@ -16,18 +16,19 @@ function removeOverride() {
 
 window.using = (dataset, testDefinitionFn) => {
   dataset.forEach(args => {
-    const suffix = `(with ${args.join(', ')})`;
+    //const suffix = ` (with ${args.join(', ')})`;
+    const suffix = '';
 
     function overrideIt(description, fn) {
-      originalIt(`${description} ${suffix}`, fn);
+      originalIt(`${description}${suffix}`, fn);
     }
 
     function overrideFit(description, fn) {
-      originalFit(`${description} ${suffix}`, fn);
+      originalFit(`${description}${suffix}`, fn);
     }
 
     function overrideXit(description, fn) {
-      originalXit(`${description} ${suffix}`, fn);
+      originalXit(`${description}${suffix}`, fn);
     }
 
     installItOverride(overrideIt, overrideFit, overrideXit);
