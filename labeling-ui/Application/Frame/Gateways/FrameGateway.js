@@ -1,9 +1,9 @@
 /**
- * Service to interact with {@link FrameLocation}s
+ * Gateway to interact with {@link FrameLocation}s
  *
- * This service is capable of preloading creating and interacting with {@link FrameLocation} models.
+ * This gateway is capable of preloading creating and interacting with {@link FrameLocation} models.
  */
-export default class FrameService {
+export default class FrameGateway {
   /**
    * Create and return an {@link Image} for the given {@link FrameLocation}
    *

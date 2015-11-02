@@ -1,7 +1,7 @@
 /**
- * Service to interact with {@link Task} related {@link Frame}s
+ * Gateway to interact with {@link Task} related {@link Frame}s
  */
-export default class TaskFrameLocationService {
+export default class TaskFrameLocationGateway {
   /**
    * @param {ApiService} apiService
    * @param {angular.$http} $http
@@ -33,4 +33,4 @@ export default class TaskFrameLocationService {
   }
 }
 
-TaskFrameLocationService.$inject = ['ApiService', '$http'];
+TaskFrameLocationGateway.$inject = ['ApiService', '$http'];

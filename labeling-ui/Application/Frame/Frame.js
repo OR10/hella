@@ -1,12 +1,12 @@
 import Module from '../Module';
-import FrameService from './Services/FrameService';
-import TaskFrameLocationService from './Services/TaskFrameLocationService';
+import FrameGateway from './Gateways/FrameGateway';
+import TaskFrameLocationGateway from './Gateways/TaskFrameLocationGateway';
 
 export default class Frame extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Frame', []);
 
-    this.module.service('frameService', FrameService);
-    this.module.service('taskFrameLocationService', TaskFrameLocationService);
+    this.module.service('frameGateway', FrameGateway);
+    this.module.service('taskFrameLocationGateway', TaskFrameLocationGateway);
   }
 }

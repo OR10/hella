@@ -3,11 +3,11 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import LabelingDataService from 'Application/LabelingData/Services/LabelingDataService';
+import LabelingDataGateway from 'Application/LabelingData/Gateways/LabelingDataGateway';
 
-describe('LabelingDataService', () => {
+describe('LabelingDataGateway', () => {
   let $httpBackend;
-  let service;
+  let gateway;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -25,12 +25,12 @@ describe('LabelingDataService', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      service = $injector.instantiate(LabelingDataService);
+      gateway = $injector.instantiate(LabelingDataGateway);
     });
   });
 
   it('should be able to instantiate without non injected arguments', () => {
-    expect(service instanceof LabelingDataService).toEqual(true);
+    expect(gateway instanceof LabelingDataGateway).toEqual(true);
   });
 
   it('should receive the list of labeled thing in frame objects', done => {
@@ -46,7 +46,7 @@ describe('LabelingDataService', () => {
       .expect('GET', expectedUrl)
       .respond(200, {result: expectedResult});
 
-    service.listLabeledThingInFrame(task, frameNumber)
+    gateway.listLabeledThingInFrame(task, frameNumber)
       .then(result => {
         expect(result).toEqual(expectedResult);
         done();
@@ -65,7 +65,7 @@ describe('LabelingDataService', () => {
       .expect('GET', expectedUrl)
       .respond(200, expectedResult);
 
-    service.getLabeledThingInFrame(labeledThingInFrameId)
+    gateway.getLabeledThingInFrame(labeledThingInFrameId)
       .then(result => {
         expect(result).toEqual(labeledThingInFrame);
         done();
@@ -85,7 +85,7 @@ describe('LabelingDataService', () => {
       .expect('POST', expectedUrl)
       .respond(200, expectedResult);
 
-    service.createLabeledThingInFrame(task, frameNumber, labeledThingInFrame)
+    gateway.createLabeledThingInFrame(task, frameNumber, labeledThingInFrame)
       .then(result => {
         expect(result).toEqual(labeledThingInFrame);
         done();
@@ -103,7 +103,7 @@ describe('LabelingDataService', () => {
       .expect('PUT', expectedUrl)
       .respond(200, expectedResult);
 
-    service.updateLabeledThingInFrame(labeledThinIngFrame)
+    gateway.updateLabeledThingInFrame(labeledThinIngFrame)
       .then(result => {
         expect(result).toEqual(labeledThinIngFrame);
         done();
@@ -121,7 +121,7 @@ describe('LabelingDataService', () => {
       .expect('DELETE', expectedUrl)
       .respond(200, expectedResult);
 
-    service.deleteLabeledThingInFrame(labeledThingInFrameId)
+    gateway.deleteLabeledThingInFrame(labeledThingInFrameId)
       .then(result => {
         expect(result).toEqual(expectedResult);
         done();
@@ -144,7 +144,7 @@ describe('LabelingDataService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.listLabeledThingInFrame(task, frameNumber)
+      gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
       $httpBackend.flush();
@@ -165,7 +165,7 @@ describe('LabelingDataService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.listLabeledThingInFrame(task, frameNumber)
+      gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
       $httpBackend.flush();
@@ -185,7 +185,7 @@ describe('LabelingDataService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.getLabeledThingInFrame(labeledThingInFrameId)
+      gateway.getLabeledThingInFrame(labeledThingInFrameId)
         .then(done);
 
       $httpBackend.flush();

@@ -3,12 +3,12 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import TaskFrameLocationService from 'Application/Frame/Services/TaskFrameLocationService';
+import TaskFrameLocationGateway from 'Application/Frame/Gateways/TaskFrameLocationGateway';
 
-describe('TaskFrameLocationService', () => {
+describe('TaskFrameLocationGateway', () => {
   let $httpBackend;
   let $httpParamSerializer;
-  let service;
+  let gateway;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -27,12 +27,12 @@ describe('TaskFrameLocationService', () => {
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       $httpParamSerializer = $injector.get('$httpParamSerializer');
-      service = $injector.instantiate(TaskFrameLocationService);
+      gateway = $injector.instantiate(TaskFrameLocationGateway);
     });
   });
 
   it('should be able to instantiate without non injected arguments', () => {
-    expect(service instanceof TaskFrameLocationService).toEqual(true);
+    expect(gateway instanceof TaskFrameLocationGateway).toEqual(true);
   });
 
   it('should by default request offset 0 with 1 frame', (done) => {
@@ -46,7 +46,7 @@ describe('TaskFrameLocationService', () => {
       .expect('GET', expectedUrl)
       .respond(200, {result: []});
 
-    service.getFrameLocations(taskId, type)
+    gateway.getFrameLocations(taskId, type)
       .then(done);
 
     $httpBackend.flush();
@@ -83,7 +83,7 @@ describe('TaskFrameLocationService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: expectedResult});
 
-      service.getFrameLocations(taskId, type, offset, limit)
+      gateway.getFrameLocations(taskId, type, offset, limit)
         .then(done);
 
       $httpBackend.flush();
@@ -94,7 +94,7 @@ describe('TaskFrameLocationService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: expectedResult});
 
-      service.getFrameLocations(taskId, type, offset, limit)
+      gateway.getFrameLocations(taskId, type, offset, limit)
         .then(result => {
           expect(result).toEqual(expectedResult);
           done();
@@ -124,7 +124,7 @@ describe('TaskFrameLocationService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.getFrameLocations(taskId, type)
+      gateway.getFrameLocations(taskId, type)
         .then(done);
 
       $httpBackend.flush();
@@ -150,7 +150,7 @@ describe('TaskFrameLocationService', () => {
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
 
-      service.getFrameLocations(taskId, type)
+      gateway.getFrameLocations(taskId, type)
         .then(done);
 
       $httpBackend.flush();

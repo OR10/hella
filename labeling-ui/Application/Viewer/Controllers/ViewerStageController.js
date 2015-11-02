@@ -10,17 +10,17 @@ export default class ViewerStageController {
   /**
    * @param {angular.Scope} $scope
    * @param {angular.element} $element
-   * @param {TaskFrameLocationService} taskFrameLocationService
-   * @param {FrameService} frameService
+   * @param {TaskFrameLocationGateway} taskFrameLocationGateway
+   * @param {FrameGateway} frameGateway
    * @param {DrawingContextService} drawingContextService
-   * @param {LabelingDataService} labelingDataService
+   * @param {LabelingDataGateway} labelingDataGateway
    */
-  constructor($scope, $element, taskFrameLocationService, frameService, drawingContextService, labelingDataService) {
+  constructor($scope, $element, taskFrameLocationGateway, frameGateway, drawingContextService, labelingDataGateway) {
     this._$scope = $scope;
-    this._taskFrameLocationService = taskFrameLocationService;
-    this._frameService = frameService;
+    this._taskFrameLocationGateway = taskFrameLocationGateway;
+    this._frameGateway = frameGateway;
     this._layerManager = new LayerManager();
-    this._labelingDataService = labelingDataService;
+    this._labelingDataGateway = labelingDataGateway;
 
     const eventDelegationLayer = new EventDelegationLayer();
     const annotationLayer = new AnnotationLayer(drawingContextService);
@@ -62,7 +62,7 @@ export default class ViewerStageController {
   _initializeFrameLocations() {
     const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber;
 
-    return this._taskFrameLocationService.getFrameLocations(this.task.id, 'source', 0, totalFrameCount)
+    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount)
       .then(frameLocations => {
         this._frameLocations = frameLocations;
       });
@@ -72,7 +72,7 @@ export default class ViewerStageController {
    * @private
    */
   _setBackground() {
-    this._frameService.getImage(this._frameLocations[this.frameNumber - 1])
+    this._frameGateway.getImage(this._frameLocations[this.frameNumber - 1])
       .then(image => {
         const backgroundLayer = this._layerManager.getLayer('background');
 
@@ -101,7 +101,7 @@ export default class ViewerStageController {
    * @private
    */
   _loadFrameLabelingData(frameNumber) {
-    return this._labelingDataService.listLabeledThingInFrame(this.task, frameNumber);
+    return this._labelingDataGateway.listLabeledThingInFrame(this.task, frameNumber);
   }
 
   /**
@@ -114,7 +114,7 @@ export default class ViewerStageController {
       this.activeTool = 'modification';
     });
 
-    this._labelingDataService.createLabeledThingInFrame(this.task, this.frameNumber, annotation)
+    this._labelingDataGateway.createLabeledThingInFrame(this.task, this.frameNumber, annotation)
       .then((labeledThingInFrame) => {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
@@ -127,7 +127,7 @@ export default class ViewerStageController {
    * @private
    */
   _onUpdatedAnnotation(annotationId, annotation) {
-    this._labelingDataService.updateLabeledThingInFrame(annotation)
+    this._labelingDataGateway.updateLabeledThingInFrame(annotation)
       .then((labeledThingInFrame) => {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
@@ -138,8 +138,8 @@ export default class ViewerStageController {
 ViewerStageController.$inject = [
   '$scope',
   '$element',
-  'taskFrameLocationService',
-  'frameService',
+  'taskFrameLocationGateway',
+  'frameGateway',
   'drawingContextService',
-  'labelingDataService',
+  'labelingDataGateway',
 ];

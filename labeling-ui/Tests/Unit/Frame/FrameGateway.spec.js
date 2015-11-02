@@ -2,10 +2,10 @@ import 'jquery';
 import 'angular';
 import angularMocks from 'angular-mocks';
 
-import FrameService from 'Application/Frame/Services/FrameService';
+import FrameGateway from 'Application/Frame/Gateways/FrameGateway';
 
-describe('FrameService', () => {
-  let service;
+describe('FrameGateway', () => {
+  let gateway;
   let createImageMock;
   let frameLocation;
 
@@ -39,16 +39,16 @@ describe('FrameService', () => {
       return retVal;
     };
 
-    service = $injector.instantiate(FrameService);
+    gateway = $injector.instantiate(FrameGateway);
   }));
 
   it('should be able to instantiate without non injected arguments', () => {
-    expect(service instanceof FrameService).toEqual(true);
+    expect(gateway instanceof FrameGateway).toEqual(true);
   });
 
   it('should request the url from the given location and return the image once loaded', done => {
     const mock = createImageMock(false);
-    service.getImage(frameLocation)
+    gateway.getImage(frameLocation)
       .then((image) => {
         expect(image.__srcSpy).toHaveBeenCalled();
         expect(image.__srcSpy).toHaveBeenCalledWith(frameLocation.url);
@@ -59,7 +59,7 @@ describe('FrameService', () => {
 
   it('should reject in case an image loading error occurs', done => {
     const mock = createImageMock(true);
-    service.getImage(frameLocation)
+    gateway.getImage(frameLocation)
       .catch((error) => {
         expect(error).toEqual('error!!1elf!!');
         done();
