@@ -5,6 +5,9 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 
 /**
  * @class ViewerStageController
+ *
+ * @property {Function} onNewAnnotation
+ * @property {Function} onUpdatedAnnotation
  */
 export default class ViewerStageController {
   /**
@@ -119,6 +122,8 @@ export default class ViewerStageController {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
       });
+
+    this.onNewAnnotation({annotation, id: annotationId});
   }
 
   /**
@@ -132,6 +137,8 @@ export default class ViewerStageController {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
       });
+
+    this.onUpdatedAnnotation({annotation, id: annotationId});
   }
 }
 

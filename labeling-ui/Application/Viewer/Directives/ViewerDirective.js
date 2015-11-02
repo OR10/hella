@@ -8,16 +8,19 @@ import viewerTemplate from './ViewerDirective.html!';
  */
 export default class ViewerDirective {
   constructor() {
+    this.scope = {
+      onNewAnnotation: '&',
+      onUpdatedAnnotation: '&',
+
+      task: '=',
+      frameNumber: '=',
+      activeTool: '=',
+    };
+
     this.controller = ViewerController;
     this.controllerAs = 'vm';
     this.bindToController = true;
 
     this.template = viewerTemplate;
-
-    this.scope = {
-      task: '=',
-      frameNumber: '=',
-      activeTool: '=',
-    };
   }
 }

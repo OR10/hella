@@ -21,12 +21,20 @@ export default class TaskController {
     this.objectLabelAnnotation = objectLabelAnnotation;
   }
 
-  onMetaLabelingChanged(classes, incomplete) {
+  handleMetaLabelingChanged(classes, incomplete) {
     console.log(arguments);
   }
 
-  onObjectLabelingChanged(classes, incomplete) {
+  handleObjectLabelingChanged(classes, incomplete) {
     console.log(arguments);
+  }
+
+  handleNewAnnotation(id, annotation) {
+    console.log(arguments)
+  }
+
+  handleUpdatedAnnotation(id, annotation) {
+    console.log(arguments)
   }
 }
 

@@ -1,14 +1,22 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-container">
-            <viewer-stage frame-number="vm.frameNumber" task="vm.task" active-tool="vm.activeTool"></viewer-stage>
+            <viewer-stage frame-number="vm.frameNumber"
+                          task="vm.task"
+                          active-tool="vm.activeTool"
+                          on-new-annotation="vm.handleNewAnnotation(id, annotation)"
+                          on-updated-annotation="vm.handleUpdatedAnnotation(id, annotation)">
+            </viewer-stage>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-controls-container">
-            <viewer-controls frame-number="vm.frameNumber" task="vm.task" active-tool="vm.activeTool"></viewer-controls>
+            <viewer-controls frame-number="vm.frameNumber"
+                             task="vm.task"
+                             active-tool="vm.activeTool">
+            </viewer-controls>
         </div>
     </div>
 </div>

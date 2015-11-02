@@ -10,15 +10,18 @@ import viewerStageTemplate from './ViewerStageDirective.html!';
  */
 export default class ViewerStageDirective {
   constructor() {
-    this.controller = ViewerStageController;
-    this.controllerAs = 'vm';
-    this.bindToController = true;
-    this.template = viewerStageTemplate;
-
     this.scope = {
+      onNewAnnotation: '&',
+      onUpdatedAnnotation: '&',
+
       task: '=',
       frameNumber: '=',
       activeTool: '=',
     };
+
+    this.controller = ViewerStageController;
+    this.controllerAs = 'vm';
+    this.bindToController = true;
+    this.template = viewerStageTemplate;
   }
 }
