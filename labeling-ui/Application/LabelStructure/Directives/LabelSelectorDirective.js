@@ -7,6 +7,8 @@ import LabelSelectorController from '../Controllers/LabelSelectorController';
 export default class LabelSelectorDirective {
   constructor() {
     this.scope = {
+      onMetaLabelingChanged: '&',
+      onObjectLabelingChanged: '&',
       metaLabelStructure: '=',
       objectLabelStructure: '=',
       metaLabelAnnotation: '=',
