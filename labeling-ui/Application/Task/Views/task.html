@@ -6,6 +6,8 @@
         </div>
         <div class="col-md-3">
             <label-selector
+                    on-object-labeling-changed="vm.onObjectLabelingChanged(classes, incomplete)"
+                    on-meta-labeling-changed="vm.onMetaLabelingChanged(classes, incomplete)"
                     meta-label-structure="vm.metaLabelStructure"
                     object-label-structure="vm.objectLabelStructure"
                     meta-label-annotation="vm.metaLabelAnnotation"

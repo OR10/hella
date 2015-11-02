@@ -20,6 +20,14 @@ export default class TaskController {
     this.metaLabelAnnotation = metaLabelAnnotation;
     this.objectLabelAnnotation = objectLabelAnnotation;
   }
+
+  onMetaLabelingChanged(classes, incomplete) {
+    console.log(arguments);
+  }
+
+  onObjectLabelingChanged(classes, incomplete) {
+    console.log(arguments);
+  }
 }
 
 TaskController.$inject = ['task'];

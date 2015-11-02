@@ -21,6 +21,12 @@ export default class LabelSelectorController {
         classes,
         this.metaLabelAnnotation
       );
+
+      const labelingComplete = this._isLabelingComplete(this.metaLabelState);
+      this.onMetaLabelingChanged({
+        classes: Object.values(this.metaLabelContext),
+        incomplete: !labelingComplete,
+      });
     });
 
     $scope.$watchCollection('vm.objectLabelContext', () => {
@@ -31,6 +37,12 @@ export default class LabelSelectorController {
         classes,
         this.objectLabelAnnotation
       );
+
+      const labelingComplete = this._isLabelingComplete(this.objectLabelState);
+      this.onObjectLabelingChanged({
+        classes: Object.values(this.objectLabelContext),
+        incomplete: !labelingComplete,
+      });
     });
   }
 
@@ -40,9 +52,12 @@ export default class LabelSelectorController {
   }
 
   _updateLabelState(state, context, annotation) {
-    console.log(annotation);
     const updatedStructure = this._linearLabelStructureVisitor.visit(state, context);
     return this._labelStructureAnnotationService.visit(updatedStructure, annotation);
+  }
+
+  _isLabelingComplete(state) {
+    return state.children.reduce((completeSoFar, category) => completeSoFar && category.metadata.value !== null, true);
   }
 }
 
