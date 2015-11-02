@@ -1,9 +1,7 @@
 /**
- * @class TaskService
- *
- * Service for retrieving information about Tasks
+ * Gateway for retrieving information about Tasks
  */
-export default class TaskService {
+export default class TaskGateway {
   constructor(apiService, $http) {
     this.$http = $http;
     this.apiService = apiService;
@@ -46,4 +44,4 @@ export default class TaskService {
   }
 }
 
-TaskService.$inject = ['ApiService', '$http'];
+TaskGateway.$inject = ['ApiService', '$http'];

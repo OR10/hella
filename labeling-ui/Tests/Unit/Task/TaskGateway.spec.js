@@ -3,11 +3,11 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import TaskService from 'Application/Task/Services/TaskService';
+import TaskGateway from 'Application/Task/Gateways/TaskGateway';
 
-describe('TaskService', () => {
+describe('TaskGateway', () => {
   let $httpBackend;
-  let service;
+  let gateway;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -25,12 +25,12 @@ describe('TaskService', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      service = $injector.instantiate(TaskService);
+      gateway = $injector.instantiate(TaskGateway);
     });
   });
 
   it('should be instantiatable', () => {
-    expect(service instanceof TaskService).toBe(true);
+    expect(gateway instanceof TaskGateway).toBe(true);
   });
 
   it('should load a list of tasks', (done) => {
@@ -43,7 +43,7 @@ describe('TaskService', () => {
 
     $httpBackend.expectGET('/backend/api/task').respond(tasksResponse);
 
-    service.getTasks().then((tasks) => {
+    gateway.getTasks().then((tasks) => {
       expect(tasks).toEqual(tasksResponse.result);
       done();
     });
@@ -58,7 +58,7 @@ describe('TaskService', () => {
 
     $httpBackend.expectGET('/backend/api/task/123asdf').respond(taskResponse);
 
-    service.getTask('123asdf').then((task) => {
+    gateway.getTask('123asdf').then((task) => {
       expect(task).toEqual(taskResponse.result);
       done();
     });

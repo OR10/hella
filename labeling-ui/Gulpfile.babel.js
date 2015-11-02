@@ -182,12 +182,12 @@ gulp.task('eslint-checkstyle', () => {
   .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
 });
 
-gulp.task('test-unit', () => {
+gulp.task('test-unit', (next) => {
   const karmaServer = new KarmaServer({
     'configFile': path.join(__dirname, '/karma.conf.js'),
-  });
+  }, next);
 
-  return karmaServer.start();
+  karmaServer.start();
 });
 
 gulp.task('test-unit-continuous', () => {

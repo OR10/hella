@@ -1,9 +1,9 @@
 export default class TaskListController {
   /**
-   * @param {TaskService} taskListService
+   * @param {TaskGateway} taskGateway
    */
-  constructor(taskListService) {
-    this.taskListService = taskListService;
+  constructor(taskGateway) {
+    this.taskGateway = taskGateway;
 
     this.tasks = null;
 
@@ -11,11 +11,11 @@ export default class TaskListController {
   }
 
   loadTaskList() {
-    this.taskListService.getTasks()
+    this.taskGateway.getTasks()
       .then((tasks) => {
         this.tasks = tasks;
       });
   }
 }
 
-TaskListController.$inject = ['taskService'];
+TaskListController.$inject = ['taskGateway'];

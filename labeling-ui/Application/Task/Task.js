@@ -1,5 +1,5 @@
 import Module from '../Module';
-import TaskService from './Services/TaskService';
+import TaskGateway from './Gateways/TaskGateway';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
@@ -7,15 +7,15 @@ export default class Task extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Task', []);
 
-    this.module.service('taskService', TaskService);
+    this.module.service('taskGateway', TaskGateway);
   }
 
   config($stateProvider) {
-    const taskResolver = ($stateParams, taskService) => {
-      return taskService.getTask($stateParams.taskId);
+    const taskResolver = ($stateParams, taskGateway) => {
+      return taskGateway.getTask($stateParams.taskId);
     };
 
-    taskResolver.$inject = ['$stateParams', 'taskService'];
+    taskResolver.$inject = ['$stateParams', 'taskGateway'];
 
     $stateProvider.state('task', {
       url: '/task/:taskId',
