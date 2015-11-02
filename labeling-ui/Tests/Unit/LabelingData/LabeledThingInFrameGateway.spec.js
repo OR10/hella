@@ -3,9 +3,9 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import LabelingDataGateway from 'Application/LabelingData/Gateways/LabelingDataGateway';
+import LabeledThingInFrameGateway from 'Application/LabelingData/Gateways/LabeledThingInFrameGateway';
 
-describe('LabelingDataGateway', () => {
+describe('LabeledThingInFrameGateway', () => {
   let $httpBackend;
   let gateway;
 
@@ -25,12 +25,12 @@ describe('LabelingDataGateway', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      gateway = $injector.instantiate(LabelingDataGateway);
+      gateway = $injector.instantiate(LabeledThingInFrameGateway);
     });
   });
 
   it('should be able to instantiate without non injected arguments', () => {
-    expect(gateway instanceof LabelingDataGateway).toEqual(true);
+    expect(gateway instanceof LabeledThingInFrameGateway).toEqual(true);
   });
 
   it('should receive the list of labeled thing in frame objects', done => {
@@ -276,7 +276,7 @@ describe('LabelingDataGateway', () => {
         .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
         .respond(200, {result: expectedLabeldThingInFrame});
 
-      service.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
+      gateway.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
       $httpBackend.flush();
@@ -352,7 +352,7 @@ describe('LabelingDataGateway', () => {
         .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
         .respond(200, {result: expectedLabeldThingInFrame});
 
-      service.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
+      gateway.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
       $httpBackend.flush();

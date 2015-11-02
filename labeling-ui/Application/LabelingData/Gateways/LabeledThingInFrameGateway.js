@@ -1,9 +1,9 @@
 /**
- * @class LabelingDataGateway
+ * @class LabeledThingInFrameGateway
  *
  * Gateway for saving and retrieving Labeling Data
  */
-export default class LabelingDataGateway {
+export default class LabeledThingInFrameGateway {
   constructor(apiService, $http) {
     this.$http = $http;
     this.apiService = apiService;
@@ -172,4 +172,4 @@ export default class LabelingDataGateway {
   }
 }
 
-LabelingDataGateway.$inject = ['ApiService', '$http'];
+LabeledThingInFrameGateway.$inject = ['ApiService', '$http'];
