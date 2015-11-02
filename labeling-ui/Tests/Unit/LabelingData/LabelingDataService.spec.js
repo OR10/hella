@@ -238,6 +238,21 @@ describe('LabelingDataService', () => {
       'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
       'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
     }],
+    [['a', 'b', 'c'], {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['a'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }, {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['a', 'b', 'c'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }],
     [[], {
       'id': '1',
       'rev': '1',
@@ -256,12 +271,88 @@ describe('LabelingDataService', () => {
   ], (classes, labeledThingInFrame, expectedLabeldThingInFrame) => {
     const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrame.id}`;
 
-    it('should set classes to a labeled thing in frame and persist them', done => {
+    it('should add classes to a labeled thing in frame and persist them', done => {
       $httpBackend
         .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
         .respond(200, {result: expectedLabeldThingInFrame});
 
       service.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
+        .then(done);
+
+      $httpBackend.flush();
+    });
+  });
+
+  using([
+    [['a'], {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': [],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }, {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['a'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }],
+    [['a', 'b', 'c'], {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': [],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }, {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['a', 'b', 'c'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }],
+    [['b', 'c'], {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['a'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }, {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['b', 'c'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }],
+    [['a', 'a', 'b', 'c'], {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': [],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }, {
+      'id': '1',
+      'rev': '1',
+      'frameNumber': 1,
+      'classes': ['a', 'b', 'c'],
+      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
+      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
+    }],
+  ], (classes, labeledThingInFrame, expectedLabeldThingInFrame) => {
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrame.id}`;
+
+    it('should set classes to a labeled thing in frame and persist them', done => {
+      $httpBackend
+        .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
+        .respond(200, {result: expectedLabeldThingInFrame});
+
+      service.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
       $httpBackend.flush();
