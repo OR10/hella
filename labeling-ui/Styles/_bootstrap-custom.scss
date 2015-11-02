@@ -23,7 +23,7 @@
 @import "jspm:bootstrap/assets/stylesheets/bootstrap/buttons";
 
 // Optional Components - comment in to include them in the custom build
-//@import "jspm:bootstrap/assets/stylesheets/bootstrap/component-animations";
+@import "jspm:bootstrap/assets/stylesheets/bootstrap/component-animations";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/dropdowns";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/button-groups";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/input-groups";
@@ -38,9 +38,9 @@
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/thumbnails";
 @import "jspm:bootstrap/assets/stylesheets/bootstrap/alerts";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/progress-bars";
-//@import "jspm:bootstrap/assets/stylesheets/bootstrap/media";
+@import "jspm:bootstrap/assets/stylesheets/bootstrap/media";
 @import "jspm:bootstrap/assets/stylesheets/bootstrap/list-group";
-//@import "jspm:bootstrap/assets/stylesheets/bootstrap/panels";
+@import "jspm:bootstrap/assets/stylesheets/bootstrap/panels";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/responsive-embed";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/wells";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/close";
@@ -49,7 +49,7 @@
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/modals";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/tooltip";
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/popovers";
-//@import "jspm:bootstrap/assets/stylesheets/bootstrap/carousel";
+@import "jspm:bootstrap/assets/stylesheets/bootstrap/carousel";
 
 // Utility classes
 //@import "jspm:bootstrap/assets/stylesheets/bootstrap/utilities";

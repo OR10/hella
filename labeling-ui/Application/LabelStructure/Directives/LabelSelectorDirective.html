@@ -1,0 +1,13 @@
+<div class="label-selector">
+    <uib-accordion close-others="{{true}}">
+        <uib-accordion-group heading="Meta categories" is-open="vm.firstOpen">
+            <label-wizard label-state="vm.metaLabelState" label-context="vm.objectLabelContext"></label-wizard>
+        </uib-accordion-group>
+        <uib-accordion-group heading="Object categories">
+            <label-wizard label-state="vm.objectLabelState" label-context="vm.objectLabelContext" offset="0" limit="1"></label-wizard>
+        </uib-accordion-group>
+        <uib-accordion-group heading="Object subcategories">
+            <label-wizard label-state="vm.objectLabelState" label-context="vm.objectLabelContext" offset="1" limit="vm.objectLabelState.children.length"></label-wizard>
+        </uib-accordion-group>
+    </uib-accordion>
+</div>

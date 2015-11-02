@@ -13,7 +13,11 @@ import ip from 'ip';
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
 
-const $$ = gulpLoadPlugins();
+const $$ = gulpLoadPlugins({
+  rename: {
+    'gulp-angular-templatecache': 'angularTemplateCache',
+  },
+});
 
 const paths = {};
 paths.dir = {
@@ -66,7 +70,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
   run(
     'clean',
     'build-public',
-    ['build-sass', 'build-fonts'],
+    ['build-templates', 'build-sass', 'build-fonts'],
     () => {
       const devServer = new DevServer({
         'baseURL': './',
@@ -129,6 +133,7 @@ gulp.task('build-public', () => {
 
 gulp.task('build', next => run(
   'build-public',
+  'build-templates',
   ['build-javascript', 'build-sass', 'build-fonts'],
   next
 ));
@@ -268,6 +273,18 @@ gulp.task('optimize-css', () => {
     .pipe($$.rename({extname: '.min.css'}))
     .pipe($$.sourcemaps.write('./'))
     .pipe(gulp.dest(paths.dir.css));
+});
+
+gulp.task('build-templates', () => {
+  return gulp.src(paths.dir.vendor + '/**/angular-ui/bootstrap*/template/{collapse,accordion,carousel}/*.html')
+    .pipe($$.angularTemplateCache({
+      filename: 'angular-ui-bootstrap.js',
+      module: 'AnnoStation.VendorTemplates',
+      root: 'template/',
+      standalone: true,
+      base: template => path.basename(path.dirname(template.path)) + '/' + path.basename(template.path),
+    }))
+    .pipe(gulp.dest(paths.dir.distribution + '/Templates'));
 });
 
 gulp.task('default', next => run(

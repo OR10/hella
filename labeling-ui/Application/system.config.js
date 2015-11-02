@@ -16,6 +16,7 @@ System.config({
     "angular": "github:angular/bower-angular@1.4.7",
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
+    "angular-ui-bootstrap": "github:angular-ui/bootstrap@0.14.3",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.25",
     "babel-runtime": "npm:babel-runtime@5.8.25",
