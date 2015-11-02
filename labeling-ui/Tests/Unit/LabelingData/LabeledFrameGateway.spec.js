@@ -93,6 +93,4 @@ describe('LabeledFrameGateway', () => {
 
     $httpBackend.flush();
   });
-
-
 });
