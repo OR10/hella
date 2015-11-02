@@ -24,7 +24,7 @@ export default class LinearLabelStructureVisitor {
    * Visit an array of {@link LabelStructure}s returning a list representation of their contents
    *
    * @param {Array<LabelStructure>} nodes
-   * @param {Object<string, string>} context
+   * @param {Array<string>} context
    * @returns {Array<{name: string, value: string|null}>}
    * @private
    */
@@ -42,12 +42,13 @@ export default class LinearLabelStructureVisitor {
    * This method joins the context with the given node to determine the next path to take.
    *
    * @param {LabelStructure} node
-   * @param {Object<string,string>} context
+   * @param {Array<string>} context
    * @returns {Array<AnnotatedLabelStructure>}
    * @private
    */
   _visitLabelStructure(node, context) {
-    const value = context[node.name] ? context[node.name] : null;
+    const selectedNode = this._calculateSelectedChildForNode(node, context);
+    const value = selectedNode ? selectedNode.name : null;
     const linearNode = {name: node.name, metadata: {value}};
 
     // Attach children, but only one level of them
@@ -55,14 +56,8 @@ export default class LinearLabelStructureVisitor {
       linearNode.children = node.children.map(childNode => ({name: childNode.name}));
     }
 
-    if (value === null) {
+    if (selectedNode === null) {
       return [linearNode];
-    }
-
-    const selectedNode = node.children.find(childNode => childNode.name === value);
-
-    if (selectedNode === undefined) {
-      throw new Error(`Selected node could not be found: ${node.name} -> ${value}`);
     }
 
     if (!selectedNode.children) {
@@ -70,5 +65,32 @@ export default class LinearLabelStructureVisitor {
     }
 
     return [linearNode, ...this._visitLabelStructure(selectedNode, context)];
+  }
+
+  /**
+   * Retrieve selected child for a given node based on a context
+   *
+   * The value is based on the context as well as the children of the given node,
+   * which determine what value the current node has
+   *
+   * @param {LabelStructure} node
+   * @param {Array<string>} context
+   * @returns {LabelStructure|null}
+   * @private
+   */
+  _calculateSelectedChildForNode(node, context) {
+    if (!node.children) {
+      // Without children a node essentially can't have a child
+      return null;
+    }
+
+    const selectedChildren = node.children
+      .filter(childNode => context.indexOf(childNode.name) !== -1);
+
+    if (selectedChildren.length === 0) {
+      return null;
+    }
+
+    return selectedChildren[0];
   }
 }

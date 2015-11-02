@@ -10,7 +10,7 @@ describe('LinearLabelStructureVisitor', () => {
 
   using([
     [
-      {},
+      [],
       [
         {name: 'weather', metadata:{value: null}, children: [
           {name: 'sunny'},
@@ -26,7 +26,7 @@ describe('LinearLabelStructureVisitor', () => {
       ],
     ],
     [
-      {weather: 'solar-eclipse'},
+      ['solar-eclipse'],
       [
         {name: 'weather', metadata: {value: 'solar-eclipse'}, children: [
           {name: 'sunny'},
@@ -42,7 +42,7 @@ describe('LinearLabelStructureVisitor', () => {
       ],
     ],
     [
-      {weather: 'foggy'},
+      ['foggy'],
       [
         {name: 'weather', metadata: {value: 'foggy'}, children: [
           {name: 'sunny'},
@@ -62,7 +62,7 @@ describe('LinearLabelStructureVisitor', () => {
       ],
     ],
     [
-      {weather: 'foggy', foggy: 'really-foggy', country: 'england'},
+      ['foggy', 'really-foggy','england'],
       [
         {name: 'weather', metadata: {value: 'foggy'}, children: [
           {name: 'sunny'},
@@ -82,7 +82,7 @@ describe('LinearLabelStructureVisitor', () => {
       ],
     ],
     [
-      {weather: 'sunny', foggy: 'really-foggy', country: 'germany'},
+      ['sunny', 'really-foggy', 'germany'],
       [
         {name: 'weather', metadata: {value: 'sunny'}, children: [
           {name: 'sunny'},
