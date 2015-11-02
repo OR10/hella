@@ -69,8 +69,8 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
             $task,
             $frameNumber,
-            $request->request->get('shapes'),
-            $request->request->get('classes')
+            $request->request->get('shapes') === null ? array() : $request->request->get('shapes'),
+            $request->request->get('classes') === null ? array() : $request->request->get('classes')
         );
 
         $response->setData(['result' => $labeledThingInFrame]);

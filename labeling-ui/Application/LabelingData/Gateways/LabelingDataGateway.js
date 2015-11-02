@@ -56,8 +56,8 @@ export default class LabelingDataGateway {
    * Creates a labeled thing in frame object in the database
    *
    * @param {Task} task
-   * @param {LabeledThingInFrame} data
    * @param {Integer} frameNumber
+   * @param {LabeledThingInFrame} data
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
@@ -65,7 +65,9 @@ export default class LabelingDataGateway {
     const url = this.apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.$http.post(url, data)
+    const labeledThingInFrame = this._uniqueClasses(data);
+
+    return this.$http.post(url, labeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -78,14 +80,17 @@ export default class LabelingDataGateway {
   /**
    * Updates the labeled thing in frame with the given id in the database
    *
-   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {LabeledThingInFrame} data
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  updateLabeledThingInFrame(labeledThingInFrame) {
+  updateLabeledThingInFrame(data) {
     const url = this.apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrame.id}`
+      `/labeledThingInFrame/${data.id}`
     );
+
+    const labeledThingInFrame = this._uniqueClasses(data);
+
     return this.$http.put(url, labeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
@@ -115,6 +120,55 @@ export default class LabelingDataGateway {
 
         throw new Error('Failed deleting labeled thing in frame');
       });
+  }
+
+  /**
+   * Adds classes to a labeled thing in frame object
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {String[]} classes
+   *
+   * @returns {Promise<LabeledThingInFrame|Error>}
+   */
+  addClassesToLabeledThingInFrame(labeledThingInFrame, classes) {
+    if (labeledThingInFrame.classes) {
+      labeledThingInFrame.classes = labeledThingInFrame.classes.concat(classes);
+    } else {
+      labeledThingInFrame.classes = classes;
+    }
+
+    return this.updateLabeledThingInFrame(labeledThingInFrame);
+  }
+
+  /**
+   * Sets the classes array on a labeled thing in frame
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {String[]} classes
+   *
+   * @returns {Promise<LabeledThingInFrame|Error>}
+   */
+  setClassesToLabeledThingInFrame(labeledThingInFrame, classes) {
+    if (classes) {
+      labeledThingInFrame.classes = classes;
+    } else {
+      labeledThingInFrame.classes = [];
+    }
+
+    return this.updateLabeledThingInFrame(labeledThingInFrame);
+  }
+
+  /**
+   * Make the classes array on a labeled thing in frame unique
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @returns {LabeledThingInFrame}
+   * @private
+   */
+  _uniqueClasses(labeledThingInFrame) {
+    labeledThingInFrame.classes = [...new Set(labeledThingInFrame.classes)];
+
+    return labeledThingInFrame;
   }
 }
 

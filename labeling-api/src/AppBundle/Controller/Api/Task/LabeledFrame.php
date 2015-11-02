@@ -137,7 +137,9 @@ class LabeledFrame extends Controller\Base
             if ($labeledFrame === null) {
                 $labeledFrame = new Model\LabeledFrame($task);
             }
-            $labeledFrame->setClasses($request->request->get('classes'));
+            $labeledFrame->setClasses(
+                $request->request->get('classes') === null ? array() : $request->request->get('classes')
+            );
             $labeledFrame->setFrameNumber($request->request->get('frameNumber'));
             $this->labeledFrameFacade->save($labeledFrame);
             $response->setData(['result' => $labeledFrame]);
