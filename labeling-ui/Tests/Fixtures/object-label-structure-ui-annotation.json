@@ -1,11 +1,29 @@
 {
-  "objectType": {"challenge": "What kind of object are you labeling?"},
-  "pedestrian": {"response": "Pedestrian"},
-  "cyclist": {"response": "Cyclist"},
-  "car": {"response": "Car"},
-"movementDirection": {"challenge": "Which direction is the object moving?"},
-  "left": "Links",
-  "right": "Rechts",
-  "front": "Vorne",
-  "back": "Hinten"
+  "objectType": {
+    "challenge": "What kind of object are you labeling?"
+  },
+  "pedestrian": {
+    "response": "Pedestrian"
+  },
+  "cyclist": {
+    "response": "Cyclist"
+  },
+  "car": {
+    "response": "Car"
+  },
+  "movementDirection": {
+    "challenge": "Which direction is the object moving?"
+  },
+  "left": {
+    "response": "Links"
+  },
+  "right": {
+    "response": "Rechts"
+  },
+  "front": {
+    "response": "Vorne"
+  },
+  "back": {
+    "response": "Hinten"
+  }
 }

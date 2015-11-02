@@ -1,5 +1,5 @@
 import Module from '../Module';
-import LabelingDataGateway from 'Gateways/LabelingDataGateway';
+import LabelingDataGateway from './Gateways/LabelingDataGateway';
 
 export default class LabelingData extends Module {
   registerWithAngular(angular) {

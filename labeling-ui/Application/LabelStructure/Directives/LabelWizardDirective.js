@@ -10,6 +10,7 @@ export default class LabelWizardDirective {
 
     this.scope = {
       labelState: '=',
+      labelContext: '=',
       offset: '=',
       limit: '=',
     };

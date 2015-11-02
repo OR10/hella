@@ -5,7 +5,7 @@
                 <p>{{step.metadata.challenge}}</p>
                 <div class="radio" ng-repeat="choice in step.children">
                     <label>
-                        <input type="radio" value="{{choice.name}}" ng-model="step.metadata.value">
+                        <input type="radio" value="{{choice.name}}" ng-model="vm.labelContext[step.name]">
                         {{choice.metadata.response}}
                     </label>
                 </div>
