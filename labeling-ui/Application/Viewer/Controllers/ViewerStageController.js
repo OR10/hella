@@ -13,14 +13,14 @@ export default class ViewerStageController {
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {DrawingContextService} drawingContextService
-   * @param {LabelingDataGateway} labelingDataGateway
+   * @param {LabeledThingInFrameGateway} LabeledThingInFrameGateway
    */
-  constructor($scope, $element, taskFrameLocationGateway, frameGateway, drawingContextService, labelingDataGateway) {
+  constructor($scope, $element, taskFrameLocationGateway, frameGateway, drawingContextService, LabeledThingInFrameGateway) {
     this._$scope = $scope;
     this._taskFrameLocationGateway = taskFrameLocationGateway;
     this._frameGateway = frameGateway;
     this._layerManager = new LayerManager();
-    this._labelingDataGateway = labelingDataGateway;
+    this._labeledThingInFrameGateway = LabeledThingInFrameGateway;
 
     const eventDelegationLayer = new EventDelegationLayer();
     const annotationLayer = new AnnotationLayer(drawingContextService);
@@ -101,7 +101,7 @@ export default class ViewerStageController {
    * @private
    */
   _loadFrameLabelingData(frameNumber) {
-    return this._labelingDataGateway.listLabeledThingInFrame(this.task, frameNumber);
+    return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
   }
 
   /**
@@ -114,7 +114,7 @@ export default class ViewerStageController {
       this.activeTool = 'modification';
     });
 
-    this._labelingDataGateway.createLabeledThingInFrame(this.task, this.frameNumber, annotation)
+    this._labeledThingInFrameGateway.createLabeledThingInFrame(this.task, this.frameNumber, annotation)
       .then((labeledThingInFrame) => {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
@@ -127,7 +127,7 @@ export default class ViewerStageController {
    * @private
    */
   _onUpdatedAnnotation(annotationId, annotation) {
-    this._labelingDataGateway.updateLabeledThingInFrame(annotation)
+    this._labeledThingInFrameGateway.updateLabeledThingInFrame(annotation)
       .then((labeledThingInFrame) => {
         const annotationLayer = this._layerManager.getLayer('annotations');
         annotationLayer.setAnnotation(annotationId, labeledThingInFrame);
