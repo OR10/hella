@@ -15,15 +15,15 @@
     "challenge": "Which direction is the object moving?"
   },
   "left": {
-    "response": "Links"
+    "response": "Left"
   },
   "right": {
-    "response": "Rechts"
+    "response": "Right"
   },
   "front": {
-    "response": "Vorne"
+    "response": "Front"
   },
   "back": {
-    "response": "Hinten"
+    "response": "Back"
   }
 }
