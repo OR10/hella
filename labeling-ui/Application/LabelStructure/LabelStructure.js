@@ -5,6 +5,7 @@ import 'angular-ui-bootstrap/src/carousel/carousel';
 import Module from '../Module';
 import LabelSelectorDirective from './Directives/LabelSelectorDirective';
 import LabelWizardDirective from './Directives/LabelWizardDirective';
+import LabelSummaryDirective from './Directives/LabelSummaryDirective';
 import AnnotationLabelStructureVisitor from './Services/AnnotationLabelStructureVisitor';
 import LinearLabelStructureVisitor from './Services/LinearLabelStructureVisitor';
 
@@ -25,6 +26,7 @@ export default class LabelStructure extends Module {
 
     this.registerDirective('labelSelector', LabelSelectorDirective);
     this.registerDirective('labelWizard', LabelWizardDirective);
+    this.registerDirective('labelSummary', LabelSummaryDirective);
 
     this.module.service('annotationLabelStructureVisitor', AnnotationLabelStructureVisitor);
     this.module.service('linearLabelStructureVisitor', LinearLabelStructureVisitor);
