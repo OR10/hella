@@ -35,7 +35,7 @@ export default class TaskController {
 
     /**
      * Default placeholder image, which is used whenever a current image is not available
-     * @type {HTTPImageElement}
+     * @type {HTMLImageElement}
      * @private
      */
     this._placeholderImage = new Image();
