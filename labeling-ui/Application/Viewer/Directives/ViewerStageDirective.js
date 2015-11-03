@@ -14,8 +14,8 @@ export default class ViewerStageDirective {
       onNewAnnotation: '&',
       onUpdatedAnnotation: '&',
 
-      task: '=',
-      frameNumber: '=',
+      frameImage: '=',
+      thingsInFrame: '=',
       activeTool: '=',
     };
 

@@ -6,11 +6,12 @@ import RectangleModificationTool from '../Tools/RectangleModificationTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
- * A Layer used to draw labeling annotations within the viewer
+ * A Layer used to draw Things within the viewer
  *
- * @class AnnotationLayer
+ * @class ThingLayer
+ * @extends PaperLayer
  */
-export default class AnnotationLayer extends PaperLayer {
+export default class ThingLayer extends PaperLayer {
   /**
    * @param {DrawingContextService} drawingContextService
    */
@@ -26,12 +27,12 @@ export default class AnnotationLayer extends PaperLayer {
     this._rectangleRenderer = new RectangleRenderer();
 
     /**
-     * Storage used to manage the currently displayed annotations
+     * Storage used to manage the currently displayed things
      *
      * @type {Map}
      * @private
      */
-    this._annotations = new Map();
+    this._things = new Map();
 
     /**
      * Tool for moving and resizing rectangles
@@ -42,9 +43,9 @@ export default class AnnotationLayer extends PaperLayer {
     this._rectangleModificationTool = new RectangleModificationTool(this._context);
 
     this._rectangleModificationTool.on('rectangle:update', (rectangle) => {
-      const annotation = this._annotations.get(rectangle.id);
+      const thing = this._things.get(rectangle.id);
 
-      annotation.shapes = [
+      thing.shapes = [
         {
           type: 'rectangle',
           id: rectangle.id,
@@ -59,7 +60,7 @@ export default class AnnotationLayer extends PaperLayer {
         },
       ];
 
-      this.emit('annotation:update', rectangle.id, annotation);
+      this.emit('thing:update', rectangle.id, thing);
     });
 
     /**
@@ -71,7 +72,7 @@ export default class AnnotationLayer extends PaperLayer {
     this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
 
     this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
-      const annotation = {
+      const thing = {
         shapes: [
           {
             type: 'rectangle',
@@ -89,16 +90,16 @@ export default class AnnotationLayer extends PaperLayer {
       };
 
       // TODO use item-INdependent id since this won't work with multiple shapes per LabeledThingInFrame
-      this.setAnnotation(rectangle.id, annotation);
+      this.setThing(rectangle.id, thing);
 
-      this.emit('annotation:new', rectangle.id, annotation);
+      this.emit('thing:new', rectangle.id, thing);
     });
   }
 
   /**
    * Activates the tool identified by the given name
    *
-   * @method AnnotationLayer#activateTool
+   * @method ThingLayer#activateTool
    *
    * @param {String} toolName
    */
@@ -113,13 +114,11 @@ export default class AnnotationLayer extends PaperLayer {
   }
 
   /**
-   * Adds the given annotations to this layer and draws their respective shapes
+   * Adds the given thing to this layer and draws its respective shapes
    *
-   * @method AnnotationLayer#addAnnotations
-   *
-   * @param {LabeledThingInFrame[]} annotations
+   * @param {Array<LabeledThingInFrame>} annotations
    */
-  addAnnotations(annotations) {
+  addThings(annotations) {
     this._context.withScope((scope) => {
       annotations.forEach((annotation) => {
         const shape = annotation.shapes[0];
@@ -129,7 +128,7 @@ export default class AnnotationLayer extends PaperLayer {
           fillColor: new paper.Color(0, 0, 0, 0),
         });
 
-        this._annotations.set(rect.id, annotation);
+        this._things.set(rect.id, annotation);
       });
 
       scope.view.update();
@@ -137,21 +136,21 @@ export default class AnnotationLayer extends PaperLayer {
   }
 
   /**
-   * Removes all annotations from the layer
+   * Removes all things from the layer
    *
-   * @method AnnotationLayer#clear
+   * @method ThingLayer#clear
    */
   clear() {
     super.clear();
-    this._annotations.clear();
+    this._things.clear();
   }
 
   /**
-   * @param {String} annotationId - The annotation id used internally by this layer
-   * @param {LabeledThingInFrame} annotation
+   * @param {String} id - The id used internally by this layer
+   * @param {LabeledThingInFrame} thing
    */
-  setAnnotation(annotationId, annotation) {
-    this._annotations.set(annotationId, annotation);
+  setThing(id, thing) {
+    this._things.set(id, thing);
   }
 
   dispatchDOMEvent(event) {

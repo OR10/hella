@@ -2,7 +2,9 @@
     <div class="col-md-12">
         <div class="viewer-container">
             <viewer-stage frame-number="vm.frameNumber"
+                          frame-image="vm.frameImage"
                           task="vm.task"
+                          things-in-frame="vm.thingsInFrame"
                           active-tool="vm.activeTool"
                           on-new-annotation="vm.handleNewAnnotation(id, annotation)"
                           on-updated-annotation="vm.handleUpdatedAnnotation(id, annotation)">

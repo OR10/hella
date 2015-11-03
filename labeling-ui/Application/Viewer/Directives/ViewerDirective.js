@@ -14,6 +14,8 @@ export default class ViewerDirective {
 
       task: '=',
       frameNumber: '=',
+      frameImage: '=',
+      thingsInFrame: '=',
       activeTool: '=',
     };
 
