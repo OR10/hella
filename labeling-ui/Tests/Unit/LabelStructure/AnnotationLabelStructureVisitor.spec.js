@@ -40,14 +40,14 @@ describe('LabelStructureAnnotationVisitor', () => {
           {name: 'rainy-day', metadata: {response: 'Regen und so...'}},
           {name: 'foggy', metadata: {
             challenge: 'Wie nebelig ist es denn so?',
-            response: 'Nebel!!1111elf!'
+            response: 'Nebel!!1111elf!',
           }},
           {name: 'solar-eclipse', metadata: {response: 'Alter! Totale Sonnenfinsternis!'}},
         ]},
         {name: 'foggy', metadata: {
           value: 'really-foggy',
           challenge: 'Wie nebelig ist es denn so?',
-           response: 'Nebel!!1111elf!'
+          response: 'Nebel!!1111elf!',
         }, children: [
           {name: 'really-foggy', metadata: {response: 'London-style Nebel'}},
           {name: 'not-so-foggy', metadata: {response: 'völlig harmlos'}},
@@ -58,7 +58,7 @@ describe('LabelStructureAnnotationVisitor', () => {
           {name: 'france', metadata: {response: 'Das Land der Baguettes'}},
         ]},
       ]},
-    ]
+    ],
 
   ], (labelStructure, annotatedLabelStructure) => {
     it('should annotate labelStructure with given AnnotationDictionary', () => {
