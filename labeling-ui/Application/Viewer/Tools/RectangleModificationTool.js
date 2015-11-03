@@ -73,6 +73,8 @@ export default class RectangleModificationTool extends Tool {
             break;
           default:
         }
+      } else {
+        this._hitResult = null;
       }
     });
   }
