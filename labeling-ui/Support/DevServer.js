@@ -76,6 +76,9 @@ export default class DevServer {
       this.notifyLiveReload(changedFiles),
     ]).then(() => {
       this._changesQueue = [];
+    }).catch(() => {
+      // Let's try again upon next change
+      return Promise.resolve();
     });
   }
 
