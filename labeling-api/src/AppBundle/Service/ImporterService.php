@@ -10,21 +10,6 @@ use AppBundle\Service;
 class ImporterService
 {
     /**
-     * List of image types to create after importing a video.
-     *
-     * @todo This list currently contains all image types since the labeling
-     *       task is currently created by this service for the whole video.
-     *       This may change in future versions where some or all image types
-     *       are defined by the labeling task. However, when this happens, this
-     *       service has to be refactored anyway.
-     */
-    CONST IMAGE_TYPES = [
-        'source',
-        'sourceJpg',
-        'thumbnail',
-    ];
-
-    /**
      * @var Facade\Video
      */
     private $videoFacade;
@@ -79,7 +64,12 @@ class ImporterService
         $video->setMetaData($this->metaDataReader->readMetaData($filename));
         $this->videoFacade->save($video, $stream);
 
-        foreach (self::IMAGE_TYPES as $imageTypeName) {
+        // @todo This list currently contains all image types since the
+        //       labeling task is currently created by this service for the
+        //       whole video. This may change in future versions where some or
+        //       all image types are defined by the labeling task. However,
+        //       when this happens, this service has to be refactored anyway.
+        foreach (array_keys(ImageType\Base::$imageTypes) as $imageTypeName) {
             $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create($imageTypeName));
         }
 
