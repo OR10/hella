@@ -75,8 +75,8 @@ class VideoFrameSplitter
 
         $files = array_filter(
             $this->fileSystem->listContents($tempDir),
-            function($file) {
-                if ($file['extension'] === 'png') {
+            function($file) use ($type) {
+                if ($file['extension'] === $type->getExtension()) {
                     return true;
                 }
                 return false;
