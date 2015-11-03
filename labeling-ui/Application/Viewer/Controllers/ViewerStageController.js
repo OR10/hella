@@ -33,12 +33,6 @@ export default class ViewerStageController {
     this._layerManager.addLayer('annotations', thingLayer);
     this._layerManager.addLayer('background', backgroundLayer);
 
-    $scope.$watch('vm.activeTool', (newTool, oldTool) => {
-      if (newTool !== oldTool) {
-        thingLayer.activateTool(newTool);
-      }
-    });
-
     $scope.$watch('vm.frameImage', newFrameImage => {
       backgroundLayer.setBackgroundImage(newFrameImage);
       backgroundLayer.render();
