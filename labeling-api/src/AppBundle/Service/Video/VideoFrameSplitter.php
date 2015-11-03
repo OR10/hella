@@ -16,6 +16,11 @@ class VideoFrameSplitter
     const COMMANDLINE = '%s -i %s %s -v quiet %s/%s.%s';
 
     /**
+     * Timeout for ffmpeg process in seconds.
+     */
+    const TIMEOUT = 3600;
+
+    /**
      * @var string
      */
     private $ffmpegExecutable;
@@ -61,7 +66,7 @@ class VideoFrameSplitter
         $command = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
         $process = new Process($command);
-        $process->setTimeout(3600);
+        $process->setTimeout(self::TIMEOUT);
         $process->run();
 
         if (!$process->isSuccessful()) {
