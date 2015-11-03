@@ -10,7 +10,8 @@ class Base
      * @var array $imageTypes
      */
     public static $imageTypes = [
-        'source' => Source::class,
+        'source'    => Source::class,
+        'sourceJpg' => SourceJpg::class,
         'thumbnail' => Thumbnail::class,
     ];
 
