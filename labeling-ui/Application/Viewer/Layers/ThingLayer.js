@@ -32,7 +32,7 @@ export default class ThingLayer extends PaperLayer {
      * @type {Map}
      * @private
      */
-    this._things = new Map();
+    this._thingsByShapeId = new Map();
 
     /**
      * Tool for moving and resizing rectangles
@@ -40,12 +40,12 @@ export default class ThingLayer extends PaperLayer {
      * @type {RectangleModificationTool}
      * @private
      */
-    this._rectangleModificationTool = new RectangleModificationTool(this._context);
+    this._rectangleModificationTool = new RectangleModificationTool(this._context, undefined);
 
-    this._rectangleModificationTool.on('rectangle:update', (rectangle) => {
-      const thing = this._things.get(rectangle.id);
+    this._rectangleModificationTool.on('rectangle:update', rectangle => {
+      const labeledThing = this._thingsByShapeId.get(rectangle.id);
 
-      thing.shapes = [
+      labeledThing.shapes = [
         {
           type: 'rectangle',
           id: rectangle.id,
@@ -60,7 +60,7 @@ export default class ThingLayer extends PaperLayer {
         },
       ];
 
-      this.emit('thing:update', rectangle.id, thing);
+      this.emit('thing:update', labeledThing);
     });
 
     /**
@@ -69,37 +69,29 @@ export default class ThingLayer extends PaperLayer {
      * @type {RectangleDrawingTool}
      * @private
      */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._context);
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._context, undefined);
 
-    this._rectangleDrawingTool.on('rectangle:complete', (rectangle) => {
-      const thing = {
-        shapes: [
-          {
-            type: 'rectangle',
-            id: rectangle.id,
-            topLeft: {
-              x: rectangle.bounds.topLeft.x,
-              y: rectangle.bounds.topLeft.y,
-            },
-            bottomRight: {
-              x: rectangle.bounds.bottomRight.x,
-              y: rectangle.bounds.bottomRight.y,
-            },
+    this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
+      const shapes = [
+        {
+          type: 'rectangle',
+          topLeft: {
+            x: rectangle.bounds.topLeft.x,
+            y: rectangle.bounds.topLeft.y,
           },
-        ],
-      };
+          bottomRight: {
+            x: rectangle.bounds.bottomRight.x,
+            y: rectangle.bounds.bottomRight.y,
+          },
+        },
+      ];
 
-      // TODO use item-INdependent id since this won't work with multiple shapes per LabeledThingInFrame
-      this.setThing(rectangle.id, thing);
-
-      this.emit('thing:new', rectangle.id, thing);
+      this.emit('thing:new', shapes);
     });
   }
 
   /**
    * Activates the tool identified by the given name
-   *
-   * @method ThingLayer#activateTool
    *
    * @param {String} toolName
    */
@@ -116,19 +108,19 @@ export default class ThingLayer extends PaperLayer {
   /**
    * Adds the given thing to this layer and draws its respective shapes
    *
-   * @param {Array<LabeledThingInFrame>} annotations
+   * @param {Array<LabeledThingInFrame>} labeledThings
    */
-  addThings(annotations) {
+  addLabeledThings(labeledThings) {
     this._context.withScope((scope) => {
-      annotations.forEach((annotation) => {
-        const shape = annotation.shapes[0];
+      labeledThings.forEach((labeledThing) => {
+        const shape = labeledThing.shapes[0];
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, {
           strokeColor: 'red',
           strokeWidth: 2,
           fillColor: new paper.Color(0, 0, 0, 0),
         });
 
-        this._things.set(rect.id, annotation);
+        this._thingsByShapeId.set(rect.id, labeledThing);
       });
 
       scope.view.update();
@@ -142,15 +134,7 @@ export default class ThingLayer extends PaperLayer {
    */
   clear() {
     super.clear();
-    this._things.clear();
-  }
-
-  /**
-   * @param {String} id - The id used internally by this layer
-   * @param {LabeledThingInFrame} thing
-   */
-  setThing(id, thing) {
-    this._things.set(id, thing);
+    this._thingsByShapeId.clear();
   }
 
   dispatchDOMEvent(event) {

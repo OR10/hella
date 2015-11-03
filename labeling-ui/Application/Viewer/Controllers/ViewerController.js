@@ -7,12 +7,12 @@
  * @property {Function} onPreviousFrameRequested
  */
 export default class ViewerController {
-  handleNewThing(id, thing) {
-    this.onNewThing({id, thing});
+  handleNewThing(shapes) {
+    this.onNewThing({shapes});
   }
 
-  handleUpdatedThing(id, thing) {
-    this.onUpdatedThing({id, thing});
+  handleUpdatedThing(labeledThing) {
+    this.onUpdatedThing({labeledThing});
   }
 
   handleNextFrameRequested() {

@@ -26,8 +26,8 @@ export default class ViewerStageController {
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
-    thingLayer.on('thing:new', this._handleNewThing.bind(this));
-    thingLayer.on('thing:update', this._handleUpdatedThing.bind(this));
+    thingLayer.on('thing:new', shapes => this.onNewThing({shapes}));
+    thingLayer.on('thing:update', labeledThing => this.onUpdatedThing({labeledThing}));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -46,26 +46,8 @@ export default class ViewerStageController {
 
     $scope.$watch('vm.thingsInFrame', newThingsInFrame => {
       thingLayer.clear();
-      thingLayer.addThings(Object.values(newThingsInFrame));
+      thingLayer.addLabeledThings(Object.values(newThingsInFrame));
     });
-  }
-
-  /**
-   * @param {String} id - Internal management id
-   * @param {LabeledThingInFrame} thing
-   * @private
-   */
-  _handleNewThing(id, thing) {
-    this.onNewThing({id, thing});
-  }
-
-  /**
-   * @param {String} id - Internal management id
-   * @param {LabeledThingInFrame} thing
-   * @private
-   */
-  _handleUpdatedThing(id, thing) {
-    this.onUpdatedThing({id, thing});
   }
 }
 

@@ -4,8 +4,8 @@
         <div class="col-md-7">
             <viewer frame-image="vm.frameImage"
                     things-in-frame="vm.labelsAndThingsInFrame.things"
-                    on-new-thing="vm.handleNewThing(id, thing)"
-                    on-updated-thing="vm.handleUpdatedThing(id, thing)"
+                    on-new-thing="vm.handleNewThing(shapes)"
+                    on-updated-thing="vm.handleUpdatedThing(labeledThing)"
                     on-next-frame-requested="vm.handleNextFrameRequested()"
                     on-previous-frame-requested="vm.handlePreviousFrameRequested()"
             ></viewer>
