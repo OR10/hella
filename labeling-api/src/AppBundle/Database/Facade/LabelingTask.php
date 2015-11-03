@@ -48,8 +48,7 @@ class LabelingTask
         Model\LabelingTask $labelingTask,
         $startFrameNumber = null,
         $endFrameNumber = null
-    )
-    {
+    ) {
         $startKey = array(
             $labelingTask->getId(),
             0
@@ -92,5 +91,4 @@ class LabelingTask
         $this->documentManager->persist($labelingTask);
         $this->documentManager->flush();
     }
-
 }

@@ -78,5 +78,4 @@ class Base
     {
         return $this->commandParameters;
     }
-
 }

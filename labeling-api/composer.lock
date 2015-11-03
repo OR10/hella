@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "87a45310735912fa3ac82ad3ea3cfa30",
-    "content-hash": "161dd0281e175450b6112747c20c5a61",
+    "hash": "86de964594553c83b645ee4b8197e3ba",
+    "content-hash": "15d4734f85061a5016c3eb785385d236",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -77,16 +77,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.4.2",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "8c434000f420ade76a07c64cbe08ca47e5c101ca"
+                "reference": "2b9cec5a5e722010cbebc91713d4c11eaa064d5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/8c434000f420ade76a07c64cbe08ca47e5c101ca",
-                "reference": "8c434000f420ade76a07c64cbe08ca47e5c101ca",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/2b9cec5a5e722010cbebc91713d4c11eaa064d5e",
+                "reference": "2b9cec5a5e722010cbebc91713d4c11eaa064d5e",
                 "shasum": ""
             },
             "require": {
@@ -107,8 +107,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\Cache\\": "lib/"
+                "psr-4": {
+                    "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -143,7 +143,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-08-31 12:36:41"
+            "time": "2015-11-02 18:35:48"
         },
         {
             "name": "doctrine/collections",
@@ -344,12 +344,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/couchdb-odm.git",
-                "reference": "8d784893408ced32d88e6301fd719b3077142a8e"
+                "reference": "425625d88729630f42908d5ab6e4f7fdbd6e0f18"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/couchdb-odm/zipball/425625d88729630f42908d5ab6e4f7fdbd6e0f18",
-                "reference": "8d784893408ced32d88e6301fd719b3077142a8e",
+                "reference": "425625d88729630f42908d5ab6e4f7fdbd6e0f18",
                 "shasum": ""
             },
             "require": {
@@ -392,7 +392,7 @@
                 "couchdb",
                 "persistence"
             ],
-            "time": "2015-08-31 15:23:59"
+            "time": "2015-10-22 09:23:39"
         },
         {
             "name": "doctrine/couchdb-odm-bundle",
@@ -932,17 +932,17 @@
         },
         {
             "name": "friendsofsymfony/rest-bundle",
-            "version": "1.7.1",
+            "version": "1.7.2",
             "target-dir": "FOS/RestBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "3fb2d30c58cde59213dbddd031bc36171b8b68b6"
+                "reference": "70db6f7af4bb198881bfc9106aea633fa3e818c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/3fb2d30c58cde59213dbddd031bc36171b8b68b6",
-                "reference": "3fb2d30c58cde59213dbddd031bc36171b8b68b6",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/70db6f7af4bb198881bfc9106aea633fa3e818c0",
+                "reference": "70db6f7af4bb198881bfc9106aea633fa3e818c0",
                 "shasum": ""
             },
             "require": {
@@ -960,10 +960,11 @@
                 "symfony/validator": ">=2.5.0,<2.5.5"
             },
             "require-dev": {
-                "jms/serializer": "~0.13",
-                "jms/serializer-bundle": "~0.12",
+                "jms/serializer": "~0.13|~1.0",
+                "jms/serializer-bundle": "~0.12|~1.0",
                 "phpoption/phpoption": "~1.1.0",
                 "sensio/framework-extra-bundle": "~3.0",
+                "sllh/php-cs-fixer-styleci-bridge": "^1.3",
                 "symfony/browser-kit": "~2.3",
                 "symfony/dependency-injection": "~2.3",
                 "symfony/form": "~2.3",
@@ -973,7 +974,7 @@
                 "symfony/yaml": "~2.3"
             },
             "suggest": {
-                "jms/serializer-bundle": "Add support for advanced serialization capabilities, recommended, requires ~0.12",
+                "jms/serializer-bundle": "Add support for advanced serialization capabilities, recommended, requires ~0.12||~1.0",
                 "sensio/framework-extra-bundle": "Add support for route annotations and the view response listener, requires ~3.0",
                 "symfony/serializer": "Add support for basic serialization capabilities and xml decoding, requires ~2.3",
                 "symfony/validator": "Add support for validation capabilities in the ParamFetcher, requires ~2.3"
@@ -1012,7 +1013,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2015-06-16 08:39:26"
+            "time": "2015-10-16 07:05:52"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -1020,12 +1021,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "d5b28c367d393f9d9fbc48c4138b2a74d51c0c83"
+                "reference": "45d6f40178216a840885b4ca6d7de9e67068568a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/d5b28c367d393f9d9fbc48c4138b2a74d51c0c83",
-                "reference": "d5b28c367d393f9d9fbc48c4138b2a74d51c0c83",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/45d6f40178216a840885b4ca6d7de9e67068568a",
+                "reference": "45d6f40178216a840885b4ca6d7de9e67068568a",
                 "shasum": ""
             },
             "require": {
@@ -1079,7 +1080,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2015-09-15 13:15:07"
+            "time": "2015-11-03 10:24:23"
         },
         {
             "name": "fzaninotto/faker",
@@ -1272,16 +1273,16 @@
         },
         {
             "name": "jms/serializer",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "a29d9a204efc3ca3f39a9d182a83fd34462fef3f"
+                "reference": "fe13a1f993ea3456e195b7820692f2eb2b6bbb48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/a29d9a204efc3ca3f39a9d182a83fd34462fef3f",
-                "reference": "a29d9a204efc3ca3f39a9d182a83fd34462fef3f",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/fe13a1f993ea3456e195b7820692f2eb2b6bbb48",
+                "reference": "fe13a1f993ea3456e195b7820692f2eb2b6bbb48",
                 "shasum": ""
             },
             "require": {
@@ -1291,6 +1292,9 @@
                 "jms/parser-lib": "1.*",
                 "php": ">=5.4.0",
                 "phpcollection/phpcollection": "~0.1"
+            },
+            "conflict": {
+                "twig/twig": "<1.12"
             },
             "require-dev": {
                 "doctrine/orm": "~2.1",
@@ -1303,7 +1307,7 @@
                 "symfony/translation": "~2.0",
                 "symfony/validator": "~2.0",
                 "symfony/yaml": "2.*",
-                "twig/twig": ">=1.8,<2.0-dev"
+                "twig/twig": "~1.12|~2.0"
             },
             "suggest": {
                 "symfony/yaml": "Required if you'd like to serialize data to YAML format."
@@ -1311,7 +1315,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.17-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -1338,7 +1342,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2015-06-16 11:50:24"
+            "time": "2015-10-27 09:24:41"
         },
         {
             "name": "jms/serializer-bundle",
@@ -1495,16 +1499,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.17.1",
+            "version": "1.17.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "0524c87587ab85bc4c2d6f5b41253ccb930a5422"
+                "reference": "bee7f0dc9c3e0b69a6039697533dca1e845c8c24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/0524c87587ab85bc4c2d6f5b41253ccb930a5422",
-                "reference": "0524c87587ab85bc4c2d6f5b41253ccb930a5422",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bee7f0dc9c3e0b69a6039697533dca1e845c8c24",
+                "reference": "bee7f0dc9c3e0b69a6039697533dca1e845c8c24",
                 "shasum": ""
             },
             "require": {
@@ -1518,10 +1522,11 @@
                 "aws/aws-sdk-php": "^2.4.9",
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
+                "jakub-onderka/php-parallel-lint": "0.9",
                 "php-console/php-console": "^3.1.3",
                 "phpunit/phpunit": "~4.5",
                 "phpunit/phpunit-mock-objects": "2.3.0",
-                "raven/raven": "~0.11",
+                "raven/raven": "^0.13",
                 "ruflin/elastica": ">=0.90 <3.0",
                 "swiftmailer/swiftmailer": "~5.3",
                 "videlalvaro/php-amqplib": "~2.4"
@@ -1567,7 +1572,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-08-31 09:17:37"
+            "time": "2015-10-14 12:51:02"
         },
         {
             "name": "oneup/flysystem-bundle",
@@ -1782,17 +1787,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v4.0.1",
+            "version": "v4.0.3",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "62d99ba41144e704300e40f755346553702b27c9"
+                "reference": "2d061c01e708c83ede4720e2551d9449bf606c0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/62d99ba41144e704300e40f755346553702b27c9",
-                "reference": "62d99ba41144e704300e40f755346553702b27c9",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/2d061c01e708c83ede4720e2551d9449bf606c0a",
+                "reference": "2d061c01e708c83ede4720e2551d9449bf606c0a",
                 "shasum": ""
             },
             "require": {
@@ -1838,7 +1843,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-08-03 10:07:56"
+            "time": "2015-10-27 18:48:08"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -2110,16 +2115,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.7.5",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "619528a274647cffc1792063c3ea04c4fa8266a0"
+                "reference": "66b2e9662c44d478b69e48278aa54079a006eb42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/619528a274647cffc1792063c3ea04c4fa8266a0",
-                "reference": "619528a274647cffc1792063c3ea04c4fa8266a0",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/66b2e9662c44d478b69e48278aa54079a006eb42",
+                "reference": "66b2e9662c44d478b69e48278aa54079a006eb42",
                 "shasum": ""
             },
             "require": {
@@ -2182,8 +2187,7 @@
                 "egulias/email-validator": "~1.2",
                 "ircmaxell/password-compat": "~1.0",
                 "monolog/monolog": "~1.11",
-                "ocramius/proxy-manager": "~0.4|~1.0",
-                "symfony/phpunit-bridge": "self.version"
+                "ocramius/proxy-manager": "~0.4|~1.0"
             },
             "type": "library",
             "extra": {
@@ -2228,20 +2232,20 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-09-25 11:16:52"
+            "time": "2015-10-27 19:07:24"
         },
         {
             "name": "twig/twig",
-            "version": "v1.22.3",
+            "version": "v1.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "ebfc36b7e77b0c1175afe30459cf943010245540"
+                "reference": "5868cd822fd6cf626d5f805439575f9c323cee2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ebfc36b7e77b0c1175afe30459cf943010245540",
-                "reference": "ebfc36b7e77b0c1175afe30459cf943010245540",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/5868cd822fd6cf626d5f805439575f9c323cee2a",
+                "reference": "5868cd822fd6cf626d5f805439575f9c323cee2a",
                 "shasum": ""
             },
             "require": {
@@ -2254,7 +2258,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.22-dev"
+                    "dev-master": "1.23-dev"
                 }
             },
             "autoload": {
@@ -2289,7 +2293,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-10-13 07:07:02"
+            "time": "2015-10-29 23:29:01"
         },
         {
             "name": "willdurand/jsonp-callback-validator",
@@ -2383,55 +2387,39 @@
     ],
     "packages-dev": [
         {
-            "name": "incenteev/composer-parameter-handler",
-            "version": "v2.1.1",
+            "name": "hco/phar-installer-plugin",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Incenteev/ParameterHandler.git",
-                "reference": "84a205fe80a46101607bafbc423019527893ddd0"
+                "url": "https://github.com/hco/phar-installer-plugin.git",
+                "reference": "0cce490d93133abfc738a3120d5fe23b2f2ae494"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Incenteev/ParameterHandler/zipball/84a205fe80a46101607bafbc423019527893ddd0",
-                "reference": "84a205fe80a46101607bafbc423019527893ddd0",
+                "url": "https://api.github.com/repos/hco/phar-installer-plugin/zipball/0cce490d93133abfc738a3120d5fe23b2f2ae494",
+                "reference": "0cce490d93133abfc738a3120d5fe23b2f2ae494",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
-                "symfony/yaml": "~2.0"
+                "composer-plugin-api": "1.0.0"
             },
             "require-dev": {
-                "composer/composer": "1.0.*@dev",
-                "phpspec/prophecy-phpunit": "~1.0",
-                "symfony/filesystem": "~2.2"
+                "composer/composer": "1.0.*@dev"
             },
-            "type": "library",
+            "type": "composer-plugin",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1.x-dev"
-                }
+                "class": "hco\\ComposerPharInstaller\\PharInstallerPlugin"
             },
             "autoload": {
                 "psr-4": {
-                    "Incenteev\\ParameterHandler\\": ""
+                    "hco\\ComposerPharInstaller\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Christophe Coevoet",
-                    "email": "stof@notk.org"
-                }
-            ],
-            "description": "Composer script handling your ignored parameter file",
-            "homepage": "https://github.com/Incenteev/ParameterHandler",
-            "keywords": [
-                "parameters management"
-            ],
-            "time": "2015-06-03 08:27:03"
+            "time": "2014-09-22 16:44:39"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2474,6 +2462,39 @@
                 "object graph"
             ],
             "time": "2015-10-05 15:07:09"
+        },
+        {
+            "name": "pdepend/pdepend",
+            "version": "1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pdepend/pdepend.git",
+                "reference": "1537f19d62d7b30c13ac173270106df7c6b9c459"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/1537f19d62d7b30c13ac173270106df7c6b9c459",
+                "reference": "1537f19d62d7b30c13ac173270106df7c6b9c459",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.3"
+            },
+            "bin": [
+                "src/bin/pdepend"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHP_": "src/main/php/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Official version of pdepend to be handled with Composer",
+            "time": "2013-12-04 17:46:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -2523,6 +2544,43 @@
                 }
             ],
             "time": "2015-02-03 12:10:50"
+        },
+        {
+            "name": "phpmd/phpmd",
+            "version": "1.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpmd/phpmd.git",
+                "reference": "f2d47500f4c5f80ee442d95829c62c2ece2bbeb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/f2d47500f4c5f80ee442d95829c62c2ece2bbeb6",
+                "reference": "f2d47500f4c5f80ee442d95829c62c2ece2bbeb6",
+                "shasum": ""
+            },
+            "require": {
+                "pdepend/pdepend": "1.1.*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.*@stable",
+                "squizlabs/php_codesniffer": "@stable"
+            },
+            "bin": [
+                "src/bin/phpmd"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "../../pdepend/pdepend/src/main/php",
+                "src/main/php"
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Official version of PHPMD handled with Composer.",
+            "time": "2014-09-16 14:26:49"
         },
         {
             "name": "phpspec/prophecy",
@@ -2826,16 +2884,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.0.5",
+            "version": "5.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "65134b2c2e47f48a9afb54a28f67b4d46a2304d1"
+                "reference": "97fb2503cf8caca9d768fde3cca2ab147b9e7030"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/65134b2c2e47f48a9afb54a28f67b4d46a2304d1",
-                "reference": "65134b2c2e47f48a9afb54a28f67b4d46a2304d1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/97fb2503cf8caca9d768fde3cca2ab147b9e7030",
+                "reference": "97fb2503cf8caca9d768fde3cca2ab147b9e7030",
                 "shasum": ""
             },
             "require": {
@@ -2896,20 +2954,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-12 03:40:23"
+            "time": "2015-10-23 06:50:01"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "3.0.0",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "b66bfd55201aa33e8096d8c9bcb762361521c301"
+                "reference": "382c729a52b7ef682e94c73fd6868f5ee8116ba7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/b66bfd55201aa33e8096d8c9bcb762361521c301",
-                "reference": "b66bfd55201aa33e8096d8c9bcb762361521c301",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/382c729a52b7ef682e94c73fd6868f5ee8116ba7",
+                "reference": "382c729a52b7ef682e94c73fd6868f5ee8116ba7",
                 "shasum": ""
             },
             "require": {
@@ -2952,7 +3010,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-10-01 06:43:55"
+            "time": "2015-10-18 07:55:54"
         },
         {
             "name": "sebastian/comparator",
@@ -3414,6 +3472,40 @@
             ],
             "description": "This bundle generates code for you",
             "time": "2015-03-17 06:36:52"
+        },
+        {
+            "name": "toolphar/phpcs",
+            "version": "2.0.0-RC1",
+            "dist": {
+                "type": "file",
+                "url": "https://github.com//squizlabs/PHP_CodeSniffer/releases/download/2.0.0RC1/phpcs.phar",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "hco/phar-installer-plugin": "*"
+            },
+            "type": "toolphar",
+            "extra": {
+                "bin-name": "phpcs"
+            }
+        },
+        {
+            "name": "toolphar/phploc",
+            "version": "2.0.6",
+            "dist": {
+                "type": "file",
+                "url": "https://phar.phpunit.de/phploc-2.0.6.phar",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "hco/phar-installer-plugin": "*"
+            },
+            "type": "toolphar",
+            "extra": {
+                "bin-name": "phploc"
+            }
         }
     ],
     "aliases": [],
@@ -3423,7 +3515,8 @@
         "doctrine/couchdb": 20,
         "doctrine/couchdb-odm": 20,
         "doctrine/couchdb-odm-bundle": 20,
-        "oneup/flysystem-bundle": 0
+        "oneup/flysystem-bundle": 0,
+        "toolphar/phpcs": 5
     },
     "prefer-stable": false,
     "prefer-lowest": false,

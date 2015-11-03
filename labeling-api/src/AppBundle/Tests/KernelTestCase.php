@@ -38,7 +38,7 @@ class KernelTestCase extends Test\KernelTestCase
      * database is set up.
      * Custom setup code should be placed in `setUpImplementation` instead.
      */
-    public final function setUp()
+    final public function setUp()
     {
         parent::setUp();
 
@@ -68,7 +68,7 @@ class KernelTestCase extends Test\KernelTestCase
      * Custom teardown code should be placed in `tearDownImplementation`
      * instead.
      */
-    public final function tearDown()
+    final public function tearDown()
     {
         $this->tearDownImplementation();
 
