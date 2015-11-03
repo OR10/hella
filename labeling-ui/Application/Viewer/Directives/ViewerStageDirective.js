@@ -11,8 +11,8 @@ import viewerStageTemplate from './ViewerStageDirective.html!';
 export default class ViewerStageDirective {
   constructor() {
     this.scope = {
-      onNewAnnotation: '&',
-      onUpdatedAnnotation: '&',
+      onNewThing: '&',
+      onUpdatedThing: '&',
 
       frameImage: '=',
       thingsInFrame: '=',

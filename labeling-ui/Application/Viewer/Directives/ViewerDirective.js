@@ -9,8 +9,8 @@ import viewerTemplate from './ViewerDirective.html!';
 export default class ViewerDirective {
   constructor() {
     this.scope = {
-      onNewAnnotation: '&',
-      onUpdatedAnnotation: '&',
+      onNewThing: '&',
+      onUpdatedThing: '&',
       onNextFrameRequested: '&',
       onPreviousFrameRequested: '&',
 

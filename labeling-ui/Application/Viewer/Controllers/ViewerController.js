@@ -1,13 +1,18 @@
 /**
  * @class ViewerController
+ *
+ * @property {Function} onNewThing
+ * @property {Function} onUpdatedThing
+ * @property {Function} onNextFrameRequested
+ * @property {Function} onPreviousFrameRequested
  */
 export default class ViewerController {
-  handleNewAnnotation(id, annotation) {
-    this.onNewAnnotation({id, annotation});
+  handleNewThing(id, thing) {
+    this.onNewThing({id, thing});
   }
 
-  handleUpdatedAnnotation(id, annotation) {
-    this.onUpdatedAnnotation({id, annotation});
+  handleUpdatedThing(id, thing) {
+    this.onUpdatedThing({id, thing});
   }
 
   handleNextFrameRequested() {

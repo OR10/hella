@@ -6,8 +6,8 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 /**
  * @class ViewerStageController
  *
- * @property {Function} onNewAnnotation
- * @property {Function} onUpdatedAnnotation
+ * @property {Function} onNewThing
+ * @property {Function} onUpdatedThing
  */
 export default class ViewerStageController {
   /**
@@ -16,7 +16,6 @@ export default class ViewerStageController {
    * @param {DrawingContextService} drawingContextService
    */
   constructor($scope, $element, drawingContextService) {
-    this._$apply = $scope.$apply.bind($scope);
     this._layerManager = new LayerManager();
 
     const eventDelegationLayer = new EventDelegationLayer();
@@ -27,8 +26,8 @@ export default class ViewerStageController {
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
-    thingLayer.on('annotation:new', this._handleNewAnnotation.bind(this));
-    thingLayer.on('annotation:update', this._handleUpdatedAnnotation.bind(this));
+    thingLayer.on('thing:new', this._handleNewThing.bind(this));
+    thingLayer.on('thing:update', this._handleUpdatedThing.bind(this));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -52,25 +51,21 @@ export default class ViewerStageController {
   }
 
   /**
-   * @param {String} annotationId - Internal management id
-   * @param {LabeledThingInFrame} annotation
+   * @param {String} id - Internal management id
+   * @param {LabeledThingInFrame} thing
    * @private
    */
-  _handleNewAnnotation(annotationId, annotation) {
-    this._$apply(() => {
-      this.activeTool = 'modification';
-    });
-
-    this.onNewAnnotation({annotation, id: annotationId});
+  _handleNewThing(id, thing) {
+    this.onNewThing({id, thing});
   }
 
   /**
-   * @param {String} annotationId - Internal management id
-   * @param {LabeledThingInFrame} annotation
+   * @param {String} id - Internal management id
+   * @param {LabeledThingInFrame} thing
    * @private
    */
-  _handleUpdatedAnnotation(annotationId, annotation) {
-    this.onUpdatedAnnotation({annotation, id: annotationId});
+  _handleUpdatedThing(id, thing) {
+    this.onUpdatedThing({id, thing});
   }
 }
 

@@ -183,17 +183,17 @@ export default class TaskController {
     console.log("handleObjectLabelingChanged: ", arguments);
   }
 
-  handleNewAnnotation(id, annotation) {
+  handleNewThing(id, thing) {
     this._labeledThingInFrameGateway.createLabeledThingInFrame(
       this.task,
       this._frameNumber,
-      annotation
+      thing
     )
     .then(labeledThing => this.labelsAndThingsInFrame.things[id] = labeledThing);
   }
 
-  handleUpdatedAnnotation(id, annotation) {
-    this._labeledThingInFrameGateway.updateLabeledThingInFrame(annotation)
+  handleUpdatedThing(id, thing) {
+    this._labeledThingInFrameGateway.updateLabeledThingInFrame(thing)
       .then(labeledThing => this.labelsAndThingsInFrame.things[id] = labeledThing);
   }
 
