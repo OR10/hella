@@ -1,34 +1,18 @@
 /**
+ * Controller handling the control elements below the viewer frame
+ *
  * @class ViewerControlsController
+ * @property {Function} onPreviousFrameRequested
+ * @property {Function} onNextFrameRequested
  */
 export default class ViewerControlsController {
-  constructor($scope, hotkeys) {
-    this._$scope = $scope;
-
-    hotkeys.add({
-      combo: 'd',
-      action: 'keydown',
-      callback: () => {
-        this.activeTool = 'drawing';
-      },
-    });
+  handleNextFrameClicked() {
+    this.onNextFrameRequested();
   }
 
-  frameForward() {
-    if (this.frameNumber < this.task.frameRange.endFrameNumber) {
-      this.frameNumber++;
-    }
-  }
-
-  frameBackward() {
-    if (this.frameNumber > this.task.frameRange.startFrameNumber) {
-      this.frameNumber--;
-    }
-  }
-
-  activateDrawingMode() {
-    this.activeTool = 'drawing';
+  handlePreviousFrameClicked() {
+    this.onPreviousFrameRequested();
   }
 }
 
-ViewerControlsController.$inject = ['$scope', 'hotkeys'];
+ViewerControlsController.$inject = [];

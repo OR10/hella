@@ -11,12 +11,11 @@ export default class ViewerDirective {
     this.scope = {
       onNewAnnotation: '&',
       onUpdatedAnnotation: '&',
+      onNextFrameRequested: '&',
+      onPreviousFrameRequested: '&',
 
-      task: '=',
-      frameNumber: '=',
       frameImage: '=',
       thingsInFrame: '=',
-      activeTool: '=',
     };
 
     this.controller = ViewerController;

@@ -17,9 +17,8 @@ export default class ViewerControlsDirective {
 
     this.template = viewerControlsTempate;
     this.scope = {
-      task: '=',
-      frameNumber: '=',
-      activeTool: '=',
+      onPreviousFrameRequested: '&',
+      onNextFrameRequested: '&',
     };
   }
 }

@@ -1,11 +1,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-container">
-            <viewer-stage frame-number="vm.frameNumber"
-                          frame-image="vm.frameImage"
-                          task="vm.task"
+            <viewer-stage frame-image="vm.frameImage"
                           things-in-frame="vm.thingsInFrame"
-                          active-tool="vm.activeTool"
                           on-new-annotation="vm.handleNewAnnotation(id, annotation)"
                           on-updated-annotation="vm.handleUpdatedAnnotation(id, annotation)">
             </viewer-stage>
@@ -15,9 +12,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-controls-container">
-            <viewer-controls frame-number="vm.frameNumber"
-                             task="vm.task"
-                             active-tool="vm.activeTool">
+            <viewer-controls on-next-frame-requested="vm.handleNextFrameRequested()"
+                             on-previous-frame-requested="vm.handlePreviousFrameRequested()">
             </viewer-controls>
         </div>
     </div>
