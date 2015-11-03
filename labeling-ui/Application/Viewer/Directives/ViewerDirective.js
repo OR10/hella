@@ -1,4 +1,4 @@
-import ViewerController from '../Controllers/ViewerController';
+import ViewerController from './ViewerController';
 import viewerTemplate from './ViewerDirective.html!';
 
 /**

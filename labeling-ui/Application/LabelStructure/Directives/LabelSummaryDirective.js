@@ -1,5 +1,5 @@
 import labelSummaryTemplate from './LabelSummaryDirective.html!';
-import LabelSummaryController from '../Controllers/LabelSummaryController';
+import LabelSummaryController from './LabelSummaryController';
 
 /**
  * @class LabelSummaryDirective

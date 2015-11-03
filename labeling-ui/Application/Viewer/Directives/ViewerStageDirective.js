@@ -1,4 +1,4 @@
-import ViewerStageController from '../Controllers/ViewerStageController';
+import ViewerStageController from './ViewerStageController';
 import viewerStageTemplate from './ViewerStageDirective.html!';
 
 /**

@@ -1,5 +1,5 @@
 import labelSelectorTemplate from './LabelSelectorDirective.html!';
-import LabelSelectorController from '../Controllers/LabelSelectorController';
+import LabelSelectorController from './LabelSelectorController';
 
 /**
  * @class LabelSelectorDirective

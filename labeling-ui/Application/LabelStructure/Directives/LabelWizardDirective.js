@@ -1,5 +1,5 @@
 import labelWizardTemplate from './LabelWizardDirective.html!';
-import LabelWizardController from '../Controllers/LabelWizardController';
+import LabelWizardController from './LabelWizardController';
 
 /**
  * @class LabelWizardDirective
