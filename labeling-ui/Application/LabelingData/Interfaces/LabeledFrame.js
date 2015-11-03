@@ -19,15 +19,6 @@
  */
 
 /**
- * Array of shapes the labeled frame can consist of.
- *
- * Different shapes exist, like rectangle, circle etc.
- *
- * @interface LabeledFrame
- * @property {Shape[]} shapes
- */
-
-/**
  * Array of annotated labeling properties for this LabeledFrame.
  *
  * @interface LabeledFrame
