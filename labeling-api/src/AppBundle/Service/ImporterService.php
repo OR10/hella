@@ -27,34 +27,34 @@ class ImporterService
     /**
      * @var Facade\LabelingTask
      */
-    private $labelingTask;
+    private $labelingTaskFacade;
 
     /**
      * ImportVideoCommand constructor.
      *
      * @param Facade\Video                 $videoFacade
-     * @param Facade\LabelingTask          $labelingTask
+     * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
      * @param Video\VideoFrameSplitter     $frameCdnSplitter
      */
     public function __construct(
         Facade\Video $videoFacade,
-        Facade\LabelingTask $labelingTask,
+        Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter
     ) {
-        $this->videoFacade      = $videoFacade;
-        $this->metaDataReader   = $metaDataReader;
-        $this->frameCdnSplitter = $frameCdnSplitter;
-        $this->labelingTask     = $labelingTask;
+        $this->videoFacade        = $videoFacade;
+        $this->metaDataReader     = $metaDataReader;
+        $this->frameCdnSplitter   = $frameCdnSplitter;
+        $this->labelingTaskFacade = $labelingTaskFacade;
     }
 
     /**
      * @param string $filename
-     *
      * @param        $stream
      *
      * @return Model\LabelingTask
+     *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
      */
@@ -63,7 +63,16 @@ class ImporterService
         $video = new Model\Video(basename($filename));
         $video->setMetaData($this->metaDataReader->readMetaData($filename));
         $this->videoFacade->save($video, $stream);
-        $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create('source'));
+
+        // @todo This list currently contains all image types since the
+        //       labeling task is currently created by this service for the
+        //       whole video. This may change in future versions where some or
+        //       all image types are defined by the labeling task. However,
+        //       when this happens, this service has to be refactored anyway.
+        foreach (array_keys(ImageType\Base::$imageTypes) as $imageTypeName) {
+            $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create($imageTypeName));
+        }
+
         $task = $this->addTask($video);
 
         return $task;
@@ -81,7 +90,7 @@ class ImporterService
         $metadata     = $video->getMetaData();
         $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
         $labelingTask = new Model\LabelingTask($video, $frameRange);
-        $this->labelingTask->save($labelingTask);
+        $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;
     }
