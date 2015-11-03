@@ -1,0 +1,18 @@
+{
+  "request": {
+    "path": "/api/video/list",
+    "method": "GET"
+  },
+  "response": {
+    "result": {
+      "id": "4711",
+      "userId": null,
+      "videoId": "0115bd97fa0c1d86f8d1f65ff4096bda",
+      "frameRange": {
+        "id": null,
+        "startFrameNumber": 1,
+        "endFrameNumber": 110
+      }
+    }
+  }
+}

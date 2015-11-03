@@ -1,7 +1,11 @@
-import serveStatic from 'serve-static';
 import connect from 'connect';
 import http from 'http';
 import chalk from 'chalk';
+import send from 'send';
+import parseUrl from 'parseurl';
+import morgan from 'morgan';
+import proxy from 'proxy-middleware';
+import fs from 'fs';
 
 export default class ProtractorServer {
   constructor(config) {
@@ -12,24 +16,10 @@ export default class ProtractorServer {
   initConfig(config) {
     const defaultConfig = {
       assetPath: 'Distribution',
-      port: 52343
+      port: 52343,
     };
 
     return Object.assign({}, defaultConfig, config);
-  }
-
-  createStaticFileServeMiddleware() {
-    const {assetPath} = this.config;
-
-    const options = {
-      dotfiles: 'ignore',
-      etag: 'true',
-      fallthrough: true,
-      index: ['index-protractor.html'],
-      redirect: false,
-    };
-
-    return serveStatic(assetPath, options);
   }
 
   createServer(app, port) {
@@ -49,8 +39,41 @@ export default class ProtractorServer {
     });
   }
 
+  createOneForAllTheThingzMiddleware(assetDirectory, target) {
+    return (req, res, next) => {
+      if (!req.url.match(/^\/labeling\//)) {
+        return next();
+      }
+
+      const originalUrl = parseUrl.original(req);
+      const pathname = parseUrl(req).pathname;
+      let path = pathname.replace(/\/labeling\//, '/');
+      if (path === '/' && originalUrl.pathname.substr(-1) !== '/') {
+        path = '';
+      }
+      const stream = send(req, path, {
+        root: assetDirectory,
+      });
+
+      stream.on('error', error => {
+        if (error.code !== 'ENOENT') {
+          return next(error);
+        }
+
+        fs.readFile(target, (err, content) => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/html');
+          res.setHeader('Content-Length', Buffer.byteLength(content));
+          res.end(content);
+        });
+      });
+
+      stream.pipe(res);
+    };
+  }
+
   serve() {
-    let {port} = this.config;
+    let {port, assetPath} = this.config;
 
     if (process.env.PORT) {
       port = process.env.PORT;
@@ -58,11 +81,9 @@ export default class ProtractorServer {
 
     Promise.resolve()
       .then(() => {
-        return this.createStaticFileServeMiddleware();
-      })
-      .then(staticMiddleware => {
         const app = connect();
-        app.use(staticMiddleware);
+        app.use(morgan('dev'));
+        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/index-protractor.html`));
         return app;
       })
       .then(app => {
@@ -73,7 +94,7 @@ export default class ProtractorServer {
       })
       .catch(error => {
         console.log(chalk.red('Error during server creation:'), error.message); // eslint-disable-line no-console
-      })
+      });
   }
 
   close() {
