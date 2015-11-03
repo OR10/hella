@@ -32,7 +32,7 @@ class LabeledThing
     /**
      * @param LabelingTask $labelingTask
      */
-    function __construct(LabelingTask $labelingTask)
+    public function __construct(LabelingTask $labelingTask)
     {
         $this->labelingTaskId = $labelingTask->getId();
     }
@@ -76,5 +76,4 @@ class LabeledThing
     {
         return $this->id;
     }
-
 }

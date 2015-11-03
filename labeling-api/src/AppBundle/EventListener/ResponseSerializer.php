@@ -81,7 +81,8 @@ class ResponseSerializer
      * @param View\View $view our view
      * @return RestBundleView\View
      */
-    private function convertView(View\View $view) {
+    private function convertView(View\View $view)
+    {
         $restBundleView = RestBundleView\View::create()
                 ->setData($view->getData())
                 ->setStatusCode($view->getStatusCode())

@@ -68,6 +68,4 @@ class PrelabeledFrame
     {
         $this->videoId = $videoId;
     }
-
-
 }

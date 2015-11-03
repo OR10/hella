@@ -37,7 +37,7 @@ class LabeledThingInFrame extends Controller\Base
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      */
-    function __construct(
+    public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabelingTask $labelingTaskFacade

@@ -42,7 +42,7 @@ class LabeledThingInFrame
     /**
      * @param LabeledThing $labeledThing
      */
-    function __construct(LabeledThing $labeledThing)
+    public function __construct(LabeledThing $labeledThing)
     {
         $this->labeledThingId = $labeledThing->getId();
     }

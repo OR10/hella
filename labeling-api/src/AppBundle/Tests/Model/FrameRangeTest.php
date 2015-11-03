@@ -68,8 +68,7 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
         $offset,
         $limit,
         FrameRange $expectedFrameRange
-    )
-    {
+    ) {
         $frameRange = $givenRange->createSubRangeForOffsetAndLimit($offset, $limit);
 
         $this->assertEquals($expectedFrameRange->getStartFrameNumber(), $frameRange->getStartFrameNumber());

@@ -36,7 +36,7 @@ class LabeledFrame
      */
     private $labelingTaskId;
 
-    function __construct(Model\LabelingTask $task)
+    public function __construct(Model\LabelingTask $task)
     {
         $this->labelingTaskId = $task->getId();
     }
@@ -88,5 +88,4 @@ class LabeledFrame
     {
         return $this->frameNumber;
     }
-
 }

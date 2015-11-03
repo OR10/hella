@@ -44,10 +44,10 @@ class InitCommand extends BaseCommand
     {
         $this->setName('annostation:init')
             ->setDescription('Initializes the database to a clean known state')
-			->addOption(
-				'drop-database',
-				null,
-				InputOption::VALUE_NONE,
+            ->addOption(
+                'drop-database',
+                null,
+                InputOption::VALUE_NONE,
                 'Drop entire database. Otherwise just the schema is dropped.'
             )
         ;
@@ -89,8 +89,7 @@ class InitCommand extends BaseCommand
             if (!$this->runCommand($output, 'doctrine:database:create')) {
                 return false;
             }
-        }
-        else {
+        } else {
             $this->writeVerboseInfo($output, 'dropping database schema');
             if (!$this->runCommand($output, 'doctrine:schema:drop', [
                 '--force' => true,
