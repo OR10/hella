@@ -27,34 +27,34 @@ class ImporterService
     /**
      * @var Facade\LabelingTask
      */
-    private $labelingTask;
+    private $labelingTaskFacade;
 
     /**
      * ImportVideoCommand constructor.
      *
      * @param Facade\Video                 $videoFacade
-     * @param Facade\LabelingTask          $labelingTask
+     * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
      * @param Video\VideoFrameSplitter     $frameCdnSplitter
      */
     public function __construct(
         Facade\Video $videoFacade,
-        Facade\LabelingTask $labelingTask,
+        Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter
     ) {
-        $this->videoFacade      = $videoFacade;
-        $this->metaDataReader   = $metaDataReader;
-        $this->frameCdnSplitter = $frameCdnSplitter;
-        $this->labelingTask     = $labelingTask;
+        $this->videoFacade        = $videoFacade;
+        $this->metaDataReader     = $metaDataReader;
+        $this->frameCdnSplitter   = $frameCdnSplitter;
+        $this->labelingTaskFacade = $labelingTaskFacade;
     }
 
     /**
      * @param string $filename
-     *
      * @param        $stream
      *
      * @return Model\LabelingTask
+     *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
      */
@@ -81,7 +81,7 @@ class ImporterService
         $metadata     = $video->getMetaData();
         $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
         $labelingTask = new Model\LabelingTask($video, $frameRange);
-        $this->labelingTask->save($labelingTask);
+        $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;
     }
