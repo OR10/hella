@@ -8,6 +8,7 @@ import send from 'send';
 import parseUrl from 'parseurl';
 import {Server as TinyLrServer} from 'tiny-lr';
 import request from 'request-promise';
+import {debounce} from 'lodash';
 
 import IncrementalBuilder from './IncrementalBuilder';
 
@@ -20,6 +21,10 @@ export default class DevServer {
     this.builder = new IncrementalBuilder(baseURL, systemConfigPath, entryPointExpression, buildOptions);
 
     this.sourceCache = new Map();
+
+    this._debouncedExecuteChangesQueue = debounce(this._executeChangesQueue.bind(this), 250);
+    this._changesQueue = [];
+    this._changeQueueProcessingPromise = Promise.resolve();
   }
 
   initializeConfig(config) {
@@ -53,16 +58,31 @@ export default class DevServer {
   }
 
   notifyChange(changedFile) {
-    return Promise.all([
-      this.sourceCache.delete(changedFile),
-      this.builder.rebuild(changedFile),
-      this.notifyLiveReload(changedFile),
-    ]);
+    this._addToChangesQueue(changedFile);
   }
 
-  notifyLiveReload(changedFile) {
+  _addToChangesQueue(changedFile) {
+    this._changeQueueProcessingPromise.then(() => {
+      this._changesQueue.push(changedFile);
+      this._debouncedExecuteChangesQueue();
+    });
+  }
+
+  _executeChangesQueue() {
+    const changedFiles = this._changesQueue;
+    this._changeQueueProcessingPromise = Promise.all([
+      Promise.all(changedFiles.map(changedFile => this.sourceCache.delete(changedFile))),
+      this.builder.rebuild(changedFiles),
+      this.notifyLiveReload(changedFiles),
+    ]).then(() => {
+      this._changesQueue = [];
+    });
+  }
+
+  notifyLiveReload(changedFiles) {
+    const files = changedFiles.join(",");
     const {livereloadPort} = this.config;
-    return request(`http://localhost:${livereloadPort}/changed?files=${changedFile}`);
+    return request(`http://localhost:${livereloadPort}/changed?files=${files}`);
   }
 
   initializeLiveReload(port = 35729, options = {}) {
