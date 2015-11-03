@@ -16,14 +16,19 @@ class VideoFrameSplitter
     const COMMANDLINE = '%s -i %s %s -v quiet %s/%s.%s';
 
     /**
+     * Timeout for ffmpeg process in seconds.
+     */
+    const TIMEOUT = 3600;
+
+    /**
      * @var string
      */
     private $ffmpegExecutable;
 
     /**
-     * @var Service\FilesystemFrameCdn
+     * @var Service\FrameCdn
      */
-    private $filesystemFrameCdn;
+    private $frameCdn;
 
     /**
      * @var Flysystem\FileSystem
@@ -33,18 +38,18 @@ class VideoFrameSplitter
     /**
      * FrameCdnSplitter constructor.
      *
-     * @param Service\FilesystemFrameCdn $filesystemFrameCdn
-     * @param                            $ffmpegExecutable
-     * @param Flysystem\FileSystem       $fileSystem
+     * @param Service\FrameCdn      $frameCdn
+     * @param                       $ffmpegExecutable
+     * @param Flysystem\FileSystem  $fileSystem
      */
     public function __construct(
-        Service\FilesystemFrameCdn $filesystemFrameCdn,
+        Service\FrameCdn $frameCdn,
         $ffmpegExecutable,
         Flysystem\FileSystem $fileSystem
     ) {
-        $this->ffmpegExecutable   = $ffmpegExecutable;
-        $this->filesystemFrameCdn = $filesystemFrameCdn;
-        $this->fileSystem         = $fileSystem;
+        $this->ffmpegExecutable = $ffmpegExecutable;
+        $this->frameCdn         = $frameCdn;
+        $this->fileSystem       = $fileSystem;
     }
 
     /**
@@ -56,12 +61,12 @@ class VideoFrameSplitter
      */
     public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
     {
-        $tempDir = $this->getTempDirectory($type);
+        $tempDir         = $this->getTempDirectory($type);
         $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
-        $command = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
+        $command         = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
         $process = new Process($command);
-        $process->setTimeout(3600);
+        $process->setTimeout(self::TIMEOUT);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -70,8 +75,8 @@ class VideoFrameSplitter
 
         $files = array_filter(
             $this->fileSystem->listContents($tempDir),
-            function($file) {
-                if ($file['extension'] === 'png') {
+            function($file) use ($type) {
+                if ($file['extension'] === $type->getExtension()) {
                     return true;
                 }
                 return false;
@@ -79,7 +84,12 @@ class VideoFrameSplitter
         );
 
         foreach ($files as $file) {
-            $this->filesystemFrameCdn->save($video, $type, (int) $file['basename'], $this->fileSystem->read($file['path']));
+            $this->frameCdn->save(
+                $video,
+                $type,
+                (int) $file['basename'],
+                $this->fileSystem->read($file['path'])
+            );
         }
 
         $this->fileSystem->deleteDir($tempDir);
