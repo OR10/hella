@@ -16,6 +16,7 @@ export default class FrameGateway {
       image.addEventListener('load', () => resolve(image));
       image.addEventListener('error', (error) => reject(error));
       image.src = location.url;
+      image.crossOrigin = 'Anonymous';
     });
   }
 }
