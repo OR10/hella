@@ -24,6 +24,7 @@ class labeling_api(
     $frame_cdn_network_device = undef,
     $frame_cdn_port = 81,
     $frame_cdn_path = '',
+    $frame_cdn_allowed_origin = undef,
     $user_password = undef,
     $is_vagrant_vm = false,
 ) {
@@ -72,6 +73,11 @@ class labeling_api(
       }
 
       if $configure_nginx {
+        file { '/etc/nginx/cdn-cors.conf':
+          ensure  => file,
+          content => template('labeling_api/framecdn-cors.conf.erb'),
+        }
+
         nginx::resource::vhost { "cdn":
           ensure      => present,
           www_root    => "${frame_cdn_dir}",
@@ -79,6 +85,9 @@ class labeling_api(
           index_files => [],
           try_files   => ['$uri', "=404"],
           require     => File[$frame_cdn_dir],
+          location_cfg_append => {
+            'include' => '/etc/nginx/cdn-cors.conf',
+          }
         }
       }
     }
