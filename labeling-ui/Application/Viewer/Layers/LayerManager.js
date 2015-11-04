@@ -10,7 +10,7 @@ export default class LayerManager {
      *
      * Each layer gets a unique name during registration.
      *
-     * @type {Array}
+     * @type {Object}
      */
     this.layers = {};
 
@@ -103,5 +103,21 @@ export default class LayerManager {
     Object.values(this.layers)
       .sort((lhs, rhs) => lhs.order - rhs.order)
       .forEach(layer => delegator.dispatch(event, layer.layer));
+  }
+
+  /**
+   * Exports the currently drawn image data for all layers in this manager
+   * encoded as base64 data urls.
+   *
+   * @return {Object<String,String>}
+   */
+  exportLayerData() {
+    const data = {};
+
+    Object.values(this.layers).forEach(layer => {
+      data[layer.name] = layer.layer.exportData();
+    });
+
+    return data;
   }
 }

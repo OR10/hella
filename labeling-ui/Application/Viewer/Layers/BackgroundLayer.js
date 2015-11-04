@@ -46,4 +46,8 @@ export default class BackgroundLayer {
   setBackgroundImage(image) {
     this._backgroundImage = image;
   }
+
+  exportData() {
+    return this._element.toDataURL();
+  }
 }

@@ -60,4 +60,8 @@ export default class PaperLayer extends EventEmitter {
       scope.view.update();
     });
   }
+
+  exportData() {
+    return this._element.toDataURL();
+  }
 }
