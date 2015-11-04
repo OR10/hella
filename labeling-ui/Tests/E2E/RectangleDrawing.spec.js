@@ -98,7 +98,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
+  xit('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
     const viewer = element(by.css('.layer-container'));
@@ -111,8 +111,6 @@ describe('Rectangle drawing', () => {
       .mouseMove(viewer, {x: 0, y: 0}) // click somewhere outside to deselect element
       .click()
       .perform();
-
-    browser.pause();
 
     viewerDataExporter.exportData()
       .then((data) => {
