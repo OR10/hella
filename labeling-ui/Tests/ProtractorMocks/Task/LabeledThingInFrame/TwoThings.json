@@ -1,0 +1,59 @@
+{
+  "request": {
+    "path": "/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/source",
+    "params": {
+      "limit": 109,
+      "offset": 0
+    },
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "0115bd97fa0c1d86f8d1f65ff409f0b8",
+          "rev": "14-547b5f8221abb7327b156d7c1591b14e",
+          "frameNumber": 1,
+          "classes": null,
+          "shapes": [
+            {
+              "type": "rectangle",
+              "id": 1,
+              "topLeft": {
+                "x": 74.03125,
+                "y": 113
+              },
+              "bottomRight": {
+                "x": 127.03125,
+                "y": 186
+              }
+            }
+          ],
+          "labeledThingId": "0115bd97fa0c1d86f8d1f65ff409faa6"
+        },
+        {
+          "id": "0b104cbf507f55e820026f0b3d0146cf",
+          "rev": "8-691e8f078fc4286d30f318821457600a",
+          "frameNumber": 1,
+          "classes": null,
+          "shapes": [
+            {
+              "type": "rectangle",
+              "id": 3,
+              "topLeft": {
+                "x": 77.03125,
+                "y": 206
+              },
+              "bottomRight": {
+                "x": 240.03125,
+                "y": 394
+              }
+            }
+          ],
+          "labeledThingId": "0b104cbf507f55e820026f0b3d01524c"
+        }
+      ]
+    }
+  }
+}
+

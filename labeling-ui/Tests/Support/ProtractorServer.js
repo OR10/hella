@@ -4,8 +4,8 @@ import chalk from 'chalk';
 import send from 'send';
 import parseUrl from 'parseurl';
 import morgan from 'morgan';
-import proxy from 'proxy-middleware';
 import fs from 'fs';
+import createStatic from 'connect-static';
 
 export default class ProtractorServer {
   constructor(config) {
@@ -72,6 +72,22 @@ export default class ProtractorServer {
     };
   }
 
+  createFixturesMiddleware() {
+    const options = {
+      dir: `${process.cwd()}/Tests/Fixtures/Images`,
+    };
+
+    return new Promise((resolve, reject) => {
+      createStatic(options, (err, middleware) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(middleware);
+        }
+      });
+    });
+  }
+
   serve() {
     let {port, assetPath} = this.config;
 
@@ -80,9 +96,11 @@ export default class ProtractorServer {
     }
 
     Promise.resolve()
-      .then(() => {
+      .then(this.createFixturesMiddleware)
+      .then((fixturesMiddleware) => {
         const app = connect();
         app.use(morgan('dev'));
+        app.use('/fixtures/images', fixturesMiddleware);
         app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/index-protractor.html`));
         return app;
       })

@@ -4,3 +4,4 @@ Application/Vendor/
 Distribution/
 Logs/*
 npm-debug.log
+Tests/Exports/
