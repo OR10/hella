@@ -30,7 +30,7 @@ class LabeledFrame extends Controller\Base
      * @param Facade\LabeledFrame $labeledFrame
      * @param Facade\LabelingTask $labelingTask
      */
-    function __construct(Facade\LabeledFrame $labeledFrame, Facade\LabelingTask $labelingTask)
+    public function __construct(Facade\LabeledFrame $labeledFrame, Facade\LabelingTask $labelingTask)
     {
         $this->labeledFrameFacade = $labeledFrame;
         $this->labelingTaskFacade = $labelingTask;

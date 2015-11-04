@@ -11,6 +11,7 @@ class annostation_base(
     }
 
     $packages = [
+        'ant',
         'git',
         'htop',
         'libav-tools',

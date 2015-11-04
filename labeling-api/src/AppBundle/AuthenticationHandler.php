@@ -19,11 +19,10 @@ use Symfony\Component\Security\Http\EntryPoint;
  *
  * @todo inject config values?
  */
-class AuthenticationHandler
-    implements
-        Authentication\AuthenticationSuccessHandlerInterface,
-        Authentication\AuthenticationFailureHandlerInterface,
-        EntryPoint\AuthenticationEntryPointInterface
+class AuthenticationHandler implements
+    Authentication\AuthenticationSuccessHandlerInterface,
+    Authentication\AuthenticationFailureHandlerInterface,
+    EntryPoint\AuthenticationEntryPointInterface
 {
     /**
      * @var string

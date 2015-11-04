@@ -1,4 +1,4 @@
-import ViewerController from '../Controllers/ViewerController';
+import ViewerController from './ViewerController';
 import viewerTemplate from './ViewerDirective.html!';
 
 /**
@@ -9,12 +9,13 @@ import viewerTemplate from './ViewerDirective.html!';
 export default class ViewerDirective {
   constructor() {
     this.scope = {
-      onNewAnnotation: '&',
-      onUpdatedAnnotation: '&',
+      onNewThing: '&',
+      onUpdatedThing: '&',
+      onNextFrameRequested: '&',
+      onPreviousFrameRequested: '&',
 
-      task: '=',
-      frameNumber: '=',
-      activeTool: '=',
+      frameImage: '=',
+      thingsInFrame: '=',
     };
 
     this.controller = ViewerController;

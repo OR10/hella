@@ -50,4 +50,15 @@ export default class BackgroundLayer {
   exportData() {
     return this._element.toDataURL();
   }
+
+  /**
+   * Apply a filter to the layer
+   *
+   * @param {Filter} filter
+   */
+  applyFilter(filter) {
+    let imageData = this._renderingContext.getImageData(0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
+    imageData = filter.manipulate(imageData);
+    this._renderingContext.putImageData(imageData, 0, 0, 0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
+  }
 }

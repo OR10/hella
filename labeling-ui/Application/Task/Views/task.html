@@ -1,21 +1,25 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-2"></div>
+        <div class="col-md-2">
+            <label-summary title="Summary"></label-summary>
+        </div>
         <div class="col-md-7">
-            <viewer frame-number="vm.frameNumber"
-                    task="vm.task"
-                    on-new-annotation="vm.handleNewAnnotation(id, annotation)"
-                    on-updated-annotation="vm.handleUpdatedAnnotation(id, annotation)">
-            </viewer>
+            <viewer frame-image="vm.frameImage"
+                    things-in-frame="vm.labelsAndThingsInFrame.things"
+                    on-new-thing="vm.handleNewThing(shapes)"
+                    on-updated-thing="vm.handleUpdatedThing(labeledThing)"
+                    on-next-frame-requested="vm.handleNextFrameRequested()"
+                    on-previous-frame-requested="vm.handlePreviousFrameRequested()"
+            ></viewer>
         </div>
         <div class="col-md-3">
             <label-selector
-                    on-object-labeling-changed="vm.handleObjectLabelingChanged(classes, incomplete)"
-                    on-meta-labeling-changed="vm.handleMetaLabelingChanged(classes, incomplete)"
                     meta-label-structure="vm.metaLabelStructure"
                     object-label-structure="vm.objectLabelStructure"
                     meta-label-annotation="vm.metaLabelAnnotation"
                     object-label-annotation="vm.objectLabelAnnotation"
+                    on-object-labeling-changed="vm.handleObjectLabelingChanged(classes, incomplete)"
+                    on-meta-labeling-changed="vm.handleMetaLabelingChanged(classes, incomplete)"
             ></label-selector>
         </div>
     </div>

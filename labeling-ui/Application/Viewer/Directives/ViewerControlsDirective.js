@@ -1,5 +1,5 @@
 import viewerControlsTempate from './ViewerControlsDirective.html!';
-import ViewerControlsController from '../Controllers/ViewerControlsController';
+import ViewerControlsController from './ViewerControlsController';
 
 /**
  * Directive encapsulating the control elements of the AnnoStation viewer
@@ -17,9 +17,8 @@ export default class ViewerControlsDirective {
 
     this.template = viewerControlsTempate;
     this.scope = {
-      task: '=',
-      frameNumber: '=',
-      activeTool: '=',
+      onPreviousFrameRequested: '&',
+      onNextFrameRequested: '&',
     };
   }
 }

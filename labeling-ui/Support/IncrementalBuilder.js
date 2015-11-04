@@ -61,6 +61,8 @@ export default class IncrementalBuilder {
       changedFiles = [];
     } else if (typeof changes === 'string') {
       changedFiles = [changes];
+    } else {
+      changedFiles = changes;
     }
 
     this.setupBuilder();

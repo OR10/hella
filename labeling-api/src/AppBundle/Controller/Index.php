@@ -24,7 +24,7 @@ class Index extends Base
      */
     private $importerService;
 
-    function __construct(Twig\TwigEngine $twigEngine, ImporterService $importerService)
+    public function __construct(Twig\TwigEngine $twigEngine, ImporterService $importerService)
     {
         $this->twigEngine      = $twigEngine;
         $this->importerService = $importerService;

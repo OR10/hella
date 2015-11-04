@@ -25,7 +25,7 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      */
-    function __construct(
+    public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;

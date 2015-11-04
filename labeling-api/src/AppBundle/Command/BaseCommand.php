@@ -33,7 +33,8 @@ abstract class BaseCommand extends ContainerAwareCommand
         $output->writeln("<error>=> {$message}</>");
     }
 
-    protected function runCommand(OutputInterface $output, $commandName, array $parameters = []) {
+    protected function runCommand(OutputInterface $output, $commandName, array $parameters = [])
+    {
         $bufferedOutput = new BufferedOutput();
         $command = $this->getApplication()->find($commandName);
         $input = new ArrayInput(array_merge(['command' => $commandName], $parameters));
@@ -45,5 +46,4 @@ abstract class BaseCommand extends ContainerAwareCommand
         }
         return true;
     }
-
 }

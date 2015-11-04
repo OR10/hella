@@ -1,6 +1,6 @@
 /**
  * @interface FrameRange
  *
- * @property {int} frameRangeStart
- * @property {int} frameRangeEnd
+ * @property {int} startFrameNumber
+ * @property {int} endFrameNumber
  */

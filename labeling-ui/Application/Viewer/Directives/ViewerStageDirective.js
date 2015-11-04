@@ -1,4 +1,4 @@
-import ViewerStageController from '../Controllers/ViewerStageController';
+import ViewerStageController from './ViewerStageController';
 import viewerStageTemplate from './ViewerStageDirective.html!';
 
 /**
@@ -11,12 +11,11 @@ import viewerStageTemplate from './ViewerStageDirective.html!';
 export default class ViewerStageDirective {
   constructor() {
     this.scope = {
-      onNewAnnotation: '&',
-      onUpdatedAnnotation: '&',
+      onNewThing: '&',
+      onUpdatedThing: '&',
 
-      task: '=',
-      frameNumber: '=',
-      activeTool: '=',
+      frameImage: '=',
+      thingsInFrame: '=',
     };
 
     this.controller = ViewerStageController;
