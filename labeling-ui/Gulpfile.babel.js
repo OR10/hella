@@ -9,9 +9,17 @@ import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
 import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
 import ip from 'ip';
+import chokidar from 'chokidar';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
+
+function chokidarWatch(glob, fn) {
+  const watcher = chokidar.watch(glob);
+  watcher.on('ready', () => {
+    watcher.on('all', (...args) => fn(...args));
+  });
+}
 
 const $$ = gulpLoadPlugins({
   rename: {
@@ -72,6 +80,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
     'build-public',
     ['build-templates', 'build-sass', 'build-fonts'],
     () => {
+      debugger;
       const devServer = new DevServer({
         'baseURL': './',
         'assetPath': `${__dirname}/Distribution`,
@@ -83,21 +92,21 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
 
       devServer.serve();
 
-      gulp.watch(`${paths.dir.application}/**/*`, event => {
-        const relativePath = path.relative(__dirname, event.path);
+      chokidarWatch(`${paths.dir.application}/**/*`, (event, filepath) => {
+        const relativePath = path.relative(__dirname, filepath);
         devServer.notifyChange(relativePath);
       });
 
-      gulp.watch(paths.files.public, event => {
-        const relativePath = path.relative(__dirname, event.path);
+      chokidarWatch(paths.files.public, (event, filepath) => {
+        const relativePath = path.relative(__dirname, filepath);
         run(
           'build-public',
           () => devServer.notifyChange(relativePath)
         );
       });
 
-      gulp.watch(paths.files.sass.all, event => {
-        const relativePath = path.relative(__dirname, event.path);
+      chokidarWatch(paths.files.sass.all, (event, filepath) => {
+        const relativePath = path.relative(__dirname, filepath);
         run(
           'build-sass',
           () => devServer.notifyChange(relativePath)
