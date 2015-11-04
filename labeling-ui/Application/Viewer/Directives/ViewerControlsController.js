@@ -4,6 +4,7 @@
  * @class ViewerControlsController
  * @property {Function} onPreviousFrameRequested
  * @property {Function} onNextFrameRequested
+ * @property {Function} onNewLabeledThingRequested
  */
 export default class ViewerControlsController {
   handleNextFrameClicked() {
@@ -12,6 +13,10 @@ export default class ViewerControlsController {
 
   handlePreviousFrameClicked() {
     this.onPreviousFrameRequested();
+  }
+
+  handleNewLabeledThingClicked() {
+    this.onNewLabeledThingRequested();
   }
 }
 

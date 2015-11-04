@@ -94,7 +94,6 @@ export default class TaskController {
     this._switchActiveFrame(1);
   }
 
-
   /**
    * Load all framelocations, which belong to the current task
    *
@@ -209,6 +208,10 @@ export default class TaskController {
       return;
     }
     this._switchActiveFrame(this._frameNumber - 1);
+  }
+
+  handleNewLabeledThingRequested() {
+    console.log("LABEL! LABEL! LABEL!");
   }
 }
 

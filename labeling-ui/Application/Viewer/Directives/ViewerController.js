@@ -5,6 +5,7 @@
  * @property {Function} onUpdatedThing
  * @property {Function} onNextFrameRequested
  * @property {Function} onPreviousFrameRequested
+ * @property {Function} onNewLabeledThingRequested
  */
 export default class ViewerController {
   handleNewThing(shapes) {
@@ -21,5 +22,9 @@ export default class ViewerController {
 
   handlePreviousFrameRequested() {
     this.onPreviousFrameRequested();
+  }
+
+  handleNewLabeledThingRequested() {
+    this.onNewLabeledThingRequested();
   }
 }

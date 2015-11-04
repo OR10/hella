@@ -19,6 +19,7 @@ export default class ViewerControlsDirective {
     this.scope = {
       onPreviousFrameRequested: '&',
       onNextFrameRequested: '&',
+      onNewLabeledThingRequested: '&',
     };
   }
 }
