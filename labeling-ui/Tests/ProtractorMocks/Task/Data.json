@@ -1,17 +1,19 @@
 {
   "request": {
-    "path": "/api/video/list",
+    "path": "/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8",
     "method": "GET"
   },
   "response": {
-    "result": {
-      "id": "4711",
-      "userId": null,
-      "videoId": "0115bd97fa0c1d86f8d1f65ff4096bda",
-      "frameRange": {
-        "id": null,
-        "startFrameNumber": 1,
-        "endFrameNumber": 110
+    "data": {
+      "result": {
+        "id": "0115bd97fa0c1d86f8d1f65ff4095ed8",
+        "userId": null,
+        "videoId": "0115bd97fa0c1d86f8d1f65ff4096bda",
+        "frameRange": {
+          "id": null,
+          "startFrameNumber": 1,
+          "endFrameNumber": 2
+        }
       }
     }
   }
