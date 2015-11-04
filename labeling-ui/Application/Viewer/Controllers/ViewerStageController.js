@@ -25,6 +25,8 @@ export default class ViewerStageController {
     this._layerManager = new LayerManager();
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
+    $element[0].__endToEndTestOnlyLayerManager__ = this._layerManager;
+
     const eventDelegationLayer = new EventDelegationLayer();
     const annotationLayer = new AnnotationLayer(drawingContextService);
     const backgroundLayer = new BackgroundLayer();
@@ -63,7 +65,7 @@ export default class ViewerStageController {
    * @returns {Promise}
    */
   _initializeFrameLocations() {
-    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber;
+    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
 
     return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount)
       .then(frameLocations => {
