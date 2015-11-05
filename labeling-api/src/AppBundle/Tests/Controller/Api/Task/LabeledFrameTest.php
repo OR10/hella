@@ -165,7 +165,7 @@ class LabeledFrameTest extends Tests\WebTestCase
             )
         );
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testSaveLabeledFrameWithInvalidFrameNumbers()
@@ -184,7 +184,7 @@ class LabeledFrameTest extends Tests\WebTestCase
             )
         );
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testSaveLabeledFrameWithInvalidClasses()
@@ -204,7 +204,7 @@ class LabeledFrameTest extends Tests\WebTestCase
             )
         );
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     protected function setUpImplementation()

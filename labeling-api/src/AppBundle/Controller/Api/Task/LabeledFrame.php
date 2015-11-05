@@ -132,7 +132,7 @@ class LabeledFrame extends Controller\Base
             ($request->request->get('classes') !== null && !is_array($request->request->get('classes'))) ||
             $request->request->get('frameNumber') !== (int)$frameNumber
         ) {
-            $response->setStatusCode(404);
+            $response->setStatusCode(400);
 
             return $response;
         }
