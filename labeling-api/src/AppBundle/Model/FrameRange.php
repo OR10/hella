@@ -95,6 +95,16 @@ class FrameRange
     }
 
     /**
+     * Get an iterable range of all frames covered by this frame range.
+     *
+     * @return array
+     */
+    public function getRange()
+    {
+        return range($this->getStartFrameNumber(), $this->getEndFrameNumber());
+    }
+
+    /**
      * Return a new range from the given offset and limit which is guaranteed
      * to be a sub-range of this range.
      *

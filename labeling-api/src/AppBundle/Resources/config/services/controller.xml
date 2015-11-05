@@ -26,6 +26,12 @@
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem"/>
         </service>
         <service
+                id="annostation.labeling_api.controller.api.task.export"
+                class="AppBundle\Controller\Api\Task\Export">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.task_exporter.kitti"/>
+        </service>
+        <service
                 id="annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
                 class="AppBundle\Controller\Api\Task\LabeledThingInFrame">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
