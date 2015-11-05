@@ -10,6 +10,7 @@ use AppBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/labeledThingInFrame")
@@ -79,7 +80,7 @@ class LabeledThingInFrame extends Controller\Base
             $frameNumber = $request->request->get('frameNumber');
 
             if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
-                $response->setStatusCode(400);
+                throw new Exception\BadRequestHttpException();
 
                 return $response;
             }

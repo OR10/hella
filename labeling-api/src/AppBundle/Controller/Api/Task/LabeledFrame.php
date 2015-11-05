@@ -10,6 +10,7 @@ use AppBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -135,7 +136,7 @@ class LabeledFrame extends Controller\Base
         $task    = $this->labelingTaskFacade->find($taskId);
         $classes = $request->request->get('classes', []);
         if ($task === null || !is_array($classes) || $request->request->get('frameNumber') !== (int)$frameNumber) {
-            $response->setStatusCode(400);
+            throw new Exception\BadRequestHttpException();
 
             return $response;
         }
