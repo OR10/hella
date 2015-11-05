@@ -28,8 +28,7 @@ export default class StateMachine {
 
   transition(transitionValue, ...args) {
     const sourceState = this._currentState;
-    const transition = sourceState.getTransition(transitionValue);
-    const targetState = transition.transition(...args);
+    const targetState = sourceState.transition(transitionValue, ...args);
     this._currentState = targetState;
   }
 }

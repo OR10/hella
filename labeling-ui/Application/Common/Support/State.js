@@ -5,7 +5,6 @@ export default class State {
     this._machine = machine;
     this._name = name;
     this._transitionMapping = new Map();
-    this._executeHandlers = new Set();
   }
 
   getName() {
@@ -40,25 +39,12 @@ export default class State {
 
         const transition = new Transition(sourceState, transitionValue, targetState);
         this.addTransition(transition);
-        return targetState;
+        return transition;
       },
     };
   }
 
-  register(handler) {
-    this._executeHandlers.add(handler);
-  }
-
-  getHandlers() {
-    return this._executeHandlers;
-  }
-
-  transition(transitionEvent, ...args) {
-    this._executeHandlers.forEach(
-      handler => handler(
-        transitionEvent,
-        ...args
-      )
-    );
+  transition(transitionValue, ...args) {
+    this.getTransition(transitionValue).transition(...args);
   }
 }

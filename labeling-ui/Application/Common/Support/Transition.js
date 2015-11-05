@@ -3,6 +3,15 @@ export default class Transition {
     this._sourceState = sourceState;
     this._transitionValue = transitionValue;
     this._targetState = targetState;
+    this._executeHandlers = new Set();
+  }
+
+  register(handler) {
+    this._executeHandlers.add(handler);
+  }
+
+  getHandlers() {
+    return this._executeHandlers;
   }
 
   getTransitionValue() {
@@ -13,10 +22,16 @@ export default class Transition {
     const transitionEvent = {
       from: this._sourceState.getName(),
       on: this._transitionValue,
-      to: this._targetState.getName()
+      to: this._targetState.getName(),
     };
 
-    this._targetState.transition(transitionEvent, ...args);
+    this._executeHandlers.forEach(
+      handler => handler(
+        transitionEvent,
+        ...args
+      )
+    );
+
     return this._targetState;
   }
 }

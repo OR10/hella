@@ -47,32 +47,48 @@ describe('StateMachine', () => {
     });
 
     it('should provide shortcut to create and store transitions', () => {
-      const state = first.on('foobar').to('second');
-      expect(state).toBe(second);
+      const transition = first.on('foobar').to('second');
       expect(first.getTransition('foobar') instanceof Transition).toBeTruthy();
+      expect(first.getTransition('foobar')).toBe(transition);
     });
 
-    it('should allow the registration of handlers', () => {
-      const handler = function() {};
-      second.register(handler);
+    describe('Transition', () => {
+      let firstSecond;
+      const transitionEvent = {from: 'first', on: 'foobar', to: 'second'};
 
-      const retrievedHandlers = second.getHandlers();
-      expect(retrievedHandlers.has(handler)).toBeTruthy();
-      expect(retrievedHandlers.size).toEqual(1);
-    });
+      beforeEach(() => {
+        firstSecond = new Transition(first, 'foobar', second);
+      });
 
-    it('should call handlers upon transition', () => {
-      const handler = jasmine.createSpy();
-      second.register(handler);
-      second.transition({});
-      expect(handler).toHaveBeenCalledWith({});
-    });
+      it('should allow the registration of handlers', () => {
+        const handler = function() {};
+        firstSecond.register(handler);
 
-    it('should call handlers upon transition with given arguments', () => {
-      const handler = jasmine.createSpy();
-      second.register(handler);
-      second.transition({}, "foo", "bar");
-      expect(handler).toHaveBeenCalledWith({}, "foo", "bar");
+        const retrievedHandlers = firstSecond.getHandlers();
+        expect(retrievedHandlers.has(handler)).toBeTruthy();
+        expect(retrievedHandlers.size).toEqual(1);
+      });
+
+      it('should call handlers upon transition', () => {
+        const handler = jasmine.createSpy();
+        firstSecond.register(handler);
+        firstSecond.transition();
+        expect(handler).toHaveBeenCalled();
+      });
+
+      it('should call handlers with transitionEvent upon transition', () => {
+        const handler = jasmine.createSpy();
+        firstSecond.register(handler);
+        firstSecond.transition();
+        expect(handler).toHaveBeenCalledWith(transitionEvent);
+      });
+
+      it('should call handlers upon transition with given arguments', () => {
+        const handler = jasmine.createSpy();
+        firstSecond.register(handler);
+        firstSecond.transition("foo", "bar");
+        expect(handler).toHaveBeenCalledWith(transitionEvent, "foo", "bar");
+      });
     });
   });
 
