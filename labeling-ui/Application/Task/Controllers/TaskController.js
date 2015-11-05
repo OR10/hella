@@ -82,6 +82,14 @@ export default class TaskController {
     this.metaLabelAnnotation = metaLabelAnnotation;
     this.objectLabelAnnotation = objectLabelAnnotation;
 
+    this.objectLabelContext = {};
+    this.metaLabelContext = {};
+    this.objectLabelingCompleted = false;
+    this.metaLabelingCompleted = false;
+
+    $scope.$watch('vm.objectLabelingCompleted', (completed) => console.log("Object: ", completed));
+    $scope.$watch('vm.metaLabelingCompleted', (completed) => console.log("Meta: ", completed));
+
     /**
      * List of frame location information for this task.
      *
@@ -172,14 +180,6 @@ export default class TaskController {
    */
   _switchToPlaceholderImage() {
     this.frameImage = this._placeholderImage;
-  }
-
-  handleMetaLabelingChanged(classes, incomplete) {
-    console.log("handleMetaLabelingChanged: ", arguments);
-  }
-
-  handleObjectLabelingChanged(classes, incomplete) {
-    console.log("handleObjectLabelingChanged: ", arguments);
   }
 
   handleNewThing(shapes) {

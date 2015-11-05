@@ -10,13 +10,20 @@ export default class LinearLabelStructureVisitor {
    * Visit the given LabelStructure and output a linearized list based on the given context
    *
    * @param {LabelStructure} node
-   * @param {Object<string,string>} context
+   * @param {Object<string,string>|Array<string>} context
    * @returns {AnnotatedLabelStructure}
    */
   visit(node, context) {
+    let contextArray;
+    if (context.constructor === {}.constructor) {
+      contextArray = Object.values(context);
+    } else {
+      contextArray = context;
+    }
+
     return {
       name: 'linear-root',
-      children: this._visitLabelStructures(node.children, context),
+      children: this._visitLabelStructures(node.children, contextArray),
     };
   }
 
