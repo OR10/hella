@@ -10,7 +10,6 @@
       "shapes": [
         {
           "type": "rectangle",
-          "id": 1,
           "topLeft": {
             "x": 60,
             "y": 60
@@ -34,7 +33,6 @@
         "shapes": [
           {
             "type": "rectangle",
-            "id": 1,
             "topLeft": {
               "x": 60,
               "y": 60
