@@ -20,6 +20,8 @@ exports.config = {
       filePrefix: 'test-e2e-results.xml',
       savePath: './Logs/E2E',
     }));
+
+    require('./Tests/Support/Jasmine/CustomMatchers');
   },
   specs: ['Tests/E2E/**/*.spec.js'],
 };

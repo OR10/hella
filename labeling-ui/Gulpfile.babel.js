@@ -80,7 +80,6 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
     'build-public',
     ['build-templates', 'build-sass', 'build-fonts'],
     () => {
-      debugger;
       const devServer = new DevServer({
         'baseURL': './',
         'assetPath': `${__dirname}/Distribution`,
