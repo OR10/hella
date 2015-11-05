@@ -93,7 +93,12 @@ class LabeledFrame extends Controller\Base
     {
         $response = View\View::create();
 
-        $task         = $this->labelingTaskFacade->find($taskId);
+        $task = $this->labelingTaskFacade->find($taskId);
+        if ($task === null) {
+            $response->setStatusCode(404);
+
+            return $response;
+        }
         $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
         if ($task === null || $labeledFrame === null) {
             $response->setStatusCode(404);
@@ -123,7 +128,10 @@ class LabeledFrame extends Controller\Base
         $response = View\View::create();
 
         $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
+        if ($task === null ||
+            ($request->request->get('classes') !== null && !is_array($request->request->get('classes'))) ||
+            $request->request->get('frameNumber') !== (int)$frameNumber
+        ) {
             $response->setStatusCode(404);
 
             return $response;

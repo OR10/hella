@@ -26,78 +26,185 @@ class LabeledFrameTest extends Tests\WebTestCase
 
     public function testGetLabeledFrameDocument()
     {
-        $client       = $this->createClient();
         $labelingTask = $this->createLabelingTask();
         $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $crawler      = $client->request(
-            'GET',
-            sprintf(
-                '/api/task/%s/labeledFrame/%s.json',
-                $labelingTask->getId(),
-                $labeledFrame->getFrameNumber()
-            ),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
-            ]
-        );
-
-        $response = $client->getResponse();
+        $response     = $this->doRequest('GET', $labelingTask->getId(), $labeledFrame->getFrameNumber());
 
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testSaveLabeledFrame()
+    public function testGetLabeledFrameDocumentInvalidTaskId()
     {
-        $client       = $this->createClient();
         $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask);
-        $labeledFrame->setFrameNumber(10);
-        $crawler = $client->request(
-            'PUT',
-            sprintf(
-                '/api/task/%s/labeledFrame/%s.json',
-                $labelingTask->getId(),
-                $labeledFrame->getFrameNumber()
-            ),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
-            ]
-        );
+        $labeledFrame = $this->createLabeledFrame($labelingTask);
+        $response     = $this->doRequest('GET', 1111, $labeledFrame->getFrameNumber());
 
-        $response = $client->getResponse();
+        $this->assertEquals(404, $response->getStatusCode());
+    }
 
-        $this->assertEquals(200, $response->getStatusCode());
+    public function testGetLabeledFrameDocumentInvalidFrameNumber()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $response     = $this->doRequest('GET', $labelingTask->getId(), 1111);
+
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testDeleteLabeledFrame()
     {
-        $client       = $this->createClient();
         $labelingTask = $this->createLabelingTask();
         $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $crawler      = $client->request(
-            'DELETE',
-            sprintf(
-                '/api/task/%s/labeledFrame/%s.json',
-                $labelingTask->getId(),
-                $labeledFrame->getFrameNumber()
-            ),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
-            ]
-        );
-
-        $response = $client->getResponse();
+        $response     = $this->doRequest('DELETE', $labelingTask->getId(), $labeledFrame->getFrameNumber());
 
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testDeleteLabeledFrameInvalidTaskId()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = $this->createLabeledFrame($labelingTask);
+        $response     = $this->doRequest('DELETE', 1111, $labeledFrame->getFrameNumber());
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testDeleteLabeledFrameInvalidFrameId()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $response     = $this->doRequest('DELETE', $labelingTask->getId(), 1111);
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledFrame()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = new Model\LabeledFrame($labelingTask);
+        $labeledFrame->setFrameNumber(10);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'classes' => array('class1' => 'test'),
+                    'frameNumber' => 10,
+                )
+            )
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledFrameWithoutClasses()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = new Model\LabeledFrame($labelingTask);
+        $labeledFrame->setFrameNumber(10);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'frameNumber' => 10,
+                )
+            )
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testUpdateLabeledFrame()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = $this->createLabeledFrame($labelingTask);
+        $labeledFrame->setFrameNumber(10);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'frameNumber' => $labeledFrame->getFrameNumber(),
+                    'rev' => $labeledFrame->getRev()
+                )
+            )
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testUpdateLabeledFrameWithInvalidRevision()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = $this->createLabeledFrame($labelingTask);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'frameNumber' => 10,
+                    'rev' => 'this_revision_invalid'
+                )
+            )
+        );
+
+        $this->assertEquals(409, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledFrameWithInvalidBody()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = new Model\LabeledFrame($labelingTask);
+        $labeledFrame->setFrameNumber(10);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(array('invalid' => 'body')
+            )
+        );
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledFrameWithInvalidFrameNumbers()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = new Model\LabeledFrame($labelingTask);
+        $labeledFrame->setFrameNumber(10);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'frameNumber' => 20
+                )
+            )
+        );
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledFrameWithInvalidClasses()
+    {
+        $labelingTask = $this->createLabelingTask();
+        $labeledFrame = new Model\LabeledFrame($labelingTask);
+        $labeledFrame->setFrameNumber(10);
+        $response = $this->doRequest(
+            'PUT',
+            $labelingTask->getId(),
+            $labeledFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'classes'     => 'test_class',
+                    'frameNumber' => 20
+                )
+            )
+        );
+
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     protected function setUpImplementation()
@@ -121,6 +228,29 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->labeledFrameFacade = static::$kernel->getContainer()->get(
             'annostation.labeling_api.database.facade.labeled_frame'
         );
+    }
+
+    private function doRequest($method, $taskId, $frameNumber, $content = null)
+    {
+        $client  = $this->createClient();
+        $crawler = $client->request(
+            $method,
+            sprintf(
+                '/api/task/%s/labeledFrame/%s.json',
+                $taskId,
+                $frameNumber
+            ),
+            [],
+            [],
+            [
+                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
+                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            $content
+        );
+
+        return $client->getResponse();
     }
 
     private function createLabelingTask()
