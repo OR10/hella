@@ -32,7 +32,7 @@ class LabeledThingInFrame
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $shapes;
+    private $shapes = [];
 
     /**
      * @CouchDB\Field(type="string")
