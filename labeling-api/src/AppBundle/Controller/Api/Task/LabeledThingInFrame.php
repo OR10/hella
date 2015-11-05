@@ -10,6 +10,7 @@ use AppBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -67,19 +68,18 @@ class LabeledThingInFrame extends Controller\Base
             return $response;
         }
 
-        if (($request->request->get('shapes')) !== null && !is_array($request->request->get('shapes')) ||
-            ($request->request->get('classes')) !== null && !is_array($request->request->get('classes'))
-        ) {
-            $response->setStatusCode(400);
+        $shapes  = $request->request->get('shapes', []);
+        $classes = $request->request->get('classes', []);
 
-            return $response;
+        if (!is_array($shapes) || !is_array([$classes])) {
+            throw new Exception\BadRequestHttpException();
         }
 
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
             $task,
             $frameNumber,
-            $request->request->get('shapes') === null ? array() : $request->request->get('shapes'),
-            $request->request->get('classes') === null ? array() : $request->request->get('classes')
+            $shapes,
+            $classes
         );
 
         $response->setData(['result' => $labeledThingInFrame]);
