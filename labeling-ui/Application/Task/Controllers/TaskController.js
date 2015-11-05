@@ -106,10 +106,10 @@ export default class TaskController {
    * Load all framelocations, which belong to the current task
    *
    * @returns {Promise<Array<FrameLocation>>}
-   * @private
+ * @private
    */
   _loadFrameLocations() {
-    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber;
+    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
     return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
   }
 
