@@ -167,28 +167,28 @@ gulp.task('optimize', next => run(
 
 gulp.task('eslint', () => {
   return gulp.src([
-    `!${paths.files.vendor}`,
-    `!${paths.files.system.config}`,
-    paths.files.gulp.config,
-    paths.files.support,
-    paths.files.js,
-    paths.files.tests.unit,
-  ])
-  .pipe($$.eslint())
-  .pipe($$.eslint.format());
+      `!${paths.files.vendor}`,
+      `!${paths.files.system.config}`,
+      paths.files.gulp.config,
+      paths.files.support,
+      paths.files.js,
+      paths.files.tests.unit,
+    ])
+    .pipe($$.eslint())
+    .pipe($$.eslint.format());
 });
 
 gulp.task('eslint-checkstyle', () => {
   return gulp.src([
-    `!${paths.files.vendor}`,
-    `!${paths.files.system.config}`,
-    paths.files.gulp.config,
-    paths.files.support,
-    paths.files.js,
-    paths.files.tests.unit,
-  ])
-  .pipe($$.eslint())
-  .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
+      `!${paths.files.vendor}`,
+      `!${paths.files.system.config}`,
+      paths.files.gulp.config,
+      paths.files.support,
+      paths.files.js,
+      paths.files.tests.unit,
+    ])
+    .pipe($$.eslint())
+    .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
 });
 
 gulp.task('test-unit', (next) => {
@@ -211,7 +211,7 @@ gulp.task('test-unit-continuous', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
+gulp.task('test-e2e-run', ['webdriver-update'], (next) => {
   const protractorConfig = {
     configFile: 'protractor.conf.js',
     args: [],
@@ -224,27 +224,24 @@ gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line n
     protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
   }
 
-  run(
-    'clean',
-    'build',
-    'optimize',
-    () => {
-      const protractorServer = new ProtractorServer({
-        assetPath: 'Distribution',
-        port: 52343,
-      });
+  const protractorServer = new ProtractorServer({
+    assetPath: 'Distribution',
+    port: 52343,
+  });
 
-      protractorServer.serve();
+  protractorServer.serve();
 
-      gulp.src(paths.files.tests.e2e)
-        .pipe(protractor(protractorConfig))
-        .on('error', (error) => {
-          protractorServer.close();
-          throw error;
-        })
-        .on('end', () => protractorServer.close());
-    }
-  );
+  gulp.src(paths.files.tests.e2e)
+    .pipe(protractor(protractorConfig))
+    .on('error', (error) => {
+      protractorServer.close();
+      throw error;
+    })
+    .on('end', () => protractorServer.close());
+});
+
+gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
+  run('clean', 'build', 'optimize', 'test-e2e-run');
 });
 
 gulp.task('build-sass', () => {
