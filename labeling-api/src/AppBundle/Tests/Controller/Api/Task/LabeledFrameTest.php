@@ -161,8 +161,7 @@ class LabeledFrameTest extends Tests\WebTestCase
             'PUT',
             $labelingTask->getId(),
             $labeledFrame->getFrameNumber(),
-            json_encode(array('invalid' => 'body')
-            )
+            json_encode(array('invalid' => 'body'))
         );
 
         $this->assertEquals(400, $response->getStatusCode());

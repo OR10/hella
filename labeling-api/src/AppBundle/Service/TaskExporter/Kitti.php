@@ -108,8 +108,7 @@ class Kitti implements Service\TaskExporter
             }
 
             return $result;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             @unlink($zipFilename);
             throw $e;
         }
