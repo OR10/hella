@@ -3,6 +3,16 @@ require('babel/register');
 exports.config = {
   framework: 'jasmine2',
   seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
+
+  capabilities: {
+    'browserName': 'chrome',
+    'chromeOptions': {
+      'mobileEmulation': {
+        'deviceName': 'Laptop with MDPI screen',
+      },
+    },
+  },
+
   onPrepare: function() {
     const jasmineReporters = require('jasmine-reporters');
     jasmine.getEnv().addReporter(new jasmineReporters.JUnitXmlReporter({
