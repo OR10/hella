@@ -87,7 +87,7 @@ class LabeledThingInFrame extends Controller\Base
 
             $labeledThingInFrame->setClasses($classes);
             $labeledThingInFrame->setShapes($shapes);
-            $labeledThingInFrame->setFrameNumber($frameNumber);
+            $labeledThingInFrame->setFrameNumber((int)$frameNumber);
             $this->labeledThingInFrameFacade->save($labeledThingInFrame);
             $response->setData(['result' => $labeledThingInFrame]);
         } else {
