@@ -16,6 +16,7 @@ export default class ViewerStageDirective {
 
       frameImage: '=',
       thingsInFrame: '=',
+      filters: '=',
     };
 
     this.controller = ViewerStageController;

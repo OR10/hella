@@ -44,6 +44,15 @@ export default class ViewerStageController {
       thingLayer.clear();
       thingLayer.addLabeledThings(Object.values(newThingsInFrame));
     });
+
+    $scope.$watchCollection('vm.filters', filters => {
+      if (filters) {
+        backgroundLayer.resetLayer();
+        filters.forEach(filter => {
+          backgroundLayer.applyFilter(filter);
+        });
+      }
+    });
   }
 }
 

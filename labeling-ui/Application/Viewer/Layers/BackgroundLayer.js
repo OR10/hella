@@ -23,10 +23,17 @@ export default class BackgroundLayer {
      * @private
      */
     this._backgroundImage = null;
+
+    /**
+     * @type {ImageData}
+     * @private
+     */
+    this._imageData = null;
   }
 
   render() {
     this._renderingContext.drawImage(this._backgroundImage, 0, 0);
+    this._imageData = this._renderingContext.getImageData(0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
   }
 
   attachToDom(element) {
@@ -60,5 +67,12 @@ export default class BackgroundLayer {
     let imageData = this._renderingContext.getImageData(0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
     imageData = filter.manipulate(imageData);
     this._renderingContext.putImageData(imageData, 0, 0, 0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
+  }
+
+  /**
+   * Resets the layer image to remove applied filters
+   */
+  resetLayer() {
+    this._renderingContext.putImageData(this._imageData, 0, 0, 0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
   }
 }
