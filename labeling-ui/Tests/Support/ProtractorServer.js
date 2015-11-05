@@ -3,7 +3,6 @@ import http from 'http';
 import chalk from 'chalk';
 import send from 'send';
 import parseUrl from 'parseurl';
-import morgan from 'morgan';
 import fs from 'fs';
 import createStatic from 'connect-static';
 
@@ -99,7 +98,6 @@ export default class ProtractorServer {
       .then(this.createFixturesMiddleware)
       .then((fixturesMiddleware) => {
         const app = connect();
-        app.use(morgan('dev'));
         app.use('/fixtures/images', fixturesMiddleware);
         app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/index-protractor.html`));
         return app;
