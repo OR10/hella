@@ -31,52 +31,84 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testGetLabeledThingInFrameDocument()
     {
-        $client              = $this->createClient();
         $labelingTask        = $this->createLabelingTask();
         $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
-        $crawler             = $client->request(
-            'GET',
-            sprintf(
-                '/api/task/%s/labeledThingInFrame/%s.json',
-                $labelingTask->getId(),
-                $labeledThingInFrame->getFrameNumber()
-            ),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW'   => Controller\IndexTest::PASSWORD,
-            ]
-        );
 
-        $response = $client->getResponse();
+        $response = $this->doRequest('GET', $labelingTask->getId(), $labeledThingInFrame->getFrameNumber());
+
 
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testSaveLabeledThingInFrame()
+    public function testGetLabeledThingInFrameDocumentWithInvalidTask()
     {
-        $client              = $this->createClient();
         $labelingTask        = $this->createLabelingTask();
         $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
-        $crawler             = $client->request(
+
+        $response = $this->doRequest('GET', 111111, $labeledThingInFrame->getFrameNumber());
+
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledThingInFrame()
+    {
+        $labelingTask        = $this->createLabelingTask();
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+
+        $response = $this->doRequest(
             'POST',
-            sprintf(
-                '/api/task/%s/labeledThingInFrame/%s.json',
-                $labelingTask->getId(),
-                $labeledThingInFrame->getFrameNumber()
-            ),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW'   => Controller\IndexTest::PASSWORD,
-            ]
+            $labelingTask->getId(),
+            $labeledThingInFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'classes' => array('class1' => 'test'),
+                    'shapes'  => array('shape1' => 'test'),
+                )
+            )
         );
 
-        $response = $client->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledThingInFrameWithInvalidBody()
+    {
+        $labelingTask        = $this->createLabelingTask();
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+
+        $response = $this->doRequest(
+            'POST',
+            $labelingTask->getId(),
+            $labeledThingInFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'classes' => 'invalid_class_string',
+                    'shapes'  => 'invalid_shapes_string',
+                )
+            )
+        );
+
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledThingInFrameWithInvalidTasked()
+    {
+        $labelingTask        = $this->createLabelingTask();
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+
+        $response = $this->doRequest(
+            'POST',
+            111111,
+            $labeledThingInFrame->getFrameNumber(),
+            json_encode(
+                array(
+                    'classes' => array('class1' => 'test'),
+                    'shapes'  => array('shape1' => 'test'),
+                )
+            )
+        );
+
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     protected function setUpImplementation()
@@ -104,6 +136,29 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingThingInFrameFacade = static::$kernel->getContainer()->get(
             'annostation.labeling_api.database.facade.labeled_thing_in_frame'
         );
+    }
+
+    private function doRequest($method, $labelingTaskId, $labeledThingInFrameNumber, $content = null)
+    {
+        $client  = $this->createClient();
+        $crawler = $client->request(
+            $method,
+            sprintf(
+                '/api/task/%s/labeledThingInFrame/%s.json',
+                $labelingTaskId,
+                $labeledThingInFrameNumber
+            ),
+            [],
+            [],
+            [
+                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
+                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            $content
+        );
+
+        return $client->getResponse();
     }
 
     private function createLabelingTask()
