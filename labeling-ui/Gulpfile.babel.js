@@ -9,9 +9,17 @@ import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
 import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
 import ip from 'ip';
+import chokidar from 'chokidar';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
+
+function chokidarWatch(glob, fn) {
+  const watcher = chokidar.watch(glob);
+  watcher.on('ready', () => {
+    watcher.on('all', (...args) => fn(...args));
+  });
+}
 
 const $$ = gulpLoadPlugins({
   rename: {
@@ -83,21 +91,21 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
 
       devServer.serve();
 
-      gulp.watch(`${paths.dir.application}/**/*`, event => {
-        const relativePath = path.relative(__dirname, event.path);
+      chokidarWatch(`${paths.dir.application}/**/*`, (event, filepath) => {
+        const relativePath = path.relative(__dirname, filepath);
         devServer.notifyChange(relativePath);
       });
 
-      gulp.watch(paths.files.public, event => {
-        const relativePath = path.relative(__dirname, event.path);
+      chokidarWatch(paths.files.public, (event, filepath) => {
+        const relativePath = path.relative(__dirname, filepath);
         run(
           'build-public',
           () => devServer.notifyChange(relativePath)
         );
       });
 
-      gulp.watch(paths.files.sass.all, event => {
-        const relativePath = path.relative(__dirname, event.path);
+      chokidarWatch(paths.files.sass.all, (event, filepath) => {
+        const relativePath = path.relative(__dirname, filepath);
         run(
           'build-sass',
           () => devServer.notifyChange(relativePath)
@@ -158,28 +166,28 @@ gulp.task('optimize', next => run(
 
 gulp.task('eslint', () => {
   return gulp.src([
-    `!${paths.files.vendor}`,
-    `!${paths.files.system.config}`,
-    paths.files.gulp.config,
-    paths.files.support,
-    paths.files.js,
-    paths.files.tests.unit,
-  ])
-  .pipe($$.eslint())
-  .pipe($$.eslint.format());
+      `!${paths.files.vendor}`,
+      `!${paths.files.system.config}`,
+      paths.files.gulp.config,
+      paths.files.support,
+      paths.files.js,
+      paths.files.tests.unit,
+    ])
+    .pipe($$.eslint())
+    .pipe($$.eslint.format());
 });
 
 gulp.task('eslint-checkstyle', () => {
   return gulp.src([
-    `!${paths.files.vendor}`,
-    `!${paths.files.system.config}`,
-    paths.files.gulp.config,
-    paths.files.support,
-    paths.files.js,
-    paths.files.tests.unit,
-  ])
-  .pipe($$.eslint())
-  .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
+      `!${paths.files.vendor}`,
+      `!${paths.files.system.config}`,
+      paths.files.gulp.config,
+      paths.files.support,
+      paths.files.js,
+      paths.files.tests.unit,
+    ])
+    .pipe($$.eslint())
+    .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
 });
 
 gulp.task('test-unit', (next) => {
@@ -202,7 +210,7 @@ gulp.task('test-unit-continuous', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
+gulp.task('test-e2e-run', ['webdriver-update'], (next) => {
   const protractorConfig = {
     configFile: 'protractor.conf.js',
     args: [],
@@ -215,27 +223,24 @@ gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line n
     protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
   }
 
-  run(
-    'clean',
-    'build',
-    'optimize',
-    () => {
-      const protractorServer = new ProtractorServer({
-        assetPath: 'Distribution',
-        port: 52343,
-      });
+  const protractorServer = new ProtractorServer({
+    assetPath: 'Distribution',
+    port: 52343,
+  });
 
-      protractorServer.serve();
+  protractorServer.serve();
 
-      gulp.src(paths.files.tests.e2e)
-        .pipe(protractor(protractorConfig))
-        .on('error', (error) => {
-          protractorServer.close();
-          throw error;
-        })
-        .on('end', () => protractorServer.close());
-    }
-  );
+  gulp.src(paths.files.tests.e2e)
+    .pipe(protractor(protractorConfig))
+    .on('error', (error) => {
+      protractorServer.close();
+      throw error;
+    })
+    .on('end', () => protractorServer.close());
+});
+
+gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
+  run('clean', 'build', 'optimize', 'test-e2e-run');
 });
 
 gulp.task('build-sass', () => {

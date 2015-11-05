@@ -4,8 +4,8 @@
             <viewer-stage frame-image="vm.frameImage"
                           things-in-frame="vm.thingsInFrame"
                           on-new-thing="vm.handleNewThing(shapes)"
-                          on-updated-thing="vm.handleUpdatedThing(labeledThing)">
-            </viewer-stage>
+                          on-updated-thing="vm.handleUpdatedThing(labeledThing)"
+            ></viewer-stage>
         </div>
     </div>
 </div>
@@ -13,8 +13,9 @@
     <div class="col-md-12">
         <div class="viewer-controls-container">
             <viewer-controls on-next-frame-requested="vm.handleNextFrameRequested()"
-                             on-previous-frame-requested="vm.handlePreviousFrameRequested()">
-            </viewer-controls>
+                             on-previous-frame-requested="vm.handlePreviousFrameRequested()"
+                             on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
+            ></viewer-controls>
         </div>
     </div>
 </div>

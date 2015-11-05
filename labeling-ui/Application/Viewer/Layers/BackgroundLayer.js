@@ -47,6 +47,10 @@ export default class BackgroundLayer {
     this._backgroundImage = image;
   }
 
+  exportData() {
+    return this._element.toDataURL();
+  }
+
   /**
    * Apply a filter to the layer
    *

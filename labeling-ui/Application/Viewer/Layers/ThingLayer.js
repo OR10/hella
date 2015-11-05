@@ -48,17 +48,18 @@ export default class ThingLayer extends PaperLayer {
       labeledThing.shapes = [
         {
           type: 'rectangle',
-          id: rectangle.id,
           topLeft: {
-            x: rectangle.bounds.topLeft.x,
-            y: rectangle.bounds.topLeft.y,
+            x: Math.round(rectangle.bounds.topLeft.x),
+            y: Math.round(rectangle.bounds.topLeft.y),
           },
           bottomRight: {
-            x: rectangle.bounds.bottomRight.x,
-            y: rectangle.bounds.bottomRight.y,
+            x: Math.round(rectangle.bounds.bottomRight.x),
+            y: Math.round(rectangle.bounds.bottomRight.y),
           },
         },
       ];
+
+      console.log(labeledThing);
 
       this.emit('thing:update', labeledThing);
     });
@@ -76,12 +77,12 @@ export default class ThingLayer extends PaperLayer {
         {
           type: 'rectangle',
           topLeft: {
-            x: rectangle.bounds.topLeft.x,
-            y: rectangle.bounds.topLeft.y,
+            x: Math.round(rectangle.bounds.topLeft.x),
+            y: Math.round(rectangle.bounds.topLeft.y),
           },
           bottomRight: {
-            x: rectangle.bounds.bottomRight.x,
-            y: rectangle.bounds.bottomRight.y,
+            x: Math.round(rectangle.bounds.bottomRight.x),
+            y: Math.round(rectangle.bounds.bottomRight.y),
           },
         },
       ];

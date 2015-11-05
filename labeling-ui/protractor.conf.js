@@ -2,22 +2,27 @@ require('babel/register');
 
 exports.config = {
   framework: 'jasmine2',
-  mocks: {
-    default: [], // default value: []
-    dir: 'Tests/ProtractorMocks' // default value: 'mocks'
-  },
   seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
+
+  capabilities: {
+    'browserName': 'chrome',
+    'chromeOptions': {
+      'mobileEmulation': {
+        'deviceName': 'Laptop with MDPI screen',
+      },
+    },
+  },
+
   onPrepare: function() {
-    var jasmineReporters = require('jasmine-reporters');
+    const jasmineReporters = require('jasmine-reporters');
     jasmine.getEnv().addReporter(new jasmineReporters.JUnitXmlReporter({
       consolidateAll: true,
       filePrefix: 'test-e2e-results.xml',
-      savePath: './Logs/E2E'
+      savePath: './Logs/E2E',
     }));
 
+    require('./Tests/Support/Jasmine/CustomMatchers');
   },
-
-
-  specs: ['Tests/E2E/**/*.spec.js']
+  specs: ['Tests/E2E/**/*.spec.js'],
 };
 

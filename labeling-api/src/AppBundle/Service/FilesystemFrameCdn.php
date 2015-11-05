@@ -60,7 +60,7 @@ class FilesystemFrameCdn extends FrameCdn
         Model\FrameRange $frameRange
     ) {
         $urls = [];
-        foreach (range($frameRange->getStartFrameNumber(), $frameRange->getEndFrameNumber()) as $frameNumber) {
+        foreach ($frameRange->getRange() as $frameNumber) {
             $urls[] = [
                 'id' => "{$labelingTask->getId()}-{$frameNumber}",
                 "frameNumber" => $frameNumber,

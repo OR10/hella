@@ -18,6 +18,8 @@ export default class ViewerStageController {
   constructor($scope, $element, drawingContextService) {
     this._layerManager = new LayerManager();
 
+    $element[0].__endToEndTestOnlyLayerManager__ = this._layerManager;
+
     const eventDelegationLayer = new EventDelegationLayer();
     const thingLayer = new ThingLayer(drawingContextService);
     const backgroundLayer = new BackgroundLayer();
@@ -38,7 +40,7 @@ export default class ViewerStageController {
       backgroundLayer.render();
     });
 
-    $scope.$watch('vm.thingsInFrame', newThingsInFrame => {
+    $scope.$watchCollection('vm.thingsInFrame', newThingsInFrame => {
       thingLayer.clear();
       thingLayer.addLabeledThings(Object.values(newThingsInFrame));
     });

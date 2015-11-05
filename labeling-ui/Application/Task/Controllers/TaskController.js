@@ -94,15 +94,14 @@ export default class TaskController {
     this._switchActiveFrame(1);
   }
 
-
   /**
    * Load all framelocations, which belong to the current task
    *
    * @returns {Promise<Array<FrameLocation>>}
-   * @private
+ * @private
    */
   _loadFrameLocations() {
-    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber;
+    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
     return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
   }
 
@@ -209,6 +208,10 @@ export default class TaskController {
       return;
     }
     this._switchActiveFrame(this._frameNumber - 1);
+  }
+
+  handleNewLabeledThingRequested() {
+    console.log("LABEL! LABEL! LABEL!");
   }
 }
 

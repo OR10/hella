@@ -26,3 +26,11 @@
  * @param {Event} event
  */
 
+/**
+ * Exports the currently drawn image data for this layer encoded as base64 data urls.
+ *
+ * @method exportData
+ *
+ * @returns {String}
+ */
+

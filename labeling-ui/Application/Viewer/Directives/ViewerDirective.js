@@ -13,6 +13,7 @@ export default class ViewerDirective {
       onUpdatedThing: '&',
       onNextFrameRequested: '&',
       onPreviousFrameRequested: '&',
+      onNewLabeledThingRequested: '&',
 
       frameImage: '=',
       thingsInFrame: '=',

@@ -10,6 +10,7 @@ use AppBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/labeledThingInFrame")
@@ -74,9 +75,19 @@ class LabeledThingInFrame extends Controller\Base
         if ($labeledThingInFrame === null) {
             $response->setStatusCode(404);
         } elseif ($labeledThingInFrame->getRev() === $request->request->get('rev')) {
-            $labeledThingInFrame->setClasses($request->request->get('classes'));
-            $labeledThingInFrame->setShapes($request->request->get('shapes'));
-            $labeledThingInFrame->setFrameNumber($request->request->get('frameNumber'));
+            $shapes      = $request->request->get('shapes', []);
+            $classes     = $request->request->get('classes', []);
+            $frameNumber = $request->request->get('frameNumber');
+
+            if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
+                throw new Exception\BadRequestHttpException();
+
+                return $response;
+            }
+
+            $labeledThingInFrame->setClasses($classes);
+            $labeledThingInFrame->setShapes($shapes);
+            $labeledThingInFrame->setFrameNumber((int)$frameNumber);
             $this->labeledThingInFrameFacade->save($labeledThingInFrame);
             $response->setData(['result' => $labeledThingInFrame]);
         } else {
@@ -103,13 +114,11 @@ class LabeledThingInFrame extends Controller\Base
 
         if ($labeledThingInFrame === null) {
             $response->setStatusCode(404);
-            $response->setData(['result' => array('success' => false, 'msg' => 'Document not found')]);
         } elseif ($labeledThingInFrame->getRev() === $request->request->get('rev')) {
             $this->labeledThingInFrameFacade->delete($labeledThingInFrame);
-            $response->setData(['result' => array('success' => true)]);
+            $response->setData(['success' => true]);
         } else {
             $response->setStatusCode(409);
-            $response->setData(['result' => array('success' => false, 'msg' => 'Document conflict')]);
         }
 
         return $response;

@@ -10,6 +10,7 @@ use AppBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -63,7 +64,12 @@ class LabeledFrame extends Controller\Base
             $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, 0, $frameNumber)->toArray();
 
             if (count($labeledFrames) === 0) {
-                $response->setStatusCode(404);
+                $response->setData([
+                    'result' => array(
+                        'frameNumber' => (int) $frameNumber,
+                        'classes' => array()
+                    )
+                ]);
 
                 return $response;
             }
@@ -93,7 +99,12 @@ class LabeledFrame extends Controller\Base
     {
         $response = View\View::create();
 
-        $task         = $this->labelingTaskFacade->find($taskId);
+        $task = $this->labelingTaskFacade->find($taskId);
+        if ($task === null) {
+            $response->setStatusCode(404);
+
+            return $response;
+        }
         $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
         if ($task === null || $labeledFrame === null) {
             $response->setStatusCode(404);
@@ -122,9 +133,10 @@ class LabeledFrame extends Controller\Base
     {
         $response = View\View::create();
 
-        $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            $response->setStatusCode(404);
+        $task    = $this->labelingTaskFacade->find($taskId);
+        $classes = $request->request->get('classes', []);
+        if ($task === null || !is_array($classes) || (int) $request->request->get('frameNumber') !== (int)$frameNumber) {
+            throw new Exception\BadRequestHttpException();
 
             return $response;
         }
@@ -137,9 +149,7 @@ class LabeledFrame extends Controller\Base
             if ($labeledFrame === null) {
                 $labeledFrame = new Model\LabeledFrame($task);
             }
-            $labeledFrame->setClasses(
-                $request->request->get('classes') === null ? array() : $request->request->get('classes')
-            );
+            $labeledFrame->setClasses($classes);
             $labeledFrame->setFrameNumber($request->request->get('frameNumber'));
             $this->labeledFrameFacade->save($labeledFrame);
             $response->setData(['result' => $labeledFrame]);
