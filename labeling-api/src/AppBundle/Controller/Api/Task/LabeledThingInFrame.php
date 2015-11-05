@@ -67,9 +67,10 @@ class LabeledThingInFrame extends Controller\Base
             return $response;
         }
 
-        if (($request->request->get('shapes')) !== null && !is_array($request->request->get('shapes')) ||
-            ($request->request->get('classes')) !== null && !is_array($request->request->get('classes'))
-        ) {
+        $shapes  = $request->request->get('shapes', []);
+        $classes = $request->request->get('classes', []);
+
+        if (!is_array($shapes) || !is_array([$classes])) {
             $response->setStatusCode(400);
 
             return $response;
@@ -78,8 +79,8 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
             $task,
             $frameNumber,
-            $request->request->get('shapes') === null ? array() : $request->request->get('shapes'),
-            $request->request->get('classes') === null ? array() : $request->request->get('classes')
+            $shapes,
+            $classes
         );
 
         $response->setData(['result' => $labeledThingInFrame]);
