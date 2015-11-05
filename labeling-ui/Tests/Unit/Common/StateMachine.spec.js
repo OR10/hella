@@ -2,7 +2,7 @@ import StateMachine from 'Application/Common/Support/StateMachine';
 import State from 'Application/Common/Support/State';
 import Transition from 'Application/Common/Support/Transition';
 
-fdescribe('StateMachine', () => {
+describe('StateMachine', () => {
   beforeEach(() => {
   });
 
@@ -40,88 +40,55 @@ fdescribe('StateMachine', () => {
     });
 
     it('should allow for Transitions to be added', () => {
-      const transition = new Transition('first', 'second');
-      first.addTransition('second', transition);
-      const retrievedTransitions = first.getTransitions('second');
-      expect(retrievedTransitions.has(transition)).toBeTruthy();
-      expect(retrievedTransitions.size).toEqual(1);
+      const transition = new Transition(first, 'foobar', second);
+      first.addTransition(transition);
+      const retrievedTransition = first.getTransition('foobar');
+      expect(retrievedTransition).toBe(transition);
     });
 
-    it('should provide shortcut to create transitions', () => {
-      const transition = first.to('second');
-      expect(transition instanceof Transition).toBeTruthy();
-      const retrievedTransitions = first.getTransitions('second');
-      expect(retrievedTransitions.has(transition)).toBeTruthy();
-      expect(retrievedTransitions.size).toEqual(1);
+    it('should provide shortcut to create and store transitions', () => {
+      const state = first.on('foobar').to('second');
+      expect(state).toBe(second);
+      expect(first.getTransition('foobar') instanceof Transition).toBeTruthy();
     });
 
-    it('should provide shortcut to store transitions', () => {
-      const transition = first.to('second');
-      const retrievedTransitions = first.getTransitions('second');
-      expect(retrievedTransitions.has(transition)).toBeTruthy();
-      expect(retrievedTransitions.size).toEqual(1);
+    it('should allow the registration of handlers', () => {
+      const handler = function() {};
+      second.register(handler);
+
+      const retrievedHandlers = second.getHandlers();
+      expect(retrievedHandlers.has(handler)).toBeTruthy();
+      expect(retrievedHandlers.size).toEqual(1);
     });
 
-    describe('Transition', () => {
-      let firstSecond;
-      beforeEach(() => {
-        firstSecond = new Transition('first', 'second');
-      });
-
-      it('should allow the registration of handlers', () => {
-        const handler = function() {};
-        firstSecond.register(handler);
-
-        const retrievedHandlers = firstSecond.getHandlers();
-        expect(retrievedHandlers.has(handler)).toBeTruthy();
-        expect(retrievedHandlers.size).toEqual(1);
-      });
-
-      it('should call handlers upon transition', () => {
-        const handler = jasmine.createSpy();
-        firstSecond.register(handler);
-        firstSecond.transition();
-        expect(handler).toHaveBeenCalledWith("first", "second");
-      });
-
-      it('should call handlers upon transition with given arguments', () => {
-        const handler = jasmine.createSpy();
-        firstSecond.register(handler);
-        firstSecond.transition("foo", "bar");
-        expect(handler).toHaveBeenCalledWith("first", "second", "foo", "bar");
-      });
-    });
-
-    it('should trigger proper Transition while transitioning', () => {
+    it('should call handlers upon transition', () => {
       const handler = jasmine.createSpy();
-      first.to('second').register(handler);
-      first.transition('second');
-      expect(handler).toHaveBeenCalledWith('first', 'second');
+      second.register(handler);
+      second.transition({});
+      expect(handler).toHaveBeenCalledWith({});
     });
 
-    it('should pass arguments while transitioning', () => {
+    it('should call handlers upon transition with given arguments', () => {
       const handler = jasmine.createSpy();
-      first.to('second').register(handler);
-      first.transition('second', 'foo', 'bar');
-      expect(handler).toHaveBeenCalledWith('first', 'second', 'foo', 'bar');
+      second.register(handler);
+      second.transition({}, "foo", "bar");
+      expect(handler).toHaveBeenCalledWith({}, "foo", "bar");
     });
   });
 
   it('should trigger proper State while transitioning', () => {
     const machine = new StateMachine(['first', 'second', 'third']);
     const handler = jasmine.createSpy();
-    machine.transition('first');
-    machine.from('first').to('second').register(handler);
-    machine.transition('second');
-    expect(handler).toHaveBeenCalledWith('first', 'second');
+    machine.from('first').on('foo').to('second').register(handler);
+    machine.transition('foo');
+    expect(handler).toHaveBeenCalledWith({from: 'first', to: 'second', on: 'foo'});
   });
 
   it('should pass arguments while transitioning', () => {
     const machine = new StateMachine(['first', 'second', 'third']);
     const handler = jasmine.createSpy();
-    machine.transition('first');
-    machine.from('first').to('second').register(handler);
-    machine.transition('second', 'foo', 'bar');
-    expect(handler).toHaveBeenCalledWith('first', 'second', 'foo', 'bar');
+    machine.from('first').on('foo').to('second').register(handler);
+    machine.transition('foo', 'bar', 'baz');
+    expect(handler).toHaveBeenCalledWith({from: 'first', to: 'second', on: 'foo'}, 'bar', 'baz');
   });
 });

@@ -1,22 +1,22 @@
 export default class Transition {
-  constructor(sourceTextualState, targetTextualState) {
-    this._sourceTextualState = sourceTextualState;
-    this._targetTextualState = targetTextualState;
-
-    this._executeHandlers = new Set();
+  constructor(sourceState, transitionValue, targetState) {
+    this._sourceState = sourceState;
+    this._transitionValue = transitionValue;
+    this._targetState = targetState;
   }
 
-  register(handler) {
-    this._executeHandlers.add(handler);
-  }
-
-  getHandlers() {
-    return this._executeHandlers;
+  getTransitionValue() {
+    return this._transitionValue;
   }
 
   transition(...args) {
-    this._executeHandlers.forEach(
-      handler => handler(this._sourceTextualState, this._targetTextualState, ...args)
-    );
+    const transitionEvent = {
+      from: this._sourceState.getName(),
+      on: this._transitionValue,
+      to: this._targetState.getName()
+    };
+
+    this._targetState.transition(transitionEvent, ...args);
+    return this._targetState;
   }
 }

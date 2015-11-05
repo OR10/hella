@@ -1,39 +1,64 @@
 import Transition from './Transition';
 
 export default class State {
-  constructor(name) {
+  constructor(machine, name) {
+    this._machine = machine;
     this._name = name;
     this._transitionMapping = new Map();
+    this._executeHandlers = new Set();
   }
 
-  addTransition(targetTextualState, transition) {
-    if (!this._transitionMapping.has(targetTextualState)) {
-      this._transitionMapping.set(targetTextualState, new Set());
+  getName() {
+    return this._name;
+  }
+
+  addTransition(transition) {
+    const transitionValue = transition.getTransitionValue();
+
+    if (this._transitionMapping.has(transitionValue)) {
+      throw new Error(`Only one transition per input value is allowed in the StateMachine: ${this._name}|${transitionValue} already defined`);
     }
 
-    const transitions = this._transitionMapping.get(targetTextualState);
-    transitions.add(transition);
+    this._transitionMapping.set(transitionValue, transition);
   }
 
-  getTransitions(targetTextualState) {
-    if (!this._transitionMapping.has(targetTextualState)) {
-      throw new Error(`Can't retrieve transisitons from ${this._name} to ${targetTextualState}. No transition is defined`);
+  getTransition(transitionValue) {
+    if (!this._transitionMapping.has(transitionValue)) {
+      throw new Error(`Can't retrieve transisiton ${this._name}|${transitionValue}. No transition is defined`);
     }
 
-    return this._transitionMapping.get(targetTextualState);
+    return this._transitionMapping.get(transitionValue);
   }
 
-  to(targetTextualState) {
-    const transition = new Transition(this._name, targetTextualState);
-    this.addTransition(targetTextualState, transition);
-    return transition;
+  on(transitionValue) {
+    const sourceTextualState = this._name;
+
+    return {
+      to: (targetTextualState) => {
+        const sourceState = this._machine.getState(sourceTextualState);
+        const targetState = this._machine.getState(targetTextualState);
+
+        const transition = new Transition(sourceState, transitionValue, targetState);
+        this.addTransition(transition);
+        return targetState;
+      },
+    };
   }
 
-  transition(targetTextualState, ...args) {
-    const transitions = this.getTransitions(targetTextualState);
+  register(handler) {
+    this._executeHandlers.add(handler);
+  }
 
-    transitions.forEach(
-      transition => transition.transition(...args)
+  getHandlers() {
+    return this._executeHandlers;
+  }
+
+  transition(transitionEvent, ...args) {
+    this._executeHandlers.forEach(
+      handler => handler(
+        transitionEvent,
+        ...args
+      )
     );
   }
 }
