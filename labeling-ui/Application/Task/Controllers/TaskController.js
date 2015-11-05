@@ -3,16 +3,22 @@ import metaLabelAnnotation from 'Tests/Fixtures/meta-label-structure-ui-annotati
 import objectLabelStructure from 'Tests/Fixtures/object-label-structure.json!';
 import objectLabelAnnotation from 'Tests/Fixtures/object-label-structure-ui-annotation.json!';
 
+import ObjectLabelWorkflow from '../Workflows/ObjectLabelWorkflow';
+import MetaLabelWorkflow from '../Workflows/MetaLabelWorkflow';
 
 export default class TaskController {
   /**
    * @param {angular.Scope} $scope
    * @param {Task} task
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
+   * @param {LinearLabelStructureVisitor} linearVisitor
+   * @param {SelectedLabelObjectLabelStructureVisitor} selectedLabelObjectVisitor
+   * @param {SelectedLabelListLabelStructureVisitor} selectedLabelListVisitor
    */
-  constructor($scope, task, labeledThingInFrameGateway, taskFrameLocationGateway, frameGateway) {
+  constructor($scope, task, labeledThingInFrameGateway, labeledFrameGateway, taskFrameLocationGateway, frameGateway, linearVisitor, selectedLabelObjectVisitor, selectedLabelListVisitor) {
     /**
      * @type {angular.Scope}
      */
@@ -24,14 +30,38 @@ export default class TaskController {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
+     * @type {LabeledFrameGateway}
+     */
+    this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
      * @type {TaskFrameLocationGateway}
      */
     this._taskFrameLocationGateway = taskFrameLocationGateway;
 
     /**
      * @type {FrameGateway}
+     * @private
      */
     this._frameGateway = frameGateway;
+
+    /**
+     * @type {LinearLabelStructureVisitor}
+     * @private
+     */
+    this._linearVisitor = linearVisitor;
+
+    /**
+     * @type {SelectedLabelObjectLabelStructureVisitor}
+     * @private
+     */
+    this._selectedLabelObjectVisitor = selectedLabelObjectVisitor;
+
+    /**
+     * @type {SelectedLabelListLabelStructureVisitor}
+     * @private
+     */
+    this._selectedLabelListVisitor = selectedLabelListVisitor;
 
     /**
      * Default placeholder image, which is used whenever a current image is not available
@@ -64,6 +94,14 @@ export default class TaskController {
     this.frameImage = this._placeholderImage;
 
     /**
+     * LabeledFrame associated with the currently active frame
+     *
+     * @type {LabeledFrame|null}
+     * @private
+     */
+    this._labeledFrame = null;
+
+    /**
      * A structure holding all labels as well as all labeledThings for the currently active frame
      *
      * @type {{labels: Array<String>, things: Object<string|number, LabeledThingInFrame>}}
@@ -87,8 +125,34 @@ export default class TaskController {
     this.objectLabelingCompleted = false;
     this.metaLabelingCompleted = false;
 
-    $scope.$watch('vm.objectLabelingCompleted', (completed) => console.log("Object: ", completed));
-    $scope.$watch('vm.metaLabelingCompleted', (completed) => console.log("Meta: ", completed));
+
+    $scope.storeLabeledFrame = () => {
+      const labels = Object.values(this.metaLabelContext);
+      const cleanedLabels = this._selectedLabelListVisitor.visit(
+        this._linearVisitor.visit(this.metaLabelStructure, labels)
+      );
+      this._labeledFrame.classes = cleanedLabels;
+      this._labeledFrame.frameNumber = this._frameNumber;
+      this._labeledFrameGateway.saveLabeledFrame(this.task.id, this._frameNumber, this._labeledFrame)
+        .then(labeledFrame => this._labeledFrame = labeledFrame);
+    };
+
+    this._metaLabelWorkflow = new MetaLabelWorkflow($scope);
+
+    $scope.$watchCollection('vm.metaLabelContext', newContext => {
+      if (this.metaLabelingCompleted) {
+        this._metaLabelWorkflow.transition('complete-labels');
+      } else {
+        this._metaLabelWorkflow.transition('incomplete-labels');
+      }
+    });
+
+    $scope.$watch('vm.metaLabelingCompleted', completed => {
+      // The switch Incomplete -> Complete happens after the context update :(
+      if (completed) {
+        this._metaLabelWorkflow.transition('complete-labels');
+      }
+    });
 
     /**
      * List of frame location information for this task.
@@ -141,8 +205,18 @@ export default class TaskController {
     return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
   }
 
+  /**
+   * Load the {@link LabeledFrame} structure for the given frame
+   * @param frameNumber
+   * @returns {Promise<LabeledFrame>}
+   * @private
+   */
+  _loadLabeledFrame(frameNumber) {
+    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
+  }
+
   _switchActiveFrame(frameNumber) {
-    this._switchToPlaceholderImage();
+    //this._switchToPlaceholderImage();
     this._clearLabelsAndThingsInFrame();
 
     this._frameNumber = frameNumber;
@@ -150,13 +224,18 @@ export default class TaskController {
     Promise.all([
       this._loadFrameImage(frameNumber),
       this._loadLabeledThingsInFrame(frameNumber),
-    ]).then(([frameImage, labeledThingsInFrame]) => {
+      this._loadLabeledFrame(frameNumber),
+    ]).then(([frameImage, labeledThingsInFrame, labeledFrame]) => {
       this.$scope.$apply(() => {
         this.frameImage = frameImage;
         this.labelsAndThingsInFrame.things = {};
         labeledThingsInFrame.forEach(
           labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing
         );
+
+        this._labeledFrame = labeledFrame;
+        const annotatedLinearFrameLabelStructure = this._linearVisitor.visit(this.metaLabelStructure, labeledFrame.classes);
+        this.metaLabelContext = this._selectedLabelObjectVisitor.visit(annotatedLinearFrameLabelStructure);
       });
     });
   }
@@ -219,7 +298,11 @@ TaskController.$inject = [
   '$scope',
   'task',
   'labeledThingInFrameGateway',
+  'labeledFrameGateway',
   'taskFrameLocationGateway',
   'frameGateway',
+  'linearLabelStructureVisitor',
+  'selectedLabelObjectLabelStructureVisitor',
+  'selectedLabelListLabelStructureVisitor',
 ];
 

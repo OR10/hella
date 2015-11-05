@@ -8,6 +8,8 @@ import LabelWizardDirective from './Directives/LabelWizardDirective';
 import LabelSummaryDirective from './Directives/LabelSummaryDirective';
 import AnnotationLabelStructureVisitor from './Services/AnnotationLabelStructureVisitor';
 import LinearLabelStructureVisitor from './Services/LinearLabelStructureVisitor';
+import SelectedLabelListLabelStructureVisitor from './Services/SelectedLabelListLabelStructureVisitor';
+import SelectedLabelObjectLabelStructureVisitor from './Services/SelectedLabelObjectLabelStructureVisitor';
 
 import labelWizardCarouselTemplate from './Directives/LabelWizard/wizard-carousel.html!';
 
@@ -30,6 +32,8 @@ export default class LabelStructure extends Module {
 
     this.module.service('annotationLabelStructureVisitor', AnnotationLabelStructureVisitor);
     this.module.service('linearLabelStructureVisitor', LinearLabelStructureVisitor);
+    this.module.service('selectedLabelListLabelStructureVisitor', SelectedLabelListLabelStructureVisitor);
+    this.module.service('selectedLabelObjectLabelStructureVisitor', SelectedLabelObjectLabelStructureVisitor);
 
     this.module.run(['$templateCache', $templateCache => {
       $templateCache.put('LabelWizard/wizard-carousel.html', labelWizardCarouselTemplate);

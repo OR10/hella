@@ -21,7 +21,7 @@ export default class LabelSelectorController {
 
     $scope.$watchCollection('vm.metaLabelContext', () => {
       this.metaLabelState = this._updateLabelState(
-        this.metaLabelState,
+        this.metaLabelStructure,
         this.metaLabelContext,
         this.metaLabelAnnotation
       );
@@ -31,7 +31,7 @@ export default class LabelSelectorController {
 
     $scope.$watchCollection('vm.objectLabelContext', () => {
       this.objectLabelState = this._updateLabelState(
-        this.objectLabelState,
+        this.objectLabelStructure,
         this.objectLabelContext,
         this.objectLabelAnnotation
       );

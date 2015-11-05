@@ -45,6 +45,6 @@ export default class State {
   }
 
   transition(transitionValue, ...args) {
-    this.getTransition(transitionValue).transition(...args);
+    return this.getTransition(transitionValue).transition(...args);
   }
 }
