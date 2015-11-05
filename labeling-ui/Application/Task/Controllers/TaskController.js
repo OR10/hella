@@ -120,11 +120,13 @@ export default class TaskController {
     this.metaLabelAnnotation = metaLabelAnnotation;
     this.objectLabelAnnotation = objectLabelAnnotation;
 
+    this.hideObjectLabels = true;
     this.objectLabelContext = {};
     this.metaLabelContext = {};
     this.objectLabelingCompleted = false;
     this.metaLabelingCompleted = false;
 
+    this.activeTool = null;
 
     $scope.storeLabeledFrame = () => {
       const labels = Object.values(this.metaLabelContext);
@@ -137,7 +139,23 @@ export default class TaskController {
         .then(labeledFrame => this._labeledFrame = labeledFrame);
     };
 
-    this._metaLabelWorkflow = new MetaLabelWorkflow($scope);
+    $scope.storeLabeledThingInFrame = () => {
+      if (this._activeLabeledThingInFrame.id === undefined) {
+        this._labeledThingInFrameGateway.createLabeledThingInFrame(
+          this.task,
+          this._frameNumber,
+          this._activeLabeledThingInFrame
+          )
+          .then(labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing);
+      } else {
+        this._labeledThingInFrameGateway.updateLabeledThingInFrame(
+          this._activeLabeledThingInFrame
+        )
+        .then(labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing);
+      }
+    };
+
+    this._initializeWorkflows();
 
     $scope.$watchCollection('vm.metaLabelContext', newContext => {
       if (this.metaLabelingCompleted) {
@@ -154,6 +172,21 @@ export default class TaskController {
       }
     });
 
+    $scope.$watchCollection('vm.objectLabelContext', newContext => {
+      if (this.objectLabelingCompleted) {
+        this._objectLabelWorkflow.transition('complete-labels');
+      } else {
+        this._objectLabelWorkflow.transition('incomplete-labels');
+      }
+    });
+
+    $scope.$watch('vm.objectLabelingCompleted', completed => {
+      // The switch Incomplete -> Complete happens after the context update :(
+      if (completed) {
+        this._objectLabelWorkflow.transition('complete-labels');
+      }
+    });
+
     /**
      * List of frame location information for this task.
      *
@@ -164,6 +197,11 @@ export default class TaskController {
     this._frameLocations = this._loadFrameLocations();
 
     this._switchActiveFrame(1);
+  }
+
+  _initializeWorkflows() {
+    this._metaLabelWorkflow = new MetaLabelWorkflow(this.$scope);
+    this._objectLabelWorkflow = new ObjectLabelWorkflow(this.$scope);
   }
 
   /**
@@ -216,8 +254,9 @@ export default class TaskController {
   }
 
   _switchActiveFrame(frameNumber) {
-    //this._switchToPlaceholderImage();
+    this._switchToPlaceholderImage();
     this._clearLabelsAndThingsInFrame();
+    this._initializeWorkflows();
 
     this._frameNumber = frameNumber;
 
@@ -250,6 +289,9 @@ export default class TaskController {
       labels: [],
       things: {},
     };
+
+    this._activeLabeledThingInFrame = null;
+    this.hideObjectLabels = true;
   }
 
   /**
@@ -262,17 +304,17 @@ export default class TaskController {
   }
 
   handleNewThing(shapes) {
-    this._labeledThingInFrameGateway.createLabeledThingInFrame(
-      this.task,
-      this._frameNumber,
-      {shapes}
-    )
-    .then(labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing);
+    this._activeLabeledThingInFrame = {
+      frameNumber: this._frameNumber,
+      shapes,
+      classes: Object.values(this.objectLabelContext)
+    };
+
+    this._objectLabelWorkflow.transition('new-thing');
   }
 
   handleUpdatedThing(labeledThing) {
-    this._labeledThingInFrameGateway.updateLabeledThingInFrame(labeledThing)
-      .then(labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing);
+    this._activeLabeledThingInFrame = labeledThing;
   }
 
   handleNextFrameRequested() {
@@ -290,7 +332,7 @@ export default class TaskController {
   }
 
   handleNewLabeledThingRequested() {
-    console.log("LABEL! LABEL! LABEL!");
+    this._objectLabelWorkflow.transition('new-labeled-thing');
   }
 }
 

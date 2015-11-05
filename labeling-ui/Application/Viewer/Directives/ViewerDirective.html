@@ -3,10 +3,11 @@
         <div class="viewer-container">
             <viewer-stage frame-image="vm.frameImage"
                           things-in-frame="vm.thingsInFrame"
+                          filters="vm.filters"
+                          active-tool="vm.activeTool"
                           on-new-thing="vm.handleNewThing(shapes)"
                           on-updated-thing="vm.handleUpdatedThing(labeledThing)"
-                          filters="vm.filters">
-            </viewer-stage>
+            ></viewer-stage>
         </div>
     </div>
 </div>

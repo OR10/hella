@@ -40,6 +40,10 @@ export default class ViewerStageController {
       backgroundLayer.render();
     });
 
+    $scope.$watch('vm.activeTool', newActiveTool => {
+      thingLayer.activateTool(newActiveTool);
+    });
+
     $scope.$watchCollection('vm.thingsInFrame', newThingsInFrame => {
       thingLayer.clear();
       thingLayer.addLabeledThings(Object.values(newThingsInFrame));

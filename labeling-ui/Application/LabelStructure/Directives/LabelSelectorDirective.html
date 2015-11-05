@@ -3,10 +3,10 @@
         <uib-accordion-group heading="Meta Categories" is-open="vm.firstOpen">
             <label-wizard label-state="vm.metaLabelState" label-context="vm.metaLabelContext"></label-wizard>
         </uib-accordion-group>
-        <uib-accordion-group heading="Object categories">
+        <uib-accordion-group heading="Object categories" ng-hide="vm.hideObjectLabels">
             <label-wizard label-state="vm.objectLabelState" label-context="vm.objectLabelContext" offset="0" limit="1"></label-wizard>
         </uib-accordion-group>
-        <uib-accordion-group heading="Object subcategories">
+        <uib-accordion-group heading="Object subcategories" ng-hide="vm.hideObjectLabels">
             <label-wizard label-state="vm.objectLabelState" label-context="vm.objectLabelContext" offset="1" limit="vm.objectLabelState.children.length"></label-wizard>
         </uib-accordion-group>
     </uib-accordion>

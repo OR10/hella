@@ -15,6 +15,7 @@ export default class LabelSelectorDirective {
       objectLabelAnnotation: '=',
       metaLabelContext: '=',
       objectLabelContext: '=',
+      hideObjectLabels: '=',
     };
 
     this.template = labelSelectorTemplate;

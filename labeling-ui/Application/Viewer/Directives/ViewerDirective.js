@@ -18,6 +18,7 @@ export default class ViewerDirective {
       frameImage: '=',
       thingsInFrame: '=',
       filters: '=',
+      activeTool: '=',
     };
 
     this.controller = ViewerController;

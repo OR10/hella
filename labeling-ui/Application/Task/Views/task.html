@@ -11,6 +11,7 @@
                     on-next-frame-requested="vm.handleNextFrameRequested()"
                     on-previous-frame-requested="vm.handlePreviousFrameRequested()"
                     on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
+                    active-tool="vm.activeTool"
             ></viewer>
         </div>
         <div class="col-md-3">
@@ -23,6 +24,7 @@
                     object-label-context="vm.objectLabelContext"
                     meta-labeling-completed="vm.metaLabelingCompleted"
                     object-labeling-completed="vm.objectLabelingCompleted"
+                    hide-object-labels="vm.hideObjectLabels"
             ></label-selector>
         </div>
     </div>
