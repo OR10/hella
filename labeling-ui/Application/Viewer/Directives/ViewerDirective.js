@@ -11,6 +11,8 @@ export default class ViewerDirective {
     this.scope = {
       onNewThing: '&',
       onUpdatedThing: '&',
+      onSelectedThing: '&',
+      onDeselectedThing: '&',
       onNextFrameRequested: '&',
       onPreviousFrameRequested: '&',
       onNewLabeledThingRequested: '&',

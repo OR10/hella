@@ -13,6 +13,8 @@ export default class ViewerStageDirective {
     this.scope = {
       onNewThing: '&',
       onUpdatedThing: '&',
+      onSelectedThing: '&',
+      onDeselectedThing: '&',
 
       frameImage: '=',
       thingsInFrame: '=',

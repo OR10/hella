@@ -43,7 +43,7 @@ export default class ThingLayer extends PaperLayer {
     this._rectangleModificationTool = new RectangleModificationTool(this._context, undefined);
 
     this._rectangleModificationTool.on('rectangle:update', rectangle => {
-      const labeledThing = this._thingsByShapeId.get(rectangle.id);
+     const labeledThing = this._thingsByShapeId.get(rectangle.id);
 
       labeledThing.shapes = [
         {
@@ -59,9 +59,16 @@ export default class ThingLayer extends PaperLayer {
         },
       ];
 
-      console.log(labeledThing);
-
       this.emit('thing:update', labeledThing);
+    });
+
+    this._rectangleModificationTool.on('rectangle:selected', rectangle => {
+      const labeledThing = this._thingsByShapeId.get(rectangle.id);
+      this.emit('thing:selected', labeledThing);
+    });
+
+    this._rectangleModificationTool.on('rectangle:deselected', () => {
+      this.emit('thing:deselected');
     });
 
     /**

@@ -86,10 +86,17 @@ export default class RectangleModificationTool extends Tool {
   }
 
   _mouseUp() {
-    if (this._hitResult && this._hitResult.item && this._modified) {
-      this.emit('rectangle:update', this._hitResult.item);
-      this._modified = false;
+    if (this._hitResult && this._hitResult.item) {
+      if (this._modified) {
+        this.emit('rectangle:update', this._hitResult.item);
+        this._modified = false;
+      } else {
+        this.emit('rectangle:selected', this._hitResult.item);
+      }
+    } else {
+      this.emit('rectangle:deselected');
     }
+
     this._offset = null;
     this._scaleAnchor = null;
   }

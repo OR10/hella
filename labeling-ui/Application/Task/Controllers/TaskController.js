@@ -146,12 +146,18 @@ export default class TaskController {
           this._frameNumber,
           this._activeLabeledThingInFrame
           )
-          .then(labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing);
+          .then(labeledThing => {
+            this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
+            this._activeLabeledThingInFrame = labeledThing;
+          });
       } else {
         this._labeledThingInFrameGateway.updateLabeledThingInFrame(
           this._activeLabeledThingInFrame
         )
-        .then(labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing);
+        .then(labeledThing => {
+          this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing
+          this._activeLabeledThingInFrame = labeledThing;
+        });
       }
     };
 
@@ -173,6 +179,10 @@ export default class TaskController {
     });
 
     $scope.$watchCollection('vm.objectLabelContext', newContext => {
+      if (this._activeLabeledThingInFrame !== null) {
+        this._activeLabeledThingInFrame.classes = Object.values(newContext);
+      }
+
       if (this.objectLabelingCompleted) {
         this._objectLabelWorkflow.transition('complete-labels');
       } else {
@@ -273,10 +283,14 @@ export default class TaskController {
         );
 
         this._labeledFrame = labeledFrame;
-        const annotatedLinearFrameLabelStructure = this._linearVisitor.visit(this.metaLabelStructure, labeledFrame.classes);
-        this.metaLabelContext = this._selectedLabelObjectVisitor.visit(annotatedLinearFrameLabelStructure);
+        this.metaLabelContext = this.createLabelObjectContextFromArray(this.metaLabelStructure, labeledFrame.classes);
       });
     });
+  }
+
+  createLabelObjectContextFromArray(structure, context) {
+    const annotatedLinearLabelStructure = this._linearVisitor.visit(structure, context);
+    return this._selectedLabelObjectVisitor.visit(annotatedLinearLabelStructure);
   }
 
   /**
@@ -314,7 +328,24 @@ export default class TaskController {
   }
 
   handleUpdatedThing(labeledThing) {
+    this.handleSelectedThing(labeledThing); //@TODO: Temporary fix for incorrect selection handling
+    this._objectLabelWorkflow.transition('edit-thing');
+  }
+
+  handleSelectedThing(labeledThing) {
+    this._initializeWorkflows(); // @TODO: properly integrate change with handling
     this._activeLabeledThingInFrame = labeledThing;
+    this.$scope.$apply(
+      () => this._objectLabelWorkflow.transition('edit-labeled-thing', labeledThing)
+    );
+  }
+
+  handleDeselectedThing() {
+    console.log("deselected");
+    this._activeLabeledThingInFrame = null;
+    this.$scope.$apply(() => {
+      this.hideObjectLabels = true;
+    });
   }
 
   handleNextFrameRequested() {
@@ -332,6 +363,7 @@ export default class TaskController {
   }
 
   handleNewLabeledThingRequested() {
+    this._initializeWorkflows(); // @TODO: properly integrate change with handling
     this._objectLabelWorkflow.transition('new-labeled-thing');
   }
 }

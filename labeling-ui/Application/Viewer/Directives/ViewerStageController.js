@@ -8,6 +8,8 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
  *
  * @property {Function} onNewThing
  * @property {Function} onUpdatedThing
+ * @property {Function} onSelectedThing
+ * @property {Function} onDeselectedThing
  */
 export default class ViewerStageController {
   /**
@@ -30,6 +32,8 @@ export default class ViewerStageController {
 
     thingLayer.on('thing:new', shapes => this.onNewThing({shapes}));
     thingLayer.on('thing:update', labeledThing => this.onUpdatedThing({labeledThing}));
+    thingLayer.on('thing:selected', labeledThing => this.onSelectedThing({labeledThing}));
+    thingLayer.on('thing:deselected', () => this.onDeselectedThing());
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);

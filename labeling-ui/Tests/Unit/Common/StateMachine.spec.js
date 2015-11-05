@@ -107,4 +107,12 @@ describe('StateMachine', () => {
     machine.transition('foo', 'bar', 'baz');
     expect(handler).toHaveBeenCalledWith({from: 'first', to: 'second', on: 'foo'}, 'bar', 'baz');
   });
+
+  it('should pass arguments while transitioning', () => {
+    const machine = new StateMachine(['first', 'second', 'third']);
+    const handler = jasmine.createSpy();
+    machine.from('first').on('foo').to('second').register(handler);
+    machine.transition('foo', {blub: 'blib'});
+    expect(handler).toHaveBeenCalledWith({from: 'first', to: 'second', on: 'foo'}, {blub: 'blib'});
+  });
 });

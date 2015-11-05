@@ -17,7 +17,7 @@ export default class MetaLabelWorkflow {
       .register(this.$scope.storeLabeledFrame);
   }
 
-  transition(transitionValue) {
-    this.machine.transition(transitionValue);
+  transition(transitionValue, ...args) {
+    this.machine.transition(transitionValue, ...args);
   }
 }

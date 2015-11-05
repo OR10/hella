@@ -8,6 +8,8 @@
                     things-in-frame="vm.labelsAndThingsInFrame.things"
                     on-new-thing="vm.handleNewThing(shapes)"
                     on-updated-thing="vm.handleUpdatedThing(labeledThing)"
+                    on-selected-thing="vm.handleSelectedThing(labeledThing)"
+                    on-deselected-thing="vm.handleDeselectedThing()"
                     on-next-frame-requested="vm.handleNextFrameRequested()"
                     on-previous-frame-requested="vm.handlePreviousFrameRequested()"
                     on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
