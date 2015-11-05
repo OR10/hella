@@ -47,7 +47,7 @@ class LabeledFrameTest extends Tests\WebTestCase
         $labelingTask = $this->createLabelingTask();
         $response     = $this->doRequest('GET', $labelingTask->getId(), 1111);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testDeleteLabeledFrame()

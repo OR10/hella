@@ -63,7 +63,12 @@ class LabeledFrame extends Controller\Base
             $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, 0, $frameNumber)->toArray();
 
             if (count($labeledFrames) === 0) {
-                $response->setStatusCode(404);
+                $response->setData([
+                    'result' => array(
+                        'frameNumber' => $frameNumber,
+                        'classes' => array()
+                    )
+                ]);
 
                 return $response;
             }
