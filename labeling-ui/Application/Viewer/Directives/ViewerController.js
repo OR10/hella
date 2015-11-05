@@ -8,6 +8,14 @@
  * @property {Function} onNewLabeledThingRequested
  */
 export default class ViewerController {
+  constructor() {
+    this.filters = [];
+  }
+
+  handleFilterChanged(filters) {
+    this.filters = filters;
+  }
+
   handleNewThing(shapes) {
     this.onNewThing({shapes});
   }

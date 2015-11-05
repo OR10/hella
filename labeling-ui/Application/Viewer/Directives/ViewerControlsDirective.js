@@ -20,6 +20,7 @@ export default class ViewerControlsDirective {
       onPreviousFrameRequested: '&',
       onNextFrameRequested: '&',
       onNewLabeledThingRequested: '&',
+      onFilterChanged: '&',
     };
   }
 }

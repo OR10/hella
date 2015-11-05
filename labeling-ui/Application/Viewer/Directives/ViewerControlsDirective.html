@@ -1,9 +1,24 @@
 <div class="viewer-controls text-center">
     <div class="btn-group">
-        <button class="btn btn-default" ng-click="vm.handlePreviousFrameClicked()"><i class="fa fa-step-backward"></i></button>
-        <button class="btn btn-default" ng-click="vm.handleNextFrameClicked()"><i class="fa fa-step-forward"></i></button>
+        <button uib-popover-template="vm.brightnessSliderTemplate"
+                popover-title="Brightness"
+                popover-placement="top"
+                class="btn btn-default"
+        ><i class="fa fa-lightbulb-o"></i></button>
+        <button uib-popover-template="vm.contrastSliderTemplate"
+                popover-title="Contrast"
+                popover-placement="top"
+                class="btn btn-default"
+        ><i class="fa fa-adjust"></i></button>
     </div>
     <div class="btn-group">
-        <button class="btn btn-default" ng-click="vm.handleNewLabeledThingClicked()"><i class="fa fa-plus-square-o"></i></button>
+        <button class="btn btn-default" ng-click="vm.handlePreviousFrameClicked()"><i class="fa fa-step-backward"></i>
+        </button>
+        <button class="btn btn-default" ng-click="vm.handleNextFrameClicked()"><i class="fa fa-step-forward"></i>
+        </button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" ng-click="vm.handleNewLabeledThingClicked()"><i class="fa fa-plus-square-o"></i>
+        </button>
     </div>
 </div>

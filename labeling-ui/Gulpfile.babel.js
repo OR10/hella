@@ -281,7 +281,7 @@ gulp.task('optimize-css', () => {
 });
 
 gulp.task('build-templates', () => {
-  return gulp.src(paths.dir.vendor + '/**/angular-ui/bootstrap*/template/{collapse,accordion,carousel}/*.html')
+  return gulp.src(paths.dir.vendor + '/**/angular-ui/bootstrap*/template/{collapse,accordion,carousel,tooltip,popover}/*.html')
     .pipe($$.angularTemplateCache({
       filename: 'angular-ui-bootstrap.js',
       module: 'AnnoStation.VendorTemplates',
