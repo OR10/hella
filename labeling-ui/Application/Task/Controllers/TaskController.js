@@ -264,7 +264,7 @@ export default class TaskController {
   }
 
   _switchActiveFrame(frameNumber) {
-    this._switchToPlaceholderImage();
+    //this._switchToPlaceholderImage();
     this._clearLabelsAndThingsInFrame();
     this._initializeWorkflows();
 
