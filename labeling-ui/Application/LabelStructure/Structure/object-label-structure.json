@@ -1,0 +1,38 @@
+{
+  "name": "root",
+  "children": [
+    {
+      "name": "objectType",
+      "children": [
+        {"name": "pedestrian"},
+        {"name": "cyclist"},
+        {"name": "car"}
+      ]
+    },
+    {
+      "name": "movementDirection",
+      "children": [
+        {"name": "left"},
+        {"name": "right"},
+        {"name": "front"},
+        {"name": "back"}
+      ]
+    },
+    {
+      "name": "visibility",
+      "children": [
+        {
+          "name": "visible",
+          "children": [
+            {"name": "visible-10"},
+            {"name": "visible-30"},
+            {"name": "visible-50"},
+            {"name": "visible-80"},
+            {"name": "visible-100"}
+          ]
+        },
+        {"name": "invisible"}
+      ]
+    }
+  ]
+}

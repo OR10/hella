@@ -1,0 +1,54 @@
+{
+  "objectType": {
+    "challenge": "Was wird denn hier gelabelt?"
+  },
+  "pedestrian": {
+    "response": "Fußgänger"
+  },
+  "cyclist": {
+    "response": "Radfahrer"
+  },
+  "car": {
+    "response": "Auto"
+  },
+  "movementDirection": {
+    "challenge": "In welche Richtung bewegt sich das Objekt?"
+  },
+  "left": {
+    "response": "Nach Links"
+  },
+  "right": {
+    "response": "Nach Rechts"
+  },
+  "front": {
+    "response": "Nach Vorne"
+  },
+  "back": {
+    "response": "Nach Hinten"
+  },
+  "visibility": {
+    "challenge": "Ist das object sichtbar?"
+  },
+  "visible": {
+    "challenge": "Zu wieviel Prozent ist das Objekt sichtbar?",
+    "response": "Ja"
+  },
+  "invisible": {
+    "response": "Nein"
+  },
+  "visible-10": {
+    "response": "10%"
+  },
+  "visible-30": {
+    "response": "30%"
+  },
+  "visible-50": {
+    "response": "50%"
+  },
+  "visible-80": {
+    "response": "80%"
+  },
+  "visible-100": {
+    "response": "100%"
+  }
+}

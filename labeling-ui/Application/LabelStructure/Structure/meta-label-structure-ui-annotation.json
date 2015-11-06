@@ -1,0 +1,36 @@
+{
+  "weather": {
+    "challenge": "Wie ist das Wetter?"
+  },
+  "sunny": {
+    "response": "Sonnig! :)"
+  },
+  "rainy-day": {
+    "response": "Iiihh Regen..."
+  },
+  "foggy": {
+    "challenge": "Wie nebelig ist es denn so?",
+    "response": "Wie, Was? Neblig!"
+  },
+  "really-foggy": {
+    "response": "London-style Nebel"
+  },
+  "not-so-foggy": {
+    "response": "völlig harmloser Nebel"
+  },
+  "solar-eclipse": {
+    "response": "Totale Sonnenfinsternis!"
+  },
+  "country": {
+    "challenge": "In welchem Land befinden wir uns?"
+  },
+  "germany": {
+    "response": "Deutschland"
+  },
+  "england": {
+    "response": "England"
+  },
+  "france": {
+    "response": "Das Land der Baguettes"
+  }
+}

@@ -1,7 +1,7 @@
-import metaLabelStructure from 'Tests/Fixtures/meta-label-structure.json!';
-import metaLabelAnnotation from 'Tests/Fixtures/meta-label-structure-ui-annotation.json!';
-import objectLabelStructure from 'Tests/Fixtures/object-label-structure.json!';
-import objectLabelAnnotation from 'Tests/Fixtures/object-label-structure-ui-annotation.json!';
+import metaLabelStructure from 'Application/LabelStructure/Structure/meta-label-structure.json!';
+import metaLabelAnnotation from 'Application/LabelStructure/Structure/meta-label-structure-ui-annotation.json!';
+import objectLabelStructure from 'Application/LabelStructure/Structure/object-label-structure.json!';
+import objectLabelAnnotation from 'Application/LabelStructure/Structure/object-label-structure-ui-annotation.json!';
 
 import ObjectLabelWorkflow from '../Workflows/ObjectLabelWorkflow';
 import MetaLabelWorkflow from '../Workflows/MetaLabelWorkflow';
