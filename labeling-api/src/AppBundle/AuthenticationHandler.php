@@ -40,11 +40,6 @@ class AuthenticationHandler implements
     private $failurePath = '/login';
 
     /**
-     * @var string
-     */
-    private $targetUrlSessionKey = 'annostation.labeling_api.authentication.targetUrl';
-
-    /**
      * Gets called whenever an authentication cycle is started.
      *
      * Returns a 401 response in case of a xhr request, otherwise saves the
@@ -62,9 +57,6 @@ class AuthenticationHandler implements
         if ($request->isXmlHttpRequest()) {
             return new HttpFoundation\Response(null, HttpFoundation\Response::HTTP_UNAUTHORIZED);
         }
-
-        $targetUrl = $request->get($this->targetUrlParameter, $this->defaultSuccessPath, true);
-        $request->getSession()->set($this->targetUrlSessionKey, $targetUrl);
 
         return new HttpFoundation\RedirectResponse($this->failurePath);
     }
@@ -89,8 +81,10 @@ class AuthenticationHandler implements
             return new HttpFoundation\Response(null, HttpFoundation\Response::HTTP_NO_CONTENT);
         }
 
-        $targetUrl = $request->getSession()->get($this->targetUrlSessionKey, $this->defaultSuccessPath);
-        $request->getSession()->remove($this->targetUrlSessionKey);
+        $targetUrl = $request->get($this->targetUrlParameter);
+        if ($targetUrl === null || empty($targetUrl)) {
+            $targetUrl = $this->defaultSuccessPath;
+        }
 
         return new HttpFoundation\RedirectResponse($targetUrl);
     }
