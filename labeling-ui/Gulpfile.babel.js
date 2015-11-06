@@ -166,26 +166,26 @@ gulp.task('optimize', next => run(
 
 gulp.task('eslint', () => {
   return gulp.src([
-      `!${paths.files.vendor}`,
-      `!${paths.files.system.config}`,
-      paths.files.gulp.config,
-      paths.files.support,
-      paths.files.js,
-      paths.files.tests.unit,
-    ])
+    `!${paths.files.vendor}`,
+    `!${paths.files.system.config}`,
+    paths.files.gulp.config,
+    paths.files.support,
+    paths.files.js,
+    paths.files.tests.unit,
+  ])
     .pipe($$.eslint())
     .pipe($$.eslint.format());
 });
 
 gulp.task('eslint-checkstyle', () => {
   return gulp.src([
-      `!${paths.files.vendor}`,
-      `!${paths.files.system.config}`,
-      paths.files.gulp.config,
-      paths.files.support,
-      paths.files.js,
-      paths.files.tests.unit,
-    ])
+    `!${paths.files.vendor}`,
+    `!${paths.files.system.config}`,
+    paths.files.gulp.config,
+    paths.files.support,
+    paths.files.js,
+    paths.files.tests.unit,
+  ])
     .pipe($$.eslint())
     .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
 });
@@ -236,7 +236,10 @@ gulp.task('test-e2e-run', ['webdriver-update'], (next) => {
       protractorServer.close();
       throw error;
     })
-    .on('end', () => protractorServer.close());
+    .on('end', () => {
+      protractorServer.close();
+      next();
+    });
 });
 
 gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars

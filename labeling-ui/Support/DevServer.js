@@ -83,7 +83,7 @@ export default class DevServer {
   }
 
   notifyLiveReload(changedFiles) {
-    const files = changedFiles.join(",");
+    const files = changedFiles.join(',');
     const {livereloadPort} = this.config;
     return request(`http://localhost:${livereloadPort}/changed?files=${files}`);
   }

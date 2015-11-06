@@ -17,9 +17,8 @@ export default class ViewerControlsController {
     this.brightnessSliderValue = 0;
     this.contrastSliderValue = 0;
 
-    $scope.$watchGroup(['vm.brightnessSliderValue', 'vm.contrastSliderValue'], (newValues, oldValues, scope) => {
+    $scope.$watchGroup(['vm.brightnessSliderValue', 'vm.contrastSliderValue'], (newValues, oldValues) => {
       if (newValues !== oldValues) {
-        console.log('filters');
         const filters = [new BrightnessFilter(newValues[0]), new ContrastFilter(newValues[1])];
         this.onFilterChanged({filters});
       }

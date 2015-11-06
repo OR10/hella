@@ -11,19 +11,19 @@ describe('StateMachine', () => {
   });
 
   it('should return state object for existing state', () => {
-    const machine = new StateMachine(["state"]);
+    const machine = new StateMachine(['state']);
     expect(machine.getState('state') instanceof State).toBeTruthy();
   });
 
   it('should provide "from" alias for getState', () => {
-    const machine = new StateMachine(["state"]);
+    const machine = new StateMachine(['state']);
     const state = machine.getState('state');
     const fromState = machine.from('state');
     expect(fromState).toBe(state);
   });
 
   it('should fail if not existing state is requested', () => {
-    const machine = new StateMachine(["state"]);
+    const machine = new StateMachine(['state']);
     expect(() => machine.getState('otherState')).toThrow();
   });
 
@@ -31,12 +31,10 @@ describe('StateMachine', () => {
     let machine;
     let first;
     let second;
-    let third;
     beforeEach(() => {
       machine = new StateMachine(['first', 'second', 'third']);
       first = machine.getState('first');
       second = machine.getState('second');
-      third = machine.getState('third');
     });
 
     it('should allow for Transitions to be added', () => {
@@ -61,7 +59,7 @@ describe('StateMachine', () => {
       });
 
       it('should allow the registration of handlers', () => {
-        const handler = function() {};
+        const handler = jasmine.createSpy();
         firstSecond.register(handler);
 
         const retrievedHandlers = firstSecond.getHandlers();
@@ -86,8 +84,8 @@ describe('StateMachine', () => {
       it('should call handlers upon transition with given arguments', () => {
         const handler = jasmine.createSpy();
         firstSecond.register(handler);
-        firstSecond.transition("foo", "bar");
-        expect(handler).toHaveBeenCalledWith(transitionEvent, "foo", "bar");
+        firstSecond.transition('foo', 'bar');
+        expect(handler).toHaveBeenCalledWith(transitionEvent, 'foo', 'bar');
       });
     });
   });

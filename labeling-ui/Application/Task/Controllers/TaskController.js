@@ -155,7 +155,7 @@ export default class TaskController {
           this._activeLabeledThingInFrame
         )
         .then(labeledThing => {
-          this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing
+          this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
           this._activeLabeledThingInFrame = labeledThing;
         });
       }
@@ -163,7 +163,7 @@ export default class TaskController {
 
     this._initializeWorkflows();
 
-    $scope.$watchCollection('vm.metaLabelContext', newContext => {
+    $scope.$watchCollection('vm.metaLabelContext', () => {
       if (this.metaLabelingCompleted) {
         this._metaLabelWorkflow.transition('complete-labels');
       } else {
@@ -321,14 +321,14 @@ export default class TaskController {
     this._activeLabeledThingInFrame = {
       frameNumber: this._frameNumber,
       shapes,
-      classes: Object.values(this.objectLabelContext)
+      classes: Object.values(this.objectLabelContext),
     };
 
     this._objectLabelWorkflow.transition('new-thing');
   }
 
   handleUpdatedThing(labeledThing) {
-    this.handleSelectedThing(labeledThing); //@TODO: Temporary fix for incorrect selection handling
+    this.handleSelectedThing(labeledThing); // @TODO: Temporary fix for incorrect selection handling
     this._objectLabelWorkflow.transition('edit-thing');
   }
 
@@ -341,7 +341,6 @@ export default class TaskController {
   }
 
   handleDeselectedThing() {
-    console.log("deselected");
     this._activeLabeledThingInFrame = null;
     this.$scope.$apply(() => {
       this.hideObjectLabels = true;

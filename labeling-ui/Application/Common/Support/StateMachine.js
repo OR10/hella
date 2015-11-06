@@ -14,7 +14,7 @@ export default class StateMachine {
     this._currentState = this._stateMapping.get(initialState);
 
     if (this._currentState === undefined) {
-      throw new Error(`Can't use initial state ${intialState}, as it is not a defined state.`);
+      throw new Error(`Can't use initial state ${initialState}, as it is not a defined state.`);
     }
   }
 
