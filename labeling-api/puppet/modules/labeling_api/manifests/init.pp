@@ -28,6 +28,10 @@ class labeling_api(
     $frame_cdn_expires = '30d',
     $user_password = undef,
     $is_vagrant_vm = false,
+    $rabbitmq_host,
+    $rabbitmq_port = 5672,
+    $rabbitmq_user = 'guest',
+    $rabbitmq_password = 'guest',
 ) {
 
   ::mysql::db { $database_name:

@@ -12,6 +12,8 @@ php::fpm::settings:
 php::extensions:
   mysql: {}
 
+rabbitmq::version: present
+
 labeling_api::run_composer_install: false
 labeling_api::prepare_test_environment: true
 labeling_api::config_dir: '/etc/AnnoStation/labeling-api'
@@ -32,3 +34,4 @@ labeling_api::mailer_user: 'null'
 labeling_api::mailer_password: 'null'
 labeling_api::secret: 'saddassadasd'
 labeling_api::user_password: 'xoADo2iMO1okZJIvaQKX'
+labeling_api::rabbitmq_host: '127.0.0.1'

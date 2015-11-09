@@ -6,6 +6,8 @@ class { '::mysql::server': }
 
 class { 'couchdb': }
 
+class { 'rabbitmq': }
+
 class { 'annostation_base': }
 
 class { 'labeling_api':
