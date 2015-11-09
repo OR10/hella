@@ -25,6 +25,7 @@ class labeling_api(
     $frame_cdn_port = 81,
     $frame_cdn_path = '',
     $frame_cdn_allowed_origin = undef,
+    $frame_cdn_expires = '30d',
     $user_password = undef,
     $is_vagrant_vm = false,
 ) {
@@ -87,7 +88,14 @@ class labeling_api(
           require     => File[$frame_cdn_dir],
           location_cfg_append => {
             'include' => '/etc/nginx/cdn-cors.conf',
-          }
+          },
+          add_header => {
+            'Pragma' => 'public',
+            'Cache-Control' => '"public"',
+          },
+          vhost_cfg_prepend => {
+            'expires' => $frame_cdn_expires,
+          },
         }
       }
     }
