@@ -42,6 +42,9 @@ export default class ViewerStageController {
     $scope.$watch('vm.frameImage', newFrameImage => {
       backgroundLayer.setBackgroundImage(newFrameImage);
       backgroundLayer.render();
+      this.filters.forEach(filter => {
+        backgroundLayer.applyFilter(filter);
+      });
     });
 
     $scope.$watch('vm.activeTool', newActiveTool => {
