@@ -365,6 +365,14 @@ export default class TaskController {
     this._initializeWorkflows(); // @TODO: properly integrate change with handling
     this._objectLabelWorkflow.transition('new-labeled-thing');
   }
+
+  handleNewEllipseRequested() {
+    this.activeTool = 'ellipse';
+  }
+
+  handleNewCircleRequested() {
+    this.activeTool = 'circle';
+  }
 }
 
 TaskController.$inject = [

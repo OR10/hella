@@ -36,6 +36,14 @@ export default class ViewerControlsController {
   handleNewLabeledThingClicked() {
     this.onNewLabeledThingRequested();
   }
+
+  handleNewEllipseClicked() {
+    this.onNewEllipseRequested();
+  }
+
+  handleNewCircleClicked() {
+    this.onNewCircleRequested();
+  }
 }
 
 ViewerControlsController.$inject = ['$scope'];
