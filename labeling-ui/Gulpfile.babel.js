@@ -289,6 +289,17 @@ gulp.task('build-fonts', (next) => {
   });
 });
 
+gulp.task('deploy', () => {
+  return gulp.src('Distribution/**')
+    .pipe($$.rsync({
+      recurse: true,
+      exclude: ['index-protractor.html'],
+      root: 'Distribution/',
+      hostname: '192.168.217.212',
+      destination: '/var/www/labeling-ui'
+    }));
+});
+
 gulp.task('optimize-css', () => {
   return gulp.src(paths.files.css)
     .pipe($$.sourcemaps.init({loadMaps: true}))
