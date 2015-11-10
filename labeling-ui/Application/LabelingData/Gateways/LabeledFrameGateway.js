@@ -15,7 +15,7 @@ class LabeledFrameGateway {
     /**
      * @type {ApiService}
      */
-    this.apiService = apiService;
+    this._apiService = apiService;
   }
 
 
@@ -28,7 +28,7 @@ class LabeledFrameGateway {
    * @returns {Promise<LabeledFrame|Error>}
    */
   getLabeledFrame(taskId, frameNumber) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
     return this.$http.get(url)
@@ -52,7 +52,7 @@ class LabeledFrameGateway {
    * @returns {Promise<LabeledFrame|Error>}
    */
   saveLabeledFrame(taskId, frameNumber, data) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
 
@@ -77,7 +77,7 @@ class LabeledFrameGateway {
    * @returns {Promise<Boolean|Error>}
    */
   deleteLabeledFrame(taskId, frameNumber) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
     return this.$http.delete(url)

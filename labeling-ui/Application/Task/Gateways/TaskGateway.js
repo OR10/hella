@@ -1,20 +1,31 @@
 /**
  * Gateway for retrieving information about Tasks
  */
-export default class TaskGateway {
+class TaskGateway {
+  /**
+   * @param {ApiService} apiService injected
+   * @param {angular.$http} $http
+   */
   constructor(apiService, $http) {
-    this.$http = $http;
-    this.apiService = apiService;
+    /**
+     * @type {angular.$http}
+     */
+    this._$http = $http;
+
+    /**
+     * @type {ApiService}
+     */
+    this._apiService = apiService;
   }
 
   /**
-   * Returns the list of available tasks
+   * Retrieves a list of available {@link Task}s
    *
    * @return {Promise<Task[]|Error>}
    */
   getTasks() {
-    const url = this.apiService.getApiUrl('/task');
-    return this.$http.get(url)
+    const url = this._apiService.getApiUrl('/task');
+    return this._$http.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -25,14 +36,14 @@ export default class TaskGateway {
   }
 
   /**
-   * Returns the task identified by the given id
+   * Retrieves the {@link Task} identified by the given `id`
    *
-   * @param {String} id
+   * @param {string} id
    *
-   * @return {Promise<Task|Error>}
+   * @return {Promise.<Task|Error>}
    */
   getTask(id) {
-    const url = this.apiService.getApiUrl(`/task/${id}`);
+    const url = this._apiService.getApiUrl(`/task/${id}`);
     return this.$http.get(url)
       .then(response => {
         if (response.data && response.data.result) {
@@ -45,3 +56,5 @@ export default class TaskGateway {
 }
 
 TaskGateway.$inject = ['ApiService', '$http'];
+
+export default TaskGateway;
