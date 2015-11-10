@@ -10,6 +10,10 @@ class { 'couchdb': }
 
 class { 'rabbitmq': }
 
+class { '::supervisord':
+  install_pip => true,
+}
+
 class { 'annostation_base': }
 
 class { 'labeling_api':
