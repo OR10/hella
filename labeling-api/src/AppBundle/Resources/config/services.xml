@@ -8,6 +8,7 @@
         <import resource="services/command.xml"/>
         <import resource="services/controller.xml"/>
         <import resource="services/database_facades.xml"/>
+        <import resource="services/worker.xml"/>
     </imports>
 
     <services>
@@ -37,6 +38,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader" />
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
         </service>
 
         <service id="annostation.labeling_api.authentication_handler" class="AppBundle\AuthenticationHandler">
@@ -47,5 +49,14 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
         </service>
+
+        <service id="annostation.labeling_api.vendor.logger" class="cscntLogger" />
+
+        <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">
+            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
+            <argument type="service" id="annostation.labeling_api.vendor.logger" />
+        </service>
+
+        <service id="annostation.labeling_api.service.amqp_pool_config" class="AppBundle\Service\AmqpPoolConfig" />
     </services>
 </container>
