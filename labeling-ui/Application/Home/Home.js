@@ -3,7 +3,18 @@ import TaskListDirective from './Directives/TaskListDirective';
 import HomeController from './Controllers/HomeController';
 import homeTemplate from './Views/home.html!';
 
-export default class Home extends Module {
+/**
+ * Home Module
+ *
+ * This module contains all necessary modules directly involved in providing the initial application entry point.
+ *
+ * @extends Module
+ */
+class Home extends Module {
+  /**
+   * @inheritDoc
+   * @param {angular.$stateProvider} $stateProvider
+   */
   config($stateProvider) {
     $stateProvider.state('home', {
       url: '/',
@@ -13,6 +24,9 @@ export default class Home extends Module {
     });
   }
 
+  /**
+   * @inheritDoc
+   */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Home', []);
     this.registerDirective('tasklist', TaskListDirective);
@@ -20,3 +34,5 @@ export default class Home extends Module {
 }
 
 Home.prototype.config.$inject = ['$stateProvider'];
+
+export default Home;

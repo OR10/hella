@@ -1,10 +1,10 @@
 /**
  * Gateway to interact with {@link Task} related {@link Frame}s
  */
-export default class TaskFrameLocationGateway {
+class TaskFrameLocationGateway {
   /**
-   * @param {ApiService} apiService
-   * @param {angular.$http} $http
+   * @param {ApiService} apiService injected
+   * @param {angular.$http} $http injected
    */
   constructor(apiService, $http) {
     this.apiService = apiService;
@@ -12,12 +12,17 @@ export default class TaskFrameLocationGateway {
   }
 
   /**
+   * Retrieve CDN {@link FrameLocation}s for a specific set of frames of one {@link Task}
+   *
+   * If `offset` is not given `0` is used as a default
+   *
+   * If `limit` is not given `1` is used as a default
    *
    * @param {string} taskId
    * @param {string} type
    * @param {number?} offset
    * @param {number?} limit
-   * @return {Promise<Array<FrameLocation>>}
+   * @returns {Promise<Array<FrameLocation>>}
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
     return this.$http({
@@ -34,3 +39,5 @@ export default class TaskFrameLocationGateway {
 }
 
 TaskFrameLocationGateway.$inject = ['ApiService', '$http'];
+
+export default TaskFrameLocationGateway;

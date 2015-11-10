@@ -1,7 +1,12 @@
 import taskListTemplate from './TaskListDirective.html!';
-import TaskListController from '../Controllers/TaskListController';
+import TaskListController from './TaskListController';
 
-export default class TaskListDirective {
+/**
+ * Directive to display a List of all {@link Task}s currently available in the backend
+ *
+ * The directive retrieves the list automatically from the backend.
+ */
+class TaskListDirective {
   constructor() {
     this.template = taskListTemplate;
 
@@ -10,3 +15,5 @@ export default class TaskListDirective {
     this.bindToController = true;
   }
 }
+
+export default TaskListDirective;

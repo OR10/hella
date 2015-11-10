@@ -7,43 +7,43 @@
 /**
  * Unique id identifying this specific labeled thing in frame
  *
- * @interface LabeledThingInFrame
- * @property {string} id
+ * @name LabeledThingInFrame#id
+ * @type {string}
  */
 
 /**
  * Unique string that represents the revision of the current object
  *
- * @interface LabeledThingInFrame
- * @property {string} rev
+ * @name LabeledThingInFrame#rev
+ * @type {string}
  */
 
 /**
  * The frame this entity belongs to
  *
- * @interface LabeledThingInFrame
- * @property {int} frameNumber
+ * @name LabeledThingInFrame#frameNumber
+ * @type {int}
  */
 
 /**
  * A reference to the LabeledThing this entity belongs to
  *
- * @interface LabeledThingInFrame
- * @property {String} labeledThingId
+ * @name LabeledThingInFrame#labeledThingId
+ * @type {string}
  */
 
 /**
- * Array of shapes the labeled thing in frame can consist of.
+ * Array of shapes the {@link LabeledThingInFrame} consists of.
  *
  * Different shapes exist, like rectangle, circle etc.
  *
- * @interface LabeledThingInFrame
- * @property {Shape[]} shapes
+ * @name LabeledThingInFrame#shapes
+ * @type {Array.<Shape>}
  */
 
 /**
- * Array of annotated labeling properties for this LabeledThingInFrame.
+ * Array of labels the Thing is associated with in the defined Frame.
  *
- * @interface LabeledThingInFrame
- * @property {Object[]} classes
+ * @name LabeledThingInFrame#classes
+ * @type {Array.<string>}
  */

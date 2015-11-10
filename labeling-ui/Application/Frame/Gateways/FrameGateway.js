@@ -3,12 +3,12 @@
  *
  * This gateway is capable of preloading creating and interacting with {@link FrameLocation} models.
  */
-export default class FrameGateway {
+class FrameGateway {
   /**
-   * Create and return an {@link Image} for the given {@link FrameLocation}
+   * Create and return an {@link HTMLImageElement} for the given {@link FrameLocation}
    *
-   * @param location
-   * @returns {Promise<HTMLImageElement>}
+   * @param {FrameLocation} location
+   * @returns {Promise.<HTMLImageElement>}
    */
   getImage(location) {
     return new Promise((resolve, reject) => {
@@ -20,3 +20,5 @@ export default class FrameGateway {
     });
   }
 }
+
+export default FrameGateway;

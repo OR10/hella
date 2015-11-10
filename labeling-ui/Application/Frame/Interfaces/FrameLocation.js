@@ -7,8 +7,8 @@
 /**
  * Unique id identifying this specific frame location
  *
- * @interface FrameLocation
- * @property {string} id
+ * @type {string}
+ * @name FrameLocation#id
  */
 
 /**
@@ -16,20 +16,21 @@
  *
  * Different types exist, like thumbnails, source image and scaled variants
  *
- * @interface FrameLocation
- * @propery {string} type
+ * @type {string}
+ * @name FrameLocation#type
  */
 
 /**
  * Url where the frame referenced by this location is actually stored
  *
- * @interface FrameLocation
- * @property {string} url
+ * @type {string}
+ * @name FrameLocation#url
  */
 
 /**
  * Number of the frame within the requested sequence
  *
- * @interface FrameLocation
- * @property {number} frameNumber
+ * @type {number}
+ * @name FrameLocation#frameNumber
  */
+

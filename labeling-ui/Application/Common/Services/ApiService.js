@@ -1,10 +1,10 @@
 /**
  * Service to provide generic information and handling utilities about the API communication
  */
-export default class ApiService {
+class ApiService {
   /**
-   * @param {Object} configuration
-   * @param {$httpParamSerializer} $httpParamSerializer
+   * @param {Object} configuration injected
+   * @param {$httpParamSerializer} $httpParamSerializer injected
    */
   constructor(configuration, $httpParamSerializer) {
     this.$httpParamSerializer = $httpParamSerializer;
@@ -32,3 +32,5 @@ export default class ApiService {
 }
 
 ApiService.$inject = ['applicationConfig', '$httpParamSerializer'];
+
+export default ApiService;

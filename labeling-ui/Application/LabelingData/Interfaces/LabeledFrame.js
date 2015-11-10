@@ -7,34 +7,34 @@
 /**
  * Unique id identifying this specific labeled frame
  *
- * @interface LabeledFrame
- * @property {string} id
+ * @name LabeledFrame#id
+ * @type {string}
  */
 
 /**
  * Unique id identifying the task this entity belongs to
  *
- * @interface LabeledFrame
- * @property {string} taskId
+ * @name LabeledFrame#taskId
+ * @property {string}
  */
 
 /**
  * Frame number of this labeled frame in the video of its associated task
  *
- * @interface LabeledFrame
- * @property {int} frameNumber
+ * @name LabeledFrame#frameNumber
+ * @type {int}
  */
 
 /**
  * Unique string that represents the revision of the current labeled frame
  *
- * @interface LabeledFrame
- * @property {string} rev
+ * @name LabeledFrame#rev
+ * @type {string}
  */
 
 /**
- * Array of annotated labeling properties for this LabeledFrame.
+ * Array of labels for this LabeledFrame.
  *
- * @interface LabeledFrame
- * @property {Object[]} classes
+ * @name LabeledFrame#classes
+ * @type {Array.<string>}
  */

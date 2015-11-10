@@ -1,17 +1,26 @@
 /**
- * @class LabeledFrameGateway
- *
- * Gateway for saving and retrieving labeled frames
+ * Gateway for saving and retrieving {@link LabeledFrame}s
  */
-export default class LabeledFrameGateway {
+class LabeledFrameGateway {
+  /**
+   * @param {ApiService} apiService
+   * @param {angular.$http} $http
+   */
   constructor(apiService, $http) {
+    /**
+     * @type {angular.$http}
+     */
     this.$http = $http;
+
+    /**
+     * @type {ApiService}
+     */
     this.apiService = apiService;
   }
 
 
   /**
-   * Returns the labeled frame for the given task and frame number
+   * Returns the {@link LabeledFrame} for the given `taskId` and `frameNumber`
    *
    * @param {String} taskId
    * @param {Integer} frameNumber
@@ -86,7 +95,6 @@ export default class LabeledFrameGateway {
    *
    * @private
    * @param {LabeledFrame} labeledFrame
-   *
    * @returns {LabeledFrame}
    */
   _uniqueClasses(labeledFrame) {
@@ -97,3 +105,5 @@ export default class LabeledFrameGateway {
 }
 
 LabeledFrameGateway.$inject = ['ApiService', '$http'];
+
+export default LabeledFrameGateway;

@@ -2,7 +2,18 @@ import Module from '../Module';
 import FrameGateway from './Gateways/FrameGateway';
 import TaskFrameLocationGateway from './Gateways/TaskFrameLocationGateway';
 
-export default class Frame extends Module {
+/**
+ * Frame Module
+ *
+ * This module contains all the different implementations regarding Frame handling
+ *
+ * @extends Module
+ */
+class Frame extends Module {
+  /**
+   * Register this module with the angular API.
+   * @param {angular} angular
+   */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Frame', []);
 
@@ -10,3 +21,5 @@ export default class Frame extends Module {
     this.module.service('taskFrameLocationGateway', TaskFrameLocationGateway);
   }
 }
+
+export default Frame;
