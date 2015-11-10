@@ -49,7 +49,7 @@ class Task extends Controller\Base
         $tasks              = $this->labelingTaskFacade->findAll();
         $labelingTaskFacade = $this->labelingTaskFacade;
 
-        $taskResult = array_filter($tasks->toArray(), function ($task) use ($labelingTaskFacade) {
+        $taskResult = array_values(array_filter($tasks->toArray(), function ($task) use ($labelingTaskFacade) {
             $currentState = $labelingTaskFacade->getVideo($task)->getImageTypeConvertedStatus();
             foreach ($task->getRequiredImageTypes() as $requiredImageType) {
                 if ($currentState[$requiredImageType] === false) {
@@ -58,7 +58,7 @@ class Task extends Controller\Base
             }
 
             return true;
-        });
+        }));
 
         $result = [
             'totalCount' => count($taskResult),
