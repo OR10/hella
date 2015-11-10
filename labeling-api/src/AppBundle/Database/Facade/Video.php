@@ -36,6 +36,15 @@ class Video
         return $result->toArray();
     }
 
+    /**
+     * @param $id
+     * @return Model\Video
+     */
+    public function find($id)
+    {
+        return $this->documentManager->find(Model\Video::class, $id);
+    }
+
     public function getPrelabeledFrames(Model\Video $video)
     {
         //TODO: implement
@@ -46,6 +55,11 @@ class Video
         //TODO: implement
     }
 
+    public function update()
+    {
+        $this->documentManager->flush();
+    }
+
     public function save(Model\Video $video, $stream = null)
     {
         $this->documentManager->persist($video);
@@ -53,7 +67,7 @@ class Video
 
         if ($stream !==  null) {
             $this->fileSystem->writeStream(
-                $video->getId() . DIRECTORY_SEPARATOR . 'source',
+                $video->getSourceVideoPath(),
                 $stream
             );
         }

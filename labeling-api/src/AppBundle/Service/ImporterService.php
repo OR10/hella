@@ -6,6 +6,8 @@ use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
+use crosscan\WorkerPool\AMQP;
+use AppBundle\Worker\Jobs;
 
 class ImporterService
 {
@@ -30,6 +32,11 @@ class ImporterService
     private $labelingTaskFacade;
 
     /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $facadeAMQP;
+
+    /**
      * ImportVideoCommand constructor.
      *
      * @param Facade\Video                 $videoFacade
@@ -41,12 +48,15 @@ class ImporterService
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
-        Service\Video\VideoFrameSplitter $frameCdnSplitter
-    ) {
+        Service\Video\VideoFrameSplitter $frameCdnSplitter,
+        AMQP\FacadeAMQP $facadeAMQP
+    )
+    {
         $this->videoFacade        = $videoFacade;
         $this->metaDataReader     = $metaDataReader;
         $this->frameCdnSplitter   = $frameCdnSplitter;
         $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->facadeAMQP         = $facadeAMQP;
     }
 
     /**
@@ -64,16 +74,27 @@ class ImporterService
         $video->setMetaData($this->metaDataReader->readMetaData($filename));
         $this->videoFacade->save($video, $stream);
 
+        $imageTypeNames = array_keys(ImageType\Base::$imageTypes);
+
+        $task = $this->addTask($video, $imageTypeNames);
+
         // @todo This list currently contains all image types since the
         //       labeling task is currently created by this service for the
         //       whole video. This may change in future versions where some or
         //       all image types are defined by the labeling task. However,
         //       when this happens, this service has to be refactored anyway.
-        foreach (array_keys(ImageType\Base::$imageTypes) as $imageTypeName) {
-            $this->frameCdnSplitter->splitVideoInFrames($video, $filename, ImageType\Base::create($imageTypeName));
+        foreach ($imageTypeNames as $imageTypeName) {
+            $video->setImageTypeConvertedStatus($imageTypeName);
+            $this->videoFacade->update($video);
+            $job = new Jobs\Video(
+                $video->getId(),
+                $video->getSourceVideoPath(),
+                ImageType\Base::create($imageTypeName)
+            );
+
+            $this->facadeAMQP->addJob($job);
         }
 
-        $task = $this->addTask($video);
 
         return $task;
     }
@@ -83,13 +104,14 @@ class ImporterService
      *
      * @param Model\Video $video
      *
+     * @param             $imageTypes
      * @return Model\LabelingTask
      */
-    private function addTask(Model\Video $video)
+    private function addTask(Model\Video $video, $imageTypes)
     {
         $metadata     = $video->getMetaData();
         $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
-        $labelingTask = new Model\LabelingTask($video, $frameRange);
+        $labelingTask = new Model\LabelingTask($video, $frameRange, $imageTypes);
         $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;

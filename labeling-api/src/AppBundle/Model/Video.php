@@ -26,11 +26,16 @@ class Video
     private $metaData;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $imageTypeConvertedStatus;
+
+    /**
      * @param string $name The name of the video.
      */
     public function __construct($name)
     {
-        $this->name = (string) $name;
+        $this->name = (string)$name;
     }
 
     /**
@@ -75,5 +80,22 @@ class Video
     public function getMetaData()
     {
         return $this->metaData;
+    }
+
+    /**
+     * @param      $imageType
+     * @param bool $converted
+     */
+    public function setImageTypeConvertedStatus($imageType, $converted = false)
+    {
+        $this->imageTypeConvertedStatus[$imageType] = $converted;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceVideoPath()
+    {
+        return $this->getId() . DIRECTORY_SEPARATOR . 'source';
     }
 }
