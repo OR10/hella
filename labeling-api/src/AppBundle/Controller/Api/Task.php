@@ -46,11 +46,10 @@ class Task extends Controller\Base
      */
     public function listAction()
     {
-        $tasks              = $this->labelingTaskFacade->findAll();
-        $labelingTaskFacade = $this->labelingTaskFacade;
+        $tasks = $this->labelingTaskFacade->findAll();
 
-        $taskResult = array_values(array_filter($tasks->toArray(), function ($task) use ($labelingTaskFacade) {
-            $currentState = $labelingTaskFacade->getVideo($task)->getImageTypeConvertedStatus();
+        $taskResult = array_values(array_filter($tasks->toArray(), function ($task) {
+            $currentState = $this->labelingTaskFacade->getVideo($task)->getImageTypeConvertedStatus();
             foreach ($task->getRequiredImageTypes() as $requiredImageType) {
                 if ($currentState[$requiredImageType] === false) {
                     return false;
