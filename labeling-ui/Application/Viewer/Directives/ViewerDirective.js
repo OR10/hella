@@ -16,6 +16,8 @@ export default class ViewerDirective {
       onNextFrameRequested: '&',
       onPreviousFrameRequested: '&',
       onNewLabeledThingRequested: '&',
+      onNewEllipseRequested: '&',
+      onNewCircleRequested: '&',
 
       frameImage: '=',
       thingsInFrame: '=',

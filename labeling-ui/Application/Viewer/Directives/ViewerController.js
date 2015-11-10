@@ -45,4 +45,13 @@ export default class ViewerController {
   handleNewLabeledThingRequested() {
     this.onNewLabeledThingRequested();
   }
+
+  handleNewEllipseRequested() {
+    this.onNewEllipseRequested();
+  }
+
+  handleNewCircleRequested() {
+    this.onNewCircleRequested();
+  }
+
 }

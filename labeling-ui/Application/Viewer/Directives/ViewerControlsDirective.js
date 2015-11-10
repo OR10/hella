@@ -21,6 +21,8 @@ export default class ViewerControlsDirective {
       onNextFrameRequested: '&',
       onNewLabeledThingRequested: '&',
       onFilterChanged: '&',
+      onNewEllipseRequested: '&',
+      onNewCircleRequested: '&',
     };
   }
 }

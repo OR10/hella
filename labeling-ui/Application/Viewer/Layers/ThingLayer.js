@@ -2,8 +2,10 @@ import paper from 'paper';
 
 import PaperLayer from './PaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
+import EllipseDrawingTool from '../Tools/EllipsesDrawingTool';
 import RectangleModificationTool from '../Tools/RectangleModificationTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
+import EllipseRenderer from '../Renderer/EllipseRenderer';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -96,6 +98,46 @@ export default class ThingLayer extends PaperLayer {
 
       this.emit('thing:new', shapes);
     });
+
+    this._ellipseDrawingTool = new EllipseDrawingTool(this._context, undefined);
+
+    this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
+      const shapes = [
+        {
+          type: 'ellipse',
+          point: {
+            x: Math.round(ellipse.getPosition().x),
+            y: Math.round(ellipse.getPosition().y),
+          },
+          size: {
+            width: Math.round(ellipse.bounds.width),
+            height: Math.round(ellipse.bounds.height),
+          },
+        },
+      ];
+
+      this.emit('thing:new', shapes);
+    });
+
+    this._circleDrawingTool = new EllipseDrawingTool(this._context, {circle: true});
+
+    this._circleDrawingTool.on('ellipse:complete', ellipse => {
+      const shapes = [
+        {
+          type: 'ellipse',
+          point: {
+            x: Math.round(ellipse.getPosition().x),
+            y: Math.round(ellipse.getPosition().y),
+          },
+          size: {
+            width: Math.round(ellipse.bounds.width),
+            height: Math.round(ellipse.bounds.height),
+          },
+        },
+      ];
+
+      this.emit('thing:new', shapes);
+    });
   }
 
   /**
@@ -105,6 +147,12 @@ export default class ThingLayer extends PaperLayer {
    */
   activateTool(toolName) {
     switch (toolName) {
+      case 'ellipse':
+        this._ellipseDrawingTool.activate();
+        break;
+      case 'circle':
+        this._circleDrawingTool.activate();
+        break;
       case 'drawing':
         this._rectangleDrawingTool.activate();
         break;
