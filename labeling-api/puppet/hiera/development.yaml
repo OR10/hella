@@ -17,6 +17,7 @@ php::extensions:
 
 rabbitmq::version: present
 
+supervisord::install_pip: true
 supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running

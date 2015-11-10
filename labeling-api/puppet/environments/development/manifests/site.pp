@@ -10,9 +10,7 @@ class { 'couchdb': }
 
 class { 'rabbitmq': }
 
-class { '::supervisord':
-  install_pip => true,
-}
+include ::supervisord
 
 class { 'annostation_base': }
 
