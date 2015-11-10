@@ -17,6 +17,10 @@ php::extensions:
 
 rabbitmq::version: present
 
+supervisord::service_manage: true
+supervisord::service_enable: true
+supervisord::service_ensure: running
+
 labeling_api::app_main_script: 'app_dev.php'
 labeling_api::run_composer_install: true
 labeling_api::prepare_test_environment: true
@@ -39,3 +43,6 @@ labeling_api::secret: 'ThisTokenIsNotSoSecretChangeIt'
 labeling_api::user_password: 'password'
 labeling_api::is_vagrant_vm: true
 labeling_api::rabbitmq_host: '127.0.0.1'
+
+labeling_api::worker::app_dir: '/vagrant'
+labeling_api::worker::user: vagrant

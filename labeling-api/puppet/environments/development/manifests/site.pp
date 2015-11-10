@@ -20,3 +20,6 @@ class { 'labeling_api':
     require => Class['annostation_base'],
 }
 
+class { 'labeling_api::worker':
+    require => Class['labeling_api'],
+}
