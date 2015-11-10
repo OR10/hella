@@ -95,7 +95,7 @@ class LabeledThingInFrameGateway {
    */
   updateLabeledThingInFrame(newLabeledThingInFrame) {
     const url = this.apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrame.id}`
+      `/labeledThingInFrame/${newLabeledThingInFrame.id}`
     );
 
     const labeledThingInFrame = this._uniqueClasses(newLabeledThingInFrame);
