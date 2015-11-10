@@ -92,6 +92,18 @@ class Video
     }
 
     /**
+     * @param null $imageType
+     * @return mixed
+     */
+    public function getImageTypeConvertedStatus($imageType = null)
+    {
+        if ($imageType !== null) {
+            return $this->imageTypeConvertedStatus[$imageType];
+        }
+        return $this->imageTypeConvertedStatus;
+    }
+
+    /**
      * @return string
      */
     public function getSourceVideoPath()
