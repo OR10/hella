@@ -1,24 +1,26 @@
 /**
+ * A Thing, which has Labels
+ *
  * @interface LabeledThing
  */
 
 /**
  * Id of the task this LabeledThing belongs to.
  *
- * @interface LabeledThing
- * @property {String} taskId
+ * @name LabeledThing#taskId
+ * @type {string}
  */
 
 /**
  * The range of frames in which this LabeledThing has been marked.
  *
- * @interface LabeledThing
- * @property {FrameRange} frameRange
+ * @name LabeledThing#frameRange
+ * @type {FrameRange}
  */
 
 /**
- * Array of annotated labeling properties for this LabeledThing.
+ * Array of labels assigned to this Thing.
  *
- * @interface LabeledThing
- * @property {Object[]} classes
+ * @name LabeledThing#classes
+ * @type {Array.<string>}
  */

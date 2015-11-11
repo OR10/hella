@@ -2,7 +2,17 @@ import Module from '../Module';
 import ApiService from './Services/ApiService';
 import AuthInterceptor from './Services/AuthInterceptor';
 
-export default class Common extends Module {
+/**
+ * Common Module
+ *
+ * @extends Module
+ */
+class Common extends Module {
+  /**
+   * Register this {@link Module} with the angular service container system
+   *
+   * @param {angular} angular
+   */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Common', []);
     this.module.service('ApiService', ApiService);
@@ -23,3 +33,5 @@ export default class Common extends Module {
     }]);
   }
 }
+
+export default Common;

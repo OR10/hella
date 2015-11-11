@@ -1,16 +1,25 @@
 /**
- * @class LabeledThingInFrameGateway
- *
- * Gateway for saving and retrieving Labeling Data
+ * Gateway for saving and retrieving {@link LabeledThingInFrame}s
  */
-export default class LabeledThingInFrameGateway {
+class LabeledThingInFrameGateway {
+  /**
+   * @param {ApiService} apiService
+   * @param {angular.$http} $http
+   */
   constructor(apiService, $http) {
+    /**
+     * @type {angular.$http}
+     */
     this.$http = $http;
+
+    /**
+     * @type {ApiService}
+     */
     this.apiService = apiService;
   }
 
   /**
-   * Returns the labeledThingInFrame object for the given task and frame number
+   * Returns the {@link LabeledThingInFrame} object for the given {@link Task} and `frameNumber`
    *
    * @param {Task} task
    * @param {Integer} frameNumber
@@ -32,7 +41,7 @@ export default class LabeledThingInFrameGateway {
   }
 
   /**
-   * Returns the labeled thing in frame object with the given id
+   * Retrieves the {@link LabeledThingInFrame} with the given `id`
    *
    * @param {String} labeledThingInFrameId
    *
@@ -53,43 +62,43 @@ export default class LabeledThingInFrameGateway {
   }
 
   /**
-   * Creates a labeled thing in frame object in the database
+   * Store a **new** {@link LabeledThingInFrame} to the backend
    *
    * @param {Task} task
    * @param {Integer} frameNumber
-   * @param {LabeledThingInFrame} data
+   * @param {LabeledThingInFrame} labeledThingInFrame
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  createLabeledThingInFrame(task, frameNumber, data) {
+  createLabeledThingInFrame(task, frameNumber, labeledThingInFrame) {
     const url = this.apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    const labeledThingInFrame = this._uniqueClasses(data);
+    const unifiedLabeledThingInFrame = this._uniqueClasses(labeledThingInFrame);
 
-    return this.$http.post(url, labeledThingInFrame)
+    return this.$http.post(url, unifiedLabeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
         }
 
-        throw new Error('Failed creating labeled thing in frame');
+        throw new Error('Failed creating LabeledThingInFrame');
       });
   }
 
   /**
-   * Updates the labeled thing in frame with the given id in the database
+   * Update the {@link LabeledThingInFrame} with the given `id`.
    *
-   * @param {LabeledThingInFrame} data
+   * @param {LabeledThingInFrame} newLabeledThingInFrame
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  updateLabeledThingInFrame(data) {
+  updateLabeledThingInFrame(newLabeledThingInFrame) {
     const url = this.apiService.getApiUrl(
-      `/labeledThingInFrame/${data.id}`
+      `/labeledThingInFrame/${newLabeledThingInFrame.id}`
     );
 
-    const labeledThingInFrame = this._uniqueClasses(data);
+    const labeledThingInFrame = this._uniqueClasses(newLabeledThingInFrame);
 
     return this.$http.put(url, labeledThingInFrame)
       .then(response => {
@@ -102,11 +111,11 @@ export default class LabeledThingInFrameGateway {
   }
 
   /**
-   * Deletes the labeled thing in frame object in the database
+   * Deletes the {@link LabeledThingInFrame} in the database
    *
    * @param {String} labeledThingInFrameId
    *
-   * @returns {Promise<Boolean|Error>}
+   * @returns {Promise<true|Error>}
    */
   deleteLabeledThingInFrame(labeledThingInFrameId) {
     const url = this.apiService.getApiUrl(
@@ -123,10 +132,13 @@ export default class LabeledThingInFrameGateway {
   }
 
   /**
-   * Adds classes to a labeled thing in frame object
+   * Adds classes to a {@link LabeledThingInFrame}
+   *
+   * This method is a shortcut to updating the {@link LabeledThingInFrame#classes} list and calling
+   * {@link LabeledThingInFrameGateway#updateLabeledThingInFrame} on the modified object.
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {String[]} classes
+   * @param {Array<string>} classes
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
@@ -141,10 +153,13 @@ export default class LabeledThingInFrameGateway {
   }
 
   /**
-   * Sets the classes array on a labeled thing in frame
+   * Sets the classes array on a {@link LabeledThingInFrame}
+   *
+   * This method is a shortcut to updating the {@link LabeledThingInFrame#classes} list and calling
+   * {@link LabeledThingInFrameGateway#updateLabeledThingInFrame} on the modified object.
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {String[]} classes
+   * @param {Array<string>} classes
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
@@ -159,7 +174,7 @@ export default class LabeledThingInFrameGateway {
   }
 
   /**
-   * Make the classes array on a labeled thing in frame unique
+   * Make the classes array on a {@link LabeledThingInFrame} unique
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @returns {LabeledThingInFrame}
@@ -173,3 +188,5 @@ export default class LabeledThingInFrameGateway {
 }
 
 LabeledThingInFrameGateway.$inject = ['ApiService', '$http'];
+
+export default LabeledThingInFrameGateway;

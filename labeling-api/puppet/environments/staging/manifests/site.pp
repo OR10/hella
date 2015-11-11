@@ -10,6 +10,8 @@ class { 'couchdb': }
 
 class { 'rabbitmq': }
 
+include ::supervisord
+
 class { 'annostation_base': }
 
 class { 'labeling_api':

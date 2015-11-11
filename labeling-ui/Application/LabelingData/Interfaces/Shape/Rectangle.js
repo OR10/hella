@@ -1,5 +1,5 @@
 /**
- * The interface for rectangle shapes
+ * Interface for a Rectangle {@link Shape}
  *
  * @interface Rectangle
  * @extends Shape
@@ -8,13 +8,13 @@
 /**
  * The top left position of the rectangle
  *
- * @interface Rectangle
- * @property topLeft
+ * @name Rectangle#topLeft
+ * @type {Point}
  */
 
 /**
  * The bottom right position of the rectangle
  *
- * @interface Rectangle
- * @property bottomRight
+ * @name Rectangle#bottomRight
+ * @type {Point}
  */

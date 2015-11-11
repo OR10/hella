@@ -10,6 +10,7 @@ import run from 'run-sequence';
 import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
 import ip from 'ip';
 import chokidar from 'chokidar';
+import {exec} from 'child_process';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -18,6 +19,18 @@ function chokidarWatch(glob, fn) {
   const watcher = chokidar.watch(glob);
   watcher.on('ready', () => {
     watcher.on('all', (...args) => fn(...args));
+  });
+}
+
+function execLive(command, next) {
+  const child = exec(command, {maxBuffer: Number.MAX_SAFE_INTEGER}, next);
+
+  child.stdout.on('data', (data) => {
+    process.stdout.write(data);
+  });
+
+  child.stderr.on('data', (data) => {
+    process.stderr.write(data);
   });
 }
 
@@ -41,6 +54,9 @@ paths.dir = {
   },
   'distribution': 'Distribution',
   'public': 'Public',
+  'documentation': {
+    'javascript': 'Documentation/JavaScript',
+  },
 };
 paths.files = {
   'js': `${paths.dir.application}/**/*.js`,
@@ -67,6 +83,7 @@ paths.files = {
 gulp.task('clean', () => {
   return del([
     `${paths.dir.distribution}/**/*`,
+    `${paths.dir.documentation.javascript}/**/*`,
   ]);
 });
 
@@ -272,6 +289,22 @@ gulp.task('build-fonts', (next) => {
   });
 });
 
+gulp.task('deploy', () => {
+  const deploymentIp = process.env.LABELING_UI_DEPLOY_IP;
+  if(deploymentIp === undefined || deploymentIp === '') {
+    throw "Please set the environment variable LABELING_UI_DEPLOY_IP to the ip address that you want to deploy to.";
+  }
+
+  return gulp.src('Distribution/**')
+    .pipe($$.rsync({
+      recurse: true,
+      exclude: ['index-protractor.html'],
+      root: 'Distribution/',
+      hostname: deploymentIp,
+      destination: '/var/www/labeling-ui'
+    }));
+});
+
 gulp.task('optimize-css', () => {
   return gulp.src(paths.files.css)
     .pipe($$.sourcemaps.init({loadMaps: true}))
@@ -295,9 +328,21 @@ gulp.task('build-templates', () => {
     .pipe(gulp.dest(paths.dir.distribution + '/Templates'));
 });
 
+gulp.task('documentation-javascript', (next) => {
+  execLive('node_modules/.bin/jsdoc --configure jsdoc.conf.json', next);
+});
+
+gulp.task('documentation', (next) => {
+  run(
+    'clean',
+    ['documentation-javascript'],
+    next
+  );
+});
+
 gulp.task('default', next => run(
   'clean',
-  'build',
+  ['build', 'documentation'],
   'optimize',
   next
 ));

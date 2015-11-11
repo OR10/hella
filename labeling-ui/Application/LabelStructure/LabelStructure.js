@@ -14,10 +14,14 @@ import SelectedLabelObjectLabelStructureVisitor from './Services/SelectedLabelOb
 import labelWizardCarouselTemplate from './Directives/LabelWizard/wizard-carousel.html!';
 
 /**
- * @class LabelStructure
+ * Module containing everything related to the Structure and Display of Labels
+ *
  * @extends Module
  */
-export default class LabelStructure extends Module {
+class LabelStructure extends Module {
+  /**
+   * @inheritDoc
+   */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.LabelStructure', [
       'AnnoStation.VendorTemplates',
@@ -40,3 +44,5 @@ export default class LabelStructure extends Module {
     }]);
   }
 }
+
+export default LabelStructure;

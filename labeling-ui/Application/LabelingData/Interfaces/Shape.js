@@ -1,12 +1,12 @@
 /**
- * The base class for all shapes
+ * Base interface for all shapes like forms
  *
  * @interface Shape
  */
 
 /**
- * The type of this shape
+ * The specific type of the implemented shape
  *
- * @interface Shape
- * @property type
+ * @name Shape#type
+ * @type {string}
  */
