@@ -199,6 +199,18 @@ class BufferedHttpProvider {
       };
     });
 
+    /**
+     * Flush all buffers returning a Promise fulfilled once all current buffers are flushed
+     * @returns {Promise}
+     */
+    bufferedHttp.flushBuffers = () => {
+      const flushPromises = [];
+      _buffers.forEach((buffer) => {
+        flushPromises.push(buffer.promise);
+      });
+      return Promise.all(flushPromises);
+    };
+
     return bufferedHttp;
   }
 }
