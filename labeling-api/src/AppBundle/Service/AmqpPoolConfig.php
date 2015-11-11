@@ -42,7 +42,7 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
         $this->useAlternateExchange      = $useAlternateExchange;
 
         $this->instructionInstances = array(
-            'AppBundle\Worker\Jobs\Video' => 'annostation.labeling_api.worker.job_instruction.video',
+            'AppBundle\Worker\Jobs\VideoFrameSplitter' => 'annostation.labeling_api.worker.job_instruction.video',
         );
     }
 }

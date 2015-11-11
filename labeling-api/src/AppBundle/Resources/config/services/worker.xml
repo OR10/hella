@@ -4,7 +4,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="annostation.labeling_api.worker.job_instruction.video" class="AppBundle\Worker\JobInstruction\Video">
+        <service id="annostation.labeling_api.worker.job_instruction.video" class="AppBundle\Worker\JobInstruction\VideoFrameSplitter">
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
             <argument type="service" id="oneup_flysystem.cache_filesystem" />

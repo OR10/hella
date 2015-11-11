@@ -85,8 +85,8 @@ class ImporterService
         //       when this happens, this service has to be refactored anyway.
         foreach ($imageTypeNames as $imageTypeName) {
             $video->setImageTypeConvertedStatus($imageTypeName);
-            $this->videoFacade->update($video);
-            $job = new Jobs\Video(
+            $this->videoFacade->update();
+            $job = new Jobs\VideoFrameSplitter(
                 $video->getId(),
                 $video->getSourceVideoPath(),
                 ImageType\Base::create($imageTypeName)

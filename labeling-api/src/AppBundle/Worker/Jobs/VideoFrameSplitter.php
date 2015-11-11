@@ -6,7 +6,7 @@ use AppBundle\Model\Video\ImageType;
 use AppBundle\Service\Video as VideoService;
 use AppBundle\Database\Facade;
 
-class Video extends WorkerPool\Job
+class VideoFrameSplitter extends WorkerPool\Job
 {
     /**
      * @var int

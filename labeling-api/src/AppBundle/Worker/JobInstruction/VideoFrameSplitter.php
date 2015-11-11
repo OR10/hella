@@ -12,7 +12,7 @@ use League\Flysystem;
 use Doctrine\ODM\CouchDB;
 use AppBundle\Model\Video\ImageType;
 
-class Video extends WorkerPool\JobInstruction
+class VideoFrameSplitter extends WorkerPool\JobInstruction
 {
     /**
      * @var VideoService\VideoFrameSplitter
@@ -81,6 +81,7 @@ class Video extends WorkerPool\JobInstruction
      * @param ImageType\Base $imageType
      * @param int            $retryCount
      * @param int            $maxRetries
+     * @throws CouchDB\UpdateConflictException
      */
     private function updateDocument(Model\Video $video, ImageType\Base $imageType, $retryCount = 0, $maxRetries = 1)
     {
