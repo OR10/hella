@@ -66,6 +66,7 @@ class Video extends WorkerPool\JobInstruction
         );
 
         $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
+        $this->videoFacade->refresh($video);
         $video->setImageTypeConvertedStatus($job->imageType->getName(), true);
         $this->videoFacade->update();
 

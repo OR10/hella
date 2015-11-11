@@ -55,8 +55,15 @@ class Video
         //TODO: implement
     }
 
+    public function refresh(Model\Video $video)
+    {
+        $this->documentManager->refresh($video);
+    }
+
     public function update()
     {
+        $configuration = $this->documentManager->getConfiguration();
+        $configuration->setAllOrNothingFlush(false);
         $this->documentManager->flush();
     }
 
