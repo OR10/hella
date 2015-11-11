@@ -13,7 +13,6 @@
 export default class ViewerController {
   constructor() {
     this.filters = [];
-    debugger;
   }
 
   handleFilterChanged(filters) {

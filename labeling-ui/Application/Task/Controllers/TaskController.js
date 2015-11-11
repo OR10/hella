@@ -13,13 +13,11 @@ class TaskController {
    * @param {Task} task
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
-   * @param {TaskFrameLocationGateway} taskFrameLocationGateway
-   * @param {FrameGateway} frameGateway
    * @param {LinearLabelStructureVisitor} linearVisitor
    * @param {SelectedLabelObjectLabelStructureVisitor} selectedLabelObjectVisitor
    * @param {SelectedLabelListLabelStructureVisitor} selectedLabelListVisitor
    */
-  constructor($scope, task, labeledThingInFrameGateway, labeledFrameGateway, taskFrameLocationGateway, frameGateway, linearVisitor, selectedLabelObjectVisitor, selectedLabelListVisitor) {
+  constructor($scope, task, labeledThingInFrameGateway, labeledFrameGateway, linearVisitor, selectedLabelObjectVisitor, selectedLabelListVisitor) {
     /**
      * @type {angular.Scope}
      */
@@ -56,17 +54,6 @@ class TaskController {
      */
     this._labeledFrameGateway = labeledFrameGateway;
 
-    ///**
-    // * @type {TaskFrameLocationGateway}
-    // */
-    //this._taskFrameLocationGateway = taskFrameLocationGateway;
-    //
-    ///**
-    // * @type {FrameGateway}
-    // * @private
-    // */
-    //this._frameGateway = frameGateway;
-
     /**
      * @type {LinearLabelStructureVisitor}
      * @private
@@ -84,29 +71,6 @@ class TaskController {
      * @private
      */
     this._selectedLabelListVisitor = selectedLabelListVisitor;
-
-    ///**
-    // * Default placeholder image, which is used whenever a current image is not available
-    // * @type {HTMLImageElement}
-    // * @private
-    // */
-    //this._placeholderImage = new Image();
-    //this._placeholderImage.src = '/labeling/Images/placeholder.png';
-
-    ///**
-    // * The framenumber currently active and displayed
-    // *
-    // * @type {number}
-    // * @private
-    // */
-    //this._frameNumber = 1;
-
-    ///**
-    // * Image representing the currently active frame
-    // *
-    // * @type {HTMLImageElement}
-    // */
-    //this.frameImage = this._placeholderImage;
 
     /**
      * LabeledFrame associated with the currently active frame
@@ -211,17 +175,6 @@ class TaskController {
         this._objectLabelWorkflow.transition('complete-labels');
       }
     });
-
-    ///**
-    // * List of frame location information for this task.
-    // *
-    // * Currently all framelocations are loaded. This may change in the future for caching reasons.
-    // *
-    // * @type {Promise<Array<FrameLocation>>}
-    // */
-    //this._frameLocations = this._loadFrameLocations();
-
-    //this._switchActiveFrame(this.framePosition.position);
   }
 
   _initializeWorkflows() {
@@ -296,15 +249,6 @@ class TaskController {
     this.hideObjectLabels = true;
   }
 
-  ///**
-  // * Switch the active image over to the placeholder image
-  // *
-  // * @private
-  // */
-  //_switchToPlaceholderImage() {
-  //  this.frameImage = this._placeholderImage;
-  //}
-
   handleNewThing(shapes) {
     this._activeLabeledThingInFrame = {
       frameNumber: this.framePosition.position,
@@ -335,20 +279,6 @@ class TaskController {
     });
   }
 
-  //handleNextFrameRequested() {
-  //  if (this._frameNumber >= this.task.frameRange.endFrameNumber) {
-  //    return;
-  //  }
-  //  this._switchActiveFrame(this._frameNumber + 1);
-  //}
-  //
-  //handlePreviousFrameRequested() {
-  //  if (this._frameNumber <= this.task.frameRange.startFrameNumber) {
-  //    return;
-  //  }
-  //  this._switchActiveFrame(this._frameNumber - 1);
-  //}
-
   handleNewLabeledThingRequested() {
     this._initializeWorkflows(); // @TODO: properly integrate change with handling
     this._objectLabelWorkflow.transition('new-labeled-thing');
@@ -368,8 +298,6 @@ TaskController.$inject = [
   'task',
   'labeledThingInFrameGateway',
   'labeledFrameGateway',
-  'taskFrameLocationGateway',
-  'frameGateway',
   'linearLabelStructureVisitor',
   'selectedLabelObjectLabelStructureVisitor',
   'selectedLabelListLabelStructureVisitor',
