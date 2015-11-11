@@ -139,8 +139,6 @@ class LabeledFrame extends Controller\Base
 
         if ($task === null || !is_array($classes) || $bodyFrameNumber !== (int) $frameNumber) {
             throw new Exception\BadRequestHttpException();
-
-            return $response;
         }
 
         $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
