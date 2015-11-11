@@ -6,6 +6,7 @@
     <services>
         <service id="annostation.labeling_api.command.init" class="AppBundle\Command\Init">
             <argument type="service" id="doctrine_couchdb.client.default_connection" />
+            <argument type="service" id="annostation.labeling_api.service.importer_service"/>
             <argument>%database_name%</argument>
             <argument>%user_password%</argument>
             <argument>%cache_dir%</argument>

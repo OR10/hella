@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Service;
 use Doctrine\CouchDB;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,6 +16,11 @@ class Init extends Base
     private $couchClient;
 
     /**
+     * @var ImporterService
+     */
+    private $importerService;
+
+    /**
      * @var string
      */
     private $couchDatabase;
@@ -26,6 +32,7 @@ class Init extends Base
 
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
+        Service\ImporterService $importerService,
         $couchDatabase,
         $userPassword,
         $cacheDir,
@@ -33,11 +40,12 @@ class Init extends Base
     ) {
         parent::__construct();
 
-        $this->couchClient   = $couchClient;
-        $this->couchDatabase = (string) $couchDatabase;
-        $this->userPassword  = (string) $userPassword;
-        $this->cacheDir      = (string) $cacheDir;
-        $this->frameCdnDir   = (string) $frameCdnDir;
+        $this->couchClient     = $couchClient;
+        $this->importerService = $importerService;
+        $this->couchDatabase   = (string) $couchDatabase;
+        $this->userPassword    = (string) $userPassword;
+        $this->cacheDir        = (string) $cacheDir;
+        $this->frameCdnDir     = (string) $frameCdnDir;
     }
 
     protected function configure()
@@ -49,8 +57,7 @@ class Init extends Base
                 null,
                 InputOption::VALUE_NONE,
                 'Drop entire database. Otherwise just the schema is dropped.'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -70,6 +77,10 @@ class Init extends Base
         if (!$this->clearDirectories($output)) {
             return 1;
         }
+
+        if (!$this->downloadSampleVideo($output)) {
+            return 1;
+        }
     }
 
     private function initializeDatabase(OutputInterface $output, $dropDatabase)
@@ -78,10 +89,15 @@ class Init extends Base
 
         if ($dropDatabase) {
             $this->writeVerboseInfo($output, 'dropping database');
-            if (!$this->runCommand($output, 'doctrine:database:drop', [
-                '--force' => true,
-                '--if-exists' => true,
-            ])) {
+            if (!$this->runCommand(
+                $output,
+                'doctrine:database:drop',
+                [
+                    '--force'     => true,
+                    '--if-exists' => true,
+                ]
+            )
+            ) {
                 return false;
             }
 
@@ -91,9 +107,14 @@ class Init extends Base
             }
         } else {
             $this->writeVerboseInfo($output, 'dropping database schema');
-            if (!$this->runCommand($output, 'doctrine:schema:drop', [
-                '--force' => true,
-            ])) {
+            if (!$this->runCommand(
+                $output,
+                'doctrine:schema:drop',
+                [
+                    '--force' => true,
+                ]
+            )
+            ) {
                 return false;
             }
         }
@@ -117,6 +138,7 @@ class Init extends Base
             $this->couchClient->createDatabase($this->couchDatabase);
         } catch (\Exception $e) {
             $this->writeError($output, "Error deleting couch database: {$e->getMessage()}");
+
             return false;
         }
 
@@ -133,17 +155,22 @@ class Init extends Base
         $this->writeSection($output, 'Creating users');
 
         if ($this->userPassword !== null) {
-            if (!$this->runCommand($output, 'fos:user:create', [
-                'username'         => 'user',
-                'email'            => 'user@example.com',
-                'password'         => $this->userPassword,
-            ])) {
+            if (!$this->runCommand(
+                $output,
+                'fos:user:create',
+                [
+                    'username' => 'user',
+                    'email'    => 'user@example.com',
+                    'password' => $this->userPassword,
+                ]
+            )
+            ) {
                 return false;
             }
 
             $this->writeInfo(
                 $output,
-                "Created user <comment>user</comment> with password: <comment>{$this->userPassword}</>"
+                "Created user <comment>user</comment> with password: <comment>{$this->userPassword}</comment>"
             );
         } else {
             $this->writeInfo($output, "<comment>User 'user' is not created due to an empty password!</comment>");
@@ -187,6 +214,32 @@ class Init extends Base
             if (!$todo($info->getRealPath())) {
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    private function downloadSampleVideo($output)
+    {
+        $this->writeSection($output, 'Video Import');
+        try {
+            $this->writeInfo(
+                $output,
+                "Importing default video <comment>http://192.168.123.7/anno_short.avi</comment>"
+            );
+            $path = tempnam($this->cacheDir, 'anno_short');
+            file_put_contents(
+                $path,
+                file_get_contents("http://192.168.123.7/anno_short.avi")
+            );
+            $this->importerService->import($path, fopen($path, 'r'));
+        } catch (\Exception $e) {
+            $this->writeError(
+                $output,
+                $e->getMessage()
+            );
+
+            return false;
         }
 
         return true;
