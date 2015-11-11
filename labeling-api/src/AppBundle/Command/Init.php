@@ -57,6 +57,12 @@ class Init extends Base
                 null,
                 InputOption::VALUE_NONE,
                 'Drop entire database. Otherwise just the schema is dropped.'
+            )
+            ->addOption(
+                'skip-import',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip import of initial video file.'
             );
     }
 
@@ -78,7 +84,7 @@ class Init extends Base
             return 1;
         }
 
-        if (!$this->downloadSampleVideo($output)) {
+        if (!$this->downloadSampleVideo($output, $input->getOption('skip-import'))) {
             return 1;
         }
     }
@@ -219,9 +225,15 @@ class Init extends Base
         return true;
     }
 
-    private function downloadSampleVideo($output)
+    private function downloadSampleVideo(OutputInterface $output, $skipImport)
     {
         $this->writeSection($output, 'Video Import');
+
+        if ($skipImport) {
+            $this->writeInfo($output, 'skipping video import');
+            return true;
+        }
+
         try {
             $this->writeInfo(
                 $output,
