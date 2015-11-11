@@ -8,9 +8,9 @@ class TaskListController {
   constructor(taskGateway) {
     /**
      * List of tasks rendered by the directive
-     * @type {Array.<Task>}
+     * @type {null|Array.<Task>}
      */
-    this.tasks = [];
+    this.tasks = null;
 
 
     /**

@@ -95,12 +95,12 @@ class LabeledThingInFrameGateway {
    */
   updateLabeledThingInFrame(newLabeledThingInFrame) {
     const url = this._apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrame.id}`
+      `/labeledThingInFrame/${newLabeledThingInFrame.id}`
     );
 
     const labeledThingInFrame = this._uniqueClasses(newLabeledThingInFrame);
 
-    return this.$http.put(url, labeledThingInFrame)
+    return this.$http.put(url, newLabeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
