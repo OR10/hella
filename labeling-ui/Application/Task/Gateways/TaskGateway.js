@@ -4,13 +4,13 @@
 class TaskGateway {
   /**
    * @param {ApiService} apiService injected
-   * @param {angular.$http} $http
+   * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, $http) {
+  constructor(apiService, bufferedHttp) {
     /**
-     * @type {angular.$http}
+     * @type {BufferedHttp}
      */
-    this._$http = $http;
+    this._bufferedHttp = bufferedHttp;
 
     /**
      * @type {ApiService}
@@ -25,7 +25,7 @@ class TaskGateway {
    */
   getTasks() {
     const url = this._apiService.getApiUrl('/task');
-    return this._$http.get(url)
+    return this._bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -44,7 +44,7 @@ class TaskGateway {
    */
   getTask(id) {
     const url = this._apiService.getApiUrl(`/task/${id}`);
-    return this._$http.get(url)
+    return this._bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -55,6 +55,6 @@ class TaskGateway {
   }
 }
 
-TaskGateway.$inject = ['ApiService', '$http'];
+TaskGateway.$inject = ['ApiService', 'bufferedHttp'];
 
 export default TaskGateway;
