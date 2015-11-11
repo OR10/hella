@@ -72,6 +72,14 @@ class LabeledThingInFrame
     }
 
     /**
+     * @return array
+     */
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+
+    /**
      * @param mixed $shapes
      */
     public function setShapes($shapes)

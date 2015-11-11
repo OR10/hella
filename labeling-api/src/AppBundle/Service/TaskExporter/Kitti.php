@@ -154,13 +154,37 @@ class Kitti implements Service\TaskExporter
             $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
             foreach ($labeledThingsInFrame as $labeledThingInFrame) {
                 $result[$labeledThingInFrame->getFrameNumber()][] = [
-                    'type' => 'Pedestrian',
+                    'type'        => $this->getObjectType($labeledThingInFrame),
                     'boundingBox' => $this->getOverallBoundingBox($labeledThingInFrame->getShapes()),
                 ];
             }
         }
 
         return $this->sortResult($result);
+    }
+
+    /**
+     * Get the object type for the given labeledThingInFrame.
+     *
+     * @return string
+     *
+     * @throws Exception\Kitti
+     */
+    private function getObjectType(Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $objectTypeMap = [
+            'pedestrian' => 'Pedestrian',
+            'cyclist'    => 'Cyclist',
+            'car'        => 'Car',
+        ];
+
+        foreach ($labeledThingInFrame->getClasses() as $class) {
+            if (isset($objectTypeMap[$class])) {
+                return $objectTypeMap[$class];
+            }
+        }
+
+        throw new Exception\Kitti('Unknown labeled thing in frame');
     }
 
     /**
