@@ -373,6 +373,16 @@ export default class TaskController {
   handleNewCircleRequested() {
     this.activeTool = 'circle';
   }
+
+  handleNewPolygonRequested() {
+    console.log('polygon');
+    this.activeTool = 'polygon';
+  }
+
+  handleNewLineRequested() {
+    console.log('line');
+    this.activeTool = 'line';
+  }
 }
 
 TaskController.$inject = [

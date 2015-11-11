@@ -44,6 +44,14 @@ export default class ViewerControlsController {
   handleNewCircleClicked() {
     this.onNewCircleRequested();
   }
+
+  handleNewLineClicked() {
+    this.onNewLineRequested();
+  }
+
+  handleNewPolygonClicked() {
+    this.onNewPolygonRequested();
+  }
 }
 
 ViewerControlsController.$inject = ['$scope'];
