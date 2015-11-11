@@ -48,7 +48,6 @@ export default class PolygonDrawingTool extends Tool {
     }
 
     if (event.event.altKey && this._path) {
-      console.log('finished polygon');
       this.emit('polygon:complete', this._path);
       return;
     }

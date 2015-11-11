@@ -154,8 +154,6 @@ export default class ThingLayer extends PaperLayer {
         },
       ];
 
-      console.log(polygon);
-
       this.emit('thing:new', shapes);
     });
 
@@ -173,8 +171,6 @@ export default class ThingLayer extends PaperLayer {
           }),
         },
       ];
-
-      console.log(shapes);
 
       this.emit('thing:new', shapes);
     });

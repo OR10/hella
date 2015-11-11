@@ -264,7 +264,7 @@ export default class TaskController {
   }
 
   _switchActiveFrame(frameNumber) {
-    //this._switchToPlaceholderImage();
+    // this._switchToPlaceholderImage();
     this._clearLabelsAndThingsInFrame();
     this._initializeWorkflows();
 
@@ -375,17 +375,14 @@ export default class TaskController {
   }
 
   handleNewPolygonRequested() {
-    console.log('polygon');
     this.activeTool = 'polygon';
   }
 
   handleNewLineRequested() {
-    console.log('line');
     this.activeTool = 'line';
   }
 
   handleMoveToolRequested() {
-    console.log('move');
     this.activeTool = 'move';
   }
 }
