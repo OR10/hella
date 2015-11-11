@@ -3,8 +3,6 @@ import EventEmitter from 'event-emitter';
 
 /**
  * Base class for Tools using the PaperJs tool concept
- *
- * @class Tool
  */
 export default class Tool extends EventEmitter {
   /**

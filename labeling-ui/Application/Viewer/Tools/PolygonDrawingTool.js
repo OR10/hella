@@ -4,8 +4,6 @@ import PolygonRenderer from '../Renderer/PolygonRenderer';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
- *
- * @class PolygonDrawingTool
  */
 export default class PolygonDrawingTool extends Tool {
   /**
