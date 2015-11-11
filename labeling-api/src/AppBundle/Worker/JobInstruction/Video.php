@@ -91,6 +91,8 @@ class Video extends WorkerPool\JobInstruction
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
             if ($retryCount <= $maxRetries) {
                 $this->updateDocument($video, $imageType, $retryCount + 1);
+            }else{
+                throw new CouchDB\UpdateConflictException(array($video));
             }
         }
     }
