@@ -46,6 +46,16 @@ class WorkerStarter extends Base
         $connection     = $this->AMQPPoolConfig->openConnection();
         $channel        = $connection->channel();
 
+        if ($primaryQueue === null) {
+            $output->writeln("<error>Unknown queue: {$primary}</error>");
+            return 1;
+        }
+
+        if ($secondaryQueue === null) {
+            $output->writeln("<error>Unknown queue: {$secondary}</error>");
+            return 1;
+        }
+
         $channel->basic_qos(
             0,
             1,
@@ -84,7 +94,7 @@ class WorkerStarter extends Base
                 \cscntLogPayload::SEVERITY_ERROR
             );
 
-            exit(1);
+            return 1;
         }
     }
 
@@ -111,7 +121,7 @@ class WorkerStarter extends Base
             ):
                 return 'worker.queue.low_prio';
             default:
-                exit(0);
+                return null;
         }
     }
 }
