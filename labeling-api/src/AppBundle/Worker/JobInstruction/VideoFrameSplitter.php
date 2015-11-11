@@ -90,11 +90,10 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
             $video->setImageTypeConvertedStatus($imageType->getName(), true);
             $this->videoFacade->update();
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
-            if ($retryCount <= $maxRetries) {
-                $this->updateDocument($video, $imageType, $retryCount + 1);
-            }else{
-                throw new CouchDB\UpdateConflictException(array($video));
+            if ($retryCount > $maxRetries) {
+                throw $updateConflictException;
             }
+            $this->updateDocument($video, $imageType, $retryCount + 1);
         }
     }
 }

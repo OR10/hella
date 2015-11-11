@@ -18,7 +18,6 @@ class ServicesInstances extends WorkerPool\JobInstructionFactory
      */
     private $container;
 
-
     /**
      * ServicesInstances constructor.
      * @param array                                  $jobToInstructionMapping
