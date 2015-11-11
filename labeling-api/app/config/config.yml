@@ -89,6 +89,7 @@ doctrine_couch_db:
             default:
                 connection: ~
                 auto_mapping: true
+                all_or_nothing_flush: false
                 mappings:
                     AppBundle:
                         type: annotation

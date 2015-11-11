@@ -63,7 +63,6 @@ class Video
     public function update()
     {
         $configuration = $this->documentManager->getConfiguration();
-        $configuration->setAllOrNothingFlush(false);
         $this->documentManager->flush();
     }
 
