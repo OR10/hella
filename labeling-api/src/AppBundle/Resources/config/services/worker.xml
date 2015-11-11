@@ -10,5 +10,10 @@
             <argument type="service" id="oneup_flysystem.cache_filesystem" />
             <argument>%cache_dir%</argument>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.kitti_exporter" class="AppBundle\Worker\JobInstruction\KittiExporter">
+            <argument type="service" id="annostation.labeling_api.service.task_exporter.kitti" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+        </service>
     </services>
 </container>

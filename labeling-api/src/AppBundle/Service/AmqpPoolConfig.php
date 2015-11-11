@@ -43,6 +43,7 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
 
         $this->instructionInstances = array(
             'AppBundle\Worker\Jobs\VideoFrameSplitter' => 'annostation.labeling_api.worker.job_instruction.video',
+            'AppBundle\Worker\Jobs\KittiExporter' => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
         );
     }
 }

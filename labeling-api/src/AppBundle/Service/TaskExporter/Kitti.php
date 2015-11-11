@@ -28,17 +28,26 @@ class Kitti implements Service\TaskExporter
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\TaskExport
+     */
+    private $taskExportFacade;
+
+    /**
+     * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\TaskExport          $taskExportFacade
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\TaskExport $taskExportFacade
     ) {
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->taskExportFacade          = $taskExportFacade;
     }
 
     /**
@@ -103,11 +112,14 @@ class Kitti implements Service\TaskExporter
                 throw new Exception\Kitti(sprintf('Unable to read file at "%s"', $zipFilename));
             }
 
+            $taskExport = new Model\TaskExport($task, 'kitti.zip', 'application/zip', $result);
+            $this->taskExportFacade->save($taskExport);
+
             if (!unlink($zipFilename)) {
                 throw new Exception\Kitti(sprintf('Unable to remove temorary file at "%s"', $zipFilename));
             }
 
-            return $result;
+            return $taskExport->getRawData();
         } catch (\Exception $e) {
             @unlink($zipFilename);
             throw $e;
