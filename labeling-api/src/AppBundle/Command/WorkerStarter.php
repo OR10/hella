@@ -41,12 +41,8 @@ class WorkerStarter extends Base
         $primary        = $input->getArgument('primary');
         $secondary      = empty($input->getArgument('secondary')) ? $primary : $input->getArgument('secondary');
         $cycles         = $input->getArgument('cycles');
-        $primaryQueue   = $this->getQueue(
-            $primary
-        );
-        $secondaryQueue = $this->getQueue(
-            $secondary
-        );
+        $primaryQueue   = $this->getQueue($primary);
+        $secondaryQueue = $this->getQueue($secondary);
         $connection     = $this->AMQPPoolConfig->openConnection();
         $channel        = $connection->channel();
 
