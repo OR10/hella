@@ -248,13 +248,50 @@ class Kitti implements Service\TaskExporter
             throw new Exception\Kitti('Invalid shape');
         }
 
-        if ($shape['type'] === 'rectangle') {
-            return [
-                'left'   => $shape['topLeft']['x'],
-                'top'    => $shape['topLeft']['y'],
-                'right'  => $shape['bottomRight']['x'],
-                'bottom' => $shape['bottomRight']['y'],
-            ];
+        $boundingBoxCalculators = [
+            'rectangle' => function($shape) {
+                return [
+                    'left'   => $shape['topLeft']['x'],
+                    'top'    => $shape['topLeft']['y'],
+                    'right'  => $shape['bottomRight']['x'],
+                    'bottom' => $shape['bottomRight']['y'],
+                ];
+            },
+            // ellipse handles ellipse and circle
+            'ellipse' => function($shape) {
+                return [
+                    'left'   => $shape['point']['x'],
+                    'top'    => $shape['point']['y'],
+                    'right'  => $shape['point']['x'] + $shape['size']['width'],
+                    'bottom' => $shape['point']['y'] + $shape['size']['height'],
+                ];
+            },
+            // polygon handles polygon and line
+            'polygon' => function($shape) {
+                if (count($shape['points']) === 0) {
+                    throw new Exception\Kitti('Empty point list for polygons are not allowed');
+                }
+
+                $result = [
+                    'left'   => $shape['points'][0]['x'],
+                    'top'    => $shape['points'][0]['y'],
+                    'right'  => $shape['points'][0]['x'],
+                    'bottom' => $shape['points'][0]['y'],
+                ];
+
+                foreach ($shape['points'] as $point) {
+                    $result['left']   = min($result['left'], $point['x']);
+                    $result['top']    = min($result['top'], $point['y']);
+                    $result['right']  = max($result['right'], $point['x']);
+                    $result['bottom'] = max($result['bottom'], $point['y']);
+                }
+
+                return $result;
+            },
+        ];
+
+        if (isset($boundingBoxCalculators[$shape['type']])) {
+            return $boundingBoxCalculators[$shape['type']]($shape);
         }
 
         throw new Exception\Kitti("Unsupported shape type: {$shape['type']}");
