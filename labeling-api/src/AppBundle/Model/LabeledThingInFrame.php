@@ -64,9 +64,9 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param mixed $classes
+     * @param array $classes
      */
-    public function setClasses($classes)
+    public function setClasses(array $classes)
     {
         $this->classes = $classes;
     }
