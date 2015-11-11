@@ -27,8 +27,7 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
         $password = 'guest',
         $useDeadLetterExchange = true,
         $useAlternateExchange = true
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->numberOfHighNormalWorkers = $numberOfHighNormalWorkers;

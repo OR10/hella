@@ -50,8 +50,7 @@ class ImporterService
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
         AMQP\FacadeAMQP $facadeAMQP
-    )
-    {
+    ) {
         $this->videoFacade        = $videoFacade;
         $this->metaDataReader     = $metaDataReader;
         $this->frameCdnSplitter   = $frameCdnSplitter;

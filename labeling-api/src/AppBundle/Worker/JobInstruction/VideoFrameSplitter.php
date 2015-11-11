@@ -45,8 +45,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         Facade\Video $videoFacade,
         Flysystem\FileSystem $fileSystem,
         $cacheDir
-    )
-    {
+    ) {
         $this->videoFrameSplitter = $videoFrameSplitter;
         $this->videoFacade        = $videoFacade;
         $this->fileSystem         = $fileSystem;
@@ -66,8 +65,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
 
         file_put_contents(
             $tmpFile,
-            $this->fileSystem->read($video->getSourceVideoPath()
-            )
+            $this->fileSystem->read($video->getSourceVideoPath())
         );
 
         $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);

@@ -118,5 +118,4 @@ class WorkerStarter extends Base
                 exit(0);
         }
     }
-
 }

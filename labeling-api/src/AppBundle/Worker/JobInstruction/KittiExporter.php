@@ -31,8 +31,7 @@ class KittiExporter extends WorkerPool\JobInstruction
     public function __construct(
         Service\TaskExporter\Kitti $kittiExporter,
         Facade\LabelingTask $labelingTaskFacade
-    )
-    {
+    ) {
         $this->kittiExporter      = $kittiExporter;
         $this->labelingTaskFacade = $labelingTaskFacade;
     }
