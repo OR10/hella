@@ -104,24 +104,18 @@ class WorkerStarter extends Base
      */
     private function getQueue($marker)
     {
-        switch (true) {
-            case preg_match(
-                '(^high$)i',
-                $marker
-            ):
-                return 'worker.queue.high_prio';
-            case preg_match(
-                '(^normal$)i',
-                $marker
-            ):
-                return 'worker.queue.normal_prio';
-            case preg_match(
-                '(^low$)i',
-                $marker
-            ):
-                return 'worker.queue.low_prio';
-            default:
-                return null;
+        if (preg_match('(^high$)i', $marker)) {
+            return 'worker.queue.high_prio';
         }
+
+        if (preg_match('(^normal$)i', $marker)) {
+            return 'worker.queue.normal_prio';
+        }
+
+        if (preg_match('(^low$)i', $marker)) {
+            return 'worker.queue.low_prio';
+        }
+
+        return null;
     }
 }
