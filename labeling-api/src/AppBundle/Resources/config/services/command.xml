@@ -4,7 +4,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="annostation.labeling_api.command.init" class="AppBundle\Command\InitCommand">
+        <service id="annostation.labeling_api.command.init" class="AppBundle\Command\Init">
             <argument type="service" id="doctrine_couchdb.client.default_connection" />
             <argument>%database_name%</argument>
             <argument>%user_password%</argument>
@@ -13,7 +13,7 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="annostation.labeling_api.command.import_video_command" class="AppBundle\Command\ImportVideoCommand">
+        <service id="annostation.labeling_api.command.import_video_command" class="AppBundle\Command\ImportVideo">
             <argument type="service" id="annostation.labeling_api.service.importer_service" />
             <tag name="console.command"/>
         </service>

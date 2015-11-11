@@ -10,7 +10,7 @@ use crosscan\WorkerPool\AMQP;
 use crosscan\Logger\Facade;
 use crosscan\NewRelic;
 
-class WorkerStarter extends BaseCommand
+class WorkerStarter extends Base
 {
     /**
      * @var AMQP\AMQPPoolConfig

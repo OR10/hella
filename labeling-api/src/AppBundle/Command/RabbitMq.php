@@ -10,7 +10,7 @@ use crosscan\WorkerPool\JobInstructionFactory;
 use crosscan\Logger\Facade;
 use PhpAmqpLib\Channel;
 
-class RabbitMq extends BaseCommand
+class RabbitMq extends Base
 {
     /**
      * @var AMQP\AMQPPoolConfig
