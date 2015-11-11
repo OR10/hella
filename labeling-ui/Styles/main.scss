@@ -4,14 +4,18 @@
 @import "angular-range-slider";
 @import "viewer";
 
-h1 {
-  color: red;
+html {
+  overflow: hidden;
+  height: 100%;
 }
 
-.container {
-  width: 100%;
-  padding: 0;
-  margin: 0;
+body {
+  overflow: auto;
+  height: 100%;
+}
+
+h1 {
+  color: red;
 }
 
 .label-summary span.label-padding {
