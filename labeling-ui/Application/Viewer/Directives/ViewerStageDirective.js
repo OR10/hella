@@ -16,10 +16,12 @@ export default class ViewerStageDirective {
       onSelectedThing: '&',
       onDeselectedThing: '&',
 
-      frameImage: '=',
       thingsInFrame: '=',
       filters: '=',
       activeTool: '=',
+
+      task: '=',
+      framePosition: '=',
     };
 
     this.controller = ViewerStageController;

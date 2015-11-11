@@ -9,11 +9,10 @@ class FramePosition {
    *
    * If no `position` is specified `startFrameNumber` will be used.
    *
-   * @param {int} startFrameNumber
-   * @param {int} endFrameNumber
+   * @param {FrameRange} frameRange
    * @param {int} position
    */
-  constructor(startFrameNumber, endFrameNumber, position = startFrameNumber) {
+  constructor({startFrameNumber, endFrameNumber}, position = startFrameNumber) {
     /**
      * @inheritDoc
      */

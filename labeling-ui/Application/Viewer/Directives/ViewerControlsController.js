@@ -4,13 +4,11 @@ import ContrastFilter from '../Filters/ContrastFilter';
 /**
  * Controller handling the control elements below the viewer frame
  *
- * @class ViewerControlsController
- * @property {Function} onPreviousFrameRequested
- * @property {Function} onNextFrameRequested
+ * @property {FramePosition} framePosition Structure representing the currently displayed frame within the viewer.
  * @property {Function} onNewLabeledThingRequested
  * @property {Function} onFilterChanged
  */
-export default class ViewerControlsController {
+class ViewerControlsController {
   constructor($scope) {
     this.brightnessSliderTemplate = 'Viewer/ViewerControlsDirective/BrightnessSlider.html';
     this.contrastSliderTemplate = 'Viewer/ViewerControlsDirective/ContrastSlider.html';
@@ -26,11 +24,11 @@ export default class ViewerControlsController {
   }
 
   handleNextFrameClicked() {
-    this.onNextFrameRequested();
+    this.framePosition.next();
   }
 
   handlePreviousFrameClicked() {
-    this.onPreviousFrameRequested();
+    this.framePosition.previous();
   }
 
   handleNewLabeledThingClicked() {
@@ -47,3 +45,5 @@ export default class ViewerControlsController {
 }
 
 ViewerControlsController.$inject = ['$scope'];
+
+export default ViewerControlsController;

@@ -5,8 +5,9 @@ import objectLabelAnnotation from 'Application/LabelStructure/Structure/object-l
 
 import ObjectLabelWorkflow from '../Workflows/ObjectLabelWorkflow';
 import MetaLabelWorkflow from '../Workflows/MetaLabelWorkflow';
+import FramePosition from '../Model/FramePosition';
 
-export default class TaskController {
+class TaskController {
   /**
    * @param {angular.Scope} $scope
    * @param {Task} task
@@ -25,6 +26,27 @@ export default class TaskController {
     this.$scope = $scope;
 
     /**
+     * The currently processed {@link Task}
+     *
+     * This Model should be treated read-only by receiving directives
+     *
+     * @type {Task}
+     */
+    this.task = task;
+
+    /**
+     * Currently active frame position to be displayed inside the Viewer
+     *
+     * This model will be manipulated by different directives in order to switch between frames.
+     *
+     * @type {FramePosition}
+     */
+    this.framePosition = new FramePosition(task.frameRange);
+
+
+
+
+    /**
      * @type {LabeledThingInFrameGateway}
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
@@ -34,16 +56,16 @@ export default class TaskController {
      */
     this._labeledFrameGateway = labeledFrameGateway;
 
-    /**
-     * @type {TaskFrameLocationGateway}
-     */
-    this._taskFrameLocationGateway = taskFrameLocationGateway;
-
-    /**
-     * @type {FrameGateway}
-     * @private
-     */
-    this._frameGateway = frameGateway;
+    ///**
+    // * @type {TaskFrameLocationGateway}
+    // */
+    //this._taskFrameLocationGateway = taskFrameLocationGateway;
+    //
+    ///**
+    // * @type {FrameGateway}
+    // * @private
+    // */
+    //this._frameGateway = frameGateway;
 
     /**
      * @type {LinearLabelStructureVisitor}
@@ -63,35 +85,28 @@ export default class TaskController {
      */
     this._selectedLabelListVisitor = selectedLabelListVisitor;
 
-    /**
-     * Default placeholder image, which is used whenever a current image is not available
-     * @type {HTMLImageElement}
-     * @private
-     */
-    this._placeholderImage = new Image();
-    this._placeholderImage.src = '/labeling/Images/placeholder.png';
+    ///**
+    // * Default placeholder image, which is used whenever a current image is not available
+    // * @type {HTMLImageElement}
+    // * @private
+    // */
+    //this._placeholderImage = new Image();
+    //this._placeholderImage.src = '/labeling/Images/placeholder.png';
 
-    /**
-     * The currently processed {@link Task}
-     *
-     * @type {Task}
-     */
-    this.task = task;
+    ///**
+    // * The framenumber currently active and displayed
+    // *
+    // * @type {number}
+    // * @private
+    // */
+    //this._frameNumber = 1;
 
-    /**
-     * The framenumber currently active and displayed
-     *
-     * @type {number}
-     * @private
-     */
-    this._frameNumber = 1;
-
-    /**
-     * Image representing the currently active frame
-     *
-     * @type {HTMLImageElement}
-     */
-    this.frameImage = this._placeholderImage;
+    ///**
+    // * Image representing the currently active frame
+    // *
+    // * @type {HTMLImageElement}
+    // */
+    //this.frameImage = this._placeholderImage;
 
     /**
      * LabeledFrame associated with the currently active frame
@@ -134,8 +149,8 @@ export default class TaskController {
         this._linearVisitor.visit(this.metaLabelStructure, labels)
       );
       this._labeledFrame.classes = cleanedLabels;
-      this._labeledFrame.frameNumber = this._frameNumber;
-      this._labeledFrameGateway.saveLabeledFrame(this.task.id, this._frameNumber, this._labeledFrame)
+      this._labeledFrame.frameNumber = this.framePosition.position;
+      this._labeledFrameGateway.saveLabeledFrame(this.task.id, this.framePosition.position, this._labeledFrame)
         .then(labeledFrame => this._labeledFrame = labeledFrame);
     };
 
@@ -143,7 +158,7 @@ export default class TaskController {
       if (this._activeLabeledThingInFrame.id === undefined) {
         this._labeledThingInFrameGateway.createLabeledThingInFrame(
           this.task,
-          this._frameNumber,
+          this.framePosition.position,
           this._activeLabeledThingInFrame
           )
           .then(labeledThing => {
@@ -197,47 +212,21 @@ export default class TaskController {
       }
     });
 
-    /**
-     * List of frame location information for this task.
-     *
-     * Currently all framelocations are loaded. This may change in the future for caching reasons.
-     *
-     * @type {Promise<Array<FrameLocation>>}
-     */
-    this._frameLocations = this._loadFrameLocations();
+    ///**
+    // * List of frame location information for this task.
+    // *
+    // * Currently all framelocations are loaded. This may change in the future for caching reasons.
+    // *
+    // * @type {Promise<Array<FrameLocation>>}
+    // */
+    //this._frameLocations = this._loadFrameLocations();
 
-    this._switchActiveFrame(1);
+    //this._switchActiveFrame(this.framePosition.position);
   }
 
   _initializeWorkflows() {
     this._metaLabelWorkflow = new MetaLabelWorkflow(this.$scope);
     this._objectLabelWorkflow = new ObjectLabelWorkflow(this.$scope);
-  }
-
-  /**
-   * Load all framelocations, which belong to the current task
-   *
-   * @returns {Promise<Array<FrameLocation>>}
- * @private
-   */
-  _loadFrameLocations() {
-    const totalFrameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
-  }
-
-  /**
-   * Fetch the frame image corresponding to the given frame number
-   *
-   * The frame number is 1-indexed
-   *
-   * @param frameNumber
-   * @returns {Promise<HTMLImageElement>}
-   * @private
-   */
-  _loadFrameImage(frameNumber) {
-    return this._frameLocations.then(
-      frameLocations => this._frameGateway.getImage(frameLocations[frameNumber - 1])
-    );
   }
 
   /**
@@ -263,30 +252,29 @@ export default class TaskController {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
 
-  _switchActiveFrame(frameNumber) {
-    //this._switchToPlaceholderImage();
-    this._clearLabelsAndThingsInFrame();
-    this._initializeWorkflows();
-
-    this._frameNumber = frameNumber;
-
-    Promise.all([
-      this._loadFrameImage(frameNumber),
-      this._loadLabeledThingsInFrame(frameNumber),
-      this._loadLabeledFrame(frameNumber),
-    ]).then(([frameImage, labeledThingsInFrame, labeledFrame]) => {
-      this.$scope.$apply(() => {
-        this.frameImage = frameImage;
-        this.labelsAndThingsInFrame.things = {};
-        labeledThingsInFrame.forEach(
-          labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing
-        );
-
-        this._labeledFrame = labeledFrame;
-        this.metaLabelContext = this.createLabelObjectContextFromArray(this.metaLabelStructure, labeledFrame.classes);
-      });
-    });
-  }
+  //_switchActiveFrame(frameNumber) {
+  //  //this._switchToPlaceholderImage();
+  //  this._clearLabelsAndThingsInFrame();
+  //  this._initializeWorkflows();
+  //
+  //  this._frameNumber = frameNumber;
+  //
+  //  Promise.all([
+  //    this._loadLabeledThingsInFrame(frameNumber),
+  //    this._loadLabeledFrame(frameNumber),
+  //  ]).then(([frameImage, labeledThingsInFrame, labeledFrame]) => {
+  //    this.$scope.$apply(() => {
+  //      this.frameImage = frameImage;
+  //      this.labelsAndThingsInFrame.things = {};
+  //      labeledThingsInFrame.forEach(
+  //        labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing
+  //      );
+  //
+  //      this._labeledFrame = labeledFrame;
+  //      this.metaLabelContext = this.createLabelObjectContextFromArray(this.metaLabelStructure, labeledFrame.classes);
+  //    });
+  //  });
+  //}
 
   createLabelObjectContextFromArray(structure, context) {
     const annotatedLinearLabelStructure = this._linearVisitor.visit(structure, context);
@@ -308,18 +296,18 @@ export default class TaskController {
     this.hideObjectLabels = true;
   }
 
-  /**
-   * Switch the active image over to the placeholder image
-   *
-   * @private
-   */
-  _switchToPlaceholderImage() {
-    this.frameImage = this._placeholderImage;
-  }
+  ///**
+  // * Switch the active image over to the placeholder image
+  // *
+  // * @private
+  // */
+  //_switchToPlaceholderImage() {
+  //  this.frameImage = this._placeholderImage;
+  //}
 
   handleNewThing(shapes) {
     this._activeLabeledThingInFrame = {
-      frameNumber: this._frameNumber,
+      frameNumber: this.framePosition.position,
       shapes,
       classes: Object.values(this.objectLabelContext),
     };
@@ -347,19 +335,19 @@ export default class TaskController {
     });
   }
 
-  handleNextFrameRequested() {
-    if (this._frameNumber >= this.task.frameRange.endFrameNumber) {
-      return;
-    }
-    this._switchActiveFrame(this._frameNumber + 1);
-  }
-
-  handlePreviousFrameRequested() {
-    if (this._frameNumber <= this.task.frameRange.startFrameNumber) {
-      return;
-    }
-    this._switchActiveFrame(this._frameNumber - 1);
-  }
+  //handleNextFrameRequested() {
+  //  if (this._frameNumber >= this.task.frameRange.endFrameNumber) {
+  //    return;
+  //  }
+  //  this._switchActiveFrame(this._frameNumber + 1);
+  //}
+  //
+  //handlePreviousFrameRequested() {
+  //  if (this._frameNumber <= this.task.frameRange.startFrameNumber) {
+  //    return;
+  //  }
+  //  this._switchActiveFrame(this._frameNumber - 1);
+  //}
 
   handleNewLabeledThingRequested() {
     this._initializeWorkflows(); // @TODO: properly integrate change with handling
@@ -387,3 +375,4 @@ TaskController.$inject = [
   'selectedLabelListLabelStructureVisitor',
 ];
 
+export default TaskController;

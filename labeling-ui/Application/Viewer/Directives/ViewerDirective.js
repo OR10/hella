@@ -13,16 +13,16 @@ export default class ViewerDirective {
       onUpdatedThing: '&',
       onSelectedThing: '&',
       onDeselectedThing: '&',
-      onNextFrameRequested: '&',
-      onPreviousFrameRequested: '&',
       onNewLabeledThingRequested: '&',
       onNewEllipseRequested: '&',
       onNewCircleRequested: '&',
 
-      frameImage: '=',
       thingsInFrame: '=',
       filters: '=',
       activeTool: '=',
+
+      task: '=',
+      framePosition: '=',
     };
 
     this.controller = ViewerController;

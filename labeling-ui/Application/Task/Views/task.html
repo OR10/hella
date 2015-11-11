@@ -4,18 +4,18 @@
             <label-summary title="Summary"></label-summary>
         </div>
         <div class="col-md-7">
-            <viewer frame-image="vm.frameImage"
-                    things-in-frame="vm.labelsAndThingsInFrame.things"
+            <viewer things-in-frame="vm.labelsAndThingsInFrame.things"
                     on-new-thing="vm.handleNewThing(shapes)"
                     on-updated-thing="vm.handleUpdatedThing(labeledThing)"
                     on-selected-thing="vm.handleSelectedThing(labeledThing)"
                     on-deselected-thing="vm.handleDeselectedThing()"
-                    on-next-frame-requested="vm.handleNextFrameRequested()"
-                    on-previous-frame-requested="vm.handlePreviousFrameRequested()"
                     on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
                     on-new-ellipse-requested="vm.handleNewEllipseRequested()"
                     on-new-circle-requested="vm.handleNewCircleRequested()"
                     active-tool="vm.activeTool"
+
+                    task="vm.task"
+                    frame-position="vm.framePosition"
             ></viewer>
         </div>
         <div class="col-md-3">

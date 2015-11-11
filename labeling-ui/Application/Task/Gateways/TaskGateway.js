@@ -44,7 +44,7 @@ class TaskGateway {
    */
   getTask(id) {
     const url = this._apiService.getApiUrl(`/task/${id}`);
-    return this.$http.get(url)
+    return this._$http.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
