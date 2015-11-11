@@ -60,6 +60,7 @@ task :symlink_symfony_configuration do
     execute "cd '#{release_path}'; sudo chown -R www-data app/cache/"
     execute "cd '#{release_path}'; sudo chown -R www-data app/logs/"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod cache:clear"
+    execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod annostation:rabbitmq:setup"
   end
 end
 
