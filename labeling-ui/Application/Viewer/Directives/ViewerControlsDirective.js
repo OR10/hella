@@ -25,6 +25,7 @@ export default class ViewerControlsDirective {
       onNewCircleRequested: '&',
       onNewPolygonRequested: '&',
       onNewLineRequested: '&',
+      onMoveToolRequested: '&',
     };
   }
 }

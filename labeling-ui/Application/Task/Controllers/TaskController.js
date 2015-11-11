@@ -383,6 +383,11 @@ export default class TaskController {
     console.log('line');
     this.activeTool = 'line';
   }
+
+  handleMoveToolRequested() {
+    console.log('move');
+    this.activeTool = 'move';
+  }
 }
 
 TaskController.$inject = [

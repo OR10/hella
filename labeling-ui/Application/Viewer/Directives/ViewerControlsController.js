@@ -45,6 +45,10 @@ export default class ViewerControlsController {
     this.onNewCircleRequested();
   }
 
+  handleMoveToolClicked() {
+    this.onMoveToolRequested();
+  }
+
   handleNewLineClicked() {
     this.onNewLineRequested();
   }

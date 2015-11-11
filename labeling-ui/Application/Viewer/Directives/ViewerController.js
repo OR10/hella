@@ -62,4 +62,8 @@ export default class ViewerController {
     this.onNewLineRequested();
   }
 
+  handleMoveToolRequested() {
+    this.onMoveToolRequested();
+  }
+
 }
