@@ -47,3 +47,5 @@ labeling_api::rabbitmq_host: '127.0.0.1'
 
 labeling_api::worker::app_dir: '/vagrant'
 labeling_api::worker::user: vagrant
+labeling_api::worker::numberOfLowNormalWorkers: 2
+labeling_api::worker::numberOfHighNormalWorkers: 1
