@@ -27,7 +27,7 @@ class LabeledThingInFrame
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $classes;
+    private $classes = [];
 
     /**
      * @CouchDB\Field(type="mixed")
