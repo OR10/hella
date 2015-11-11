@@ -5,8 +5,10 @@
  */
 
 /**
- * Process the image data according to the filters functionality
+ * Perform the manipulation of the image data
  *
- * @method manipulate
+ * @name Filter#manipulate
+ * @param {ImageData} imageData
+ * @returns {ImageData}
  */
 

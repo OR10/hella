@@ -10,10 +10,10 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
  * @property {Function} onUpdatedThing
  * @property {Function} onSelectedThing
  * @property {Function} onDeselectedThing
- * @property {Array} filters
  *
  * @property {FramePosition} framePosition
  * @property {Task} task
+ * @property {Filters} filters
  */
 class ViewerStageController {
   /**
@@ -74,9 +74,6 @@ class ViewerStageController {
     this._layerManager.addLayer('annotations', thingLayer);
     this._layerManager.addLayer('background', backgroundLayer);
 
-    $scope.$watch('vm.frameImage', newFrameImage => {
-    });
-
     $scope.$watch('vm.activeTool', newActiveTool => {
       thingLayer.activateTool(newActiveTool);
     });
@@ -86,13 +83,12 @@ class ViewerStageController {
       thingLayer.addLabeledThings(Object.values(newThingsInFrame));
     });
 
-    $scope.$watchCollection('vm.filters', filters => {
-      if (filters) {
+    // Reapply filters if they changed
+    $scope.$watchCollection('vm.filters.filters', filters => {
         backgroundLayer.resetLayer();
         filters.forEach(filter => {
           backgroundLayer.applyFilter(filter);
         });
-      }
     });
 
     // Update the Background once the `framePosition` changes
@@ -106,7 +102,7 @@ class ViewerStageController {
 
         backgroundLayer.setBackgroundImage(newFrameImage);
         backgroundLayer.render();
-        this.filters.forEach(filter => {
+        this.filters.filters.forEach(filter => {
           backgroundLayer.applyFilter(filter);
         });
       })

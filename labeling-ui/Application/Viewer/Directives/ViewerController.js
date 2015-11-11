@@ -1,3 +1,5 @@
+import Filters from '../Models/Filters';
+
 /**
  * @class ViewerController
  *
@@ -12,11 +14,7 @@
  */
 export default class ViewerController {
   constructor() {
-    this.filters = [];
-  }
-
-  handleFilterChanged(filters) {
-    this.filters = filters;
+    this.filters = new Filters();
   }
 
   handleNewThing(shapes) {

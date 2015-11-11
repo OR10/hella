@@ -2,7 +2,6 @@
     <div class="col-md-12">
         <div class="viewer-container">
             <viewer-stage things-in-frame="vm.thingsInFrame"
-                          filters="vm.filters"
                           active-tool="vm.activeTool"
                           on-new-thing="vm.handleNewThing(shapes)"
                           on-updated-thing="vm.handleUpdatedThing(labeledThing)"
@@ -11,6 +10,7 @@
 
                           task="vm.task"
                           frame-position="vm.framePosition"
+                          filters="vm.filters"
             ></viewer-stage>
         </div>
     </div>
@@ -21,8 +21,8 @@
             <viewer-controls on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
                              on-new-ellipse-requested="vm.handleNewEllipseRequested()"
                              on-new-circle-requested="vm.handleNewCircleRequested()"
-                             on-filter-changed="vm.handleFilterChanged(filters)"
 
+                             filters="vm.filters"
                              frame-position="vm.framePosition"
             ></viewer-controlsD>
         </div>

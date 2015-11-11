@@ -17,11 +17,11 @@ export default class ViewerStageDirective {
       onDeselectedThing: '&',
 
       thingsInFrame: '=',
-      filters: '=',
       activeTool: '=',
 
       task: '=',
       framePosition: '=',
+      filters: '=',
     };
 
     this.controller = ViewerStageController;

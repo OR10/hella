@@ -39,6 +39,7 @@ export default class BackgroundLayer {
   attachToDom(element) {
     this._element = element;
     this._renderingContext = this._element.getContext('2d');
+    this._imageData = this._renderingContext.getImageData(0, 0, this._renderingContext.canvas.width, this._renderingContext.canvas.height);
   }
 
   dispatchDOMEvent(event) { // eslint-disable-line no-unused-vars
