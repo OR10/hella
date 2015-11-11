@@ -1,42 +1,40 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-2">
-            <label-summary title="Summary"></label-summary>
-        </div>
-        <div class="col-md-7">
-            <viewer frame-image="vm.frameImage"
-                    things-in-frame="vm.labelsAndThingsInFrame.things"
-                    on-new-thing="vm.handleNewThing(shapes)"
-                    on-updated-thing="vm.handleUpdatedThing(labeledThing)"
-                    on-selected-thing="vm.handleSelectedThing(labeledThing)"
-                    on-deselected-thing="vm.handleDeselectedThing()"
-                    on-next-frame-requested="vm.handleNextFrameRequested()"
-                    on-previous-frame-requested="vm.handlePreviousFrameRequested()"
-                    on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
-                    on-new-ellipse-requested="vm.handleNewEllipseRequested()"
-                    on-new-circle-requested="vm.handleNewCircleRequested()"
-                    on-new-polygon-requested="vm.handleNewPolygonRequested()"
-                    on-new-line-requested="vm.handleNewLineRequested()"
-                    on-move-tool-requested="vm.handleMoveToolRequested()"
-                    active-tool="vm.activeTool"
-            ></viewer>
-        </div>
-        <div class="col-md-3">
-            <label-selector
-                    meta-label-structure="vm.metaLabelStructure"
-                    object-label-structure="vm.objectLabelStructure"
-                    meta-label-annotation="vm.metaLabelAnnotation"
-                    object-label-annotation="vm.objectLabelAnnotation"
-                    meta-label-context="vm.metaLabelContext"
-                    object-label-context="vm.objectLabelContext"
-                    meta-labeling-completed="vm.metaLabelingCompleted"
-                    object-labeling-completed="vm.objectLabelingCompleted"
-                    hide-object-labels="vm.hideObjectLabels"
-            ></label-selector>
-        </div>
+<div class="row">
+    <div class="col-md-2">
+        <label-summary title="Summary"></label-summary>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
+    <div class="col-md-7">
+        <viewer frame-image="vm.frameImage"
+                things-in-frame="vm.labelsAndThingsInFrame.things"
+                on-new-thing="vm.handleNewThing(shapes)"
+                on-updated-thing="vm.handleUpdatedThing(labeledThing)"
+                on-selected-thing="vm.handleSelectedThing(labeledThing)"
+                on-deselected-thing="vm.handleDeselectedThing()"
+                on-next-frame-requested="vm.handleNextFrameRequested()"
+                on-previous-frame-requested="vm.handlePreviousFrameRequested()"
+                on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
+                on-new-ellipse-requested="vm.handleNewEllipseRequested()"
+                on-new-circle-requested="vm.handleNewCircleRequested()"
+                on-new-polygon-requested="vm.handleNewPolygonRequested()"
+                on-new-line-requested="vm.handleNewLineRequested()"
+                on-move-tool-requested="vm.handleMoveToolRequested()"
+                active-tool="vm.activeTool"
+        ></viewer>
     </div>
-    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <label-selector
+                meta-label-structure="vm.metaLabelStructure"
+                object-label-structure="vm.objectLabelStructure"
+                meta-label-annotation="vm.metaLabelAnnotation"
+                object-label-annotation="vm.objectLabelAnnotation"
+                meta-label-context="vm.metaLabelContext"
+                object-label-context="vm.objectLabelContext"
+                meta-labeling-completed="vm.metaLabelingCompleted"
+                object-labeling-completed="vm.objectLabelingCompleted"
+                hide-object-labels="vm.hideObjectLabels"
+        ></label-selector>
+    </div>
 </div>
+<div class="col-md-3"></div>
+<div class="col-md-6">
+</div>
+<div class="col-md-3"></div>

@@ -39,6 +39,7 @@ export default class RectangleDrawingTool extends Tool {
     const drawingOptions = {
       strokeColor: 'red',
       strokeWidth: 2,
+      strokeScaling: false,
       // Required to make rect clickable
       fillColor: new paper.Color(0, 0, 0, 0),
     };

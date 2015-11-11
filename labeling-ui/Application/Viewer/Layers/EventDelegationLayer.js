@@ -28,6 +28,7 @@ export default class EventDelegationLayer extends EventEmitter {
       'mouseover',
       'click',
       'dblclick',
+      'wheel',
     ].forEach(
       name => element.addEventListener(name, this._onDelegateEvent)
     );
@@ -55,6 +56,9 @@ export default class EventDelegationLayer extends EventEmitter {
    */
   _cloneEvent(event) {
     switch (true) {
+      // NOTE: this list should respect inheritance order (i.e. every WheelEvent is also an instance of MouseEvent)
+      case event instanceof WheelEvent:
+        return this._cloneWheelEvent(event);
       case event instanceof MouseEvent:
         return this._cloneMouseEvent(event);
       default:
@@ -88,6 +92,39 @@ export default class EventDelegationLayer extends EventEmitter {
       buttons: event.buttons,
       relatedTarget: event.relatedTarget,
       region: event.region,
+    });
+  }
+
+  /**
+   * Correctly clone WheelEvents
+   *
+   * @param {WheelEvent} event
+   *
+   * @returns {WheelEvent}
+   * @private
+   */
+  _cloneWheelEvent(event) {
+    return new WheelEvent(event.type, {
+      bubbles: event.bubbles,
+      cancelable: event.cancelable,
+      detail: event.detail,
+      view: event.view,
+      screenX: event.screenX,
+      screenY: event.screenY,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      ctrlKey: event.ctrlKey,
+      shiftKey: event.shiftKey,
+      altKey: event.altKey,
+      metaKey: event.metaKey,
+      button: event.button,
+      buttons: event.buttons,
+      relatedTarget: event.relatedTarget,
+      region: event.region,
+      deltaX: event.deltaX,
+      deltaY: event.deltaY,
+      deltaZ: event.deltaZ,
+      deltaMode: event.deltaMode,
     });
   }
 

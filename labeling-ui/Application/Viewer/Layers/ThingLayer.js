@@ -1,6 +1,6 @@
 import paper from 'paper';
 
-import PaperLayer from './PaperLayer';
+import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
 import EllipseDrawingTool from '../Tools/EllipsesDrawingTool';
 import PolygonDrawingTool from '../Tools/PolygonDrawingTool';
@@ -11,9 +11,9 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
  * A Layer used to draw Things within the viewer
  *
  * @class ThingLayer
- * @extends PaperLayer
+ * @extends PanAndZoomPaperLayer
  */
-export default class ThingLayer extends PaperLayer {
+export default class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * @param {DrawingContextService} drawingContextService
    */
@@ -215,6 +215,7 @@ export default class ThingLayer extends PaperLayer {
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, {
           strokeColor: 'red',
           strokeWidth: 2,
+          strokeScaling: false,
           fillColor: new paper.Color(0, 0, 0, 0),
         });
 
@@ -233,9 +234,5 @@ export default class ThingLayer extends PaperLayer {
   clear() {
     super.clear();
     this._thingsByShapeId.clear();
-  }
-
-  dispatchDOMEvent(event) {
-    this._element.dispatchEvent(event);
   }
 }
