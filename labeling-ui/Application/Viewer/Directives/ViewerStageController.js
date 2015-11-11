@@ -95,8 +95,15 @@ class ViewerStageController {
       }
     });
 
+    // Update the Background once the `framePosition` changes
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._loadFrameImage(newPosition).then(newFrameImage => {
+        if (newPosition != this.framePosition.position) {
+          // The position changed while loading the frame
+          // another frame is already requested. Skip this one.
+          return;
+        }
+
         backgroundLayer.setBackgroundImage(newFrameImage);
         backgroundLayer.render();
         this.filters.forEach(filter => {
