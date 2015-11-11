@@ -72,11 +72,7 @@ class RabbitMq extends BaseCommand
                 $channel
             );
 
-        if ($ok) {
-            exit(0);
-        }
-
-        exit(1);
+        return $ok ? 0 : 1;
     }
 
     /**
