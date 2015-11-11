@@ -9,6 +9,8 @@ use AppBundle\Service\Video as VideoService;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use League\Flysystem;
+use Doctrine\ODM\CouchDB;
+use AppBundle\Model\Video\ImageType;
 
 class Video extends WorkerPool\JobInstruction
 {
@@ -51,7 +53,10 @@ class Video extends WorkerPool\JobInstruction
         $this->cacheDir           = $cacheDir;
     }
 
-
+    /**
+     * @param Job                        $job
+     * @param Logger\Facade\LoggerFacade $logger
+     */
     public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
         /** @var Model\Video $video */
@@ -66,10 +71,27 @@ class Video extends WorkerPool\JobInstruction
         );
 
         $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
-        $this->videoFacade->refresh($video);
-        $video->setImageTypeConvertedStatus($job->imageType->getName(), true);
-        $this->videoFacade->update();
+        $this->updateDocument($video, $job->imageType);
 
         unlink($tmpFile);
+    }
+
+    /**
+     * @param Model\Video    $video
+     * @param ImageType\Base $imageType
+     * @param int            $retryCount
+     * @param int            $maxRetries
+     */
+    private function updateDocument(Model\Video $video, ImageType\Base $imageType, $retryCount = 0, $maxRetries = 1)
+    {
+        try {
+            $this->videoFacade->refresh($video);
+            $video->setImageTypeConvertedStatus($imageType->getName(), true);
+            $this->videoFacade->update();
+        } catch (CouchDB\UpdateConflictException $updateConflictException) {
+            if ($retryCount <= $maxRetries) {
+                $this->updateDocument($video, $imageType, $retryCount + 1);
+            }
+        }
     }
 }
