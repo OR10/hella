@@ -56,28 +56,20 @@ class WorkerStarter extends Base
             return 1;
         }
 
-        $channel->basic_qos(
-            0,
-            1,
-            0
-        );
+        $channel->basic_qos(0, 1, 0);
 
-        $exceptionEstimator = new AMQP\ExceptionEstimator();
-        $queueFinder        = new AMQP\ExceptionQueueFinder($exceptionEstimator);
-
-        $loggerFacade = new Facade\LoggerFacade(
-            new \cscntLogger(),
-            \cscntLogFacility::WORKER_POOL
-        );
-
-        $jobSource         = new AMQP\JobSourceAMQP($primaryQueue, $secondaryQueue, $channel);
-        $rescheduleManager = new AMQP\AMQPRescheduleManager($this->AMQPPoolConfig, $queueFinder, $loggerFacade);
-
-        $container = $this->getContainer();
+        $exceptionEstimator   = new AMQP\ExceptionEstimator();
+        $queueFinder          = new AMQP\ExceptionQueueFinder($exceptionEstimator);
+        $loggerFacade         = new Facade\LoggerFacade(new \cscntLogger(), \cscntLogFacility::WORKER_POOL);
+        $jobSource            = new AMQP\JobSourceAMQP($primaryQueue, $secondaryQueue, $channel);
+        $rescheduleManager    = new AMQP\AMQPRescheduleManager($this->AMQPPoolConfig, $queueFinder, $loggerFacade);
+        $instructionInstances = $this->AMQPPoolConfig->instructionInstances;
+        $container            = $this->getContainer();
+        $serviceInstances     = new JobInstructionFactory\ServicesInstances($instructionInstances, $container);
 
         $worker = new WorkerPool\Worker(
             $jobSource,
-            new JobInstructionFactory\ServicesInstances($this->AMQPPoolConfig->instructionInstances, $container),
+            $serviceInstances,
             $loggerFacade,
             $rescheduleManager,
             new NewRelic\Aggregated(array())
