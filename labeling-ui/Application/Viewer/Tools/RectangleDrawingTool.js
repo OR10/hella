@@ -4,8 +4,6 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
- *
- * @class RectangleDrawingTool
  */
 export default class RectangleDrawingTool extends Tool {
   /**

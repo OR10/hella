@@ -54,4 +54,16 @@ export default class ViewerController {
     this.onNewCircleRequested();
   }
 
+  handleNewPolygonRequested() {
+    this.onNewPolygonRequested();
+  }
+
+  handleNewLineRequested() {
+    this.onNewLineRequested();
+  }
+
+  handleMoveToolRequested() {
+    this.onMoveToolRequested();
+  }
+
 }

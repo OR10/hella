@@ -264,7 +264,7 @@ export default class TaskController {
   }
 
   _switchActiveFrame(frameNumber) {
-    //this._switchToPlaceholderImage();
+    // this._switchToPlaceholderImage();
     this._clearLabelsAndThingsInFrame();
     this._initializeWorkflows();
 
@@ -372,6 +372,18 @@ export default class TaskController {
 
   handleNewCircleRequested() {
     this.activeTool = 'circle';
+  }
+
+  handleNewPolygonRequested() {
+    this.activeTool = 'polygon';
+  }
+
+  handleNewLineRequested() {
+    this.activeTool = 'line';
+  }
+
+  handleMoveToolRequested() {
+    this.activeTool = 'move';
   }
 }
 

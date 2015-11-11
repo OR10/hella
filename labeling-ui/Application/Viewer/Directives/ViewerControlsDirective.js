@@ -23,6 +23,9 @@ export default class ViewerControlsDirective {
       onFilterChanged: '&',
       onNewEllipseRequested: '&',
       onNewCircleRequested: '&',
+      onNewPolygonRequested: '&',
+      onNewLineRequested: '&',
+      onMoveToolRequested: '&',
     };
   }
 }
