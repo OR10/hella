@@ -31,7 +31,17 @@ System.config({
     "jquery": "github:components/jquery@2.1.4",
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "json": "github:systemjs/plugin-json@0.1.0",
-    "paper": "npm:paper@0.9.24",
+    "paper": "Application/Common/Vendor/paper-full-mouseevent-patched",
+    "Application/Common/Vendor/paper-full-mouseevent-patched": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "canvas": "npm:canvas@1.2.11",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "http": "github:jspm/nodelibs-http@1.7.1",
+      "jsdom": "npm:jsdom@3.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "request": "npm:request@2.53.0"
+    },
     "github:angular-ui/ui-router@0.2.15": {
       "angular": "github:angular/bower-angular@1.4.7"
     },

@@ -10,7 +10,9 @@ import ContrastFilter from '../Filters/ContrastFilter';
  * @property {Filters} filters
  */
 class ViewerControlsController {
-  constructor($scope) {
+  constructor($scope, labeledThingInFrameGateway) {
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
     /**
      * Template name used for the brightnessSlider button popover
      *
@@ -87,7 +89,15 @@ class ViewerControlsController {
   }
 
   handleNewLabeledThingClicked() {
-    this.onNewLabeledThingRequested();
+    // TODO this is a hack. we probably need to generate our ids in the frontend
+    this._labeledThingInFrameGateway.createLabeledThingInFrame(this.task, this.framePosition.position, {
+      classes: [],
+      shapes: [],
+      incomplete: true,
+    }).then(newLabeledThingInFrame => {
+      this.labeledThingsInFrame[newLabeledThingInFrame.id] = newLabeledThingInFrame;
+      this.selectedLabeledThingInFrame = newLabeledThingInFrame;
+    });
   }
 
   handleNewEllipseClicked() {
@@ -111,6 +121,6 @@ class ViewerControlsController {
   }
 }
 
-ViewerControlsController.$inject = ['$scope'];
+ViewerControlsController.$inject = ['$scope', 'labeledThingInFrameGateway'];
 
 export default ViewerControlsController;

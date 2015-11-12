@@ -15,6 +15,9 @@ class ViewerControlsDirective {
       framePosition: '=',
       filters: '=',
       activeTool: '=',
+      task: '=',
+      selectedLabeledThingInFrame: '=',
+      labeledThingsInFrame: '=',
     };
   }
 }
