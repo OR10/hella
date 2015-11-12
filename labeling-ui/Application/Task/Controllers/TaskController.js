@@ -60,7 +60,7 @@ class TaskController {
     this.labeledThings = null;
 
     this.labeledThingStructure = labeledThingStructure;
-    this.labeledThingAnnotaion = labeledThingAnnotation;
+    this.labeledThingAnnotation = labeledThingAnnotation;
 
     /**
      * The LabeledFrame for the currently active frame

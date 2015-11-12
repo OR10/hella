@@ -7,6 +7,7 @@ import LabelSelectorController from './LabelSelectorController';
 export default class LabelSelectorDirective {
   constructor() {
     this.scope = {
+      labeledObjectTyoe: '@',
       labeledObject: '=',
       structure: '=',
       annotation: '=',
