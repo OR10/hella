@@ -78,6 +78,7 @@ class LabeledThingInFrame extends Controller\Base
             $shapes      = $request->request->get('shapes', []);
             $classes     = $request->request->get('classes', []);
             $frameNumber = $request->request->get('frameNumber');
+            $incomplete  = $request->request->get('incomplete');
 
             if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
                 throw new Exception\BadRequestHttpException();
@@ -88,6 +89,7 @@ class LabeledThingInFrame extends Controller\Base
             $labeledThingInFrame->setClasses($classes);
             $labeledThingInFrame->setShapes($shapes);
             $labeledThingInFrame->setFrameNumber((int)$frameNumber);
+            $labeledThingInFrame->setIncomplete($incomplete);
             $this->labeledThingInFrameFacade->save($labeledThingInFrame);
             $response->setData(['result' => $labeledThingInFrame]);
         } else {

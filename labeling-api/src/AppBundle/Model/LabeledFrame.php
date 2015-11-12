@@ -36,6 +36,11 @@ class LabeledFrame
      */
     private $labelingTaskId;
 
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
+
     public function __construct(Model\LabelingTask $task)
     {
         $this->labelingTaskId = $task->getId();
@@ -87,5 +92,21 @@ class LabeledFrame
     public function getFrameNumber()
     {
         return $this->frameNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
     }
 }
