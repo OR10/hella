@@ -73,6 +73,7 @@ class RevisionManager {
     }
 
     this.updateRevision(id, rev);
+    delete model.rev;
   }
 }
 
