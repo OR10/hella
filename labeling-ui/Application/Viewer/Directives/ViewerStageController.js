@@ -17,8 +17,9 @@ class ViewerStageController {
    * @param {DrawingContextService} drawingContextService
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
+   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    */
-  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway) {
+  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway) {
     /**
      * @type {TaskFrameLocationGateway}
      * @private
@@ -30,6 +31,12 @@ class ViewerStageController {
      * @private
      */
     this._frameGateway = frameGateway;
+
+    /**
+     * @type {LabeledThingInFrameGateway}
+     * @private
+     */
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
      * @type {LayerManager}
@@ -143,8 +150,12 @@ class ViewerStageController {
   }
 
   _onUpdatedShape(labeledThingInFrameId, shape) {
+    const labeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
+
     // TODO this needs to be fixed for supporting multiple shapes
-    this.labeledThingsInFrame[labeledThingInFrameId].shapes[0] = shape;
+    labeledThingInFrame.shapes[0] = shape;
+
+    this._labeledThingInFrameGateway.updateLabeledThingInFrame(labeledThingInFrame);
   }
 
   _onNewShape(shape) {
@@ -158,6 +169,7 @@ ViewerStageController.$inject = [
   'drawingContextService',
   'taskFrameLocationGateway',
   'frameGateway',
+  'labeledThingInFrameGateway',
 ];
 
 export default ViewerStageController;
