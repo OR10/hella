@@ -136,6 +136,7 @@ class LabeledFrame extends Controller\Base
         $task            = $this->labelingTaskFacade->find($taskId);
         $classes         = $request->request->get('classes', []);
         $bodyFrameNumber = (int) $request->request->get('frameNumber');
+        $incomplete      = $request->request->get('incomplete');
 
         if ($task === null || !is_array($classes) || $bodyFrameNumber !== (int) $frameNumber) {
             throw new Exception\BadRequestHttpException();
@@ -151,6 +152,7 @@ class LabeledFrame extends Controller\Base
             }
             $labeledFrame->setClasses($classes);
             $labeledFrame->setFrameNumber($request->request->get('frameNumber'));
+            $labeledFrame->setIncomplete($incomplete);
             $this->labeledFrameFacade->save($labeledFrame);
             $response->setData(['result' => $labeledFrame]);
         }

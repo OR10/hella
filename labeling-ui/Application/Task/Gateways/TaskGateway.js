@@ -55,6 +55,9 @@ class TaskGateway {
   }
 }
 
-TaskGateway.$inject = ['ApiService', 'bufferedHttp'];
+TaskGateway.$inject = [
+  'ApiService',
+  'bufferedHttp',
+];
 
 export default TaskGateway;

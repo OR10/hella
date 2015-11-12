@@ -8,24 +8,29 @@ import LabeledThingInFrameGateway from 'Application/LabelingData/Gateways/Labele
 describe('LabeledThingInFrameGateway', () => {
   let $httpBackend;
   let gateway;
+  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
+      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingInFrameGateway);
+      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 
@@ -52,7 +57,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should get a labeled thing in frame', done => {
@@ -71,7 +76,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should create a labeled thing in frame', done => {
@@ -91,7 +96,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should update a labeled thing in frame', done => {
@@ -109,7 +114,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should delete a labeled thing in frame', done => {
@@ -127,7 +132,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   using([
@@ -147,7 +152,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -168,7 +173,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -188,7 +193,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.getLabeledThingInFrame(labeledThingInFrameId)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -279,7 +284,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -355,7 +360,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 });

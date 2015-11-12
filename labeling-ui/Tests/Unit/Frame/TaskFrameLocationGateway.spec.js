@@ -9,25 +9,30 @@ describe('TaskFrameLocationGateway', () => {
   let $httpBackend;
   let $httpParamSerializer;
   let gateway;
+  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.enableFlushFunctionality();
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       $httpParamSerializer = $injector.get('$httpParamSerializer');
       gateway = $injector.instantiate(TaskFrameLocationGateway);
+      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 
@@ -49,7 +54,7 @@ describe('TaskFrameLocationGateway', () => {
     gateway.getFrameLocations(taskId, type)
       .then(done);
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   using([
@@ -86,7 +91,7 @@ describe('TaskFrameLocationGateway', () => {
       gateway.getFrameLocations(taskId, type, offset, limit)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
 
     it('should receive the extracted response', done => {
@@ -100,7 +105,7 @@ describe('TaskFrameLocationGateway', () => {
           done();
         });
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -127,7 +132,7 @@ describe('TaskFrameLocationGateway', () => {
       gateway.getFrameLocations(taskId, type)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -153,7 +158,7 @@ describe('TaskFrameLocationGateway', () => {
       gateway.getFrameLocations(taskId, type)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 });

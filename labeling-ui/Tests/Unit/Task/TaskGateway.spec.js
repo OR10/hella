@@ -15,13 +15,16 @@ describe('TaskGateway', () => {
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
+      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -50,6 +53,8 @@ describe('TaskGateway', () => {
       done();
     });
 
+    console.log(bufferedHttp);
+    console.log(bufferedHttp.flushBuffers());
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 

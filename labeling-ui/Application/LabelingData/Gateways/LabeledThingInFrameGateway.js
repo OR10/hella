@@ -4,13 +4,13 @@
 class LabeledThingInFrameGateway {
   /**
    * @param {ApiService} apiService
-   * @param {angular.$http} $http
+   * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, $http) {
+  constructor(apiService, bufferedHttp) {
     /**
-     * @type {angular.$http}
+     * @type {BufferedHttp}
      */
-    this.$http = $http;
+    this.bufferedHttp = bufferedHttp;
 
     /**
      * @type {ApiService}
@@ -30,7 +30,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.$http.get(url)
+    return this.bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -51,7 +51,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.$http.get(url)
+    return this.bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -76,7 +76,7 @@ class LabeledThingInFrameGateway {
     );
     const unifiedLabeledThingInFrame = this._uniqueClasses(labeledThingInFrame);
 
-    return this.$http.post(url, unifiedLabeledThingInFrame)
+    return this.bufferedHttp.post(url, unifiedLabeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -100,7 +100,7 @@ class LabeledThingInFrameGateway {
 
     const labeledThingInFrame = this._uniqueClasses(newLabeledThingInFrame);
 
-    return this.$http.put(url, labeledThingInFrame)
+    return this.bufferedHttp.put(url, newLabeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -121,7 +121,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.$http.delete(url)
+    return this.bufferedHttp.delete(url)
       .then(response => {
         if (response.data) {
           return true;
@@ -187,6 +187,9 @@ class LabeledThingInFrameGateway {
   }
 }
 
-LabeledThingInFrameGateway.$inject = ['ApiService', '$http'];
+LabeledThingInFrameGateway.$inject = [
+  'ApiService',
+  'bufferedHttp',
+];
 
 export default LabeledThingInFrameGateway;

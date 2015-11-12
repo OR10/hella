@@ -4,16 +4,18 @@
 class LabeledFrameGateway {
   /**
    * @param {ApiService} apiService
-   * @param {angular.$http} $http
+   * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, $http) {
+  constructor(apiService, bufferedHttp) {
     /**
-     * @type {angular.$http}
+     * @type {BufferedHttp}
+     * @private
      */
-    this.$http = $http;
+    this._bufferedHttp = bufferedHttp;
 
     /**
      * @type {ApiService}
+     * @private
      */
     this._apiService = apiService;
   }
@@ -31,7 +33,7 @@ class LabeledFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
-    return this.$http.get(url)
+    return this._bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -58,7 +60,7 @@ class LabeledFrameGateway {
 
     const labeledFrame = this._uniqueClasses(data);
 
-    return this.$http.put(url, labeledFrame)
+    return this._bufferedHttp.put(url, labeledFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -80,7 +82,7 @@ class LabeledFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
-    return this.$http.delete(url)
+    return this._bufferedHttp.delete(url)
       .then(response => {
         if (response.data) {
           return true;
@@ -104,6 +106,9 @@ class LabeledFrameGateway {
   }
 }
 
-LabeledFrameGateway.$inject = ['ApiService', '$http'];
+LabeledFrameGateway.$inject = [
+  'ApiService',
+  'bufferedHttp',
+];
 
 export default LabeledFrameGateway;
