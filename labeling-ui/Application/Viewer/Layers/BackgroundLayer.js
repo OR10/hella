@@ -21,12 +21,6 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
     this._element = null;
 
     /**
-     * @type {CanvasRenderingContext2D}
-     * @private
-     */
-    this._renderingContext = null;
-
-    /**
      * @type {HTMLImageElement}
      * @private
      */
@@ -37,6 +31,12 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._imageData = null;
+
+    /**
+     * @type {paper.Raster|null}
+     * @private
+     */
+    this._raster = null;
   }
 
   render() {
@@ -49,6 +49,12 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
 
   attachToDom(element) {
     super.attachToDom(element);
+
+    this._imageData = new ImageData(element.width, element.height);
+
+    this._context.withScope(() => {
+      this._raster = new paper.Raster();
+    });
   }
 
   /**

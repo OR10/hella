@@ -26,13 +26,6 @@
  */
 
 /**
- * Unique string that represents the revision of the current labeled frame
- *
- * @name LabeledFrame#rev
- * @type {string}
- */
-
-/**
  * Array of labels for this LabeledFrame.
  *
  * @name LabeledFrame#classes

@@ -91,23 +91,23 @@ class ViewerControlsController {
   }
 
   handleNewEllipseClicked() {
-    this.onNewEllipseRequested();
+    this.activeTool = 'ellipse';
   }
 
   handleNewCircleClicked() {
-    this.onNewCircleRequested();
+    this.activeTool = 'circle';
   }
 
   handleMoveToolClicked() {
-    this.onMoveToolRequested();
+    this.activeTool = 'move';
   }
 
   handleNewLineClicked() {
-    this.onNewLineRequested();
+    this.activeTool = 'line';
   }
 
   handleNewPolygonClicked() {
-    this.onNewPolygonRequested();
+    this.activeTool = 'polygon';
   }
 }
 

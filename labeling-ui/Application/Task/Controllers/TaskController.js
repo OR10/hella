@@ -1,10 +1,3 @@
-import metaLabelStructure from 'Application/LabelStructure/Structure/meta-label-structure.json!';
-import metaLabelAnnotation from 'Application/LabelStructure/Structure/meta-label-structure-ui-annotation.json!';
-import objectLabelStructure from 'Application/LabelStructure/Structure/object-label-structure.json!';
-import objectLabelAnnotation from 'Application/LabelStructure/Structure/object-label-structure-ui-annotation.json!';
-
-import ObjectLabelWorkflow from '../Workflows/ObjectLabelWorkflow';
-import MetaLabelWorkflow from '../Workflows/MetaLabelWorkflow';
 import FramePosition from '../Model/FramePosition';
 
 class TaskController {
@@ -13,15 +6,19 @@ class TaskController {
    * @param {Task} task
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
-   * @param {LinearLabelStructureVisitor} linearVisitor
    * @param {SelectedLabelObjectLabelStructureVisitor} selectedLabelObjectVisitor
    * @param {SelectedLabelListLabelStructureVisitor} selectedLabelListVisitor
    */
-  constructor($scope, task, labeledThingInFrameGateway, labeledFrameGateway, linearVisitor, selectedLabelObjectVisitor, selectedLabelListVisitor) {
+  constructor($scope, $q, task, labeledThingInFrameGateway, labeledFrameGateway, selectedLabelObjectVisitor, selectedLabelListVisitor) {
     /**
      * @type {angular.Scope}
      */
     this.$scope = $scope;
+
+    /**
+     * {angular.$q}
+     */
+    this._$q = $q;
 
     /**
      * The currently processed {@link Task}
@@ -41,8 +38,36 @@ class TaskController {
      */
     this.framePosition = new FramePosition(task.frameRange);
 
+    /**
+     * A structure holding all LabeledThingInFrames for the currently active frame
+     *
+     * @type {Object<string|LabeledThingInFrame>|null}
+     */
+    this.labeledThingsInFrame = null;
 
+    /**
+     * A structure holding all LabeledThings for the currently active frame
+     *
+     * @type {Object<string|LabeledThing>|null}
+     */
+    this.labeledThings = null;
 
+    /**
+     * The LabeledFrame for the currently active frame
+     *
+     * @type {LabeledFrame|null}
+     */
+    this.labeledFrame = null;
+
+    /**
+     * @type {Tool|null}
+     */
+    this.activeTool = null;
+
+    /**
+     * @type {LabeledThingInFrame|null}
+     */
+    this.selectedThingInFrame = null;
 
     /**
      * @type {LabeledThingInFrameGateway}
@@ -53,12 +78,6 @@ class TaskController {
      * @type {LabeledFrameGateway}
      */
     this._labeledFrameGateway = labeledFrameGateway;
-
-    /**
-     * @type {LinearLabelStructureVisitor}
-     * @private
-     */
-    this._linearVisitor = linearVisitor;
 
     /**
      * @type {SelectedLabelObjectLabelStructureVisitor}
@@ -72,114 +91,82 @@ class TaskController {
      */
     this._selectedLabelListVisitor = selectedLabelListVisitor;
 
-    /**
-     * LabeledFrame associated with the currently active frame
-     *
-     * @type {LabeledFrame|null}
-     * @private
-     */
-    this._labeledFrame = null;
+    $scope.$watch('vm.framePosition.position', newFramePosition => {
+      this._handleFrameChange(newFramePosition);
+    }, true);
 
-    /**
-     * A structure holding all labels as well as all labeledThings for the currently active frame
-     *
-     * @type {{labels: Array<String>, things: Object<string|number, LabeledThingInFrame>}}
-     */
-    this.labelsAndThingsInFrame = {
-      labels: [],
-      things: {},
-    };
+    //this.hideObjectLabels = true;
+    //this.objectLabelingCompleted = false;
+    //this.metaLabelingCompleted = false;
 
-    /*
-     * @TODO: Replace with real data provided by the server?
-     *        Currently only some hardcoded mock data is loaded for the classes to be tagged
-     */
-    this.metaLabelStructure = metaLabelStructure;
-    this.objectLabelStructure = objectLabelStructure;
-    this.metaLabelAnnotation = metaLabelAnnotation;
-    this.objectLabelAnnotation = objectLabelAnnotation;
+    //$scope.storeLabeledFrame = () => {
+    //  const labels = Object.values(this.metaLabelContext);
+    //  const cleanedLabels = this._selectedLabelListVisitor.visit(
+    //    this._linearVisitor.visit(this.metaLabelStructure, labels)
+    //  );
+    //  this._labeledFrame.classes = cleanedLabels;
+    //  this._labeledFrame.frameNumber = this.framePosition.position;
+    //  this._labeledFrameGateway.saveLabeledFrame(this.task.id, this.framePosition.position, this._labeledFrame)
+    //    .then(labeledFrame => this._labeledFrame = labeledFrame);
+    //};
 
-    this.hideObjectLabels = true;
-    this.objectLabelContext = {};
-    this.metaLabelContext = {};
-    this.objectLabelingCompleted = false;
-    this.metaLabelingCompleted = false;
+    //$scope.storeLabeledThingInFrame = () => {
+    //  if (this._activeLabeledThingInFrame.id === undefined) {
+    //    this._labeledThingInFrameGateway.createLabeledThingInFrame(
+    //      this.task,
+    //      this.framePosition.position,
+    //      this._activeLabeledThingInFrame
+    //      )
+    //      .then(labeledThing => {
+    //        this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
+    //        this._activeLabeledThingInFrame = labeledThing;
+    //      });
+    //  } else {
+    //    this._labeledThingInFrameGateway.updateLabeledThingInFrame(
+    //      this._activeLabeledThingInFrame
+    //    )
+    //    .then(labeledThing => {
+    //      this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
+    //      this._activeLabeledThingInFrame = labeledThing;
+    //    });
+    //  }
+    //};
 
-    this.activeTool = null;
 
-    $scope.storeLabeledFrame = () => {
-      const labels = Object.values(this.metaLabelContext);
-      const cleanedLabels = this._selectedLabelListVisitor.visit(
-        this._linearVisitor.visit(this.metaLabelStructure, labels)
-      );
-      this._labeledFrame.classes = cleanedLabels;
-      this._labeledFrame.frameNumber = this.framePosition.position;
-      this._labeledFrameGateway.saveLabeledFrame(this.task.id, this.framePosition.position, this._labeledFrame)
-        .then(labeledFrame => this._labeledFrame = labeledFrame);
-    };
 
-    $scope.storeLabeledThingInFrame = () => {
-      if (this._activeLabeledThingInFrame.id === undefined) {
-        this._labeledThingInFrameGateway.createLabeledThingInFrame(
-          this.task,
-          this.framePosition.position,
-          this._activeLabeledThingInFrame
-          )
-          .then(labeledThing => {
-            this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
-            this._activeLabeledThingInFrame = labeledThing;
-          });
-      } else {
-        this._labeledThingInFrameGateway.updateLabeledThingInFrame(
-          this._activeLabeledThingInFrame
-        )
-        .then(labeledThing => {
-          this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
-          this._activeLabeledThingInFrame = labeledThing;
-        });
-      }
-    };
+    //$scope.$watchCollection('vm.metaLabelContext', () => {
+    //  if (this.metaLabelingCompleted) {
+    //    this._metaLabelWorkflow.transition('complete-labels');
+    //  } else {
+    //    this._metaLabelWorkflow.transition('incomplete-labels');
+    //  }
+    //});
 
-    this._initializeWorkflows();
+    //$scope.$watch('vm.metaLabelingCompleted', completed => {
+    //  // The switch Incomplete -> Complete happens after the context update :(
+    //  if (completed) {
+    //    this._metaLabelWorkflow.transition('complete-labels');
+    //  }
+    //});
 
-    $scope.$watchCollection('vm.metaLabelContext', () => {
-      if (this.metaLabelingCompleted) {
-        this._metaLabelWorkflow.transition('complete-labels');
-      } else {
-        this._metaLabelWorkflow.transition('incomplete-labels');
-      }
-    });
+    //$scope.$watchCollection('vm.objectLabelContext', newContext => {
+    //  if (this._activeLabeledThingInFrame !== null) {
+    //    this._activeLabeledThingInFrame.classes = Object.values(newContext);
+    //  }
+    //
+    //  if (this.objectLabelingCompleted) {
+    //    this._objectLabelWorkflow.transition('complete-labels');
+    //  } else {
+    //    this._objectLabelWorkflow.transition('incomplete-labels');
+    //  }
+    //});
 
-    $scope.$watch('vm.metaLabelingCompleted', completed => {
-      // The switch Incomplete -> Complete happens after the context update :(
-      if (completed) {
-        this._metaLabelWorkflow.transition('complete-labels');
-      }
-    });
-
-    $scope.$watchCollection('vm.objectLabelContext', newContext => {
-      if (this._activeLabeledThingInFrame !== null) {
-        this._activeLabeledThingInFrame.classes = Object.values(newContext);
-      }
-
-      if (this.objectLabelingCompleted) {
-        this._objectLabelWorkflow.transition('complete-labels');
-      } else {
-        this._objectLabelWorkflow.transition('incomplete-labels');
-      }
-    });
-
-    $scope.$watch('vm.objectLabelingCompleted', completed => {
-      // The switch Incomplete -> Complete happens after the context update :(
-      if (completed) {
-        this._objectLabelWorkflow.transition('complete-labels');
-      }
-    });
-  }
-
-  _initializeWorkflows() {
-    this._metaLabelWorkflow = new MetaLabelWorkflow(this.$scope);
-    this._objectLabelWorkflow = new ObjectLabelWorkflow(this.$scope);
+    //$scope.$watch('vm.objectLabelingCompleted', completed => {
+    //  // The switch Incomplete -> Complete happens after the context update :(
+    //  if (completed) {
+    //    this._objectLabelWorkflow.transition('complete-labels');
+    //  }
+    //});
   }
 
   /**
@@ -196,6 +183,20 @@ class TaskController {
   }
 
   /**
+   * Load all {@link LabeledThing}s for a given frame
+   *
+   * @param {int} frameNumber
+   * @returns {Array.<LabeledThing>}
+   *
+   * @private
+   *
+   * @TODO implement once we support inter-frame object tracking
+   */
+  _loadLabeledThings(frameNumber) { // eslint-disable-line no-unused-vars
+    return [];
+  }
+
+  /**
    * Load the {@link LabeledFrame} structure for the given frame
    * @param frameNumber
    * @returns {Promise<LabeledFrame>}
@@ -205,115 +206,93 @@ class TaskController {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
 
-  //_switchActiveFrame(frameNumber) {
-  //  // this._switchToPlaceholderImage();
-  //  this._clearLabelsAndThingsInFrame();
-  //  this._initializeWorkflows();
-  //
-  //  this._frameNumber = frameNumber;
-  //
-  //  Promise.all([
-  //    this._loadFrameImage(frameNumber),
-  //    this._loadLabeledThingsInFrame(frameNumber),
-  //    this._loadLabeledFrame(frameNumber),
-  //  ]).then(([frameImage, labeledThingsInFrame, labeledFrame]) => {
-  //    this.$scope.$apply(() => {
-  //      this.frameImage = frameImage;
-  //      this.labelsAndThingsInFrame.things = {};
-  //      labeledThingsInFrame.forEach(
-  //        labeledThing => this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing
-  //      );
-  //
-  //      this._labeledFrame = labeledFrame;
-  //      this.metaLabelContext = this.createLabelObjectContextFromArray(this.metaLabelStructure, labeledFrame.classes);
-  //    });
-  //  });
-  //}
+  _handleFrameChange(frameNumber) {
+    this.labeledThingsInFrame = null;
+    this.labeledThings = null;
+    this.labeledFrame = null;
 
-  createLabelObjectContextFromArray(structure, context) {
-    const annotatedLinearLabelStructure = this._linearVisitor.visit(structure, context);
-    return this._selectedLabelObjectVisitor.visit(annotatedLinearLabelStructure);
-  }
+    this._$q.all([
+      this._loadLabeledThingsInFrame(frameNumber),
+      this._loadLabeledThings(frameNumber),
+      this._loadLabeledFrame(frameNumber),
+    ]).then(([labeledThingsInFrame, labeledThings, labeledFrame]) => {
+      this.labeledThingsInFrame = {};
+      this.labeledThings = {};
 
-  /**
-   * Clear the currently active labels and things in a frame
-   *
-   * @private
-   */
-  _clearLabelsAndThingsInFrame() {
-    this.labelsAndThingsInFrame = {
-      labels: [],
-      things: {},
-    };
+      labeledThingsInFrame.forEach(labeledThingInFrame => {
+        this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
+      });
 
-    this._activeLabeledThingInFrame = null;
-    this.hideObjectLabels = true;
-  }
+      labeledThings.forEach(labeledThing => {
+        this.labeledThings[labeledThing.id] = labeledThing;
+      });
 
-  handleNewThing(shapes) {
-    this._activeLabeledThingInFrame = {
-      frameNumber: this.framePosition.position,
-      shapes,
-      classes: Object.values(this.objectLabelContext),
-    };
-
-    this._objectLabelWorkflow.transition('new-thing');
-  }
-
-  handleUpdatedThing(labeledThing) {
-    this.handleSelectedThing(labeledThing); // @TODO: Temporary fix for incorrect selection handling
-    this._objectLabelWorkflow.transition('edit-thing');
-  }
-
-  handleSelectedThing(labeledThing) {
-    this._initializeWorkflows(); // @TODO: properly integrate change with handling
-    this._activeLabeledThingInFrame = labeledThing;
-    this.$scope.$apply(
-      () => this._objectLabelWorkflow.transition('edit-labeled-thing', labeledThing)
-    );
-  }
-
-  handleDeselectedThing() {
-    this._activeLabeledThingInFrame = null;
-    this.$scope.$apply(() => {
-      this.hideObjectLabels = true;
+      this.labeledFrame = labeledFrame;
     });
   }
 
-  handleNewLabeledThingRequested() {
-    this._initializeWorkflows(); // @TODO: properly integrate change with handling
-    this._objectLabelWorkflow.transition('new-labeled-thing');
-  }
+  //createLabelObjectContextFromArray(structure, context) {
+  //  const annotatedLinearLabelStructure = this._linearVisitor.visit(structure, context);
+  //  return this._selectedLabelObjectVisitor.visit(annotatedLinearLabelStructure);
+  //}
 
-  handleNewEllipseRequested() {
-    this.activeTool = 'ellipse';
-  }
+  //handleNewThing(shapes) {
+  //  this._activeLabeledThingInFrame = {
+  //    frameNumber: this.framePosition.position,
+  //    shapes,
+  //    classes: Object.values(this.objectLabelContext),
+  //  };
+  //
+  //  this._objectLabelWorkflow.transition('new-thing');
+  //}
 
-  handleNewCircleRequested() {
-    this.activeTool = 'circle';
-  }
+  //handleUpdatedThing(labeledThing) {
+  //  this.handleSelectedThing(labeledThing); // @TODO: Temporary fix for incorrect selection handling
+  //  this._objectLabelWorkflow.transition('edit-thing');
+  //}
 
-  handleNewPolygonRequested() {
-    this.activeTool = 'polygon';
-  }
+  //handleSelectedThing(labeledThing) {
+  //  this._initializeWorkflow(); // @TODO: properly integrate change with handling
+  //  this._activeLabeledThingInFrame = labeledThing;
+  //  this.$scope.$apply(
+  //    () => this._objectLabelWorkflow.transition('edit-labeled-thing', labeledThing)
+  //  );
+  //}
 
-  handleNewLineRequested() {
-    this.activeTool = 'line';
-  }
+  //handleDeselectedThing() {
+  //  this._activeLabeledThingInFrame = null;
+  //  this.$scope.$apply(() => {
+  //    this.hideObjectLabels = true;
+  //  });
+  //}
 
-  handleMoveToolRequested() {
-    this.activeTool = 'move';
-  }
+  //handleNewEllipseRequested() {
+  //  this.activeTool = 'ellipse';
+  //}
+
+  //handleNewCircleRequested() {
+  //  this.activeTool = 'circle';
+  //}
+
+  //handleNewPolygonRequested() {
+  //  this.activeTool = 'polygon';
+  //}
+
+  //handleNewLineRequested() {
+  //  this.activeTool = 'line';
+  //}
+  //
+  //handleMoveToolRequested() {
+  //  this.activeTool = 'move';
+  //}
 }
 
 TaskController.$inject = [
   '$scope',
+  '$q',
   'task',
   'labeledThingInFrameGateway',
   'labeledFrameGateway',
-  'linearLabelStructureVisitor',
-  'selectedLabelObjectLabelStructureVisitor',
-  'selectedLabelListLabelStructureVisitor',
 ];
 
 export default TaskController;

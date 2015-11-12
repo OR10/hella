@@ -1,13 +1,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-container">
-            <viewer-stage things-in-frame="vm.thingsInFrame"
+            <viewer-stage labeled-things-in-frame="vm.labeledThingsInFrame"
                           active-tool="vm.activeTool"
-                          on-new-thing="vm.handleNewThing(shapes)"
-                          on-updated-thing="vm.handleUpdatedThing(labeledThing)"
-                          on-selected-thing="vm.handleSelectedThing(labeledThing)"
-                          on-deselected-thing="vm.handleDeselectedThing()"
-
                           task="vm.task"
                           frame-position="vm.framePosition"
                           filters="vm.filters"
@@ -18,16 +13,10 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-controls-container">
-            <viewer-controls on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
-                             on-new-ellipse-requested="vm.handleNewEllipseRequested()"
-                             on-new-circle-requested="vm.handleNewCircleRequested()"
-                             filters="vm.filters"
+            <viewer-controls filters="vm.filters"
                              frame-position="vm.framePosition"
-                             on-new-polygon-requested="vm.handleNewPolygonRequested()"
-                             on-new-line-requested="vm.handleNewLineRequested()"
-                             on-move-tool-requested="vm.handleMoveToolRequested()"
-                             on-filter-changed="vm.handleFilterChanged(filters)">
-            </viewer-controls>
+                             active-tool="vm.activeTool"
+            ></viewer-controls>
         </div>
     </div>
 </div>
