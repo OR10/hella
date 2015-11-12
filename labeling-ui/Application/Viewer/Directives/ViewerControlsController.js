@@ -4,33 +4,86 @@ import ContrastFilter from '../Filters/ContrastFilter';
 /**
  * Controller handling the control elements below the viewer frame
  *
- * @class ViewerControlsController
- * @property {Function} onPreviousFrameRequested
- * @property {Function} onNextFrameRequested
+ * @property {FramePosition} framePosition Structure representing the currently displayed frame within the viewer.
  * @property {Function} onNewLabeledThingRequested
- * @property {Function} onFilterChanged
+ *
+ * @property {Filters} filters
  */
-export default class ViewerControlsController {
+class ViewerControlsController {
   constructor($scope) {
+    /**
+     * Template name used for the brightnessSlider button popover
+     *
+     * @type {string}
+     */
     this.brightnessSliderTemplate = 'Viewer/ViewerControlsDirective/BrightnessSlider.html';
+
+    /**
+     * Template name used for the contrastSlider button popover
+     *
+     * @type {string}
+     */
     this.contrastSliderTemplate = 'Viewer/ViewerControlsDirective/ContrastSlider.html';
+
+    /**
+     * Value of the brightness slider
+     *
+     * @type {int}
+     */
     this.brightnessSliderValue = 0;
+
+    /**
+     * Value of the contrast slider
+     * @type {int}
+     */
     this.contrastSliderValue = 0;
 
-    $scope.$watchGroup(['vm.brightnessSliderValue', 'vm.contrastSliderValue'], (newValues, oldValues) => {
-      if (newValues !== oldValues) {
-        const filters = [new BrightnessFilter(newValues[0]), new ContrastFilter(newValues[1])];
-        this.onFilterChanged({filters});
+
+    /**
+     * Currently active {@link BrightnessFilter}
+     *
+     * @type {BrightnessFilter|null}
+     * @private
+     */
+    this._brightnessFilter = null;
+
+    /**
+     * Currently active {@link ContrastFilter}
+     * @type {ContrastFilter|null}
+     *
+     * @private
+     */
+    this._constrastFilter = null;
+
+    // Update BrightnessFilter if value changed
+    $scope.$watch('vm.brightnessSliderValue', newBrightness => {
+      const newFilter = new BrightnessFilter(newBrightness);
+      if (!this._brightnessFilter) {
+        this.filters.addFilter(newFilter);
+      } else {
+        this.filters.replaceFilter(this._brightnessFilter, newFilter);
       }
+      this._brightnessFilter = newFilter;
+    });
+
+    // Update ContrastFilter if value changed
+    $scope.$watch('vm.contrastSliderValue', newContrast => {
+      const newFilter = new ContrastFilter(newContrast);
+      if (!this._constrastFilter) {
+        this.filters.addFilter(newFilter);
+      } else {
+        this.filters.replaceFilter(this._constrastFilter, newFilter);
+      }
+      this._constrastFilter = newFilter;
     });
   }
 
   handleNextFrameClicked() {
-    this.onNextFrameRequested();
+    this.framePosition.next();
   }
 
   handlePreviousFrameClicked() {
-    this.onPreviousFrameRequested();
+    this.framePosition.previous();
   }
 
   handleNewLabeledThingClicked() {
@@ -38,24 +91,26 @@ export default class ViewerControlsController {
   }
 
   handleNewEllipseClicked() {
-    this.onNewEllipseRequested();
+    this.activeTool = 'ellipse';
   }
 
   handleNewCircleClicked() {
-    this.onNewCircleRequested();
+    this.activeTool = 'circle';
   }
 
   handleMoveToolClicked() {
-    this.onMoveToolRequested();
+    this.activeTool = 'move';
   }
 
   handleNewLineClicked() {
-    this.onNewLineRequested();
+    this.activeTool = 'line';
   }
 
   handleNewPolygonClicked() {
-    this.onNewPolygonRequested();
+    this.activeTool = 'polygon';
   }
 }
 
 ViewerControlsController.$inject = ['$scope'];
+
+export default ViewerControlsController;

@@ -8,6 +8,8 @@ import TaskListController from './TaskListController';
  */
 class TaskListDirective {
   constructor() {
+    this.scope = true;
+
     this.template = taskListTemplate;
 
     this.controller = TaskListController;

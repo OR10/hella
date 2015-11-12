@@ -7,7 +7,7 @@ class TaskFrameLocationGateway {
    * @param {angular.$http} $http injected
    */
   constructor(apiService, $http) {
-    this.apiService = apiService;
+    this._apiService = apiService;
     this.$http = $http;
   }
 
@@ -27,7 +27,7 @@ class TaskFrameLocationGateway {
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
     return this.$http({
       method: 'GET',
-      url: this.apiService.getApiUrl(
+      url: this._apiService.getApiUrl(
         `/task/${taskId}/frameLocations/${type}`,
         {offset, limit}
       ),

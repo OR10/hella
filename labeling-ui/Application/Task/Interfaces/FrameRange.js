@@ -1,6 +1,19 @@
 /**
- * @interface FrameRange
+ * A specific range of frames
  *
- * @property {int} startFrameNumber
- * @property {int} endFrameNumber
+ * @interface FrameRange
+ */
+
+/**
+ * First frame of the given {@link FrameRange} (inclusive)
+ *
+ * @name FrameRange#startFrameNumber
+ * @type {int}
+ */
+
+/**
+ * Last frame of the given {@link FrameRange} (inclusive)
+ *
+ * @name FrameRange#endFrameNumber
+ * @type {int}
  */

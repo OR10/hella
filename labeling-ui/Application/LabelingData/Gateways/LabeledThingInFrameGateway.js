@@ -15,7 +15,7 @@ class LabeledThingInFrameGateway {
     /**
      * @type {ApiService}
      */
-    this.apiService = apiService;
+    this._apiService = apiService;
   }
 
   /**
@@ -27,7 +27,7 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame[]|Error>}
    */
   listLabeledThingInFrame(task, frameNumber) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
     return this.$http.get(url)
@@ -48,7 +48,7 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
   getLabeledThingInFrame(labeledThingInFrameId) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
     return this.$http.get(url)
@@ -71,7 +71,7 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
   createLabeledThingInFrame(task, frameNumber, labeledThingInFrame) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
     const unifiedLabeledThingInFrame = this._uniqueClasses(labeledThingInFrame);
@@ -94,7 +94,7 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
   updateLabeledThingInFrame(newLabeledThingInFrame) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${newLabeledThingInFrame.id}`
     );
 
@@ -118,7 +118,7 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<true|Error>}
    */
   deleteLabeledThingInFrame(labeledThingInFrameId) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
     return this.$http.delete(url)

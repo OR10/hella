@@ -7,18 +7,19 @@ class TaskListController {
    */
   constructor(taskGateway) {
     /**
-     * @type {TaskGateway}
-     */
-    this.taskGateway = taskGateway;
-
-    /**
-     * List of retrieved {@link Tasks}
-     *
-     * @type {Array.<Task>}
+     * List of tasks rendered by the directive
+     * @type {null|Array.<Task>}
      */
     this.tasks = null;
 
-    this.loadTaskList();
+
+    /**
+     * @type {TaskGateway}
+     * @private
+     */
+    this._taskGateway = taskGateway;
+
+    this._loadTaskList();
   }
 
   /**
@@ -26,9 +27,11 @@ class TaskListController {
    *
    * Once the retrieval operation is finished the {@link TaskListController#tasks} will be automatically updated
    * to the new list.
+   *
+   * @private
    */
-  loadTaskList() {
-    this.taskGateway.getTasks()
+  _loadTaskList() {
+    this._taskGateway.getTasks()
       .then((tasks) => {
         this.tasks = tasks;
       });

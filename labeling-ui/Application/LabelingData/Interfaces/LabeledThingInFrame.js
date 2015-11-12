@@ -12,13 +12,6 @@
  */
 
 /**
- * Unique string that represents the revision of the current object
- *
- * @name LabeledThingInFrame#rev
- * @type {string}
- */
-
-/**
  * The frame this entity belongs to
  *
  * @name LabeledThingInFrame#frameNumber

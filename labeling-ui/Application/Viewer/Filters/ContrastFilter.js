@@ -1,7 +1,6 @@
 /**
  * Filter responsible for adjusting the contrast of an image
  *
- * @class ContrastFilter
  * @implements {Filter}
  */
 export default class ContrastFilter {

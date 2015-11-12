@@ -3,18 +3,28 @@ import TaskGateway from './Gateways/TaskGateway';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
-export default class Task extends Module {
+/**
+ * Module containing all functionality associated with a {@link Task}
+ *
+ * @extends Module
+ */
+class Task extends Module {
+  /**
+   * @inheritDoc
+   */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Task', []);
 
     this.module.service('taskGateway', TaskGateway);
   }
 
+  /**
+   * @inheritDoc
+   */
   config($stateProvider) {
-    const taskResolver = ($stateParams, taskGateway) => {
+    function taskResolver($stateParams, taskGateway) {
       return taskGateway.getTask($stateParams.taskId);
-    };
-
+    }
     taskResolver.$inject = ['$stateParams', 'taskGateway'];
 
     $stateProvider.state('task', {
@@ -30,3 +40,5 @@ export default class Task extends Module {
 }
 
 Task.prototype.config.$inject = ['$stateProvider'];
+
+export default Task;

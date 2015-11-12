@@ -1,3 +1,5 @@
+import Filters from '../Models/Filters';
+
 /**
  * @class ViewerController
  *
@@ -5,17 +7,14 @@
  * @property {Function} onUpdatedThing
  * @property {Function} onSelectedThing
  * @property {Function} onDeselectedThing
- * @property {Function} onNextFrameRequested
- * @property {Function} onPreviousFrameRequested
  * @property {Function} onNewLabeledThingRequested
+ *
+ * @property {Task} task
+ * @property {FramePosition} framePosition
  */
 export default class ViewerController {
   constructor() {
-    this.filters = [];
-  }
-
-  handleFilterChanged(filters) {
-    this.filters = filters;
+    this.filters = new Filters();
   }
 
   handleNewThing(shapes) {
@@ -32,14 +31,6 @@ export default class ViewerController {
 
   handleDeselectedThing() {
     this.onDeselectedThing();
-  }
-
-  handleNextFrameRequested() {
-    this.onNextFrameRequested();
-  }
-
-  handlePreviousFrameRequested() {
-    this.onPreviousFrameRequested();
   }
 
   handleNewLabeledThingRequested() {
