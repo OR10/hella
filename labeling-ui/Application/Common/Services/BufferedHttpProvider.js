@@ -16,6 +16,44 @@ class BufferedHttpProvider {
      * @private
      */
     this._bufferedHttp = null;
+
+    /**
+     * Automatically extract and inject revisions
+     *
+     * Can be disabled for tests
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._autoExtractInject = true;
+
+    /**
+     * Expose a flushBuffers method
+     *
+     * Usually disabled, but can be enabled for tests
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._flushExposed = false;
+  }
+
+  /**
+   * Disable the automatic extraction and injection of revisions
+   *
+   * This is useful for tests, which should use the bufferedHttp as an isolated black box
+   */
+  disableAutoExtractionAndInjection() {
+    this._autoExtractInject = false;
+  }
+
+  /**
+   * Enable the exposure of a `flushBuffers` method
+   *
+   * This is useful for tests, which need to wait until all `$http` calls have been processed
+   */
+  enableFlushFunctionality() {
+    this._flushExposed = true;
   }
 
   /**
@@ -118,17 +156,17 @@ class BufferedHttpProvider {
      * @param {Object} options
      * @param {string} bufferName
      */
-    function bufferedHttp(options, bufferName = 'default') {
+    const bufferedHttp = function BufferedHttp(options, bufferName = 'default') { // eslint-disable-line no-extra-bind
       return $q((resolve, reject) => {
         const buffer = _getBuffer(bufferName);
         buffer.promise = buffer.promise.then(() => {
-          if (options.data) {
+          if (options.data && this._autoExtractInject) {
             _injectRevision(options.data);
           }
 
           $http(options)
             .then(result => {
-              if (result.data) {
+              if (result.data && this._autoExtractInject) {
                 _extractRevision(result.data);
               }
               resolve(result);
@@ -136,7 +174,7 @@ class BufferedHttpProvider {
             .catch(reject);
         });
       });
-    }
+    }.bind(this);
 
     // Create $http like shortcuts (without body)
     ['get', 'head', 'delete', 'jsonp'].forEach(method => {
@@ -199,17 +237,19 @@ class BufferedHttpProvider {
       };
     });
 
-    /**
-     * Flush all buffers returning a Promise fulfilled once all current buffers are flushed
-     * @returns {Promise}
-     */
-    bufferedHttp.flushBuffers = () => {
-      const flushPromises = [];
-      _buffers.forEach((buffer) => {
-        flushPromises.push(buffer.promise);
-      });
-      return Promise.all(flushPromises);
-    };
+    if (this._flushExposed) {
+      /**
+       * Flush all buffers returning a Promise fulfilled once all current buffers are flushed
+       * @returns {Promise}
+       */
+      bufferedHttp.flushBuffers = () => {
+        const flushPromises = [];
+        _buffers.forEach((buffer) => {
+          flushPromises.push(buffer.promise);
+        });
+        return Promise.all(flushPromises);
+      };
+    }
 
     return bufferedHttp;
   }
