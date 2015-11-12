@@ -105,10 +105,10 @@ class ViewerStageController {
         }
 
         backgroundLayer.setBackgroundImage(newFrameImage);
-        backgroundLayer.render();
         this.filters.filters.forEach(filter => {
           backgroundLayer.applyFilter(filter);
         });
+        backgroundLayer.render();
       });
     });
   }

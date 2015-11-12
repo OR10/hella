@@ -10,7 +10,8 @@ export default class ViewerDirective {
   constructor() {
     this.scope = {
       labeledThingsInFrame: '=',
-      filters: '=',
+      labeldThings: '=',
+      selectedLabeledThingInFrame: '=',
       activeTool: '=',
       task: '=',
       framePosition: '=',

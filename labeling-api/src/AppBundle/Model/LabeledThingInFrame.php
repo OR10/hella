@@ -40,6 +40,11 @@ class LabeledThingInFrame
     private $labeledThingId;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
+
+    /**
      * @param LabeledThing $labeledThing
      */
     public function __construct(LabeledThing $labeledThing)
@@ -125,5 +130,21 @@ class LabeledThingInFrame
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
     }
 }

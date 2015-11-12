@@ -3,6 +3,7 @@ import FramePosition from '../Model/FramePosition';
 class TaskController {
   /**
    * @param {angular.Scope} $scope
+   * @param {angular.$q} $q
    * @param {Task} task
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
@@ -67,7 +68,7 @@ class TaskController {
     /**
      * @type {LabeledThingInFrame|null}
      */
-    this.selectedThingInFrame = null;
+    this.selectedLabeledThingInFrame = null;
 
     /**
      * @type {LabeledThingInFrameGateway}

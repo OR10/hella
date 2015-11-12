@@ -2,6 +2,7 @@
     <div class="col-md-12">
         <div class="viewer-container">
             <viewer-stage labeled-things-in-frame="vm.labeledThingsInFrame"
+                          selected-thing-in-frame="vm.selectedThingInFrame"
                           active-tool="vm.activeTool"
                           task="vm.task"
                           frame-position="vm.framePosition"
@@ -13,9 +14,12 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-controls-container">
-            <viewer-controls filters="vm.filters"
+            <viewer-controls labeled-things-in-frame="vm.labeledThingsInFrame"
+                             selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
                              frame-position="vm.framePosition"
                              active-tool="vm.activeTool"
+                             filters="vm.filters"
+                             task="vm.task"
             ></viewer-controls>
         </div>
     </div>
