@@ -104,82 +104,11 @@ class TaskController {
      */
     this._selectedLabelListVisitor = selectedLabelListVisitor;
 
+    // Watch for changes of the Frame position to correctly update all
+    // data structures for the new frame
     $scope.$watch('vm.framePosition.position', newFramePosition => {
       this._handleFrameChange(newFramePosition);
     });
-
-    //this.hideObjectLabels = true;
-    //this.objectLabelingCompleted = false;
-    //this.metaLabelingCompleted = false;
-
-    //$scope.storeLabeledFrame = () => {
-    //  const labels = Object.values(this.metaLabelContext);
-    //  const cleanedLabels = this._selectedLabelListVisitor.visit(
-    //    this._linearVisitor.visit(this.metaLabelStructure, labels)
-    //  );
-    //  this._labeledFrame.classes = cleanedLabels;
-    //  this._labeledFrame.frameNumber = this.framePosition.position;
-    //  this._labeledFrameGateway.saveLabeledFrame(this.task.id, this.framePosition.position, this._labeledFrame)
-    //    .then(labeledFrame => this._labeledFrame = labeledFrame);
-    //};
-
-    //$scope.storeLabeledThingInFrame = () => {
-    //  if (this._activeLabeledThingInFrame.id === undefined) {
-    //    this._labeledThingInFrameGateway.createLabeledThingInFrame(
-    //      this.task,
-    //      this.framePosition.position,
-    //      this._activeLabeledThingInFrame
-    //      )
-    //      .then(labeledThing => {
-    //        this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
-    //        this._activeLabeledThingInFrame = labeledThing;
-    //      });
-    //  } else {
-    //    this._labeledThingInFrameGateway.updateLabeledThingInFrame(
-    //      this._activeLabeledThingInFrame
-    //    )
-    //    .then(labeledThing => {
-    //      this.labelsAndThingsInFrame.things[labeledThing.id] = labeledThing;
-    //      this._activeLabeledThingInFrame = labeledThing;
-    //    });
-    //  }
-    //};
-
-
-
-    //$scope.$watchCollection('vm.metaLabelContext', () => {
-    //  if (this.metaLabelingCompleted) {
-    //    this._metaLabelWorkflow.transition('complete-labels');
-    //  } else {
-    //    this._metaLabelWorkflow.transition('incomplete-labels');
-    //  }
-    //});
-
-    //$scope.$watch('vm.metaLabelingCompleted', completed => {
-    //  // The switch Incomplete -> Complete happens after the context update :(
-    //  if (completed) {
-    //    this._metaLabelWorkflow.transition('complete-labels');
-    //  }
-    //});
-
-    //$scope.$watchCollection('vm.objectLabelContext', newContext => {
-    //  if (this._activeLabeledThingInFrame !== null) {
-    //    this._activeLabeledThingInFrame.classes = Object.values(newContext);
-    //  }
-    //
-    //  if (this.objectLabelingCompleted) {
-    //    this._objectLabelWorkflow.transition('complete-labels');
-    //  } else {
-    //    this._objectLabelWorkflow.transition('incomplete-labels');
-    //  }
-    //});
-
-    //$scope.$watch('vm.objectLabelingCompleted', completed => {
-    //  // The switch Incomplete -> Complete happens after the context update :(
-    //  if (completed) {
-    //    this._objectLabelWorkflow.transition('complete-labels');
-    //  }
-    //});
   }
 
   /**
@@ -219,6 +148,15 @@ class TaskController {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
 
+  /**
+   * Handle the change to new frame
+   *
+   * The frame change includes things like loading all frame relevant data from the backend,
+   * as well as propagating this information to all subcomponents
+   *
+   * @param {int} frameNumber
+   * @private
+   */
   _handleFrameChange(frameNumber) {
     this.labeledThingsInFrame = null;
     this.labeledThings = null;
@@ -230,12 +168,11 @@ class TaskController {
       this._loadLabeledFrame(frameNumber),
     ]).then(([labeledThingsInFrame, labeledThings, labeledFrame]) => {
       this.labeledThingsInFrame = {};
-      this.labeledThings = {};
-
       labeledThingsInFrame.forEach(labeledThingInFrame => {
         this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
       });
 
+      this.labeledThings = {};
       labeledThings.forEach(labeledThing => {
         this.labeledThings[labeledThing.id] = labeledThing;
       });
@@ -243,41 +180,6 @@ class TaskController {
       this.labeledFrame = labeledFrame;
     });
   }
-
-  //createLabelObjectContextFromArray(structure, context) {
-  //  const annotatedLinearLabelStructure = this._linearVisitor.visit(structure, context);
-  //  return this._selectedLabelObjectVisitor.visit(annotatedLinearLabelStructure);
-  //}
-
-  //handleNewThing(shapes) {
-  //  this._activeLabeledThingInFrame = {
-  //    frameNumber: this.framePosition.position,
-  //    shapes,
-  //    classes: Object.values(this.objectLabelContext),
-  //  };
-  //
-  //  this._objectLabelWorkflow.transition('new-thing');
-  //}
-
-  //handleUpdatedThing(labeledThing) {
-  //  this.handleSelectedThing(labeledThing); // @TODO: Temporary fix for incorrect selection handling
-  //  this._objectLabelWorkflow.transition('edit-thing');
-  //}
-
-  //handleSelectedThing(labeledThing) {
-  //  this._initializeWorkflow(); // @TODO: properly integrate change with handling
-  //  this._activeLabeledThingInFrame = labeledThing;
-  //  this.$scope.$apply(
-  //    () => this._objectLabelWorkflow.transition('edit-labeled-thing', labeledThing)
-  //  );
-  //}
-
-  //handleDeselectedThing() {
-  //  this._activeLabeledThingInFrame = null;
-  //  this.$scope.$apply(() => {
-  //    this.hideObjectLabels = true;
-  //  });
-  //}
 }
 
 TaskController.$inject = [
