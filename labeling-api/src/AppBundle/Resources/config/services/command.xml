@@ -27,6 +27,10 @@
             <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
             <tag name="console.command"/>
         </service>
-
+        <service id="annostation.labeling_api.command.queue_maintainer" class="AppBundle\Command\QueueMaintainer">
+            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
