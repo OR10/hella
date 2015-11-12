@@ -57,6 +57,11 @@ class ViewerControlsController {
      */
     this._constrastFilter = null;
 
+    /**
+     * @type {string}
+     */
+    this.selectedDrawingTool = 'rectangle';
+
     // Update BrightnessFilter if value changed
     $scope.$watch('vm.brightnessSliderValue', newBrightness => {
       const newFilter = new BrightnessFilter(newBrightness);
@@ -88,9 +93,9 @@ class ViewerControlsController {
     this.framePosition.previous();
   }
 
-  handleNewLabeledThingClicked() {
-    // TODO this is a hack. we probably need to generate our ids in the frontend
-    this._labeledThingInFrameGateway.createLabeledThingInFrame(this.task, this.framePosition.position, {
+  _createNewLabeledThingInFrame() {
+    // TODO this is a hack. we probably want to generate our ids in the frontend
+    return this._labeledThingInFrameGateway.createLabeledThingInFrame(this.task, this.framePosition.position, {
       classes: [],
       shapes: [],
       incomplete: true,
@@ -100,24 +105,44 @@ class ViewerControlsController {
     });
   }
 
+  handleNewLabeledThingClicked() {
+    this._createNewLabeledThingInFrame()
+      .then(() => {
+        debugger;
+        this.selectedDrawingTool = 'rectangle';
+      });
+  }
+
   handleNewEllipseClicked() {
-    this.activeTool = 'ellipse';
+    this._createNewLabeledThingInFrame()
+      .then(() => {
+        this.selectedDrawingTool = 'ellipse';
+      });
   }
 
   handleNewCircleClicked() {
-    this.activeTool = 'circle';
+    this._createNewLabeledThingInFrame()
+      .then(() => {
+        this.selectedDrawingTool = 'circle';
+      });
+  }
+
+  handleNewLineClicked() {
+    this._createNewLabeledThingInFrame()
+      .then(() => {
+        this.selectedDrawingTool = 'line';
+      });
+  }
+
+  handleNewPolygonClicked() {
+    this._createNewLabeledThingInFrame()
+      .then(() => {
+        this.selectedDrawingTool = 'polygon';
+      });
   }
 
   handleMoveToolClicked() {
     this.activeTool = 'move';
-  }
-
-  handleNewLineClicked() {
-    this.activeTool = 'line';
-  }
-
-  handleNewPolygonClicked() {
-    this.activeTool = 'polygon';
   }
 }
 

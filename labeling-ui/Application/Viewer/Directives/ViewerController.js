@@ -17,44 +17,44 @@ export default class ViewerController {
     this.filters = new Filters();
   }
 
-  handleNewThing(shapes) {
-    this.onNewThing({shapes});
-  }
-
-  handleUpdatedThing(labeledThing) {
-    this.onUpdatedThing({labeledThing});
-  }
-
-  handleSelectedThing(labeledThing) {
-    this.onSelectedThing({labeledThing});
-  }
-
-  handleDeselectedThing() {
-    this.onDeselectedThing();
-  }
-
-  handleNewLabeledThingRequested() {
-    this.onNewLabeledThingRequested();
-  }
-
-  handleNewEllipseRequested() {
-    this.onNewEllipseRequested();
-  }
-
-  handleNewCircleRequested() {
-    this.onNewCircleRequested();
-  }
-
-  handleNewPolygonRequested() {
-    this.onNewPolygonRequested();
-  }
-
-  handleNewLineRequested() {
-    this.onNewLineRequested();
-  }
-
-  handleMoveToolRequested() {
-    this.onMoveToolRequested();
-  }
+  //handleNewThing(shapes) {
+  //  this.onNewThing({shapes});
+  //}
+  //
+  //handleUpdatedThing(labeledThing) {
+  //  this.onUpdatedThing({labeledThing});
+  //}
+  //
+  //handleSelectedThing(labeledThing) {
+  //  this.onSelectedThing({labeledThing});
+  //}
+  //
+  //handleDeselectedThing() {
+  //  this.onDeselectedThing();
+  //}
+  //
+  //handleNewLabeledThingRequested() {
+  //  this.onNewLabeledThingRequested();
+  //}
+  //
+  //handleNewEllipseRequested() {
+  //  this.onNewEllipseRequested();
+  //}
+  //
+  //handleNewCircleRequested() {
+  //  this.onNewCircleRequested();
+  //}
+  //
+  //handleNewPolygonRequested() {
+  //  this.onNewPolygonRequested();
+  //}
+  //
+  //handleNewLineRequested() {
+  //  this.onNewLineRequested();
+  //}
+  //
+  //handleMoveToolRequested() {
+  //  this.onMoveToolRequested();
+  //}
 
 }
