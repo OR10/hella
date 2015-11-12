@@ -188,8 +188,6 @@ class KittiTest extends Tests\KernelTestCase
     }
 
     /**
-     * Create a rectangle shape.
-     *
      * @param float $left
      * @param float $top
      * @param float $right
