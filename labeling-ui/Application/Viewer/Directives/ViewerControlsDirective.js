@@ -15,6 +15,7 @@ class ViewerControlsDirective {
       framePosition: '=',
       filters: '=',
       activeTool: '=',
+      selectedDrawingTool: '=',
       task: '=',
       selectedLabeledThingInFrame: '=',
       labeledThingsInFrame: '=',

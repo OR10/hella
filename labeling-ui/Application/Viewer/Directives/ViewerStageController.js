@@ -6,11 +6,6 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 /**
  * @class ViewerStageController
  *
- * @property {Function} onNewThing
- * @property {Function} onUpdatedThing
- * @property {Function} onSelectedThing
- * @property {Function} onDeselectedThing
- *
  * @property {FramePosition} framePosition
  * @property {Task} task
  * @property {Filters} filters
@@ -65,10 +60,10 @@ class ViewerStageController {
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
-    thingLayer.on('thing:new', shapes => this.onNewThing({shapes}));
-    thingLayer.on('thing:update', labeledThing => this.onUpdatedThing({labeledThing}));
-    thingLayer.on('thing:selected', labeledThing => this.onSelectedThing({labeledThing}));
-    thingLayer.on('thing:deselected', () => this.onDeselectedThing());
+    thingLayer.on('thing:new', shape => this._onNewShape(shape));
+    thingLayer.on('thing:update', labeledThingInFrame => this._onUpdatedShape(labeledThingInFrame));
+    thingLayer.on('thing:selected', labeledThingInFrame => this._onSelectedThing(labeledThingInFrame));
+    thingLayer.on('thing:deselected', () => this._onDeselectedThing());
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -139,6 +134,22 @@ class ViewerStageController {
     );
   }
 
+  _onDeselectedThing() {
+    this.selectedLabeledThingInFrame = null;
+  }
+
+  _onSelectedThing(labeledThingInFrameId) {
+    this.selectedLabeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
+  }
+
+  _onUpdatedShape(labeledThingInFrameId, shape) {
+    // TODO this needs to be fixed for supporting multiple shapes
+    this.labeledThingsInFrame[labeledThingInFrameId].shapes[0] = shape;
+  }
+
+  _onNewShape(shape) {
+    this.selectedLabeledThingInFrame.shapes.push(shape);
+  }
 }
 
 ViewerStageController.$inject = [

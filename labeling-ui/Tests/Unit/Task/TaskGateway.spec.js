@@ -53,8 +53,6 @@ describe('TaskGateway', () => {
       done();
     });
 
-    console.log(bufferedHttp);
-    console.log(bufferedHttp.flushBuffers());
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
