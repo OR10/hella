@@ -73,12 +73,12 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
-      this.emit('thing:update', this._thingIdsByShapeId.get(shape.id), shape);
+      this.emit('thing:update', this._thingIdsByShapeId.get(rectangle.id), shape);
     });
 
     this._rectangleModificationTool.on('rectangle:selected', rectangle => {
-      const labeledThing = this._thingsByShapeId.get(rectangle.id);
-      this.emit('thing:selected', labeledThing);
+      const labeledThingId = this._thingIdsByShapeId.get(rectangle.id);
+      this.emit('thing:selected', labeledThingId);
     });
 
     this._rectangleModificationTool.on('rectangle:deselected', () => {
@@ -236,11 +236,11 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeOptions);
         return rect.id;
       case 'polygon':
-        const polygon = this._polygonRenderer.drawPolygon(shape.segments, shapeOptions);
+        const polygon = this._polygonRenderer.drawPolygon(shape.points, shapeOptions);
         return polygon.id;
-      case 'ellipsis':
-        const ellipsis = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeOptions);
-        return ellipsis.id;
+      case 'ellipse':
+        const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeOptions);
+        return ellipse.id;
       default:
         throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
     }

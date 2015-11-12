@@ -1,6 +1,6 @@
 <div class="label-wizard">
     <uib-carousel template-url="LabelWizard/wizard-carousel.html" no-wrap="true">
-        <uib-slide ng-repeat="page in vm.pages" active="vm.activePages[page.id]">
+        <uib-slide ng-repeat="page in vm.slicedPages" active="vm.activePages[page.id]">
             <div class="label-wizard-challenge">
                 <p>{{page.challenge}}</p>
                 <div class="radio" ng-repeat="response in page.responses track by $index">

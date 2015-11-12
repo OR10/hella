@@ -16,6 +16,7 @@ export default class ViewerStageDirective {
       task: '=',
       framePosition: '=',
       filters: '=',
+      selectedLabeledThingInFrame: '=',
     };
 
     this.controller = ViewerStageController;

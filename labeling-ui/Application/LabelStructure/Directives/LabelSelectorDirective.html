@@ -2,10 +2,9 @@
     <uib-accordion close-others="{{true}}">
         <uib-accordion-group ng-repeat="section in vm.sections track by $index"
                              heading="{{section.header}}"
-                             is-open="vm.firstOpen">
-            <label-wizard labeled-object="vm.labeledObject"
-                          structure="vm.structure"
-                          annotation="vm.annotation"
+                             is-open="vm.openPanels[$index]">
+            <label-wizard pages="vm.pages"
+                          choices="vm.choices"
                           offset="{{section.offset}}"
                           limit="{{section.limit}}"
             ></label-wizard>

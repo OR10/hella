@@ -67,7 +67,7 @@ class LabeledFrame extends Controller\Base
                 $response->setData([
                     'result' => array(
                         'frameNumber' => (int) $frameNumber,
-                        'classes' => array()
+                        'classes' => array(),
                     )
                 ]);
 
@@ -77,7 +77,13 @@ class LabeledFrame extends Controller\Base
             usort($labeledFrames, function ($a, $b) {
                 return (int)$b->getFrameNumber() - (int)$a->getFrameNumber();
             });
-            $response->setData(['result' => $labeledFrames[0]]);
+            $foundLabeledFrame = $labeledFrames[0];
+            $response->setData([
+                'result' => [
+                    'frameNumber' => $frameNumber,
+                    'classes' => $foundLabeledFrame->getClasses(),
+                ]
+           ]);
         } else {
             $response->setData(['result' => $labeledFrame]);
         }
@@ -144,9 +150,11 @@ class LabeledFrame extends Controller\Base
 
         $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
 
-        if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
-            $response->setStatusCode(409);
-        } else {
+        // @TODO: Synchronize with frontend team, to find a better solution
+        // here!
+//        if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
+//            $response->setStatusCode(409);
+//        } else {
             if ($labeledFrame === null) {
                 $labeledFrame = new Model\LabeledFrame($task);
             }
@@ -155,7 +163,7 @@ class LabeledFrame extends Controller\Base
             $labeledFrame->setIncomplete($incomplete);
             $this->labeledFrameFacade->save($labeledFrame);
             $response->setData(['result' => $labeledFrame]);
-        }
+  //      }
 
         return $response;
     }

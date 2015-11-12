@@ -21,6 +21,12 @@ class ViewerStageController {
    */
   constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway) {
     /**
+     * @type {angular.Scope}
+     * @private
+     */
+    this._$scope = $scope;
+
+    /**
      * @type {TaskFrameLocationGateway}
      * @private
      */
@@ -68,8 +74,8 @@ class ViewerStageController {
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
     thingLayer.on('thing:new', shape => this._onNewShape(shape));
-    thingLayer.on('thing:update', labeledThingInFrame => this._onUpdatedShape(labeledThingInFrame));
-    thingLayer.on('thing:selected', labeledThingInFrame => this._onSelectedThing(labeledThingInFrame));
+    thingLayer.on('thing:update', (labeledThingInFrameId, shape) => this._onUpdatedShape(labeledThingInFrameId, shape));
+    thingLayer.on('thing:selected', labeledThingInFrameId => this._onSelectedThing(labeledThingInFrameId));
     thingLayer.on('thing:deselected', () => this._onDeselectedThing());
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
@@ -142,24 +148,36 @@ class ViewerStageController {
   }
 
   _onDeselectedThing() {
-    this.selectedLabeledThingInFrame = null;
+    this._$scope.$apply(() => {
+      this.selectedLabeledThingInFrame = null;
+    });
   }
 
   _onSelectedThing(labeledThingInFrameId) {
-    this.selectedLabeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
+    this._$scope.$apply(() => {
+      this.selectedLabeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
+    });
   }
 
   _onUpdatedShape(labeledThingInFrameId, shape) {
     const labeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
 
-    // TODO this needs to be fixed for supporting multiple shapes
+    // @TODO this needs to be fixed for supporting multiple shapes
     labeledThingInFrame.shapes[0] = shape;
 
     this._labeledThingInFrameGateway.updateLabeledThingInFrame(labeledThingInFrame);
   }
 
   _onNewShape(shape) {
-    this.selectedLabeledThingInFrame.shapes.push(shape);
+    this._$scope.$apply(() => {
+      this.selectedLabeledThingInFrame.shapes.push(shape);
+      this.activeTool = null;
+    });
+
+    // @TODO: Currently we don't really know if it really complete. The current workflow simply implies, that it needs
+    //        to be complete at this point. Maybe we need different flags for incomplete_labels and incomplete_shapes?
+    this.selectedLabeledThingInFrame.incomplete = false;
+    this._labeledThingInFrameGateway.updateLabeledThingInFrame(this.selectedLabeledThingInFrame);
   }
 }
 

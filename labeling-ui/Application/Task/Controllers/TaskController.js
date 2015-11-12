@@ -13,10 +13,8 @@ class TaskController {
    * @param {Task} task
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
-   * @param {SelectedLabelObjectLabelStructureVisitor} selectedLabelObjectVisitor
-   * @param {SelectedLabelListLabelStructureVisitor} selectedLabelListVisitor
    */
-  constructor($scope, $q, task, labeledThingInFrameGateway, labeledFrameGateway, selectedLabelObjectVisitor, selectedLabelListVisitor) {
+  constructor($scope, $q, task, labeledThingInFrameGateway, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
@@ -83,6 +81,20 @@ class TaskController {
     this.selectedLabeledThingInFrame = null;
 
     /**
+     * Information about the labeling state of the `selectedLabeledThingInFrame`
+     *
+     * @type {boolean}
+     */
+    this.selectedLabeledThingInFrameCompletelyLabeled = false;
+
+    /**
+     * Due to an action selected DrawingTool, which should be activated when appropriate.
+     *
+     * @type {string}
+     */
+    this.selectedDrawingTool = null;
+
+    /**
      * @type {LabeledThingInFrameGateway}
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
@@ -92,22 +104,20 @@ class TaskController {
      */
     this._labeledFrameGateway = labeledFrameGateway;
 
-    /**
-     * @type {SelectedLabelObjectLabelStructureVisitor}
-     * @private
-     */
-    this._selectedLabelObjectVisitor = selectedLabelObjectVisitor;
-
-    /**
-     * @type {SelectedLabelListLabelStructureVisitor}
-     * @private
-     */
-    this._selectedLabelListVisitor = selectedLabelListVisitor;
-
     // Watch for changes of the Frame position to correctly update all
     // data structures for the new frame
     $scope.$watch('vm.framePosition.position', newFramePosition => {
       this._handleFrameChange(newFramePosition);
+    });
+
+    // Make sure a drawing action can take place, after labeling is completed
+    $scope.$watch('vm.selectedLabeledThingInFrameCompletelyLabeled', newState => {
+      if (newState === true && this.selectedLabeledThingInFrame.shapes.length === 0) {
+        if (this.selectedDrawingTool !== null) {
+          this.activeTool = this.selectedDrawingTool;
+          this.selectedDrawingTool = null;
+        }
+      }
     });
   }
 

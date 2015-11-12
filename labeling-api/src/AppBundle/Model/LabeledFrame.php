@@ -78,6 +78,15 @@ class LabeledFrame
         $this->labelingTaskId = $labelingTaskId;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+
     /**
      * @return mixed
      */
