@@ -49,7 +49,7 @@ class TaskFrameLocationGateway {
 
 TaskFrameLocationGateway.$inject = [
   'ApiService',
-  'bufferedHttp'
+  'bufferedHttp',
 ];
 
 export default TaskFrameLocationGateway;

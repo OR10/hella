@@ -8,24 +8,29 @@ import LabeledFrameGateway from 'Application/LabelingData/Gateways/LabeledFrameG
 describe('LabeledFrameGateway', () => {
   let $httpBackend;
   let gateway;
+  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.enableFlushFunctionality();
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledFrameGateway);
+      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 
@@ -51,7 +56,7 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should save a labeled thing in frame', done => {
@@ -71,7 +76,7 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
 
@@ -91,6 +96,6 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 });
