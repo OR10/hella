@@ -3,23 +3,20 @@
     "challenge": "Wie ist das Wetter?"
   },
   "sunny": {
-    "response": "Sonnig! :)"
+    "response": "Sonne"
   },
   "rainy-day": {
-    "response": "Iiihh Regen..."
+    "response": "Regen"
   },
   "foggy": {
     "challenge": "Wie nebelig ist es denn so?",
-    "response": "Wie, Was? Neblig!"
+    "response": "Nebel"
   },
   "really-foggy": {
-    "response": "London-style Nebel"
+    "response": "Dichter Nebel"
   },
   "not-so-foggy": {
-    "response": "völlig harmloser Nebel"
-  },
-  "solar-eclipse": {
-    "response": "Totale Sonnenfinsternis!"
+    "response": "Leichter Nebel"
   },
   "country": {
     "challenge": "In welchem Land befinden wir uns?"
@@ -31,6 +28,33 @@
     "response": "England"
   },
   "france": {
-    "response": "Das Land der Baguettes"
+    "response": "Frankreich"
+  },
+  "landscape": {
+    "challenge": "Welcher Landschaftstyp liegt vor?"
+  },
+  "urban": {
+    "response": "Städtisch"
+  },
+  "suburban": {
+    "response": "Vorort"
+  },
+  "rural": {
+    "response": "Ländlich"
+  },
+  "traffic-density": {
+    "challenge": "Wie ist das Verkehrsaufkommen?"
+  },
+  "no-traffic": {
+    "response": "Kein Verkehr"
+  },
+  "light-traffic": {
+    "response": "Leichtes Verkehrsaufkommen"
+  },
+  "heavy-traffic": {
+    "response": "Hohes Verkehrsaufkommen"
+  },
+  "congestion": {
+    "response": "Stau"
   }
 }
