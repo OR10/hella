@@ -30,8 +30,11 @@ class labeling_api(
     $is_vagrant_vm = false,
     $rabbitmq_host,
     $rabbitmq_port = 5672,
+    $rabbitmq_vhost = '/',
     $rabbitmq_user = 'guest',
     $rabbitmq_password = 'guest',
+    $rabbitmq_use_dead_letter_exchange = true,
+    $rabbitmq_use_alternate_exchange = true,
 ) {
 
   ::mysql::db { $database_name:

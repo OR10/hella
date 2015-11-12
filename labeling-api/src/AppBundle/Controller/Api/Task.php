@@ -46,10 +46,22 @@ class Task extends Controller\Base
      */
     public function listAction()
     {
-        $tasks  = $this->labelingTaskFacade->findAll();
+        $tasks = $this->labelingTaskFacade->findAll();
+
+        $taskResult = array_values(array_filter($tasks->toArray(), function ($task) {
+            $currentState = $this->labelingTaskFacade->getVideo($task)->getImageTypeConvertedStatus();
+            foreach ($task->getRequiredImageTypes() as $requiredImageType) {
+                if ($currentState[$requiredImageType] === false) {
+                    return false;
+                }
+            }
+
+            return true;
+        }));
+
         $result = [
-            'totalCount' => $tasks->getTotalRows(),
-            'result'     => $tasks->toArray(),
+            'totalCount' => count($taskResult),
+            'result'     => $taskResult,
         ];
 
         return View\View::create()

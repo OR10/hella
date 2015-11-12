@@ -12,12 +12,9 @@ class ViewerControlsDirective {
 
     this.template = viewerControlsTempate;
     this.scope = {
-      onNewLabeledThingRequested: '&',
-      onNewEllipseRequested: '&',
-      onNewCircleRequested: '&',
-
       framePosition: '=',
       filters: '=',
+      activeTool: '=',
     };
   }
 }

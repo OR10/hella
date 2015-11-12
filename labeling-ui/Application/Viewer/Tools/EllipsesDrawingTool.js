@@ -4,8 +4,6 @@ import EllipseRenderer from '../Renderer/EllipseRenderer';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
- *
- * @class EllipseDrawingTool
  */
 export default class EllipseDrawingTool extends Tool {
   /**

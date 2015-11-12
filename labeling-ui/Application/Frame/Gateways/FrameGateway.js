@@ -15,8 +15,8 @@ class FrameGateway {
       const image = new Image();
       image.addEventListener('load', () => resolve(image));
       image.addEventListener('error', (error) => reject(error));
-      image.src = location.url;
       image.crossOrigin = 'Anonymous';
+      image.src = location.url;
     });
   }
 }

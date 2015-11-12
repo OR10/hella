@@ -58,7 +58,7 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithOneLabeledThingInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
             $this->createRectangleShape(10, 10, 100, 100),
         ]);
 
@@ -72,13 +72,13 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithOneLabeledThingWithMultipleShapesInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'cyclist', [
             $this->createRectangleShape(10, 10, 100, 100),
             $this->createRectangleShape(5, 5, 150, 150),
         ]);
 
         $expectedResult = [
-            1 => [$this->createExpectedResultEntry('Pedestrian', 5, 5, 150, 150)],
+            1 => [$this->createExpectedResultEntry('Cyclist', 5, 5, 150, 150)],
         ] + array_fill(2, 9, []);
 
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
@@ -87,18 +87,18 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithTwoLabeledThingsWithMultipleShapesInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'car', [
             $this->createRectangleShape(10, 10, 100, 100),
             $this->createRectangleShape(5, 5, 150, 150),
         ]);
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
             $this->createRectangleShape(300, 10, 400, 100),
             $this->createRectangleShape(290, 5, 350, 95),
         ]);
 
         $expectedResult = [
             1 => [
-                $this->createExpectedResultEntry('Pedestrian', 5, 5, 150, 150),
+                $this->createExpectedResultEntry('Car', 5, 5, 150, 150),
                 $this->createExpectedResultEntry('Pedestrian', 290, 5, 400, 100),
             ],
         ] + array_fill(2, 9, []);
@@ -111,7 +111,7 @@ class KittiTest extends Tests\KernelTestCase
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
 
         for ($frameNumber = 5; $frameNumber <= 10; ++$frameNumber) {
-            $this->createLabeledThingInFrame($task, $frameNumber, [
+            $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
                 $this->createRectangleShape(10, 10, 100, 100),
             ]);
         }
@@ -172,7 +172,7 @@ class KittiTest extends Tests\KernelTestCase
      * Store a labeled thing for the given frame number and the given shapes in
      * the database.
      */
-    private function createLabeledThingInFrame(Model\LabelingTask $task, $frameNumber, array $shapes)
+    private function createLabeledThingInFrame(Model\LabelingTask $task, $frameNumber, $type, array $shapes)
     {
         $labeledThing = new Model\LabeledThing($task);
         $labeledThing->setFrameRange($task->getFrameRange());
@@ -181,6 +181,7 @@ class KittiTest extends Tests\KernelTestCase
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
         $labeledThingInFrame->setFrameNumber($frameNumber);
+        $labeledThingInFrame->setClasses([(string) $type]);
         $labeledThingInFrame->setShapes($shapes);
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);

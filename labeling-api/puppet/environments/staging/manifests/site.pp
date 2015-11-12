@@ -10,9 +10,15 @@ class { 'couchdb': }
 
 class { 'rabbitmq': }
 
+include ::supervisord
+
 class { 'annostation_base': }
 
 class { 'labeling_api':
+}
+
+class { 'labeling_api::worker':
+    require => Class['labeling_api'],
 }
 
 file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:

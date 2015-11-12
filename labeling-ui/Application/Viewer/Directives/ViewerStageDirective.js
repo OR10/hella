@@ -11,14 +11,8 @@ import viewerStageTemplate from './ViewerStageDirective.html!';
 export default class ViewerStageDirective {
   constructor() {
     this.scope = {
-      onNewThing: '&',
-      onUpdatedThing: '&',
-      onSelectedThing: '&',
-      onDeselectedThing: '&',
-
-      thingsInFrame: '=',
+      labeledThingsInFrame: '=',
       activeTool: '=',
-
       task: '=',
       framePosition: '=',
       filters: '=',

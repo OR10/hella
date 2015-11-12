@@ -59,7 +59,7 @@ class ViewerStageController {
 
     const eventDelegationLayer = new EventDelegationLayer();
     const thingLayer = new ThingLayer(drawingContextService);
-    const backgroundLayer = new BackgroundLayer();
+    const backgroundLayer = new BackgroundLayer(drawingContextService);
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);
@@ -78,23 +78,26 @@ class ViewerStageController {
       thingLayer.activateTool(newActiveTool);
     });
 
-    $scope.$watchCollection('vm.thingsInFrame', newThingsInFrame => {
-      thingLayer.clear();
-      thingLayer.addLabeledThings(Object.values(newThingsInFrame));
+    $scope.$watchCollection('vm.labeledThingsInFrame', newLabeledThingsInFrame => {
+      if (newLabeledThingsInFrame === null) {
+        thingLayer.clear();
+      } else {
+        thingLayer.addLabeledThings(Object.values(newLabeledThingsInFrame));
+      }
     });
 
     // Reapply filters if they changed
     $scope.$watchCollection('vm.filters.filters', filters => {
-        backgroundLayer.resetLayer();
-        filters.forEach(filter => {
-          backgroundLayer.applyFilter(filter);
-        });
+      backgroundLayer.resetLayer();
+      filters.forEach(filter => {
+        backgroundLayer.applyFilter(filter);
+      });
     });
 
     // Update the Background once the `framePosition` changes
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._loadFrameImage(newPosition).then(newFrameImage => {
-        if (newPosition != this.framePosition.position) {
+        if (newPosition !== this.framePosition.position) {
           // The position changed while loading the frame
           // another frame is already requested. Skip this one.
           return;
@@ -105,20 +108,20 @@ class ViewerStageController {
         this.filters.filters.forEach(filter => {
           backgroundLayer.applyFilter(filter);
         });
-      })
+      });
     });
   }
 
-   /**
-    * Load all {@link FrameLocation}s corresponding to the assigned Task
-    *
-    * @returns {Promise<Array<FrameLocation>>}
-    * @private
-    */
-   _loadFrameLocations() {
-     const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
-     return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
-   }
+  /**
+   * Load all {@link FrameLocation}s corresponding to the assigned Task
+   *
+   * @returns {Promise<Array<FrameLocation>>}
+   * @private
+   */
+  _loadFrameLocations() {
+    const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
+    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
+  }
 
   /**
    * Fetch the frame image corresponding to the given frame number

@@ -1,3 +1,8 @@
+import metaLabelStructure from 'Application/LabelStructure/Structure/meta-label-structure.json!';
+import metaLabelAnnotation from 'Application/LabelStructure/Structure/meta-label-structure-ui-annotation.json!';
+import objectLabelStructure from 'Application/LabelStructure/Structure/object-label-structure.json!';
+import objectLabelAnnotation from 'Application/LabelStructure/Structure/object-label-structure-ui-annotation.json!';
+
 /**
  * @class LabelSelectorController
  *
@@ -14,6 +19,15 @@ export default class LabelSelectorController {
   constructor($scope, annotationLabelStructureVisitor, linearLabelStructureVisitor) {
     this._annotationLabelStructureVisitor = annotationLabelStructureVisitor;
     this._linearLabelStructureVisitor = linearLabelStructureVisitor;
+
+    /*
+     * @TODO: Replace with real data provided by the server?
+     *        Currently only some hardcoded mock data is loaded for the classes to be tagged
+     */
+    this.metaLabelStructure = metaLabelStructure;
+    this.objectLabelStructure = objectLabelStructure;
+    this.metaLabelAnnotation = metaLabelAnnotation;
+    this.objectLabelAnnotation = objectLabelAnnotation;
 
     this.firstOpen = true;
 

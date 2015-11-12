@@ -289,6 +289,22 @@ gulp.task('build-fonts', (next) => {
   });
 });
 
+gulp.task('deploy', () => {
+  const deploymentIp = process.env.LABELING_UI_DEPLOY_IP;
+  if (deploymentIp === undefined || deploymentIp === '') {
+    throw new Error('Please set the environment variable LABELING_UI_DEPLOY_IP to the ip address that you want to deploy to.');
+  }
+
+  return gulp.src('Distribution/**')
+    .pipe($$.rsync({
+      recurse: true,
+      exclude: ['index-protractor.html'],
+      root: 'Distribution/',
+      hostname: deploymentIp,
+      destination: '/var/www/labeling-ui',
+    }));
+});
+
 gulp.task('optimize-css', () => {
   return gulp.src(paths.files.css)
     .pipe($$.sourcemaps.init({loadMaps: true}))
