@@ -9,10 +9,11 @@ export default class LabelWizardDirective {
     this.template = labelWizardTemplate;
 
     this.scope = {
-      labelState: '=',
-      labelContext: '=',
-      offset: '=',
-      limit: '=',
+      labeledObject: '=',
+      structure: '=',
+      annotation: '=',
+      offset: '@',
+      limit: '@',
     };
 
     this.controller = LabelWizardController;

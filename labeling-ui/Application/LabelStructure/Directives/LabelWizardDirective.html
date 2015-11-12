@@ -1,12 +1,12 @@
 <div class="label-wizard">
     <uib-carousel template-url="LabelWizard/wizard-carousel.html" no-wrap="true">
-        <uib-slide ng-repeat="step in vm.steps" active="step.active">
+        <uib-slide ng-repeat="page in vm.pages" active="vm.activePages[page.id]">
             <div class="label-wizard-challenge">
-                <p>{{step.metadata.challenge}}</p>
-                <div class="radio" ng-repeat="choice in step.children">
+                <p>{{page.challenge}}</p>
+                <div class="radio" ng-repeat="response in page.responses track by $index">
                     <label>
-                        <input type="radio" value="{{choice.name}}" ng-model="vm.labelContext[step.name]">
-                        {{choice.metadata.response}}
+                        <input type="radio" value="{{response.id}}" ng-model="vm.choices[page.id]">
+                        {{response.response}}
                     </label>
                 </div>
             </div>

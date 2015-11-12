@@ -12,7 +12,16 @@
         ></viewer>
     </div>
     <div class="col-md-3">
-        <!--<label-selector></label-selector>-->
+        <label-selector labeled-object="vm.labeledFrame"
+                        structure="vm.labeledFrameStructure"
+                        annotation="vm.labeledFrameAnnotation"
+                        sections="[{header: 'Frame Label'}]"
+        ></label-selector>
+        <label-selector labeled-object="vm.selectedLabeledThingInFrame"
+                        structure="vm.labeledThingInFrameStructure"
+                        annotation="vm.labeledThingInFrameAnnotation"
+                        sections="[{header: 'Objekt Kategorie', limit: 1}, {header: 'Objekt Subkategorie', offset: 1}]"
+        ></label-selector>
     </div>
 </div>
 <div class="col-md-3"></div>

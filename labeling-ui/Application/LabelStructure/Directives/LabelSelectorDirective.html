@@ -1,18 +1,14 @@
-<div class="label-selector">
+<div class="label-selector" ng-hide="vm.labeledObject === null">
     <uib-accordion close-others="{{true}}">
-
-
-        <uib-accordion-group heading="Meta Categories" is-open="vm.firstOpen">
-            <label-wizard label-state="vm.metaLabelState" label-context="vm.metaLabelContext"></label-wizard>
+        <uib-accordion-group ng-repeat="section in vm.sections track by $index"
+                             heading="{{section.header}}"
+                             is-open="vm.firstOpen">
+            <label-wizard labeled-object="vm.labeledObject"
+                          structure="vm.structure"
+                          annotation="vm.annotation"
+                          offset="{{section.offset}}"
+                          limit="{{section.limit}}"
+            ></label-wizard>
         </uib-accordion-group>
-
-
-        <uib-accordion-group heading="Object categories" ng-hide="vm.hideObjectLabels">
-            <label-wizard label-state="vm.objectLabelState" label-context="vm.objectLabelContext" offset="0" limit="1"></label-wizard>
-        </uib-accordion-group>
-        <uib-accordion-group heading="Object subcategories" ng-hide="vm.hideObjectLabels">
-            <label-wizard label-state="vm.objectLabelState" label-context="vm.objectLabelContext" offset="1" limit="vm.objectLabelState.children.length"></label-wizard>
-        </uib-accordion-group>
-
     </uib-accordion>
 </div>
