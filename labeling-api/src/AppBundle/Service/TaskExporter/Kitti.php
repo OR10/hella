@@ -293,7 +293,7 @@ class Kitti implements Service\TaskExporter
             // polygon handles polygon and line
             'polygon' => function($shape) {
                 if (count($shape['points']) === 0) {
-                    throw new Exception\Kitti('Empty point list for polygons are not allowed');
+                    throw new Exception\Kitti('Empty point list for polygons is not allowed');
                 }
 
                 $result = [

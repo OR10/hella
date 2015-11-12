@@ -41,8 +41,6 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
 
   render() {
     this._context.withScope((scope) => {
-      this._raster = new paper.Raster(this._backgroundImage, scope.view.center);
-      this._imageData = this._raster.getImageData(0, 0, this._element.width, this._element.height);
       scope.view.update(true);
     });
   }
@@ -64,6 +62,12 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
    */
   setBackgroundImage(image) {
     this._backgroundImage = image;
+
+    this._context.withScope(scope => {
+      this._raster = new paper.Raster(this._backgroundImage, scope.view.center);
+    });
+
+    this._imageData = this._raster.getImageData(0, 0, this._element.width, this._element.height);
   }
 
   exportData() {

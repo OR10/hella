@@ -92,6 +92,7 @@ class ViewerStageController {
       filters.forEach(filter => {
         backgroundLayer.applyFilter(filter);
       });
+      backgroundLayer.render();
     });
 
     // Update the Background once the `framePosition` changes

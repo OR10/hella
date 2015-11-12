@@ -126,6 +126,58 @@ class KittiTest extends Tests\KernelTestCase
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
     }
 
+    public function testExportingTaskWithEllipseShapeInOneFrame()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createEllipseShape(10, 10, 100, 10),
+        ]);
+
+        $expectedResult = [
+            1 => [
+                $this->createExpectedResultEntry('Car', 10, 10, 110, 20),
+            ],
+        ];
+
+        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+    }
+
+    /**
+     * @expectedException AppBundle\Service\TaskExporter\Exception\Kitti
+     */
+    public function testExportingTaskWithPolygonShapeWithoutAnyPointThrowsKittiException()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createPolygonShape([
+                // No point should lead to an exception
+            ]),
+        ]);
+
+        $this->exporter->getInternalExportData($task);
+    }
+
+    public function testExportingTaskWithPolygonShapeInOneFrame()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createPolygonShape([
+                ['x' =>   7, 'y' =>   8],
+                ['x' =>  17, 'y' =>  28],
+                ['x' =>  -7, 'y' =>  -8],
+                ['x' => 107, 'y' => 308],
+            ]),
+        ]);
+
+        $expectedResult = [
+            1 => [
+                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+            ],
+        ];
+
+        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+    }
+
     /**
      * Create one expected result entry from the given arguments.
      *
@@ -188,8 +240,6 @@ class KittiTest extends Tests\KernelTestCase
     }
 
     /**
-     * Create a rectangle shape.
-     *
      * @param float $left
      * @param float $top
      * @param float $right
@@ -210,5 +260,50 @@ class KittiTest extends Tests\KernelTestCase
                 'y' => (float) $bottom,
             ],
         ];
+    }
+
+    /**
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     *
+     * @return array
+     */
+    private function createEllipseShape($x, $y, $width, $height)
+    {
+        return [
+            'type' => 'ellipse',
+            'point' => [
+                'x' => (float) $x,
+                'y' => (float) $y,
+            ],
+            'size' => [
+                'width'  => (float) $width,
+                'height' => (float) $height,
+            ],
+        ];
+    }
+
+    /**
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     *
+     * @return array
+     */
+    private function createPolygonShape(array $points)
+    {
+        $result = [
+            'type'   => 'polygon',
+            'points' => [],
+        ];
+
+        foreach ($points as $point) {
+            $result['points'][] = ['x' => $point['x'], 'y' => $point['y']];
+        }
+
+        return $result;
     }
 }
