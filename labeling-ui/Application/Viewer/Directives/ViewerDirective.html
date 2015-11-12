@@ -21,10 +21,13 @@
             <viewer-controls on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
                              on-new-ellipse-requested="vm.handleNewEllipseRequested()"
                              on-new-circle-requested="vm.handleNewCircleRequested()"
-
                              filters="vm.filters"
                              frame-position="vm.framePosition"
-            ></viewer-controlsD>
+                             on-new-polygon-requested="vm.handleNewPolygonRequested()"
+                             on-new-line-requested="vm.handleNewLineRequested()"
+                             on-move-tool-requested="vm.handleMoveToolRequested()"
+                             on-filter-changed="vm.handleFilterChanged(filters)">
+            </viewer-controls>
         </div>
     </div>
 </div>

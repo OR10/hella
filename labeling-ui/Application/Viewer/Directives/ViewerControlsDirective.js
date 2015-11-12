@@ -15,7 +15,6 @@ class ViewerControlsDirective {
       onNewLabeledThingRequested: '&',
       onNewEllipseRequested: '&',
       onNewCircleRequested: '&',
-
       framePosition: '=',
       filters: '=',
     };

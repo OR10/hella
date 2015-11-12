@@ -16,6 +16,9 @@ export default class ViewerDirective {
       onNewLabeledThingRequested: '&',
       onNewEllipseRequested: '&',
       onNewCircleRequested: '&',
+      onNewPolygonRequested: '&',
+      onNewLineRequested: '&',
+      onMoveToolRequested: '&',
 
       thingsInFrame: '=',
       filters: '=',

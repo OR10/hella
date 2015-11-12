@@ -27,7 +27,7 @@ class LabeledThingInFrame
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $classes;
+    private $classes = [];
 
     /**
      * @CouchDB\Field(type="mixed")
@@ -64,11 +64,19 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param mixed $classes
+     * @param array $classes
      */
-    public function setClasses($classes)
+    public function setClasses(array $classes)
     {
         $this->classes = $classes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClasses()
+    {
+        return $this->classes;
     }
 
     /**

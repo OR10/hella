@@ -11,6 +11,8 @@ import 'angular-ui-bootstrap/src/stackedMap/stackedMap';
 import 'angular-ui-bootstrap/src/tooltip/tooltip';
 import 'angular-ui-bootstrap/src/popover/popover';
 
+import 'jquery-mousewheel';
+
 /**
  * @class Viewer
  */

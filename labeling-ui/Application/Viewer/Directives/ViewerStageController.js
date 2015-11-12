@@ -59,7 +59,7 @@ class ViewerStageController {
 
     const eventDelegationLayer = new EventDelegationLayer();
     const thingLayer = new ThingLayer(drawingContextService);
-    const backgroundLayer = new BackgroundLayer();
+    const backgroundLayer = new BackgroundLayer(drawingContextService);
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);

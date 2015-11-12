@@ -1,19 +1,19 @@
 import paper from 'paper';
 
-import PaperLayer from './PaperLayer';
+import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
 import EllipseDrawingTool from '../Tools/EllipsesDrawingTool';
+import PolygonDrawingTool from '../Tools/PolygonDrawingTool';
 import RectangleModificationTool from '../Tools/RectangleModificationTool';
 import RectangleRenderer from '../Renderer/RectangleRenderer';
-import EllipseRenderer from '../Renderer/EllipseRenderer';
 
 /**
  * A Layer used to draw Things within the viewer
  *
  * @class ThingLayer
- * @extends PaperLayer
+ * @extends PanAndZoomPaperLayer
  */
-export default class ThingLayer extends PaperLayer {
+export default class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * @param {DrawingContextService} drawingContextService
    */
@@ -138,6 +138,42 @@ export default class ThingLayer extends PaperLayer {
 
       this.emit('thing:new', shapes);
     });
+
+    this._polygonDrawingTool = new PolygonDrawingTool(this._context, {closed: true});
+
+    this._polygonDrawingTool.on('polygon:complete', polygon => {
+      const shapes = [
+        {
+          type: 'polygon',
+          points: polygon.getSegments().map((segment) => {
+            return {
+              x: segment.point.x,
+              y: segment.point.y,
+            };
+          }),
+        },
+      ];
+
+      this.emit('thing:new', shapes);
+    });
+
+    this._lineDrawingTool = new PolygonDrawingTool(this._context, {line: true});
+
+    this._lineDrawingTool.on('line:complete', polygon => {
+      const shapes = [
+        {
+          type: 'polygon',
+          points: polygon.getSegments().map((segment) => {
+            return {
+              x: segment.point.x,
+              y: segment.point.y,
+            };
+          }),
+        },
+      ];
+
+      this.emit('thing:new', shapes);
+    });
   }
 
   /**
@@ -147,6 +183,12 @@ export default class ThingLayer extends PaperLayer {
    */
   activateTool(toolName) {
     switch (toolName) {
+      case 'polygon':
+        this._polygonDrawingTool.activate();
+        break;
+      case 'line':
+        this._lineDrawingTool.activate();
+        break;
       case 'ellipse':
         this._ellipseDrawingTool.activate();
         break;
@@ -173,6 +215,7 @@ export default class ThingLayer extends PaperLayer {
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, {
           strokeColor: 'red',
           strokeWidth: 2,
+          strokeScaling: false,
           fillColor: new paper.Color(0, 0, 0, 0),
         });
 
@@ -191,9 +234,5 @@ export default class ThingLayer extends PaperLayer {
   clear() {
     super.clear();
     this._thingsByShapeId.clear();
-  }
-
-  dispatchDOMEvent(event) {
-    this._element.dispatchEvent(event);
   }
 }

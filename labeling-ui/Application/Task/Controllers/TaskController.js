@@ -206,13 +206,14 @@ class TaskController {
   }
 
   //_switchActiveFrame(frameNumber) {
-  //  //this._switchToPlaceholderImage();
+  //  // this._switchToPlaceholderImage();
   //  this._clearLabelsAndThingsInFrame();
   //  this._initializeWorkflows();
   //
   //  this._frameNumber = frameNumber;
   //
   //  Promise.all([
+  //    this._loadFrameImage(frameNumber),
   //    this._loadLabeledThingsInFrame(frameNumber),
   //    this._loadLabeledFrame(frameNumber),
   //  ]).then(([frameImage, labeledThingsInFrame, labeledFrame]) => {
@@ -290,6 +291,18 @@ class TaskController {
 
   handleNewCircleRequested() {
     this.activeTool = 'circle';
+  }
+
+  handleNewPolygonRequested() {
+    this.activeTool = 'polygon';
+  }
+
+  handleNewLineRequested() {
+    this.activeTool = 'line';
+  }
+
+  handleMoveToolRequested() {
+    this.activeTool = 'move';
   }
 }
 

@@ -1,39 +1,36 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-2">
-            <label-summary title="Summary"></label-summary>
-        </div>
-        <div class="col-md-7">
-            <viewer things-in-frame="vm.labelsAndThingsInFrame.things"
-                    on-new-thing="vm.handleNewThing(shapes)"
-                    on-updated-thing="vm.handleUpdatedThing(labeledThing)"
-                    on-selected-thing="vm.handleSelectedThing(labeledThing)"
-                    on-deselected-thing="vm.handleDeselectedThing()"
-                    on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
-                    on-new-ellipse-requested="vm.handleNewEllipseRequested()"
-                    on-new-circle-requested="vm.handleNewCircleRequested()"
-                    active-tool="vm.activeTool"
+<div class="row">
+    <div class="col-md-2">
+        <label-summary title="Summary"></label-summary>
+    </div>
+    <div class="col-md-7">
+        <viewer things-in-frame="vm.labelsAndThingsInFrame.things"
+                on-new-thing="vm.handleNewThing(shapes)"
+                on-updated-thing="vm.handleUpdatedThing(labeledThing)"
+                on-selected-thing="vm.handleSelectedThing(labeledThing)"
+                on-deselected-thing="vm.handleDeselectedThing()"
+                on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
+                on-new-ellipse-requested="vm.handleNewEllipseRequested()"
+                on-new-circle-requested="vm.handleNewCircleRequested()"
+                active-tool="vm.activeTool"
 
-                    task="vm.task"
-                    frame-position="vm.framePosition"
-            ></viewer>
-        </div>
-        <div class="col-md-3">
-            <label-selector
-                    meta-label-structure="vm.metaLabelStructure"
-                    object-label-structure="vm.objectLabelStructure"
-                    meta-label-annotation="vm.metaLabelAnnotation"
-                    object-label-annotation="vm.objectLabelAnnotation"
-                    meta-label-context="vm.metaLabelContext"
-                    object-label-context="vm.objectLabelContext"
-                    meta-labeling-completed="vm.metaLabelingCompleted"
-                    object-labeling-completed="vm.objectLabelingCompleted"
-                    hide-object-labels="vm.hideObjectLabels"
-            ></label-selector>
-        </div>
+                task="vm.task"
+                frame-position="vm.framePosition"
+        ></viewer>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
+    <div class="col-md-3">
+        <label-selector
+                meta-label-structure="vm.metaLabelStructure"
+                object-label-structure="vm.objectLabelStructure"
+                meta-label-annotation="vm.metaLabelAnnotation"
+                object-label-annotation="vm.objectLabelAnnotation"
+                meta-label-context="vm.metaLabelContext"
+                object-label-context="vm.objectLabelContext"
+                meta-labeling-completed="vm.metaLabelingCompleted"
+                object-labeling-completed="vm.objectLabelingCompleted"
+                hide-object-labels="vm.hideObjectLabels"
+        ></label-selector>
     </div>
-    <div class="col-md-3"></div>
 </div>
+<div class="col-md-3"></div>
+<div class="col-md-6"></div>
+<div class="col-md-3"></div>

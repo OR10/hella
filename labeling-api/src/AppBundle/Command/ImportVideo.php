@@ -8,7 +8,7 @@ use AppBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 
-class ImportVideoCommand extends BaseCommand
+class ImportVideo extends Base
 {
 
     /**

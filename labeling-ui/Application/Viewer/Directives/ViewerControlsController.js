@@ -97,6 +97,18 @@ class ViewerControlsController {
   handleNewCircleClicked() {
     this.onNewCircleRequested();
   }
+
+  handleMoveToolClicked() {
+    this.onMoveToolRequested();
+  }
+
+  handleNewLineClicked() {
+    this.onNewLineRequested();
+  }
+
+  handleNewPolygonClicked() {
+    this.onNewPolygonRequested();
+  }
 }
 
 ViewerControlsController.$inject = ['$scope'];

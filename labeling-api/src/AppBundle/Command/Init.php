@@ -2,17 +2,23 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Service;
 use Doctrine\CouchDB;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InitCommand extends BaseCommand
+class Init extends Base
 {
     /**
      * @var CouchDB\CouchDBClient
      */
     private $couchClient;
+
+    /**
+     * @var ImporterService
+     */
+    private $importerService;
 
     /**
      * @var string
@@ -26,6 +32,7 @@ class InitCommand extends BaseCommand
 
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
+        Service\ImporterService $importerService,
         $couchDatabase,
         $userPassword,
         $cacheDir,
@@ -33,11 +40,12 @@ class InitCommand extends BaseCommand
     ) {
         parent::__construct();
 
-        $this->couchClient   = $couchClient;
-        $this->couchDatabase = (string) $couchDatabase;
-        $this->userPassword  = (string) $userPassword;
-        $this->cacheDir      = (string) $cacheDir;
-        $this->frameCdnDir   = (string) $frameCdnDir;
+        $this->couchClient     = $couchClient;
+        $this->importerService = $importerService;
+        $this->couchDatabase   = (string) $couchDatabase;
+        $this->userPassword    = (string) $userPassword;
+        $this->cacheDir        = (string) $cacheDir;
+        $this->frameCdnDir     = (string) $frameCdnDir;
     }
 
     protected function configure()
@@ -50,7 +58,12 @@ class InitCommand extends BaseCommand
                 InputOption::VALUE_NONE,
                 'Drop entire database. Otherwise just the schema is dropped.'
             )
-        ;
+            ->addOption(
+                'skip-import',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip import of initial video file.'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -70,6 +83,10 @@ class InitCommand extends BaseCommand
         if (!$this->clearDirectories($output)) {
             return 1;
         }
+
+        if (!$this->downloadSampleVideo($output, $input->getOption('skip-import'))) {
+            return 1;
+        }
     }
 
     private function initializeDatabase(OutputInterface $output, $dropDatabase)
@@ -78,10 +95,15 @@ class InitCommand extends BaseCommand
 
         if ($dropDatabase) {
             $this->writeVerboseInfo($output, 'dropping database');
-            if (!$this->runCommand($output, 'doctrine:database:drop', [
-                '--force' => true,
-                '--if-exists' => true,
-            ])) {
+            if (!$this->runCommand(
+                $output,
+                'doctrine:database:drop',
+                [
+                    '--force'     => true,
+                    '--if-exists' => true,
+                ]
+            )
+            ) {
                 return false;
             }
 
@@ -91,9 +113,14 @@ class InitCommand extends BaseCommand
             }
         } else {
             $this->writeVerboseInfo($output, 'dropping database schema');
-            if (!$this->runCommand($output, 'doctrine:schema:drop', [
-                '--force' => true,
-            ])) {
+            if (!$this->runCommand(
+                $output,
+                'doctrine:schema:drop',
+                [
+                    '--force' => true,
+                ]
+            )
+            ) {
                 return false;
             }
         }
@@ -117,6 +144,7 @@ class InitCommand extends BaseCommand
             $this->couchClient->createDatabase($this->couchDatabase);
         } catch (\Exception $e) {
             $this->writeError($output, "Error deleting couch database: {$e->getMessage()}");
+
             return false;
         }
 
@@ -133,17 +161,22 @@ class InitCommand extends BaseCommand
         $this->writeSection($output, 'Creating users');
 
         if ($this->userPassword !== null) {
-            if (!$this->runCommand($output, 'fos:user:create', [
-                'username'         => 'user',
-                'email'            => 'user@example.com',
-                'password'         => $this->userPassword,
-            ])) {
+            if (!$this->runCommand(
+                $output,
+                'fos:user:create',
+                [
+                    'username' => 'user',
+                    'email'    => 'user@example.com',
+                    'password' => $this->userPassword,
+                ]
+            )
+            ) {
                 return false;
             }
 
             $this->writeInfo(
                 $output,
-                "Created user <comment>user</comment> with password: <comment>{$this->userPassword}</>"
+                "Created user <comment>user</comment> with password: <comment>{$this->userPassword}</comment>"
             );
         } else {
             $this->writeInfo($output, "<comment>User 'user' is not created due to an empty password!</comment>");
@@ -187,6 +220,38 @@ class InitCommand extends BaseCommand
             if (!$todo($info->getRealPath())) {
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    private function downloadSampleVideo(OutputInterface $output, $skipImport)
+    {
+        $this->writeSection($output, 'Video Import');
+
+        if ($skipImport) {
+            $this->writeInfo($output, 'skipping video import');
+            return true;
+        }
+
+        try {
+            $this->writeInfo(
+                $output,
+                "Importing default video <comment>http://192.168.123.7/anno_short.avi</comment>"
+            );
+            $path = tempnam($this->cacheDir, 'anno_short');
+            file_put_contents(
+                $path,
+                file_get_contents("http://192.168.123.7/anno_short.avi")
+            );
+            $this->importerService->import($path, fopen($path, 'r'));
+        } catch (\Exception $e) {
+            $this->writeError(
+                $output,
+                $e->getMessage()
+            );
+
+            return false;
         }
 
         return true;

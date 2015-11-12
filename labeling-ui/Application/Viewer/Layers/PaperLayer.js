@@ -48,7 +48,8 @@ export default class PaperLayer extends EventEmitter {
   /**
    * @param event
    */
-  dispatchDOMEvent(event) { // eslint-disable-line no-unused-vars
+  dispatchDOMEvent(event) {
+    this._element.dispatchEvent(event);
   }
 
   /**

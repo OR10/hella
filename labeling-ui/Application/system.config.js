@@ -29,6 +29,7 @@ System.config({
     "font-awesome": "npm:font-awesome@4.4.0",
     "html": "github:systemjs/plugin-text@0.0.2",
     "jquery": "github:components/jquery@2.1.4",
+    "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "json": "github:systemjs/plugin-json@0.1.0",
     "paper": "npm:paper@0.9.24",
     "github:angular-ui/ui-router@0.2.15": {
