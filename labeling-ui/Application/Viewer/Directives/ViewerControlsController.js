@@ -108,7 +108,6 @@ class ViewerControlsController {
   handleNewLabeledThingClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        debugger;
         this.selectedDrawingTool = 'rectangle';
       });
   }

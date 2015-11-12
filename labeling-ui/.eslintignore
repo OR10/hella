@@ -1,1 +1,2 @@
 karma.conf.js
+Application/Common/Vendor/paper-full-mouseevent-patched.js

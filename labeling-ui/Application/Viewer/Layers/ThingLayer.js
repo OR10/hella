@@ -50,7 +50,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
      * @type {Map}
      * @private
      */
-    this._thingsByShapeId = new Map();
+    this._thingIdsByShapeId = new Map();
 
     /**
      * Tool for moving and resizing rectangles
@@ -61,21 +61,19 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     this._rectangleModificationTool = new RectangleModificationTool(this._context, undefined);
 
     this._rectangleModificationTool.on('rectangle:update', rectangle => {
-      const labeledThingId = this._thingsByShapeId.get(rectangle.id);
+      const shape = {
+        type: 'rectangle',
+        topLeft: {
+          x: Math.round(rectangle.bounds.topLeft.x),
+          y: Math.round(rectangle.bounds.topLeft.y),
+        },
+        bottomRight: {
+          x: Math.round(rectangle.bounds.bottomRight.x),
+          y: Math.round(rectangle.bounds.bottomRight.y),
+        },
+      };
 
-      shape = {
-          type: 'rectangle',
-          topLeft: {
-            x: Math.round(rectangle.bounds.topLeft.x),
-            y: Math.round(rectangle.bounds.topLeft.y),
-          },
-          bottomRight: {
-            x: Math.round(rectangle.bounds.bottomRight.x),
-            y: Math.round(rectangle.bounds.bottomRight.y),
-          },
-        };
-
-      this.emit('thing:update', labeledThingId, shape);
+      this.emit('thing:update', this._thingIdsByShapeId.get(shape.id), shape);
     });
 
     this._rectangleModificationTool.on('rectangle:selected', rectangle => {
@@ -114,8 +112,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     this._ellipseDrawingTool = new EllipseDrawingTool(this._context, undefined);
 
     this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
-      const shape =
-      {
+      const shape = {
         type: 'ellipse',
         point: {
           x: Math.round(ellipse.getPosition().x),
@@ -218,7 +215,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       labeledThings.forEach((labeledThing) => {
         labeledThing.shapes.forEach(shape => {
           const shapeId = this._drawShape(shape);
-          this._thingsByShapeId.set(shapeId, labeledThing.id);
+          this._thingIdsByShapeId.set(shapeId, labeledThing.id);
         });
       });
 
@@ -256,6 +253,6 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
    */
   clear() {
     super.clear();
-    this._thingsByShapeId.clear();
+    this._thingIdsByShapeId.clear();
   }
 }

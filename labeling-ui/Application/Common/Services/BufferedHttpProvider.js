@@ -120,7 +120,7 @@ class BufferedHttpProvider {
         try {
           revisionManager.injectRevision(model);
         } catch (error) {
-          console.warn(`Could not auto-inject revision into model: `, model);
+          console.warn(`Could not auto-inject revision into model: `, model); // eslint-disable-line no-console
         }
       });
     }
@@ -136,7 +136,7 @@ class BufferedHttpProvider {
     function _extractRevision(data) {
       if (!data.result) {
         // Assume we do not need to map the data
-        console.warn(`Encountered backend request without the usual {result: ...} structure. ${data}`);
+        console.warn(`Encountered backend request without the usual {result: ...} structure. ${data}`); // eslint-disable-line no-console
         return;
       }
 
@@ -149,7 +149,7 @@ class BufferedHttpProvider {
         try {
           revisionManager.extractRevision(model);
         } catch (error) {
-          console.warn(`Could not auto-extract revision: `, model);
+          console.warn(`Could not auto-extract revision: `, model); // eslint-disable-line no-console
         }
       });
     }

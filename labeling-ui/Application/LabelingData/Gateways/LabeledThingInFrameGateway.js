@@ -100,7 +100,7 @@ class LabeledThingInFrameGateway {
 
     const labeledThingInFrame = this._uniqueClasses(newLabeledThingInFrame);
 
-    return this.bufferedHttp.put(url, newLabeledThingInFrame)
+    return this.bufferedHttp.put(url, labeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
