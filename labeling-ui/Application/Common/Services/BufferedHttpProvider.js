@@ -113,8 +113,12 @@ class BufferedHttpProvider {
     function _injectRevision(data) {
       const processableData = isArray(data) ? data : [data];
       processableData.forEach(model => {
+        if (!model.id) {
+          return;
+        }
+
         try {
-          revisionManager.injectRevision(model)
+          revisionManager.injectRevision(model);
         } catch (error) {
           console.warn(`Could not auto-inject revision into model: `, model);
         }
@@ -138,8 +142,12 @@ class BufferedHttpProvider {
 
       const processableData = isArray(data.result) ? data.result : [data.result];
       processableData.forEach(model => {
+        if (!model.id) {
+          return;
+        }
+
         try {
-          revisionManager.extractRevision(model)
+          revisionManager.extractRevision(model);
         } catch (error) {
           console.warn(`Could not auto-extract revision: `, model);
         }
