@@ -118,6 +118,8 @@ class Export extends Controller\Base
 
         $this->amqpFacade->addJob(new Jobs\KittiExporter($task->getId()));
 
-        return new HttpFoundation\Response(null, HttpFoundation\Response::HTTP_NO_CONTENT);
+        return View\View::create()
+            ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
+            ->setData(['message' => 'Export started']);
     }
 }
