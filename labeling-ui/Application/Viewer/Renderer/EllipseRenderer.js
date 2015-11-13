@@ -8,12 +8,12 @@ export default class EllipseRenderer {
   /**
    * Draws a ellipse defined by the given points.
    *
-   * @param {paper.Point} point
+   * @param {paper.Point} center
    * @param {paper.Point} size
    * @param {Object} options
    */
-  drawEllipse(point, size, options) {
-    const params = Object.assign({}, options, {point, size});
+  drawEllipse(center, size, options) {
+    const params = Object.assign({}, options, {center, size});
 
     return new paper.Path.Ellipse(params);
   }
