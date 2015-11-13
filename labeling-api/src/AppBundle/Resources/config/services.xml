@@ -58,6 +58,14 @@
             <argument type="service" id="annostation.labeling_api.vendor.logger" />
         </service>
 
-        <service id="annostation.labeling_api.service.amqp_pool_config" class="AppBundle\Service\AmqpPoolConfig" />
+        <service id="annostation.labeling_api.service.amqp_pool_config" class="AppBundle\Service\AmqpPoolConfig">
+            <argument>%rabbitmq_host%</argument>
+            <argument>%rabbitmq_port%</argument>
+            <argument>%rabbitmq_vhost%</argument>
+            <argument>%rabbitmq_user%</argument>
+            <argument>%rabbitmq_password%</argument>
+            <argument>%rabbitmq_use_dead_letter_exchange%</argument>
+            <argument>%rabbitmq_use_alternate_exchange%</argument>
+        </service>
     </services>
 </container>
