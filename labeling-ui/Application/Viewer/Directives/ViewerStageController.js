@@ -94,6 +94,10 @@ class ViewerStageController {
       }
     });
 
+    $scope.$watch('vm.selectedLabeledThingInFrame', (newThing) => {
+      thingLayer.setSelectedLabeledThingInFrame(newThing);
+    });
+
     // Reapply filters if they changed
     $scope.$watchCollection('vm.filters.filters', filters => {
       backgroundLayer.resetLayer();

@@ -27,6 +27,8 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
   constructor(drawingContextService) {
     super(drawingContextService);
 
+    this._selectedLabeledThingInFrame = null;
+
     /**
      * Renderer used by this layer to draw labeling rectangles loaded from the backend
      *
@@ -132,8 +134,8 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     this._shapeMoveTool.on('shape:update', shape => {
-      const labeledThing = this._updateLabeledThing(this._thingsByShapeId.get(shape.id), shape);
-      this.emit('thing:update', labeledThing);
+      const transformedShape = this._transformShape(shape);
+      this.emit('thing:update', this._thingIdsByShapeId.get(shape.id), transformedShape);
     });
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
@@ -150,6 +152,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       };
 
       this._typeByShapeId.set(rectangle.id, 'rectangle');
+      this._thingIdsByShapeId.set(rectangle.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
 
@@ -167,12 +170,13 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       };
 
       this._typeByShapeId.set(ellipse.id, 'ellipse');
+      this._thingIdsByShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
 
     this._circleDrawingTool.on('ellipse:complete', ellipse => {
       const shape = {
-        type: 'ellipse',
+        type: 'circle',
         point: {
           x: Math.round(ellipse.getPosition().x),
           y: Math.round(ellipse.getPosition().y),
@@ -184,12 +188,13 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       };
 
       this._typeByShapeId.set(ellipse.id, 'circle');
+      this._thingIdsByShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
 
     this._pathDrawingTool.on('path:complete', polygon => {
       const shape = {
-        type: 'polygon',
+        type: 'path',
         points: polygon.getSegments().map((segment) => {
           return {
             x: segment.point.x,
@@ -200,6 +205,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       };
 
       this._typeByShapeId.set(polygon.id, 'path');
+      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
 
@@ -215,12 +221,13 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       };
 
       this._typeByShapeId.set(polygon.id, 'polygon');
+      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
 
     this._lineDrawingTool.on('path:complete', polygon => {
       const shape = {
-        type: 'polygon',
+        type: 'line',
         points: polygon.getSegments().map((segment) => {
           return {
             x: segment.point.x,
@@ -230,14 +237,15 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       };
 
       this._typeByShapeId.set(polygon.id, 'line');
+      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
 
     this._pointDrawingTool.on('point:complete', polygon => {
       const shape = [
         {
-          type: 'polygon',
-          center: {
+          type: 'point',
+          point: {
             x: polygon.getPosition().x,
             y: polygon.getPosition().y,
           },
@@ -245,6 +253,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       ];
 
       this._typeByShapeId.set(polygon.id, 'point');
+      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
       this.emit('thing:new', shape);
     });
   }
@@ -283,6 +292,10 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     }
   }
 
+  setSelectedLabeledThingInFrame(thing){
+    this._selectedLabeledThingInFrame = thing;
+  }
+
   /**
    * Adds the given thing to this layer and draws its respective shapes
    *
@@ -294,6 +307,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         labeledThing.shapes.forEach(shape => {
           const shapeId = this._drawShape(shape);
           this._thingIdsByShapeId.set(shapeId, labeledThing.id);
+          this._typeByShapeId.set(shapeId, shape.type);
         });
       });
 
@@ -312,16 +326,15 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       strokeColor: 'red',
       strokeWidth: 2,
       strokeScaling: false,
-      fillColor: new paper.Color(0, 0, 0, 0),
     };
 
     switch (shape.type) {
       case 'rectangle':
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
         return rect.id;
-      case 'ellipsis':
-        const ellipsis = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
-        return ellipsis.id;
+      case 'ellipse':
+        const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+        return ellipse.id;
       case 'circle':
         const circle = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
         return circle.id;
@@ -332,7 +345,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         const polygon = this._pathRenderer.drawPolygon(shape.points, shapeFillOptions);
         return polygon.id;
       case 'line':
-        const line = this._pathRenderer.drawLine(shape.segments[0], shape.segments[1], shapeOptions);
+        const line = this._pathRenderer.drawLine(shape.points[0], shape.segments[1], shapeOptions);
         return line.id;
       case 'point':
         const point = this._ellipseRenderer.drawCircle(shape.center, 1, shapeFillOptions);
@@ -345,34 +358,56 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Updates the labeledThing object based on the object type
    *
-   * @param {LabeledThing} labeledThing
-   * @param {string} type
+   * @param {string} labeledThingId
+   * @param {Object} shape
    * @returns {LabeledThing}
    * @private
    */
-  _updateLabeledThing(labeledThing, shape) {
+  _transformShape(shape) {
     const type = this._typeByShapeId.get(shape.id);
+    let transformedShape = {};
     switch (type) {
       case 'rectangle':
-        labeledThing.topLeft.x = Math.round(shape.bounds.x);
-        labeledThing.topLeft.y = Math.round(shape.bounds.y);
-        labeledThing.bottomRight.x = Math.round(shape.bounds.x + shape.bounds.width);
-        labeledThing.bottomRight.y = Math.round(shape.bounds.y + shape.bounds.height);
+        transformedShape = {
+          topLeft: {
+            x: Math.round(shape.bounds.x),
+            y: Math.round(shape.bounds.y),
+          },
+          bottomRight: {
+            x: Math.round(shape.bounds.x + shape.bounds.width),
+            y: Math.round(shape.bounds.y + shape.bounds.height),
+          },
+        };
         break;
       case 'ellipse':
-        labeledThing.point.x = Math.round(shape.position.x);
-        labeledThing.point.y = Math.round(shape.position.y);
-        labeledThing.size.width = Math.round(shape.bounds.width);
-        labeledThing.size.height = Math.round(shape.bounds.height);
+        transformedShape = {
+          point: {
+            x: Math.round(shape.position.x),
+            y: Math.round(shape.position.y),
+          },
+          size: {
+            width: Math.round(shape.bounds.width),
+            height: Math.round(shape.bounds.height),
+          },
+        };
         break;
       case 'circle':
-        labeledThing.point.x = Math.round(shape.position.x);
-        labeledThing.point.y = Math.round(shape.position.y);
-        labeledThing.size.width = Math.round(shape.bounds.width);
-        labeledThing.size.height = Math.round(shape.bounds.height);
+        transformedShape = {
+          point: {
+            x: Math.round(shape.position.x),
+            y: Math.round(shape.position.y),
+          },
+          size: {
+            width: Math.round(shape.bounds.width),
+            height: Math.round(shape.bounds.height),
+          },
+        };
         break;
       case 'path':
-        labeledThing.points = shape.segments.map((segment) => {
+        transformedShape = {
+          points: [],
+        };
+        transformedShape.points = shape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -380,7 +415,10 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'polygon':
-        labeledThing.points = shape.segments.map((segment) => {
+        transformedShape = {
+          points: [],
+        };
+        transformedShape.points = shape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -388,7 +426,10 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'line':
-        labeledThing.points = shape.segments.map((segment) => {
+        transformedShape = {
+          points: [],
+        };
+        transformedShape.points = shape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -396,13 +437,19 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'point':
-        labeledThing.center.x = Math.round(polygon.getPosition().x);
-        labeledThing.center.y = Math.round(polygon.getPosition().y);
+        transformedShape = {
+          point: {
+            x: Math.round(shape.getPosition().x),
+            y: Math.round(shape.getPosition().y),
+          },
+        };
         break;
       default:
         throw new Error(`Could not update shape of unknown type "${type}"`);
     }
-    return labeledThing;
+    transformedShape.id = shape.id;
+    transformedShape.type = type;
+    return transformedShape;
   }
 
   /**
