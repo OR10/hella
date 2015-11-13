@@ -125,8 +125,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
     this._shapeMoveTool.on('shape:selected', shape => {
-      const labeledThing = this._thingsByShapeId.get(shape.id);
-      this.emit('thing:selected', labeledThing);
+      this.emit('thing:selected', this._thingIdsByShapeId.get(shape.id));
     });
 
     this._shapeMoveTool.on('shape:deselected', () => {
