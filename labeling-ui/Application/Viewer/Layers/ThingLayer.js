@@ -329,7 +329,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         const path = this._pathRenderer.drawPath(shape.points, shapeOptions);
         return path.id;
       case 'polygon':
-        const polygon = this._pathRenderer.drawPolygon(shape.segments, shapeFillOptions);
+        const polygon = this._pathRenderer.drawPolygon(shape.points, shapeFillOptions);
         return polygon.id;
       case 'line':
         const line = this._pathRenderer.drawLine(shape.segments[0], shape.segments[1], shapeOptions);
