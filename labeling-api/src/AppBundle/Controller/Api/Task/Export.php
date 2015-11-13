@@ -103,7 +103,7 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{taskId}/export/kitti")
+     * @Rest\Get("/{taskId}/kitti/export")
      *
      * @param string $taskId
      *
