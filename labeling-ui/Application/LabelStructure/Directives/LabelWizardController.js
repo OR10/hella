@@ -37,6 +37,24 @@ class LabelWizardController {
       }
     });
 
+    // Handle slices, which appear before the current selection
+    $scope.$watchCollection('vm.slicedPages', (newSlices, oldSlices) => {
+      for (let i = 0; i < newSlices.length; i++) {
+        const newSlice = newSlices[i];
+        if (this.activePages[newSlice.id] === true) {
+          // Found active page without a difference before it
+          break;
+        }
+
+        if (!oldSlices[i] || newSlice.id !== oldSlices[i].id) {
+          // A difference has been detected
+          // Move activePages
+          this.activePages = {[newSlice.id]: true};
+          break;
+        }
+      }
+    });
+
     /**
      * @type {angular.$scope}
      * @private
