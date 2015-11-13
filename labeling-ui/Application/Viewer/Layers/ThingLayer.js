@@ -174,6 +174,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     this._circleDrawingTool.on('ellipse:complete', ellipse => {
+      console.log(ellipse.getPosition(), ellipse.position);
       const shape = {
         type: 'circle',
         point: {
@@ -335,7 +336,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
         return ellipse.id;
       case 'circle':
-        const circle = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+        const circle = this._ellipseRenderer.drawCircle(shape.point, shape.size.width / 2, shapeFillOptions);
         return circle.id;
       case 'path':
         const path = this._pathRenderer.drawPath(shape.points, shapeOptions);
@@ -347,7 +348,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         const line = this._pathRenderer.drawLine(shape.points[0], shape.segments[1], shapeOptions);
         return line.id;
       case 'point':
-        const point = this._ellipseRenderer.drawCircle(shape.center, 1, shapeFillOptions);
+        const point = this._ellipseRenderer.drawCircle(shape.point, 1, shapeFillOptions);
         return point.id;
       default:
         throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
@@ -391,6 +392,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         };
         break;
       case 'circle':
+        console.log(shape.position);
         transformedShape = {
           point: {
             x: Math.round(shape.position.x),
