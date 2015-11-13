@@ -93,6 +93,9 @@ class ViewerControlsController {
     this.framePosition.previous();
   }
 
+
+  handleNewLabeledThingClicked() {
+  }
   _createNewLabeledThingInFrame() {
     // TODO this is a hack. we probably want to generate our ids in the frontend
     return this._labeledThingInFrameGateway.createLabeledThingInFrame(this.task, this.framePosition.position, {
@@ -103,6 +106,7 @@ class ViewerControlsController {
       this.labeledThingsInFrame[newLabeledThingInFrame.id] = newLabeledThingInFrame;
       this.selectedLabeledThingInFrame = newLabeledThingInFrame;
     });
+    this.activeTool = 'rectangle';
   }
 
   handleNewLabeledThingClicked() {
@@ -119,11 +123,20 @@ class ViewerControlsController {
       });
   }
 
+
   handleNewCircleClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
         this.selectedDrawingTool = 'circle';
       });
+  }
+
+  handleNewPathClicked() {
+    this.activeTool = 'path';
+  }
+
+  handleNewPolygonClicked() {
+    this.activeTool = 'polygon';
   }
 
   handleNewLineClicked() {
@@ -133,11 +146,16 @@ class ViewerControlsController {
       });
   }
 
+
   handleNewPolygonClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
         this.selectedDrawingTool = 'polygon';
       });
+  }
+
+  handleNewPointClicked() {
+    this.activeTool = 'point';
   }
 
   handleMoveToolClicked() {

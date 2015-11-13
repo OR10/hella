@@ -2,12 +2,17 @@ import paper from 'paper';
 
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
-import EllipseDrawingTool from '../Tools/EllipsesDrawingTool';
+import EllipseDrawingTool from '../Tools/EllipseDrawingTool';
+import CircleDrawingTool from '../Tools/CircleDrawingTool';
+import PathDrawingTool from '../Tools/PathDrawingTool';
 import PolygonDrawingTool from '../Tools/PolygonDrawingTool';
-import RectangleModificationTool from '../Tools/RectangleModificationTool';
+import LineDrawingTool from '../Tools/LineDrawingTool';
+import PointDrawingTool from '../Tools/PointDrawingTool';
+import ShapeMoveTool from '../Tools/ShapeMoveTool';
+
 import RectangleRenderer from '../Renderer/RectangleRenderer';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
-import PolygonRenderer from '../Renderer/PolygonRenderer';
+import PathRenderer from '../Renderer/PathRenderer';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -39,10 +44,10 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
     /**
      *
-     * @type {PolygonRenderer}
+     * @type {PathRenderer}
      * @private
      */
-    this._polygonRenderer = new PolygonRenderer();
+    this._pathRenderer = new PathRenderer();
 
     /**
      * Storage used to manage the currently displayed things
@@ -53,38 +58,20 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     this._thingIdsByShapeId = new Map();
 
     /**
-     * Tool for moving and resizing rectangles
+     * Storage to get the shape type from the shape
      *
-     * @type {RectangleModificationTool}
+     * @type {Map}
      * @private
      */
-    this._rectangleModificationTool = new RectangleModificationTool(this._context, undefined);
+    this._typeByShapeId = new Map();
 
-    this._rectangleModificationTool.on('rectangle:update', rectangle => {
-      const shape = {
-        type: 'rectangle',
-        topLeft: {
-          x: Math.round(rectangle.bounds.topLeft.x),
-          y: Math.round(rectangle.bounds.topLeft.y),
-        },
-        bottomRight: {
-          x: Math.round(rectangle.bounds.bottomRight.x),
-          y: Math.round(rectangle.bounds.bottomRight.y),
-        },
-      };
-
-      this.emit('thing:update', this._thingIdsByShapeId.get(rectangle.id), shape);
-    });
-
-    this._rectangleModificationTool.on('rectangle:selected', rectangle => {
-      const labeledThingId = this._thingIdsByShapeId.get(rectangle.id);
-      this.emit('thing:selected', labeledThingId);
-    });
-
-    this._rectangleModificationTool.on('rectangle:deselected', () => {
-      this.emit('thing:deselected');
-    });
-
+    /**
+     * Tool for moving shapes
+     *
+     * @type {ShapeMoveTool}
+     * @private
+     */
+    this._shapeMoveTool = new ShapeMoveTool(this._context, undefined);
     /**
      * Tool for drawing rectangles
      *
@@ -92,6 +79,62 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._rectangleDrawingTool = new RectangleDrawingTool(this._context, undefined);
+    /**
+     * Tool for drawing ellipses
+     *
+     * @type {EllipseDrawingTool}
+     * @private
+     */
+    this._ellipseDrawingTool = new EllipseDrawingTool(this._context, undefined);
+    /**
+     * Tool for drawing circles
+     *
+     * @type {CircleDrawingTool}
+     * @private
+     */
+    this._circleDrawingTool = new CircleDrawingTool(this._context, undefined);
+    /**
+     * Tool for drawing paths
+     *
+     * @type {PathDrawingTool}
+     * @private
+     */
+    this._pathDrawingTool = new PathDrawingTool(this._context, undefined);
+    /**
+     * Tool for drawing closed polygons
+     *
+     * @type {PolygonDrawingTool}
+     * @private
+     */
+    this._polygonDrawingTool = new PolygonDrawingTool(this._context, undefined);
+    /**
+     * Tool for drawing lines
+     *
+     * @type {LineDrawingTool}
+     * @private
+     */
+    this._lineDrawingTool = new LineDrawingTool(this._context, undefined);
+    /**
+     * Tool for drawing points
+     *
+     * @type {PointDrawingTool}
+     * @private
+     */
+    this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
+
+    this._shapeMoveTool.on('shape:selected', shape => {
+      const labeledThing = this._thingsByShapeId.get(shape.id);
+      this.emit('thing:selected', labeledThing);
+    });
+
+    this._shapeMoveTool.on('shape:deselected', () => {
+      this.emit('thing:deselected');
+    });
+
+    this._shapeMoveTool.on('shape:update', shape => {
+      const labeledThing = this._updateLabeledThing(this._thingsByShapeId.get(shape.id), shape);
+      this.emit('thing:update', labeledThing);
+    });
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
       const shape = {
@@ -106,10 +149,9 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
+      this._typeByShapeId.set(rectangle.id, 'rectangle');
       this.emit('thing:new', shape);
     });
-
-    this._ellipseDrawingTool = new EllipseDrawingTool(this._context, undefined);
 
     this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
       const shape = {
@@ -124,10 +166,9 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
+      this._typeByShapeId.set(ellipse.id, 'ellipse');
       this.emit('thing:new', shape);
     });
-
-    this._circleDrawingTool = new EllipseDrawingTool(this._context, {circle: true});
 
     this._circleDrawingTool.on('ellipse:complete', ellipse => {
       const shape = {
@@ -142,12 +183,27 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
+      this._typeByShapeId.set(ellipse.id, 'circle');
       this.emit('thing:new', shape);
     });
 
-    this._polygonDrawingTool = new PolygonDrawingTool(this._context, {closed: true});
+    this._pathDrawingTool.on('path:complete', polygon => {
+      const shape = {
+        type: 'polygon',
+        points: polygon.getSegments().map((segment) => {
+          return {
+            x: segment.point.x,
+            y: segment.point.y,
+          };
+        }),
+        closed: true,
+      };
 
-    this._polygonDrawingTool.on('polygon:complete', polygon => {
+      this._typeByShapeId.set(polygon.id, 'path');
+      this.emit('thing:new', shape);
+    });
+
+    this._polygonDrawingTool.on('path:complete', polygon => {
       const shape = {
         type: 'polygon',
         points: polygon.getSegments().map((segment) => {
@@ -158,12 +214,11 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         }),
       };
 
+      this._typeByShapeId.set(polygon.id, 'polygon');
       this.emit('thing:new', shape);
     });
 
-    this._lineDrawingTool = new PolygonDrawingTool(this._context, {line: true});
-
-    this._lineDrawingTool.on('line:complete', polygon => {
+    this._lineDrawingTool.on('path:complete', polygon => {
       const shape = {
         type: 'polygon',
         points: polygon.getSegments().map((segment) => {
@@ -174,6 +229,22 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         }),
       };
 
+      this._typeByShapeId.set(polygon.id, 'line');
+      this.emit('thing:new', shape);
+    });
+
+    this._pointDrawingTool.on('point:complete', polygon => {
+      const shape = [
+        {
+          type: 'polygon',
+          center: {
+            x: polygon.getPosition().x,
+            y: polygon.getPosition().y,
+          },
+        },
+      ];
+
+      this._typeByShapeId.set(polygon.id, 'point');
       this.emit('thing:new', shape);
     });
   }
@@ -185,11 +256,8 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
    */
   activateTool(toolName) {
     switch (toolName) {
-      case 'polygon':
-        this._polygonDrawingTool.activate();
-        break;
-      case 'line':
-        this._lineDrawingTool.activate();
+      case 'rectangle':
+        this._rectangleDrawingTool.activate();
         break;
       case 'ellipse':
         this._ellipseDrawingTool.activate();
@@ -197,11 +265,21 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       case 'circle':
         this._circleDrawingTool.activate();
         break;
-      case 'drawing':
-        this._rectangleDrawingTool.activate();
+      case 'path':
+        this._pathDrawingTool.activate();
         break;
+      case 'polygon':
+        this._polygonDrawingTool.activate();
+        break;
+      case 'line':
+        this._lineDrawingTool.activate();
+        break;
+      case 'point':
+        this._pointDrawingTool.activate();
+        break;
+      case 'move':
       default:
-        this._rectangleModificationTool.activate();
+        this._shapeMoveTool.activate();
     }
   }
 
@@ -224,6 +302,12 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _drawShape(shape) {
+    const shapeFillOptions = {
+      strokeColor: 'red',
+      strokeWidth: 2,
+      strokeScaling: false,
+      fillColor: new paper.Color(0, 0, 0, 0),
+    };
     const shapeOptions = {
       strokeColor: 'red',
       strokeWidth: 2,
@@ -233,17 +317,92 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
     switch (shape.type) {
       case 'rectangle':
-        const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeOptions);
+        const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
         return rect.id;
+      case 'ellipsis':
+        const ellipsis = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+        return ellipsis.id;
+      case 'circle':
+        const circle = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+        return circle.id;
+      case 'path':
+        const path = this._pathRenderer.drawPath(shape.points, shapeOptions);
+        return path.id;
       case 'polygon':
-        const polygon = this._polygonRenderer.drawPolygon(shape.points, shapeOptions);
+        const polygon = this._pathRenderer.drawPolygon(shape.segments, shapeFillOptions);
         return polygon.id;
-      case 'ellipse':
-        const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeOptions);
-        return ellipse.id;
+      case 'line':
+        const line = this._pathRenderer.drawLine(shape.segments[0], shape.segments[1], shapeOptions);
+        return line.id;
+      case 'point':
+        const point = this._ellipseRenderer.drawCircle(shape.center, 1, shapeFillOptions);
+        return point.id;
       default:
         throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
     }
+  }
+
+  /**
+   * Updates the labeledThing object based on the object type
+   *
+   * @param {LabeledThing} labeledThing
+   * @param {string} type
+   * @returns {LabeledThing}
+   * @private
+   */
+  _updateLabeledThing(labeledThing, shape) {
+    const type = this._typeByShapeId.get(shape.id);
+    switch (type) {
+      case 'rectangle':
+        labeledThing.topLeft.x = Math.round(shape.bounds.x);
+        labeledThing.topLeft.y = Math.round(shape.bounds.y);
+        labeledThing.bottomRight.x = Math.round(shape.bounds.x + shape.bounds.width);
+        labeledThing.bottomRight.y = Math.round(shape.bounds.y + shape.bounds.height);
+        break;
+      case 'ellipse':
+        labeledThing.point.x = Math.round(shape.position.x);
+        labeledThing.point.y = Math.round(shape.position.y);
+        labeledThing.size.width = Math.round(shape.bounds.width);
+        labeledThing.size.height = Math.round(shape.bounds.height);
+        break;
+      case 'circle':
+        labeledThing.point.x = Math.round(shape.position.x);
+        labeledThing.point.y = Math.round(shape.position.y);
+        labeledThing.size.width = Math.round(shape.bounds.width);
+        labeledThing.size.height = Math.round(shape.bounds.height);
+        break;
+      case 'path':
+        labeledThing.points = shape.segments.map((segment) => {
+          return {
+            x: Math.round(segment.point.x),
+            y: Math.round(segment.point.y),
+          };
+        });
+        break;
+      case 'polygon':
+        labeledThing.points = shape.segments.map((segment) => {
+          return {
+            x: Math.round(segment.point.x),
+            y: Math.round(segment.point.y),
+          };
+        });
+        break;
+      case 'line':
+        labeledThing.points = shape.segments.map((segment) => {
+          return {
+            x: Math.round(segment.point.x),
+            y: Math.round(segment.point.y),
+          };
+        });
+        break;
+      case 'point':
+        labeledThing.center.x = Math.round(polygon.getPosition().x);
+        labeledThing.center.y = Math.round(polygon.getPosition().y);
+        break;
+      default:
+        throw new Error(`Could not update shape of unknown type "${type}"`);
+    }
+    return labeledThing;
   }
 
   /**

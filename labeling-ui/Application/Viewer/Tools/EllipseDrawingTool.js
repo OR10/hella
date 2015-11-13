@@ -3,7 +3,7 @@ import Tool from './Tool';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
 
 /**
- * A tool for drawing rectangle shapes with the mouse cursor
+ * A tool for drawing ellipse shapes with the mouse cursor
  */
 export default class EllipseDrawingTool extends Tool {
   /**
@@ -32,7 +32,6 @@ export default class EllipseDrawingTool extends Tool {
 
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const size = new paper.Point(1, 1);
-    const radius = 1;
 
     const drawingOptions = {
       strokeColor: 'red',
@@ -42,11 +41,7 @@ export default class EllipseDrawingTool extends Tool {
     };
 
     this._context.withScope(() => {
-      if (this._options.circle) {
-        this._ellipse = this._renderer.drawCircle(this._startPosition, radius, drawingOptions);
-      } else {
-        this._ellipse = this._renderer.drawEllipse(this._startPosition, size, drawingOptions);
-      }
+      this._ellipse = this._renderer.drawEllipse(this._startPosition, size, drawingOptions);
     });
 
     this.emit('ellipse:new', this._ellipse);
@@ -58,16 +53,9 @@ export default class EllipseDrawingTool extends Tool {
     const width = Math.abs(point.x - this._startPosition.x) || 1;
     const height = Math.abs(point.y - this._startPosition.y) || 1;
 
-    if (this._options.circle) {
-      const distance = this._startPosition.getDistance(point);
-      const scale = distance / this._ellipse.bounds.width || 1;
-      this._ellipse.scale(scale);
-      this._ellipse.position = new paper.Point((this._startPosition.x + point.x) / 2, (this._startPosition.y + point.y) / 2);
-    } else {
-      const scaleX = width / this._ellipse.bounds.width || 1;
-      const scaleY = height / this._ellipse.bounds.height || 1;
-      this._ellipse.scale(scaleX, scaleY, this._getScaleAnchor(point));
-    }
+    const scaleX = width / this._ellipse.bounds.width || 1;
+    const scaleY = height / this._ellipse.bounds.height || 1;
+    this._ellipse.scale(scaleX, scaleY, this._getScaleAnchor(point));
 
     this.emit('ellipse:update', this._ellipse);
   }
