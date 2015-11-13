@@ -2,7 +2,7 @@
 :backends:
     - yaml
 :hierarchy:
-    - node/%{::fqdn}
+    - "node/%{::fqdn}"
     - "%{::environment}"
     - global
 :yaml:

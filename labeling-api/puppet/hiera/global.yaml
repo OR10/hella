@@ -1,4 +1,4 @@
-annostation_base::nodejs: true
+annostation_base::nodejs: false
 
 php::ensure: latest
 php::manage_repos: true

@@ -41,5 +41,15 @@ labeling_api::secret: 'saddassadasd'
 labeling_api::user_password: 'xoADo2iMO1okZJIvaQKX'
 labeling_api::rabbitmq_host: '127.0.0.1'
 
+labeling_api::couch::database_name: 'labeling_api'
+labeling_api::couch::prepare_test_environment: true
+
 labeling_api::worker::app_dir: '/var/www/labeling-api/current'
 labeling_api::worker::user: www-data
+
+labeling_api::mysql::database_name: 'labeling_api'
+labeling_api::mysql::database_user: 'labeling_api'
+labeling_api::mysql::database_password: 'pEid4oShu'
+labeling_api::mysql::prepare_test_environment: true
+
+

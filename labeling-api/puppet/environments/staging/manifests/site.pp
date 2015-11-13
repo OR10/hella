@@ -17,6 +17,10 @@ class { 'annostation_base': }
 class { 'labeling_api':
 }
 
+class { 'labeling_api::couch':
+    require => Class['labeling_api'],
+}
+
 class { 'labeling_api::worker':
     require => Class['labeling_api'],
 }

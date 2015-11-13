@@ -36,25 +36,7 @@ class labeling_api(
     $rabbitmq_use_dead_letter_exchange = true,
     $rabbitmq_use_alternate_exchange = true,
 ) {
-
-  ::mysql::db { $database_name:
-    user     => $database_user,
-    password => $database_password,
-    host     => '%',
-  }
-
-  ::couchdb::database { $database_name: }
-
-
   if $prepare_test_environment {
-    ::mysql::db { "${database_name}_test":
-      user     => $database_user,
-      password => $database_password,
-      host     => '%',
-    }
-
-    ::couchdb::database { "${database_name}_test": }
-
     if ($config_dir == undef) {
       $test_config_file = "${root_dir}/app/config/parameters_test.yml"
     } else {

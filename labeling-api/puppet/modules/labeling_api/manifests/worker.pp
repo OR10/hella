@@ -4,6 +4,9 @@ class labeling_api::worker(
   $numberOfLowNormalWorkers = 8,
   $numberOfHighNormalWorkers = 2,
 ) {
+  include ::php
+  include ::supervisord
+  include labeling_api::common
 
   supervisord::program { 'worker-pool-starter-low-normal':
     command => "${app_dir}/app/console annostation:workerpool:starter low normal",
@@ -24,5 +27,4 @@ class labeling_api::worker(
     startsecs => 0,
     numprocs => $numberOfHighNormalWorkers,
   }
-
 }

@@ -1,23 +1,41 @@
 Class['apt::update'] -> Package<| title != 'apt-transport-https' and title != 'ca-certificates' |>
 
-class { 'nginx': }
+include ::apt
+include ::annostation_base
 
-include php
-
-class { '::mysql::server': }
-
-class { 'couchdb': }
-
-class { 'rabbitmq': }
-
-include ::supervisord
-
-class { 'annostation_base': }
-
-class { 'labeling_api':
-    require => Class['annostation_base'],
+node mysql.vagrant {
+    include ::labeling_api::mysql
 }
 
-class { 'labeling_api::worker':
-    require => Class['labeling_api'],
+node couch.vagrant {
+    include ::labeling_api::couch
+}
+
+node cdn.vagrant {
+    include ::labeling_api::cdn
+}
+
+node workerqueue.vagrant {
+    include ::labeling_api::worker_queue
+}
+
+node app.vagrant {
+    include ::annostation_base::nodejs
+    include ::labeling_api::app_parameters
+    include ::labeling_api::app
+}
+
+node worker.vagrant {
+    include ::labeling_api::app_parameters
+    include ::labeling_api::worker
+}
+
+node vagrant {
+    include ::annostation_base::nodejs
+    include ::labeling_api::mysql
+    include ::labeling_api::couch
+    include ::labeling_api::cdn
+    include ::labeling_api::app_parameters
+    include ::labeling_api::app
+    include ::labeling_api::worker
 }
