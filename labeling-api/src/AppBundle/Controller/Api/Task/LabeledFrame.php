@@ -152,9 +152,9 @@ class LabeledFrame extends Controller\Base
 
         // @TODO: Synchronize with frontend team, to find a better solution
         // here!
-//        if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
-//            $response->setStatusCode(409);
-//        } else {
+        //if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
+        //      $response->setStatusCode(409);
+        //} else {
             if ($labeledFrame === null) {
                 $labeledFrame = new Model\LabeledFrame($task);
             }
@@ -163,7 +163,7 @@ class LabeledFrame extends Controller\Base
             $labeledFrame->setIncomplete($incomplete);
             $this->labeledFrameFacade->save($labeledFrame);
             $response->setData(['result' => $labeledFrame]);
-  //      }
+        //}
 
         return $response;
     }
