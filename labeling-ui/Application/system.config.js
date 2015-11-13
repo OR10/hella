@@ -19,11 +19,11 @@ System.config({
     "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",
     "angular-ui-bootstrap": "github:angular-ui/bootstrap@0.14.3",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
-    "babel": "npm:babel-core@5.8.25",
-    "babel-runtime": "npm:babel-runtime@5.8.25",
+    "babel": "npm:babel-core@5.8.34",
+    "babel-runtime": "npm:babel-runtime@5.8.34",
     "bootstrap": "github:twbs/bootstrap-sass@3.3.5",
-    "clean-css": "npm:clean-css@3.4.6",
-    "core-js": "npm:core-js@1.2.1",
+    "clean-css": "npm:clean-css@3.4.7",
+    "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.19",
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
     "font-awesome": "npm:font-awesome@4.4.0",
@@ -122,16 +122,13 @@ System.config({
     "github:jspm/nodelibs-zlib@0.1.0": {
       "browserify-zlib": "npm:browserify-zlib@0.1.4"
     },
-    "github:twbs/bootstrap-sass@3.3.5": {
-      "bootstrap": "github:twbs/bootstrap-sass@3.3.5"
-    },
     "npm:acorn-globals@1.0.9": {
-      "acorn": "npm:acorn@2.6.2"
+      "acorn": "npm:acorn@2.6.4"
     },
     "npm:acorn@0.11.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:acorn@2.6.2": {
+    "npm:acorn@2.6.4": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
@@ -175,7 +172,7 @@ System.config({
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "url": "github:jspm/nodelibs-url@0.1.0"
     },
-    "npm:babel-runtime@5.8.25": {
+    "npm:babel-runtime@5.8.34": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:bl@0.9.4": {
@@ -257,7 +254,7 @@ System.config({
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "string_decoder": "github:jspm/nodelibs-string_decoder@0.1.0"
     },
-    "npm:clean-css@3.4.6": {
+    "npm:clean-css@3.4.7": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "commander": "npm:commander@2.8.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -287,8 +284,9 @@ System.config({
     "npm:constants-browserify@0.0.1": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
-    "npm:core-js@1.2.1": {
+    "npm:core-js@1.2.6": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
@@ -516,7 +514,7 @@ System.config({
     "npm:mime-types@2.0.14": {
       "mime-db": "npm:mime-db@1.12.0"
     },
-    "npm:node-uuid@1.4.4": {
+    "npm:node-uuid@1.4.6": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0"
     },
@@ -599,16 +597,6 @@ System.config({
       "stream-browserify": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31"
     },
-    "npm:readable-stream@1.1.13": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "core-util-is": "npm:core-util-is@1.0.1",
-      "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
-      "isarray": "npm:isarray@0.0.1",
-      "process": "github:jspm/nodelibs-process@0.1.2",
-      "stream-browserify": "npm:stream-browserify@1.0.0",
-      "string_decoder": "npm:string_decoder@0.10.31"
-    },
     "npm:request@2.53.0": {
       "aws-sign2": "npm:aws-sign2@0.5.0",
       "bl": "npm:bl@0.9.4",
@@ -626,14 +614,14 @@ System.config({
       "json-stringify-safe": "npm:json-stringify-safe@5.0.1",
       "mime-types": "npm:mime-types@2.0.14",
       "net": "github:jspm/nodelibs-net@0.1.2",
-      "node-uuid": "npm:node-uuid@1.4.4",
+      "node-uuid": "npm:node-uuid@1.4.6",
       "oauth-sign": "npm:oauth-sign@0.6.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "qs": "npm:qs@2.3.3",
       "querystring": "github:jspm/nodelibs-querystring@0.1.0",
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "stringstream": "npm:stringstream@0.0.5",
-      "tough-cookie": "npm:tough-cookie@2.2.0",
+      "tough-cookie": "npm:tough-cookie@2.2.1",
       "tunnel-agent": "npm:tunnel-agent@0.4.1",
       "url": "github:jspm/nodelibs-url@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0",
@@ -669,7 +657,7 @@ System.config({
     "npm:stream-browserify@1.0.0": {
       "events": "github:jspm/nodelibs-events@0.1.1",
       "inherits": "npm:inherits@2.0.1",
-      "readable-stream": "npm:readable-stream@1.1.13"
+      "readable-stream": "npm:readable-stream@1.0.33"
     },
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
@@ -686,7 +674,7 @@ System.config({
     "npm:timers-browserify@1.4.1": {
       "process": "npm:process@0.11.2"
     },
-    "npm:tough-cookie@2.2.0": {
+    "npm:tough-cookie@2.2.1": {
       "net": "github:jspm/nodelibs-net@0.1.2",
       "punycode": "github:jspm/nodelibs-punycode@0.1.0",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0",
