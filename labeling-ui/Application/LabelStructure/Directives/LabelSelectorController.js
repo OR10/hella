@@ -1,5 +1,4 @@
 import {equals} from 'angular';
-import uuid from 'uuid';
 
 /**
  * @class LabelSelectorController
@@ -209,7 +208,7 @@ export default class LabelSelectorController {
     if (!labeledFrame.id) {
       // @TODO: Synchronize this with the backend guys :)
       //        and possibly create an uuid service for this!
-      labeledFrame.id = uuid.v4();
+      labeledFrame.id = this._generateUuid();
     }
 
     labeledFrame.incomplete = !this.isCompleted;
@@ -236,6 +235,13 @@ export default class LabelSelectorController {
       (isCompleted, page) => isCompleted === true && this.choices[page.id] !== null,
       true
     );
+  }
+
+  _generateUuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = crypto.getRandomValues(new Uint8Array(1))[0]%16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
   }
 }
 
