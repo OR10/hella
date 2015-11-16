@@ -102,6 +102,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
         'assetPath': `${__dirname}/Distribution`,
         'buildOptions': {
           'sfx': true,
+          'lowResSourceMaps': true
         },
         'entryPointExpression': 'Application/main.js',
       });

@@ -1,0 +1,18 @@
+<div ng-if="vm.exports === null" class="alert alert-info">Loading Exports...</div>
+<div ng-if="vm.exports.length === 0" class="alert alert-warning">No exports available!</div>
+
+<table class="table table-striped" ng-if="vm.exports.length > 0">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Filename</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="export in vm.exports">
+        <td class="col-md-1"><i class="fa fa-file"></i></td>
+        <td><a href="" ui-sref="export({taskId: task.id})"><i class="fa fa-download"></i> {{export.filename}} -
+            {{export.id}}</a></td>
+    </tr>
+    </tbody>
+</table>
