@@ -2,7 +2,6 @@ import {equals} from 'angular';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
-var _entityIdService:EntityIdService;
 /**
  * @class LabelSelectorController
  *
