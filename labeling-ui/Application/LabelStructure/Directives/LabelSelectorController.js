@@ -1,10 +1,12 @@
 import {equals} from 'angular';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 /**
  * @class LabelSelectorController
  *
  * @property {string} labeledObjectType
- * @property {{classes: Array<string>}} labeledObject
+ * @property {LabeledObject} labeledObject
  * @property {LabelStructure} structure
  * @property {Object} annotation
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
@@ -169,18 +171,15 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledObject() {
-    // @TODO: Use instanceof checks o.ä. mit klassenhierachie hier.
-    //        alternatively implement the corresponding function on the type
-    //        maybe going back and forth?
-    switch (this.labeledObjectType) {
-      case 'labeledThingInFrame':
+    switch (true) {
+      case this.labeledObject instanceof LabeledThingInFrame:
         this._storeUpdatedLabeledThingInFrame(this.labeledObject);
       break;
-      case 'labeledFrame':
+      case this.labeledObject instanceof LabeledFrame:
         this._storeUpdatedLabeledFrame(this.labeledObject);
       break;
       default:
-        throw new Error(`Unknown labeledObjectType (${this.labeledObjectType}): Unable to send updates to the backend.`);
+        throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
     }
   }
 
