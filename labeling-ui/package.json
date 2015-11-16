@@ -68,7 +68,7 @@
     "selenium-webdriver": "^2.47.0",
     "send": "^0.13.0",
     "serve-static": "^1.10.0",
-    "systemjs-builder": "^0.14.8",
+    "systemjs-builder": "git+https://github.com/systemjs/builder.git#master",
     "tiny-lr": "^0.2.1"
   },
   "jspm": {
