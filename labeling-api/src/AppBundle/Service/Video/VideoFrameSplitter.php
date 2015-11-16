@@ -36,6 +36,11 @@ class VideoFrameSplitter
     private $fileSystem;
 
     /**
+     * @var array
+     */
+    private $imageSizes = array();
+
+    /**
      * FrameCdnSplitter constructor.
      *
      * @param Service\FrameCdn      $frameCdn
@@ -84,6 +89,7 @@ class VideoFrameSplitter
         );
 
         foreach ($files as $file) {
+            $this->imageSizes[(int) $file['basename']] = getimagesizefromstring($this->fileSystem->read($file['path']));
             $this->frameCdn->save(
                 $video,
                 $type,
@@ -133,5 +139,13 @@ class VideoFrameSplitter
         $this->fileSystem->createDir($tempDir);
 
         return $tempDir;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImageSizes()
+    {
+        return $this->imageSizes;
     }
 }

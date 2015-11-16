@@ -28,7 +28,7 @@ class Video
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $imageTypeConvertedStatus;
+    private $imageTypes;
 
     /**
      * @param string $name The name of the video.
@@ -83,31 +83,28 @@ class Video
     }
 
     /**
-     * @param      $imageType
-     * @param bool $converted
-     */
-    public function setImageTypeConvertedStatus($imageType, $converted = false)
-    {
-        $this->imageTypeConvertedStatus[$imageType] = $converted;
-    }
-
-    /**
-     * @param null $imageType
-     * @return mixed
-     */
-    public function getImageTypeConvertedStatus($imageType = null)
-    {
-        if ($imageType !== null) {
-            return $this->imageTypeConvertedStatus[$imageType];
-        }
-        return $this->imageTypeConvertedStatus;
-    }
-
-    /**
      * @return string
      */
     public function getSourceVideoPath()
     {
         return $this->getId() . DIRECTORY_SEPARATOR . 'source';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageTypes()
+    {
+        return $this->imageTypes;
+    }
+
+    /**
+     * @param $imageType
+     * @param $key
+     * @param $value
+     */
+    public function setImageType($imageType, $key, $value)
+    {
+        $this->imageTypes[$imageType][$key] = $value;
     }
 }
