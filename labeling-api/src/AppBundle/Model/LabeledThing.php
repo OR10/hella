@@ -27,7 +27,7 @@ class LabeledThing
     /**
      * @CouchDB\Field(type="string")
      */
-    private $labelingTaskId;
+    private $taskId;
 
     /**
      * @CouchDB\Field(type="boolean")
@@ -39,15 +39,15 @@ class LabeledThing
      */
     public function __construct(LabelingTask $labelingTask)
     {
-        $this->labelingTaskId = $labelingTask->getId();
+        $this->taskId = $labelingTask->getId();
     }
 
     /**
      * @return string
      */
-    public function getLabelingTaskId()
+    public function getTaskId()
     {
-        return $this->labelingTaskId;
+        return $this->taskId;
     }
 
     /**
@@ -67,11 +67,11 @@ class LabeledThing
     }
 
     /**
-     * @param string $labelingTaskId
+     * @param string $taskId
      */
-    public function setLabelingTaskId($labelingTaskId)
+    public function setTaskId($taskId)
     {
-        $this->labelingTaskId = $labelingTaskId;
+        $this->taskId = $taskId;
     }
 
     /**
