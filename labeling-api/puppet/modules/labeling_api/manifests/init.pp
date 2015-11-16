@@ -3,7 +3,7 @@ class labeling_api(
   $couch = false,
   $worker_queue = false,
   $app = false,
-  $run_composer_install = true,
+  $run_composer_install = false,
 ) {
   include ::labeling_api::params
 

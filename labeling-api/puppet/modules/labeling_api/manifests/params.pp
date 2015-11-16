@@ -39,6 +39,8 @@ class labeling_api::params(
   $frame_cdn_port = 80,
 
   $user_password,
+
+  $create_parameter_files = false,
 ) {
   file { "${config_dir}/parameters.yml":
     ensure  => file,
