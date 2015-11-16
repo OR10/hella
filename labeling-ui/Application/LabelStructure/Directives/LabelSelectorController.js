@@ -181,10 +181,10 @@ export default class LabelSelectorController {
     switch (true) {
       case this.labeledObject instanceof LabeledThingInFrame:
         this._storeUpdatedLabeledThingInFrame(this.labeledObject);
-      break;
+        break;
       case this.labeledObject instanceof LabeledFrame:
         this._storeUpdatedLabeledFrame(this.labeledObject);
-      break;
+        break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
     }

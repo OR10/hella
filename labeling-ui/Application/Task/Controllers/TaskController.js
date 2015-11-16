@@ -1,4 +1,4 @@
-//@TODO: Load from the server assigned to a certain task
+// @TODO: Load from the server assigned to a certain task
 import labeledFrameStructure from 'Application/LabelStructure/Structure/meta-label-structure.json!';
 import labeledFrameAnnotation from 'Application/LabelStructure/Structure/meta-label-structure-ui-annotation.json!';
 import labeledThingStructure from 'Application/LabelStructure/Structure/object-label-structure.json!';

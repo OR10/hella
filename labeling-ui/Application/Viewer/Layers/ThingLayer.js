@@ -174,7 +174,6 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     this._circleDrawingTool.on('ellipse:complete', ellipse => {
-      console.log(ellipse.getPosition(), ellipse.position);
       const shape = {
         type: 'circle',
         point: {
@@ -292,7 +291,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     }
   }
 
-  setSelectedLabeledThingInFrame(thing){
+  setSelectedLabeledThingInFrame(thing) {
     this._selectedLabeledThingInFrame = thing;
   }
 
@@ -392,7 +391,6 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
         };
         break;
       case 'circle':
-        console.log(shape.position);
         transformedShape = {
           point: {
             x: Math.round(shape.position.x),

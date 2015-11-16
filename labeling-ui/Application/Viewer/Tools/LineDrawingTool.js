@@ -1,4 +1,3 @@
-import paper from 'paper';
 import PathDrawingTool from './PathDrawingTool';
 
 /**

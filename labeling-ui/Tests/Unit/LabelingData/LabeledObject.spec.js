@@ -1,6 +1,3 @@
-import 'jquery';
-import angular from 'angular';
-
 import LabeledObject from 'Application/LabelingData/Models/LabeledObject';
 
 describe('LabeledObject', () => {
@@ -12,13 +9,13 @@ describe('LabeledObject', () => {
      id: '123',
      rev: '456',
      classes: ['foo', 'bar'],
-     incomplete: true
+     incomplete: true,
    }],
    [{
      id: 'abc',
      classes: ['baz', 'bar'],
-     incomplete: false
-   }]
+     incomplete: false,
+   }],
   ], (labeledObjectData) => {
     it('should take a labeledObject POJO for initialization', () => {
       const labeledObject = new LabeledObject(labeledObjectData);
@@ -34,7 +31,7 @@ describe('LabeledObject', () => {
       id: '123',
       rev: '456',
       classes: ['foo', 'bar'],
-      incomplete: true
+      incomplete: true,
     });
 
     labeledObject.classes = ['blib', 'blub', 'blib'];

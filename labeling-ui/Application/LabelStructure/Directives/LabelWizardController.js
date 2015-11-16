@@ -39,7 +39,7 @@ class LabelWizardController {
 
     // Handle slices, which appear before the current selection
     $scope.$watchCollection('vm.slicedPages', (newSlices, oldSlices) => {
-      for (let i = 0; i < newSlices.length; i++) {
+      for (let i = 0; i < newSlices.length; i++) { // eslint-disable-line id-length
         const newSlice = newSlices[i];
         if (this.activePages[newSlice.id] === true) {
           // Found active page without a difference before it

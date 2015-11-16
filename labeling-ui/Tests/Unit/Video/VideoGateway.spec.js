@@ -7,7 +7,6 @@ import VideoGateway from 'Application/Video/Gateways/VideoGateway';
 
 describe('VideoGateway', () => {
   let $httpBackend;
-  let $httpParamSerializer;
   let gateway;
   let bufferedHttp;
 
@@ -30,7 +29,6 @@ describe('VideoGateway', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      $httpParamSerializer = $injector.get('$httpParamSerializer');
       gateway = $injector.instantiate(VideoGateway);
       bufferedHttp = $injector.get('bufferedHttp');
     });
