@@ -13,8 +13,10 @@ System.config({
   },
 
   meta: {
-    'Distribution/Templates/*': {
-      deps: ['angular']
+    "Distribution/Templates/*": {
+      "deps": [
+        "angular"
+      ]
     }
   },
 
