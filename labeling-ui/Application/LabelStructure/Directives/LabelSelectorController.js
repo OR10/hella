@@ -1,10 +1,13 @@
 import {equals} from 'angular';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
+var _entityIdService:EntityIdService;
 /**
  * @class LabelSelectorController
  *
  * @property {string} labeledObjectType
- * @property {{classes: Array<string>}} labeledObject
+ * @property {LabeledObject} labeledObject
  * @property {LabelStructure} structure
  * @property {Object} annotation
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
@@ -19,8 +22,9 @@ export default class LabelSelectorController {
    * @param {AnnotationLabelStructureVisitor} annotationStructureVisitor
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {EntityIdService} entityIdService
    */
-  constructor($scope, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway) {
+  constructor($scope, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway, entityIdService) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -64,6 +68,12 @@ export default class LabelSelectorController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
 
     // Handle changes of `labeledObject`s
     $scope.$watch('vm.labeledObject', newLabeledObject => {
@@ -169,18 +179,15 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledObject() {
-    // @TODO: Use instanceof checks o.ä. mit klassenhierachie hier.
-    //        alternatively implement the corresponding function on the type
-    //        maybe going back and forth?
-    switch (this.labeledObjectType) {
-      case 'labeledThingInFrame':
+    switch (true) {
+      case this.labeledObject instanceof LabeledThingInFrame:
         this._storeUpdatedLabeledThingInFrame(this.labeledObject);
       break;
-      case 'labeledFrame':
+      case this.labeledObject instanceof LabeledFrame:
         this._storeUpdatedLabeledFrame(this.labeledObject);
       break;
       default:
-        throw new Error(`Unknown labeledObjectType (${this.labeledObjectType}): Unable to send updates to the backend.`);
+        throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
     }
   }
 
@@ -206,9 +213,7 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledFrame(labeledFrame) {
     if (!labeledFrame.id) {
-      // @TODO: Synchronize this with the backend guys :)
-      //        and possibly create an uuid service for this!
-      labeledFrame.id = this._generateUuid();
+      labeledFrame.id = this._entityIdService.getUniqueId();
     }
 
     labeledFrame.incomplete = !this.isCompleted;
@@ -236,13 +241,6 @@ export default class LabelSelectorController {
       true
     );
   }
-
-  _generateUuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = crypto.getRandomValues(new Uint8Array(1))[0]%16|0, v = c == 'x' ? r : (r&0x3|0x8);
-      return v.toString(16);
-    });
-  }
 }
 
 LabelSelectorController.$inject = [
@@ -251,4 +249,5 @@ LabelSelectorController.$inject = [
   'annotationLabelStructureVisitor',
   'labeledFrameGateway',
   'labeledThingInFrameGateway',
+  'entityIdService',
 ];

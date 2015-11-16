@@ -4,6 +4,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import LabeledFrameGateway from 'Application/LabelingData/Gateways/LabeledFrameGateway';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 
 describe('LabeledFrameGateway', () => {
   let $httpBackend;
@@ -43,7 +44,7 @@ describe('LabeledFrameGateway', () => {
     const taskId = '2';
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = {id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']};
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend
@@ -59,11 +60,11 @@ describe('LabeledFrameGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
-  it('should save a labeled thing in frame', done => {
+  it('should save a labeled frame', done => {
     const taskId = '2';
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = {id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']};
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend

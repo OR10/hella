@@ -1,3 +1,5 @@
+import LabeledFrame from '../Models/LabeledFrame';
+
 /**
  * Gateway for saving and retrieving {@link LabeledFrame}s
  */
@@ -36,7 +38,7 @@ class LabeledFrameGateway {
     return this._bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledFrame(response.data.result);
         }
 
         throw new Error('Failed loading labeled frame');
@@ -49,21 +51,19 @@ class LabeledFrameGateway {
    *
    * @param {String} taskId
    * @param {Integer} frameNumber
-   * @param {LabeledFrame} data
+   * @param {LabeledFrame} labeledFrame
    *
    * @returns {Promise<LabeledFrame|Error>}
    */
-  saveLabeledFrame(taskId, frameNumber, data) {
+  saveLabeledFrame(taskId, frameNumber, labeledFrame) {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
 
-    const labeledFrame = this._uniqueClasses(data);
-
     return this._bufferedHttp.put(url, labeledFrame)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledFrame(response.data.result);
         }
 
         throw new Error('Failed updating labeled frame');
@@ -90,19 +90,6 @@ class LabeledFrameGateway {
 
         throw new Error('Failed deleting labeled thing in frame');
       });
-  }
-
-  /**
-   * Make the classes array on a labeled frame unique
-   *
-   * @private
-   * @param {LabeledFrame} labeledFrame
-   * @returns {LabeledFrame}
-   */
-  _uniqueClasses(labeledFrame) {
-    labeledFrame.classes = [...new Set(labeledFrame.classes)];
-
-    return labeledFrame;
   }
 }
 

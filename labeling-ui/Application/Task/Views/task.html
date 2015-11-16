@@ -13,18 +13,14 @@
         ></viewer>
     </div>
     <div class="col-md-3">
-        <!-- @TODO: labeled-object-type ersetzen durch klassenstruktur und instanceof checks auf LabeledObject -> LabeledThingInFrame -->
-        <label-selector labeled-object-type="labeledFrame"
-                        labeled-object="vm.labeledFrame"
+        <label-selector labeled-object="vm.labeledFrame"
                         structure="vm.labeledFrameStructure"
                         annotation="vm.labeledFrameAnnotation"
                         task="vm.task"
                         frame-position="vm.framePosition"
                         sections="[{header: 'Frame Label'}]"
         ></label-selector>
-        <!-- @TODO: labeled-object-type ersetzen durch klassenstruktur und instanceof checks auf LabeledObject -> LabeledThingInFrame -->
-        <label-selector labeled-object-type="labeledThingInFrame"
-                        labeled-object="vm.selectedLabeledThingInFrame"
+        <label-selector labeled-object="vm.selectedLabeledThingInFrame"
                         structure="vm.labeledThingStructure"
                         annotation="vm.labeledThingAnnotation"
                         task="vm.task"
