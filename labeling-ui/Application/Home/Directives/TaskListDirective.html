@@ -1,5 +1,19 @@
 <div ng-if="vm.tasks === null" class="alert alert-info">Loading Tasks...</div>
 <div ng-if="vm.tasks.length === 0" class="alert alert-warning">No tasks available!</div>
-<ul class="list-group" ng-if="vm.tasks.length > 0">
-    <li class="list-group-item" ng-repeat="task in vm.tasks"><i class="fa fa-video-camera"></i>&nbsp; &nbsp;<a href="" ui-sref="task({taskId: task.id})">{{task.id}}</a></li>
-</ul>
+
+<table class="table table-striped" ng-if="vm.tasks.length > 0">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Task</th>
+            <th>Export Liste</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="task in vm.tasks">
+            <td class="col-md-1"><i class="fa fa-video-camera"></i></td>
+            <td><a href="" ui-sref="task({taskId: task.id})">{{task.id}}</a></td>
+            <td class="col-md-2"><a href="" ui-sref="export({taskId: task.id})"><i class="fa fa-list"></i></a></td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h1>Exportliste</h1>
+        <a href="/labeling" class="btn btn-default"><i class="fa fa-arrow-left"></i> back</a>
+        <button class="btn btn-default"
+                ng-click="vm.handleStartExportClicked()">
+            Start new Export
+        </button>
+        <hr>
+        <exportlist task="vm.task"/>
+    </div>
+</div>
