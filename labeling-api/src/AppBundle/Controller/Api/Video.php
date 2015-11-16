@@ -7,6 +7,8 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
+use Symfony\Component\HttpKernel\Exception;
+
 
 /**
  * @Rest\Prefix("/api/video")
@@ -42,7 +44,13 @@ class Video extends Controller\Base
      */
     public function getVideoAction($videoId)
     {
+        $video = $this->videoFacade->find($videoId);
+
+        if ($video === null) {
+            throw new Exception\NotFoundHttpException();
+        }
+
         return View\View::create()
-            ->setData(['result' => $this->videoFacade->find($videoId)]);
+            ->setData(['result' => $video]);
     }
 }
