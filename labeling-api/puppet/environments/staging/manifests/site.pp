@@ -7,3 +7,15 @@ include ::labeling_api
 file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
   ensure  => directory,
 }
+
+node /^annostation\-ci\-slave\-.*/ {
+  class { 'ruby':
+    version      => '2.0.0',
+    gems_version => 'latest'
+  }
+
+  limits::fragment {
+    "ubuntu/-/nofile":
+      value => 8192
+  }
+}

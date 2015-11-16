@@ -14,7 +14,7 @@ sudo /opt/puppetlabs/bin/puppet apply \
     --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml  \
     --environmentpath /home/ubuntu/puppet/environments/ \
     --environment staging \
-    /home/ubuntu/puppet/environments/staging/manifests/jenkins.pp
+    /home/ubuntu/puppet/environments/staging/manifests/site.pp
 
 sudo gem2.0 install capistrano capistrano-scm-copy
 
