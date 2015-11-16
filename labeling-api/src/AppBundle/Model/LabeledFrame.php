@@ -34,7 +34,7 @@ class LabeledFrame
     /**
      * @CouchDB\Field(type="string")
      */
-    private $taskId;
+    private $labelingTaskId;
 
     /**
      * @CouchDB\Field(type="boolean")
@@ -43,15 +43,15 @@ class LabeledFrame
 
     public function __construct(Model\LabelingTask $task)
     {
-        $this->taskId = $task->getId();
+        $this->labelingTaskId = $task->getId();
     }
 
     /**
      * @return mixed
      */
-    public function getTaskId()
+    public function getLabelingTaskId()
     {
-        return $this->taskId;
+        return $this->labelingTaskId;
     }
 
     /**
@@ -71,11 +71,11 @@ class LabeledFrame
     }
 
     /**
-     * @param string $taskId
+     * @param string $labelingTaskId
      */
-    public function setTaskId($taskId)
+    public function setLabelingTaskId($labelingTaskId)
     {
-        $this->taskId = $taskId;
+        $this->labelingTaskId = $labelingTaskId;
     }
 
 

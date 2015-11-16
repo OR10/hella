@@ -216,7 +216,7 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
                 "result": [
                     {
                         "id": "36047d429d50548893be41c6880632fd",
-                        "taskId": "36047d429d50548893be41c6883f3416",
+                        "labelingTaskId": "36047d429d50548893be41c6883f3416",
                         "filename": "kitti.zip"
                     },
                     ...
