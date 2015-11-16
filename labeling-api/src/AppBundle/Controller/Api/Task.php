@@ -49,9 +49,9 @@ class Task extends Controller\Base
         $tasks = $this->labelingTaskFacade->findAll();
 
         $taskResult = array_values(array_filter($tasks->toArray(), function ($task) {
-            $currentState = $this->labelingTaskFacade->getVideo($task)->getImageTypeConvertedStatus();
+            $imageTypes = $this->labelingTaskFacade->getVideo($task)->getImageTypes();
             foreach ($task->getRequiredImageTypes() as $requiredImageType) {
-                if ($currentState[$requiredImageType] === false) {
+                if ($imageTypes[$requiredImageType]['converted'] === false) {
                     return false;
                 }
             }

@@ -69,7 +69,9 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         );
 
         $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
-        $this->updateDocument($video, $job->imageType);
+        $imageSizes = $this->videoFrameSplitter->getImageSizes();
+
+        $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
 
         unlink($tmpFile);
     }
@@ -77,21 +79,27 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     /**
      * @param Model\Video    $video
      * @param ImageType\Base $imageType
+     * @param                $width
+     * @param                $height
      * @param int            $retryCount
      * @param int            $maxRetries
      * @throws CouchDB\UpdateConflictException
+     * @internal param ImageType\Base $imageType
      */
-    private function updateDocument(Model\Video $video, ImageType\Base $imageType, $retryCount = 0, $maxRetries = 1)
+    private function updateDocument(Model\Video $video, ImageType\Base $imageType, $width, $height, $retryCount = 0, $maxRetries = 1)
     {
+        $imageTypeName = $imageType->getName();
         try {
             $this->videoFacade->refresh($video);
-            $video->setImageTypeConvertedStatus($imageType->getName(), true);
+            $video->setImageType($imageTypeName, 'converted', true);
+            $video->setImageType($imageTypeName, 'width', $width);
+            $video->setImageType($imageTypeName, 'height', $height);
             $this->videoFacade->update();
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
             if ($retryCount > $maxRetries) {
                 throw $updateConflictException;
             }
-            $this->updateDocument($video, $imageType, $retryCount + 1);
+            $this->updateDocument($video, $retryCount + 1);
         }
     }
 }

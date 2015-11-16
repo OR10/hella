@@ -12,6 +12,12 @@ System.config({
     "npm:*": "Application/Vendor/npm/*"
   },
 
+  meta: {
+    'Distribution/Templates/*': {
+      deps: ['angular']
+    }
+  },
+
   map: {
     "angular": "github:angular/bower-angular@1.4.7",
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
