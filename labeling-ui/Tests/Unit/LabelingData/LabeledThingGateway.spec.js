@@ -4,6 +4,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import LabeledThingGateway from 'Application/LabelingData/Gateways/LabeledThingGateway';
+import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 
 describe('LabeledThingGateway', () => {
   let $httpBackend;
@@ -43,10 +44,13 @@ describe('LabeledThingGateway', () => {
     const labeledThingId = '123';
     const expectedUrl = `/backend/api/task/${taskId}/labeledThing/${labeledThingId}`;
 
-    const expectedResult = {
+    const expectedResult = new LabeledThing({
       id: '123',
       rev: '1-abcdef',
-    };
+      taskId: '456',
+      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      classes: ['foo', 'bar'],
+    });
 
     $httpBackend
       .expect('GET', expectedUrl)
@@ -66,13 +70,13 @@ describe('LabeledThingGateway', () => {
     const labeledThingId = '123';
     const expectedUrl = `/backend/api/task/${taskId}/labeledThing/${labeledThingId}`;
 
-    const labeledThing = {
-      id: labeledThingId,
-      rev: 'bcd',
-      taskId: taskId,
-      frameRange: {startFrameNumber: 100, endFrameNumber: 250},
-      classes: ['someclass', 'someotherclass'],
-    };
+    const labeledThing = new LabeledThing({
+      id: '123',
+      rev: '1-abcdef',
+      taskId: '456',
+      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      classes: ['foo', 'bar'],
+    });
 
     const expectedResult = {result: labeledThing};
 

@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import LabeledThing from '../Models/LabeledThing';
 
 /**
  * Gateway for CRUD operation on {@link LabeledThing}s
@@ -33,7 +33,7 @@ class LabeledThingGateway {
     return this._bufferedHttp.put(url, labeledThing)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledThing(response.data.result);
         }
 
         throw new Error('Received malformed response when creating labeled thing.');
@@ -51,7 +51,7 @@ class LabeledThingGateway {
     return this._bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledThing(response.data.result);
         }
 
         throw new Error('Received malformed response when requesting labeled thing.');
