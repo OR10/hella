@@ -3,6 +3,7 @@ class labeling_api(
   $couch = false,
   $worker_queue = false,
   $app = false,
+  $run_composer_install = true,
 ) {
   include ::labeling_api::params
 
@@ -22,5 +23,9 @@ class labeling_api(
     include ::labeling_api::cdn
     include ::labeling_api::app
     include ::labeling_api::worker
+  }
+
+  if $run_composer_install {
+    include ::labeling_api::vagrant_composer_install
   }
 }
