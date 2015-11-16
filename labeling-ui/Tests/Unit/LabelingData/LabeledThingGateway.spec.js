@@ -66,14 +66,14 @@ describe('LabeledThingGateway', () => {
   });
 
   it('should save a labeled thing', done => {
-    const taskId = 'someTaskId234';
+    const taskId = '456';
     const labeledThingId = '123';
     const expectedUrl = `/backend/api/task/${taskId}/labeledThing/${labeledThingId}`;
 
     const labeledThing = new LabeledThing({
-      id: '123',
+      id: labeledThingId,
       rev: '1-abcdef',
-      taskId: '456',
+      taskId: taskId,
       frameRange: {startFrameNumber: 23, endFrameNumber: 42},
       classes: ['foo', 'bar'],
     });
