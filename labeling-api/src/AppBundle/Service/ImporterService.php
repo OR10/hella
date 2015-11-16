@@ -83,7 +83,7 @@ class ImporterService
         //       all image types are defined by the labeling task. However,
         //       when this happens, this service has to be refactored anyway.
         foreach ($imageTypeNames as $imageTypeName) {
-            $video->setImageTypeConvertedStatus($imageTypeName);
+            $video->setImageType($imageTypeName, 'converted', false);
             $this->videoFacade->update();
             $job = new Jobs\VideoFrameSplitter(
                 $video->getId(),

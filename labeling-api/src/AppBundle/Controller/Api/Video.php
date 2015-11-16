@@ -32,4 +32,17 @@ class Video extends Controller\Base
         return View\View::create()
             ->setData(['result' => $this->videoFacade->findAll()]);
     }
+
+    /**
+     * @Rest\Get("/{videoId}")
+     *
+     * @param $videoId
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getVideoAction($videoId)
+    {
+        return View\View::create()
+            ->setData(['result' => $this->videoFacade->find($videoId)]);
+    }
 }
