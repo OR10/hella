@@ -6,7 +6,7 @@ class labeling_api::worker(
 ) {
   include ::php
   include ::supervisord
-  include labeling_api::common
+  include ::labeling_api::common
 
   supervisord::program { 'worker-pool-starter-low-normal':
     command => "${app_dir}/app/console annostation:workerpool:starter low normal",

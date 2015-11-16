@@ -1,5 +1,0 @@
-
-labeling_api::app_parameters::frame_cdn_base_url: 'http://192.168.222.32:80'
-labeling_api::app_parameters::database_host: '192.168.222.30'
-labeling_api::app_parameters::couchdb_host: '192.168.222.31'
-labeling_api::app_parameters::rabbitmq_host: '192.168.222.33'

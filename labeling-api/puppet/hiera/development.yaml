@@ -22,56 +22,25 @@ supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running
 
-#labeling_api::app_main_script: 'app_dev.php'
-#labeling_api::run_composer_install: true
-#labeling_api::prepare_test_environment: true
-#labeling_api::root_dir: '/vagrant'
-#labeling_api::cache_dir: '/var/cache/labeling_api'
-#labeling_api::frame_cdn_dir: '/var/www/frame_cdn'
-#labeling_api::frame_cdn_network_device: "eth1"
-#labeling_api::frame_cdn_allowed_origin: '*'
-#labeling_api::frame_cdn_expires: '1m'
-#labeling_api::database_host: '127.0.0.1'
-#labeling_api::database_port: 'null'
-#labeling_api::database_name: 'labeling_api'
-#labeling_api::database_user: 'labeling_api'
-#labeling_api::database_password: 'pEid4oShu'
-#labeling_api::mailer_transport: 'smtp'
-#labeling_api::mailer_host: '127.0.0.1'
-#labeling_api::mailer_user: 'null'
-#labeling_api::mailer_password: 'null'
-#labeling_api::secret: 'ThisTokenIsNotSoSecretChangeIt'
-#labeling_api::user_password: 'password'
-#labeling_api::is_vagrant_vm: true
-#labeling_api::rabbitmq_host: '127.0.0.1'
+labeling_api::params::config_dir: '/vagrant/app/config'
+labeling_api::params::cache_dir: '/var/cache/labeling_api'
+labeling_api::params::database_name: 'labeling_api'
+labeling_api::params::database_password: 'pEid4oShu'
+labeling_api::params::database_user: 'labeling_api'
+labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
+labeling_api::params::frame_cdn_port: 81
+labeling_api::params::prepare_test_environment: true
+labeling_api::params::user_password: 'password'
 
-labeling_api::couch::database_name: 'labeling_api'
-labeling_api::couch::prepare_test_environment: true
+labeling_api::app::root_dir: '/vagrant'
+labeling_api::app::is_vagrant_vm: true
+labeling_api::app::app_main_script: 'app_dev.php'
+labeling_api::app:client_max_body_size: '512M'
+
+labeling_api::cdn::allowed_origin: '*'
+labeling_api::cdn::expires: '1m'
 
 labeling_api::worker::app_dir: '/vagrant'
 labeling_api::worker::user: vagrant
 labeling_api::worker::numberOfLowNormalWorkers: 2
 labeling_api::worker::numberOfHighNormalWorkers: 1
-
-labeling_api::mysql::database_name: 'labeling_api'
-labeling_api::mysql::database_user: 'labeling_api'
-labeling_api::mysql::database_password: 'pEid4oShu'
-labeling_api::mysql::prepare_test_environment: true
-
-labeling_api::app::root_dir: '/vagrant'
-labeling_api::app::cache_dir: '/var/cache/labeling_api'
-labeling_api::app::is_vagrant_vm: true
-labeling_api::app::app_main_script: 'app_dev.php'
-
-labeling_api::cdn::allowed_origin: '*'
-labeling_api::cdn::expires: '1m'
-
-labeling_api::app_parameters::prepare_test_environment: true
-labeling_api::app_parameters::config_dir: '/vagrant/app/config'
-labeling_api::app_parameters::cache_dir: '/var/cache/labeling_api'
-labeling_api::app_parameters::frame_cdn_dir: '/var/www/frame_cdn'
-labeling_api::app_parameters::frame_cdn_base_url: 'http://192.168.222.20:81'
-labeling_api::app_parameters::database_name: 'labeling_api'
-labeling_api::app_parameters::database_user: 'labeling_api'
-labeling_api::app_parameters::database_password: 'pEid4oShu'
-labeling_api::app_parameters::user_password: 'password'

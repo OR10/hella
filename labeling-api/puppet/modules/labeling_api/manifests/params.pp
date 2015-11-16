@@ -1,10 +1,8 @@
-class labeling_api::app_parameters(
+class labeling_api::params(
   $config_dir,
   $cache_dir,
-  $frame_cdn_dir,
-  $frame_cdn_base_url,
-  $user_password,
 
+  $configure_nginx = true,
   $prepare_test_environment = false,
 
   $database_host = '127.0.0.1',
@@ -35,6 +33,12 @@ class labeling_api::app_parameters(
   $rabbitmq_password = 'guest',
   $rabbitmq_use_dead_letter_exchange = true,
   $rabbitmq_use_alternate_exchange = true,
+
+  $frame_cdn_dir,
+  $frame_cdn_base_url,
+  $frame_cdn_port = 80,
+
+  $user_password,
 ) {
   file { "${config_dir}/parameters.yml":
     ensure  => file,

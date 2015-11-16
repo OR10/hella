@@ -1,23 +1,19 @@
 class labeling_api::cdn(
-  $vhost_dir = '/var/www/frame_cdn',
+  $configure_nginx = $labeling_api::params::configure_nginx,
+  $vhost_dir = $labeling_api::params::frame_cdn_dir,
   $vhost_name = '_',
-  $vhost_port = 80,
+  $vhost_port = $labeling_api::params::frame_cdn_port,
   $allowed_origin = undef,
   $expires = '30d',
 ) {
-  include ::nginx
-  include labeling_api::common
-
-    if $vhost_dir != '/var/www/frame_cdn' {
-      file { $vhost_dir:
-        ensure => directory,
-        require => File['/var/www'],
-      }
-    }
+  if $configure_nginx {
+    include ::nginx
+    include ::labeling_api::common
 
     file { '/etc/nginx/cdn-cors.conf':
       ensure  => file,
       content => template('labeling_api/cdn/cors.conf.erb'),
+      require => Package['nginx'],
     }
 
     nginx::resource::vhost { 'cdn':
@@ -38,4 +34,5 @@ class labeling_api::cdn(
         'expires' => $expires,
       },
     }
+  }
 }
