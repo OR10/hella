@@ -15,6 +15,11 @@ class LabeledThing
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $frameRange;

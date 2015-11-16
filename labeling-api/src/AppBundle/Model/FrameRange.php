@@ -16,6 +16,11 @@ class FrameRange
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @var integer
      * @CouchDB\Field(type="integer")
      */

@@ -15,6 +15,11 @@ class Video
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $name;

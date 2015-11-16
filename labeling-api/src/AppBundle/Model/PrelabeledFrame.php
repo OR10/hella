@@ -15,6 +15,11 @@ class PrelabeledFrame
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $frameNumber;

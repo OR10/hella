@@ -17,6 +17,11 @@ class TaskExport
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $labelingTaskId;
