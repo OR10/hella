@@ -4,7 +4,7 @@ import {module, inject} from 'angular-mocks';
 
 import AbortablePromiseProvider from 'Application/Common/Support/AbortablePromiseProvider';
 
-fdescribe('AbortablePromise', () => {
+describe('AbortablePromise', () => {
   let abortable;
   let $q;
   let $rootScope;
@@ -12,7 +12,7 @@ fdescribe('AbortablePromise', () => {
   beforeEach(() => {
     inject($injector => {
       const provider = $injector.instantiate(AbortablePromiseProvider);
-      abortable = provider.$get();
+      abortable = $injector.invoke(provider.$get);
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
     });

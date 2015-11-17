@@ -1,25 +1,14 @@
 class AbortablePromiseProvider {
   /**
-   * @param {$q} $q
-   */
-  constructor($q) {
-    /**
-     * @type {$q}
-     * @private
-     */
-    this._$q = $q;
-  }
-
-  /**
    * @return {Function}
    */
-  $get() {
+  $get($q) {
     /**
      * Wrap given promise in a way, that its result can be ignored/aborted
      * @param {Promise} promise
      */
     return function abortable(inputPromise) {
-      const deferred = this._$q.defer();
+      const deferred = $q.defer();
       const promise = deferred.promise;
       deferred.__aborted__ = false;
       promise.abort = () => deferred.__aborted__ = true;
@@ -39,5 +28,9 @@ class AbortablePromiseProvider {
     }.bind(this);
   }
 }
+
+AbortablePromiseProvider.prototype.$get.$inject = [
+  '$q',
+];
 
 export default AbortablePromiseProvider;
