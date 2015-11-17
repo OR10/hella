@@ -55,25 +55,36 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     /**
      * @param Job                        $job
      * @param Logger\Facade\LoggerFacade $logger
+     *
+     * @todo throw better exceptions
      */
     public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
         /** @var Model\Video $video */
         $video = $this->videoFacade->find($job->videoId);
 
+        if ($video === null) {
+            throw new \RuntimeException("Video '{$job->videoId}' could not be found");
+        }
+
         $tmpFile = tempnam($this->cacheDir, 'source_video');
 
-        file_put_contents(
-            $tmpFile,
-            $this->fileSystem->read($video->getSourceVideoPath())
-        );
+        if ($tmpFile === false) {
+            throw new \RuntimeException('Error creating temporary file for video data');
+        }
+
+        if (file_put_contents($tmpFile, $this->fileSystem->read($video->getSourceVideoPath())) === false) {
+            throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
+        }
 
         $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
         $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
         $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
 
-        unlink($tmpFile);
+        if (!unlink($tmpFile)) {
+            throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+        }
     }
 
     /**

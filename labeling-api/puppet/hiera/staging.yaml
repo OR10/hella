@@ -19,27 +19,35 @@ supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running
 
-labeling_api::run_composer_install: false
-labeling_api::prepare_test_environment: true
-labeling_api::config_dir: '/etc/AnnoStation/labeling-api'
-labeling_api::root_dir: '/var/www/labeling-api/current'
-labeling_api::cache_dir: '/var/cache/labeling_api'
-labeling_api::frame_cdn_dir: '/var/www/frame_cdn'
-labeling_api::frame_cdn_hostname: 'anno.crosscan.com'
-labeling_api::frame_cdn_allowed_origin: 'http://anno.crosscan.com'
-labeling_api::frame_cdn_expires: '1d'
-labeling_api::database_host: '127.0.0.1'
-labeling_api::database_port: 'null'
-labeling_api::database_name: 'labeling_api'
-labeling_api::database_user: 'labeling_api'
-labeling_api::database_password: 'pEid4oShu'
-labeling_api::mailer_transport: 'smtp'
-labeling_api::mailer_host: '127.0.0.1'
-labeling_api::mailer_user: 'null'
-labeling_api::mailer_password: 'null'
-labeling_api::secret: 'saddassadasd'
-labeling_api::user_password: 'xoADo2iMO1okZJIvaQKX'
-labeling_api::rabbitmq_host: '127.0.0.1'
+labeling_api::params::config_dir: '/etc/AnnoStation/labeling-api'
+labeling_api::params::cache_dir: '/var/cache/labeling_api'
+labeling_api::params::database_name: 'labeling_api'
+labeling_api::params::database_password: 'pEid4oShu'
+labeling_api::params::database_user: 'labeling_api'
+labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
+labeling_api::params::frame_cdn_port: 81
+labeling_api::params::frame_cdn_base_url: 'anno.crosscan.com'
+labeling_api::params::frame_cdn_allowed_origin: 'http://anno.crosscan.com'
+labeling_api::params::frame_cdn_expires: '1d'
+labeling_api::params::prepare_test_environment: true
+labeling_api::params::secret: 'saddassadasd'
+labeling_api::params::user_password: 'xoADo2iMO1okZJIvaQKX'
+labeling_api::params::create_parameter_files: true
+
+labeling_api::app::root_dir: '/var/www/labeling-api/current'
+
+labeling_api::mysql::database_name: 'labeling_api'
+labeling_api::mysql::database_user: 'labeling_api'
+labeling_api::mysql::database_password: 'pEid4oShu'
+
+labeling_api::couch::database_name: 'labeling_api'
+labeling_api::couch::prepare_test_environment: true
 
 labeling_api::worker::app_dir: '/var/www/labeling-api/current'
 labeling_api::worker::user: www-data
+
+labeling_api::mysql: true
+labeling_api::couch: true
+labeling_api::worker_queue: true
+labeling_api::app: true
+labeling_api::run_composer_install: false

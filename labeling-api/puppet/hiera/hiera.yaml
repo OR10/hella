@@ -2,7 +2,11 @@
 :backends:
     - yaml
 :hierarchy:
-    - node/%{::fqdn}
+    - "node/%{::fqdn}"
+    - "vagrant/%{::vagrant_environment}/%{::annostation_servertype}"
+    - "vagrant/%{::vagrant_environment}"
+    - "%{::environment}/%{::annostation_servertype}"
+    - "servertype/%{::annostation_servertype}"
     - "%{::environment}"
     - global
 :yaml:

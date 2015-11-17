@@ -1,7 +1,7 @@
 class labeling_api::vagrant_composer_install (
-    $root_dir = '/vagrant',
-    $user = 'vagrant',
-    $composer_home = '/home/vagrant/.composer',
+  $root_dir = '/vagrant',
+  $user = 'vagrant',
+  $composer_home = '/home/vagrant/.composer',
 ) {
   exec { 'composer-install-labelstation':
     command     => '/usr/local/bin/composer install --no-interaction',

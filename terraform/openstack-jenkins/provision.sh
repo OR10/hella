@@ -9,7 +9,12 @@ sudo aptitude -y install puppet-agent git openjdk-7-jre icedtea-7-plugin
 
 wget http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/1.22/swarm-client-1.22-jar-with-dependencies.jar
 
-sudo /opt/puppetlabs/bin/puppet apply --modulepath /home/ubuntu/puppet/modules:/home/ubuntu/puppet/vendor:/etc/puppet/modules --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml  --environmentpath /home/ubuntu/puppet/environments/ --environment staging /home/ubuntu/puppet/environments/staging/manifests/jenkins.pp
+sudo /opt/puppetlabs/bin/puppet apply \
+    --modulepath /home/ubuntu/puppet/modules:/home/ubuntu/puppet/vendor:/etc/puppet/modules \
+    --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml  \
+    --environmentpath /home/ubuntu/puppet/environments/ \
+    --environment staging \
+    /home/ubuntu/puppet/environments/staging/manifests/site.pp
 
 sudo gem2.0 install capistrano capistrano-scm-copy
 
