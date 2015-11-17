@@ -12,7 +12,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 class LabeledFrame
 {
     /**
-     * @CouchDB\Id
+     * @CouchDB\Id(strategy="ASSIGNED")
      */
     private $id;
 
@@ -117,5 +117,21 @@ class LabeledFrame
     public function setIncomplete($incomplete)
     {
         $this->incomplete = $incomplete;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

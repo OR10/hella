@@ -24,12 +24,20 @@ class LabeledThingInFrame extends Controller\Base
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\LabeledThing
+     */
+    private $labeledThingFacade;
+
+    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\LabeledThing        $labeledThingFacade
      */
     public function __construct(
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\LabeledThing $labeledThingFacade
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->labeledThingFacade = $labeledThingFacade;
     }
 
     /**
@@ -69,32 +77,43 @@ class LabeledThingInFrame extends Controller\Base
      */
     public function putLabeledThingInFrameAction($documentId, HttpFoundation\Request $request)
     {
-        $response            = View\View::create();
-        $labeledThingInFrame = $this->labeledThingInFrameFacade->find($documentId);
+        $response = View\View::create();
 
-        if ($labeledThingInFrame === null) {
-            $response->setStatusCode(404);
-        } elseif ($labeledThingInFrame->getRev() === $request->request->get('rev')) {
-            $shapes      = $request->request->get('shapes', []);
-            $classes     = $request->request->get('classes', []);
-            $frameNumber = $request->request->get('frameNumber');
-            $incomplete  = $request->request->get('incomplete');
-
-            if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
-                throw new Exception\BadRequestHttpException();
+        if ($request->request->get('rev') === null) {
+            $labeledThing        = $this->labeledThingFacade->find(
+                $request->request->get('labeledThingId')
+            );
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+            $labeledThingInFrame->setId($documentId);
+        } else {
+            $labeledThingInFrame = $this->labeledThingInFrameFacade->find($documentId);
+            if ($labeledThingInFrame === null) {
+                $response->setStatusCode(404);
 
                 return $response;
             }
+            if ($labeledThingInFrame->getRev() !== $request->request->get('rev')) {
+                $response->setStatusCode(409);
 
-            $labeledThingInFrame->setClasses($classes);
-            $labeledThingInFrame->setShapes($shapes);
-            $labeledThingInFrame->setFrameNumber((int)$frameNumber);
-            $labeledThingInFrame->setIncomplete($incomplete);
-            $this->labeledThingInFrameFacade->save($labeledThingInFrame);
-            $response->setData(['result' => $labeledThingInFrame]);
-        } else {
-            $response->setStatusCode(409);
+                return $response;
+            }
         }
+
+        $shapes      = $request->request->get('shapes', []);
+        $classes     = $request->request->get('classes', []);
+        $frameNumber = $request->request->get('frameNumber');
+        $incomplete  = $request->request->get('incomplete');
+
+        if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
+            throw new Exception\BadRequestHttpException();
+        }
+
+        $labeledThingInFrame->setClasses($classes);
+        $labeledThingInFrame->setShapes($shapes);
+        $labeledThingInFrame->setFrameNumber((int)$frameNumber);
+        $labeledThingInFrame->setIncomplete($incomplete);
+        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+        $response->setData(['result' => $labeledThingInFrame]);
 
         return $response;
     }

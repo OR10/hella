@@ -143,21 +143,27 @@ class LabeledFrame extends Controller\Base
         $classes         = $request->request->get('classes', []);
         $bodyFrameNumber = (int) $request->request->get('frameNumber');
         $incomplete      = $request->request->get('incomplete');
+        $documentId      = $request->request->get('id');
 
-        if ($task === null || !is_array($classes) || $bodyFrameNumber !== (int) $frameNumber) {
+        if ($task === null || !is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $documentId === null) {
             throw new Exception\BadRequestHttpException();
         }
 
-        $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
+        if ($request->request->get('rev') === null) {
+            $labeledFrame = new Model\LabeledFrame($task);
+            $labeledFrame->setId(
+                $documentId
+            );
+        }else{
+            $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
+        }
+
 
         // @TODO: Synchronize with frontend team, to find a better solution
         // here!
         //if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
         //      $response->setStatusCode(409);
         //} else {
-            if ($labeledFrame === null) {
-                $labeledFrame = new Model\LabeledFrame($task);
-            }
             $labeledFrame->setClasses($classes);
             $labeledFrame->setFrameNumber($request->request->get('frameNumber'));
             $labeledFrame->setIncomplete($incomplete);

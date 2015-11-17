@@ -6,6 +6,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
+use Doctrine\ODM\CouchDB;
 
 class KittiTest extends Tests\KernelTestCase
 {
@@ -34,6 +35,11 @@ class KittiTest extends Tests\KernelTestCase
      */
     private $exporter;
 
+    /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnoService('database.facade.video');
@@ -41,6 +47,9 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade        = $this->getAnnoService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnoService('database.facade.labeled_thing_in_frame');
         $this->exporter                  = $this->getAnnoService('service.task_exporter.kitti');
+        $this->documentManager           = static::$kernel->getContainer()->get(
+            'doctrine_couchdb.odm.default_document_manager'
+        );
     }
 
     private function getAnnoService($name)
@@ -232,6 +241,7 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade->save($labeledThing);
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+        $labeledThingInFrame->setId(reset($this->documentManager->getCouchDBClient()->getUuids()));
         $labeledThingInFrame->setFrameNumber($frameNumber);
         $labeledThingInFrame->setClasses([(string) $type]);
         $labeledThingInFrame->setShapes($shapes);
@@ -286,12 +296,9 @@ class KittiTest extends Tests\KernelTestCase
     }
 
     /**
-     * @param float $x
-     * @param float $y
-     * @param float $width
-     * @param float $height
-     *
+     * @param array $points
      * @return array
+     *
      */
     private function createPolygonShape(array $points)
     {
