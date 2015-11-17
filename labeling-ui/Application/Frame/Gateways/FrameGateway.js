@@ -5,13 +5,20 @@
  */
 class FrameGateway {
   /**
+   * @param {angular.$q} $q
+   */
+  constructor($q) {
+    this._$q = $q;
+  }
+
+  /**
    * Create and return an {@link HTMLImageElement} for the given {@link FrameLocation}
    *
    * @param {FrameLocation} location
    * @returns {Promise.<HTMLImageElement>}
    */
   getImage(location) {
-    return new Promise((resolve, reject) => {
+    return this._$q((resolve, reject) => {
       const image = new Image();
       image.addEventListener('load', () => resolve(image));
       image.addEventListener('error', (error) => reject(error));
@@ -20,5 +27,7 @@ class FrameGateway {
     });
   }
 }
+
+FrameGateway.$inject = ['$q'];
 
 export default FrameGateway;

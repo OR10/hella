@@ -3,8 +3,6 @@ import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 /**
- * @class LabelSelectorController
- *
  * @property {string} labeledObjectType
  * @property {LabeledObject} labeledObject
  * @property {LabelStructure} structure
@@ -197,7 +195,7 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame) {
-    labeledThingInFrame.incomplete = (!this.isCompleted || labeledThingInFrame.shapes.length === 0);
+    labeledThingInFrame.incomplete = !this.isCompleted;
 
     this._labeledThingInFrameGateway.updateLabeledThingInFrame(
       labeledThingInFrame

@@ -446,7 +446,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       default:
         throw new Error(`Could not update shape of unknown type "${type}"`);
     }
-    transformedShape.id = shape.id;
+
     transformedShape.type = type;
     return transformedShape;
   }
