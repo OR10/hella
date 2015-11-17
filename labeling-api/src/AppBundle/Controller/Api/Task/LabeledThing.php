@@ -129,7 +129,15 @@ class LabeledThing extends Controller\Base
     {
         $response = View\View::create();
 
-        $labeledThing = $this->labeledThingFacade->find($labeledThingId);
+        $task = $this->labelingTaskFacade->find($taskId);
+
+        if ($request->request->get('rev') === null) {
+            $labeledThing = new Model\LabeledThing($task);
+            $labeledThing->setId($labeledThingId);
+        } else {
+            $labeledThing = $this->labeledThingFacade->find($labeledThingId);
+        }
+
         if ($labeledThing === null) {
             $response->setStatusCode(404);
 
@@ -139,7 +147,7 @@ class LabeledThing extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
-        if ($request->request->get('rev') !== $labeledThing->getRev()) {
+        if ($request->request->get('rev') !== null && $request->request->get('rev') !== $labeledThing->getRev()) {
             $response->setStatusCode(409);
 
             return $response;
