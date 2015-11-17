@@ -10,6 +10,7 @@ class labeling_api::params(
   $database_name = 'symfony',
   $database_user = 'root',
   $database_password = 'null',
+  $database_allowed_host = '127.0.0.1',
 
   $couchdb_host = '127.0.0.1',
   $couchdb_port = 5984,
