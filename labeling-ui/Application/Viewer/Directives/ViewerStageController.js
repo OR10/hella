@@ -86,7 +86,7 @@ class ViewerStageController {
       thingLayer.activateTool(newActiveTool);
     });
 
-    $scope.$watchCollection('vm.labeledThingsInFrame', newLabeledThingsInFrame => {
+    $scope.$watch('vm.labeledThingsInFrame', newLabeledThingsInFrame => {
       if (newLabeledThingsInFrame === null) {
         thingLayer.clear();
       } else {
