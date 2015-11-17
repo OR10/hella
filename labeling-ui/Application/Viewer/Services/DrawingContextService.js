@@ -1,5 +1,5 @@
 import paper from 'paper';
-import DrawingContext from '../DrawingContext';
+import DrawingContext from './DrawingContext';
 
 /**
  * Service managing the creation of Paper related DrawingContexts.
@@ -20,7 +20,10 @@ class DrawingContextService {
    * @returns {DrawingContext}
    */
   createContext() {
-    return new DrawingContext(this._activeScope);
+    const context = new DrawingContext(this);
+    // Paper automatically switches scopes upon initialization of a new one
+    this._activeScope.activate();
+    return context;
   }
 
   /**
@@ -47,7 +50,7 @@ class DrawingContextService {
     this.activateContext(drawingContext);
     operation(drawingContext.scope);
     this._activeScope = oldScope;
-    this._activeScope.scope();
+    this._activeScope.activate();
   }
 }
 
