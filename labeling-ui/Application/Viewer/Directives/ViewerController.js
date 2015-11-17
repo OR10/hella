@@ -1,19 +1,25 @@
 import Filters from '../Models/Filters';
 
 /**
- * @class ViewerController
- *
- * @property {Function} onNewThing
- * @property {Function} onUpdatedThing
- * @property {Function} onSelectedThing
- * @property {Function} onDeselectedThing
- * @property {Function} onNewLabeledThingRequested
- *
  * @property {Task} task
  * @property {FramePosition} framePosition
+ * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
+ * @property {Array.<LabeledThing> labeledThings
+ * @property {LabeledThingInFrame} selectedLabeledThingInFrame
+ * @property {string} activeTool
+ * @property {string} selectedDrawingTool
  */
-export default class ViewerController {
+class ViewerController {
   constructor() {
+    /**
+     * @type {Filters}
+     */
     this.filters = new Filters();
   }
 }
+
+ViewerController.$inject = [
+];
+
+export default ViewerController;
+
