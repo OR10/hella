@@ -4,11 +4,20 @@
 class TaskFrameLocationGateway {
   /**
    * @param {ApiService} apiService injected
-   * @param {angular.$http} $http injected
+   * @param {BufferedHttp} bufferedHttp injected
    */
-  constructor(apiService, $http) {
-    this.apiService = apiService;
-    this.$http = $http;
+  constructor(apiService, bufferedHttp) {
+    /**
+     * @type {ApiService}
+     * @private
+     */
+    this._apiService = apiService;
+
+    /**
+     * @type {BufferedHttp}
+     * @private
+     */
+    this._bufferedHttp = bufferedHttp;
   }
 
   /**
@@ -25,9 +34,9 @@ class TaskFrameLocationGateway {
    * @returns {Promise<Array<FrameLocation>>}
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
-    return this.$http({
+    return this._bufferedHttp({
       method: 'GET',
-      url: this.apiService.getApiUrl(
+      url: this._apiService.getApiUrl(
         `/task/${taskId}/frameLocations/${type}`,
         {offset, limit}
       ),
@@ -38,6 +47,9 @@ class TaskFrameLocationGateway {
   }
 }
 
-TaskFrameLocationGateway.$inject = ['ApiService', '$http'];
+TaskFrameLocationGateway.$inject = [
+  'ApiService',
+  'bufferedHttp',
+];
 
 export default TaskFrameLocationGateway;

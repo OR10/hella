@@ -67,7 +67,7 @@ class LabeledFrame extends Controller\Base
                 $response->setData([
                     'result' => array(
                         'frameNumber' => (int) $frameNumber,
-                        'classes' => array()
+                        'classes' => array(),
                     )
                 ]);
 
@@ -77,7 +77,13 @@ class LabeledFrame extends Controller\Base
             usort($labeledFrames, function ($a, $b) {
                 return (int)$b->getFrameNumber() - (int)$a->getFrameNumber();
             });
-            $response->setData(['result' => $labeledFrames[0]]);
+            $foundLabeledFrame = $labeledFrames[0];
+            $response->setData([
+                'result' => [
+                    'frameNumber' => $frameNumber,
+                    'classes' => $foundLabeledFrame->getClasses(),
+                ]
+           ]);
         } else {
             $response->setData(['result' => $labeledFrame]);
         }
@@ -133,27 +139,37 @@ class LabeledFrame extends Controller\Base
     {
         $response = View\View::create();
 
-        $task    = $this->labelingTaskFacade->find($taskId);
-        $classes = $request->request->get('classes', []);
-        if ($task === null || !is_array($classes) || (int) $request->request->get('frameNumber') !== (int)$frameNumber) {
-            throw new Exception\BadRequestHttpException();
+        $task            = $this->labelingTaskFacade->find($taskId);
+        $classes         = $request->request->get('classes', []);
+        $bodyFrameNumber = (int) $request->request->get('frameNumber');
+        $incomplete      = $request->request->get('incomplete');
+        $documentId      = $request->request->get('id');
 
-            return $response;
+        if ($task === null || !is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $documentId === null) {
+            throw new Exception\BadRequestHttpException();
         }
 
-        $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
+        if ($request->request->get('rev') === null) {
+            $labeledFrame = new Model\LabeledFrame($task);
+            $labeledFrame->setId(
+                $documentId
+            );
+        }else{
+            $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
+        }
 
-        if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
-            $response->setStatusCode(409);
-        } else {
-            if ($labeledFrame === null) {
-                $labeledFrame = new Model\LabeledFrame($task);
-            }
+
+        // @TODO: Synchronize with frontend team, to find a better solution
+        // here!
+        //if ($labeledFrame instanceof Model\LabeledFrame && $labeledFrame->getRev() !== $request->request->get('rev')) {
+        //      $response->setStatusCode(409);
+        //} else {
             $labeledFrame->setClasses($classes);
             $labeledFrame->setFrameNumber($request->request->get('frameNumber'));
+            $labeledFrame->setIncomplete($incomplete);
             $this->labeledFrameFacade->save($labeledFrame);
             $response->setData(['result' => $labeledFrame]);
-        }
+        //}
 
         return $response;
     }

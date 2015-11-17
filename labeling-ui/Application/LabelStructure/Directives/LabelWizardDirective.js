@@ -9,10 +9,10 @@ export default class LabelWizardDirective {
     this.template = labelWizardTemplate;
 
     this.scope = {
-      labelState: '=',
-      labelContext: '=',
-      offset: '=',
-      limit: '=',
+      pages: '=',
+      choices: '=',
+      offset: '@',
+      limit: '@',
     };
 
     this.controller = LabelWizardController;

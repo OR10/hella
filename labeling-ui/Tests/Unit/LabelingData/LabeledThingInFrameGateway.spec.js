@@ -4,28 +4,34 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import LabeledThingInFrameGateway from 'Application/LabelingData/Gateways/LabeledThingInFrameGateway';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 describe('LabeledThingInFrameGateway', () => {
   let $httpBackend;
   let gateway;
+  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
+      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingInFrameGateway);
+      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 
@@ -38,8 +44,8 @@ describe('LabeledThingInFrameGateway', () => {
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
     const expectedResult = [
-      {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]},
-      {id: 'cde', rev: 'def', shapes: [{type: 'circle'}]},
+      new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]}),
+      new LabeledThingInFrame({id: 'cde', rev: 'def', shapes: [{type: 'circle'}]}),
     ];
 
     $httpBackend
@@ -52,13 +58,13 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should get a labeled thing in frame', done => {
     const labeledThingInFrameId = '2';
     const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
-    const labeledThingInFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const labeledThingInFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
     const expectedResult = {result: labeledThingInFrame};
 
     $httpBackend
@@ -71,14 +77,14 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should create a labeled thing in frame', done => {
     const task = {id: 'someTaskId234'};
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
-    const labeledThingInFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const labeledThingInFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
     const expectedResult = {result: labeledThingInFrame};
 
     $httpBackend
@@ -91,11 +97,11 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should update a labeled thing in frame', done => {
-    const labeledThinIngFrame = {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]};
+    const labeledThinIngFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
     const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThinIngFrame.id}`;
     const expectedResult = {result: labeledThinIngFrame};
 
@@ -109,7 +115,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should delete a labeled thing in frame', done => {
@@ -127,7 +133,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   using([
@@ -147,7 +153,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -168,7 +174,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
@@ -188,174 +194,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.getLabeledThingInFrame(labeledThingInFrameId)
         .then(done);
 
-      $httpBackend.flush();
-    });
-  });
-
-  using([
-    [['a'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [['a', 'b', 'c'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a', 'b', 'c'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [['b', 'c'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a', 'b', 'c'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [['a', 'b', 'c'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a', 'b', 'c'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [[], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-  ], (classes, labeledThingInFrame, expectedLabeldThingInFrame) => {
-    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrame.id}`;
-
-    it('should add classes to a labeled thing in frame and persist them', done => {
-      $httpBackend
-        .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
-        .respond(200, {result: expectedLabeldThingInFrame});
-
-      gateway.addClassesToLabeledThingInFrame(labeledThingInFrame, classes)
-        .then(done);
-
-      $httpBackend.flush();
-    });
-  });
-
-  using([
-    [['a'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [['a', 'b', 'c'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a', 'b', 'c'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [['b', 'c'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['b', 'c'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-    [['a', 'a', 'b', 'c'], {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': [],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }, {
-      'id': '1',
-      'rev': '1',
-      'frameNumber': 1,
-      'classes': ['a', 'b', 'c'],
-      'shapes': [{'type': 'rectangle', 'id': 5, 'topLeft': {'x': 75, 'y': 133}, 'bottomRight': {'x': 115, 'y': 195}}],
-      'labeledThingId': '7bf2e2dbdb4c3d453225c5c351035417',
-    }],
-  ], (classes, labeledThingInFrame, expectedLabeldThingInFrame) => {
-    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrame.id}`;
-
-    it('should set classes to a labeled thing in frame and persist them', done => {
-      $httpBackend
-        .expect('PUT', expectedUrl, expectedLabeldThingInFrame)
-        .respond(200, {result: expectedLabeldThingInFrame});
-
-      gateway.setClassesToLabeledThingInFrame(labeledThingInFrame, classes)
-        .then(done);
-
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 });

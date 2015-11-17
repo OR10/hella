@@ -28,17 +28,26 @@ class Kitti implements Service\TaskExporter
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\TaskExport
+     */
+    private $taskExportFacade;
+
+    /**
+     * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\TaskExport          $taskExportFacade
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\TaskExport $taskExportFacade
     ) {
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->taskExportFacade          = $taskExportFacade;
     }
 
     /**
@@ -103,11 +112,14 @@ class Kitti implements Service\TaskExporter
                 throw new Exception\Kitti(sprintf('Unable to read file at "%s"', $zipFilename));
             }
 
+            $taskExport = new Model\TaskExport($task, 'kitti.zip', 'application/zip', $result);
+            $this->taskExportFacade->save($taskExport);
+
             if (!unlink($zipFilename)) {
                 throw new Exception\Kitti(sprintf('Unable to remove temorary file at "%s"', $zipFilename));
             }
 
-            return $result;
+            return $taskExport->getRawData();
         } catch (\Exception $e) {
             @unlink($zipFilename);
             throw $e;
@@ -142,13 +154,37 @@ class Kitti implements Service\TaskExporter
             $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
             foreach ($labeledThingsInFrame as $labeledThingInFrame) {
                 $result[$labeledThingInFrame->getFrameNumber()][] = [
-                    'type' => 'Pedestrian',
+                    'type'        => $this->getObjectType($labeledThingInFrame),
                     'boundingBox' => $this->getOverallBoundingBox($labeledThingInFrame->getShapes()),
                 ];
             }
         }
 
         return $this->sortResult($result);
+    }
+
+    /**
+     * Get the object type for the given labeledThingInFrame.
+     *
+     * @return string
+     *
+     * @throws Exception\Kitti
+     */
+    private function getObjectType(Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $objectTypeMap = [
+            'pedestrian' => 'Pedestrian',
+            'cyclist'    => 'Cyclist',
+            'car'        => 'Car',
+        ];
+
+        foreach ($labeledThingInFrame->getClasses() as $class) {
+            if (isset($objectTypeMap[$class])) {
+                return $objectTypeMap[$class];
+            }
+        }
+
+        throw new Exception\Kitti('Unknown labeled thing in frame');
     }
 
     /**
@@ -236,13 +272,50 @@ class Kitti implements Service\TaskExporter
             throw new Exception\Kitti('Invalid shape');
         }
 
-        if ($shape['type'] === 'rectangle') {
-            return [
-                'left'   => $shape['topLeft']['x'],
-                'top'    => $shape['topLeft']['y'],
-                'right'  => $shape['bottomRight']['x'],
-                'bottom' => $shape['bottomRight']['y'],
-            ];
+        $boundingBoxCalculators = [
+            'rectangle' => function($shape) {
+                return [
+                    'left'   => $shape['topLeft']['x'],
+                    'top'    => $shape['topLeft']['y'],
+                    'right'  => $shape['bottomRight']['x'],
+                    'bottom' => $shape['bottomRight']['y'],
+                ];
+            },
+            // ellipse handles ellipse and circle
+            'ellipse' => function($shape) {
+                return [
+                    'left'   => $shape['point']['x'],
+                    'top'    => $shape['point']['y'],
+                    'right'  => $shape['point']['x'] + $shape['size']['width'],
+                    'bottom' => $shape['point']['y'] + $shape['size']['height'],
+                ];
+            },
+            // polygon handles polygon and line
+            'polygon' => function($shape) {
+                if (count($shape['points']) === 0) {
+                    throw new Exception\Kitti('Empty point list for polygons is not allowed');
+                }
+
+                $result = [
+                    'left'   => $shape['points'][0]['x'],
+                    'top'    => $shape['points'][0]['y'],
+                    'right'  => $shape['points'][0]['x'],
+                    'bottom' => $shape['points'][0]['y'],
+                ];
+
+                foreach ($shape['points'] as $point) {
+                    $result['left']   = min($result['left'], $point['x']);
+                    $result['top']    = min($result['top'], $point['y']);
+                    $result['right']  = max($result['right'], $point['x']);
+                    $result['bottom'] = max($result['bottom'], $point['y']);
+                }
+
+                return $result;
+            },
+        ];
+
+        if (isset($boundingBoxCalculators[$shape['type']])) {
+            return $boundingBoxCalculators[$shape['type']]($shape);
         }
 
         throw new Exception\Kitti("Unsupported shape type: {$shape['type']}");

@@ -102,6 +102,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
         'assetPath': `${__dirname}/Distribution`,
         'buildOptions': {
           'sfx': true,
+          'lowResSourceMaps': true,
         },
         'entryPointExpression': 'Application/main.js',
       });
@@ -291,8 +292,8 @@ gulp.task('build-fonts', (next) => {
 
 gulp.task('deploy', () => {
   const deploymentIp = process.env.LABELING_UI_DEPLOY_IP;
-  if(deploymentIp === undefined || deploymentIp === '') {
-    throw "Please set the environment variable LABELING_UI_DEPLOY_IP to the ip address that you want to deploy to.";
+  if (deploymentIp === undefined || deploymentIp === '') {
+    throw new Error('Please set the environment variable LABELING_UI_DEPLOY_IP to the ip address that you want to deploy to.');
   }
 
   return gulp.src('Distribution/**')
@@ -301,7 +302,7 @@ gulp.task('deploy', () => {
       exclude: ['index-protractor.html'],
       root: 'Distribution/',
       hostname: deploymentIp,
-      destination: '/var/www/labeling-ui'
+      destination: '/var/www/labeling-ui',
     }));
 });
 

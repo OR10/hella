@@ -62,7 +62,6 @@ class FilesystemFrameCdn extends FrameCdn
         $urls = [];
         foreach ($frameRange->getRange() as $frameNumber) {
             $urls[] = [
-                'id' => "{$labelingTask->getId()}-{$frameNumber}",
                 "frameNumber" => $frameNumber,
                 'url' => sprintf(
                     '%s/%s/%s/%s.%s',

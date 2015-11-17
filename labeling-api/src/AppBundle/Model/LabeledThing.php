@@ -15,6 +15,11 @@ class LabeledThing
     private $id;
 
     /**
+     * @CouchDB\Version
+     */
+    private $rev;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $frameRange;
@@ -28,6 +33,11 @@ class LabeledThing
      * @CouchDB\Field(type="string")
      */
     private $labelingTaskId;
+
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
 
     /**
      * @param LabelingTask $labelingTask
@@ -75,5 +85,21 @@ class LabeledThing
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
     }
 }

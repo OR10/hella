@@ -1,9 +1,10 @@
 {
   "objectType": {
-    "challenge": "Was wird denn hier gelabelt?"
+    "challenge": "Welche Art von Objekt möchten Sie labeln?"
   },
   "pedestrian": {
-    "response": "Fußgänger"
+    "response": "Fußgänger",
+    "challenge": "Führt die Person weitere Gegenstände mit sich?"
   },
   "cyclist": {
     "response": "Radfahrer"
@@ -27,7 +28,7 @@
     "response": "Nach Hinten"
   },
   "visibility": {
-    "challenge": "Ist das object sichtbar?"
+    "challenge": "Ist das Objekt sichtbar?"
   },
   "visible": {
     "challenge": "Zu wieviel Prozent ist das Objekt sichtbar?",
@@ -50,5 +51,24 @@
   },
   "visible-100": {
     "response": "100%"
+  },
+  "hasAccessory": {
+    "challenge": "Was für einen Gegenstand führt die Person mit sich?",
+    "response": "Ja"
+  },
+  "noAccessory": {
+    "response": "Nein"
+  },
+  "hat": {
+    "response": "Hut"
+  },
+  "umbrella": {
+    "response": "Regenschirm"
+  },
+  "stroller": {
+    "response": "Kinderwagen"
+  },
+  "skateboard": {
+    "response": "Skateboard"
   }
 }

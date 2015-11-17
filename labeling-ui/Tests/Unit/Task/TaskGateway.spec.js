@@ -7,6 +7,7 @@ import TaskGateway from 'Application/Task/Gateways/TaskGateway';
 
 describe('TaskGateway', () => {
   let $httpBackend;
+  let bufferedHttp;
   let gateway;
 
   beforeEach(() => {
@@ -14,17 +15,21 @@ describe('TaskGateway', () => {
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
+      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
+      bufferedHttp = $injector.get('bufferedHttp');
       gateway = $injector.instantiate(TaskGateway);
     });
   });
@@ -48,7 +53,7 @@ describe('TaskGateway', () => {
       done();
     });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
   it('should load information for a single task', (done) => {
@@ -63,6 +68,6 @@ describe('TaskGateway', () => {
       done();
     });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 });

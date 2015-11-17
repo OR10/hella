@@ -57,11 +57,21 @@ class Init extends Base
                 null,
                 InputOption::VALUE_NONE,
                 'Drop entire database. Otherwise just the schema is dropped.'
+            )
+            ->addOption(
+                'skip-import',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip import of initial video file.'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->clearDirectories($output)) {
+            return 1;
+        }
+
         if (!$this->initializeDatabase($output, $input->getOption('drop-database'))) {
             return 1;
         }
@@ -70,15 +80,15 @@ class Init extends Base
             return 1;
         }
 
+        if (!$this->setupRabbitmq($output)) {
+            return 1;
+        }
+
         if (!$this->createUser($output)) {
             return 1;
         }
 
-        if (!$this->clearDirectories($output)) {
-            return 1;
-        }
-
-        if (!$this->downloadSampleVideo($output)) {
+        if (!$this->downloadSampleVideo($output, $input->getOption('skip-import'))) {
             return 1;
         }
     }
@@ -196,6 +206,13 @@ class Init extends Base
         return true;
     }
 
+    private function setupRabbitmq(OutputInterface $output)
+    {
+        $this->writeSection($output, 'Setup queues');
+
+        return $this->runCommand($output, 'annostation:rabbitmq:setup');
+    }
+
     private function clearDirectory($directory)
     {
         $entries = new \RecursiveIteratorIterator(
@@ -219,9 +236,15 @@ class Init extends Base
         return true;
     }
 
-    private function downloadSampleVideo($output)
+    private function downloadSampleVideo(OutputInterface $output, $skipImport)
     {
         $this->writeSection($output, 'Video Import');
+
+        if ($skipImport) {
+            $this->writeInfo($output, 'skipping video import');
+            return true;
+        }
+
         try {
             $this->writeInfo(
                 $output,

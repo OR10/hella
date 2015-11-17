@@ -9,23 +9,13 @@ import viewerTemplate from './ViewerDirective.html!';
 export default class ViewerDirective {
   constructor() {
     this.scope = {
-      onNewThing: '&',
-      onUpdatedThing: '&',
-      onSelectedThing: '&',
-      onDeselectedThing: '&',
-      onNextFrameRequested: '&',
-      onPreviousFrameRequested: '&',
-      onNewLabeledThingRequested: '&',
-      onNewEllipseRequested: '&',
-      onNewCircleRequested: '&',
-      onNewPolygonRequested: '&',
-      onNewLineRequested: '&',
-      onMoveToolRequested: '&',
-
-      frameImage: '=',
-      thingsInFrame: '=',
-      filters: '=',
+      labeledThingsInFrame: '=',
+      labeledThings: '=',
+      selectedLabeledThingInFrame: '=',
       activeTool: '=',
+      selectedDrawingTool: '=',
+      task: '=',
+      framePosition: '=',
     };
 
     this.controller = ViewerController;

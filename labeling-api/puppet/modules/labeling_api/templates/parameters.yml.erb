@@ -1,31 +1,39 @@
 # This file is auto-generated during the composer install
 parameters:
     cache_dir: <%= @cache_dir %>
+
     database_host: <%= @database_host %>
     database_port: <%= @database_port %>
     database_name: <%= @database_name %>
     database_user: <%= @database_user %>
     database_password: <%= @database_password %>
+
+    couchdb_host: <%= @couchdb_host %>
+    couchdb_port: <%= @couchdb_port %>
+    couchdb_user: <% if @couchdb_user != nil %><%= @couchdb_user %><% else %>~<% end %>
+    couchdb_password: <% if @couchdb_password != nil %><%= @couchdb_password %><% else %>~<% end %>
+
     mailer_transport: <%= @mailer_transport %>
     mailer_host: <%= @mailer_host %>
     mailer_user: <%= @mailer_user %>
     mailer_password: <%= @mailer_password %>
+
     secret: <%= @secret %>
 
     ffmpeg_executable: <%= @ffmpeg_executable %>
     ffprobe_executable: <%= @ffprobe_executable %>
 
     frame_cdn_dir: <%= @frame_cdn_dir %>
-    frame_cdn_base_url: "<%= @frame_cdn_scheme %>://<%= @frame_cdn_real_hostname %>:<%= @frame_cdn_port %><%= @frame_cdn_path %>"
+    frame_cdn_base_url: <%= @frame_cdn_base_url %>
 
     <% if @user_password != nil %>
     user_password: <%= @user_password %>
     <% end %>
 
-    rabbitmq_host: "<%= @rabbitmq_host %>"
-    rabbitmq_port: "<%= @rabbitmq_port %>"
-    rabbitmq_vhost: "<%= @rabbitmq_vhost %>"
-    rabbitmq_user: "<%= @rabbitmq_user %>"
-    rabbitmq_password: "<%= @rabbitmq_password %>"
-    rabbitmq_use_alternate_exchange: "<%= @rabbitmq_use_dead_letter_exchange %>"
-    rabbitmq_use_dead_letter_exchange: "<%= @rabbitmq_use_alternate_exchange %>"
+    rabbitmq_host: <%= @rabbitmq_host %>
+    rabbitmq_port: <%= @rabbitmq_port %>
+    rabbitmq_vhost: <%= @rabbitmq_vhost %>
+    rabbitmq_user: <%= @rabbitmq_user %>
+    rabbitmq_password: <%= @rabbitmq_password %>
+    rabbitmq_use_alternate_exchange: <%= @rabbitmq_use_dead_letter_exchange %>
+    rabbitmq_use_dead_letter_exchange: <%= @rabbitmq_use_alternate_exchange %>

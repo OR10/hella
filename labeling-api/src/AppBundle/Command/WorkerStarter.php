@@ -41,37 +41,35 @@ class WorkerStarter extends Base
         $primary        = $input->getArgument('primary');
         $secondary      = empty($input->getArgument('secondary')) ? $primary : $input->getArgument('secondary');
         $cycles         = $input->getArgument('cycles');
-        $primaryQueue   = $this->getQueue(
-            $primary
-        );
-        $secondaryQueue = $this->getQueue(
-            $secondary
-        );
+        $primaryQueue   = $this->getQueue($primary);
+        $secondaryQueue = $this->getQueue($secondary);
         $connection     = $this->AMQPPoolConfig->openConnection();
         $channel        = $connection->channel();
 
-        $channel->basic_qos(
-            0,
-            1,
-            0
-        );
+        if ($primaryQueue === null) {
+            $output->writeln("<error>Unknown queue: {$primary}</error>");
+            return 1;
+        }
 
-        $exceptionEstimator = new AMQP\ExceptionEstimator();
-        $queueFinder        = new AMQP\ExceptionQueueFinder($exceptionEstimator);
+        if ($secondaryQueue === null) {
+            $output->writeln("<error>Unknown queue: {$secondary}</error>");
+            return 1;
+        }
 
-        $loggerFacade = new Facade\LoggerFacade(
-            new \cscntLogger(),
-            \cscntLogFacility::WORKER_POOL
-        );
+        $channel->basic_qos(0, 1, 0);
 
-        $jobSource         = new AMQP\JobSourceAMQP($primaryQueue, $secondaryQueue, $channel);
-        $rescheduleManager = new AMQP\AMQPRescheduleManager($this->AMQPPoolConfig, $queueFinder, $loggerFacade);
-
-        $container = $this->getContainer();
+        $exceptionEstimator   = new AMQP\ExceptionEstimator();
+        $queueFinder          = new AMQP\ExceptionQueueFinder($exceptionEstimator);
+        $loggerFacade         = new Facade\LoggerFacade(new \cscntLogger(), \cscntLogFacility::WORKER_POOL);
+        $jobSource            = new AMQP\JobSourceAMQP($primaryQueue, $secondaryQueue, $channel);
+        $rescheduleManager    = new AMQP\AMQPRescheduleManager($this->AMQPPoolConfig, $queueFinder, $loggerFacade);
+        $instructionInstances = $this->AMQPPoolConfig->instructionInstances;
+        $container            = $this->getContainer();
+        $serviceInstances     = new JobInstructionFactory\ServicesInstances($instructionInstances, $container);
 
         $worker = new WorkerPool\Worker(
             $jobSource,
-            new JobInstructionFactory\ServicesInstances($this->AMQPPoolConfig->instructionInstances, $container),
+            $serviceInstances,
             $loggerFacade,
             $rescheduleManager,
             new NewRelic\Aggregated(array())
@@ -88,7 +86,7 @@ class WorkerStarter extends Base
                 \cscntLogPayload::SEVERITY_ERROR
             );
 
-            exit(1);
+            return 1;
         }
     }
 
@@ -98,25 +96,18 @@ class WorkerStarter extends Base
      */
     private function getQueue($marker)
     {
-        switch (true) {
-            case preg_match(
-                '(^high$)i',
-                $marker
-            ):
-                return 'worker.queue.high_prio';
-            case preg_match(
-                '(^normal$)i',
-                $marker
-            ):
-                return 'worker.queue.normal_prio';
-            case preg_match(
-                '(^low$)i',
-                $marker
-            ):
-                return 'worker.queue.low_prio';
-            default:
-                exit(0);
+        if (preg_match('(^high$)i', $marker)) {
+            return 'worker.queue.high_prio';
         }
-    }
 
+        if (preg_match('(^normal$)i', $marker)) {
+            return 'worker.queue.normal_prio';
+        }
+
+        if (preg_match('(^low$)i', $marker)) {
+            return 'worker.queue.low_prio';
+        }
+
+        return null;
+    }
 }

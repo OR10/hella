@@ -83,7 +83,11 @@ fos_user:
 
 doctrine_couch_db:
     client:
-        dbname: %database_name%
+        dbname: "%database_name%"
+        host: "%couchdb_host%"
+        port: "%couchdb_port%"
+        user: "%couchdb_user%"
+        password: "%couchdb_password%"
     odm:
         document_managers:
             default:

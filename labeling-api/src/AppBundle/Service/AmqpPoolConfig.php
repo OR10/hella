@@ -7,8 +7,6 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
 {
     /**
      * AMQPPoolConfig constructor.
-     * @param int       $numberOfHighNormalWorkers
-     * @param int       $numberOfLowNormalWorkers
      * @param string    $host
      * @param int       $port
      * @param string    $vhost
@@ -18,8 +16,6 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
      * @param bool|true $useAlternateExchange
      */
     public function __construct(
-        $numberOfHighNormalWorkers = 8,
-        $numberOfLowNormalWorkers = 2,
         $host = 'localhost',
         $port = 5672,
         $vhost = '/',
@@ -27,12 +23,9 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
         $password = 'guest',
         $useDeadLetterExchange = true,
         $useAlternateExchange = true
-    )
-    {
+    ) {
         parent::__construct();
 
-        $this->numberOfHighNormalWorkers = $numberOfHighNormalWorkers;
-        $this->numberOfLowNormalWorkers  = $numberOfLowNormalWorkers;
         $this->host                      = $host;
         $this->port                      = $port;
         $this->vhost                     = $vhost;
@@ -43,6 +36,7 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
 
         $this->instructionInstances = array(
             'AppBundle\Worker\Jobs\VideoFrameSplitter' => 'annostation.labeling_api.worker.job_instruction.video',
+            'AppBundle\Worker\Jobs\KittiExporter' => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
         );
     }
 }

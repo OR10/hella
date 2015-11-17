@@ -31,8 +31,7 @@ class VideoFrameSplitter extends WorkerPool\Job
         $videoId,
         $path,
         ImageType\Base $imageType
-    )
-    {
+    ) {
         $this->videoId   = $videoId;
         $this->path      = $path;
         $this->imageType = $imageType;

@@ -179,3 +179,62 @@ Save or update a labeled frame. If you want to update a document it is necessary
 Delete a labeled frame document
 
 + Response 200 (application/json)
+
+
+## K.I.T.T.I. Export [/api/task/{taskId}/export/kitti]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Start K.I.T.T.I. export job [POST]
+
+Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "message": "Export started"
+            }
+
+## Task exports [/api/task/{taskId}/export]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### List all task exports [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "totalCount": 3,
+                "result": [
+                    {
+                        "id": "36047d429d50548893be41c6880632fd",
+                        "labelingTaskId": "36047d429d50548893be41c6883f3416",
+                        "filename": "kitti.zip"
+                    },
+                    ...
+                ]
+            }
+
+## Download Task export [/api/task/{taskId}/export/{taskExportId}]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + taskExportId: `36047d429d50548893be41c6880632fd` (string, required) - The id of the task-export-entity.
+
+### Download [GET]
+
++ Response 200 (mixed)
+
+    The Raw data of the exported data. The actual content type depends on the type of export.
+    In case of the K.I.T.T.I. Object Detection Benchmark export, it is a zip archive containing one textfile for each frame containing object types and their bounding boxes.
+
+    + Body

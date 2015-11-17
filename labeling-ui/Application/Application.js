@@ -7,8 +7,10 @@ import 'Distribution/Templates/angular-ui-bootstrap';
 import CommonModule from './Common/Common';
 import TaskModule from './Task/Task';
 import HomeModule from './Home/Home';
+import ExportModule from './Export/Export';
 import FrameModule from './Frame/Frame';
 import ViewerModule from './Viewer/Viewer';
+import VideoModule from './Video/Video';
 import LabelingDataModule from './LabelingData/LabelingData';
 import LabelStructureModule from './LabelStructure/LabelStructure';
 
@@ -46,8 +48,10 @@ export default class Application {
     this.modules.push(new CommonModule());
     this.modules.push(new TaskModule());
     this.modules.push(new HomeModule());
+    this.modules.push(new ExportModule());
     this.modules.push(new FrameModule());
     this.modules.push(new ViewerModule());
+    this.modules.push(new VideoModule());
     this.modules.push(new LabelingDataModule());
     this.modules.push(new LabelStructureModule());
   }

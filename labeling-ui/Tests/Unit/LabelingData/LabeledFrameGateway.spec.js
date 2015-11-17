@@ -4,28 +4,34 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import LabeledFrameGateway from 'Application/LabelingData/Gateways/LabeledFrameGateway';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 
 describe('LabeledFrameGateway', () => {
   let $httpBackend;
   let gateway;
+  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
-    module($provide => {
+    module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
       });
+
+      bufferedHttpProvider.enableFlushFunctionality();
+      bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledFrameGateway);
+      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 
@@ -38,7 +44,7 @@ describe('LabeledFrameGateway', () => {
     const taskId = '2';
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = {id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']};
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend
@@ -51,14 +57,14 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
-  it('should save a labeled thing in frame', done => {
+  it('should save a labeled frame', done => {
     const taskId = '2';
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = {id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']};
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend
@@ -71,7 +77,7 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
 
@@ -91,6 +97,6 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    $httpBackend.flush();
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 });

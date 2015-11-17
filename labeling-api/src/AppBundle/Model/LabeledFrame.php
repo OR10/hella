@@ -12,7 +12,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 class LabeledFrame
 {
     /**
-     * @CouchDB\Id
+     * @CouchDB\Id(strategy="ASSIGNED")
      */
     private $id;
 
@@ -35,6 +35,11 @@ class LabeledFrame
      * @CouchDB\Field(type="string")
      */
     private $labelingTaskId;
+
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
 
     public function __construct(Model\LabelingTask $task)
     {
@@ -73,6 +78,15 @@ class LabeledFrame
         $this->labelingTaskId = $labelingTaskId;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+
     /**
      * @return mixed
      */
@@ -87,5 +101,37 @@ class LabeledFrame
     public function getFrameNumber()
     {
         return $this->frameNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

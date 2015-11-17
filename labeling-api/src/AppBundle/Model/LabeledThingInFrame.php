@@ -10,7 +10,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 class LabeledThingInFrame
 {
     /**
-     * @CouchDB\Id
+     * @CouchDB\Id(strategy="ASSIGNED")
      */
     private $id;
 
@@ -27,7 +27,7 @@ class LabeledThingInFrame
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $classes;
+    private $classes = [];
 
     /**
      * @CouchDB\Field(type="mixed")
@@ -38,6 +38,11 @@ class LabeledThingInFrame
      * @CouchDB\Field(type="string")
      */
     private $labeledThingId;
+
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
 
     /**
      * @param LabeledThing $labeledThing
@@ -64,11 +69,19 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param mixed $classes
+     * @param array $classes
      */
-    public function setClasses($classes)
+    public function setClasses(array $classes)
     {
         $this->classes = $classes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClasses()
+    {
+        return $this->classes;
     }
 
     /**
@@ -117,5 +130,29 @@ class LabeledThingInFrame
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }

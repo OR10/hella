@@ -36,4 +36,14 @@ class LabeledThing
         $this->documentManager->persist($labeledThing);
         $this->documentManager->flush();
     }
+
+    /**
+     * @param $id
+     *
+     * @return Model\LabeledThing
+     */
+    public function find($id)
+    {
+        return $this->documentManager->find(Model\LabeledThing::class, $id);
+    }
 }

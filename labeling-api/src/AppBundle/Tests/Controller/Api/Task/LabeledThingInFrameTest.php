@@ -177,6 +177,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $labeledThing = new Model\LabeledThing($labelingTask);
         $this->labelingThingFacade->save($labeledThing);
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+        $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765c');
         $labeledThingInFrame->setFrameNumber(10);
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 

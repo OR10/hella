@@ -45,8 +45,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         Facade\Video $videoFacade,
         Flysystem\FileSystem $fileSystem,
         $cacheDir
-    )
-    {
+    ) {
         $this->videoFrameSplitter = $videoFrameSplitter;
         $this->videoFacade        = $videoFacade;
         $this->fileSystem         = $fileSystem;
@@ -56,45 +55,62 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     /**
      * @param Job                        $job
      * @param Logger\Facade\LoggerFacade $logger
+     *
+     * @todo throw better exceptions
      */
     public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
         /** @var Model\Video $video */
         $video = $this->videoFacade->find($job->videoId);
 
+        if ($video === null) {
+            throw new \RuntimeException("Video '{$job->videoId}' could not be found");
+        }
+
         $tmpFile = tempnam($this->cacheDir, 'source_video');
 
-        file_put_contents(
-            $tmpFile,
-            $this->fileSystem->read($video->getSourceVideoPath()
-            )
-        );
+        if ($tmpFile === false) {
+            throw new \RuntimeException('Error creating temporary file for video data');
+        }
+
+        if (file_put_contents($tmpFile, $this->fileSystem->read($video->getSourceVideoPath())) === false) {
+            throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
+        }
 
         $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
-        $this->updateDocument($video, $job->imageType);
+        $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
-        unlink($tmpFile);
+        $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
+
+        if (!unlink($tmpFile)) {
+            throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+        }
     }
 
     /**
      * @param Model\Video    $video
      * @param ImageType\Base $imageType
+     * @param                $width
+     * @param                $height
      * @param int            $retryCount
      * @param int            $maxRetries
      * @throws CouchDB\UpdateConflictException
+     * @internal param ImageType\Base $imageType
      */
-    private function updateDocument(Model\Video $video, ImageType\Base $imageType, $retryCount = 0, $maxRetries = 1)
+    private function updateDocument(Model\Video $video, ImageType\Base $imageType, $width, $height, $retryCount = 0, $maxRetries = 1)
     {
+        $imageTypeName = $imageType->getName();
         try {
             $this->videoFacade->refresh($video);
-            $video->setImageTypeConvertedStatus($imageType->getName(), true);
+            $video->setImageType($imageTypeName, 'converted', true);
+            $video->setImageType($imageTypeName, 'width', $width);
+            $video->setImageType($imageTypeName, 'height', $height);
             $this->videoFacade->update();
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
-            if ($retryCount <= $maxRetries) {
-                $this->updateDocument($video, $imageType, $retryCount + 1);
-            }else{
-                throw new CouchDB\UpdateConflictException(array($video));
+            if ($retryCount > $maxRetries) {
+                throw $updateConflictException;
             }
+            $this->updateDocument($video, $retryCount + 1);
         }
     }
 }

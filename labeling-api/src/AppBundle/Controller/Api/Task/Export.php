@@ -2,10 +2,13 @@
 
 namespace AppBundle\Controller\Api\Task;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
+use AppBundle\View;
+use AppBundle\Worker\Jobs;
+use crosscan\WorkerPool\AMQP;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 
@@ -21,22 +24,86 @@ class Export extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @var Service\TaskExporter\Kitti
+     * @var Facade\TaskExport
      */
-    private $kittiExporter;
+    private $taskExportFacade;
 
     /**
-     * @param Facade\LabelingTask        $labelingTaskFacade
-     * @param Service\TaskExporter\Kitti $kittiExporter
+     * @var AMQP\FacadeAMQP
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade, Service\TaskExporter\Kitti $kittiExporter)
-    {
+    private $amqpFacade;
+
+    /**
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Facade\TaskExport   $taskExportFacade
+     * @param AMQP\FacadeAMQP     $amqpFacade
+     */
+    public function __construct(
+        Facade\LabelingTask $labelingTaskFacade,
+        Facade\TaskExport $taskExportFacade,
+        AMQP\FacadeAMQP $amqpFacade
+    ) {
         $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->kittiExporter      = $kittiExporter;
+        $this->taskExportFacade   = $taskExportFacade;
+        $this->amqpFacade         = $amqpFacade;
     }
 
     /**
-     * @Rest\Get("/{taskId}/export/kitti")
+     * @Rest\Get("/{taskId}/export")
+     *
+     * @param string $taskId
+     */
+    public function listExportsAction($taskId)
+    {
+        $task = $this->labelingTaskFacade->find($taskId);
+        if ($task === null) {
+            throw new Exception\NotFoundHttpException();
+        }
+
+        $exports = $this->taskExportFacade->findAll();
+        $exports = array_values(array_filter($exports->toArray(), function($export) use ($task) {
+            return $export->getLabelingTaskId() === $task->getId();
+        }));
+
+        return View\View::create()->setData([
+            'totalCount' => count($exports),
+            'result'     => $exports,
+        ]);
+    }
+
+    /**
+     * @Rest\Get("/{taskId}/export/{taskExportId}")
+     *
+     * @param string $taskId
+     * @param string $taskExportId
+     */
+    public function getExportAction($taskId, $taskExportId)
+    {
+        $task = $this->labelingTaskFacade->find($taskId);
+        if ($task === null) {
+            throw new Exception\NotFoundHttpException();
+        }
+
+        $taskExport = $this->taskExportFacade->find($taskExportId);
+        if ($taskExport === null || $taskExport->getLabelingTaskId() !== $task->getId()) {
+            throw new Exception\NotFoundHttpException();
+        }
+
+        return new HttpFoundation\Response(
+            $taskExport->getRawData(),
+            HttpFoundation\Response::HTTP_OK,
+            [
+                'Content-Type' => $taskExport->getContentType(),
+                'Content-Disposition' => sprintf(
+                    'attachment; filename="%s"',
+                    $taskExport->getFilename()
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @Rest\Post("/{taskId}/export/kitti")
      *
      * @param string $taskId
      *
@@ -49,18 +116,10 @@ class Export extends Controller\Base
             throw new Exception\NotFoundHttpException();
         }
 
-        $data = $this->kittiExporter->exportLabelingTask($task);
+        $this->amqpFacade->addJob(new Jobs\KittiExporter($task->getId()));
 
-        return new HttpFoundation\Response(
-            $data,
-            HttpFoundation\Response::HTTP_OK,
-            [
-                'Content-Type' => 'application/zip',
-                'Content-Disposition' => sprintf(
-                    'attachment; filename="%s.zip"',
-                    'kitti-export'
-                ),
-            ]
-        );
+        return View\View::create()
+            ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
+            ->setData(['message' => 'Export started']);
     }
 }

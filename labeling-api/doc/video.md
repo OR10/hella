@@ -1,0 +1,47 @@
+# Group Video
+
+## Get all videos [/api/video]
+
+### Get all videos [GET]
+
+This routes simply returns all videos saved in our database
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "result": [
+                {
+                  "id": "16b00780792d045c496513f01f006f09",
+                  "name": "anno_shortBotrxV",
+                  "metaData": {
+                    ...
+                  }
+                }
+              ]
+            }
+
+## Video by id [/api/video/{id}]
+
++ Parameters
+
+    + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the video-entity.
+
+### Get a video by id [GET]
+
+Get a video specified by id
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "result": {
+                "id": "16b00780792d045c496513f01f006f09",
+                "name": "anno_shortBotrxV",
+                "metaData": {
+                    ...
+                }
+              }
+            }

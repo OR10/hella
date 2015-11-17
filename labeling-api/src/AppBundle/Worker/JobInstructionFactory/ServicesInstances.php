@@ -18,7 +18,6 @@ class ServicesInstances extends WorkerPool\JobInstructionFactory
      */
     private $container;
 
-
     /**
      * ServicesInstances constructor.
      * @param array                                  $jobToInstructionMapping
@@ -62,7 +61,7 @@ class ServicesInstances extends WorkerPool\JobInstructionFactory
      * @param Job $job
      * @return bool
      */
-    function supports(Job $job)
+    public function supports(Job $job)
     {
         return isset($this->jobToInstructionMapping[get_class($job)]);
     }

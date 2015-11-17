@@ -11,6 +11,7 @@ use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
 use Symfony\Component\HttpKernel\Exception;
+use Doctrine\ODM\CouchDB;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -34,18 +35,26 @@ class LabeledThingInFrame extends Controller\Base
     private $labelingTaskFacade;
 
     /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param CouchDB\DocumentManager    $documentManager
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabelingTask $labelingTaskFacade
+        Facade\LabelingTask $labelingTaskFacade,
+        CouchDB\DocumentManager $documentManager
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->documentManager           = $documentManager;
     }
 
     /**
@@ -68,18 +77,27 @@ class LabeledThingInFrame extends Controller\Base
             return $response;
         }
 
-        $shapes  = $request->request->get('shapes', []);
-        $classes = $request->request->get('classes', []);
+        $shapes     = $request->request->get('shapes', []);
+        $classes    = $request->request->get('classes', []);
+        $incomplete = $request->request->get('incomplete', true);
+        $documentId = $request->request->get('id');
 
         if (!is_array($shapes) || !is_array([$classes])) {
             throw new Exception\BadRequestHttpException();
         }
 
+        if ($documentId === null) {
+            $uuids      = $this->documentManager->getCouchDBClient()->getUuids();
+            $documentId = reset($uuids);
+        }
+
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
             $task,
+            $documentId,
             $frameNumber,
             $shapes,
-            $classes
+            $classes,
+            $incomplete
         );
 
         $response->setData(['result' => $labeledThingInFrame]);
@@ -130,22 +148,27 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @param Model\LabelingTask $task
+     * @param                    $id
      * @param                    $frameNumber
      * @param                    $shapes
      * @param                    $classes
-     *
+     * @param                    $incomplete
      * @return Model\LabeledThingInFrame
      */
     private function addLabeledThingAndLabeledThingInFrame(
         Model\LabelingTask $task,
+        $id,
         $frameNumber,
         $shapes,
-        $classes
+        $classes,
+        $incomplete
     ) {
         $labeledThing = new Model\LabeledThing($task);
         $this->labeledThingFacade->save($labeledThing);
 
         $thingInFrame = new Model\LabeledThingInFrame($labeledThing);
+
+        $thingInFrame->setId($id);
 
         $thingInFrame->setFrameNumber(
             $frameNumber
@@ -155,6 +178,9 @@ class LabeledThingInFrame extends Controller\Base
         );
         $thingInFrame->setClasses(
             $classes
+        );
+        $thingInFrame->setIncomplete(
+            $incomplete
         );
 
         $this->labeledThingInFrameFacade->save($thingInFrame);

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+unset VAGRANT_VAGRANTFILE
+unset VAGRANT_DOTFILE_PATH

@@ -1,21 +1,23 @@
+import LabeledThingInFrame from '../Models/LabeledThingInFrame';
+
 /**
  * Gateway for saving and retrieving {@link LabeledThingInFrame}s
  */
 class LabeledThingInFrameGateway {
   /**
    * @param {ApiService} apiService
-   * @param {angular.$http} $http
+   * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, $http) {
+  constructor(apiService, bufferedHttp) {
     /**
-     * @type {angular.$http}
+     * @type {BufferedHttp}
      */
-    this.$http = $http;
+    this.bufferedHttp = bufferedHttp;
 
     /**
      * @type {ApiService}
      */
-    this.apiService = apiService;
+    this._apiService = apiService;
   }
 
   /**
@@ -27,13 +29,14 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame[]|Error>}
    */
   listLabeledThingInFrame(task, frameNumber) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.$http.get(url)
+    return this.bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return response.data.result
+            .map(labeledThingInFrame => new LabeledThingInFrame(labeledThingInFrame));
         }
 
         throw new Error('Failed loading labeled thing in frame list');
@@ -48,13 +51,13 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
   getLabeledThingInFrame(labeledThingInFrameId) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.$http.get(url)
+    return this.bufferedHttp.get(url)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledThingInFrame(response.data.result);
         }
 
         throw new Error('Failed loading labeled thing in frame');
@@ -71,12 +74,11 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
   createLabeledThingInFrame(task, frameNumber, labeledThingInFrame) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    const unifiedLabeledThingInFrame = this._uniqueClasses(labeledThingInFrame);
 
-    return this.$http.post(url, unifiedLabeledThingInFrame)
+    return this.bufferedHttp.post(url, labeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -94,16 +96,14 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
   updateLabeledThingInFrame(newLabeledThingInFrame) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${newLabeledThingInFrame.id}`
     );
 
-    const labeledThingInFrame = this._uniqueClasses(newLabeledThingInFrame);
-
-    return this.$http.put(url, labeledThingInFrame)
+    return this.bufferedHttp.put(url, newLabeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledThingInFrame(response.data.result);
         }
 
         throw new Error('Failed updating labeled thing in frame');
@@ -118,10 +118,10 @@ class LabeledThingInFrameGateway {
    * @returns {Promise<true|Error>}
    */
   deleteLabeledThingInFrame(labeledThingInFrameId) {
-    const url = this.apiService.getApiUrl(
+    const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.$http.delete(url)
+    return this.bufferedHttp.delete(url)
       .then(response => {
         if (response.data) {
           return true;
@@ -130,63 +130,11 @@ class LabeledThingInFrameGateway {
         throw new Error('Failed deleting labeled thing in frame');
       });
   }
-
-  /**
-   * Adds classes to a {@link LabeledThingInFrame}
-   *
-   * This method is a shortcut to updating the {@link LabeledThingInFrame#classes} list and calling
-   * {@link LabeledThingInFrameGateway#updateLabeledThingInFrame} on the modified object.
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Array<string>} classes
-   *
-   * @returns {Promise<LabeledThingInFrame|Error>}
-   */
-  addClassesToLabeledThingInFrame(labeledThingInFrame, classes) {
-    if (labeledThingInFrame.classes) {
-      labeledThingInFrame.classes = labeledThingInFrame.classes.concat(classes);
-    } else {
-      labeledThingInFrame.classes = classes;
-    }
-
-    return this.updateLabeledThingInFrame(labeledThingInFrame);
-  }
-
-  /**
-   * Sets the classes array on a {@link LabeledThingInFrame}
-   *
-   * This method is a shortcut to updating the {@link LabeledThingInFrame#classes} list and calling
-   * {@link LabeledThingInFrameGateway#updateLabeledThingInFrame} on the modified object.
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Array<string>} classes
-   *
-   * @returns {Promise<LabeledThingInFrame|Error>}
-   */
-  setClassesToLabeledThingInFrame(labeledThingInFrame, classes) {
-    if (classes) {
-      labeledThingInFrame.classes = classes;
-    } else {
-      labeledThingInFrame.classes = [];
-    }
-
-    return this.updateLabeledThingInFrame(labeledThingInFrame);
-  }
-
-  /**
-   * Make the classes array on a {@link LabeledThingInFrame} unique
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @returns {LabeledThingInFrame}
-   * @private
-   */
-  _uniqueClasses(labeledThingInFrame) {
-    labeledThingInFrame.classes = [...new Set(labeledThingInFrame.classes)];
-
-    return labeledThingInFrame;
-  }
 }
 
-LabeledThingInFrameGateway.$inject = ['ApiService', '$http'];
+LabeledThingInFrameGateway.$inject = [
+  'ApiService',
+  'bufferedHttp',
+];
 
 export default LabeledThingInFrameGateway;

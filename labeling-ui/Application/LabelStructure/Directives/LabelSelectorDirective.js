@@ -7,15 +7,14 @@ import LabelSelectorController from './LabelSelectorController';
 export default class LabelSelectorDirective {
   constructor() {
     this.scope = {
-      metaLabelingCompleted: '=',
-      objectLabelingCompleted: '=',
-      metaLabelStructure: '=',
-      objectLabelStructure: '=',
-      metaLabelAnnotation: '=',
-      objectLabelAnnotation: '=',
-      metaLabelContext: '=',
-      objectLabelContext: '=',
-      hideObjectLabels: '=',
+      labeledObjectType: '@',
+      labeledObject: '=',
+      structure: '=',
+      annotation: '=',
+      sections: '=',
+      task: '=',
+      framePosition: '=',
+      isCompleted: '=?',
     };
 
     this.template = labelSelectorTemplate;

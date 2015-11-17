@@ -3,13 +3,8 @@ import ViewerControlsController from './ViewerControlsController';
 
 /**
  * Directive encapsulating the control elements of the AnnoStation viewer
- *
- * @class ViewerControlsDirective
- *
- * @ngdoc directive
- * @scope
  */
-export default class ViewerControlsDirective {
+class ViewerControlsDirective {
   constructor() {
     this.controllerAs = 'vm';
     this.controller = ViewerControlsController;
@@ -17,15 +12,15 @@ export default class ViewerControlsDirective {
 
     this.template = viewerControlsTempate;
     this.scope = {
-      onPreviousFrameRequested: '&',
-      onNextFrameRequested: '&',
-      onNewLabeledThingRequested: '&',
-      onFilterChanged: '&',
-      onNewEllipseRequested: '&',
-      onNewCircleRequested: '&',
-      onNewPolygonRequested: '&',
-      onNewLineRequested: '&',
-      onMoveToolRequested: '&',
+      framePosition: '=',
+      filters: '=',
+      activeTool: '=',
+      selectedDrawingTool: '=',
+      task: '=',
+      selectedLabeledThingInFrame: '=',
+      labeledThingsInFrame: '=',
     };
   }
 }
+
+export default ViewerControlsDirective;

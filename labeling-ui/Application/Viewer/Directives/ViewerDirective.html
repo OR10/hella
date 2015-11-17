@@ -1,14 +1,12 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-container">
-            <viewer-stage frame-image="vm.frameImage"
-                          things-in-frame="vm.thingsInFrame"
-                          filters="vm.filters"
+            <viewer-stage labeled-things-in-frame="vm.labeledThingsInFrame"
+                          selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
                           active-tool="vm.activeTool"
-                          on-new-thing="vm.handleNewThing(shapes)"
-                          on-updated-thing="vm.handleUpdatedThing(labeledThing)"
-                          on-selected-thing="vm.handleSelectedThing(labeledThing)"
-                          on-deselected-thing="vm.handleDeselectedThing()"
+                          task="vm.task"
+                          frame-position="vm.framePosition"
+                          filters="vm.filters"
             ></viewer-stage>
         </div>
     </div>
@@ -16,16 +14,14 @@
 <div class="row">
     <div class="col-md-12">
         <div class="viewer-controls-container">
-            <viewer-controls on-next-frame-requested="vm.handleNextFrameRequested()"
-                             on-previous-frame-requested="vm.handlePreviousFrameRequested()"
-                             on-new-labeled-thing-requested="vm.handleNewLabeledThingRequested()"
-                             on-new-ellipse-requested="vm.handleNewEllipseRequested()"
-                             on-new-circle-requested="vm.handleNewCircleRequested()"
-                             on-new-polygon-requested="vm.handleNewPolygonRequested()"
-                             on-new-line-requested="vm.handleNewLineRequested()"
-                             on-move-tool-requested="vm.handleMoveToolRequested()"
-                             on-filter-changed="vm.handleFilterChanged(filters)">
-            </viewer-controls>
+            <viewer-controls labeled-things-in-frame="vm.labeledThingsInFrame"
+                             selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
+                             frame-position="vm.framePosition"
+                             active-tool="vm.activeTool"
+                             selected-drawing-tool="vm.selectedDrawingTool"
+                             filters="vm.filters"
+                             task="vm.task"
+            ></viewer-controls>
         </div>
     </div>
 </div>

@@ -1,6 +1,9 @@
 import Module from '../Module';
 import ApiService from './Services/ApiService';
 import AuthInterceptor from './Services/AuthInterceptor';
+import RevisionManager from './Services/RevisionManager';
+import BufferedHttpProvider from './Services/BufferedHttpProvider';
+import EntityIdService from './Services/EntityIdService';
 
 /**
  * Common Module
@@ -17,11 +20,12 @@ class Common extends Module {
     this.module = angular.module('AnnoStation.Common', []);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
-
+    this.module.service('revisionManager', RevisionManager);
+    this.module.service('entityIdService', EntityIdService);
+    this.module.provider('bufferedHttp', BufferedHttpProvider);
 
     this.module.config(['$httpProvider', ($httpProvider) => {
       $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
       $httpProvider.interceptors.push('authInterceptor');
     }]);
 

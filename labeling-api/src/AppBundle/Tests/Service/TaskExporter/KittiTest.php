@@ -6,6 +6,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
+use Doctrine\ODM\CouchDB;
 
 class KittiTest extends Tests\KernelTestCase
 {
@@ -34,6 +35,11 @@ class KittiTest extends Tests\KernelTestCase
      */
     private $exporter;
 
+    /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnoService('database.facade.video');
@@ -41,6 +47,9 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade        = $this->getAnnoService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnoService('database.facade.labeled_thing_in_frame');
         $this->exporter                  = $this->getAnnoService('service.task_exporter.kitti');
+        $this->documentManager           = static::$kernel->getContainer()->get(
+            'doctrine_couchdb.odm.default_document_manager'
+        );
     }
 
     private function getAnnoService($name)
@@ -58,7 +67,7 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithOneLabeledThingInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
             $this->createRectangleShape(10, 10, 100, 100),
         ]);
 
@@ -72,13 +81,13 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithOneLabeledThingWithMultipleShapesInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'cyclist', [
             $this->createRectangleShape(10, 10, 100, 100),
             $this->createRectangleShape(5, 5, 150, 150),
         ]);
 
         $expectedResult = [
-            1 => [$this->createExpectedResultEntry('Pedestrian', 5, 5, 150, 150)],
+            1 => [$this->createExpectedResultEntry('Cyclist', 5, 5, 150, 150)],
         ] + array_fill(2, 9, []);
 
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
@@ -87,18 +96,18 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithTwoLabeledThingsWithMultipleShapesInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'car', [
             $this->createRectangleShape(10, 10, 100, 100),
             $this->createRectangleShape(5, 5, 150, 150),
         ]);
-        $this->createLabeledThingInFrame($task, 1, [
+        $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
             $this->createRectangleShape(300, 10, 400, 100),
             $this->createRectangleShape(290, 5, 350, 95),
         ]);
 
         $expectedResult = [
             1 => [
-                $this->createExpectedResultEntry('Pedestrian', 5, 5, 150, 150),
+                $this->createExpectedResultEntry('Car', 5, 5, 150, 150),
                 $this->createExpectedResultEntry('Pedestrian', 290, 5, 400, 100),
             ],
         ] + array_fill(2, 9, []);
@@ -111,7 +120,7 @@ class KittiTest extends Tests\KernelTestCase
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
 
         for ($frameNumber = 5; $frameNumber <= 10; ++$frameNumber) {
-            $this->createLabeledThingInFrame($task, $frameNumber, [
+            $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
                 $this->createRectangleShape(10, 10, 100, 100),
             ]);
         }
@@ -122,6 +131,58 @@ class KittiTest extends Tests\KernelTestCase
                 $this->createExpectedResultEntry('Pedestrian', 10, 10, 100, 100),
             ];
         }
+
+        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+    }
+
+    public function testExportingTaskWithEllipseShapeInOneFrame()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createEllipseShape(10, 10, 100, 10),
+        ]);
+
+        $expectedResult = [
+            1 => [
+                $this->createExpectedResultEntry('Car', 10, 10, 110, 20),
+            ],
+        ];
+
+        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+    }
+
+    /**
+     * @expectedException AppBundle\Service\TaskExporter\Exception\Kitti
+     */
+    public function testExportingTaskWithPolygonShapeWithoutAnyPointThrowsKittiException()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createPolygonShape([
+                // No point should lead to an exception
+            ]),
+        ]);
+
+        $this->exporter->getInternalExportData($task);
+    }
+
+    public function testExportingTaskWithPolygonShapeInOneFrame()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createPolygonShape([
+                ['x' =>   7, 'y' =>   8],
+                ['x' =>  17, 'y' =>  28],
+                ['x' =>  -7, 'y' =>  -8],
+                ['x' => 107, 'y' => 308],
+            ]),
+        ]);
+
+        $expectedResult = [
+            1 => [
+                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+            ],
+        ];
 
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
     }
@@ -172,7 +233,7 @@ class KittiTest extends Tests\KernelTestCase
      * Store a labeled thing for the given frame number and the given shapes in
      * the database.
      */
-    private function createLabeledThingInFrame(Model\LabelingTask $task, $frameNumber, array $shapes)
+    private function createLabeledThingInFrame(Model\LabelingTask $task, $frameNumber, $type, array $shapes)
     {
         $labeledThing = new Model\LabeledThing($task);
         $labeledThing->setFrameRange($task->getFrameRange());
@@ -180,15 +241,16 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade->save($labeledThing);
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+        $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
+        $labeledThingInFrame->setId(reset($uuids));
         $labeledThingInFrame->setFrameNumber($frameNumber);
+        $labeledThingInFrame->setClasses([(string) $type]);
         $labeledThingInFrame->setShapes($shapes);
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
     }
 
     /**
-     * Create a rectangle shape.
-     *
      * @param float $left
      * @param float $top
      * @param float $right
@@ -209,5 +271,47 @@ class KittiTest extends Tests\KernelTestCase
                 'y' => (float) $bottom,
             ],
         ];
+    }
+
+    /**
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     *
+     * @return array
+     */
+    private function createEllipseShape($x, $y, $width, $height)
+    {
+        return [
+            'type' => 'ellipse',
+            'point' => [
+                'x' => (float) $x,
+                'y' => (float) $y,
+            ],
+            'size' => [
+                'width'  => (float) $width,
+                'height' => (float) $height,
+            ],
+        ];
+    }
+
+    /**
+     * @param array $points
+     * @return array
+     *
+     */
+    private function createPolygonShape(array $points)
+    {
+        $result = [
+            'type'   => 'polygon',
+            'points' => [],
+        ];
+
+        foreach ($points as $point) {
+            $result['points'][] = ['x' => $point['x'], 'y' => $point['y']];
+        }
+
+        return $result;
     }
 }
