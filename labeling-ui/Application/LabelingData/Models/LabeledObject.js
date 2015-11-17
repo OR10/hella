@@ -14,13 +14,12 @@ class LabeledObject {
      */
     this.id = labeledObject.id;
 
-    // Required private properties
-    ['classes']
-      .forEach(property => Object.defineProperty(this, `_${property}`, {
-        enumerable: false,
-        writable: true,
-        value: labeledObject[property],
-      }));
+    /**
+     * The labels assigned to this `labeledObject`
+     *
+     * @type {Array.<String>}
+     */
+    this.classes = labeledObject.classes;
 
     // Optional properties
     if (labeledObject.rev) {
@@ -43,24 +42,15 @@ class LabeledObject {
   }
 
   /**
-   * Array of labels associated with this `LabeledObject`
-   * @returns {Array.<string>}
-   */
-  get classes() {
-    // Always return unique classes
-    return this._classes;
-  }
-
-  /**
    * Store a new set of labels.
    *
    * The setter ensures that a unique set of labels is stored
    *
    * @param {Array.<string>} newClasses
    */
-  set classes(newClasses) {
+  setClasses(newClasses) {
     // Ensure all stored classes are a unique list
-    this._classes = [...new Set(newClasses)];
+    this.classes = [...new Set(newClasses)];
   }
 
   /**
@@ -71,7 +61,7 @@ class LabeledObject {
    * @param {string} newClass
    */
   addClass(newClass) {
-    this.classes = [...this._classes, newClass];
+    this.setClasses([...this.classes, newClass]);
   }
 }
 

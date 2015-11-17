@@ -65,42 +65,18 @@ class LabeledThingInFrameGateway {
   }
 
   /**
-   * Store a **new** {@link LabeledThingInFrame} to the backend
+   * Update the {@link LabeledThingInFrame} with the given `id`.
    *
-   * @param {Task} task
-   * @param {Integer} frameNumber
    * @param {LabeledThingInFrame} labeledThingInFrame
    *
    * @returns {Promise<LabeledThingInFrame|Error>}
    */
-  createLabeledThingInFrame(task, frameNumber, labeledThingInFrame) {
+  saveLabeledThingInFrame(labeledThingInFrame) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${frameNumber}`
+      `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
-    return this.bufferedHttp.post(url, labeledThingInFrame)
-      .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
-        }
-
-        throw new Error('Failed creating LabeledThingInFrame');
-      });
-  }
-
-  /**
-   * Update the {@link LabeledThingInFrame} with the given `id`.
-   *
-   * @param {LabeledThingInFrame} newLabeledThingInFrame
-   *
-   * @returns {Promise<LabeledThingInFrame|Error>}
-   */
-  updateLabeledThingInFrame(newLabeledThingInFrame) {
-    const url = this._apiService.getApiUrl(
-      `/labeledThingInFrame/${newLabeledThingInFrame.id}`
-    );
-
-    return this.bufferedHttp.put(url, newLabeledThingInFrame)
+    return this.bufferedHttp.put(url, labeledThingInFrame)
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThingInFrame(response.data.result);

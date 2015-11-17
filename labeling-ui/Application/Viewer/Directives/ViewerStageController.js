@@ -169,7 +169,7 @@ class ViewerStageController {
     // @TODO this needs to be fixed for supporting multiple shapes
     labeledThingInFrame.shapes[0] = shape;
 
-    this._labeledThingInFrameGateway.updateLabeledThingInFrame(labeledThingInFrame);
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   _onNewShape(shape) {
@@ -177,7 +177,7 @@ class ViewerStageController {
       this.selectedLabeledThingInFrame.shapes.push(shape);
       this.activeTool = null;
 
-      this._labeledThingInFrameGateway.updateLabeledThingInFrame(this.selectedLabeledThingInFrame);
+      this._labeledThingInFrameGateway.saveLabeledThingInFrame(this.selectedLabeledThingInFrame);
     });
   }
 }

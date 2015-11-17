@@ -6,6 +6,7 @@
       "id": "0115bd97fa0c1d86f8d1f65ff409f0b8",
       "rev": "14-547b5f8221abb7327b156d7c1591b14e",
       "frameNumber": 1,
+      "incomplete": true,
       "classes": [],
       "shapes": [
         {
@@ -29,6 +30,7 @@
         "id": "0115bd97fa0c1d86f8d1f65ff409f0b8",
         "rev": "15-c3bc44889b793d878c57d5edb81e381f",
         "frameNumber": 1,
+        "incomplete": true,
         "classes": [],
         "shapes": [
           {

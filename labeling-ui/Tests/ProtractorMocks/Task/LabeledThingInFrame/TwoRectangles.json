@@ -11,6 +11,7 @@
           "rev": "14-547b5f8221abb7327b156d7c1591b14e",
           "frameNumber": 1,
           "classes": [],
+          "incomplete": true,
           "shapes": [
             {
               "type": "rectangle",
@@ -32,6 +33,7 @@
           "rev": "8-691e8f078fc4286d30f318821457600a",
           "frameNumber": 1,
           "classes": [],
+          "incomplete": true,
           "shapes": [
             {
               "type": "rectangle",

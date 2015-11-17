@@ -1,5 +1,7 @@
 import BrightnessFilter from '../Filters/BrightnessFilter';
 import ContrastFilter from '../Filters/ContrastFilter';
+import LabeledThing from '../../LabelingData/Models/LabeledThing';
+import LabeledThingInFrame from '../../LabelingData/Models/LabeledThingInFrame';
 
 /**
  * Controller handling the control elements below the viewer frame
@@ -10,8 +12,18 @@ import ContrastFilter from '../Filters/ContrastFilter';
  * @property {Filters} filters
  */
 class ViewerControlsController {
-  constructor($scope, labeledThingInFrameGateway) {
+  /**
+   * @param {angular.$scope} $scope
+   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGateway} labeledThingGateway
+   * @param {EntityIdService} entityIdService
+   * @param {angular.$q} $q
+   */
+  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, entityIdService, $q) {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+    this._labeledThingGateway = labeledThingGateway;
+    this._entityIdService = entityIdService;
+    this._$q = $q;
 
     /**
      * Template name used for the brightnessSlider button popover
@@ -94,15 +106,40 @@ class ViewerControlsController {
   }
 
   _createNewLabeledThingInFrame() {
-    // TODO this is a hack. we probably want to generate our ids in the frontend
-    return this._labeledThingInFrameGateway.createLabeledThingInFrame(this.task, this.framePosition.position, {
+    const labeledThingId = this._entityIdService.getUniqueId();
+    const labeledThingInFrameId = this._entityIdService.getUniqueId();
+
+    const labeledThing = new LabeledThing({
+      id: labeledThingId,
       classes: [],
-      shapes: [],
       incomplete: true,
-    }).then(newLabeledThingInFrame => {
-      this.labeledThingsInFrame[newLabeledThingInFrame.id] = newLabeledThingInFrame;
-      this.selectedLabeledThingInFrame = newLabeledThingInFrame;
+      taskId: this.task.id,
+      frameRange: {
+        startFrameNumber: this.framePosition.startFrameNumber,
+        endFrameNumber: this.framePosition.endFrameNumber,
+      },
     });
+
+    const labeledThingInFrame = new LabeledThingInFrame({
+      id: labeledThingInFrameId,
+      classes: [],
+      incomplete: true,
+      frameNumber: this.framePosition.position,
+      labeledThingId: labeledThingId,
+      shapes: [],
+    });
+
+    return this._labeledThingGateway.saveLabeledThing(labeledThing)
+      .then(() => {
+        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+      })
+      .then(() => {
+        /* @TODO maybe we don't need to wait for the backend before we update the scope here but i left it in for now
+         * in lieu of proper error handling
+         */
+        this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
+        this.selectedLabeledThingInFrame = labeledThingInFrame;
+      });
   }
 
   handleNewLabeledThingClicked() {
@@ -118,7 +155,6 @@ class ViewerControlsController {
         this.activeTool = 'ellipse';
       });
   }
-
 
   handleNewCircleClicked() {
     this._createNewLabeledThingInFrame()
@@ -141,7 +177,6 @@ class ViewerControlsController {
       });
   }
 
-
   handleNewPolygonClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -161,6 +196,12 @@ class ViewerControlsController {
   }
 }
 
-ViewerControlsController.$inject = ['$scope', 'labeledThingInFrameGateway'];
+ViewerControlsController.$inject = [
+  '$scope',
+  'labeledThingInFrameGateway',
+  'labeledThingGateway',
+  'entityIdService',
+  '$q',
+];
 
 export default ViewerControlsController;
