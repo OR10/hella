@@ -91,6 +91,7 @@ describe('Rectangle drawing', () => {
               id: '0115bd97fa0c1d86f8d1f65ff409f0b8',
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
+              incomplete: true,
               frameNumber: 1,
               shapes: [
                 {

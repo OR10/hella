@@ -7,20 +7,13 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledThingInFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, taskId: string, frameNumber: int, labeledThingId: string, shapes: Array.<Object>}} labeledThingInFrame
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, frameNumber: int, labeledThingId: string, shapes: Array.<Object>}} labeledThingInFrame
    */
   constructor(labeledThingInFrame) {
     super(labeledThingInFrame);
 
     /**
-     * Unique identifier of the {@link Task} associated with this `LabeledFrame`
-     *
-     * @type {string}
-     */
-    this.taskId = labeledThingInFrame.taskId;
-
-    /**
-     * {@link FrameRange} this `LabeledThing` is defined in
+     * Number of the frame this `LabeledThingInFrame` is defined in
      *
      * @type {int}
      */

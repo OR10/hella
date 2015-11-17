@@ -1,3 +1,5 @@
+annostation_base::nodejs: true
+
 labeling_api::mysql: true
 labeling_api::couch: true
 labeling_api::worker_queue: true

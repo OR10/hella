@@ -80,27 +80,7 @@ describe('LabeledThingInFrameGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
-  it('should create a labeled thing in frame', done => {
-    const task = {id: 'someTaskId234'};
-    const frameNumber = 2;
-    const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
-    const labeledThingInFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
-    const expectedResult = {result: labeledThingInFrame};
-
-    $httpBackend
-      .expect('POST', expectedUrl)
-      .respond(200, expectedResult);
-
-    gateway.createLabeledThingInFrame(task, frameNumber, labeledThingInFrame)
-      .then(result => {
-        expect(result).toEqual(labeledThingInFrame);
-        done();
-      });
-
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
-  });
-
-  it('should update a labeled thing in frame', done => {
+  it('should save a labeled thing in frame', done => {
     const labeledThinIngFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
     const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThinIngFrame.id}`;
     const expectedResult = {result: labeledThinIngFrame};
@@ -109,7 +89,7 @@ describe('LabeledThingInFrameGateway', () => {
       .expect('PUT', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.updateLabeledThingInFrame(labeledThinIngFrame)
+    gateway.saveLabeledThingInFrame(labeledThinIngFrame)
       .then(result => {
         expect(result).toEqual(labeledThinIngFrame);
         done();

@@ -236,12 +236,15 @@ class KittiTest extends Tests\KernelTestCase
     private function createLabeledThingInFrame(Model\LabelingTask $task, $frameNumber, $type, array $shapes)
     {
         $labeledThing = new Model\LabeledThing($task);
+        $uuids        = $this->documentManager->getCouchDBClient()->getUuids();
+        $labeledThing->setId(reset($uuids));
         $labeledThing->setFrameRange($task->getFrameRange());
 
         $this->labeledThingFacade->save($labeledThing);
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $labeledThingInFrame->setId(reset($this->documentManager->getCouchDBClient()->getUuids()));
+        $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
+        $labeledThingInFrame->setId(reset($uuids));
         $labeledThingInFrame->setFrameNumber($frameNumber);
         $labeledThingInFrame->setClasses([(string) $type]);
         $labeledThingInFrame->setShapes($shapes);

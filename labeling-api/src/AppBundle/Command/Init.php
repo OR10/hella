@@ -68,6 +68,10 @@ class Init extends Base
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->clearDirectories($output)) {
+            return 1;
+        }
+
         if (!$this->initializeDatabase($output, $input->getOption('drop-database'))) {
             return 1;
         }
@@ -76,11 +80,11 @@ class Init extends Base
             return 1;
         }
 
-        if (!$this->createUser($output)) {
+        if (!$this->setupRabbitmq($output)) {
             return 1;
         }
 
-        if (!$this->clearDirectories($output)) {
+        if (!$this->createUser($output)) {
             return 1;
         }
 
@@ -200,6 +204,13 @@ class Init extends Base
         }
 
         return true;
+    }
+
+    private function setupRabbitmq(OutputInterface $output)
+    {
+        $this->writeSection($output, 'Setup queues');
+
+        return $this->runCommand($output, 'annostation:rabbitmq:setup');
     }
 
     private function clearDirectory($directory)

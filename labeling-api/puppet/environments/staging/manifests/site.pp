@@ -8,6 +8,9 @@ file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
   ensure  => directory,
 }
 
+node /^app\-server\-.*/ {
+}
+
 node /^annostation\-ci\-slave\-.*/ {
   class { 'ruby':
     version      => '2.0.0',
@@ -19,3 +22,4 @@ node /^annostation\-ci\-slave\-.*/ {
       value => 8192
   }
 }
+

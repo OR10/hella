@@ -109,16 +109,6 @@ class TaskController {
     $scope.$watch('vm.framePosition.position', newFramePosition => {
       this._handleFrameChange(newFramePosition);
     });
-
-    // Make sure a drawing action can take place, after labeling is completed
-    $scope.$watch('vm.selectedLabeledThingInFrameCompletelyLabeled', newState => {
-      if (newState === true && this.selectedLabeledThingInFrame.shapes.length === 0) {
-        if (this.selectedDrawingTool !== null) {
-          //this.activeTool = this.selectedDrawingTool;
-          //this.selectedDrawingTool = null;
-        }
-      }
-    });
   }
 
   /**
@@ -132,20 +122,6 @@ class TaskController {
    */
   _loadLabeledThingsInFrame(frameNumber) {
     return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
-  }
-
-  /**
-   * Load all {@link LabeledThing}s for a given frame
-   *
-   * @param {int} frameNumber
-   * @returns {Array.<LabeledThing>}
-   *
-   * @private
-   *
-   * @TODO implement once we support inter-frame object tracking
-   */
-  _loadLabeledThings(frameNumber) { // eslint-disable-line no-unused-vars
-    return [];
   }
 
   /**
@@ -169,22 +145,16 @@ class TaskController {
    */
   _handleFrameChange(frameNumber) {
     this.labeledThingsInFrame = null;
-    this.labeledThings = null;
     this.labeledFrame = null;
 
     this._$q.all([
       this._loadLabeledThingsInFrame(frameNumber),
-      this._loadLabeledThings(frameNumber),
       this._loadLabeledFrame(frameNumber),
-    ]).then(([labeledThingsInFrame, labeledThings, labeledFrame]) => {
+    ]).then(([labeledThingsInFrame, labeledFrame]) => {
       this.labeledThingsInFrame = {};
+
       labeledThingsInFrame.forEach(labeledThingInFrame => {
         this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-      });
-
-      this.labeledThings = {};
-      labeledThings.forEach(labeledThing => {
-        this.labeledThings[labeledThing.id] = labeledThing;
       });
 
       this.labeledFrame = labeledFrame;

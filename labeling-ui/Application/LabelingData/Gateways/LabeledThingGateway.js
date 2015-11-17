@@ -25,7 +25,6 @@ class LabeledThingGateway {
   /**
    * @param {LabeledThing} labeledThing
    * @returns {Promise.<LabeledThing|Error>}
-   * @private
    */
   saveLabeledThing(labeledThing) {
     const url = this._apiService.getApiUrl(`/task/${labeledThing.taskId}/labeledThing/${labeledThing.id}`);

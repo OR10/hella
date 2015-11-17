@@ -56,5 +56,12 @@
                 id="annostation.labeling_api.controller.api.test"
                 class="AppBundle\Controller\Api\Test">
         </service>
+        <service
+                id="annostation.labeling_api.controller.api.task.labeled_thing"
+                class="AppBundle\Controller\Api\Task\LabeledThing">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+        </service>
     </services>
 </container>

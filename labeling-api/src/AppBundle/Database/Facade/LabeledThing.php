@@ -46,4 +46,13 @@ class LabeledThing
     {
         return $this->documentManager->find(Model\LabeledThing::class, $id);
     }
+
+    /**
+     * @param Model\LabeledThing $labeledThing
+     */
+    public function delete(Model\LabeledThing $labeledThing)
+    {
+        $this->documentManager->remove($labeledThing);
+        $this->documentManager->flush();
+    }
 }

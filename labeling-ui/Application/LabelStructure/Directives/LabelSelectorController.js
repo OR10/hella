@@ -105,7 +105,7 @@ export default class LabelSelectorController {
         return;
       }
 
-      this.labeledObject.classes = labels;
+      this.labeledObject.setClasses(labels);
 
       this._storeUpdatedLabeledObject();
     }, true);
@@ -159,8 +159,10 @@ export default class LabelSelectorController {
         }
         if (this.choices[id] !== null) {
           // Remove the chosen value from the labelsObject
-          this.labeledObject.classes = this.labeledObject.classes.filter(
-            label => label !== this.choices[id]
+          this.labeledObject.setClasses(
+            this.labeledObject.classes.filter(
+              label => label !== this.choices[id]
+            )
           );
         }
       });
@@ -197,7 +199,7 @@ export default class LabelSelectorController {
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame) {
     labeledThingInFrame.incomplete = !this.isCompleted;
 
-    this._labeledThingInFrameGateway.updateLabeledThingInFrame(
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(
       labeledThingInFrame
     );
   }

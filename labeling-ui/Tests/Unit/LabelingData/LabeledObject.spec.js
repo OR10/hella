@@ -34,7 +34,7 @@ describe('LabeledObject', () => {
       incomplete: true,
     });
 
-    labeledObject.classes = ['blib', 'blub', 'blib'];
+    labeledObject.setClasses(['blib', 'blub', 'blib']);
 
     expect(labeledObject.classes).toEqual(['blib', 'blub']);
   });

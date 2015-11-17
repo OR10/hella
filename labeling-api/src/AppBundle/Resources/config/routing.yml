@@ -42,3 +42,7 @@ api_test:
     type: rest
     name_prefix: app_api_test_
 
+api_task_labeled_thing:
+    resource: "annostation.labeling_api.controller.api.task.labeled_thing"
+    type: rest
+    name_prefix: app_api_task_labeled_thing_
