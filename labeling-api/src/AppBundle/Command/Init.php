@@ -76,6 +76,10 @@ class Init extends Base
             return 1;
         }
 
+        if (!$this->setupRabbitmq($output)) {
+            return 1;
+        }
+
         if (!$this->createUser($output)) {
             return 1;
         }
@@ -200,6 +204,13 @@ class Init extends Base
         }
 
         return true;
+    }
+
+    private function setupRabbitmq(OutputInterface $output)
+    {
+        $this->writeSection($output, 'Setup queues');
+
+        return $this->runCommand($output, 'annostation:rabbitmq:setup');
     }
 
     private function clearDirectory($directory)
