@@ -13,6 +13,7 @@ import ViewerModule from './Viewer/Viewer';
 import VideoModule from './Video/Video';
 import LabelingDataModule from './LabelingData/LabelingData';
 import LabelStructureModule from './LabelStructure/LabelStructure';
+import FilmReelModule from './FilmReel/FilmReel';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -54,6 +55,7 @@ export default class Application {
     this.modules.push(new VideoModule());
     this.modules.push(new LabelingDataModule());
     this.modules.push(new LabelStructureModule());
+    this.modules.push(new FilmReelModule());
   }
 
   buildApplicationConfig() {
