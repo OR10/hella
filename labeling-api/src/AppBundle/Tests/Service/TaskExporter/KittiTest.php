@@ -241,7 +241,8 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade->save($labeledThing);
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $labeledThingInFrame->setId(reset($this->documentManager->getCouchDBClient()->getUuids()));
+        $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
+        $labeledThingInFrame->setId(reset($uuids));
         $labeledThingInFrame->setFrameNumber($frameNumber);
         $labeledThingInFrame->setClasses([(string) $type]);
         $labeledThingInFrame->setShapes($shapes);

@@ -87,7 +87,8 @@ class LabeledThingInFrame extends Controller\Base
         }
 
         if ($documentId === null) {
-            $documentId = reset($this->documentManager->getCouchDBClient()->getUuids());
+            $uuids      = $this->documentManager->getCouchDBClient()->getUuids();
+            $documentId = reset($uuids);
         }
 
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
