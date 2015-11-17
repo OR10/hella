@@ -64,8 +64,6 @@ describe('Rectangle drawing', () => {
       .click()
       .perform();
 
-    browser.pause();
-
     viewerDataExporter.exportData()
       .then((data) => {
         expect(data).toEqualViewerStage(movedRectangleViewerData);
