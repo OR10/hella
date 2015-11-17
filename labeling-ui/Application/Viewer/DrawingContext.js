@@ -5,35 +5,27 @@ import paper from 'paper';
  *
  * Classes using a DrawingContext can use its DrawingContext#withScope method to execute
  * code within the PaperJs scope associated with the context.
- *
- * @class DrawingContext
  */
-export default class DrawingContext {
-  constructor(activeScope) {
-    /**
-     * A reference to the currently active scope
-     *
-     * @type {paper.PaperScope}
-     * @private
-     */
-    this._activeScope = activeScope;
-
+class DrawingContext {
+  /**
+   * @param {DrawingContextService} drawingContextService
+   */
+  constructor(drawingContextService) {
     /**
      * The scope associated with this context
      *
      * @type {paper.PaperScope}
+     */
+    this.scope = new paper.PaperScope();
+
+
+    /**
+     * Reference to the {@link DrawingContextService} this `DrawingContext` has been created at.
+     *
+     * @type {DrawingContextService}
      * @private
      */
-    this._scope = new paper.PaperScope();
-  }
-
-  /**
-   * @param scope
-   * @private
-   */
-  _activateScope(scope) {
-    this._activeScope = scope;
-    scope.activate();
+    this._service = drawingContextService;
   }
 
   /**
@@ -42,21 +34,19 @@ export default class DrawingContext {
    * @param {HTMLCanvasElement} element
    */
   setup(element) {
-    this._scope.setup(element);
+    this.scope.setup(element);
   }
 
   /**
-   * Execute the given operation within the scope of this drawing context
+   * Execute operations with the `paper.Scope` of this `DrawingContext` active
    *
-   * The scope will be passed to the given function
+   * The provided function will be executed synchronously with the correct `paper.Scope` provided
    *
    * @param {Function} operation
    */
   withScope(operation) {
-    const oldScope = this._activeScope;
-
-    this._activateScope(this._scope);
-    operation(this._scope);
-    this._activateScope(oldScope);
+    this._service.withDrawingContext(this, operation);
   }
 }
+
+export default DrawingContext;
