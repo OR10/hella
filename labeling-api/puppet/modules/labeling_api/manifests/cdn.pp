@@ -3,8 +3,8 @@ class labeling_api::cdn(
   $vhost_dir = $labeling_api::params::frame_cdn_dir,
   $vhost_name = '_',
   $vhost_port = $labeling_api::params::frame_cdn_port,
-  $allowed_origin = undef,
-  $expires = '30d',
+  $allowed_origin = $labeling_api::params::frame_cdn_allowed_origin,
+  $expires = $labeling_api::params::frame_cdn_expires,
 ) {
   if $configure_nginx {
     include ::nginx

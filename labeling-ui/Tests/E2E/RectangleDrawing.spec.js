@@ -16,7 +16,7 @@ const compoundEditViewerData = require('../Fixtures/ViewerData/RectangleDrawing/
 
 const viewerDataExporter = new ViewerDataExporter(browser);
 
-describe('Rectangle drawing', () => {
+xdescribe('Rectangle drawing', () => {
   beforeEach(() => {
     mock([taskDataMock, frameLocationsMock, labeledThingsMock, labeledFrameMock, movedRectangleMock, resizedRectangleMock, resizedAndMovedRectangleMock]);
   });
