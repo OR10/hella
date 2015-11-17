@@ -68,6 +68,10 @@ class Init extends Base
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->clearDirectories($output)) {
+            return 1;
+        }
+
         if (!$this->initializeDatabase($output, $input->getOption('drop-database'))) {
             return 1;
         }
@@ -81,10 +85,6 @@ class Init extends Base
         }
 
         if (!$this->createUser($output)) {
-            return 1;
-        }
-
-        if (!$this->clearDirectories($output)) {
             return 1;
         }
 
