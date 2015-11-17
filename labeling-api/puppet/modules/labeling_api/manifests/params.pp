@@ -42,15 +42,17 @@ class labeling_api::params(
 
   $create_parameter_files = false,
 ) {
-  file { "${config_dir}/parameters.yml":
-    ensure  => file,
-    content => template('labeling_api/parameters.yml.erb'),
-  }
-
-  if $prepare_test_environment {
-    file { "${config_dir}/parameters_test.yml":
+  if $create_parameter_files {
+    file { "${config_dir}/parameters.yml":
       ensure  => file,
-      content => template('labeling_api/parameters_test.yml.erb'),
+      content => template('labeling_api/parameters.yml.erb'),
+    }
+
+    if $prepare_test_environment {
+      file { "${config_dir}/parameters_test.yml":
+        ensure  => file,
+        content => template('labeling_api/parameters_test.yml.erb'),
+      }
     }
   }
 }
