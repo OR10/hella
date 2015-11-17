@@ -25,5 +25,6 @@ class labeling_api::common(
 
   file { $frameCdnDirectory:
     ensure => 'directory',
+    mode   => "777",
   }
 }
