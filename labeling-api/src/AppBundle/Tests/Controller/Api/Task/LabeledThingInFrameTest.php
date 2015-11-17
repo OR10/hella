@@ -62,6 +62,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             $labeledThingInFrame->getFrameNumber(),
             json_encode(
                 array(
+                    'labeledThingId' => '11aa239108f1419967ed8d6a1f5a765t',
                     'classes' => array('class1' => 'test'),
                     'shapes'  => array('shape1' => 'test'),
                 )
@@ -82,6 +83,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             $labeledThingInFrame->getFrameNumber(),
             json_encode(
                 array(
+                    'labeledThingId' => '11aa239108f1419967ed8d6a1f5a765t',
                     'classes' => 'invalid_class_string',
                     'shapes'  => 'invalid_shapes_string',
                 )
@@ -175,6 +177,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     private function createLabeledInFrameDocument(Model\LabelingTask $labelingTask)
     {
         $labeledThing = new Model\LabeledThing($labelingTask);
+        $labeledThing->setId('11aa239108f1419967ed8d6a1f5a765t');
         $this->labelingThingFacade->save($labeledThing);
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
         $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765c');

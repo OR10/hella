@@ -77,12 +77,14 @@ class LabeledThingInFrame extends Controller\Base
             return $response;
         }
 
-        $shapes     = $request->request->get('shapes', []);
-        $classes    = $request->request->get('classes', []);
-        $incomplete = $request->request->get('incomplete', true);
-        $documentId = $request->request->get('id');
+        $shapes         = $request->request->get('shapes', []);
+        $classes        = $request->request->get('classes', []);
+        $incomplete     = $request->request->get('incomplete', true);
+        $documentId     = $request->request->get('id');
+        $labeledThingId = $request->request->get('labeledThingId');
+        $labeledThing   = $this->labeledThingFacade->find($labeledThingId);
 
-        if (!is_array($shapes) || !is_array([$classes])) {
+        if (!is_array($shapes) || !is_array([$classes]) || $labeledThing === null) {
             throw new Exception\BadRequestHttpException();
         }
 
@@ -93,6 +95,7 @@ class LabeledThingInFrame extends Controller\Base
 
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
             $task,
+            $labeledThing,
             $documentId,
             $frameNumber,
             $shapes,
@@ -157,15 +160,13 @@ class LabeledThingInFrame extends Controller\Base
      */
     private function addLabeledThingAndLabeledThingInFrame(
         Model\LabelingTask $task,
+        Model\LabeledThing $labeledThing,
         $id,
         $frameNumber,
         $shapes,
         $classes,
         $incomplete
     ) {
-        $labeledThing = new Model\LabeledThing($task);
-        $this->labeledThingFacade->save($labeledThing);
-
         $thingInFrame = new Model\LabeledThingInFrame($labeledThing);
 
         $thingInFrame->setId($id);
