@@ -19,7 +19,7 @@ echo '/usr/bin/screen -dmS jenkins /usr/bin/java -Xmx1024m -XX:MaxPermSize=256M 
 chmod +x jenkinsSwarmSlaveScreen.sh
 sudo mv jenkinsSwarmSlaveScreen.sh /usr/local/bin/jenkinsSwarmSlaveScreen.sh
 
-echo '@reboot sleep 10 && /usr/local/bin/jenkinsSwarmSlaveScreen.sh' | crontab -u ubuntu -
+echo '@reboot sleep 30 && /usr/local/bin/jenkinsSwarmSlaveScreen.sh' | crontab -u ubuntu -
 
 
 sleep 3
