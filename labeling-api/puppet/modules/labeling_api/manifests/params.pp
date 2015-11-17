@@ -38,6 +38,8 @@ class labeling_api::params(
   $frame_cdn_dir,
   $frame_cdn_base_url,
   $frame_cdn_port = 80,
+  $frame_cdn_allowed_origin = undef,
+  $frame_cdn_expires = '30d',
 
   $user_password,
 
