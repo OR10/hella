@@ -108,14 +108,14 @@ class ViewerControlsController {
   handleNewLabeledThingClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'rectangle';
+        this.activeTool = 'rectangle';
       });
   }
 
   handleNewEllipseClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'ellipse';
+        this.activeTool = 'ellipse';
       });
   }
 
@@ -123,21 +123,21 @@ class ViewerControlsController {
   handleNewCircleClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'circle';
+        this.activeTool = 'circle';
       });
   }
 
   handleNewPathClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'path';
+        this.activeTool = 'path';
       });
   }
 
   handleNewLineClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'line';
+        this.activeTool = 'line';
       });
   }
 
@@ -145,14 +145,14 @@ class ViewerControlsController {
   handleNewPolygonClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'polygon';
+        this.activeTool = 'polygon';
       });
   }
 
   handleNewPointClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
-        this.selectedDrawingTool = 'point';
+        this.activeTool = 'point';
       });
   }
 

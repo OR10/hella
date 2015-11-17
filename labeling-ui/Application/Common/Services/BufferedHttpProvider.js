@@ -211,7 +211,7 @@ class BufferedHttpProvider {
        * @returns {Promise}
        */
       bufferedHttp[method] = (url, config = {}) => {
-        const processedConfig = Object.assign({}, config, {method, url});
+        const processedConfig = Object.assign({}, config, {url, method: method.toUpperCase()});
         return bufferedHttp(processedConfig);
       };
     });
@@ -240,7 +240,7 @@ class BufferedHttpProvider {
        * @returns {Promise}
        */
       bufferedHttp[method] = (url, data, config = {}) => {
-        const processedConfig = Object.assign({}, config, {method, url, data});
+        const processedConfig = Object.assign({}, config, {url, data, method: method.toUpperCase()});
         return bufferedHttp(processedConfig);
       };
     });

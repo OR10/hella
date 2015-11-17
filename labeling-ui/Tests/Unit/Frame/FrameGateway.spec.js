@@ -8,6 +8,7 @@ describe('FrameGateway', () => {
   let gateway;
   let createImageMock;
   let frameLocation;
+  let $rootScope;
 
   beforeEach(angularMocks.inject($injector => {
     frameLocation = {id: 'abc', type: 'source', frameNumber: 23, url: 'http://example.com/frame/23.png'};
@@ -15,7 +16,9 @@ describe('FrameGateway', () => {
     createImageMock = (error = false) => {
       const OriginalImage = Image;
       const retVal = {
-        restore() {window.Image = OriginalImage;},
+        restore() {
+          window.Image = OriginalImage;
+        },
         instance: null,
       };
 
@@ -32,7 +35,9 @@ describe('FrameGateway', () => {
           retVal.instance = this;
         }
 
-        set src(value) {this.__srcSpy(value);}
+        set src(value) {
+          this.__srcSpy(value);
+        }
       }
 
       window.Image = ImageMockImpl;
@@ -40,6 +45,7 @@ describe('FrameGateway', () => {
     };
 
     gateway = $injector.instantiate(FrameGateway);
+    $rootScope = $injector.get('$rootScope');
   }));
 
   it('should be able to instantiate without non injected arguments', () => {
@@ -54,6 +60,9 @@ describe('FrameGateway', () => {
         expect(image.__srcSpy).toHaveBeenCalledWith(frameLocation.url);
         done();
       });
+
+    $rootScope.$digest();
+
     mock.restore();
   });
 
@@ -64,6 +73,9 @@ describe('FrameGateway', () => {
         expect(error).toEqual('error!!1elf!!');
         done();
       });
+
+    $rootScope.$digest();
+
     mock.restore();
   });
 });

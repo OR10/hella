@@ -25,6 +25,8 @@ export default class ViewerDataExporter {
    * @private
    */
   _getViewerImageData() {
+    this._browser.waitForAngular();
+
     return this._browser.executeScript(() => {
       const layerManager = document.getElementsByTagName('viewer-stage')[0].__endToEndTestOnlyLayerManager__;
 

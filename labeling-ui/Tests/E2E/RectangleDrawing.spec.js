@@ -4,6 +4,7 @@ import ViewerDataExporter from '../Support/ViewerDataExporter';
 const taskDataMock = require('../ProtractorMocks/Task/Data.json');
 const frameLocationsMock = require('../ProtractorMocks/Task/FrameLocations.json');
 const labeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectangles.json');
+const labeledFrameMock = require('../ProtractorMocks/Task/LabeledFrame.json');
 const movedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/MovedRectangle.json');
 const resizedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedRectangle.json');
 const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedAndMovedRectangle.json');
@@ -15,9 +16,9 @@ const compoundEditViewerData = require('../Fixtures/ViewerData/RectangleDrawing/
 
 const viewerDataExporter = new ViewerDataExporter(browser);
 
-xdescribe('Rectangle drawing', () => {
+describe('Rectangle drawing', () => {
   beforeEach(() => {
-    mock([taskDataMock, frameLocationsMock, labeledThingsMock, movedRectangleMock, resizedRectangleMock, resizedAndMovedRectangleMock]);
+    mock([taskDataMock, frameLocationsMock, labeledThingsMock, labeledFrameMock, movedRectangleMock, resizedRectangleMock, resizedAndMovedRectangleMock]);
   });
 
   it('should draw the background and initial shapes as provided by the backend', (done) => {
@@ -34,6 +35,10 @@ xdescribe('Rectangle drawing', () => {
       },
       {
         url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
+        method: 'GET',
+      },
+      {
+        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
         method: 'GET',
       },
     ]);
@@ -77,6 +82,10 @@ xdescribe('Rectangle drawing', () => {
             method: 'GET',
           },
           {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
+            method: 'GET',
+          },
+          {
             data: {
               classes: [],
               id: '0115bd97fa0c1d86f8d1f65ff409f0b8',
@@ -100,8 +109,10 @@ xdescribe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
+  xit('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
+
+    browser.waitForAngular();
 
     const viewer = element(by.css('.layer-container'));
 
@@ -114,7 +125,7 @@ xdescribe('Rectangle drawing', () => {
       .click()
       .perform();
 
-    viewerDataExporter.exportData()
+    viewerDataExporter.exportData(true, 'bar')
       .then((data) => {
         expect(data).toEqualViewerStage(resizedRectangleViewerData);
 
@@ -129,6 +140,10 @@ xdescribe('Rectangle drawing', () => {
           },
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
+            method: 'GET',
+          },
+          {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
             method: 'GET',
           },
           {
@@ -155,10 +170,12 @@ xdescribe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly apply a compound transformation a rectangle on canvas and update the changed coordinates', (done) => {
+  xit('should correctly apply a compound transformation a rectangle on canvas and update the changed coordinates', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
     const viewer = element(by.css('.layer-container'));
+
+    browser.waitForAngular();
 
     // Resize
     browser.actions()
@@ -198,6 +215,10 @@ xdescribe('Rectangle drawing', () => {
           },
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
+            method: 'GET',
+          },
+          {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
             method: 'GET',
           },
           {

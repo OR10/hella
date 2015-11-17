@@ -114,8 +114,8 @@ class TaskController {
     $scope.$watch('vm.selectedLabeledThingInFrameCompletelyLabeled', newState => {
       if (newState === true && this.selectedLabeledThingInFrame.shapes.length === 0) {
         if (this.selectedDrawingTool !== null) {
-          this.activeTool = this.selectedDrawingTool;
-          this.selectedDrawingTool = null;
+          //this.activeTool = this.selectedDrawingTool;
+          //this.selectedDrawingTool = null;
         }
       }
     });

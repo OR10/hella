@@ -176,12 +176,9 @@ class ViewerStageController {
     this._$scope.$apply(() => {
       this.selectedLabeledThingInFrame.shapes.push(shape);
       this.activeTool = null;
-    });
 
-    // @TODO: Currently we don't really know if it really complete. The current workflow simply implies, that it needs
-    //        to be complete at this point. Maybe we need different flags for incomplete_labels and incomplete_shapes?
-    this.selectedLabeledThingInFrame.incomplete = false;
-    this._labeledThingInFrameGateway.updateLabeledThingInFrame(this.selectedLabeledThingInFrame);
+      this._labeledThingInFrameGateway.updateLabeledThingInFrame(this.selectedLabeledThingInFrame);
+    });
   }
 }
 
