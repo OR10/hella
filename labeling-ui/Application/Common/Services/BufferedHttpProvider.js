@@ -196,7 +196,7 @@ class BufferedHttpProvider {
 
           $http(options)
             .then(result => {
-              if (result.data && this._autoExtractInject) {
+              if (result && result.data && this._autoExtractInject) {
                 _extractRevision(result.data);
               }
               resolve(result);
