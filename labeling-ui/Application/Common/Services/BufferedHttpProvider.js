@@ -62,10 +62,11 @@ class BufferedHttpProvider {
    * @param {angular.$q} $q
    * @param {angular.$http} $http
    * @param {RevisionManager} revisionManager
+   * @param {AbortablePromiseFactory} abortable
    */
-  $get($q, $http, revisionManager) {
+  $get($q, $http, revisionManager, abortable) {
     if (this._bufferedHttp === null) {
-      this._bufferedHttp = this.createBufferedHttp($q, $http, revisionManager);
+      this._bufferedHttp = this.createBufferedHttp($q, $http, revisionManager, abortable);
     }
 
     return this._bufferedHttp;
@@ -77,8 +78,9 @@ class BufferedHttpProvider {
    * @param {angular.$q} $q
    * @param {angular.$http} $http
    * @param {RevisionManager} revisionManager
+   * @param {AbortablePromiseFactory} abortable
    */
-  createBufferedHttp($q, $http, revisionManager) {
+  createBufferedHttp($q, $http, revisionManager, abortable) {
     /**
      * Mapping between buffer names and their corresponding Buffer Promise
      *
@@ -154,6 +156,16 @@ class BufferedHttpProvider {
       });
     }
 
+    function _createTimeoutDeferred(oldTimeoutPromise = null) {
+      const deferred = $q.defer();
+
+      if (oldTimeoutPromise) {
+        oldTimeoutPromise.then(() => deferred.resolve());
+      }
+
+      return deferred;
+    }
+
     /**
      * Fire a new bufferedHttp request using the given `options`
      *
@@ -161,11 +173,21 @@ class BufferedHttpProvider {
      *
      * If no `bufferName` name is given `default` is used.
      * @name BufferedHttp
+     * @extends Function
      * @param {Object} options
      * @param {string} bufferName
+     * @return {AbortablePromise}
      */
     const bufferedHttp = function BufferedHttp(options, bufferName = 'default') { // eslint-disable-line no-extra-bind
-      return $q((resolve, reject) => {
+      let timeoutDeferred;
+      if (options.timeout) {
+        timeoutDeferred = _createTimeoutDeferred(options.timeout);
+      } else {
+        timeoutDeferred = _createTimeoutDeferred();
+      }
+      options.timeout = timeoutDeferred.promise;
+
+      return abortable($q((resolve, reject) => {
         const buffer = _getBuffer(bufferName);
         buffer.promise = buffer.promise.then(() => {
           if (options.data && this._autoExtractInject) {
@@ -181,7 +203,7 @@ class BufferedHttpProvider {
             })
             .catch(reject);
         });
-      });
+      }), timeoutDeferred);
     }.bind(this);
 
     // Create $http like shortcuts (without body)
@@ -190,29 +212,33 @@ class BufferedHttpProvider {
        * @name BufferedHttp#get
        * @param {string} url
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
       /**
        * @name BufferedHttp#head
        * @param {string} url
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
       /**
        * @name BufferedHttp#delete
        * @param {string} url
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
       /**
        * @name BufferedHttp#jsonp
        * @param {string} url
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
-      bufferedHttp[method] = (url, config = {}) => {
+      bufferedHttp[method] = (url, config = {}, bufferName = 'default') => {
         const processedConfig = Object.assign({}, config, {url, method: method.toUpperCase()});
-        return bufferedHttp(processedConfig);
+        return bufferedHttp(processedConfig, bufferName);
       };
     });
 
@@ -223,25 +249,28 @@ class BufferedHttpProvider {
        * @param {string} url
        * @param {Object} data
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
       /**
        * @name BufferedHttp#put
        * @param {string} url
        * @param {Object} data
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
       /**
        * @name BufferedHttp#patch
        * @param {string} url
        * @param {Object} data
        * @param {Object?} config
-       * @returns {Promise}
+       * @param {string?} bufferName
+       * @returns {AbortablePromise}
        */
-      bufferedHttp[method] = (url, data, config = {}) => {
+      bufferedHttp[method] = (url, data, config = {}, bufferName = 'default') => {
         const processedConfig = Object.assign({}, config, {url, data, method: method.toUpperCase()});
-        return bufferedHttp(processedConfig);
+        return bufferedHttp(processedConfig, bufferName);
       };
     });
 
@@ -267,6 +296,7 @@ BufferedHttpProvider.prototype.$get.$inject = [
   '$q',
   '$http',
   'revisionManager',
+  'abortablePromiseFactory',
 ];
 
 export default BufferedHttpProvider;
