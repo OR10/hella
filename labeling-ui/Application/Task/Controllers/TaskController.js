@@ -5,6 +5,7 @@ import labeledThingStructure from 'Application/LabelStructure/Structure/object-l
 import labeledThingAnnotation from 'Application/LabelStructure/Structure/object-label-structure-ui-annotation.json!';
 
 import FramePosition from '../Model/FramePosition';
+import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 
 class TaskController {
   /**
@@ -100,9 +101,19 @@ class TaskController {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
+     * @type {AbortablePromiseRingBuffer}
+     */
+    this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
+
+    /**
      * @type {LabeledFrameGateway}
      */
     this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
+     * @type {AbortablePromiseRingBuffer}
+     */
+    this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     // Watch for changes of the Frame position to correctly update all
     // data structures for the new frame
@@ -117,7 +128,7 @@ class TaskController {
    * The frameNumber is 1-Indexed
    *
    * @param {int} frameNumber
-   * @returns {Promise<LabeledThingInFrame[]>}
+   * @returns {AbortablePromise<LabeledThingInFrame[]>}
    * @private
    */
   _loadLabeledThingsInFrame(frameNumber) {
@@ -127,7 +138,7 @@ class TaskController {
   /**
    * Load the {@link LabeledFrame} structure for the given frame
    * @param frameNumber
-   * @returns {Promise<LabeledFrame>}
+   * @returns {AbortablePromise<LabeledFrame>}
    * @private
    */
   _loadLabeledFrame(frameNumber) {
@@ -148,8 +159,8 @@ class TaskController {
     this.labeledFrame = null;
 
     this._$q.all([
-      this._loadLabeledThingsInFrame(frameNumber),
-      this._loadLabeledFrame(frameNumber),
+      this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber)),
+      this._labeledFrameBuffer.add(this._loadLabeledFrame(frameNumber)),
     ]).then(([labeledThingsInFrame, labeledFrame]) => {
       this.labeledThingsInFrame = {};
 
