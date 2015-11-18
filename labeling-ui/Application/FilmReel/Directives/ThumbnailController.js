@@ -11,9 +11,8 @@ class ThumbnailController {
    * @param {window} $window
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
-   * @param {AbortablePromiseFactory} abortable
    */
-  constructor($scope, $element, $window, drawingContextService, frameGateway, abortable) {
+  constructor($scope, $element, $window, drawingContextService, frameGateway) {
     /**
      * @type {DrawingContext}
      * @private
@@ -76,7 +75,7 @@ class ThumbnailController {
       }
 
       this._ringbuffer.add(
-        abortable(this._frameGateway.getImage(newLocation))
+        this._frameGateway.getImage(newLocation)
       ).then(image => {
         this._activeImage = image;
         this._drawImage();
@@ -119,7 +118,6 @@ ThumbnailController.$inject = [
   '$window',
   'drawingContextService',
   'frameGateway',
-  'abortablePromiseFactory',
 ];
 
 export default ThumbnailController;

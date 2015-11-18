@@ -10,9 +10,8 @@ class ThumbnailReelController {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
-   * @param {AbortablePromiseFactory} abortable
    */
-  constructor($scope, taskFrameLocationGateway, abortable) {
+  constructor($scope, taskFrameLocationGateway) {
     /**
      * {@link FrameLocation}s of the thumbnails, which are currently rendered
      * @type {Array.<FrameLocation>}
@@ -33,8 +32,9 @@ class ThumbnailReelController {
 
     $scope.$watch('vm.framePosition.position', () => {
       this._ringbuffer.add(
-        abortable(this._loadFrameLocations(this.framePosition))
-      ).then((thumbnailLocations) => this.thumbnailLocations = thumbnailLocations);
+        this._loadFrameLocations(this.framePosition)
+      )
+      .then((thumbnailLocations) => this.thumbnailLocations = thumbnailLocations);
     });
   }
 
@@ -43,27 +43,26 @@ class ThumbnailReelController {
    * the current {@link FramePosition}
    *
    * @param {FramePosition} framePosition
-   * @returns {Promise<Array<FrameLocation|null>>}
+   * @returns {AbortablePromise<Array<FrameLocation|null>>}
    * @private
    */
   _loadFrameLocations(framePosition) {
     const offset = Math.max(1, framePosition.position - 3);
     const limit = Math.min(framePosition.endFrameNumber, framePosition.position + 3) - offset + 1;
     return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', offset, limit)
-    .then(locations => {
-      const thumbnailLocations = new Array(7).fill(null);
-      const startIndex = offset - framePosition.position + 3;
-      locations.forEach((location, index) => thumbnailLocations[startIndex + index] = location);
+      .then(locations => {
+        const thumbnailLocations = new Array(7).fill(null);
+        const startIndex = offset - framePosition.position + 3;
+        locations.forEach((location, index) => thumbnailLocations[startIndex + index] = location);
 
-      return thumbnailLocations;
-    });
+        return thumbnailLocations;
+      });
   }
 }
 
 ThumbnailReelController.$inject = [
   '$scope',
   'taskFrameLocationGateway',
-  'abortablePromiseFactory',
 ];
 
 export default ThumbnailReelController;
