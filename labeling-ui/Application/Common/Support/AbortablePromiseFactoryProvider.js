@@ -8,22 +8,34 @@ class AbortablePromiseFactoryProvider {
   $get($q) {
     /**
      * Wrap given promise in a way, that its result can be ignored/aborted
+     *
+     * If an `abortDeferred` is given it will be resolved in case the promise is aborted
+     *
      * @param {Promise} promise
+     * @param {Deferred?} abortDeferred
      * @name AbortablePromiseFactory
+     * @return {AbortablePromise}
      */
-    return function abortable(inputPromise) {
+    return function abortable(inputPromise, abortDeferred = $q.defer()) {
       const deferred = $q.defer();
       const promise = deferred.promise;
-      deferred.__aborted__ = false;
-      promise.abort = () => deferred.__aborted__ = true;
+      let hasBeenAborted = false;
+
+      promise.abort = () => {
+        hasBeenAborted = true;
+        if (typeof inputPromise.abort === 'function') {
+          inputPromise.abort();
+        }
+        abortDeferred.resolve();
+      };
 
       inputPromise.then(result => {
-        if (!deferred.__aborted__) {
+        if (!hasBeenAborted) {
           deferred.resolve(result);
         }
       })
       .catch(error => {
-        if (!deferred.__aborted__) {
+        if (!hasBeenAborted) {
           deferred.reject(error);
         }
       });
@@ -38,3 +50,14 @@ AbortablePromiseFactoryProvider.prototype.$get.$inject = [
 ];
 
 export default AbortablePromiseFactoryProvider;
+
+/**
+ * @name AbortablePromise
+ * @extends Promise
+ */
+
+/**
+ * Abort the Promise
+ *
+ * @name AbortablePromise#abort
+ */
