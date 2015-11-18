@@ -42,6 +42,13 @@ resource "openstack_compute_instance_v2" "app-server" {
       }
   }
 
+  provisioner "local-exec" {
+      command = "cd ../../labeling-api/ && CAP_DEPLOY_IP=${openstack_compute_instance_v2.app-server.access_ip_v4} time cap single-staging-machine deploy"
+  }
+
+  provisioner "local-exec" {
+      command = "cd ../../labeling-ui/ && ./deploy.sh ${openstack_compute_instance_v2.app-server.access_ip_v4}"
+  }
 
 }
 
