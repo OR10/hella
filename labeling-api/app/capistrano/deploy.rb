@@ -56,11 +56,12 @@ task :symlink_symfony_configuration do
   on roles(:app) do
     execute "cd '#{release_path}'; mkdir -p app/cache/prod"
     execute "cd '#{release_path}'; mkdir -p app/logs"
-    execute "cd '#{release_path}'; ln -s /etc/AnnoStation/labeling-api/parameters.yml app/config/parameters.yml"
+    execute "cd '#{release_path}'; ln -snf /etc/AnnoStation/labeling-api/parameters.yml app/config/parameters.yml"
     execute "cd '#{release_path}'; sudo chown -R www-data app/cache/"
     execute "cd '#{release_path}'; sudo chown -R www-data app/logs/"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod cache:clear"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod annostation:rabbitmq:setup"
+    execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod doctrine:couchdb:update-design-doc"
   end
 end
 

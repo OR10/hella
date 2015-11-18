@@ -115,7 +115,6 @@ class LabeledThingInFrame extends Controller\Base
      * @param $frameNumber
      *
      * @return \FOS\RestBundle\View\View
-     * @internal param HttpFoundation\Request $request
      *
      */
     public function getLabeledThingInFrameAction($taskId, $frameNumber)
@@ -145,6 +144,76 @@ class LabeledThingInFrame extends Controller\Base
         );
 
         $response->setData(['result' => array_values($labeledThingsInFrames)]);
+
+        return $response;
+    }
+
+
+    /**
+     *
+     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThingId}")
+     * @param                        $taskId
+     * @param                        $frameNumber
+     * @param                        $labeledThingId
+     * @param HttpFoundation\Request $request
+     * 
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getLabeledThingInFrameWithinFrameNumberAction($taskId, $frameNumber, $labeledThingId, HttpFoundation\Request $request)
+    {
+        $response = View\View::create();
+
+        $labeledThing = $this->labeledThingFacade->find($labeledThingId);
+
+        $offset = $request->query->get('offset', null);
+        $limit  = $request->query->get('limit', null);
+
+        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray();
+        $expectedFrameNumbers = range($frameNumber + $offset, ($frameNumber + $offset) + $limit);
+
+        $result = array_map(function ($expectedFrameNumber) use ($labeledThingInFrames) {
+            reset($labeledThingInFrames);
+            while ($item = current($labeledThingInFrames)) {
+                $currentItem = current($labeledThingInFrames);
+                $prevItem    = prev($labeledThingInFrames);
+                if (!$prevItem) {
+                    $prevItem = $currentItem;
+                    reset($labeledThingInFrames);
+                } else {
+                    next($labeledThingInFrames);
+                }
+
+                $nextItem = next($labeledThingInFrames);
+                if (!$nextItem) {
+                    end($labeledThingInFrames);
+                } else {
+                    prev($labeledThingInFrames);
+                }
+
+                if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
+                    return $currentItem;
+                } elseif ($expectedFrameNumber < $currentItem->getFrameNumber()) {
+                    $ghostLabeledThingInFrame = new Model\LabeledThingInFrame();
+                    $ghostLabeledThingInFrame->setGhost(true);
+                    $ghostLabeledThingInFrame->setLabeledThingId($currentItem->getLabeledThingId());
+                    $ghostLabeledThingInFrame->setFrameNumber($expectedFrameNumber);
+                    $ghostLabeledThingInFrame->setId('');
+
+                    return $ghostLabeledThingInFrame;
+                }
+
+                next($labeledThingInFrames);
+            }
+            $ghostLabeledThingInFrame = new Model\LabeledThingInFrame();
+            $ghostLabeledThingInFrame->setGhost(true);
+            $ghostLabeledThingInFrame->setLabeledThingId(end($labeledThingInFrames)->getLabeledThingId());
+            $ghostLabeledThingInFrame->setFrameNumber($expectedFrameNumber);
+            $ghostLabeledThingInFrame->setId('');
+
+            return $ghostLabeledThingInFrame;
+        }, $expectedFrameNumbers);
+
+        $response->setData(['result' => $result]);
 
         return $response;
     }
