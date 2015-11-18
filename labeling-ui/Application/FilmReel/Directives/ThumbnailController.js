@@ -1,4 +1,5 @@
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
+import angular from 'angular';
 
 /**
  * Controller managing the display of a single ThumbnailImage
@@ -7,13 +8,12 @@ class ThumbnailController {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {jQuery} $element
+   * @param {window} $window
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
    * @param {AbortablePromiseFactory} abortable
    */
-  constructor($scope, $element, drawingContextService, frameGateway, abortable) {
-    this.width = 200;
-
+  constructor($scope, $element, $window, drawingContextService, frameGateway, abortable) {
     /**
      * @type {DrawingContext}
      * @private
@@ -36,18 +36,39 @@ class ThumbnailController {
     this._rasterImage = null;
 
     /**
+     * The currently displayed background image as `HTMLImageElement`
+     *
+     * @type {HTMLImageElement}
+     * @private
+     */
+    this._activeImage = null;
+
+    /**
      * @type {AbortablePromiseRingBuffer}
      * @private
      */
     this._ringbuffer = new AbortablePromiseRingBuffer(1);
 
-    $scope.$watch('vm.location', newLocation => {
+    /**
+     * @type {HTMLElement}
+     * @private
+     */
+    this._parentElement = $element.parent().get(0);
 
+    const onWindowResized = () => this._drawImage();
+    angular.element($window).on('resize', onWindowResized);
+    $scope.$on('$destroy', () => {
+      angular.element($window).off(onWindowResized);
+    });
+
+    // Update rendered image once the location changes
+    $scope.$watch('vm.location', newLocation => {
       if (newLocation === null) {
         if (this._rasterImage) {
           this._context.withScope(scope => {
             this._rasterImage.remove();
             this._rasterImage = null;
+            this._activeImage = null;
             scope.view.draw();
           });
         }
@@ -56,19 +77,38 @@ class ThumbnailController {
 
       this._ringbuffer.add(
         abortable(this._frameGateway.getImage(newLocation))
-      ).then(
-        image => this._context.withScope(scope => {
-          if (this._rasterImage) {
-            this._rasterImage.remove();
-          }
+      ).then(image => {
+        this._activeImage = image;
+        this._drawImage();
+      });
+    });
+  }
 
-          const zoom = this.width / image.width;
-          scope.view.viewSize = new scope.Size(this.width, image.height * zoom);
-          this._rasterImage = new scope.Raster(image, scope.view.center);
-          this._rasterImage.scaling = new scope.Point(zoom, zoom);
-          scope.view.draw();
-        })
+  /**
+   * Draw the currently active Image
+   * @private
+   */
+  _drawImage() {
+    const image = this._activeImage;
+    const parentElement = this._parentElement;
+
+    if (image === null) {
+      return;
+    }
+
+    this._context.withScope(scope => {
+      if (this._rasterImage) {
+        this._rasterImage.remove();
+      }
+
+      scope.view.viewSize = new scope.Size(
+        parentElement.clientWidth, scope.view.viewSize.height
       );
+
+      const zoom = scope.view.viewSize.width / image.width;
+      this._rasterImage = new scope.Raster(image, scope.view.center);
+      this._rasterImage.scaling = new scope.Point(zoom, zoom);
+      scope.view.draw();
     });
   }
 }
@@ -76,6 +116,7 @@ class ThumbnailController {
 ThumbnailController.$inject = [
   '$scope',
   '$element',
+  '$window',
   'drawingContextService',
   'frameGateway',
   'abortablePromiseFactory',
