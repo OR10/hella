@@ -1,4 +1,7 @@
-class AbortablePromiseProvider {
+/**
+ * Provider for a {@link AbortablePromiseFactory}
+ */
+class AbortablePromiseFactoryProvider {
   /**
    * @return {Function}
    */
@@ -6,6 +9,7 @@ class AbortablePromiseProvider {
     /**
      * Wrap given promise in a way, that its result can be ignored/aborted
      * @param {Promise} promise
+     * @name AbortablePromiseFactory
      */
     return function abortable(inputPromise) {
       const deferred = $q.defer();
@@ -25,12 +29,12 @@ class AbortablePromiseProvider {
       });
 
       return promise;
-    }.bind(this);
+    };
   }
 }
 
-AbortablePromiseProvider.prototype.$get.$inject = [
+AbortablePromiseFactoryProvider.prototype.$get.$inject = [
   '$q',
 ];
 
-export default AbortablePromiseProvider;
+export default AbortablePromiseFactoryProvider;

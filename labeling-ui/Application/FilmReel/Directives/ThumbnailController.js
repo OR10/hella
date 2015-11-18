@@ -71,7 +71,7 @@ ThumbnailController.$inject = [
   '$element',
   'drawingContextService',
   'frameGateway',
-  'abortablePromise',
+  'abortablePromiseFactory',
 ];
 
 export default ThumbnailController;

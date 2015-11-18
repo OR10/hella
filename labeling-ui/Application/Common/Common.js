@@ -4,7 +4,7 @@ import AuthInterceptor from './Services/AuthInterceptor';
 import RevisionManager from './Services/RevisionManager';
 import BufferedHttpProvider from './Services/BufferedHttpProvider';
 import EntityIdService from './Services/EntityIdService';
-import AbortablePromiseProvider from './Support/AbortablePromiseProvider';
+import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryProvider';
 
 /**
  * Common Module
@@ -24,7 +24,7 @@ class Common extends Module {
     this.module.service('revisionManager', RevisionManager);
     this.module.service('entityIdService', EntityIdService);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
-    this.module.provider('abortablePromise', AbortablePromiseProvider);
+    this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
 
     this.module.config(['$httpProvider', ($httpProvider) => {
       $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

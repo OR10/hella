@@ -63,7 +63,7 @@ class ThumbnailReelController {
 ThumbnailReelController.$inject = [
   '$scope',
   'taskFrameLocationGateway',
-  'abortablePromise',
+  'abortablePromiseFactory',
 ];
 
 export default ThumbnailReelController;
