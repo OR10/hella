@@ -9,6 +9,7 @@ class FilmReelDirective {
     this.scope = {
       framePosition: '=',
       task: '=',
+      filters: '=',
     };
 
     this.template = FilmReelTemplate;

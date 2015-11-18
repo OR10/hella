@@ -3,6 +3,8 @@ import angular from 'angular';
 
 /**
  * Controller managing the display of a single ThumbnailImage
+ * @property {FrameLocation} location
+ * @property {Filters} filters
  */
 class ThumbnailController {
   /**
@@ -81,6 +83,30 @@ class ThumbnailController {
         this._drawImage();
       });
     });
+
+    // Update filters upon change
+    $scope.$watchCollection('vm.filters.filters', () => this._drawImage());
+  }
+
+
+  /**
+   * Apply all given filters to a given RasterImage
+   *
+   * @param {paper.Raster} rasterImage
+   * @param {Filters} filters
+   * @private
+   */
+  _applyFilters(rasterImage, filters) {
+    this._context.withScope((scope) => {
+      const originalImageData = rasterImage.getImageData(
+        new scope.Rectangle(0, 0, rasterImage.width, rasterImage.height)
+      );
+      const filteredImageData = filters.filters.reduce(
+        (imageData, filter) => filter.manipulate(imageData),
+        originalImageData
+      );
+      rasterImage.setImageData(filteredImageData, new scope.Point(0, 0));
+    });
   }
 
   /**
@@ -106,6 +132,7 @@ class ThumbnailController {
 
       const zoom = scope.view.viewSize.width / image.width;
       this._rasterImage = new scope.Raster(image, scope.view.center);
+      this._applyFilters(this._rasterImage, this.filters);
       this._rasterImage.scaling = new scope.Point(zoom, zoom);
       scope.view.draw();
     });

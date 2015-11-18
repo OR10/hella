@@ -10,6 +10,7 @@ class ThumbnailReelDirective {
     this.scope = {
       framePosition: '=',
       task: '=',
+      filters: '=',
     };
 
     this.template = ThumbnailReelTemplate;

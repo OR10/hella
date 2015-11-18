@@ -8,6 +8,7 @@ class ThumbnailDirective {
   constructor() {
     this.scope = {
       location: '=',
+      filters: '=',
     };
 
     this.template = ThumbnailTemplate;
