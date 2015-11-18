@@ -1,3 +1,5 @@
+import AbortablePromise from './AbortablePromise';
+
 /**
  * Provider for a {@link AbortablePromiseFactory}
  */
@@ -17,30 +19,7 @@ class AbortablePromiseFactoryProvider {
      * @return {AbortablePromise}
      */
     return function abortable(inputPromise, abortDeferred = $q.defer()) {
-      const deferred = $q.defer();
-      const promise = deferred.promise;
-      let hasBeenAborted = false;
-
-      promise.abort = () => {
-        hasBeenAborted = true;
-        if (typeof inputPromise.abort === 'function') {
-          inputPromise.abort();
-        }
-        abortDeferred.resolve();
-      };
-
-      inputPromise.then(result => {
-        if (!hasBeenAborted) {
-          deferred.resolve(result);
-        }
-      })
-      .catch(error => {
-        if (!hasBeenAborted) {
-          deferred.reject(error);
-        }
-      });
-
-      return promise;
+      return new AbortablePromise($q, inputPromise, abortDeferred);
     };
   }
 }
@@ -51,13 +30,3 @@ AbortablePromiseFactoryProvider.prototype.$get.$inject = [
 
 export default AbortablePromiseFactoryProvider;
 
-/**
- * @name AbortablePromise
- * @extends Promise
- */
-
-/**
- * Abort the Promise
- *
- * @name AbortablePromise#abort
- */

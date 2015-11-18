@@ -55,7 +55,7 @@ describe('AbortablePromiseFactory', () => {
     expect(spy).toHaveBeenCalledWith(expectedResult);
   });
 
-  it('should pass through promise error', () => {
+  it('should pass through promise error value', () => {
     const expectedResult = 'foobar';
     const spy = jasmine.createSpy();
     const deferred = $q.defer();
@@ -94,18 +94,58 @@ describe('AbortablePromiseFactory', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should bubble up aborts the promise chain', () => {
-    const spy = jasmine.createSpy();
+  it('should bubble up aborts to success the promise chain', () => {
+    const spy1 = jasmine.createSpy();
+    const spy2 = jasmine.createSpy();
+    const spy3 = jasmine.createSpy();
     const deferred = $q.defer();
     const promise = deferred.promise;
-    promise.abort = spy;
 
-    const wrapped = abortable(promise);
+    const wrapped = abortable(promise).then(spy1).then(spy2).then(spy3);
+
     wrapped.abort();
+    deferred.resolve();
 
     $rootScope.$digest();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy1).not.toHaveBeenCalled();
+    expect(spy2).not.toHaveBeenCalled();
+    expect(spy3).not.toHaveBeenCalled();
+  });
+
+  it('should bubble up aborts to error the promise chain', () => {
+    const spy1 = jasmine.createSpy();
+    const spy2 = jasmine.createSpy();
+    const deferred = $q.defer();
+    const promise = deferred.promise;
+
+    const wrapped = abortable(promise).catch(spy1).then(spy2);
+
+    wrapped.abort();
+    deferred.reject();
+
+    $rootScope.$digest();
+
+    expect(spy1).not.toHaveBeenCalled();
+    expect(spy2).not.toHaveBeenCalled();
+  });
+
+  it('should correctly pass through promise chaining', () => {
+    const spy1 = jasmine.createSpy();
+    const spy2 = jasmine.createSpy();
+    const spy3 = jasmine.createSpy();
+    const deferred = $q.defer();
+    const promise = deferred.promise;
+
+    const wrapped = abortable(promise).then(spy1).then(spy2).then(spy3);
+
+    deferred.resolve();
+
+    $rootScope.$digest();
+
+    expect(spy1).toHaveBeenCalled();
+    expect(spy2).toHaveBeenCalled();
+    expect(spy3).toHaveBeenCalled();
   });
 
   it('should abort promise error', () => {
