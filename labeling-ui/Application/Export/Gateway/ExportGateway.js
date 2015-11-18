@@ -21,11 +21,11 @@ class ExportGateway {
   /**
    * Retrieves a list of available {@link Export}s for the given {@link Task}
    *
-   * @return {Promise<Export[]|Error>}
+   * @return {AbortablePromise<Export[]|Error>}
    */
   getTaskExports(taskId) {
     const url = this._apiService.getApiUrl(`/task/${taskId}/export`);
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'export')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -40,12 +40,12 @@ class ExportGateway {
    *
    * @param {string} taskId
    * @param {string} type
-   * @returns {Promise<string|Error>}
+   * @returns {AbortablePromise<string|Error>}
    */
   startExport(taskId, type) {
     const exportType = type || 'kitti';
     const url = this._apiService.getApiUrl(`/task/${taskId}/export/${exportType}`);
-    return this._bufferedHttp.post(url, {})
+    return this._bufferedHttp.post(url, {}, 'export')
       .then(response => {
         if (response.data && response.data.message) {
           return response.data.message;

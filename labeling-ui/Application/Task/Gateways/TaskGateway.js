@@ -21,11 +21,11 @@ class TaskGateway {
   /**
    * Retrieves a list of available {@link Task}s
    *
-   * @return {Promise<Task[]|Error>}
+   * @return {AbortablePromise<Task[]|Error>}
    */
   getTasks() {
     const url = this._apiService.getApiUrl('/task');
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'task')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -40,11 +40,11 @@ class TaskGateway {
    *
    * @param {string} id
    *
-   * @return {Promise.<Task|Error>}
+   * @return {AbortablePromise.<Task|Error>}
    */
   getTask(id) {
     const url = this._apiService.getApiUrl(`/task/${id}`);
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'task')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;

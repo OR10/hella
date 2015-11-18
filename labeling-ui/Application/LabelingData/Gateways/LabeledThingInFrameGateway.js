@@ -26,13 +26,13 @@ class LabeledThingInFrameGateway {
    * @param {Task} task
    * @param {Integer} frameNumber
    *
-   * @returns {Promise<LabeledThingInFrame[]|Error>}
+   * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
   listLabeledThingInFrame(task, frameNumber) {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.bufferedHttp.get(url)
+    return this.bufferedHttp.get(url, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result
@@ -48,13 +48,13 @@ class LabeledThingInFrameGateway {
    *
    * @param {String} labeledThingInFrameId
    *
-   * @returns {Promise<LabeledThingInFrame|Error>}
+   * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   getLabeledThingInFrame(labeledThingInFrameId) {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.bufferedHttp.get(url)
+    return this.bufferedHttp.get(url, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThingInFrame(response.data.result);
@@ -69,14 +69,14 @@ class LabeledThingInFrameGateway {
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
    *
-   * @returns {Promise<LabeledThingInFrame|Error>}
+   * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
-    return this.bufferedHttp.put(url, labeledThingInFrame)
+    return this.bufferedHttp.put(url, labeledThingInFrame, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThingInFrame(response.data.result);
@@ -91,13 +91,13 @@ class LabeledThingInFrameGateway {
    *
    * @param {String} labeledThingInFrameId
    *
-   * @returns {Promise<true|Error>}
+   * @returns {AbortablePromise<true|Error>}
    */
   deleteLabeledThingInFrame(labeledThingInFrameId) {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.bufferedHttp.delete(url)
+    return this.bufferedHttp.delete(url, 'labeledThingInFrame')
       .then(response => {
         if (response.data) {
           return true;

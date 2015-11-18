@@ -26,13 +26,13 @@ class VideoGateway {
    *
    * @param {String} id
    *
-   * @returns {Promise<Video|Error>}
+   * @returns {AbortablePromise<Video|Error>}
    */
   getVideo(id) {
     const url = this._apiService.getApiUrl(
       `/video/${id}`
     );
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'video')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -45,13 +45,13 @@ class VideoGateway {
   /**
    * Returns all {@link Video}s
    *
-   * @returns {Promise<Video[]|Error>}
+   * @returns {AbortablePromise<Video[]|Error>}
    */
   getVideos() {
     const url = this._apiService.getApiUrl(
       `/video`
     );
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'video')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;

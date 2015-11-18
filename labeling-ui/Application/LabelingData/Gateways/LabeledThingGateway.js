@@ -24,12 +24,12 @@ class LabeledThingGateway {
 
   /**
    * @param {LabeledThing} labeledThing
-   * @returns {Promise.<LabeledThing|Error>}
+   * @returns {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing) {
     const url = this._apiService.getApiUrl(`/task/${labeledThing.taskId}/labeledThing/${labeledThing.id}`);
 
-    return this._bufferedHttp.put(url, labeledThing)
+    return this._bufferedHttp.put(url, labeledThing, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThing(response.data.result);
@@ -42,12 +42,12 @@ class LabeledThingGateway {
   /**
    * @param {string} taskId
    * @param {string} labeledThingId
-   * @returns {Promise.<LabeledThing|Error>}
+   * @returns {AbortablePromise.<LabeledThing|Error>}
    */
   getLabeledThing(taskId, labeledThingId) {
     const url = this._apiService.getApiUrl(`/task/${taskId}/labeledThing/${labeledThingId}`);
 
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThing(response.data.result);

@@ -5,8 +5,9 @@ class TaskFrameLocationGateway {
   /**
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp injected
+   * @param {$q} $q injected
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, $q) {
     /**
      * @type {ApiService}
      * @private
@@ -18,6 +19,12 @@ class TaskFrameLocationGateway {
      * @private
      */
     this._bufferedHttp = bufferedHttp;
+
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
   }
 
   /**
@@ -31,7 +38,7 @@ class TaskFrameLocationGateway {
    * @param {string} type
    * @param {number?} offset
    * @param {number?} limit
-   * @returns {Promise<Array<FrameLocation>>}
+   * @returns {AbortablePromise<Array<FrameLocation>>}
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
     return this._bufferedHttp({
@@ -40,16 +47,17 @@ class TaskFrameLocationGateway {
         `/task/${taskId}/frameLocations/${type}`,
         {offset, limit}
       ),
-    })
-      .then(response => {
-        return response.data.result;
-      });
+    }, 'frameLocations')
+    .then(response => {
+      return response.data.result;
+    });
   }
 }
 
 TaskFrameLocationGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  '$q',
 ];
 
 export default TaskFrameLocationGateway;

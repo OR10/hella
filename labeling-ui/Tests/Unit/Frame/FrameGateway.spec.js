@@ -1,7 +1,8 @@
 import 'jquery';
 import 'angular';
-import angularMocks from 'angular-mocks';
+import {module, inject} from 'angular-mocks';
 
+import Common from 'Application/Common/Common';
 import FrameGateway from 'Application/Frame/Gateways/FrameGateway';
 
 describe('FrameGateway', () => {
@@ -10,43 +11,49 @@ describe('FrameGateway', () => {
   let frameLocation;
   let $rootScope;
 
-  beforeEach(angularMocks.inject($injector => {
-    frameLocation = {id: 'abc', type: 'source', frameNumber: 23, url: 'http://example.com/frame/23.png'};
+  beforeEach(() => {
+    const commonModule = new Common();
+    commonModule.registerWithAngular(angular);
+    module('AnnoStation.Common');
 
-    createImageMock = (error = false) => {
-      const OriginalImage = Image;
-      const retVal = {
-        restore() {
-          window.Image = OriginalImage;
-        },
-        instance: null,
+    inject($injector => {
+      frameLocation = {id: 'abc', type: 'source', frameNumber: 23, url: 'http://example.com/frame/23.png'};
+
+      createImageMock = (error = false) => {
+        const OriginalImage = Image;
+        const retVal = {
+          restore() {
+            window.Image = OriginalImage;
+          },
+          instance: null,
+        };
+
+        class ImageMockImpl {
+          constructor() {
+            this.__srcSpy = jasmine.createSpy();
+            this.addEventListener = jasmine.createSpy().and.callFake((name, fn) => {
+              if (name === 'load' && error !== true) {
+                fn();
+              } else if (name === 'error' && error === true) {
+                fn('error!!1elf!!');
+              }
+            });
+            retVal.instance = this;
+          }
+
+          set src(value) {
+            this.__srcSpy(value);
+          }
+        }
+
+        window.Image = ImageMockImpl;
+        return retVal;
       };
 
-      class ImageMockImpl {
-        constructor() {
-          this.__srcSpy = jasmine.createSpy();
-          this.addEventListener = jasmine.createSpy().and.callFake((name, fn) => {
-            if (name === 'load' && error !== true) {
-              fn();
-            } else if (name === 'error' && error === true) {
-              fn('error!!1elf!!');
-            }
-          });
-          retVal.instance = this;
-        }
-
-        set src(value) {
-          this.__srcSpy(value);
-        }
-      }
-
-      window.Image = ImageMockImpl;
-      return retVal;
-    };
-
-    gateway = $injector.instantiate(FrameGateway);
-    $rootScope = $injector.get('$rootScope');
-  }));
+      gateway = $injector.instantiate(FrameGateway);
+      $rootScope = $injector.get('$rootScope');
+    });
+  });
 
   it('should be able to instantiate without non injected arguments', () => {
     expect(gateway instanceof FrameGateway).toEqual(true);

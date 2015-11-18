@@ -29,13 +29,13 @@ class LabeledFrameGateway {
    * @param {String} taskId
    * @param {Integer} frameNumber
    *
-   * @returns {Promise<LabeledFrame|Error>}
+   * @returns {AbortablePromise<LabeledFrame|Error>}
    */
   getLabeledFrame(taskId, frameNumber) {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
-    return this._bufferedHttp.get(url)
+    return this._bufferedHttp.get(url, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledFrame(response.data.result);
@@ -53,14 +53,14 @@ class LabeledFrameGateway {
    * @param {Integer} frameNumber
    * @param {LabeledFrame} labeledFrame
    *
-   * @returns {Promise<LabeledFrame|Error>}
+   * @returns {AbortablePromise<LabeledFrame|Error>}
    */
   saveLabeledFrame(taskId, frameNumber, labeledFrame) {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
 
-    return this._bufferedHttp.put(url, labeledFrame)
+    return this._bufferedHttp.put(url, labeledFrame, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledFrame(response.data.result);
@@ -76,13 +76,13 @@ class LabeledFrameGateway {
    * @param {String} taskId
    * @param {Integer} frameNumber
    *
-   * @returns {Promise<Boolean|Error>}
+   * @returns {AbortablePromise<Boolean|Error>}
    */
   deleteLabeledFrame(taskId, frameNumber) {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
-    return this._bufferedHttp.delete(url)
+    return this._bufferedHttp.delete(url, 'labeledFrame')
       .then(response => {
         if (response.data) {
           return true;
