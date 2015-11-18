@@ -12,7 +12,7 @@ class ThumbnailController {
    * @param {AbortablePromiseFactory} abortable
    */
   constructor($scope, $element, drawingContextService, frameGateway, abortable) {
-    this.width = 300;
+    this.width = 200;
 
     /**
      * @type {DrawingContext}
@@ -42,12 +42,15 @@ class ThumbnailController {
     this._ringbuffer = new AbortablePromiseRingBuffer(1);
 
     $scope.$watch('vm.location', newLocation => {
-      if (this._rasterImage) {
-        this._rasterImage.remove();
-        this._rasterImage = null;
-      }
 
       if (newLocation === null) {
+        if (this._rasterImage) {
+          this._context.withScope(scope => {
+            this._rasterImage.remove();
+            this._rasterImage = null;
+            scope.view.draw();
+          });
+        }
         return;
       }
 
@@ -55,6 +58,10 @@ class ThumbnailController {
         abortable(this._frameGateway.getImage(newLocation))
       ).then(
         image => this._context.withScope(scope => {
+          if (this._rasterImage) {
+            this._rasterImage.remove();
+          }
+
           const zoom = this.width / image.width;
           scope.view.viewSize = new scope.Size(this.width, image.height * zoom);
           this._rasterImage = new scope.Raster(image, scope.view.center);
