@@ -45,11 +45,18 @@ class LabeledThingInFrame
     private $incomplete = true;
 
     /**
+     * @var bool
+     */
+    private $ghost = false;
+
+    /**
      * @param LabeledThing $labeledThing
      */
-    public function __construct(LabeledThing $labeledThing)
+    public function __construct(LabeledThing $labeledThing = null)
     {
-        $this->labeledThingId = $labeledThing->getId();
+        if ($labeledThing instanceof LabeledThing) {
+            $this->labeledThingId = $labeledThing->getId();
+        }
     }
 
     /**
@@ -154,5 +161,21 @@ class LabeledThingInFrame
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isGhost()
+    {
+        return $this->ghost;
+    }
+
+    /**
+     * @param boolean $ghost
+     */
+    public function setGhost($ghost)
+    {
+        $this->ghost = $ghost;
     }
 }

@@ -16,12 +16,40 @@ class LabeledThing
         $this->documentManager = $documentManager;
     }
 
-    public function getLabeledThingInFrames(Model\LabeledThing $labeledThing)
+    /**
+     * @param Model\LabeledThing $labeledThing
+     * @param null               $frameNumber
+     * @param int                $offset
+     * @param int                $limit
+     * @return CouchDB\View\Result
+     */
+    public function getLabeledThingInFrames(Model\LabeledThing $labeledThing, $frameNumber = null, $offset = 0, $limit = 0)
     {
+        if ($frameNumber !== null) {
+            $startKey = array(
+                $labeledThing->getId(),
+                $frameNumber + $offset
+            );
+            $endKey = array(
+                $labeledThing->getId(),
+                ($frameNumber + $offset) + $limit
+            );
+
+        }else{
+            $startKey = array(
+                $labeledThing->getId(),
+                0
+            );
+            $endKey = array(
+                $labeledThing->getId(),
+                array()
+            );
+        }
+
         return $this->documentManager
             ->createQuery('labeling_api', 'labeled_thing_in_frame')
-            ->setStartKey($labeledThing->getId())
-            ->setEndKey($labeledThing->getId())
+            ->setStartKey($startKey)
+            ->setEndKey($endKey)
             ->onlyDocs(true)
             ->execute();
     }

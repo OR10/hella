@@ -6,6 +6,7 @@ use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
+use Doctrine\ODM\CouchDB;
 
 class LabeledThingInFrameTest extends Tests\WebTestCase
 {
@@ -29,10 +30,16 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
      */
     private $labelingThingInFrameFacade;
 
+    /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
     public function testGetLabeledThingInFrameDocument()
     {
         $labelingTask        = $this->createLabelingTask();
-        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+        $labeledThing        = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labeledThing);
 
         $response = $this->doRequest('GET', $labelingTask->getId(), $labeledThingInFrame->getFrameNumber());
 
@@ -43,7 +50,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testGetLabeledThingInFrameDocumentWithInvalidTask()
     {
         $labelingTask        = $this->createLabelingTask();
-        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+        $labeledThing        = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labeledThing);
 
         $response = $this->doRequest('GET', 111111, $labeledThingInFrame->getFrameNumber());
 
@@ -54,7 +62,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testSaveLabeledThingInFrame()
     {
         $labelingTask        = $this->createLabelingTask();
-        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+        $labeledThing        = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labeledThing);
 
         $response = $this->doRequest(
             'POST',
@@ -62,7 +71,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             $labeledThingInFrame->getFrameNumber(),
             json_encode(
                 array(
-                    'labeledThingId' => '11aa239108f1419967ed8d6a1f5a765t',
+                    'labeledThingId' => $labeledThing->getId(),
                     'classes' => array('class1' => 'test'),
                     'shapes'  => array('shape1' => 'test'),
                 )
@@ -75,7 +84,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testSaveLabeledThingInFrameWithInvalidBody()
     {
         $labelingTask        = $this->createLabelingTask();
-        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+        $labeledThing        = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labeledThing);
 
         $response = $this->doRequest(
             'POST',
@@ -83,7 +93,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             $labeledThingInFrame->getFrameNumber(),
             json_encode(
                 array(
-                    'labeledThingId' => '11aa239108f1419967ed8d6a1f5a765t',
+                    'labeledThingId' => $labeledThing->getId(),
                     'classes' => 'invalid_class_string',
                     'shapes'  => 'invalid_shapes_string',
                 )
@@ -96,7 +106,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testSaveLabeledThingInFrameWithInvalidTasked()
     {
         $labelingTask        = $this->createLabelingTask();
-        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingTask);
+        $labeledThing        = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labeledThing);
 
         $response = $this->doRequest(
             'POST',
@@ -111,6 +122,82 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
 
         $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testGetGhostedLabeledThingInFrames()
+    {
+        $labelingTask                = $this->createLabelingTask();
+        $labeledThing                = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrameNumber10 = $this->createLabeledInFrameDocument($labeledThing, 10);
+        $labeledThingInFrameNumber11 = $this->createLabeledInFrameDocument($labeledThing, 11);
+
+
+        $client  = $this->createClient();
+        $crawler = $client->request(
+            'GET',
+            sprintf(
+                '/api/task/%s/labeledThingInFrame/%s/%s.json?offset=-2&limit=3',
+                $labelingTask->getId(),
+                11,
+                $labeledThing->getId()
+            ),
+            [],
+            [],
+            [
+                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
+                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
+                'CONTENT_TYPE' => 'application/json',
+            ]
+        );
+
+        $expected = array(
+            array(
+                'id' => '',
+                'rev' => NULL,
+                'frameNumber' => 9,
+                'classes' => array(),
+                'shapes' => array(),
+                'labeledThingId' => $labeledThingInFrameNumber10->getLabeledThingId(),
+                'incomplete' => true,
+                'ghost' => true,
+            ),
+            array(
+                'id' => $labeledThingInFrameNumber10->getId(),
+                'rev' => $labeledThingInFrameNumber10->getRev(),
+                'frameNumber' => 10,
+                'classes' => array(),
+                'shapes' => array(),
+                'labeledThingId' => $labeledThingInFrameNumber10->getLabeledThingId(),
+                'incomplete' => true,
+                'ghost' => false,
+            ),
+            array(
+                'id' => $labeledThingInFrameNumber11->getId(),
+                'rev' => $labeledThingInFrameNumber11->getRev(),
+                'frameNumber' => 11,
+                'classes' => array(),
+                'shapes' => array(),
+                'labeledThingId' => $labeledThingInFrameNumber11->getLabeledThingId(),
+                'incomplete' => true,
+                'ghost' => false,
+            ),
+            array(
+                'id' => '',
+                'rev' => NULL,
+                'frameNumber' => 12,
+                'classes' => array(),
+                'shapes' => array(),
+                'labeledThingId' => $labeledThingInFrameNumber11->getLabeledThingId(),
+                'incomplete' => true,
+                'ghost' => true,
+            ),
+        );
+
+        $response = $client->getResponse();
+        $content  = json_decode($response->getContent(), true);
+
+        $this->assertEquals($expected, $content['result']);
+
     }
 
     protected function setUpImplementation()
@@ -137,6 +224,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         /** @var Facade\LabeledThingInFrame $labelingThingInFrameFacade */
         $this->labelingThingInFrameFacade = static::$kernel->getContainer()->get(
             'annostation.labeling_api.database.facade.labeled_thing_in_frame'
+        );
+        $this->documentManager           = static::$kernel->getContainer()->get(
+            'doctrine_couchdb.odm.default_document_manager'
         );
     }
 
@@ -174,14 +264,22 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         return $labelingTask;
     }
 
-    private function createLabeledInFrameDocument(Model\LabelingTask $labelingTask)
+    private function createLabeledThingDocument(Model\LabelingTask $labelingTask)
     {
         $labeledThing = new Model\LabeledThing($labelingTask);
-        $labeledThing->setId('11aa239108f1419967ed8d6a1f5a765t');
+        $uuids        = $this->documentManager->getCouchDBClient()->getUuids();
+        $labeledThing->setId(reset($uuids));
         $this->labelingThingFacade->save($labeledThing);
+
+        return $labeledThing;
+    }
+
+    private function createLabeledInFrameDocument(Model\LabeledThing $labeledThing, $frameNumber = 10)
+    {
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765c');
-        $labeledThingInFrame->setFrameNumber(10);
+        $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
+        $labeledThingInFrame->setId(reset($uuids));
+        $labeledThingInFrame->setFrameNumber($frameNumber);
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 
         return $labeledThingInFrame;
