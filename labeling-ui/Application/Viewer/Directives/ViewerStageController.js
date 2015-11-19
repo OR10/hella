@@ -2,6 +2,7 @@ import LayerManager from '../Layers/LayerManager';
 import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
 import BackgroundLayer from '../Layers/BackgroundLayer';
+import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 
 /**
  * @class ViewerStageController
@@ -65,6 +66,13 @@ class ViewerStageController {
      */
     this._frameLocations = this._loadFrameLocations();
 
+    /**
+     * RingBuffer to ensure only the last requested Background image is loaded
+     *
+     * @type {AbortablePromiseRingBuffer}
+     */
+    this._backgroundBuffer = new AbortablePromiseRingBuffer(1);
+
     const eventDelegationLayer = new EventDelegationLayer();
     const thingLayer = new ThingLayer($scope.$new(), drawingContextService);
     const backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
@@ -82,6 +90,7 @@ class ViewerStageController {
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
     this._layerManager.addLayer('background', backgroundLayer);
+
 
     $scope.$watch('vm.activeTool', newActiveTool => {
       thingLayer.activateTool(newActiveTool);
@@ -110,13 +119,9 @@ class ViewerStageController {
 
     // Update the Background once the `framePosition` changes
     $scope.$watch('vm.framePosition.position', newPosition => {
-      this._loadFrameImage(newPosition).then(newFrameImage => {
-        if (newPosition !== this.framePosition.position) {
-          // The position changed while loading the frame
-          // another frame is already requested. Skip this one.
-          return;
-        }
-
+      this._backgroundBuffer.add(
+        this._loadFrameImage(newPosition)
+      ).then(newFrameImage => {
         backgroundLayer.setBackgroundImage(newFrameImage);
         this.filters.filters.forEach(filter => {
           backgroundLayer.applyFilter(filter);
