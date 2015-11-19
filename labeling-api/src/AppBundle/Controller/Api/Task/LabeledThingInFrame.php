@@ -156,7 +156,7 @@ class LabeledThingInFrame extends Controller\Base
      * @param                        $frameNumber
      * @param                        $labeledThingId
      * @param HttpFoundation\Request $request
-     * 
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingInFrameWithinFrameNumberAction($taskId, $frameNumber, $labeledThingId, HttpFoundation\Request $request)
@@ -165,10 +165,14 @@ class LabeledThingInFrame extends Controller\Base
 
         $labeledThing = $this->labeledThingFacade->find($labeledThingId);
 
+        if ($labeledThing === null) {
+            throw new Exception\NotFoundHttpException();
+        }
+
         $offset = $request->query->get('offset', null);
         $limit  = $request->query->get('limit', null);
 
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray();
+        $labeledThingInFrames = array_reverse($this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray());
         $expectedFrameNumbers = range($frameNumber + $offset, ($frameNumber + $offset) + $limit);
 
         $result = array_map(function ($expectedFrameNumber) use ($labeledThingInFrames) {
@@ -177,7 +181,6 @@ class LabeledThingInFrame extends Controller\Base
                 $currentItem = current($labeledThingInFrames);
                 $prevItem    = prev($labeledThingInFrames);
                 if (!$prevItem) {
-                    $prevItem = $currentItem;
                     reset($labeledThingInFrames);
                 } else {
                     next($labeledThingInFrames);
@@ -185,30 +188,31 @@ class LabeledThingInFrame extends Controller\Base
 
                 $nextItem = next($labeledThingInFrames);
                 if (!$nextItem) {
-                    end($labeledThingInFrames);
+                    $endLabeledThingInFrame = end($labeledThingInFrames);
                 } else {
                     prev($labeledThingInFrames);
                 }
 
                 if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
                     return $currentItem;
-                } elseif ($expectedFrameNumber < $currentItem->getFrameNumber()) {
+                } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
                     $ghostLabeledThingInFrame = new Model\LabeledThingInFrame();
                     $ghostLabeledThingInFrame->setGhost(true);
                     $ghostLabeledThingInFrame->setLabeledThingId($currentItem->getLabeledThingId());
                     $ghostLabeledThingInFrame->setFrameNumber($expectedFrameNumber);
-                    $ghostLabeledThingInFrame->setId('');
+                    $ghostLabeledThingInFrame->setShapes($currentItem->getShapes());
 
                     return $ghostLabeledThingInFrame;
                 }
 
                 next($labeledThingInFrames);
             }
+
             $ghostLabeledThingInFrame = new Model\LabeledThingInFrame();
             $ghostLabeledThingInFrame->setGhost(true);
-            $ghostLabeledThingInFrame->setLabeledThingId(end($labeledThingInFrames)->getLabeledThingId());
+            $ghostLabeledThingInFrame->setLabeledThingId($endLabeledThingInFrame->getLabeledThingId());
             $ghostLabeledThingInFrame->setFrameNumber($expectedFrameNumber);
-            $ghostLabeledThingInFrame->setId('');
+            $ghostLabeledThingInFrame->setShapes($endLabeledThingInFrame->getShapes());
 
             return $ghostLabeledThingInFrame;
         }, $expectedFrameNumbers);
