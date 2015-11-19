@@ -73,10 +73,11 @@ class ViewerStageController {
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
-    thingLayer.on('thing:new', shape => this._onNewShape(shape));
+    thingLayer.on('shape:new', shape => this._onNewShape(shape));
     thingLayer.on('thing:update', (labeledThingInFrameId, shape) => this._onUpdatedShape(labeledThingInFrameId, shape));
     thingLayer.on('thing:selected', labeledThingInFrameId => this._onSelectedThing(labeledThingInFrameId));
-    thingLayer.on('thing:deselected', () => this._onDeselectedThing());
+    thingLayer.on('shape:deselected', () => this._onDeselectedShape());
+    thingLayer.on('shape:selected', shape => this._onSelectedShape(shape));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -142,7 +143,7 @@ class ViewerStageController {
    * The frame number is 1-indexed
    *
    * @param frameNumber
-   * @returns {Promise<HTMLImageElement>}
+   * @returns {AbortablePromise<HTMLImageElement>}
    * @private
    */
   _loadFrameImage(frameNumber) {
@@ -151,15 +152,22 @@ class ViewerStageController {
     );
   }
 
-  _onDeselectedThing() {
+  _onDeselectedShape() {
     this._$scope.$apply(() => {
       this.selectedLabeledThingInFrame = null;
+      this.selectedShape = null;
     });
   }
 
   _onSelectedThing(labeledThingInFrameId) {
     this._$scope.$apply(() => {
       this.selectedLabeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
+    });
+  }
+
+  _onSelectedShape(shape) {
+    this._$scope.$apply(() => {
+      this.selectedShape = shape;
     });
   }
 
