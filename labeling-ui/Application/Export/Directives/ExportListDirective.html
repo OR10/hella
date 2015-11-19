@@ -11,7 +11,7 @@
     <tbody>
     <tr ng-repeat="export in vm.exports">
         <td class="col-md-1"><i class="fa fa-file"></i></td>
-        <td><a href="" ui-sref="export({taskId: task.id})"><i class="fa fa-download"></i> {{export.filename}} -
+        <td><a href="" ng-href="{{vm.downloadUrl(export.labelingTaskId, export.id)}}"><i class="fa fa-download"></i> {{export.filename}} -
             {{export.id}}</a></td>
     </tr>
     </tbody>
