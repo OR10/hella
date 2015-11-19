@@ -54,10 +54,8 @@ resource "null_resource" "provisioning" {
 
     provisioner "remote-exec" {
         inline = [
-            "if [ -d /var/www/labeling-api/current ]; then",
             "cd /var/www/labeling-api/current",
             "app/console annostation:init --env=prod",
-            "fi",
         ]
         connection {
             host = "${module.app.ipv4_address}"
