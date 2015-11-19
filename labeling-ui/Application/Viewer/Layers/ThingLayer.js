@@ -125,12 +125,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
     this._shapeMoveTool.on('shape:selected', shape => {
-      this.emit('shape:selected', shape);
+      $scope.$apply(() => {
+        $scope.vm.selectedShape = shape;
+      });
       this.emit('thing:selected', this._thingIdsByShapeId.get(shape.id));
     });
 
     this._shapeMoveTool.on('shape:deselected', () => {
-      this.emit('shape:deselected');
+      $scope.$apply(() => {
+        $scope.vm.selectedShape = null;
+      });
     });
 
     this._shapeMoveTool.on('shape:update', shape => {

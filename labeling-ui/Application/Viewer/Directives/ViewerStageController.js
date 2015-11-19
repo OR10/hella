@@ -22,6 +22,13 @@ class ViewerStageController {
    */
   constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway) {
     /**
+     * The currently selected Shape
+     *
+     * @type {Shape|null}
+     */
+    this.selectedShape = null;
+
+    /**
      * @type {angular.Scope}
      * @private
      */
@@ -84,8 +91,6 @@ class ViewerStageController {
     thingLayer.on('shape:new', shape => this._onNewShape(shape));
     thingLayer.on('thing:update', (labeledThingInFrameId, shape) => this._onUpdatedShape(labeledThingInFrameId, shape));
     thingLayer.on('thing:selected', labeledThingInFrameId => this._onSelectedThing(labeledThingInFrameId));
-    thingLayer.on('shape:deselected', () => this._onDeselectedShape());
-    thingLayer.on('shape:selected', shape => this._onSelectedShape(shape));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -129,6 +134,13 @@ class ViewerStageController {
         backgroundLayer.render();
       });
     });
+
+    // Handle shape selection changes
+    $scope.$watch('vm.selectedShape', (newShape) => {
+      if (newShape === null) {
+        this.selectedLabeledThingInFrame = null;
+      }
+    });
   }
 
   /**
@@ -157,22 +169,9 @@ class ViewerStageController {
     );
   }
 
-  _onDeselectedShape() {
-    this._$scope.$apply(() => {
-      this.selectedLabeledThingInFrame = null;
-      this.selectedShape = null;
-    });
-  }
-
   _onSelectedThing(labeledThingInFrameId) {
     this._$scope.$apply(() => {
       this.selectedLabeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
-    });
-  }
-
-  _onSelectedShape(shape) {
-    this._$scope.$apply(() => {
-      this.selectedShape = shape;
     });
   }
 
