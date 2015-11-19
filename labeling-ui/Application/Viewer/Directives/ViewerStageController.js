@@ -66,8 +66,8 @@ class ViewerStageController {
     this._frameLocations = this._loadFrameLocations();
 
     const eventDelegationLayer = new EventDelegationLayer();
-    const thingLayer = new ThingLayer(drawingContextService);
-    const backgroundLayer = new BackgroundLayer(drawingContextService);
+    const thingLayer = new ThingLayer($scope.$new(), drawingContextService);
+    const backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
     thingLayer.attachToDom($element.find('.annotation-layer')[0]);

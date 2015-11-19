@@ -3,15 +3,15 @@ import EventEmitter from 'event-emitter';
 /**
  * Base class for all layers using PaperJs
  *
- * @class PaperLayer
- *
  * @implements {Layer}
+ * @extends EventEmitter
  */
-export default class PaperLayer extends EventEmitter {
+class PaperLayer extends EventEmitter {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor(drawingContextService) {
+  constructor($scope, drawingContextService) {
     super();
 
     /**
@@ -66,3 +66,5 @@ export default class PaperLayer extends EventEmitter {
     return this._element.toDataURL();
   }
 }
+
+export default PaperLayer;

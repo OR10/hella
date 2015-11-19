@@ -9,10 +9,11 @@ import paper from 'paper';
  */
 export default class BackgroundLayer extends PanAndZoomPaperLayer {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor(drawingContextService) {
-    super(drawingContextService);
+  constructor($scope, drawingContextService) {
+    super($scope, drawingContextService);
 
     /**
      * @type {HTMLCanvasElement}

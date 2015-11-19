@@ -6,14 +6,15 @@ import angular from 'angular';
 /**
  * Special PaperLayer which provides basic pan and zoom functionality
  *
- * @class PanAndZoomPaperLayer
+ * @extends PaperLayer
  */
-export default class PanAndZoomPaperLayer extends PaperLayer {
+class PanAndZoomPaperLayer extends PaperLayer {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor(drawingContextService) {
-    super(drawingContextService);
+  constructor($scope, drawingContextService) {
+    super($scope, drawingContextService);
   }
 
   attachToDom(element) {
@@ -72,3 +73,5 @@ export default class PanAndZoomPaperLayer extends PaperLayer {
     this._dragging = false;
   }
 }
+
+export default PanAndZoomPaperLayer;

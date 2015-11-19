@@ -17,15 +17,15 @@ import PathRenderer from '../Renderer/PathRenderer';
 /**
  * A Layer used to draw Things within the viewer
  *
- * @class ThingLayer
  * @extends PanAndZoomPaperLayer
  */
-export default class ThingLayer extends PanAndZoomPaperLayer {
+class ThingLayer extends PanAndZoomPaperLayer {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor(drawingContextService) {
-    super(drawingContextService);
+  constructor($scope, drawingContextService) {
+    super($scope, drawingContextService);
 
     this._selectedLabeledThingInFrame = null;
 
@@ -125,11 +125,12 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
     this._shapeMoveTool.on('shape:selected', shape => {
+      this.emit('shape:selected', shape);
       this.emit('thing:selected', this._thingIdsByShapeId.get(shape.id));
     });
 
     this._shapeMoveTool.on('shape:deselected', () => {
-      this.emit('thing:deselected');
+      this.emit('shape:deselected');
     });
 
     this._shapeMoveTool.on('shape:update', shape => {
@@ -152,7 +153,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(rectangle.id, 'rectangle');
       this._thingIdsByShapeId.set(rectangle.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
 
     this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
@@ -170,7 +171,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(ellipse.id, 'ellipse');
       this._thingIdsByShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
 
     this._circleDrawingTool.on('ellipse:complete', ellipse => {
@@ -188,7 +189,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(ellipse.id, 'circle');
       this._thingIdsByShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
 
     this._pathDrawingTool.on('path:complete', polygon => {
@@ -205,7 +206,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(polygon.id, 'path');
       this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
 
     this._polygonDrawingTool.on('path:complete', polygon => {
@@ -221,7 +222,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(polygon.id, 'polygon');
       this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
 
     this._lineDrawingTool.on('path:complete', polygon => {
@@ -237,7 +238,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(polygon.id, 'line');
       this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
 
     this._pointDrawingTool.on('point:complete', polygon => {
@@ -253,7 +254,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
 
       this._typeByShapeId.set(polygon.id, 'point');
       this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
-      this.emit('thing:new', shape);
+      this.emit('shape:new', shape);
     });
   }
 
@@ -327,6 +328,7 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
       strokeScaling: false,
     };
 
+    // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
     switch (shape.type) {
       case 'rectangle':
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
@@ -357,7 +359,6 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Updates the labeledThing object based on the object type
    *
-   * @param {string} labeledThingId
    * @param {Object} shape
    * @returns {LabeledThing}
    * @private
@@ -461,3 +462,5 @@ export default class ThingLayer extends PanAndZoomPaperLayer {
     this._thingIdsByShapeId.clear();
   }
 }
+
+export default ThingLayer;
