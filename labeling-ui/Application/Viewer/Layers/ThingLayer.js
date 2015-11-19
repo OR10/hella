@@ -54,20 +54,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._pathRenderer = new PathRenderer();
 
     /**
-     * Storage used to manage the currently displayed things
-     *
-     * @type {Map}
-     * @private
-     */
-    this._thingIdsByShapeId = new Map();
-
-    /**
      * Storage to get the shape type from the shape
      *
      * @type {Map}
      * @private
      */
-    this._typeByShapeId = new Map();
+    this._typeByPaperShapeId = new Map();
 
     /**
      * Tool for moving shapes
@@ -130,7 +122,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       $scope.$apply(() => {
         $scope.vm.selectedShape = shape;
       });
-      this.emit('thing:selected', this._thingIdsByShapeId.get(shape.id));
     });
 
     this._shapeMoveTool.on('shape:deselected', () => {
@@ -141,7 +132,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._shapeMoveTool.on('shape:update', shape => {
       const transformedShape = this._transformShape(shape);
-      this.emit('thing:update', this._thingIdsByShapeId.get(shape.id), transformedShape);
+      this.emit('thing:update', transformedShape);
     });
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
@@ -157,8 +148,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
-      this._typeByShapeId.set(rectangle.id, 'rectangle');
-      this._thingIdsByShapeId.set(rectangle.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(rectangle.id, 'rectangle');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
 
@@ -175,8 +166,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
-      this._typeByShapeId.set(ellipse.id, 'ellipse');
-      this._thingIdsByShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(ellipse.id, 'ellipse');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
 
@@ -193,8 +184,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         },
       };
 
-      this._typeByShapeId.set(ellipse.id, 'circle');
-      this._thingIdsByShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(ellipse.id, 'circle');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
 
@@ -210,8 +201,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         closed: true,
       };
 
-      this._typeByShapeId.set(polygon.id, 'path');
-      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(polygon.id, 'path');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
 
@@ -226,8 +217,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         }),
       };
 
-      this._typeByShapeId.set(polygon.id, 'polygon');
-      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(polygon.id, 'polygon');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
 
@@ -242,8 +233,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         }),
       };
 
-      this._typeByShapeId.set(polygon.id, 'line');
-      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(polygon.id, 'line');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
 
@@ -258,8 +249,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         },
       ];
 
-      this._typeByShapeId.set(polygon.id, 'point');
-      this._thingIdsByShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
+      this._typeByPaperShapeId.set(polygon.id, 'point');
+      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
       this.emit('shape:new', shape);
     });
   }
@@ -312,8 +303,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       labeledThings.forEach((labeledThing) => {
         labeledThing.shapes.forEach(shape => {
           const shapeId = this._drawShape(shape);
-          this._thingIdsByShapeId.set(shapeId, labeledThing.id);
-          this._typeByShapeId.set(shapeId, shape.type);
+          this._typeByPaperShapeId.set(shapeId, shape.type);
         });
       });
 
@@ -371,55 +361,55 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Updates the labeledThing object based on the object type
    *
-   * @param {Object} shape
-   * @returns {LabeledThing}
+   * @param {Paper.Shape} paperShape
+   * @returns {Shape}
    * @private
    */
-  _transformShape(shape) {
-    const type = this._typeByShapeId.get(shape.id);
-    let transformedShape = {};
+  _transformShape(paperShape) {
+    const type = this._typeByPaperShapeId.get(paperShape.id);
+    let newShape = {};
     switch (type) {
       case 'rectangle':
-        transformedShape = {
+        newShape = {
           topLeft: {
-            x: Math.round(shape.bounds.x),
-            y: Math.round(shape.bounds.y),
+            x: Math.round(paperShape.bounds.x),
+            y: Math.round(paperShape.bounds.y),
           },
           bottomRight: {
-            x: Math.round(shape.bounds.x + shape.bounds.width),
-            y: Math.round(shape.bounds.y + shape.bounds.height),
+            x: Math.round(paperShape.bounds.x + paperShape.bounds.width),
+            y: Math.round(paperShape.bounds.y + paperShape.bounds.height),
           },
         };
         break;
       case 'ellipse':
-        transformedShape = {
+        newShape = {
           point: {
-            x: Math.round(shape.position.x),
-            y: Math.round(shape.position.y),
+            x: Math.round(paperShape.position.x),
+            y: Math.round(paperShape.position.y),
           },
           size: {
-            width: Math.round(shape.bounds.width),
-            height: Math.round(shape.bounds.height),
+            width: Math.round(paperShape.bounds.width),
+            height: Math.round(paperShape.bounds.height),
           },
         };
         break;
       case 'circle':
-        transformedShape = {
+        newShape = {
           point: {
-            x: Math.round(shape.position.x),
-            y: Math.round(shape.position.y),
+            x: Math.round(paperShape.position.x),
+            y: Math.round(paperShape.position.y),
           },
           size: {
-            width: Math.round(shape.bounds.width),
-            height: Math.round(shape.bounds.height),
+            width: Math.round(paperShape.bounds.width),
+            height: Math.round(paperShape.bounds.height),
           },
         };
         break;
       case 'path':
-        transformedShape = {
+        newShape = {
           points: [],
         };
-        transformedShape.points = shape.segments.map((segment) => {
+        newShape.points = paperShape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -427,10 +417,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'polygon':
-        transformedShape = {
+        newShape = {
           points: [],
         };
-        transformedShape.points = shape.segments.map((segment) => {
+        newShape.points = paperShape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -438,10 +428,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'line':
-        transformedShape = {
+        newShape = {
           points: [],
         };
-        transformedShape.points = shape.segments.map((segment) => {
+        newShape.points = paperShape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -449,10 +439,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'point':
-        transformedShape = {
+        newShape = {
           point: {
-            x: Math.round(shape.getPosition().x),
-            y: Math.round(shape.getPosition().y),
+            x: Math.round(paperShape.getPosition().x),
+            y: Math.round(paperShape.getPosition().y),
           },
         };
         break;
@@ -460,8 +450,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         throw new Error(`Could not update shape of unknown type "${type}"`);
     }
 
-    transformedShape.type = type;
-    return transformedShape;
+    newShape.type = type;
+    return newShape;
   }
 
   /**
@@ -471,7 +461,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   clear() {
     super.clear();
-    this._thingIdsByShapeId.clear();
   }
 }
 

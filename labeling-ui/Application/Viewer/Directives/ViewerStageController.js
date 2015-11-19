@@ -7,8 +7,12 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 /**
  * @class ViewerStageController
  *
- * @property {FramePosition} framePosition
  * @property {Task} task
+ * @property {FramePosition} framePosition
+ * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
+ * @property {Array.<LabeledThing> labeledThings
+ * @property {LabeledThingInFrame} selectedLabeledThingInFrame
+ * @property {string} activeTool
  * @property {Filters} filters
  */
 class ViewerStageController {
@@ -89,8 +93,7 @@ class ViewerStageController {
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
     thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    thingLayer.on('thing:update', (labeledThingInFrameId, shape) => this._onUpdatedShape(labeledThingInFrameId, shape));
-    thingLayer.on('thing:selected', labeledThingInFrameId => this._onSelectedThing(labeledThingInFrameId));
+    thingLayer.on('thing:update', shape => this._onUpdatedShape(shape));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -135,10 +138,12 @@ class ViewerStageController {
       });
     });
 
-    // Handle shape selection changes
+    // Update selectedLabeledThingInFrame once a shape is selected
     $scope.$watch('vm.selectedShape', (newShape) => {
       if (newShape === null) {
         this.selectedLabeledThingInFrame = null;
+      } else {
+        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newShape.labeledThingInFrameId];
       }
     });
   }
@@ -171,12 +176,11 @@ class ViewerStageController {
 
   _onSelectedThing(labeledThingInFrameId) {
     this._$scope.$apply(() => {
-      this.selectedLabeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
     });
   }
 
   _onUpdatedShape(labeledThingInFrameId, shape) {
-    const labeledThingInFrame = this.labeledThingsInFrame[labeledThingInFrameId];
+    const labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
 
     // @TODO this needs to be fixed for supporting multiple shapes
     labeledThingInFrame.shapes[0] = shape;
