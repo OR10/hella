@@ -7,5 +7,5 @@ labeling_api::params::create_parameter_files: true
 labeling_api::params::database_host: 'mysql'
 labeling_api::params::couchdb_host: 'couch'
 labeling_api::params::rabbitmq_host: 'workerqueue'
-labeling_api::params::frame_cdn_base_url: 'http://192.168.217.223:81'
-labeling_api::params::frame_cdn_allowed_origin: 'http://192.168.217.223'
+labeling_api::params::frame_cdn_base_url: "http://%{::ipaddress_eth0}:81"
+labeling_api::params::frame_cdn_allowed_origin: 'http://%{::ipaddress_eth0}'

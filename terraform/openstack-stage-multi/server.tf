@@ -23,10 +23,19 @@ module "app" {
     source = "./modules/server"
     server_type = "app"
     count = 1
-    ipv4_address = "192.168.217.223"
+    ipv4_address = ""
 }
 
 resource "null_resource" "provisioning" {
+    provisioner "remote-exec" {
+        inline = [
+            "echo '${module.app.ipv4_address} app' >> /etc/hosts",
+        ]
+        connection {
+            host = "${module.mysql.ipv4_address}"
+        }
+    }
+
     provisioner "remote-exec" {
         inline = [
             "echo '${module.mysql.ipv4_address} mysql' >> /etc/hosts",
