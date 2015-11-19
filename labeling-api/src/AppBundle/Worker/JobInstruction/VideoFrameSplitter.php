@@ -73,7 +73,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
             throw new \RuntimeException('Error creating temporary file for video data');
         }
 
-        if (file_put_contents($tmpFile, $this->fileSystem->read($video->getSourceVideoPath())) === false) {
+        if (file_put_contents($tmpFile, $this->fileSystem->readStream($video->getSourceVideoPath())) === false) {
             throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
         }
 
