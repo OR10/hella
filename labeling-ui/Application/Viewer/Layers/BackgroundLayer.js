@@ -28,12 +28,6 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
     this._backgroundImage = null;
 
     /**
-     * @type {ImageData}
-     * @private
-     */
-    this._imageData = null;
-
-    /**
      * @type {paper.Raster|null}
      * @private
      */
@@ -49,8 +43,6 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
   attachToDom(element) {
     super.attachToDom(element);
 
-    this._imageData = new ImageData(element.width, element.height);
-
     this._context.withScope(() => {
       this._raster = new paper.Raster();
     });
@@ -64,11 +56,7 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
   setBackgroundImage(image) {
     this._backgroundImage = image;
 
-    this._context.withScope(scope => {
-      this._raster = new paper.Raster(this._backgroundImage, scope.view.center);
-    });
-
-    this._imageData = this._raster.getImageData(0, 0, this._element.width, this._element.height);
+    this._drawBackgroundImage();
   }
 
   exportData() {
@@ -81,8 +69,13 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
    * @param {Filter} filter
    */
   applyFilter(filter) {
+    // This is needed for the Firefox to work... 
+    if (!this._backgroundImage) {
+      return;
+    }
+
     this._context.withScope(() => {
-      let imageData = this._raster.getImageData(0, 0, this._element.width, this._element.height);
+      let imageData = this._raster.getImageData(new paper.Rectangle(0, 0, this._raster.width, this._raster.height));
       imageData = filter.manipulate(imageData);
       this._raster.setImageData(imageData, new paper.Point(0, 0));
     });
@@ -92,6 +85,15 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
    * Resets the layer image to remove applied filters
    */
   resetLayer() {
-    this._raster.setImageData(this._imageData, new paper.Point(0, 0));
+    this._drawBackgroundImage();
+  }
+
+  _drawBackgroundImage() {
+    if (this._raster) {
+      this._raster.remove();
+    }
+    this._context.withScope(scope => {
+      this._raster = new paper.Raster(this._backgroundImage, scope.view.center);
+    });
   }
 }
