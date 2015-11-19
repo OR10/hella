@@ -4,8 +4,8 @@ labeling_api::worker_queue: false
 labeling_api::app: true
 
 labeling_api::params::create_parameter_files: true
-labeling_api::params::database_host: '192.168.217.220'
-labeling_api::params::couchdb_host: '192.168.217.221'
-labeling_api::params::rabbitmq_host: '192.168.217.222'
+labeling_api::params::database_host: 'mysql'
+labeling_api::params::couchdb_host: 'couch'
+labeling_api::params::rabbitmq_host: 'workerqueue'
 labeling_api::params::frame_cdn_base_url: 'http://192.168.217.223:81'
 labeling_api::params::frame_cdn_allowed_origin: 'http://192.168.217.223'
