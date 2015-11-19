@@ -14,6 +14,8 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
 import PathRenderer from '../Renderer/PathRenderer';
 
+//import PaperRectangle from '../Renderer/Shapes/PaperRectangle';
+
 /**
  * A Layer used to draw Things within the viewer
  *
@@ -333,9 +335,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
     };
 
     // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
+    // @TODO: Should be refactored be use custom Shapes inheriting the Paper.Shape classes, which can then handle the
+    //        creation from out data structures as well as the serialization into them
+    //        I have tried something like this in the Renderer/Shape/PaperRectangle. It works, but uses an evil hack for
+    //        realizing the inheritance from Paper. I am not sure we want this. Maybe we want to discuss wrapping all our
+    //        paper objects here instead.
     switch (shape.type) {
       case 'rectangle':
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
+        //const rect = new PaperRectangle(shape, shapeFillOptions);
         return rect.id;
       case 'ellipse':
         const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
