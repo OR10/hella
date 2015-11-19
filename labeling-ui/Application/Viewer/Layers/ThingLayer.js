@@ -54,12 +54,20 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._pathRenderer = new PathRenderer();
 
     /**
-     * Storage to get the shape type from the shape
+     * Storage to get the shape type from the paper shape by id
      *
      * @type {Map}
      * @private
      */
     this._typeByPaperShapeId = new Map();
+
+    /**
+     * Storage to get the labeledThingInFrameId from paper shape by id
+     *
+     * @type {Map}
+     * @private
+     */
+    this._labeledThingInFrameIdByPaperShapeId = new Map();
 
     /**
      * Tool for moving shapes
@@ -118,7 +126,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
-    this._shapeMoveTool.on('shape:selected', shape => {
+    this._shapeMoveTool.on('shape:selected', paperShape => {
+      const type = this._typeByPaperShapeId.get(paperShape.id);
+      const shape = this._createShapeFromPaperShape(paperShape, type);
+
       $scope.$apply(() => {
         $scope.vm.selectedShape = shape;
       });
@@ -130,127 +141,58 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
     });
 
-    this._shapeMoveTool.on('shape:update', shape => {
-      const transformedShape = this._transformShape(shape);
-      this.emit('thing:update', transformedShape);
+    this._shapeMoveTool.on('shape:update', paperShape => {
+      const type = this._typeByPaperShapeId.get(paperShape.id);
+      const shape = this._createShapeFromPaperShape(paperShape, type);
+      this.emit('shape:update', shape);
     });
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
-      const shape = {
-        type: 'rectangle',
-        topLeft: {
-          x: Math.round(rectangle.bounds.topLeft.x),
-          y: Math.round(rectangle.bounds.topLeft.y),
-        },
-        bottomRight: {
-          x: Math.round(rectangle.bounds.bottomRight.x),
-          y: Math.round(rectangle.bounds.bottomRight.y),
-        },
-      };
-
       this._typeByPaperShapeId.set(rectangle.id, 'rectangle');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+      this._labeledThingInFrameIdByPaperShapeId.set(rectangle.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(rectangle, 'rectangle');
       this.emit('shape:new', shape);
     });
 
     this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
-      const shape = {
-        type: 'ellipse',
-        point: {
-          x: Math.round(ellipse.getPosition().x),
-          y: Math.round(ellipse.getPosition().y),
-        },
-        size: {
-          width: Math.round(ellipse.bounds.width),
-          height: Math.round(ellipse.bounds.height),
-        },
-      };
-
       this._typeByPaperShapeId.set(ellipse.id, 'ellipse');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+      this._labeledThingInFrameIdByPaperShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(ellipse, 'ellipse');
       this.emit('shape:new', shape);
     });
 
-    this._circleDrawingTool.on('ellipse:complete', ellipse => {
-      const shape = {
-        type: 'circle',
-        point: {
-          x: Math.round(ellipse.getPosition().x),
-          y: Math.round(ellipse.getPosition().y),
-        },
-        size: {
-          width: Math.round(ellipse.bounds.width),
-          height: Math.round(ellipse.bounds.height),
-        },
-      };
-
-      this._typeByPaperShapeId.set(ellipse.id, 'circle');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+    this._circleDrawingTool.on('ellipse:complete', circle => {
+      this._typeByPaperShapeId.set(circle.id, 'circle');
+      this._labeledThingInFrameIdByPaperShapeId.set(circle.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(circle, 'circle');
       this.emit('shape:new', shape);
     });
 
-    this._pathDrawingTool.on('path:complete', polygon => {
-      const shape = {
-        type: 'path',
-        points: polygon.getSegments().map((segment) => {
-          return {
-            x: segment.point.x,
-            y: segment.point.y,
-          };
-        }),
-        closed: true,
-      };
-
-      this._typeByPaperShapeId.set(polygon.id, 'path');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+    this._pathDrawingTool.on('path:complete', path => {
+      this._typeByPaperShapeId.set(path.id, 'path');
+      this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(path, 'path');
       this.emit('shape:new', shape);
     });
 
     this._polygonDrawingTool.on('path:complete', polygon => {
-      const shape = {
-        type: 'polygon',
-        points: polygon.getSegments().map((segment) => {
-          return {
-            x: segment.point.x,
-            y: segment.point.y,
-          };
-        }),
-      };
-
       this._typeByPaperShapeId.set(polygon.id, 'polygon');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+      this._labeledThingInFrameIdByPaperShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(polygon, 'polygon');
       this.emit('shape:new', shape);
     });
 
-    this._lineDrawingTool.on('path:complete', polygon => {
-      const shape = {
-        type: 'line',
-        points: polygon.getSegments().map((segment) => {
-          return {
-            x: segment.point.x,
-            y: segment.point.y,
-          };
-        }),
-      };
-
-      this._typeByPaperShapeId.set(polygon.id, 'line');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+    this._lineDrawingTool.on('path:complete', line => {
+      this._typeByPaperShapeId.set(line.id, 'line');
+      this._labeledThingInFrameIdByPaperShapeId.set(line.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(line, 'line');
       this.emit('shape:new', shape);
     });
 
-    this._pointDrawingTool.on('point:complete', polygon => {
-      const shape = [
-        {
-          type: 'point',
-          point: {
-            x: polygon.getPosition().x,
-            y: polygon.getPosition().y,
-          },
-        },
-      ];
-
-      this._typeByPaperShapeId.set(polygon.id, 'point');
-      shape.labeledThingInFrameId = this._selectedLabeledThingInFrame.id;
+    this._pointDrawingTool.on('point:complete', point => {
+      this._typeByPaperShapeId.set(point.id, 'point');
+      this._labeledThingInFrameIdByPaperShapeId.set(point.id, this._selectedLabeledThingInFrame.id);
+      const shape = this._createShapeFromPaperShape(point, 'point');
       this.emit('shape:new', shape);
     });
   }
@@ -296,14 +238,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Adds the given thing to this layer and draws its respective shapes
    *
-   * @param {Array<LabeledThingInFrame>} labeledThings
+   * @param {Array<LabeledThingInFrame>} labeledThingsInFrame
    */
-  addLabeledThings(labeledThings) {
+  addLabeledThingsInFrame(labeledThingsInFrame) {
     this._context.withScope((scope) => {
-      labeledThings.forEach((labeledThing) => {
-        labeledThing.shapes.forEach(shape => {
+      labeledThingsInFrame.forEach((labeledThingInFrame) => {
+        labeledThingInFrame.shapes.forEach(shape => {
           const shapeId = this._drawShape(shape);
           this._typeByPaperShapeId.set(shapeId, shape.type);
+          this._labeledThingInFrameIdByPaperShapeId.set(shapeId, labeledThingInFrame.id);
         });
       });
 
@@ -359,18 +302,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
-   * Updates the labeledThing object based on the object type
-   *
-   * @param {Paper.Shape} paperShape
-   * @returns {Shape}
+   * @param {paper.Shape} paperShape
+   * @param type
+   * @return {Shape}
    * @private
    */
-  _transformShape(paperShape) {
-    const type = this._typeByPaperShapeId.get(paperShape.id);
-    let newShape = {};
+  _createShapeFromPaperShape(paperShape, type) {
+    let shape = {};
     switch (type) {
       case 'rectangle':
-        newShape = {
+        shape = {
           topLeft: {
             x: Math.round(paperShape.bounds.x),
             y: Math.round(paperShape.bounds.y),
@@ -382,7 +323,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         };
         break;
       case 'ellipse':
-        newShape = {
+        shape = {
           point: {
             x: Math.round(paperShape.position.x),
             y: Math.round(paperShape.position.y),
@@ -394,7 +335,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         };
         break;
       case 'circle':
-        newShape = {
+        shape = {
           point: {
             x: Math.round(paperShape.position.x),
             y: Math.round(paperShape.position.y),
@@ -406,10 +347,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         };
         break;
       case 'path':
-        newShape = {
+        shape = {
           points: [],
         };
-        newShape.points = paperShape.segments.map((segment) => {
+        shape.points = paperShape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -417,10 +358,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'polygon':
-        newShape = {
+        shape = {
           points: [],
         };
-        newShape.points = paperShape.segments.map((segment) => {
+        shape.points = paperShape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -428,10 +369,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'line':
-        newShape = {
+        shape = {
           points: [],
         };
-        newShape.points = paperShape.segments.map((segment) => {
+        shape.points = paperShape.segments.map((segment) => {
           return {
             x: Math.round(segment.point.x),
             y: Math.round(segment.point.y),
@@ -439,7 +380,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
         break;
       case 'point':
-        newShape = {
+        shape = {
           point: {
             x: Math.round(paperShape.getPosition().x),
             y: Math.round(paperShape.getPosition().y),
@@ -447,11 +388,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
         };
         break;
       default:
-        throw new Error(`Could not update shape of unknown type "${type}"`);
+        throw new Error(`Could not create shape of unknown type "${type}"`);
+    }
+    shape.type = type;
+
+    if (this._labeledThingInFrameIdByPaperShapeId.has(paperShape.id)) {
+      shape.labeledThingInFrameId = this._labeledThingInFrameIdByPaperShapeId.get(paperShape.id);
     }
 
-    newShape.type = type;
-    return newShape;
+    return shape;
   }
 
   /**
@@ -461,6 +406,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   clear() {
     super.clear();
+    this._typeByPaperShapeId.clear();
+    this._labeledThingInFrameIdByPaperShapeId.clear();
   }
 }
 

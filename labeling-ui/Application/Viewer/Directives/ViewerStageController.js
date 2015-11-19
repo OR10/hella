@@ -93,7 +93,7 @@ class ViewerStageController {
     backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
     thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    thingLayer.on('thing:update', shape => this._onUpdatedShape(shape));
+    thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
     this._layerManager.addLayer('annotations', thingLayer);
@@ -108,7 +108,7 @@ class ViewerStageController {
       if (newLabeledThingsInFrame === null) {
         thingLayer.clear();
       } else {
-        thingLayer.addLabeledThings(Object.values(newLabeledThingsInFrame));
+        thingLayer.addLabeledThingsInFrame(Object.values(newLabeledThingsInFrame));
       }
     });
 
@@ -174,12 +174,7 @@ class ViewerStageController {
     );
   }
 
-  _onSelectedThing(labeledThingInFrameId) {
-    this._$scope.$apply(() => {
-    });
-  }
-
-  _onUpdatedShape(labeledThingInFrameId, shape) {
+  _onUpdatedShape(shape) {
     const labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
 
     // @TODO this needs to be fixed for supporting multiple shapes
