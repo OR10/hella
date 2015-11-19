@@ -33,6 +33,8 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
         $this->password                  = $password;
         $this->useDeadLetterExchange     = $useDeadLetterExchange;
         $this->useAlternateExchange      = $useAlternateExchange;
+        $this->heartBeatSeconds          = 0;
+
 
         $this->instructionInstances = array(
             'AppBundle\Worker\Jobs\VideoFrameSplitter' => 'annostation.labeling_api.worker.job_instruction.video',
