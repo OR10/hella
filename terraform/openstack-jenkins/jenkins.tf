@@ -1,13 +1,17 @@
 resource "openstack_compute_instance_v2" "jenkins" {
   count = 2
 
-  name = "annostation-ci-slave-${count.index}"
+  name = "annostation-ci-slave-0-${count.index}"
   #image_name = "trusty"
   image_name = "trusty-jenkins"
   flavor_name = "m1.small"
-  key_pair = "cho"
+  key_pair = "chh"
   security_groups = ["default"]
   user_data = "${template_file.user_data.rendered}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   metadata {
     manage_etc_hosts = true

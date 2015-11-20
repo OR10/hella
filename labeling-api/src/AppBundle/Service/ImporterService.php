@@ -59,30 +59,30 @@ class ImporterService
     }
 
     /**
-     * @param string $filename
-     * @param        $stream
+     * @param string $name       The name for the video (usually the basename).
+     * @param string $path       The filesystem path to the video file.
+     * @param array  $compressed Wether or not the UI should use compressed images.
      *
      * @return Model\LabelingTask
      *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
      */
-    public function import($filename, $stream)
+    public function import($name, $path, $compressed = false)
     {
-        $video = new Model\Video(basename($filename));
-        $video->setMetaData($this->metaDataReader->readMetaData($filename));
-        $this->videoFacade->save($video, $stream);
+        $video = new Model\Video($name);
+        $video->setMetaData($this->metaDataReader->readMetaData($path));
+        $this->videoFacade->save($video, $path);
 
-        $imageTypeNames = array_keys(ImageType\Base::$imageTypes);
-
-        $task = $this->addTask($video, $imageTypeNames);
+        $imageTypes = $this->getImageTypes($compressed);
+        $task       = $this->addTask($video, $imageTypes);
 
         // @todo This list currently contains all image types since the
         //       labeling task is currently created by this service for the
         //       whole video. This may change in future versions where some or
         //       all image types are defined by the labeling task. However,
         //       when this happens, this service has to be refactored anyway.
-        foreach ($imageTypeNames as $imageTypeName) {
+        foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
             $this->videoFacade->update();
             $job = new Jobs\VideoFrameSplitter(
@@ -114,5 +114,21 @@ class ImporterService
         $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;
+    }
+
+    /**
+     * Get the list of image types that should be generated for the task.
+     *
+     * @param bool $compressed
+     *
+     * @return array List of image types to generate for the task.
+     */
+    private function getImageTypes($compressed)
+    {
+        if ($compressed) {
+            return ['sourceJpg', 'thumbnail'];
+        }
+
+        return ['source', 'thumbnail'];
     }
 }

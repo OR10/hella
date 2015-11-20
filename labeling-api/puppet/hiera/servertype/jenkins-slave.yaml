@@ -3,6 +3,7 @@ annostation_base::nodejs: true
 labeling_api::mysql: true
 labeling_api::couch: true
 labeling_api::worker_queue: false
+labeling_api::worker: false
 labeling_api::app: true
 
 labeling_api::params::configure_nginx: false

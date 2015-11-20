@@ -23,5 +23,5 @@ class Thumbnail extends Base
      *
      * @var string
      */
-    protected $commandParameters = '-f image2 -vf scale=100:75';
+    protected $commandParameters = '-f image2 -vf scale=200:-1';
 }

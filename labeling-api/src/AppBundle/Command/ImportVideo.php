@@ -27,7 +27,13 @@ class ImportVideo extends Base
     {
         $this->setName('annostation:import:video')
             ->setDescription('Import a video from a filename')
-            ->addArgument('file', Input\InputArgument::REQUIRED, 'Path to the video file.');
+            ->addArgument('file', Input\InputArgument::REQUIRED, 'Path to the video file.')
+            ->addOption(
+                'compressed',
+                null,
+                Input\InputOption::VALUE_NONE,
+                'Generate compressed JPGs instead of lossless compressed PNGs.'
+            );
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
@@ -38,7 +44,7 @@ class ImportVideo extends Base
 
         try {
             $stream   = fopen($filename, 'r+');
-            $task = $this->importerService->import($filename, $stream);
+            $task = $this->importerService->import(basename($filename), $filename, $input->getOption('compressed'));
 
             $this->writeInfo($output, "VideoId: <comment>{$task->getVideoId()}</>");
             $this->writeInfo($output, "TaskId:  <comment>{$task->getId()}</>");

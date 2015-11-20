@@ -2,7 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Service\ImporterService;
+use AppBundle\Model;
+use AppBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Bridge\Twig;
 use Symfony\Component\HttpFoundation;
@@ -16,16 +17,22 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class Index extends Base
 {
     /**
-     * @var TwigEngine
+     * @var Twig\TwigEngine
      */
     private $twigEngine;
     /**
-     * @var ImporterService
+     * @var Service\ImporterService
      */
     private $importerService;
 
-    public function __construct(Twig\TwigEngine $twigEngine, ImporterService $importerService)
-    {
+    /**
+     * @param Twig\TwigEngine          $twigEngine
+     * @param Service\ImporterService  $importerService
+     */
+    public function __construct(
+        Twig\TwigEngine $twigEngine,
+        Service\ImporterService $importerService
+    ) {
         $this->twigEngine      = $twigEngine;
         $this->importerService = $importerService;
     }
@@ -44,11 +51,7 @@ class Index extends Base
      */
     public function uploadGetAction(HttpFoundation\Request $request)
     {
-        return new Response(
-            $this->twigEngine->render(
-                'AppBundle:default:uploadForm.html.twig'
-            )
-        );
+        return new Response($this->twigEngine->render('AppBundle:default:uploadForm.html.twig'));
     }
 
     /**
@@ -57,18 +60,25 @@ class Index extends Base
      */
     public function uploadPostAction(HttpFoundation\Request $request)
     {
+        $viewData = [];
+
         /**
          * @var UploadedFile $file
          */
-        $filename = $request->files->get('file');
-        $stream   = fopen($filename, 'r+');
+        $file       = $request->files->get('file');
+        $compressed = $request->request->get('compressed', false);
 
-        $task = $this->importerService->import($filename, $stream);
+        if ($file === null) {
+            $viewData['error'] = 'No file given';
+        } else {
+            $task = $this->importerService->import($file->getClientOriginalName(), $file, $compressed);
+            $viewData['taskId'] = $task->getId();
+        }
 
         return new Response(
             $this->twigEngine->render(
                 'AppBundle:default:uploadForm.html.twig',
-                ['taskId' => $task->getId()]
+                $viewData
             )
         );
     }

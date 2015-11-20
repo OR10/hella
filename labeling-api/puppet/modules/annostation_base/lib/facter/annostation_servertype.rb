@@ -5,7 +5,7 @@ Facter.add(:annostation_servertype) do
     if hostname =~ /.*\-ci\-slave\-/ then
       'jenkins-slave'
     else
-      hostname.gsub(/^(\w+)\d*\..*$/, '\1')
+      hostname.gsub(/^([a-zA-Z]+)(?:\-?\d+)?\..*$/, '\1')
     end
   end
 end
