@@ -10,31 +10,39 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 class LabelingTask
 {
     /**
+     * @var string
      * @CouchDB\Id
      */
     private $id;
 
     /**
+     * @var string
      * @CouchDB\Version
      */
     private $rev;
 
     /**
+     * @var int
      * @CouchDB\Field(type="integer")
      */
     private $userId;
 
     /**
+     * @var string
      * @CouchDB\Field(type="string")
      */
     private $videoId;
 
     /**
+     * @var FrameRange
      * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
      */
     private $frameRange;
 
     /**
+     * Required image types for this task in order of preference.
+     *
+     * @var array
      * @CouchDB\Field(type="mixed")
      */
     private $requiredImageTypes;

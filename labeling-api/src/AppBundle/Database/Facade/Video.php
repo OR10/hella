@@ -66,16 +66,24 @@ class Video
         $this->documentManager->flush();
     }
 
-    public function save(Model\Video $video, $stream = null)
+    public function save(Model\Video $video, $source = null)
     {
         $this->documentManager->persist($video);
         $this->documentManager->flush();
 
-        if ($stream !==  null) {
-            $this->fileSystem->writeStream(
-                $video->getSourceVideoPath(),
-                $stream
-            );
+        if ($source !== null) {
+            if (is_resource($source)) {
+                $this->fileSystem->writeStream($video->getSourceVideoPath(), $source);
+            } elseif (is_file($source)) {
+                if (($stream = fopen($source, 'r+')) === false) {
+                    throw new \RuntimeException("File '{$source}' is not readable");
+                }
+                $this->fileSystem->writeStream($video->getSourceVideoPath(), $stream);
+            } elseif (is_string($source)) {
+                $this->fileSystem->write($video->getSourceVideoPath(), $source);
+            } else {
+                throw new \RuntimeException(sprintf('Unsupported source type: %s', gettype($source)));
+            }
         }
     }
 }
