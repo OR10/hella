@@ -32,6 +32,6 @@ class labeling_api::worker(
 
   exec { 'restart supervisord':
     refreshonly => true,
-    command => '/etc/init.d/supervisord reload',
+    command => '/etc/init.d/supervisord restart',
   }
 }
