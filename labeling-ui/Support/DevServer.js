@@ -123,16 +123,15 @@ export default class DevServer {
     if (req.url === bundleTargetUrl) {
       this.builder.getBundle()
         .then(output => {
+          const sourceMap = new Buffer(
+            JSON.stringify(
+              this.augmentSourceMap(
+                JSON.parse(output.sourceMap)
+              )
+            ), 'utf-8')
+            .toString('base64');
           res.end(
-            `${output.source}\n//# sourceMappingURL=${bundleTargetUrl}.map\n`
-          );
-        })
-        .catch(this.handleBuildError.bind(this, res));
-    } else if (req.url === `${bundleTargetUrl}.map`) {
-      this.builder.getBundle()
-        .then(output => {
-          res.end(
-            JSON.stringify(this.augmentSourceMap(JSON.parse(output.sourceMap)))
+            `${output.source}\n//# sourceMappingURL=data:application/json;base64,${sourceMap}\n`
           );
         })
         .catch(this.handleBuildError.bind(this, res));
