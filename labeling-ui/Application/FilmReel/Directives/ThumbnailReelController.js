@@ -13,6 +13,14 @@ class ThumbnailReelController {
    */
   constructor($scope, taskFrameLocationGateway) {
     /**
+     * List of supported image types for this component
+     *
+     * @type {string[]}
+     * @private
+     */
+    this._supportedImageTypes = ['thumbnail'];
+
+    /**
      * {@link FrameLocation}s of the thumbnails, which are currently rendered
      * @type {Array.<FrameLocation>}
      */
@@ -47,9 +55,16 @@ class ThumbnailReelController {
    * @private
    */
   _loadFrameLocations(framePosition) {
+    const imageTypes = this.task.requiredImageTypes.filter((imageType) => {
+      return (this._supportedImageTypes.indexOf(imageType) !== -1);
+    });
+    if (!imageTypes.length) {
+      throw new Error('No supported image type found');
+    }
+
     const offset = Math.max(1, framePosition.position - 3);
     const limit = Math.min(framePosition.endFrameNumber, framePosition.position + 3) - offset + 1;
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', offset, limit)
+    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], offset, limit)
       .then(locations => {
         const thumbnailLocations = new Array(7).fill(null);
         const startIndex = offset - framePosition.position + 3;
