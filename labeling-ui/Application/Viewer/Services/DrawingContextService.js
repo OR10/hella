@@ -48,9 +48,10 @@ class DrawingContextService {
   withDrawingContext(drawingContext, operation) {
     const oldScope = this._activeScope;
     this.activateContext(drawingContext);
-    operation(drawingContext.scope);
+    const result = operation(drawingContext.scope);
     this._activeScope = oldScope;
     this._activeScope.activate();
+    return result;
   }
 }
 

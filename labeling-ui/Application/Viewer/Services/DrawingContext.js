@@ -45,7 +45,7 @@ class DrawingContext {
    * @param {Function} operation
    */
   withScope(operation) {
-    this._service.withDrawingContext(this, operation);
+    return this._service.withDrawingContext(this, operation);
   }
 }
 
