@@ -276,19 +276,73 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {Array<LabeledThingInFrame>} labeledThingsInFrame
    */
   addLabeledThingsInFrame(labeledThingsInFrame) {
-    this._context.withScope((scope) => {
-      labeledThingsInFrame.forEach((labeledThingInFrame) => {
-        labeledThingInFrame.shapes.forEach(shape => {
-          const shapeId = this._drawShape(shape);
-          this._typeByPaperShapeId.set(shapeId, shape.type);
-          this._labeledThingInFrameIdByPaperShapeId.set(shapeId, labeledThingInFrame.id);
-        });
-      });
+    labeledThingsInFrame.forEach((labeledThingInFrame) => {
+      this.addLabeledThingInFrame(labeledThingInFrame, false);
+    });
 
+    this._context.withScope((scope) => {
       scope.view.update();
     });
   }
 
+  /**
+   * Add a single {@link LabeledThingInFrame} to the layer
+   *
+   * Optionally it may be specified if the view should be updated after adding the new shapes
+   * By default it will be rerendered.
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {boolean?} update
+   * @return {Array.<paper.Shape>}
+   */
+  addLabeledThingInFrame(labeledThingInFrame, update = true) {
+     const paperShapes = labeledThingInFrame.shapes.map(shape => {
+      return this._addShape(shape, false);
+    });
+
+    if (update) {
+      this._context.withScope((scope) => {
+        scope.view.update();
+      });
+    }
+
+    return paperShapes;
+  }
+
+  /**
+   * Add a specific {@link Shape} to the layer
+   *
+   * Optionally it may be specified if the view should be updated after adding the new shapes
+   * By default it will be rerendered.
+   *
+   * @param {Shape} shape
+   * @param {boolean?} update
+   * @return {paper.Shape}
+   */
+  _addShape(shape, update = true) {
+    const paperShape = this._drawShape(shape);
+
+    this._typeByPaperShapeId.set(paperShape.id, shape.type);
+    this._labeledThingInFrameIdByPaperShapeId.set(paperShape.id, shape.labeledThingInFrameId);
+
+    if (update) {
+      this._context.withScope((scope) => {
+        scope.view.update();
+      });
+    }
+
+    return paperShape;
+  }
+
+  /**
+   * Draw a given {@link Shape} to the Layer
+   *
+   * The drawn Paper Shape will be returned
+   *
+   * @param {Shape} shape
+   * @returns {paper.Shape}
+   * @private
+   */
   _drawShape(shape) {
     const shapeFillOptions = {
       strokeColor: 'red',
@@ -302,38 +356,27 @@ class ThingLayer extends PanAndZoomPaperLayer {
       strokeScaling: false,
     };
 
-    // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
-    // @TODO: Should be refactored be use custom Shapes inheriting the Paper.Shape classes, which can then handle the
-    //        creation from out data structures as well as the serialization into them
-    //        I have tried something like this in the Renderer/Shape/PaperRectangle. It works, but uses an evil hack for
-    //        realizing the inheritance from Paper. I am not sure we want this. Maybe we want to discuss wrapping all our
-    //        paper objects here instead.
-    switch (shape.type) {
-      case 'rectangle':
-        const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
-        //const rect = new PaperRectangle(shape, shapeFillOptions);
-        return rect.id;
-      case 'ellipse':
-        const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
-        return ellipse.id;
-      case 'circle':
-        const circle = this._ellipseRenderer.drawCircle(shape.point, shape.size.width / 2, shapeFillOptions);
-        return circle.id;
-      case 'path':
-        const path = this._pathRenderer.drawPath(shape.points, shapeOptions);
-        return path.id;
-      case 'polygon':
-        const polygon = this._pathRenderer.drawPolygon(shape.points, shapeFillOptions);
-        return polygon.id;
-      case 'line':
-        const line = this._pathRenderer.drawLine(shape.points[0], shape.segments[1], shapeOptions);
-        return line.id;
-      case 'point':
-        const point = this._ellipseRenderer.drawCircle(shape.point, 1, shapeFillOptions);
-        return point.id;
-      default:
-        throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
-    }
+    return this._context.withScope(scope => {
+      // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
+      switch (shape.type) {
+        case 'rectangle':
+          return this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
+        case 'ellipse':
+          return this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+        case 'circle':
+          return this._ellipseRenderer.drawCircle(shape.point, shape.size.width / 2, shapeFillOptions);
+        case 'path':
+          return this._pathRenderer.drawPath(shape.points, shapeOptions);
+        case 'polygon':
+          return this._pathRenderer.drawPolygon(shape.points, shapeFillOptions);
+        case 'line':
+          return this._pathRenderer.drawLine(shape.points[0], shape.segments[1], shapeOptions);
+        case 'point':
+          return this._ellipseRenderer.drawCircle(shape.point, 1, shapeFillOptions);
+        default:
+          throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
+      }
+    });
   }
 
   /**
