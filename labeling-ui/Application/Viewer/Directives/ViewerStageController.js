@@ -23,8 +23,9 @@ class ViewerStageController {
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {EntityIdService} entityIdService
    */
-  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway) {
+  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, entityIdService) {
     /**
      * List of supported image types for this component
      *
@@ -70,6 +71,12 @@ class ViewerStageController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
 
     /**
      * @type {LayerManager}
@@ -181,17 +188,6 @@ class ViewerStageController {
       }
     });
 
-    // Display ghostedLabeledThingInFrame once it is available
-    $scope.$watch('vm.ghostedLabeledThingInFrame', ghostedLabeledThingInFrame => {
-      console.log("👻: ", ghostedLabeledThingInFrame);
-      if (ghostedLabeledThingInFrame === null) {
-        // @TODO: Proper handling needed here
-        //        Needs removal capabilities in the thinglayer
-        return;
-      }
-    });
-
-
     // Update selectedLabeledThingInFrame once a shape is selected
     $scope.$watch('vm.selectedShape', (newSelectedShape) => {
       if (newSelectedShape === null) {
@@ -236,7 +232,16 @@ class ViewerStageController {
   }
 
   _onUpdatedShape(shape) {
-    const labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
+    let labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
+
+    if (labeledThingInFrame === undefined) {
+      // A ghost shape has been updated
+      // Let's bust the ghost and add it to the normal selection of labeledthingsinframe
+      labeledThingInFrame = this.ghostedLabeledThingInFrame.ghostBust(
+        this._entityIdService.getUniqueId(),
+        this.framePosition.position
+      );
+    }
 
     // @TODO this needs to be fixed for supporting multiple shapes
     labeledThingInFrame.shapes[0] = shape;
@@ -261,6 +266,7 @@ ViewerStageController.$inject = [
   'taskFrameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
+  'entityIdService',
 ];
 
 export default ViewerStageController;
