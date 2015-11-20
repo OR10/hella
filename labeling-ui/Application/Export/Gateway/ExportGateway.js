@@ -25,7 +25,7 @@ class ExportGateway {
    */
   getTaskExports(taskId) {
     const url = this._apiService.getApiUrl(`/task/${taskId}/export`);
-    return this._bufferedHttp.get(url, 'export')
+    return this._bufferedHttp.get(url, undefined, 'export')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -45,7 +45,7 @@ class ExportGateway {
   startExport(taskId, type) {
     const exportType = type || 'kitti';
     const url = this._apiService.getApiUrl(`/task/${taskId}/export/${exportType}`);
-    return this._bufferedHttp.post(url, {}, 'export')
+    return this._bufferedHttp.post(url, {}, undefined, 'export')
       .then(response => {
         if (response.data && response.data.message) {
           return response.data.message;

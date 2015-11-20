@@ -35,7 +35,7 @@ class LabeledFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
-    return this._bufferedHttp.get(url, 'labeledFrame')
+    return this._bufferedHttp.get(url, undefined, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledFrame(response.data.result);
@@ -82,7 +82,7 @@ class LabeledFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
-    return this._bufferedHttp.delete(url, 'labeledFrame')
+    return this._bufferedHttp.delete(url, undefined, 'labeledFrame')
       .then(response => {
         if (response.data) {
           return true;

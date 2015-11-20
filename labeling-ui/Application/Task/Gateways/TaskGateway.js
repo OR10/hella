@@ -25,7 +25,7 @@ class TaskGateway {
    */
   getTasks() {
     const url = this._apiService.getApiUrl('/task');
-    return this._bufferedHttp.get(url, 'task')
+    return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -44,7 +44,7 @@ class TaskGateway {
    */
   getTask(id) {
     const url = this._apiService.getApiUrl(`/task/${id}`);
-    return this._bufferedHttp.get(url, 'task')
+    return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;

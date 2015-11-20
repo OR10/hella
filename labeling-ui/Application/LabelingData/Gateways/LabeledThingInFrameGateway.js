@@ -32,7 +32,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
-    return this.bufferedHttp.get(url, 'labeledThingInFrame')
+    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result
@@ -63,7 +63,7 @@ class LabeledThingInFrameGateway {
       `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThingId}`,
       {offset, limit}
     );
-    return this.bufferedHttp.get(url, 'labeledThingInFrame')
+    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result
@@ -85,7 +85,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.bufferedHttp.get(url, 'labeledThingInFrame')
+    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThingInFrame(response.data.result);
@@ -107,7 +107,7 @@ class LabeledThingInFrameGateway {
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
-    return this.bufferedHttp.put(url, labeledThingInFrame, 'labeledThingInFrame')
+    return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThingInFrame(response.data.result);
@@ -128,7 +128,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.bufferedHttp.delete(url, 'labeledThingInFrame')
+    return this.bufferedHttp.delete(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data) {
           return true;
