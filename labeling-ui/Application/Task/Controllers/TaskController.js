@@ -158,18 +158,21 @@ class TaskController {
     this.labeledThingsInFrame = null;
     this.labeledFrame = null;
 
-    this._$q.all([
-      this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber)),
-      this._labeledFrameBuffer.add(this._loadLabeledFrame(frameNumber)),
-    ]).then(([labeledThingsInFrame, labeledFrame]) => {
+    this._labeledThingInFrameBuffer.add(
+      this._loadLabeledThingsInFrame(frameNumber)
+    )
+    .then(labeledThingsInFrame => {
       this.labeledThingsInFrame = {};
 
       labeledThingsInFrame.forEach(labeledThingInFrame => {
         this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
       });
-
-      this.labeledFrame = labeledFrame;
     });
+
+    this._labeledFrameBuffer.add(
+      this._loadLabeledFrame(frameNumber)
+    )
+    .then(labeledFrame => this.labeledFrame = labeledFrame);
   }
 }
 
