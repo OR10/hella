@@ -157,4 +157,30 @@ describe('LabeledThingInFrameGateway', () => {
       bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
+
+  using([
+    ['abc', 23, 'def', undefined, undefined, 0, 1],
+    ['foo', 42, 'xyz', 5, undefined, 5, 1],
+    ['abc', 23, 'def', 0, 5, 0, 5],
+    ['foo', 42, 'xyz', -5, undefined, -5, 1],
+    ['foo', 423, 'xyz', -23, 100, -23, 100],
+  ], (taskId, frameNumber, labeledThingId, limit, offset, expectedOffset, expectedLimit) => {
+    const task = {id: taskId};
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThingId}?limit=${expectedLimit}&offset=${expectedOffset}`;
+    const expectedResult = [{id: 'testResult'}];
+
+    it('should request labeledThings by task, frameNumber and labeledThingId', done => {
+      $httpBackend
+        .expect('GET', expectedUrl)
+        .respond(200, {result: expectedResult});
+
+      gateway.getLabeledThingInFrame(task, frameNumber, labeledThingId, limit, offset)
+        .then(result => {
+          expect(result).toEqual(expectedResult.map(item => new LabeledThingInFrame(item)));
+          done();
+        });
+
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    });
+  });
 });

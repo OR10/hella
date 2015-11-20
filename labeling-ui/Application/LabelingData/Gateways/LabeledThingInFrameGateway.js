@@ -44,6 +44,37 @@ class LabeledThingInFrameGateway {
   }
 
   /**
+   * Retrieve a {@link LabeledThingInFrame} which is associated to a specific
+   * {@link Task}, {@link LabeledThing} and `frameNumber`.
+   *
+   * If the `LabeledThingInFrame` does not exist in the database an interpolated ghost frame is returned
+   *
+   * Optionally an `offset` and `limit` may be specified, which relates to the specified `frameNumber`.
+   * By default `offset = 0` and `limit = 1` is assumed.
+   *
+   * @param task
+   * @param frameNumber
+   * @param labeledThingId
+   * @param offset
+   * @param limit
+   */
+  getLabeledThingInFrame(task, frameNumber, labeledThingId, offset = 0, limit = 1) {
+    const url = this._apiService.getApiUrl(
+      `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThingId}`,
+      {offset, limit}
+    );
+    return this.bufferedHttp.get(url, 'labeledThingInFrame')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result
+            .map(labeledThingInFrame => new LabeledThingInFrame(labeledThingInFrame));
+        }
+
+        throw new Error('Failed loading labeled thing in frame');
+      });
+  }
+
+  /**
    * Retrieves the {@link LabeledThingInFrame} with the given `id`
    *
    * @param {String} labeledThingInFrameId
