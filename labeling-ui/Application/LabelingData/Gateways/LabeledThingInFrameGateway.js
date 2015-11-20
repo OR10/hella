@@ -8,7 +8,7 @@ class LabeledThingInFrameGateway {
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, $q) {
     /**
      * @type {BufferedHttp}
      */
@@ -18,6 +18,11 @@ class LabeledThingInFrameGateway {
      * @type {ApiService}
      */
     this._apiService = apiService;
+
+    /**
+     * @type {$q}
+     */
+    this._$q = $q;
   }
 
   /**
@@ -103,6 +108,12 @@ class LabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
+    if (labeledThingInFrame.ghost === true) {
+      return this._$q.reject(
+        new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!')
+      );
+    }
+
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
@@ -142,6 +153,7 @@ class LabeledThingInFrameGateway {
 LabeledThingInFrameGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  '$q',
 ];
 
 export default LabeledThingInFrameGateway;

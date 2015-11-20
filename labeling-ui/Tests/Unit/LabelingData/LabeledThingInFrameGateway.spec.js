@@ -98,6 +98,17 @@ describe('LabeledThingInFrameGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
+  it('should error if trying to save a Ghosted LabeledThingInFrame', done => {
+    const labeledThinIngFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}], ghost: true});
+
+    gateway.saveLabeledThingInFrame(labeledThinIngFrame)
+      .catch(error => {
+        done();
+      });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
   it('should delete a labeled thing in frame', done => {
     const labeledThingInFrameId = '2';
     const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
