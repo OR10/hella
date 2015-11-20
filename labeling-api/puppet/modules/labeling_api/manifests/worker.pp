@@ -16,6 +16,7 @@ class labeling_api::worker(
     directory => $app_dir,
     startsecs => 0,
     numprocs => $numberOfLowNormalWorkers,
+    notify => Exec['restart supervisord'],
   }
 
   supervisord::program { 'worker-pool-starter-high-normal':
@@ -26,5 +27,11 @@ class labeling_api::worker(
     directory => $app_dir,
     startsecs => 0,
     numprocs => $numberOfHighNormalWorkers,
+    notify => Exec['restart supervisord'],
+  }
+
+  exec { 'restart supervisord':
+    refreshonly => true,
+    command => '/etc/init.d/supervisord reload',
   }
 }
