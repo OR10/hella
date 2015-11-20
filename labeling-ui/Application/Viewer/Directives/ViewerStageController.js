@@ -26,6 +26,14 @@ class ViewerStageController {
    */
   constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway) {
     /**
+     * List of supported image types for this component
+     *
+     * @type {string[]}
+     * @private
+     */
+    this._supportedImageTypes = ['source', 'sourceJpg'];
+
+    /**
      * The currently selected Shape
      *
      * @type {Shape|null}
@@ -155,8 +163,14 @@ class ViewerStageController {
    * @private
    */
   _loadFrameLocations() {
+    const imageTypes = this.task.requiredImageTypes.filter((imageType) => {
+      return (this._supportedImageTypes.indexOf(imageType) !== -1);
+    });
+    if (!imageTypes.length) {
+      throw new Error('No supported image type found');
+    }
     const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
+    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
   }
 
   /**
