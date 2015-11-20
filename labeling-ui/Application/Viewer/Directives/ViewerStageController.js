@@ -41,6 +41,13 @@ class ViewerStageController {
     this.selectedShape = null;
 
     /**
+     * The ghosted LabeledThingInFrame, if one exists for the current selection and frame
+     *
+     * @type {LabeledThingInFrame|null}
+     */
+    this.ghostedLabeledThingInFrame = null;
+
+    /**
      * @type {angular.Scope}
      * @private
      */
@@ -92,6 +99,13 @@ class ViewerStageController {
      */
     this._backgroundBuffer = new AbortablePromiseRingBuffer(1);
 
+    /**
+     * RingBuffer to ensure only the last requested ghost {@link LabeledThingInFrame} is loaded
+     *
+     * @type {AbortablePromiseRingBuffer}
+     */
+    this._ghostedLabeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
+
     const eventDelegationLayer = new EventDelegationLayer();
     const thingLayer = new ThingLayer($scope.$new(), drawingContextService);
     const backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
@@ -121,6 +135,7 @@ class ViewerStageController {
     });
 
     $scope.$watch('vm.selectedLabeledThingInFrame', (newThing) => {
+      this.ghostedLabeledThingInFrame = null;
       thingLayer.setSelectedLabeledThingInFrame(newThing);
     });
 
@@ -134,6 +149,7 @@ class ViewerStageController {
     });
 
     // Update the Background once the `framePosition` changes
+    // Update the possibly ghosted LabeledThingInFrame
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._backgroundBuffer.add(
         this._loadFrameImage(newPosition)
@@ -144,14 +160,45 @@ class ViewerStageController {
         });
         backgroundLayer.render();
       });
+
+      if (this.selectedLabeledThingInFrame !== null) {
+        this._ghostedLabeledThingInFrameBuffer.add(
+          this._labeledThingInFrameGateway.getLabeledThingInFrame(
+            this.task,
+            newPosition,
+            this.selectedLabeledThingInFrame.labeledThingId,
+            0, 0 // @TODO: After backend fix to be removed
+          )
+        ).then(labeledThingsInFrame => {
+          const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
+          if (ghostedLabeledThingsInFrame.length === 0) {
+            // The labeledThingInFrame is not ghosted and will automatically be loaded during the basic labeledThingInFrame request
+            return;
+          }
+
+          this.ghostedLabeledThingInFrame = ghostedLabeledThingsInFrame[0];
+        });
+      }
     });
 
+    // Display ghostedLabeledThingInFrame once it is available
+    $scope.$watch('vm.ghostedLabeledThingInFrame', ghostedLabeledThingInFrame => {
+      console.log("👻: ", ghostedLabeledThingInFrame);
+      if (ghostedLabeledThingInFrame === null) {
+        // @TODO: Proper handling needed here
+        //        Needs removal capabilities in the thinglayer
+        return;
+      }
+    });
+
+
     // Update selectedLabeledThingInFrame once a shape is selected
-    $scope.$watch('vm.selectedShape', (newShape) => {
-      if (newShape === null) {
+    $scope.$watch('vm.selectedShape', (newSelectedShape) => {
+      if (newSelectedShape === null) {
         this.selectedLabeledThingInFrame = null;
       } else {
-        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newShape.labeledThingInFrameId];
+        const {shape} = newSelectedShape;
+        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
       }
     });
   }

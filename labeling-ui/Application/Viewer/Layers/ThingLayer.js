@@ -135,12 +135,27 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
+    $scope.$watch('vm.ghostedLabeledThingInFrame', labeledThingInFrame => {
+      if (labeledThingInFrame === null) {
+        // @TODO: Remove old ghost here
+        return;
+      }
+
+      const paperShapes = this.addLabeledThingInFrame(labeledThingInFrame, false);
+      $scope.vm.activeTool = 'move';
+      this._shapeMoveTool.selectShape(paperShapes[0]);
+
+      this._context.withScope(scope => {
+        scope.view.draw();
+      })
+    });
+
     this._shapeMoveTool.on('shape:selected', paperShape => {
       const type = this._typeByPaperShapeId.get(paperShape.id);
       const shape = this._createShapeFromPaperShape(paperShape, type);
 
       $scope.$apply(() => {
-        $scope.vm.selectedShape = shape;
+        $scope.vm.selectedShape = {paperShape, shape};
       });
     });
 
@@ -297,7 +312,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   addLabeledThingInFrame(labeledThingInFrame, update = true) {
      const paperShapes = labeledThingInFrame.shapes.map(shape => {
-      return this._addShape(shape, false);
+       if (!shape.labeledThingInFrameId) {
+         shape.labeledThingInFrameId = labeledThingInFrame.id;
+       }
+       return this._addShape(shape, false);
     });
 
     if (update) {
