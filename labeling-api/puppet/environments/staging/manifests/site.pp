@@ -11,7 +11,7 @@ file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
 node /^app\-server\-.*/ {
 }
 
-node /^(?:mysql|couch|workerqueue|app)\d+\.annostation\..*/ {
+node /^(?:mysql|couch|workerqueue|app)(\-?\d+)\.annostation\..*/ {
 }
 
 node /^annostation\-ci\-slave\-.*/ {
