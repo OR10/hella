@@ -3,6 +3,8 @@ import Tool from './Tool';
 
 /**
  * A Tool for moving annotation shapes
+ *
+ * @extends Tool
  */
 export default class ShapeMoveTool extends Tool {
   /**
@@ -12,12 +14,12 @@ export default class ShapeMoveTool extends Tool {
   constructor(drawingContext, options) {
     super(drawingContext, options);
     /**
-     * Hit test result
+     * Currently active shape
      *
-     * @type {HitResult}
+     * @type {paper.Shape|null}
      * @private
      */
-    this._hitResult = null;
+    this._paperShape = null;
     /**
      * Mouse to center offset for moving a shape
      *
@@ -38,6 +40,11 @@ export default class ShapeMoveTool extends Tool {
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
   }
 
+  selectShape(paperShape) {
+    this._paperShape = paperShape;
+    this._paperShape.selected = true;
+  }
+
   _mouseDown(event) {
     this._deselectCurrentSelection();
 
@@ -52,31 +59,31 @@ export default class ShapeMoveTool extends Tool {
       });
 
       if (hitResult) {
-        this._hitResult = hitResult;
-        this._hitResult.item.selected = true;
+        this._paperShape = hitResult.item;
+        this._paperShape.selected = true;
         this._offset = new paper.Point(
-          this._hitResult.item.position.x - event.point.x,
-          this._hitResult.item.position.y - event.point.y
+          this._paperShape.position.x - event.point.x,
+          this._paperShape.position.y - event.point.y
         );
       } else {
-        this._hitResult = null;
+        this._paperShape = null;
       }
     });
   }
 
   _deselectCurrentSelection() {
-    if (this._hitResult && this._hitResult.item) {
-      this._hitResult.item.selected = false;
+    if (this._paperShape) {
+      this._paperShape.selected = false;
     }
   }
 
   _mouseUp() {
-    if (this._hitResult && this._hitResult.item) {
+    if (this._paperShape) {
       if (this._modified) {
-        this.emit('shape:update', this._hitResult.item);
+        this.emit('shape:update', this._paperShape);
         this._modified = false;
       } else {
-        this.emit('shape:selected', this._hitResult.item);
+        this.emit('shape:selected', this._paperShape);
       }
     } else {
       this.emit('shape:deselected');
@@ -86,10 +93,12 @@ export default class ShapeMoveTool extends Tool {
   }
 
   _mouseDrag(event) {
-    if (!this._hitResult) return;
+    if (!this._paperShape) {
+      return;
+    }
 
     this._modified = true;
-    this._moveTo(this._hitResult.item, event.point);
+    this._moveTo(this._paperShape, event.point);
   }
 
   _moveTo(item, centerPoint) {
