@@ -194,6 +194,10 @@ class ViewerControlsController {
   handleMoveToolClicked() {
     this.activeTool = 'move';
   }
+
+  handleScaleToolClicked() {
+    this.activeTool = 'scale';
+  }
 }
 
 ViewerControlsController.$inject = [

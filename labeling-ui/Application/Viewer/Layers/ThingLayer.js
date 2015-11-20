@@ -9,6 +9,7 @@ import PolygonDrawingTool from '../Tools/PolygonDrawingTool';
 import LineDrawingTool from '../Tools/LineDrawingTool';
 import PointDrawingTool from '../Tools/PointDrawingTool';
 import ShapeMoveTool from '../Tools/ShapeMoveTool';
+import ShapeScaleTool from '../Tools/ShapeScaleTool';
 
 import RectangleRenderer from '../Renderer/RectangleRenderer';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
@@ -76,6 +77,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._shapeMoveTool = new ShapeMoveTool(this._context, undefined);
+
+    /**
+     * Tool for scaling shapes
+     *
+     * @type {ShapeScaleTool}
+     * @private
+     */
+    this._shapeScaleTool = new ShapeScaleTool(this._context, undefined);
     /**
      * Tool for drawing rectangles
      *
@@ -146,6 +155,29 @@ class ThingLayer extends PanAndZoomPaperLayer {
       const shape = this._createShapeFromPaperShape(paperShape, type);
       this.emit('shape:update', shape);
     });
+
+
+    this._shapeScaleTool.on('shape:selected', paperShape => {
+      const type = this._typeByPaperShapeId.get(paperShape.id);
+      const shape = this._createShapeFromPaperShape(paperShape, type);
+
+      $scope.$apply(() => {
+        $scope.vm.selectedShape = shape;
+      });
+    });
+
+    this._shapeScaleTool.on('shape:deselected', () => {
+      $scope.$apply(() => {
+        $scope.vm.selectedShape = null;
+      });
+    });
+
+    this._shapeScaleTool.on('shape:update', paperShape => {
+      const type = this._typeByPaperShapeId.get(paperShape.id);
+      const shape = this._createShapeFromPaperShape(paperShape, type);
+      this.emit('shape:update', shape);
+    });
+
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
       this._typeByPaperShapeId.set(rectangle.id, 'rectangle');
@@ -224,6 +256,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         break;
       case 'point':
         this._pointDrawingTool.activate();
+        break;
+      case 'scale':
+        this._shapeScaleTool.activate();
         break;
       case 'move':
       default:
