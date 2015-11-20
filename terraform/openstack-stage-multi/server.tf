@@ -26,7 +26,7 @@ module "app" {
     source = "./modules/server"
     server_type = "app"
     count = 1
-    ipv4_address = ""
+    ipv4_address = "192.168.217.212"
     user_data = "${template_file.user_data.rendered}"
 }
 
