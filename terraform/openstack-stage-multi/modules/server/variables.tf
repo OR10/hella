@@ -10,8 +10,3 @@ variable "server_type" {
 variable "ipv4_address" {
     description = "The IPv4 address of this server"
 }
-
-variable "user_data" {
-    default = ""
-    description = "Some user data to inject into the openstack compute instance"
-}
