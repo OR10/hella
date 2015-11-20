@@ -156,7 +156,7 @@ class ViewerStageController {
    */
   _loadFrameLocations() {
     const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', 0, totalFrameCount);
+    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, this.task.requiredImageTypes[0], 0, totalFrameCount);
   }
 
   /**
