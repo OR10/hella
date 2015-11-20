@@ -10,7 +10,7 @@ resource "openstack_compute_instance_v2" "server" {
     flavor_name = "m1.small"
     security_groups = ["default"]
 
-    user_data = "${template_file.user_data.rendered}"
+    user_data = "${var.user_data}"
 
     provisioner "file" {
         source = "puppet"

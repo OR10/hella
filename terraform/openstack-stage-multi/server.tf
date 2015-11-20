@@ -3,6 +3,7 @@ module "mysql" {
     server_type = "mysql"
     count = 1
     ipv4_address = ""
+    user_data = "${template_file.user_data.rendered}"
 }
 
 module "couch" {
@@ -10,6 +11,7 @@ module "couch" {
     server_type = "couch"
     count = 1
     ipv4_address = ""
+    user_data = "${template_file.user_data.rendered}"
 }
 
 module "workerqueue" {
@@ -17,6 +19,7 @@ module "workerqueue" {
     server_type = "workerqueue"
     count = 1
     ipv4_address = ""
+    user_data = "${template_file.user_data.rendered}"
 }
 
 module "app" {
@@ -24,6 +27,7 @@ module "app" {
     server_type = "app"
     count = 1
     ipv4_address = ""
+    user_data = "${template_file.user_data.rendered}"
 }
 
 resource "null_resource" "provisioning" {

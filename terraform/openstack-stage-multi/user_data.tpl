@@ -1,3 +1,3 @@
-#cloud-config
+##cloud-config
 manage_etc_hosts: true
 
