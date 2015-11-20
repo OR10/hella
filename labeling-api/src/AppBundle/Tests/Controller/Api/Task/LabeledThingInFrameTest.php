@@ -152,9 +152,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $expected = array(
             array(
-                'id' => '',
-                'rev' => NULL,
-                'frameNumber' => 9,
+                'id' => $labeledThingInFrameNumber10->getId(),
+                'rev' => $labeledThingInFrameNumber10->getRev(),
+                'frameNumber' => 10,
                 'classes' => array(),
                 'shapes' => array(),
                 'labeledThingId' => $labeledThingInFrameNumber10->getLabeledThingId(),
@@ -182,9 +182,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'ghost' => false,
             ),
             array(
-                'id' => '',
-                'rev' => NULL,
-                'frameNumber' => 12,
+                'id' => $labeledThingInFrameNumber11->getId(),
+                'rev' => $labeledThingInFrameNumber11->getRev(),
+                'frameNumber' => 11,
                 'classes' => array(),
                 'shapes' => array(),
                 'labeledThingId' => $labeledThingInFrameNumber11->getLabeledThingId(),
