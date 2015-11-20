@@ -61,7 +61,7 @@ describe('LabeledThingInFrameGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
-  it('should get a labeled thing in frame', done => {
+  it('should get a labeled thing in frame by id', done => {
     const labeledThingInFrameId = '2';
     const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
     const labeledThingInFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
@@ -71,7 +71,7 @@ describe('LabeledThingInFrameGateway', () => {
       .expect('GET', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.getLabeledThingInFrame(labeledThingInFrameId)
+    gateway.getLabeledThingInFrameById(labeledThingInFrameId)
       .then(result => {
         expect(result).toEqual(labeledThingInFrame);
         done();
@@ -152,26 +152,6 @@ describe('LabeledThingInFrameGateway', () => {
         .respond(200, {result: []});
 
       gateway.listLabeledThingInFrame(task, frameNumber)
-        .then(done);
-
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
-    });
-  });
-
-  using([
-    ['1'],
-    ['2'],
-    ['3'],
-    ['4'],
-  ], (labeledThingInFrameId) => {
-    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
-
-    it('should request the labeled thing in frame id as specified', done => {
-      $httpBackend
-        .expect('GET', expectedUrl)
-        .respond(200, {result: []});
-
-      gateway.getLabeledThingInFrame(labeledThingInFrameId)
         .then(done);
 
       bufferedHttp.flushBuffers().then(() => $httpBackend.flush());

@@ -50,7 +50,7 @@ class LabeledThingInFrameGateway {
    *
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
-  getLabeledThingInFrame(labeledThingInFrameId) {
+  getLabeledThingInFrameById(labeledThingInFrameId) {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
