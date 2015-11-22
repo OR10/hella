@@ -39,6 +39,8 @@ class labeling_api::worker(
 
   exec { 'restart supervisord':
     refreshonly => true,
-    command => '/etc/init.d/supervisord restart',
+    command => 'service supervisord restart',
+    path => '/bin:/usr/bin:/sbin:/usr/sbin',
+    user => 'root',
   }
 }
