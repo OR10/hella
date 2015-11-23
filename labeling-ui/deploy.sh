@@ -6,4 +6,4 @@ jspm install
 gulp test-unit
 gulp test-e2e
 gulp
-rsync -a Distribution/ root@${1}:/var/www/labeling-ui/
+rsync -e 'ssh -o UserKnownHostsFile=/dev/null,StrictHostKeyChecking=no' -a Distribution/ root@${1}:/var/www/labeling-ui/
