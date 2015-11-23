@@ -152,7 +152,7 @@ class LabeledThingInFrame
      */
     public function setIncomplete($incomplete)
     {
-        $this->incomplete = $incomplete;
+        $this->incomplete = (bool) $incomplete;
     }
 
     /**
