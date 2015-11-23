@@ -133,17 +133,8 @@ class ViewerStageController {
       thingLayer.activateTool(newActiveTool);
     });
 
-    $scope.$watch('vm.labeledThingsInFrame', newLabeledThingsInFrame => {
-      if (newLabeledThingsInFrame === null) {
-        thingLayer.clear();
-      } else {
-        thingLayer.addLabeledThingsInFrame(Object.values(newLabeledThingsInFrame));
-      }
-    });
-
     $scope.$watch('vm.selectedLabeledThingInFrame', (newThing) => {
       this.ghostedLabeledThingInFrame = null;
-      thingLayer.setSelectedLabeledThingInFrame(newThing);
     });
 
     // Reapply filters if they changed
@@ -202,7 +193,7 @@ class ViewerStageController {
   /**
    * Load all {@link FrameLocation}s corresponding to the assigned Task
    *
-   * @returns {Promise<Array<FrameLocation>>}
+   * @returns {AbortablePromise<Array<FrameLocation>>}
    * @private
    */
   _loadFrameLocations() {
@@ -241,7 +232,14 @@ class ViewerStageController {
         this._entityIdService.getUniqueId(),
         this.framePosition.position
       );
+
+      shape.labeledThingInFrameId = labeledThingInFrame.id;
+
+      this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
+      this.ghostedLabeledThingInFrame = null;
+      this.selectedLabeledThingInFrame = labeledThingInFrame;
     }
+
 
     // @TODO this needs to be fixed for supporting multiple shapes
     labeledThingInFrame.shapes[0] = shape;
