@@ -11,29 +11,23 @@ class Kitti extends Exception
      */
     private $frameNumber;
 
-    public function __construct($message = null, $code = 0, \Exception $previousException = null)
+    /**
+     * @param string    $message
+     * @param int       $frameNumber
+     * @param Exception $previousException
+     */
+    public function __construct($message = null, $frameNumber = null, \Exception $previousException = null)
     {
-        parent::__construct($message, $code, $previousException);
+        $this->frameNumber = (int) $frameNumber;
+
+        if ($this->frameNumber !== null) {
+            $message .= sprintf(', frameNumber: %d', $this->frameNumber);
+        }
+        parent::__construct($message, 0, $previousException);
     }
 
     public function getFrameNumber()
     {
         return $this->frameNumber;
-    }
-
-    public function setFrameNumber($frameNumber)
-    {
-        $this->frameNumber = (int) $frameNumber;
-    }
-
-    public function getMessage()
-    {
-        $message = parent::getMessage();
-
-        if ($this->frameNumber === null) {
-            $message .= sprintf(', frameNumber: %d', $this->frameNumber);
-        }
-
-        return $message;
     }
 }

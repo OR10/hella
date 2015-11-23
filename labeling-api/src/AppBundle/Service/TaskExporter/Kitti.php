@@ -158,13 +158,12 @@ class Kitti implements Service\TaskExporter
                         'type'        => $this->getObjectType($labeledThingInFrame),
                         'boundingBox' => $this->getOverallBoundingBox($labeledThingInFrame->getShapes()),
                     ];
-                } catch (Exception\Kitti $exception) {
-                    $exception->setFrameNumber($labeledThingInFrame->getFrameNumber());
-                    throw $exception;
                 } catch (\Exception $exception) {
-                    $kittiException = new Exception\Kitti($exception->getMessage(), 0, $exception);
-                    $kittiException->setFrameNumber($labeledThingInFrame->getFrameNumber());
-                    throw $kittiException;
+                    throw new Exception\Kitti(
+                        $exception->getMessage(),
+                        $labeledThingInFrame->getFrameNumber(),
+                        $exception
+                    );
                 }
             }
         }

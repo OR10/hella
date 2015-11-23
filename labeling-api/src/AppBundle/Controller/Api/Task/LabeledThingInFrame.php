@@ -131,7 +131,7 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThings         = $this->labelingTaskFacade->getLabeledThings($task);
         $labeledThingsInFrames = array();
         foreach ($labeledThings as $labeledThing) {
-            foreach ($this->labeledThingFacade->getLabeledThingInFrames($labeledThing) as $labeledThingInFrame) {
+            foreach ($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameNumber, 0, 1) as $labeledThingInFrame) {
                 $labeledThingsInFrames[] = $labeledThingInFrame;
             }
         }
