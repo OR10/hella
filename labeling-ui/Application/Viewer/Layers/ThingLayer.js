@@ -15,7 +15,7 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
 import PathRenderer from '../Renderer/PathRenderer';
 
-//import PaperRectangle from '../Renderer/Shapes/PaperRectangle';
+// import PaperRectangle from '../Renderer/Shapes/PaperRectangle';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -311,7 +311,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     switch (shape.type) {
       case 'rectangle':
         const rect = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
-        //const rect = new PaperRectangle(shape, shapeFillOptions);
+        // const rect = new PaperRectangle(shape, shapeFillOptions);
         return rect.id;
       case 'ellipse':
         const ellipse = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
