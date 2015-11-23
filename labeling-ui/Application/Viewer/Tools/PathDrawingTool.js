@@ -23,7 +23,7 @@ export default class PathDrawingTool extends Tool {
   }
 
   _addPoint(event) {
-    const point = event.point;
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
     const drawingOptions = {
       strokeColor: 'red',
       strokeWidth: 2,
@@ -38,7 +38,7 @@ export default class PathDrawingTool extends Tool {
       this._draw(point, drawingOptions);
       this.emit('path:new', this._path);
     } else {
-      this._path.add(event.point);
+      this._path.add(new paper.Point(event.event.offsetX, event.event.offsetY));
       this.emit('path:update', this._path);
     }
   }

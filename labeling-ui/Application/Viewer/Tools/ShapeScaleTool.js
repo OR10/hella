@@ -41,10 +41,11 @@ export default class ShapeScaleTool extends Tool {
   }
 
   _mouseDown(event) {
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
     this._deselectCurrentSelection();
 
     this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(event.point, {
+      const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: true,
         tolerance: this._options.hitTestTolerance,
@@ -58,10 +59,10 @@ export default class ShapeScaleTool extends Tool {
         if (this._hitResult.type === 'bounds') {
           switch (this._hitType) {
             case 'circle':
-              this._scaleAnchor = this._getCircleScaleAnchor(event.point, this._hitResult.item);
+              this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
               break;
             default:
-              this._scaleAnchor = this._getScaleAnchor(event.point, this._hitResult.item);
+              this._scaleAnchor = this._getScaleAnchor(point, this._hitResult.item);
           }
         }
       } else {
@@ -93,14 +94,15 @@ export default class ShapeScaleTool extends Tool {
 
   _mouseDrag(event) {
     if (!this._hitResult || this._hitResult.type !== 'bounds') return;
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY)
 
     this._modified = true;
     switch (this._hitType) {
       case 'circle':
-        this._scaleCircle(this._hitResult.item, event.point);
+        this._scaleCircle(this._hitResult.item, point);
         break;
       default:
-        this._scale(this._hitResult.item, event.point);
+        this._scale(this._hitResult.item, point);
     }
   }
 

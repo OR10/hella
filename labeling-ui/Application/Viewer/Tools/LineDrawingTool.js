@@ -14,7 +14,7 @@ export default class LineDrawingTool extends PathDrawingTool {
   }
 
   _addPoint(event) {
-    const point = event.point;
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
     const drawingOptions = {
       strokeColor: 'red',
       strokeWidth: 2,
