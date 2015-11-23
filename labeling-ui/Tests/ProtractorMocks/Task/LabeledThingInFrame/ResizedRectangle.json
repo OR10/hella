@@ -8,6 +8,7 @@
       "frameNumber": 1,
       "classes": [],
       "incomplete": true,
+      "ghost": false,
       "shapes": [
         {
           "type": "rectangle",
@@ -33,6 +34,7 @@
         "frameNumber": 1,
         "classes": [],
         "incomplete": true,
+        "ghost": false,
         "shapes": [
           {
             "type": "rectangle",

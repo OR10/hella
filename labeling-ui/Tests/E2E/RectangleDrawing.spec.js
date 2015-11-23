@@ -30,7 +30,7 @@ describe('Rectangle drawing', () => {
   it('should draw the background and initial shapes as provided by the backend', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
-    expect(getMockRequestsMade(mock)).toEqual([
+    expect(getMockRequestsMade(mock)).toHaveSameItems([
       {
         url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
         method: 'GET',
@@ -51,7 +51,7 @@ describe('Rectangle drawing', () => {
         url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
         method: 'GET',
       },
-    ]);
+    ], true);
 
     viewerDataManager.exportData()
       .then((data) => {
@@ -82,7 +82,7 @@ describe('Rectangle drawing', () => {
 
         expect(data).toEqualViewerData(expectedData);
 
-        expect(getMockRequestsMade(mock)).toEqual([
+        expect(getMockRequestsMade(mock)).toHaveSameItems([
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
             method: 'GET',
@@ -110,6 +110,7 @@ describe('Rectangle drawing', () => {
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
               incomplete: true,
+              "ghost": false,
               frameNumber: 1,
               shapes: [
                 {
@@ -123,7 +124,7 @@ describe('Rectangle drawing', () => {
             url: '/api/labeledThingInFrame/0115bd97fa0c1d86f8d1f65ff409f0b8',
             method: 'PUT',
           },
-        ]);
+        ], true);
 
         done();
       });
@@ -152,7 +153,7 @@ describe('Rectangle drawing', () => {
 
         expect(data).toEqualViewerData(expectedData);
 
-        expect(getMockRequestsMade(mock)).toEqual([
+        expect(getMockRequestsMade(mock)).toHaveSameItems([
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
             method: 'GET',
@@ -180,6 +181,7 @@ describe('Rectangle drawing', () => {
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
               frameNumber: 1,
+              "ghost": false,
               incomplete: true,
               shapes: [
                 {
@@ -193,7 +195,7 @@ describe('Rectangle drawing', () => {
             url: '/api/labeledThingInFrame/0115bd97fa0c1d86f8d1f65ff409f0b8',
             method: 'PUT',
           },
-        ]);
+        ], true);
 
         done();
       });
@@ -241,7 +243,7 @@ describe('Rectangle drawing', () => {
 
         expect(data).toEqualViewerData(expectedData);
 
-        expect(getMockRequestsMade(mock)).toEqual([
+        expect(getMockRequestsMade(mock)).toHaveSameItems([
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
             method: 'GET',
@@ -266,6 +268,7 @@ describe('Rectangle drawing', () => {
             data: {
               classes: [],
               incomplete: true,
+              "ghost": false,
               id: '0115bd97fa0c1d86f8d1f65ff409f0b8',
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
@@ -289,6 +292,7 @@ describe('Rectangle drawing', () => {
               'frameNumber': 1,
               'classes': [],
               incomplete: true,
+              "ghost": false,
               'shapes': [
                 {
                   'type': 'rectangle',
@@ -308,7 +312,7 @@ describe('Rectangle drawing', () => {
             url: '/api/labeledThingInFrame/0115bd97fa0c1d86f8d1f65ff409f0b8',
             method: 'PUT',
           },
-        ]);
+        ], true);
 
         done();
       });
