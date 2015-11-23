@@ -153,10 +153,19 @@ class Kitti implements Service\TaskExporter
         foreach ($labeledThings as $labeledThing) {
             $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
             foreach ($labeledThingsInFrame as $labeledThingInFrame) {
-                $result[$labeledThingInFrame->getFrameNumber()][] = [
-                    'type'        => $this->getObjectType($labeledThingInFrame),
-                    'boundingBox' => $this->getOverallBoundingBox($labeledThingInFrame->getShapes()),
-                ];
+                try {
+                    $result[$labeledThingInFrame->getFrameNumber()][] = [
+                        'type'        => $this->getObjectType($labeledThingInFrame),
+                        'boundingBox' => $this->getOverallBoundingBox($labeledThingInFrame->getShapes()),
+                    ];
+                } catch (Exception\Kitti $exception) {
+                    $exception->setFrameNumber($labeledThingInFrame->getFrameNumber());
+                    throw $exception;
+                } catch (\Exception $exception) {
+                    $kittiException = new Exception\Kitti($exception->getMessage(), 0, $exception);
+                    $kittiException->setFrameNumber($labeledThingInFrame->getFrameNumber());
+                    throw $kittiException;
+                }
             }
         }
 
@@ -240,6 +249,10 @@ class Kitti implements Service\TaskExporter
      */
     private function getOverallBoundingBox(array $shapes)
     {
+        if (empty($shapes)) {
+            throw new Exception\Kitti('Empty shapes');
+        }
+
         $boundingBox = null;
 
         foreach ($shapes as $shape) {
@@ -274,6 +287,14 @@ class Kitti implements Service\TaskExporter
 
         $boundingBoxCalculators = [
             'rectangle' => function($shape) {
+                if (!isset($shape['topLeft']['x'])
+                    || !isset($shape['topLeft']['y'])
+                    || !isset($shape['bottomRight']['x'])
+                    || !isset($shape['bottomRight']['y'])
+                ) {
+                    throw new Exception\Kitti('Invalid rectangle shape');
+                }
+
                 return [
                     'left'   => $shape['topLeft']['x'],
                     'top'    => $shape['topLeft']['y'],
@@ -283,6 +304,14 @@ class Kitti implements Service\TaskExporter
             },
             // ellipse handles ellipse and circle
             'ellipse' => function($shape) {
+                if (!isset($shape['point']['x'])
+                    || !isset($shape['point']['y'])
+                    || !isset($shape['size']['width'])
+                    || !isset($shape['size']['height'])
+                ) {
+                    throw new Exception\Kitti('Invalid ellipse shape');
+                }
+
                 return [
                     'left'   => $shape['point']['x'],
                     'top'    => $shape['point']['y'],
@@ -292,8 +321,18 @@ class Kitti implements Service\TaskExporter
             },
             // polygon handles polygon and line
             'polygon' => function($shape) {
-                if (count($shape['points']) === 0) {
+                if (!isset($shape['points']) || !is_array($shape['points'])) {
+                    throw new Exception\Kitti('Invalid polygon shape');
+                }
+
+                if (empty($shape['points'])) {
                     throw new Exception\Kitti('Empty point list for polygons is not allowed');
+                }
+
+                foreach ($shape['points'] as $point) {
+                    if (!isset($point['x']) || !isset($point['y'])) {
+                        throw new Exception\Kitti('Invalid point in polygon shape');
+                    }
                 }
 
                 $result = [
