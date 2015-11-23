@@ -3,7 +3,7 @@ import {isArray} from 'angular';
 /**
  * Provider for a buffered version of the $http client
  *
- * The buffering is queue-like, which allows to ensure sequentiell backend operation
+ * The buffering is queue-like, which allows to ensure sequential backend operation
  *
  * Different parallel working queues might be used.
  **/

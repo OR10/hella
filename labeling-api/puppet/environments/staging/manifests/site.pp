@@ -15,6 +15,8 @@ node /^(?:mysql|couch|workerqueue|app)(\-?\d+)\.annostation\..*/ {
 }
 
 node /^annostation\-ci\-slave\-.*/ {
+  include ::annostation_base::jenkins
+
   class { 'ruby':
     version      => '2.0.0',
     gems_version => 'latest'

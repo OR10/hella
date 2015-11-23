@@ -1,5 +1,7 @@
 import fs from 'fs';
+import zlib from 'zlib';
 import mkdirp from 'mkdirp';
+import base64 from 'base64-js';
 
 /**
  * Helper class for testing the viewer drawing features.
@@ -9,9 +11,9 @@ import mkdirp from 'mkdirp';
  * current test scenario. Secondly, it can be used to generate such fixture data by exporting
  * data from a new test scenario, saving it to disk and verifying the result manually.
  *
- * @class ViewerDataExporter
+ * @class ViewerDataManager
  */
-export default class ViewerDataExporter {
+export default class ViewerDataManager {
   /**
    * @param {Protractor} browser
    */
@@ -30,8 +32,25 @@ export default class ViewerDataExporter {
     return this._browser.executeScript(() => {
       const layerManager = document.getElementsByTagName('viewer-stage')[0].__endToEndTestOnlyLayerManager__;
 
-      return layerManager.exportLayerData();
+      return JSON.stringify(layerManager.exportLayerData());
     });
+  }
+
+  _decodeViewerData(encodedData) {
+    const decodedData = {};
+    const parsedData = JSON.parse(encodedData);
+
+    Object.keys(parsedData).forEach(layerName => {
+      // Don't instatiate an ImageData object here, we don't necessarily need it and the constructor is still experimental
+      // see https://developer.mozilla.org/en-US/docs/Web/API/ImageData/ImageData#Browser_compatibility
+      decodedData[layerName] = {
+        width: parsedData[layerName].width,
+        height: parsedData[layerName].height,
+        data: base64.toByteArray(parsedData[layerName].data),
+      };
+    });
+
+    return decodedData;
   }
 
   /**
@@ -45,15 +64,17 @@ export default class ViewerDataExporter {
 
     mkdirp.sync(exportDestination);
 
-    Object.keys(result).forEach((key) => {
-      const dataUrl = result[key];
-      const [ignored, extension, data] = dataUrl.match(/^data:.+\/(.+);base64,(.*)$/);
-      const buffer = new Buffer(data, 'base64');
+    fs.writeFileSync(`${exportDestination}/viewerData.json.gz`, zlib.gzipSync(new Buffer(result, 'utf-8')));
+  }
 
-      fs.writeFileSync(`${exportDestination}/${key}.${extension}`, buffer);
-    });
+  readViewerData(path) {
+    const importPath = `${process.cwd()}/${path}`;
 
-    fs.writeFileSync(`${exportDestination}/viewerData.json`, JSON.stringify(result));
+    const encodedData = zlib.gunzipSync(fs.readFileSync(importPath)).toString('utf-8');
+
+    const decodedData = this._decodeViewerData(encodedData);
+
+    return decodedData;
   }
 
   /**
@@ -69,7 +90,9 @@ export default class ViewerDataExporter {
           this._writeImageDataToFile(result, testName);
         }
 
-        return result;
+        const decodedData = this._decodeViewerData(result);
+
+        return decodedData;
       });
   }
 }

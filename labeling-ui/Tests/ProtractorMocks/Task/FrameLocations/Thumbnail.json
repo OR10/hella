@@ -1,0 +1,32 @@
+{
+  "request": {
+    "path": "/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail",
+    "queryString": {
+      "limit": "2",
+      "offset": "1"
+    },
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "frameNumber": 2,
+          "url": "\/fixtures\/images\/0115bd97fa0c1d86f8d1f65ff4095ed8_thumbnail_2.jpg"
+        },
+        {
+          "frameNumber": 3,
+          "url": "\/fixtures\/images\/0115bd97fa0c1d86f8d1f65ff4095ed8_thumbnail_3.jpg"
+        },
+        {
+          "frameNumber": 4,
+          "url": "\/fixtures\/images\/0115bd97fa0c1d86f8d1f65ff4095ed8_thumbnail_4.jpg"
+        },
+        {
+          "frameNumber": 5,
+          "url": "\/fixtures\/images\/0115bd97fa0c1d86f8d1f65ff4095ed8_thumbnail_5.jpg"
+        }
+      ]
+    }
+  }
+}

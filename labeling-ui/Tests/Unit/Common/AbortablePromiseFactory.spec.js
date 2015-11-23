@@ -1,6 +1,6 @@
 import 'jquery';
 import 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject} from 'angular-mocks';
 
 import AbortablePromiseFactoryProvider from 'Application/Common/Support/AbortablePromiseFactoryProvider';
 
@@ -137,7 +137,8 @@ describe('AbortablePromiseFactory', () => {
     const deferred = $q.defer();
     const promise = deferred.promise;
 
-    const wrapped = abortable(promise).then(spy1).then(spy2).then(spy3);
+    const wrapped = abortable(promise);
+    wrapped.then(spy1).then(spy2).then(spy3);
 
     deferred.resolve();
 

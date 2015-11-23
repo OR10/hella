@@ -69,7 +69,7 @@ class PaperLayer extends EventEmitter {
   }
 
   exportData() {
-    return this._element.toDataURL();
+    return this._element.getContext('2d').getImageData(0, 0, this._element.width, this._element.height);
   }
 }
 
