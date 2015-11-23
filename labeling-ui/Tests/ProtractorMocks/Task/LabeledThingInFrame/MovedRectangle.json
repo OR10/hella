@@ -7,6 +7,7 @@
       "rev": "14-547b5f8221abb7327b156d7c1591b14e",
       "frameNumber": 1,
       "incomplete": true,
+      "ghost": false,
       "classes": [],
       "shapes": [
         {
@@ -32,6 +33,7 @@
         "rev": "15-c3bc44889b793d878c57d5edb81e381f",
         "frameNumber": 1,
         "incomplete": true,
+        "ghost": false,
         "classes": [],
         "shapes": [
           {

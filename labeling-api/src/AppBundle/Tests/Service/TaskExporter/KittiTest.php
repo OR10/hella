@@ -187,6 +187,28 @@ class KittiTest extends Tests\KernelTestCase
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
     }
 
+    public function testExportingTaskWithIncompleteLabeledThingsInFrame()
+    {
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $this->createLabeledThingInFrame($task, 1, 'car', [
+            $this->createPolygonShape([
+                ['x' =>   7, 'y' =>   8],
+                ['x' =>  17, 'y' =>  28],
+                ['x' =>  -7, 'y' =>  -8],
+                ['x' => 107, 'y' => 308],
+            ]),
+        ]);
+        $incompleteThing = $this->createLabeledThingInFrame($task, 1, null, [], true);
+
+        $expectedResult = [
+            1 => [
+                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+            ],
+        ];
+
+        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+    }
+
     /**
      * Create one expected result entry from the given arguments.
      *
@@ -233,8 +255,13 @@ class KittiTest extends Tests\KernelTestCase
      * Store a labeled thing for the given frame number and the given shapes in
      * the database.
      */
-    private function createLabeledThingInFrame(Model\LabelingTask $task, $frameNumber, $type, array $shapes)
-    {
+    private function createLabeledThingInFrame(
+        Model\LabelingTask $task,
+        $frameNumber,
+        $type = null,
+        array $shapes = [],
+        $incomplete = false
+    ) {
         $labeledThing = new Model\LabeledThing($task);
         $uuids        = $this->documentManager->getCouchDBClient()->getUuids();
         $labeledThing->setId(reset($uuids));
@@ -246,10 +273,16 @@ class KittiTest extends Tests\KernelTestCase
         $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
         $labeledThingInFrame->setId(reset($uuids));
         $labeledThingInFrame->setFrameNumber($frameNumber);
-        $labeledThingInFrame->setClasses([(string) $type]);
         $labeledThingInFrame->setShapes($shapes);
+        $labeledThingInFrame->setIncomplete($incomplete);
+
+        if ($type !== null) {
+            $labeledThingInFrame->setClasses([(string) $type]);
+        }
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+
+        return $labeledThingInFrame;
     }
 
     /**

@@ -6,7 +6,7 @@ import EllipseDrawingTool from './EllipseDrawingTool';
  */
 export default class PointDrawingTool extends EllipseDrawingTool {
   _startNewEllipse(event) {
-    this._startPosition = event.point;
+    this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
 
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const radius = 1;

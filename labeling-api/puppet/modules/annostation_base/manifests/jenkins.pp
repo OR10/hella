@@ -1,5 +1,17 @@
 class annostation_base::jenkins(
 ) {
+  $packages = [
+    'libcairo2-dev',
+    'libjpeg8-dev',
+    'libpango1.0-dev',
+    'libgif-dev',
+    'build-essential',
+  ]
+
+  package { $packages:
+    ensure => present,
+  }
+
   file { '/home/ubuntu/.jspm/':
     ensure  => directory,
     owner   => 'ubuntu',

@@ -1,4 +1,5 @@
 import PathDrawingTool from './PathDrawingTool';
+import paper from 'paper';
 
 /**
  * A tool for drawing a path with the mouse cursor
@@ -14,7 +15,7 @@ export default class LineDrawingTool extends PathDrawingTool {
   }
 
   _addPoint(event) {
-    const point = event.point;
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
     const drawingOptions = {
       strokeColor: 'red',
       strokeWidth: 2,

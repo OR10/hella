@@ -46,10 +46,11 @@ export default class ShapeMoveTool extends Tool {
   }
 
   _mouseDown(event) {
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
     this._deselectCurrentSelection();
 
     this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(event.point, {
+      const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: true,
         segments: true,
@@ -62,8 +63,8 @@ export default class ShapeMoveTool extends Tool {
         this._paperShape = hitResult.item;
         this._paperShape.selected = true;
         this._offset = new paper.Point(
-          this._paperShape.position.x - event.point.x,
-          this._paperShape.position.y - event.point.y
+          this._paperShape.position.x - point.x,
+          this._paperShape.position.y - point.y
         );
       } else {
         this._paperShape = null;
@@ -96,9 +97,10 @@ export default class ShapeMoveTool extends Tool {
     if (!this._paperShape) {
       return;
     }
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
 
     this._modified = true;
-    this._moveTo(this._paperShape, event.point);
+    this._moveTo(this._paperShape, point);
   }
 
   _moveTo(item, centerPoint) {

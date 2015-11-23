@@ -18,6 +18,8 @@ exports.config = {
 
   onPrepare: () => {
     require('./Tests/Support/Jasmine/CustomMatchers');
+    require('jasmine-collection-matchers');
+
     const jasmineReporters = require('jasmine-reporters');
 
     return browser.getCapabilities().then(capabilities => {

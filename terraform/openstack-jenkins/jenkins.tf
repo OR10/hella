@@ -1,7 +1,7 @@
 resource "openstack_compute_instance_v2" "jenkins" {
   count = 2
 
-  name = "annostation-ci-slave-3-${count.index}"
+  name = "annostation-ci-slave-4-${count.index}"
   #image_name = "trusty"
   image_name = "trusty-jenkins"
   flavor_name = "m1.small"

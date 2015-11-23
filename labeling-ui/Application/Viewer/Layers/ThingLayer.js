@@ -86,7 +86,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeScaleTool}
      * @private
      */
-    this._shapeScaleTool = new ShapeScaleTool(this._context, undefined);
+    this._shapeScaleTool = new ShapeScaleTool(this._context, undefined, this._typeByPaperShapeId);
     /**
      * Tool for drawing rectangles
      *
