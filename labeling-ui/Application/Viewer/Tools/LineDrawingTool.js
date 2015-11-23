@@ -1,4 +1,5 @@
 import PathDrawingTool from './PathDrawingTool';
+import paper from 'paper';
 
 /**
  * A tool for drawing a path with the mouse cursor

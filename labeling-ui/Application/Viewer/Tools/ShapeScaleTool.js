@@ -1,4 +1,5 @@
 import Tool from './Tool';
+import paper from 'paper';
 
 /**
  * A Tool for scaling annotation shapes
