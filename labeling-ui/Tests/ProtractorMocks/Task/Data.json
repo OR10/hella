@@ -13,7 +13,12 @@
           "id": null,
           "startFrameNumber": 1,
           "endFrameNumber": 2
-        }
+        },
+        "requiredImageTypes": [
+          "source",
+          "sourceJpg",
+          "thumbnail"
+        ]
       }
     }
   }

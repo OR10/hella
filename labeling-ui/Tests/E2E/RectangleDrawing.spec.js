@@ -1,30 +1,36 @@
 import mock from 'protractor-http-mock';
-import ViewerDataExporter from '../Support/ViewerDataExporter';
+import ViewerDataManager from '../Support/ViewerDataManager';
+import {getMockRequestsMade} from '../Support/Protractor/Helpers';
 
 const taskDataMock = require('../ProtractorMocks/Task/Data.json');
-const frameLocationsMock = require('../ProtractorMocks/Task/FrameLocations.json');
+const sourceFrameLocationsMock = require('../ProtractorMocks/Task/FrameLocations/Source.json');
+const thumbnailFrameLocationsMock = require('../ProtractorMocks/Task/FrameLocations/Thumbnail.json');
 const labeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectangles.json');
 const labeledFrameMock = require('../ProtractorMocks/Task/LabeledFrame.json');
 const movedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/MovedRectangle.json');
 const resizedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedRectangle.json');
 const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedAndMovedRectangle.json');
 
-const initialViewerData = require('../Fixtures/ViewerData/RectangleDrawing/initialState.json');
-const movedRectangleViewerData = require('../Fixtures/ViewerData/RectangleDrawing/movedRectangle.json');
-const resizedRectangleViewerData = require('../Fixtures/ViewerData/RectangleDrawing/resizedRectangle.json');
-const compoundEditViewerData = require('../Fixtures/ViewerData/RectangleDrawing/compoundEdit.json');
+const viewerDataManager = new ViewerDataManager(browser);
 
-const viewerDataExporter = new ViewerDataExporter(browser);
-
-xdescribe('Rectangle drawing', () => {
+describe('Rectangle drawing', () => {
   beforeEach(() => {
-    mock([taskDataMock, frameLocationsMock, labeledThingsMock, labeledFrameMock, movedRectangleMock, resizedRectangleMock, resizedAndMovedRectangleMock]);
+    mock([
+      taskDataMock,
+      sourceFrameLocationsMock,
+      thumbnailFrameLocationsMock,
+      labeledThingsMock,
+      labeledFrameMock,
+      movedRectangleMock,
+      resizedRectangleMock,
+      resizedAndMovedRectangleMock,
+    ]);
   });
 
   it('should draw the background and initial shapes as provided by the backend', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
-    expect(mock.requestsMade()).toEqual([
+    expect(getMockRequestsMade(mock)).toEqual([
       {
         url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
         method: 'GET',
@@ -38,14 +44,20 @@ xdescribe('Rectangle drawing', () => {
         method: 'GET',
       },
       {
+        method: 'GET',
+        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1'
+      },
+      {
         url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
         method: 'GET',
       },
     ]);
 
-    viewerDataExporter.exportData()
+    viewerDataManager.exportData()
       .then((data) => {
-        expect(data).toEqualViewerStage(initialViewerData);
+        const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/initialState.json.gz');
+
+        expect(data).toEqualViewerData(expectedData);
         done();
       });
   });
@@ -64,11 +76,13 @@ xdescribe('Rectangle drawing', () => {
       .click()
       .perform();
 
-    viewerDataExporter.exportData()
+    viewerDataManager.exportData()
       .then((data) => {
-        expect(data).toEqualViewerStage(movedRectangleViewerData);
+        const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/movedRectangle.json.gz');
 
-        expect(mock.requestsMade()).toEqual([
+        expect(data).toEqualViewerData(expectedData);
+
+        expect(getMockRequestsMade(mock)).toEqual([
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
             method: 'GET',
@@ -80,6 +94,10 @@ xdescribe('Rectangle drawing', () => {
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
             method: 'GET',
+          },
+          {
+            method: 'GET',
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1'
           },
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
@@ -96,6 +114,7 @@ xdescribe('Rectangle drawing', () => {
               shapes: [
                 {
                   type: 'rectangle',
+                  labeledThingInFrameId: '0115bd97fa0c1d86f8d1f65ff409f0b8',
                   bottomRight: {y: 190, x: 140},
                   topLeft: {y: 60, x: 60},
                 },
@@ -110,12 +129,13 @@ xdescribe('Rectangle drawing', () => {
       });
   });
 
-  xit('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
+  it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
-    browser.waitForAngular();
-
     const viewer = element(by.css('.layer-container'));
+    const scaleToolButton = element(by.name('controls-button-scale-tool'));
+
+    scaleToolButton.click();
 
     browser.actions()
       .mouseMove(viewer, {x: 50, y: 50}) // initial position
@@ -126,11 +146,13 @@ xdescribe('Rectangle drawing', () => {
       .click()
       .perform();
 
-    viewerDataExporter.exportData(true, 'bar')
+    viewerDataManager.exportData()
       .then((data) => {
-        expect(data).toEqualViewerStage(resizedRectangleViewerData);
+        const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/resizedRectangle.json.gz');
 
-        expect(mock.requestsMade()).toEqual([
+        expect(data).toEqualViewerData(expectedData);
+
+        expect(getMockRequestsMade(mock)).toEqual([
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
             method: 'GET',
@@ -144,6 +166,10 @@ xdescribe('Rectangle drawing', () => {
             method: 'GET',
           },
           {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1',
+            method: 'GET',
+          },
+          {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
             method: 'GET',
           },
@@ -154,11 +180,13 @@ xdescribe('Rectangle drawing', () => {
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
               frameNumber: 1,
+              incomplete: true,
               shapes: [
                 {
                   type: 'rectangle',
                   bottomRight: {y: 180, x: 130},
                   topLeft: {y: 40, x: 40},
+                  labeledThingInFrameId: '0115bd97fa0c1d86f8d1f65ff409f0b8',
                 },
               ],
             },
@@ -171,12 +199,16 @@ xdescribe('Rectangle drawing', () => {
       });
   });
 
-  xit('should correctly apply a compound transformation a rectangle on canvas and update the changed coordinates', (done) => {
+  it('should correctly apply a compound transformation a rectangle on canvas and update the changed coordinates', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
     const viewer = element(by.css('.layer-container'));
+    const scaleToolButton = element(by.name('controls-button-scale-tool'));
+    const moveToolButton = element(by.name('controls-button-move-tool'));
 
     browser.waitForAngular();
+
+    scaleToolButton.click();
 
     // Resize
     browser.actions()
@@ -191,6 +223,8 @@ xdescribe('Rectangle drawing', () => {
     // Explicitly wait for backend to sync since we don't have proper queueing, yet
     browser.waitForAngular();
 
+    moveToolButton.click();
+
     // Move
     browser.actions()
       .mouseMove(viewer, {x: 50, y: 50}) // move within the object position
@@ -201,11 +235,13 @@ xdescribe('Rectangle drawing', () => {
       .click()
       .perform();
 
-    viewerDataExporter.exportData()
+    viewerDataManager.exportData()
       .then((data) => {
-        expect(data).toEqualViewerStage(compoundEditViewerData);
+        const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/compoundEdit.json.gz');
 
-        expect(mock.requestsMade()).toEqual([
+        expect(data).toEqualViewerData(expectedData);
+
+        expect(getMockRequestsMade(mock)).toEqual([
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
             method: 'GET',
@@ -219,12 +255,17 @@ xdescribe('Rectangle drawing', () => {
             method: 'GET',
           },
           {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1',
+            method: 'GET',
+          },
+          {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
             method: 'GET',
           },
           {
             data: {
               classes: [],
+              incomplete: true,
               id: '0115bd97fa0c1d86f8d1f65ff409f0b8',
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
@@ -234,6 +275,7 @@ xdescribe('Rectangle drawing', () => {
                   type: 'rectangle',
                   bottomRight: {y: 180, x: 130},
                   topLeft: {y: 40, x: 40},
+                  labeledThingInFrameId: '0115bd97fa0c1d86f8d1f65ff409f0b8',
                 },
               ],
             },
@@ -246,6 +288,7 @@ xdescribe('Rectangle drawing', () => {
               'rev': '15-c3bc44889b793d878c57d5edb81e381f',
               'frameNumber': 1,
               'classes': [],
+              incomplete: true,
               'shapes': [
                 {
                   'type': 'rectangle',
@@ -257,6 +300,7 @@ xdescribe('Rectangle drawing', () => {
                     'x': 140,
                     'y': 190,
                   },
+                  labeledThingInFrameId: '0115bd97fa0c1d86f8d1f65ff409f0b8',
                 },
               ],
               'labeledThingId': '0115bd97fa0c1d86f8d1f65ff409faa6',

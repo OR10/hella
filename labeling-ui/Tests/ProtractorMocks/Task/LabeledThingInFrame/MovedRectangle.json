@@ -18,7 +18,8 @@
           "bottomRight": {
             "x": 140,
             "y": 190
-          }
+          },
+          "labeledThingInFrameId": "0115bd97fa0c1d86f8d1f65ff409f0b8"
         }
       ],
       "labeledThingId": "0115bd97fa0c1d86f8d1f65ff409faa6"
@@ -42,7 +43,8 @@
             "bottomRight": {
               "x": 140,
               "y": 190
-            }
+            },
+            "labeledThingInFrameId": "0115bd97fa0c1d86f8d1f65ff409f0b8"
           }
         ],
         "labeledThingId": "0115bd97fa0c1d86f8d1f65ff409faa6"
