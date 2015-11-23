@@ -143,7 +143,6 @@ class ViewerStageController {
 
     $scope.$watch('vm.selectedLabeledThingInFrame', (newThing) => {
       this.ghostedLabeledThingInFrame = null;
-      thingLayer.setSelectedLabeledThingInFrame(newThing);
     });
 
     // Reapply filters if they changed

@@ -30,8 +30,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
   constructor($scope, drawingContextService) {
     super($scope, drawingContextService);
 
-    this._selectedLabeledThingInFrame = null;
-
     /**
      * Renderer used by this layer to draw labeling rectangles loaded from the backend
      *
@@ -196,49 +194,49 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
       this._typeByPaperShapeId.set(rectangle.id, 'rectangle');
-      this._labeledThingInFrameIdByPaperShapeId.set(rectangle.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(rectangle.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(rectangle, 'rectangle');
       this.emit('shape:new', shape);
     });
 
     this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
       this._typeByPaperShapeId.set(ellipse.id, 'ellipse');
-      this._labeledThingInFrameIdByPaperShapeId.set(ellipse.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(ellipse.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(ellipse, 'ellipse');
       this.emit('shape:new', shape);
     });
 
     this._circleDrawingTool.on('ellipse:complete', circle => {
       this._typeByPaperShapeId.set(circle.id, 'circle');
-      this._labeledThingInFrameIdByPaperShapeId.set(circle.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(circle.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(circle, 'circle');
       this.emit('shape:new', shape);
     });
 
     this._pathDrawingTool.on('path:complete', path => {
       this._typeByPaperShapeId.set(path.id, 'path');
-      this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(path, 'path');
       this.emit('shape:new', shape);
     });
 
     this._polygonDrawingTool.on('path:complete', polygon => {
       this._typeByPaperShapeId.set(polygon.id, 'polygon');
-      this._labeledThingInFrameIdByPaperShapeId.set(polygon.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(polygon.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(polygon, 'polygon');
       this.emit('shape:new', shape);
     });
 
     this._lineDrawingTool.on('path:complete', line => {
       this._typeByPaperShapeId.set(line.id, 'line');
-      this._labeledThingInFrameIdByPaperShapeId.set(line.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(line.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(line, 'line');
       this.emit('shape:new', shape);
     });
 
     this._pointDrawingTool.on('point:complete', point => {
       this._typeByPaperShapeId.set(point.id, 'point');
-      this._labeledThingInFrameIdByPaperShapeId.set(point.id, this._selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(point.id, this._$scope.selectedLabeledThingInFrame.id);
       const shape = this._createShapeFromPaperShape(point, 'point');
       this.emit('shape:new', shape);
     });
@@ -279,10 +277,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       default:
         this._shapeMoveTool.activate();
     }
-  }
-
-  setSelectedLabeledThingInFrame(thing) {
-    this._selectedLabeledThingInFrame = thing;
   }
 
   /**

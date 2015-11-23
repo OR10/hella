@@ -15,6 +15,12 @@ class PaperLayer extends EventEmitter {
     super();
 
     /**
+     * @type {$rootScope.Scope}
+     * @private
+     */
+    this._$scope = $scope;
+
+    /**
      * @type {DrawingContext}
      * @protected
      */
