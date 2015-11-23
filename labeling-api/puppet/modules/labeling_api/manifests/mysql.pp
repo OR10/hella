@@ -25,6 +25,8 @@ class labeling_api::mysql(
 
   exec { 'restart mysqld':
     refreshonly => true,
-    command => '/etc/init.d/mysql restart',
+    command => 'service mysql restart',
+    path => '/bin:/usr/bin:/sbin:/usr/sbin',
+    user => 'root',
   }
 }

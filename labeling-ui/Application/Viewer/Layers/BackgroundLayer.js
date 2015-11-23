@@ -60,7 +60,7 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
   }
 
   exportData() {
-    return this._element.toDataURL();
+    return this._raster.getImageData(new paper.Rectangle(0, 0, this._raster.width, this._raster.height));
   }
 
   /**
@@ -69,7 +69,7 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
    * @param {Filter} filter
    */
   applyFilter(filter) {
-    // This is needed for the Firefox to work... 
+    // This is needed for the Firefox to work...
     if (!this._backgroundImage) {
       return;
     }

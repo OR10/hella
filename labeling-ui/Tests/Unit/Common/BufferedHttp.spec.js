@@ -1,5 +1,5 @@
 import 'jquery';
-import 'angular';
+import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 
 import AbortablePromise from 'Application/Common/Support/AbortablePromise';

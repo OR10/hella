@@ -29,6 +29,7 @@ System.config({
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
+    "base64-js": "github:beatgammit/base64-js@1.0.0",
     "bootstrap": "github:twbs/bootstrap-sass@3.3.5",
     "clean-css": "npm:clean-css@3.4.7",
     "core-js": "npm:core-js@1.2.6",

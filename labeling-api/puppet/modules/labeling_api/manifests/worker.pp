@@ -3,6 +3,7 @@ class labeling_api::worker(
   $user,
   $numberOfLowNormalWorkers = 8,
   $numberOfHighNormalWorkers = 2,
+  $symfony_environment = 'prod',
 ) {
   include ::php
   include ::supervisord
@@ -16,6 +17,9 @@ class labeling_api::worker(
     directory => $app_dir,
     startsecs => 0,
     numprocs => $numberOfLowNormalWorkers,
+    environment => {
+        'SYMFONY_ENV' => $symfony_environment,
+    },
     notify => Exec['restart supervisord'],
   }
 
@@ -27,11 +31,16 @@ class labeling_api::worker(
     directory => $app_dir,
     startsecs => 0,
     numprocs => $numberOfHighNormalWorkers,
+    environment => {
+        'SYMFONY_ENV' => $symfony_environment,
+    },
     notify => Exec['restart supervisord'],
   }
 
   exec { 'restart supervisord':
     refreshonly => true,
-    command => '/etc/init.d/supervisord reload',
+    command => 'service supervisord restart',
+    path => '/bin:/usr/bin:/sbin:/usr/sbin',
+    user => 'root',
   }
 }

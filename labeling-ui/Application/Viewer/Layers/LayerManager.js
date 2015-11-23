@@ -1,3 +1,5 @@
+import base64 from 'base64-js';
+
 /**
  * Management component to keep track of an access the different layers of the viewer
  *
@@ -107,7 +109,7 @@ export default class LayerManager {
 
   /**
    * Exports the currently drawn image data for all layers in this manager
-   * encoded as base64 data urls.
+   * encoded as base64.
    *
    * @return {Object<String,String>}
    */
@@ -115,7 +117,13 @@ export default class LayerManager {
     const data = {};
 
     Object.values(this.layers).forEach(layer => {
-      data[layer.name] = layer.layer.exportData();
+      const rawData = layer.layer.exportData();
+
+      data[layer.name] = {
+        width: rawData.width,
+        height: rawData.height,
+        data: base64.fromByteArray(rawData.data),
+      };
     });
 
     return data;

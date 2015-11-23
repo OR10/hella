@@ -48,7 +48,7 @@ class AbortablePromise {
      * @name AbortablePromise#catch
      * @returns {AbortablePromise}
      */
-    this['catch'] = (...args) => {
+    this.catch = (...args) => {
       const newPromise = innerPromise.catch(...args);
       return new AbortablePromise($q, newPromise, abortDeferred, this);
     };
@@ -57,7 +57,7 @@ class AbortablePromise {
      * @name AbortablePromise#finally
      * @returns {AbortablePromise}
      */
-    this['finally'] = (...args) => {
+    this.finally = (...args) => {
       const newPromise = innerPromise.finally(...args);
       return new AbortablePromise($q, newPromise, abortDeferred, this);
     };

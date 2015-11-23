@@ -7,6 +7,7 @@
       "rev": "15-c3bc44889b793d878c57d5edb81e381f",
       "frameNumber": 1,
       "classes": [],
+      "incomplete": true,
       "shapes": [
         {
           "type": "rectangle",
@@ -17,7 +18,8 @@
           "bottomRight": {
             "x": 140,
             "y": 190
-          }
+          },
+          "labeledThingInFrameId": "0115bd97fa0c1d86f8d1f65ff409f0b8"
         }
       ],
       "labeledThingId": "0115bd97fa0c1d86f8d1f65ff409faa6"
@@ -30,6 +32,7 @@
         "rev": "16-c3bc44889b793d878c57d5edb81e381e",
         "frameNumber": 1,
         "classes": [],
+        "incomplete": true,
         "shapes": [
           {
             "type": "rectangle",
@@ -40,7 +43,8 @@
             "bottomRight": {
               "x": 140,
               "y": 190
-            }
+            },
+            "labeledThingInFrameId": "0115bd97fa0c1d86f8d1f65ff409f0b8"
           }
         ],
         "labeledThingId": "0115bd97fa0c1d86f8d1f65ff409faa6"
