@@ -129,21 +129,26 @@ class LabeledThingInFrame extends Controller\Base
         }
 
         $labeledThings         = $this->labelingTaskFacade->getLabeledThings($task);
-        $labeledThingsInFrames = array();
-        foreach ($labeledThings as $labeledThing) {
-            foreach ($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameNumber, 0, 1) as $labeledThingInFrame) {
-                $labeledThingsInFrames[] = $labeledThingInFrame;
-            }
-        }
 
-        $labeledThingsInFrames = array_filter(
-            $labeledThingsInFrames,
-            function ($labeledThingInFrame) use ($frameNumber) {
-                return ($labeledThingInFrame->getFrameNumber() === (int) $frameNumber);
-            }
-        );
+        $labeledThingsInFrames = $this->labeledThingFacade->getLabledThingsInFrameForLabeledThingsAndFrame($labeledThings->toArray(), $frameNumber);
 
-        $response->setData(['result' => array_values($labeledThingsInFrames)]);
+//        var_dump($labeledThingsInFrames->toArray());
+//        die();
+
+//        foreach ($labeledThings as $labeledThing) {
+//            foreach ($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameNumber, 0, 1) as $labeledThingInFrame) {
+//                $labeledThingsInFrames[] = $labeledThingInFrame;
+//            }
+//        }
+//
+//        $labeledThingsInFrames = array_filter(
+//            $labeledThingsInFrames,
+//            function ($labeledThingInFrame) use ($frameNumber) {
+//                return ($labeledThingInFrame->getFrameNumber() === (int) $frameNumber);
+//            }
+//        );
+//
+        $response->setData(['result' => $labeledThingsInFrames->toArray()]);
 
         return $response;
     }
