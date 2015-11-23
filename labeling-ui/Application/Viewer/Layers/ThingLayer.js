@@ -15,8 +15,6 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
 import PathRenderer from '../Renderer/PathRenderer';
 
-//import PaperRectangle from '../Renderer/Shapes/PaperRectangle';
-
 /**
  * A Layer used to draw Things within the viewer
  *
@@ -67,6 +65,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._labeledThingInFrameIdByPaperShapeId = new Map();
+
+    /**
+     * @type {Map}
+     * @private
+     */
+    this._paperShapeByLabeledThingInFrameId = new Map();
 
     /**
      * Tool for moving shapes
@@ -133,9 +137,21 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
-    $scope.$watch('vm.ghostedLabeledThingInFrame', labeledThingInFrame => {
+    $scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
       if (labeledThingInFrame === null) {
-        // @TODO: Remove old ghost here
+        if (oldLabeledThingInFrame !== null) {
+          // Remove ghost if it is no longer needed
+          const oldGhostPaperShape = this._paperShapeByLabeledThingInFrameId.get(oldLabeledThingInFrame.id);
+          if (oldGhostPaperShape) {
+            // @TODO: I am not 100% sure, why this can happen. Should be fixed at its root cause
+            oldGhostPaperShape.remove();
+          }
+
+          this._context.withScope(scope => {
+            scope.view.draw();
+          });
+        }
+
         return;
       }
 
@@ -145,7 +161,21 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
       this._context.withScope(scope => {
         scope.view.draw();
-      })
+      });
+    });
+
+    $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
+      if (newLabeledThingsInFrame === null) {
+        this.clear();
+        return;
+      }
+
+      const addedLabeledThingsInFrame = Object.values(newLabeledThingsInFrame)
+        .filter(
+          newLabeledThingInFrame => oldLabeledThingsInFrame === null || oldLabeledThingsInFrame[newLabeledThingInFrame.id] === undefined
+        );
+
+      this.addLabeledThingsInFrame(addedLabeledThingsInFrame);
     });
 
     this._shapeMoveTool.on('shape:selected', paperShape => {
@@ -194,49 +224,56 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
       this._typeByPaperShapeId.set(rectangle.id, 'rectangle');
-      this._labeledThingInFrameIdByPaperShapeId.set(rectangle.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(rectangle.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, rectangle);
       const shape = this._createShapeFromPaperShape(rectangle, 'rectangle');
       this.emit('shape:new', shape);
     });
 
     this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
       this._typeByPaperShapeId.set(ellipse.id, 'ellipse');
-      this._labeledThingInFrameIdByPaperShapeId.set(ellipse.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(ellipse.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, ellipse);
       const shape = this._createShapeFromPaperShape(ellipse, 'ellipse');
       this.emit('shape:new', shape);
     });
 
     this._circleDrawingTool.on('ellipse:complete', circle => {
       this._typeByPaperShapeId.set(circle.id, 'circle');
-      this._labeledThingInFrameIdByPaperShapeId.set(circle.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(circle.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, circle);
       const shape = this._createShapeFromPaperShape(circle, 'circle');
       this.emit('shape:new', shape);
     });
 
     this._pathDrawingTool.on('path:complete', path => {
       this._typeByPaperShapeId.set(path.id, 'path');
-      this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, path);
       const shape = this._createShapeFromPaperShape(path, 'path');
       this.emit('shape:new', shape);
     });
 
     this._polygonDrawingTool.on('path:complete', polygon => {
       this._typeByPaperShapeId.set(polygon.id, 'polygon');
-      this._labeledThingInFrameIdByPaperShapeId.set(polygon.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(polygon.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, polygon);
       const shape = this._createShapeFromPaperShape(polygon, 'polygon');
       this.emit('shape:new', shape);
     });
 
     this._lineDrawingTool.on('path:complete', line => {
       this._typeByPaperShapeId.set(line.id, 'line');
-      this._labeledThingInFrameIdByPaperShapeId.set(line.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(line.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, line);
       const shape = this._createShapeFromPaperShape(line, 'line');
       this.emit('shape:new', shape);
     });
 
     this._pointDrawingTool.on('point:complete', point => {
       this._typeByPaperShapeId.set(point.id, 'point');
-      this._labeledThingInFrameIdByPaperShapeId.set(point.id, this._$scope.selectedLabeledThingInFrame.id);
+      this._labeledThingInFrameIdByPaperShapeId.set(point.id, this._$scope.vm.selectedLabeledThingInFrame.id);
+      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, point);
       const shape = this._createShapeFromPaperShape(point, 'point');
       this.emit('shape:new', shape);
     });
@@ -306,10 +343,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   addLabeledThingInFrame(labeledThingInFrame, update = true) {
      const paperShapes = labeledThingInFrame.shapes.map(shape => {
+       let selectedLabeledThingId = null;
+       if (this._$scope.vm.selectedLabeledThingInFrame) {
+         selectedLabeledThingId = this._$scope.vm.selectedLabeledThingInFrame.labeledThingId;
+       }
+
+       const selected = labeledThingInFrame.labeledThingId === selectedLabeledThingId;
+
        if (!shape.labeledThingInFrameId) {
          shape.labeledThingInFrameId = labeledThingInFrame.id;
        }
-       return this._addShape(shape, false);
+
+       return this._addShape(shape, false, selected);
     });
 
     if (update) {
@@ -329,13 +374,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
    *
    * @param {Shape} shape
    * @param {boolean?} update
+   * @param {boolean?} selected
    * @return {paper.Shape}
    */
-  _addShape(shape, update = true) {
-    const paperShape = this._drawShape(shape);
+  _addShape(shape, update = true, selected = false) {
+    const paperShape = this._drawShape(shape, selected);
 
     this._typeByPaperShapeId.set(paperShape.id, shape.type);
     this._labeledThingInFrameIdByPaperShapeId.set(paperShape.id, shape.labeledThingInFrameId);
+    this._paperShapeByLabeledThingInFrameId.set(shape.labeledThingInFrameId, paperShape);
 
     if (update) {
       this._context.withScope((scope) => {
@@ -352,10 +399,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * The drawn Paper Shape will be returned
    *
    * @param {Shape} shape
+   * @param {boolean} selected
    * @returns {paper.Shape}
    * @private
    */
-  _drawShape(shape) {
+  _drawShape(shape, selected = false) {
     const shapeFillOptions = {
       strokeColor: 'red',
       strokeWidth: 2,
@@ -369,25 +417,39 @@ class ThingLayer extends PanAndZoomPaperLayer {
     };
 
     return this._context.withScope(scope => {
+      let paperShape = null;
       // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
       switch (shape.type) {
         case 'rectangle':
-          return this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
+          paperShape = this._rectangleRenderer.drawRectangle(shape.topLeft, shape.bottomRight, shapeFillOptions);
+          break;
         case 'ellipse':
-          return this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+          paperShape = this._ellipseRenderer.drawEllipse(shape.point, shape.size, shapeFillOptions);
+          break;
         case 'circle':
-          return this._ellipseRenderer.drawCircle(shape.point, shape.size.width / 2, shapeFillOptions);
+          paperShape = this._ellipseRenderer.drawCircle(shape.point, shape.size.width / 2, shapeFillOptions);
+          break;
         case 'path':
-          return this._pathRenderer.drawPath(shape.points, shapeOptions);
+          paperShape = this._pathRenderer.drawPath(shape.points, shapeOptions);
+          break;
         case 'polygon':
-          return this._pathRenderer.drawPolygon(shape.points, shapeFillOptions);
+          paperShape = this._pathRenderer.drawPolygon(shape.points, shapeFillOptions);
+          break;
         case 'line':
-          return this._pathRenderer.drawLine(shape.points[0], shape.segments[1], shapeOptions);
+          paperShape = this._pathRenderer.drawLine(shape.points[0], shape.segments[1], shapeOptions);
+          break;
         case 'point':
-          return this._ellipseRenderer.drawCircle(shape.point, 1, shapeFillOptions);
+          paperShape = this._ellipseRenderer.drawCircle(shape.point, 1, shapeFillOptions);
+          break;
         default:
           throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
       }
+
+      if (selected) {
+        this._shapeMoveTool.selectShape(paperShape);
+      }
+
+      return paperShape;
     });
   }
 
@@ -498,6 +560,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     super.clear();
     this._typeByPaperShapeId.clear();
     this._labeledThingInFrameIdByPaperShapeId.clear();
+    this._paperShapeByLabeledThingInFrameId.clear();
   }
 }
 

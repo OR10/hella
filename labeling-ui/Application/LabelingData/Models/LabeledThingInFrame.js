@@ -70,7 +70,7 @@ class LabeledThingInFrame extends LabeledObject {
       classes,
       incomplete,
       shapes: this._ghostBustShapes(id, shapes),
-      frameNumber
+      frameNumber,
     });
   }
 
