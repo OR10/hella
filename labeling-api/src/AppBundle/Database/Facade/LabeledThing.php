@@ -54,29 +54,6 @@ class LabeledThing
             ->execute();
     }
 
-    /**
-     * @param Model\LabeledThing[] $labeledThings
-     * @param int $frameNumber
-     *
-     * @return mixed
-     */
-    public function getLabledThingsInFrameForLabeledThingsAndFrame($labeledThings, $frameNumber)
-    {
-        $keys = array_map(
-            function(Model\LabeledThing $labeledThing) use ($frameNumber) {
-                return [$labeledThing->getId(), $frameNumber];
-            },
-            $labeledThings
-        );
-
-        return $this->documentManager
-            ->createQuery('labeling_api', 'labeled_thing_in_frame')
-            ->setKeys($keys)
-            ->onlyDocs(true)
-            ->execute();
-
-    }
-
     public function getlabelingTasks(Model\LabeledThing $labeledThing)
     {
         $this->documentManager->find(Model\LabelingTask::class, $labeledThing->getLabelingTaskId());

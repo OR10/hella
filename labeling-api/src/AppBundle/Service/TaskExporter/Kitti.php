@@ -153,6 +153,13 @@ class Kitti implements Service\TaskExporter
         foreach ($labeledThings as $labeledThing) {
             $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
             foreach ($labeledThingsInFrame as $labeledThingInFrame) {
+                if ($labeledThingInFrame->getIncomplete()) {
+                    // TODO: it makes no sense to export incomplete things but
+                    // we may want to generate some warnings if incomplete
+                    // things are found
+                    continue;
+                }
+
                 try {
                     $result[$labeledThingInFrame->getFrameNumber()][] = [
                         'type'        => $this->getObjectType($labeledThingInFrame),
