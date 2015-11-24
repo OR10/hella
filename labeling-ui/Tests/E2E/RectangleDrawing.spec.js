@@ -30,34 +30,43 @@ xdescribe('Rectangle drawing', () => {
   it('should draw the background and initial shapes as provided by the backend', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
-    expect(getMockRequestsMade(mock)).toHaveSameItems([
-      {
-        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
-        method: 'GET',
-      },
-      {
-        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/source?limit=2&offset=0',
-        method: 'GET',
-      },
-      {
-        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
-        method: 'GET',
-      },
-      {
-        method: 'GET',
-        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1'
-      },
-      {
-        url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
-        method: 'GET',
-      },
-    ], true);
+    /*
+     * NOTE! This seems to be required to make the first test run on jenkins even though the first thing
+     * exportData does is wait for angular to settle. I don't completely understand what is happening,
+     * but it seems to work for now. If this is no longer the first executed spec it might be safe to
+     * remove it.
+     */
+    browser.waitForAngular();
 
     viewerDataManager.exportData()
       .then((data) => {
         const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/initialState.json.gz');
 
         expect(data).toEqualViewerData(expectedData);
+
+        expect(getMockRequestsMade(mock)).toHaveSameItems([
+          {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
+            method: 'GET',
+          },
+          {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/source?limit=2&offset=0',
+            method: 'GET',
+          },
+          {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
+            method: 'GET',
+          },
+          {
+            method: 'GET',
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1'
+          },
+          {
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
+            method: 'GET',
+          },
+        ], true);
+
         done();
       });
   });
