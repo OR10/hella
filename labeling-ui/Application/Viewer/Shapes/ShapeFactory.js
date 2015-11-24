@@ -1,45 +1,16 @@
 import paper from 'paper';
-import RectangleShape from './RectangleShape';
+import Rectangle from './Rectangle';
 
 class ShapeFactory {
-  constructor() {
-
+  constructor($baseScope) {
+    this._$baseScope = $baseScope;
   }
 
-  /**
-   * Evil hack to extend paper class, which otherwise does not work properly
-   * We are essentially destroying the prototype chain here, but I don't see another way for now.
-   * (Only other way would be using __proto__ which is not supported by older IEs :()
-   *
-   * @param paperShape
-   * @param ourShape
-   * @returns {path}
-   * @private
-   */
-  _bendInheritanceModel(paperShape, ourShape) {
-    const newInstance = Object.create(paperShape);
-    Object.getOwnPropertyNames(ourShape.constructor.prototype).forEach(property => {
-      if (property === 'constructor') {
-        return;
-      }
+  createRectangle({shape, color}) {
+    const $scope = this._$baseScope.$new(true);
+    $scope.vm = {shape, color};
 
-      newInstance[property] = ourShape.constructor.prototype[property];
-    });
-
-    Object.getOwnPropertyNames(ourShape).forEach(property => {
-      newInstance[property] = ourShape[property];
-    });
-
-    return newInstance;
-  }
-
-  createRectangle(shape, shapeFillOptions) {
-    const params = Object.assign({}, shapeFillOptions, {from: shape.topLeft, to: shape.bottomRight});
-
-    const paperRectangle = new paper.Path.Rectangle(params);
-    const rectangle = new RectangleShape();
-
-    return this._bendInheritanceModel(paperRectangle, rectangle);
+    return new Rectangle($scope);
   }
 }
 
