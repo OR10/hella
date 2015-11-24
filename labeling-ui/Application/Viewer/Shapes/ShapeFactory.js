@@ -6,9 +6,9 @@ class ShapeFactory {
     this._$baseScope = $baseScope;
   }
 
-  createRectangle({shape, color}) {
+  createRectangle({shape, color, selected = true}) {
     const $scope = this._$baseScope.$new(true);
-    $scope.vm = {shape, color};
+    $scope.vm = {shape, color, selected};
 
     return new Rectangle($scope);
   }

@@ -4,16 +4,21 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
+ *
+ * @extends Tool
  */
-export default class RectangleDrawingTool extends Tool {
+class RectangleDrawingTool extends Tool {
   /**
+   * @param shapeFactory
    * @param {DrawingContext} drawingContext
    * @param {Object} options
    */
-  constructor(drawingContext, options) {
+  constructor(shapeFactory, drawingContext, options) {
     super(drawingContext, options);
 
-    this._renderer = new RectangleRenderer();
+    //this._renderer = new RectangleRenderer();
+
+    this._shapeFactory = shapeFactory;
 
     this._rect = null;
     this._startPosition = null;
@@ -45,7 +50,8 @@ export default class RectangleDrawingTool extends Tool {
     };
 
     this._context.withScope(() => {
-      this._rect = this._renderer.drawRectangle(this._startPosition, endPosition, drawingOptions);
+      this._shapeFactory.createRectangle({shape: })
+      //this._rect = this._renderer.drawRectangle(this._startPosition, endPosition, drawingOptions);
     });
 
     this.emit('rectangle:new', this._rect);
@@ -85,3 +91,5 @@ export default class RectangleDrawingTool extends Tool {
     return this._rect.bounds.bottomLeft;
   }
 }
+
+export default RectangleDrawingTool;

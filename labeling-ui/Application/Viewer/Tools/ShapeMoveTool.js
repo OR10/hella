@@ -61,7 +61,7 @@ export default class ShapeMoveTool extends Tool {
 
       if (hitResult) {
         this._paperShape = hitResult.item;
-        this._paperShape.selected = true;
+        this._paperShape.select();
         this._offset = new paper.Point(
           this._paperShape.position.x - point.x,
           this._paperShape.position.y - point.y
@@ -74,15 +74,15 @@ export default class ShapeMoveTool extends Tool {
 
   _deselectCurrentSelection() {
     if (this._paperShape) {
-      this._paperShape.selected = false;
+      this._paperShape.deselect();
     }
   }
 
   _mouseUp() {
     if (this._paperShape) {
       if (this._modified) {
-        this.emit('shape:update', this._paperShape);
         this._modified = false;
+
       } else {
         this.emit('shape:selected', this._paperShape);
       }
@@ -100,10 +100,7 @@ export default class ShapeMoveTool extends Tool {
     const point = new paper.Point(event.event.offsetX, event.event.offsetY);
 
     this._modified = true;
-    this._moveTo(this._paperShape, point);
+    this._paperShape.moveTo(point.add(this._offset));
   }
 
-  _moveTo(item, centerPoint) {
-    item.position = centerPoint.add(this._offset);
-  }
 }
