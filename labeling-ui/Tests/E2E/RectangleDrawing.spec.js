@@ -13,7 +13,7 @@ const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThi
 
 const viewerDataManager = new ViewerDataManager(browser);
 
-xdescribe('Rectangle drawing', () => {
+describe('Rectangle drawing', () => {
   beforeEach(() => {
     mock([
       taskDataMock,
