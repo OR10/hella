@@ -94,8 +94,10 @@ export default class ShapeScaleTool extends Tool {
   }
 
   _mouseDrag(event) {
-    if (!this._hitResult || this._hitResult.type !== 'bounds') return;
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY)
+    if (!this._hitResult || this._hitResult.type !== 'bounds') {
+      return;
+    }
+    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
 
     this._modified = true;
     switch (this._hitType) {
@@ -161,16 +163,15 @@ export default class ShapeScaleTool extends Tool {
       // Scale on x axis
       if (dragHandle.x > item.position.x) {
         return new paper.Point(item.bounds.left, item.position.y);
-      } else {
-        return new paper.Point(item.bounds.right, item.position.y);
       }
-    } else {
-      // Scale on y axis
-      if (dragHandle.y > item.position.y) {
-        return new paper.Point(item.position.x, item.bounds.top);
-      } else {
-        return new paper.Point(item.position.x, item.bounds.bottom);
-      }
+
+      return new paper.Point(item.bounds.right, item.position.y);
     }
+    // Scale on y axis
+    if (dragHandle.y > item.position.y) {
+      return new paper.Point(item.position.x, item.bounds.top);
+    }
+
+    return new paper.Point(item.position.x, item.bounds.bottom);
   }
 }

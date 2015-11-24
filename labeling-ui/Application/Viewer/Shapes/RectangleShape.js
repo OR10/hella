@@ -7,9 +7,9 @@ class RectangleShape extends paper.Group {
 
     // $scope.vm.
 
-    this.rectangle = new paper.Rectangle(/*...*/);
+    this.rectangle = new paper.Rectangle(/* ... */);
 
-    this.addChild(rectangle);
+    this.addChild(/* rectangle */);
 
     $scope.$watch('selected', () => {
       // ...

@@ -102,7 +102,7 @@ describe('LabeledThingInFrameGateway', () => {
     const labeledThinIngFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}], ghost: true});
 
     gateway.saveLabeledThingInFrame(labeledThinIngFrame)
-      .catch(error => {
+      .catch(() => {
         done();
       });
 

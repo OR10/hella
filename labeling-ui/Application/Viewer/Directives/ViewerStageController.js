@@ -133,7 +133,7 @@ class ViewerStageController {
       thingLayer.activateTool(newActiveTool);
     });
 
-    $scope.$watch('vm.selectedLabeledThingInFrame', (newThing) => {
+    $scope.$watch('vm.selectedLabeledThingInFrame', () => {
       this.ghostedLabeledThingInFrame = null;
     });
 

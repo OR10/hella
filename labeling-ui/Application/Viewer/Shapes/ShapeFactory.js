@@ -1,3 +1,4 @@
+import paper from 'paper';
 import RectangleShape from './RectangleShape';
 
 class ShapeFactory {
@@ -35,7 +36,7 @@ class ShapeFactory {
   createRectangle(shape, shapeFillOptions) {
     const params = Object.assign({}, shapeFillOptions, {from: shape.topLeft, to: shape.bottomRight});
 
-    const paperRectangle = new Paper.Path.Rectangle(params);
+    const paperRectangle = new paper.Path.Rectangle(params);
     const rectangle = new RectangleShape();
 
     return this._bendInheritanceModel(paperRectangle, rectangle);

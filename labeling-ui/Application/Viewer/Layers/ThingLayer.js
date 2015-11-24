@@ -342,19 +342,19 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @return {Array.<paper.Shape>}
    */
   addLabeledThingInFrame(labeledThingInFrame, update = true) {
-     const paperShapes = labeledThingInFrame.shapes.map(shape => {
-       let selectedLabeledThingId = null;
-       if (this._$scope.vm.selectedLabeledThingInFrame) {
-         selectedLabeledThingId = this._$scope.vm.selectedLabeledThingInFrame.labeledThingId;
-       }
+    const paperShapes = labeledThingInFrame.shapes.map(shape => {
+      let selectedLabeledThingId = null;
+      if (this._$scope.vm.selectedLabeledThingInFrame) {
+        selectedLabeledThingId = this._$scope.vm.selectedLabeledThingInFrame.labeledThingId;
+      }
 
-       const selected = labeledThingInFrame.labeledThingId === selectedLabeledThingId;
+      const selected = labeledThingInFrame.labeledThingId === selectedLabeledThingId;
 
-       if (!shape.labeledThingInFrameId) {
-         shape.labeledThingInFrameId = labeledThingInFrame.id;
-       }
+      if (!shape.labeledThingInFrameId) {
+        shape.labeledThingInFrameId = labeledThingInFrame.id;
+      }
 
-       return this._addShape(shape, false, selected);
+      return this._addShape(shape, false, selected);
     });
 
     if (update) {
@@ -416,7 +416,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       strokeScaling: false,
     };
 
-    return this._context.withScope(scope => {
+    return this._context.withScope(() => {
       let paperShape = null;
       // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
       switch (shape.type) {

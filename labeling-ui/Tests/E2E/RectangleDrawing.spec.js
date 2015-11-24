@@ -59,7 +59,7 @@ describe('Rectangle drawing', () => {
           },
           {
             method: 'GET',
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1'
+            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1',
           },
           {
             url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
@@ -190,7 +190,7 @@ describe('Rectangle drawing', () => {
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
               frameNumber: 1,
-              "ghost": false,
+              ghost: false,
               incomplete: true,
               shapes: [
                 {
@@ -277,7 +277,7 @@ describe('Rectangle drawing', () => {
             data: {
               classes: [],
               incomplete: true,
-              "ghost": false,
+              ghost: false,
               id: '0115bd97fa0c1d86f8d1f65ff409f0b8',
               labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
               rev: '14-547b5f8221abb7327b156d7c1591b14e',
@@ -301,7 +301,7 @@ describe('Rectangle drawing', () => {
               'frameNumber': 1,
               'classes': [],
               incomplete: true,
-              "ghost": false,
+              ghost: false,
               'shapes': [
                 {
                   'type': 'rectangle',
