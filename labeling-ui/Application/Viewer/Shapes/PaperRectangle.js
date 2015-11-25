@@ -1,12 +1,9 @@
 import paper from 'paper';
+import PaperShape from './PaperShape';
 
-class PaperRectangle extends paper.Group {
+class PaperRectangle extends PaperShape {
   constructor(shapeId, labeledThingInFrameId, topLeft, bottomRight, strokeColor) {
-    super();
-    super.initialize();
-
-    this._shapeId = shapeId;
-    this.labeledThingInFrameId = labeledThingInFrameId;
+    super(shapeId, labeledThingInFrameId);
 
     this._rectangle = new paper.Path.Rectangle({
       strokeColor,
@@ -21,22 +18,6 @@ class PaperRectangle extends paper.Group {
     this.addChild(this._rectangle);
   }
 
-  get id() {
-    return this._shapeId;
-  }
-
-  select() {
-    this._rectangle.selected = true;
-  }
-
-  deselect() {
-    this._rectangle.selected = false;
-  }
-
-  moveTo(point) {
-    this.position = point;
-  }
-
   toJSON() {
     const {topLeft, bottomRight} = this.bounds;
 
@@ -47,6 +28,14 @@ class PaperRectangle extends paper.Group {
       bottomRight: {x: bottomRight.x, y: bottomRight.y},
       labeledThingInFrameId: this.labeledThingInFrameId,
     };
+  }
+
+  select() {
+    this._rectangle.selected = true;
+  }
+
+  deselect() {
+    this._rectangle.selected = false;
   }
 }
 
