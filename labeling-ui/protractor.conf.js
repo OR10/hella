@@ -7,15 +7,6 @@ exports.config = {
   framework: 'jasmine2',
   seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
 
-  capabilities: {
-    'browserName': 'chrome',
-    'chromeOptions': {
-      'mobileEmulation': {
-        'deviceName': 'Laptop with MDPI screen',
-      },
-    },
-  },
-
   onPrepare: () => {
     require('./Tests/Support/Jasmine/CustomMatchers');
     require('jasmine-collection-matchers');
@@ -45,3 +36,28 @@ exports.config = {
   specs: ['Tests/E2E/**/*.spec.js'],
 };
 
+if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
+  // CI MODE
+  exports.config.multiCapabilities = [
+    {
+      'browserName': 'chrome',
+      'chromeOptions': {
+        'mobileEmulation': {
+          'deviceName': 'Laptop with MDPI screen',
+        },
+      },
+    },
+    {
+      'browserName': 'firefox',
+    },
+  ];
+} else {
+  exports.config.capabilities = {
+    'browserName': 'chrome',
+    'chromeOptions': {
+      'mobileEmulation': {
+        'deviceName': 'Laptop with MDPI screen',
+      },
+    },
+  };
+}
