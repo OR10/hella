@@ -6,7 +6,7 @@ import EllipseDrawingTool from './EllipseDrawingTool';
  */
 export default class CircleDrawingTool extends EllipseDrawingTool {
   _startNewEllipse(event) {
-    this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
+    this._startPosition = event.point;
 
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const radius = 1;
@@ -25,7 +25,7 @@ export default class CircleDrawingTool extends EllipseDrawingTool {
   }
 
   _updateEllipse(event) {
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
     const distance = this._startPosition.getDistance(point);
     const scale = distance / this._ellipse.bounds.width || 1;
 

@@ -28,7 +28,7 @@ export default class EllipseDrawingTool extends Tool {
   }
 
   _startNewEllipse(event) {
-    this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
+    this._startPosition = event.point;
 
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const size = new paper.Point(1, 1);
@@ -48,7 +48,7 @@ export default class EllipseDrawingTool extends Tool {
   }
 
   _updateEllipse(event) {
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
 
     const width = Math.abs(point.x - this._startPosition.x) || 1;
     const height = Math.abs(point.y - this._startPosition.y) || 1;

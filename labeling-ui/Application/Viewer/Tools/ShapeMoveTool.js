@@ -46,7 +46,7 @@ export default class ShapeMoveTool extends Tool {
   }
 
   _mouseDown(event) {
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
     this._deselectCurrentSelection();
 
     this._context.withScope(scope => {
@@ -97,7 +97,7 @@ export default class ShapeMoveTool extends Tool {
     if (!this._paperShape) {
       return;
     }
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
 
     this._modified = true;
     this._moveTo(this._paperShape, point);

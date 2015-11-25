@@ -28,7 +28,7 @@ export default class RectangleDrawingTool extends Tool {
   }
 
   _startNewRect(event) {
-    this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
+    this._startPosition = event.point;
 
     // PaperJs doesn't deal well with single point rectangles so we cheat a little on the first draw
     const endPosition = new paper.Point(
@@ -52,7 +52,7 @@ export default class RectangleDrawingTool extends Tool {
   }
 
   _updateRect(event) {
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
 
     const width = Math.abs(point.x - this._startPosition.x) || 1;
     const height = Math.abs(point.y - this._startPosition.y) || 1;
