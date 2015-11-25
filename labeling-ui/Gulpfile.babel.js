@@ -53,6 +53,7 @@ paths.dir = {
     'e2e': 'Test/E2E',
   },
   'distribution': 'Distribution',
+  'logs': 'Logs',
   'public': 'Public',
   'documentation': {
     'javascript': 'Documentation/JavaScript',
@@ -83,7 +84,14 @@ paths.files = {
 gulp.task('clean', () => {
   return del([
     `${paths.dir.distribution}/**/*`,
+    `${paths.dir.logs}/**/*`,
     `${paths.dir.documentation.javascript}/**/*`,
+  ]);
+});
+
+gulp.task('clean-logs', () => {
+  return del([
+    `${paths.dir.logs}/**/*`,
   ]);
 });
 
@@ -228,7 +236,7 @@ gulp.task('test-unit-continuous', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e-run', ['webdriver-update'], (next) => {
+gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
   const protractorConfig = {
     configFile: 'protractor.conf.js',
     args: [],
