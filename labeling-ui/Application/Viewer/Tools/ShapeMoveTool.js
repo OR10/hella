@@ -42,7 +42,7 @@ export default class ShapeMoveTool extends Tool {
 
   selectShape(paperShape) {
     this._paperShape = paperShape;
-    this._paperShape.selected = true;
+    this._paperShape.select();
   }
 
   _mouseDown(event) {
@@ -51,6 +51,8 @@ export default class ShapeMoveTool extends Tool {
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
+        // @TODO find out if we can also do this with our potential PaperShape base class
+        class: paper.Group,
         fill: true,
         bounds: true,
         segments: true,
@@ -83,6 +85,7 @@ export default class ShapeMoveTool extends Tool {
       if (this._modified) {
         this._modified = false;
 
+        this.emit('shape:update', this._paperShape);
       } else {
         this.emit('shape:selected', this._paperShape);
       }

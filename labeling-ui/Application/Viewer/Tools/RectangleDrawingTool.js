@@ -1,6 +1,7 @@
 import paper from 'paper';
 import Tool from './Tool';
-import RectangleRenderer from '../Renderer/RectangleRenderer';
+import PaperRectangle from '../Shapes/PaperRectangle';
+import uuid from 'uuid';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
@@ -9,23 +10,17 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
  */
 class RectangleDrawingTool extends Tool {
   /**
-   * @param shapeFactory
+   * @param $scope
    * @param {DrawingContext} drawingContext
    * @param {Object} options
    */
-  constructor(shapeFactory, drawingContext, options) {
+  constructor($scope, drawingContext, options) {
     super(drawingContext, options);
 
-    //this._renderer = new RectangleRenderer();
-
-    this._shapeFactory = shapeFactory;
+    this._$scope = $scope;
 
     this._rect = null;
     this._startPosition = null;
-
-    this._context.withScope(() => {
-      this._tool = new paper.Tool();
-    });
 
     this._tool.onMouseDown = this._startNewRect.bind(this);
     this._tool.onMouseDrag = this._updateRect.bind(this);
@@ -41,17 +36,10 @@ class RectangleDrawingTool extends Tool {
       this._startPosition.y + 1
     );
 
-    const drawingOptions = {
-      strokeColor: 'red',
-      strokeWidth: 2,
-      strokeScaling: false,
-      // Required to make rect clickable
-      fillColor: new paper.Color(0, 0, 0, 0),
-    };
-
     this._context.withScope(() => {
-      this._shapeFactory.createRectangle({shape: })
-      //this._rect = this._renderer.drawRectangle(this._startPosition, endPosition, drawingOptions);
+      // TODO use entityIdService if/once we make this a directive
+      this._rect = new PaperRectangle(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, endPosition, 'red');
+      this._rect.select();
     });
 
     this.emit('rectangle:new', this._rect);

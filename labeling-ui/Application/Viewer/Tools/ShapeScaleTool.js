@@ -47,6 +47,7 @@ export default class ShapeScaleTool extends Tool {
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
+        class: paper.Group,
         fill: true,
         bounds: true,
         tolerance: this._options.hitTestTolerance,
@@ -81,8 +82,8 @@ export default class ShapeScaleTool extends Tool {
   _mouseUp() {
     if (this._hitResult && this._hitResult.item) {
       if (this._modified) {
-        this.emit('shape:update', this._hitResult.item);
         this._modified = false;
+        this.emit('shape:update', this._hitResult.item);
       } else {
         this.emit('shape:selected', this._hitResult.item);
       }

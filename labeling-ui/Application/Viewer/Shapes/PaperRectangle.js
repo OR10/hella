@@ -1,12 +1,12 @@
 import paper from 'paper';
 
 class PaperRectangle extends paper.Group {
-  constructor(shapeId, labeledThingInFrame, topLeft, bottomRight, strokeColor) {
+  constructor(shapeId, labeledThingInFrameId, topLeft, bottomRight, strokeColor) {
     super();
     super.initialize();
 
     this._shapeId = shapeId;
-    this._labeledThingInFrame = labeledThingInFrame;
+    this.labeledThingInFrameId = labeledThingInFrameId;
 
     this._rectangle = new paper.Path.Rectangle({
       strokeColor,
@@ -43,9 +43,9 @@ class PaperRectangle extends paper.Group {
     return {
       type: 'rectangle',
       id: this._shapeId,
-      topLeft,
-      bottomRight,
-      labeledThingInFrameId: this._labeledThingInFrame.id,
+      topLeft: {x: topLeft.x, y: topLeft.y},
+      bottomRight: {x: bottomRight.x, y: bottomRight.y},
+      labeledThingInFrameId: this.labeledThingInFrameId,
     };
   }
 }

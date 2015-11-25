@@ -15,7 +15,7 @@ import RectangleRenderer from '../Renderer/RectangleRenderer';
 import EllipseRenderer from '../Renderer/EllipseRenderer';
 import PathRenderer from '../Renderer/PathRenderer';
 
-import ShapeFactory from '../Shapes/ShapeFactory';
+import PaperShapeFactory from '../Shapes/PaperShapeFactory';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -75,10 +75,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._paperShapeByLabeledThingInFrameId = new Map();
 
     /**
-     * @type {ShapeFactory}
+     * @type {PaperShapeFactory}
      * @private
      */
-    this._shapeFactory = new ShapeFactory($scope);
+    this._shapeFactory = new PaperShapeFactory($scope);
 
     /**
      * Tool for moving shapes
@@ -101,7 +101,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {RectangleDrawingTool}
      * @private
      */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._shapeFactory, this._context, undefined);
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope, this._context, undefined);
 
     /**
      * Tool for drawing ellipses
@@ -146,6 +146,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
 
+    this._$scope.vm.shapes = [];
+
     $scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
       if (labeledThingInFrame === null) {
         if (oldLabeledThingInFrame !== null) {
@@ -164,9 +166,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         return;
       }
 
-      const paperShapes = this.addLabeledThingInFrame(labeledThingInFrame, false);
       $scope.vm.activeTool = 'move';
-      //this._shapeMoveTool.selectShape(paperShapes[0]);
 
       this._context.withScope(scope => {
         scope.view.draw();
@@ -187,9 +187,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.addLabeledThingsInFrame(addedLabeledThingsInFrame);
     });
 
-    this._shapeMoveTool.on('shape:selected', paperShape => {
+    this._shapeMoveTool.on('shape:selected', shape => {
       $scope.$apply(() => {
-        $scope.vm.selectedShape = {paperShape, shape};
+        $scope.vm.selectedShape = shape;
       });
     });
 
@@ -199,11 +199,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
     });
 
-
-    this._shapeScaleTool.on('shape:selected', paperShape => {
-      const type = this._typeByPaperShapeId.get(paperShape.id);
-      const shape = rectangle._$scope.vm.shape;
-
+    this._shapeScaleTool.on('shape:selected', shape => {
       $scope.$apply(() => {
         $scope.vm.selectedShape = shape;
       });
@@ -215,18 +211,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
     });
 
-    //this._shapeScaleTool.on('shape:update', paperShape => {
-    //  const type = this._typeByPaperShapeId.get(paperShape.id);
-    //  const shape = this._createShapeFromPaperShape(paperShape, type);
-    //  this.emit('shape:update', shape);
-    //});
+    this._shapeMoveTool.on('shape:update', shape => {
+      this.emit('shape:update', shape);
+    });
 
+    this._shapeScaleTool.on('shape:update', shape => {
+      this.emit('shape:update', shape);
+    });
 
     this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
-      this._typeByPaperShapeId.set(rectangle.id, 'rectangle');
-      this._labeledThingInFrameIdByPaperShapeId.set(rectangle.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-      this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, rectangle);
-      this.emit('shape:new', rectangle._$scope.vm.shape);
+      this.emit('shape:new', rectangle);
     });
 
     //this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
@@ -404,15 +398,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   _drawShape(shape, selected = false) {
     return this._context.withScope(() => {
-      let paperShape = null;
-      // @TODO: Should be refactored to be handled inside the Renderer 'supportsShape(...)' -> (Open/Close Principle)
-      switch (shape.type) {
-        case 'rectangle':
-          paperShape = this._shapeFactory.createRectangle({shape, selected, color: 'red'});
-          break;
-        default:
-          throw new Error(`Could not draw shape of unknown type "${shape.type}"`);
+      const paperShape = this._shapeFactory.createPaperShape(shape);
+
+      if (selected) {
+        paperShape.select();
       }
+
       return paperShape;
     });
   }
