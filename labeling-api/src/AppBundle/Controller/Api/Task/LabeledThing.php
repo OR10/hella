@@ -57,7 +57,7 @@ class LabeledThing extends Controller\Base
      * @param HttpFoundation\Request $request
      * @return \FOS\RestBundle\View\View
      */
-    public function getLabeledThingAction($taskId, HttpFoundation\Request $request)
+    public function getAllLabeledThingsAction($taskId, HttpFoundation\Request $request)
     {
         $response = View\View::create();
         $task     = $this->labelingTaskFacade->find($taskId);
@@ -122,6 +122,31 @@ class LabeledThing extends Controller\Base
         $labeledThing->setFrameRange($frameRange);
         $labeledThing->setIncomplete($incomplete);
         $this->labeledThingFacade->save($labeledThing);
+
+        return View\View::create()->setData(['result' => $labeledThing]);
+    }
+
+    /**
+     * @Rest\Get("/{taskId}/labeledThing/{labeledThingId}")
+     *
+     * @param string                 $taskId
+     * @param string                 $labeledThingId
+     * @param HttpFoundation\Request $request
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getLabeledThingAction($taskId, $labeledThingId, HttpFoundation\Request $request)
+    {
+        if (($task = $this->labelingTaskFacade->find($taskId)) === null) {
+            throw new Exception\NotFoundHttpException();
+        }
+
+        if (($labeledThing = $this->labeledThingFacade->find($labeledThingId)) === null) {
+            throw new Exception\NotFoundHttpException();
+        }
+
+        if ($labeledThing->getLabelingTaskId() !== $task->getId()) {
+            throw new Exception\BadRequestHttpException();
+        }
 
         return View\View::create()->setData(['result' => $labeledThing]);
     }

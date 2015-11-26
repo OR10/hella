@@ -1,6 +1,6 @@
 # Group LabeledThing
 
-## Get all labeled things [/api/task/{taskId}/labeledThing]
+## All labeled things [/api/task/{taskId}/labeledThing]
 
 + Parameters
 
@@ -31,13 +31,7 @@ This routes simply returns all labeled things for this task
               }
             }
 
-## Save a new labeled thing [/api/task/{taskId}/labeledThing]
-
-+ Parameters
-
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task.
-
-### Save a new labeled thing [POST]
+### Add a new labeled thing [POST]
 
 Save a new labeled thing for a specified task
 
@@ -55,14 +49,32 @@ Save a new labeled thing for a specified task
               }
             }
 
-## Update a labeled thing [/api/task/{taskId}/labeledThing/{labeledThingId}]
+## A labeled thing [/api/task/{taskId}/labeledThing/{labeledThingId}]
 
 + Parameters
 
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task.
     + labeledThingId: `29fbaf39788de290b3047f1fe8888d0a` (string, required) - The id of the labeled Thing document.
 
-### Update new labeled thing [PUT]
+### Get a labeled thing [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": {
+                    "id": "123jn12jk3j123jk",
+                    "rev": "1-29fbaf39788de290b3047f1fe8888d0a",
+                    "frameRange": {
+                        "startFrameNumber": 1,
+                        "endFrameNumber": 100
+                    },
+                    ...
+                }
+            }
+
+### Update a labeled thing [PUT]
 
 Update a labeled thing for a specified task
 
@@ -71,21 +83,16 @@ Update a labeled thing for a specified task
     + Body
 
             {
-              "result": {
-                "id": "123jn12jk3j123jk",
-                "rev": "1-29fbaf39788de290b3047f1fe8888d0a",
-                "frameRange": [],
-                ...
-                ...
-              }
+                "result": {
+                    "id": "123jn12jk3j123jk",
+                    "rev": "1-29fbaf39788de290b3047f1fe8888d0a",
+                    "frameRange": {
+                        "startFrameNumber": 1,
+                        "endFrameNumber": 100
+                    },
+                    ...
+                }
             }
-
-## Delete a labeled thing [/api/task/{taskId}/labeledThing/{labeledThingId}]
-
-+ Parameters
-
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task.
-    + labeledThingId: `29fbaf39788de290b3047f1fe8888d0a` (string, required) - The id of the labeled Thing document.
 
 ### Delete a labeled thing [DELETE]
 
