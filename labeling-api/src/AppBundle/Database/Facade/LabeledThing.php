@@ -23,8 +23,12 @@ class LabeledThing
      * @param int                $limit
      * @return CouchDB\View\Result
      */
-    public function getLabeledThingInFrames(Model\LabeledThing $labeledThing, $frameNumber = null, $offset = 0, $limit = 0)
-    {
+    public function getLabeledThingInFrames(
+        Model\LabeledThing $labeledThing,
+        $frameNumber = null,
+        $offset = 0,
+        $limit = 0
+    ) {
         if ($frameNumber !== null) {
             $startKey = array(
                 $labeledThing->getId(),
