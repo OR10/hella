@@ -105,6 +105,8 @@ class InterpolationService {
 InterpolationService.$inject = [
   '$q',
   'labeledThingGateway',
+  // All Interpolations listed here will be auto registered.
+  'linearBackendInterpolation'
 ];
 
 export default InterpolationService;
