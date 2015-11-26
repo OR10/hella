@@ -124,7 +124,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         return;
       }
 
+      const paperShapes = this.addLabeledThingInFrame(labeledThingInFrame, false);
       $scope.vm.activeTool = 'move';
+      paperShapes[0].select();
 
       this._context.withScope(scope => {
         scope.view.draw();
