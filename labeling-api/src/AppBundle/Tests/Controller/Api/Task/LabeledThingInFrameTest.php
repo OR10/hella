@@ -30,11 +30,6 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
      */
     private $labelingThingInFrameFacade;
 
-    /**
-     * @var CouchDB\DocumentManager
-     */
-    private $documentManager;
-
     public function testGetLabeledThingInFrameDocument()
     {
         $labelingTask        = $this->createLabelingTask();
@@ -225,9 +220,6 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingThingInFrameFacade = static::$kernel->getContainer()->get(
             'annostation.labeling_api.database.facade.labeled_thing_in_frame'
         );
-        $this->documentManager           = static::$kernel->getContainer()->get(
-            'doctrine_couchdb.odm.default_document_manager'
-        );
     }
 
     private function doRequest($method, $labelingTaskId, $labeledThingInFrameNumber, $content = null)
@@ -267,8 +259,6 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     private function createLabeledThingDocument(Model\LabelingTask $labelingTask)
     {
         $labeledThing = new Model\LabeledThing($labelingTask);
-        $uuids        = $this->documentManager->getCouchDBClient()->getUuids();
-        $labeledThing->setId(reset($uuids));
         $this->labelingThingFacade->save($labeledThing);
 
         return $labeledThing;
@@ -277,8 +267,6 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     private function createLabeledInFrameDocument(Model\LabeledThing $labeledThing, $frameNumber = 10)
     {
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
-        $labeledThingInFrame->setId(reset($uuids));
         $labeledThingInFrame->setFrameNumber($frameNumber);
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 

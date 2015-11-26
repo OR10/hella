@@ -45,6 +45,7 @@ class LabeledThing
     public function __construct(LabelingTask $labelingTask)
     {
         $this->labelingTaskId = $labelingTask->getId();
+        $this->frameRange     = $labelingTask->getFrameRange();
     }
 
     /**
@@ -56,9 +57,17 @@ class LabeledThing
     }
 
     /**
-     * @param mixed $frameRange
+     * @return FrameRange
      */
-    public function setFrameRange($frameRange)
+    public function getFrameRange()
+    {
+        return $this->frameRange === null ?: clone $this->frameRange;
+    }
+
+    /**
+     * @param FrameRange $frameRange
+     */
+    public function setFrameRange(FrameRange $frameRange)
     {
         $this->frameRange = $frameRange;
     }
