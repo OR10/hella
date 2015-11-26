@@ -2,6 +2,7 @@ import Module from '../Module';
 import ApiService from './Services/ApiService';
 import AuthInterceptor from './Services/AuthInterceptor';
 import RevisionManager from './Services/RevisionManager';
+import StatusGateway from './Gateways/StatusGateway';
 import BufferedHttpProvider from './Services/BufferedHttpProvider';
 import EntityIdService from './Services/EntityIdService';
 import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryProvider';
@@ -23,6 +24,7 @@ class Common extends Module {
     this.module.service('authInterceptor', AuthInterceptor);
     this.module.service('revisionManager', RevisionManager);
     this.module.service('entityIdService', EntityIdService);
+    this.module.service('statusGateway', StatusGateway);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
 
