@@ -1,34 +1,31 @@
 import paper from 'paper';
-import EllipseDrawingTool from './EllipseDrawingTool';
+import CircleDrawingTool from './CircleDrawingTool';
+import PaperCircle from '../Shapes/PaperCircle';
+import uuid from 'uuid';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor
  */
-export default class PointDrawingTool extends EllipseDrawingTool {
+export default class PointDrawingTool extends CircleDrawingTool {
   _startNewEllipse(event) {
     this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
 
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const radius = 1;
-    const drawingOptions = {
-      strokeColor: 'red',
-      strokeWidth: 1,
-      // Required to make ellipse clickable
-      fillColor: new paper.Color(0, 0, 0, 0),
-    };
 
     this._context.withScope(() => {
-      this._ellipse = this._renderer.drawCircle(this._startPosition, radius, drawingOptions);
+      this._shape = new PaperCircle(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, radius, 'red');
+      this._shape.select();
     });
 
-    this.emit('point:new', this._ellipse);
+    this.emit('point:new', this._shape);
   }
 
   _updateEllipse() {
   }
 
   _completeEllipse() {
-    this.emit('point:complete', this._ellipse);
+    this.emit('point:complete', this._shape);
     this._ellipse = null;
   }
 }

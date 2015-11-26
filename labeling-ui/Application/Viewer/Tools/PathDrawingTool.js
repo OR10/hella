@@ -4,8 +4,11 @@ import PathRenderer from '../Renderer/PathRenderer';
 
 /**
  * A tool for drawing a path with the mouse cursor
+ *
+ * @class PathDrawingTool
+ * @extends Tool
  */
-export default class PathDrawingTool extends Tool {
+class PathDrawingTool extends Tool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {Object} options
@@ -53,3 +56,5 @@ export default class PathDrawingTool extends Tool {
     this._path = null;
   }
 }
+
+export default PathDrawingTool;

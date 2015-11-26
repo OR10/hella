@@ -5,7 +5,7 @@ class PaperRectangle extends PaperShape {
   constructor(shapeId, labeledThingInFrameId, topLeft, bottomRight, strokeColor) {
     super(shapeId, labeledThingInFrameId);
 
-    this._rectangle = new paper.Path.Rectangle({
+    this._shape = new paper.Path.Rectangle({
       strokeColor,
       selected: false,
       strokeWidth: 2,
@@ -15,7 +15,7 @@ class PaperRectangle extends PaperShape {
       to: bottomRight,
     });
 
-    this.addChild(this._rectangle);
+    this.addChild(this._shape);
   }
 
   toJSON() {
@@ -28,14 +28,6 @@ class PaperRectangle extends PaperShape {
       bottomRight: {x: bottomRight.x, y: bottomRight.y},
       labeledThingInFrameId: this.labeledThingInFrameId,
     };
-  }
-
-  select() {
-    this._rectangle.selected = true;
-  }
-
-  deselect() {
-    this._rectangle.selected = false;
   }
 }
 

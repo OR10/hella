@@ -86,7 +86,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeMoveTool}
      * @private
      */
-    this._shapeMoveTool = new ShapeMoveTool(this._context, undefined);
+    this._shapeMoveTool = new ShapeMoveTool(this._context);
 
     /**
      * Tool for scaling shapes
@@ -101,7 +101,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {RectangleDrawingTool}
      * @private
      */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope, this._context, undefined);
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope, this._context);
 
     /**
      * Tool for drawing ellipses
@@ -109,42 +109,42 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {EllipseDrawingTool}
      * @private
      */
-    this._ellipseDrawingTool = new EllipseDrawingTool(this._context, undefined);
+    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope, this._context);
     /**
      * Tool for drawing circles
      *
      * @type {CircleDrawingTool}
      * @private
      */
-    this._circleDrawingTool = new CircleDrawingTool(this._context, undefined);
+    this._circleDrawingTool = new CircleDrawingTool(this._$scope, this._context);
     /**
      * Tool for drawing paths
      *
      * @type {PathDrawingTool}
      * @private
      */
-    this._pathDrawingTool = new PathDrawingTool(this._context, undefined);
+    this._pathDrawingTool = new PathDrawingTool(this._context);
     /**
      * Tool for drawing closed polygons
      *
      * @type {PolygonDrawingTool}
      * @private
      */
-    this._polygonDrawingTool = new PolygonDrawingTool(this._context, undefined);
+    this._polygonDrawingTool = new PolygonDrawingTool(this._context);
     /**
      * Tool for drawing lines
      *
      * @type {LineDrawingTool}
      * @private
      */
-    this._lineDrawingTool = new LineDrawingTool(this._context, undefined);
+    this._lineDrawingTool = new LineDrawingTool(this._context);
     /**
      * Tool for drawing points
      *
      * @type {PointDrawingTool}
      * @private
      */
-    this._pointDrawingTool = new PointDrawingTool(this._context, undefined);
+    this._pointDrawingTool = new PointDrawingTool(this._$scope, this._context);
 
     this._$scope.vm.shapes = [];
 
