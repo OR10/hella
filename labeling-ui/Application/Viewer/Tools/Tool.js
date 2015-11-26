@@ -7,7 +7,7 @@ import EventEmitter from 'event-emitter';
 export default class Tool extends EventEmitter {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
   constructor(drawingContext, options) {
     super();

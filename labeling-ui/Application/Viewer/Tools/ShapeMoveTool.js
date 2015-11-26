@@ -1,5 +1,6 @@
 import paper from 'paper';
 import Tool from './Tool';
+import PaperShape from '../Shapes/PaperShape';
 
 /**
  * A Tool for moving annotation shapes
@@ -9,7 +10,7 @@ import Tool from './Tool';
 export default class ShapeMoveTool extends Tool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
   constructor(drawingContext, options) {
     super(drawingContext, options);
@@ -42,7 +43,7 @@ export default class ShapeMoveTool extends Tool {
 
   selectShape(paperShape) {
     this._paperShape = paperShape;
-    this._paperShape.selected = true;
+    this._paperShape.select();
   }
 
   _mouseDown(event) {
@@ -51,6 +52,7 @@ export default class ShapeMoveTool extends Tool {
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
+        class: PaperShape,
         fill: true,
         bounds: true,
         segments: true,
@@ -61,7 +63,7 @@ export default class ShapeMoveTool extends Tool {
 
       if (hitResult) {
         this._paperShape = hitResult.item;
-        this._paperShape.selected = true;
+        this._paperShape.select();
         this._offset = new paper.Point(
           this._paperShape.position.x - point.x,
           this._paperShape.position.y - point.y
@@ -74,15 +76,16 @@ export default class ShapeMoveTool extends Tool {
 
   _deselectCurrentSelection() {
     if (this._paperShape) {
-      this._paperShape.selected = false;
+      this._paperShape.deselect();
     }
   }
 
   _mouseUp() {
     if (this._paperShape) {
       if (this._modified) {
-        this.emit('shape:update', this._paperShape);
         this._modified = false;
+
+        this.emit('shape:update', this._paperShape);
       } else {
         this.emit('shape:selected', this._paperShape);
       }
@@ -100,10 +103,7 @@ export default class ShapeMoveTool extends Tool {
     const point = event.point;
 
     this._modified = true;
-    this._moveTo(this._paperShape, point);
+    this._paperShape.moveTo(point.add(this._offset));
   }
 
-  _moveTo(item, centerPoint) {
-    item.position = centerPoint.add(this._offset);
-  }
 }
