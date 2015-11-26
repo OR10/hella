@@ -1,5 +1,4 @@
 import PathDrawingTool from './PathDrawingTool';
-import paper from 'paper';
 import PaperLine from '../Shapes/PaperLine';
 import uuid from 'uuid';
 
@@ -17,7 +16,7 @@ export default class LineDrawingTool extends PathDrawingTool {
   }
 
   _addPoint(event) {
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
     const drawingOptions = {
       strokeColor: 'red',
       strokeWidth: 2,

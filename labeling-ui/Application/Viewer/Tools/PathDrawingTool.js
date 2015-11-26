@@ -26,7 +26,7 @@ class PathDrawingTool extends Tool {
   }
 
   _addPoint(event) {
-    const point = new paper.Point(event.event.offsetX, event.event.offsetY);
+    const point = event.point;
     const drawingOptions = {
       strokeColor: 'red',
       strokeWidth: 2,

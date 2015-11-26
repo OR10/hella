@@ -8,7 +8,7 @@ import uuid from 'uuid';
  */
 export default class PointDrawingTool extends CircleDrawingTool {
   _startNewEllipse(event) {
-    this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
+    this._startPosition = event.point;
 
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const radius = 1;

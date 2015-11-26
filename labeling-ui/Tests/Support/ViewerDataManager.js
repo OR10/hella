@@ -2,6 +2,7 @@ import fs from 'fs';
 import zlib from 'zlib';
 import mkdirp from 'mkdirp';
 import base64 from 'base64-js';
+import {default as Canvas, ImageData} from 'canvas';
 
 /**
  * Helper class for testing the viewer drawing features.
@@ -54,27 +55,53 @@ export default class ViewerDataManager {
   }
 
   /**
-   * @param {Object<String, String>}result
-   * @param {String} testName
+   * @param {String} targetPath
+   * @param {ImageData} imageData
+   * @private
+   */
+  _storeImage(targetPath, imageData) {
+    const canvas = new Canvas(imageData.width, imageData.height);
+    const context = canvas.getContext('2d');
+
+    context.putImageData(imageData, 0, 0);
+
+    fs.writeFileSync(targetPath, canvas.toBuffer());
+  }
+
+  /**
+   * @param {{width: {int}, height: {int}, data: {int[]}}} rawImageData
+   * @returns {ImageData}
+   * @private
+   */
+  _createImageData(rawImageData) {
+    const imageData = new ImageData(rawImageData.width, rawImageData.height);
+
+    for (let i = 0; i < rawImageData.data.length; i++) {
+      imageData.data[i] = rawImageData.data[i];
+    }
+
+    return imageData;
+  }
+
+  /**
+   * @param {Object<String, String>}encodedImageData
+   * @param {String} targetPath
    *
    * @private
    */
-  _writeImageDataToFile(result, testName) {
-    const exportDestination = `${process.cwd()}/Tests/Exports/${testName}`;
-
-    mkdirp.sync(exportDestination);
-
-    fs.writeFileSync(`${exportDestination}/viewerData.json.gz`, zlib.gzipSync(new Buffer(result, 'utf-8')));
+  _writeEncodedDataToFile(encodedImageData, targetPath) {
+    fs.writeFileSync(`${targetPath}/viewerData.json.gz`, zlib.gzipSync(new Buffer(encodedImageData, 'utf-8')));
   }
 
+  /**
+   * @param path
+   * @returns {{width: {int}, height: {int}, data: {int[]}}}
+   */
   readViewerData(path) {
     const importPath = `${process.cwd()}/${path}`;
-
     const encodedData = zlib.gunzipSync(fs.readFileSync(importPath)).toString('utf-8');
 
-    const decodedData = this._decodeViewerData(encodedData);
-
-    return decodedData;
+    return this._decodeViewerData(encodedData);
   }
 
   /**
@@ -85,12 +112,22 @@ export default class ViewerDataManager {
    */
   exportData(writeToFile = false, testName = 'TestOutput') {
     return this._getViewerImageData()
-      .then(result => {
-        if (writeToFile || process.env.EXPORT_CANVAS_DATA) {
-          this._writeImageDataToFile(result, testName);
-        }
+      .then(encodedData => {
+        const decodedData = this._decodeViewerData(encodedData);
 
-        const decodedData = this._decodeViewerData(result);
+        if (writeToFile || process.env.EXPORT_CANVAS_DATA) {
+          const targetPath = `${process.cwd()}/Tests/Exports/${testName}`;
+          mkdirp.sync(targetPath);
+
+          this._writeEncodedDataToFile(encodedData, targetPath);
+
+          Object.keys(decodedData).forEach(key => {
+            this._storeImage(
+              `${targetPath}/${key}.png`,
+              this._createImageData(decodedData[key])
+            );
+          });
+        }
 
         return decodedData;
       });

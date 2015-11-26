@@ -4,14 +4,14 @@
 @import "angular-range-slider";
 @import "viewer";
 
+// Carefull with 'height: 100%'. This causes strange bugs with the ToolEvent.point coordinates.
 html {
-  overflow: hidden;
-  height: 100%;
+  //height: 100%;
 }
 
 body {
-  overflow: auto;
-  height: 100%;
+  //overflow: auto;
+  //height: 100%;
 }
 
 h1 {
