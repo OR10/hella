@@ -1,6 +1,7 @@
 import paper from 'paper';
 import Tool from './Tool';
-import PathRenderer from '../Renderer/PathRenderer';
+import PaperPath from '../Shapes/PaperPath';
+import uuid from 'uuid';
 
 /**
  * A tool for drawing a path with the mouse cursor
@@ -10,17 +11,16 @@ import PathRenderer from '../Renderer/PathRenderer';
  */
 class PathDrawingTool extends Tool {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
-  constructor(drawingContext, options) {
+  constructor($scope, drawingContext, options) {
     super(drawingContext, options);
 
-    this._renderer = new PathRenderer();
+    this._$scope = $scope;
+
     this._path = null;
-    this._context.withScope(() => {
-      this._tool = new paper.Tool();
-    });
 
     this._tool.onMouseUp = this._addPoint.bind(this);
   }
@@ -46,9 +46,11 @@ class PathDrawingTool extends Tool {
     }
   }
 
-  _draw(point, drawingOptions) {
+  _draw(point) {
     this._context.withScope(() => {
-      this._path = this._renderer.drawPath([point], drawingOptions);
+      // TODO use entityIdService if/once we make this a directive
+      this._path = new PaperPath(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
+      this._path.select();
     });
   }
 

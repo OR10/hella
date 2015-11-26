@@ -10,7 +10,7 @@ import PaperShape from '../Shapes/PaperShape';
 export default class ShapeMoveTool extends Tool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
   constructor(drawingContext, options) {
     super(drawingContext, options);

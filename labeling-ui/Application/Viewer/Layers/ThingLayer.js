@@ -11,10 +11,6 @@ import PointDrawingTool from '../Tools/PointDrawingTool';
 import ShapeMoveTool from '../Tools/ShapeMoveTool';
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
 
-import RectangleRenderer from '../Renderer/RectangleRenderer';
-import EllipseRenderer from '../Renderer/EllipseRenderer';
-import PathRenderer from '../Renderer/PathRenderer';
-
 import PaperShapeFactory from '../Shapes/PaperShapeFactory';
 
 /**
@@ -29,29 +25,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   constructor($scope, drawingContextService) {
     super($scope, drawingContextService);
-
-    /**
-     * Renderer used by this layer to draw labeling rectangles loaded from the backend
-     *
-     * @type {RectangleRenderer}
-     * @private
-     */
-    this._rectangleRenderer = new RectangleRenderer();
-
-    /**
-     *
-     * @type {EllipseRenderer}
-     * @private
-     */
-    this._ellipseRenderer = new EllipseRenderer();
-
-    /**
-     *
-     * @type {PathRenderer}
-     * @private
-     */
-    this._pathRenderer = new PathRenderer();
-
     /**
      * Storage to get the shape type from the paper shape by id
      *
@@ -123,21 +96,21 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {PathDrawingTool}
      * @private
      */
-    this._pathDrawingTool = new PathDrawingTool(this._context);
+    this._pathDrawingTool = new PathDrawingTool(this._$scope, this._context);
     /**
      * Tool for drawing closed polygons
      *
      * @type {PolygonDrawingTool}
      * @private
      */
-    this._polygonDrawingTool = new PolygonDrawingTool(this._context);
+    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope, this._context);
     /**
      * Tool for drawing lines
      *
      * @type {LineDrawingTool}
      * @private
      */
-    this._lineDrawingTool = new LineDrawingTool(this._context);
+    this._lineDrawingTool = new LineDrawingTool(this._$scope, this._context);
     /**
      * Tool for drawing points
      *
@@ -146,6 +119,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._pointDrawingTool = new PointDrawingTool(this._$scope, this._context);
 
+    // @TODO use this?
     this._$scope.vm.shapes = [];
 
     $scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
@@ -235,30 +209,17 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.emit('shape:new', point);
     });
 
-    //this._pathDrawingTool.on('path:complete', path => {
-    //  this._typeByPaperShapeId.set(path.id, 'path');
-    //  this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-    //  this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, path);
-    //  const shape = this._createShapeFromPaperShape(path, 'path');
-    //  this.emit('shape:new', shape);
-    //});
-    //
-    //this._polygonDrawingTool.on('path:complete', polygon => {
-    //  this._typeByPaperShapeId.set(polygon.id, 'polygon');
-    //  this._labeledThingInFrameIdByPaperShapeId.set(polygon.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-    //  this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, polygon);
-    //  const shape = this._createShapeFromPaperShape(polygon, 'polygon');
-    //  this.emit('shape:new', shape);
-    //});
-    //
-    //this._lineDrawingTool.on('path:complete', line => {
-    //  this._typeByPaperShapeId.set(line.id, 'line');
-    //  this._labeledThingInFrameIdByPaperShapeId.set(line.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-    //  this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, line);
-    //  const shape = this._createShapeFromPaperShape(line, 'line');
-    //  this.emit('shape:new', shape);
-    //});
-    //
+    this._pathDrawingTool.on('path:complete', path => {
+      this.emit('shape:new', path);
+    });
+
+    this._polygonDrawingTool.on('path:complete', polygon => {
+      this.emit('shape:new', polygon);
+    });
+
+    this._lineDrawingTool.on('path:complete', line => {
+      this.emit('shape:new', line);
+    });
   }
 
   /**

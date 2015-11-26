@@ -58,6 +58,10 @@ class PaperShape extends paper.Group {
     this._shape.selected = false;
   }
 
+  scale() {
+    this._shape.scale.apply(this._shape, arguments);
+  }
+
   /**
    * @abstract
    * @method PaperShape#toJSON

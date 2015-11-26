@@ -33,10 +33,6 @@ class PaperEllipse extends PaperShape {
       labeledThingInFrameId: this.labeledThingInFrameId,
     };
   }
-
-  scale() {
-    this._shape.scale.apply(this, arguments);
-  }
 }
 
 export default PaperEllipse;

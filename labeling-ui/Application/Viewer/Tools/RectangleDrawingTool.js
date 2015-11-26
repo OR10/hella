@@ -6,13 +6,14 @@ import uuid from 'uuid';
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
  *
+ * @class RectangleDrawingTool
  * @extends Tool
  */
 class RectangleDrawingTool extends Tool {
   /**
    * @param $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
   constructor($scope, drawingContext, options) {
     super(drawingContext, options);

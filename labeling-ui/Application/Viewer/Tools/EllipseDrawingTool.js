@@ -13,7 +13,7 @@ class EllipseDrawingTool extends Tool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
   constructor($scope, drawingContext, options) {
     super(drawingContext, options);
@@ -21,10 +21,6 @@ class EllipseDrawingTool extends Tool {
     this._$scope = $scope;
 
     this._startPosition = null;
-
-    this._context.withScope(() => {
-      this._tool = new paper.Tool();
-    });
 
     this._tool.onMouseDown = this._startNewEllipse.bind(this);
     this._tool.onMouseDrag = this._updateEllipse.bind(this);
