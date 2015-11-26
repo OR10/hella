@@ -5,6 +5,12 @@ import PaperCircle from '../Shapes/PaperCircle';
  * @extends PaperCircle
  */
 class PaperPoint extends PaperCircle {
+  /**
+   * @param {String} shapeId
+   * @param {String} labeledThingInFrameId
+   * @param {Point} position
+   * @param {String} strokeColor
+   */
   constructor(shapeId, labeledThingInFrameId, position, strokeColor) {
     super(shapeId, labeledThingInFrameId, position, 1, strokeColor);
   }

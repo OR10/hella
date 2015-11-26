@@ -6,6 +6,13 @@ import PaperShape from './PaperShape';
  * @extends PaperShape
  */
 class PaperEllipse extends PaperShape {
+  /**
+   * @param {String} shapeId
+   * @param {String} labeledThingInFrameId
+   * @param {Point} center
+   * @param {Size} size
+   * @param {String} strokeColor
+   */
   constructor(shapeId, labeledThingInFrameId, center, size, strokeColor) {
     super(shapeId, labeledThingInFrameId);
 

@@ -6,6 +6,10 @@ import paper from 'paper';
  * @abstract
  */
 class PaperShape extends paper.Group {
+  /**
+   * @param {String} shapeId
+   * @param {String} labeledThingInFrameId
+   */
   constructor(shapeId, labeledThingInFrameId) {
     super();
     // This needs to be called due to how PaperJS does inheritance

@@ -6,6 +6,13 @@ import PaperShape from './PaperShape';
  * @extends PaperShape
  */
 class PaperRectangle extends PaperShape {
+  /**
+   * @param {String} shapeId
+   * @param {String} labeledThingInFrameId
+   * @param {Point} topLeft
+   * @param {Point} bottomRight
+   * @param {String} strokeColor
+   */
   constructor(shapeId, labeledThingInFrameId, topLeft, bottomRight, strokeColor) {
     super(shapeId, labeledThingInFrameId);
 

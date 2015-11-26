@@ -6,6 +6,9 @@ import PaperPath from './PaperPath';
 import PaperPolygon from './PaperPolygon';
 import PaperLine from './PaperLine';
 
+/**
+ * Factory to produce PaperShape objects from JSON representations stored in our backend
+ */
 class PaperShapeFactory {
   _createRectangle(shape) {
     return new PaperRectangle(shape.id, shape.labeledThingInFrameId, shape.topLeft, shape.bottomRight, 'red');
@@ -35,6 +38,10 @@ class PaperShapeFactory {
     return new PaperLine(shape.id, shape.labeledThingInFrameId, shape.points, 'red');
   }
 
+  /**
+   * @param {Object} shape
+   * @returns {PaperShape}
+   */
   createPaperShape(shape) {
     switch (shape.type) {
       case 'rectangle':

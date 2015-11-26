@@ -2,6 +2,13 @@ import paper from 'paper';
 import PaperShape from './PaperShape';
 
 class PaperCircle extends PaperShape {
+  /**
+   * @param {String} shapeId
+   * @param {String} labeledThingInFrameId
+   * @param {Point} center
+   * @param {Number} radius
+   * @param {String} strokeColor
+   */
   constructor(shapeId, labeledThingInFrameId, center, radius, strokeColor) {
     super(shapeId, labeledThingInFrameId);
 

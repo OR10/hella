@@ -6,8 +6,14 @@ import PaperShape from './PaperShape';
  * @extends PaperShape
  */
 class PaperPolygon extends PaperShape {
-  constructor(shapeId, labeledThingId, points, strokeColor) {
-    super(shapeId, labeledThingId);
+  /**
+   * @param {String} shapeId
+   * @param {String} labeledThingInFrameId
+   * @param {Array.<Point>} points
+   * @param {String} strokeColor
+   */
+  constructor(shapeId, labeledThingInFrameId, points, strokeColor) {
+    super(shapeId, labeledThingInFrameId);
 
     this._shape = new paper.Path({
       strokeColor,
