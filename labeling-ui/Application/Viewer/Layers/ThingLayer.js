@@ -26,22 +26,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
   constructor($scope, drawingContextService) {
     super($scope, drawingContextService);
     /**
-     * Storage to get the shape type from the paper shape by id
-     *
-     * @type {Map}
-     * @private
-     */
-    this._typeByPaperShapeId = new Map();
-
-    /**
-     * Storage to get the labeledThingInFrameId from paper shape by id
-     *
-     * @type {Map}
-     * @private
-     */
-    this._labeledThingInFrameIdByPaperShapeId = new Map();
-
-    /**
      * @type {Map}
      * @private
      */
@@ -51,7 +35,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {PaperShapeFactory}
      * @private
      */
-    this._shapeFactory = new PaperShapeFactory($scope);
+    this._shapeFactory = new PaperShapeFactory(this._$scope.$new());
 
     /**
      * Tool for moving shapes
@@ -67,14 +51,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeScaleTool}
      * @private
      */
-    this._shapeScaleTool = new ShapeScaleTool(this._context, undefined, this._typeByPaperShapeId);
+    this._shapeScaleTool = new ShapeScaleTool(this._context);
     /**
      * Tool for drawing rectangles
      *
      * @type {RectangleDrawingTool}
      * @private
      */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope, this._context);
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context);
 
     /**
      * Tool for drawing ellipses
@@ -82,42 +66,42 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {EllipseDrawingTool}
      * @private
      */
-    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope, this._context);
+    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context);
     /**
      * Tool for drawing circles
      *
      * @type {CircleDrawingTool}
      * @private
      */
-    this._circleDrawingTool = new CircleDrawingTool(this._$scope, this._context);
+    this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context);
     /**
      * Tool for drawing paths
      *
      * @type {PathDrawingTool}
      * @private
      */
-    this._pathDrawingTool = new PathDrawingTool(this._$scope, this._context);
+    this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context);
     /**
      * Tool for drawing closed polygons
      *
      * @type {PolygonDrawingTool}
      * @private
      */
-    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope, this._context);
+    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context);
     /**
      * Tool for drawing lines
      *
      * @type {LineDrawingTool}
      * @private
      */
-    this._lineDrawingTool = new LineDrawingTool(this._$scope, this._context);
+    this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context);
     /**
      * Tool for drawing points
      *
      * @type {PointDrawingTool}
      * @private
      */
-    this._pointDrawingTool = new PointDrawingTool(this._$scope, this._context);
+    this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context);
 
     // @TODO use this?
     this._$scope.vm.shapes = [];
@@ -323,8 +307,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
   _addShape(shape, update = true, selected = false) {
     const paperShape = this._drawShape(shape, selected);
 
-    this._typeByPaperShapeId.set(paperShape.id, shape.type);
-    this._labeledThingInFrameIdByPaperShapeId.set(paperShape.id, shape.labeledThingInFrameId);
     this._paperShapeByLabeledThingInFrameId.set(shape.labeledThingInFrameId, paperShape);
 
     if (update) {
@@ -365,8 +347,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   clear() {
     super.clear();
-    this._typeByPaperShapeId.clear();
-    this._labeledThingInFrameIdByPaperShapeId.clear();
     this._paperShapeByLabeledThingInFrameId.clear();
   }
 }

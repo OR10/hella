@@ -9,10 +9,9 @@ import PaperCircle from '../Shapes/PaperCircle';
 export default class ShapeScaleTool extends Tool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
-   * @param {Map} typeByPaperShapeId
+   * @param {Object} [options]
    */
-  constructor(drawingContext, options, typeByPaperShapeId) {
+  constructor(drawingContext, options) {
     super(drawingContext, options);
     /**
      * Hit test result
@@ -29,8 +28,6 @@ export default class ShapeScaleTool extends Tool {
      * @private
      */
     this._modified = false;
-
-    this._typeByPaperShapeId = typeByPaperShapeId;
 
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
