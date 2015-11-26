@@ -184,8 +184,7 @@ class ViewerStageController {
       if (newSelectedShape === null) {
         this.selectedLabeledThingInFrame = null;
       } else {
-        const {shape} = newSelectedShape;
-        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
+        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrameId];
       }
     });
   }
@@ -240,9 +239,8 @@ class ViewerStageController {
       this.selectedLabeledThingInFrame = labeledThingInFrame;
     }
 
-
     // @TODO this needs to be fixed for supporting multiple shapes
-    labeledThingInFrame.shapes[0] = shape;
+    labeledThingInFrame.shapes[0] = shape.toJSON();
 
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }

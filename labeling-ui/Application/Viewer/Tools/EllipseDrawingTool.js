@@ -1,26 +1,26 @@
 import paper from 'paper';
 import Tool from './Tool';
-import EllipseRenderer from '../Renderer/EllipseRenderer';
+import PaperEllipse from '../Shapes/PaperEllipse';
+import uuid from 'uuid';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor
+ *
+ * @class EllipseDrawingTool
+ * @extends Tool
  */
-export default class EllipseDrawingTool extends Tool {
+class EllipseDrawingTool extends Tool {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
-  constructor(drawingContext, options) {
+  constructor($scope, drawingContext, options) {
     super(drawingContext, options);
 
-    this._renderer = new EllipseRenderer();
+    this._$scope = $scope;
 
-    this._ellipse = null;
     this._startPosition = null;
-
-    this._context.withScope(() => {
-      this._tool = new paper.Tool();
-    });
 
     this._tool.onMouseDown = this._startNewEllipse.bind(this);
     this._tool.onMouseDrag = this._updateEllipse.bind(this);
@@ -33,18 +33,13 @@ export default class EllipseDrawingTool extends Tool {
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const size = new paper.Point(1, 1);
 
-    const drawingOptions = {
-      strokeColor: 'red',
-      strokeWidth: 2,
-      // Required to make ellipse clickable
-      fillColor: new paper.Color(0, 0, 0, 0),
-    };
-
     this._context.withScope(() => {
-      this._ellipse = this._renderer.drawEllipse(this._startPosition, size, drawingOptions);
+      // TODO use entityIdService if/once we make this a directive
+      this._shape = new PaperEllipse(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, size, 'red');
+      this._shape.select();
     });
 
-    this.emit('ellipse:new', this._ellipse);
+    this.emit('ellipse:new', this._shape);
   }
 
   _updateEllipse(event) {
@@ -53,30 +48,33 @@ export default class EllipseDrawingTool extends Tool {
     const width = Math.abs(point.x - this._startPosition.x) || 1;
     const height = Math.abs(point.y - this._startPosition.y) || 1;
 
-    const scaleX = width / this._ellipse.bounds.width || 1;
-    const scaleY = height / this._ellipse.bounds.height || 1;
-    this._ellipse.scale(scaleX, scaleY, this._getScaleAnchor(point));
+    const scaleX = width / this._shape.bounds.width || 1;
+    const scaleY = height / this._shape.bounds.height || 1;
 
-    this.emit('ellipse:update', this._ellipse);
+    this._shape.scale(scaleX, scaleY, this._getScaleAnchor(point));
+
+    this.emit('ellipse:update', this._shape);
   }
 
   _completeEllipse() {
-    this.emit('ellipse:complete', this._ellipse);
+    this.emit('ellipse:complete', this._shape);
   }
 
   _getScaleAnchor(point) {
     if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
-      return this._ellipse.bounds.topLeft;
+      return this._shape.bounds.topLeft;
     }
 
     if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
-      return this._ellipse.bounds.topRight;
+      return this._shape.bounds.topRight;
     }
 
     if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
-      return this._ellipse.bounds.bottomRight;
+      return this._shape.bounds.bottomRight;
     }
 
-    return this._ellipse.bounds.bottomLeft;
+    return this._shape.bounds.bottomLeft;
   }
 }
+
+export default EllipseDrawingTool;

@@ -1,12 +1,17 @@
 import PathDrawingTool from './PathDrawingTool';
+import PaperLine from '../Shapes/PaperLine';
+import uuid from 'uuid';
 
 /**
  * A tool for drawing a path with the mouse cursor
+ *
+ * @class LineDrawingTool
+ * @extends PathDrawingTool
  */
-export default class LineDrawingTool extends PathDrawingTool {
+class LineDrawingTool extends PathDrawingTool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {Object} options
+   * @param {Object} [options]
    */
   constructor(drawingContext, options) {
     super(drawingContext, options);
@@ -30,4 +35,14 @@ export default class LineDrawingTool extends PathDrawingTool {
       this._cleanUp();
     }
   }
+
+  _draw(point) {
+    this._context.withScope(() => {
+      // TODO use entityIdService if/once we make this a directive
+      this._path = new PaperLine(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
+      this._path.select();
+    });
+  }
 }
+
+export default LineDrawingTool;
