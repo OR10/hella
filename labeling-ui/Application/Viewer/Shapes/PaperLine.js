@@ -1,4 +1,3 @@
-import paper from 'paper';
 import PaperPath from './PaperPath';
 
 /**
@@ -23,4 +22,4 @@ class PaperLine extends PaperPath {
   }
 }
 
-export default PaperPath;
+export default PaperLine;

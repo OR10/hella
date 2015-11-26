@@ -4,8 +4,11 @@ import uuid from 'uuid';
 
 /**
  * A tool for drawing a path with the mouse cursor
+ *
+ * @class LineDrawingTool
+ * @extends PathDrawingTool
  */
-export default class LineDrawingTool extends PathDrawingTool {
+class LineDrawingTool extends PathDrawingTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
@@ -41,3 +44,5 @@ export default class LineDrawingTool extends PathDrawingTool {
     });
   }
 }
+
+export default LineDrawingTool;

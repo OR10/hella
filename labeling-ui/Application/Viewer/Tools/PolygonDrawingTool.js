@@ -1,4 +1,3 @@
-import paper from 'paper';
 import PathDrawingTool from './PathDrawingTool';
 import PaperPolygon from '../Shapes/PaperPolygon';
 import uuid from 'uuid';

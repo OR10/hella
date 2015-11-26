@@ -1,4 +1,3 @@
-import paper from 'paper';
 import CircleDrawingTool from './CircleDrawingTool';
 import PaperCircle from '../Shapes/PaperCircle';
 import uuid from 'uuid';
@@ -26,6 +25,6 @@ export default class PointDrawingTool extends CircleDrawingTool {
 
   _completeEllipse() {
     this.emit('point:complete', this._shape);
-    this._ellipse = null;
+    this._shape = null;
   }
 }

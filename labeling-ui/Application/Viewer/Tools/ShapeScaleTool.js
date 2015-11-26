@@ -96,7 +96,6 @@ export default class ShapeScaleTool extends Tool {
 
     switch (true) {
       case this._hitResult.item instanceof PaperCircle:
-        console.log('scale circ');
         this._scaleCircle(this._hitResult.item, point);
         break;
       default:

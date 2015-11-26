@@ -1,5 +1,3 @@
-import paper from 'paper';
-
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
 import EllipseDrawingTool from '../Tools/EllipseDrawingTool';
@@ -102,9 +100,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context);
-
-    // @TODO use this?
-    this._$scope.vm.shapes = [];
 
     $scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
       if (labeledThingInFrame === null) {
