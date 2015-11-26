@@ -1,2 +1,7 @@
-<canvas></canvas>
+<canvas ng-mouseover="vm.showFrameNumber = true" ng-mouseleave="vm.showFrameNumber = false"></canvas>
+<div class="frame-range" ng-hide="(!vm.showFrameNumber && !vm.showFrameNumberAlways) || vm.location === null">
+    <span class="current">{{vm.location.frameNumber}}</span>
+    <span class="divider">/</span>
+    <span class="endFrameNumber">{{vm.endFrameNumber}}</span>
+</div>
 

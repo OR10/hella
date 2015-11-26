@@ -45,6 +45,18 @@
       > canvas {
         width: 100%;
       }
+
+      .frame-range {
+        text-align: center;
+
+        .divider {
+          font-weight: bold;
+        }
+
+        .divider, .endFrameNumber {
+          color: darkgray;
+        }
+      }
     }
   }
 }

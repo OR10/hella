@@ -3,8 +3,11 @@ import angular from 'angular';
 
 /**
  * Controller managing the display of a single ThumbnailImage
+ *
  * @property {FrameLocation} location
  * @property {Filters} filters
+ * @property {int} endFrameNumber
+ * @property {bool} showFrameNumberAlways
  */
 class ThumbnailController {
   /**
@@ -15,6 +18,15 @@ class ThumbnailController {
    * @param {FrameGateway} frameGateway
    */
   constructor($scope, $element, $window, drawingContextService, frameGateway) {
+    /**
+     * Flag to indicate whether the frame number is shown or not
+     *
+     * Used by mouseover and mouseleave event handlers
+     *
+     * @type {bool}
+     */
+    this.showFrameNumber = false;
+
     /**
      * @type {DrawingContext}
      * @private

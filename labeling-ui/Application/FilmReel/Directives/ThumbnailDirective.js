@@ -7,6 +7,8 @@ import ThumbnailController from './ThumbnailController';
 class ThumbnailDirective {
   constructor() {
     this.scope = {
+      endFrameNumber: '=',
+      showFrameNumberAlways: '=',
       location: '=',
       filters: '=',
     };
