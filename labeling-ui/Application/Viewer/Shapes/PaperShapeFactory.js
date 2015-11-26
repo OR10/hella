@@ -1,6 +1,7 @@
 import PaperRectangle from './PaperRectangle';
 import PaperEllipse from './PaperEllipse';
 import PaperCircle from './PaperCircle';
+import PaperPoint from './PaperPoint';
 
 class PaperShapeFactory {
   _createRectangle(shape) {
@@ -8,11 +9,15 @@ class PaperShapeFactory {
   }
 
   _createEllipse(shape) {
-    return new PaperEllipse(shape.id, shape.labeledThingInFrameId, shape.center, shape.size, 'red');
+    return new PaperEllipse(shape.id, shape.labeledThingInFrameId, shape.point, shape.size, 'red');
   }
 
   _createCircle(shape) {
-    return new PaperCircle(shape.id, shape.labeledThingInFrameId, shape.center, shape.size, 'red');
+    return new PaperCircle(shape.id, shape.labeledThingInFrameId, shape.point, shape.size.width / 2, 'red');
+  }
+
+  _createPoint(shape) {
+    return new PaperPoint(shape.id, shape.labeledThingInFrameId, shape.point, 'red');
   }
 
   createPaperShape(shape) {
@@ -24,7 +29,7 @@ class PaperShapeFactory {
       case 'circle':
         return this._createCircle(shape);
       case 'point':
-        return this._createCircle(shape);
+        return this._createPoint(shape);
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }

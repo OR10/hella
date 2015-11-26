@@ -15,6 +15,9 @@ class PaperShape extends paper.Group {
      * Internal id for this shape.
      *
      * This id must remain stable over multiple LabeledThingsInFrame.
+     *
+     * @type {String}
+     * @protected
      */
     this._shapeId = shapeId;
 
@@ -57,9 +60,8 @@ class PaperShape extends paper.Group {
 
   /**
    * @abstract
+   * @method PaperShape#toJSON
    */
-  toJSON() {
-  }
 }
 
 export default PaperShape;

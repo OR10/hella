@@ -1,5 +1,7 @@
 import Tool from './Tool';
 import paper from 'paper';
+import PaperShape from '../Shapes/PaperShape';
+import PaperCircle from '../Shapes/PaperCircle';
 
 /**
  * A Tool for scaling annotation shapes
@@ -19,13 +21,7 @@ export default class ShapeScaleTool extends Tool {
      * @private
      */
     this._hitResult = null;
-    /**
-     * Shape type of the hit result
-     *
-     * @type {string}
-     * @private
-     */
-    this._hitType = null;
+
     /**
      * Variable that holds the modified state of the current rectangle
      *
@@ -47,7 +43,7 @@ export default class ShapeScaleTool extends Tool {
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
-        class: paper.Group,
+        class: PaperShape,
         fill: true,
         bounds: true,
         tolerance: this._options.hitTestTolerance,
@@ -56,11 +52,10 @@ export default class ShapeScaleTool extends Tool {
       if (hitResult) {
         this._hitResult = hitResult;
         this._hitResult.item.selected = true;
-        this._hitType = this._typeByPaperShapeId.get(hitResult.item.id);
 
         if (this._hitResult.type === 'bounds') {
-          switch (this._hitType) {
-            case 'circle':
+          switch (true) {
+            case this._hitResult.item instanceof PaperCircle:
               this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
               break;
             default:
@@ -101,8 +96,10 @@ export default class ShapeScaleTool extends Tool {
     const point = new paper.Point(event.event.offsetX, event.event.offsetY);
 
     this._modified = true;
-    switch (this._hitType) {
-      case 'circle':
+
+    switch (true) {
+      case this._hitResult.item instanceof PaperCircle:
+        console.log('scale circ');
         this._scaleCircle(this._hitResult.item, point);
         break;
       default:

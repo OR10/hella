@@ -1,6 +1,10 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
 
+/**
+ * @class PaperRectangle
+ * @extends PaperShape
+ */
 class PaperRectangle extends PaperShape {
   constructor(shapeId, labeledThingInFrameId, topLeft, bottomRight, strokeColor) {
     super(shapeId, labeledThingInFrameId);
@@ -19,13 +23,19 @@ class PaperRectangle extends PaperShape {
   }
 
   toJSON() {
-    const {topLeft, bottomRight} = this.bounds;
+    const {topLeft, bottomRight} = this._shape.bounds;
 
     return {
       type: 'rectangle',
       id: this._shapeId,
-      topLeft: {x: topLeft.x, y: topLeft.y},
-      bottomRight: {x: bottomRight.x, y: bottomRight.y},
+      topLeft: {
+        x: Math.round(topLeft.x),
+        y: Math.round(topLeft.y),
+      },
+      bottomRight: {
+        x: Math.round(bottomRight.x),
+        y: Math.round(bottomRight.y),
+      },
       labeledThingInFrameId: this.labeledThingInFrameId,
     };
   }

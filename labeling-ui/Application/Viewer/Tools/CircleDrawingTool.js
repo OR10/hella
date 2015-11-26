@@ -5,8 +5,11 @@ import uuid from 'uuid';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor
+ *
+ * @class CircleDrawingTool
+ * @extends EllipseDrawingTool
  */
-export default class CircleDrawingTool extends EllipseDrawingTool {
+class CircleDrawingTool extends EllipseDrawingTool {
   _startNewEllipse(event) {
     this._startPosition = new paper.Point(event.event.offsetX, event.event.offsetY);
 
@@ -27,7 +30,7 @@ export default class CircleDrawingTool extends EllipseDrawingTool {
     const scale = distance / this._shape.bounds.width || 1;
 
     this._shape.scale(scale);
-    this._shape.position = new paper.Point((this._startPosition.x + point.x) / 2, (this._startPosition.y + point.y) / 2);
+    this._shape.moveTo(new paper.Point((this._startPosition.x + point.x) / 2, (this._startPosition.y + point.y) / 2));
 
     this.emit('circle:update', this._shape);
   }
@@ -36,3 +39,5 @@ export default class CircleDrawingTool extends EllipseDrawingTool {
     this.emit('circle:complete', this._shape);
   }
 }
+
+export default CircleDrawingTool;

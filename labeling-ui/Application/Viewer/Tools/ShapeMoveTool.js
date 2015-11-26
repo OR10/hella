@@ -1,5 +1,6 @@
 import paper from 'paper';
 import Tool from './Tool';
+import PaperShape from '../Shapes/PaperShape';
 
 /**
  * A Tool for moving annotation shapes
@@ -51,8 +52,7 @@ export default class ShapeMoveTool extends Tool {
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
-        // @TODO find out if we can also do this with our potential PaperShape base class
-        class: paper.Group,
+        class: PaperShape,
         fill: true,
         bounds: true,
         segments: true,

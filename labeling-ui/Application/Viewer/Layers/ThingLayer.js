@@ -223,22 +223,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.emit('shape:new', rectangle);
     });
 
-    //this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
-    //  this._typeByPaperShapeId.set(ellipse.id, 'ellipse');
-    //  this._labeledThingInFrameIdByPaperShapeId.set(ellipse.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-    //  this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, ellipse);
-    //  const shape = this._createShapeFromPaperShape(ellipse, 'ellipse');
-    //  this.emit('shape:new', shape);
-    //});
-    //
-    //this._circleDrawingTool.on('ellipse:complete', circle => {
-    //  this._typeByPaperShapeId.set(circle.id, 'circle');
-    //  this._labeledThingInFrameIdByPaperShapeId.set(circle.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-    //  this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, circle);
-    //  const shape = this._createShapeFromPaperShape(circle, 'circle');
-    //  this.emit('shape:new', shape);
-    //});
-    //
+    this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
+      this.emit('shape:new', ellipse);
+    });
+
+    this._circleDrawingTool.on('circle:complete', circle => {
+      this.emit('shape:new', circle);
+    });
+
+    this._pointDrawingTool.on('point:complete', point => {
+      this.emit('shape:new', point);
+    });
+
     //this._pathDrawingTool.on('path:complete', path => {
     //  this._typeByPaperShapeId.set(path.id, 'path');
     //  this._labeledThingInFrameIdByPaperShapeId.set(path.id, this._$scope.vm.selectedLabeledThingInFrame.id);
@@ -263,13 +259,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
     //  this.emit('shape:new', shape);
     //});
     //
-    //this._pointDrawingTool.on('point:complete', point => {
-    //  this._typeByPaperShapeId.set(point.id, 'point');
-    //  this._labeledThingInFrameIdByPaperShapeId.set(point.id, this._$scope.vm.selectedLabeledThingInFrame.id);
-    //  this._paperShapeByLabeledThingInFrameId.set(this._$scope.vm.selectedLabeledThingInFrame.id, point);
-    //  const shape = this._createShapeFromPaperShape(point, 'point');
-    //  this.emit('shape:new', shape);
-    //});
   }
 
   /**

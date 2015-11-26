@@ -19,13 +19,13 @@ class PaperCircle extends PaperShape {
   }
 
   toJSON() {
-    const {radius, center} = this._shape;
+    const {bounds, position} = this._shape;
 
     return {
       type: 'circle',
       id: this._shapeId,
-      center: {x: center.x, y: center.y},
-      radius,
+      point: {x: Math.round(position.x), y: Math.round(position.y)},
+      size: {width: Math.round(bounds.width), height: Math.round(bounds.height)},
       labeledThingInFrameId: this.labeledThingInFrameId,
     };
   }

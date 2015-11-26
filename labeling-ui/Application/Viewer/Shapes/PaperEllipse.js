@@ -23,13 +23,13 @@ class PaperEllipse extends PaperShape {
   }
 
   toJSON() {
-    const {size, center} = this._shape;
+    const {bounds, position} = this._shape;
 
     return {
       type: 'ellipse',
       id: this._shapeId,
-      center: {x: center.x, y: center.y},
-      size: {width: size.width, height: size.height},
+      point: {x: Math.round(position.x), y: Math.round(position.y)},
+      size: {width: Math.round(bounds.width), height: Math.round(bounds.height)},
       labeledThingInFrameId: this.labeledThingInFrameId,
     };
   }
