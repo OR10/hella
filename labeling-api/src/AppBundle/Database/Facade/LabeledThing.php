@@ -23,8 +23,12 @@ class LabeledThing
      * @param int                $limit
      * @return CouchDB\View\Result
      */
-    public function getLabeledThingInFrames(Model\LabeledThing $labeledThing, $frameNumber = null, $offset = 0, $limit = 0)
-    {
+    public function getLabeledThingInFrames(
+        Model\LabeledThing $labeledThing,
+        $frameNumber = null,
+        $offset = 0,
+        $limit = 0
+    ) {
         if ($frameNumber !== null) {
             $startKey = array(
                 $labeledThing->getId(),
@@ -61,6 +65,14 @@ class LabeledThing
 
     public function save(Model\LabeledThing $labeledThing)
     {
+        if ($labeledThing->getId() === null) {
+            $uuids = $this->documentManager->getCouchDBClient()->getUuids();
+            if (!is_array($uuids) || empty($uuids)) {
+                throw new \RuntimeException("Error retrieving uuid for LabeledThing");
+            }
+            $labeledThing->setId($uuids[0]);
+        }
+
         $this->documentManager->persist($labeledThing);
         $this->documentManager->flush();
     }

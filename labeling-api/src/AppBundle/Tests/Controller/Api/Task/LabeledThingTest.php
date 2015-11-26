@@ -73,7 +73,6 @@ class LabeledThingTest extends Tests\WebTestCase
                 array(
                     'id' => '11aa239108f1419967ed8d6a1f5a765t',
                     'classes' => array('class1' => 'test'),
-                    'frameRange' => array('start' => 1),
                     'incomplete' => true,
                 )
             )
@@ -95,7 +94,6 @@ class LabeledThingTest extends Tests\WebTestCase
                 array(
                     'id' => '11aa239108f1419967ed8d6a1f5a765t',
                     'classes' => array('class1' => 'test'),
-                    'frameRange' => array('start' => 1),
                     'incomplete' => true,
                 )
             )
@@ -120,7 +118,6 @@ class LabeledThingTest extends Tests\WebTestCase
                 array(
                     'rev' => $labelingThing->getRev(),
                     'classes' => array('class1' => 'test'),
-                    'frameRange' => array('start' => 1),
                     'incomplete' => true,
                 )
             )
@@ -145,7 +142,6 @@ class LabeledThingTest extends Tests\WebTestCase
                 array(
                     'rev' => '324jh2jk4hkh234h',
                     'classes' => array('class1' => 'test'),
-                    'frameRange' => array('start' => 1),
                     'incomplete' => true,
                 )
             )

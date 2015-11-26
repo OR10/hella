@@ -77,11 +77,6 @@ class ImporterService
         $imageTypes = $this->getImageTypes($compressed);
         $task       = $this->addTask($video, $imageTypes);
 
-        // @todo This list currently contains all image types since the
-        //       labeling task is currently created by this service for the
-        //       whole video. This may change in future versions where some or
-        //       all image types are defined by the labeling task. However,
-        //       when this happens, this service has to be refactored anyway.
         foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
             $this->videoFacade->update();
@@ -118,6 +113,11 @@ class ImporterService
 
     /**
      * Get the list of image types that should be generated for the task.
+     *
+     * TODO: Currently, we don't know how the image types are actually
+     *       determined, so the list is hardcoded and depends only on wether or
+     *       not we are allowed to use compressed images or not but this will
+     *       change in the future.
      *
      * @param bool $compressed
      *

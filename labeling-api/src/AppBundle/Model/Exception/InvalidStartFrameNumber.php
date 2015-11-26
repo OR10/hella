@@ -2,9 +2,7 @@
 
 namespace AppBundle\Model\Exception;
 
-use AppBundle\Exception;
-
-class InvalidStartFrameNumber extends Exception
+class InvalidStartFrameNumber extends FrameRange
 {
     public $startFrameNumber;
 
