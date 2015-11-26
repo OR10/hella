@@ -70,6 +70,7 @@
 
         <service id="annostation.labeling_api.service.interpolation" class="AppBundle\Service\Interpolation">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.status" />
         </service>
     </services>
 </container>

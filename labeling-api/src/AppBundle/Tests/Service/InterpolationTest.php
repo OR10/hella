@@ -59,16 +59,17 @@ class InterpolationTest extends Tests\KernelTestCase
         return static::$kernel->getContainer()->get($name);
     }
 
-    /**
-     * @expectedException AppBundle\Service\Interpolation\Exception
-     */
-    public function testInterpolateThrowsRuntimeExceptionWhenUnknownAlgorithmShouldBeUsed()
+    public function testInterpolateSetsErrorStatusWhenUnknownAlgorithmShouldBeUsed()
     {
-        $this->interpolationService->interpolate('foo', $this->createLabeledThing());
+        $status = new Model\Interpolation\Status();
+        $this->interpolationService->interpolate('foo', $this->createLabeledThing(), $status);
+
+        $this->assertEquals(Model\Interpolation\Status::ERROR, $status->getStatus());
     }
 
     public function testEmittedLabeledThingsInFrameArePersisted()
     {
+        $status = new Model\Interpolation\Status();
         $labeledThing = $this->createLabeledThing();
         $labeledThingsInFrame = [];
 
@@ -81,7 +82,8 @@ class InterpolationTest extends Tests\KernelTestCase
         $algorithm = $this->getMockBuilder(Service\Interpolation\Algorithm::class)->getMock();
         $algorithm->method('getName')->willReturn('test');
         $algorithm->method('interpolate')->will(
-            $this->returnCallback(function($labeledThing, $frameRange, $emit) use (&$labeledThingsInFrame) {
+            $this->returnCallback(function($labeledThing, $frameRange, $emit) use (&$labeledThingsInFrame, $status) {
+                $this->assertEquals(Model\Interpolation\Status::RUNNING, $status->getStatus());
                 foreach ($labeledThingsInFrame as $labeledThingInFrame) {
                     $emit($labeledThingInFrame);
                 }
@@ -89,12 +91,12 @@ class InterpolationTest extends Tests\KernelTestCase
         );
 
         $this->interpolationService->addAlgorithm($algorithm);
-
-        $this->interpolationService->interpolate('test', $labeledThing);
+        $this->interpolationService->interpolate('test', $labeledThing, $status);
 
         $result = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, 3, 0, 2)->toArray();
 
         $this->assertEquals($labeledThingsInFrame, $result);
+        $this->assertEquals(Model\Interpolation\Status::SUCCESS, $status->getStatus());
     }
 
     /**

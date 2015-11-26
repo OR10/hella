@@ -28,12 +28,19 @@ class Interpolation
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\Status
+     */
+    private $statusFacade;
+
+    /**
      * @param Facade\LabeledThingInFrame
      */
     public function __construct(
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\Status $statusFacade
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->statusFacade              = $statusFacade;
     }
 
     /**
@@ -68,49 +75,67 @@ class Interpolation
      * Interpolate for the whole frame range of the given `$labeledThing` using
      * the algorithm identified by `$algorithmName`.
      * The algorithm has to be added with `addAlgorithm` first.
+     * A status object may be passed as optional parameter which will be
+     * updated according to the interpolation status.
      *
-     * @param string             $algorithmName
-     * @param Model\LabeledThing $labeledThing
+     * @param string                          $algorithmName
+     * @param Model\LabeledThing              $labeledThing
+     * @param Model\Interpolation\Status|null $status
      */
-    public function interpolate($algorithmName, Model\LabeledThing $labeledThing)
-    {
-        $this->interpolateForRange($algorithmName, $labeledThing, $labeledThing->getFrameRange());
+    public function interpolate(
+        $algorithmName,
+        Model\LabeledThing $labeledThing,
+        Model\Interpolation\Status $status = null
+    ) {
+        $this->interpolateForRange($algorithmName, $labeledThing, $labeledThing->getFrameRange(), $status);
     }
 
     /**
      * Interpolate for the given `$frameRange` and `$labeledThing` using the
      * algorithm identified by `$algorithmName`.
      * The algorithm has to be added with `addAlgorithm` first.
+     * A status object may be passed as optional parameter which will be
+     * updated according to the interpolation status.
      *
-     * @param string             $algorithmName
-     * @param Model\LabeledThing $labeledThing
-     * @param Model\FrameRange   $frameRange
+     * @param string                          $algorithmName
+     * @param Model\LabeledThing              $labeledThing
+     * @param Model\FrameRange                $frameRange
+     * @param Model\Interpolation\Status|null $status
      */
     public function interpolateForRange(
         $algorithmName,
         Model\LabeledThing $labeledThing,
-        Model\FrameRange $frameRange
+        Model\FrameRange $frameRange,
+        Model\Interpolation\Status $status = null
     ) {
-        $algorithm = $this->getAlgorithm($algorithmName);
+        $this->updateStatus($status, Model\Interpolation\Status::RUNNING);
 
-        $labeledThingsInFrame = [];
+        try {
+            $algorithm = $this->getAlgorithm($algorithmName);
 
-        $algorithm->interpolate(
-            $labeledThing,
-            $frameRange,
-            function(Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
-                // TODO: make the number configurable
-                if (count($labeledThingsInFrame) == 10) {
-                    $this->persistLabeledThingsInFrame($labeledThingsInFrame);
-                    $labeledThingsInFrame = [];
-                } else {
-                    $labeledThingsInFrame[] = $labeledThingInFrame;
+            $labeledThingsInFrame = [];
+
+            $algorithm->interpolate(
+                $labeledThing,
+                $frameRange,
+                function(Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
+                    // TODO: make the number configurable
+                    if (count($labeledThingsInFrame) == 10) {
+                        $this->persistLabeledThingsInFrame($labeledThingsInFrame);
+                        $labeledThingsInFrame = [];
+                    } else {
+                        $labeledThingsInFrame[] = $labeledThingInFrame;
+                    }
                 }
-            }
-        );
+            );
 
-        if (!empty($labeledThingsInFrame)) {
-            $this->persistLabeledThingsInFrame($labeledThingsInFrame);
+            if (!empty($labeledThingsInFrame)) {
+                $this->persistLabeledThingsInFrame($labeledThingsInFrame);
+            }
+
+            $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
+        } catch (\Exception $e) {
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR);
         }
     }
 
@@ -121,6 +146,20 @@ class Interpolation
     {
         foreach ($labeledThingsInFrame as $labeledThingInFrame) {
             $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+        }
+    }
+
+    /**
+     * Update the given `$status` if it is not null or otherwise do nothing.
+     *
+     * @param Model\Interpolation\Status|null $status
+     * @param string                          $newState
+     */
+    private function updateStatus(Model\Interpolation\Status $status = null, $newState)
+    {
+        if ($status !== null) {
+            $status->setStatus($newState);
+            $this->statusFacade->save($status);
         }
     }
 }
