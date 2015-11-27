@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Api\Task;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
+use AppBundle\Model;
 use AppBundle\View;
 use AppBundle\Worker\Jobs;
 use crosscan\WorkerPool\AMQP;
@@ -49,17 +50,12 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskId}/export")
+     * @Rest\Get("/{task}/export")
      *
-     * @param string $taskId
+     * @param Model\LabelingTask $task
      */
-    public function listExportsAction($taskId)
+    public function listExportsAction(Model\LabelingTask $task)
     {
-        $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
         $exports = $this->taskExportFacade->findAll();
         $exports = array_values(array_filter($exports->toArray(), function($export) use ($task) {
             return $export->getLabelingTaskId() === $task->getId();
@@ -72,20 +68,14 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskId}/export/{taskExportId}")
+     * @Rest\Get("/{task}/export/{taskExport}")
      *
-     * @param string $taskId
-     * @param string $taskExportId
+     * @param Model\LabelingTask $task
+     * @param Model\TaskExport   $taskExport
      */
-    public function getExportAction($taskId, $taskExportId)
+    public function getExportAction(Model\LabelingTask $task, Model\TaskExport $taskExport)
     {
-        $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
-        $taskExport = $this->taskExportFacade->find($taskExportId);
-        if ($taskExport === null || $taskExport->getLabelingTaskId() !== $task->getId()) {
+        if ($taskExport->getLabelingTaskId() !== $task->getId()) {
             throw new Exception\NotFoundHttpException();
         }
 
@@ -103,19 +93,14 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{taskId}/export/kitti")
+     * @Rest\Post("/{task}/export/kitti")
      *
-     * @param string $taskId
+     * @param Model\LabelingTask $task
      *
      * @return HttpFoundation\Response
      */
-    public function getKittiExportAction($taskId)
+    public function getKittiExportAction(Model\LabelingTask $task)
     {
-        $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
         $this->amqpFacade->addJob(new Jobs\KittiExporter($task->getId()));
 
         return View\View::create()

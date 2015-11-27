@@ -2,14 +2,14 @@
 
 namespace AppBundle\Controller\Api;
 
-use AppBundle\Model\Video\ImageType;
-use Symfony\Component\HttpFoundation;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
-use AppBundle\View;
-use AppBundle\Service;
 use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
+use AppBundle\Service;
+use AppBundle\View;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 
 /**
@@ -41,33 +41,25 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
+     * @Rest\Get("/{labeledThingInFrame}")
      *
-     * @Rest\Get("/{documentId}")
-     * @param                        $documentId
-     * @param HttpFoundation\Request $request
+     * @param Model\LabeledThingInFrame $documentId
+     * @param HttpFoundation\Request    $request
      *
      * @return \FOS\RestBundle\View\View
      *
      * @internal param HttpFoundation\Request $request
      */
-    public function getLabeledThingInFrameAction($documentId, HttpFoundation\Request $request)
-    {
-        $response            = View\View::create();
-        $labeledThingInFrame = $this->labeledThingInFrameFacade->find($documentId);
-
-        if ($labeledThingInFrame === null) {
-            $response->setStatusCode(404);
-            $response->setData(['result' => array('success' => false, 'msg' => 'Document not found')]);
-        } else {
-            $response->setData(['result' => array('success' => true, 'data' => $labeledThingInFrame)]);
-        }
-
-        return $response;
+    public function getLabeledThingInFrameAction(
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        HttpFoundation\Request $request
+    ) {
+        return View\View::create()->setData(['result' => array('success' => true, 'data' => $labeledThingInFrame)]);
     }
 
     /**
-     *
      * @Rest\Put("/{documentId}")
+     *
      * @param                        $documentId
      * @param HttpFoundation\Request $request
      *
@@ -119,23 +111,22 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
+     * @Rest\Delete("/{labeledThingInFrame}")
      *
-     * @Rest\Delete("/{documentId}")
-     * @param                        $documentId
-     * @param HttpFoundation\Request $request
+     * @param Model\LabeledThingInFrame $documentId
+     * @param HttpFoundation\Request    $request
      *
      * @return \FOS\RestBundle\View\View
      *
      * @internal param HttpFoundation\Request $request
      */
-    public function deleteLabeledThingInFrameAction($documentId, HttpFoundation\Request $request)
-    {
-        $response            = View\View::create();
-        $labeledThingInFrame = $this->labeledThingInFrameFacade->find($documentId);
+    public function deleteLabeledThingInFrameAction(
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        HttpFoundation\Request $request
+    ) {
+        $response = View\View::create();
 
-        if ($labeledThingInFrame === null) {
-            $response->setStatusCode(404);
-        } elseif ($labeledThingInFrame->getRev() === $request->request->get('rev')) {
+        if ($labeledThingInFrame->getRev() === $request->request->get('rev')) {
             $this->labeledThingInFrameFacade->delete($labeledThingInFrame);
             $response->setData(['success' => true]);
         } else {
