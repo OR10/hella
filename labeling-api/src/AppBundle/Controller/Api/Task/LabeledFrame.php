@@ -2,14 +2,14 @@
 
 namespace AppBundle\Controller\Api\Task;
 
-use AppBundle\Model\Video\ImageType;
-use Symfony\Component\HttpFoundation;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
-use AppBundle\View;
-use AppBundle\Service;
 use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
+use AppBundle\Service;
+use AppBundle\View;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 
 /**
@@ -38,27 +38,20 @@ class LabeledFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskId}/labeledFrame/{frameNumber}")
+     * @Rest\Get("/{task}/labeledFrame/{frameNumber}")
      *
-     * @param $taskId
-     * @param $frameNumber
+     * @param Model\LabelingTask $task
+     * @param int                $frameNumber
      *
      * @return \FOS\RestBundle\View\View
      * @internal param $documentId
      *
      */
-    public function getLabeledFrameAction($taskId, $frameNumber)
+    public function getLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
         $response = View\View::create();
 
-        $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
-
-        $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
+        $labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber);
 
         if ($labeledFrame === null) {
             $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, 0, $frameNumber)->toArray();
@@ -92,70 +85,59 @@ class LabeledFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Delete("/{taskId}/labeledFrame/{frameNumber}")
+     * @Rest\Delete("/{task}/labeledFrame/{frameNumber}")
      *
-     * @param $taskId
-     * @param $frameNumber
+     * @param Model\LabelingTask $task
+     * @param int                $frameNumber
      *
      * @return \FOS\RestBundle\View\View
      * @internal param $documentId
      *
      */
-    public function deleteLabeledFrameAction($taskId, $frameNumber)
+    public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $response = View\View::create();
-
-        $task = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            $response->setStatusCode(404);
-
-            return $response;
+        if (($labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber)) === null) {
+            throw new Exception\NotFoundHttpException();
         }
-        $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
-        if ($task === null || $labeledFrame === null) {
-            $response->setStatusCode(404);
 
-            return $response;
-        }
         $this->labeledFrameFacade->delete($labeledFrame);
-        $response->setData(['success' => true]);
 
-        return $response;
-
+        return View\View::create()->setData(['success' => true]);
     }
 
     /**
      *
-     * @Rest\Put("/{taskId}/labeledFrame/{frameNumber}")
+     * @Rest\Put("/{task}/labeledFrame/{frameNumber}")
      *
-     * @param                        $taskId
-     * @param                        $frameNumber
+     * @param Model\LabelingTask     $task
+     * @param int                    $frameNumber
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
+     *
      * @internal param HttpFoundation\Request $request
      */
-    public function putLabeledThingInFrameAction($taskId, $frameNumber, HttpFoundation\Request $request)
-    {
+    public function putLabeledThingInFrameAction(
+        Model\LabelingTask $task,
+        $frameNumber,
+        HttpFoundation\Request $request
+    ) {
         $response = View\View::create();
 
-        $task            = $this->labelingTaskFacade->find($taskId);
         $classes         = $request->request->get('classes', []);
         $bodyFrameNumber = (int) $request->request->get('frameNumber');
         $incomplete      = $request->request->get('incomplete');
         $documentId      = $request->request->get('id');
 
-        if ($task === null || !is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $documentId === null) {
+        if (!is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $documentId === null) {
             throw new Exception\BadRequestHttpException();
         }
 
         if ($request->request->get('rev') === null) {
             $labeledFrame = new Model\LabeledFrame($task);
-            $labeledFrame->setId(
-                $documentId
-            );
-        }else{
-            $labeledFrame = $this->getDocumentByTaskIdAndFrameNumber($task, $frameNumber);
+            $labeledFrame->setId($documentId);
+        } else {
+            $labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber);
         }
 
 
@@ -179,7 +161,7 @@ class LabeledFrame extends Controller\Base
      * @param                    $frameNumber
      * @return null|Model\LabeledFrame
      */
-    private function getDocumentByTaskIdAndFrameNumber(Model\LabelingTask $task, $frameNumber)
+    private function getDocumentByTaskAndFrameNumber(Model\LabelingTask $task, $frameNumber)
     {
         $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, $frameNumber, $frameNumber)->toArray();
 

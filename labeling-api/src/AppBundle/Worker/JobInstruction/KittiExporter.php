@@ -42,7 +42,7 @@ class KittiExporter extends WorkerPool\JobInstruction
      */
     public function run(Job $job, Logger\Facade\LoggerFacade $logger)
     {
-        $task = $this->labelingTaskFacade->find($job->getLabelingTaskId());
+        $task = $this->labelingTaskFacade->find($job->getTaskId());
         if ($task === null) {
             // @todo log task-not-found
             return;
