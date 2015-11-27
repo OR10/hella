@@ -222,14 +222,14 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
     }
 
-    private function doRequest($method, $labelingTaskId, $labeledThingInFrameNumber, $content = null)
+    private function doRequest($method, $taskId, $labeledThingInFrameNumber, $content = null)
     {
         $client  = $this->createClient();
         $crawler = $client->request(
             $method,
             sprintf(
                 '/api/task/%s/labeledThingInFrame/%s.json',
-                $labelingTaskId,
+                $taskId,
                 $labeledThingInFrameNumber
             ),
             [],

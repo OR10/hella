@@ -122,7 +122,7 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getLabelingTaskId() !== $task->getId()) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
 
@@ -159,7 +159,7 @@ class LabeledThing extends Controller\Base
                 throw new Exception\ConflictHttpException();
             }
 
-            if ($labeledThing->getLabelingTaskId() !== $task->getId()) {
+            if ($labeledThing->getTaskId() !== $task->getId()) {
                 throw new Exception\BadRequestHttpException();
             }
         }
@@ -203,7 +203,7 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getLabelingTaskId() !== $task->getId()) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
 

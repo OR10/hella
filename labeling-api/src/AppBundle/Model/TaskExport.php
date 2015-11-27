@@ -23,6 +23,7 @@ class TaskExport
 
     /**
      * @CouchDB\Field(type="string")
+     * @Serializer\SerializedName("taskId")
      */
     private $labelingTaskId;
 
@@ -75,7 +76,7 @@ class TaskExport
      *
      * @return string
      */
-    public function getLabelingTaskId()
+    public function getTaskId()
     {
         return $this->labelingTaskId;
     }

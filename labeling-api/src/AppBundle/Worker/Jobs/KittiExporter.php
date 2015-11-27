@@ -8,18 +8,21 @@ class KittiExporter extends WorkerPool\Job
     /**
      * @var string
      */
-    private $labelingTaskId;
+    private $taskId;
 
     /**
-     * @param string $labelingTaskId
+     * @param string $taskId
      */
-    public function __construct($labelingTaskId)
+    public function __construct($taskId)
     {
-        $this->labelingTaskId = $labelingTaskId;
+        $this->taskId = (string) $taskId;
     }
 
-    public function getLabelingTaskId()
+    /**
+     * @return string
+     */
+    public function getTaskId()
     {
-        return $this->labelingTaskId;
+        return $this->taskId;
     }
 }

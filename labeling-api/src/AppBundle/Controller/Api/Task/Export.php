@@ -58,7 +58,7 @@ class Export extends Controller\Base
     {
         $exports = $this->taskExportFacade->findAll();
         $exports = array_values(array_filter($exports->toArray(), function($export) use ($task) {
-            return $export->getLabelingTaskId() === $task->getId();
+            return $export->getTaskId() === $task->getId();
         }));
 
         return View\View::create()->setData([
@@ -75,7 +75,7 @@ class Export extends Controller\Base
      */
     public function getExportAction(Model\LabelingTask $task, Model\TaskExport $taskExport)
     {
-        if ($taskExport->getLabelingTaskId() !== $task->getId()) {
+        if ($taskExport->getTaskId() !== $task->getId()) {
             throw new Exception\NotFoundHttpException();
         }
 
