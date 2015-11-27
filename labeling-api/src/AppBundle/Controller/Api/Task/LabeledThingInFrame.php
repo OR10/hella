@@ -163,7 +163,9 @@ class LabeledThingInFrame extends Controller\Base
             return View\View::create()->setData(['result' => []]);
         }
 
-        $labeledThingInFrames =$this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray();
+        $labeledThingInFrames = array_reverse(
+            $this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray()
+        );
         $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
         $result = array_map(function ($expectedFrameNumber) use (&$labeledThingInFrames) {

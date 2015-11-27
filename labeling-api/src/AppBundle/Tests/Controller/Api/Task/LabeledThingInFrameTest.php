@@ -176,16 +176,6 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'incomplete' => true,
                 'ghost' => false,
             ),
-            array(
-                'id' => $labeledThingInFrameNumber11->getId(),
-                'rev' => $labeledThingInFrameNumber11->getRev(),
-                'frameNumber' => 11,
-                'classes' => array(),
-                'shapes' => array(),
-                'labeledThingId' => $labeledThingInFrameNumber11->getLabeledThingId(),
-                'incomplete' => true,
-                'ghost' => true,
-            ),
         );
 
         $response = $client->getResponse();
