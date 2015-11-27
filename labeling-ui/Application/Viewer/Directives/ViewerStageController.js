@@ -165,8 +165,7 @@ class ViewerStageController {
           this._labeledThingInFrameGateway.getLabeledThingInFrame(
             this.task,
             newPosition,
-            this.selectedLabeledThingInFrame.labeledThingId,
-            0, 0 // @TODO: After backend fix to be removed
+            this.selectedLabeledThingInFrame.labeledThingId
           )
         ).then(labeledThingsInFrame => {
           const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);

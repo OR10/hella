@@ -182,7 +182,7 @@ class ThumbnailReelController {
       1,
       this.selectedLabeledThingInFrame.labeledThingId,
       offset,
-      limit - 1 // @TODO The backend has an off-by-one error here. As soon as this is fixed the -1 needs to be removed
+      limit
     )
     .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
   }
