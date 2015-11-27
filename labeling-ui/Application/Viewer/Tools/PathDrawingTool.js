@@ -33,7 +33,7 @@ class PathDrawingTool extends Tool {
     };
 
     if (event.event.altKey) {
-      this.emit('path:complete', this._path);
+      this.emit('shape:new', this._path);
       return;
     }
 
@@ -50,7 +50,6 @@ class PathDrawingTool extends Tool {
     this._context.withScope(() => {
       // TODO use entityIdService if/once we make this a directive
       this._path = new PaperPath(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
-      this._path.select();
     });
   }
 

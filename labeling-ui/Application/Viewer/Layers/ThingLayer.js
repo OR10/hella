@@ -1,3 +1,4 @@
+import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
 import EllipseDrawingTool from '../Tools/EllipseDrawingTool';
@@ -10,6 +11,7 @@ import ShapeMoveTool from '../Tools/ShapeMoveTool';
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
 
 import PaperShapeFactory from '../Shapes/PaperShapeFactory';
+import PaperShape from '../Shapes/PaperShape';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -142,30 +144,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.addLabeledThingsInFrame(addedLabeledThingsInFrame);
     });
 
-    this._shapeMoveTool.on('shape:selected', shape => {
-      $scope.$apply(() => {
-        $scope.vm.selectedShape = shape;
-      });
-    });
-
-    this._shapeMoveTool.on('shape:deselected', () => {
-      $scope.$apply(() => {
-        $scope.vm.selectedShape = null;
-      });
-    });
-
-    this._shapeScaleTool.on('shape:selected', shape => {
-      $scope.$apply(() => {
-        $scope.vm.selectedShape = shape;
-      });
-    });
-
-    this._shapeScaleTool.on('shape:deselected', () => {
-      $scope.$apply(() => {
-        $scope.vm.selectedShape = null;
-      });
-    });
-
     this._shapeMoveTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
@@ -174,33 +152,59 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.emit('shape:update', shape);
     });
 
-    this._rectangleDrawingTool.on('rectangle:complete', rectangle => {
-      this.emit('shape:new', rectangle);
-    });
+    this._rectangleDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._ellipseDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
+  }
 
-    this._ellipseDrawingTool.on('ellipse:complete', ellipse => {
-      this.emit('shape:new', ellipse);
-    });
+  _onLayerClick(event) {
+    this._context.withScope(scope => {
+      const projectPoint = scope.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
 
-    this._circleDrawingTool.on('circle:complete', circle => {
-      this.emit('shape:new', circle);
-    });
+      const hitResult = scope.project.hitTest(projectPoint, {
+        class: PaperShape,
+        fill: true,
+        bounds: true,
+      });
 
-    this._pointDrawingTool.on('point:complete', point => {
-      this.emit('shape:new', point);
+      if (hitResult) {
+        this._updateSelectedShape(hitResult.item);
+      } else {
+        this._clearSelectedShape();
+      }
     });
+  }
 
-    this._pathDrawingTool.on('path:complete', path => {
-      this.emit('shape:new', path);
-    });
+  _updateSelectedShape(shape) {
+    if (this._$scope.vm.selectedShape && this._$scope.vm.selectedShape !== shape.id) {
+      this._$scope.vm.selectedShape.deselect();
+    }
 
-    this._polygonDrawingTool.on('path:complete', polygon => {
-      this.emit('shape:new', polygon);
-    });
+    shape.select();
 
-    this._lineDrawingTool.on('path:complete', line => {
-      this.emit('shape:new', line);
+    this._$scope.$apply(() => {
+      this._$scope.vm.selectedShape = shape;
     });
+  }
+
+  _clearSelectedShape() {
+    if (this._$scope.vm.selectedShape) {
+      this._$scope.vm.selectedShape.deselect();
+    }
+
+    this._$scope.$apply(() => {
+      this._$scope.vm.selectedShape = null;
+    });
+  }
+
+  _onNewShape(shape) {
+    this.emit('shape:new', shape);
+    shape.select();
+    this._updateSelectedShape(shape);
   }
 
   /**
@@ -345,6 +349,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
   clear() {
     super.clear();
     this._paperShapeByLabeledThingInFrameId.clear();
+  }
+
+  attachToDom(element) {
+    super.attachToDom(element);
+
+    element.addEventListener('mousedown', this._onLayerClick.bind(this));
   }
 }
 

@@ -18,7 +18,6 @@ class CircleDrawingTool extends EllipseDrawingTool {
 
     this._context.withScope(() => {
       this._shape = new PaperCircle(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, radius, 'red');
-      this._shape.select();
     });
 
     this.emit('circle:new', this._shape);
@@ -36,7 +35,7 @@ class CircleDrawingTool extends EllipseDrawingTool {
   }
 
   _completeEllipse() {
-    this.emit('circle:complete', this._shape);
+    this.emit('shape:new', this._shape);
   }
 }
 

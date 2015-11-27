@@ -41,14 +41,8 @@ export default class ShapeMoveTool extends Tool {
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
   }
 
-  selectShape(paperShape) {
-    this._paperShape = paperShape;
-    this._paperShape.select();
-  }
-
   _mouseDown(event) {
     const point = event.point;
-    this._deselectCurrentSelection();
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
@@ -63,7 +57,6 @@ export default class ShapeMoveTool extends Tool {
 
       if (hitResult) {
         this._paperShape = hitResult.item;
-        this._paperShape.select();
         this._offset = new paper.Point(
           this._paperShape.position.x - point.x,
           this._paperShape.position.y - point.y
@@ -74,23 +67,13 @@ export default class ShapeMoveTool extends Tool {
     });
   }
 
-  _deselectCurrentSelection() {
-    if (this._paperShape) {
-      this._paperShape.deselect();
-    }
-  }
-
   _mouseUp() {
     if (this._paperShape) {
       if (this._modified) {
         this._modified = false;
 
         this.emit('shape:update', this._paperShape);
-      } else {
-        this.emit('shape:selected', this._paperShape);
       }
-    } else {
-      this.emit('shape:deselected');
     }
 
     this._offset = null;

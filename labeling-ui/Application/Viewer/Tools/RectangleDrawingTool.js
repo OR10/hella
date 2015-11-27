@@ -40,7 +40,6 @@ class RectangleDrawingTool extends Tool {
     this._context.withScope(() => {
       // TODO use entityIdService if/once we make this a directive
       this._rect = new PaperRectangle(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, endPosition, 'red');
-      this._rect.select();
     });
 
     this.emit('rectangle:new', this._rect);
@@ -61,7 +60,7 @@ class RectangleDrawingTool extends Tool {
   }
 
   _completeRect() {
-    this.emit('rectangle:complete', this._rect);
+    this.emit('shape:new', this._rect);
   }
 
   _getScaleAnchor(point) {

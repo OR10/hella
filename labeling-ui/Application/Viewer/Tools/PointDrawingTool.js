@@ -14,7 +14,6 @@ export default class PointDrawingTool extends CircleDrawingTool {
 
     this._context.withScope(() => {
       this._shape = new PaperCircle(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, radius, 'red');
-      this._shape.select();
     });
 
     this.emit('point:new', this._shape);
@@ -24,7 +23,7 @@ export default class PointDrawingTool extends CircleDrawingTool {
   }
 
   _completeEllipse() {
-    this.emit('point:complete', this._shape);
+    this.emit('shape:new', this._shape);
     this._shape = null;
   }
 }

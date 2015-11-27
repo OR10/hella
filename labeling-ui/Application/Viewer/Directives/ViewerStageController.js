@@ -248,7 +248,7 @@ class ViewerStageController {
   _onNewShape(shape) {
     this._$scope.$apply(() => {
       this.selectedLabeledThingInFrame.shapes.push(shape);
-      this.activeTool = null;
+      this.activeTool = 'move';
 
       this._labeledThingInFrameGateway.saveLabeledThingInFrame(this.selectedLabeledThingInFrame);
     });

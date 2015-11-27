@@ -36,7 +36,6 @@ export default class ShapeScaleTool extends Tool {
 
   _mouseDown(event) {
     const point = event.point;
-    this._deselectCurrentSelection();
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
@@ -48,7 +47,6 @@ export default class ShapeScaleTool extends Tool {
 
       if (hitResult) {
         this._hitResult = hitResult;
-        this._hitResult.item.selected = true;
 
         if (this._hitResult.type === 'bounds') {
           switch (true) {
@@ -65,22 +63,12 @@ export default class ShapeScaleTool extends Tool {
     });
   }
 
-  _deselectCurrentSelection() {
-    if (this._hitResult && this._hitResult.item) {
-      this._hitResult.item.selected = false;
-    }
-  }
-
   _mouseUp() {
     if (this._hitResult && this._hitResult.item) {
       if (this._modified) {
         this._modified = false;
         this.emit('shape:update', this._hitResult.item);
-      } else {
-        this.emit('shape:selected', this._hitResult.item);
       }
-    } else {
-      this.emit('shape:deselected');
     }
 
     this._scaleAnchor = null;

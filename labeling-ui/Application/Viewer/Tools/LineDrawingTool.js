@@ -31,7 +31,7 @@ class LineDrawingTool extends PathDrawingTool {
       this.emit('path:new', this._path);
     } else {
       this._path.add(point);
-      this.emit('path:complete', this._path);
+      this.emit('shape:new', this._path);
       this._cleanUp();
     }
   }
@@ -40,7 +40,6 @@ class LineDrawingTool extends PathDrawingTool {
     this._context.withScope(() => {
       // TODO use entityIdService if/once we make this a directive
       this._path = new PaperLine(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
-      this._path.select();
     });
   }
 }

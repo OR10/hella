@@ -10,7 +10,6 @@ export default class PolygonDrawingTool extends PathDrawingTool {
     this._context.withScope(() => {
       // TODO use entityIdService if/once we make this a directive
       this._path = new PaperPolygon(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
-      this._path.select();
     });
   }
 }

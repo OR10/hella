@@ -36,7 +36,6 @@ class EllipseDrawingTool extends Tool {
     this._context.withScope(() => {
       // TODO use entityIdService if/once we make this a directive
       this._shape = new PaperEllipse(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, size, 'red');
-      this._shape.select();
     });
 
     this.emit('ellipse:new', this._shape);
@@ -57,7 +56,7 @@ class EllipseDrawingTool extends Tool {
   }
 
   _completeEllipse() {
-    this.emit('ellipse:complete', this._shape);
+    this.emit('shape:new', this._shape);
   }
 
   _getScaleAnchor(point) {
