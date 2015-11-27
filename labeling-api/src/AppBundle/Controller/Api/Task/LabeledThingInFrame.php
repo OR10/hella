@@ -134,6 +134,13 @@ class LabeledThingInFrame extends Controller\Base
 
 
     /**
+     * Get labeled things in frame for the given frame range identified by
+     * frame number, offset and limit.
+     * Missing `LabeledThingInFrame`s are cloned from existing ones and marked
+     * as `ghost`. Those `ghosts` have the same `frameNumber` like the
+     * clone-source (for now) because of historical reasons.
+     * This may change sometime.
+     *
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}/{labeledThing}")
      *
      * @param Model\LabelingTask     $task
