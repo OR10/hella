@@ -72,6 +72,18 @@ class FrameRange
     }
 
     /**
+     * Construct a new frame range from an array.
+     */
+    public static function createFromArray(array $array)
+    {
+        if (!isset($array['startFrameNumber']) || !isset($array['endFrameNumber'])) {
+            throw new Exception\FrameRange();
+        }
+
+        return new FrameRange($array['startFrameNumber'], $array['endFrameNumber']);
+    }
+
+    /**
      * Get the starting frame number.
      *
      * @return integer

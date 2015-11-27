@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Test;
+namespace AppBundle\Tests;
 
 use AppBundle;
 use Symfony\Component\HttpFoundation;

@@ -47,14 +47,17 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade        = $this->getAnnoService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnoService('database.facade.labeled_thing_in_frame');
         $this->exporter                  = $this->getAnnoService('service.task_exporter.kitti');
-        $this->documentManager           = static::$kernel->getContainer()->get(
-            'doctrine_couchdb.odm.default_document_manager'
-        );
+        $this->documentManager           = $this->getService('doctrine_couchdb.odm.default_document_manager');
     }
 
     private function getAnnoService($name)
     {
-        return static::$kernel->getContainer()->get(sprintf('annostation.labeling_api.%s', $name));
+        return $this->getService(sprintf('annostation.labeling_api.%s', $name));
+    }
+
+    private function getService($name)
+    {
+        return static::$kernel->getContainer()->get($name);
     }
 
     public function testExportingTaskWithoutLabeledDataReturnsEmptyZipArchive()
@@ -263,15 +266,11 @@ class KittiTest extends Tests\KernelTestCase
         $incomplete = false
     ) {
         $labeledThing = new Model\LabeledThing($task);
-        $uuids        = $this->documentManager->getCouchDBClient()->getUuids();
-        $labeledThing->setId(reset($uuids));
         $labeledThing->setFrameRange($task->getFrameRange());
 
         $this->labeledThingFacade->save($labeledThing);
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $uuids               = $this->documentManager->getCouchDBClient()->getUuids();
-        $labeledThingInFrame->setId(reset($uuids));
         $labeledThingInFrame->setFrameNumber($frameNumber);
         $labeledThingInFrame->setShapes($shapes);
         $labeledThingInFrame->setIncomplete($incomplete);

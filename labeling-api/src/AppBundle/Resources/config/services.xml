@@ -67,5 +67,10 @@
             <argument>%rabbitmq_use_dead_letter_exchange%</argument>
             <argument>%rabbitmq_use_alternate_exchange%</argument>
         </service>
+
+        <service id="annostation.labeling_api.service.interpolation" class="AppBundle\Service\Interpolation">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.status" />
+        </service>
     </services>
 </container>

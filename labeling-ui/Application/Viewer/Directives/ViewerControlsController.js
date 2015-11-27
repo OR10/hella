@@ -97,12 +97,32 @@ class ViewerControlsController {
     });
   }
 
+  handleGotoOpenBracketClicked() {
+    // @TODO: Maybe it is better to track something like `selectedThing` in addition to
+    //        `selectedThingInFrame` and pass it down to this directive
+    this._labeledThingGateway.getLabeledThing(
+      this.task.id,
+      this.selectedLabeledThingInFrame.labeledThingId
+      )
+      .then(labeledThing => this.framePosition.goto(labeledThing.frameRange,startFrameNumber));
+  }
+
   handleNextFrameClicked() {
     this.framePosition.next();
   }
 
   handlePreviousFrameClicked() {
     this.framePosition.previous();
+  }
+
+  handleGotoCloseBracketClicked() {
+    // @TODO: Maybe it is better to track something like `selectedThing` in addition to
+    //        `selectedThingInFrame` and pass it down to this directive
+    this._labeledThingGateway.getLabeledThing(
+      this.task.id,
+      this.selectedLabeledThingInFrame.labeledThingId
+    )
+    .then(labeledThing => this.framePosition.goto(labeledThing.frameRange,endFrameNumber));
   }
 
   _createNewLabeledThingInFrame() {

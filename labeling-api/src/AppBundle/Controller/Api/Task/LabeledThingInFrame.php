@@ -80,17 +80,12 @@ class LabeledThingInFrame extends Controller\Base
         $shapes         = $request->request->get('shapes', []);
         $classes        = $request->request->get('classes', []);
         $incomplete     = $request->request->get('incomplete', true);
-        $documentId     = $request->request->get('id');
+        $documentId     = $request->request->get('id', null);
         $labeledThingId = $request->request->get('labeledThingId');
         $labeledThing   = $this->labeledThingFacade->find($labeledThingId);
 
         if (!is_array($shapes) || !is_array([$classes]) || $labeledThing === null) {
             throw new Exception\BadRequestHttpException();
-        }
-
-        if ($documentId === null) {
-            $uuids      = $this->documentManager->getCouchDBClient()->getUuids();
-            $documentId = reset($uuids);
         }
 
         $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
@@ -218,11 +213,13 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @param Model\LabelingTask $task
-     * @param                    $id
-     * @param                    $frameNumber
-     * @param                    $shapes
-     * @param                    $classes
-     * @param                    $incomplete
+     * @param Model\LabeledThing $labeledThing
+     * @param string|null        $id
+     * @param int                $frameNumber
+     * @param mixed[]            $shapes
+     * @param mixed[]            $classes
+     * @param boolean            $incomplete
+     *
      * @return Model\LabeledThingInFrame
      */
     private function addLabeledThingAndLabeledThingInFrame(
@@ -236,20 +233,14 @@ class LabeledThingInFrame extends Controller\Base
     ) {
         $thingInFrame = new Model\LabeledThingInFrame($labeledThing);
 
-        $thingInFrame->setId($id);
+        if ($id !== null) {
+            $thingInFrame->setId($id);
+        }
 
-        $thingInFrame->setFrameNumber(
-            $frameNumber
-        );
-        $thingInFrame->setShapes(
-            $shapes
-        );
-        $thingInFrame->setClasses(
-            $classes
-        );
-        $thingInFrame->setIncomplete(
-            $incomplete
-        );
+        $thingInFrame->setFrameNumber($frameNumber);
+        $thingInFrame->setShapes($shapes);
+        $thingInFrame->setClasses($classes);
+        $thingInFrame->setIncomplete($incomplete);
 
         $this->labeledThingInFrameFacade->save($thingInFrame);
 

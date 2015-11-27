@@ -62,12 +62,12 @@ class ThumbnailReelController {
       throw new Error('No supported image type found');
     }
 
-    const offset = Math.max(1, framePosition.position - 3);
-    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + 3) - offset + 1;
+    const offset = Math.max(0, (framePosition.position - 1) - 3 );
+    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + 3) - offset;
     return this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], offset, limit)
       .then(locations => {
         const thumbnailLocations = new Array(7).fill(null);
-        const startIndex = offset - framePosition.position + 3;
+        const startIndex = offset - (framePosition.position - 1) + 3;
         locations.forEach((location, index) => thumbnailLocations[startIndex + index] = location);
 
         return thumbnailLocations;

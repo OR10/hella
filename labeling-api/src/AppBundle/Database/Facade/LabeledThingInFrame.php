@@ -28,6 +28,14 @@ class LabeledThingInFrame
 
     public function save(Model\LabeledThingInFrame $labeledThingInFrame)
     {
+        if ($labeledThingInFrame->getId() === null) {
+            $uuids = $this->documentManager->getCouchDBClient()->getUuids();
+            if (!is_array($uuids) || empty($uuids)) {
+                throw new \RuntimeException("Error retrieving uuid for LabeledThingInFrame");
+            }
+            $labeledThingInFrame->setId($uuids[0]);
+        }
+
         $this->documentManager->persist($labeledThingInFrame);
         $this->documentManager->flush();
     }
