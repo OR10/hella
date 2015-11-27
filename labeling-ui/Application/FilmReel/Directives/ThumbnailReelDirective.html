@@ -1,7 +1,10 @@
 <ul class="thumbnail-reel-list">
-    <li class="thumbnail-spacer"></li>
+    <li class="thumbnail-spacer">
+        <div ng-if="vm.placeStartBracket(-1)" class="frame-range-bracket start-bracket"></div>
+        <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket"></div>
+    </li>
     <li class="thumbnail" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
-        ng-class="{'active': vm.selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber && vm.selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber}"
+        ng-class="{'active': vm.thumbnailInFrameRange($index)}"
     >
         <thumbnail end-frame-number="vm.task.frameRange.endFrameNumber"
                    location="thumbnail.location"
@@ -11,5 +14,13 @@
                    labeled-thing-viewport="{width: vm.video.metaData.width, height: vm.video.metaData.height}"
         ></thumbnail>
     </li>
-    <li ng-repeat-end class="thumbnail-spacer"></li>
+    <li ng-repeat-end
+        class="thumbnail-spacer"
+        data-jqyoui-options
+        data-drop="true"
+        jqyoui-droppable
+    >
+        <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket"></div>
+        <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket"></div>
+    </li>
 </ul>

@@ -65,6 +65,14 @@ class ThumbnailReelController {
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
+    /**
+     * Number of frames to display both before and after the current frame
+     *
+     * @type {number}
+     * @private
+     */
+    this._thumbnailLookahead = 3;
+
     // Update thumbnails on position change
     $scope.$watchGroup(['vm.framePosition.position', 'vm.selectedLabeledThingInFrame'], () => {
       $q.all([
@@ -91,8 +99,8 @@ class ThumbnailReelController {
    * @private
    */
   _calculateOffsetAndLimitByPosition(framePosition) {
-    const offset = Math.max(0, (framePosition.position - 1) - 3 );
-    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + 3) - offset;
+    const offset = Math.max(0, (framePosition.position - 1) - this._thumbnailLookahead );
+    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + this._thumbnailLookahead) - offset;
     return {offset, limit};
   }
 
@@ -157,6 +165,41 @@ class ThumbnailReelController {
       limit - 1 // @TODO The backend has an off-by-one error here. As soon as this is fixed the -1 needs to be removed
     )
     .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
+  }
+
+  thumbnailInFrameRange(index) {
+    if (!this.selectedLabeledThing || index < 0) {
+      return false;
+    }
+
+    const thumbnail = this.thumbnails[index];
+
+    return this.selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber
+      && this.selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber;
+  }
+
+  placeStartBracket(index) {
+    if (!this.selectedLabeledThing) {
+      return false;
+    }
+
+    if (index < 0) {
+      return this.selectedLabeledThing.frameRange.startFrameNumber === this.framePosition.position - this._thumbnailLookahead;
+    }
+
+    const thumbnail = this.thumbnails[index + 1];
+
+    return thumbnail && thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.startFrameNumber;
+  }
+
+  placeEndBracket(index) {
+    if (!this.selectedLabeledThing || index < 0) {
+      return false;
+    }
+
+    const thumbnail = this.thumbnails[index];
+
+    return thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.endFrameNumber;
   }
 }
 

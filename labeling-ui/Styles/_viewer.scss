@@ -69,6 +69,13 @@
 
       div.frame-range-bracket {
         background-color: greenyellow;
+        width: 8px;
+        height: 180px;
+      }
+
+      > li.thumbnail-spacer.active {
+        border-top: 2px solid greenyellow;
+        border-bottom: 2px solid greenyellow;
       }
     }
   }

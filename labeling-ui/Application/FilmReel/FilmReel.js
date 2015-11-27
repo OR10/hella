@@ -1,3 +1,4 @@
+import 'jquery-ui';
 import 'angular-dragdrop';
 
 import Module from '../Module';

@@ -15,8 +15,9 @@ class TaskController {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
+   * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledThingGateway, labeledFrameGateway) {
+  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledThingGateway, labeledFrameGateway, abortablePromiseFactory) {
     /**
      * @type {angular.Scope}
      */
@@ -36,6 +37,12 @@ class TaskController {
      * @type {angular.$q}
      */
     this._$q = $q;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
      * Currently active frame position to be displayed inside the Viewer
@@ -152,10 +159,12 @@ class TaskController {
    * @private
    */
   _loadLabeledThings(labeledThingIds) {
-    return this._$q.all(
-      labeledThingIds.map(labeledThingId => {
-        return this._labeledThingGateway.getLabeledThing(this.task.id, labeledThingId);
-      })
+    return this._abortablePromiseFactory(
+      this._$q.all(
+        labeledThingIds.map(labeledThingId => {
+          return this._labeledThingGateway.getLabeledThing(this.task.id, labeledThingId);
+        })
+      )
     );
   }
 
@@ -184,30 +193,30 @@ class TaskController {
 
     this._labeledThingInFrameBuffer.add(
       this._loadLabeledThingsInFrame(frameNumber)
-    )
-    .then(labeledThingsInFrame => {
-      const labeledThingIds = [];
-      this.labeledThingsInFrame = {};
+      )
+      .then(labeledThingsInFrame => {
+        const labeledThingIds = [];
+        this.labeledThingsInFrame = {};
 
-      labeledThingsInFrame.forEach(labeledThingInFrame => {
-        this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-        labeledThingIds.push(labeledThingInFrame.labeledThingId);
-      });
-
-      this._labeledThingBuffer.add(this._loadLabeledThings(labeledThingIds))
-        .then(labeledThings => {
-          this.labeledThings = {};
-
-          labeledThings.forEach(labeledThing => {
-            this.labeledThings[labeledThing.id] = labeledThing;
-          });
+        labeledThingsInFrame.forEach(labeledThingInFrame => {
+          this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
+          labeledThingIds.push(labeledThingInFrame.labeledThingId);
         });
-    });
+
+        this._labeledThingBuffer.add(this._loadLabeledThings(labeledThingIds))
+          .then(labeledThings => {
+            this.labeledThings = {};
+
+            labeledThings.forEach(labeledThing => {
+              this.labeledThings[labeledThing.id] = labeledThing;
+            });
+          });
+      });
 
     this._labeledFrameBuffer.add(
       this._loadLabeledFrame(frameNumber)
-    )
-    .then(labeledFrame => this.labeledFrame = labeledFrame);
+      )
+      .then(labeledFrame => this.labeledFrame = labeledFrame);
   }
 }
 
@@ -218,6 +227,7 @@ TaskController.$inject = [
   'labeledThingInFrameGateway',
   'labeledThingGateway',
   'labeledFrameGateway',
+  'abortablePromiseFactory',
 ];
 
 export default TaskController;

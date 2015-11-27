@@ -20,6 +20,7 @@ class ViewerControlsDirective {
       selectedLabeledThingInFrame: '=',
       selectedLabeledThing: '=',
       labeledThingsInFrame: '=',
+      labeledThings: '=',
     };
   }
 }
