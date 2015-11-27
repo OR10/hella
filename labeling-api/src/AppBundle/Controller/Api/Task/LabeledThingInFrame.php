@@ -149,15 +149,17 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        $response = View\View::create();
+        $offset = (int) $request->query->get('offset', 0);
+        $limit  = (int) $request->query->get('limit', 1);
 
-        $offset = $request->query->get('offset', null);
-        $limit  = $request->query->get('limit', null);
+        if ($limit <= 0) {
+            return View\View::create()->setData(['result' => []]);
+        }
 
-        $labeledThingInFrames = array_reverse($this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray());
-        $expectedFrameNumbers = range($frameNumber + $offset, ($frameNumber + $offset) + $limit);
+        $labeledThingInFrames =$this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray();
+        $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
-        $result = array_map(function ($expectedFrameNumber) use ($labeledThingInFrames) {
+        $result = array_map(function ($expectedFrameNumber) use (&$labeledThingInFrames) {
             reset($labeledThingInFrames);
             while ($item = current($labeledThingInFrames)) {
                 $currentItem = current($labeledThingInFrames);
@@ -193,9 +195,7 @@ class LabeledThingInFrame extends Controller\Base
             return $ghostLabeledThingInFrame;
         }, $expectedFrameNumbers);
 
-        $response->setData(['result' => $result]);
-
-        return $response;
+        return View\View::create()->setData(['result' => $result]);
     }
 
     /**
