@@ -60,6 +60,22 @@ class LabeledThingInFrame
     }
 
     /**
+     * @return LabeledThingInFrame
+     */
+    public function copy()
+    {
+        $copy                 = new LabeledThingInFrame();
+        $copy->labeledThingId = $this->labeledThingId;
+        $copy->frameNumber    = $this->frameNumber;
+        $copy->classes        = $this->classes;
+        $copy->shapes         = $this->shapes;
+        $copy->incomplete     = $this->incomplete;
+        $copy->ghost          = $this->ghost;
+
+        return $copy;
+    }
+
+    /**
      * @return string
      */
     public function getLabeledThingId()
