@@ -34,11 +34,6 @@ class InterpolationTest extends Tests\KernelTestCase
      */
     private $interpolationService;
 
-    /**
-     * @var CouchDB\DocumentManager
-     */
-    private $documentManager;
-
     public function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnoService('database.facade.video');
@@ -46,7 +41,6 @@ class InterpolationTest extends Tests\KernelTestCase
         $this->labeledThingFacade        = $this->getAnnoService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnoService('database.facade.labeled_thing_in_frame');
         $this->interpolationService      = $this->getAnnoService('service.interpolation');
-        $this->documentManager           = $this->getService('doctrine_couchdb.odm.default_document_manager');
     }
 
     private function getAnnoService($name)
