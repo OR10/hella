@@ -35,6 +35,7 @@ class LabeledThing extends Controller\Base
 
     /**
      * LabeledThing constructor.
+     *
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
