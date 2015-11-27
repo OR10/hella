@@ -67,16 +67,6 @@ class InterpolateTest extends Tests\WebTestCase
         $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
-    public function testStartInterpolationActionReturnsAcceptedAndJobGetsScheduled()
-    {
-        $task         = $this->createTask();
-        $labeledThing = $this->createLabeledThing($task);
-
-        $response = $this->startInterpolationRequest($task->getId(), $labeledThing->getId(), ['type' => 'linear']);
-
-        $this->assertEquals(HttpFoundation\Response::HTTP_ACCEPTED, $response->getStatusCode());
-    }
-
     protected function setUpImplementation()
     {
         $this->getService('fos_user.util.user_manipulator')->create(
