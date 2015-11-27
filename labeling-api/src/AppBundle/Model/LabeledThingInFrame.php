@@ -94,7 +94,7 @@ class LabeledThingInFrame
     /**
      * @param mixed $shapes
      */
-    public function setShapes($shapes)
+    public function setShapes(array $shapes)
     {
         $this->shapes = $shapes;
     }
