@@ -18,10 +18,9 @@ class ThumbnailReelController {
    */
   constructor($scope, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway) {
     /**
-     * {@link FrameLocation}s of the thumbnails, which are currently rendered
-     * @type {Array.<FrameLocation>}
+     * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
-    this.thumbnailLocations = new Array(7).fill(null);
+    this.thumbnails = new Array(7).fill().map(() => ({location: null, labeledThingInFrame: null}));
 
     /**
      * List of supported image types for this component
@@ -65,9 +64,9 @@ class ThumbnailReelController {
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
-    // Update thumbnails on position change
-    $scope.$watchGroup(['vm.framePosition.position', 'vm.selectedLabeledThingInFrame'], () => {
-      $q.all([
+    // Update thumbnails on frame and/or selection change change
+    $scope.$watch('vm.framePosition.position', () => {
+      this._$q.all([
         this._frameLocationsBuffer.add(
           this._loadFrameLocations(this.framePosition)
         ),
@@ -76,8 +75,37 @@ class ThumbnailReelController {
         ),
       ])
       .then(([thumbnailLocations, labeledThingsInFrame]) => {
-        this.thumbnails = thumbnailLocations.map(
-          (location, index) => ({location, labeledThingInFrame: labeledThingsInFrame[index]})
+        thumbnailLocations.forEach(
+          (location, index) => {
+            const labeledThingInFrame = labeledThingsInFrame[index];
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
+        );
+      });
+    });
+
+    $scope.$watchCollection('vm.selectedLabeledThingInFrame.shapes', (newShapes) => {
+      if (!newShapes) {
+        this.thumbnails.forEach(
+          (thumbnail, index) => {
+            const location = thumbnail.location;
+            const labeledThingInFrame = null;
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
+        );
+        return;
+      }
+
+      this._labeledThingInFrameBuffer.add(
+        this._loadLabeledThingsInFrame(this.framePosition)
+      )
+      .then(labeledThingsInFrame => {
+        labeledThingsInFrame.forEach(
+          (labeledThingInFrame, index) => {
+            const thumbnail = this.thumbnails[index];
+            const location = thumbnail.location;
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
         );
       });
     });

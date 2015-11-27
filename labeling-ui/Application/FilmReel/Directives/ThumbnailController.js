@@ -72,7 +72,7 @@ class ThumbnailController {
      * @type {HTMLImageElement}
      * @private
      */
-    this._activeImage = null;
+    this._activeBackgroundImage = null;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -86,7 +86,9 @@ class ThumbnailController {
      */
     this._parentElement = $element.parent().get(0);
 
-    const onWindowResized = () => this._draw();
+    const onWindowResized = () => {
+      this._draw();
+    };
     angular.element($window).on('resize', onWindowResized);
     $scope.$on('$destroy', () => {
       angular.element($window).off('resize', onWindowResized);
@@ -95,23 +97,27 @@ class ThumbnailController {
     // Update rendered thumbnail once the location changes
     $scope.$watch('vm.location', newLocation => {
       if (newLocation === null) {
-        this._activeImage = null;
-        this._draw();
+        this._activeBackgroundImage = null;
+        this._drawBackgroundLayer();
         return;
       }
 
       this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)
       ).then(image => {
-        this._activeImage = image;
-        this._draw();
+        this._activeBackgroundImage = image;
+        this._drawBackgroundLayer();
       });
     });
 
-    // Update filters upon change
-    $scope.$watchCollection('vm.filters.filters', () => this._draw());
-  }
+    // Update rendered thing layer the labeledThingInFrame changes
+    $scope.$watch('vm.labeledThingInFrame', () => {
+      this._drawThingLayer();
+    });
 
+    // Update filters upon change
+    $scope.$watchCollection('vm.filters.filters', () => this._drawBackgroundLayer());
+  }
 
   /**
    * Apply all given filters to a given RasterImage
@@ -142,14 +148,14 @@ class ThumbnailController {
     const parentElement = this._parentElement;
 
     this._context.withScope(scope => {
-      if (this._activeImage === null) {
+      if (this._activeBackgroundImage === null) {
         scope.view.viewSize = new scope.Size(
           parentElement.clientWidth, 0
         );
       } else {
-        const zoom = parentElement.clientWidth / this._activeImage.width;
+        const zoom = parentElement.clientWidth / this._activeBackgroundImage.width;
         scope.view.viewSize = new scope.Size(
-          parentElement.clientWidth, this._activeImage.height * zoom
+          parentElement.clientWidth, this._activeBackgroundImage.height * zoom
         );
       }
     });
@@ -161,36 +167,48 @@ class ThumbnailController {
    * @private
    */
   _draw() {
-    this._recalculateViewSize();
-    this._drawBackgroundLayer();
-    this._drawThingLayer();
-    this._context.withScope(scope => scope.view.draw());
+    this._drawBackgroundLayer(false);
+    this._drawThingLayer(false);
+
+    this._context.withScope(scope => {
+      scope.view.draw();
+    });
   }
 
   /**
-   * Draw the currently active Image
+   * Draw the currently active Background Image
+   *
+   * @param {boolean?} redraw
    * @private
    */
-  _drawBackgroundLayer() {
-    const image = this._activeImage;
+  _drawBackgroundLayer(redraw = true) {
+    this._recalculateViewSize();
+
+    const image = this._activeBackgroundImage;
 
     this._context.withScope(() => {
+      this._backgroundLayer.activate();
       this._backgroundLayer.removeChildren();
     });
 
     if (image === null) {
+      if (redraw) {
+        this._context.withScope(scope => scope.view.draw());
+      }
       return;
     }
 
     this._context.withScope(scope => {
-      this._backgroundLayer.activate();
-
       const zoom = scope.view.viewSize.width / image.width;
 
       const rasterImage = new scope.Raster(image, new scope.Point(image.width/2, image.height/2));
       this._applyFilters(rasterImage, this.filters);
 
       this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
+
+      if (redraw) {
+        scope.view.draw();
+      }
     });
   }
 
@@ -200,20 +218,24 @@ class ThumbnailController {
    * The drawing operation correctly scales the {@link LabeledThingInFrame} to properly fit
    * into the thumbnail
    *
+   * @param {boolean?} redraw
+   *
    * @private
    */
-  _drawThingLayer() {
+  _drawThingLayer(redraw = true) {
     this._context.withScope(() => {
+      this._thingLayer.activate();
       this._thingLayer.removeChildren();
     });
 
     if (this.labeledThingInFrame === null) {
-      // No drawing needed :)
+      if (redraw) {
+        this._context.withScope(scope => scope.view.draw());
+      }
       return;
     }
 
     this._context.withScope(scope => {
-      this._thingLayer.activate();
       const viewportScaleX = scope.view.viewSize.width / this.labeledThingViewport.width;
 
       const paperShapes = this.labeledThingInFrame.shapes.map(
@@ -221,6 +243,10 @@ class ThumbnailController {
       );
 
       this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
+
+      if (redraw) {
+        scope.view.draw();
+      }
     });
   }
 }
