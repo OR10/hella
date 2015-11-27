@@ -80,8 +80,7 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThingId = $request->request->get('labeledThingId');
         $labeledThing   = $this->labeledThingFacade->find($labeledThingId);
 
-        // FIXME: !is_array([$classes])
-        if (!is_array($shapes) || !is_array([$classes]) || $labeledThing === null) {
+        if (!is_array($shapes) || !is_array($classes) || $labeledThing === null) {
             throw new Exception\BadRequestHttpException();
         }
 
