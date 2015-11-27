@@ -41,3 +41,13 @@ api_task_labeled_thing:
     resource: "annostation.labeling_api.controller.api.task.labeled_thing"
     type: rest
     name_prefix: app_api_task_labeled_thing_
+
+api_task_interpolate:
+    resource: "annostation.labeling_api.controller.api.task.interpolate"
+    type: rest
+    name_prefix: app_api_task_interpolate_
+
+api_status:
+    resource: "annostation.labeling_api.controller.api.status"
+    type: rest
+    name_prefix: app_api_status_
