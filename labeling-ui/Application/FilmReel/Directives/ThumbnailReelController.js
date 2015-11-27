@@ -144,7 +144,7 @@ class ThumbnailReelController {
    * @private
    */
   _loadLabeledThingsInFrame(framePosition) {
-    if (this.selectedLabeledThingInFrame === null) {
+    if (!this.selectedLabeledThingInFrame) {
       return this._abortablePromiseFactory(this._$q.resolve(new Array(7).fill(null)));
     }
 

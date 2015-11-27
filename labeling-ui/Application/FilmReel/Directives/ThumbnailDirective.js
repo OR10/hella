@@ -12,7 +12,7 @@ class ThumbnailDirective {
       location: '=',
       filters: '=',
       labeledThingInFrame: '=',
-      labeledThingViewPort: '=',
+      labeledThingViewport: '=',
     };
 
     this.template = ThumbnailTemplate;
