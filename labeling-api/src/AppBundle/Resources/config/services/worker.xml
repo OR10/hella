@@ -15,5 +15,11 @@
             <argument type="service" id="annostation.labeling_api.service.task_exporter.kitti" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.interpolation" class="AppBundle\Worker\JobInstruction\Interpolation">
+            <argument type="service" id="annostation.labeling_api.service.interpolation" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.status" />
+        </service>
     </services>
 </container>

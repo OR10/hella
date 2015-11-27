@@ -59,5 +59,17 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
         </service>
+        <service
+                id="annostation.labeling_api.controller.api.task.interpolate"
+                class="AppBundle\Controller\Api\Task\Interpolate">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.status" />
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+        </service>
+
+        <service id="annostation.labeling_api.controller.api.status" class="AppBundle\Controller\Api\Status">
+            <argument type="service" id="annostation.labeling_api.database.facade.status" />
+        </service>
     </services>
 </container>
