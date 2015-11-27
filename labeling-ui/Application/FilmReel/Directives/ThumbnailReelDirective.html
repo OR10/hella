@@ -4,7 +4,8 @@
                    location="thumbnail.location"
                    filters="vm.filters"
                    show-frame-number-always="(vm.thumbnailLocations.length - 1) / $index === 2"
-                   labeledThingInFrame="thumbnail.labeledThingInFrame"
+                   labeled-thing-in-frame="thumbnail.labeledThingInFrame"
+                   labeled-thing-viewport="{width: vm.video.metaData.width, height: vm.video.metaData.height}"
         ></thumbnail>
     </li>
 </ul>

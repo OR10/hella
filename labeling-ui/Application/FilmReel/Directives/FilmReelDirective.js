@@ -9,6 +9,7 @@ class FilmReelDirective {
     this.scope = {
       framePosition: '=',
       task: '=',
+      video: '=',
       filters: '=',
       selectedLabeledThingInFrame: '=',
     };
