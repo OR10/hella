@@ -21,7 +21,7 @@ class LabeledThing
     private $rev;
 
     /**
-     * @CouchDB\Field(type="mixed")
+     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
      */
     private $frameRange;
 
@@ -63,7 +63,7 @@ class LabeledThing
      */
     public function getFrameRange()
     {
-        return $this->frameRange === null ?: clone $this->frameRange;
+        return $this->frameRange ? clone $this->frameRange : null;
     }
 
     /**
