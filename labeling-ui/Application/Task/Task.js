@@ -22,10 +22,14 @@ class Task extends Module {
    * @inheritDoc
    */
   config($stateProvider) {
-    function taskResolver($stateParams, taskGateway) {
-      return taskGateway.getTask($stateParams.taskId);
+    function initialDataResolver($stateParams, taskGateway, videoGateway) {
+      return taskGateway.getTask($stateParams.taskId)
+        .then(
+          task => videoGateway.getVideo(task.videoId)
+            .then(video => ({task, video}))
+        );
     }
-    taskResolver.$inject = ['$stateParams', 'taskGateway'];
+    initialDataResolver.$inject = ['$stateParams', 'taskGateway', 'videoGateway'];
 
     $stateProvider.state('task', {
       url: '/task/:taskId',
@@ -33,7 +37,7 @@ class Task extends Module {
       controllerAs: 'vm',
       template: taskTemplate,
       resolve: {
-        task: taskResolver,
+        initialData: initialDataResolver,
       },
     });
   }

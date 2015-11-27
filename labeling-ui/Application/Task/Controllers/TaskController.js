@@ -11,29 +11,30 @@ class TaskController {
   /**
    * @param {angular.Scope} $scope
    * @param {angular.$q} $q
-   * @param {Task} task
+   * @param {{task: Task, video: Video}} initialData
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor($scope, $q, task, labeledThingInFrameGateway, labeledFrameGateway) {
+  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
     this.$scope = $scope;
 
     /**
+     * @type {Task}
+     */
+    this.task = initialData.task;
+
+    /**
+     * @type {Video}
+     */
+    this.video = initialData.video;
+
+    /**
      * @type {angular.$q}
      */
     this._$q = $q;
-
-    /**
-     * The currently processed {@link Task}
-     *
-     * This Model should be treated read-only by receiving directives
-     *
-     * @type {Task}
-     */
-    this.task = task;
 
     /**
      * Currently active frame position to be displayed inside the Viewer
@@ -42,7 +43,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition(task.frameRange);
+    this.framePosition = new FramePosition(this.task.frameRange);
 
     /**
      * A structure holding all LabeledThingInFrames for the currently active frame
@@ -179,7 +180,7 @@ class TaskController {
 TaskController.$inject = [
   '$scope',
   '$q',
-  'task',
+  'initialData',
   'labeledThingInFrameGateway',
   'labeledFrameGateway',
 ];
