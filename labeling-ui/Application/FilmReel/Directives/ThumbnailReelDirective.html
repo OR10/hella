@@ -1,9 +1,10 @@
 <ul class="thumbnail-reel-list">
-    <li ng-repeat="location in vm.thumbnailLocations track by $index">
+    <li ng-repeat="thumbnail in vm.thumbnails track by $index">
         <thumbnail end-frame-number="vm.task.frameRange.endFrameNumber"
-                   location="location"
+                   location="thumbnail.location"
                    filters="vm.filters"
                    show-frame-number-always="(vm.thumbnailLocations.length - 1) / $index === 2"
+                   labeledThingInFrame="thumbnail.labeledThingInFrame"
         ></thumbnail>
     </li>
 </ul>

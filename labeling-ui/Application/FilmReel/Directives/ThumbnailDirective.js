@@ -11,6 +11,7 @@ class ThumbnailDirective {
       showFrameNumberAlways: '=',
       location: '=',
       filters: '=',
+      labeledThingInFrame: '=',
     };
 
     this.template = ThumbnailTemplate;

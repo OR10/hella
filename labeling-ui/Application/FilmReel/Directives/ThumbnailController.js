@@ -60,7 +60,7 @@ class ThumbnailController {
      * @type {AbortablePromiseRingBuffer}
      * @private
      */
-    this._ringbuffer = new AbortablePromiseRingBuffer(1);
+    this._frameLocationsBuffer = new AbortablePromiseRingBuffer(1);
 
     /**
      * @type {HTMLElement}
@@ -71,7 +71,7 @@ class ThumbnailController {
     const onWindowResized = () => this._drawImage();
     angular.element($window).on('resize', onWindowResized);
     $scope.$on('$destroy', () => {
-      angular.element($window).off(onWindowResized);
+      angular.element($window).off('resize', onWindowResized);
     });
 
     // Update rendered image once the location changes
@@ -88,7 +88,7 @@ class ThumbnailController {
         return;
       }
 
-      this._ringbuffer.add(
+      this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)
       ).then(image => {
         this._activeImage = image;

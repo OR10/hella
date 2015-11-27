@@ -10,6 +10,7 @@ class FilmReelDirective {
       framePosition: '=',
       task: '=',
       filters: '=',
+      selectedLabeledThingInFrame: '=',
     };
 
     this.template = FilmReelTemplate;
