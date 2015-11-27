@@ -37,8 +37,8 @@
     justify-content: center;
     list-style: none;
 
-    > li {
-      margin: 0 2px;
+    > li.thumbnail {
+      margin: 0;
       flex: 1;
       border: 1px solid #52666c;
 
@@ -56,6 +56,19 @@
         .divider, .endFrameNumber {
           color: darkgray;
         }
+      }
+    }
+
+    > li.thumbnail.active {
+      border-top: 2px solid greenyellow;
+      border-bottom: 2px solid greenyellow;
+    }
+
+    > li.thumbnail-spacer {
+      width: 8px;
+
+      div.frame-range-bracket {
+        background-color: greenyellow;
       }
     }
   }

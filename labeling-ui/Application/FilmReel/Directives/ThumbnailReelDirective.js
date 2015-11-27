@@ -13,6 +13,7 @@ class ThumbnailReelDirective {
       video: '=',
       filters: '=',
       selectedLabeledThingInFrame: '=',
+      selectedLabeledThing: '=',
     };
 
     this.template = ThumbnailReelTemplate;

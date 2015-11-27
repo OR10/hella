@@ -12,10 +12,11 @@ class TaskController {
    * @param {angular.Scope} $scope
    * @param {angular.$q} $q
    * @param {{task: Task, video: Video}} initialData
+   * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledFrameGateway) {
+  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledThingGateway, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
@@ -107,6 +108,16 @@ class TaskController {
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     /**
+     * @type {LabeledThingGateway}
+     */
+    this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {AbortablePromiseRingBuffer}
+     */
+    this._labeledThingBuffer = new AbortablePromiseRingBuffer(1);
+
+    /**
      * @type {LabeledFrameGateway}
      */
     this._labeledFrameGateway = labeledFrameGateway;
@@ -137,6 +148,18 @@ class TaskController {
   }
 
   /**
+   *
+   * @private
+   */
+  _loadLabeledThings(labeledThingIds) {
+    return this._$q.all(
+      labeledThingIds.map(labeledThingId => {
+        return this._labeledThingGateway.getLabeledThing(this.task.id, labeledThingId);
+      })
+    );
+  }
+
+  /**
    * Load the {@link LabeledFrame} structure for the given frame
    * @param frameNumber
    * @returns {AbortablePromise<LabeledFrame>}
@@ -163,11 +186,22 @@ class TaskController {
       this._loadLabeledThingsInFrame(frameNumber)
     )
     .then(labeledThingsInFrame => {
+      const labeledThingIds = [];
       this.labeledThingsInFrame = {};
 
       labeledThingsInFrame.forEach(labeledThingInFrame => {
         this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
+        labeledThingIds.push(labeledThingInFrame.labeledThingId);
       });
+
+      this._labeledThingBuffer.add(this._loadLabeledThings(labeledThingIds))
+        .then(labeledThings => {
+          this.labeledThings = {};
+
+          labeledThings.forEach(labeledThing => {
+            this.labeledThings[labeledThing.id] = labeledThing;
+          });
+        });
     });
 
     this._labeledFrameBuffer.add(
@@ -182,6 +216,7 @@ TaskController.$inject = [
   '$q',
   'initialData',
   'labeledThingInFrameGateway',
+  'labeledThingGateway',
   'labeledFrameGateway',
 ];
 

@@ -22,6 +22,7 @@ System.config({
 
   map: {
     "angular": "github:angular/bower-angular@1.4.7",
+    "angular-dragdrop": "github:codef0rmer/angular-dragdrop@1.0.12",
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",

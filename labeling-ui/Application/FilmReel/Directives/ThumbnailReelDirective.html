@@ -1,5 +1,8 @@
 <ul class="thumbnail-reel-list">
-    <li ng-repeat="thumbnail in vm.thumbnails track by $index">
+    <li class="thumbnail-spacer"></li>
+    <li class="thumbnail" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
+        ng-class="{'active': vm.selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber && vm.selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber}"
+    >
         <thumbnail end-frame-number="vm.task.frameRange.endFrameNumber"
                    location="thumbnail.location"
                    filters="vm.filters"
@@ -8,4 +11,5 @@
                    labeled-thing-viewport="{width: vm.video.metaData.width, height: vm.video.metaData.height}"
         ></thumbnail>
     </li>
+    <li ng-repeat-end class="thumbnail-spacer"></li>
 </ul>
