@@ -50,6 +50,8 @@ class FramePosition {
     if (newPosition < this.startFrameNumber || newPosition > this.endFrameNumber) {
       throw new Error(`Tried to jump out of FrameRange (${this.startFrameNumber}-${this.endFrameNumber}) -> ${newPosition}`);
     }
+
+    this._position = newPosition;
   }
 
   /**
@@ -68,7 +70,6 @@ class FramePosition {
       return false;
     }
 
-    this._position += 1;
     return true;
   }
 
@@ -88,7 +89,6 @@ class FramePosition {
       return false;
     }
 
-    this._position -= 1;
     return true;
   }
 }

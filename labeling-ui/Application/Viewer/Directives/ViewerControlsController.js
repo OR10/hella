@@ -104,7 +104,7 @@ class ViewerControlsController {
       this.task.id,
       this.selectedLabeledThingInFrame.labeledThingId
       )
-      .then(labeledThing => this.framePosition.goto(labeledThing.frameRange,startFrameNumber));
+      .then(labeledThing => this.framePosition.goto(labeledThing.frameRange.startFrameNumber));
   }
 
   handleNextFrameClicked() {
@@ -122,7 +122,7 @@ class ViewerControlsController {
       this.task.id,
       this.selectedLabeledThingInFrame.labeledThingId
     )
-    .then(labeledThing => this.framePosition.goto(labeledThing.frameRange,endFrameNumber));
+    .then(labeledThing => this.framePosition.goto(labeledThing.frameRange.endFrameNumber));
   }
 
   _createNewLabeledThingInFrame() {
