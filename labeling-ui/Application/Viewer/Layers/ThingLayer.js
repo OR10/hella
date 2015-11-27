@@ -22,8 +22,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
+   * @param {PaperShapeFactory} paperShapeFactory
    */
-  constructor($scope, drawingContextService) {
+  constructor($scope, drawingContextService, paperShapeFactory) {
     super($scope, drawingContextService);
     /**
      * @type {Map}
@@ -35,7 +36,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {PaperShapeFactory}
      * @private
      */
-    this._shapeFactory = new PaperShapeFactory(this._$scope.$new());
+    this._paperShapeFactory = paperShapeFactory;
 
     /**
      * Tool for moving shapes
@@ -52,6 +53,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._shapeScaleTool = new ShapeScaleTool(this._context);
+
     /**
      * Tool for drawing rectangles
      *
@@ -67,6 +69,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context);
+
     /**
      * Tool for drawing circles
      *
@@ -74,6 +77,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context);
+
     /**
      * Tool for drawing paths
      *
@@ -81,6 +85,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context);
+
     /**
      * Tool for drawing closed polygons
      *
@@ -88,6 +93,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context);
+
     /**
      * Tool for drawing lines
      *
@@ -95,6 +101,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context);
+
     /**
      * Tool for drawing points
      *
@@ -331,7 +338,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   _drawShape(shape, selected = false) {
     return this._context.withScope(() => {
-      const paperShape = this._shapeFactory.createPaperShape(shape);
+      const paperShape = this._paperShapeFactory.createPaperShape(shape);
 
       if (selected) {
         paperShape.select();

@@ -24,8 +24,9 @@ class ViewerStageController {
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {EntityIdService} entityIdService
+   * @param {PaperShapeFactory} paperShapeFactory
    */
-  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, entityIdService) {
+  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, entityIdService, paperShapeFactory) {
     /**
      * List of supported image types for this component
      *
@@ -114,7 +115,7 @@ class ViewerStageController {
     this._ghostedLabeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     const eventDelegationLayer = new EventDelegationLayer();
-    const thingLayer = new ThingLayer($scope.$new(), drawingContextService);
+    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, paperShapeFactory);
     const backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
@@ -263,6 +264,7 @@ ViewerStageController.$inject = [
   'frameGateway',
   'labeledThingInFrameGateway',
   'entityIdService',
+  'paperShapeFactory',
 ];
 
 export default ViewerStageController;
