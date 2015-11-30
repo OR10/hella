@@ -98,7 +98,13 @@ class ViewerControlsController {
   }
 
   handleSetOpenBracketClicked() {
-    this.selectedLabeledThing.frameRange.startFrameNumber = this.framePosition.position;
+    const framePosition = this.framePosition.position;
+
+    if (framePosition > this.selectedLabeledThing.frameRange.endFrameNumber) {
+      return;
+    }
+
+    this.selectedLabeledThing.frameRange.startFrameNumber = framePosition;
     this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
   }
 
@@ -119,7 +125,13 @@ class ViewerControlsController {
   }
 
   handleSetCloseBracketClicked() {
-    this.selectedLabeledThing.frameRange.endFrameNumber = this.framePosition.position;
+    const framePosition = this.framePosition.position;
+
+    if (framePosition < this.selectedLabeledThing.frameRange.startFrameNumber) {
+      return;
+    }
+
+    this.selectedLabeledThing.frameRange.endFrameNumber = framePosition;
     this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
   }
 
