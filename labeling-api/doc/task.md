@@ -216,7 +216,7 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
                 "result": [
                     {
                         "id": "36047d429d50548893be41c6880632fd",
-                        "labelingTaskId": "36047d429d50548893be41c6883f3416",
+                        "taskId": "36047d429d50548893be41c6883f3416",
                         "filename": "kitti.zip"
                     },
                     ...
@@ -238,3 +238,33 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
     In case of the K.I.T.T.I. Object Detection Benchmark export, it is a zip archive containing one textfile for each frame containing object types and their bounding boxes.
 
     + Body
+
+## Interpolate labeled things in frame [/api/task/{taskId}/interpolate/{labeledThingId}]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + labeledThingId: `36047d429d50548893be41c6880632fd` (string, required) - The id of the labeled-thing-entity.
+
+### Start interpolation [POST]
+
++ Request (application/json)
+
+    + Attributes
+
+        + type: `linear` (string, required) - The type of interpolation that should be performed.
+
+    + Body
+
+            {
+                "type": "linear"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "id": "e47f4bdfd22883b196ce45a8c980ab68",
+                "type": "AppBundle.Model.Interpolation.Status"
+            }

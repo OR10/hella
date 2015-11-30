@@ -2,13 +2,15 @@
 
 namespace AppBundle\Controller\Api;
 
-use AppBundle\Model\Video\ImageType;
-use Symfony\Component\HttpFoundation;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
+use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
 use AppBundle\View;
 use AppBundle\Service;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -71,27 +73,15 @@ class Task extends Controller\Base
     /**
      * Return the labeling task with the given id
      *
-     * @Rest\Get("/{taskId}")
-     * @param $taskId
+     * @Rest\Get("/{task}")
+     *
+     * @param $task
      *
      * @return \FOS\RestBundle\View\View
-     * @internal param $id
-     *
      */
-    public function getTaskAction($taskId)
+    public function getTaskAction(Model\LabelingTask $task)
     {
-        $response = View\View::create();
-        $task     = $this->labelingTaskFacade->find($taskId);
-
-        if ($task === null) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
-
-        $response->setData(['result' => $this->labelingTaskFacade->find($taskId)]);
-
-        return $response;
+        return View\View::create()->setData(['result' => $task]);
     }
 
     /**
@@ -101,25 +91,21 @@ class Task extends Controller\Base
      *       see http://symfony.com/doc/current/bundles/FOSRestBundle/6-automatic-route-generation_multiple-restful-controllers.html
      *       for details.
      *
-     * @Rest\Get("/{taskId}/frameLocations/{type}")
-     * @param string                 $taskId
+     * @Rest\Get("/{task}/frameLocations/{type}")
+     *
+     * @param Model\LabelingTask     $task
      * @param string                 $type
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function showFrameLocationsAction($taskId, $type, HttpFoundation\Request $request)
+    public function showFrameLocationsAction(Model\LabelingTask $task, $type, HttpFoundation\Request $request)
     {
-        $task   = $this->labelingTaskFacade->find($taskId);
-        $offset = $request->query->getDigits('offset');
-        $limit  = $request->query->getDigits('limit');
-        $data   = $this->frameCdn->getFrameLocations(
-            $task,
-            ImageType\Base::create($type),
-            $task->getFrameRange()->createSubRangeForOffsetAndLimit($offset, $limit)
-        );
+        $offset   = $request->query->getDigits('offset');
+        $limit    = $request->query->getDigits('limit');
+        $subRange = $task->getFrameRange()->createSubRangeForOffsetAndLimit($offset, $limit);
+        $data     = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $subRange);
 
-        return View\View::create()
-            ->setData(['result' => $data]);
+        return View\View::create()->setData(['result' => $data]);
     }
 }

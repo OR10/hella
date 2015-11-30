@@ -1,10 +1,16 @@
 import Module from '../Module';
+
 import ViewerDirective from './Directives/ViewerDirective';
 import ViewerStageDirective from './Directives/ViewerStageDirective';
 import ViewerControlsDirective from './Directives/ViewerControlsDirective';
+
+import PaperShapeFactory from './Shapes/PaperShapeFactory';
+
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
+
 import brightnessSliderTemplate from './Directives/ViewerControls/BrightnessSlider.html!';
 import contrastSliderTemplate from './Directives/ViewerControls/ContrastSlider.html!';
+
 import 'angular-rangeslider-directive';
 import 'angular-ui-bootstrap/src/position/position';
 import 'angular-ui-bootstrap/src/stackedMap/stackedMap';
@@ -23,6 +29,8 @@ export default class Viewer extends Module {
     this.registerDirective('viewer', ViewerDirective);
     this.registerDirective('viewerStage', ViewerStageDirective);
     this.registerDirective('viewerControls', ViewerControlsDirective);
+
+    this.module.service('paperShapeFactory', PaperShapeFactory);
 
     this.module.provider('drawingContextService', DrawingContextServiceProvider);
 

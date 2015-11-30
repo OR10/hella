@@ -2,16 +2,16 @@
 
 namespace AppBundle\Controller\Api\Task;
 
-use AppBundle\Model\Video\ImageType;
-use Symfony\Component\HttpFoundation;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Model;
-use Symfony\Component\HttpKernel\Exception;
+use AppBundle\Model\Video\ImageType;
 use Doctrine\ODM\CouchDB;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -35,6 +35,7 @@ class LabeledThing extends Controller\Base
 
     /**
      * LabeledThing constructor.
+     *
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
@@ -51,50 +52,33 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskId}/labeledThing")
+     * @Rest\Get("/{task}/labeledThing")
      *
-     * @param                        $taskId
+     * @param Model\LabelingTask     $task
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function getAllLabeledThingsAction($taskId, HttpFoundation\Request $request)
+    public function getAllLabeledThingsAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $response = View\View::create();
-        $task     = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            $response->setStatusCode(404);
+        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task)->toArray();
 
-            return $response;
-        }
-
-        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
-
-        if ($labeledThings === null) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
-
-        $response->setData($labeledThings);
-
-        return $response;
+        return View\View::create()->setData([
+            'totalCount' => count($labeledThings),
+            'result' => $labeledThings,
+        ]);
     }
 
     /**
-     * @Rest\Post("/{taskId}/labeledThing")
+     * @Rest\Post("/{task}/labeledThing")
      *
-     * @param                        $taskId
+     * @param Model\LabelingTask     $task
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function saveLabeledThingAction($taskId, HttpFoundation\Request $request)
+    public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $task = $this->labelingTaskFacade->find($taskId);
-
-        if ($task === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
         $documentId = $request->request->get('id');
         $classes    = $request->request->get('classes', []);
         $frameRange = $request->request->get('frameRange');
@@ -127,24 +111,20 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskId}/labeledThing/{labeledThingId}")
+     * @Rest\Get("/{task}/labeledThing/{labeledThing}")
      *
-     * @param string                 $taskId
-     * @param string                 $labeledThingId
+     * @param Model\LabelingTask     $task
+     * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function getLabeledThingAction($taskId, $labeledThingId, HttpFoundation\Request $request)
-    {
-        if (($task = $this->labelingTaskFacade->find($taskId)) === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
-        if (($labeledThing = $this->labeledThingFacade->find($labeledThingId)) === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
-        if ($labeledThing->getLabelingTaskId() !== $task->getId()) {
+    public function getLabeledThingAction(
+        Model\LabelingTask $task,
+        Model\LabeledThing $labeledThing,
+        HttpFoundation\Request $request
+    ) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
 
@@ -152,21 +132,19 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Put("/{taskId}/labeledThing/{labeledThingId}")
+     * @Rest\Put("/{task}/labeledThing/{labeledThingId}")
      *
-     * @param                        $taskId
-     * @param                        $labeledThingId
+     * @param Model\LabelingTask     $task
+     * @param string                 $labeledThingId
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function updateLabeledThingAction($taskId, $labeledThingId, HttpFoundation\Request $request)
-    {
-        $task = $this->labelingTaskFacade->find($taskId);
-
-        if ($task === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
+    public function updateLabeledThingAction(
+        Model\LabelingTask $task,
+        $labeledThingId,
+        HttpFoundation\Request $request
+    ) {
         $revision = $request->request->get('rev');
 
         if ($revision === null) {
@@ -183,7 +161,7 @@ class LabeledThing extends Controller\Base
                 throw new Exception\ConflictHttpException();
             }
 
-            if ($labeledThing->getLabelingTaskId() !== $taskId) {
+            if ($labeledThing->getTaskId() !== $task->getId()) {
                 throw new Exception\BadRequestHttpException();
             }
         }
@@ -214,26 +192,25 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Delete("/{taskId}/labeledThing/{labeledThingId}")
+     * @Rest\Delete("/{task}/labeledThing/{labeledThing}")
      *
-     * @param                        $taskId
-     * @param                        $labeledThingId
+     * @param Model\LabelingTask     $task
+     * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function deleteLabeledThingAction($taskId, $labeledThingId, HttpFoundation\Request $request)
-    {
-        $response = View\View::create();
-
-        $labeledThing = $this->labeledThingFacade->find($labeledThingId);
-        if ($labeledThing === null) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
-        if ($labeledThing->getLabelingTaskId() !== $taskId) {
+    public function deleteLabeledThingAction(
+        Model\LabelingTask $task,
+        Model\LabeledThing $labeledThing,
+        HttpFoundation\Request $request
+    ) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
+
+        $response = View\View::create();
+
         if ($request->request->get('rev') !== $labeledThing->getRev()) {
             $response->setStatusCode(409);
 

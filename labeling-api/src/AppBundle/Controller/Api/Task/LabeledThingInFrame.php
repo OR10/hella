@@ -2,16 +2,16 @@
 
 namespace AppBundle\Controller\Api\Task;
 
-use AppBundle\Model\Video\ImageType;
-use Symfony\Component\HttpFoundation;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
-use AppBundle\View;
 use AppBundle\Service;
+use AppBundle\View;
 use AppBundle\Model;
-use Symfony\Component\HttpKernel\Exception;
+use AppBundle\Model\Video\ImageType;
 use Doctrine\ODM\CouchDB;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -58,24 +58,20 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
+     * @Rest\Post("/{task}/labeledThingInFrame/{frameNumber}")
      *
-     * @Rest\Post("/{taskId}/labeledThingInFrame/{frameNumber}")
-     * @param                        $taskId
+     * @param Model\LabelingTask     $task
      * @param                        $frameNumber
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function saveLabeledThingInFrameAction($taskId, $frameNumber, HttpFoundation\Request $request)
-    {
+    public function saveLabeledThingInFrameAction(
+        Model\LabelingTask $task,
+        $frameNumber,
+        HttpFoundation\Request $request
+    ) {
         $response = View\View::create();
-        $task     = $this->labelingTaskFacade->find($taskId);
-
-        if ($task === null) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
 
         $shapes         = $request->request->get('shapes', []);
         $classes        = $request->request->get('classes', []);
@@ -84,7 +80,7 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThingId = $request->request->get('labeledThingId');
         $labeledThing   = $this->labeledThingFacade->find($labeledThingId);
 
-        if (!is_array($shapes) || !is_array([$classes]) || $labeledThing === null) {
+        if (!is_array($shapes) || !is_array($classes) || $labeledThing === null) {
             throw new Exception\BadRequestHttpException();
         }
 
@@ -104,24 +100,16 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
+     * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
      *
-     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameNumber}")
-     * @param $taskId
-     * @param $frameNumber
+     * @param Model\LabelingTask $taskId
+     * @param int                $frameNumber
      *
      * @return \FOS\RestBundle\View\View
-     *
      */
-    public function getLabeledThingInFrameAction($taskId, $frameNumber)
+    public function getLabeledThingInFrameAction(Model\LabelingTask $task, $frameNumber)
     {
         $response = View\View::create();
-        $task     = $this->labelingTaskFacade->find($taskId);
-
-        if ($task === null) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
 
         $labeledThings         = $this->labelingTaskFacade->getLabeledThings($task);
         $labeledThingsInFrames = array();
@@ -145,32 +133,41 @@ class LabeledThingInFrame extends Controller\Base
 
 
     /**
+     * Get labeled things in frame for the given frame range identified by
+     * frame number, offset and limit.
+     * Missing `LabeledThingInFrame`s are cloned from existing ones and marked
+     * as `ghost`. Those `ghosts` have the same `frameNumber` like the
+     * clone-source (for now) because of historical reasons.
+     * This may change sometime.
      *
-     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThingId}")
-     * @param                        $taskId
+     * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}/{labeledThing}")
+     *
+     * @param Model\LabelingTask     $task
      * @param                        $frameNumber
-     * @param                        $labeledThingId
+     * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getLabeledThingInFrameWithinFrameNumberAction($taskId, $frameNumber, $labeledThingId, HttpFoundation\Request $request)
-    {
-        $response = View\View::create();
+    public function getLabeledThingInFrameWithinFrameNumberAction(
+        Model\LabelingTask $task,
+        $frameNumber,
+        Model\LabeledThing $labeledThing,
+        HttpFoundation\Request $request
+    ) {
+        $offset = (int) $request->query->get('offset', 0);
+        $limit  = (int) $request->query->get('limit', 1);
 
-        $labeledThing = $this->labeledThingFacade->find($labeledThingId);
-
-        if ($labeledThing === null) {
-            throw new Exception\NotFoundHttpException();
+        if ($limit <= 0) {
+            return View\View::create()->setData(['result' => []]);
         }
 
-        $offset = $request->query->get('offset', null);
-        $limit  = $request->query->get('limit', null);
+        $labeledThingInFrames = array_reverse(
+            $this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray()
+        );
+        $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
-        $labeledThingInFrames = array_reverse($this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray());
-        $expectedFrameNumbers = range($frameNumber + $offset, ($frameNumber + $offset) + $limit);
-
-        $result = array_map(function ($expectedFrameNumber) use ($labeledThingInFrames) {
+        $result = array_map(function ($expectedFrameNumber) use (&$labeledThingInFrames) {
             reset($labeledThingInFrames);
             while ($item = current($labeledThingInFrames)) {
                 $currentItem = current($labeledThingInFrames);
@@ -206,9 +203,7 @@ class LabeledThingInFrame extends Controller\Base
             return $ghostLabeledThingInFrame;
         }, $expectedFrameNumbers);
 
-        $response->setData(['result' => $result]);
-
-        return $response;
+        return View\View::create()->setData(['result' => $result]);
     }
 
     /**

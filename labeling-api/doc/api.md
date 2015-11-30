@@ -18,3 +18,4 @@ broken a 400 status code should be returned.
 <!-- include(labeledThingInFrame.md) -->
 <!-- include(labeledThing.md) -->
 <!-- include(video.md) -->
+<!-- include(status.md) -->

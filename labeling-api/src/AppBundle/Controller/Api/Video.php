@@ -2,11 +2,12 @@
 
 namespace AppBundle\Controller\Api;
 
-use Symfony\Component\HttpFoundation;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
+use AppBundle\Model;
 use AppBundle\View;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 
 
@@ -31,26 +32,18 @@ class Video extends Controller\Base
      */
     public function listAction()
     {
-        return View\View::create()
-            ->setData(['result' => $this->videoFacade->findAll()]);
+        return View\View::create()->setData(['result' => $this->videoFacade->findAll()]);
     }
 
     /**
-     * @Rest\Get("/{videoId}")
+     * @Rest\Get("/{video}")
      *
-     * @param $videoId
+     * @param $video
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getVideoAction($videoId)
+    public function getVideoAction(Model\Video $video)
     {
-        $video = $this->videoFacade->find($videoId);
-
-        if ($video === null) {
-            throw new Exception\NotFoundHttpException();
-        }
-
-        return View\View::create()
-            ->setData(['result' => $video]);
+        return View\View::create()->setData(['result' => $video]);
     }
 }

@@ -176,16 +176,6 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'incomplete' => true,
                 'ghost' => false,
             ),
-            array(
-                'id' => $labeledThingInFrameNumber11->getId(),
-                'rev' => $labeledThingInFrameNumber11->getRev(),
-                'frameNumber' => 11,
-                'classes' => array(),
-                'shapes' => array(),
-                'labeledThingId' => $labeledThingInFrameNumber11->getLabeledThingId(),
-                'incomplete' => true,
-                'ghost' => true,
-            ),
         );
 
         $response = $client->getResponse();
@@ -222,14 +212,14 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
     }
 
-    private function doRequest($method, $labelingTaskId, $labeledThingInFrameNumber, $content = null)
+    private function doRequest($method, $taskId, $labeledThingInFrameNumber, $content = null)
     {
         $client  = $this->createClient();
         $crawler = $client->request(
             $method,
             sprintf(
                 '/api/task/%s/labeledThingInFrame/%s.json',
-                $labelingTaskId,
+                $taskId,
                 $labeledThingInFrameNumber
             ),
             [],

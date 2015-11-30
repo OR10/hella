@@ -19,10 +19,9 @@ class ThumbnailReelController {
    */
   constructor($scope, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway) {
     /**
-     * {@link FrameLocation}s of the thumbnails, which are currently rendered
-     * @type {Array.<FrameLocation>}
+     * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
-    this.thumbnailLocations = new Array(7).fill(null);
+    this.thumbnails = new Array(7).fill().map(() => ({location: null, labeledThingInFrame: null}));
 
     /**
      * List of supported image types for this component
@@ -31,6 +30,12 @@ class ThumbnailReelController {
      * @private
      */
     this._supportedImageTypes = ['thumbnail'];
+
+    /**
+     * @type {$rootScope.Scope}
+     * @private
+     */
+    this._$scope = $scope;
 
     /**
      * @type {$q}
@@ -80,9 +85,9 @@ class ThumbnailReelController {
      */
     this._thumbnailLookahead = 3;
 
-    // Update thumbnails on position change
-    $scope.$watchGroup(['vm.framePosition.position', 'vm.selectedLabeledThingInFrame'], () => {
-      $q.all([
+    // Update thumbnails on frame and/or selection change change
+    $scope.$watch('vm.framePosition.position', () => {
+      this._$q.all([
           this._frameLocationsBuffer.add(
             this._loadFrameLocations(this.framePosition)
           ),
@@ -91,8 +96,37 @@ class ThumbnailReelController {
           ),
         ])
         .then(([thumbnailLocations, labeledThingsInFrame]) => {
-          this.thumbnails = thumbnailLocations.map(
-            (location, index) => ({location, labeledThingInFrame: labeledThingsInFrame[index]})
+          thumbnailLocations.forEach(
+            (location, index) => {
+              const labeledThingInFrame = labeledThingsInFrame[index];
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
+          );
+        });
+    });
+
+    $scope.$watchCollection('vm.selectedLabeledThingInFrame.shapes', (newShapes) => {
+      if (!newShapes) {
+        this.thumbnails.forEach(
+          (thumbnail, index) => {
+            const location = thumbnail.location;
+            const labeledThingInFrame = null;
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
+        );
+        return;
+      }
+
+      this._labeledThingInFrameBuffer.add(
+        this._loadLabeledThingsInFrame(this.framePosition)
+        )
+        .then(labeledThingsInFrame => {
+          labeledThingsInFrame.forEach(
+            (labeledThingInFrame, index) => {
+              const thumbnail = this.thumbnails[index];
+              const location = thumbnail.location;
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
           );
         });
     });
@@ -161,18 +195,18 @@ class ThumbnailReelController {
    * @private
    */
   _loadLabeledThingsInFrame(framePosition) {
-    if (this.selectedLabeledThingInFrame === null) {
+    if (!this.selectedLabeledThingInFrame) {
       return this._abortablePromiseFactory(this._$q.resolve(new Array(7).fill(null)));
     }
 
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
-      this.task.id,
-      1,
+      this.task,
+        offset + 1,
       this.selectedLabeledThingInFrame.labeledThingId,
-      offset,
-      limit - 1 // @TODO The backend has an off-by-one error here. As soon as this is fixed the -1 needs to be removed
-    )
+      0,
+      limit
+      )
       .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
   }
 
@@ -215,31 +249,35 @@ class ThumbnailReelController {
     return thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.endFrameNumber;
   }
 
-  _setStartFrameNumber(frameNumber) {
-    if (frameNumber >= this.selectedLabeledThing.frameRange.startFrameNumber) {
-      this.selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
-      this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+  _setStartFrameNumber(index) {
+    if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
+      const frameNumber = this.thumbnails[index + 1].location.frameNumber;
+
+      if (frameNumber <= this.selectedLabeledThing.frameRange.endFrameNumber) {
+        this.selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
+        this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+      }
     }
   }
 
-  _setEndFrameNumber(frameNumber) {
-    if (frameNumber >= this.selectedLabeledThing.frameRange.startFrameNumber) {
-      this.selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
-      this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+  _setEndFrameNumber(index) {
+    if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
+      const frameNumber = this.thumbnails[index].location.frameNumber;
+
+      if (frameNumber >= this.selectedLabeledThing.frameRange.startFrameNumber) {
+        this.selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
+        this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+      }
     }
   }
 
   handleDrop(event, dragObject, index) {
-    if (this.thumbnails[index].location !== null) {
-      const frameNumber = this.thumbnails[index].location.frameNumber;
-
-      if (dragObject.draggable.hasClass('start-bracket')) {
-        this._setStartFrameNumber(frameNumber);
-        return;
-      }
-
-      this._setEndFrameNumber(frameNumber);
+    if (dragObject.draggable.hasClass('start-bracket')) {
+      this._setStartFrameNumber(index);
+      return;
     }
+
+    this._setEndFrameNumber(index);
   }
 }
 

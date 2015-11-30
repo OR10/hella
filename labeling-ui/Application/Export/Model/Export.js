@@ -14,7 +14,7 @@
 /**
  * Referenced labeling Task
  *
- * @name Export#labelingTaskId
+ * @name Export#taskId
  * @type {string}
  */
 

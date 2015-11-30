@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -20,7 +21,7 @@ class LabeledThing
     private $rev;
 
     /**
-     * @CouchDB\Field(type="mixed")
+     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
      */
     private $frameRange;
 
@@ -31,6 +32,7 @@ class LabeledThing
 
     /**
      * @CouchDB\Field(type="string")
+     * @Serializer\SerializedName("taskId")
      */
     private $labelingTaskId;
 
@@ -51,7 +53,7 @@ class LabeledThing
     /**
      * @return string
      */
-    public function getLabelingTaskId()
+    public function getTaskId()
     {
         return $this->labelingTaskId;
     }
@@ -61,7 +63,7 @@ class LabeledThing
      */
     public function getFrameRange()
     {
-        return $this->frameRange === null ?: clone $this->frameRange;
+        return $this->frameRange ? clone $this->frameRange : null;
     }
 
     /**
@@ -81,11 +83,11 @@ class LabeledThing
     }
 
     /**
-     * @param string $labelingTaskId
+     * @param string $taskId
      */
-    public function setLabelingTaskId($labelingTaskId)
+    public function setTaskId($taskId)
     {
-        $this->labelingTaskId = $labelingTaskId;
+        $this->labelingTaskId = (string) $taskId;
     }
 
     /**

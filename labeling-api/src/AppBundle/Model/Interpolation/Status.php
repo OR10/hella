@@ -16,6 +16,9 @@ class Status implements Model\Status
     const SUCCESS = 'success';
     const ERROR = 'error';
 
+    /**
+     * @Serializer\Exclude
+     */
     public static $validStates = [
         self::WAITING,
         self::RUNNING,
