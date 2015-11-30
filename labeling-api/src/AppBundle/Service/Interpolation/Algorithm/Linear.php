@@ -70,7 +70,7 @@ class Linear implements Interpolation\Algorithm
         callable $emit
     ) {
         if ($end->getFrameNumber() - $start->getFrameNumber() < 2) {
-            // nothing to when there is no frame in between
+            // nothing to do when there is no frame in between
             return;
         }
 
