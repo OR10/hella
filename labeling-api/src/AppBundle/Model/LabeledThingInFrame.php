@@ -51,12 +51,23 @@ class LabeledThingInFrame
 
     /**
      * @param LabeledThing $labeledThing
+     * @param int|null     $frameNumber
+     * @param array        $classes
+     * @param array        $shapes
      */
-    public function __construct(LabeledThing $labeledThing = null)
-    {
+    public function __construct(
+        LabeledThing $labeledThing = null,
+        $frameNumber = null,
+        array $classes = [],
+        array $shapes = []
+    ) {
         if ($labeledThing instanceof LabeledThing) {
             $this->labeledThingId = $labeledThing->getId();
         }
+
+        $this->frameNumber = $frameNumber;
+        $this->classes     = $classes;
+        $this->shapes      = $shapes;
     }
 
     /**
