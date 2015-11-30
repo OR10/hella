@@ -15,8 +15,9 @@ class ThumbnailReelController {
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGateway} labeledThingGateway
    */
-  constructor($scope, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway) {
+  constructor($scope, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -29,6 +30,12 @@ class ThumbnailReelController {
      * @private
      */
     this._supportedImageTypes = ['thumbnail'];
+
+    /**
+     * @type {$rootScope.Scope}
+     * @private
+     */
+    this._$scope = $scope;
 
     /**
      * @type {$q}
@@ -55,6 +62,12 @@ class ThumbnailReelController {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
+
+    /**
      * @type {AbortablePromiseRingBuffer}
      */
     this._frameLocationsBuffer = new AbortablePromiseRingBuffer(1);
@@ -64,24 +77,32 @@ class ThumbnailReelController {
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
+    /**
+     * Number of frames to display both before and after the current frame
+     *
+     * @type {number}
+     * @private
+     */
+    this._thumbnailLookahead = 3;
+
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
       this._$q.all([
-        this._frameLocationsBuffer.add(
-          this._loadFrameLocations(this.framePosition)
-        ),
-        this._labeledThingInFrameBuffer.add(
-          this._loadLabeledThingsInFrame(this.framePosition)
-        ),
-      ])
-      .then(([thumbnailLocations, labeledThingsInFrame]) => {
-        thumbnailLocations.forEach(
-          (location, index) => {
-            const labeledThingInFrame = labeledThingsInFrame[index];
-            this.thumbnails[index] = {location, labeledThingInFrame};
-          }
-        );
-      });
+          this._frameLocationsBuffer.add(
+            this._loadFrameLocations(this.framePosition)
+          ),
+          this._labeledThingInFrameBuffer.add(
+            this._loadLabeledThingsInFrame(this.framePosition)
+          ),
+        ])
+        .then(([thumbnailLocations, labeledThingsInFrame]) => {
+          thumbnailLocations.forEach(
+            (location, index) => {
+              const labeledThingInFrame = labeledThingsInFrame[index];
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
+          );
+        });
     });
 
     $scope.$watchCollection('vm.selectedLabeledThingInFrame.shapes', (newShapes) => {
@@ -98,17 +119,19 @@ class ThumbnailReelController {
 
       this._labeledThingInFrameBuffer.add(
         this._loadLabeledThingsInFrame(this.framePosition)
-      )
-      .then(labeledThingsInFrame => {
-        labeledThingsInFrame.forEach(
-          (labeledThingInFrame, index) => {
-            const thumbnail = this.thumbnails[index];
-            const location = thumbnail.location;
-            this.thumbnails[index] = {location, labeledThingInFrame};
-          }
-        );
-      });
+        )
+        .then(labeledThingsInFrame => {
+          labeledThingsInFrame.forEach(
+            (labeledThingInFrame, index) => {
+              const thumbnail = this.thumbnails[index];
+              const location = thumbnail.location;
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
+          );
+        });
     });
+
+    this.handleDrop = this.handleDrop.bind(this);
   }
 
   /**
@@ -119,8 +142,8 @@ class ThumbnailReelController {
    * @private
    */
   _calculateOffsetAndLimitByPosition(framePosition) {
-    const offset = Math.max(0, (framePosition.position - 1) - 3 );
-    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + 3) - offset;
+    const offset = Math.max(0, (framePosition.position - 1) - this._thumbnailLookahead);
+    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + this._thumbnailLookahead) - offset;
     return {offset, limit};
   }
 
@@ -179,12 +202,82 @@ class ThumbnailReelController {
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
-      offset + 1,
+        offset + 1,
       this.selectedLabeledThingInFrame.labeledThingId,
       0,
       limit
-    )
-    .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
+      )
+      .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
+  }
+
+  thumbnailInFrameRange(index) {
+    if (!this.selectedLabeledThing || index < 0) {
+      return false;
+    }
+
+    const thumbnail = this.thumbnails[index];
+
+    if (thumbnail.location === null) {
+      return false;
+    }
+
+    return this.selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber
+      && this.selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber;
+  }
+
+  placeStartBracket(index) {
+    if (!this.selectedLabeledThing) {
+      return false;
+    }
+
+    if (index < 0) {
+      return this.selectedLabeledThing.frameRange.startFrameNumber === this.framePosition.position - this._thumbnailLookahead;
+    }
+
+    const thumbnail = this.thumbnails[index + 1];
+
+    return thumbnail && thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.startFrameNumber;
+  }
+
+  placeEndBracket(index) {
+    if (!this.selectedLabeledThing || index < 0) {
+      return false;
+    }
+
+    const thumbnail = this.thumbnails[index];
+
+    return thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.endFrameNumber;
+  }
+
+  _setStartFrameNumber(index) {
+    if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
+      const frameNumber = this.thumbnails[index + 1].location.frameNumber;
+
+      if (frameNumber <= this.selectedLabeledThing.frameRange.endFrameNumber) {
+        this.selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
+        this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+      }
+    }
+  }
+
+  _setEndFrameNumber(index) {
+    if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
+      const frameNumber = this.thumbnails[index].location.frameNumber;
+
+      if (frameNumber >= this.selectedLabeledThing.frameRange.startFrameNumber) {
+        this.selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
+        this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+      }
+    }
+  }
+
+  handleDrop(event, dragObject, index) {
+    if (dragObject.draggable.hasClass('start-bracket')) {
+      this._setStartFrameNumber(index);
+      return;
+    }
+
+    this._setEndFrameNumber(index);
   }
 }
 
@@ -194,6 +287,7 @@ ThumbnailReelController.$inject = [
   'abortablePromiseFactory',
   'taskFrameLocationGateway',
   'labeledThingInFrameGateway',
+  'labeledThingGateway',
 ];
 
 export default ThumbnailReelController;

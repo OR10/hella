@@ -18,6 +18,11 @@
     <div class="btn-group">
         <button ng-hide="vm.selectedLabeledThingInFrame === null"
                 class="btn btn-default"
+                ng-click="vm.handleSetOpenBracketClicked()">
+            &#91;
+        </button>
+        <button ng-hide="vm.selectedLabeledThingInFrame === null"
+                class="btn btn-default"
                 ng-click="vm.handleGotoOpenBracketClicked()">
             <i class="fa fa-angle-double-left"></i>
         </button>
@@ -35,6 +40,11 @@
                 class="btn btn-default"
                 ng-click="vm.handleGotoCloseBracketClicked()">
             <i class="fa fa-angle-double-right"></i>
+        </button>
+        <button ng-hide="vm.selectedLabeledThingInFrame === null"
+                class="btn btn-default"
+                ng-click="vm.handleSetCloseBracketClicked()">
+            &#93;
         </button>
     </div>
     <div class="btn-group">
@@ -84,6 +94,13 @@
                 class="btn btn-default"
                 ng-click="vm.handleNewPointClicked()">
             Point
+        </button>
+    </div>
+    <div class="btn-group">
+        <button ng-hide="vm.selectedLabeledThingInFrame === null"
+                class="btn btn-default"
+                ng-click="vm.handleInterpolation()">
+            <i class="fa fa-clone"></i>
         </button>
     </div>
 </div>

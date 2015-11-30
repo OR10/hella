@@ -12,6 +12,7 @@ class FilmReelDirective {
       video: '=',
       filters: '=',
       selectedLabeledThingInFrame: '=',
+      selectedLabeledThing: '=',
     };
 
     this.template = FilmReelTemplate;

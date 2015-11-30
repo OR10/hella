@@ -16,12 +16,14 @@ class ViewerControlsController {
    * @param {angular.$scope} $scope
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {InterpolationService} interpolationService
    * @param {EntityIdService} entityIdService
    * @param {angular.$q} $q
    */
-  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, entityIdService, $q) {
+  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, $q) {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
     this._labeledThingGateway = labeledThingGateway;
+    this._interpolationService = interpolationService;
     this._entityIdService = entityIdService;
     this._$q = $q;
 
@@ -97,14 +99,19 @@ class ViewerControlsController {
     });
   }
 
+  handleSetOpenBracketClicked() {
+    const framePosition = this.framePosition.position;
+
+    if (framePosition > this.selectedLabeledThing.frameRange.endFrameNumber) {
+      return;
+    }
+
+    this.selectedLabeledThing.frameRange.startFrameNumber = framePosition;
+    this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+  }
+
   handleGotoOpenBracketClicked() {
-    // @TODO: Maybe it is better to track something like `selectedThing` in addition to
-    //        `selectedThingInFrame` and pass it down to this directive
-    this._labeledThingGateway.getLabeledThing(
-      this.task.id,
-      this.selectedLabeledThingInFrame.labeledThingId
-      )
-      .then(labeledThing => this.framePosition.goto(labeledThing.frameRange.startFrameNumber));
+    this.framePosition.goto(this.selectedLabeledThing.frameRange.startFrameNumber);
   }
 
   handleNextFrameClicked() {
@@ -116,13 +123,18 @@ class ViewerControlsController {
   }
 
   handleGotoCloseBracketClicked() {
-    // @TODO: Maybe it is better to track something like `selectedThing` in addition to
-    //        `selectedThingInFrame` and pass it down to this directive
-    this._labeledThingGateway.getLabeledThing(
-      this.task.id,
-      this.selectedLabeledThingInFrame.labeledThingId
-    )
-    .then(labeledThing => this.framePosition.goto(labeledThing.frameRange.endFrameNumber));
+    this.framePosition.goto(this.selectedLabeledThing.frameRange.endFrameNumber);
+  }
+
+  handleSetCloseBracketClicked() {
+    const framePosition = this.framePosition.position;
+
+    if (framePosition < this.selectedLabeledThing.frameRange.startFrameNumber) {
+      return;
+    }
+
+    this.selectedLabeledThing.frameRange.endFrameNumber = framePosition;
+    this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
   }
 
   _createNewLabeledThingInFrame() {
@@ -135,8 +147,8 @@ class ViewerControlsController {
       incomplete: true,
       taskId: this.task.id,
       frameRange: {
-        startFrameNumber: this.framePosition.startFrameNumber,
-        endFrameNumber: this.framePosition.endFrameNumber,
+        startFrameNumber: this.framePosition.position,
+        endFrameNumber: this.framePosition.position,
       },
     });
 
@@ -151,6 +163,7 @@ class ViewerControlsController {
 
     return this._labeledThingGateway.saveLabeledThing(labeledThing)
       .then(() => {
+        this.labeledThings[labeledThingId] = labeledThing;
         return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
       })
       .then(() => {
@@ -218,12 +231,19 @@ class ViewerControlsController {
   handleScaleToolClicked() {
     this.activeTool = 'scale';
   }
+
+  handleInterpolation() {
+    this._interpolationService.interpolate('default', this.task.id, this.selectedLabeledThingInFrame.labeledThingId);
+    // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
+    // @TODO: Show some sort of loading indicator, while interpolation is running
+  }
 }
 
 ViewerControlsController.$inject = [
   '$scope',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
+  'interpolationService',
   'entityIdService',
   '$q',
 ];
