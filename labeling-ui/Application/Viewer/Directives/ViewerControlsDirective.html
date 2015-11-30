@@ -86,4 +86,11 @@
             Point
         </button>
     </div>
+    <div class="btn-group">
+        <button ng-hide="vm.selectedLabeledThingInFrame === null"
+                class="btn btn-default"
+                ng-click="vm.handleInterpolation()">
+            <i class="fa fa-clone"></i>
+        </button>
+    </div>
 </div>

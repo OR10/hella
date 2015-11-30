@@ -16,12 +16,14 @@ class ViewerControlsController {
    * @param {angular.$scope} $scope
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {InterpolationService} interpolationService
    * @param {EntityIdService} entityIdService
    * @param {angular.$q} $q
    */
-  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, entityIdService, $q) {
+  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, $q) {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
     this._labeledThingGateway = labeledThingGateway;
+    this._interpolationService = interpolationService;
     this._entityIdService = entityIdService;
     this._$q = $q;
 
@@ -218,12 +220,19 @@ class ViewerControlsController {
   handleScaleToolClicked() {
     this.activeTool = 'scale';
   }
+
+  handleInterpolation() {
+    this._interpolationService.interpolate('default', this.task.id, this.selectedLabeledThingInFrame.labeledThingId);
+    // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
+    // @TODO: Show some sort of loading indicator, while interpolation is running
+  }
 }
 
 ViewerControlsController.$inject = [
   '$scope',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
+  'interpolationService',
   'entityIdService',
   '$q',
 ];

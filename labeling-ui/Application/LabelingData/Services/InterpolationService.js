@@ -28,6 +28,9 @@ class InterpolationService {
      */
     this._interpolations = new Map();
     interpolations.forEach(interpolation => this._interpolations.add(interpolation.id, interpolation));
+    if (interpolations.length > 0) {
+      this.setDefaultInterpolation(interpolations[0].id);
+    }
   }
 
   /**
@@ -106,7 +109,7 @@ InterpolationService.$inject = [
   '$q',
   'labeledThingGateway',
   // All Interpolations listed here will be auto registered.
-  'linearBackendInterpolation'
+  'linearBackendInterpolation',
 ];
 
 export default InterpolationService;
