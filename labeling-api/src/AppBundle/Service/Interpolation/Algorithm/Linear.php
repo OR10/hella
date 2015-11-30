@@ -121,6 +121,19 @@ class Linear implements Interpolation\Algorithm
                     'y' => $current['bottomRight']['y'] + ($end['bottomRight']['y'] - $current['bottomRight']['y']) / $steps,
                 ],
             ];
+        case 'ellipse':
+            return [
+                'id' => $current['id'],
+                'type' => $current['type'],
+                'point' => [
+                    'x' => $current['point']['x'] + ($end['point']['x'] - $current['point']['x']) / $steps,
+                    'y' => $current['point']['y'] + ($end['point']['y'] - $current['point']['y']) / $steps,
+                ],
+                'size' => [
+                    'width'  => $current['size']['width']  + ($end['size']['width']  - $current['size']['width']) / $steps,
+                    'height' => $current['size']['height'] + ($end['size']['height'] - $current['size']['height']) / $steps,
+                ],
+            ];
         }
 
         throw new \RuntimeException("Unsupported shape '{$current['type']}'");
