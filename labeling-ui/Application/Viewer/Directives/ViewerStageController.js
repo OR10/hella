@@ -183,8 +183,10 @@ class ViewerStageController {
     $scope.$watch('vm.selectedShape', (newSelectedShape) => {
       if (newSelectedShape === null) {
         this.selectedLabeledThingInFrame = null;
+        this.selectedLabeledThing = null;
       } else {
         this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrameId];
+        this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThingId];
       }
     });
   }

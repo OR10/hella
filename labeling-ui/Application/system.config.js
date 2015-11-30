@@ -22,6 +22,7 @@ System.config({
 
   map: {
     "angular": "github:angular/bower-angular@1.4.7",
+    "angular-dragdrop": "github:codef0rmer/angular-dragdrop@1.0.12",
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",
@@ -39,6 +40,7 @@ System.config({
     "html": "github:systemjs/plugin-text@0.0.2",
     "jquery": "github:components/jquery@2.1.4",
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
+    "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "uuid": "npm:uuid@2.0.1",
@@ -50,6 +52,9 @@ System.config({
     },
     "github:chieffancypants/angular-hotkeys@1.6.0": {
       "angular": "github:angular/bower-angular@1.4.7"
+    },
+    "github:components/jqueryui@1.11.4": {
+      "jquery": "github:components/jquery@2.1.4"
     },
     "github:jdworschak/paper.js@0.9.24-mouseevent-patch": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",

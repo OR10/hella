@@ -18,7 +18,9 @@ class ViewerControlsDirective {
       selectedDrawingTool: '=',
       task: '=',
       selectedLabeledThingInFrame: '=',
+      selectedLabeledThing: '=',
       labeledThingsInFrame: '=',
+      labeledThings: '=',
     };
   }
 }

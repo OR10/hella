@@ -1,3 +1,6 @@
+import 'jquery-ui';
+import 'angular-dragdrop';
+
 import Module from '../Module';
 import FilmReelDirective from './Directives/FilmReelDirective';
 import ThumbnailReelDirective from './Directives/ThumbnailReelDirective';
@@ -15,7 +18,7 @@ class FilmReel extends Module {
    * @param {angular} angular
    */
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.FilmReel', []);
+    this.module = angular.module('AnnoStation.FilmReel', ['ngDragDrop']);
 
     this.registerDirective('filmReel', FilmReelDirective);
     this.registerDirective('thumbnailReel', ThumbnailReelDirective);

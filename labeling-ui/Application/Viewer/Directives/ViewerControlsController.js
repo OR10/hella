@@ -99,14 +99,19 @@ class ViewerControlsController {
     });
   }
 
+  handleSetOpenBracketClicked() {
+    const framePosition = this.framePosition.position;
+
+    if (framePosition > this.selectedLabeledThing.frameRange.endFrameNumber) {
+      return;
+    }
+
+    this.selectedLabeledThing.frameRange.startFrameNumber = framePosition;
+    this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+  }
+
   handleGotoOpenBracketClicked() {
-    // @TODO: Maybe it is better to track something like `selectedThing` in addition to
-    //        `selectedThingInFrame` and pass it down to this directive
-    this._labeledThingGateway.getLabeledThing(
-      this.task.id,
-      this.selectedLabeledThingInFrame.labeledThingId
-      )
-      .then(labeledThing => this.framePosition.goto(labeledThing.frameRange.startFrameNumber));
+    this.framePosition.goto(this.selectedLabeledThing.frameRange.startFrameNumber);
   }
 
   handleNextFrameClicked() {
@@ -118,13 +123,18 @@ class ViewerControlsController {
   }
 
   handleGotoCloseBracketClicked() {
-    // @TODO: Maybe it is better to track something like `selectedThing` in addition to
-    //        `selectedThingInFrame` and pass it down to this directive
-    this._labeledThingGateway.getLabeledThing(
-      this.task.id,
-      this.selectedLabeledThingInFrame.labeledThingId
-    )
-    .then(labeledThing => this.framePosition.goto(labeledThing.frameRange.endFrameNumber));
+    this.framePosition.goto(this.selectedLabeledThing.frameRange.endFrameNumber);
+  }
+
+  handleSetCloseBracketClicked() {
+    const framePosition = this.framePosition.position;
+
+    if (framePosition < this.selectedLabeledThing.frameRange.startFrameNumber) {
+      return;
+    }
+
+    this.selectedLabeledThing.frameRange.endFrameNumber = framePosition;
+    this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
   }
 
   _createNewLabeledThingInFrame() {
@@ -137,8 +147,8 @@ class ViewerControlsController {
       incomplete: true,
       taskId: this.task.id,
       frameRange: {
-        startFrameNumber: this.framePosition.startFrameNumber,
-        endFrameNumber: this.framePosition.endFrameNumber,
+        startFrameNumber: this.framePosition.position,
+        endFrameNumber: this.framePosition.position,
       },
     });
 
@@ -153,6 +163,7 @@ class ViewerControlsController {
 
     return this._labeledThingGateway.saveLabeledThing(labeledThing)
       .then(() => {
+        this.labeledThings[labeledThingId] = labeledThing;
         return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
       })
       .then(() => {
