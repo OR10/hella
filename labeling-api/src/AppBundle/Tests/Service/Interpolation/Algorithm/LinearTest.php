@@ -67,7 +67,7 @@ class LinearTest extends Tests\KernelTestCase
     {
         $thing = $this->createLabeledThing();
         $thingInFrame = $this->createLabeledThingInFrame($thing, 1, [
-            $this->createRectangleShape(5, 5, 10, 10),
+            $this->createRectangleShape('test', 5, 5, 10, 10),
         ]);
 
         $emitted = [];
@@ -88,10 +88,10 @@ class LinearTest extends Tests\KernelTestCase
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
             $this->createLabeledThingInFrame($thing, 1, [
-                $this->createRectangleShape(5, 5, 10, 10),
+                $this->createRectangleShape('test-1', 5, 5, 10, 10),
             ]),
             $this->createLabeledThingInFrame($thing, 2, [
-                    $this->createRectangleShape(5, 5, 10, 10),
+                    $this->createRectangleShape('test-2', 5, 5, 10, 10),
             ]),
         ];
 
@@ -113,7 +113,7 @@ class LinearTest extends Tests\KernelTestCase
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
             $this->createLabeledThingInFrame($thing, 3, [
-                $this->createRectangleShape(5, 5, 10, 10),
+                $this->createRectangleShape('test-3', 5, 5, 10, 10),
             ]),
         ];
 
@@ -144,7 +144,7 @@ class LinearTest extends Tests\KernelTestCase
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
             $this->createLabeledThingInFrame($thing, 3, [
-                $this->createRectangleShape(5, 5, 10, 10),
+                $this->createRectangleShape('test-3', 5, 5, 10, 10),
             ]),
         ];
 
@@ -175,10 +175,10 @@ class LinearTest extends Tests\KernelTestCase
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
             $this->createLabeledThingInFrame($thing, 3, [
-                $this->createRectangleShape(5, 5, 10, 10),
+                $this->createRectangleShape('test', 5, 5, 10, 10),
             ]),
             $this->createLabeledThingInFrame($thing, 7, [
-                $this->createRectangleShape(5, 5, 10, 10),
+                $this->createRectangleShape('test', 5, 5, 10, 10),
             ]),
         ];
 
@@ -202,6 +202,63 @@ class LinearTest extends Tests\KernelTestCase
         );
         array_unshift($expected, $thingsInFrame[0]);
         $expected[] = $thingsInFrame[1];
+
+        $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
+    }
+
+    public function testInterpolationBetweenTwoLabeledThingsInFrameWithMovedAndResizedShapes()
+    {
+        $thing = $this->createLabeledThing();
+        $thingsInFrame = [
+            $this->createLabeledThingInFrame($thing, 3, [
+                $this->createRectangleShape('test-1', 5, 5, 10, 10),
+                $this->createRectangleShape('test-2', 100, 100, 200, 200),
+                $this->createEllipseShape('test-3', 100, 100, 200, 200),
+            ]),
+            $this->createLabeledThingInFrame($thing, 7, [
+                $this->createRectangleShape('test-1', 8, 8, 20, 20),
+                $this->createRectangleShape('test-2', 200, 200, 100, 100),
+                $this->createEllipseShape('test-3', 200, 200, 100, 100),
+            ]),
+        ];
+
+        $emitted = [];
+
+        $this->algorithm->interpolate(
+            $thing,
+            new Model\FrameRange(3, 7),
+            function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
+                $emitted[] = $emittedLabeledThingInFrame;
+            }
+        );
+
+        $expected = [
+            new Model\LabeledThingInFrame($thing, 3, [], [
+                $this->createRectangleShape('test-1', 5, 5, 10, 10),
+                $this->createRectangleShape('test-2', 100, 100, 200, 200),
+                $this->createEllipseShape('test-3', 100, 100, 200, 200),
+            ]),
+            new Model\LabeledThingInFrame($thing, 4, [], [
+                $this->createRectangleShape('test-1', 5.75, 5.75, 12.5, 12.5),
+                $this->createRectangleShape('test-2', 125, 125, 175, 175),
+                $this->createEllipseShape('test-3', 125, 125, 175, 175),
+            ]),
+            new Model\LabeledThingInFrame($thing, 5, [], [
+                $this->createRectangleShape('test-1', 6.5, 6.5, 15, 15),
+                $this->createRectangleShape('test-2', 150, 150, 150, 150),
+                $this->createEllipseShape('test-3', 150, 150, 150, 150),
+            ]),
+            new Model\LabeledThingInFrame($thing, 6, [], [
+                $this->createRectangleShape('test-1', 7.25, 7.25, 17.5, 17.5),
+                $this->createRectangleShape('test-2', 175, 175, 125, 125),
+                $this->createEllipseShape('test-3', 175, 175, 125, 125),
+            ]),
+            new Model\LabeledThingInFrame($thing, 7, [], [
+                $this->createRectangleShape('test-1', 8, 8, 20, 20),
+                $this->createRectangleShape('test-2', 200, 200, 100, 100),
+                $this->createEllipseShape('test-3', 200, 200, 100, 100),
+            ]),
+        ];
 
         $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
     }
@@ -274,10 +331,11 @@ class LinearTest extends Tests\KernelTestCase
      *
      * @return array
      */
-    private function createRectangleShape($left, $top, $right, $bottom)
+    private function createRectangleShape($id, $left, $top, $right, $bottom)
     {
         return [
             'type' => 'rectangle',
+            'id' => (string) $id,
             'topLeft' => [
                 'x' => (float) $left,
                 'y' => (float) $top,
@@ -285,6 +343,30 @@ class LinearTest extends Tests\KernelTestCase
             'bottomRight' => [
                 'x' => (float) $right,
                 'y' => (float) $bottom,
+            ],
+        ];
+    }
+
+    /**
+     * @param float $left
+     * @param float $top
+     * @param float $right
+     * @param float $bottom
+     *
+     * @return array
+     */
+    private function createEllipseShape($id, $x, $y, $width, $height)
+    {
+        return [
+            'type' => 'ellipse',
+            'id' => (string) $id,
+            'point' => [
+                'x' => (float) $x,
+                'y' => (float) $y,
+            ],
+            'size' => [
+                'width' => (float) $width,
+                'height' => (float) $height,
             ],
         ];
     }
