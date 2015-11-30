@@ -1,7 +1,13 @@
 <ul class="thumbnail-reel-list">
-    <li class="thumbnail-spacer">
-        <div ng-if="vm.placeStartBracket(-1)" class="frame-range-bracket start-bracket"></div>
-        <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket"></div>
+    <li class="thumbnail-spacer"
+        data-jqyoui-options="{}"
+        data-drop="true"
+        jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
+    >
+        <div ng-if="vm.placeStartBracket(-1)" class="frame-range-bracket start-bracket" data-drag="true"
+             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
+        <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket" data-drag="true"
+             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
     </li>
     <li class="thumbnail" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
         ng-class="{'active': vm.thumbnailInFrameRange($index)}"
@@ -16,11 +22,13 @@
     </li>
     <li ng-repeat-end
         class="thumbnail-spacer"
-        data-jqyoui-options
+        data-jqyoui-options="{}"
         data-drop="true"
-        jqyoui-droppable
+        jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
     >
-        <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket"></div>
-        <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket"></div>
+        <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket" data-drag="true"
+             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
+        <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket" data-drag="true"
+             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
     </li>
 </ul>
