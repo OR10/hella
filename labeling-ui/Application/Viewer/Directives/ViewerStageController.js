@@ -181,6 +181,10 @@ class ViewerStageController {
 
     // Update selectedLabeledThingInFrame once a shape is selected
     $scope.$watch('vm.selectedShape', (newSelectedShape) => {
+      if (this.ghostedLabeledThingInFrame !== null) {
+        return;
+      }
+
       if (newSelectedShape === null) {
         this.selectedLabeledThingInFrame = null;
         this.selectedLabeledThing = null;

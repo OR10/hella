@@ -46,7 +46,7 @@ class BackendInterpolation {
     return this._labeledThingGateway.getLabeledThing(taskId, labeledThingId)
       .then(labeledThing => {
         const url = this._apiService.getApiUrl(
-          `/${taskId}/interpolate/${labeledThingId}`
+          `/task/${taskId}/interpolate/${labeledThingId}`
         );
 
         const data = {
@@ -56,6 +56,13 @@ class BackendInterpolation {
         };
 
         return this._bufferedHttp.post(url, data, undefined, 'interpolate');
+      })
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed initiating interpolation`);
       })
       .then(job => this._statusGateway.waitForJob(job, 500));
   }

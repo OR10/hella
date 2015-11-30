@@ -27,7 +27,7 @@ class InterpolationService {
      * @private
      */
     this._interpolations = new Map();
-    interpolations.forEach(interpolation => this._interpolations.add(interpolation.id, interpolation));
+    interpolations.forEach(interpolation => this._interpolations.set(interpolation.id, interpolation));
     if (interpolations.length > 0) {
       this.setDefaultInterpolation(interpolations[0].id);
     }
