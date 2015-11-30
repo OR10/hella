@@ -131,6 +131,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       const paperShapes = this.addLabeledThingInFrame(labeledThingInFrame, false);
       $scope.vm.activeTool = 'move';
       paperShapes[0].select();
+      $scope.vm.selectedShape = paperShapes[0];
 
       this._context.withScope(scope => {
         scope.view.draw();
@@ -187,10 +188,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _updateSelectedShape(shape) {
-    if (this._$scope.vm.selectedShape && this._$scope.vm.selectedShape !== shape.id) {
+    if (this._$scope.vm.selectedShape && this._$scope.vm.selectedShape.id === shape.id) {
+      console.log('no selection change: ', shape.id);
+      // Selection did not change
+      return;
+    }
+
+    if (this._$scope.vm.selectedShape !== null) {
+      console.log('deselect shape: ', this._$scope.vm.selectedShape.id);
       this._$scope.vm.selectedShape.deselect();
     }
 
+    console.log('select shape: ', shape.id);
     shape.select();
 
     this._$scope.$apply(() => {
@@ -199,9 +208,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _clearSelectedShape() {
-    if (this._$scope.vm.selectedShape) {
-      this._$scope.vm.selectedShape.deselect();
+    if (!this._$scope.vm.selectedShape) {
+      console.log('Nothing to clear');
+      return;
     }
+
+    console.log('clear selection: ', this._$scope.vm.selectedShape.id);
+    this._$scope.vm.selectedShape.deselect();
 
     this._$scope.$apply(() => {
       this._$scope.vm.selectedShape = null;
@@ -342,6 +355,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
       if (selected) {
         paperShape.select();
+        this._$scope.vm.selectedShape = paperShape;
       }
 
       return paperShape;

@@ -16,7 +16,7 @@ class PaperLayer extends EventEmitter {
 
     /**
      * @type {$rootScope.Scope}
-     * @private
+     * @protected
      */
     this._$scope = $scope;
 

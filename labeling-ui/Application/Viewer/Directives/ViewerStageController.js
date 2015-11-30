@@ -181,14 +181,18 @@ class ViewerStageController {
 
     // Update selectedLabeledThingInFrame once a shape is selected
     $scope.$watch('vm.selectedShape', (newSelectedShape) => {
-      if (this.ghostedLabeledThingInFrame !== null) {
-        return;
-      }
-
       if (newSelectedShape === null) {
         this.selectedLabeledThingInFrame = null;
         this.selectedLabeledThing = null;
+        this.ghostedLabeledThingInFrame = null;
       } else {
+        if (this.ghostedLabeledThingInFrame !== null && newSelectedShape.labeledThingInFrameId === this.ghostedLabeledThingInFrame.id) {
+          return;
+        }
+
+        // As we do change from a ghost to a non ghost we can simply set this to null
+        // If the change is executed between to non ghosts the null is just what was already set anyway.
+        this.ghostedLabeledThingInFrame = null;
         this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrameId];
         this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThingId];
       }
