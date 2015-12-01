@@ -4,6 +4,7 @@ namespace AppBundle\Tests\Service\TaskExporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\Shapes;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
 use Doctrine\ODM\CouchDB;
@@ -71,7 +72,7 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
         $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
-            $this->createRectangleShape(10, 10, 100, 100),
+            new Shapes\Rectangle('test', 10, 10, 100, 100),
         ]);
 
         $expectedResult = [
@@ -85,8 +86,8 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
         $this->createLabeledThingInFrame($task, 1, 'cyclist', [
-            $this->createRectangleShape(10, 10, 100, 100),
-            $this->createRectangleShape(5, 5, 150, 150),
+            new Shapes\Rectangle('test', 10, 10, 100, 100),
+            new Shapes\Rectangle('test', 5, 5, 150, 150),
         ]);
 
         $expectedResult = [
@@ -100,12 +101,12 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createRectangleShape(10, 10, 100, 100),
-            $this->createRectangleShape(5, 5, 150, 150),
+            new Shapes\Rectangle('test', 10, 10, 100, 100),
+            new Shapes\Rectangle('test', 5, 5, 150, 150),
         ]);
         $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
-            $this->createRectangleShape(300, 10, 400, 100),
-            $this->createRectangleShape(290, 5, 350, 95),
+            new Shapes\Rectangle('test', 300, 10, 400, 100),
+            new Shapes\Rectangle('test', 290, 5, 350, 95),
         ]);
 
         $expectedResult = [
@@ -124,7 +125,7 @@ class KittiTest extends Tests\KernelTestCase
 
         for ($frameNumber = 5; $frameNumber <= 10; ++$frameNumber) {
             $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
-                $this->createRectangleShape(10, 10, 100, 100),
+                new Shapes\Rectangle('test', 10, 10, 100, 100),
             ]);
         }
 
@@ -142,7 +143,7 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createEllipseShape(10, 10, 100, 10),
+            new Shapes\Ellipse('test', 10, 10, 100, 10),
         ]);
 
         $expectedResult = [
@@ -155,13 +156,15 @@ class KittiTest extends Tests\KernelTestCase
     }
 
     /**
-     * @expectedException AppBundle\Service\TaskExporter\Exception\Kitti
+     * TODO: remove this tests because this case is no longer handled by the exporter service?
+     *
+     * @expectedException RuntimeException
      */
     public function testExportingTaskWithPolygonShapeWithoutAnyPointThrowsKittiException()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createPolygonShape([
+            new Shapes\Polygon('test', [
                 // No point should lead to an exception
             ]),
         ]);
@@ -173,7 +176,7 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createPolygonShape([
+            new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
                 ['x' =>  17, 'y' =>  28],
                 ['x' =>  -7, 'y' =>  -8],
@@ -194,7 +197,7 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createPolygonShape([
+            new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
                 ['x' =>  17, 'y' =>  28],
                 ['x' =>  -7, 'y' =>  -8],
@@ -227,12 +230,7 @@ class KittiTest extends Tests\KernelTestCase
     {
         return [
             'type' => (string) $type,
-            'boundingBox' => [
-                'left'   => (float) $left,
-                'top'    => (float) $top,
-                'right'  => (float) $right,
-                'bottom' => (float) $bottom,
-            ],
+            'boundingBox' => new Shapes\BoundingBox($left, $top, $right, $bottom),
         ];
     }
 
@@ -272,7 +270,14 @@ class KittiTest extends Tests\KernelTestCase
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
         $labeledThingInFrame->setFrameNumber($frameNumber);
-        $labeledThingInFrame->setShapes($shapes);
+        $labeledThingInFrame->setShapes(
+            array_map(
+                function($shape) {
+                    return $shape->toArray();
+                },
+                $shapes
+            )
+        );
         $labeledThingInFrame->setIncomplete($incomplete);
 
         if ($type !== null) {
@@ -282,70 +287,5 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 
         return $labeledThingInFrame;
-    }
-
-    /**
-     * @param float $left
-     * @param float $top
-     * @param float $right
-     * @param float $bottom
-     *
-     * @return array
-     */
-    private function createRectangleShape($left, $top, $right, $bottom)
-    {
-        return [
-            'type' => 'rectangle',
-            'topLeft' => [
-                'x' => (float) $left,
-                'y' => (float) $top,
-            ],
-            'bottomRight' => [
-                'x' => (float) $right,
-                'y' => (float) $bottom,
-            ],
-        ];
-    }
-
-    /**
-     * @param float $x
-     * @param float $y
-     * @param float $width
-     * @param float $height
-     *
-     * @return array
-     */
-    private function createEllipseShape($x, $y, $width, $height)
-    {
-        return [
-            'type' => 'ellipse',
-            'point' => [
-                'x' => (float) $x,
-                'y' => (float) $y,
-            ],
-            'size' => [
-                'width'  => (float) $width,
-                'height' => (float) $height,
-            ],
-        ];
-    }
-
-    /**
-     * @param array $points
-     * @return array
-     *
-     */
-    private function createPolygonShape(array $points)
-    {
-        $result = [
-            'type'   => 'polygon',
-            'points' => [],
-        ];
-
-        foreach ($points as $point) {
-            $result['points'][] = ['x' => $point['x'], 'y' => $point['y']];
-        }
-
-        return $result;
     }
 }
