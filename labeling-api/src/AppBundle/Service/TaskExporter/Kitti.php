@@ -13,6 +13,16 @@ use AppBundle\Service\TaskExporter\Exception;
 class Kitti implements Service\TaskExporter
 {
     /**
+     * This map maps a specific labeling class to a known object type of the
+     * KITTI exporter.
+     */
+    static $objectTypeMap = [
+        'pedestrian' => 'Pedestrian',
+        'cyclist'    => 'Cyclist',
+        'car'        => 'Car',
+    ];
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -187,15 +197,9 @@ class Kitti implements Service\TaskExporter
      */
     private function getObjectType(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $objectTypeMap = [
-            'pedestrian' => 'Pedestrian',
-            'cyclist'    => 'Cyclist',
-            'car'        => 'Car',
-        ];
-
         foreach ($labeledThingInFrame->getClasses() as $class) {
-            if (isset($objectTypeMap[$class])) {
-                return $objectTypeMap[$class];
+            if (isset(static::$objectTypeMap[$class])) {
+                return static::$objectTypeMap[$class];
             }
         }
 
