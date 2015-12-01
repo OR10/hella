@@ -155,23 +155,6 @@ class KittiTest extends Tests\KernelTestCase
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
     }
 
-    /**
-     * TODO: remove this tests because this case is no longer handled by the exporter service?
-     *
-     * @expectedException RuntimeException
-     */
-    public function testExportingTaskWithPolygonShapeWithoutAnyPointThrowsKittiException()
-    {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
-        $this->createLabeledThingInFrame($task, 1, 'car', [
-            new Shapes\Polygon('test', [
-                // No point should lead to an exception
-            ]),
-        ]);
-
-        $this->exporter->getInternalExportData($task);
-    }
-
     public function testExportingTaskWithPolygonShapeInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
