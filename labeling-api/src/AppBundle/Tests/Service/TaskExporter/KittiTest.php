@@ -5,6 +5,7 @@ namespace AppBundle\Tests\Service\TaskExporter;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
+use AppBundle\Model\TaskExporter\Kitti;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
 use Doctrine\ODM\CouchDB;
@@ -76,7 +77,7 @@ class KittiTest extends Tests\KernelTestCase
         ]);
 
         $expectedResult = [
-            1 => [$this->createExpectedResultEntry('Pedestrian', 10, 10, 100, 100)],
+            1 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
         ] + array_fill(2, 9, []);
 
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
@@ -91,7 +92,7 @@ class KittiTest extends Tests\KernelTestCase
         ]);
 
         $expectedResult = [
-            1 => [$this->createExpectedResultEntry('Cyclist', 5, 5, 150, 150)],
+            1 => [new Kitti\Object('Cyclist', new Shapes\BoundingBox(5, 5, 150, 150))],
         ] + array_fill(2, 9, []);
 
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
@@ -111,8 +112,8 @@ class KittiTest extends Tests\KernelTestCase
 
         $expectedResult = [
             1 => [
-                $this->createExpectedResultEntry('Car', 5, 5, 150, 150),
-                $this->createExpectedResultEntry('Pedestrian', 290, 5, 400, 100),
+                new Kitti\Object('Car', new Shapes\BoundingBox(5, 5, 150, 150)),
+                new Kitti\Object('Pedestrian', new Shapes\BoundingBox(290, 5, 400, 100)),
             ],
         ] + array_fill(2, 9, []);
 
@@ -132,7 +133,7 @@ class KittiTest extends Tests\KernelTestCase
         $expectedResult = array_fill(1, 5, []);
         for ($frameNumber = 5; $frameNumber <= 10; ++$frameNumber) {
             $expectedResult[$frameNumber] = [
-                $this->createExpectedResultEntry('Pedestrian', 10, 10, 100, 100),
+                new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100)),
             ];
         }
 
@@ -148,7 +149,7 @@ class KittiTest extends Tests\KernelTestCase
 
         $expectedResult = [
             1 => [
-                $this->createExpectedResultEntry('Car', 10, 10, 110, 20),
+                new Kitti\Object('Car', new Shapes\BoundingBox(10, 10, 110, 20)),
             ],
         ];
 
@@ -169,7 +170,7 @@ class KittiTest extends Tests\KernelTestCase
 
         $expectedResult = [
             1 => [
-                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+                new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308)),
             ],
         ];
 
@@ -191,30 +192,11 @@ class KittiTest extends Tests\KernelTestCase
 
         $expectedResult = [
             1 => [
-                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+                new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308)),
             ],
         ];
 
         $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
-    }
-
-    /**
-     * Create one expected result entry from the given arguments.
-     *
-     * @param string $type
-     * @param float  $left
-     * @param float  $top
-     * @param float  $right
-     * @param float  $bottom
-     *
-     * @return array
-     */
-    private function createExpectedResultEntry($type, $left, $top, $right, $bottom)
-    {
-        return [
-            'type' => (string) $type,
-            'boundingBox' => new Shapes\BoundingBox($left, $top, $right, $bottom),
-        ];
     }
 
     /**

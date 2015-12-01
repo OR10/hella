@@ -4,6 +4,7 @@ namespace AppBundle\Service\TaskExporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\TaskExporter;
 use AppBundle\Service;
 use AppBundle\Service\TaskExporter\Exception;
 
@@ -61,6 +62,31 @@ class Kitti implements Service\TaskExporter
     }
 
     /**
+     */
+    static public function getRowForObject(TaskExporter\Kitti\Object $object)
+    {
+        return sprintf(
+            '%s %.2f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f',
+            $object->getType(),                     // type
+            -1,                                     // trucation
+            -1,                                     // occlusion
+            -10,                                    // alpha [-pi, pi]
+            $object->getBoundingBox()->getLeft(),   // bounding-box-left in pixels
+            $object->getBoundingBox()->getTop(),    // bounding-box-top in pixels
+            $object->getBoundingBox()->getRight(),  // bounding-box-right in pixels
+            $object->getBoundingBox()->getBottom(), // bounding-box-bottom in pixels
+            -1,                                     // height in meters
+            -1,                                     // width in meters
+            -1,                                     // length in meters
+            -1000,                                  // 3d-location-x in camera coordinates (in meters)
+            -1000,                                  // 3d-location-y in camera coordinates (in meters)
+            -1000,                                  // 3d-location-z in camera coordinates (in meters)
+            -10,                                    // rotation around y-axis [-pi, pi]
+            1                                       // detection confidence (higher is better)
+        );
+    }
+
+    /**
      * @param Model\LabelingTask $task
      *
      * @return string containing the raw content of a zip archive.
@@ -77,33 +103,11 @@ class Kitti implements Service\TaskExporter
                 throw new Exception\Kitti(sprintf('Unable to open zip archive at "%s"', $zipFilename));
             }
 
-            foreach ($data as $frameNumber => $entries) {
+            foreach ($data as $frameNumber => $objects) {
                 $filename = sprintf('%06d.txt', $frameNumber);
-                $content = [];
+                $content = implode("\n", array_map([self::class, 'getRowForObject'], $objects));
 
-                foreach ($entries as $entry) {
-                    $content[] = sprintf(
-                        '%s %.2f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f',
-                        $entry['type'],                     // type
-                        -1,                                 // trucation
-                        -1,                                 // occlusion
-                        -10,                                // alpha [-pi, pi]
-                        $entry['boundingBox']->getLeft(),   // bounding-box-left in pixels
-                        $entry['boundingBox']->getTop(),    // bounding-box-top in pixels
-                        $entry['boundingBox']->getRight(),  // bounding-box-right in pixels
-                        $entry['boundingBox']->getBottom(), // bounding-box-bottom in pixels
-                        -1,                                 // height in meters
-                        -1,                                 // width in meters
-                        -1,                                 // length in meters
-                        -1000,                              // 3d-location-x in camera coordinates (in meters)
-                        -1000,                              // 3d-location-y in camera coordinates (in meters)
-                        -1000,                              // 3d-location-z in camera coordinates (in meters)
-                        -10,                                // rotation around y-axis [-pi, pi]
-                        1                                   // detection confidence (higher is better)
-                    );
-                }
-
-                if (!$zip->addFromString($filename, implode("\n", $content))) {
+                if (!$zip->addFromString($filename, $content)) {
                     throw new Exception\Kitti(
                         sprintf(
                             'Unable to add file "%s" for frame "%d" to zip archive',
@@ -171,10 +175,10 @@ class Kitti implements Service\TaskExporter
                 }
 
                 try {
-                    $result[$labeledThingInFrame->getFrameNumber()][] = [
-                        'type'        => $this->getObjectType($labeledThingInFrame),
-                        'boundingBox' => $labeledThingInFrame->getBoundingBox(),
-                    ];
+                    $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
+                        $this->getObjectType($labeledThingInFrame),
+                        $labeledThingInFrame->getBoundingBox()
+                    );
                 } catch (\Exception $exception) {
                     throw new Exception\Kitti(
                         $exception->getMessage(),
@@ -226,21 +230,21 @@ class Kitti implements Service\TaskExporter
 
         foreach ($result as $frameNumber => $entries) {
             usort($entries, function($a, $b) {
-                if ($a['boundingBox']->getLeft() < $b['boundingBox']->getLeft()) {
+                if ($a->getBoundingBox()->getLeft() < $b->getBoundingBox()->getLeft()) {
                     return -1;
-                } elseif ($a['boundingBox']->getLeft() > $b['boundingBox']->getLeft()) {
+                } elseif ($a->getBoundingBox()->getLeft() > $b->getBoundingBox()->getLeft()) {
                     return 1;
-                } elseif ($a['boundingBox']->getTop() < $b['boundingBox']->getTop()) {
+                } elseif ($a->getBoundingBox()->getTop() < $b->getBoundingBox()->getTop()) {
                     return -1;
-                } elseif ($a['boundingBox']->getTop() > $b['boundingBox']->getTop()) {
+                } elseif ($a->getBoundingBox()->getTop() > $b->getBoundingBox()->getTop()) {
                     return 1;
-                } elseif ($a['boundingBox']->getRight() < $b['boundingBox']->getRight()) {
+                } elseif ($a->getBoundingBox()->getRight() < $b->getBoundingBox()->getRight()) {
                     return -1;
-                } elseif ($a['boundingBox']->getRight() > $b['boundingBox']->getRight()) {
+                } elseif ($a->getBoundingBox()->getRight() > $b->getBoundingBox()->getRight()) {
                     return 1;
-                } elseif ($a['boundingBox']->getBottom() < $b['boundingBox']->getBottom()) {
+                } elseif ($a->getBoundingBox()->getBottom() < $b->getBoundingBox()->getBottom()) {
                     return -1;
-                } elseif ($a['boundingBox']->getBottom() > $b['boundingBox']->getBottom()) {
+                } elseif ($a->getBoundingBox()->getBottom() > $b->getBoundingBox()->getBottom()) {
                     return 1;
                 }
                 return 0;
