@@ -3,8 +3,11 @@
 namespace AppBundle\Model;
 
 /**
- * Each concrete implementation reference in `$availableShapes` has to
- * implement a static method `createFromArray`.
+ * Each concrete implementation has to be referenced in `$availableShapes` in
+ * order to be able to create a shape of this type using
+ * `Shape::createFromArray`. In addition to this, the implementation has to
+ * provide a static method `createFromArray` which takes an array and returns
+ * an instance of the concrete shape.
  */
 abstract class Shape
 {
@@ -24,9 +27,10 @@ abstract class Shape
             throw new \RuntimeException("Unsupported type '{$shapeAsArray['type']}'");
         }
 
-        $class = static::$availableShapes[$shapeAsArray['type']];
-
-        return $class::createFromArray($shapeAsArray);
+		return call_user_func(
+			[static::$availableShapes[$shapeAsArray['type']], 'createFromArray'],
+			$shapeAsArray
+		);
     }
 
     /**
