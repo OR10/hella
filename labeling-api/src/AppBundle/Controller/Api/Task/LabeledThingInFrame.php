@@ -173,41 +173,44 @@ class LabeledThingInFrame extends Controller\Base
         );
         $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
-        $result = array_map(function ($expectedFrameNumber) use (&$labeledThingInFrames) {
-            reset($labeledThingInFrames);
-            while ($item = current($labeledThingInFrames)) {
-                $currentItem = current($labeledThingInFrames);
-                $prevItem    = prev($labeledThingInFrames);
-                if (!$prevItem) {
-                    reset($labeledThingInFrames);
-                } else {
+        $result = array_map(
+            function ($expectedFrameNumber) use (&$labeledThingInFrames) {
+                reset($labeledThingInFrames);
+                while ($item = current($labeledThingInFrames)) {
+                    $currentItem = current($labeledThingInFrames);
+                    $prevItem    = prev($labeledThingInFrames);
+                    if (!$prevItem) {
+                        reset($labeledThingInFrames);
+                    } else {
+                        next($labeledThingInFrames);
+                    }
+
+                    $nextItem = next($labeledThingInFrames);
+                    if (!$nextItem) {
+                        $endLabeledThingInFrame = end($labeledThingInFrames);
+                    } else {
+                        prev($labeledThingInFrames);
+                    }
+
+                    if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
+                        return $currentItem;
+                    } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
+                        $ghostLabeledThingInFrame = clone $currentItem;
+                        $ghostLabeledThingInFrame->setGhost(true);
+
+                        return $ghostLabeledThingInFrame;
+                    }
+
                     next($labeledThingInFrames);
                 }
 
-                $nextItem = next($labeledThingInFrames);
-                if (!$nextItem) {
-                    $endLabeledThingInFrame = end($labeledThingInFrames);
-                } else {
-                    prev($labeledThingInFrames);
-                }
+                $ghostLabeledThingInFrame = clone $endLabeledThingInFrame;
+                $ghostLabeledThingInFrame->setGhost(true);
 
-                if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
-                    return $currentItem;
-                } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
-                    $ghostLabeledThingInFrame = clone $currentItem;
-                    $ghostLabeledThingInFrame->setGhost(true);
-
-                    return $ghostLabeledThingInFrame;
-                }
-
-                next($labeledThingInFrames);
-            }
-
-            $ghostLabeledThingInFrame = clone $endLabeledThingInFrame;
-            $ghostLabeledThingInFrame->setGhost(true);
-
-            return $ghostLabeledThingInFrame;
-        }, $expectedFrameNumbers);
+                return $ghostLabeledThingInFrame;
+            },
+            $expectedFrameNumbers
+        );
 
         return View\View::create()->setData(['result' => $result]);
     }
