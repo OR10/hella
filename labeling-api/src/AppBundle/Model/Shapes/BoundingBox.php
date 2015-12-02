@@ -84,17 +84,4 @@ class BoundingBox
             max($this->getBottom(), $other->getBottom())
         );
     }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return [
-            'left'   => $this->left,
-            'top'    => $this->top,
-            'right'  => $this->right,
-            'bottom' => $this->bottom,
-        ];
-    }
 }
