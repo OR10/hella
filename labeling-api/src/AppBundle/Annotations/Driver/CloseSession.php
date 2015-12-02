@@ -33,7 +33,7 @@ class CloseSession
      */
     public function onKernelController(Event\FilterControllerEvent $event)
     {
-        if (!is_array($controller = $event->getController())) {
+        if (!$this->session->isStarted() || !is_array($controller = $event->getController())) {
             return;
         }
 
