@@ -8,8 +8,6 @@ use AppBundle\Model\Shapes;
 use AppBundle\Model\TaskExporter\Kitti;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
-use Doctrine\ODM\CouchDB;
-
 class KittiTest extends Tests\KernelTestCase
 {
     /**
