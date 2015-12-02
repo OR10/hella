@@ -38,15 +38,15 @@ class BackendInterpolation {
   }
 
   /**
-   * @param {string} taskId
+   * @param {Task} task
    * @param {string} labeledThingId
    * @param {FrameRange} frameRange
    */
-  execute(taskId, labeledThingId, frameRange) {
-    return this._labeledThingGateway.getLabeledThing(taskId, labeledThingId)
+  execute(task, labeledThingId, frameRange) {
+    return this._labeledThingGateway.getLabeledThing(task, labeledThingId)
       .then(labeledThing => {
         const url = this._apiService.getApiUrl(
-          `/task/${taskId}/interpolate/${labeledThingId}`
+          `/task/${task.id}/interpolate/${labeledThingId}`
         );
 
         const data = {

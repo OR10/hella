@@ -40,14 +40,14 @@ describe('LabeledThingGateway', () => {
   });
 
   it('should receive a labeled thing by id', done => {
-    const taskId = 'someTaskId234';
+    const task = {id: 'someTaskId234'};
     const labeledThingId = '123';
-    const expectedUrl = `/backend/api/task/${taskId}/labeledThing/${labeledThingId}`;
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThing/${labeledThingId}`;
 
     const expectedResult = new LabeledThing({
+      task,
       id: '123',
       rev: '1-abcdef',
-      taskId: '456',
       frameRange: {startFrameNumber: 23, endFrameNumber: 42},
       classes: ['foo', 'bar'],
     });
@@ -56,7 +56,7 @@ describe('LabeledThingGateway', () => {
       .expect('GET', expectedUrl)
       .respond(200, {result: expectedResult});
 
-    gateway.getLabeledThing(taskId, labeledThingId)
+    gateway.getLabeledThing(task, labeledThingId)
       .then(result => {
         expect(result).toEqual(expectedResult);
         done();
@@ -66,14 +66,14 @@ describe('LabeledThingGateway', () => {
   });
 
   it('should save a labeled thing', done => {
-    const taskId = '456';
+    const task = {id: '456'};
     const labeledThingId = '123';
-    const expectedUrl = `/backend/api/task/${taskId}/labeledThing/${labeledThingId}`;
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThing/${labeledThingId}`;
 
     const labeledThing = new LabeledThing({
+      task,
       id: labeledThingId,
       rev: '1-abcdef',
-      taskId: taskId,
       frameRange: {startFrameNumber: 23, endFrameNumber: 42},
       classes: ['foo', 'bar'],
     });

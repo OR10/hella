@@ -162,7 +162,7 @@ class TaskController {
     return this._abortablePromiseFactory(
       this._$q.all(
         labeledThingIds.map(labeledThingId => {
-          return this._labeledThingGateway.getLabeledThing(this.task.id, labeledThingId);
+          return this._labeledThingGateway.getLabeledThing(this.task, labeledThingId);
         })
       )
     );

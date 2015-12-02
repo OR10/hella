@@ -21,10 +21,10 @@ describe('BackendInterpolation', () => {
     }
   }
 
-  function createLabeledThing(startFrameNumber = 1, endFrameNumber = 100, taskId = 'some-task-id', id = 'some-labeled-thing-id') {
+  function createLabeledThing(startFrameNumber = 1, endFrameNumber = 100, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
     return new LabeledThing({
       id,
-      taskId,
+      task,
       classes: [],
       incomplete: false,
       frameRange: {startFrameNumber, endFrameNumber},
@@ -78,9 +78,9 @@ describe('BackendInterpolation', () => {
   });
 
   it('should communicate with backend', done => {
-    const taskId = 'some-task-id';
+    const task = {id: 'some-task-id'};
     const labeledThingId = 'some-labeled-thing-id';
-    const expectedUrl = `/backend/api/task/${taskId}/interpolate/${labeledThingId}`;
+    const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
     const frameRange = {startFrameNumber: 1, endFrameNumber: 100};
     const status = {status: 'success'};
     const expectedResult = {result: status};
@@ -89,7 +89,7 @@ describe('BackendInterpolation', () => {
       .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 0, limit: 100})
       .respond(200, expectedResult);
 
-    interpolation.execute(taskId, labeledThingId, frameRange)
+    interpolation.execute(task, labeledThingId, frameRange)
       .then(result => {
         expect(result).toEqual(status);
         done();
@@ -100,9 +100,9 @@ describe('BackendInterpolation', () => {
   });
 
   it('should calculate limit and offset', done => {
-    const taskId = 'some-task-id';
+    const task = {id: 'some-task-id'};
     const labeledThingId = 'some-labeled-thing-id';
-    const expectedUrl = `/backend/api/task/${taskId}/interpolate/${labeledThingId}`;
+    const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
     const frameRange = {startFrameNumber: 101, endFrameNumber: 150};
     const status = {status: 'success'};
     const expectedResult = {result: status};
@@ -116,7 +116,7 @@ describe('BackendInterpolation', () => {
       .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 51, limit: 50})
       .respond(200, expectedResult);
 
-    interpolation.execute(taskId, labeledThingId, frameRange)
+    interpolation.execute(task, labeledThingId, frameRange)
       .then(result => {
         expect(result).toEqual(status);
         done();
