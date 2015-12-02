@@ -40,7 +40,7 @@ class LabeledThing
         }
 
         return $this->documentManager
-            ->createQuery('labeling_api', 'labeled_thing_in_frame')
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
             ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameNumber()])
             ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameNumber()])
             ->onlyDocs(true)

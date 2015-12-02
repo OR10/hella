@@ -32,7 +32,7 @@ class TaskExport
     public function findAll()
     {
         return $this->documentManager
-            ->createQuery('labeling_api', 'task_exports')
+            ->createQuery('annostation_task_export', 'by_id')
             ->onlyDocs(true)
             ->execute();
     }
