@@ -4,14 +4,26 @@ namespace AppBundle\Service\TaskExporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\TaskExporter;
 use AppBundle\Service;
 use AppBundle\Service\TaskExporter\Exception;
 
 /**
- * @todo create zip archive
+ * Service to export a task for the K.I.T.T.I. Object Detection Benchmark
+ * (http://www.cvlibs.net/datasets/kitti/eval_object.php).
  */
 class Kitti implements Service\TaskExporter
 {
+    /**
+     * This map maps a specific labeling class to a known object type of the
+     * KITTI exporter.
+     */
+    static $objectTypeMap = [
+        'pedestrian' => 'Pedestrian',
+        'cyclist'    => 'Cyclist',
+        'car'        => 'Car',
+    ];
+
     /**
      * @var Facade\LabelingTask
      */
@@ -67,33 +79,10 @@ class Kitti implements Service\TaskExporter
                 throw new Exception\Kitti(sprintf('Unable to open zip archive at "%s"', $zipFilename));
             }
 
-            foreach ($data as $frameNumber => $entries) {
+            foreach ($data as $frameNumber => $objects) {
                 $filename = sprintf('%06d.txt', $frameNumber);
-                $content = [];
 
-                foreach ($entries as $entry) {
-                    $content[] = sprintf(
-                        '%s %.2f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f',
-                        $entry['type'],                  // type
-                        -1,                              // trucation
-                        -1,                              // occlusion
-                        -10,                             // alpha [-pi, pi]
-                        $entry['boundingBox']['left'],   // bounding-box-left in pixels
-                        $entry['boundingBox']['top'],    // bounding-box-top in pixels
-                        $entry['boundingBox']['right'],  // bounding-box-right in pixels
-                        $entry['boundingBox']['bottom'], // bounding-box-bottom in pixels
-                        -1,                              // height in meters
-                        -1,                              // width in meters
-                        -1,                              // length in meters
-                        -1000,                           // 3d-location-x in camera coordinates (in meters)
-                        -1000,                           // 3d-location-y in camera coordinates (in meters)
-                        -1000,                           // 3d-location-z in camera coordinates (in meters)
-                        -10,                             // rotation around y-axis [-pi, pi]
-                        1                                // detection confidence (higher is better)
-                    );
-                }
-
-                if (!$zip->addFromString($filename, implode("\n", $content))) {
+                if (!$zip->addFromString($filename, implode("\n", $objects))) {
                     throw new Exception\Kitti(
                         sprintf(
                             'Unable to add file "%s" for frame "%d" to zip archive',
@@ -161,10 +150,10 @@ class Kitti implements Service\TaskExporter
                 }
 
                 try {
-                    $result[$labeledThingInFrame->getFrameNumber()][] = [
-                        'type'        => $this->getObjectType($labeledThingInFrame),
-                        'boundingBox' => $this->getOverallBoundingBox($labeledThingInFrame->getShapes()),
-                    ];
+                    $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
+                        $this->getObjectType($labeledThingInFrame),
+                        $labeledThingInFrame->getBoundingBox()
+                    );
                 } catch (\Exception $exception) {
                     throw new Exception\Kitti(
                         $exception->getMessage(),
@@ -175,7 +164,7 @@ class Kitti implements Service\TaskExporter
             }
         }
 
-        return $this->sortResult($result);
+        return $result;
     }
 
     /**
@@ -187,182 +176,12 @@ class Kitti implements Service\TaskExporter
      */
     private function getObjectType(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $objectTypeMap = [
-            'pedestrian' => 'Pedestrian',
-            'cyclist'    => 'Cyclist',
-            'car'        => 'Car',
-        ];
-
         foreach ($labeledThingInFrame->getClasses() as $class) {
-            if (isset($objectTypeMap[$class])) {
-                return $objectTypeMap[$class];
+            if (isset(static::$objectTypeMap[$class])) {
+                return static::$objectTypeMap[$class];
             }
         }
 
         throw new Exception\Kitti('Unknown labeled thing in frame');
-    }
-
-    /**
-     * Sort the result array according to the bounding boxes.
-     *
-     * This is required because the labeled things are fetched in order of
-     * their internal id which is an uuid and therefore their order is
-     * unpredictable which is a problem in automated tests.
-     *
-     * The sorting functionality is placed here because it doesn't matter for
-     * the export and this way, the tests are not cluttered by this.
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    private function sortResult(array $input)
-    {
-        $result = $input;
-
-        foreach ($result as $frameNumber => $entries) {
-            usort($entries, function($a, $b) {
-                if ($a['boundingBox']['left'] < $b['boundingBox']['left']) {
-                    return -1;
-                } elseif ($a['boundingBox']['left'] > $b['boundingBox']['left']) {
-                    return 1;
-                } elseif ($a['boundingBox']['top'] < $b['boundingBox']['top']) {
-                    return -1;
-                } elseif ($a['boundingBox']['top'] > $b['boundingBox']['top']) {
-                    return 1;
-                } elseif ($a['boundingBox']['right'] < $b['boundingBox']['right']) {
-                    return -1;
-                } elseif ($a['boundingBox']['right'] > $b['boundingBox']['right']) {
-                    return 1;
-                } elseif ($a['boundingBox']['bottom'] < $b['boundingBox']['bottom']) {
-                    return -1;
-                } elseif ($a['boundingBox']['bottom'] > $b['boundingBox']['bottom']) {
-                    return 1;
-                }
-                return 0;
-            });
-
-            $result[$frameNumber] = $entries;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get a bounding box for all given shapes.
-     *
-     * @return array
-     */
-    private function getOverallBoundingBox(array $shapes)
-    {
-        if (empty($shapes)) {
-            throw new Exception\Kitti('Empty shapes');
-        }
-
-        $boundingBox = null;
-
-        foreach ($shapes as $shape) {
-            $shapeBoundingBox = $this->getBoundingBox($shape);
-            if ($boundingBox === null) {
-                $boundingBox = $shapeBoundingBox;
-            } else {
-                $boundingBox = [
-                    'left'   => min($boundingBox['left'], $shapeBoundingBox['left']),
-                    'top'    => min($boundingBox['top'], $shapeBoundingBox['top']),
-                    'right'  => max($boundingBox['right'], $shapeBoundingBox['right']),
-                    'bottom' => max($boundingBox['bottom'], $shapeBoundingBox['bottom']),
-                ];
-            }
-        }
-
-        return $boundingBox;
-    }
-
-    /**
-     * Get the bounding box for the given shape.
-     *
-     * @return array
-     *
-     * @throws Exception\Kitti
-     */
-    private function getBoundingBox(array $shape)
-    {
-        if (!isset($shape['type'])) {
-            throw new Exception\Kitti('Invalid shape');
-        }
-
-        $boundingBoxCalculators = [
-            'rectangle' => function($shape) {
-                if (!isset($shape['topLeft']['x'])
-                    || !isset($shape['topLeft']['y'])
-                    || !isset($shape['bottomRight']['x'])
-                    || !isset($shape['bottomRight']['y'])
-                ) {
-                    throw new Exception\Kitti('Invalid rectangle shape');
-                }
-
-                return [
-                    'left'   => $shape['topLeft']['x'],
-                    'top'    => $shape['topLeft']['y'],
-                    'right'  => $shape['bottomRight']['x'],
-                    'bottom' => $shape['bottomRight']['y'],
-                ];
-            },
-            // ellipse handles ellipse and circle
-            'ellipse' => function($shape) {
-                if (!isset($shape['point']['x'])
-                    || !isset($shape['point']['y'])
-                    || !isset($shape['size']['width'])
-                    || !isset($shape['size']['height'])
-                ) {
-                    throw new Exception\Kitti('Invalid ellipse shape');
-                }
-
-                return [
-                    'left'   => $shape['point']['x'],
-                    'top'    => $shape['point']['y'],
-                    'right'  => $shape['point']['x'] + $shape['size']['width'],
-                    'bottom' => $shape['point']['y'] + $shape['size']['height'],
-                ];
-            },
-            // polygon handles polygon and line
-            'polygon' => function($shape) {
-                if (!isset($shape['points']) || !is_array($shape['points'])) {
-                    throw new Exception\Kitti('Invalid polygon shape');
-                }
-
-                if (empty($shape['points'])) {
-                    throw new Exception\Kitti('Empty point list for polygons is not allowed');
-                }
-
-                foreach ($shape['points'] as $point) {
-                    if (!isset($point['x']) || !isset($point['y'])) {
-                        throw new Exception\Kitti('Invalid point in polygon shape');
-                    }
-                }
-
-                $result = [
-                    'left'   => $shape['points'][0]['x'],
-                    'top'    => $shape['points'][0]['y'],
-                    'right'  => $shape['points'][0]['x'],
-                    'bottom' => $shape['points'][0]['y'],
-                ];
-
-                foreach ($shape['points'] as $point) {
-                    $result['left']   = min($result['left'], $point['x']);
-                    $result['top']    = min($result['top'], $point['y']);
-                    $result['right']  = max($result['right'], $point['x']);
-                    $result['bottom'] = max($result['bottom'], $point['y']);
-                }
-
-                return $result;
-            },
-        ];
-
-        if (isset($boundingBoxCalculators[$shape['type']])) {
-            return $boundingBoxCalculators[$shape['type']]($shape);
-        }
-
-        throw new Exception\Kitti("Unsupported shape type: {$shape['type']}");
     }
 }

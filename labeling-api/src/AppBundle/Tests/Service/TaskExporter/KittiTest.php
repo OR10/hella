@@ -4,10 +4,10 @@ namespace AppBundle\Tests\Service\TaskExporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\Shapes;
+use AppBundle\Model\TaskExporter\Kitti;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
-use Doctrine\ODM\CouchDB;
-
 class KittiTest extends Tests\KernelTestCase
 {
     /**
@@ -64,116 +64,137 @@ class KittiTest extends Tests\KernelTestCase
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
 
-        $this->assertEquals(array_fill(1, 10, []), $this->exporter->getInternalExportData($task));
+        $this->assertEquals(
+            array_fill(1, 10, []),
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithOneLabeledThingInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
         $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
-            $this->createRectangleShape(10, 10, 100, 100),
+            new Shapes\Rectangle('test', 10, 10, 100, 100),
         ]);
 
-        $expectedResult = [
-            1 => [$this->createExpectedResultEntry('Pedestrian', 10, 10, 100, 100)],
-        ] + array_fill(2, 9, []);
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+        $this->assertEquals(
+            [
+                1 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                2 => [],
+                3 => [],
+                4 => [],
+                5 => [],
+                6 => [],
+                7 => [],
+                8 => [],
+                9 => [],
+                9 => [],
+            ],
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithOneLabeledThingWithMultipleShapesInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
         $this->createLabeledThingInFrame($task, 1, 'cyclist', [
-            $this->createRectangleShape(10, 10, 100, 100),
-            $this->createRectangleShape(5, 5, 150, 150),
+            new Shapes\Rectangle('test', 10, 10, 100, 100),
+            new Shapes\Rectangle('test', 5, 5, 150, 150),
         ]);
 
-        $expectedResult = [
-            1 => [$this->createExpectedResultEntry('Cyclist', 5, 5, 150, 150)],
-        ] + array_fill(2, 9, []);
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+        $this->assertEquals(
+            [
+                1 => [new Kitti\Object('Cyclist', new Shapes\BoundingBox(5, 5, 150, 150))],
+                2 => [],
+                3 => [],
+                4 => [],
+                5 => [],
+                6 => [],
+                7 => [],
+                8 => [],
+                9 => [],
+            ],
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithTwoLabeledThingsWithMultipleShapesInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createRectangleShape(10, 10, 100, 100),
-            $this->createRectangleShape(5, 5, 150, 150),
+            new Shapes\Rectangle('test', 10, 10, 100, 100),
+            new Shapes\Rectangle('test', 5, 5, 150, 150),
         ]);
         $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
-            $this->createRectangleShape(300, 10, 400, 100),
-            $this->createRectangleShape(290, 5, 350, 95),
+            new Shapes\Rectangle('test', 300, 10, 400, 100),
+            new Shapes\Rectangle('test', 290, 5, 350, 95),
         ]);
 
-        $expectedResult = [
-            1 => [
-                $this->createExpectedResultEntry('Car', 5, 5, 150, 150),
-                $this->createExpectedResultEntry('Pedestrian', 290, 5, 400, 100),
+        $this->assertEquals(
+            [
+                1 => [
+                    new Kitti\Object('Car', new Shapes\BoundingBox(5, 5, 150, 150)),
+                    new Kitti\Object('Pedestrian', new Shapes\BoundingBox(290, 5, 400, 100)),
+                ],
+                2 => [],
+                3 => [],
+                4 => [],
+                5 => [],
+                6 => [],
+                7 => [],
+                8 => [],
+                9 => [],
             ],
-        ] + array_fill(2, 9, []);
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithLabeledThingsInMultipleFrames()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
+        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
 
-        for ($frameNumber = 5; $frameNumber <= 10; ++$frameNumber) {
+        foreach (range(5, 9) as $frameNumber) {
             $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
-                $this->createRectangleShape(10, 10, 100, 100),
+                new Shapes\Rectangle('test', 10, 10, 100, 100),
             ]);
         }
 
-        $expectedResult = array_fill(1, 5, []);
-        for ($frameNumber = 5; $frameNumber <= 10; ++$frameNumber) {
-            $expectedResult[$frameNumber] = [
-                $this->createExpectedResultEntry('Pedestrian', 10, 10, 100, 100),
-            ];
-        }
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+        $this->assertEquals(
+            [
+                1 => [],
+                2 => [],
+                3 => [],
+                4 => [],
+                5 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                6 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                7 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                8 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                9 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+            ],
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithEllipseShapeInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createEllipseShape(10, 10, 100, 10),
+            new Shapes\Ellipse('test', 10, 10, 100, 10),
         ]);
 
-        $expectedResult = [
-            1 => [
-                $this->createExpectedResultEntry('Car', 10, 10, 110, 20),
+        $this->assertEquals(
+            [
+                1 => [new Kitti\Object('Car', new Shapes\BoundingBox(10, 10, 110, 20))],
             ],
-        ];
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
-    }
-
-    /**
-     * @expectedException AppBundle\Service\TaskExporter\Exception\Kitti
-     */
-    public function testExportingTaskWithPolygonShapeWithoutAnyPointThrowsKittiException()
-    {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
-        $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createPolygonShape([
-                // No point should lead to an exception
-            ]),
-        ]);
-
-        $this->exporter->getInternalExportData($task);
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithPolygonShapeInOneFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createPolygonShape([
+            new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
                 ['x' =>  17, 'y' =>  28],
                 ['x' =>  -7, 'y' =>  -8],
@@ -181,20 +202,19 @@ class KittiTest extends Tests\KernelTestCase
             ]),
         ]);
 
-        $expectedResult = [
-            1 => [
-                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+        $this->assertEquals(
+            [
+                1 => [new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308))],
             ],
-        ];
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     public function testExportingTaskWithIncompleteLabeledThingsInFrame()
     {
         $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
-            $this->createPolygonShape([
+            new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
                 ['x' =>  17, 'y' =>  28],
                 ['x' =>  -7, 'y' =>  -8],
@@ -203,37 +223,12 @@ class KittiTest extends Tests\KernelTestCase
         ]);
         $incompleteThing = $this->createLabeledThingInFrame($task, 1, null, [], true);
 
-        $expectedResult = [
-            1 => [
-                $this->createExpectedResultEntry('Car', -7, -8, 107, 308),
+        $this->assertEquals(
+            [
+                1 => [new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308))],
             ],
-        ];
-
-        $this->assertEquals($expectedResult, $this->exporter->getInternalExportData($task));
-    }
-
-    /**
-     * Create one expected result entry from the given arguments.
-     *
-     * @param string $type
-     * @param float  $left
-     * @param float  $top
-     * @param float  $right
-     * @param float  $bottom
-     *
-     * @return array
-     */
-    private function createExpectedResultEntry($type, $left, $top, $right, $bottom)
-    {
-        return [
-            'type' => (string) $type,
-            'boundingBox' => [
-                'left'   => (float) $left,
-                'top'    => (float) $top,
-                'right'  => (float) $right,
-                'bottom' => (float) $bottom,
-            ],
-        ];
+            $this->sortResult($this->exporter->getInternalExportData($task))
+        );
     }
 
     /**
@@ -272,7 +267,7 @@ class KittiTest extends Tests\KernelTestCase
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
         $labeledThingInFrame->setFrameNumber($frameNumber);
-        $labeledThingInFrame->setShapes($shapes);
+        $labeledThingInFrame->setShapesAsObjects($shapes);
         $labeledThingInFrame->setIncomplete($incomplete);
 
         if ($type !== null) {
@@ -285,65 +280,64 @@ class KittiTest extends Tests\KernelTestCase
     }
 
     /**
-     * @param float $left
-     * @param float $top
-     * @param float $right
-     * @param float $bottom
+     * Sort the result array according to the bounding boxes.
+     *
+     * This is required because the labeled things are fetched in order of
+     * their internal id which is an uuid and therefore their order is
+     * unpredictable which is a problem in automated tests.
+     *
+     * @param array $input
      *
      * @return array
      */
-    private function createRectangleShape($left, $top, $right, $bottom)
+    private function sortResult(array $input)
     {
-        return [
-            'type' => 'rectangle',
-            'topLeft' => [
-                'x' => (float) $left,
-                'y' => (float) $top,
-            ],
-            'bottomRight' => [
-                'x' => (float) $right,
-                'y' => (float) $bottom,
-            ],
-        ];
-    }
+        $result = [];
 
-    /**
-     * @param float $x
-     * @param float $y
-     * @param float $width
-     * @param float $height
-     *
-     * @return array
-     */
-    private function createEllipseShape($x, $y, $width, $height)
-    {
-        return [
-            'type' => 'ellipse',
-            'point' => [
-                'x' => (float) $x,
-                'y' => (float) $y,
-            ],
-            'size' => [
-                'width'  => (float) $width,
-                'height' => (float) $height,
-            ],
-        ];
-    }
+        foreach ($input as $frameNumber => $entries) {
+            usort(
+                $entries,
+                function($a, $b) {
+                    $aBoundingBox = $a->getBoundingBox();
+                    $bBoundingBox = $b->getBoundingBox();
 
-    /**
-     * @param array $points
-     * @return array
-     *
-     */
-    private function createPolygonShape(array $points)
-    {
-        $result = [
-            'type'   => 'polygon',
-            'points' => [],
-        ];
+                    if ($aBoundingBox->getLeft() < $bBoundingBox->getLeft()) {
+                        return -1;
+                    }
 
-        foreach ($points as $point) {
-            $result['points'][] = ['x' => $point['x'], 'y' => $point['y']];
+                    if ($aBoundingBox->getLeft() > $bBoundingBox->getLeft()) {
+                        return 1;
+                    }
+
+                    if ($aBoundingBox->getTop() < $bBoundingBox->getTop()) {
+                        return -1;
+                    }
+
+                    if ($aBoundingBox->getTop() > $bBoundingBox->getTop()) {
+                        return 1;
+                    }
+
+                    if ($aBoundingBox->getRight() < $bBoundingBox->getRight()) {
+                        return -1;
+                    }
+
+                    if ($aBoundingBox->getRight() > $bBoundingBox->getRight()) {
+                        return 1;
+                    }
+
+                    if ($aBoundingBox->getBottom() < $bBoundingBox->getBottom()) {
+                        return -1;
+                    }
+
+                    if ($aBoundingBox->getBottom() > $bBoundingBox->getBottom()) {
+                        return 1;
+                    }
+
+                    return 0;
+                }
+            );
+
+            $result[$frameNumber] = $entries;
         }
 
         return $result;

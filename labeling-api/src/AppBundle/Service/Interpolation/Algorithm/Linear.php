@@ -4,6 +4,7 @@ namespace AppBundle\Service\Interpolation\Algorithm;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\Shapes;
 use AppBundle\Service\Interpolation;
 
 class Linear implements Interpolation\Algorithm
@@ -64,81 +65,6 @@ class Linear implements Interpolation\Algorithm
         );
     }
 
-    private function doInterpolate(
-        Model\LabeledThingInFrame $start,
-        Model\LabeledThingInFrame $end,
-        callable $emit
-    ) {
-        if ($end->getFrameNumber() - $start->getFrameNumber() < 2) {
-            // nothing to do when there is no frame in between
-            return;
-        }
-
-        $previous       = $start;
-        $remainingSteps = $end->getFrameNumber() - $start->getFrameNumber();
-        $currentShapes  = $start->getShapes();
-        $endShapes      = $this->createShapeIndex($end->getShapes());
-
-        foreach (range($start->getFrameNumber() + 1, $end->getFrameNumber() - 1) as $frameNumber) {
-            $currentShapes = array_map(function($shape) use ($endShapes, $remainingSteps) {
-                return $this->interpolateShape($shape, $endShapes[$shape['id']], $remainingSteps);
-            }, $currentShapes);
-
-            $current = new Model\LabeledThingInFrame();
-            $current->setLabeledThingId($previous->getLabeledThingId());
-            $current->setFrameNumber($frameNumber);
-            $current->setClasses($previous->getClasses());
-            $current->setIncomplete($previous->getIncomplete());
-            $current->setShapes($currentShapes);
-            $emit($current);
-            $previous = $current;
-            --$remainingSteps;
-        }
-    }
-
-    private function createShapeIndex(array $shapes)
-    {
-        $indexedShapes = [];
-        foreach ($shapes as $shape) {
-            $indexedShapes[$shape['id']] = $shape;
-        }
-        return $indexedShapes;
-    }
-
-    private function interpolateShape($current, $end, $steps)
-    {
-        switch ($current['type']) {
-        case 'rectangle':
-            return [
-                'id' => $current['id'],
-                'type' => $current['type'],
-                'topLeft' => [
-                    'x' => $current['topLeft']['x'] + ($end['topLeft']['x'] - $current['topLeft']['x']) / $steps,
-                    'y' => $current['topLeft']['y'] + ($end['topLeft']['y'] - $current['topLeft']['y']) / $steps,
-                ],
-                'bottomRight' => [
-                    'x' => $current['bottomRight']['x'] + ($end['bottomRight']['x'] - $current['bottomRight']['x']) / $steps,
-                    'y' => $current['bottomRight']['y'] + ($end['bottomRight']['y'] - $current['bottomRight']['y']) / $steps,
-                ],
-            ];
-        case 'ellipse':
-            return [
-                'id' => $current['id'],
-                'type' => $current['type'],
-                'point' => [
-                    'x' => $current['point']['x'] + ($end['point']['x'] - $current['point']['x']) / $steps,
-                    'y' => $current['point']['y'] + ($end['point']['y'] - $current['point']['y']) / $steps,
-                ],
-                'size' => [
-                    'width'  => $current['size']['width']  + ($end['size']['width']  - $current['size']['width']) / $steps,
-                    'height' => $current['size']['height'] + ($end['size']['height'] - $current['size']['height']) / $steps,
-                ],
-            ];
-        }
-
-        throw new \RuntimeException("Unsupported shape '{$current['type']}'");
-    }
-
     private function clonePrecedingLabeledThingsInFrame(
         $startFrameNumber,
         Model\LabeledThingInFrame $labeledThingInFrame,
@@ -169,5 +95,109 @@ class Linear implements Interpolation\Algorithm
             $clone->setFrameNumber($frameNumber);
             $emit($clone);
         }
+    }
+
+    private function doInterpolate(
+        Model\LabeledThingInFrame $start,
+        Model\LabeledThingInFrame $end,
+        callable $emit
+    ) {
+        if ($end->getFrameNumber() - $start->getFrameNumber() < 2) {
+            // nothing to do when there is no frame in between
+            return;
+        }
+
+        $previous       = $start;
+        $remainingSteps = $end->getFrameNumber() - $start->getFrameNumber();
+        $currentShapes  = $start->getShapesAsObjects();
+        $endShapes      = $this->createShapeIndex($end->getShapesAsObjects());
+
+        foreach (range($start->getFrameNumber() + 1, $end->getFrameNumber() - 1) as $frameNumber) {
+            $currentShapes = array_map(
+                function($shape) use ($endShapes, $remainingSteps) {
+                    return $this->interpolateShape($shape, $endShapes[$shape->getId()], $remainingSteps);
+                },
+                $currentShapes
+            );
+
+            $current = new Model\LabeledThingInFrame();
+            $current->setLabeledThingId($previous->getLabeledThingId());
+            $current->setFrameNumber($frameNumber);
+            $current->setClasses($previous->getClasses());
+            $current->setIncomplete($previous->getIncomplete());
+            $current->setShapesAsObjects($currentShapes);
+            $emit($current);
+            $previous = $current;
+            --$remainingSteps;
+        }
+    }
+
+    /**
+     * @param array $shapes
+     *
+     * @return array
+     */
+    private function createShapeIndex(array $shapes)
+    {
+        $indexedShapes = [];
+        foreach ($shapes as $shape) {
+            $indexedShapes[$shape->getId()] = $shape;
+        }
+        return $indexedShapes;
+    }
+
+    /**
+     * @param Model\Shape $current
+     * @param Model\Shape $end
+     * @param int         $steps
+     *
+     * @return Model\Shape
+     */
+    private function interpolateShape(Model\Shape $current, Model\Shape $end, $steps)
+    {
+        switch (get_class($current)) {
+        case Shapes\Rectangle::class:
+            return $this->interpolateRectangle($current, $end, $steps);
+        case Shapes\Ellipse::class:
+            return $this->interpolateEllipse($current, $end, $steps);
+        }
+
+        throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
+    }
+
+    /**
+     * @param Shapes\Rectangle $current
+     * @param Shapes\Rectangle $end
+     * @param int              $steps
+     *
+     * @return Shapes\Rectangle
+     */
+    private function interpolateRectangle(Shapes\Rectangle $current, Shapes\Rectangle $end, $steps)
+    {
+        return new Shapes\Rectangle(
+            $current->getId(),
+            $current->getLeft() + ($end->getLeft() - $current->getLeft()) / $steps,
+            $current->getTop() + ($end->getTop() - $current->getTop()) / $steps,
+            $current->getRight() + ($end->getRight() - $current->getRight()) / $steps,
+            $current->getBottom() + ($end->getBottom() - $current->getBottom()) / $steps
+        );
+    }
+
+    /**
+     * @param Shapes\Ellipse $current
+     * @param Shapes\Ellipse $end
+     * @param int              $steps
+     *
+     * @return Shapes\Ellipse
+     */
+    private function interpolateEllipse(Shapes\Ellipse $current, Shapes\Ellipse $end, $steps)
+    {
+        return new Shapes\Ellipse(
+            $current->getId(),
+            $current->getX() + ($end->getX() - $current->getX()) / $steps,
+            $current->getY() + ($end->getY() - $current->getY()) / $steps,
+            $current->getWidth() + ($end->getWidth() - $current->getWidth()) / $steps,
+            $current->getHeight() + ($end->getHeight() - $current->getHeight()) / $steps
+        );
     }
 }
