@@ -205,4 +205,49 @@ class LabeledThingInFrame
     {
         $this->ghost = $ghost;
     }
+
+    /**
+     * Get an array of shapes instantiated as objects.
+     *
+     * @return Shape[]
+     */
+    public function getShapesAsObjects()
+    {
+        return array_map([Shape::class, 'createFromArray'], $this->shapes);
+    }
+
+    /**
+     * Set an array of shapes as objects.
+     *
+     * @param Shape[]
+     */
+    public function setShapesAsObjects(array $shapes)
+    {
+        $this->shapes = array_map(
+            function($shape) {
+                return $shape->toArray();
+            },
+            $shapes
+        );
+    }
+
+    /**
+     * @return BoundingBox
+     */
+    public function getBoundingBox()
+    {
+        if (empty($this->shapes)) {
+            throw new \RuntimeException("Trying to get a bounding box without any shape");
+        }
+
+        return array_reduce(
+            $this->getShapesAsObjects(),
+            function(Shapes\BoundingBox $boundingBox = null, Shape $shape) {
+                if ($boundingBox === null) {
+                    return $shape->getBoundingBox();
+                }
+                return $boundingBox->merge($shape->getBoundingBox());
+            }
+        );
+    }
 }
