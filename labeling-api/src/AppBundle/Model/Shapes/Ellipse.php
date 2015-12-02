@@ -11,10 +11,33 @@ class Ellipse extends Model\Shape
      */
     private $id;
 
-    private $point = [];
+    /**
+     * @var float
+     */
+    private $x;
 
-    private $size = [];
+    /**
+     * @var float
+     */
+    private $y;
 
+    /**
+     * @var float
+     */
+    private $width;
+
+    /**
+     * @var float
+     */
+    private $height;
+
+    /**
+     * @param array
+     *
+     * @return Ellipse
+     *
+     * @throws \RuntimeException
+     */
     static public function createFromArray(array $shape)
     {
         if (!isset($shape['id'])
@@ -44,9 +67,11 @@ class Ellipse extends Model\Shape
      */
     public function __construct($id, $x, $y, $width, $height)
     {
-        $this->id    = (string) $id;
-        $this->point = ['x' => (float) $x, 'y' => (float) $y];
-        $this->size  = ['width' => (float) $width, 'height' => (float) $height];
+        $this->id     = (string) $id;
+        $this->x      = (float) $x;
+        $this->y      = (float) $y;
+        $this->width  = (float) $width;
+        $this->height = (float) $height;
     }
 
     public function getId()
@@ -59,48 +84,55 @@ class Ellipse extends Model\Shape
         return 'ellipse';
     }
 
+    /**
+     * @return float
+     */
     public function getX()
     {
-        return $this->point['x'];
+        return $this->x;
     }
 
+    /**
+     * @return float
+     */
     public function getY()
     {
-        return $this->point['y'];
+        return $this->y;
     }
 
+    /**
+     * @return float
+     */
     public function getWidth()
     {
-        return $this->size['width'];
+        return $this->width;
     }
 
+    /**
+     * @return float
+     */
     public function getHeight()
     {
-        return $this->size['height'];
+        return $this->height;
     }
 
     public function getBoundingBox()
     {
-        return new BoundingBox(
-            $this->point['x'],
-            $this->point['y'],
-            $this->point['x'] + $this->size['width'],
-            $this->point['y'] + $this->size['height']
-        );
+        return new BoundingBox($this->x, $this->y, $this->x + $this->width, $this->y + $this->height);
     }
 
     public function toArray()
     {
         return [
-            'id' => (string) $this->id,
+            'id' => $this->getId(),
             'type' => $this->getType(),
             'point' => [
-                'x' => (float) $this->point['x'],
-                'y' => (float) $this->point['y'],
+                'x' => $this->getX(),
+                'y' => $this->getY(),
             ],
             'size' => [
-                'width'  => (float) $this->size['width'],
-                'height' => (float) $this->size['height'],
+                'width'  => $this->getWidth(),
+                'height' => $this->getHeight(),
             ],
         ];
     }

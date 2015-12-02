@@ -11,10 +11,33 @@ class Rectangle extends Model\Shape
      */
     private $id;
 
-    private $topLeft = [];
+    /**
+     * @var float
+     */
+    private $left;
 
-    private $bottomRight = [];
+    /**
+     * @var float
+     */
+    private $top;
 
+    /**
+     * @var float
+     */
+    private $right;
+
+    /**
+     * @var float
+     */
+    private $bottom;
+
+    /**
+     * @param array
+     *
+     * @return Rectangle
+     *
+     * @throws \RuntimeException
+     */
     static public function createFromArray(array $shape)
     {
         if (!isset($shape['id'])
@@ -44,9 +67,11 @@ class Rectangle extends Model\Shape
      */
     public function __construct($id, $left, $top, $right, $bottom)
     {
-        $this->id          = (string) $id;
-        $this->topLeft     = ['x' => (float) $left, 'y' => (float) $top];
-        $this->bottomRight = ['x' => (float) $right, 'y' => (float) $bottom];
+        $this->id     = (string) $id;
+        $this->left   = (float) $left;
+        $this->top    = (float) $top;
+        $this->right  = (float) $right;
+        $this->bottom = (float) $bottom;
     }
 
     public function getId()
@@ -59,34 +84,41 @@ class Rectangle extends Model\Shape
         return 'rectangle';
     }
 
+    /**
+     * @return float
+     */
     public function getLeft()
     {
-        return $this->topLeft['x'];
+        return $this->left;
     }
 
+    /**
+     * @return float
+     */
     public function getTop()
     {
-        return $this->topLeft['y'];
+        return $this->top;
     }
 
+    /**
+     * @return float
+     */
     public function getRight()
     {
-        return $this->bottomRight['x'];
+        return $this->right;
     }
 
+    /**
+     * @return float
+     */
     public function getBottom()
     {
-        return $this->bottomRight['y'];
+        return $this->bottom;
     }
 
     public function getBoundingBox()
     {
-        return new BoundingBox(
-            $this->topLeft['x'],
-            $this->topLeft['y'],
-            $this->bottomRight['x'],
-            $this->bottomRight['y']
-        );
+        return new BoundingBox($this->left, $this->top, $this->right, $this->bottom);
     }
 
     public function toArray()
@@ -95,12 +127,12 @@ class Rectangle extends Model\Shape
             'id' => $this->getId(),
             'type' => $this->getType(),
             'topLeft' => [
-                'x' => $this->topLeft['x'],
-                'y' => $this->topLeft['y'],
+                'x' => $this->getLeft(),
+                'y' => $this->getTop(),
             ],
             'bottomRight' => [
-                'x' => $this->bottomRight['x'],
-                'y' => $this->bottomRight['y'],
+                'x' => $this->getRight(),
+                'y' => $this->getBottom(),
             ],
         ];
     }
