@@ -71,6 +71,8 @@ class LabeledThingInFrame extends Controller\Base
         $frameNumber,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         $response = View\View::create();
 
         $shapes         = $request->request->get('shapes', []);
@@ -109,6 +111,8 @@ class LabeledThingInFrame extends Controller\Base
      */
     public function getLabeledThingInFrameAction(Model\LabelingTask $task, $frameNumber)
     {
+        $this->closeSession();
+
         $response = View\View::create();
 
         $labeledThings         = $this->labelingTaskFacade->getLabeledThings($task);
@@ -155,6 +159,8 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         $offset = (int) $request->query->get('offset', 0);
         $limit  = (int) $request->query->get('limit', 1);
 

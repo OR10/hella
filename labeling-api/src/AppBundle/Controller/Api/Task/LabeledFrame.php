@@ -49,6 +49,8 @@ class LabeledFrame extends Controller\Base
      */
     public function getLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
+        $this->closeSession();
+
         $response = View\View::create();
 
         $labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber);
@@ -96,6 +98,8 @@ class LabeledFrame extends Controller\Base
      */
     public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
+        $this->closeSession();
+
         if (($labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber)) === null) {
             throw new Exception\NotFoundHttpException();
         }
@@ -122,6 +126,8 @@ class LabeledFrame extends Controller\Base
         $frameNumber,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         $response = View\View::create();
 
         $classes         = $request->request->get('classes', []);

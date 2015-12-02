@@ -41,6 +41,8 @@ class Status extends Controller\Base
      */
     public function getStatusAction($type, $statusId)
     {
+        $this->closeSession();
+
         $class = str_replace('.', '\\', $type);
 
         if (($status = $this->statusFacade->find($class, $statusId)) === null) {

@@ -61,6 +61,8 @@ class LabeledThing extends Controller\Base
      */
     public function getAllLabeledThingsAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
+        $this->closeSession();
+
         $labeledThings = $this->labelingTaskFacade->getLabeledThings($task)->toArray();
 
         return View\View::create()->setData([
@@ -79,6 +81,8 @@ class LabeledThing extends Controller\Base
      */
     public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
+        $this->closeSession();
+
         $documentId = $request->request->get('id');
         $classes    = $request->request->get('classes', []);
         $frameRange = $request->request->get('frameRange');
@@ -124,6 +128,8 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
@@ -145,6 +151,8 @@ class LabeledThing extends Controller\Base
         $labeledThingId,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         $revision = $request->request->get('rev');
 
         if ($revision === null) {
@@ -205,6 +213,8 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }

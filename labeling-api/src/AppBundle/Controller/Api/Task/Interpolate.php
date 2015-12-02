@@ -69,6 +69,8 @@ class Interpolate extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }

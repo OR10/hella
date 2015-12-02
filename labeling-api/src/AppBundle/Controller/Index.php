@@ -42,6 +42,7 @@ class Index extends Base
      */
     public function indexAction(HttpFoundation\Request $request)
     {
+        $this->closeSession();
         return new RedirectResponse('/labeling');
     }
 
@@ -51,6 +52,7 @@ class Index extends Base
      */
     public function uploadGetAction(HttpFoundation\Request $request)
     {
+        $this->closeSession();
         return new Response($this->twigEngine->render('AppBundle:default:uploadForm.html.twig'));
     }
 
@@ -60,6 +62,8 @@ class Index extends Base
      */
     public function uploadPostAction(HttpFoundation\Request $request)
     {
+        $this->closeSession();
+
         $viewData = [];
 
         /**

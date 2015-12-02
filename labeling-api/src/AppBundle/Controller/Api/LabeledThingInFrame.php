@@ -54,6 +54,8 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThingInFrame $labeledThingInFrame,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         return View\View::create()->setData(['result' => array('success' => true, 'data' => $labeledThingInFrame)]);
     }
 
@@ -69,6 +71,8 @@ class LabeledThingInFrame extends Controller\Base
      */
     public function putLabeledThingInFrameAction($documentId, HttpFoundation\Request $request)
     {
+        $this->closeSession();
+
         $response = View\View::create();
 
         if ($request->request->get('rev') === null) {
@@ -124,6 +128,8 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThingInFrame $labeledThingInFrame,
         HttpFoundation\Request $request
     ) {
+        $this->closeSession();
+
         $response = View\View::create();
 
         if ($labeledThingInFrame->getRev() === $request->request->get('rev')) {

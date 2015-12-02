@@ -32,6 +32,8 @@ class Video extends Controller\Base
      */
     public function listAction()
     {
+        $this->closeSession();
+
         return View\View::create()->setData(['result' => $this->videoFacade->findAll()]);
     }
 
@@ -44,6 +46,8 @@ class Video extends Controller\Base
      */
     public function getVideoAction(Model\Video $video)
     {
+        $this->closeSession();
+
         return View\View::create()->setData(['result' => $video]);
     }
 }
