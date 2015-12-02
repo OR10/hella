@@ -59,6 +59,26 @@ class Rectangle extends Model\Shape
         return 'rectangle';
     }
 
+    public function getLeft()
+    {
+        return $this->topLeft['x'];
+    }
+
+    public function getTop()
+    {
+        return $this->topLeft['y'];
+    }
+
+    public function getRight()
+    {
+        return $this->bottomRight['x'];
+    }
+
+    public function getBottom()
+    {
+        return $this->bottomRight['y'];
+    }
+
     public function getBoundingBox()
     {
         return new BoundingBox(

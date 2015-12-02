@@ -59,6 +59,26 @@ class Ellipse extends Model\Shape
         return 'ellipse';
     }
 
+    public function getX()
+    {
+        return $this->point['x'];
+    }
+
+    public function getY()
+    {
+        return $this->point['y'];
+    }
+
+    public function getWidth()
+    {
+        return $this->size['width'];
+    }
+
+    public function getHeight()
+    {
+        return $this->size['height'];
+    }
+
     public function getBoundingBox()
     {
         return new BoundingBox(
