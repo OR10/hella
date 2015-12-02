@@ -9,7 +9,8 @@ use AppBundle\Service;
 use AppBundle\Service\TaskExporter\Exception;
 
 /**
- * @todo create zip archive
+ * Service to export a task for the K.I.T.T.I. Object Detection Benchmark
+ * (http://www.cvlibs.net/datasets/kitti/eval_object.php).
  */
 class Kitti implements Service\TaskExporter
 {
