@@ -113,7 +113,13 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
                 'offset' => 30,
                 'limit' => 10,
                 'expectedFrameRange' => new FrameRange(20, 20),
-            ]
+            ],
+            'sub-range bug with offset and limit greater than number of frames' => [
+                'givenRange' => new FrameRange(1, 10),
+                'offset' => 11,
+                'limit' => 11,
+                'expectedFrameRange' => new FrameRange(10, 10),
+            ],
         ];
     }
 }
