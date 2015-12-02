@@ -201,7 +201,12 @@ class ThumbnailController {
     this._context.withScope(scope => {
       const zoom = scope.view.viewSize.width / image.width;
 
-      const rasterImage = new scope.Raster(image, new scope.Point(image.width/2, image.height/2));
+      const rasterImage = new scope.Raster(
+        image,
+        new scope.Point(
+          image.width / 2, image.height / 2
+        )
+      );
       this._applyFilters(rasterImage, this.filters);
 
       this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
@@ -238,7 +243,7 @@ class ThumbnailController {
     this._context.withScope(scope => {
       const viewportScaleX = scope.view.viewSize.width / this.labeledThingViewport.width;
 
-      const paperShapes = this.labeledThingInFrame.shapes.map(
+      this.labeledThingInFrame.shapes.forEach(
         shape => this._paperShapeFactory.createPaperShape(shape)
       );
 

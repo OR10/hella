@@ -10,7 +10,6 @@ import PointDrawingTool from '../Tools/PointDrawingTool';
 import ShapeMoveTool from '../Tools/ShapeMoveTool';
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
 
-import PaperShapeFactory from '../Shapes/PaperShapeFactory';
 import PaperShape from '../Shapes/PaperShape';
 
 /**

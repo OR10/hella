@@ -174,9 +174,7 @@ describe('Status', () => {
   it('should only wait specified maxWait while polling for jobs to be finished', done => {
     const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
     const statusInProgress = {status: 'running'};
-    const statusFinished = {status: 'success'};
     const resultInProgress = {result: statusInProgress};
-    const resultFinished = {result: statusFinished};
 
     const flush = (timeoutFlush = true) => bufferedHttp.flushBuffers()
       .then(() => {
@@ -193,7 +191,7 @@ describe('Status', () => {
           .respond(200, resultInProgress);
 
         gateway.waitForJob(job, 7000)
-          .catch((error) => {
+          .catch(() => {
             done();
           });
 
@@ -252,5 +250,4 @@ describe('Status', () => {
         return flushHttp();
       });
   });
-
 });
