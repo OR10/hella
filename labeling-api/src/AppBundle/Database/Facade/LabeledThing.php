@@ -46,11 +46,6 @@ class LabeledThing
             ->execute();
     }
 
-    public function getlabelingTasks(Model\LabeledThing $labeledThing)
-    {
-        $this->documentManager->find(Model\LabelingTask::class, $labeledThing->getTaskId());
-    }
-
     public function save(Model\LabeledThing $labeledThing)
     {
         if ($labeledThing->getId() === null) {
