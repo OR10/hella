@@ -10,54 +10,97 @@ import PaperLine from './PaperLine';
  * Factory to produce PaperShape objects from JSON representations stored in our backend
  */
 class PaperShapeFactory {
-  _createRectangle(shape) {
-    return new PaperRectangle(shape.id, shape.labeledThingInFrameId, shape.topLeft, shape.bottomRight, 'red');
-  }
-
-  _createEllipse(shape) {
-    return new PaperEllipse(shape.id, shape.labeledThingInFrameId, shape.point, shape.size, 'red');
-  }
-
-  _createCircle(shape) {
-    return new PaperCircle(shape.id, shape.labeledThingInFrameId, shape.point, shape.size.width / 2, 'red');
-  }
-
-  _createPoint(shape) {
-    return new PaperPoint(shape.id, shape.labeledThingInFrameId, shape.point, 'red');
-  }
-
-  _createPath(shape) {
-    return new PaperPath(shape.id, shape.labeledThingInFrameId, shape.points, 'red');
-  }
-
-  _createPolygon(shape) {
-    return new PaperPolygon(shape.id, shape.labeledThingInFrameId, shape.points, 'red');
-  }
-
-  _createLine(shape) {
-    return new PaperLine(shape.id, shape.labeledThingInFrameId, shape.points, 'red');
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperRectangle}
+   * @private
+   */
+  _createRectangle(labeledThingInFrame, shape) {
+    return new PaperRectangle(labeledThingInFrame, shape.id, shape.topLeft, shape.bottomRight, 'red');
   }
 
   /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperEllipse}
+   * @private
+   */
+  _createEllipse(labeledThingInFrame, shape) {
+    return new PaperEllipse(labeledThingInFrame, shape.id, shape.point, shape.size, 'red');
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperCircle}
+   * @private
+   */
+  _createCircle(labeledThingInFrame, shape) {
+    return new PaperCircle(labeledThingInFrame, shape.id, shape.point, shape.size.width / 2, 'red');
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperPoint}
+   * @private
+   */
+  _createPoint(labeledThingInFrame, shape) {
+    return new PaperPoint(labeledThingInFrame, shape.id, shape.point, 'red');
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperPath}
+   * @private
+   */
+  _createPath(labeledThingInFrame, shape) {
+    return new PaperPath(labeledThingInFrame, shape.id, shape.points, 'red');
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperPolygon}
+   * @private
+   */
+  _createPolygon(labeledThingInFrame, shape) {
+    return new PaperPolygon(labeledThingInFrame, shape.id, shape.points, 'red');
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @returns {PaperLine}
+   * @private
+   */
+  _createLine(labeledThingInFrame, shape) {
+    return new PaperLine(labeledThingInFrame, shape.id, shape.points, 'red');
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
    * @returns {PaperShape}
    */
-  createPaperShape(shape) {
+  createPaperShape(labeledThingInFrame, shape) {
     switch (shape.type) {
       case 'rectangle':
-        return this._createRectangle(shape);
+        return this._createRectangle(labeledThingInFrame, shape);
       case 'ellipse':
-        return this._createEllipse(shape);
+        return this._createEllipse(labeledThingInFrame, shape);
       case 'circle':
-        return this._createCircle(shape);
+        return this._createCircle(labeledThingInFrame, shape);
       case 'point':
-        return this._createPoint(shape);
+        return this._createPoint(labeledThingInFrame, shape);
       case 'path':
-        return this._createPath(shape);
+        return this._createPath(labeledThingInFrame, shape);
       case 'polygon':
-        return this._createPolygon(shape);
+        return this._createPolygon(labeledThingInFrame, shape);
       case 'line':
-        return this._createLine(shape);
+        return this._createLine(labeledThingInFrame, shape);
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }

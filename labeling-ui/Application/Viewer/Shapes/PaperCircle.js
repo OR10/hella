@@ -1,16 +1,21 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
 
+/**
+ * Circle Shape
+ *
+ * @extends PaperShape
+ */
 class PaperCircle extends PaperShape {
   /**
+   * @param {LabeledThing} labeledThingInFrame
    * @param {String} shapeId
-   * @param {String} labeledThingInFrameId
    * @param {Point} center
    * @param {Number} radius
    * @param {String} strokeColor
    */
-  constructor(shapeId, labeledThingInFrameId, center, radius, strokeColor) {
-    super(shapeId, labeledThingInFrameId);
+  constructor(labeledThingInFrame, shapeId, center, radius, strokeColor) {
+    super(labeledThingInFrame, shapeId);
 
     this._shape = new paper.Path.Circle({
       strokeColor,
@@ -33,7 +38,7 @@ class PaperCircle extends PaperShape {
       id: this._shapeId,
       point: {x: Math.round(position.x), y: Math.round(position.y)},
       size: {width: Math.round(bounds.width), height: Math.round(bounds.height)},
-      labeledThingInFrameId: this.labeledThingInFrameId,
+      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

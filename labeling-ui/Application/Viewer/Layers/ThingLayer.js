@@ -297,11 +297,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
       const selected = labeledThingInFrame.labeledThingId === selectedLabeledThingId;
 
-      if (!shape.labeledThingInFrameId) {
-        shape.labeledThingInFrameId = labeledThingInFrame.id;
-      }
-
-      return this._addShape(shape, false, selected);
+      return this._addShape(labeledThingInFrame, shape, false, selected);
     });
 
     if (update) {
@@ -319,13 +315,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * Optionally it may be specified if the view should be updated after adding the new shapes
    * By default it will be rerendered.
    *
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Shape} shape
    * @param {boolean?} update
    * @param {boolean?} selected
    * @return {paper.Shape}
    */
-  _addShape(shape, update = true, selected = false) {
-    const paperShape = this._drawShape(shape, selected);
+  _addShape(labeledThingInFrame, shape, update = true, selected = false) {
+    const paperShape = this._drawShape(labeledThingInFrame, shape, selected);
 
     this._paperShapeByLabeledThingInFrameId.set(shape.labeledThingInFrameId, paperShape);
 
@@ -343,14 +340,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
    *
    * The drawn Paper Shape will be returned
    *
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Shape} shape
    * @param {boolean} selected
    * @returns {paper.Shape}
    * @private
    */
-  _drawShape(shape, selected = false) {
+  _drawShape(labeledThingInFrame, shape, selected = false) {
     return this._context.withScope(() => {
-      const paperShape = this._paperShapeFactory.createPaperShape(shape);
+      const paperShape = this._paperShapeFactory.createPaperShape(labeledThingInFrame, shape);
 
       if (selected) {
         paperShape.select();

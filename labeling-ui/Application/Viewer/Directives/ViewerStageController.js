@@ -186,14 +186,14 @@ class ViewerStageController {
         this.selectedLabeledThing = null;
         this.ghostedLabeledThingInFrame = null;
       } else {
-        if (this.ghostedLabeledThingInFrame !== null && newSelectedShape.labeledThingInFrameId === this.ghostedLabeledThingInFrame.id) {
+        if (this.ghostedLabeledThingInFrame !== null && newSelectedShape.labeledThingInFrame.id === this.ghostedLabeledThingInFrame.id) {
           return;
         }
 
         // As we do change from a ghost to a non ghost we can simply set this to null
         // If the change is executed between to non ghosts the null is just what was already set anyway.
         this.ghostedLabeledThingInFrame = null;
-        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrameId];
+        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrame.id];
         this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThingId];
       }
     });
@@ -232,7 +232,7 @@ class ViewerStageController {
   }
 
   _onUpdatedShape(shape) {
-    let labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrameId];
+    let labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrame.id];
 
     if (labeledThingInFrame === undefined) {
       // A ghost shape has been updated

@@ -2,19 +2,18 @@ import paper from 'paper';
 import PaperShape from './PaperShape';
 
 /**
- * @class PaperRectangle
  * @extends PaperShape
  */
 class PaperRectangle extends PaperShape {
   /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
-   * @param {String} labeledThingInFrameId
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {String} strokeColor
    */
-  constructor(shapeId, labeledThingInFrameId, topLeft, bottomRight, strokeColor) {
-    super(shapeId, labeledThingInFrameId);
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, strokeColor) {
+    super(labeledThingInFrame, shapeId);
 
     this._shape = new paper.Path.Rectangle({
       strokeColor,
@@ -43,7 +42,7 @@ class PaperRectangle extends PaperShape {
         x: Math.round(bottomRight.x),
         y: Math.round(bottomRight.y),
       },
-      labeledThingInFrameId: this.labeledThingInFrameId,
+      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

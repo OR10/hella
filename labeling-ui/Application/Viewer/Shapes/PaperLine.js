@@ -1,7 +1,6 @@
 import PaperPath from './PaperPath';
 
 /**
- * @class PaperLine
  * @extends PaperPath
  */
 class PaperLine extends PaperPath {
@@ -16,7 +15,7 @@ class PaperLine extends PaperPath {
     return {
       type: 'line',
       id: this._shapeId,
-      labeledThingInFrameId: this.labeledThingInFrameId,
+      labeledThingInFrame: this.labeledThingInFrame.id,
       points,
     };
   }

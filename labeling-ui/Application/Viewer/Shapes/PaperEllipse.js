@@ -2,19 +2,18 @@ import paper from 'paper';
 import PaperShape from './PaperShape';
 
 /**
- * @class PaperEllipse
  * @extends PaperShape
  */
 class PaperEllipse extends PaperShape {
   /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
-   * @param {String} labeledThingInFrameId
    * @param {Point} center
    * @param {Size} size
    * @param {String} strokeColor
    */
-  constructor(shapeId, labeledThingInFrameId, center, size, strokeColor) {
-    super(shapeId, labeledThingInFrameId);
+  constructor(labeledThingInFrame, shapeId, center, size, strokeColor) {
+    super(labeledThingInFrame, shapeId);
 
     this._shape = new paper.Path.Ellipse({
       strokeColor,
@@ -37,7 +36,7 @@ class PaperEllipse extends PaperShape {
       id: this._shapeId,
       point: {x: Math.round(position.x), y: Math.round(position.y)},
       size: {width: Math.round(bounds.width), height: Math.round(bounds.height)},
-      labeledThingInFrameId: this.labeledThingInFrameId,
+      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

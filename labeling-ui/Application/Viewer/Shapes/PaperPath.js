@@ -2,18 +2,17 @@ import paper from 'paper';
 import PaperShape from './PaperShape';
 
 /**
- * @class PaperPath
  * @extends PaperShape
  */
 class PaperPath extends PaperShape {
   /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
-   * @param {String} labeledThingInFrameId
    * @param {Array.<Point>} points
    * @param {String} strokeColor
    */
-  constructor(shapeId, labeledThingInFrameId, points, strokeColor) {
-    super(shapeId, labeledThingInFrameId);
+  constructor(labeledThingInFrame, shapeId, points, strokeColor) {
+    super(labeledThingInFrame, shapeId);
 
     this._shape = new paper.Path({
       strokeColor,
@@ -38,7 +37,7 @@ class PaperPath extends PaperShape {
     return {
       type: 'path',
       id: this._shapeId,
-      labeledThingInFrameId: this.labeledThingInFrameId,
+      labeledThingInFrameId: this.labeledThingInFrame.id,
       points,
     };
   }

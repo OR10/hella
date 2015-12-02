@@ -3,14 +3,15 @@ import paper from 'paper';
 /**
  * Base class for shapes
  *
+ * @extends paper.Group
  * @abstract
  */
 class PaperShape extends paper.Group {
   /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
-   * @param {String} labeledThingInFrameId
    */
-  constructor(shapeId, labeledThingInFrameId) {
+  constructor(labeledThingInFrame, shapeId) {
     super();
     // This needs to be called due to how PaperJS does inheritance
     super.initialize();
@@ -34,19 +35,12 @@ class PaperShape extends paper.Group {
     this._shape = null;
 
     /**
-     * The id representing the LabeledThingInFrame this shape belongs to
-     *
-     * {String}
-     */
-    this.labeledThingInFrameId = labeledThingInFrameId;
-
-    /**
      * {@link LabeledThingInFrame} associated with this `PaperShape`
      *
      * @type {LabeledThingInFrame}
      * @private
      */
-    this._labeledThingInFrame = null;
+    this._labeledThingInFrame = labeledThingInFrame;
   }
 
   get id() {
@@ -59,24 +53,7 @@ class PaperShape extends paper.Group {
    * @returns {LabeledThingInFrame}
    */
   get labeledThingInFrame() {
-    if (this._labeledThingInFrame === null) {
-      throw new Error('LabeledThingInFrame has been read before the dependency was injected.');
-    }
-
     return this._labeledThingInFrame;
-  }
-
-  /**
-   * {@link LabeledThingInFrame} associated with this `PaperShape`
-   *
-   * @param {LabeledThingInFrame} value
-   */
-  set labeledThingInFrame(value) {
-    if (this._labeledThingInFrame !== null) {
-      throw new Error('Tried to inject LabeledThingInFrame dependency for a second time.');
-    }
-
-    this._labeledThingInFrame = value;
   }
 
   /**
