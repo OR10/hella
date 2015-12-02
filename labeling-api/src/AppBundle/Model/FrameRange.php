@@ -125,24 +125,34 @@ class FrameRange
      * Return a new range from the given offset and limit which is guaranteed
      * to be a sub-range of this range.
      *
-     * @param integer      $offset
+     * @param integer|null $offset
      * @param integer|null $limit
      */
-    public function createSubRangeForOffsetAndLimit($offset, $limit = null)
+    public function createSubRangeForOffsetAndLimit($offset = null, $limit = null)
     {
-        if (is_null($offset) || $offset < $this->getStartFrameNumber() - 1) {
-            $offset = $this->getStartFrameNumber() - 1;
+        $startFrameNumber = $this->getStartFrameNumber();
+        $endFrameNumber   = $this->getEndFrameNumber();
+
+        if ($offset !== null) {
+            $startFrameNumber = max(
+                $startFrameNumber,
+                min(
+                    $endFrameNumber,
+                    $startFrameNumber + (int) $offset
+                )
+            );
         }
 
-        if ($offset > $this->getEndFrameNumber()) {
-            $offset = $this->getEndFrameNumber() - 1;
-            $limit  = max(1, $limit - $offset);
+        if ($limit !== null) {
+            $endFrameNumber = max(
+                $startFrameNumber,
+                min(
+                    $endFrameNumber,
+                    $startFrameNumber + (int) $limit - 1
+                )
+            );
         }
 
-        if (is_null($limit) || $limit > $this->getNumberOfFrames()) {
-            $limit = $this->getNumberOfFrames() - $offset;
-        }
-
-        return static::createFromOffsetAndLimit($offset, $limit);
+        return new FrameRange($startFrameNumber, $endFrameNumber);
     }
 }
