@@ -18,9 +18,10 @@ class LabeledThing
 
     /**
      * @param Model\LabeledThing $labeledThing
-     * @param null               $frameNumber
+     * @param int|null           $frameNumber
      * @param int                $offset
      * @param int                $limit
+     *
      * @return CouchDB\View\Result
      */
     public function getLabeledThingInFrames(
