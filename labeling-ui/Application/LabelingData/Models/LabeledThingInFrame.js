@@ -28,6 +28,14 @@ class LabeledThingInFrame extends LabeledObject {
     this.labeledThingId = labeledThingInFrame.labeledThingId;
 
     /**
+     * {@link LabeledThing} associated with this `LabeledThingInFrame`
+     *
+     * @type {LabeledThing}
+     * @private
+     */
+    this._labeledThing = null;
+
+    /**
      * Array of shapes associated with this `LabeledThingInFrame`
      *
      * @type {Array.<Object>}
@@ -40,6 +48,32 @@ class LabeledThingInFrame extends LabeledObject {
      * @type {boolean}
      */
     this.ghost = labeledThingInFrame.ghost;
+  }
+
+  /**
+   * {@link LabeledThing} associated with this `LabeledThingInFrame`
+   *
+   * @returns {LabeledThing}
+   */
+  get labeledThing() {
+    if (this._labeledThing === null) {
+      throw new Error('LabeledThing has been read before the dependency was injected.');
+    }
+
+    return this._labeledThing;
+  }
+
+  /**
+   * {@link LabeledThing} associated with this `LabeledThingInFrame`
+   *
+   * @param {LabeledThing} value
+   */
+  set labeledThing(value) {
+    if (this._labeledThing !== null) {
+      throw new Error('Tried to inject LabeledThing dependency for a second time.');
+    }
+
+    this._labeledThing = value;
   }
 
   /**

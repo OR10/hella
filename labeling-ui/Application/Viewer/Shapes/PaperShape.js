@@ -39,10 +39,44 @@ class PaperShape extends paper.Group {
      * {String}
      */
     this.labeledThingInFrameId = labeledThingInFrameId;
+
+    /**
+     * {@link LabeledThingInFrame} associated with this `PaperShape`
+     *
+     * @type {LabeledThingInFrame}
+     * @private
+     */
+    this._labeledThingInFrame = null;
   }
 
   get id() {
     return this._shapeId;
+  }
+
+ /**
+   * {@link LabeledThingInFrame} associated with this `PaperShape`
+   *
+   * @returns {LabeledThingInFrame}
+   */
+  get labeledThingInFrame() {
+    if (this._labeledThingInFrame === null) {
+      throw new Error('LabeledThingInFrame has been read before the dependency was injected.');
+    }
+
+    return this._labeledThingInFrame;
+  }
+
+  /**
+   * {@link LabeledThingInFrame} associated with this `PaperShape`
+   *
+   * @param {LabeledThingInFrame} value
+   */
+  set labeledThingInFrame(value) {
+    if (this._labeledThingInFrame !== null) {
+      throw new Error('Tried to inject LabeledThingInFrame dependency for a second time.');
+    }
+
+    this._labeledThingInFrame = value;
   }
 
   /**

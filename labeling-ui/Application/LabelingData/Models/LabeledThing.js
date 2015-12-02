@@ -25,6 +25,38 @@ class LabeledThing extends LabeledObject {
      * @type {FrameRange}
      */
     this.frameRange = labeledThing.frameRange;
+
+    /**
+     * @type {Task}
+     * @private
+     */
+    this._task = null;
+  }
+
+  /**
+   * {@link Task} associated with this `LabeledThing`
+   *
+   * @returns {Task}
+   */
+  get task() {
+    if (this._task === null) {
+      throw new Error('Task has been read before the dependency was injected.');
+    }
+
+    return this._task;
+  }
+
+  /**
+   * {@link Task} associated with this `LabeledThing`
+   *
+   * @param {Task} value
+   */
+  set task(value) {
+    if (this._task !== null) {
+      throw new Error('Tried to inject Task dependency for a second time.');
+    }
+
+    this._task = value;
   }
 }
 
