@@ -5,6 +5,7 @@ import 'angular-ui-router';
 import 'Distribution/Templates/angular-ui-bootstrap';
 
 import CommonModule from './Common/Common';
+import HeaderModule from './Header/Header';
 import TaskModule from './Task/Task';
 import HomeModule from './Home/Home';
 import ExportModule from './Export/Export';
@@ -47,6 +48,7 @@ export default class Application {
    */
   registerModules() {
     this.modules.push(new CommonModule());
+    this.modules.push(new HeaderModule());
     this.modules.push(new TaskModule());
     this.modules.push(new HomeModule());
     this.modules.push(new ExportModule());
