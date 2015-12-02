@@ -217,6 +217,21 @@ class LabeledThingInFrame
     }
 
     /**
+     * Set an array of shapes as objects.
+     *
+     * @param Shape[]
+     */
+    public function setShapesAsObjects(array $shapes)
+    {
+        $this->shapes = array_map(
+            function($shape) {
+                return $shape->toArray();
+            },
+            $shapes
+        );
+    }
+
+    /**
      * @return BoundingBox
      */
     public function getBoundingBox()
