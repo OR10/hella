@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/labeledThingInFrame")
  * @Rest\Route(service="annostation.labeling_api.controller.api.labeled_thing_in_frame")
+ *
+ * @CloseSession
  */
 class LabeledThingInFrame extends Controller\Base
 {
@@ -54,8 +57,6 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThingInFrame $labeledThingInFrame,
         HttpFoundation\Request $request
     ) {
-        $this->closeSession();
-
         return View\View::create()->setData(['result' => array('success' => true, 'data' => $labeledThingInFrame)]);
     }
 
@@ -71,8 +72,6 @@ class LabeledThingInFrame extends Controller\Base
      */
     public function putLabeledThingInFrameAction($documentId, HttpFoundation\Request $request)
     {
-        $this->closeSession();
-
         $response = View\View::create();
 
         if ($request->request->get('rev') === null) {
@@ -128,8 +127,6 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThingInFrame $labeledThingInFrame,
         HttpFoundation\Request $request
     ) {
-        $this->closeSession();
-
         $response = View\View::create();
 
         if ($labeledThingInFrame->getRev() === $request->request->get('rev')) {

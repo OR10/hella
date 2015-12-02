@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -10,10 +11,11 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 
-
 /**
  * @Rest\Prefix("/api/user")
  * @Rest\Route(service="annostation.labeling_api.controller.api.current_user")
+ *
+ * @CloseSession
  */
 class CurrentUser extends Controller\Base
 {

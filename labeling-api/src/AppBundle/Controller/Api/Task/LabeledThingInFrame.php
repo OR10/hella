@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api\Task;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/task")
  * @Rest\Route(service="annostation.labeling_api.controller.api.task.labeled_thing_in_frame")
+ *
+ * @CloseSession
  */
 class LabeledThingInFrame extends Controller\Base
 {
@@ -71,8 +74,6 @@ class LabeledThingInFrame extends Controller\Base
         $frameNumber,
         HttpFoundation\Request $request
     ) {
-        $this->closeSession();
-
         $response = View\View::create();
 
         $shapes         = $request->request->get('shapes', []);
@@ -111,8 +112,6 @@ class LabeledThingInFrame extends Controller\Base
      */
     public function getLabeledThingInFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $this->closeSession();
-
         $response = View\View::create();
 
         $labeledThings         = $this->labelingTaskFacade->getLabeledThings($task);
@@ -159,8 +158,6 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        $this->closeSession();
-
         $offset = (int) $request->query->get('offset', 0);
         $limit  = (int) $request->query->get('limit', 1);
 

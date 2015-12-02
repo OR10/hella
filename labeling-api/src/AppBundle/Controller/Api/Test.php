@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Annotations\CloseSession;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Component\HttpFoundation;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -17,6 +18,8 @@ use AppBundle\View;
  *
  * @Rest\Prefix("/api/test")
  * @Rest\Route(service="annostation.labeling_api.controller.api.test")
+ *
+ * @CloseSession
  */
 class Test extends Controller\Base
 {

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api\Task;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/task")
  * @Rest\Route(service="annostation.labeling_api.controller.api.task.labeled_frame")
+ *
+ * @CloseSession
  */
 class LabeledFrame extends Controller\Base
 {
@@ -49,8 +52,6 @@ class LabeledFrame extends Controller\Base
      */
     public function getLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $this->closeSession();
-
         $response = View\View::create();
 
         $labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber);
@@ -98,8 +99,6 @@ class LabeledFrame extends Controller\Base
      */
     public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $this->closeSession();
-
         if (($labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber)) === null) {
             throw new Exception\NotFoundHttpException();
         }
@@ -126,8 +125,6 @@ class LabeledFrame extends Controller\Base
         $frameNumber,
         HttpFoundation\Request $request
     ) {
-        $this->closeSession();
-
         $response = View\View::create();
 
         $classes         = $request->request->get('classes', []);

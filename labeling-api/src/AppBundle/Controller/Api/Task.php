@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation;
 /**
  * @Rest\Prefix("/api/task")
  * @Rest\Route(service="annostation.labeling_api.controller.api.task")
+ *
+ * @CloseSession
  */
 class Task extends Controller\Base
 {
@@ -48,8 +51,6 @@ class Task extends Controller\Base
      */
     public function listAction()
     {
-        $this->closeSession();
-
         $tasks = $this->labelingTaskFacade->findAll();
 
         $taskResult = array_values(array_filter($tasks->toArray(), function ($task) {
@@ -83,8 +84,6 @@ class Task extends Controller\Base
      */
     public function getTaskAction(Model\LabelingTask $task)
     {
-        $this->closeSession();
-
         return View\View::create()->setData(['result' => $task]);
     }
 
@@ -105,8 +104,6 @@ class Task extends Controller\Base
      */
     public function showFrameLocationsAction(Model\LabelingTask $task, $type, HttpFoundation\Request $request)
     {
-        $this->closeSession();
-
         $offset   = $request->query->getDigits('offset');
         $limit    = $request->query->getDigits('limit');
         $subRange = $task->getFrameRange()->createSubRangeForOffsetAndLimit($offset, $limit);

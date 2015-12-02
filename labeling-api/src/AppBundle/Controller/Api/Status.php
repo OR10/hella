@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -10,12 +11,13 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 
-
 /**
  * Controller to query for status information of asynchronous jobs.
  *
  * @Rest\Prefix("/api/status")
  * @Rest\Route(service="annostation.labeling_api.controller.api.status")
+ *
+ * @CloseSession
  */
 class Status extends Controller\Base
 {
@@ -41,8 +43,6 @@ class Status extends Controller\Base
      */
     public function getStatusAction($type, $statusId)
     {
-        $this->closeSession();
-
         $class = str_replace('.', '\\', $type);
 
         if (($status = $this->statusFacade->find($class, $statusId)) === null) {

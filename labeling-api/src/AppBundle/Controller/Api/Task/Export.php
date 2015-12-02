@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api\Task;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/task")
  * @Rest\Route(service="annostation.labeling_api.controller.api.task.export")
+ *
+ * @CloseSession
  */
 class Export extends Controller\Base
 {
@@ -56,8 +59,6 @@ class Export extends Controller\Base
      */
     public function listExportsAction(Model\LabelingTask $task)
     {
-        $this->closeSession();
-
         $exports = $this->taskExportFacade->findAll();
         $exports = array_values(array_filter($exports->toArray(), function($export) use ($task) {
             return $export->getTaskId() === $task->getId();
@@ -77,8 +78,6 @@ class Export extends Controller\Base
      */
     public function getExportAction(Model\LabelingTask $task, Model\TaskExport $taskExport)
     {
-        $this->closeSession();
-
         if ($taskExport->getTaskId() !== $task->getId()) {
             throw new Exception\NotFoundHttpException();
         }
@@ -105,8 +104,6 @@ class Export extends Controller\Base
      */
     public function getKittiExportAction(Model\LabelingTask $task)
     {
-        $this->closeSession();
-
         $this->amqpFacade->addJob(new Jobs\KittiExporter($task->getId()));
 
         return View\View::create()

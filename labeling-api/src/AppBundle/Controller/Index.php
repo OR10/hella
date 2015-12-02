@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
 use AppBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
+ *
+ * @CloseSession
  */
 class Index extends Base
 {
@@ -42,7 +45,6 @@ class Index extends Base
      */
     public function indexAction(HttpFoundation\Request $request)
     {
-        $this->closeSession();
         return new RedirectResponse('/labeling');
     }
 
@@ -52,7 +54,6 @@ class Index extends Base
      */
     public function uploadGetAction(HttpFoundation\Request $request)
     {
-        $this->closeSession();
         return new Response($this->twigEngine->render('AppBundle:default:uploadForm.html.twig'));
     }
 
@@ -62,8 +63,6 @@ class Index extends Base
      */
     public function uploadPostAction(HttpFoundation\Request $request)
     {
-        $this->closeSession();
-
         $viewData = [];
 
         /**
