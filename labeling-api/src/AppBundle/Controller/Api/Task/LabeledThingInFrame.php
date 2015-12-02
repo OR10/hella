@@ -144,9 +144,9 @@ class LabeledThingInFrame extends Controller\Base
      * clone-source (for now) because of historical reasons.
      * This may change sometime.
      *
-     * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}/{labeledThing}")
+     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThing}")
      *
-     * @param Model\LabelingTask     $task
+     * @param string                 $taskId
      * @param                        $frameNumber
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
@@ -154,7 +154,7 @@ class LabeledThingInFrame extends Controller\Base
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingInFrameWithinFrameNumberAction(
-        Model\LabelingTask $task,
+        $taskId,
         $frameNumber,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
