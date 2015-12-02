@@ -79,6 +79,38 @@
                 ]
             }
 
+## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThingId}{?offset,limit}]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + frameNumber: `3` (int, required) - The frame number for which the labeled things should be retrieved, added or replaced (int).
+    + labeledThingId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the labeled-thing-entity.
+    + offset: `3` (int, optional) - The offset relative to the given frameNumber.
+    + limit: `10` (int, optional) - The maximum number of results.
+
+### Get labeled things [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": [
+                    {
+                        "id": "...",
+                        "rev": "...",
+                        "labeledThingId": "05c1a74d8eda4a16a355519c0f002ee6",
+                        "classes": [...],
+                        "shapes": [
+                            ...
+                        ]
+                    },
+                    ...
+                ]
+            }
+
+
 ## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
 
 + Parameters
