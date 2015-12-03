@@ -55,7 +55,7 @@ class TaskController {
     /**
      * A structure holding all LabeledThingInFrames for the currently active frame
      *
-     * @type {Object<string|LabeledThingInFrame>|null}
+     * @type {Array.<LabeledThingInFrame>}
      */
     this.labeledThingsInFrame = null;
 
@@ -163,18 +163,14 @@ class TaskController {
    * @private
    */
   _handleFrameChange(frameNumber) {
-    this.labeledThingsInFrame = null;
+    this.labeledThingsInFrame = [];
     this.labeledFrame = null;
 
     this._labeledThingInFrameBuffer.add(
       this._loadLabeledThingsInFrame(frameNumber)
       )
       .then(labeledThingsInFrame => {
-        this.labeledThingsInFrame = {};
-
-        labeledThingsInFrame.forEach(labeledThingInFrame => {
-          this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-        });
+        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
       });
 
     this._labeledFrameBuffer.add(

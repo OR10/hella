@@ -87,52 +87,52 @@ class ThumbnailReelController {
 
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
-      this._$q.all([
         this._frameLocationsBuffer.add(
           this._loadFrameLocations(this.framePosition)
-        ),
-        this._labeledThingInFrameBuffer.add(
-          this._loadLabeledThingsInFrame(this.framePosition)
-        ),
-      ])
-      .then(([thumbnailLocations, labeledThingsInFrame]) => {
+        )
+      .then(thumbnailLocations =>
         thumbnailLocations.forEach(
           (location, index) => {
-            const labeledThingInFrame = labeledThingsInFrame[index];
+            const thumbnail = this.thumbnails[index];
+            const labeledThingInFrame = thumbnail.labeledThingInFrame;
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
+        )
+      );
+    });
+
+    $scope.$watchGroup(['vm.selectedPaperShape', 'vm.selectedPaperShape.isDraft'],
+      ([newPaperShape]) => this._updateLabeledThingInFrames(newPaperShape)
+    );
+
+    this.handleDrop = this.handleDrop.bind(this);
+  }
+
+  _updateLabeledThingInFrames(newPaperShape) {
+    if (!newPaperShape || newPaperShape.isDraft) {
+      // Clear all thumbnail shape previews
+      this.thumbnails.forEach(
+        (thumbnail, index) => {
+          const location = thumbnail.location;
+          const labeledThingInFrame = null;
+          this.thumbnails[index] = {location, labeledThingInFrame};
+        }
+      );
+      return;
+    }
+
+    this._labeledThingInFrameBuffer.add(
+      this._loadLabeledThingsInFrame(this.framePosition)
+      )
+      .then(labeledThingsInFrame => {
+        labeledThingsInFrame.forEach(
+          (labeledThingInFrame, index) => {
+            const thumbnail = this.thumbnails[index];
+            const location = thumbnail.location;
             this.thumbnails[index] = {location, labeledThingInFrame};
           }
         );
       });
-    });
-
-    $scope.$watchGroup(['vm.selectedPaperShape', 'vm.selectedPaperShape.isDraft'], ([newPaperShape, isDraft]) => {
-      if (!newPaperShape || isDraft) {
-        // Clear all thumbnail shape previews
-        this.thumbnails.forEach(
-          (thumbnail, index) => {
-            const location = thumbnail.location;
-            const labeledThingInFrame = null;
-            this.thumbnails[index] = {location, labeledThingInFrame};
-          }
-        );
-        return;
-      }
-
-      this._labeledThingInFrameBuffer.add(
-        this._loadLabeledThingsInFrame(this.framePosition)
-        )
-        .then(labeledThingsInFrame => {
-          labeledThingsInFrame.forEach(
-            (labeledThingInFrame, index) => {
-              const thumbnail = this.thumbnails[index];
-              const location = thumbnail.location;
-              this.thumbnails[index] = {location, labeledThingInFrame};
-            }
-          );
-        });
-    });
-
-    this.handleDrop = this.handleDrop.bind(this);
   }
 
   /**

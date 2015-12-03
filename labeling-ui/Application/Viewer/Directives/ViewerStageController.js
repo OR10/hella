@@ -36,13 +36,6 @@ class ViewerStageController {
     this._supportedImageTypes = ['source', 'sourceJpg'];
 
     /**
-     * The ghosted LabeledThingInFrame, if one exists for the current selection and frame
-     *
-     * @type {LabeledThingInFrame|null}
-     */
-    this.ghostedLabeledThingInFrame = null;
-
-    /**
      * @type {angular.Scope}
      * @private
      */
@@ -133,10 +126,6 @@ class ViewerStageController {
       thingLayer.activateTool(newActiveTool);
     });
 
-    $scope.$watch('vm.selectedPaperShape', () => {
-      //this.ghostedLabeledThingInFrame = null;
-    });
-
     // Reapply filters if they changed
     $scope.$watchCollection('vm.filters.filters', filters => {
       backgroundLayer.resetLayer();
@@ -147,7 +136,7 @@ class ViewerStageController {
     });
 
     // Update the Background once the `framePosition` changes
-    // Update the possibly ghosted LabeledThingInFrame
+    // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._backgroundBuffer.add(
         this._loadFrameImage(newPosition)
@@ -159,42 +148,22 @@ class ViewerStageController {
         backgroundLayer.render();
       });
 
-      //if (this.selectedPaperShape !== null) {
-      //  this._ghostedLabeledThingInFrameBuffer.add(
-      //    this._labeledThingInFrameGateway.getLabeledThingInFrame(
-      //      this.task,
-      //      newPosition,
-      //      this.selectedLabeledThingInFrame.labeledThing
-      //    )
-      //  ).then(labeledThingsInFrame => {
-      //    const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
-      //    if (ghostedLabeledThingsInFrame.length === 0) {
-      //      // The labeledThingInFrame is not ghosted and will automatically be loaded during the basic labeledThingInFrame request
-      //      return;
-      //    }
-      //
-      //    this.ghostedLabeledThingInFrame = ghostedLabeledThingsInFrame[0];
-      //  });
-      //}
+      if (this.selectedPaperShape !== null) {
+        const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+        this._ghostedLabeledThingInFrameBuffer.add(
+          this._labeledThingInFrameGateway.getLabeledThingInFrame(
+            this.task,
+            newPosition,
+            selectedLabeledThing
+          )
+        ).then(labeledThingsInFrame => {
+          const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
+          if (ghostedLabeledThingsInFrame.length > 0) {
+            this.labeledThingsInFrame.push(ghostedLabeledThingsInFrame[0]);
+          }
+        });
+      }
     });
-
-    //$scope.$watch('vm.selectedShape', (newSelectedShape) => {
-    //  if (newSelectedShape === null) {
-    //    this.selectedLabeledThingInFrame = null;
-    //    this.selectedLabeledThing = null;
-    //    this.ghostedLabeledThingInFrame = null;
-    //  } else {
-    //    if (this.ghostedLabeledThingInFrame !== null && newSelectedShape.labeledThingInFrame.id === this.ghostedLabeledThingInFrame.id) {
-    //      return;
-    //    }
-    //
-    //    // As we do change from a ghost to a non ghost we can simply set this to null
-    //    // If the change is executed between to non ghosts the null is just what was already set anyway.
-    //    this.ghostedLabeledThingInFrame = null;
-    //    this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrame.id];
-    //    this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThing.id];
-    //  }
-    //});
   }
 
   /**
@@ -230,22 +199,13 @@ class ViewerStageController {
   }
 
   _onUpdatedShape(shape) {
-    let labeledThingInFrame = shape.labeledThingInFrame;
-
-    //if (labeledThingInFrame === undefined) {
-    //  // A ghost shape has been updated
-    //  // Let's bust the ghost and add it to the normal selection of labeledthingsinframe
-    //  labeledThingInFrame = this.ghostedLabeledThingInFrame.ghostBust(
-    //    this._entityIdService.getUniqueId(),
-    //    this.framePosition.position
-    //  );
-    //
-    //  shape.labeledThingInFrameId = labeledThingInFrame.id;
-    //
-    //  this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-    //  this.ghostedLabeledThingInFrame = null;
-    //  this.selectedLabeledThingInFrame = labeledThingInFrame;
-    //}
+    const labeledThingInFrame = shape.labeledThingInFrame;
+    if (labeledThingInFrame.ghost) {
+      labeledThingInFrame.ghostBust(
+        this._entityIdService.getUniqueId(),
+        this.framePosition.position
+      );
+    }
 
     // @TODO this needs to be fixed for supporting multiple shapes
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
@@ -267,7 +227,7 @@ class ViewerStageController {
     const newLabeledThingInFrame = shape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
 
-    // Store the newly created hierachy to the backend
+    // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());

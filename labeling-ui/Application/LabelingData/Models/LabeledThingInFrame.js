@@ -60,28 +60,19 @@ class LabeledThingInFrame extends LabeledObject {
    * A new id for the realized `LabeledThingInFrame` as well as its newly attached
    * `frameNumber` needs to be provided
    *
-   * A newly created `LabeledThingInFrame` will be returned. The source model is not changed
-   * in any way.
+   * The correction is executed in place
    *
    * @param {string} id
    * @param {int} frameNumber
-   * @return {LabeledThingInFrame}
    */
   ghostBust(id, frameNumber) {
     if (this.ghost !== true) {
       throw new Error('Can\'t realize ghosted LabeledThingInFrame, as it is no ghost');
     }
 
-    const {labeledThing, shapes, classes, incomplete} = this;
-
-    return new LabeledThingInFrame({
-      id,
-      labeledThing,
-      classes,
-      incomplete,
-      shapes: this._ghostBustShapes(id, shapes),
-      frameNumber,
-    });
+    this.ghost = false;
+    this.id = id;
+    this.frameNumber = frameNumber;
   }
 
   /**
@@ -95,18 +86,6 @@ class LabeledThingInFrame extends LabeledObject {
       frameNumber, shapes, ghost,
       labeledThingId: labeledThing.id,
     });
-  }
-
-  /**
-   * @param {string} labeledThingInFrameId
-   * @param {Array.<Object>} shapes
-   * @returns {Array.<Object>}
-   * @private
-   */
-  _ghostBustShapes(labeledThingInFrameId, shapes) {
-    const newShapes = copy(shapes);
-    newShapes.forEach(shape => shape.labeledThingInFrameId = labeledThingInFrameId);
-    return newShapes;
   }
 }
 
