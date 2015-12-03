@@ -82,27 +82,26 @@ class LabeledThing extends Controller\Base
      */
     public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $labeledThingId = $request->request->get('id');
-        $frameRange     = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
-        $classes        = $request->request->get('classes', []);
-        $incomplete     = $request->request->get('incomplete', true);
-
+        $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         if ($frameRange === null) {
             throw new Exception\BadRequestHttpException();
         }
 
-        $labeledThing = new Model\LabeledThing($task);
-
-        if ($labeledThingId !== null) {
+        if (($labeledThingId = $request->request->get('id')) !== null) {
             if ($this->labeledThingFacade->find($labeledThingId) !== null) {
                 throw new Exception\ConflictHttpException();
             }
-            $labeledThing->setId($labeledThingId);
         }
 
-        $labeledThing->setClasses($classes);
+        if (!is_array($classes = $request->request->get('classes', []))) {
+            throw new Exception\BadRequestHttpException();
+        }
+
+        $labeledThing = new Model\LabeledThing($task);
+        $labeledThing->setId($labeledThingId);
         $labeledThing->setFrameRange($frameRange);
-        $labeledThing->setIncomplete($incomplete);
+        $labeledThing->setClasses($classes);
+        $labeledThing->setIncomplete($request->request->get('incomplete', true));
         $this->labeledThingFacade->save($labeledThing);
 
         return View\View::create()->setData(['result' => $labeledThing]);
