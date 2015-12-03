@@ -13,6 +13,8 @@ html {
 body {
   //overflow: auto;
   //height: 100%;
+  background-color: #000;
+  color: #fff;
 }
 
 h1 {
@@ -21,4 +23,49 @@ h1 {
 
 .label-summary span.label-padding {
   margin-right: 2px;
+}
+
+svg.icon {
+  width: 25px;
+  height: 25px;
+  fill-opacity: 0;
+  stroke: #fff;
+  stroke-width: 2;
+  padding-top: 5px;
+}
+
+div.header {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  height: 44px;
+  border-bottom: 1px solid #121314;
+  padding: 5px 25px;
+  line-height: 24px;
+  font-size: 20px;
+
+  .icon {
+
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .left {
+    flex: 1;
+    align-self: center;
+  }
+
+  .right {
+    text-align: right;
+    flex: 2;
+    align-self: center;
+
+    .timer {
+      display: inline-block;
+    }
+
+    .username {
+      margin-left: 60px;
+    }
+  }
 }
