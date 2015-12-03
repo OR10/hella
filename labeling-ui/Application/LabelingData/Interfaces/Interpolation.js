@@ -13,8 +13,8 @@
  *
  * @name Interpolation#execute
  *
- * @param {string} taskId
- * @param {string} labeledThingId
+ * @param {Task} task
+ * @param {LabeledThing} labeledThing
  * @param {FrameRange} frameRange
  * @return {Promise.<*>}
  */

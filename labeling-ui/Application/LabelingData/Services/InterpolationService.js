@@ -50,28 +50,23 @@ class InterpolationService {
    *
    * @param {string} id
    * @param {Task} task
-   * @param {string} labeledThingId
+   * @param {LabeledThing} labeledThing
    * @param {FrameRange} frameRange
    * @return {Promise.<*>}
    */
-  interpolate(id, task, labeledThingId, frameRange = null) {
+  interpolate(id, task, labeledThing, frameRange = null) {
     if (!this._interpolations.has(id)) {
       throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
     }
 
     const interpolation = this._interpolations.get(id);
 
-    return this._$q.resolve()
-      .then(() => {
-        if (frameRange !== null) {
-          return frameRange;
-        }
+    let interpolationFrameRange = frameRange;
+    if (!frameRange) {
+      interpolationFrameRange = labeledThing.frameRange;
+    }
 
-        return this._fetchFrameRange(task.id, labeledThingId);
-      })
-      .then(
-        interpolationFrameRange => interpolation.execute(task, labeledThingId, interpolationFrameRange)
-      );
+    return interpolation.execute(task, labeledThing, interpolationFrameRange);
   }
 
   /**
@@ -89,19 +84,6 @@ class InterpolationService {
     this._interpolations.set('default', defaultInterpolation);
 
     return defaultInterpolation;
-  }
-
-  /**
-   * @param {Task} task
-   * @param {string} labeledThingId
-   * @return {AbortablePromise.<FrameRange>}
-   * @private
-   */
-  _fetchFrameRange(task, labeledThingId) {
-    return this._labeledThingGateway.getLabeledThing(task, labeledThingId)
-      .then(labeledThing => {
-        return labeledThing.frameRange;
-      });
   }
 }
 

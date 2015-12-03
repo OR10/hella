@@ -120,11 +120,6 @@ class TaskController {
     this._labeledThingGateway = labeledThingGateway;
 
     /**
-     * @type {AbortablePromiseRingBuffer}
-     */
-    this._labeledThingBuffer = new AbortablePromiseRingBuffer(1);
-
-    /**
      * @type {LabeledFrameGateway}
      */
     this._labeledFrameGateway = labeledFrameGateway;
@@ -155,20 +150,6 @@ class TaskController {
   }
 
   /**
-   *
-   * @private
-   */
-  _loadLabeledThings(labeledThingIds) {
-    return this._abortablePromiseFactory(
-      this._$q.all(
-        labeledThingIds.map(labeledThingId => {
-          return this._labeledThingGateway.getLabeledThing(this.task, labeledThingId);
-        })
-      )
-    );
-  }
-
-  /**
    * Load the {@link LabeledFrame} structure for the given frame
    * @param frameNumber
    * @returns {AbortablePromise<LabeledFrame>}
@@ -195,22 +176,13 @@ class TaskController {
       this._loadLabeledThingsInFrame(frameNumber)
       )
       .then(labeledThingsInFrame => {
-        const labeledThingIds = [];
         this.labeledThingsInFrame = {};
+        this.labeledThings = {};
 
         labeledThingsInFrame.forEach(labeledThingInFrame => {
           this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-          labeledThingIds.push(labeledThingInFrame.labeledThingId);
+          this.labeledThings[labeledThingInFrame.labeledThing.id] = labeledThingInFrame.labeledThing;
         });
-
-        this._labeledThingBuffer.add(this._loadLabeledThings(labeledThingIds))
-          .then(labeledThings => {
-            this.labeledThings = {};
-
-            labeledThings.forEach(labeledThing => {
-              this.labeledThings[labeledThing.id] = labeledThing;
-            });
-          });
       });
 
     this._labeledFrameBuffer.add(
