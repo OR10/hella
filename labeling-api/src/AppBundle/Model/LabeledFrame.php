@@ -111,9 +111,14 @@ class LabeledFrame
 
     /**
      * @param mixed $id
+     *
+     * @throw \LogicException if the id was already set.
      */
     public function setId($id)
     {
+        if ($this->id !== null) {
+            throw new \LogicException("Trying to set an already assigned id from '{$this->id}' to '{$id}'");
+        }
         $this->id = $id;
     }
 
