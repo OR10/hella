@@ -114,7 +114,7 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @Rest\Delete("/{labeledThingInFrame}")
      *
-     * @param Model\LabeledThingInFrame $documentId
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
      * @param HttpFoundation\Request    $request
      *
      * @return \FOS\RestBundle\View\View
