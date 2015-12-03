@@ -94,6 +94,9 @@ class LabeledThing extends Controller\Base
         $labeledThing = new Model\LabeledThing($task);
 
         if ($labeledThingId !== null) {
+            if ($this->labeledThingFacade->find($labeledThingId) !== null) {
+                throw new Exception\ConflictHttpException();
+            }
             $labeledThing->setId($labeledThingId);
         }
 
