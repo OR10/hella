@@ -18,9 +18,10 @@ class LabeledThing
 
     /**
      * @param Model\LabeledThing $labeledThing
-     * @param null               $frameNumber
+     * @param int|null           $frameNumber
      * @param int                $offset
      * @param int                $limit
+     *
      * @return CouchDB\View\Result
      */
     public function getLabeledThingInFrames(
@@ -29,38 +30,21 @@ class LabeledThing
         $offset = 0,
         $limit = 0
     ) {
-        if ($frameNumber !== null) {
-            $startKey = array(
-                $labeledThing->getId(),
-                $frameNumber + $offset
-            );
-            $endKey = array(
-                $labeledThing->getId(),
-                ($frameNumber + $offset) + $limit
-            );
+        $frameRange = $labeledThing->getFrameRange();
 
-        }else{
-            $startKey = array(
-                $labeledThing->getId(),
-                0
-            );
-            $endKey = array(
-                $labeledThing->getId(),
-                array()
+        if ($frameNumber !== null) {
+            $frameRange = $frameRange->createSubRangeForOffsetAndLimit(
+                $frameNumber + (int) $offset - 1,
+                (int) $limit
             );
         }
 
         return $this->documentManager
-            ->createQuery('labeling_api', 'labeled_thing_in_frame')
-            ->setStartKey($startKey)
-            ->setEndKey($endKey)
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
+            ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameNumber()])
+            ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameNumber()])
             ->onlyDocs(true)
             ->execute();
-    }
-
-    public function getlabelingTasks(Model\LabeledThing $labeledThing)
-    {
-        $this->documentManager->find(Model\LabelingTask::class, $labeledThing->getTaskId());
     }
 
     public function save(Model\LabeledThing $labeledThing)

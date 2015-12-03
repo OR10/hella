@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api\Task;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/task")
  * @Rest\Route(service="annostation.labeling_api.controller.api.task.interpolate")
+ *
+ * @CloseSession
  */
 class Interpolate extends Controller\Base
 {

@@ -68,8 +68,14 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
         </service>
 
+        <service id="annostation.labeling_api.controller.api.task.timer" class="AppBundle\Controller\Api\Task\Timer">
+        </service>
+
         <service id="annostation.labeling_api.controller.api.status" class="AppBundle\Controller\Api\Status">
             <argument type="service" id="annostation.labeling_api.database.facade.status" />
+        </service>
+
+        <service id="annostation.labeling_api.controller.api.current_user" class="AppBundle\Controller\Api\CurrentUser">
         </service>
     </services>
 </container>

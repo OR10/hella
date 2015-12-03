@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api\Task;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/task")
  * @Rest\Route(service="annostation.labeling_api.controller.api.task.labeled_thing")
+ *
+ * @CloseSession
  */
 class LabeledThing extends Controller\Base
 {

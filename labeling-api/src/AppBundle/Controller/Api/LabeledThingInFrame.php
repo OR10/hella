@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception;
 /**
  * @Rest\Prefix("/api/labeledThingInFrame")
  * @Rest\Route(service="annostation.labeling_api.controller.api.labeled_thing_in_frame")
+ *
+ * @CloseSession
  */
 class LabeledThingInFrame extends Controller\Base
 {

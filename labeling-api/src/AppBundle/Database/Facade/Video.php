@@ -29,7 +29,7 @@ class Video
     public function findAll()
     {
         $result = $this->documentManager
-            ->createQuery('labeling_api', 'video')
+            ->createQuery('annostation_video', 'by_id')
             ->onlyDocs(true)
             ->execute();
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
 use AppBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
+ *
+ * @CloseSession
  */
 class Index extends Base
 {

@@ -28,7 +28,7 @@ class LabelingTask
     public function findAll()
     {
         return $this->documentManager
-            ->createQuery('labeling_api', 'task_list')
+            ->createQuery('annostation_labeling_task', 'by_id')
             ->onlyDocs(true)
             ->execute();
     }
@@ -69,7 +69,7 @@ class LabelingTask
         }
 
         return $this->documentManager
-            ->createQuery('labeling_api', 'labeled_frame')
+            ->createQuery('annostation_labeled_frame', 'by_taskid_framenumber')
             ->setStartKey($startKey)
             ->setEndKey($endKey)
             ->onlyDocs(true)
@@ -79,7 +79,7 @@ class LabelingTask
     public function getLabeledThings(Model\LabelingTask $labelingTask)
     {
         return $this->documentManager
-            ->createQuery('labeling_api', 'labeled_thing')
+            ->createQuery('annostation_labeled_thing', 'by_taskid')
             ->setStartKey($labelingTask->getId())
             ->setEndKey($labelingTask->getId())
             ->onlyDocs(true)

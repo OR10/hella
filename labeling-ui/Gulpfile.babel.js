@@ -11,6 +11,8 @@ import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor';
 import ip from 'ip';
 import chokidar from 'chokidar';
 import {exec} from 'child_process';
+import {default as svgstore} from 'gulp-svgstore';
+import {default as svgmin} from 'gulp-svgmin';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -103,7 +105,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
   run(
     'clean',
     'build-public',
-    ['build-templates', 'build-sass', 'build-fonts'],
+    ['build-templates', 'build-sass', 'build-fonts', 'build-icons'],
     () => {
       const devServer = new DevServer({
         'baseURL': './',
@@ -168,7 +170,7 @@ gulp.task('build-public', () => {
 gulp.task('build', next => run(
   'build-public',
   'build-templates',
-  ['build-javascript', 'build-sass', 'build-fonts'],
+  ['build-javascript', 'build-sass', 'build-fonts', 'build-icons'],
   next
 ));
 
@@ -296,6 +298,31 @@ gulp.task('build-fonts', (next) => {
       .pipe(gulp.dest(`${paths.dir.fonts}`))
       .on('end', next);
   });
+});
+
+gulp.task('build-icons', () => {
+  return gulp
+    .src('Public/Images/icons/*.svg')
+    .pipe(svgmin((file) => {
+      const prefix = path.basename(file.relative, path.extname(file.relative));
+      return {
+        plugins: [{
+          convertColors: {
+            names2hex: true,
+            rgb2hex: true,
+          },
+        }, {
+          removeComments: true,
+        }, {
+          cleanupIDs: {
+            prefix: prefix + '-',
+            minify: true,
+          },
+        }],
+      };
+    }))
+    .pipe(svgstore())
+    .pipe(gulp.dest(`${paths.dir.distribution}`));
 });
 
 gulp.task('deploy', () => {
