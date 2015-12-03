@@ -1,6 +1,12 @@
-<div class="row">
-    <header task="vm.task"></header>
-    <div class="col-md-9">
+<header task="vm.task"
+        user="vm.user"
+></header>
+<div class="main grid-block">
+    <div class="grid-content small-5 contain-left sidebar-left">
+        Task Manager
+    </div>
+
+    <div class="grid-content viewer">
         <viewer labeled-things-in-frame="vm.labeledThingsInFrame"
                 labeled-things="vm.labeledThings"
                 selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
@@ -12,25 +18,9 @@
                 filters="vm.filters"
         ></viewer>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="media-controls-container">
-                <media-controls labeled-things-in-frame="vm.labeledThingsInFrame"
-                                 labeled-things="vm.labeledThings"
-                                 selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
-                                 selected-labeled-thing="vm.selectedLabeledThing"
-                                 frame-position="vm.framePosition"
-                                 active-tool="vm.activeTool"
-                                 selected-drawing-tool="vm.selectedDrawingTool"
-                                 filters="vm.filters"
-                                 task="vm.task"
-                                 playing="vm.playing"
-                ></media-controls>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label-selector labeled-object="vm.labeledFrame"
+    <div class="grid-content small-5 contain-right sidebar-right">
+        <label-selector class="uses-bootstrap-3"
+                        labeled-object="vm.labeledFrame"
                         structure="vm.labeledFrameStructure"
                         annotation="vm.labeledFrameAnnotation"
                         task="vm.task"
@@ -47,3 +37,17 @@
         ></label-selector>
     </div>
 </div>
+
+<media-controls class="task-bar grid-block"
+                labeled-things-in-frame="vm.labeledThingsInFrame"
+                labeled-things="vm.labeledThings"
+                selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
+                selected-labeled-thing="vm.selectedLabeledThing"
+                frame-position="vm.framePosition"
+                active-tool="vm.activeTool"
+                selected-drawing-tool="vm.selectedDrawingTool"
+                filters="vm.filters"
+                task="vm.task"
+                playing="vm.playing"
+></media-controls>
+
