@@ -61,47 +61,51 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Put("/{documentId}")
+     * @Rest\Put("/{labeledThingInFrame}")
      *
-     * @param                        $documentId
-     * @param HttpFoundation\Request $request
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param HttpFoundation\Request    $request
      *
      * @return \FOS\RestBundle\View\View
      *
      * @internal param HttpFoundation\Request $request
      */
-    public function putLabeledThingInFrameAction($documentId, HttpFoundation\Request $request)
-    {
-        $frameNumber = $request->request->get('frameNumber');
-        $shapes      = $request->request->get('shapes', []);
-        $classes     = $request->request->get('classes', []);
-        $incomplete  = $request->request->get('incomplete');
+    public function putLabeledThingInFrameAction(
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        HttpFoundation\Request $request
+    ) {
+        $labeledThingId = $request->request->get('labeledThingId');
+        $frameNumber    = $request->request->get('frameNumber');
+        $classes        = $request->request->get('classes', []);
+        $shapes         = $request->request->get('shapes', []);
 
-        if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
+        if ($labeledThingId === null || $frameNumber === null || !is_array($classes) || !is_array($shapes)) {
             throw new Exception\BadRequestHttpException();
         }
 
-        if ($request->request->get('rev') === null) {
-            $labeledThing        = $this->labeledThingFacade->find($request->request->get('labeledThingId'));
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
-            $labeledThingInFrame->setId($documentId);
-        } else {
-            if (($labeledThingInFrame = $this->labeledThingInFrameFacade->find($documentId)) === null) {
+        if ($labeledThingInFrame === null) {
+            if (($labeledThing = $this->labeledThingFacade->find($labeledThingId)) === null) {
                 throw new Exception\NotFoundHttpException();
             }
-
-            if ($labeledThingInFrame->getRev() !== $request->request->get('rev')) {
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+            $labeledThingInFrame->setId($request->request->get('labeledThingInFrame'));
+        } else {
+            if ($request->request->get('rev') !== $labeledThingInFrame->getRev()) {
                 throw new Exception\ConflictHttpException();
             }
 
-            if ($labeledThingInFrame->getFrameNumber() !== (int) $frameNumber) {
+            if ($labeledThingId !== $labeledThingInFrame->getLabeledThingId()) {
+                throw new Exception\BadRequestHttpException();
+            }
+
+            if ((int) $frameNumber !== $labeledThingInFrame->getFrameNumber()) {
                 throw new Exception\BadRequestHttpException();
             }
         }
 
         $labeledThingInFrame->setClasses($classes);
         $labeledThingInFrame->setShapes($shapes);
-        $labeledThingInFrame->setIncomplete($incomplete);
+        $labeledThingInFrame->setIncomplete($request->request->get('incomplete'));
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 
         return View\View::create()->setData(['result' => $labeledThingInFrame]);
