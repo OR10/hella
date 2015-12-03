@@ -105,7 +105,7 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
      *
-     * @param Model\LabelingTask $taskId
+     * @param Model\LabelingTask $task
      * @param int                $frameNumber
      *
      * @return \FOS\RestBundle\View\View
