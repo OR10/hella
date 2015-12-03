@@ -127,38 +127,30 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Put("/{task}/labeledThing/{labeledThingId}")
+     * @Rest\Put("/{task}/labeledThing/{labeledThing}")
      *
-     * @param Model\LabelingTask     $task
-     * @param string                 $labeledThingId
-     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask      $task
+     * @param Model\LabeledThing|null $labeledThing
+     * @param HttpFoundation\Request  $request
      *
      * @return \FOS\RestBundle\View\View
      */
     public function updateLabeledThingAction(
         Model\LabelingTask $task,
-        $labeledThingId,
+        Model\LabeledThing $labeledThing = null,
         HttpFoundation\Request $request
     ) {
-        $revision = $request->request->get('rev');
-
-        if ($revision === null) {
+        if ($labeledThing === null) {
             $labeledThing = new Model\LabeledThing($task);
-            $labeledThing->setId($labeledThingId);
-        } else {
-            $labeledThing = $this->labeledThingFacade->find($labeledThingId);
+            $labeledThing->setId($request->request->get('labeledThing'));
+        }
 
-            if ($labeledThing === null) {
-                throw new Exception\NotFoundHttpException();
-            }
+        if ($labeledThing->getTaskId() !== $task->getId()) {
+            throw new Exception\BadRequestHttpException();
+        }
 
-            if ($labeledThing->getRev() !== $revision) {
-                throw new Exception\ConflictHttpException();
-            }
-
-            if ($labeledThing->getTaskId() !== $task->getId()) {
-                throw new Exception\BadRequestHttpException();
-            }
+        if ($request->request->get('rev') !== $labeledThing->getRev()) {
+            throw new Exception\ConflictHttpException();
         }
 
         $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
