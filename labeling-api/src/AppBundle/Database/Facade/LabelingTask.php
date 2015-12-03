@@ -124,19 +124,9 @@ class LabelingTask
 
     public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
     {
-        $labeledThingIds = $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'by_taskId_frameNumber')
-            ->setKey([$labelingTask->getId(), (int) $frameNumber])
-            ->execute();
-
-        $keys = [];
-        foreach ($labeledThingIds as $labeledThingId) {
-            $keys[] = [$labeledThingId['value'], (int) $frameNumber];
-        }
-
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
-            ->setKeys($keys)
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
+            ->setKey([$labelingTask->getId(), (int) $frameNumber])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

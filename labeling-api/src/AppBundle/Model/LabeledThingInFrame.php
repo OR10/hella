@@ -37,6 +37,11 @@ class LabeledThingInFrame
     /**
      * @CouchDB\Field(type="string")
      */
+    private $taskId;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $labeledThingId;
 
     /**
@@ -61,6 +66,7 @@ class LabeledThingInFrame
         array $classes = [],
         array $shapes = []
     ) {
+        $this->taskId         = $labeledThing->getTaskId();
         $this->labeledThingId = $labeledThing->getId();
         $this->frameNumber    = $frameNumber;
         $this->classes        = $classes;
@@ -74,6 +80,7 @@ class LabeledThingInFrame
     {
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
+        $copy->taskId         = $this->taskId;
         $copy->labeledThingId = $this->labeledThingId;
         $copy->frameNumber    = $this->frameNumber;
         $copy->classes        = $this->classes;
