@@ -9,7 +9,6 @@ use AppBundle\Service;
 use AppBundle\View;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use Doctrine\ODM\CouchDB;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -38,26 +37,18 @@ class LabeledThingInFrame extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @var CouchDB\DocumentManager
-     */
-    private $documentManager;
-
-    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
-     * @param CouchDB\DocumentManager    $documentManager
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabelingTask $labelingTaskFacade,
-        CouchDB\DocumentManager $documentManager
+        Facade\LabelingTask $labelingTaskFacade
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
-        $this->documentManager           = $documentManager;
     }
 
     /**
