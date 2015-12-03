@@ -105,8 +105,9 @@ class ThumbnailReelController {
       });
     });
 
-    $scope.$watchCollection('vm.selectedPaperShape.labeledThingInFrame.shapes', (newShapes) => {
-      if (!newShapes) {
+    $scope.$watchGroup(['vm.selectedPaperShape', 'vm.selectedPaperShape.isDraft'], ([newPaperShape, isDraft]) => {
+      if (!newPaperShape || isDraft) {
+        // Clear all thumbnail shape previews
         this.thumbnails.forEach(
           (thumbnail, index) => {
             const location = thumbnail.location;
@@ -274,7 +275,7 @@ class ThumbnailReelController {
       const frameNumber = this.thumbnails[index].location.frameNumber;
 
       if (frameNumber >= selectedLabeledThing.frameRange.startFrameNumber) {
-        this.selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
+        selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
         this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
       }
     }

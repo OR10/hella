@@ -22,10 +22,11 @@ class ViewerStageController {
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    */
-  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, entityIdService, paperShapeFactory) {
+  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, labeledThingGateway, entityIdService, paperShapeFactory) {
     /**
      * List of supported image types for this component
      *
@@ -64,6 +65,12 @@ class ViewerStageController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
 
     /**
      * @type {EntityIdService}
@@ -107,7 +114,7 @@ class ViewerStageController {
     this._ghostedLabeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     const eventDelegationLayer = new EventDelegationLayer();
-    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, paperShapeFactory);
+    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
     const backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
@@ -127,7 +134,7 @@ class ViewerStageController {
     });
 
     $scope.$watch('vm.selectedPaperShape', () => {
-      this.ghostedLabeledThingInFrame = null;
+      //this.ghostedLabeledThingInFrame = null;
     });
 
     // Reapply filters if they changed
@@ -247,14 +254,27 @@ class ViewerStageController {
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
+  /**
+   * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
+   * {@link LabeledObject}s to the backend
+   *
+   * @returns {AbortablePromise.<LabeledThingInFrame>}
+   * @private
+   */
   _onNewShape(shape) {
     console.log('new shape: ', shape);
-  //  this._$scope.$apply(() => {
-  //    this.selectedLabeledThingInFrame.shapes.push(shape);
-  //    this.activeTool = 'move';
-  //
-  //    this._labeledThingInFrameGateway.saveLabeledThingInFrame(this.selectedLabeledThingInFrame);
-  //  });
+
+    const newLabeledThingInFrame = shape.labeledThingInFrame;
+    const newLabeledThing = newLabeledThingInFrame.labeledThing;
+
+    // Store the newly created hierachy to the backend
+    this._labeledThingGateway.saveLabeledThing(newLabeledThing)
+      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .then(() => shape.publish());
+
+    this._$scope.$apply(() => {
+      this.activeTool = 'move';
+    });
   }
 }
 
@@ -265,6 +285,7 @@ ViewerStageController.$inject = [
   'taskFrameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
+  'labeledThingGateway',
   'entityIdService',
   'paperShapeFactory',
 ];

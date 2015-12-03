@@ -21,9 +21,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
+   * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    */
-  constructor($scope, drawingContextService, paperShapeFactory) {
+  constructor($scope, drawingContextService, entityIdService, paperShapeFactory) {
     super($scope, drawingContextService);
 
     /**
@@ -54,55 +55,55 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {RectangleDrawingTool}
      * @private
      */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context);
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context, entityIdService);
 
-    /**
-     * Tool for drawing ellipses
-     *
-     * @type {EllipseDrawingTool}
-     * @private
-     */
-    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context);
-
-    /**
-     * Tool for drawing circles
-     *
-     * @type {CircleDrawingTool}
-     * @private
-     */
-    this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context);
-
-    /**
-     * Tool for drawing paths
-     *
-     * @type {PathDrawingTool}
-     * @private
-     */
-    this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context);
-
-    /**
-     * Tool for drawing closed polygons
-     *
-     * @type {PolygonDrawingTool}
-     * @private
-     */
-    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context);
-
-    /**
-     * Tool for drawing lines
-     *
-     * @type {LineDrawingTool}
-     * @private
-     */
-    this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context);
-
-    /**
-     * Tool for drawing points
-     *
-     * @type {PointDrawingTool}
-     * @private
-     */
-    this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context);
+    ///**
+    // * Tool for drawing ellipses
+    // *
+    // * @type {EllipseDrawingTool}
+    // * @private
+    // */
+    //this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context);
+    //
+    ///**
+    // * Tool for drawing circles
+    // *
+    // * @type {CircleDrawingTool}
+    // * @private
+    // */
+    //this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context);
+    //
+    ///**
+    // * Tool for drawing paths
+    // *
+    // * @type {PathDrawingTool}
+    // * @private
+    // */
+    //this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context);
+    //
+    ///**
+    // * Tool for drawing closed polygons
+    // *
+    // * @type {PolygonDrawingTool}
+    // * @private
+    // */
+    //this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context);
+    //
+    ///**
+    // * Tool for drawing lines
+    // *
+    // * @type {LineDrawingTool}
+    // * @private
+    // */
+    //this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context);
+    //
+    ///**
+    // * Tool for drawing points
+    // *
+    // * @type {PointDrawingTool}
+    // * @private
+    // */
+    //this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context);
 
     //$scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
     //  if (labeledThingInFrame === null) {
@@ -146,6 +147,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.addLabeledThingsInFrame(addedLabeledThingsInFrame);
     });
 
+    $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+      if (oldShape !== null) {
+        console.log('deselect shape: ', oldShape.id);
+        oldShape.deselect();
+      }
+
+      if (newShape) {
+        console.log('select shape: ', newShape.id);
+        newShape.select();
+      }
+    });
+
     this._shapeMoveTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
@@ -155,12 +168,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     this._rectangleDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._ellipseDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    //this._ellipseDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    //this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    //this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    //this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    //this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    //this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
   }
 
   _onLayerClick(event) {
@@ -174,51 +187,22 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
 
       if (hitResult) {
-        this._updateSelectedShape(hitResult.item);
+        this._$scope.$apply(() => {
+          this._$scope.vm.selectedPaperShape = hitResult.item;
+        });
       } else {
-        this._clearSelectedShape();
+        this._$scope.$apply(() => {
+          this._$scope.vm.selectedPaperShape = null;
+        });
       }
     });
   }
 
-  _updateSelectedShape(shape) {
-    if (this._$scope.vm.selectedPaperShape && this._$scope.vm.selectedPaperShape.id === shape.id) {
-      console.log('no selection change: ', shape.id);
-      // Selection did not change
-      return;
-    }
-
-    if (this._$scope.vm.selectedPaperShape !== null) {
-      console.log('deselect shape: ', this._$scope.vm.selectedPaperShape.id);
-      this._$scope.vm.selectedPaperShape.deselect();
-    }
-
-    console.log('select shape: ', shape.id);
-    shape.select();
-
+  _onNewShape(shape) {
     this._$scope.$apply(() => {
       this._$scope.vm.selectedPaperShape = shape;
     });
-  }
-
-  _clearSelectedShape() {
-    if (!this._$scope.vm.selectedPaperShape) {
-      console.log('Nothing to clear');
-      return;
-    }
-
-    console.log('clear selection: ', this._$scope.vm.selectedPaperShape.id);
-    this._$scope.vm.selectedPaperShape.deselect();
-
-    this._$scope.$apply(() => {
-      this._$scope.vm.selectedPaperShape = null;
-    });
-  }
-
-  _onNewShape(shape) {
     this.emit('shape:new', shape);
-    shape.select();
-    this._updateSelectedShape(shape);
   }
 
   /**
@@ -231,24 +215,24 @@ class ThingLayer extends PanAndZoomPaperLayer {
       case 'rectangle':
         this._rectangleDrawingTool.activate();
         break;
-      case 'ellipse':
-        this._ellipseDrawingTool.activate();
-        break;
-      case 'circle':
-        this._circleDrawingTool.activate();
-        break;
-      case 'path':
-        this._pathDrawingTool.activate();
-        break;
-      case 'polygon':
-        this._polygonDrawingTool.activate();
-        break;
-      case 'line':
-        this._lineDrawingTool.activate();
-        break;
-      case 'point':
-        this._pointDrawingTool.activate();
-        break;
+      //case 'ellipse':
+      //  this._ellipseDrawingTool.activate();
+      //  break;
+      //case 'circle':
+      //  this._circleDrawingTool.activate();
+      //  break;
+      //case 'path':
+      //  this._pathDrawingTool.activate();
+      //  break;
+      //case 'polygon':
+      //  this._polygonDrawingTool.activate();
+      //  break;
+      //case 'line':
+      //  this._lineDrawingTool.activate();
+      //  break;
+      //case 'point':
+      //  this._pointDrawingTool.activate();
+      //  break;
       case 'scale':
         this._shapeScaleTool.activate();
         break;

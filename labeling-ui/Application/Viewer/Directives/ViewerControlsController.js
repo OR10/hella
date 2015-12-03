@@ -1,7 +1,5 @@
 import BrightnessFilter from '../Filters/BrightnessFilter';
 import ContrastFilter from '../Filters/ContrastFilter';
-import LabeledThing from '../../LabelingData/Models/LabeledThing';
-import LabeledThingInFrame from '../../LabelingData/Models/LabeledThingInFrame';
 
 /**
  * Controller handling the control elements below the viewer frame
@@ -181,121 +179,54 @@ class ViewerControlsController {
     this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
   }
 
-  /**
-   * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
-   * {@link LabeledObject}s to the backend
-   *
-   * @returns {AbortablePromise.<LabeledThingInFrame>}
-   * @private
-   */
-  _createNewLabeledThingInFrame() {
-    const newLabeledThingId = this._entityIdService.getUniqueId();
-    const newLabeledThingInFrameId = this._entityIdService.getUniqueId();
-
-    const newLabeledThing = new LabeledThing({
-      id: newLabeledThingId,
-      classes: [],
-      incomplete: true,
-      task: this.task,
-      frameRange: {
-        startFrameNumber: this.framePosition.position,
-        endFrameNumber: this.framePosition.position,
-      },
-    });
-
-    const newLabeledThingInFrame = new LabeledThingInFrame({
-      id: newLabeledThingInFrameId,
-      classes: [],
-      incomplete: true,
-      frameNumber: this.framePosition.position,
-      labeledThing: newLabeledThing,
-      shapes: [],
-    });
-
-    return this._labeledThingGateway.saveLabeledThing(newLabeledThing)
-      .then(() => {
-        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame);
-      })
-      .then(() => {
-        /* @TODO maybe we don't need to wait for the backend before we update the scope here but i left it in for now
-         * in lieu of proper error handling
-         */
-        this.labeledThingsInFrame[newLabeledThingInFrame.id] = newLabeledThingInFrame;
-
-        //@TODO: Handle properly after refactoring to only use selectedPaperShape
-        //       Most likely this needs to be moved to the thing layer somehow
-//        this.selectedLabeledThingInFrame = newLabeledThingInFrame;
-      });
-  }
 
   /**
    * Handle the creation of new rectangle
    */
   handleNewLabeledThingClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'rectangle';
-      });
+    this.activeTool = 'rectangle';
   }
 
   /**
    * Handle the creation of new ellipse
    */
   handleNewEllipseClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'ellipse';
-      });
+    this.activeTool = 'ellipse';
   }
 
   /**
    * Handle the creation of new circle
    */
   handleNewCircleClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'circle';
-      });
+    this.activeTool = 'circle';
   }
 
   /**
    * Handle the creation of new path
    */
   handleNewPathClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'path';
-      });
+    this.activeTool = 'path';
   }
 
   /**
    * Handle the creation of new line
    */
   handleNewLineClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'line';
-      });
+    this.activeTool = 'line';
   }
 
   /**
    * Handle the creation of new polygon
    */
   handleNewPolygonClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'polygon';
-      });
+    this.activeTool = 'polygon';
   }
 
   /**
    * Handle the creation of new point
    */
   handleNewPointClicked() {
-    this._createNewLabeledThingInFrame()
-      .then(() => {
-        this.activeTool = 'point';
-      });
+    this.activeTool = 'point';
   }
 
   /**
