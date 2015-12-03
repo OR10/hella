@@ -59,6 +59,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             json_encode(
                 array(
                     'rev' => $labeledThingInFrame->getRev(),
+                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
                     'frameNumber' => 5,
@@ -114,6 +115,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             json_encode(
                 array(
                     'rev' => 'some_invalid_revision',
+                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
                     'frameNumber' => 5,
