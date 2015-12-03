@@ -25,3 +25,11 @@
  * @name Task#frameRange
  * @type {FrameRange}
  */
+
+/**
+ * List of available ImageTypes
+ *
+ * @name Task#requiredImageTypes
+ * @type {Array.<string>}
+ */
+

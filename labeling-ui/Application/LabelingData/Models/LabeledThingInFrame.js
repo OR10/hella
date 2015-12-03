@@ -85,6 +85,19 @@ class LabeledThingInFrame extends LabeledObject {
   }
 
   /**
+   * Convert this model into a datastructure suitable for backend storage
+   *
+   * @return {Object}
+   */
+  toJSON() {
+    const {frameNumber, labeledThing, shapes, ghost} = this;
+    return Object.assign(super.toJSON(), {
+      frameNumber, shapes, ghost,
+      labeledThingId: labeledThing.id,
+    });
+  }
+
+  /**
    * @param {string} labeledThingInFrameId
    * @param {Array.<Object>} shapes
    * @returns {Array.<Object>}

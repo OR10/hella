@@ -82,17 +82,35 @@ describe('LabeledThingInFrameGateway', () => {
   });
 
   it('should save a labeled thing in frame', done => {
-    const labeledThinIngFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
-    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThinIngFrame.id}`;
-    const expectedResult = {result: labeledThinIngFrame};
+    const labeledThingInFrame = new LabeledThingInFrame({
+      id: 'abc',
+      rev: 'bcd',
+      shapes: [{type: 'rectangle'}],
+      classes: [],
+      incomplete: true,
+      frameNumber: 23,
+      ghost: false,
+      labeledThing: {id: 'some-labeled-thing-id'},
+    });
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrame.id}`;
+    const expectedResult = {result: {
+      id: 'abc',
+      rev: 'bcd',
+      shapes: [{type: 'rectangle'}],
+      classes: [],
+      incomplete: true,
+      frameNumber: 23,
+      ghost: false,
+      labeledThingId: 'some-labeled-thing-id',
+    }};
 
     $httpBackend
       .expect('PUT', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.saveLabeledThingInFrame(labeledThinIngFrame)
+    gateway.saveLabeledThingInFrame(labeledThingInFrame)
       .then(result => {
-        expect(result).toEqual(labeledThinIngFrame);
+        expect(result.toJSON()).toEqual(expectedResult.result);
         done();
       });
 
@@ -104,7 +122,7 @@ describe('LabeledThingInFrameGateway', () => {
       id: 'abc',
       rev: 'bcd',
       shapes: [{type: 'rectangle'}],
-      ghost: true
+      ghost: true,
     });
 
     gateway.saveLabeledThingInFrame(labeledThinIngFrame)

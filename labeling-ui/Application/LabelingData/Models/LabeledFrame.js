@@ -27,6 +27,18 @@ class LabeledFrame extends LabeledObject {
      */
     this.frameNumber = labeledFrame.frameNumber;
   }
+
+  /**
+   * Convert this model into a datastructure suitable for backend storage
+   *
+   * @return {Object}
+   */
+  toJSON() {
+    const {taskId, frameNumber} = this;
+    return Object.assign(super.toJSON(), {
+      taskId, frameNumber,
+    });
+  }
 }
 
 export default LabeledFrame;
