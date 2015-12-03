@@ -31,6 +31,22 @@
                 ng-click="vm.handlePreviousFrameClicked()">
             <i class="fa fa-step-backward"></i>
         </button>
+        <button class="btn btn-default"
+                ng-click="vm.handlePlay()"
+                ng-if="!vm.playing"
+            >
+            <svg class="icon">
+                <use xlink:href="icons.svg#control-play"></use>
+            </svg>
+        </button>
+        <button class="btn btn-default"
+                ng-click="vm.handlePause()"
+                ng-if="vm.playing"
+            >
+            <svg class="icon">
+                <use xlink:href="icons.svg#control-pause"></use>
+            </svg>
+        </button>
         <button tabIndex="4"
                 class="btn btn-default"
                 ng-click="vm.handleNextFrameClicked()">

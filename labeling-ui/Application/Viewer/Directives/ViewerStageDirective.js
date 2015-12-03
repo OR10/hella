@@ -19,6 +19,7 @@ export default class ViewerStageDirective {
       filters: '=',
       selectedLabeledThingInFrame: '=',
       selectedLabeledThing: '=',
+      playing: '=',
     };
 
     this.controller = ViewerStageController;

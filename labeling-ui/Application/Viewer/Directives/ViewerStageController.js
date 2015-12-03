@@ -25,8 +25,9 @@ class ViewerStageController {
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
+   * @param {Object} applicationConfig
    */
-  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, entityIdService, paperShapeFactory) {
+  constructor($scope, $element, drawingContextService, taskFrameLocationGateway, frameGateway, labeledThingInFrameGateway, entityIdService, paperShapeFactory, applicationConfig) {
     /**
      * List of supported image types for this component
      *
@@ -197,6 +198,19 @@ class ViewerStageController {
         this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThingId];
       }
     });
+
+    $scope.$watch('vm.playing', (playingNow, playingBefore) => {
+      if (playingNow === playingBefore) {
+        return;
+      }
+
+      if (playingNow) {
+        this._startPlaying();
+        return;
+      }
+
+      this._stopPlaying();
+    });
   }
 
   /**
@@ -263,6 +277,14 @@ class ViewerStageController {
       this._labeledThingInFrameGateway.saveLabeledThingInFrame(this.selectedLabeledThingInFrame);
     });
   }
+
+  _startPlaying() {
+
+  }
+
+  _stopPlaying() {
+
+  }
 }
 
 ViewerStageController.$inject = [
@@ -274,6 +296,8 @@ ViewerStageController.$inject = [
   'labeledThingInFrameGateway',
   'entityIdService',
   'paperShapeFactory',
+  'applicationConfig',
+  '$interval',
 ];
 
 export default ViewerStageController;

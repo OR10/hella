@@ -237,6 +237,14 @@ class ViewerControlsController {
     // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
     // @TODO: Show some sort of loading indicator, while interpolation is running
   }
+
+  handlePlay() {
+    this.playing = true;
+  }
+
+  handlePause() {
+    this.playing = false;
+  }
 }
 
 ViewerControlsController.$inject = [

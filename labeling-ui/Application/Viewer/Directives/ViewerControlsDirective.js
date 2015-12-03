@@ -21,7 +21,8 @@ class ViewerControlsDirective {
       selectedLabeledThing: '=',
       labeledThingsInFrame: '=',
       labeledThings: '=',
-    };
+      playing: '=',
+  };
   }
 }
 
