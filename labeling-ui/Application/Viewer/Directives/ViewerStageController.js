@@ -269,7 +269,6 @@ class ViewerStageController {
       console.warn('frame change already in progress');
     }
 
-    console.time('frame change');
     this._frameChangeInProgress = true;
     const frameChangePromises = [];
 
@@ -326,7 +325,6 @@ class ViewerStageController {
 
     Promise.all(frameChangePromises).then(() => {
       this._frameChangeInProgress = false;
-      console.timeEnd('frame change');
     });
   }
 
