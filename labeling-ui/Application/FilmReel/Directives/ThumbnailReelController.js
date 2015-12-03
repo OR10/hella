@@ -202,8 +202,8 @@ class ThumbnailReelController {
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
-        offset + 1,
-      this.selectedLabeledThingInFrame.labeledThingId,
+      offset + 1,
+      this.selectedLabeledThingInFrame.labeledThing,
       0,
       limit
       )

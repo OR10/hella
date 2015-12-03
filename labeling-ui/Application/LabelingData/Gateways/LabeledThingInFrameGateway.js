@@ -7,8 +7,10 @@ class LabeledThingInFrameGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {$q} $q
+   * @param {LabeledThingGateway} labeledThingGateway
    */
-  constructor(apiService, bufferedHttp, $q) {
+  constructor(apiService, bufferedHttp, $q, labeledThingGateway) {
     /**
      * @type {BufferedHttp}
      */
@@ -23,6 +25,8 @@ class LabeledThingInFrameGateway {
      * @type {$q}
      */
     this._$q = $q;
+
+    this._labeledThingGateway = labeledThingGateway;
   }
 
   /**
@@ -40,13 +44,13 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result
-            .map(labeledThingInFrame => new LabeledThingInFrame(labeledThingInFrame));
+          return this._associateWithLabeledThings(task, response.data.result)
         }
 
         throw new Error('Failed loading labeled thing in frame list');
       });
   }
+
 
   /**
    * Retrieve a {@link LabeledThingInFrame} which is associated to a specific
@@ -57,22 +61,26 @@ class LabeledThingInFrameGateway {
    * Optionally an `offset` and `limit` may be specified, which relates to the specified `frameNumber`.
    * By default `offset = 0` and `limit = 1` is assumed.
    *
-   * @param task
-   * @param frameNumber
-   * @param labeledThingId
-   * @param offset
-   * @param limit
+   * @param {Task} task
+   * @param {int} frameNumber
+   * @param {LabeledThing} labeledThing
+   * @param {int?} offset
+   * @param {int?} limit
    */
-  getLabeledThingInFrame(task, frameNumber, labeledThingId, offset = 0, limit = 1) {
+  getLabeledThingInFrame(task, frameNumber, labeledThing, offset = 0, limit = 1) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThingId}`,
+      `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThing.id}`,
       {offset, limit}
     );
     return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result
-            .map(labeledThingInFrame => new LabeledThingInFrame(labeledThingInFrame));
+          const labeledThingsInFrameData = response.data.result;
+          return labeledThingsInFrameData.map(
+            data => new LabeledThingInFrame(
+              Object.assign({}, data, {labeledThing})
+            )
+          );
         }
 
         throw new Error('Failed loading labeled thing in frame');
@@ -80,23 +88,26 @@ class LabeledThingInFrameGateway {
   }
 
   /**
-   * Retrieves the {@link LabeledThingInFrame} with the given `id`
+   * Retrieve the corresponding {@link LabeledThing}s for each given `labeledThingInFrame`
    *
-   * @param {String} labeledThingInFrameId
+   * After the {@link LabeledThing} is Retrieved it will be combined into a new {@link LabeledThingInFrame}
    *
-   * @returns {AbortablePromise<LabeledThingInFrame|Error>}
+   * @param {Task} task
+   * @param {Object} labeledThingsInFrameData
+   * @returns {Promise.<Array.<LabeledThingInFrame>>}
+   * @private
    */
-  getLabeledThingInFrameById(labeledThingInFrameId) {
-    const url = this._apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrameId}`
-    );
-    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return new LabeledThingInFrame(response.data.result);
-        }
-
-        throw new Error('Failed loading labeled thing in frame');
+  _associateWithLabeledThings(task, labeledThingsInFrameData) {
+    return this._$q.all(
+      labeledThingsInFrameData.map(
+        data => this._labeledThingGateway.getLabeledThing(task, data.labeledThingId))
+      )
+      .then(labeledThings => {
+        return labeledThingsInFrameData.map(
+          (data, index) => new LabeledThingInFrame(
+            Object.assign({}, data, {labeledThing: labeledThings[index]})
+          )
+        );
       });
   }
 
@@ -121,7 +132,7 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledThingInFrame(response.data.result);
+          return new LabeledThingInFrame(Object.assign({}, response.data.result, labeledThingInFrame.labeledThing));
         }
 
         throw new Error('Failed updating labeled thing in frame');
@@ -154,6 +165,7 @@ LabeledThingInFrameGateway.$inject = [
   'ApiService',
   'bufferedHttp',
   '$q',
+  'labeledThingGateway',
 ];
 
 export default LabeledThingInFrameGateway;

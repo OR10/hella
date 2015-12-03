@@ -80,6 +80,7 @@ describe('BackendInterpolation', () => {
   it('should communicate with backend', done => {
     const task = {id: 'some-task-id'};
     const labeledThingId = 'some-labeled-thing-id';
+    const labeledThing = createLabeledThing(1, 200, task, labeledThingId);
     const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
     const frameRange = {startFrameNumber: 1, endFrameNumber: 100};
     const status = {status: 'success'};
@@ -89,7 +90,7 @@ describe('BackendInterpolation', () => {
       .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 0, limit: 100})
       .respond(200, expectedResult);
 
-    interpolation.execute(task, labeledThingId, frameRange)
+    interpolation.execute(task, labeledThing, frameRange)
       .then(result => {
         expect(result).toEqual(status);
         done();
@@ -102,6 +103,7 @@ describe('BackendInterpolation', () => {
   it('should calculate limit and offset', done => {
     const task = {id: 'some-task-id'};
     const labeledThingId = 'some-labeled-thing-id';
+    const labeledThing = createLabeledThing(50, 200, task, labeledThingId);
     const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
     const frameRange = {startFrameNumber: 101, endFrameNumber: 150};
     const status = {status: 'success'};
@@ -109,14 +111,14 @@ describe('BackendInterpolation', () => {
 
     labeledThingGateway.getLabeledThing = jasmine.createSpy('LabeledThingGateway#getLabeledThing')
       .and.returnValue(
-        $q.resolve(createLabeledThing(50, 200))
+        $q.resolve(labeledThing)
       );
 
     $httpBackend
       .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 51, limit: 50})
       .respond(200, expectedResult);
 
-    interpolation.execute(task, labeledThingId, frameRange)
+    interpolation.execute(task, labeledThing, frameRange)
       .then(result => {
         expect(result).toEqual(status);
         done();

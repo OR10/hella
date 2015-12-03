@@ -5,11 +5,14 @@ import Common from 'Application/Common/Common';
 
 import LabeledThingInFrameGateway from 'Application/LabelingData/Gateways/LabeledThingInFrameGateway';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 
 describe('LabeledThingInFrameGateway', () => {
   let $httpBackend;
   let gateway;
   let bufferedHttp;
+  let $q;
+  let $rootScope;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -24,6 +27,12 @@ describe('LabeledThingInFrameGateway', () => {
         },
       });
 
+      $provide.value('labeledThingGateway', {
+        getLabeledThing(task, labeledThingId) {
+          return $q.resolve(new LabeledThing({task, id: labeledThingId}));
+        },
+      });
+
       bufferedHttpProvider.disableAutoExtractionAndInjection();
       bufferedHttpProvider.enableFlushFunctionality();
     });
@@ -32,6 +41,8 @@ describe('LabeledThingInFrameGateway', () => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingInFrameGateway);
       bufferedHttp = $injector.get('bufferedHttp');
+      $q = $injector.get('$q');
+      $rootScope = $injector.get('$rootScope');
     });
   });
 
@@ -43,37 +54,27 @@ describe('LabeledThingInFrameGateway', () => {
     const task = {id: 'someTaskId234'};
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}`;
-    const expectedResult = [
-      new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]}),
-      new LabeledThingInFrame({id: 'cde', rev: 'def', shapes: [{type: 'circle'}]}),
+    const response = [
+      {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}], labeledThingId: 'uvw'},
+      {id: 'cde', rev: 'def', shapes: [{type: 'circle'}], labeledThingId: 'xyz'},
     ];
+    const expectedResult = response.map(
+      data => new LabeledThingInFrame(
+        Object.assign({}, data, {
+          labeledThing: new LabeledThing(
+            {task, id: data.labeledThingId}
+          ),
+        })
+      )
+    );
 
     $httpBackend
       .expect('GET', expectedUrl)
-      .respond(200, {result: expectedResult});
+      .respond(200, {result: response});
 
     gateway.listLabeledThingInFrame(task, frameNumber)
       .then(result => {
         expect(result).toEqual(expectedResult);
-        done();
-      });
-
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
-  });
-
-  it('should get a labeled thing in frame by id', done => {
-    const labeledThingInFrameId = '2';
-    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrameId}`;
-    const labeledThingInFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}]});
-    const expectedResult = {result: labeledThingInFrame};
-
-    $httpBackend
-      .expect('GET', expectedUrl)
-      .respond(200, expectedResult);
-
-    gateway.getLabeledThingInFrameById(labeledThingInFrameId)
-      .then(result => {
-        expect(result).toEqual(labeledThingInFrame);
         done();
       });
 
@@ -99,7 +100,12 @@ describe('LabeledThingInFrameGateway', () => {
   });
 
   it('should error if trying to save a Ghosted LabeledThingInFrame', done => {
-    const labeledThinIngFrame = new LabeledThingInFrame({id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}], ghost: true});
+    const labeledThinIngFrame = new LabeledThingInFrame({
+      id: 'abc',
+      rev: 'bcd',
+      shapes: [{type: 'rectangle'}],
+      ghost: true
+    });
 
     gateway.saveLabeledThingInFrame(labeledThinIngFrame)
       .catch(() => {
@@ -177,17 +183,21 @@ describe('LabeledThingInFrameGateway', () => {
     ['foo', 423, 'xyz', -23, 100, -23, 100],
   ], (taskId, frameNumber, labeledThingId, limit, offset, expectedOffset, expectedLimit) => {
     const task = {id: taskId};
+    const labeledThing = new LabeledThing({task, id: labeledThingId});
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThingId}?limit=${expectedLimit}&offset=${expectedOffset}`;
-    const expectedResult = [{id: 'testResult'}];
+    const response = [{labeledThingId, id: 'testResult'}];
+    const expectedResult = response.map(
+      item => new LabeledThingInFrame({labeledThing, id: 'testResult'})
+    );
 
     it('should request labeledThings by task, frameNumber and labeledThingId', done => {
       $httpBackend
         .expect('GET', expectedUrl)
-        .respond(200, {result: expectedResult});
+        .respond(200, {result: response});
 
-      gateway.getLabeledThingInFrame(task, frameNumber, labeledThingId, limit, offset)
+      gateway.getLabeledThingInFrame(task, frameNumber, labeledThing, limit, offset)
         .then(result => {
-          expect(result).toEqual(expectedResult.map(item => new LabeledThingInFrame(item)));
+          expect(result).toEqual(expectedResult);
           done();
         });
 

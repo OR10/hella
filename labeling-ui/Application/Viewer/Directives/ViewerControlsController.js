@@ -233,7 +233,7 @@ class ViewerControlsController {
   }
 
   handleInterpolation() {
-    this._interpolationService.interpolate('default', this.task, this.selectedLabeledThingInFrame.labeledThingId);
+    this._interpolationService.interpolate('default', this.task, this.selectedLabeledThingInFrame.labeledThing);
     // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
     // @TODO: Show some sort of loading indicator, while interpolation is running
   }

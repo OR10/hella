@@ -292,10 +292,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     const paperShapes = labeledThingInFrame.shapes.map(shape => {
       let selectedLabeledThingId = null;
       if (this._$scope.vm.selectedLabeledThingInFrame) {
-        selectedLabeledThingId = this._$scope.vm.selectedLabeledThingInFrame.labeledThingId;
+        selectedLabeledThingId = this._$scope.vm.selectedLabeledThingInFrame.labeledThing.id;
       }
 
-      const selected = labeledThingInFrame.labeledThingId === selectedLabeledThingId;
+      const selected = labeledThingInFrame.labeledThing.id === selectedLabeledThingId;
 
       return this._addShape(labeledThingInFrame, shape, false, selected);
     });

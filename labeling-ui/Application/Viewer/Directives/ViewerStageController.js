@@ -166,7 +166,7 @@ class ViewerStageController {
           this._labeledThingInFrameGateway.getLabeledThingInFrame(
             this.task,
             newPosition,
-            this.selectedLabeledThingInFrame.labeledThingId
+            this.selectedLabeledThingInFrame.labeledThing
           )
         ).then(labeledThingsInFrame => {
           const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
@@ -195,7 +195,7 @@ class ViewerStageController {
         // If the change is executed between to non ghosts the null is just what was already set anyway.
         this.ghostedLabeledThingInFrame = null;
         this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrame.id];
-        this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThingId];
+        this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThing.id];
       }
     });
 

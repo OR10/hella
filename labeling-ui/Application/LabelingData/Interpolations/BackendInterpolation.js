@@ -8,10 +8,9 @@ class BackendInterpolation {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
-   * @param {LabeledThingGateway} labeledThingGateway
    * @param {StatusGateway} statusGateway
    */
-  constructor(apiService, bufferedHttp, labeledThingGateway, statusGateway) {
+  constructor(apiService, bufferedHttp, statusGateway) {
     /**
      * @type {ApiService}
      * @private
@@ -25,12 +24,6 @@ class BackendInterpolation {
     this._bufferedHttp = bufferedHttp;
 
     /**
-     * @type {LabeledThingGateway}
-     * @private
-     */
-    this._labeledThingGateway = labeledThingGateway;
-
-    /**
      * @type {StatusGateway}
      * @private
      */
@@ -39,24 +32,21 @@ class BackendInterpolation {
 
   /**
    * @param {Task} task
-   * @param {string} labeledThingId
+   * @param {LabeledThing} labeledThing
    * @param {FrameRange} frameRange
    */
-  execute(task, labeledThingId, frameRange) {
-    return this._labeledThingGateway.getLabeledThing(task, labeledThingId)
-      .then(labeledThing => {
-        const url = this._apiService.getApiUrl(
-          `/task/${task.id}/interpolate/${labeledThingId}`
-        );
+  execute(task, labeledThing, frameRange) {
+    const url = this._apiService.getApiUrl(
+      `/task/${task.id}/interpolate/${labeledThing.id}`
+    );
 
-        const data = {
-          offset: frameRange.startFrameNumber - labeledThing.frameRange.startFrameNumber,
-          limit: frameRange.endFrameNumber - frameRange.startFrameNumber + 1,
-          type: this._getRemoteType(),
-        };
+    const data = {
+      offset: frameRange.startFrameNumber - labeledThing.frameRange.startFrameNumber,
+      limit: frameRange.endFrameNumber - frameRange.startFrameNumber + 1,
+      type: this._getRemoteType(),
+    };
 
-        return this._bufferedHttp.post(url, data, undefined, 'interpolate');
-      })
+    return this._bufferedHttp.post(url, data, undefined, 'interpolate')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -81,7 +71,6 @@ class BackendInterpolation {
 BackendInterpolation.$inject = [
   'ApiService',
   'bufferedHttp',
-  'labeledThingGateway',
   'statusGateway',
 ];
 
