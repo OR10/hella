@@ -13,6 +13,7 @@ class FilmReelDirective {
       filters: '=',
       selectedLabeledThingInFrame: '=',
       selectedLabeledThing: '=',
+      playing: '=',
     };
 
     this.template = FilmReelTemplate;

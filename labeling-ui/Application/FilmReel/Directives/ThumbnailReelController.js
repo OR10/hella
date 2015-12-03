@@ -87,22 +87,17 @@ class ThumbnailReelController {
 
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
-      this._$q.all([
-        this._frameLocationsBuffer.add(
-          this._loadFrameLocations(this.framePosition)
-        ),
-        this._labeledThingInFrameBuffer.add(
-          this._loadLabeledThingsInFrame(this.framePosition)
-        ),
-      ])
-      .then(([thumbnailLocations, labeledThingsInFrame]) => {
-        thumbnailLocations.forEach(
-          (location, index) => {
-            const labeledThingInFrame = labeledThingsInFrame[index];
-            this.thumbnails[index] = {location, labeledThingInFrame};
-          }
-        );
-      });
+      if (this.playing) {
+        return;
+      }
+
+      this._updateThumbnailData();
+    });
+
+    $scope.$watch('vm.playing', (playingNow, playingBefore) => {
+      if (playingBefore) {
+        this._updateThumbnailData();
+      }
     });
 
     $scope.$watchCollection('vm.selectedLabeledThingInFrame.shapes', (newShapes) => {
@@ -132,6 +127,25 @@ class ThumbnailReelController {
     });
 
     this.handleDrop = this.handleDrop.bind(this);
+  }
+
+  _updateThumbnailData() {
+    this._$q.all([
+        this._frameLocationsBuffer.add(
+          this._loadFrameLocations(this.framePosition)
+        ),
+        this._labeledThingInFrameBuffer.add(
+          this._loadLabeledThingsInFrame(this.framePosition)
+        ),
+      ])
+      .then(([thumbnailLocations, labeledThingsInFrame]) => {
+        thumbnailLocations.forEach(
+          (location, index) => {
+            const labeledThingInFrame = labeledThingsInFrame[index];
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
+        );
+      });
   }
 
   /**

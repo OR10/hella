@@ -10,14 +10,10 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 class TaskController {
   /**
    * @param {angular.Scope} $scope
-   * @param {angular.$q} $q
    * @param {{task: Task, video: Video}} initialData
-   * @param {LabeledThingGateway} labeledThingGateway
-   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
-   * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledThingGateway, labeledFrameGateway, abortablePromiseFactory) {
+  constructor($scope, initialData, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
@@ -34,17 +30,6 @@ class TaskController {
     this.video = initialData.video;
 
     /**
-     * @type {angular.$q}
-     */
-    this._$q = $q;
-
-    /**
-     * @type {AbortablePromiseFactory}
-     * @private
-     */
-    this._abortablePromiseFactory = abortablePromiseFactory;
-
-    /**
      * Currently active frame position to be displayed inside the Viewer
      *
      * This model will be manipulated by different directives in order to switch between frames.
@@ -54,23 +39,21 @@ class TaskController {
     this.framePosition = new FramePosition(this.task.frameRange);
 
     /**
-     * A structure holding all LabeledThingInFrames for the currently active frame
-     *
-     * @type {Object<string|LabeledThingInFrame>|null}
+     * @type {LabeledFrameGateway}
      */
-    this.labeledThingsInFrame = null;
+    this._labeledFrameGateway = labeledFrameGateway;
 
     /**
-     * A structure holding all LabeledThings for the currently active frame
-     *
-     * @type {Object<string|LabeledThing>|null}
+     * @TODO Move into LabelSelector when refactoring for different task types
+     * @type {AbortablePromiseRingBuffer}
      */
-    this.labeledThings = null;
+    this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     this.labeledThingStructure = labeledThingStructure;
     this.labeledThingAnnotation = labeledThingAnnotation;
 
     /**
+     * @TODO Move into LabelSelector when refactoring for different task types
      * The LabeledFrame for the currently active frame
      *
      * @type {LabeledFrame|null}
@@ -81,72 +64,19 @@ class TaskController {
     this.labeledFrameAnnotation = labeledFrameAnnotation;
 
     /**
-     * @type {Tool|null}
-     */
-    this.activeTool = null;
-
-    /**
-     * @type {LabeledThingInFrame|null}
-     */
-    this.selectedLabeledThingInFrame = null;
-
-    /**
      * Information about the labeling state of the `selectedLabeledThingInFrame`
      *
      * @type {boolean}
      */
     this.selectedLabeledThingInFrameCompletelyLabeled = false;
 
-    /**
-     * Due to an action selected DrawingTool, which should be activated when appropriate.
-     *
-     * @type {string}
-     */
-    this.selectedDrawingTool = null;
-
-    /**
-     * @type {LabeledThingInFrameGateway}
-     */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
-
-    /**
-     * @type {AbortablePromiseRingBuffer}
-     */
-    this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
-
-    /**
-     * @type {LabeledThingGateway}
-     */
-    this._labeledThingGateway = labeledThingGateway;
-
-    /**
-     * @type {LabeledFrameGateway}
-     */
-    this._labeledFrameGateway = labeledFrameGateway;
-
-    /**
-     * @type {AbortablePromiseRingBuffer}
-     */
-    this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     // Watch for changes of the Frame position to correctly update all
     // data structures for the new frame
     $scope.$watch('vm.framePosition.position', newFramePosition => {
-      this._handleFrameChange(newFramePosition);
+      this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
+        .then(labeledFrame => this.labeledFrame = labeledFrame);
     });
-  }
-
-  /**
-   * Load all {@link LabeledThingInFrame} for a corresponding frame
-   *
-   * The frameNumber is 1-Indexed
-   *
-   * @param {int} frameNumber
-   * @returns {AbortablePromise<LabeledThingInFrame[]>}
-   * @private
-   */
-  _loadLabeledThingsInFrame(frameNumber) {
-    return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
   }
 
   /**
@@ -158,48 +88,8 @@ class TaskController {
   _loadLabeledFrame(frameNumber) {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
-
-  /**
-   * Handle the change to new frame
-   *
-   * The frame change includes things like loading all frame relevant data from the backend,
-   * as well as propagating this information to all subcomponents
-   *
-   * @param {int} frameNumber
-   * @private
-   */
-  _handleFrameChange(frameNumber) {
-    this.labeledThingsInFrame = null;
-    this.labeledFrame = null;
-
-    this._labeledThingInFrameBuffer.add(
-      this._loadLabeledThingsInFrame(frameNumber)
-      )
-      .then(labeledThingsInFrame => {
-        this.labeledThingsInFrame = {};
-        this.labeledThings = {};
-
-        labeledThingsInFrame.forEach(labeledThingInFrame => {
-          this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-          this.labeledThings[labeledThingInFrame.labeledThing.id] = labeledThingInFrame.labeledThing;
-        });
-      });
-
-    this._labeledFrameBuffer.add(
-      this._loadLabeledFrame(frameNumber)
-      )
-      .then(labeledFrame => this.labeledFrame = labeledFrame);
-  }
 }
 
-TaskController.$inject = [
-  '$scope',
-  '$q',
-  'initialData',
-  'labeledThingInFrameGateway',
-  'labeledThingGateway',
-  'labeledFrameGateway',
-  'abortablePromiseFactory',
-];
+TaskController.$inject = ['$scope', 'initialData', 'labeledFrameGateway'];
 
 export default TaskController;

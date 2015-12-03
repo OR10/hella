@@ -14,6 +14,7 @@ class ThumbnailReelDirective {
       filters: '=',
       selectedLabeledThingInFrame: '=',
       selectedLabeledThing: '=',
+      playing: '=',
     };
 
     this.template = ThumbnailReelTemplate;
