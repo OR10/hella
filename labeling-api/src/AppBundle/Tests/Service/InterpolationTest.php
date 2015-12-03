@@ -87,7 +87,7 @@ class InterpolationTest extends Tests\KernelTestCase
         $this->interpolationService->addAlgorithm($algorithm);
         $this->interpolationService->interpolate('test', $labeledThing, $status);
 
-        $result = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, 3, 0, 2)->toArray();
+        $result = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, 3, 0, 2);
 
         $this->assertEquals($labeledThingsInFrame, $result);
         $this->assertEquals(Model\Interpolation\Status::SUCCESS, $status->getStatus());
