@@ -63,16 +63,16 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @Rest\Put("/{labeledThingInFrame}")
      *
-     * @param Model\LabeledThingInFrame $labeledThingInFrame
-     * @param HttpFoundation\Request    $request
+     * @param HttpFoundation\Request         $request
+     * @param Model\LabeledThingInFrame|null $labeledThingInFrame
      *
      * @return \FOS\RestBundle\View\View
      *
      * @internal param HttpFoundation\Request $request
      */
     public function putLabeledThingInFrameAction(
-        Model\LabeledThingInFrame $labeledThingInFrame = null,
-        HttpFoundation\Request $request
+        HttpFoundation\Request $request,
+        Model\LabeledThingInFrame $labeledThingInFrame = null
     ) {
         $labeledThingId = $request->request->get('labeledThingId');
         $frameNumber    = $request->request->get('frameNumber');
@@ -88,7 +88,7 @@ class LabeledThingInFrame extends Controller\Base
                 throw new Exception\NotFoundHttpException();
             }
             $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
-            $labeledThingInFrame->setId($request->request->get('labeledThingInFrame'));
+            $labeledThingInFrame->setId($request->attributes->get('_unresolvedLabeledThingInFrameId'));
         } else {
             if ($request->request->get('rev') !== $labeledThingInFrame->getRev()) {
                 throw new Exception\ConflictHttpException();

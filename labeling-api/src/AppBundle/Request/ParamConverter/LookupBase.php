@@ -28,7 +28,10 @@ abstract class LookupBase implements ParamConverter\ParamConverterInterface
         }
 
         if (($resolvedParameter = $this->resolveParameter($id)) === null) {
-            throw new Exception\NotFoundHttpException();
+            if (!$configuration->isOptional()) {
+                throw new Exception\NotFoundHttpException();
+            }
+            $request->attributes->set(sprintf("_unresolved%sId", ucfirst($param)), $id);
         }
 
         $request->attributes->set($param, $resolvedParameter);

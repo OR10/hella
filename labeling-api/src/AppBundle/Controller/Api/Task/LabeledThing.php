@@ -132,19 +132,19 @@ class LabeledThing extends Controller\Base
      * @Rest\Put("/{task}/labeledThing/{labeledThing}")
      *
      * @param Model\LabelingTask      $task
-     * @param Model\LabeledThing|null $labeledThing
      * @param HttpFoundation\Request  $request
+     * @param Model\LabeledThing|null $labeledThing
      *
      * @return \FOS\RestBundle\View\View
      */
     public function updateLabeledThingAction(
         Model\LabelingTask $task,
-        Model\LabeledThing $labeledThing = null,
-        HttpFoundation\Request $request
+        HttpFoundation\Request $request,
+        Model\LabeledThing $labeledThing = null
     ) {
         if ($labeledThing === null) {
             $labeledThing = new Model\LabeledThing($task);
-            $labeledThing->setId($request->request->get('labeledThing'));
+            $labeledThing->setId($request->attributes->get('_unresolvedLabeledThingId'));
         }
 
         if ($labeledThing->getTaskId() !== $task->getId()) {
