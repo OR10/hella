@@ -34,7 +34,8 @@ class TaskExport
         return $this->documentManager
             ->createQuery('annostation_task_export', 'by_id')
             ->onlyDocs(true)
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
     public function save(Model\TaskExport $taskExport)

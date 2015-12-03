@@ -64,7 +64,7 @@ class LabeledThing extends Controller\Base
      */
     public function getAllLabeledThingsAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task)->toArray();
+        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
 
         return View\View::create()->setData([
             'totalCount' => count($labeledThings),

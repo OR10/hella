@@ -57,7 +57,7 @@ class LabeledFrame extends Controller\Base
         $labeledFrame = $this->getDocumentByTaskAndFrameNumber($task, $frameNumber);
 
         if ($labeledFrame === null) {
-            $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, 0, $frameNumber)->toArray();
+            $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, 0, $frameNumber);
 
             if (count($labeledFrames) === 0) {
                 $response->setData([
@@ -166,7 +166,7 @@ class LabeledFrame extends Controller\Base
      */
     private function getDocumentByTaskAndFrameNumber(Model\LabelingTask $task, $frameNumber)
     {
-        $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, $frameNumber, $frameNumber)->toArray();
+        $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task, $frameNumber, $frameNumber);
 
         if (count($labeledFrames) === 0) {
             return null;

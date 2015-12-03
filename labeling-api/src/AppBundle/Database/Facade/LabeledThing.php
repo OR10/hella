@@ -22,7 +22,7 @@ class LabeledThing
      * @param int                $offset
      * @param int                $limit
      *
-     * @return CouchDB\View\Result
+     * @return Model\LabeledThingInFrame[]
      */
     public function getLabeledThingInFrames(
         Model\LabeledThing $labeledThing,
@@ -44,7 +44,8 @@ class LabeledThing
             ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameNumber()])
             ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameNumber()])
             ->onlyDocs(true)
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
     public function save(Model\LabeledThing $labeledThing)

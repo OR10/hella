@@ -30,7 +30,8 @@ class LabelingTask
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'by_id')
             ->onlyDocs(true)
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
     public function getVideo(Model\LabelingTask $labelingTask)
@@ -73,7 +74,8 @@ class LabelingTask
             ->setStartKey($startKey)
             ->setEndKey($endKey)
             ->onlyDocs(true)
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
     public function getLabeledThings(Model\LabelingTask $labelingTask)
@@ -83,7 +85,8 @@ class LabelingTask
             ->setStartKey($labelingTask->getId())
             ->setEndKey($labelingTask->getId())
             ->onlyDocs(true)
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
     public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
