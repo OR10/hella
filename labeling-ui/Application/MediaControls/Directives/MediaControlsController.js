@@ -1,5 +1,5 @@
-import BrightnessFilter from '../Filters/BrightnessFilter';
-import ContrastFilter from '../Filters/ContrastFilter';
+import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
+import ContrastFilter from '../../Common/Filters/ContrastFilter';
 import LabeledThing from '../../LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from '../../LabelingData/Models/LabeledThingInFrame';
 
@@ -11,7 +11,7 @@ import LabeledThingInFrame from '../../LabelingData/Models/LabeledThingInFrame';
  *
  * @property {Filters} filters
  */
-class ViewerControlsController {
+class MediaControlsController {
   /**
    * @param {angular.$scope} $scope
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
@@ -32,14 +32,14 @@ class ViewerControlsController {
      *
      * @type {string}
      */
-    this.brightnessSliderTemplate = 'Viewer/ViewerControlsDirective/BrightnessSlider.html';
+    this.brightnessSliderTemplate = 'MediaControls/MediaControlsDirective/BrightnessSlider.html';
 
     /**
      * Template name used for the contrastSlider button popover
      *
      * @type {string}
      */
-    this.contrastSliderTemplate = 'Viewer/ViewerControlsDirective/ContrastSlider.html';
+    this.contrastSliderTemplate = 'MediaControls/MediaControlsDirective/ContrastSlider.html';
 
     /**
      * Value of the brightness slider
@@ -247,7 +247,7 @@ class ViewerControlsController {
   }
 }
 
-ViewerControlsController.$inject = [
+MediaControlsController.$inject = [
   '$scope',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
@@ -256,4 +256,4 @@ ViewerControlsController.$inject = [
   '$q',
 ];
 
-export default ViewerControlsController;
+export default MediaControlsController;

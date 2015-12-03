@@ -30,7 +30,7 @@ class TaskController {
     this.video = initialData.video;
 
     /**
-     * Currently active frame position to be displayed inside the Viewer
+     * Currently active frame position to be displayed inside the MediaControls
      *
      * This model will be manipulated by different directives in order to switch between frames.
      *

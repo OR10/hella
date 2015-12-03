@@ -9,7 +9,25 @@
                 task="vm.task"
                 video="vm.video"
                 frame-position="vm.framePosition"
+                filters="vm.filters"
         ></viewer>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="media-controls-container">
+                <media-controls labeled-things-in-frame="vm.labeledThingsInFrame"
+                                 labeled-things="vm.labeledThings"
+                                 selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
+                                 selected-labeled-thing="vm.selectedLabeledThing"
+                                 frame-position="vm.framePosition"
+                                 active-tool="vm.activeTool"
+                                 selected-drawing-tool="vm.selectedDrawingTool"
+                                 filters="vm.filters"
+                                 task="vm.task"
+                                 playing="vm.playing"
+                ></media-controls>
+            </div>
+        </div>
     </div>
     <div class="col-md-3">
         <label-selector labeled-object="vm.labeledFrame"

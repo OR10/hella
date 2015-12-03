@@ -1,16 +1,16 @@
-import viewerControlsTempate from './ViewerControlsDirective.html!';
-import ViewerControlsController from './ViewerControlsController';
+import mediaControlsTemplate from './MediaControlsDirective.html!';
+import MediaControlsController from './MediaControlsController';
 
 /**
  * Directive encapsulating the control elements of the AnnoStation viewer
  */
-class ViewerControlsDirective {
+class MediaControlsDirective {
   constructor() {
     this.controllerAs = 'vm';
-    this.controller = ViewerControlsController;
+    this.controller = MediaControlsController;
     this.bindToController = true;
 
-    this.template = viewerControlsTempate;
+    this.template = mediaControlsTemplate;
     this.scope = {
       framePosition: '=',
       filters: '=',
@@ -26,4 +26,4 @@ class ViewerControlsDirective {
   }
 }
 
-export default ViewerControlsDirective;
+export default MediaControlsDirective;
