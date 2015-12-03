@@ -54,12 +54,10 @@ class LabeledFrame extends Controller\Base
         $labeledFrame = $this->labelingTaskFacade->getCurrentOrPreceedingLabeledFrame($task, $frameNumber);
 
         if ($labeledFrame === null) {
-            $labeledFrame = new Model\LabeledFrame($task);
-            $labeledFrame->setFrameNumber($frameNumber);
+            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
         } elseif ($labeledFrame->getFrameNumber() !== $frameNumber) {
             $classes      = $labeledFrame->getClasses();
-            $labeledFrame = new Model\LabeledFrame($task);
-            $labeledFrame->setFrameNumber($frameNumber);
+            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
             $labeledFrame->setClasses($classes);
         }
 
@@ -115,9 +113,8 @@ class LabeledFrame extends Controller\Base
         }
 
         if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber)) === null) {
-            $labeledFrame = new Model\LabeledFrame($task);
+            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
             $labeledFrame->setId($labeledFrameId);
-            $labeledFrame->setFrameNumber($frameNumber);
         } elseif ($labeledFrame->getRev() !== $revision) {
             // TODO: Synchronize with frontend team to find a better solution here!
             //throw new Exception\ConflictHttpException();

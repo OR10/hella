@@ -2,8 +2,6 @@
 
 namespace AppBundle\Model;
 
-use AppBundle\Model;
-
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
 /**
@@ -41,9 +39,18 @@ class LabeledFrame
      */
     private $incomplete = true;
 
-    public function __construct(Model\LabelingTask $task)
+    /**
+     * @param LabelingTask $task
+     * @param int          $frameNumber
+     */
+    public function __construct(LabelingTask $task, $frameNumber)
     {
-        $this->taskId = $task->getId();
+        if (!$task->getFrameRange()->coversFrameNumber($frameNumber)) {
+            throw new \RangeException("Invalid frameNumber '{$frameNumber}'");
+        }
+
+        $this->taskId      = $task->getId();
+        $this->frameNumber = (int) $frameNumber;
     }
 
     /**
@@ -55,29 +62,12 @@ class LabeledFrame
     }
 
     /**
-     * @param int $frameNumber
-     */
-    public function setFrameNumber($frameNumber)
-    {
-        $this->frameNumber = $frameNumber;
-    }
-
-    /**
      * @param mixed $classes
      */
     public function setClasses($classes)
     {
         $this->classes = $classes;
     }
-
-    /**
-     * @param string $taskId
-     */
-    public function setTaskId($taskId)
-    {
-        $this->taskId = (string) $taskId;
-    }
-
 
     /**
      * @return mixed
@@ -112,11 +102,11 @@ class LabeledFrame
     }
 
     /**
-     * @param mixed $incomplete
+     * @param boolean $incomplete
      */
     public function setIncomplete($incomplete)
     {
-        $this->incomplete = $incomplete;
+        $this->incomplete = (bool) $incomplete;
     }
 
     /**

@@ -78,7 +78,6 @@ class LabeledThingTest extends Tests\WebTestCase
             )
         );
 
-
         $this->assertEquals(200, $response->getStatusCode());
     }
 

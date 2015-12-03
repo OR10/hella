@@ -155,4 +155,16 @@ class FrameRange
 
         return new FrameRange($startFrameNumber, $endFrameNumber);
     }
+
+    /**
+     * Check wether or not the given frame number is covered by this frame range.
+     *
+     * @param int $frameNumber
+     *
+     * @return boolean
+     */
+    public function coversFrameNumber($frameNumber)
+    {
+        return $this->startFrameNumber <= (int) $frameNumber && (int) $frameNumber <= $this->endFrameNumber;
+    }
 }
