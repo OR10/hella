@@ -55,7 +55,7 @@ class LabeledThingInFrame extends Controller\Base
      * @Rest\Post("/{task}/labeledThingInFrame/{frameNumber}")
      *
      * @param Model\LabelingTask     $task
-     * @param                        $frameNumber
+     * @param int                    $frameNumber
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
@@ -65,32 +65,27 @@ class LabeledThingInFrame extends Controller\Base
         $frameNumber,
         HttpFoundation\Request $request
     ) {
-        $response = View\View::create();
+        $labeledThingInFrameId = $request->request->get('id', null);
+        $labeledThingId        = $request->request->get('labeledThingId');
+        $shapes                = $request->request->get('shapes', []);
+        $classes               = $request->request->get('classes', []);
+        $incomplete            = $request->request->get('incomplete', true);
+        $labeledThing          = $this->labeledThingFacade->find($labeledThingId);
 
-        $shapes         = $request->request->get('shapes', []);
-        $classes        = $request->request->get('classes', []);
-        $incomplete     = $request->request->get('incomplete', true);
-        $documentId     = $request->request->get('id', null);
-        $labeledThingId = $request->request->get('labeledThingId');
-        $labeledThing   = $this->labeledThingFacade->find($labeledThingId);
-
-        if (!is_array($shapes) || !is_array($classes) || $labeledThing === null) {
+        if ($labeledThing === null || !is_array($shapes) || !is_array($classes)) {
             throw new Exception\BadRequestHttpException();
         }
 
-        $labeledThingInFrame = $this->addLabeledThingAndLabeledThingInFrame(
-            $task,
-            $labeledThing,
-            $documentId,
-            $frameNumber,
-            $shapes,
-            $classes,
-            $incomplete
-        );
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+        $labeledThingInFrame->setId($labeledThingInFrameId);
+        $labeledThingInFrame->setFrameNumber($frameNumber);
+        $labeledThingInFrame->setShapes($shapes);
+        $labeledThingInFrame->setClasses($classes);
+        $labeledThingInFrame->setIncomplete($incomplete);
 
-        $response->setData(['result' => $labeledThingInFrame]);
+        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 
-        return $response;
+        return View\View::create()->setData(['result' => $labeledThingInFrame]);
     }
 
     /**
@@ -103,9 +98,9 @@ class LabeledThingInFrame extends Controller\Base
      */
     public function getLabeledThingInFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $labeledThingsInFrames = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber);
-
-        return View\View::create()->setData(['result' => $labeledThingsInFrames]);
+        return View\View::create()->setData([
+            'result' => $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber)
+        ]);
     }
 
 
@@ -182,41 +177,5 @@ class LabeledThingInFrame extends Controller\Base
         );
 
         return View\View::create()->setData(['result' => $result]);
-    }
-
-    /**
-     * @param Model\LabelingTask $task
-     * @param Model\LabeledThing $labeledThing
-     * @param string|null        $id
-     * @param int                $frameNumber
-     * @param mixed[]            $shapes
-     * @param mixed[]            $classes
-     * @param boolean            $incomplete
-     *
-     * @return Model\LabeledThingInFrame
-     */
-    private function addLabeledThingAndLabeledThingInFrame(
-        Model\LabelingTask $task,
-        Model\LabeledThing $labeledThing,
-        $id,
-        $frameNumber,
-        $shapes,
-        $classes,
-        $incomplete
-    ) {
-        $thingInFrame = new Model\LabeledThingInFrame($labeledThing);
-
-        if ($id !== null) {
-            $thingInFrame->setId($id);
-        }
-
-        $thingInFrame->setFrameNumber($frameNumber);
-        $thingInFrame->setShapes($shapes);
-        $thingInFrame->setClasses($classes);
-        $thingInFrame->setIncomplete($incomplete);
-
-        $this->labeledThingInFrameFacade->save($thingInFrame);
-
-        return $thingInFrame;
     }
 }
