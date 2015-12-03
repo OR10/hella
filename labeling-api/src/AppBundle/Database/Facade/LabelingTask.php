@@ -83,10 +83,10 @@ class LabelingTask
      *
      * @return Model\LabeledFrame|null
      */
-    public function getPreceedingLabeledFrame(Model\LabelingTask $task, $frameNumber)
+    public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameNumber)
     {
         $startFrameNumber = $task->getFrameRange()->getStartFrameNumber();
-        $endFrameNumber   = $frameNumber - 1;
+        $endFrameNumber   = $frameNumber;
 
         if ($startFrameNumber > $endFrameNumber) {
             $tmp = $startFrameNumber;

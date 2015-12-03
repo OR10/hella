@@ -50,16 +50,17 @@ class LabeledFrame extends Controller\Base
      */
     public function getLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber);
+        $frameNumber  = (int) $frameNumber;
+        $labeledFrame = $this->labelingTaskFacade->getCurrentOrPreceedingLabeledFrame($task, $frameNumber);
 
         if ($labeledFrame === null) {
             $labeledFrame = new Model\LabeledFrame($task);
             $labeledFrame->setFrameNumber($frameNumber);
-
-            $preceedingLabeledFrame = $this->labelingTaskFacade->getPreceedingLabeledFrame($task, $frameNumber);
-            if ($preceedingLabeledFrame !== null) {
-                $labeledFrame->setClasses($preceedingLabeledFrame->getClasses());
-            }
+        } elseif ($labeledFrame->getFrameNumber() !== $frameNumber) {
+            $classes      = $labeledFrame->getClasses();
+            $labeledFrame = new Model\LabeledFrame($task);
+            $labeledFrame->setFrameNumber($frameNumber);
+            $labeledFrame->setClasses($classes);
         }
 
         return View\View::create()->setData(['result' => $labeledFrame]);
