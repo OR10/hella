@@ -123,7 +123,7 @@ class LabeledFrame extends Controller\Base
             //throw new Exception\ConflictHttpException();
         }
 
-        // I'm not quite sure about chaning the id but since we are requesting
+        // I'm not quite sure about changing the id but since we are requesting
         // the labeledFrame by task and frameNumber, the id might be able to
         // change.
         // Maybe it's better to throw an exception in this case.
