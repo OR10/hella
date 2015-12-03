@@ -56,18 +56,15 @@ class LabeledThingInFrame
      * @param array        $shapes
      */
     public function __construct(
-        LabeledThing $labeledThing = null,
+        LabeledThing $labeledThing,
         $frameNumber = null,
         array $classes = [],
         array $shapes = []
     ) {
-        if ($labeledThing instanceof LabeledThing) {
-            $this->labeledThingId = $labeledThing->getId();
-        }
-
-        $this->frameNumber = $frameNumber;
-        $this->classes     = $classes;
-        $this->shapes      = $shapes;
+        $this->labeledThingId = $labeledThing->getId();
+        $this->frameNumber    = $frameNumber;
+        $this->classes        = $classes;
+        $this->shapes         = $shapes;
     }
 
     /**
@@ -75,7 +72,8 @@ class LabeledThingInFrame
      */
     public function copy()
     {
-        $copy                 = new LabeledThingInFrame();
+        $reflectionClass      = new \ReflectionClass(self::class);
+        $copy                 = $reflectionClass->newInstanceWithoutConstructor();
         $copy->labeledThingId = $this->labeledThingId;
         $copy->frameNumber    = $this->frameNumber;
         $copy->classes        = $this->classes;
@@ -124,14 +122,6 @@ class LabeledThingInFrame
     public function setShapes(array $shapes)
     {
         $this->shapes = $shapes;
-    }
-
-    /**
-     * @param string $labeledThingId
-     */
-    public function setLabeledThingId($labeledThingId)
-    {
-        $this->labeledThingId = $labeledThingId;
     }
 
     /**

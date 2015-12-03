@@ -135,7 +135,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testUpdateLabeledFrameWithInvalidRevision()
     {
         $this->markTestIncomplete('Temporary skipping the revision check :(');
-        
+
         $labelingTask = $this->createLabelingTask();
         $labeledFrame = $this->createLabeledFrame($labelingTask);
         $response     = $this->doRequest(

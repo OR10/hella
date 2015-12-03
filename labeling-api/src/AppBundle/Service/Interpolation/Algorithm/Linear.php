@@ -120,11 +120,8 @@ class Linear implements Interpolation\Algorithm
                 $currentShapes
             );
 
-            $current = new Model\LabeledThingInFrame();
-            $current->setLabeledThingId($previous->getLabeledThingId());
+            $current = $previous->copy();
             $current->setFrameNumber($frameNumber);
-            $current->setClasses($previous->getClasses());
-            $current->setIncomplete($previous->getIncomplete());
             $current->setShapesAsObjects($currentShapes);
             $emit($current);
             $previous = $current;
