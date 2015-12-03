@@ -57,7 +57,7 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThingInFrame $labeledThingInFrame,
         HttpFoundation\Request $request
     ) {
-        return View\View::create()->setData(['result' => array('success' => true, 'data' => $labeledThingInFrame)]);
+        return View\View::create()->setData(['result' => $labeledThingInFrame]);
     }
 
     /**
