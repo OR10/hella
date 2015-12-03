@@ -75,7 +75,12 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return this._associateWithLabeledThings(task, response.data.result);
+          const labeledThingsInFrameData = response.data.result;
+          return labeledThingsInFrameData.map(
+            data => new LabeledThingInFrame(
+              Object.assign({}, data, {labeledThing})
+            )
+          );
         }
 
         throw new Error('Failed loading labeled thing in frame');
