@@ -114,20 +114,20 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{task}/labeledThing/{labeledThing}")
+     * @Rest\Get("/{taskId}/labeledThing/{labeledThing}")
      *
-     * @param Model\LabelingTask     $task
+     * @param string                 $taskId
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingAction(
-        Model\LabelingTask $task,
+        $taskId,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getTaskId() !== $task->getId()) {
+        if ($labeledThing->getTaskId() !== $taskId) {
             throw new Exception\BadRequestHttpException();
         }
 
@@ -195,29 +195,27 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Delete("/{task}/labeledThing/{labeledThing}")
+     * TODO: move deletion of labeledThingsInFrame to labeledThingFacade?
      *
-     * @param Model\LabelingTask     $task
+     * @Rest\Delete("/{taskId}/labeledThing/{labeledThing}")
+     *
+     * @param string                 $taskId
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
     public function deleteLabeledThingAction(
-        Model\LabelingTask $task,
+        $taskId,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getTaskId() !== $task->getId()) {
+        if ($labeledThing->getTaskId() !== $taskId) {
             throw new Exception\BadRequestHttpException();
         }
 
-        $response = View\View::create();
-
         if ($request->request->get('rev') !== $labeledThing->getRev()) {
-            $response->setStatusCode(409);
-
-            return $response;
+            throw new Exception\ConflictHttpException();
         }
 
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
@@ -227,8 +225,6 @@ class LabeledThing extends Controller\Base
 
         $this->labeledThingFacade->delete($labeledThing);
 
-        $response->setData(['success' => true]);
-
-        return $response;
+        return View\View::create()->setData(['success' => true]);
     }
 }
