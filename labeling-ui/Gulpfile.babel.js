@@ -11,8 +11,6 @@ import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor';
 import ip from 'ip';
 import chokidar from 'chokidar';
 import {exec} from 'child_process';
-import {default as svgstore} from 'gulp-svgstore';
-import {default as svgmin} from 'gulp-svgmin';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -303,7 +301,7 @@ gulp.task('build-fonts', (next) => {
 gulp.task('build-icons', () => {
   return gulp
     .src('Public/Images/icons/*.svg')
-    .pipe(svgmin((file) => {
+    .pipe($$.svgmin((file) => {
       const prefix = path.basename(file.relative, path.extname(file.relative));
       return {
         plugins: [{
@@ -321,7 +319,7 @@ gulp.task('build-icons', () => {
         }],
       };
     }))
-    .pipe(svgstore())
+    .pipe($$.svgstore())
     .pipe(gulp.dest(`${paths.dir.distribution}`));
 });
 
