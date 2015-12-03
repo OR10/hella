@@ -19,12 +19,12 @@ abstract class Base
             return $defaultIfNull;
         }
 
-        if (!is_array($frameRange)) {
+        if (!is_array($input)) {
             return null;
         }
 
         try {
-            return Model\FrameRange::createFromArray($frameRange);
+            return Model\FrameRange::createFromArray($input);
         } catch (\Exception $e) {
             return null;
         }
