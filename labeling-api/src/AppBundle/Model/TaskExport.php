@@ -23,9 +23,8 @@ class TaskExport
 
     /**
      * @CouchDB\Field(type="string")
-     * @Serializer\SerializedName("taskId")
      */
-    private $labelingTaskId;
+    private $taskId;
 
     /**
      * @CouchDB\Field(type="string")
@@ -62,8 +61,8 @@ class TaskExport
             throw new Exception\EmptyData();
         }
 
-        $this->labelingTaskId = $task->getId();
-        $this->filename       = $filename;
+        $this->taskId   = $task->getId();
+        $this->filename = $filename;
 
         $this->attachments[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
             $binaryData,
@@ -78,7 +77,7 @@ class TaskExport
      */
     public function getTaskId()
     {
-        return $this->labelingTaskId;
+        return $this->taskId;
     }
 
     /**
