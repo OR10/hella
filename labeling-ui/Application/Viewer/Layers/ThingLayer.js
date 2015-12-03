@@ -25,11 +25,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   constructor($scope, drawingContextService, paperShapeFactory) {
     super($scope, drawingContextService);
-    /**
-     * @type {Map}
-     * @private
-     */
-    this._paperShapeByLabeledThingInFrameId = new Map();
 
     /**
      * @type {PaperShapeFactory}
@@ -109,33 +104,33 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context);
 
-    $scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
-      if (labeledThingInFrame === null) {
-        if (oldLabeledThingInFrame !== null) {
-          // Remove ghost if it is no longer needed
-          const oldGhostPaperShape = this._paperShapeByLabeledThingInFrameId.get(oldLabeledThingInFrame.id);
-          if (oldGhostPaperShape) {
-            // @TODO: I am not 100% sure, why this can happen. Should be fixed at its root cause
-            oldGhostPaperShape.remove();
-          }
-
-          this._context.withScope(scope => {
-            scope.view.draw();
-          });
-        }
-
-        return;
-      }
-
-      const paperShapes = this.addLabeledThingInFrame(labeledThingInFrame, false);
-      $scope.vm.activeTool = 'move';
-      paperShapes[0].select();
-      $scope.vm.selectedShape = paperShapes[0];
-
-      this._context.withScope(scope => {
-        scope.view.draw();
-      });
-    });
+    //$scope.$watch('vm.ghostedLabeledThingInFrame', (labeledThingInFrame, oldLabeledThingInFrame) => {
+    //  if (labeledThingInFrame === null) {
+    //    if (oldLabeledThingInFrame !== null) {
+    //      // Remove ghost if it is no longer needed
+    //      const oldGhostPaperShape = this._paperShapeByLabeledThingInFrameId.get(oldLabeledThingInFrame.id);
+    //      if (oldGhostPaperShape) {
+    //        // @TODO: I am not 100% sure, why this can happen. Should be fixed at its root cause
+    //        oldGhostPaperShape.remove();
+    //      }
+    //
+    //      this._context.withScope(scope => {
+    //        scope.view.draw();
+    //      });
+    //    }
+    //
+    //    return;
+    //  }
+    //
+    //  const paperShapes = this.addLabeledThingInFrame(labeledThingInFrame, false);
+    //  $scope.vm.activeTool = 'move';
+    //  paperShapes[0].select();
+    //  $scope.vm.selectedShape = paperShapes[0];
+    //
+    //  this._context.withScope(scope => {
+    //    scope.view.draw();
+    //  });
+    //});
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       if (newLabeledThingsInFrame === null) {
@@ -187,36 +182,36 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _updateSelectedShape(shape) {
-    if (this._$scope.vm.selectedShape && this._$scope.vm.selectedShape.id === shape.id) {
+    if (this._$scope.vm.selectedPaperShape && this._$scope.vm.selectedPaperShape.id === shape.id) {
       console.log('no selection change: ', shape.id);
       // Selection did not change
       return;
     }
 
-    if (this._$scope.vm.selectedShape !== null) {
-      console.log('deselect shape: ', this._$scope.vm.selectedShape.id);
-      this._$scope.vm.selectedShape.deselect();
+    if (this._$scope.vm.selectedPaperShape !== null) {
+      console.log('deselect shape: ', this._$scope.vm.selectedPaperShape.id);
+      this._$scope.vm.selectedPaperShape.deselect();
     }
 
     console.log('select shape: ', shape.id);
     shape.select();
 
     this._$scope.$apply(() => {
-      this._$scope.vm.selectedShape = shape;
+      this._$scope.vm.selectedPaperShape = shape;
     });
   }
 
   _clearSelectedShape() {
-    if (!this._$scope.vm.selectedShape) {
+    if (!this._$scope.vm.selectedPaperShape) {
       console.log('Nothing to clear');
       return;
     }
 
-    console.log('clear selection: ', this._$scope.vm.selectedShape.id);
-    this._$scope.vm.selectedShape.deselect();
+    console.log('clear selection: ', this._$scope.vm.selectedPaperShape.id);
+    this._$scope.vm.selectedPaperShape.deselect();
 
     this._$scope.$apply(() => {
-      this._$scope.vm.selectedShape = null;
+      this._$scope.vm.selectedPaperShape = null;
     });
   }
 
@@ -291,13 +286,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
   addLabeledThingInFrame(labeledThingInFrame, update = true) {
     const paperShapes = labeledThingInFrame.shapes.map(shape => {
       let selectedLabeledThingId = null;
-      if (this._$scope.vm.selectedLabeledThingInFrame) {
-        selectedLabeledThingId = this._$scope.vm.selectedLabeledThingInFrame.labeledThing.id;
-      }
+      //if (this._$scope.vm.selectedPaperShape) {
+      //  selectedLabeledThingId = this._$scope.vm.selectedPaperShape.labeledThingInFrame.labeledThing.id;
+      //}
+      //
+      //const selected = labeledThingInFrame.labeledThing.id === selectedLabeledThingId;
+      const selected = false;
 
-      const selected = labeledThingInFrame.labeledThing.id === selectedLabeledThingId;
-
-      return this._addShape(labeledThingInFrame, shape, false, selected);
+      return this._addShape(labeledThingInFrame, shape, selected, false);
     });
 
     if (update) {
@@ -310,32 +306,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
-   * Add a specific {@link Shape} to the layer
-   *
-   * Optionally it may be specified if the view should be updated after adding the new shapes
-   * By default it will be rerendered.
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Shape} shape
-   * @param {boolean?} update
-   * @param {boolean?} selected
-   * @return {paper.Shape}
-   */
-  _addShape(labeledThingInFrame, shape, update = true, selected = false) {
-    const paperShape = this._drawShape(labeledThingInFrame, shape, selected);
-
-    this._paperShapeByLabeledThingInFrameId.set(shape.labeledThingInFrameId, paperShape);
-
-    if (update) {
-      this._context.withScope((scope) => {
-        scope.view.update();
-      });
-    }
-
-    return paperShape;
-  }
-
-  /**
    * Draw a given {@link Shape} to the Layer
    *
    * The drawn Paper Shape will be returned
@@ -343,16 +313,23 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Shape} shape
    * @param {boolean} selected
+   * @param {boolean?} update
    * @returns {paper.Shape}
    * @private
    */
-  _drawShape(labeledThingInFrame, shape, selected = false) {
+  _addShape(labeledThingInFrame, shape, selected = false, update = true) {
     return this._context.withScope(() => {
       const paperShape = this._paperShapeFactory.createPaperShape(labeledThingInFrame, shape);
 
       if (selected) {
         paperShape.select();
-        this._$scope.vm.selectedShape = paperShape;
+        this._$scope.vm.selectedPaperShape = paperShape;
+      }
+
+      if (update) {
+        this._context.withScope((scope) => {
+          scope.view.update();
+        });
       }
 
       return paperShape;
@@ -366,7 +343,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   clear() {
     super.clear();
-    this._paperShapeByLabeledThingInFrameId.clear();
   }
 
   attachToDom(element) {

@@ -6,10 +6,13 @@ import LabeledThingInFrame from '../../LabelingData/Models/LabeledThingInFrame';
 /**
  * Controller handling the control elements below the viewer frame
  *
- * @property {FramePosition} framePosition Structure representing the currently displayed frame within the viewer.
- * @property {Function} onNewLabeledThingRequested
- *
+ * @property {Task} task
  * @property {Filters} filters
+ * @property {FramePosition} framePosition
+ * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
+ * @property {PaperShape} selectedPaperShape
+ * @property {string} activeTool
+ * @property {string} selectedDrawingTool
  */
 class ViewerControlsController {
   /**
@@ -21,12 +24,6 @@ class ViewerControlsController {
    * @param {angular.$q} $q
    */
   constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, $q) {
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
-    this._labeledThingGateway = labeledThingGateway;
-    this._interpolationService = interpolationService;
-    this._entityIdService = entityIdService;
-    this._$q = $q;
-
     /**
      * Template name used for the brightnessSlider button popover
      *
@@ -50,10 +47,40 @@ class ViewerControlsController {
 
     /**
      * Value of the contrast slider
+     *
      * @type {int}
      */
     this.contrastSliderValue = 0;
 
+    /**
+     * @type {LabeledThingInFrameGateway}
+     * @private
+     */
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {InterpolationService}
+     * @private
+     */
+    this._interpolationService = interpolationService;
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * Currently active {@link BrightnessFilter}
@@ -65,16 +92,11 @@ class ViewerControlsController {
 
     /**
      * Currently active {@link ContrastFilter}
-     * @type {ContrastFilter|null}
      *
+     * @type {ContrastFilter|null}
      * @private
      */
     this._constrastFilter = null;
-
-    /**
-     * @type {string}
-     */
-    this.selectedDrawingTool = 'rectangle';
 
     // Update BrightnessFilter if value changed
     $scope.$watch('vm.brightnessSliderValue', newBrightness => {
@@ -99,82 +121,116 @@ class ViewerControlsController {
     });
   }
 
+  /**
+   * Set new `startFrameNumber` based once **Bracket open** button is clicked
+   */
   handleSetOpenBracketClicked() {
     const framePosition = this.framePosition.position;
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
-    if (framePosition > this.selectedLabeledThing.frameRange.endFrameNumber) {
+    if (framePosition > selectedLabeledThing.frameRange.endFrameNumber) {
       return;
     }
 
-    this.selectedLabeledThing.frameRange.startFrameNumber = framePosition;
-    this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+    selectedLabeledThing.frameRange.startFrameNumber = framePosition;
+    this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
   }
 
+  /**
+   * Jump to the `startFrameNumber` of the selected {@link LabeledThing}
+   */
   handleGotoOpenBracketClicked() {
-    this.framePosition.goto(this.selectedLabeledThing.frameRange.startFrameNumber);
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    this.framePosition.goto(selectedLabeledThing.frameRange.startFrameNumber);
   }
 
+  /**
+   * Advance one frame
+   */
   handleNextFrameClicked() {
     this.framePosition.next();
   }
 
+  /**
+   * Go one frame back
+   */
   handlePreviousFrameClicked() {
     this.framePosition.previous();
   }
 
+  /**
+   * Jump to the `endFrameNumber` of the selected {@link LabeledThing}
+   */
   handleGotoCloseBracketClicked() {
-    this.framePosition.goto(this.selectedLabeledThing.frameRange.endFrameNumber);
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    this.framePosition.goto(selectedLabeledThing.frameRange.endFrameNumber);
   }
 
+  /**
+   * Set new `endFrameNumber` based once **Bracket close** button is clicked
+   */
   handleSetCloseBracketClicked() {
     const framePosition = this.framePosition.position;
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
-    if (framePosition < this.selectedLabeledThing.frameRange.startFrameNumber) {
+    if (framePosition < selectedLabeledThing.frameRange.startFrameNumber) {
       return;
     }
 
-    this.selectedLabeledThing.frameRange.endFrameNumber = framePosition;
-    this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+    selectedLabeledThing.frameRange.endFrameNumber = framePosition;
+    this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
   }
 
+  /**
+   * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
+   * {@link LabeledObject}s to the backend
+   *
+   * @returns {AbortablePromise.<LabeledThingInFrame>}
+   * @private
+   */
   _createNewLabeledThingInFrame() {
-    const labeledThingId = this._entityIdService.getUniqueId();
-    const labeledThingInFrameId = this._entityIdService.getUniqueId();
+    const newLabeledThingId = this._entityIdService.getUniqueId();
+    const newLabeledThingInFrameId = this._entityIdService.getUniqueId();
 
-    const labeledThing = new LabeledThing({
-      id: labeledThingId,
+    const newLabeledThing = new LabeledThing({
+      id: newLabeledThingId,
       classes: [],
       incomplete: true,
-      taskId: this.task.id,
+      task: this.task,
       frameRange: {
         startFrameNumber: this.framePosition.position,
         endFrameNumber: this.framePosition.position,
       },
     });
 
-    const labeledThingInFrame = new LabeledThingInFrame({
-      id: labeledThingInFrameId,
+    const newLabeledThingInFrame = new LabeledThingInFrame({
+      id: newLabeledThingInFrameId,
       classes: [],
       incomplete: true,
       frameNumber: this.framePosition.position,
-      labeledThingId: labeledThingId,
+      labeledThing: newLabeledThing,
       shapes: [],
     });
 
-    return this._labeledThingGateway.saveLabeledThing(labeledThing)
+    return this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => {
-        this.labeledThings[labeledThingId] = labeledThing;
-        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame);
       })
       .then(() => {
         /* @TODO maybe we don't need to wait for the backend before we update the scope here but i left it in for now
          * in lieu of proper error handling
          */
-        this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-        this.selectedLabeledThingInFrame = labeledThingInFrame;
+        this.labeledThingsInFrame[newLabeledThingInFrame.id] = newLabeledThingInFrame;
+
+        //@TODO: Handle properly after refactoring to only use selectedPaperShape
+        //       Most likely this needs to be moved to the thing layer somehow
+//        this.selectedLabeledThingInFrame = newLabeledThingInFrame;
       });
   }
 
+  /**
+   * Handle the creation of new rectangle
+   */
   handleNewLabeledThingClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -182,6 +238,9 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the creation of new ellipse
+   */
   handleNewEllipseClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -189,6 +248,9 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the creation of new circle
+   */
   handleNewCircleClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -196,6 +258,9 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the creation of new path
+   */
   handleNewPathClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -203,6 +268,9 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the creation of new line
+   */
   handleNewLineClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -210,6 +278,9 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the creation of new polygon
+   */
   handleNewPolygonClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -217,6 +288,9 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the creation of new point
+   */
   handleNewPointClicked() {
     this._createNewLabeledThingInFrame()
       .then(() => {
@@ -224,16 +298,26 @@ class ViewerControlsController {
       });
   }
 
+  /**
+   * Handle the switch to the move tool
+   */
   handleMoveToolClicked() {
     this.activeTool = 'move';
   }
 
+  /**
+   * Handle the switch to the scale tool
+   */
   handleScaleToolClicked() {
     this.activeTool = 'scale';
   }
 
+  /**
+   * Execute the interpolation
+   */
   handleInterpolation() {
-    this._interpolationService.interpolate('default', this.task, this.selectedLabeledThingInFrame.labeledThing);
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    this._interpolationService.interpolate('default', this.task, selectedLabeledThing);
     // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
     // @TODO: Show some sort of loading indicator, while interpolation is running
   }

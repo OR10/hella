@@ -12,12 +12,11 @@ class TaskController {
    * @param {angular.Scope} $scope
    * @param {angular.$q} $q
    * @param {{task: Task, video: Video}} initialData
-   * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledThingGateway, labeledFrameGateway, abortablePromiseFactory) {
+  constructor($scope, $q, initialData, labeledThingInFrameGateway, labeledFrameGateway, abortablePromiseFactory) {
     /**
      * @type {angular.Scope}
      */
@@ -86,9 +85,9 @@ class TaskController {
     this.activeTool = null;
 
     /**
-     * @type {LabeledThingInFrame|null}
+     * @type {PaperShape|null}
      */
-    this.selectedLabeledThingInFrame = null;
+    this.selectedPaperShape = null;
 
     /**
      * Information about the labeling state of the `selectedLabeledThingInFrame`
@@ -113,11 +112,6 @@ class TaskController {
      * @type {AbortablePromiseRingBuffer}
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
-
-    /**
-     * @type {LabeledThingGateway}
-     */
-    this._labeledThingGateway = labeledThingGateway;
 
     /**
      * @type {LabeledFrameGateway}
@@ -177,11 +171,9 @@ class TaskController {
       )
       .then(labeledThingsInFrame => {
         this.labeledThingsInFrame = {};
-        this.labeledThings = {};
 
         labeledThingsInFrame.forEach(labeledThingInFrame => {
           this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-          this.labeledThings[labeledThingInFrame.labeledThing.id] = labeledThingInFrame.labeledThing;
         });
       });
 
@@ -197,7 +189,6 @@ TaskController.$inject = [
   '$q',
   'initialData',
   'labeledThingInFrameGateway',
-  'labeledThingGateway',
   'labeledFrameGateway',
   'abortablePromiseFactory',
 ];

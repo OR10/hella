@@ -12,8 +12,7 @@ class ThumbnailReelDirective {
       task: '=',
       video: '=',
       filters: '=',
-      selectedLabeledThingInFrame: '=',
-      selectedLabeledThing: '=',
+      selectedPaperShape: '=',
     };
 
     this.template = ThumbnailReelTemplate;

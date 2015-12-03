@@ -4,8 +4,7 @@ import Filters from '../Models/Filters';
  * @property {Task} task
  * @property {FramePosition} framePosition
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
- * @property {Array.<LabeledThing> labeledThings
- * @property {LabeledThingInFrame} selectedLabeledThingInFrame
+ * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
  */
