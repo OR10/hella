@@ -40,7 +40,7 @@ class LabeledThingInFrame extends Controller\Base
         Facade\LabeledThing $labeledThingFacade
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->labeledThingFacade = $labeledThingFacade;
+        $this->labeledThingFacade        = $labeledThingFacade;
     }
 
     /**
