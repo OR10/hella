@@ -82,27 +82,19 @@ class LabeledThing extends Controller\Base
      */
     public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $documentId = $request->request->get('id');
-        $classes    = $request->request->get('classes', []);
-        $frameRange = $request->request->get('frameRange');
-        $incomplete = $request->request->get('incomplete', true);
+        $labeledThingId = $request->request->get('id');
+        $frameRange     = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
+        $classes        = $request->request->get('classes', []);
+        $incomplete     = $request->request->get('incomplete', true);
 
         if ($frameRange === null) {
-            $frameRange = $task->getFrameRange();
-        } elseif (is_array($frameRange)) {
-            try {
-                $frameRange = Model\FrameRange::createFromArray($frameRange);
-            } catch (\Exception $e) {
-                throw new Exception\BadRequestHttpException();
-            }
-        } else {
             throw new Exception\BadRequestHttpException();
         }
 
         $labeledThing = new Model\LabeledThing($task);
 
-        if ($documentId !== null) {
-            $labeledThing->setId($documentId);
+        if ($labeledThingId !== null) {
+            $labeledThing->setId($labeledThingId);
         }
 
         $labeledThing->setClasses($classes);
@@ -169,19 +161,11 @@ class LabeledThing extends Controller\Base
             }
         }
 
+        $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         $classes    = $request->request->get('classes', []);
-        $frameRange = $request->request->get('frameRange');
         $incomplete = $request->request->get('incomplete', true);
 
         if ($frameRange === null) {
-            $frameRange = $task->getFrameRange();
-        } elseif (is_array($frameRange)) {
-            try {
-                $frameRange = Model\FrameRange::createFromArray($frameRange);
-            } catch (\Exception $e) {
-                throw new Exception\BadRequestHttpException();
-            }
-        } else {
             throw new Exception\BadRequestHttpException();
         }
 
