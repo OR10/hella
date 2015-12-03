@@ -297,8 +297,7 @@ class LinearTest extends Tests\KernelTestCase
         $frameNumber,
         array $shapes = []
     ) {
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $labeledThingInFrame->setFrameNumber($frameNumber);
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
         $labeledThingInFrame->setShapes($this->convertShapesToArray($shapes));
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
         return $labeledThingInFrame;

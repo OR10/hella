@@ -74,11 +74,18 @@ class LabeledThingInFrame extends Controller\Base
     {
         $response = View\View::create();
 
+        $frameNumber = $request->request->get('frameNumber');
+        $shapes      = $request->request->get('shapes', []);
+        $classes     = $request->request->get('classes', []);
+        $incomplete  = $request->request->get('incomplete');
+
+        if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
+            throw new Exception\BadRequestHttpException();
+        }
+
         if ($request->request->get('rev') === null) {
-            $labeledThing        = $this->labeledThingFacade->find(
-                $request->request->get('labeledThingId')
-            );
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+            $labeledThing        = $this->labeledThingFacade->find($request->request->get('labeledThingId'));
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
             $labeledThingInFrame->setId($documentId);
         } else {
             $labeledThingInFrame = $this->labeledThingInFrameFacade->find($documentId);
@@ -92,20 +99,16 @@ class LabeledThingInFrame extends Controller\Base
 
                 return $response;
             }
-        }
 
-        $shapes      = $request->request->get('shapes', []);
-        $classes     = $request->request->get('classes', []);
-        $frameNumber = $request->request->get('frameNumber');
-        $incomplete  = $request->request->get('incomplete');
+            if ($labeledThingInFrame->getFrameNumber() !== (int) $frameNumber) {
+                $response->setStatusCode(400);
 
-        if (!is_array($shapes) || !is_array($classes) || $frameNumber === null) {
-            throw new Exception\BadRequestHttpException();
+                return $response;
+            }
         }
 
         $labeledThingInFrame->setClasses($classes);
         $labeledThingInFrame->setShapes($shapes);
-        $labeledThingInFrame->setFrameNumber((int)$frameNumber);
         $labeledThingInFrame->setIncomplete($incomplete);
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
         $response->setData(['result' => $labeledThingInFrame]);

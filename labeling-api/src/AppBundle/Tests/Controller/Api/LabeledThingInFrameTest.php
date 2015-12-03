@@ -218,7 +218,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
     }
 
-    private function createLabeledInFrameDocument()
+    private function createLabeledInFrameDocument($frameNumber = 5)
     {
         $video = new Model\Video('foobar');
         $this->videoFacade->save($video);
@@ -228,7 +228,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $labeledThing = new Model\LabeledThing($labelingTask);
         $labeledThing->setId('11dd639108f1419967ed8d6a1f5a76e7');
         $this->labelingThingFacade->save($labeledThing);
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
         $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765t');
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 

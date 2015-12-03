@@ -56,19 +56,19 @@ class LabeledThingInFrame
 
     /**
      * @param LabeledThing $labeledThing
-     * @param int|null     $frameNumber
+     * @param int          $frameNumber
      * @param array        $classes
      * @param array        $shapes
      */
     public function __construct(
         LabeledThing $labeledThing,
-        $frameNumber = null,
+        $frameNumber,
         array $classes = [],
         array $shapes = []
     ) {
         $this->taskId         = $labeledThing->getTaskId();
         $this->labeledThingId = $labeledThing->getId();
-        $this->frameNumber    = $frameNumber;
+        $this->frameNumber    = (int) $frameNumber;
         $this->classes        = $classes;
         $this->shapes         = $shapes;
     }
@@ -97,14 +97,6 @@ class LabeledThingInFrame
     public function getLabeledThingId()
     {
         return $this->labeledThingId;
-    }
-
-    /**
-     * @param int $frameNumber
-     */
-    public function setFrameNumber($frameNumber)
-    {
-        $this->frameNumber = $frameNumber;
     }
 
     /**

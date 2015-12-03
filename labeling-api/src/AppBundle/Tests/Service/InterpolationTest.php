@@ -68,8 +68,7 @@ class InterpolationTest extends Tests\KernelTestCase
         $labeledThingsInFrame = [];
 
         foreach (range(3, 4) as $frameNumber) {
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-            $labeledThingInFrame->setFrameNumber($frameNumber);
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
             $labeledThingsInFrame[] = $labeledThingInFrame;
         }
 
