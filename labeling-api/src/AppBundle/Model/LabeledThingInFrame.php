@@ -74,15 +74,17 @@ class LabeledThingInFrame
     }
 
     /**
+     * @param int $toFrameNumber
+     *
      * @return LabeledThingInFrame
      */
-    public function copy()
+    public function copy($toFrameNumber)
     {
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
         $copy->taskId         = $this->taskId;
         $copy->labeledThingId = $this->labeledThingId;
-        $copy->frameNumber    = $this->frameNumber;
+        $copy->frameNumber    = (int) $toFrameNumber;
         $copy->classes        = $this->classes;
         $copy->shapes         = $this->shapes;
         $copy->incomplete     = $this->incomplete;

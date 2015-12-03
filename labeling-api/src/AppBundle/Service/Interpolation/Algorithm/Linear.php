@@ -75,9 +75,7 @@ class Linear implements Interpolation\Algorithm
         }
 
         foreach (range($startFrameNumber, $labeledThingInFrame->getFrameNumber() - 1) as $frameNumber) {
-            $clone = $labeledThingInFrame->copy();
-            $clone->setFrameNumber($frameNumber);
-            $emit($clone);
+            $emit($labeledThingInFrame->copy($frameNumber));
         }
     }
 
@@ -91,9 +89,7 @@ class Linear implements Interpolation\Algorithm
         }
 
         foreach (range($labeledThingInFrame->getFrameNumber() + 1, $endFrameNumber) as $frameNumber) {
-            $clone = $labeledThingInFrame->copy();
-            $clone->setFrameNumber($frameNumber);
-            $emit($clone);
+            $emit($labeledThingInFrame->copy($frameNumber));
         }
     }
 
@@ -120,8 +116,7 @@ class Linear implements Interpolation\Algorithm
                 $currentShapes
             );
 
-            $current = $previous->copy();
-            $current->setFrameNumber($frameNumber);
+            $current = $previous->copy($frameNumber);
             $current->setShapesAsObjects($currentShapes);
             $emit($current);
             $previous = $current;

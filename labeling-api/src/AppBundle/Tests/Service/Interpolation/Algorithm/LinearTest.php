@@ -130,9 +130,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $expected = array_map(
             function($frameNumber) use ($thingsInFrame) {
-                $clone = $thingsInFrame[0]->copy();
-                $clone->setFrameNumber($frameNumber);
-                return $clone;
+                return $thingsInFrame[0]->copy($frameNumber);
             },
             range(1, 3)
         );
@@ -161,9 +159,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $expected = array_map(
             function($frameNumber) use ($thingsInFrame) {
-                $clone = $thingsInFrame[0]->copy();
-                $clone->setFrameNumber($frameNumber);
-                return $clone;
+                return $thingsInFrame[0]->copy($frameNumber);
             },
             range(3, 10)
         );
@@ -195,9 +191,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $expected = array_map(
             function($frameNumber) use ($thingsInFrame) {
-                $clone = $thingsInFrame[0]->copy();
-                $clone->setFrameNumber($frameNumber);
-                return $clone;
+                return $thingsInFrame[0]->copy($frameNumber);
             },
             range(4, 6)
         );
