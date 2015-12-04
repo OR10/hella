@@ -38,7 +38,7 @@ class Linear implements Interpolation\Algorithm
             $frameRange->getStartFrameNumber(),
             0,
             $frameRange->getNumberOfFrames()
-        )->toArray();
+        );
 
         if (empty($labeledThingsInFrame)) {
             throw new Interpolation\Exception('Insufficient labeled things in frame');

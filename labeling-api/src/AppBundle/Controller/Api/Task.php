@@ -53,7 +53,7 @@ class Task extends Controller\Base
     {
         $tasks = $this->labelingTaskFacade->findAll();
 
-        $taskResult = array_values(array_filter($tasks->toArray(), function ($task) {
+        $taskResult = array_values(array_filter($tasks, function ($task) {
             $imageTypes = $this->labelingTaskFacade->getVideo($task)->getImageTypes();
             foreach ($task->getRequiredImageTypes() as $requiredImageType) {
                 if ($imageTypes[$requiredImageType]['converted'] === false) {

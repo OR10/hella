@@ -105,33 +105,16 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
      *
-     * @param Model\LabelingTask $taskId
+     * @param Model\LabelingTask $task
      * @param int                $frameNumber
      *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingInFrameAction(Model\LabelingTask $task, $frameNumber)
     {
-        $response = View\View::create();
+        $labeledThingsInFrames = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber);
 
-        $labeledThings         = $this->labelingTaskFacade->getLabeledThings($task);
-        $labeledThingsInFrames = array();
-        foreach ($labeledThings as $labeledThing) {
-            foreach ($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameNumber, 0, 1) as $labeledThingInFrame) {
-                $labeledThingsInFrames[] = $labeledThingInFrame;
-            }
-        }
-
-        $labeledThingsInFrames = array_filter(
-            $labeledThingsInFrames,
-            function ($labeledThingInFrame) use ($frameNumber) {
-                return ($labeledThingInFrame->getFrameNumber() === (int) $frameNumber);
-            }
-        );
-
-        $response->setData(['result' => array_values($labeledThingsInFrames)]);
-
-        return $response;
+        return View\View::create()->setData(['result' => $labeledThingsInFrames]);
     }
 
 
@@ -165,9 +148,7 @@ class LabeledThingInFrame extends Controller\Base
             return View\View::create()->setData(['result' => []]);
         }
 
-        $labeledThingInFrames = array_reverse(
-            $this->labeledThingFacade->getLabeledThingInFrames($labeledThing)->toArray()
-        );
+        $labeledThingInFrames = array_reverse($this->labeledThingFacade->getLabeledThingInFrames($labeledThing));
         $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
         $result = array_map(

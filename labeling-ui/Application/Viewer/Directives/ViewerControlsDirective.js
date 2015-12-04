@@ -19,6 +19,7 @@ class ViewerControlsDirective {
       task: '=',
       selectedPaperShape: '=',
       labeledThingsInFrame: '=',
+      playing: '=',
     };
   }
 }

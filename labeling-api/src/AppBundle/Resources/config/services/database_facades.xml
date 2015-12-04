@@ -6,6 +6,7 @@
     <services>
         <service id="annostation.labeling_api.database.facade.user" class="AppBundle\Database\Facade\User">
             <argument type="service" id="fos_user.user_manager" />
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
         <service id="annostation.labeling_api.database.facade.video" class="AppBundle\Database\Facade\Video">

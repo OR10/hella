@@ -17,6 +17,7 @@ export default class ViewerStageDirective {
       framePosition: '=',
       filters: '=',
       selectedPaperShape: '=',
+      playing: '=',
     };
 
     this.controller = ViewerStageController;

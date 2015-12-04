@@ -12,6 +12,7 @@ class FilmReelDirective {
       video: '=',
       filters: '=',
       selectedPaperShape: '=',
+      playing: '=',
     };
 
     this.template = FilmReelTemplate;

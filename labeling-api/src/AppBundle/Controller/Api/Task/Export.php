@@ -60,7 +60,7 @@ class Export extends Controller\Base
     public function listExportsAction(Model\LabelingTask $task)
     {
         $exports = $this->taskExportFacade->findAll();
-        $exports = array_values(array_filter($exports->toArray(), function($export) use ($task) {
+        $exports = array_values(array_filter($exports, function($export) use ($task) {
             return $export->getTaskId() === $task->getId();
         }));
 

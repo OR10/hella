@@ -13,6 +13,7 @@ class ThumbnailReelDirective {
       video: '=',
       filters: '=',
       selectedPaperShape: '=',
+      playing: '=',
     };
 
     this.template = ThumbnailReelTemplate;

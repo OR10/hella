@@ -19,6 +19,7 @@ import FilmReelModule from './FilmReel/FilmReel';
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
 import commonModuleConfig from './Common/config.json!';
+import viewerModuleConfig from './Viewer/config.json!';
 
 /**
  * The Main Application class
@@ -63,6 +64,7 @@ export default class Application {
   buildApplicationConfig() {
     return Promise.resolve({
       Common: commonModuleConfig,
+      Viewer: viewerModuleConfig,
     });
   }
 
