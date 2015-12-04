@@ -300,3 +300,55 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
                 "id": "e47f4bdfd22883b196ce45a8c980ab68",
                 "type": "AppBundle.Model.Interpolation.Status"
             }
+
+## Timer [/api/task/{taskId}/timer/{userId}]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + userId: `3` (number, required) - The id of the user-entity.
+
+### Read timer value of a user [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": {
+                    "time": 1234567890
+                }
+            }
+
+
+### Set timer value for a user [PUT]
+
++ Request (application/json)
+
+    + Attributes
+
+        + time: `1234567890` (number, required) - The time in seconds since the beginning of the unix epoch.
+
+    + Body
+
+            {
+                "time": 1234567890
+            }
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": {
+                    "time": 1234567890
+                }
+            }
+
++ Response 403 (application/json)
+
+    + Body
+
+            {
+            }
