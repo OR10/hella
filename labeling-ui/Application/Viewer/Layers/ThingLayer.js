@@ -64,14 +64,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context, entityIdService);
-    //
-    ///**
-    // * Tool for drawing circles
-    // *
-    // * @type {CircleDrawingTool}
-    // * @private
-    // */
-    //this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context);
+
+    /**
+     * Tool for drawing circles
+     *
+     * @type {CircleDrawingTool}
+     * @private
+     */
+    this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context, entityIdService);
     //
     ///**
     // * Tool for drawing paths
@@ -155,7 +155,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._rectangleDrawingTool.on('shape:new', this._onNewShape.bind(this));
     this._ellipseDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    //this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
     //this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
     //this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
     //this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
@@ -225,9 +225,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       case 'ellipse':
         this._ellipseDrawingTool.activate();
         break;
-      //case 'circle':
-      //  this._circleDrawingTool.activate();
-      //  break;
+      case 'circle':
+        this._circleDrawingTool.activate();
+        break;
       //case 'path':
       //  this._pathDrawingTool.activate();
       //  break;
