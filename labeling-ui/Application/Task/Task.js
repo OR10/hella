@@ -3,6 +3,8 @@ import TaskGateway from './Gateways/TaskGateway';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
+import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
+
 /**
  * Module containing all functionality associated with a {@link Task}
  *
@@ -16,6 +18,7 @@ class Task extends Module {
     this.module = angular.module('AnnoStation.Task', []);
 
     this.module.service('taskGateway', TaskGateway);
+    this.registerDirective('taskDescription', TaskDescriptionDirective);
   }
 
   /**
