@@ -1,24 +1,21 @@
 import paper from 'paper';
-import Tool from './Tool';
+import DrawingTool from './DrawingTool';
 import PaperEllipse from '../Shapes/PaperEllipse';
-import uuid from 'uuid';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor
  *
- * @class EllipseDrawingTool
- * @extends Tool
+ * @extends DrawingTool
  */
-class EllipseDrawingTool extends Tool {
+class EllipseDrawingTool extends DrawingTool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} [options]
+   * @param {EntityIdService} entityIdService
+   * @param {Object?} options
    */
-  constructor($scope, drawingContext, options) {
-    super(drawingContext, options);
-
-    this._$scope = $scope;
+  constructor($scope, drawingContext, entityIdService, options) {
+    super($scope, drawingContext, entityIdService, options);
 
     this._startPosition = null;
 
@@ -33,9 +30,15 @@ class EllipseDrawingTool extends Tool {
     // PaperJs doesn't deal well with single point ellipses so we cheat a little on the first draw
     const size = new paper.Point(1, 1);
 
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
+
     this._context.withScope(() => {
-      // TODO use entityIdService if/once we make this a directive
-      this._shape = new PaperEllipse(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, size, 'red');
+      this._shape = new PaperEllipse(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        this._startPosition, size, 'red',
+        true
+      );
     });
 
     this.emit('ellipse:new', this._shape);
@@ -56,6 +59,10 @@ class EllipseDrawingTool extends Tool {
   }
 
   _completeEllipse() {
+    // Ensure the parent/child structure is intact
+    const labeledThingInFrame = this._shape.labeledThingInFrame;
+    labeledThingInFrame.shapes.push(this._shape.toJSON());
+
     this.emit('shape:new', this._shape);
   }
 

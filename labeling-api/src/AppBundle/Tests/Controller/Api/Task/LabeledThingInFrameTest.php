@@ -256,8 +256,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     private function createLabeledInFrameDocument(Model\LabeledThing $labeledThing, $frameNumber = 10)
     {
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
-        $labeledThingInFrame->setFrameNumber($frameNumber);
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 
         return $labeledThingInFrame;

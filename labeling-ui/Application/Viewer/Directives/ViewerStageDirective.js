@@ -12,13 +12,12 @@ export default class ViewerStageDirective {
   constructor() {
     this.scope = {
       labeledThingsInFrame: '=',
-      labeledThings: '=',
       activeTool: '=',
       task: '=',
       framePosition: '=',
       filters: '=',
-      selectedLabeledThingInFrame: '=',
-      selectedLabeledThing: '=',
+      selectedPaperShape: '=',
+      playing: '=',
     };
 
     this.controller = ViewerStageController;

@@ -59,6 +59,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             json_encode(
                 array(
                     'rev' => $labeledThingInFrame->getRev(),
+                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
                     'frameNumber' => 5,
@@ -94,6 +95,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             1231231231231,
             json_encode(
                 array(
+                    'labeledThingId' => 'some-non-existing-id',
                     'rev' => 'some_rev_',
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
@@ -114,6 +116,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             json_encode(
                 array(
                     'rev' => 'some_invalid_revision',
+                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
                     'frameNumber' => 5,
@@ -218,7 +221,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
     }
 
-    private function createLabeledInFrameDocument()
+    private function createLabeledInFrameDocument($frameNumber = 5)
     {
         $video = new Model\Video('foobar');
         $this->videoFacade->save($video);
@@ -228,7 +231,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $labeledThing = new Model\LabeledThing($labelingTask);
         $labeledThing->setId('11dd639108f1419967ed8d6a1f5a76e7');
         $this->labelingThingFacade->save($labeledThing);
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing);
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
         $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765t');
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 

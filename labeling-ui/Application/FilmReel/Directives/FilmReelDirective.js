@@ -11,8 +11,8 @@ class FilmReelDirective {
       task: '=',
       video: '=',
       filters: '=',
-      selectedLabeledThingInFrame: '=',
-      selectedLabeledThing: '=',
+      selectedPaperShape: '=',
+      playing: '=',
     };
 
     this.template = FilmReelTemplate;

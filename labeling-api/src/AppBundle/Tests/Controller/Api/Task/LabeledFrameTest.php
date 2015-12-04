@@ -47,7 +47,7 @@ class LabeledFrameTest extends Tests\WebTestCase
         $labelingTask = $this->createLabelingTask();
         $response     = $this->doRequest('GET', $labelingTask->getId(), 1111);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(500, $response->getStatusCode());
     }
 
     public function testDeleteLabeledFrame()
@@ -115,7 +115,6 @@ class LabeledFrameTest extends Tests\WebTestCase
     {
         $labelingTask = $this->createLabelingTask();
         $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $labeledFrame->setFrameNumber(10);
         $response = $this->doRequest(
             'PUT',
             $labelingTask->getId(),
@@ -135,7 +134,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testUpdateLabeledFrameWithInvalidRevision()
     {
         $this->markTestIncomplete('Temporary skipping the revision check :(');
-        
+
         $labelingTask = $this->createLabelingTask();
         $labeledFrame = $this->createLabeledFrame($labelingTask);
         $response     = $this->doRequest(
@@ -156,8 +155,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testSaveLabeledFrameWithInvalidBody()
     {
         $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask);
-        $labeledFrame->setFrameNumber(10);
+        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
         $response = $this->doRequest(
             'PUT',
             $labelingTask->getId(),
@@ -171,8 +169,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testSaveLabeledFrameWithInvalidFrameNumbers()
     {
         $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask);
-        $labeledFrame->setFrameNumber(10);
+        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
         $response = $this->doRequest(
             'PUT',
             $labelingTask->getId(),
@@ -190,8 +187,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testSaveLabeledFrameWithInvalidClasses()
     {
         $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask);
-        $labeledFrame->setFrameNumber(10);
+        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
         $response = $this->doRequest(
             'PUT',
             $labelingTask->getId(),
@@ -266,9 +262,8 @@ class LabeledFrameTest extends Tests\WebTestCase
 
     private function createLabeledFrame(Model\LabelingTask $labelingTask)
     {
-        $labeledFrame = new Model\LabeledFrame($labelingTask);
+        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
         $labeledFrame->setId('22dd639108f1419967ed8d6a1f5a765c');
-        $labeledFrame->setFrameNumber(10);
         $labeledFrame->setClasses(array(
             'foo' => 'bar'
         ));

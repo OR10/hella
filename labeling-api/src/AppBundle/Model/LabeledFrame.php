@@ -2,10 +2,7 @@
 
 namespace AppBundle\Model;
 
-use AppBundle\Model;
-
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -30,22 +27,30 @@ class LabeledFrame
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $classes;
+    private $classes = [];
 
     /**
      * @CouchDB\Field(type="string")
-     * @Serializer\SerializedName("taskId")
      */
-    private $labelingTaskId;
+    private $taskId;
 
     /**
      * @CouchDB\Field(type="boolean")
      */
     private $incomplete = true;
 
-    public function __construct(Model\LabelingTask $task)
+    /**
+     * @param LabelingTask $task
+     * @param int          $frameNumber
+     */
+    public function __construct(LabelingTask $task, $frameNumber)
     {
-        $this->labelingTaskId = $task->getId();
+        if (!$task->getFrameRange()->coversFrameNumber($frameNumber)) {
+            throw new \RangeException("Invalid frameNumber '{$frameNumber}'");
+        }
+
+        $this->taskId      = $task->getId();
+        $this->frameNumber = (int) $frameNumber;
     }
 
     /**
@@ -53,15 +58,7 @@ class LabeledFrame
      */
     public function getTaskId()
     {
-        return $this->labelingTaskId;
-    }
-
-    /**
-     * @param int $frameNumber
-     */
-    public function setFrameNumber($frameNumber)
-    {
-        $this->frameNumber = $frameNumber;
+        return $this->taskId;
     }
 
     /**
@@ -71,15 +68,6 @@ class LabeledFrame
     {
         $this->classes = $classes;
     }
-
-    /**
-     * @param string $taskId
-     */
-    public function setTaskId($taskId)
-    {
-        $this->labelingTaskId = (string) $taskId;
-    }
-
 
     /**
      * @return mixed
@@ -114,18 +102,23 @@ class LabeledFrame
     }
 
     /**
-     * @param mixed $incomplete
+     * @param boolean $incomplete
      */
     public function setIncomplete($incomplete)
     {
-        $this->incomplete = $incomplete;
+        $this->incomplete = (bool) $incomplete;
     }
 
     /**
      * @param mixed $id
+     *
+     * @throw \LogicException if the id was already set.
      */
     public function setId($id)
     {
+        if ($this->id !== null) {
+            throw new \LogicException("Trying to set an already assigned id from '{$this->id}' to '{$id}'");
+        }
         $this->id = $id;
     }
 

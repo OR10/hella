@@ -29,12 +29,14 @@ class TaskExport
         return $this->documentManager->find(Model\TaskExport::class, $id);
     }
 
-    public function findAll()
+    public function findAllByTask(Model\LabelingTask $task)
     {
         return $this->documentManager
-            ->createQuery('annostation_task_export', 'by_id')
+            ->createQuery('annostation_task_export', 'by_taskId')
+            ->setKey($task->getId())
             ->onlyDocs(true)
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
     public function save(Model\TaskExport $taskExport)

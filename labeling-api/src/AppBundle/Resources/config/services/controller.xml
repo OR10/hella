@@ -34,7 +34,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.labeled_thing_in_frame"
@@ -69,6 +68,9 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.timer" class="AppBundle\Controller\Api\Task\Timer">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <argument type="service" id="security.token_storage" />
         </service>
 
         <service id="annostation.labeling_api.controller.api.status" class="AppBundle\Controller\Api\Status">
@@ -76,6 +78,8 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.current_user" class="AppBundle\Controller\Api\CurrentUser">
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
         </service>
     </services>
 </container>

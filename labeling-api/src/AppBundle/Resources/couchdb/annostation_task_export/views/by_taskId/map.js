@@ -1,5 +1,5 @@
 function(doc) {
   if (doc.type === 'AppBundle.Model.TaskExport') {
-    emit(doc._id, doc);
+    emit(doc.taskId, doc);
   }
 }

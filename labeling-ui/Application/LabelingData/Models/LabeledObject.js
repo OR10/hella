@@ -63,6 +63,18 @@ class LabeledObject {
   addClass(newClass) {
     this.setClasses([...this.classes, newClass]);
   }
+
+  /**
+   * Convert this model into a datastructure suitable for backend storage
+   *
+   * @return {Object}
+   */
+  toJSON() {
+    const {id, classes, rev, incomplete} = this;
+    return {
+      id, classes, rev, incomplete,
+    };
+  }
 }
 
 export default LabeledObject;

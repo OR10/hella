@@ -34,6 +34,18 @@ class LabelingTask
     private $videoId;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $descriptionTitle;
+
+    /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $descriptionText;
+
+    /**
      * @var FrameRange
      * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
      */
@@ -97,5 +109,37 @@ class LabelingTask
     public function getRequiredImageTypes()
     {
         return $this->requiredImageTypes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptionText()
+    {
+        return $this->descriptionText;
+    }
+
+    /**
+     * @param string $descriptionText
+     */
+    public function setDescriptionText($descriptionText)
+    {
+        $this->descriptionText = $descriptionText;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptionTitle()
+    {
+        return $this->descriptionTitle;
+    }
+
+    /**
+     * @param string $descriptionTitle
+     */
+    public function setDescriptionTitle($descriptionTitle)
+    {
+        $this->descriptionTitle = $descriptionTitle;
     }
 }

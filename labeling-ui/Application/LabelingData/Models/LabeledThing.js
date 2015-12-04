@@ -34,6 +34,19 @@ class LabeledThing extends LabeledObject {
   get task() {
     return this._task;
   }
+
+  /**
+   * Convert this model into a datastructure suitable for backend storage
+   *
+   * @return {Object}
+   */
+  toJSON() {
+    const {frameRange, task} = this;
+    return Object.assign(super.toJSON(), {
+      frameRange,
+      taskId: task.id,
+    });
+  }
 }
 
 export default LabeledThing;

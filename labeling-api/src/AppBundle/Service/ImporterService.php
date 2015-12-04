@@ -106,6 +106,10 @@ class ImporterService
         $metadata     = $video->getMetaData();
         $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
         $labelingTask = new Model\LabelingTask($video, $frameRange, $imageTypes);
+        $labelingTask->setDescriptionTitle('Identify the person');
+        $labelingTask->setDescriptionText(
+            'How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?'
+        );
         $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;

@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -36,6 +37,12 @@ class LabeledThingInFrame
 
     /**
      * @CouchDB\Field(type="string")
+     * @Serializer\Exclude
+     */
+    private $taskId;
+
+    /**
+     * @CouchDB\Field(type="string")
      */
     private $labeledThingId;
 
@@ -51,33 +58,35 @@ class LabeledThingInFrame
 
     /**
      * @param LabeledThing $labeledThing
-     * @param int|null     $frameNumber
+     * @param int          $frameNumber
      * @param array        $classes
      * @param array        $shapes
      */
     public function __construct(
-        LabeledThing $labeledThing = null,
-        $frameNumber = null,
+        LabeledThing $labeledThing,
+        $frameNumber,
         array $classes = [],
         array $shapes = []
     ) {
-        if ($labeledThing instanceof LabeledThing) {
-            $this->labeledThingId = $labeledThing->getId();
-        }
-
-        $this->frameNumber = $frameNumber;
-        $this->classes     = $classes;
-        $this->shapes      = $shapes;
+        $this->taskId         = $labeledThing->getTaskId();
+        $this->labeledThingId = $labeledThing->getId();
+        $this->frameNumber    = (int) $frameNumber;
+        $this->classes        = $classes;
+        $this->shapes         = $shapes;
     }
 
     /**
+     * @param int $toFrameNumber
+     *
      * @return LabeledThingInFrame
      */
-    public function copy()
+    public function copy($toFrameNumber)
     {
-        $copy                 = new LabeledThingInFrame();
+        $reflectionClass      = new \ReflectionClass(self::class);
+        $copy                 = $reflectionClass->newInstanceWithoutConstructor();
+        $copy->taskId         = $this->taskId;
         $copy->labeledThingId = $this->labeledThingId;
-        $copy->frameNumber    = $this->frameNumber;
+        $copy->frameNumber    = (int) $toFrameNumber;
         $copy->classes        = $this->classes;
         $copy->shapes         = $this->shapes;
         $copy->incomplete     = $this->incomplete;
@@ -92,14 +101,6 @@ class LabeledThingInFrame
     public function getLabeledThingId()
     {
         return $this->labeledThingId;
-    }
-
-    /**
-     * @param int $frameNumber
-     */
-    public function setFrameNumber($frameNumber)
-    {
-        $this->frameNumber = $frameNumber;
     }
 
     /**
@@ -124,14 +125,6 @@ class LabeledThingInFrame
     public function setShapes(array $shapes)
     {
         $this->shapes = $shapes;
-    }
-
-    /**
-     * @param string $labeledThingId
-     */
-    public function setLabeledThingId($labeledThingId)
-    {
-        $this->labeledThingId = $labeledThingId;
     }
 
     /**
@@ -184,9 +177,14 @@ class LabeledThingInFrame
 
     /**
      * @param mixed $id
+     *
+     * @throws \LogicException if the id was already set.
      */
     public function setId($id)
     {
+        if ($this->id !== null) {
+            throw new \LogicException("Trying to set an already assigned id from '{$this->id}' to '{$id}'");
+        }
         $this->id = $id;
     }
 

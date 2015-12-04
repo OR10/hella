@@ -2,8 +2,7 @@
     <header task="vm.task"></header>
     <div class="col-md-9">
         <viewer labeled-things-in-frame="vm.labeledThingsInFrame"
-                labeled-things="vm.labeledThings"
-                selected-labeled-thing-in-frame="vm.selectedLabeledThingInFrame"
+                selected-paper-shape="vm.selectedPaperShape"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"
                 task="vm.task"
@@ -19,7 +18,7 @@
                         frame-position="vm.framePosition"
                         sections="[{header: 'Frame Label'}]"
         ></label-selector>
-        <label-selector labeled-object="vm.selectedLabeledThingInFrame"
+        <label-selector labeled-object="vm.selectedPaperShape.labeledThing"
                         structure="vm.labeledThingStructure"
                         annotation="vm.labeledThingAnnotation"
                         task="vm.task"

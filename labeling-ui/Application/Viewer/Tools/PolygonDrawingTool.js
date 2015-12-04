@@ -1,15 +1,22 @@
 import PathDrawingTool from './PathDrawingTool';
 import PaperPolygon from '../Shapes/PaperPolygon';
-import uuid from 'uuid';
 
 /**
  * A tool for drawing a path with the mouse cursor
+ *
+ * @extends PathDrawingTool
  */
 export default class PolygonDrawingTool extends PathDrawingTool {
   _draw(point) {
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
+
     this._context.withScope(() => {
-      // TODO use entityIdService if/once we make this a directive
-      this._path = new PaperPolygon(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
+      this._path = new PaperPolygon(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        [point], 'red',
+        true
+      );
     });
   }
 }

@@ -38,7 +38,7 @@ class Linear implements Interpolation\Algorithm
             $frameRange->getStartFrameNumber(),
             0,
             $frameRange->getNumberOfFrames()
-        )->toArray();
+        );
 
         if (empty($labeledThingsInFrame)) {
             throw new Interpolation\Exception('Insufficient labeled things in frame');
@@ -75,9 +75,7 @@ class Linear implements Interpolation\Algorithm
         }
 
         foreach (range($startFrameNumber, $labeledThingInFrame->getFrameNumber() - 1) as $frameNumber) {
-            $clone = $labeledThingInFrame->copy();
-            $clone->setFrameNumber($frameNumber);
-            $emit($clone);
+            $emit($labeledThingInFrame->copy($frameNumber));
         }
     }
 
@@ -91,9 +89,7 @@ class Linear implements Interpolation\Algorithm
         }
 
         foreach (range($labeledThingInFrame->getFrameNumber() + 1, $endFrameNumber) as $frameNumber) {
-            $clone = $labeledThingInFrame->copy();
-            $clone->setFrameNumber($frameNumber);
-            $emit($clone);
+            $emit($labeledThingInFrame->copy($frameNumber));
         }
     }
 
@@ -120,11 +116,7 @@ class Linear implements Interpolation\Algorithm
                 $currentShapes
             );
 
-            $current = new Model\LabeledThingInFrame();
-            $current->setLabeledThingId($previous->getLabeledThingId());
-            $current->setFrameNumber($frameNumber);
-            $current->setClasses($previous->getClasses());
-            $current->setIncomplete($previous->getIncomplete());
+            $current = $previous->copy($frameNumber);
             $current->setShapesAsObjects($currentShapes);
             $emit($current);
             $previous = $current;
