@@ -101,7 +101,9 @@ class ThumbnailReelController {
       );
     });
 
-    $scope.$watchGroup(['vm.selectedPaperShape', 'vm.selectedPaperShape.isDraft'],
+    // @TODO: Only supports single shaped LabeledThingInFrames at the moment.
+    //        Some sort of watchGroupCollection would be needed to fix this.
+    $scope.$watchGroup(['vm.selectedPaperShape', 'vm.selectedPaperShape.isDraft', 'vm.selectedPaperShape.labeledThingInFrame.shapes[0]'],
       ([newPaperShape]) => this._updateLabeledThingInFrames(newPaperShape)
     );
 
