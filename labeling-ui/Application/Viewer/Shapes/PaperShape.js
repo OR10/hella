@@ -10,8 +10,9 @@ class PaperShape extends paper.Group {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
+   * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId) {
+  constructor(labeledThingInFrame, shapeId, draft = false) {
     super();
     // This needs to be called due to how PaperJS does inheritance
     super.initialize();
@@ -41,10 +42,54 @@ class PaperShape extends paper.Group {
      * @private
      */
     this._labeledThingInFrame = labeledThingInFrame;
+
+    /**
+     * If this shape is a draft it means it has not been stored to the database. This implies, that its hierarchy may
+     * not have been stored as well.
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._draft = draft;
   }
 
   get id() {
     return this._shapeId;
+  }
+
+  /**
+   * Whether the Shape has been stored with its hierarchy to the backend
+   *
+   * @returns {boolean}
+   */
+  get isDraft() {
+    return this._draft;
+  }
+
+  /**
+   * Mark a shape to be a draft
+   *
+   * Being a draft means it has not been stored to the backend yet
+   */
+  draft() {
+    if (this._draft) {
+        throw new Error(`Tried to draft a Shape more than once: ${this.id}`);
+    }
+
+    this._draft = true;
+  }
+
+  /**
+   * Mark a draft shape to be now published.
+   *
+   * This may only be done once!
+   */
+  publish() {
+    if (!this._draft) {
+      throw new Error(`Tried to publish a Shape more than once: ${this.id}`);
+    }
+
+    this._draft = false;
   }
 
  /**

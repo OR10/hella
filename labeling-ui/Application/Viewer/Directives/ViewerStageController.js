@@ -10,8 +10,7 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
  * @property {Task} task
  * @property {FramePosition} framePosition
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
- * @property {Array.<LabeledThing> labeledThings
- * @property {LabeledThingInFrame} selectedLabeledThingInFrame
+ * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {Filters} filters
  */
@@ -30,20 +29,18 @@ class ViewerStageController {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor(
-    $scope,
-    $element,
-    drawingContextService,
-    taskFrameLocationGateway,
-    frameGateway,
-    labeledThingInFrameGateway,
-    entityIdService,
-    paperShapeFactory,
-    applicationConfig,
-    $interval,
-    labeledThingGateway,
-    abortablePromiseFactory
-  ) {
+  constructor($scope,
+              $element,
+              drawingContextService,
+              taskFrameLocationGateway,
+              frameGateway,
+              labeledThingInFrameGateway,
+              entityIdService,
+              paperShapeFactory,
+              applicationConfig,
+              $interval,
+              labeledThingGateway,
+              abortablePromiseFactory) {
     /**
      * List of supported image types for this component
      *
@@ -51,20 +48,6 @@ class ViewerStageController {
      * @private
      */
     this._supportedImageTypes = ['source', 'sourceJpg'];
-
-    /**
-     * The currently selected Shape
-     *
-     * @type {Shape|null}
-     */
-    this.selectedShape = null;
-
-    /**
-     * The ghosted LabeledThingInFrame, if one exists for the current selection and frame
-     *
-     * @type {LabeledThingInFrame|null}
-     */
-    this.ghostedLabeledThingInFrame = null;
 
     /**
      * @type {angular.Scope}
@@ -89,6 +72,12 @@ class ViewerStageController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
 
     /**
      * @type {EntityIdService}
@@ -177,7 +166,7 @@ class ViewerStageController {
     this._labeledThingGateway = labeledThingGateway;
 
     const eventDelegationLayer = new EventDelegationLayer();
-    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, paperShapeFactory);
+    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
     this._backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
@@ -196,10 +185,6 @@ class ViewerStageController {
       thingLayer.activateTool(newActiveTool);
     });
 
-    $scope.$watch('vm.selectedLabeledThingInFrame', () => {
-      this.ghostedLabeledThingInFrame = null;
-    });
-
     // Reapply filters if they changed
     $scope.$watchCollection('vm.filters.filters', filters => {
       this._backgroundLayer.resetLayer();
@@ -211,28 +196,9 @@ class ViewerStageController {
 
 
     // Update the Background once the `framePosition` changes
-    // Update the possibly ghosted LabeledThingInFrame
+    // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._handleFrameChange(newPosition);
-    });
-
-    // Update selectedLabeledThingInFrame once a shape is selected
-    $scope.$watch('vm.selectedShape', (newSelectedShape) => {
-      if (newSelectedShape === null) {
-        this.selectedLabeledThingInFrame = null;
-        this.selectedLabeledThing = null;
-        this.ghostedLabeledThingInFrame = null;
-      } else {
-        if (this.ghostedLabeledThingInFrame !== null && newSelectedShape.labeledThingInFrame.id === this.ghostedLabeledThingInFrame.id) {
-          return;
-        }
-
-        // As we do change from a ghost to a non ghost we can simply set this to null
-        // If the change is executed between to non ghosts the null is just what was already set anyway.
-        this.ghostedLabeledThingInFrame = null;
-        this.selectedLabeledThingInFrame = this.labeledThingsInFrame[newSelectedShape.labeledThingInFrame.id];
-        this.selectedLabeledThing = this.labeledThings[this.selectedLabeledThingInFrame.labeledThing.id];
-      }
     });
 
     $scope.$watch('vm.playing', (playingNow, playingBefore) => {
@@ -284,40 +250,31 @@ class ViewerStageController {
 
     frameChangePromises.push(backgroundPromise);
 
-    this.labeledThingsInFrame = null;
+    this.labeledThingsInFrame = [];
     this.labeledFrame = null;
 
     const labeledThingsInFramePromise = this._labeledThingInFrameBuffer.add(
       this._loadLabeledThingsInFrame(frameNumber)
       )
       .then(labeledThingsInFrame => {
-        this.labeledThingsInFrame = {};
-        this.labeledThings = {};
-
-        labeledThingsInFrame.forEach(labeledThingInFrame => {
-          this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-          this.labeledThings[labeledThingInFrame.labeledThing.id] = labeledThingInFrame.labeledThing;
-        });
+        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
       });
 
     frameChangePromises.push(labeledThingsInFramePromise);
 
-
-    if (this.selectedLabeledThingInFrame !== null) {
+    if (this.selectedPaperShape !== null) {
+      const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
       const ghostUpdatePromise = this._ghostedLabeledThingInFrameBuffer.add(
         this._labeledThingInFrameGateway.getLabeledThingInFrame(
           this.task,
           frameNumber,
-          this.selectedLabeledThingInFrame.labeledThing
+          selectedLabeledThing
         )
       ).then(labeledThingsInFrame => {
         const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
-        if (ghostedLabeledThingsInFrame.length === 0) {
-          // The labeledThingInFrame is not ghosted and will automatically be loaded during the basic labeledThingInFrame request
-          return;
+        if (ghostedLabeledThingsInFrame.length > 0) {
+          this.labeledThingsInFrame.push(ghostedLabeledThingsInFrame[0]);
         }
-
-        this.ghostedLabeledThingInFrame = ghostedLabeledThingsInFrame[0];
       });
 
       frameChangePromises.push(ghostUpdatePromise);
@@ -374,35 +331,41 @@ class ViewerStageController {
   }
 
   _onUpdatedShape(shape) {
-    let labeledThingInFrame = this.labeledThingsInFrame[shape.labeledThingInFrame.id];
-
-    if (labeledThingInFrame === undefined) {
-      // A ghost shape has been updated
-      // Let's bust the ghost and add it to the normal selection of labeledthingsinframe
-      labeledThingInFrame = this.ghostedLabeledThingInFrame.ghostBust(
+    const labeledThingInFrame = shape.labeledThingInFrame;
+    if (labeledThingInFrame.ghost) {
+      labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
         this.framePosition.position
       );
-
-      shape.labeledThingInFrameId = labeledThingInFrame.id;
-
-      this.labeledThingsInFrame[labeledThingInFrame.id] = labeledThingInFrame;
-      this.ghostedLabeledThingInFrame = null;
-      this.selectedLabeledThingInFrame = labeledThingInFrame;
     }
 
     // @TODO this needs to be fixed for supporting multiple shapes
+    //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
+  /**
+   * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
+   * {@link LabeledObject}s to the backend
+   *
+   * @returns {AbortablePromise.<LabeledThingInFrame>}
+   * @private
+   */
   _onNewShape(shape) {
-    this._$scope.$apply(() => {
-      this.selectedLabeledThingInFrame.shapes.push(shape);
-      this.activeTool = 'move';
+    console.log('new shape: ', shape);
 
-      this._labeledThingInFrameGateway.saveLabeledThingInFrame(this.selectedLabeledThingInFrame);
+    const newLabeledThingInFrame = shape.labeledThingInFrame;
+    const newLabeledThing = newLabeledThingInFrame.labeledThing;
+
+    // Store the newly created hierarchy to the backend
+    this._labeledThingGateway.saveLabeledThing(newLabeledThing)
+      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .then(() => shape.publish());
+
+    this._$scope.$apply(() => {
+      this.activeTool = 'move';
     });
   }
 

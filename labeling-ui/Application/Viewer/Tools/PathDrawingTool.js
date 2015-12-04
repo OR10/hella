@@ -1,24 +1,21 @@
 import paper from 'paper';
-import Tool from './Tool';
+import DrawingTool from './DrawingTool';
 import PaperPath from '../Shapes/PaperPath';
-import uuid from 'uuid';
 
 /**
  * A tool for drawing a path with the mouse cursor
  *
- * @class PathDrawingTool
- * @extends Tool
+ * @extends DrawingTool
  */
-class PathDrawingTool extends Tool {
+class PathDrawingTool extends DrawingTool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} [options]
+   * @param {EntityIdService} entityIdService
+   * @param {Object?} options
    */
-  constructor($scope, drawingContext, options) {
-    super(drawingContext, options);
-
-    this._$scope = $scope;
+  constructor($scope, drawingContext, entityIdService, options) {
+    super($scope, drawingContext, entityIdService, options);
 
     this._path = null;
 
@@ -33,6 +30,10 @@ class PathDrawingTool extends Tool {
     };
 
     if (event.event.altKey) {
+      // Ensure the parent/child structure is intact
+      const labeledThingInFrame = this._path.labeledThingInFrame;
+      labeledThingInFrame.shapes.push(this._path.toJSON());
+
       this.emit('shape:new', this._path);
       return;
     }
@@ -47,14 +48,16 @@ class PathDrawingTool extends Tool {
   }
 
   _draw(point) {
-    this._context.withScope(() => {
-      // TODO use entityIdService if/once we make this a directive
-      this._path = new PaperPath(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, [point], 'red');
-    });
-  }
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
 
-  _cleanUp() {
-    this._path = null;
+    this._context.withScope(() => {
+      this._path = new PaperPath(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        [point], 'red',
+        true
+      );
+    });
   }
 }
 

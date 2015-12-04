@@ -1,24 +1,21 @@
 import paper from 'paper';
-import Tool from './Tool';
+import DrawingTool from './DrawingTool';
 import PaperRectangle from '../Shapes/PaperRectangle';
-import uuid from 'uuid';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
  *
- * @class RectangleDrawingTool
- * @extends Tool
+ * @extends DrawingTool
  */
-class RectangleDrawingTool extends Tool {
+class RectangleDrawingTool extends DrawingTool {
   /**
-   * @param $scope
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} [options]
+   * @param {EntityIdService} entityIdService
+   * @param {Object?} options
    */
-  constructor($scope, drawingContext, options) {
-    super(drawingContext, options);
-
-    this._$scope = $scope;
+  constructor($scope, drawingContext, entityIdService, options) {
+    super($scope, drawingContext, entityIdService, options);
 
     this._rect = null;
     this._startPosition = null;
@@ -37,9 +34,15 @@ class RectangleDrawingTool extends Tool {
       this._startPosition.y + 1
     );
 
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
+
     this._context.withScope(() => {
-      // TODO use entityIdService if/once we make this a directive
-      this._rect = new PaperRectangle(uuid.v4(), this._$scope.vm.selectedLabeledThingInFrame.id, this._startPosition, endPosition, 'red');
+      this._rect = new PaperRectangle(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        this._startPosition, endPosition, 'red',
+        true
+      );
     });
 
     this.emit('rectangle:new', this._rect);
@@ -60,6 +63,10 @@ class RectangleDrawingTool extends Tool {
   }
 
   _completeRect() {
+    // Ensure the parent/child structure is intact
+    const labeledThingInFrame = this._rect.labeledThingInFrame;
+    labeledThingInFrame.shapes.push(this._rect.toJSON());
+
     this.emit('shape:new', this._rect);
   }
 

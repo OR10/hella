@@ -4,7 +4,7 @@
  * @property {FramePosition} framePosition
  * @property {Task} task
  * @property {Filters} filters
- * @property {LabeledThingInFrame|null} selectedLabeledThingInFrame
+ * @property {PaperShape|null} selectedPaperShape
  */
 class FilmReelController {
 

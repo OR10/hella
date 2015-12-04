@@ -64,12 +64,31 @@ class TaskController {
     this.labeledFrameAnnotation = labeledFrameAnnotation;
 
     /**
-     * Information about the labeling state of the `selectedLabeledThingInFrame`
-     *
-     * @type {boolean}
+     * @type {Tool|null}
      */
-    this.selectedLabeledThingInFrameCompletelyLabeled = false;
+    this.activeTool = null;
 
+    /**
+     * @type {PaperShape|null}
+     */
+    this.selectedPaperShape = null;
+
+    /**
+     * Due to an action selected DrawingTool, which should be activated when appropriate.
+     *
+     * @type {string}
+     */
+    this.selectedDrawingTool = null;
+
+    /**
+     * @type {LabeledFrameGateway}
+     */
+    this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
+     * @type {AbortablePromiseRingBuffer}
+     */
+    this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
 
     // Watch for changes of the Frame position to correctly update all
     // data structures for the new frame
@@ -90,6 +109,10 @@ class TaskController {
   }
 }
 
-TaskController.$inject = ['$scope', 'initialData', 'labeledFrameGateway'];
+TaskController.$inject = [
+  '$scope',
+  'initialData',
+  'labeledFrameGateway',
+];
 
 export default TaskController;

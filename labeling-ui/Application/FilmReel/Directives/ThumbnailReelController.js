@@ -6,7 +6,7 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
  * @property {FramePosition} framePosition
  * @property {Task} task
  * @property {Filters} filters
- * @property {LabeledThingInFrame} selectedLabeledThingInFrame
+ * @property {PaperShape} selectedPaperShape
  */
 class ThumbnailReelController {
   /**
@@ -87,6 +87,7 @@ class ThumbnailReelController {
 
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
+      // Pause updating during playback
       if (this.playing) {
         return;
       }
@@ -94,58 +95,65 @@ class ThumbnailReelController {
       this._updateThumbnailData();
     });
 
+    // Update Thumbnails after playing stopped.
     $scope.$watch('vm.playing', (playingNow, playingBefore) => {
       if (playingBefore) {
         this._updateThumbnailData();
+        if (this.selectedPaperShape !== null) {
+          this._updateLabeledThingInFrames(this.selectedPaperShape);
+        }
       }
     });
 
-    $scope.$watchCollection('vm.selectedLabeledThingInFrame.shapes', (newShapes) => {
-      if (!newShapes) {
-        this.thumbnails.forEach(
-          (thumbnail, index) => {
-            const location = thumbnail.location;
-            const labeledThingInFrame = null;
-            this.thumbnails[index] = {location, labeledThingInFrame};
-          }
-        );
-        return;
-      }
-
-      this._labeledThingInFrameBuffer.add(
-        this._loadLabeledThingsInFrame(this.framePosition)
-        )
-        .then(labeledThingsInFrame => {
-          labeledThingsInFrame.forEach(
-            (labeledThingInFrame, index) => {
-              const thumbnail = this.thumbnails[index];
-              const location = thumbnail.location;
-              this.thumbnails[index] = {location, labeledThingInFrame};
-            }
-          );
-        });
-    });
+    // @TODO: Only supports single shaped LabeledThingInFrames at the moment.
+    //        Some sort of watchGroupCollection would be needed to fix this.
+    $scope.$watchGroup(['vm.selectedPaperShape', 'vm.selectedPaperShape.isDraft', 'vm.selectedPaperShape.labeledThingInFrame.shapes[0]'],
+      ([newPaperShape]) => this._updateLabeledThingInFrames(newPaperShape)
+    );
 
     this.handleDrop = this.handleDrop.bind(this);
   }
 
-  _updateThumbnailData() {
-    this._$q.all([
-        this._frameLocationsBuffer.add(
-          this._loadFrameLocations(this.framePosition)
-        ),
-        this._labeledThingInFrameBuffer.add(
-          this._loadLabeledThingsInFrame(this.framePosition)
-        ),
-      ])
-      .then(([thumbnailLocations, labeledThingsInFrame]) => {
-        thumbnailLocations.forEach(
-          (location, index) => {
-            const labeledThingInFrame = labeledThingsInFrame[index];
+  _updateLabeledThingInFrames(newPaperShape) {
+    if (!newPaperShape || newPaperShape.isDraft) {
+      // Clear all thumbnail shape previews
+      this.thumbnails.forEach(
+        (thumbnail, index) => {
+          const location = thumbnail.location;
+          const labeledThingInFrame = null;
+          this.thumbnails[index] = {location, labeledThingInFrame};
+        }
+      );
+      return;
+    }
+
+    this._labeledThingInFrameBuffer.add(
+      this._loadLabeledThingsInFrame(this.framePosition)
+      )
+      .then(labeledThingsInFrame => {
+        labeledThingsInFrame.forEach(
+          (labeledThingInFrame, index) => {
+            const thumbnail = this.thumbnails[index];
+            const location = thumbnail.location;
             this.thumbnails[index] = {location, labeledThingInFrame};
           }
         );
       });
+  }
+
+  _updateThumbnailData() {
+    this._frameLocationsBuffer.add(
+      this._loadFrameLocations(this.framePosition)
+      )
+      .then(thumbnailLocations =>
+        thumbnailLocations.forEach(
+          (location, index) => {
+            const thumbnail = this.thumbnails[index];
+            const labeledThingInFrame = thumbnail.labeledThingInFrame;
+            this.thumbnails[index] = {location, labeledThingInFrame};
+          }
+        )
+      );
   }
 
   /**
@@ -209,7 +217,7 @@ class ThumbnailReelController {
    * @private
    */
   _loadLabeledThingsInFrame(framePosition) {
-    if (!this.selectedLabeledThingInFrame) {
+    if (!this.selectedPaperShape) {
       return this._abortablePromiseFactory(this._$q.resolve(new Array(7).fill(null)));
     }
 
@@ -217,7 +225,7 @@ class ThumbnailReelController {
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
       offset + 1,
-      this.selectedLabeledThingInFrame.labeledThing,
+      this.selectedPaperShape.labeledThingInFrame.labeledThing,
       0,
       limit
       )
@@ -225,7 +233,7 @@ class ThumbnailReelController {
   }
 
   thumbnailInFrameRange(index) {
-    if (!this.selectedLabeledThing || index < 0) {
+    if (!this.selectedPaperShape || index < 0) {
       return false;
     }
 
@@ -235,52 +243,61 @@ class ThumbnailReelController {
       return false;
     }
 
-    return this.selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber
-      && this.selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber;
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    return selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber
+      && selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber;
   }
 
   placeStartBracket(index) {
-    if (!this.selectedLabeledThing) {
+    if (!this.selectedPaperShape) {
       return false;
     }
 
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
     if (index < 0) {
-      return this.selectedLabeledThing.frameRange.startFrameNumber === this.framePosition.position - this._thumbnailLookahead;
+      return selectedLabeledThing.frameRange.startFrameNumber === this.framePosition.position - this._thumbnailLookahead;
     }
 
     const thumbnail = this.thumbnails[index + 1];
 
-    return thumbnail && thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.startFrameNumber;
+    return thumbnail && thumbnail.location && thumbnail.location.frameNumber === selectedLabeledThing.frameRange.startFrameNumber;
   }
 
   placeEndBracket(index) {
-    if (!this.selectedLabeledThing || index < 0) {
+    if (!this.selectedPaperShape || index < 0) {
       return false;
     }
 
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
     const thumbnail = this.thumbnails[index];
 
-    return thumbnail.location && thumbnail.location.frameNumber === this.selectedLabeledThing.frameRange.endFrameNumber;
+    return thumbnail.location && thumbnail.location.frameNumber === selectedLabeledThing.frameRange.endFrameNumber;
   }
 
   _setStartFrameNumber(index) {
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
     if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
       const frameNumber = this.thumbnails[index + 1].location.frameNumber;
 
-      if (frameNumber <= this.selectedLabeledThing.frameRange.endFrameNumber) {
-        this.selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
-        this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+      if (frameNumber <= selectedLabeledThing.frameRange.endFrameNumber) {
+        selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
       }
     }
   }
 
   _setEndFrameNumber(index) {
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
     if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
       const frameNumber = this.thumbnails[index].location.frameNumber;
 
-      if (frameNumber >= this.selectedLabeledThing.frameRange.startFrameNumber) {
-        this.selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
-        this._labeledThingGateway.saveLabeledThing(this.selectedLabeledThing);
+      if (frameNumber >= selectedLabeledThing.frameRange.startFrameNumber) {
+        selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
       }
     }
   }
