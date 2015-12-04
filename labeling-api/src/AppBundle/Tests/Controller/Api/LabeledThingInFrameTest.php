@@ -95,6 +95,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             1231231231231,
             json_encode(
                 array(
+                    'labeledThingId' => 'some-non-existing-id',
                     'rev' => 'some_rev_',
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
