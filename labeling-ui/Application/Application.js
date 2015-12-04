@@ -111,9 +111,7 @@ export default class Application {
       $urlRouterProvider.otherwise('/tasks');
 
       function userResolver(userGateway) {
-        console.log('user');
         return userGateway.getCurrentUser().then((user) => {
-          console.log(user);
           return user;
         });
       }
