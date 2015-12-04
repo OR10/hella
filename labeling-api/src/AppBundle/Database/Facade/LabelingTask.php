@@ -122,6 +122,24 @@ class LabelingTask
             ->toArray();
     }
 
+    public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $skip = null, $limit = null)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
+            ->setStartKey([$labelingTask->getId()])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        if ($skip !== null) {
+            $query->setSkip($skip);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        return $query->onlyDocs(true)->execute()->toArray();
+    }
+
     public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
     {
         return $this->documentManager
