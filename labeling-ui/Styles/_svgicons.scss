@@ -1,11 +1,16 @@
 svg.icon {
   width: 25px;
   height: 25px;
-  fill-opacity: 0;
-  stroke: $icon;
-  stroke-width: 1.5;
+
+  * {
+    //stroke: $icon;
+  }
+
+  path {
+    fill: $icon;
+  }
 }
 
-svg.icon:hover{
+svg.icon:hover {
   stroke: $icon-hover;
 }
