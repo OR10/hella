@@ -155,4 +155,27 @@ class LabelingTask
         $this->documentManager->persist($labelingTask);
         $this->documentManager->flush();
     }
+
+    public function getTimerForTaskAndUser(Model\LabelingTask $task, Model\User $user)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_task_timer', 'by_taskId_userId')
+            ->setKey([$task->getId(), $user->getId()])
+            ->setLimit(1)
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $result[0];
+    }
+
+    public function saveTimer(Model\TaskTimer $taskTimer)
+    {
+        $this->documentManager->persist($taskTimer);
+        $this->documentManager->flush();
+    }
 }

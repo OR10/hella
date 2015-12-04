@@ -28,5 +28,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
             <tag name="request.param_converter" converter="annostation.task_export" priority="10" />
         </service>
+
+        <service id="annostation.labeling_api.request.param_converter.user" class="AppBundle\Request\ParamConverter\User">
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <tag name="request.param_converter" converter="annostation.user" priority="10" />
+        </service>
     </services>
 </container>
