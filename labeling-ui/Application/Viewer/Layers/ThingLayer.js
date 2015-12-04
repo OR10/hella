@@ -72,38 +72,38 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context, entityIdService);
-    //
-    ///**
-    // * Tool for drawing paths
-    // *
-    // * @type {PathDrawingTool}
-    // * @private
-    // */
-    //this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context);
-    //
-    ///**
-    // * Tool for drawing closed polygons
-    // *
-    // * @type {PolygonDrawingTool}
-    // * @private
-    // */
-    //this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context);
-    //
-    ///**
-    // * Tool for drawing lines
-    // *
-    // * @type {LineDrawingTool}
-    // * @private
-    // */
-    //this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context);
-    //
-    ///**
-    // * Tool for drawing points
-    // *
-    // * @type {PointDrawingTool}
-    // * @private
-    // */
-    //this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context);
+
+    /**
+     * Tool for drawing paths
+     *
+     * @type {PathDrawingTool}
+     * @private
+     */
+    this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context, entityIdService);
+
+    /**
+     * Tool for drawing closed polygons
+     *
+     * @type {PolygonDrawingTool}
+     * @private
+     */
+    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context, entityIdService);
+
+    /**
+     * Tool for drawing lines
+     *
+     * @type {LineDrawingTool}
+     * @private
+     */
+    this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context, entityIdService);
+
+    /**
+     * Tool for drawing points
+     *
+     * @type {PointDrawingTool}
+     * @private
+     */
+    this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context, entityIdService);
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);
@@ -156,10 +156,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._rectangleDrawingTool.on('shape:new', this._onNewShape.bind(this));
     this._ellipseDrawingTool.on('shape:new', this._onNewShape.bind(this));
     this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    //this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    //this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    //this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    //this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
+    this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
   }
 
   _onLayerClick(event) {
@@ -170,6 +170,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         class: PaperShape,
         fill: true,
         bounds: true,
+        segments: true,
+        curves: true,
+        center: true,
+        tolerance: 3,
       });
 
       if (hitResult) {
@@ -228,18 +232,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
       case 'circle':
         this._circleDrawingTool.activate();
         break;
-      //case 'path':
-      //  this._pathDrawingTool.activate();
-      //  break;
-      //case 'polygon':
-      //  this._polygonDrawingTool.activate();
-      //  break;
-      //case 'line':
-      //  this._lineDrawingTool.activate();
-      //  break;
-      //case 'point':
-      //  this._pointDrawingTool.activate();
-      //  break;
+      case 'path':
+        this._pathDrawingTool.activate();
+        break;
+      case 'polygon':
+        this._polygonDrawingTool.activate();
+        break;
+      case 'line':
+        this._lineDrawingTool.activate();
+        break;
+      case 'point':
+        this._pointDrawingTool.activate();
+        break;
       case 'scale':
         this._shapeScaleTool.activate();
         break;

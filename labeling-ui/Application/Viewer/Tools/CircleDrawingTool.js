@@ -30,7 +30,8 @@ class CircleDrawingTool extends EllipseDrawingTool {
       this._shape = new PaperCircle(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        this._startPosition, radius, 'red'
+        this._startPosition, radius, 'red',
+        true
       );
     });
 

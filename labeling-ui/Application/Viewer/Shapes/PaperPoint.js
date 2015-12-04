@@ -9,9 +9,10 @@ class PaperPoint extends PaperCircle {
    * @param {String} shapeId
    * @param {Point} position
    * @param {String} strokeColor
+   * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, position, strokeColor) {
-    super(labeledThingInFrame, shapeId, position, 1, strokeColor);
+  constructor(labeledThingInFrame, shapeId, position, strokeColor, draft) {
+    super(labeledThingInFrame, shapeId, position, 1, strokeColor, draft);
   }
 
   toJSON() {
