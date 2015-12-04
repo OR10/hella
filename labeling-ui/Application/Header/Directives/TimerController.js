@@ -3,21 +3,25 @@
  */
 class TimerController {
   constructor($interval, timerGateway) {
+    this.$interval = $interval;
     this.timerGateway = timerGateway;
+
     this.elapsedTime = 0;
     this.elapsedHours = 0;
     this.elapsedMinutes = 0;
+
+    //this.timerGateway.getTime(this.task.id, this.user.id).then(this.init());
+    this.init(0);
   }
 
   init(time) {
     this.elapsedTime = time;
     this.calculateTime();
-    $interval(this.interval.bind(this), 1000);
+    this.$interval(this.interval.bind(this), 1000);
   }
 
   interval() {
     this.elapsedTime++;
-    this.timerGateway.setTime()
     this.calculateTime();
   }
 

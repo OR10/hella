@@ -12,7 +12,6 @@ class TimerDirective {
     };
 
     this.template = timerTemplate;
-    this.scope = true;
 
     this.controller = TimerController;
     this.controllerAs = 'vm';

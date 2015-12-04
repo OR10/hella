@@ -6,8 +6,13 @@ import HeaderController from './HeaderController';
  */
 class HeaderDirective {
   constructor() {
+    this.scope = {
+      task: '=',
+      user: '=',
+    };
+
+
     this.template = headerTemplate;
-    this.scope = true;
 
     this.controller = HeaderController;
     this.controllerAs = 'vm';

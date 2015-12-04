@@ -11,9 +11,10 @@ class TaskController {
   /**
    * @param {angular.Scope} $scope
    * @param {{task: Task, video: Video}} initialData
+   * @param {User} user
    * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor($scope, initialData, labeledFrameGateway) {
+  constructor($scope, initialData, user, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
@@ -28,6 +29,11 @@ class TaskController {
      * @type {Video}
      */
     this.video = initialData.video;
+
+    /**
+     * @type {User}
+     */
+    this.user = user;
 
     /**
      * Currently active frame position to be displayed inside the MediaControls
@@ -90,6 +96,6 @@ class TaskController {
   }
 }
 
-TaskController.$inject = ['$scope', 'initialData', 'labeledFrameGateway'];
+TaskController.$inject = ['$scope', 'initialData', 'user', 'labeledFrameGateway'];
 
 export default TaskController;

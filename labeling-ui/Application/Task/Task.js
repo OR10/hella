@@ -31,8 +31,8 @@ class Task extends Module {
     }
     initialDataResolver.$inject = ['$stateParams', 'taskGateway', 'videoGateway'];
 
-    $stateProvider.state('task', {
-      url: '/task/:taskId',
+    $stateProvider.state('labeling.task', {
+      url: 'task/:taskId',
       controller: TaskController,
       controllerAs: 'vm',
       template: taskTemplate,

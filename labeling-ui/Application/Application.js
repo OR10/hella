@@ -108,19 +108,28 @@ export default class Application {
       $locationProvider.html5Mode(true);
 
       // For any unmatched url, redirect to /state1
-      $urlRouterProvider.otherwise('/');
+      $urlRouterProvider.otherwise('/tasks');
+
+      function userResolver(userGateway) {
+        console.log('user');
+        return userGateway.getCurrentUser().then((user) => {
+          console.log(user);
+          return user;
+        });
+      }
+
+      userResolver.$inject = ['userGateway'];
 
       // Now set up the states
-      // $stateProvider
-      //  .state('home', {
-      //    url: '/',
-      //    views: {
-      //      'content@': {
-      //        templateUrl: 'module/home/templates/home.html'
-      //
-      //      }
-      //    }
-      //  });
+      $stateProvider
+        .state('labeling', {
+          abstract: true,
+          url: '/',
+          template: '<ui-view/>',
+          resolve: {
+            user: userResolver,
+          },
+        });
     }
 
     routerConfigurator.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];
