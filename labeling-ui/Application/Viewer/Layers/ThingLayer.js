@@ -287,7 +287,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       const selected = (
         selectedLabeledThingInFrame
         && selectedLabeledThingInFrame !== labeledThingInFrame
-        && selectedLabeledThing === labeledThingInFrame.labeledThing
+        && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
       );
 
       return this._addShape(labeledThingInFrame, shape, selected, false);
