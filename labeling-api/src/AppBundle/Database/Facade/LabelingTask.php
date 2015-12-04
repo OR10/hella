@@ -122,21 +122,29 @@ class LabelingTask
             ->toArray();
     }
 
-    public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
+    public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $skip = null, $limit = null)
     {
-        $labeledThingIds = $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'by_taskId_frameNumber')
-            ->setKey([$labelingTask->getId(), (int) $frameNumber])
-            ->execute();
+        $query = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
+            ->setStartKey([$labelingTask->getId()])
+            ->setEndKey([$labelingTask->getId(), []]);
 
-        $keys = [];
-        foreach ($labeledThingIds as $labeledThingId) {
-            $keys[] = [$labeledThingId['value'], (int) $frameNumber];
+        if ($skip !== null) {
+            $query->setSkip($skip);
         }
 
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        return $query->onlyDocs(true)->execute()->toArray();
+    }
+
+    public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
+    {
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
-            ->setKeys($keys)
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
+            ->setKey([$labelingTask->getId(), (int) $frameNumber])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

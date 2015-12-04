@@ -59,10 +59,7 @@ class Export extends Controller\Base
      */
     public function listExportsAction(Model\LabelingTask $task)
     {
-        $exports = $this->taskExportFacade->findAll();
-        $exports = array_values(array_filter($exports, function($export) use ($task) {
-            return $export->getTaskId() === $task->getId();
-        }));
+        $exports = $this->taskExportFacade->findAllByTask($task);
 
         return View\View::create()->setData([
             'totalCount' => count($exports),
@@ -71,14 +68,14 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{task}/export/{taskExport}")
+     * @Rest\Get("/{taskId}/export/{taskExport}")
      *
-     * @param Model\LabelingTask $task
-     * @param Model\TaskExport   $taskExport
+     * @param string           $taskId
+     * @param Model\TaskExport $taskExport
      */
-    public function getExportAction(Model\LabelingTask $task, Model\TaskExport $taskExport)
+    public function getExportAction($taskId, Model\TaskExport $taskExport)
     {
-        if ($taskExport->getTaskId() !== $task->getId()) {
+        if ($taskExport->getTaskId() !== $taskId) {
             throw new Exception\NotFoundHttpException();
         }
 

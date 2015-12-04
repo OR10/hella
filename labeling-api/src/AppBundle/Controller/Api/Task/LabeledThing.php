@@ -82,32 +82,26 @@ class LabeledThing extends Controller\Base
      */
     public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $documentId = $request->request->get('id');
-        $classes    = $request->request->get('classes', []);
-        $frameRange = $request->request->get('frameRange');
-        $incomplete = $request->request->get('incomplete', true);
-
+        $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         if ($frameRange === null) {
-            $frameRange = $task->getFrameRange();
-        } elseif (is_array($frameRange)) {
-            try {
-                $frameRange = Model\FrameRange::createFromArray($frameRange);
-            } catch (\Exception $e) {
-                throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException();
+        }
+
+        if (($labeledThingId = $request->request->get('id')) !== null) {
+            if ($this->labeledThingFacade->find($labeledThingId) !== null) {
+                throw new Exception\ConflictHttpException();
             }
-        } else {
+        }
+
+        if (!is_array($classes = $request->request->get('classes', []))) {
             throw new Exception\BadRequestHttpException();
         }
 
         $labeledThing = new Model\LabeledThing($task);
-
-        if ($documentId !== null) {
-            $labeledThing->setId($documentId);
-        }
-
-        $labeledThing->setClasses($classes);
+        $labeledThing->setId($labeledThingId);
         $labeledThing->setFrameRange($frameRange);
-        $labeledThing->setIncomplete($incomplete);
+        $labeledThing->setClasses($classes);
+        $labeledThing->setIncomplete($request->request->get('incomplete', true));
         $this->labeledThingFacade->save($labeledThing);
 
         return View\View::create()->setData(['result' => $labeledThing]);
@@ -135,53 +129,37 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Put("/{task}/labeledThing/{labeledThingId}")
+     * @Rest\Put("/{task}/labeledThing/{labeledThing}")
      *
-     * @param Model\LabelingTask     $task
-     * @param string                 $labeledThingId
-     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask      $task
+     * @param HttpFoundation\Request  $request
+     * @param Model\LabeledThing|null $labeledThing
      *
      * @return \FOS\RestBundle\View\View
      */
     public function updateLabeledThingAction(
         Model\LabelingTask $task,
-        $labeledThingId,
-        HttpFoundation\Request $request
+        HttpFoundation\Request $request,
+        Model\LabeledThing $labeledThing = null
     ) {
-        $revision = $request->request->get('rev');
-
-        if ($revision === null) {
+        if ($labeledThing === null) {
             $labeledThing = new Model\LabeledThing($task);
-            $labeledThing->setId($labeledThingId);
-        } else {
-            $labeledThing = $this->labeledThingFacade->find($labeledThingId);
-
-            if ($labeledThing === null) {
-                throw new Exception\NotFoundHttpException();
-            }
-
-            if ($labeledThing->getRev() !== $revision) {
-                throw new Exception\ConflictHttpException();
-            }
-
-            if ($labeledThing->getTaskId() !== $task->getId()) {
-                throw new Exception\BadRequestHttpException();
-            }
+            $labeledThing->setId($request->attributes->get('_unresolvedLabeledThingId'));
         }
 
+        if ($labeledThing->getTaskId() !== $task->getId()) {
+            throw new Exception\BadRequestHttpException();
+        }
+
+        if ($request->request->get('rev') !== $labeledThing->getRev()) {
+            throw new Exception\ConflictHttpException();
+        }
+
+        $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         $classes    = $request->request->get('classes', []);
-        $frameRange = $request->request->get('frameRange');
         $incomplete = $request->request->get('incomplete', true);
 
         if ($frameRange === null) {
-            $frameRange = $task->getFrameRange();
-        } elseif (is_array($frameRange)) {
-            try {
-                $frameRange = Model\FrameRange::createFromArray($frameRange);
-            } catch (\Exception $e) {
-                throw new Exception\BadRequestHttpException();
-            }
-        } else {
             throw new Exception\BadRequestHttpException();
         }
 

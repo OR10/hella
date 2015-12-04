@@ -40,7 +40,7 @@ class Video
      */
     public function __construct($name)
     {
-        $this->name = (string)$name;
+        $this->name = (string) $name;
     }
 
     /**

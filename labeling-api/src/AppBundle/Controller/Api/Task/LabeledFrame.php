@@ -34,10 +34,10 @@ class LabeledFrame extends Controller\Base
      * @param Facade\LabeledFrame $labeledFrame
      * @param Facade\LabelingTask $labelingTask
      */
-    public function __construct(Facade\LabeledFrame $labeledFrame, Facade\LabelingTask $labelingTask)
+    public function __construct(Facade\LabeledFrame $labeledFrameFacade, Facade\LabelingTask $labelingTaskFacade)
     {
-        $this->labeledFrameFacade = $labeledFrame;
-        $this->labelingTaskFacade = $labelingTask;
+        $this->labeledFrameFacade = $labeledFrameFacade;
+        $this->labelingTaskFacade = $labelingTaskFacade;
     }
 
     /**
@@ -54,12 +54,10 @@ class LabeledFrame extends Controller\Base
         $labeledFrame = $this->labelingTaskFacade->getCurrentOrPreceedingLabeledFrame($task, $frameNumber);
 
         if ($labeledFrame === null) {
-            $labeledFrame = new Model\LabeledFrame($task);
-            $labeledFrame->setFrameNumber($frameNumber);
+            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
         } elseif ($labeledFrame->getFrameNumber() !== $frameNumber) {
             $classes      = $labeledFrame->getClasses();
-            $labeledFrame = new Model\LabeledFrame($task);
-            $labeledFrame->setFrameNumber($frameNumber);
+            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
             $labeledFrame->setClasses($classes);
         }
 
@@ -115,15 +113,14 @@ class LabeledFrame extends Controller\Base
         }
 
         if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber)) === null) {
-            $labeledFrame = new Model\LabeledFrame($task);
+            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
             $labeledFrame->setId($labeledFrameId);
-            $labeledFrame->setFrameNumber($frameNumber);
         } elseif ($labeledFrame->getRev() !== $revision) {
             // TODO: Synchronize with frontend team to find a better solution here!
             //throw new Exception\ConflictHttpException();
         }
 
-        // I'm not quite sure about chaning the id but since we are requesting
+        // I'm not quite sure about changing the id but since we are requesting
         // the labeledFrame by task and frameNumber, the id might be able to
         // change.
         // Maybe it's better to throw an exception in this case.

@@ -61,18 +61,18 @@ class Interpolate extends Controller\Base
     /**
      * TODO: add support for offset/limit to restrict the frame range
      *
-     * @Rest\Post("/{task}/interpolate/{labeledThing}")
+     * @Rest\Post("/{taskId}/interpolate/{labeledThing}")
      *
-     * @param Model\LabelingTask     $task
+     * @param string                 $task
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
      */
     public function startInterpolationAction(
-        Model\LabelingTask $task,
+        $taskId,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getTaskId() !== $task->getId()) {
+        if ($labeledThing->getTaskId() !== $taskId) {
             throw new Exception\BadRequestHttpException();
         }
 

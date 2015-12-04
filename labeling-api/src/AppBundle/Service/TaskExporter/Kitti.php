@@ -137,30 +137,25 @@ class Kitti implements Service\TaskExporter
             []
         );
 
-        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
+        foreach ($this->labelingTaskFacade->getLabeledThingsInFrame($task) as $labeledThingInFrame) {
+            if ($labeledThingInFrame->getIncomplete()) {
+                // TODO: it makes no sense to export incomplete things but
+                // we may want to generate some warnings if incomplete
+                // things are found
+                continue;
+            }
 
-        foreach ($labeledThings as $labeledThing) {
-            $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
-            foreach ($labeledThingsInFrame as $labeledThingInFrame) {
-                if ($labeledThingInFrame->getIncomplete()) {
-                    // TODO: it makes no sense to export incomplete things but
-                    // we may want to generate some warnings if incomplete
-                    // things are found
-                    continue;
-                }
-
-                try {
-                    $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
-                        $this->getObjectType($labeledThingInFrame),
-                        $labeledThingInFrame->getBoundingBox()
-                    );
-                } catch (\Exception $exception) {
-                    throw new Exception\Kitti(
-                        $exception->getMessage(),
-                        $labeledThingInFrame->getFrameNumber(),
-                        $exception
-                    );
-                }
+            try {
+                $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
+                    $this->getObjectType($labeledThingInFrame),
+                    $labeledThingInFrame->getBoundingBox()
+                );
+            } catch (\Exception $exception) {
+                throw new Exception\Kitti(
+                    $exception->getMessage(),
+                    $labeledThingInFrame->getFrameNumber(),
+                    $exception
+                );
             }
         }
 
