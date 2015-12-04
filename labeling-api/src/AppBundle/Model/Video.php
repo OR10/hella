@@ -115,4 +115,25 @@ class Video
     {
         $this->imageTypes[$imageType][$key] = $value;
     }
+
+    /**
+     * @param string $imageType
+     *
+     * @return boolean
+     */
+    public function hasImageType($imageType)
+    {
+        return isset($this->imageTypes[$imageType]);
+    }
+
+    /**
+     * @param string $imageType
+     */
+    public function isImageTypeConverted($imageType)
+    {
+        if (isset($this->imageTypes[$imageType]['converted'])) {
+            return $this->imageTypes[$imageType]['converted'];
+        }
+        return false;
+    }
 }

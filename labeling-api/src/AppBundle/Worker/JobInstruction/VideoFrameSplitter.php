@@ -23,6 +23,12 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
      * @var Facade\Video
      */
     private $videoFacade;
+
+    /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
     /**
      * @var Flysystem\FileSystem
      */
@@ -43,11 +49,13 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     public function __construct(
         VideoService\VideoFrameSplitter $videoFrameSplitter,
         Facade\Video $videoFacade,
+        Facade\LabelingTask $labelingTaskFacade,
         Flysystem\FileSystem $fileSystem,
         $cacheDir
     ) {
         $this->videoFrameSplitter = $videoFrameSplitter;
         $this->videoFacade        = $videoFacade;
+        $this->labelingTaskFacade = $labelingTaskFacade;
         $this->fileSystem         = $fileSystem;
         $this->cacheDir           = $cacheDir;
     }
@@ -81,6 +89,10 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
         $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
+        foreach ($this->labelingTaskFacade->findAllEnabled($video, false) as $disabledTask) {
+            $disabledTask->setEnabledIfAllImagesAreConverted($video);
+            $this->labelingTaskFacade->save($disabledTask);
+        }
 
         if (!unlink($tmpFile)) {
             throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
