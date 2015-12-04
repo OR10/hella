@@ -60,8 +60,8 @@
 
     + taskId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the task-entity.
     + type: `source` (string, required) - The image type.
-    + offset: `3` (int, optional) - The offset relative to the startFrameNumber of the frameRange of the task.
-    + limit: `10` (int, optional) - The maximum number of frameLocations that should be returned.
+    + offset: `3` (number, optional) - The offset relative to the startFrameNumber of the frameRange of the task.
+    + limit: `10` (number, optional) - The maximum number of frameLocations that should be returned.
 
 ### Get frame locations [GET]
 
@@ -84,10 +84,10 @@
 + Parameters
 
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + frameNumber: `3` (int, required) - The frame number for which the labeled things should be retrieved, added or replaced (int).
+    + frameNumber: `3` (number, required) - The frame number for which the labeled things should be retrieved, added or replaced (number).
     + labeledThingId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the labeled-thing-entity.
-    + offset: `3` (int, optional) - The offset relative to the given frameNumber.
-    + limit: `10` (int, optional) - The maximum number of results.
+    + offset: `3` (number, optional) - The offset relative to the given frameNumber.
+    + limit: `10` (number, optional) - The maximum number of results.
 
 ### Get labeled things [GET]
 
@@ -116,7 +116,7 @@
 + Parameters
 
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + frameNumber: `3` (int, required) - The frame number for which the labeled things should be retrieved, added or replaced (int).
+    + frameNumber: `3` (number, required) - The frame number for which the labeled things should be retrieved, added or replaced (number).
 
 ### Get labeled things [GET]
 
@@ -164,7 +164,7 @@ the same revision.
 + Parameters
 
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + frameNumber: `3` (int, required) - The frame number for which the labeled things should be retrieved, added or replaced (int).
+    + frameNumber: `3` (number, required) - The frame number for which the labeled things should be retrieved, added or replaced (number).
 
 ### Get [GET]
 
@@ -299,4 +299,56 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
             {
                 "id": "e47f4bdfd22883b196ce45a8c980ab68",
                 "type": "AppBundle.Model.Interpolation.Status"
+            }
+
+## Timer [/api/task/{taskId}/timer/{userId}]
+
++ Parameters
+
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + userId: `3` (number, required) - The id of the user-entity.
+
+### Read timer value of a user [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": {
+                    "time": 1234567890
+                }
+            }
+
+
+### Set timer value for a user [PUT]
+
++ Request (application/json)
+
+    + Attributes
+
+        + time: `1234567890` (number, required) - The time in seconds since the beginning of the unix epoch.
+
+    + Body
+
+            {
+                "time": 1234567890
+            }
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "result": {
+                    "time": 1234567890
+                }
+            }
+
++ Response 403 (application/json)
+
+    + Body
+
+            {
             }

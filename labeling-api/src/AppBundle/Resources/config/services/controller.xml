@@ -68,6 +68,9 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.timer" class="AppBundle\Controller\Api\Task\Timer">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <argument type="service" id="security.token_storage" />
         </service>
 
         <service id="annostation.labeling_api.controller.api.status" class="AppBundle\Controller\Api\Status">
