@@ -7,12 +7,26 @@ class User {
    */
   constructor(user) {
     // Required properties
+
+    /**
+     * Id of the user
+     *
+     * @type {string}
+     */
+    this.id = user.id;
     /**
      * Username of the user
      *
      * @type {string}
      */
     this.username = user.username;
+
+    /**
+     * Mail address of the user
+     *
+     * @type {string}
+     */
+    this.email = user.email;
   }
 
   /**
@@ -21,7 +35,7 @@ class User {
    * @return {Object}
    */
   toJSON() {
-    return {username};
+    return {id, username, email};
   }
 }
 

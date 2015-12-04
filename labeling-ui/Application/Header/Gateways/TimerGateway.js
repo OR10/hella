@@ -49,8 +49,8 @@ class TimerGateway {
     const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
     return this._bufferedHttp.put(url, {time}, undefined, 'timer')
       .then(response => {
-        if (response.data && response.data.message) {
-          return response.data.message;
+        if (response.data && response.data.result) {
+          return response.data.result;
         }
 
         throw new Error('Failed saving time');

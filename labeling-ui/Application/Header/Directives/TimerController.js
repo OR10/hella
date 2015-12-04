@@ -5,24 +5,29 @@ class TimerController {
   constructor($interval, timerGateway) {
     this.$interval = $interval;
     this.timerGateway = timerGateway;
+    /**
+     * Time between two syncs in seconds
+     * @type {number}
+     */
+    this.waitTime = 10;
 
     this.elapsedTime = 0;
     this.elapsedHours = 0;
     this.elapsedMinutes = 0;
 
-    //this.timerGateway.getTime(this.task.id, this.user.id).then(this.init());
-    this.init(0);
+    this.timerGateway.getTime(this.task.id, this.user.id).then(this.init.bind(this));
   }
 
-  init(time) {
-    this.elapsedTime = time;
+  init(timer) {
+    this.elapsedTime = timer.time;
     this.calculateTime();
-    this.$interval(this.interval.bind(this), 1000);
+    this.$interval(this.interval.bind(this), this.waitTime * 1000);
   }
 
   interval() {
-    this.elapsedTime++;
+    this.elapsedTime += this.waitTime;
     this.calculateTime();
+    this.timerGateway.updateTime(this.task.id, this.user.id, this.elapsedTime);
   }
 
   calculateTime() {
