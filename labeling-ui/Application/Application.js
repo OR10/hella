@@ -15,6 +15,7 @@ import VideoModule from './Video/Video';
 import LabelingDataModule from './LabelingData/LabelingData';
 import LabelStructureModule from './LabelStructure/LabelStructure';
 import FilmReelModule from './FilmReel/FilmReel';
+import MediaControlsModule from './MediaControls/MediaControls';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -59,6 +60,7 @@ export default class Application {
     this.modules.push(new LabelingDataModule());
     this.modules.push(new LabelStructureModule());
     this.modules.push(new FilmReelModule());
+    this.modules.push(new MediaControlsModule());
   }
 
   buildApplicationConfig() {
@@ -106,19 +108,26 @@ export default class Application {
       $locationProvider.html5Mode(true);
 
       // For any unmatched url, redirect to /state1
-      $urlRouterProvider.otherwise('/');
+      $urlRouterProvider.otherwise('/tasks');
+
+      function userResolver(userGateway) {
+        return userGateway.getCurrentUser().then((user) => {
+          return user;
+        });
+      }
+
+      userResolver.$inject = ['userGateway'];
 
       // Now set up the states
-      // $stateProvider
-      //  .state('home', {
-      //    url: '/',
-      //    views: {
-      //      'content@': {
-      //        templateUrl: 'module/home/templates/home.html'
-      //
-      //      }
-      //    }
-      //  });
+      $stateProvider
+        .state('labeling', {
+          abstract: true,
+          url: '/',
+          template: '<ui-view/>',
+          resolve: {
+            user: userResolver,
+          },
+        });
     }
 
     routerConfigurator.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];

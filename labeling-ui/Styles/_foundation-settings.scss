@@ -36,7 +36,7 @@
 
 // Change any value in this map from "true" to "false" to disable that component's CSS class output. You'll still be able to use the component's mixins, but none of our pre-written classes will be in your CSS.
 
-// $include-css: (
+ $include-css: (
 //   accordion: true,
 //   action-sheet: true,
 //   block-list: true,
@@ -61,9 +61,9 @@
 //   switch: true,
 //   tabs: true,
 //   title-bar: true,
-//   typography: true,
+   typography: true,
 //   utilities: true,
-// ); 
+ );
 
 // 2. Global Styles
 // - - - - - - - - - - - - - - -
@@ -90,9 +90,9 @@
 // $font-weight-bold: bold;
 
 // We use these to control various global styles
- $body-background: #2B3036;
+ $body-background: #181d23;
  $body-font-color: #DADFE6;
-// $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+ $body-font-family: "equiplight", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 // $body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
 // $body-antialiased: true;
@@ -139,7 +139,7 @@
 // $header-font-family: $body-font-family;
 // $header-font-weight: $font-weight-normal;
 // $header-font-style: $font-weight-normal;
-// $header-font-color: #222;
+ $header-font-color: $headlines;
 // $header-line-height: 1.4;
 // $header-top-margin: .2rem;
 // $header-bottom-margin: .5rem;

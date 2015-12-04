@@ -11,9 +11,10 @@ class TaskController {
   /**
    * @param {angular.Scope} $scope
    * @param {{task: Task, video: Video}} initialData
+   * @param {User} user
    * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor($scope, initialData, labeledFrameGateway) {
+  constructor($scope, initialData, user, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
@@ -30,7 +31,12 @@ class TaskController {
     this.video = initialData.video;
 
     /**
-     * Currently active frame position to be displayed inside the Viewer
+     * @type {User}
+     */
+    this.user = user;
+
+    /**
+     * Currently active frame position to be displayed inside the MediaControls
      *
      * This model will be manipulated by different directives in order to switch between frames.
      *
@@ -112,6 +118,7 @@ class TaskController {
 TaskController.$inject = [
   '$scope',
   'initialData',
+  'user',
   'labeledFrameGateway',
 ];
 

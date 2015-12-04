@@ -16,6 +16,8 @@ export default class ViewerDirective {
       task: '=',
       video: '=',
       framePosition: '=',
+      filters: '=',
+      playing: '=',
     };
 
     this.controller = ViewerController;

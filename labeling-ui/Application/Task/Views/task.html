@@ -1,6 +1,12 @@
-<div class="row">
-    <header task="vm.task"></header>
-    <div class="col-md-9">
+<header task="vm.task"
+        user="vm.user"
+></header>
+<div class="main grid-block">
+    <div class="grid-content small-5 contain-left sidebar-left">
+        <task-description></task-description>
+    </div>
+
+    <div class="grid-content viewer">
         <viewer labeled-things-in-frame="vm.labeledThingsInFrame"
                 selected-paper-shape="vm.selectedPaperShape"
                 active-tool="vm.activeTool"
@@ -8,10 +14,13 @@
                 task="vm.task"
                 video="vm.video"
                 frame-position="vm.framePosition"
+                filters="vm.filters"
+                playing="vm.playing"
         ></viewer>
     </div>
-    <div class="col-md-3">
-        <label-selector labeled-object="vm.labeledFrame"
+    <div class="grid-content small-5 contain-right sidebar-right">
+        <label-selector class="uses-bootstrap-3"
+                        labeled-object="vm.labeledFrame"
                         structure="vm.labeledFrameStructure"
                         annotation="vm.labeledFrameAnnotation"
                         task="vm.task"
@@ -28,3 +37,15 @@
         ></label-selector>
     </div>
 </div>
+
+<media-controls class="task-bar grid-block"
+                labeled-things-in-frame="vm.labeledThingsInFrame"
+                frame-position="vm.framePosition"
+                active-tool="vm.activeTool"
+                selected-drawing-tool="vm.selectedDrawingTool"
+                selected-paper-shape="vm.selectedPaperShape"
+                filters="vm.filters"
+                task="vm.task"
+                playing="vm.playing"
+></media-controls>
+

@@ -1,20 +1,28 @@
-<div class="header">
-    <div class="left">
-        <span class="video-title">{{vm.title}}</span>
+<div class="header grid-block">
+    <div class="grid-content left">
+        <span class="video-title">{{vm.task.id}}</span>
     </div>
-    <div class="center">
+    <div class="grid-block align-right right">
 
-    <div class="right">
-        <timer></timer>
-        <svg class="icon">
-            <use xlink:href="icons.svg#general-faq"></use>
-        </svg>
-        <svg class="icon">
-            <use xlink:href="icons.svg#general-chat"></use>
-        </svg>
-        <span class="username">Jan Modal</span>
-        <svg class="icon">
-            <use xlink:href="icons.svg#general-loggedin"></use>
-        </svg>
+        <timer task="vm.task" user="vm.user"></timer>
+
+        <div class="grid-content small-2">
+            <svg class="icon">
+                <use xlink:href="icons.svg#general-help"></use>
+            </svg>
+        </div>
+        <div class="grid-content small-2">
+            <svg class="icon">
+                <use xlink:href="icons.svg#general-chat"></use>
+            </svg>
+        </div>
+        <div class="grid-content small-4">
+            <span class="username">{{vm.user.username}}</span>
+        </div>
+        <div class="grid-content small-2">
+            <svg class="icon">
+                <use xlink:href="icons.svg#general-loggedin"></use>
+            </svg>
+        </div>
     </div>
 </div>

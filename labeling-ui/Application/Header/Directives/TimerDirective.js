@@ -6,8 +6,12 @@ import TimerController from './TimerController';
  */
 class TimerDirective {
   constructor() {
+    this.scope = {
+      task: '=',
+      user: '=',
+    };
+
     this.template = timerTemplate;
-    this.scope = true;
 
     this.controller = TimerController;
     this.controllerAs = 'vm';

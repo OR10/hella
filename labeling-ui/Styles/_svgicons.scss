@@ -1,0 +1,16 @@
+svg.icon {
+  width: 25px;
+  height: 25px;
+
+  * {
+    //stroke: $icon;
+  }
+
+  path {
+    fill: $icon;
+  }
+}
+
+svg.icon:hover {
+  stroke: $icon-hover;
+}

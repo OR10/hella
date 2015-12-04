@@ -1,6 +1,7 @@
 import Module from '../Module';
 import HeaderDirective from './Directives/HeaderDirective';
 import TimerDirective from './Directives/TimerDirective';
+import TimerGateway from './Gateways/TimerGateway';
 
 /**
  * Module containing all functionality related to the header bar
@@ -16,6 +17,8 @@ class Header extends Module {
 
     this.registerDirective('header', HeaderDirective);
     this.registerDirective('timer', TimerDirective);
+
+    this.module.service('timerGateway', TimerGateway);
   }
 }
 

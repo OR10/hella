@@ -3,6 +3,8 @@ import TaskGateway from './Gateways/TaskGateway';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
+import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
+
 /**
  * Module containing all functionality associated with a {@link Task}
  *
@@ -16,6 +18,7 @@ class Task extends Module {
     this.module = angular.module('AnnoStation.Task', []);
 
     this.module.service('taskGateway', TaskGateway);
+    this.registerDirective('taskDescription', TaskDescriptionDirective);
   }
 
   /**
@@ -31,8 +34,8 @@ class Task extends Module {
     }
     initialDataResolver.$inject = ['$stateParams', 'taskGateway', 'videoGateway'];
 
-    $stateProvider.state('task', {
-      url: '/task/:taskId',
+    $stateProvider.state('labeling.task', {
+      url: 'task/:taskId',
       controller: TaskController,
       controllerAs: 'vm',
       template: taskTemplate,
