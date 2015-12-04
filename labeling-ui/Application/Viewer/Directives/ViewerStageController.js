@@ -22,7 +22,6 @@ class ViewerStageController {
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
-   * @param {LabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {Object} applicationConfig
@@ -415,7 +414,6 @@ ViewerStageController.$inject = [
   'taskFrameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
-  'labeledThingGateway',
   'entityIdService',
   'paperShapeFactory',
   'applicationConfig',

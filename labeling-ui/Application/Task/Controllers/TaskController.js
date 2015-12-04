@@ -81,16 +81,6 @@ class TaskController {
     this.selectedDrawingTool = null;
 
     /**
-     * @type {LabeledThingInFrameGateway}
-     */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
-
-    /**
-     * @type {AbortablePromiseRingBuffer}
-     */
-    this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
-
-    /**
      * @type {LabeledFrameGateway}
      */
     this._labeledFrameGateway = labeledFrameGateway;
