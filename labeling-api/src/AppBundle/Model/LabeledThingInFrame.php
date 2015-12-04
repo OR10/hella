@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -36,6 +37,7 @@ class LabeledThingInFrame
 
     /**
      * @CouchDB\Field(type="string")
+     * @Serializer\Exclude
      */
     private $taskId;
 
