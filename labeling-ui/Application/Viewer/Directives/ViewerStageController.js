@@ -28,6 +28,7 @@ class ViewerStageController {
    * @param {$interval} $interval
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
+   * @param {angular.$q} $q
    */
   constructor($scope,
               $element,
@@ -40,7 +41,9 @@ class ViewerStageController {
               applicationConfig,
               $interval,
               labeledThingGateway,
-              abortablePromiseFactory) {
+              abortablePromiseFactory,
+              $q
+  ) {
     /**
      * List of supported image types for this component
      *
@@ -114,6 +117,12 @@ class ViewerStageController {
      * @private
      */
     this._abortablePromiseFactory = abortablePromiseFactory;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {LayerManager}
@@ -236,52 +245,58 @@ class ViewerStageController {
     }
 
     this._frameChangeInProgress = true;
-    const frameChangePromises = [];
 
-    const backgroundPromise = this._backgroundBuffer.add(
-      this._loadFrameImage(frameNumber)
-    ).then(newFrameImage => {
+    this._$q.all([
+      this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
+      this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber)),
+      this._fetchGhostedLabeledThingInFrame(frameNumber),
+    ]).then(([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+      this._frameChangeInProgress = false;
+      this.labeledThingsInFrame = [];
+      this.labeledFrame = null;
+
+      // Update background
       this._backgroundLayer.setBackgroundImage(newFrameImage);
       this.filters.filters.forEach(filter => {
         this._backgroundLayer.applyFilter(filter);
       });
       this._backgroundLayer.render();
+
+      // Update labeledThingsInFrame
+      this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+
+      if (ghostedLabeledThingInFrame) {
+        this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+      }
     });
+  }
 
-    frameChangePromises.push(backgroundPromise);
-
-    this.labeledThingsInFrame = [];
-    this.labeledFrame = null;
-
-    const labeledThingsInFramePromise = this._labeledThingInFrameBuffer.add(
-      this._loadLabeledThingsInFrame(frameNumber)
-      )
-      .then(labeledThingsInFrame => {
-        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
-      });
-
-    frameChangePromises.push(labeledThingsInFramePromise);
-
-    if (this.selectedPaperShape !== null) {
-      const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-      const ghostUpdatePromise = this._ghostedLabeledThingInFrameBuffer.add(
-        this._labeledThingInFrameGateway.getLabeledThingInFrame(
-          this.task,
-          frameNumber,
-          selectedLabeledThing
-        )
-      ).then(labeledThingsInFrame => {
-        const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
-        if (ghostedLabeledThingsInFrame.length > 0) {
-          this.labeledThingsInFrame.push(ghostedLabeledThingsInFrame[0]);
-        }
-      });
-
-      frameChangePromises.push(ghostUpdatePromise);
+  /**
+   * @param {int} frameNumber
+   * @returns {Promise.<LabeledThingInFrame|null>}
+   * @private
+   */
+  _fetchGhostedLabeledThingInFrame(frameNumber) {
+    if (this.selectedPaperShape === null) {
+      return Promise.resolve(null);
     }
 
-    Promise.all(frameChangePromises).then(() => {
-      this._frameChangeInProgress = false;
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
+    return this._ghostedLabeledThingInFrameBuffer.add(
+      this._labeledThingInFrameGateway.getLabeledThingInFrame(
+        this.task,
+        frameNumber,
+        selectedLabeledThing
+      )
+    ).then(labeledThingsInFrame => {
+      const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
+
+      if (ghostedLabeledThingsInFrame.length > 0) {
+        return ghostedLabeledThingsInFrame[0];
+      }
+
+      return null;
     });
   }
 
@@ -444,6 +459,7 @@ ViewerStageController.$inject = [
   '$interval',
   'labeledThingGateway',
   'abortablePromiseFactory',
+  '$q',
 ];
 
 export default ViewerStageController;
