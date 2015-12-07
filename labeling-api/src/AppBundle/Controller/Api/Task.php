@@ -51,26 +51,12 @@ class Task extends Controller\Base
      */
     public function listAction()
     {
-        $tasks = $this->labelingTaskFacade->findAll();
+        $tasks = $this->labelingTaskFacade->findAllEnabled(null);
 
-        $taskResult = array_values(array_filter($tasks, function ($task) {
-            $imageTypes = $this->labelingTaskFacade->getVideo($task)->getImageTypes();
-            foreach ($task->getRequiredImageTypes() as $requiredImageType) {
-                if ($imageTypes[$requiredImageType]['converted'] === false) {
-                    return false;
-                }
-            }
-
-            return true;
-        }));
-
-        $result = [
-            'totalCount' => count($taskResult),
-            'result'     => $taskResult,
-        ];
-
-        return View\View::create()
-            ->setData($result);
+        return View\View::create()->setData([
+            'totalCount' => count($tasks),
+            'result'     => $tasks,
+        ]);
     }
 
     /**
