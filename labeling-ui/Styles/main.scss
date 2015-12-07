@@ -12,7 +12,7 @@ $body-background: #181d23;
 $button: #30363c;
 $button-selected: #353b42;
 
-//@import "bootstrap";
+@import "bootstrap";
 @import "foundation";
 @import "font-awesome";
 @import "fonts";
@@ -51,12 +51,15 @@ div.viewer{
 
 div.task-bar-left{
   text-align: center;
+  .block {
+    flex: 1;
+  }
 }
 div.task-bar-right{
   text-align: center;
 }
 
-.task-desscription{
+.task-description {
   align-items: center;
 }
 
@@ -66,7 +69,6 @@ div.task-bar-right{
   text-transform: uppercase;
   color: $headlines;
   border-bottom: 1px solid $element-inline-divider;
-  margin-bottom: 20px;
 
   .handle{
     padding-left: 10px;
@@ -77,8 +79,26 @@ div.task-bar-right{
   }
 }
 
-.task-desscription-content{
+.task-description-content{
   padding-left: 0;
   padding-right: 0;
-  margin-bottom: 20px;
+  padding-top: 10px;
+  font-size: 16px;
+
+  h1 {
+    font-size: 16px;
+    color: $sub-headlines;
+    font-weight: bold;
+  }
+}
+
+.sidebar-left {
+  .task-description-content {
+    height: 160px;
+  }
+  .popout-panel {
+    height: 220px;
+    background-color: $button;
+    border-top: 1px solid $element-inline-divider;
+  }
 }

@@ -8,7 +8,7 @@ import taskDescriptionTemplate from './TaskDescriptionDirective.html!';
 class TaskDescriptionDirective {
   constructor() {
     this.scope = {
-      taskDescription: '@',
+      task: '=',
     };
 
     this.template = taskDescriptionTemplate;
