@@ -90,18 +90,42 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
      *
-     * @param Model\LabelingTask $task
-     * @param int                $frameNumber
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask     $task
+     * @param int                    $frameNumber
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getLabeledThingInFrameAction(Model\LabelingTask $task, $frameNumber)
-    {
+    public function getLabeledThingInFrameAction(
+        HttpFoundation\Request $request,
+        Model\LabelingTask $task,
+        $frameNumber
+    ) {
+        $fetchLabeledThings = (bool) $request->query->get('labeledThings', true);
+
+        $labeledThings        = [];
+        $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber);
+
+        if ($fetchLabeledThings) {
+            $labeledThingIds = array_map(
+                function ($labeledThingInFrame) {
+                    return $labeledThingInFrame->getLabeledThingId();
+                },
+                $labeledThingsInFrame
+            );
+
+            foreach ($this->labeledThingFacade->getLabeledThingsById($labeledThingIds) as $labeledThing) {
+                $labeledThings[$labeledThing->getId()] = $labeledThing;
+            }
+        }
+
         return View\View::create()->setData([
-            'result' => $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber)
+            'result' => [
+                'labeledThings' => $labeledThings,
+                'labeledThingsInFrame' => $labeledThingsInFrame,
+            ]
         ]);
     }
-
 
     /**
      * Get labeled things in frame for the given frame range identified by
