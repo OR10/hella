@@ -55,3 +55,30 @@ div.task-bar-left{
 div.task-bar-right{
   text-align: center;
 }
+
+.task-desscription{
+  align-items: center;
+}
+
+.task-description-header{
+  height: 44px;
+  align-items: center;
+  text-transform: uppercase;
+  color: $headlines;
+  border-bottom: 1px solid $element-inline-divider;
+  margin-bottom: 20px;
+
+  .handle{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-transform: lowercase;
+    font-weight: bold;
+    color: $text;
+  }
+}
+
+.task-desscription-content{
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 20px;
+}
