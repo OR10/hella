@@ -10,11 +10,8 @@ php::pear: true
 php::phpunit: false
 php::composer::auto_update: true
 
-php::settings:
-    opcache:
-        provider: none
-        settings:
-            enable: 1
+php::fpm::settings:
+    opcache/opcache.enable: 1
 
 mysql::server::root_password: 'xohx6aeS'
 mysql::server::remove_default_accounts: true
