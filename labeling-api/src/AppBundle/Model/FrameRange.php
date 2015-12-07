@@ -4,6 +4,7 @@ namespace AppBundle\Model;
 
 use AppBundle\Model\Exception;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -12,11 +13,13 @@ class FrameRange
 {
     /**
      * @CouchDB\Id
+     * @Serializer\Exclude
      */
     private $id;
 
     /**
      * @CouchDB\Version
+     * @Serializer\Exclude
      */
     private $rev;
 
