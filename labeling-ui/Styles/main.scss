@@ -80,8 +80,6 @@ div.task-bar-right{
 }
 
 .task-description-content{
-  padding-left: 0;
-  padding-right: 0;
   padding-top: 10px;
   font-size: 16px;
 
@@ -94,11 +92,23 @@ div.task-bar-right{
 
 .sidebar-left {
   .task-description-content {
-    height: 160px;
+    height: 180px;
   }
   .popout-panel {
-    height: 220px;
+    height: 170px;
+    padding-top: 20px;
     background-color: $button;
     border-top: 1px solid $element-inline-divider;
   }
+}
+
+.panel{
+  display: block;
+  width: 300px;
+  min-height: 100px;
+  float: left;
+}
+
+.panel-collapse{
+  display: block;
 }
