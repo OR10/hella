@@ -42,7 +42,17 @@
         <li>
             <button class="dark button"
                     ng-click="vm.handlePlay()"
-                    ng-if="!vm.playing"
+                    ng-if="!vm.playing && vm.selectedPaperShape !== null"
+            >
+                <svg class="icon">
+                    <use xlink:href="icons.svg#control-play-brackets"></use>
+                </svg>
+            </button>
+        </li>
+        <li>
+            <button class="dark button"
+                    ng-click="vm.handlePlay()"
+                    ng-if="!vm.playing && vm.selectedPaperShape === null"
             >
                 <svg class="icon">
                     <use xlink:href="icons.svg#control-play"></use>

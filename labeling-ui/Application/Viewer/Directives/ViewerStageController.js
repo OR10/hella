@@ -369,12 +369,29 @@ class ViewerStageController {
     });
   }
 
+  _calculatePlaybackStartPosition() {
+    if (this.selectedPaperShape) {
+      return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber;
+    }
+
+    return this.framePosition.startFrameNumber;
+  }
+
+  _calculatePlaybackEndPosition() {
+    if (this.selectedPaperShape) {
+      return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber;
+    }
+
+    return this.framePosition.endFrameNumber;
+  }
+
   _playNext() {
     if (!this.playing) {
       this._stopPlaying();
       return;
     }
 
+    const endPosition = this._calculatePlaybackEndPosition();
     let nextFramePosition = this.framePosition.position + 1;
 
     if (this._frameChangeInProgress) {
@@ -383,15 +400,22 @@ class ViewerStageController {
       nextFramePosition += this._applicationConfig.Viewer.frameSkip;
     }
 
-    if (nextFramePosition <= this.framePosition.endFrameNumber) {
+    if (nextFramePosition < endPosition) {
       this.framePosition.goto(nextFramePosition);
     } else {
+      if (this.framePosition.position < endPosition) {
+        this.framePosition.goto(endPosition);
+      }
+
       this._stopPlaying();
     }
   }
 
   _startPlaying() {
-    this.framePosition.goto(this.framePosition.startFrameNumber);
+    const startPosition = this._calculatePlaybackStartPosition();
+
+    this.framePosition.goto(startPosition);
+
     this._renderLoopPromise = this._$interval(
       this._playNext.bind(this),
       1000 / this._applicationConfig.Viewer.framesPerSecond
