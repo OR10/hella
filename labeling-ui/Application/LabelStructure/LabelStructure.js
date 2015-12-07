@@ -24,7 +24,6 @@ class LabelStructure extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.LabelStructure', [
-      'AnnoStation.VendorTemplates',
       'ui.bootstrap.collapse',
       'ui.bootstrap.accordion',
       'ui.bootstrap.carousel',

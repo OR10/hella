@@ -2,7 +2,10 @@ import angular from 'angular';
 import 'angular-hotkeys';
 import 'angular-ui-router';
 
+import 'foundation-apps/js/angular/components/accordion/accordion';
+
 import 'Distribution/Templates/angular-ui-bootstrap';
+import 'Distribution/Templates/foundation-ui';
 
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
@@ -82,6 +85,9 @@ export default class Application {
 
         this.app = angular.module(this.moduleName, [
           'ui.router',
+          'AnnoStation.AngularVendorTemplates',
+          'AnnoStation.FoundationVendorTemplates',
+          'foundation.accordion',
           ...this.modules.map(mod => mod.module.name),
         ]);
 

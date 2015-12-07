@@ -261,9 +261,8 @@ $block-grid-max-size: 12;
 // 7. Accordion
 // - - - - - - - - - - - - - - -
 
-// $accordion-border: 1px solid $gray-dark;
-
-// $accordion-title-background: $gray-light;
+ $accordion-border: none;
+ $accordion-title-background: $element-background;
 // $accordion-title-background-hover: smartscale($accordion-title-background, 5%);
 // $accordion-title-background-active: smartscale($accordion-title-background, 3%);
 // $accordion-title-color: isitlight($accordion-title-background);
