@@ -112,3 +112,26 @@ div.task-bar-right{
 .panel-collapse{
   display: block;
 }
+
+.thumbnail-reel-list{
+  margin-top: 5px;
+}
+
+.thumbnail {
+  text-align: center;
+
+  thumbnail{
+    z-index: -1;
+  }
+
+  .frame-range {
+    position: relative;
+    border-radius: 20px;
+    width: 100px;
+    background-color: $button;
+    margin-top: -40px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 10;
+  }
+}
