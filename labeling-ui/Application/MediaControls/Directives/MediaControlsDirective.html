@@ -19,14 +19,14 @@
 <div class="grid-container task-bar-middle">
     <ul class="button-group">
         <li>
-            <button ng-hide="vm.selectedLabeledThingInFrame === null"
+            <button ng-hide="vm.selectedPaperShape === null"
                     class="dark button"
                     ng-click="vm.handleSetOpenBracketClicked()">
                 &#91;
             </button>
         </li>
         <li>
-            <button ng-hide="vm.selectedLabeledThingInFrame === null"
+            <button ng-hide="vm.selectedPaperShape === null"
                     class="dark button"
                     ng-click="vm.handleGotoOpenBracketClicked()">
                 <i class="fa fa-angle-double-left"></i>
@@ -77,14 +77,14 @@
             </button>
         </li>
         <li>
-            <button ng-hide="vm.selectedLabeledThingInFrame === null"
+            <button ng-hide="vm.selectedPaperShape === null"
                     class="dark button"
                     ng-click="vm.handleGotoCloseBracketClicked()">
                 <i class="fa fa-angle-double-right"></i>
             </button>
         </li>
         <li>
-            <button ng-hide="vm.selectedLabeledThingInFrame === null"
+            <button ng-hide="vm.selectedPaperShape === null"
                     class="dark button"
                     ng-click="vm.handleSetCloseBracketClicked()">
                 &#93;
@@ -165,7 +165,7 @@
     </ul>-->
     <ul class="button-group">
         <li>
-        <button ng-hide="vm.selectedLabeledThingInFrame === null"
+        <button ng-hide="vm.selectedPaperShape=== null"
                 class="dark button"
                 ng-click="vm.handleInterpolation()">
             <i class="fa fa-clone"></i>
