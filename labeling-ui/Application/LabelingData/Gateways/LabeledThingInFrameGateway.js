@@ -1,4 +1,5 @@
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
+import LabeledThing from '../Models/LabeledThing';
 
 /**
  * Gateway for saving and retrieving {@link LabeledThingInFrame}s
@@ -44,7 +45,7 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return this._associateWithLabeledThings(task, response.data.result)
+          return this._associateWithLabeledThings(task, response.data.result);
         }
 
         throw new Error('Failed loading labeled thing in frame list');
@@ -88,19 +89,26 @@ class LabeledThingInFrameGateway {
   }
 
   /**
-   * Retrieve the corresponding {@link LabeledThing}s for each given `labeledThingInFrame`
+   * Associate the labeledThingsInFrame with their labeledThings
    *
    * After the {@link LabeledThing} is Retrieved it will be combined into a new {@link LabeledThingInFrame}
    *
    * @param {Task} task
    * @param {Object} labeledThingsInFrameData
-   * @returns {Promise.<Array.<LabeledThingInFrame>>}
+   * @returns {Array.<LabeledThingInFrame>}
    * @private
    */
   _associateWithLabeledThings(task, labeledThingsInFrameData) {
-    return labeledThingsInFrameData.labeledThingsInFrame.map(data => new LabeledThingInFrame(
-      Object.assign({}, data, {labeledThing: labeledThingsInFrameData.labeledThings[data.labeledThingId]})
-    ));
+    return labeledThingsInFrameData.labeledThingsInFrame.map(data => {
+      const labeledThing = labeledThingsInFrameData.labeledThings[data.labeledThingId];
+      labeledThing.task = task;
+
+      return new LabeledThingInFrame(
+        Object.assign({}, data, {
+          labeledThing: new LabeledThing(labeledThing),
+        })
+      );
+    });
   }
 
   /**
