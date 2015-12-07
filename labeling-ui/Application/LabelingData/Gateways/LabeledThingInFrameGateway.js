@@ -99,13 +99,16 @@ class LabeledThingInFrameGateway {
    * @private
    */
   _associateWithLabeledThings(task, labeledThingsInFrameData) {
-    return labeledThingsInFrameData.labeledThingsInFrame.map(data => new LabeledThingInFrame(
-      Object.assign({}, data, {
-        labeledThing: new LabeledThing(
-          labeledThingsInFrameData.labeledThings[data.labeledThingId]
-        ),
-      })
-    ));
+    return labeledThingsInFrameData.labeledThingsInFrame.map(data => {
+      const labeledThing = labeledThingsInFrameData.labeledThings[data.labeledThingId];
+      labeledThing.task = task;
+
+      return new LabeledThingInFrame(
+        Object.assign({}, data, {
+          labeledThing: new LabeledThing(labeledThing),
+        })
+      );
+    });
   }
 
   /**
