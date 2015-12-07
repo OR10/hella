@@ -48,6 +48,16 @@ class LabeledThing
             ->toArray();
     }
 
+    public function getLabeledThingsById(array $labeledThingIds)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'by_id')
+            ->setKeys($labeledThingIds)
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
     public function save(Model\LabeledThing $labeledThing)
     {
         if ($labeledThing->getId() === null) {
