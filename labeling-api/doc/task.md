@@ -118,26 +118,37 @@
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
     + frameNumber: `3` (number, required) - The frame number for which the labeled things should be retrieved, added or replaced (number).
 
-### Get labeled things [GET]
+### Get labeled things in frame [GET]
 
-Each returned labeled thing contains a revision.
+Each returned labeled thing in frame contains a revision.
 A subsequent PUT request will only be accepted if the labeled thing still has
 the same revision.
+
+By default, all associated labeled things are also returned. This can be
+controlled by a query parameter `labeledThings` which may be set to `false`
+when the associated labeled things are not required.
 
 + Response 200 (application/json)
 
     + Body
 
             {
-                "result": [
-                    {
-                        "id": "...",
-                        "rev": "...",
-                        "shapes": [
+                "result": {
+                    "labeledThings": {
+                        "<labeledThingId>": {
                             ...
-                        ]
-                    }
-                ]
+                        }
+                    },
+                    "labeledThingsInFrame": [
+                        {
+                            "id": "...",
+                            "rev": "...",
+                            "shapes": [
+                                ...
+                            ]
+                        }
+                    ],
+                }
             }
 
 ### Create a new labeled thing [POST]

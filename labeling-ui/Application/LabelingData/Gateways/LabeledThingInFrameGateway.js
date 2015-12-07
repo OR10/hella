@@ -98,17 +98,9 @@ class LabeledThingInFrameGateway {
    * @private
    */
   _associateWithLabeledThings(task, labeledThingsInFrameData) {
-    return this._$q.all(
-      labeledThingsInFrameData.map(
-        data => this._labeledThingGateway.getLabeledThing(task, data.labeledThingId))
-      )
-      .then(labeledThings => {
-        return labeledThingsInFrameData.map(
-          (data, index) => new LabeledThingInFrame(
-            Object.assign({}, data, {labeledThing: labeledThings[index]})
-          )
-        );
-      });
+    return labeledThingsInFrameData.labeledThingsInFrame.map(data => new LabeledThingInFrame(
+      Object.assign({}, data, {labeledThing: labeledThingsInFrameData.labeledThings[data.labeledThingId]})
+    ));
   }
 
   /**

@@ -60,6 +60,12 @@ class LabelingTask
     private $requiredImageTypes;
 
     /**
+     * @var boolean
+     * @CouchDB\Field(type="boolean")
+     */
+    private $enabled = false;
+
+    /**
      * @param Video      $video
      * @param FrameRange $frameRange
      * @param array      $requiredImageTypes
@@ -141,5 +147,35 @@ class LabelingTask
     public function setDescriptionTitle($descriptionTitle)
     {
         $this->descriptionTitle = $descriptionTitle;
+    }
+
+    /**
+     * @param boolean $enabled
+     */
+    public function setEnabled($enabled = true)
+    {
+        $this->enabled = (bool) $enabled;
+    }
+
+
+    /**
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param Video $video
+     */
+    public function setEnabledIfAllImagesAreConverted(Video $video)
+    {
+        foreach ($this->getRequiredImageTypes() as $requiredImageType) {
+            if (!$video->isImageTypeConverted($requiredImageType)) {
+                return;
+            }
+        }
+        $this->setEnabled();
     }
 }

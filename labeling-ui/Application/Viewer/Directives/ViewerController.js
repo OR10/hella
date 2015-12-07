@@ -37,7 +37,7 @@ class ViewerController {
      *
      * @type {Object<string|LabeledThingInFrame>|null}
      */
-    this.labeledThingsInFrame = null;
+    this.labeledThingsInFrame = [];
 
     /**
      * A structure holding all LabeledThings for the currently active frame
