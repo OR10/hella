@@ -1,28 +1,28 @@
 <div class="task-description">
     <div class="grid-block task-description-item">
         <div class="grid-content">
-            <div class="grid-block task-description-header">
+            <div class="grid-block task-description-header" ng-click="vm.descriptionCollapse=!vm.descriptionCollapse">
                 <div class="grid-content">Task Description</div>
                 <div class="grid-content align-right small-2 handle">
                     <i class="fa fa-angle-down"></i>
                 </div>
             </div>
-            <div class="grid-content task-description-content">
-                <h1>{{task.descriptionTitle}}</h1>
+            <div class="grid-content task-description-content" ng-show="vm.descriptionCollapse">
+                <h1>{{vm.task.descriptionTitle}}</h1>
 
-                <p>{{task.descriptionText}}</p>
+                <p>{{vm.task.descriptionText}}</p>
             </div>
         </div>
     </div>
     <div class="grid-block">
         <div class="grid-content task-description-item">
-            <div class="grid-block task-description-header">
+            <div class="grid-block task-description-header" ng-click="vm.faqCollapse=!vm.faqCollapse">
                 <div class="grid-content">Label-Job FAQ</div>
                 <div class="grid-content align-right small-2 handle">
                     <i class="fa fa-angle-down"></i>
                 </div>
             </div>
-            <div class="grid-content task-description-content">
+            <div class="grid-content task-description-content" ng-show="vm.faqCollapse">
                 <h1>Dummy Text</h1>
 
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris fermentum nec elit non

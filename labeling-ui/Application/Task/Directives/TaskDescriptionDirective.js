@@ -1,4 +1,5 @@
 import taskDescriptionTemplate from './TaskDescriptionDirective.html!';
+import TaskDescriptionController from './TaskDescriptionController';
 
 /**
  * Directive to display a List of all {@link Export}s currently available for the given {@link Task}
@@ -12,6 +13,10 @@ class TaskDescriptionDirective {
     };
 
     this.template = taskDescriptionTemplate;
+
+    this.controller = TaskDescriptionController;
+    this.controllerAs = 'vm';
+    this.bindToController = true;
   }
 }
 
