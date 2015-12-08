@@ -61,6 +61,9 @@ class LabeledThingInFrame
      * @param int          $frameNumber
      * @param array        $classes
      * @param array        $shapes
+     *
+     * @throws \RangeException if the given $frameNumber is outside of the
+     *         `FrameRange` of the given `$labeledThing`.
      */
     public function __construct(
         LabeledThing $labeledThing,
@@ -68,6 +71,8 @@ class LabeledThingInFrame
         array $classes = [],
         array $shapes = []
     ) {
+        $labeledThing->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
+
         $this->taskId         = $labeledThing->getTaskId();
         $this->labeledThingId = $labeledThing->getId();
         $this->frameNumber    = (int) $frameNumber;

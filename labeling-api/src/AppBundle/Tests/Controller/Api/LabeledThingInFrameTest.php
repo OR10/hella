@@ -6,6 +6,7 @@ use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
+use Symfony\Component\HttpFoundation;
 
 class LabeledThingInFrameTest extends Tests\WebTestCase
 {
@@ -62,7 +63,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                     'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                     'shapes' => array('shape' => 1),
                     'classes' => array('class' => 1),
-                    'frameNumber' => 5,
+                    'frameNumber' => 15,
                 )
             )
         );
@@ -125,6 +126,26 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
 
         $this->assertEquals(409, $response->getStatusCode());
+    }
+
+    public function testPutLabeledThingInFrameDocumentFrameNumberOutOfRange()
+    {
+        $labeledThingInFrame = $this->createLabeledInFrameDocument();
+        $response            = $this->doRequest(
+            'PUT',
+            $labeledThingInFrame->getId(),
+            json_encode(
+                array(
+                    'rev' => $labeledThingInFrame->getRev(),
+                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
+                    'shapes' => array('shape' => 1),
+                    'classes' => array('class' => 1),
+                    'frameNumber' => 30,
+                )
+            )
+        );
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testDeleteLabeledThingInFrameDocument()
@@ -221,7 +242,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
     }
 
-    private function createLabeledInFrameDocument($frameNumber = 5)
+    private function createLabeledInFrameDocument($frameNumber = 15)
     {
         $video = new Model\Video('foobar');
         $this->videoFacade->save($video);

@@ -76,11 +76,15 @@ class LabeledThingInFrame extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
-        $labeledThingInFrame->setId($labeledThingInFrameId);
-        $labeledThingInFrame->setShapes($shapes);
-        $labeledThingInFrame->setClasses($classes);
-        $labeledThingInFrame->setIncomplete($incomplete);
+        try {
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+            $labeledThingInFrame->setId($labeledThingInFrameId);
+            $labeledThingInFrame->setShapes($shapes);
+            $labeledThingInFrame->setClasses($classes);
+            $labeledThingInFrame->setIncomplete($incomplete);
+        } catch (\Exception $e) {
+            throw new Exception\BadRequestHttpException();
+        }
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 

@@ -30,18 +30,16 @@ class LabeledThing
         $offset = 0,
         $limit = 0
     ) {
-        $startFrameNumber = 0;
-        $endFrameNumber   = [];
+        $frameRange = $labeledThing->getFrameRange();
 
         if ($frameNumber !== null) {
-            $startFrameNumber = $frameNumber + $offset;
-            $endFrameNumber   = $startFrameNumber + $limit;
+            $frameRange = $frameRange->createSubRangeForOffsetAndLimit($frameNumber - 1 + $offset, $limit);
         }
 
         return $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
-            ->setStartKey([$labeledThing->getId(), $startFrameNumber])
-            ->setEndKey([$labeledThing->getId(), $endFrameNumber])
+            ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameNumber()])
+            ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameNumber()])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

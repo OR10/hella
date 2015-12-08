@@ -87,8 +87,12 @@ class LabeledThingInFrame extends Controller\Base
             if (($labeledThing = $this->labeledThingFacade->find($labeledThingId)) === null) {
                 throw new Exception\NotFoundHttpException();
             }
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
-            $labeledThingInFrame->setId($request->attributes->get('_unresolvedLabeledThingInFrameId'));
+            try {
+                $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+                $labeledThingInFrame->setId($request->attributes->get('_unresolvedLabeledThingInFrameId'));
+            } catch (\Exception $e) {
+                throw new Exception\BadRequestHttpException();
+            }
         } else {
             if ($request->request->get('rev') !== $labeledThingInFrame->getRev()) {
                 throw new Exception\ConflictHttpException();
