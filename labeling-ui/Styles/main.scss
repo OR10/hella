@@ -19,7 +19,8 @@ $button-selected: #353b42;
 @import "label-selection-wizard";
 @import "angular-range-slider";
 @import "viewer";
-@import "svgicons";
+@import "icon-font";
+@import "icons";
 @import "header";
 
 // Carefull with 'height: 100%'. This causes strange bugs with the ToolEvent.point coordinates.
@@ -27,7 +28,6 @@ $button-selected: #353b42;
 .label-summary span.label-padding {
   margin-right: 2px;
 }
-
 
 div.viewer{
   text-align: center;

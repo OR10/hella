@@ -103,7 +103,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
   run(
     'clean',
     'build-public',
-    ['build-templates', 'build-sass', 'build-fonts', 'build-icons'],
+    ['build-templates', 'build-sass', 'build-fonts'],
     () => {
       const devServer = new DevServer({
         'baseURL': './',
@@ -168,7 +168,7 @@ gulp.task('build-public', () => {
 gulp.task('build', next => run(
   'build-public',
   'build-templates',
-  ['build-javascript', 'build-sass', 'build-fonts', 'build-icons'],
+  ['build-javascript', 'build-sass', 'build-fonts'],
   next
 ));
 
@@ -296,31 +296,6 @@ gulp.task('build-fonts', (next) => {
       .pipe(gulp.dest(`${paths.dir.fonts}`))
       .on('end', next);
   });
-});
-
-gulp.task('build-icons', () => {
-  return gulp
-    .src('Public/Images/icons/*.svg')
-    .pipe($$.svgmin((file) => {
-      const prefix = path.basename(file.relative, path.extname(file.relative));
-      return {
-        plugins: [{
-          convertColors: {
-            names2hex: true,
-            rgb2hex: true,
-          },
-        }, {
-          removeComments: true,
-        }, {
-          cleanupIDs: {
-            prefix: prefix + '-',
-            minify: true,
-          },
-        }],
-      };
-    }))
-    .pipe($$.svgstore())
-    .pipe(gulp.dest(`${paths.dir.distribution}`));
 });
 
 gulp.task('deploy', () => {

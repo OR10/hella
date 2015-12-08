@@ -7,14 +7,14 @@
                popover-placement="top"
                popover-trigger="focus"
                class="dark button"
-            ><i class="fa fa-lightbulb-o"></i></a>
+            ><i class="icon icon-view-brightness"></i></a>
             <a tabIndex="2"
                uib-popover-template="vm.contrastSliderTemplate"
                popover-title="Contrast"
                popover-trigger="focus"
                popover-placement="top"
                class="dark button"
-            ><i class="fa fa-adjust"></i></a>
+            ><i class="icon icon-general-settings"></i></a>
         </div>
     </div>
     <div class="grid-container task-bar-middle">
@@ -23,21 +23,21 @@
                 <button ng-hide="vm.selectedPaperShape === null"
                         class="dark button"
                         ng-click="vm.handleSetOpenBracketClicked()">
-                    &#91;
+                    <i class="icon icon-selection-start"></i>
                 </button>
             </li>
             <li>
                 <button ng-hide="vm.selectedPaperShape === null"
                         class="dark button"
                         ng-click="vm.handleGotoOpenBracketClicked()">
-                    <i class="fa fa-angle-double-left"></i>
+                    <i class="icon icon-selection-gostart"></i>
                 </button>
             </li>
             <li>
                 <button tabIndex="3"
                         class="dark button"
                         ng-click="vm.handlePreviousFrameClicked()">
-                    <i class="fa fa-step-backward"></i>
+                    <i class="icon icon-control-previous"></i>
                 </button>
             </li>
             <li>
@@ -45,9 +45,7 @@
                         ng-click="vm.handlePlay()"
                         ng-if="!vm.playing && vm.selectedPaperShape !== null"
                 >
-                    <svg class="icon">
-                        <use xlink:href="icons.svg#control-play-brackets"></use>
-                    </svg>
+                    <i class="icon icon-control-play-steps"></i>
                 </button>
             </li>
             <li>
@@ -55,9 +53,7 @@
                         ng-click="vm.handlePlay()"
                         ng-if="!vm.playing && vm.selectedPaperShape === null"
                 >
-                    <svg class="icon">
-                        <use xlink:href="icons.svg#control-play"></use>
-                    </svg>
+                    <i class="icon icon-control-play"></i>
                 </button>
             </li>
             <li>
@@ -65,30 +61,28 @@
                         ng-click="vm.handlePause()"
                         ng-if="vm.playing"
                 >
-                    <svg class="icon">
-                        <use xlink:href="icons.svg#control-pause"></use>
-                    </svg>
+                    <i class="icon icon-control-pause"></i>
                 </button>
             </li>
             <li>
                 <button tabIndex="4"
                         class="dark button"
                         ng-click="vm.handleNextFrameClicked()">
-                    <i class="fa fa-step-forward"></i>
+                    <i class="icon icon-control-next"></i>
                 </button>
             </li>
             <li>
                 <button ng-hide="vm.selectedPaperShape === null"
                         class="dark button"
                         ng-click="vm.handleGotoCloseBracketClicked()">
-                    <i class="fa fa-angle-double-right"></i>
+                    <i class="icon icon-selection-goend"></i>
                 </button>
             </li>
             <li>
                 <button ng-hide="vm.selectedPaperShape === null"
                         class="dark button"
                         ng-click="vm.handleSetCloseBracketClicked()">
-                    &#93;
+                    <i class="icon icon-selection-end"></i>
                 </button>
             </li>
         </ul>
@@ -103,7 +97,7 @@
                         class="dark button"
                         name="controls-button-move-tool"
                         ng-click="vm.handleMoveToolClicked()">
-                    <i class="fa fa-arrows"></i>
+                    <i class="icon icon-selection-forwards"></i>
                 </button>
             </li>
             <li>
@@ -111,14 +105,14 @@
                         class="dark button"
                         name="controls-button-scale-tool"
                         ng-click="vm.handleScaleToolClicked()">
-                    <i class="fa fa-expand"></i>
+                    <i class="icon icon-selection-off2"></i>
                 </button>
             </li>
             <li>
                 <button tabIndex="7"
                         class="dark button"
                         ng-click="vm.handleNewLabeledThingClicked()">
-                    Rectangle
+                    <i class="icon icon-selection-add"></i>
                 </button>
             </li>
             <!--<li>
@@ -169,7 +163,7 @@
                     <button ng-hide="vm.selectedPaperShape=== null"
                             class="dark button"
                             ng-click="vm.handleInterpolation()">
-                        <i class="fa fa-clone"></i>
+                        <i class="icon icon-selection-generate"></i>
                     </button>
                 </li>
             </ul>
