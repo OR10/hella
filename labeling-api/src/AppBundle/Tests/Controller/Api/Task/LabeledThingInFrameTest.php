@@ -7,6 +7,7 @@ use AppBundle\Tests\Controller;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
 use Doctrine\ODM\CouchDB;
+use Symfony\Component\HttpFoundation;
 
 class LabeledThingInFrameTest extends Tests\WebTestCase
 {
@@ -98,7 +99,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testSaveLabeledThingInFrameWithInvalidTasked()
+    public function testSaveLabeledThingInFrameWithInvalidTaskId()
     {
         $labelingTask        = $this->createLabelingTask();
         $labeledThing        = $this->createLabeledThingDocument($labelingTask);
@@ -117,6 +118,28 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
 
         $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testSaveLabeledThingInFrameWithInvalidFrameNumber()
+    {
+        $labelingTask        = $this->createLabelingTask();
+        $labeledThing        = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labeledThing);
+
+        $response = $this->doRequest(
+            'POST',
+            $labelingTask->getId(),
+            12345,
+            json_encode(
+                array(
+                    'labeledThingId' => $labeledThing->getId(),
+                    'classes' => array('class1' => 'test'),
+                    'shapes'  => array('shape1' => 'test'),
+                )
+            )
+        );
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testGetGhostedLabeledThingInFrames()
