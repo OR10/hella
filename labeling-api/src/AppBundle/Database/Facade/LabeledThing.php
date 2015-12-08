@@ -33,10 +33,7 @@ class LabeledThing
         $frameRange = $labeledThing->getFrameRange();
 
         if ($frameNumber !== null) {
-            $frameRange = $frameRange->createSubRangeForOffsetAndLimit(
-                $frameNumber + (int) $offset - 1,
-                (int) $limit
-            );
+            $frameRange = $frameRange->createSubRangeForOffsetAndLimit($frameNumber - 1 + $offset, $limit);
         }
 
         return $this->documentManager
