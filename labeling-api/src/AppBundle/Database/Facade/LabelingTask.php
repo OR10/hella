@@ -73,7 +73,7 @@ class LabelingTask
         $endFrameNumber = null
     ) {
         return $this->documentManager
-            ->createQuery('annostation_labeled_frame', 'by_taskid_framenumber')
+            ->createQuery('annostation_labeled_frame', 'by_taskId_frameNumber')
             ->setStartKey([$labelingTask->getId(), $startFrameNumber === null ? 0 : (int) $startFrameNumber])
             ->setEndKey([$labelingTask->getId(), $endFrameNumber === null ? [] : (int) $endFrameNumber])
             ->onlyDocs(true)
@@ -116,7 +116,7 @@ class LabelingTask
         }
 
         $result = $this->documentManager
-            ->createQuery('annostation_labeled_frame', 'by_taskid_framenumber')
+            ->createQuery('annostation_labeled_frame', 'by_taskId_frameNumber')
             ->setStartKey([$task->getId(), $endFrameNumber])
             ->setEndKey([$task->getId(), $startFrameNumber])
             ->setDescending(true)
