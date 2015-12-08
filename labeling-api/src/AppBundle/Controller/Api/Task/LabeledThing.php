@@ -87,6 +87,8 @@ class LabeledThing extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
+        $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
+
         if (($labeledThingId = $request->request->get('id')) !== null) {
             if ($this->labeledThingFacade->find($labeledThingId) !== null) {
                 throw new Exception\ConflictHttpException();
@@ -162,6 +164,8 @@ class LabeledThing extends Controller\Base
         if ($frameRange === null) {
             throw new Exception\BadRequestHttpException();
         }
+
+        $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
 
         $labeledThing->setClasses($classes);
         $labeledThing->setFrameRange($frameRange);

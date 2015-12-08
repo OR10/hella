@@ -71,17 +71,7 @@ class LabeledThingInFrame
         array $classes = [],
         array $shapes = []
     ) {
-        $frameRange = $labeledThing->getFrameRange();
-        if (!$frameRange->coversFrameNumber($frameNumber)) {
-            throw new \RangeException(
-                sprintf(
-                    "FrameNumber '%d' outside of FrameRange '%d - %d'",
-                    $frameNumber,
-                    $frameRange->getStartFrameNumber(),
-                    $frameRange->getEndFrameNumber()
-                )
-            );
-        }
+        $labeledThing->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
 
         $this->taskId         = $labeledThing->getTaskId();
         $this->labeledThingId = $labeledThing->getId();

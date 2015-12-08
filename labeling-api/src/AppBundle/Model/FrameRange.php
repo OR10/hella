@@ -160,6 +160,40 @@ class FrameRange
     }
 
     /**
+     * Check wether or not the given frame range is a subrange of this range.
+     *
+     * @param FrameRange $otherFrameRange
+     *
+     * @return boolean
+     */
+    public function coversFrameRange(FrameRange $otherFrameRange)
+    {
+        return $this->coversFrameNumber($otherFrameRange->getStartFrameNumber())
+            && $this->coversFrameNumber($otherFrameRange->getEndFrameNumber());
+    }
+
+    /**
+     * Throw exception if given `$otherFrameRange` is not covered by this frame
+     * range.
+     *
+     * @throws \RangeException
+     */
+    public function throwIfFrameRangeIsNotCovered(FrameRange $otherFrameRange)
+    {
+        if (!$this->coversFrameRange($otherFrameRange)) {
+            throw new \RangeException(
+                sprintf(
+                    "FrameRange '%d - %d' is not completly covered by FrameRange '%d - %d'",
+                    $otherFrameRange->getStartFrameNumber(),
+                    $otherFrameRange->getEndFrameNumber(),
+                    $this->getStartFrameNumber(),
+                    $this->getEndFrameNumber()
+                )
+            );
+        }
+    }
+
+    /**
      * Check wether or not the given frame number is covered by this frame range.
      *
      * @param int $frameNumber
@@ -169,5 +203,24 @@ class FrameRange
     public function coversFrameNumber($frameNumber)
     {
         return $this->startFrameNumber <= (int) $frameNumber && (int) $frameNumber <= $this->endFrameNumber;
+    }
+
+    /**
+     * Throw exception if given `$frameNumber` is not covered by this frame range.
+     *
+     * @throws \RangeException
+     */
+    public function throwIfFrameNumberIsNotCovered($frameNumber)
+    {
+        if (!$this->coversFrameNumber($frameNumber)) {
+            throw new \RangeException(
+                sprintf(
+                    "FrameNumber '%d' outside of FrameRange '%d - %d'",
+                    $frameNumber,
+                    $this->getStartFrameNumber(),
+                    $this->getEndFrameNumber()
+                )
+            );
+        }
     }
 }
