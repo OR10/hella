@@ -258,6 +258,67 @@ class LinearTest extends Tests\KernelTestCase
         $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
     }
 
+    public function testInterpolationWithWithMultipleExistingLabeledThingsInFrame()
+    {
+        $thing = $this->createLabeledThing();
+        $thingsInFrame = [
+            $this->createLabeledThingInFrame($thing, 1, [
+                new Shapes\Rectangle('test-1', 5, 5, 10, 10),
+            ]),
+            $this->createLabeledThingInFrame($thing, 5, [
+                new Shapes\Rectangle('test-1', 10, 10, 20, 20),
+            ]),
+            $this->createLabeledThingInFrame($thing, 10, [
+                new Shapes\Rectangle('test-1', 5, 5, 30, 30),
+            ]),
+        ];
+
+        $emitted = [];
+
+        $this->algorithm->interpolate(
+            $thing,
+            new Model\FrameRange(1, 10),
+            function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
+                $emitted[] = $emittedLabeledThingInFrame;
+            }
+        );
+
+        $expected = [
+            new Model\LabeledThingInFrame($thing, 1, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 5, 5, 10, 10),
+            ])),
+            new Model\LabeledThingInFrame($thing, 2, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 6.25, 6.25, 12.5, 12.5),
+            ])),
+            new Model\LabeledThingInFrame($thing, 3, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 7.5, 7.5, 15, 15),
+            ])),
+            new Model\LabeledThingInFrame($thing, 4, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 8.75, 8.75, 17.5, 17.5),
+            ])),
+            new Model\LabeledThingInFrame($thing, 5, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 10, 10, 20, 20),
+            ])),
+            new Model\LabeledThingInFrame($thing, 6, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 9, 9, 22, 22),
+            ])),
+            new Model\LabeledThingInFrame($thing, 7, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 8, 8, 24, 24),
+            ])),
+            new Model\LabeledThingInFrame($thing, 8, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 7, 7, 26, 26),
+            ])),
+            new Model\LabeledThingInFrame($thing, 9, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 6, 6, 28, 28),
+            ])),
+            new Model\LabeledThingInFrame($thing, 10, [], $this->convertShapesToArray([
+                new Shapes\Rectangle('test-1', 5, 5, 30, 30),
+            ])),
+        ];
+
+        $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
+    }
+
     private function assertLabeledThingsInFrameAreEqual(array $expected, array $actual)
     {
         $this->assertEquals($this->createComparableArray($expected), $this->createComparableArray($actual));
