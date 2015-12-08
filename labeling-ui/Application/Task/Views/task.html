@@ -67,8 +67,7 @@
     </div>
 </div>
 
-<media-controls class="task-bar grid-block"
-                labeled-things-in-frame="vm.labeledThingsInFrame"
+<media-controls labeled-things-in-frame="vm.labeledThingsInFrame"
                 frame-position="vm.framePosition"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"
@@ -78,13 +77,25 @@
                 playing="vm.playing"
 ></media-controls>
 
-<div class="viewer-film-reel-container">
-    <film-reel frame-position="vm.framePosition"
-               task="vm.task"
-               video="vm.video"
-               filters="vm.filters"
-               selected-paper-shape="vm.selectedPaperShape"
-               playing="vm.playing"
-    ></film-reel>
+<div class="thumbnail-zone grid-block">
+    <div class="thumbnail-zone-layer small-3 grid-content"></div>
+    <div class="viewer-film-reel-container">
+        <film-reel class="grid-content" frame-position="vm.framePosition"
+                   task="vm.task"
+                   video="vm.video"
+                   filters="vm.filters"
+                   selected-paper-shape="vm.selectedPaperShape"
+                   playing="vm.playing"
+        ></film-reel>
+    </div>
 </div>
+<div class="timeline-container grid-block">
+    <div class="timeline-layer small-3 grid-content">
+        <p class="text-center">Timeline header placeholder</p>
+    </div>
+    <div class="timeline-inner grid-content">
+        <p class="text-center">Timeline main placeholder</p>
+    </div>
+</div>
+
 

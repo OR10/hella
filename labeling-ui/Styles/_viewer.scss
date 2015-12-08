@@ -31,6 +31,8 @@
 }
 
 .viewer-film-reel-container {
+  @include grid-block(21);
+
   .thumbnail-reel-list {
     display: flex;
     flex-direction: row;

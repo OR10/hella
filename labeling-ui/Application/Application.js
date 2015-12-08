@@ -129,7 +129,7 @@ export default class Application {
         .state('labeling', {
           abstract: true,
           url: '/',
-          template: '<ui-view/>',
+          template: '<ui-view class="vertical grid-frame"/>',
           resolve: {
             user: userResolver,
           },

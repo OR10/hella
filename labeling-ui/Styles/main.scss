@@ -47,6 +47,8 @@ div.viewer{
   box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.5);
   background-color: $element-background;
   border-top: 1px solid $element-divider;
+  border-bottom: 1px solid $element-divider;
+  height: 45px;
 }
 
 div.task-bar-left{
@@ -92,10 +94,10 @@ div.task-bar-right{
 
 .sidebar-left {
   .task-description-content {
-    height: 240px;
+    //height: 240px;
   }
   .popout-panel {
-    height: 170px;
+    //height: 170px;
     padding-top: 20px;
     background-color: $button;
     border-top: 1px solid $element-inline-divider;
@@ -134,4 +136,29 @@ div.task-bar-right{
     margin-right: auto;
     z-index: 10;
   }
+}
+
+.thumbnail-zone {
+  flex: 0 0 percentage(3/24);
+  border-bottom: 1px solid $element-divider;
+
+  .thumbnail-zone-layer {
+    background-color: $element-background;
+    border-right: 1px solid $element-divider;
+    box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.5);
+  }
+}
+
+.timeline-container {
+  flex: 0 0 percentage(5/24);
+
+  .timeline-layer {
+    background-color: $element-background;
+    border-right: 1px solid $element-divider;
+    box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.5);
+  }
+}
+
+.main {
+  flex: 1 1 percentage(13/24);
 }
