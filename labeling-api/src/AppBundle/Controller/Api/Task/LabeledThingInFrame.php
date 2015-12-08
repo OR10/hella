@@ -101,7 +101,7 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabelingTask $task,
         $frameNumber
     ) {
-        $fetchLabeledThings = (bool) $request->query->get('labeledThings', true);
+        $fetchLabeledThings = $request->query->getBoolean('labeledThings', true);
 
         $labeledThings        = [];
         $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber);
