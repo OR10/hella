@@ -8,7 +8,8 @@ class ThumbnailDirective {
   constructor() {
     this.scope = {
       endFrameNumber: '=',
-      showFrameNumberAlways: '=',
+      isCurrent: '=',
+      framePosition: '=',
       location: '=',
       filters: '=',
       labeledThingInFrame: '=',
