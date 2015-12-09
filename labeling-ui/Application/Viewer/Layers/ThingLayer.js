@@ -19,13 +19,15 @@ import PaperShape from '../Shapes/PaperShape';
  */
 class ThingLayer extends PanAndZoomPaperLayer {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    */
-  constructor($scope, drawingContextService, entityIdService, paperShapeFactory) {
-    super($scope, drawingContextService);
+  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory) {
+    super(width, height, $scope, drawingContextService);
 
     /**
      * @type {PaperShapeFactory}
@@ -359,7 +361,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
   attachToDom(element) {
     super.attachToDom(element);
 
+    this.resize();
+
     element.addEventListener('mousedown', this._onLayerClick.bind(this));
+  }
+
+  resize() {
+    this._context.withScope(scope => {
+      console.log(scope.project.activeLayer);
+      scope.view.zoom = scope.view.viewSize.width / this._width;
+      console.log('thingLayer scale', scope.view.viewSize.width / this._width)
+      console.log(scope.project.activeLayer.scaling);
+    });
   }
 }
 

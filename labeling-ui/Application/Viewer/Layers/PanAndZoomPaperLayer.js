@@ -10,11 +10,13 @@ import angular from 'angular';
  */
 class PanAndZoomPaperLayer extends PaperLayer {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor($scope, drawingContextService) {
-    super($scope, drawingContextService);
+  constructor(width, height, $scope, drawingContextService) {
+    super(width, height, $scope, drawingContextService);
   }
 
   attachToDom(element) {

@@ -19,6 +19,7 @@ class ViewerController {
   /**
    * @param {angular.Scope} $scope
    * @param {angular.element} $element
+   * @param {angular.window} $window
    * @param {DrawingContextService} drawingContextService
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
@@ -33,6 +34,7 @@ class ViewerController {
    */
   constructor($scope,
               $element,
+              $window,
               drawingContextService,
               taskFrameLocationGateway,
               frameGateway,
@@ -58,6 +60,12 @@ class ViewerController {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {angular.element}
+     * @private
+     */
+    this._$element = $element;
 
     /**
      * @type {TaskFrameLocationGateway}
@@ -211,24 +219,41 @@ class ViewerController {
      */
     this._labeledThingGateway = labeledThingGateway;
 
+    /**
+     * @type {HtmlElement}
+     */
+    this._layerContainer = $element.find('.layer-container');
+
+    const {width, height} = this.video.metaData;
+    this._contentWidth = width;
+    this._contentHeight = height;
+
     const eventDelegationLayer = new EventDelegationLayer();
-    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
-    this._backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
+    this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
+
+    // TODO needs to be called on side element resize as well
+    $window.onresize = () => {
+      this._resizeLayerContainer();
+      this._resizeLayers();
+    };
+
+    this._resizeLayerContainer();
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
-    thingLayer.attachToDom($element.find('.annotation-layer')[0]);
+    this._thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     this._backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
-    thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
+    this._thingLayer.on('shape:new', shape => this._onNewShape(shape));
+    this._thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
-    this._layerManager.addLayer('annotations', thingLayer);
+    this._layerManager.addLayer('annotations', this._thingLayer);
     this._layerManager.addLayer('background', this._backgroundLayer);
 
 
     $scope.$watch('vm.activeTool', newActiveTool => {
-      thingLayer.activateTool(newActiveTool);
+      this._thingLayer.activateTool(newActiveTool);
     });
 
     // Reapply filters if they changed
@@ -265,6 +290,17 @@ class ViewerController {
         this._$interval.cancel(this._renderLoopPromise);
       }
     });
+  }
+
+  _resizeLayerContainer() {
+    const viewerHeight = this._$element.height();
+    this._layerContainer.width(this._contentWidth / this._contentHeight * viewerHeight);
+    console.log('set width for layerContainer');
+  }
+
+  _resizeLayers() {
+    this._backgroundLayer.resize();
+    this._thingLayer.resize();
   }
 
   /**
@@ -486,6 +522,7 @@ class ViewerController {
 ViewerController.$inject = [
   '$scope',
   '$element',
+  '$window',
   'drawingContextService',
   'taskFrameLocationGateway',
   'frameGateway',

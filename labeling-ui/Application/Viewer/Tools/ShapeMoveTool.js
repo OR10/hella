@@ -42,6 +42,10 @@ export default class ShapeMoveTool extends Tool {
   }
 
   _mouseDown(event) {
+
+    this._context.withScope(scope => {
+      console.log(event.point, scope.view.viewToProject(event.point), scope.view.projectToView(event.point));
+    });
     const point = event.point;
 
     this._context.withScope(scope => {

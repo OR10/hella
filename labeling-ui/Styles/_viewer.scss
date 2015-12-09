@@ -1,22 +1,17 @@
-.viewer-container {
-  .viewer {
-    height: 620px;
-    width: 1024px;
+.viewer {
+  align-items: stretch;
+
+  .layer-container {
+    position: relative;
+    //height: 100%;
     margin: 0 auto;
 
-    .layer-container {
-      position: relative;
-
-      canvas.annotation-layer, canvas.background-layer, .event-delegation-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-
-      .event-delegation-layer {
-        width: 1024px;
-        height: 620px;
-      }
+    canvas.annotation-layer, canvas.background-layer, .event-delegation-layer {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 }

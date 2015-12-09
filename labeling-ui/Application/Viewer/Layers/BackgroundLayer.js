@@ -6,14 +6,18 @@ import paper from 'paper';
  *
  * @class BackgroundLayer
  * @implements {Layer}
+ *
+ * @extends PanAndZoomPaperLayer
  */
 export default class BackgroundLayer extends PanAndZoomPaperLayer {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor($scope, drawingContextService) {
-    super($scope, drawingContextService);
+  constructor(width, height, $scope, drawingContextService) {
+    super(width, height, $scope, drawingContextService);
 
     /**
      * @type {HTMLCanvasElement}
@@ -46,6 +50,8 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
     this._context.withScope(() => {
       this._raster = new paper.Raster();
     });
+
+    this.resize();
   }
 
   /**
@@ -94,6 +100,14 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
     }
     this._context.withScope(scope => {
       this._raster = new paper.Raster(this._backgroundImage, scope.view.center);
+    });
+  }
+
+  resize() {
+    this._context.withScope(scope => {
+      this._drawBackgroundImage();
+      scope.view.zoom = scope.view.viewSize.width / this._width;
+      console.log('backgroundLayerScale', scope.view.viewSize.width / this._width);
     });
   }
 }

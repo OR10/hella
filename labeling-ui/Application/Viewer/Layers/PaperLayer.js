@@ -8,11 +8,25 @@ import EventEmitter from 'event-emitter';
  */
 class PaperLayer extends EventEmitter {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor($scope, drawingContextService) {
+  constructor(width, height, $scope, drawingContextService) {
     super();
+
+    /**
+     * @type {Number}
+     * @protected
+     */
+    this._height = height;
+
+    /**
+     * @type {Number}
+     * @protected
+     */
+    this._width = width;
 
     /**
      * @type {$rootScope.Scope}
