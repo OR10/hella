@@ -12,7 +12,7 @@ $body-background: #181d23;
 $button: #30363c;
 $button-selected: #353b42;
 
-@import "bootstrap";
+//@import "bootstrap";
 @import "foundation";
 @import "font-awesome";
 @import "fonts";
@@ -182,4 +182,13 @@ div.viewer{
 button{
   background-color: inherit;
   border: 0;
+}
+
+button:focus{
+  border: none;
+  outline: none;
+}
+
+button:hover i{
+  color: $icon-hover;
 }
