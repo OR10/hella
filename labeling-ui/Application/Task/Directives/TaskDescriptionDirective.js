@@ -9,7 +9,9 @@ import TaskDescriptionController from './TaskDescriptionController';
 class TaskDescriptionDirective {
   constructor() {
     this.scope = {
-      task: '=',
+      title: '@',
+      heading: '=',
+      content: '=',
     };
 
     this.template = taskDescriptionTemplate;

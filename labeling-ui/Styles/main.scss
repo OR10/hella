@@ -99,6 +99,11 @@ div.viewer{
   text-transform: uppercase;
   color: $headlines;
   border-bottom: 1px solid $element-inline-divider;
+  cursor: pointer;
+  
+  .icon{
+    color: $text;
+  }
 
   .handle{
     padding-left: 10px;

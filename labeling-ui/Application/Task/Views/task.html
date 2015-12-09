@@ -4,15 +4,22 @@
 <div class="main grid-block">
     <div class="grid-block small-5 contain-left sidebar-left">
         <div class="grid-block vertical">
-            <task-description task="vm.task"
+            <task-description title="Task Description"
+                              heading="vm.task.descriptionTitle"
+                              content="vm.task.descriptionText"
             ></task-description>
+
+            <task-description title="Labeling FAQ"
+                              heading="vm.task.descriptionTitle"
+                              content="vm.task.descriptionText"
+            ></task-description>
+
+            <popup-panel popup-panel-state="vm.popupPanelState"
+                         brightness-slider-value="vm.brightnessSliderValue"
+                         contrast-slider-value="vm.contrastSliderValue"
+            ></popup-panel>
+
         </div>
-
-        <popup-panel popup-panel-state="vm.popupPanelState"
-                     brightness-slider-value="vm.brightnessSliderValue"
-                     contrast-slider-value="vm.contrastSliderValue"
-        ></popup-panel>
-
     </div>
 
     <div class="grid-content viewer">
