@@ -378,6 +378,8 @@ class ViewerController {
 
   _onUpdatedShape(shape) {
     const labeledThingInFrame = shape.labeledThingInFrame;
+    const labeledThing = labeledThingInFrame.labeledThing;
+
     if (labeledThingInFrame.ghost) {
       labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
@@ -385,11 +387,32 @@ class ViewerController {
       );
     }
 
+    // Update the frame range for the associated LabeledThing if we made a modification outside of it
+    let labeledThingUpdatePromise = Promise.resolve();
+
+    if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
+      labeledThing.frameRange.endFrameNumber = this.framePosition.position;
+
+      labeledThingUpdatePromise = labeledThingUpdatePromise.then(() => {
+        return this._labeledThingGateway.saveLabeledThing(labeledThing);
+      });
+    }
+
+    if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
+      labeledThing.frameRange.startFrameNumber = this.framePosition.position;
+
+      labeledThingUpdatePromise = labeledThingUpdatePromise.then(() => {
+        return this._labeledThingGateway.saveLabeledThing(labeledThing);
+      });
+    }
+
     // @TODO this needs to be fixed for supporting multiple shapes
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    labeledThingUpdatePromise.then(() => {
+      this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    });
   }
 
   /**
