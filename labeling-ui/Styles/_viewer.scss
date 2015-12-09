@@ -67,12 +67,16 @@
     }
 
     > li.thumbnail-spacer {
+      display: block;
       width: 8px;
+      position: relative;
 
       div.frame-range-bracket {
         background-color: greenyellow;
         width: 8px;
-        height: 180px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
       }
 
       > li.thumbnail-spacer.active {
