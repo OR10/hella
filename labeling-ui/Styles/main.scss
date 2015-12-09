@@ -126,7 +126,8 @@ div.viewer{
 .thumbnail {
   text-align: center;
 
-  thumbnail{
+  thumbnail {
+    cursor: pointer;
     z-index: -1;
   }
 
