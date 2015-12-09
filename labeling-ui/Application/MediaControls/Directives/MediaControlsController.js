@@ -1,11 +1,7 @@
-import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
-import ContrastFilter from '../../Common/Filters/ContrastFilter';
-
 /**
  * Controller handling the control elements below the viewer frame
  *
  * @property {Task} task
- * @property {Filters} filters
  * @property {FramePosition} framePosition
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
  * @property {PaperShape} selectedPaperShape
@@ -22,33 +18,6 @@ class MediaControlsController {
    * @param {angular.$q} $q
    */
   constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, $q) {
-    /**
-     * Template name used for the brightnessSlider button popover
-     *
-     * @type {string}
-     */
-    this.brightnessSliderTemplate = 'MediaControls/MediaControlsDirective/BrightnessSlider.html';
-
-    /**
-     * Template name used for the contrastSlider button popover
-     *
-     * @type {string}
-     */
-    this.contrastSliderTemplate = 'MediaControls/MediaControlsDirective/ContrastSlider.html';
-
-    /**
-     * Value of the brightness slider
-     *
-     * @type {int}
-     */
-    this.brightnessSliderValue = 0;
-
-    /**
-     * Value of the contrast slider
-     *
-     * @type {int}
-     */
-    this.contrastSliderValue = 0;
 
     /**
      * @type {LabeledThingInFrameGateway}
@@ -79,44 +48,6 @@ class MediaControlsController {
      * @private
      */
     this._$q = $q;
-
-    /**
-     * Currently active {@link BrightnessFilter}
-     *
-     * @type {BrightnessFilter|null}
-     * @private
-     */
-    this._brightnessFilter = null;
-
-    /**
-     * Currently active {@link ContrastFilter}
-     *
-     * @type {ContrastFilter|null}
-     * @private
-     */
-    this._constrastFilter = null;
-
-    // Update BrightnessFilter if value changed
-    $scope.$watch('vm.brightnessSliderValue', newBrightness => {
-      const newFilter = new BrightnessFilter(newBrightness);
-      if (!this._brightnessFilter) {
-        this.filters.addFilter(newFilter);
-      } else {
-        this.filters.replaceFilter(this._brightnessFilter, newFilter);
-      }
-      this._brightnessFilter = newFilter;
-    });
-
-    // Update ContrastFilter if value changed
-    $scope.$watch('vm.contrastSliderValue', newContrast => {
-      const newFilter = new ContrastFilter(newContrast);
-      if (!this._constrastFilter) {
-        this.filters.addFilter(newFilter);
-      } else {
-        this.filters.replaceFilter(this._constrastFilter, newFilter);
-      }
-      this._constrastFilter = newFilter;
-    });
   }
 
   /**

@@ -1,4 +1,3 @@
-import Filters from '../Models/Filters';
 import LayerManager from '../Layers/LayerManager';
 import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
@@ -145,11 +144,6 @@ class ViewerController {
      * @private
      */
     this._frameLocations = this._loadFrameLocations();
-
-    /**
-     * @type {Filters}
-     */
-    this.filters = new Filters();
 
     /**
      * @type {Tool|null}

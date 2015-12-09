@@ -13,7 +13,6 @@ class MediaControlsDirective {
     this.template = mediaControlsTemplate;
     this.scope = {
       framePosition: '=',
-      filters: '=',
       activeTool: '=',
       selectedDrawingTool: '=',
       task: '=',
