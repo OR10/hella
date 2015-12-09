@@ -191,6 +191,15 @@ class MediaControlsController {
   handlePause() {
     this.playing = false;
   }
+
+  handleSettingsClicked() {
+    switch (this.popupPanelState) {
+      case 'videosettings':
+        this.popupPanelState = false;
+        break;
+      default:
+        this.popupPanelState = 'videosettings';
+    }
 }
 
 MediaControlsController.$inject = [

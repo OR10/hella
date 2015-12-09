@@ -19,6 +19,7 @@ class MediaControlsDirective {
       selectedPaperShape: '=',
       labeledThingsInFrame: '=',
       playing: '=',
+      popupPanelState: '=',
     };
   }
 }

@@ -4,6 +4,7 @@ import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
 import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
+import PopupPanelDirective from './Directives/PopupPanelDirective';
 
 /**
  * Module containing all functionality associated with a {@link Task}
@@ -19,6 +20,7 @@ class Task extends Module {
 
     this.module.service('taskGateway', TaskGateway);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
+    this.registerDirective('popupPanel', PopupPanelDirective);
   }
 
   /**

@@ -1,4 +1,12 @@
 <div class="task-bar button-bar grid-block">
+    <div class="grid-block small-5 task-bar-left">
+        <div class="grid-content">
+            <button ng-click="vm.handleSettingsClicked()">
+                <i class="icon icon-general-settings"></i>
+            </button>
+        </div>
+        <div class="grid-content"></div>
+        <div class="grid-content"></div>
     </div>
     <div class="grid-content task-bar-center">
         <button ng-hide="vm.selectedPaperShape === null"
