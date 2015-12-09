@@ -45,6 +45,7 @@ div.viewer{
 
   div.popup-panel {
     width: 100%;
+    font-size: 16pt;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -110,10 +111,10 @@ div.viewer{
 
 .task-description-content{
   padding-top: 10px;
-  font-size: 16px;
+  font-size: 16pt;
 
   h1 {
-    font-size: 16px;
+    font-size: 16pt;
     color: $sub-headlines;
     font-weight: bold;
   }
