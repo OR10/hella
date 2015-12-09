@@ -181,6 +181,8 @@ div.viewer{
       border: none;
       background: transparent;
       display: inline;
+      height: auto;
+      vertical-align: initial;
     }
 
     input[type=number]:focus {
