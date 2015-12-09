@@ -192,7 +192,7 @@ class MediaControlsController {
     this.playing = false;
   }
 
-  handleSettingsClicked() {
+  handleVideoSettingsClicked() {
     switch (this.popupPanelState) {
       case 'videosettings':
         this.popupPanelState = false;
