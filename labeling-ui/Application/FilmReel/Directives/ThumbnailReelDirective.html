@@ -4,6 +4,7 @@
         data-drop="true"
         jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
     >
+        <div ng-if="!(vm.placeStartBracket(-1) || vm.placeEndBracket(-1))" class="frame-range-bracket-space" />
         <div ng-if="vm.placeStartBracket(-1)" class="frame-range-bracket start-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
         <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket" data-drag="true"
@@ -27,6 +28,7 @@
         data-drop="true"
         jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
     >
+        <div ng-if="!(vm.placeStartBracket($index) || vm.placeEndBracket($index))" class="frame-range-bracket-space" />
         <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
         <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket" data-drag="true"

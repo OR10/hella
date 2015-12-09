@@ -3,6 +3,7 @@
     ng-mouseleave="vm.showFrameNumber = false"
     ng-click="vm.framePosition.goto(vm.location.frameNumber)"
 ></canvas>
+<div class="frame-range" ng-show="(!vm.showFrameNumber && !vm.isCurrent) || vm.location === null"></div>
 <div class="frame-range" ng-hide="(!vm.showFrameNumber && !vm.isCurrent) || vm.location === null">
     <span ng-if="!vm.isCurrent" class="current">{{vm.location.frameNumber}}</span>
     <input ng-if="vm.isCurrent" ng-model="vm._currentFrameNumber" class="current" type="number" onFocus="this.select()" />
