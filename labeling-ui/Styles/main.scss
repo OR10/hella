@@ -195,7 +195,7 @@ div.viewer{
 }
 
 .thumbnail-zone {
-  flex: 0 0 percentage(3/24);
+  flex: 0 0 auto;
   border-bottom: 2px solid $element-divider;
 
   .thumbnail-zone-layer {
