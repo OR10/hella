@@ -157,6 +157,82 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $labeledThingsOutsideRange = $this->labelingThingInFrameFacade->getLabeledThingInFramesOutsideRange($labelingThing);
         $this->assertEmpty($labeledThingsOutsideRange);
+
+        $labeledThingsInFrame = $this->labelingThingFacade->getLabeledThingInFrames($labelingThing);
+        $this->assertCount(1, $labeledThingsInFrame);
+        $this->assertEquals($labeledThingInFrameInRange, $labeledThingsInFrame[0]);
+    }
+
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameNumberIfLabeledThingDoesNotYetExistForStartFrameNumber()
+    {
+        $labelingTask        = $this->createLabelingTask(9, 11);
+        $labelingThing       = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingThing, 9);
+
+        $response = $this->doRequest(
+            'PUT',
+            sprintf(
+                '/api/task/%s/labeledThing/%s',
+                $labelingTask->getId(),
+                $labelingThing->getId()
+            ),
+            json_encode(
+                array(
+                    'rev' => $labelingThing->getRev(),
+                    'classes' => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'frameRange' => array(
+                        'startFrameNumber' => 10,
+                        'endFrameNumber' => 10,
+                    ),
+                )
+            )
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $labeledThingsOutsideRange = $this->labelingThingInFrameFacade->getLabeledThingInFramesOutsideRange($labelingThing);
+        $this->assertEmpty($labeledThingsOutsideRange);
+
+        $labeledThingsInFrame = $this->labelingThingFacade->getLabeledThingInFrames($labelingThing);
+        $this->assertCount(1, $labeledThingsInFrame);
+        $this->assertEquals($labeledThingInFrame, $labeledThingsInFrame[0]);
+    }
+
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameNumberIfLabeledThingDoesNotYetExistForEndFrameNumber()
+    {
+        $labelingTask        = $this->createLabelingTask(9, 11);
+        $labelingThing       = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrame = $this->createLabeledInFrameDocument($labelingThing, 11);
+
+        $response = $this->doRequest(
+            'PUT',
+            sprintf(
+                '/api/task/%s/labeledThing/%s',
+                $labelingTask->getId(),
+                $labelingThing->getId()
+            ),
+            json_encode(
+                array(
+                    'rev' => $labelingThing->getRev(),
+                    'classes' => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'frameRange' => array(
+                        'startFrameNumber' => 10,
+                        'endFrameNumber' => 10,
+                    ),
+                )
+            )
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $labeledThingsOutsideRange = $this->labelingThingInFrameFacade->getLabeledThingInFramesOutsideRange($labelingThing);
+        $this->assertEmpty($labeledThingsOutsideRange);
+
+        $labeledThingsInFrame = $this->labelingThingFacade->getLabeledThingInFrames($labelingThing);
+        $this->assertCount(1, $labeledThingsInFrame);
+        $this->assertEquals($labeledThingInFrame, $labeledThingsInFrame[0]);
     }
 
     public function testUpdateLabeledThingWithInvalidRevDocument()
