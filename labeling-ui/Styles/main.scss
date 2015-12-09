@@ -23,6 +23,11 @@ $button-selected: #353b42;
 @import "icons";
 @import "header";
 
+html, body {
+  // Prevent overscroll
+  overflow: hidden;
+}
+
 // Carefull with 'height: 100%'. This causes strange bugs with the ToolEvent.point coordinates.
 
 .label-summary span.label-padding {
@@ -48,18 +53,17 @@ div.viewer{
   background-color: $element-background;
   border-top: 1px solid $element-divider;
   border-bottom: 1px solid $element-divider;
-  height: 45px;
+  align-items: center;
+  flex: 0 0 percentage(1/24);
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
-div.task-bar-left{
+.task-bar-left, .task-bar-right, .task-bar-center{
   text-align: center;
-  .block {
-    flex: 1;
-  }
+  overflow: hidden;
 }
-div.task-bar-right{
-  text-align: center;
-}
+
 
 .task-description {
   align-items: center;
@@ -161,4 +165,10 @@ div.task-bar-right{
 
 .main {
   flex: 1 1 percentage(13/24);
+}
+
+
+button{
+  background-color: inherit;
+  border: 0;
 }

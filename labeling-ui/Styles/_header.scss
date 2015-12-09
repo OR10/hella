@@ -1,23 +1,20 @@
 .header {
   z-index: 1;
   box-shadow: 0px 0px 10px 0px #000000;
-  align-items: center;
-  justify-content: center;
-  height: 44px;
   border-bottom: 1px solid;
   border-color: $element-divider;
   background-color: $element-background;
+  flex: 0 0 percentage(1/24);
+  align-items: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
 
-  .grid-block, .grid-content{
+  .header-right, .header-left {
     align-items: center;
   }
 
-  .icon {
-    margin-left: 30px;
-    margin-right: 30px;
-  }
-
-  .username {
-    margin-left: 60px;
+  .header-timer {
+    padding-right: 0;
+    text-align: right;
   }
 }

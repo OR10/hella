@@ -1,22 +1,41 @@
-<div class="header grid-block">
-    <div class="grid-content left">
-        <span class="video-title">{{vm.task.id}}</span>
+<div class="header header-left grid-block">
+    <div class="grid-content text-left small-16 noscroll">
+        {{vm.task.id}}
     </div>
-    <div class="grid-block align-right right">
+    <div class="grid-block header-right small-8">
 
-        <timer task="vm.task" user="vm.user"></timer>
+        <timer class="grid-content text-right header-timer small-6 noscroll"
+               task="vm.task"
+               user="vm.user"></timer>
 
-        <div class="grid-content small-2">
-            <i class="icon icon-help"></i>
+        <div class="grid-content text-left small-3 noscroll">
+            <button>
+                <i class="icon icon-general-timer"></i>
+            </button>
         </div>
-        <div class="grid-content small-2">
-            <i class="icon icon-general-chat"></i>
+
+        <div class="grid-content small-3 noscroll">
+            <button>
+                <i class="icon icon-help"></i>
+            </button>
         </div>
-        <div class="grid-content small-4">
-            <span class="username">{{vm.user.username}}</span>
+
+        <div class="grid-content small-3 noscroll">
+            <button>
+                <i class="icon icon-general-chat"></i>
+            </button>
         </div>
-        <div class="grid-content small-2">
-            <i class="icon icon-general-loggedin"></i>
+
+        <div class="grid-content text-center small-6 noscroll">
+            <button>
+                {{vm.user.username}}
+            </button>
+        </div>
+
+        <div class="grid-content small-3 noscroll">
+            <button>
+                <i class="icon icon-general-loggedin"></i>
+            </button>
         </div>
     </div>
 </div>
