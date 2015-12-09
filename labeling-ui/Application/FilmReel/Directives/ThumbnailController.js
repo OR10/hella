@@ -7,7 +7,8 @@ import angular from 'angular';
  * @property {FrameLocation} location
  * @property {Filters} filters
  * @property {int} endFrameNumber
- * @property {bool} showFrameNumberAlways
+ * @property {bool} isCurrent
+ * @property {FramePosition} framePosition
  * @property {LabeledThingInFrame|null} labeledThingInFrame
  * @property {{width: int, height: int}} labeledThingViewport
  */
@@ -86,6 +87,32 @@ class ThumbnailController {
      */
     this._parentElement = $element.parent().get(0);
 
+    /**
+     * @type {bool}
+     * @private
+     */
+    this._editMode = false;
+
+    /**
+     * @type {int}
+     * @private
+     */
+    this._currentFrameNumber = null;
+
+    $scope.$watch('vm._currentFrameNumber', newFrameNumber => {
+      try {
+        if (newFrameNumber < this.framePosition.startFrameNumber) {
+          this.framePosition.goto(this.framePosition.startFrameNumber);
+        } else if (newFrameNumber > this.framePosition.endFrameNumber) {
+          this.framePosition.goto(this.framePosition.endFrameNumber);
+        } else {
+          this.framePosition.goto(newFrameNumber);
+        }
+      } catch (error) {
+      }
+      this._currentFrameNumber = this.framePosition.position;
+    });
+
     const onWindowResized = () => {
       this._draw();
     };
@@ -101,6 +128,8 @@ class ThumbnailController {
         this._drawBackgroundLayer();
         return;
       }
+
+      this._currentFrameNumber = this.framePosition.position;
 
       this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)

@@ -141,6 +141,14 @@ class LabeledThingInFrame
     }
 
     /**
+     * @param int $frameNumber
+     */
+    public function setFrameNumber($frameNumber)
+    {
+        $this->frameNumber = (int) $frameNumber;
+    }
+
+    /**
      * @return array
      */
     public function getShapes()

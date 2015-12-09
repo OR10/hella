@@ -149,8 +149,10 @@ class ThumbnailReelController {
         thumbnailLocations.forEach(
           (location, index) => {
             const thumbnail = this.thumbnails[index];
-            const labeledThingInFrame = thumbnail.labeledThingInFrame;
-            this.thumbnails[index] = {location, labeledThingInFrame};
+            if (thumbnail) {
+              const labeledThingInFrame = thumbnail.labeledThingInFrame;
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
           }
         )
       );
