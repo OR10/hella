@@ -173,6 +173,9 @@ class LabeledThing extends Controller\Base
 
         $this->labeledThingFacade->save($labeledThing);
 
+        $labeledThingInFramesToDelete = $this->labeledThingInFrameFacade->getLabeledThingInFramesOutsideRange($labeledThing);
+        $this->labeledThingInFrameFacade->delete($labeledThingInFramesToDelete);
+
         return View\View::create()->setData(['result' => $labeledThing]);
     }
 
@@ -201,9 +204,7 @@ class LabeledThing extends Controller\Base
         }
 
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
-        foreach ($labeledThingInFrames as $labeledThingInFrame) {
-            $this->labeledThingInFrameFacade->delete($labeledThingInFrame);
-        }
+        $this->labeledThingInFrameFacade->delete($labeledThingInFrames);
 
         $this->labeledThingFacade->delete($labeledThing);
 
