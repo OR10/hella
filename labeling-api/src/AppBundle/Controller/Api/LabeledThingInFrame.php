@@ -133,7 +133,7 @@ class LabeledThingInFrame extends Controller\Base
             throw new Exception\ConflictHttpException();
         }
 
-        $this->labeledThingInFrameFacade->delete($labeledThingInFrame);
+        $this->labeledThingInFrameFacade->delete(array($labeledThingInFrame));
 
         return View\View::create()->setData(['success' => true]);
     }

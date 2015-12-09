@@ -126,6 +126,39 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
+    public function testUpdateLabeledThingAndDeleteDocument()
+    {
+        $labelingTask = $this->createLabelingTask(9, 11);
+        $labelingThing = $this->createLabeledThingDocument($labelingTask);
+        $labeledThingInFrameBeforeRange = $this->createLabeledInFrameDocument($labelingThing, 9);
+        $labeledThingInFrameInRange = $this->createLabeledInFrameDocument($labelingThing, 10);
+        $labeledThingInFrameAfterRange = $this->createLabeledInFrameDocument($labelingThing, 11);
+        $response = $this->doRequest(
+            'PUT',
+            sprintf(
+                '/api/task/%s/labeledThing/%s',
+                $labelingTask->getId(),
+                $labelingThing->getId()
+            ),
+            json_encode(
+                array(
+                    'rev' => $labelingThing->getRev(),
+                    'classes' => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'frameRange' => array(
+                        'startFrameNumber' => 10,
+                        'endFrameNumber' => 10,
+                    ),
+                )
+            )
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $labeledThingsOutsideRange = $this->labelingThingInFrameFacade->getLabeledThingInFramesOutsideRange($labelingThing);
+        $this->assertEmpty($labeledThingsOutsideRange);
+    }
+
     public function testUpdateLabeledThingWithInvalidRevDocument()
     {
         $labelingTask  = $this->createLabelingTask();
@@ -154,7 +187,7 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $labelingTask  = $this->createLabelingTask();
         $labelingThing = $this->createLabeledThingDocument($labelingTask);
-        $this->createLabeledInFrameDocument($labelingThing);
+        $this->createLabeledInFrameDocument($labelingThing, 10, '22dd639108f1419967ed8d6a1f5a765c');
         $response      = $this->doRequest(
             'DELETE',
             sprintf(
@@ -218,11 +251,11 @@ class LabeledThingTest extends Tests\WebTestCase
         return $client->getResponse();
     }
 
-    private function createLabelingTask()
+    private function createLabelingTask($startRange = 10, $endRange = 20)
     {
         $video = new Model\Video('foobar');
         $this->videoFacade->save($video);
-        $frameRange   = new Model\FrameRange(10, 20);
+        $frameRange   = new Model\FrameRange($startRange, $endRange);
         $labelingTask = new Model\LabelingTask($video, $frameRange);
         $this->labelingTaskFacade->save($labelingTask);
 
@@ -238,10 +271,15 @@ class LabeledThingTest extends Tests\WebTestCase
         return $labeledThing;
     }
 
-    private function createLabeledInFrameDocument(Model\LabeledThing $labeledThing)
+    private function createLabeledInFrameDocument(
+        Model\LabeledThing $labeledThing,
+        $frameNumber = 10,
+        $id = null)
     {
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, 10);
-        $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765c');
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+        if ($id !== null) {
+            $labeledThingInFrame->setId($id);
+        }
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 
         return $labeledThingInFrame;

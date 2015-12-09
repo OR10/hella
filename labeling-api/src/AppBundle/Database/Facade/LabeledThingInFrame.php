@@ -40,9 +40,35 @@ class LabeledThingInFrame
         $this->documentManager->flush();
     }
 
-    public function delete(Model\LabeledThingInFrame $labeledThingInFrame)
+    public function getLabeledThingInFramesOutsideRange(Model\LabeledThing $labeledThing)
     {
-        $this->documentManager->remove($labeledThingInFrame);
+        $frameRange = $labeledThing->getFrameRange();
+        $start      = $frameRange->getStartFrameNumber();
+        $end        = $frameRange->getEndFrameNumber();
+
+        $beforeRange = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
+            ->setStartKey([$labeledThing->getId(), 0])
+            ->setEndKey([$labeledThing->getId(), $start - 1])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+
+        $afterRange = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
+            ->setStartKey([$labeledThing->getId(), $end + 1])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+
+        return array_merge($beforeRange, $afterRange);
+    }
+
+    public function delete(array $labeledThingInFrames)
+    {
+        foreach($labeledThingInFrames as $labeledThingInFrame) {
+            $this->documentManager->remove($labeledThingInFrame);
+        }
         $this->documentManager->flush();
     }
 }
