@@ -200,6 +200,18 @@ class MediaControlsController {
       default:
         this.popupPanelState = 'videosettings';
     }
+  }
+
+  handleZoomClicked() {
+    switch (this.popupPanelState) {
+      case 'zoom':
+        this.popupPanelState = false;
+        break;
+      default:
+        this.popupPanelState = 'zoom';
+    }
+  }
+
 }
 
 MediaControlsController.$inject = [
