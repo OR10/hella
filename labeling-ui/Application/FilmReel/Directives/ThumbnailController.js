@@ -264,7 +264,7 @@ class ThumbnailController {
 
     if (this.labeledThingInFrame === null) {
       if (redraw) {
-        this._context.withScope(scope => scope.view.draw());
+        this._context.withScope(scope => scope.view.update());
       }
       return;
     }
@@ -279,7 +279,7 @@ class ThumbnailController {
       this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
 
       if (redraw) {
-        scope.view.draw();
+        scope.view.update();
       }
     });
   }
