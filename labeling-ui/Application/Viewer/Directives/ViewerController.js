@@ -3,6 +3,7 @@ import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
 import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
+import frameDebounce from 'frame-debounce';
 
 /**
  * @class ViewerController
@@ -225,17 +226,24 @@ class ViewerController {
     this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
-    // TODO needs to be called on side element resize as well
-    $window.onresize = () => {
-      this._resizeLayerContainer();
-      this._resizeLayers();
-    };
+    this._resizeDebounced = frameDebounce(() => {
+      this._resize();
+    });
 
-    this._resizeLayerContainer();
+    // TODO needs to be called on side element resize as well
+    $window.addEventListener('resize', this._resizeDebounced);
+
+    $scope.$on('$destroy', () => {
+      $window.removeEventListener('resize', this._resizeDebounced);
+    });
 
     eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
     this._thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     this._backgroundLayer.attachToDom($element.find('.background-layer')[0]);
+
+    // Something seemingly still resizes after this point. We simply bump
+    // the resize to the next animation frame to avoid this.
+    this._resizeDebounced();
 
     this._thingLayer.on('shape:new', shape => this._onNewShape(shape));
     this._thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
@@ -298,15 +306,25 @@ class ViewerController {
     });
   }
 
-  _resizeLayerContainer() {
-    const viewerHeight = this._$element.height();
-    this._layerContainer.width(this._contentWidth / this._contentHeight * viewerHeight);
-    console.log('set width for layerContainer');
+  _resize() {
+    const viewerHeight = this._$element.outerHeight(true);
+    const viewerWidth = this._$element.outerWidth(true);
+
+    const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
+    const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;
+
+    const layerContainerWidth = fittedWidth <= viewerWidth ? fittedWidth : viewerWidth;
+    const layerContainerHeight = fittedWidth <= viewerWidth ? viewerHeight : fittedHeight;
+
+    this._layerContainer.width(layerContainerWidth);
+    this._layerContainer.height(layerContainerHeight);
+
+    this._resizeLayers(layerContainerWidth, layerContainerHeight);
   }
 
-  _resizeLayers() {
-    this._backgroundLayer.resize();
-    this._thingLayer.resize();
+  _resizeLayers(width, height) {
+    this._backgroundLayer.resize(width, height);
+    this._thingLayer.resize(width, height);
   }
 
   /**

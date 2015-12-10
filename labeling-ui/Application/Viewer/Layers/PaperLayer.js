@@ -83,6 +83,19 @@ class PaperLayer extends EventEmitter {
     });
   }
 
+  resize(width, height) {
+    this._context.withScope(scope => {
+      scope.view.viewSize = new paper.Size(width, height);
+
+      // Scale the view
+      scope.view.center = new paper.Point(0, 0);
+      scope.view.zoom = width / this._width;
+      scope.view.center = new paper.Point(Math.round(scope.view.size.width / 2), Math.round(scope.view.size.height / 2));
+
+      scope.view.update(true);
+    });
+  }
+
   exportData() {
     return this._element.getContext('2d').getImageData(0, 0, this._element.width, this._element.height);
   }

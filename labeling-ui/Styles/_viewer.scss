@@ -1,17 +1,17 @@
-.viewer {
-  align-items: stretch;
-
+viewer {
   .layer-container {
     position: relative;
-    //height: 100%;
-    margin: 0 auto;
+    padding: 0;
 
     canvas.annotation-layer, canvas.background-layer, .event-delegation-layer {
-      width: 100%;
-      height: 100%;
       position: absolute;
       top: 0;
       left: 0;
+    }
+
+    .event-delegation-layer {
+      width: 100%;
+      height: 100%;
     }
   }
 }
@@ -22,71 +22,5 @@
   .viewer-controls {
     padding-top: 5px;
     padding-bottom: 5px;
-  }
-}
-
-.viewer-film-reel-container {
-  @include grid-block(21);
-
-  .thumbnail-reel-list {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    list-style: none;
-
-    > li.thumbnail {
-      margin: 1px 0;
-      flex: 1;
-      border: 1px solid #52666c;
-      overflow: hidden;
-
-      > canvas {
-        width: 100%;
-      }
-
-      .frame-range {
-        text-align: center;
-
-        .divider {
-          font-weight: bold;
-        }
-
-        .divider, .endFrameNumber {
-          color: darkgray;
-        }
-      }
-    }
-
-    > li.thumbnail.active {
-      margin: 0;
-      border-top: 2px solid greenyellow;
-      border-bottom: 2px solid greenyellow;
-    }
-
-    > li.thumbnail-spacer {
-      display: block;
-      width: 8px;
-      position: relative;
-
-      div.frame-range-bracket {
-        background-color: greenyellow;
-        width: 8px;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-      }
-
-      div.frame-range-bracket-space {
-        width: 8px;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-      }
-
-      > li.thumbnail-spacer.active {
-        border-top: 2px solid greenyellow;
-        border-bottom: 2px solid greenyellow;
-      }
-    }
   }
 }

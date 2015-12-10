@@ -38,6 +38,7 @@ System.config({
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
     "font-awesome": "npm:font-awesome@4.4.0",
     "foundation-apps": "npm:foundation-apps@1.1.0",
+    "frame-debounce": "npm:frame-debounce@1.0.1",
     "html": "github:systemjs/plugin-text@0.0.2",
     "jquery": "github:components/jquery@2.1.4",
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
@@ -450,6 +451,10 @@ System.config({
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:frame-debounce@1.0.1": {
+      "raf": "npm:raf@2.0.4",
+      "sliced": "npm:sliced@0.0.5"
+    },
     "npm:graceful-readlink@1.0.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2"
     },
@@ -592,6 +597,9 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
+    "npm:performance-now@0.1.4": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:process@0.11.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0"
     },
@@ -606,6 +614,9 @@ System.config({
     },
     "npm:punycode@1.3.2": {
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:raf@2.0.4": {
+      "performance-now": "npm:performance-now@0.1.4"
     },
     "npm:randombytes@2.0.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
