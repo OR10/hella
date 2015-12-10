@@ -31,10 +31,45 @@ class PanAndZoomPaperLayer extends PaperLayer {
     this._element.addEventListener('mouseleave', this._handleMouseLeave.bind(this));
   }
 
+  /**
+   * Reset the view's pan and zoom to the original state
+   */
+  resetZoom() {
+    this._context.withScope(scope => {
+      this._panAndZoom.zoom(1, scope.view.center);
+      this._panAndZoom.setCenter(new paper.Point(
+        scope.view.viewSize.width / 2,
+        scope.view.viewSize.height / 2
+      ));
+    });
+  }
+
+  /**
+   * Zoom the view in on the current center
+   */
+  zoomIn() {
+    this._context.withScope(scope => {
+      this._panAndZoom.zoomIn(scope.view.center, 1.5);
+    });
+  }
+
+  /**
+   * Zoom the view out from the current center
+   */
+  zoomOut() {
+    this._context.withScope(scope => {
+      this._panAndZoom.zoomOut(scope.view.center, 1.5);
+    });
+  }
+
   _zoom(deltaY, focalPointX, focalPointY) {
     const focalPoint = new paper.Point(focalPointX, focalPointY);
 
-    this._panAndZoom.changeZoom(deltaY, focalPoint);
+    if (deltaY < 0) {
+      this._panAndZoom.zoomIn(focalPoint);
+    } else if (deltaY > 0) {
+      this._panAndZoom.zoomOut(focalPoint);
+    }
   }
 
   _pan(deltaX, deltaY) {
