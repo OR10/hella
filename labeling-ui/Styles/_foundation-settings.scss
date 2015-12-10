@@ -261,8 +261,8 @@ $block-grid-max-size: 12;
 // 7. Accordion
 // - - - - - - - - - - - - - - -
 
- $accordion-border: none;
- $accordion-title-background: $element-background;
+// $accordion-border: none;
+// $accordion-title-background: $element-background;
 // $accordion-title-background-hover: smartscale($accordion-title-background, 5%);
 // $accordion-title-background-active: smartscale($accordion-title-background, 3%);
 // $accordion-title-color: isitlight($accordion-title-background);
@@ -381,12 +381,12 @@ $block-grid-max-size: 12;
 // $inlinelabel-border: $input-border;
 
 // Range slider
-// $slider-background: #ddd;
-// $slider-height: 1rem;
-// $slider-radius: 0px;
-// $slider-thumb-height: 1.5rem;
-// $slider-thumb-color: $primary-color;
-// $slider-thumb-radius: 0px;
+ $slider-background: $body-background;
+ $slider-height: 0.15rem;
+ $slider-radius: 50%;
+ $slider-thumb-height: 0.5rem;
+ $slider-thumb-color: $icon-hover;
+ $slider-thumb-radius: 50%;
 
 // Progress and meter
 // $meter-height: 1.5rem;

@@ -1,19 +1,30 @@
 <div class="task-bar button-bar grid-block">
-    <div class="grid-content small-5 task-bar-left">
-        <button tabIndex="1"
-                uib-popover-template="vm.brightnessSliderTemplate"
-                popover-title="Brightness"
-                popover-placement="top"
-                popover-trigger="focus"
-                class="button"
-        ><i class="icon icon-view-brightness"></i></button>
-        <button tabIndex="2"
-                uib-popover-template="vm.contrastSliderTemplate"
-                popover-title="Contrast"
-                popover-trigger="focus"
-                popover-placement="top"
-                class="button"
-        ><i class="icon icon-general-settings"></i></button>
+    <div class="grid-block small-5 task-bar-left">
+        <div class="grid-content noscroll">
+            <button ng-click="vm.handleVideoSettingsClicked()">
+                <i class="icon icon-view-brightness"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button>
+                <i class="icon icon-general-settings"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button>
+                <i class="icon icon-view-fullscreen"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button>
+                <i class="icon icon-bookmark"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button ng-click="vm.handleZoomClicked()">
+                <i class="icon icon-view-zoom"></i>
+            </button>
+        </div>
     </div>
     <div class="grid-content task-bar-center">
         <button ng-hide="vm.selectedPaperShape === null"

@@ -149,8 +149,10 @@ class ThumbnailReelController {
         thumbnailLocations.forEach(
           (location, index) => {
             const thumbnail = this.thumbnails[index];
-            const labeledThingInFrame = thumbnail.labeledThingInFrame;
-            this.thumbnails[index] = {location, labeledThingInFrame};
+            if (thumbnail) {
+              const labeledThingInFrame = thumbnail.labeledThingInFrame;
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
           }
         )
       );
@@ -276,6 +278,12 @@ class ThumbnailReelController {
     return thumbnail.location && thumbnail.location.frameNumber === selectedLabeledThing.frameRange.endFrameNumber;
   }
 
+  /**
+   * Update the start frame number for the currently selected thing
+   *
+   * @param index
+   * @private
+   */
   _setStartFrameNumber(index) {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
@@ -283,12 +291,26 @@ class ThumbnailReelController {
       const frameNumber = this.thumbnails[index + 1].location.frameNumber;
 
       if (frameNumber <= selectedLabeledThing.frameRange.endFrameNumber) {
+        const oldStartFrameNumber = selectedLabeledThing.frameRange.startFrameNumber;
+
         selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
+          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+          if (frameNumber > oldStartFrameNumber) {
+            this._updateLabeledThingInFrames(this.selectedPaperShape);
+          }
+        });
       }
     }
   }
 
+  /**
+   * Update the end frame number for the currently selected thing
+   *
+   * @param index
+   * @private
+   */
   _setEndFrameNumber(index) {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
@@ -296,8 +318,16 @@ class ThumbnailReelController {
       const frameNumber = this.thumbnails[index].location.frameNumber;
 
       if (frameNumber >= selectedLabeledThing.frameRange.startFrameNumber) {
+        const oldEndFrameNumber = selectedLabeledThing.frameRange.endFrameNumber;
+
         selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
+          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+          if (frameNumber < oldEndFrameNumber) {
+            this._updateLabeledThingInFrames(this.selectedPaperShape);
+          }
+        });
       }
     }
   }

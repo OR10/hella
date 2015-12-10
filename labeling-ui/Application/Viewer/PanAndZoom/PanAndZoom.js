@@ -23,21 +23,11 @@ class PanAndZoom {
   /**
    * Adjust the view's zoom while keeping the given focal point stable
    *
-   * @param {Number} deltaY
+   * @param {Number} newZoom
    * @param {Point} focalPoint
    */
-  changeZoom(deltaY, focalPoint) {
+  zoom(newZoom, focalPoint) {
     const localFocalPoint = this.view.viewToProject(focalPoint);
-    let newZoom = this.view.zoom;
-
-    if (deltaY < 0) {
-      newZoom *= this.zoomFactor;
-    } else if (deltaY > 0) {
-      newZoom /= this.zoomFactor;
-    }
-
-    newZoom = Math.max(newZoom, 1);
-
     const deltaZoom = this.view.zoom / newZoom;
 
     const deltaCenter = localFocalPoint.subtract(this.view.center);
@@ -52,18 +42,51 @@ class PanAndZoom {
   }
 
   /**
+   * Zoom the view in by the given amount of ticks
+   *
+   * @param {Point} focalPoint
+   * @param {Number} [ticks]
+   */
+  zoomIn(focalPoint, ticks = 1) {
+    const newZoom = Math.max(this.view.zoom * this.zoomFactor * ticks, 1);
+
+    this.zoom(newZoom, focalPoint);
+  }
+
+  /**
+   * Zoom the view out by the given amount of ticks
+   *
+   * @param {Point} focalPoint
+   * @param {Number} [ticks]
+   */
+  zoomOut(focalPoint, ticks = 1) {
+    const newZoom = Math.max(this.view.zoom / this.zoomFactor / ticks, 1);
+
+    this.zoom(newZoom, focalPoint);
+  }
+
+  /**
    * Adjust the views center by the given deltas in x and y direction, panning the view
    *
-   * @param deltaX
-   * @param deltaY
+   * @param {Number} deltaX
+   * @param {Number} deltaY
    */
   changeCenter(deltaX, deltaY) {
-    let offset = (new paper.Point(deltaX, deltaY));
+    let offset = new paper.Point(deltaX, deltaY);
 
     // Account for view to client pixel ratio when zoomed
     offset = offset.divide(this.view.zoom);
 
-    this.view.center = this._restrictViewportToViewBounds(this.view.center.add(offset));
+    this.setCenter(this.view.center.add(offset));
+  }
+
+  /**
+   * Center the view on the given point. View bounds restrictions are enforced.
+   *
+   * @param {Point} newCenter
+   */
+  setCenter(newCenter) {
+    this.view.center = this._restrictViewportToViewBounds(newCenter);
   }
 
   /**

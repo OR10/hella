@@ -7,6 +7,10 @@ import labeledThingAnnotation from 'Application/LabelStructure/Structure/object-
 import FramePosition from '../Model/FramePosition';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 
+import Filters from '../../Viewer/Models/Filters';
+import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
+import ContrastFilter from '../../Common/Filters/ContrastFilter';
+
 class TaskController {
   /**
    * @param {angular.Scope} $scope
@@ -34,6 +38,41 @@ class TaskController {
      * @type {User}
      */
     this.user = user;
+
+    /**
+     * @type {Filters}
+     */
+    this.filters = new Filters();
+
+    /**
+     * Value of the brightness slider
+     *
+     * @type {int}
+     */
+    this.brightnessSliderValue = 0;
+
+    /**
+     * Value of the contrast slider
+     *
+     * @type {int}
+     */
+    this.contrastSliderValue = 0;
+
+    /**
+     * Currently active {@link BrightnessFilter}
+     *
+     * @type {BrightnessFilter|null}
+     * @private
+     */
+    this._brightnessFilter = null;
+
+    /**
+     * Currently active {@link ContrastFilter}
+     *
+     * @type {ContrastFilter|null}
+     * @private
+     */
+    this._constrastFilter = null;
 
     /**
      * Currently active frame position to be displayed inside the MediaControls
@@ -96,11 +135,38 @@ class TaskController {
      */
     this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
 
+    /**
+     * @type {boolean}
+     */
+    this.popupPanelState = false;
+
     // Watch for changes of the Frame position to correctly update all
     // data structures for the new frame
     $scope.$watch('vm.framePosition.position', newFramePosition => {
       this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
         .then(labeledFrame => this.labeledFrame = labeledFrame);
+    });
+
+    // Update BrightnessFilter if value changed
+    $scope.$watch('vm.brightnessSliderValue', newBrightness => {
+      const newFilter = new BrightnessFilter(parseInt(newBrightness, 10));
+      if (!this._brightnessFilter) {
+        this.filters.addFilter(newFilter);
+      } else {
+        this.filters.replaceFilter(this._brightnessFilter, newFilter);
+      }
+      this._brightnessFilter = newFilter;
+    });
+
+    // Update ContrastFilter if value changed
+    $scope.$watch('vm.contrastSliderValue', newContrast => {
+      const newFilter = new ContrastFilter(parseInt(newContrast, 10));
+      if (!this._constrastFilter) {
+        this.filters.addFilter(newFilter);
+      } else {
+        this.filters.replaceFilter(this._constrastFilter, newFilter);
+      }
+      this._constrastFilter = newFilter;
     });
   }
 

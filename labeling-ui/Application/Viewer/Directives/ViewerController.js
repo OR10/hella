@@ -1,4 +1,3 @@
-import Filters from '../Models/Filters';
 import LayerManager from '../Layers/LayerManager';
 import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
@@ -155,11 +154,6 @@ class ViewerController {
     this._frameLocations = this._loadFrameLocations();
 
     /**
-     * @type {Filters}
-     */
-    this.filters = new Filters();
-
-    /**
      * @type {Tool|null}
      */
     this.activeTool = null;
@@ -285,6 +279,19 @@ class ViewerController {
       this._stopPlaying();
     });
 
+    $scope.$watchGroup([
+      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
+      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
+    ], ([newStart, newEnd], [oldStart, oldEnd]) => {
+      if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
+        // TODO this is still subject to a race condition. The LabeledThing model has changed here but
+        // the change might not yet have arrived at the backend. Loading the (potentially) updated
+        // LabeledThingInFrame data now might thus provide stale state.
+        this._updateLabeledThingsInFrame();
+      }
+    });
+
+
     $scope.$on('destroy', () => {
       if (this._renderLoopPromise) {
         this._$interval.cancel(this._renderLoopPromise);
@@ -334,6 +341,24 @@ class ViewerController {
         this._backgroundLayer.applyFilter(filter);
       });
       this._backgroundLayer.render();
+
+      // Update labeledThingsInFrame
+      this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+
+      if (ghostedLabeledThingInFrame) {
+        this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+      }
+    });
+  }
+
+  _updateLabeledThingsInFrame() {
+    this._$q.all([
+      this._labeledThingInFrameBuffer.add(
+        this._loadLabeledThingsInFrame(this.framePosition.position)
+      ),
+      this._fetchGhostedLabeledThingInFrame(this.framePosition.position),
+    ]).then(([labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+      this.labeledThingsInFrame = [];
 
       // Update labeledThingsInFrame
       this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
@@ -420,6 +445,8 @@ class ViewerController {
 
   _onUpdatedShape(shape) {
     const labeledThingInFrame = shape.labeledThingInFrame;
+    const labeledThing = labeledThingInFrame.labeledThing;
+
     if (labeledThingInFrame.ghost) {
       labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
@@ -427,11 +454,32 @@ class ViewerController {
       );
     }
 
+    // Update the frame range for the associated LabeledThing if we made a modification outside of it
+    let labeledThingUpdatePromise = Promise.resolve();
+
+    if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
+      labeledThing.frameRange.endFrameNumber = this.framePosition.position;
+
+      labeledThingUpdatePromise = labeledThingUpdatePromise.then(() => {
+        return this._labeledThingGateway.saveLabeledThing(labeledThing);
+      });
+    }
+
+    if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
+      labeledThing.frameRange.startFrameNumber = this.framePosition.position;
+
+      labeledThingUpdatePromise = labeledThingUpdatePromise.then(() => {
+        return this._labeledThingGateway.saveLabeledThing(labeledThing);
+      });
+    }
+
     // @TODO this needs to be fixed for supporting multiple shapes
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    labeledThingUpdatePromise.then(() => {
+      this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    });
   }
 
   /**
@@ -516,6 +564,25 @@ class ViewerController {
       this._renderLoopPromise = null;
       this.playing = false;
     }
+  }
+
+  _currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd) {
+    const currentPosition = this.framePosition.position;
+    let removedCurrentFramFromRange = false;
+
+    if (oldStart !== undefined && newStart !== undefined && newStart !== oldStart) {
+      if (newStart > oldStart && oldStart <= currentPosition && newStart > currentPosition) {
+        removedCurrentFramFromRange = true;
+      }
+    }
+
+    if (oldEnd !== undefined && newEnd !== undefined && newEnd !== oldEnd) {
+      if (newEnd < oldEnd && oldEnd >= currentPosition && newEnd < currentPosition) {
+        removedCurrentFramFromRange = true;
+      }
+    }
+
+    return removedCurrentFramFromRange;
   }
 }
 

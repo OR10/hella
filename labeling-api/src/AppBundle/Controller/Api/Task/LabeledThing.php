@@ -167,14 +167,18 @@ class LabeledThing extends Controller\Base
 
         $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
 
+        $this->labeledThingInFrameFacade->delete(
+            array_merge(
+                $this->adjustFrameRangeStart($labeledThing, $frameRange),
+                $this->adjustFrameRangeEnd($labeledThing, $frameRange)
+            )
+        );
+
         $labeledThing->setClasses($classes);
         $labeledThing->setFrameRange($frameRange);
         $labeledThing->setIncomplete($incomplete);
 
         $this->labeledThingFacade->save($labeledThing);
-
-        $labeledThingInFramesToDelete = $this->labeledThingInFrameFacade->getLabeledThingInFramesOutsideRange($labeledThing);
-        $this->labeledThingInFrameFacade->delete($labeledThingInFramesToDelete);
 
         return View\View::create()->setData(['result' => $labeledThing]);
     }
@@ -209,5 +213,64 @@ class LabeledThing extends Controller\Base
         $this->labeledThingFacade->delete($labeledThing);
 
         return View\View::create()->setData(['success' => true]);
+    }
+
+    /**
+     * Adjust preceeding labeledThingsInFrame and return all
+     * labeledthingsInFrame that have to be deleted.
+     */
+    private function adjustFrameRangeStart(Model\LabeledThing $labeledThing, Model\FrameRange $newFrameRange)
+    {
+        $previousFrameRange = $labeledThing->getFrameRange();
+
+        if ($newFrameRange->getStartFrameNumber() <= $previousFrameRange->getStartFrameNumber()) {
+            return [];
+        }
+
+        $preceedingLabeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
+            $labeledThing,
+            $previousFrameRange->getStartFrameNumber(),
+            0,
+            $newFrameRange->getStartFrameNumber() - $previousFrameRange->getStartFrameNumber() + 1
+        );
+        if (!empty($preceedingLabeledThingsInFrame)) {
+            $lastPreceedingLabeledThingInFrame = array_pop($preceedingLabeledThingsInFrame);
+            if ($lastPreceedingLabeledThingInFrame->getFrameNumber() < $newFrameRange->getStartFrameNumber()) {
+                $lastPreceedingLabeledThingInFrame->setFrameNumber($newFrameRange->getStartFrameNumber());
+                $this->labeledThingInFrameFacade->save($lastPreceedingLabeledThingInFrame);
+            }
+        }
+
+        return $preceedingLabeledThingsInFrame;
+    }
+
+    /**
+     * Adjust succeeding labeledThingsInFrame and return all
+     * labeledthingsInFrame that have to be deleted.
+     */
+    private function adjustFrameRangeEnd(Model\LabeledThing $labeledThing, Model\FrameRange $newFrameRange)
+    {
+        $previousFrameRange = $labeledThing->getFrameRange();
+
+        if ($newFrameRange->getEndFrameNumber() >= $previousFrameRange->getEndFrameNumber()) {
+            return [];
+        }
+
+        $succeedingLabeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
+            $labeledThing,
+            $newFrameRange->getEndFrameNumber(),
+            0,
+            $previousFrameRange->getEndFrameNumber() - $newFrameRange->getEndFrameNumber() + 1
+        );
+
+        if (!empty($succeedingLabeledThingsInFrame)) {
+            $lastSucceedingLabeledThingInFrame = array_shift($succeedingLabeledThingsInFrame);
+            if ($lastSucceedingLabeledThingInFrame->getFrameNumber() > $newFrameRange->getEndFrameNumber()) {
+                $lastSucceedingLabeledThingInFrame->setFrameNumber($newFrameRange->getEndFrameNumber());
+                $this->labeledThingInFrameFacade->save($lastSucceedingLabeledThingInFrame);
+            }
+        }
+
+        return $succeedingLabeledThingsInFrame;
     }
 }

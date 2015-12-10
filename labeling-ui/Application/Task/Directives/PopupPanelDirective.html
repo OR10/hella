@@ -1,0 +1,48 @@
+<div ng-show="vm.popupPanelState" class="popup-panel">
+    <div ng-show="vm.popupPanelState=='videosettings'" class="grid-block settings vertical">
+        <div class="grid-block align-center">
+            <div class="grid-content small-12 noscroll text-uppercase">Brightness</div>
+            <div class="grid-content small-12 text-right noscroll">
+                <input ng-model="vm.brightnessSliderValue"
+                       type="range"
+                       min="-150"
+                       max="150"
+                       defaultValue="0"
+                       step="1">
+            </div>
+        </div>
+        <div class="grid-block align-center">
+            <div class="grid-content small-12 noscroll text-uppercase">Contrast</div>
+            <div class="grid-content small-12 text-right noscroll">
+                <input ng-model="vm.contrastSliderValue"
+                       type="range"
+                       min="-255"
+                       max="255"
+                       defaultValue="0"
+                       step="1">
+            </div>
+        </div>
+    </div>
+    <div ng-show="vm.popupPanelState=='zoom'" class="grid-block zoom align-center align-justify">
+        <div class="grid-content">
+            <img src="https://placehold.it/300x200">
+        </div>
+        <div class="grid-block shrink vertical">
+            <div class="grid-content">
+                <button>
+                    <i class="icon icon-view-zoom-in"></i>
+                </button>
+            </div>
+            <div class="grid-content">
+                <button>
+                    <i class="icon icon-view-zoom-out"></i>
+                </button>
+            </div>
+            <div class="grid-content">
+                <button>
+                    <i class="icon icon-view-zoom-resize"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

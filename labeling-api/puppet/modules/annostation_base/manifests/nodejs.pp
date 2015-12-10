@@ -2,7 +2,15 @@ class annostation_base::nodejs() {
   class { 'nodejs':
   }
 
-  package { 'g++':
+  $packages = [
+    'libcairo2-dev',
+    'libjpeg8-dev',
+    'libpango1.0-dev',
+    'libgif-dev',
+    'build-essential',
+  ]
+
+  package { $packages:
     ensure => present,
   }
 
@@ -14,7 +22,7 @@ class annostation_base::nodejs() {
     provider => 'npm',
     require => [
       Package['npm'],
-      Package['g++'],
+      Package[$packages],
     ]
   })
 }

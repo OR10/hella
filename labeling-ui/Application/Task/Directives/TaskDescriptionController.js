@@ -3,8 +3,7 @@
  */
 class TaskDescriptionController {
   constructor() {
-    this.descriptionCollapse = true;
-    this.faqCollapse = true;
+    this.collapse = false;
   }
 }
 
