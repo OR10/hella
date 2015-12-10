@@ -73,7 +73,7 @@ class PaperShape extends paper.Group {
    */
   draft() {
     if (this._draft) {
-        throw new Error(`Tried to draft a Shape more than once: ${this.id}`);
+      throw new Error(`Tried to draft a Shape more than once: ${this.id}`);
     }
 
     this._draft = true;
@@ -92,7 +92,7 @@ class PaperShape extends paper.Group {
     this._draft = false;
   }
 
- /**
+  /**
    * {@link LabeledThingInFrame} associated with this `PaperShape`
    *
    * @returns {LabeledThingInFrame}

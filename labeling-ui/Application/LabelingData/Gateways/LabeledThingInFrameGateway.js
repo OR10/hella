@@ -45,41 +45,6 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          response.data = {
-            "result": {
-              "labeledThings": {
-                "1c874fa7-5e7b-43d1-9c76-d7183ba61595": {
-                  "id": "1c874fa7-5e7b-43d1-9c76-d7183ba61595",
-                  "rev": "1-60d2720b5f6ea00454540145b3713cf6",
-                  "frameRange": {"startFrameNumber": 1, "endFrameNumber": 1},
-                  "classes": [],
-                  "taskId": "69ac41c0f5b5d807f77b2d6e0b078456",
-                  "incomplete": true
-                }
-              },
-              "labeledThingsInFrame": [
-                {
-                  "id": "a91923a7-881c-437f-a013-1bfaad40f0e4",
-                  "rev": "7-d089335be3fe1089f4ee039cedd19c02",
-                  "frameNumber": 1,
-                  "classes": [],
-                  "shapes": [
-                    {
-                      "type": "rectangle",
-                      "id": "e926f315-1681-4810-acba-697fe798f76f",
-                      "topLeft": {"x": 0, "y": 0},
-                      "bottomRight": {"x": 200, "y": 200},
-                      "labeledThingInFrameId": "a91923a7-881c-437f-a013-1bfaad40f0e4"
-                    }
-                  ],
-                  "labeledThingId": "1c874fa7-5e7b-43d1-9c76-d7183ba61595",
-                  "incomplete": true,
-                  "ghost": false
-                }
-              ]
-            }
-          };
-
           return this._associateWithLabeledThings(task, response.data.result);
         }
 
@@ -154,7 +119,6 @@ class LabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
-    console.log(labeledThingInFrame.shapes[0].topLeft, labeledThingInFrame.shapes[0].bottomRight);
     if (labeledThingInFrame.ghost === true) {
       return this._$q.reject(
         new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!')

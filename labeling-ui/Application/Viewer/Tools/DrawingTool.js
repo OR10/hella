@@ -1,4 +1,3 @@
-import paper from 'paper';
 import Tool from './Tool';
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';

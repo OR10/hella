@@ -1,6 +1,5 @@
 import CircleDrawingTool from './CircleDrawingTool';
 import PaperCircle from '../Shapes/PaperCircle';
-import uuid from 'uuid';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor

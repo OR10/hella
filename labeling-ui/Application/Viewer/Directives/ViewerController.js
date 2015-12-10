@@ -44,8 +44,7 @@ class ViewerController {
               $interval,
               labeledThingGateway,
               abortablePromiseFactory,
-              $q
-  ) {
+              $q) {
     /**
      * List of supported image types for this component
      *
@@ -490,8 +489,6 @@ class ViewerController {
    * @private
    */
   _onNewShape(shape) {
-    console.log('new shape: ', shape);
-
     const newLabeledThingInFrame = shape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
 

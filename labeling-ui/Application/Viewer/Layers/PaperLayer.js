@@ -1,4 +1,5 @@
 import EventEmitter from 'event-emitter';
+import paper from 'paper';
 
 /**
  * Base class for all layers using PaperJs
