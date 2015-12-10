@@ -4,6 +4,7 @@ class labeling_api(
   $worker_queue = false,
   $app = false,
   $run_composer_install = false,
+  $tideways = false,
 ) {
   include ::labeling_api::params
 
@@ -27,5 +28,9 @@ class labeling_api(
 
   if $run_composer_install {
     include ::labeling_api::vagrant_composer_install
+  }
+
+  if $tideways {
+    include ::tideways
   }
 }
