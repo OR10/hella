@@ -1,5 +1,6 @@
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import angular from 'angular';
+import frameDebounce from 'frame-debounce';
 
 /**
  * Controller managing the display of a single ThumbnailImage
@@ -85,7 +86,13 @@ class ThumbnailController {
      * @type {HTMLElement}
      * @private
      */
-    this._parentElement = $element.parent().get(0);
+    this._$element = $element;
+
+    /**
+     * @type {HTMLElement}
+     * @private
+     */
+    this._frameRangeElement = $element.find('.thumbnail-frame-range');
 
     /**
      * @type {bool}
@@ -98,6 +105,10 @@ class ThumbnailController {
      * @private
      */
     this._currentFrameNumber = null;
+
+    this._drawBackgroundLayerDebounced = frameDebounce((redraw) => this._drawBackgroundLayer(redraw));
+    this._drawThingLayerDebounced = frameDebounce((redraw) => this._drawThingLayer(redraw));
+    this._recalculateViewSizeDebounced = frameDebounce(() => this._recalculateViewSize());
 
     $scope.$watch('vm._currentFrameNumber', newFrameNumber => {
       try {
@@ -114,8 +125,11 @@ class ThumbnailController {
     });
 
     const onWindowResized = () => {
-      this._draw();
+      this._recalculateViewSizeDebounced();
     };
+
+    this._recalculateViewSizeDebounced();
+
     angular.element($window).on('resize', onWindowResized);
     $scope.$on('$destroy', () => {
       angular.element($window).off('resize', onWindowResized);
@@ -125,7 +139,7 @@ class ThumbnailController {
     $scope.$watch('vm.location', newLocation => {
       if (newLocation === null) {
         this._activeBackgroundImage = null;
-        this._drawBackgroundLayer();
+        this._drawBackgroundLayerDebounced();
         return;
       }
 
@@ -135,7 +149,7 @@ class ThumbnailController {
         this._frameGateway.getImage(newLocation)
       ).then(image => {
         this._activeBackgroundImage = image;
-        this._drawBackgroundLayer();
+        this._drawBackgroundLayerDebounced();
       });
     });
 
@@ -145,7 +159,7 @@ class ThumbnailController {
     });
 
     // Update filters upon change
-    $scope.$watchCollection('vm.filters.filters', () => this._drawBackgroundLayer());
+    $scope.$watchCollection('vm.filters.filters', () => this._drawBackgroundLayerDebounced());
   }
 
   /**
@@ -174,19 +188,30 @@ class ThumbnailController {
    * @private
    */
   _recalculateViewSize() {
-    const parentElement = this._parentElement;
+    const containerHeight = this._$element.height();
+    const containerWidth = this._$element.width();
+
+    this._frameRangeElement.width(containerWidth);
+    this._frameRangeElement.height(containerHeight);
+
+    const {width, height} = this.labeledThingViewport;
+
+    const fittedWidth = width / height * containerHeight;
+    const fittedHeight = height / width * containerWidth;
+
+    const canvasWidth = fittedWidth <= containerWidth ? fittedWidth : containerWidth;
+    const canvasHeight = fittedWidth <= containerWidth ? containerHeight : fittedHeight;
 
     this._context.withScope(scope => {
-      if (this._activeBackgroundImage === null) {
+      //if (this._activeBackgroundImage === null) {
+      //  scope.view.viewSize = new scope.Size(
+      //    parentElement.clientWidth, 0
+      //  );
+      //} else {
         scope.view.viewSize = new scope.Size(
-          parentElement.clientWidth, 0
+          canvasWidth, canvasHeight
         );
-      } else {
-        const zoom = parentElement.clientWidth / this._activeBackgroundImage.width;
-        scope.view.viewSize = new scope.Size(
-          parentElement.clientWidth, this._activeBackgroundImage.height * zoom
-        );
-      }
+      //}
     });
   }
 
@@ -196,11 +221,11 @@ class ThumbnailController {
    * @private
    */
   _draw() {
-    this._drawBackgroundLayer(false);
-    this._drawThingLayer(false);
+    this._drawBackgroundLayerDebounced(false);
+    this._drawThingLayerDebounced(false);
 
     this._context.withScope(scope => {
-      scope.view.draw();
+      scope.view.update();
     });
   }
 
@@ -211,39 +236,37 @@ class ThumbnailController {
    * @private
    */
   _drawBackgroundLayer(redraw = true) {
-    this._recalculateViewSize();
-
-    const image = this._activeBackgroundImage;
-
-    this._context.withScope(() => {
-      this._backgroundLayer.activate();
-      this._backgroundLayer.removeChildren();
-    });
-
-    if (image === null) {
-      if (redraw) {
-        this._context.withScope(scope => scope.view.draw());
-      }
-      return;
-    }
-
-    this._context.withScope(scope => {
-      const zoom = scope.view.viewSize.width / image.width;
-
-      const rasterImage = new scope.Raster(
-        image,
-        new scope.Point(
-          image.width / 2, image.height / 2
-        )
-      );
-      this._applyFilters(rasterImage, this.filters);
-
-      this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
-
-      if (redraw) {
-        scope.view.draw();
-      }
-    });
+    //const image = this._activeBackgroundImage;
+    //
+    //this._context.withScope(() => {
+    //  this._backgroundLayer.activate();
+    //  this._backgroundLayer.removeChildren();
+    //});
+    //
+    //if (image === null) {
+    //  if (redraw) {
+    //    this._context.withScope(scope => scope.view.draw());
+    //  }
+    //  return;
+    //}
+    //
+    //this._context.withScope(scope => {
+    //  const zoom = scope.view.viewSize.width / image.width;
+    //
+    //  const rasterImage = new scope.Raster(
+    //    image,
+    //    new scope.Point(
+    //      image.width / 2, image.height / 2
+    //    )
+    //  );
+    //  this._applyFilters(rasterImage, this.filters);
+    //
+    //  this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
+    //
+    //  if (redraw) {
+    //    scope.view.draw();
+    //  }
+    //});
   }
 
   /**

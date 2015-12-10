@@ -5,6 +5,7 @@ import Module from '../Module';
 import FilmReelDirective from './Directives/FilmReelDirective';
 import ThumbnailReelDirective from './Directives/ThumbnailReelDirective';
 import ThumbnailDirective from './Directives/ThumbnailDirective';
+import FrameNumberInputDirective from './Directives/FrameNumberInputDirective';
 
 /**
  * FilmReel Module
@@ -23,6 +24,7 @@ class FilmReel extends Module {
     this.registerDirective('filmReel', FilmReelDirective);
     this.registerDirective('thumbnailReel', ThumbnailReelDirective);
     this.registerDirective('thumbnail', ThumbnailDirective);
+    this.registerDirective('frameNumberInput', FrameNumberInputDirective);
   }
 }
 

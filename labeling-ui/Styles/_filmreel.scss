@@ -1,0 +1,100 @@
+.viewer-film-reel-container {
+  .thumbnail-reel-list {
+    list-style: none;
+    margin: 0;
+
+    > li.thumbnail {
+      overflow: hidden;
+
+      .frame-range {
+        .divider {
+          font-weight: bold;
+        }
+
+        .divider, .endFrameNumber {
+          color: darkgray;
+        }
+      }
+    }
+
+    .thumbnail {
+      text-align: center;
+
+      thumbnail {
+        cursor: pointer;
+        z-index: -1;
+      }
+
+      .thumbnail-frame-range {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        .frame-range {
+          border-radius: 20px;
+          background-color: $button;
+          z-index: 10;
+
+          .current {
+            display: inline-block;
+            text-align: right;
+            width: 40%;
+          }
+
+          input[type=number] {
+            -moz-appearance: textfield;
+            -webkit-appearance: textfield;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            display: inline;
+            height: auto;
+            vertical-align: initial;
+          }
+
+          input[type=number]:focus {
+            outline: none;
+          }
+
+          input[type=number]::-webkit-inner-spin-button,
+          input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+          }
+        }
+      }
+    }
+
+    > li.thumbnail.active {
+      margin: 0;
+      border-top: 2px solid greenyellow;
+      border-bottom: 2px solid greenyellow;
+    }
+
+    > li.thumbnail-spacer {
+      display: block;
+      width: 8px;
+      position: relative;
+
+      div.frame-range-bracket {
+        background-color: greenyellow;
+        width: 8px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+      }
+
+      div.frame-range-bracket-space {
+        width: 8px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+      }
+
+      > li.thumbnail-spacer.active {
+        border-top: 2px solid greenyellow;
+        border-bottom: 2px solid greenyellow;
+      }
+    }
+  }
+}

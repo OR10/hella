@@ -1,4 +1,4 @@
-<ul class="thumbnail-reel-list">
+<ul class="thumbnail-reel-list grid-block">
     <li class="thumbnail-spacer"
         data-jqyoui-options="{}"
         data-drop="true"
@@ -10,10 +10,11 @@
         <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
     </li>
-    <li class="thumbnail" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
+    <li class="thumbnail grid-block" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
         ng-class="{'active': vm.thumbnailInFrameRange($index)}"
     >
-        <thumbnail end-frame-number="vm.task.frameRange.endFrameNumber"
+        <thumbnail class="grid-block align-center"
+                   end-frame-number="vm.task.frameRange.endFrameNumber"
                    location="thumbnail.location"
                    filters="vm.filters"
                    is-current="(vm.thumbnails.length - 1) / $index === 2"
