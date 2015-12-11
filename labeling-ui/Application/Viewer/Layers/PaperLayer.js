@@ -46,6 +46,12 @@ class PaperLayer extends EventEmitter {
      * @private
      */
     this._element = null;
+
+    /**
+     * @type {number}
+     * @protected
+     */
+    this._scaleToFitZoom = 1;
   }
 
   render() {
@@ -92,8 +98,22 @@ class PaperLayer extends EventEmitter {
       scope.view.zoom = width / this._width;
       scope.view.center = new paper.Point(Math.round(scope.view.size.width / 2), Math.round(scope.view.size.height / 2));
 
+      this._scaleToFitZoom = scope.view.zoom;
+
       scope.view.update(true);
     });
+  }
+
+  get zoom() {
+    return this._context.withScope(scope => scope.view.zoom);
+  }
+
+  get center() {
+    return this._context.withScope(scope => scope.view.center);
+  }
+
+  get bounds() {
+    return this._context.withScope(scope => scope.view.bounds);
   }
 
   exportData() {

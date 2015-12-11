@@ -3,6 +3,9 @@ import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
 import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
+import Viewport from '../Models/Viewport';
+import paper from 'paper';
+
 import frameDebounce from 'frame-debounce';
 
 /**
@@ -237,7 +240,15 @@ class ViewerController {
       $window.removeEventListener('resize', this._resizeDebounced);
     });
 
-    eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
+    const eventDelegationLayerElement = $element.find('.event-delegation-layer');
+    eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
+
+    eventDelegationLayerElement.on('mousewheel', this._handleScroll.bind(this));
+    eventDelegationLayerElement.on('mousedown', this._handleMouseDown.bind(this));
+    eventDelegationLayerElement.on('mousemove', this._handleMouseMove.bind(this));
+    eventDelegationLayerElement.on('mouseup', this._handleMouseUp.bind(this));
+    eventDelegationLayerElement.on('mouseleave', this._handleMouseLeave.bind(this));
+
     this._thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     this._backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
@@ -298,6 +309,16 @@ class ViewerController {
       }
     });
 
+    $scope.$watchGroup(['vm.viewport.zoom', 'vm.viewport.center'], ([newZoom, newCenter]) => {
+      if (newZoom && newZoom !== this._backgroundLayer.zoom) {
+        this._zoom(newZoom);
+      }
+
+      const currentCenter = this._backgroundLayer.center;
+      if (newCenter && newCenter.x !== currentCenter.x && newCenter.y !== currentCenter.y) {
+        this._panTo(newCenter);
+      }
+    });
 
     $scope.$on('destroy', () => {
       if (this._renderLoopPromise) {
@@ -320,11 +341,26 @@ class ViewerController {
     this._layerContainer.height(layerContainerHeight);
 
     this._resizeLayers(layerContainerWidth, layerContainerHeight);
+    this._updateViewport();
   }
 
   _resizeLayers(width, height) {
     this._backgroundLayer.resize(width, height);
     this._thingLayer.resize(width, height);
+  }
+
+  _updateViewport() {
+    if (!this.viewport) {
+      this.viewport = new Viewport(
+        this._backgroundLayer.zoom,
+        this._backgroundLayer.center,
+        this._backgroundLayer.bounds
+      );
+    } else {
+      this.viewport.center = this._backgroundLayer.center;
+      this.viewport.zoom = this._backgroundLayer.zoom;
+      this.viewport.bounds = this._backgroundLayer.bounds;
+    }
   }
 
   /**
@@ -598,6 +634,79 @@ class ViewerController {
     }
 
     return removedCurrentFramFromRange;
+  }
+
+  _handleScroll(event) {
+    if (event.altKey) {
+      const focalPoint = new paper.Point(event.offsetX, event.offsetY);
+
+      if (event.deltaY < 0) {
+        this._zoomIn(focalPoint, 1.05);
+      } else if (event.deltaY > 0) {
+        this._zoomOut(focalPoint, 1.05);
+      }
+    }
+  }
+
+  _handleMouseDown(event) {
+    if (event.shiftKey) {
+      this._dragging = true;
+      this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
+    }
+  }
+
+  _handleMouseMove(event) {
+    if (this._dragging) {
+      const deltaX = this._lastKnownMousePosition.x - event.offsetX;
+      const deltaY = this._lastKnownMousePosition.y - event.offsetY;
+
+      this._panBy(deltaX, deltaY);
+
+      this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
+    }
+  }
+
+  _handleMouseUp() {
+    this._dragging = false;
+  }
+
+  _handleMouseLeave() {
+    this._dragging = false;
+  }
+
+  _zoom(newZoom) {
+    this._backgroundLayer.setZoom(newZoom);
+    this._thingLayer.setZoom(newZoom);
+
+    this._updateViewport();
+  }
+
+  _zoomIn(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
+    this._thingLayer.zoomIn(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
+  _zoomOut(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
+    this._thingLayer.zoomOut(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
+  _panTo(newCenter) {
+    this._backgroundLayer.panTo(newCenter);
+    this._thingLayer.panTo(newCenter);
+
+    this._updateViewport();
+  }
+
+  _panBy(deltaX, deltaY) {
+    this._backgroundLayer.panBy(deltaX, deltaY);
+    this._thingLayer.panBy(deltaX, deltaY);
+
+    this._updateViewport();
   }
 }
 

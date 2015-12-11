@@ -10,6 +10,7 @@ class PopupPanelDirective {
       popupPanelState: '=',
       brightnessSliderValue: '=',
       contrastSliderValue: '=',
+      viewerViewport: '=',
     };
 
     this.template = popupPanelTemplate;

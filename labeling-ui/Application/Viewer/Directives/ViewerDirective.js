@@ -18,6 +18,7 @@ export default class ViewerDirective {
       framePosition: '=',
       filters: '=',
       playing: '=',
+      viewport: '=',
     };
 
     this.controller = ViewerController;
