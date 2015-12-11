@@ -6,8 +6,6 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
 
-import frameDebounce from 'frame-debounce';
-
 /**
  * @class ViewerController
  *
@@ -33,6 +31,7 @@ class ViewerController {
    * @param {$interval} $interval
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
+   * @param {AnimationFrameService} animationFrameService
    * @param {angular.$q} $q
    */
   constructor($scope,
@@ -48,6 +47,7 @@ class ViewerController {
               $interval,
               labeledThingGateway,
               abortablePromiseFactory,
+              animationFrameService,
               $q) {
     /**
      * List of supported image types for this component
@@ -229,9 +229,7 @@ class ViewerController {
     this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
-    this._resizeDebounced = frameDebounce(() => {
-      this._resize();
-    });
+    this._resizeDebounced = animationFrameService.debounce(() => this._resize());
 
     // TODO needs to be called on side element resize as well
     $window.addEventListener('resize', this._resizeDebounced);
@@ -724,6 +722,7 @@ ViewerController.$inject = [
   '$interval',
   'labeledThingGateway',
   'abortablePromiseFactory',
+  'animationFrameService',
   '$q',
 ];
 

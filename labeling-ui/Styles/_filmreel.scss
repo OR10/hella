@@ -1,29 +1,15 @@
 .viewer-film-reel-container {
   .thumbnail-reel-list {
-    list-style: none;
     margin: 0;
 
-    > li.thumbnail {
-      overflow: hidden;
-
-      .frame-range {
-        .divider {
-          font-weight: bold;
-        }
-
-        .divider, .endFrameNumber {
-          color: darkgray;
-        }
-      }
+    canvas {
+      width: 100%;
+      height: 100%;
     }
 
-    .thumbnail {
+    > .thumbnail {
+      overflow: hidden;
       text-align: center;
-
-      thumbnail {
-        cursor: pointer;
-        z-index: -1;
-      }
 
       .thumbnail-frame-range {
         position: absolute;
@@ -33,45 +19,27 @@
         .frame-range {
           border-radius: 20px;
           background-color: $button;
-          z-index: 10;
+          padding: 5px 10px;
+          margin-bottom: 11px;
 
-          .current {
-            display: inline-block;
-            text-align: right;
-            width: 40%;
+          .divider {
+            font-weight: bold;
           }
 
-          input[type=number] {
-            -moz-appearance: textfield;
-            -webkit-appearance: textfield;
-            margin: 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            display: inline;
-            height: auto;
-            vertical-align: initial;
-          }
-
-          input[type=number]:focus {
-            outline: none;
-          }
-
-          input[type=number]::-webkit-inner-spin-button,
-          input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
+          .divider, .endFrameNumber {
+            color: darkgray;
           }
         }
       }
     }
 
-    > li.thumbnail.active {
+    > .thumbnail.active {
       margin: 0;
       border-top: 2px solid greenyellow;
       border-bottom: 2px solid greenyellow;
     }
 
-    > li.thumbnail-spacer {
+    > .thumbnail-spacer {
       display: block;
       width: 8px;
       position: relative;
@@ -91,7 +59,7 @@
         bottom: 0;
       }
 
-      > li.thumbnail-spacer.active {
+      > .thumbnail-spacer.active {
         border-top: 2px solid greenyellow;
         border-bottom: 2px solid greenyellow;
       }

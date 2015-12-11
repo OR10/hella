@@ -1,25 +1,28 @@
-<div class="grid-block thumbnail-image align-center">
+<div class="grid-block thumbnail-image align-center"
+>
     <div class="grid-block vertical shrink align-center">
         <div class="grid-block shrink align-center">
             <canvas style="background-color: goldenrod"
-                    ng-mouseover="vm.showFrameNumber = true"
-                    ng-mouseleave="vm.showFrameNumber = false"
-                    ng-click="vm.framePosition.goto(vm.location.frameNumber)"
             ></canvas>
         </div>
     </div>
 </div>
-<div class="thumbnail-frame-range grid-block align-center"
-     ng-hide="(!vm.showFrameNumber && !vm.isCurrent) || vm.location === null"
-     ng-mouseover="vm.showFrameNumber = true">
+<div ng-style="{width: vm.dimensions.width + 'px', height: vm.dimensions.height + 'px'}"
+     class="thumbnail-frame-range grid-block align-center"
+     ng-mouseover="vm.showFrameNumber = true"
+     ng-mouseleave="vm.showFrameNumber = false"
+     ng-click="vm.framePosition.goto(vm.location.frameNumber)"
+>
     <div class="grid-block vertical shrink align-right">
-        <div class="frame-range grid-block shrink">
+        <div class="frame-range grid-block shrink"
+             ng-hide="(!vm.showFrameNumber && !vm.isCurrent) || vm.location === null"
+        >
             <span ng-if="!vm.isCurrent" class="current">{{vm.location.frameNumber}}</span>
-            <frame-number-input ng-if="vm.isCurrent" ng-model="vm._currentFrameNumber" class="current"
-                                onFocus="this.select()"
+            <frame-number-input ng-if="vm.isCurrent"
+                                ng-model="vm.currentFrameNumber"
             ></frame-number-input>
-            <span class="divider">/</span>
-            <span class="endFrameNum</div>ber">{{vm.endFrameNumber}}</span>
+            <span class="divider" ng-if="vm.isCurrent">/</span>
+            <span class="endFrameNumber" ng-if="vm.isCurrent">{{vm.endFrameNumber}}</span>
         </div>
     </div>
 </div>

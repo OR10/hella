@@ -1,6 +1,5 @@
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import angular from 'angular';
-import frameDebounce from 'frame-debounce';
 
 /**
  * Controller managing the display of a single ThumbnailImage
@@ -12,17 +11,18 @@ import frameDebounce from 'frame-debounce';
  * @property {FramePosition} framePosition
  * @property {LabeledThingInFrame|null} labeledThingInFrame
  * @property {{width: int, height: int}} labeledThingViewport
+ * @property {{width: in, height: int}} dimensions
  */
 class ThumbnailController {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {jQuery} $element
-   * @param {window} $window
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
+   * @param {AnimationFrameService} animationFrameService
    */
-  constructor($scope, $element, $window, paperShapeFactory, drawingContextService, frameGateway) {
+  constructor($scope, $element, paperShapeFactory, drawingContextService, frameGateway, animationFrameService) {
     /**
      * Flag to indicate whether the frame number is shown or not
      *
@@ -31,6 +31,12 @@ class ThumbnailController {
      * @type {bool}
      */
     this.showFrameNumber = false;
+
+    /**
+     * @type {int}
+     */
+    this.currentFrameNumber = null;
+
 
     /**
      * @type {DrawingContext}
@@ -100,39 +106,50 @@ class ThumbnailController {
      */
     this._editMode = false;
 
-    /**
-     * @type {int}
-     * @private
-     */
-    this._currentFrameNumber = null;
+    this._drawBackgroundLayerDebounced = animationFrameService.debounce((redraw) => this._drawBackgroundLayer(redraw));
+    this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
 
-    this._drawBackgroundLayerDebounced = frameDebounce((redraw) => this._drawBackgroundLayer(redraw));
-    this._drawThingLayerDebounced = frameDebounce((redraw) => this._drawThingLayer(redraw));
-    this._recalculateViewSizeDebounced = frameDebounce(() => this._recalculateViewSize());
-
-    $scope.$watch('vm._currentFrameNumber', newFrameNumber => {
-      try {
-        if (newFrameNumber < this.framePosition.startFrameNumber) {
-          this.framePosition.goto(this.framePosition.startFrameNumber);
-        } else if (newFrameNumber > this.framePosition.endFrameNumber) {
-          this.framePosition.goto(this.framePosition.endFrameNumber);
-        } else {
-          this.framePosition.goto(newFrameNumber);
-        }
-      } catch (error) {
+    $scope.$watch('vm.currentFrameNumber', newFrameNumber => {
+      if (newFrameNumber < this.framePosition.startFrameNumber) {
+        this.framePosition.goto(this.framePosition.startFrameNumber);
+      } else if (newFrameNumber > this.framePosition.endFrameNumber) {
+        this.framePosition.goto(this.framePosition.endFrameNumber);
+      } else {
+        this.framePosition.goto(newFrameNumber);
       }
-      this._currentFrameNumber = this.framePosition.position;
+      this.currentFrameNumber = this.framePosition.position;
     });
 
-    const onWindowResized = () => {
-      this._recalculateViewSizeDebounced();
-    };
+    $scope.$watch('vm.dimensions', newDimensions => {
+      const {width, height} = newDimensions;
 
-    this._recalculateViewSizeDebounced();
+      console.group(`Thumbnail (${$canvas.attr('id')}): vm.dimensions changed`);
+      console.log(`new    dimensions: ${width}x${height}`);
 
-    angular.element($window).on('resize', onWindowResized);
-    $scope.$on('$destroy', () => {
-      angular.element($window).off('resize', onWindowResized);
+      // Original video width and height
+      const {width: videoWidth, height: videoHeight} = this.labeledThingViewport;
+
+      const fittedWidth = Math.round(videoWidth / videoHeight * height);
+      const fittedHeight = Math.round(videoHeight / videoWidth * width);
+
+      console.log(`fitted dimensions: ${fittedWidth}x${fittedHeight}`);
+
+      const canvasWidth = fittedWidth <= width ? fittedWidth : width;
+      const canvasHeight = fittedWidth <= width ? height : fittedHeight;
+      console.log(`canvas dimensions: ${canvasWidth}x${canvasHeight}`);
+
+      console.groupEnd();
+
+      this._context.withScope(scope => {
+        scope.view.viewSize = new scope.Size(
+          canvasWidth, canvasHeight
+        );
+
+        scope.view.update();
+      });
+
+      this._drawBackgroundLayerDebounced();
+      this._drawThingLayerDebounced();
     });
 
     // Update rendered thumbnail once the location changes
@@ -143,7 +160,7 @@ class ThumbnailController {
         return;
       }
 
-      this._currentFrameNumber = this.framePosition.position;
+      this.currentFrameNumber = this.framePosition.position;
 
       this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)
@@ -155,7 +172,7 @@ class ThumbnailController {
 
     // Update rendered thing layer the labeledThingInFrame changes
     $scope.$watch('vm.labeledThingInFrame', () => {
-      this._drawThingLayer();
+      this._drawThingLayerDebounced();
     });
 
     // Update filters upon change
@@ -183,90 +200,41 @@ class ThumbnailController {
   }
 
   /**
-   * Recalculate the ViewSize based on the available width and the aspect ratio of the supplied image
-   *
-   * @private
-   */
-  _recalculateViewSize() {
-    const containerHeight = this._$element.height();
-    const containerWidth = this._$element.width();
-
-    this._frameRangeElement.width(containerWidth);
-    this._frameRangeElement.height(containerHeight);
-
-    const {width, height} = this.labeledThingViewport;
-
-    const fittedWidth = width / height * containerHeight;
-    const fittedHeight = height / width * containerWidth;
-
-    const canvasWidth = fittedWidth <= containerWidth ? fittedWidth : containerWidth;
-    const canvasHeight = fittedWidth <= containerWidth ? containerHeight : fittedHeight;
-
-    this._context.withScope(scope => {
-      //if (this._activeBackgroundImage === null) {
-      //  scope.view.viewSize = new scope.Size(
-      //    parentElement.clientWidth, 0
-      //  );
-      //} else {
-        scope.view.viewSize = new scope.Size(
-          canvasWidth, canvasHeight
-        );
-      //}
-    });
-  }
-
-  /**
-   * Redraw the complete Thumbnail
-   *
-   * @private
-   */
-  _draw() {
-    this._drawBackgroundLayerDebounced(false);
-    this._drawThingLayerDebounced(false);
-
-    this._context.withScope(scope => {
-      scope.view.update();
-    });
-  }
-
-  /**
    * Draw the currently active Background Image
    *
    * @param {boolean?} redraw
    * @private
    */
   _drawBackgroundLayer(redraw = true) {
-    //const image = this._activeBackgroundImage;
-    //
-    //this._context.withScope(() => {
-    //  this._backgroundLayer.activate();
-    //  this._backgroundLayer.removeChildren();
-    //});
-    //
-    //if (image === null) {
-    //  if (redraw) {
-    //    this._context.withScope(scope => scope.view.draw());
-    //  }
-    //  return;
-    //}
-    //
-    //this._context.withScope(scope => {
-    //  const zoom = scope.view.viewSize.width / image.width;
-    //
-    //  const rasterImage = new scope.Raster(
-    //    image,
-    //    new scope.Point(
-    //      image.width / 2, image.height / 2
-    //    )
-    //  );
-    //  this._applyFilters(rasterImage, this.filters);
-    //
-    //  this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
-    //
-    //  if (redraw) {
-    //    scope.view.draw();
-    //  }
-    //});
+    const image = this._activeBackgroundImage;
+
+    this._context.withScope(() => {
+      this._backgroundLayer.activate();
+      this._backgroundLayer.removeChildren();
+    });
+
+    if (image === null) {
+      if (redraw) {
+        this._context.withScope(scope => scope.view.update());
+      }
+      return;
+    }
+
+    this._context.withScope(scope => {
+      const zoom = scope.view.size.width / image.width;
+
+      const rasterImage = new scope.Raster(
+        image,
+        new scope.Point(image.width / 2, image.height / 2)
+      );
+      this._applyFilters(rasterImage, this.filters);
+
+      this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
+
+      if (redraw) {
+        scope.view.draw();
+      }
+    });
   }
 
   /**
@@ -311,10 +279,10 @@ class ThumbnailController {
 ThumbnailController.$inject = [
   '$scope',
   '$element',
-  '$window',
   'paperShapeFactory',
   'drawingContextService',
   'frameGateway',
+  'animationFrameService',
 ];
 
 export default ThumbnailController;

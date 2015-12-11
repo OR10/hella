@@ -14,6 +14,7 @@ class ThumbnailDirective {
       filters: '=',
       labeledThingInFrame: '=',
       labeledThingViewport: '=',
+      dimensions: '=',
     };
 
     this.template = ThumbnailTemplate;
