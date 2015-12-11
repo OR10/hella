@@ -24,7 +24,14 @@
 
           .divider {
             font-weight: bold;
+            margin: 0 6px;
           }
+
+          .divider:before {
+            display: inline;
+            content: '/';
+          }
+
 
           .divider, .endFrameNumber {
             color: darkgray;
