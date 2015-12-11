@@ -21,8 +21,8 @@
             <frame-number-input ng-if="vm.isCurrent"
                                 ng-model="vm.currentFrameNumber"
             ></frame-number-input>
-            <span class="divider">/</span>
-            <span class="endFrameNumber">{{vm.endFrameNumber}}</span>
+            <span class="divider" ng-if="vm.isCurrent">/</span>
+            <span class="endFrameNumber" ng-if="vm.isCurrent">{{vm.endFrameNumber}}</span>
         </div>
     </div>
 </div>

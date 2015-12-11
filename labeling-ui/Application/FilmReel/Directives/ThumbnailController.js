@@ -134,7 +134,6 @@ class ThumbnailController {
 
       console.log(`fitted dimensions: ${fittedWidth}x${fittedHeight}`);
 
-
       const canvasWidth = fittedWidth <= width ? fittedWidth : width;
       const canvasHeight = fittedWidth <= width ? height : fittedHeight;
       console.log(`canvas dimensions: ${canvasWidth}x${canvasHeight}`);
@@ -145,8 +144,12 @@ class ThumbnailController {
         scope.view.viewSize = new scope.Size(
           canvasWidth, canvasHeight
         );
+
         scope.view.update();
       });
+
+      this._drawBackgroundLayerDebounced();
+      this._drawThingLayerDebounced();
     });
 
     // Update rendered thumbnail once the location changes
@@ -203,37 +206,35 @@ class ThumbnailController {
    * @private
    */
   _drawBackgroundLayer(redraw = true) {
-    //const image = this._activeBackgroundImage;
-    //
-    //this._context.withScope(() => {
-    //  this._backgroundLayer.activate();
-    //  this._backgroundLayer.removeChildren();
-    //});
-    //
-    //if (image === null) {
-    //  if (redraw) {
-    //    this._context.withScope(scope => scope.view.draw());
-    //  }
-    //  return;
-    //}
-    //
-    //this._context.withScope(scope => {
-    //  const zoom = scope.view.viewSize.width / image.width;
-    //
-    //  const rasterImage = new scope.Raster(
-    //    image,
-    //    new scope.Point(
-    //      image.width / 2, image.height / 2
-    //    )
-    //  );
-    //  this._applyFilters(rasterImage, this.filters);
-    //
-    //  this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
-    //
-    //  if (redraw) {
-    //    scope.view.draw();
-    //  }
-    //});
+    const image = this._activeBackgroundImage;
+
+    this._context.withScope(() => {
+      this._backgroundLayer.activate();
+      this._backgroundLayer.removeChildren();
+    });
+
+    if (image === null) {
+      if (redraw) {
+        this._context.withScope(scope => scope.view.update());
+      }
+      return;
+    }
+
+    this._context.withScope(scope => {
+      const zoom = scope.view.size.width / image.width;
+
+      const rasterImage = new scope.Raster(
+        image,
+        new scope.Point(image.width / 2, image.height / 2)
+      );
+      this._applyFilters(rasterImage, this.filters);
+
+      this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
+
+      if (redraw) {
+        scope.view.draw();
+      }
+    });
   }
 
   /**
