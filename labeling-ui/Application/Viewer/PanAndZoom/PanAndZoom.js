@@ -6,63 +6,35 @@ import paper from 'paper';
 class PanAndZoom {
   /**
    * @param {paper.View} view
-   * @param {Number} zoomFactor
    */
-  constructor(view, zoomFactor = 1.05) {
+  constructor(view) {
     /**
      * @type {paper.View}
      */
     this.view = view;
-
-    /**
-     * @type {Number}
-     */
-    this.zoomFactor = zoomFactor;
   }
 
   /**
    * Adjust the view's zoom while keeping the given focal point stable
    *
    * @param {Number} newZoom
-   * @param {Point} focalPoint
+   * @param {Point} [focalPoint]
    */
-  zoom(newZoom, focalPoint) {
-    const localFocalPoint = this.view.viewToProject(focalPoint);
-    const deltaZoom = this.view.zoom / newZoom;
+  zoom(newZoom, focalPoint = null) {
+    let newCenter = this.view.center;
 
-    const deltaCenter = localFocalPoint.subtract(this.view.center);
-    const centerTranslation = localFocalPoint.subtract(deltaCenter.multiply(deltaZoom)).subtract(this.view.center);
+    if (focalPoint !== null) {
+      const localFocalPoint = this.view.viewToProject(focalPoint);
+      const deltaZoom = this.view.zoom / newZoom;
 
-    let newCenter = this.view.center.add(centerTranslation);
+      const deltaCenter = localFocalPoint.subtract(this.view.center);
+      const centerTranslation = localFocalPoint.subtract(deltaCenter.multiply(deltaZoom)).subtract(this.view.center);
 
-    newCenter = this._restrictViewportToViewBounds(newCenter);
+      newCenter = this.view.center.add(centerTranslation);
+    }
 
     this.view.zoom = newZoom;
-    this.view.center = newCenter;
-  }
-
-  /**
-   * Zoom the view in by the given amount of ticks
-   *
-   * @param {Point} focalPoint
-   * @param {Number} [ticks]
-   */
-  zoomIn(focalPoint, ticks = 1) {
-    const newZoom = Math.max(this.view.zoom * this.zoomFactor * ticks, 1);
-
-    this.zoom(newZoom, focalPoint);
-  }
-
-  /**
-   * Zoom the view out by the given amount of ticks
-   *
-   * @param {Point} focalPoint
-   * @param {Number} [ticks]
-   */
-  zoomOut(focalPoint, ticks = 1) {
-    const newZoom = Math.max(this.view.zoom / this.zoomFactor / ticks, 1);
-
-    this.zoom(newZoom, focalPoint);
+    this.view.center = this._restrictViewportToViewBounds(newCenter);
   }
 
   /**
@@ -71,13 +43,13 @@ class PanAndZoom {
    * @param {Number} deltaX
    * @param {Number} deltaY
    */
-  changeCenter(deltaX, deltaY) {
+  panBy(deltaX, deltaY) {
     let offset = new paper.Point(deltaX, deltaY);
 
     // Account for view to client pixel ratio when zoomed
     offset = offset.divide(this.view.zoom);
 
-    this.setCenter(this.view.center.add(offset));
+    this.panTo(this.view.center.add(offset));
   }
 
   /**
@@ -85,7 +57,7 @@ class PanAndZoom {
    *
    * @param {Point} newCenter
    */
-  setCenter(newCenter) {
+  panTo(newCenter) {
     this.view.center = this._restrictViewportToViewBounds(newCenter);
   }
 
