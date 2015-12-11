@@ -1,7 +1,5 @@
 import PaperLayer from './PaperLayer';
 import PanAndZoom from '../PanAndZoom/PanAndZoom';
-import paper from 'paper';
-import angular from 'angular';
 
 /**
  * Special PaperLayer which provides basic pan and zoom functionality

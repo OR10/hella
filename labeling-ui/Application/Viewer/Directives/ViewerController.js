@@ -639,9 +639,13 @@ class ViewerController {
       const focalPoint = new paper.Point(event.offsetX, event.offsetY);
 
       if (event.deltaY < 0) {
-        this._zoomIn(focalPoint, 1.05);
+        this._$scope.$apply(() => {
+          this._zoomIn(focalPoint, 1.05);
+        });
       } else if (event.deltaY > 0) {
-        this._zoomOut(focalPoint, 1.05);
+        this._$scope.$apply(() => {
+          this._zoomOut(focalPoint, 1.05);
+        });
       }
     }
   }
@@ -658,7 +662,9 @@ class ViewerController {
       const deltaX = this._lastKnownMousePosition.x - event.offsetX;
       const deltaY = this._lastKnownMousePosition.y - event.offsetY;
 
-      this._panBy(deltaX, deltaY);
+      this._$scope.$apply(() => {
+        this._panBy(deltaX, deltaY);
+      });
 
       this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
     }

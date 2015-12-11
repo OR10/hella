@@ -51,8 +51,25 @@ class PopupPanelController {
     this._context = drawingContextService.createContext();
     this._context.setup(this._minimap.get(0));
 
+    this._context.withScope(scope => {
+      /**
+       * @type {paper.Layer}
+       * @private
+       */
+      this._backgroundLayer = new scope.Layer();
+
+      /**
+       * @type {paper.Layer}
+       * @private
+       */
+      this._thingLayer = new scope.Layer();
+    });
+
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
-    this._drawBackgroundImageDebounced = animationFrameService.debounce(() => this._drawBackgroundImage());
+    this._drawLayerDebounced = animationFrameService.debounce(() => {
+      this._drawBackgroundImage();
+      this._drawViewportBounds();
+    });
 
     // TODO needs to be called on side element resize as well
     $window.addEventListener('resize', this._resizeDebounced);
@@ -69,6 +86,12 @@ class PopupPanelController {
 
     $scope.$watch('vm.framePosition.position', () => this._loadBackgroundImage());
 
+    $scope.$watch('vm.viewerViewport.bounds', (newBounds) => {
+      if (newBounds) {
+        this._drawViewportBounds();
+      }
+    });
+
     this._resizeDebounced();
   }
 
@@ -80,7 +103,7 @@ class PopupPanelController {
         })
         .then(image => {
           this._activeBackgroundImage = image;
-          this._drawBackgroundImageDebounced();
+          this._drawLayerDebounced();
         })
     );
   }
@@ -107,12 +130,20 @@ class PopupPanelController {
       scope.view.update();
     });
 
-    this._drawBackgroundImageDebounced();
-    this._drawViewportBounds();
+    this._drawLayerDebounced();
+
+    if (this.viewerViewport) {
+      this._drawViewportBounds();
+    }
   }
 
   _drawBackgroundImage() {
     const image = this._activeBackgroundImage;
+
+    this._context.withScope(() => {
+      this._backgroundLayer.activate();
+      this._backgroundLayer.removeChildren();
+    });
 
     if (image === null) {
       return;
@@ -126,14 +157,32 @@ class PopupPanelController {
 
       this._applyFilters(rasterImage, this.filters);
 
-      rasterImage.scale(zoom, new scope.Point(0, 0));
+      this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
 
       scope.view.update();
     });
   }
 
   _drawViewportBounds() {
-    // TODO
+    this._context.withScope(() => {
+      this._thingLayer.activate();
+      this._thingLayer.removeChildren();
+    });
+
+    this._context.withScope(scope => {
+      const viewportScaleX = scope.view.viewSize.width / this.video.metaData.width;
+      const {topLeft, bottomRight} = this.viewerViewport.bounds;
+
+      this._viewportBoundsRect = new scope.Path.Rectangle({
+        topLeft,
+        bottomRight,
+        strokeColor: '#bedb31',
+      });
+
+      this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
+
+      scope.view.update();
+    });
   }
 
   /**
