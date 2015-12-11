@@ -11,6 +11,10 @@ class PopupPanelDirective {
       brightnessSliderValue: '=',
       contrastSliderValue: '=',
       viewerViewport: '=',
+      video: '=',
+      task: '=',
+      framePosition: '=',
+      filters: '=',
     };
 
     this.template = popupPanelTemplate;

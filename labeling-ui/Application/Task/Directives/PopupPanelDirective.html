@@ -23,11 +23,15 @@
             </div>
         </div>
     </div>
-    <div ng-show="vm.popupPanelState=='zoom'" class="grid-block zoom align-center align-justify">
-        <div class="grid-content">
-            <img src="https://placehold.it/300x200">
+    <div ng-show="vm.popupPanelState=='zoom'" class="grid-block zoom align-justify">
+        <div class="grid-block align-center minimap-container">
+            <div class="grid-block align-center shrink vertical">
+                <div class="grid-block align-center shrink">
+                    <canvas class="minimap"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="grid-block shrink vertical">
+        <div class="grid-block shrink vertical zoom-controls">
             <div class="grid-content">
                 <button ng-click="vm.zoomIn()">
                     <i class="icon icon-view-zoom-in"></i>

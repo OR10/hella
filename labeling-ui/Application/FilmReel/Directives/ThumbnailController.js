@@ -123,22 +123,14 @@ class ThumbnailController {
     $scope.$watch('vm.dimensions', newDimensions => {
       const {width, height} = newDimensions;
 
-      console.group(`Thumbnail (${$canvas.attr('id')}): vm.dimensions changed`);
-      console.log(`new    dimensions: ${width}x${height}`);
-
       // Original video width and height
       const {width: videoWidth, height: videoHeight} = this.labeledThingViewport;
 
       const fittedWidth = Math.round(videoWidth / videoHeight * height);
       const fittedHeight = Math.round(videoHeight / videoWidth * width);
 
-      console.log(`fitted dimensions: ${fittedWidth}x${fittedHeight}`);
-
       const canvasWidth = fittedWidth <= width ? fittedWidth : width;
       const canvasHeight = fittedWidth <= width ? height : fittedHeight;
-      console.log(`canvas dimensions: ${canvasWidth}x${canvasHeight}`);
-
-      console.groupEnd();
 
       this._context.withScope(scope => {
         scope.view.viewSize = new scope.Size(

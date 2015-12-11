@@ -24,6 +24,7 @@ $button-selected: #353b42;
 @import "icon-font";
 @import "icons";
 @import "header";
+@import "minimap";
 
 html, body {
   // Prevent overscroll
@@ -52,15 +53,26 @@ div.viewer{
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 2rem 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     background-color: $button;
     border-top: 2px solid $element-inline-divider;
 
-    .grid-block {
-      margin-bottom: 10px;
+    .zoom {
+      .zoom-controls {
+        padding: 2rem 0;
+      }
+    }
 
-      .grid-content {
-        overflow: hidden;
+    .settings {
+      padding: 2rem 0;
+
+      .grid-block {
+        margin-bottom: 10px;
+
+        .grid-content {
+          overflow: hidden;
+        }
       }
     }
 
