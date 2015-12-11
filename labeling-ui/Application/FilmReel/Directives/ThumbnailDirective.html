@@ -7,21 +7,22 @@
         </div>
     </div>
 </div>
-<!--<div class="thumbnail-frame-range grid-block align-center"-->
-     <!--ng-mouseover="vm.showFrameNumber = true"-->
-     <!--ng-mouseleave="vm.showFrameNumber = false"-->
-     <!--ng-click="vm.framePosition.goto(vm.location.frameNumber)"-->
-<!--&gt;-->
-    <!--<div class="grid-block vertical shrink align-right">-->
-        <!--<div class="frame-range grid-block shrink"-->
-             <!--ng-hide="(!vm.showFrameNumber && !vm.isCurrent) || vm.location === null"-->
-        <!--&gt;-->
-            <!--<span ng-if="!vm.isCurrent" class="current">{{vm.location.frameNumber}}</span>-->
-            <!--<frame-number-input ng-if="vm.isCurrent"-->
-                                <!--ng-model="vm.currentFrameNumber"-->
-            <!--&gt;</frame-number-input>-->
-            <!--<span class="divider">/</span>-->
-            <!--<span class="endFrameNumber">{{vm.endFrameNumber}}</span>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
+<div ng-style="{width: vm.dimensions.width + 'px', height: vm.dimensions.height + 'px'}"
+     class="thumbnail-frame-range grid-block align-center"
+     ng-mouseover="vm.showFrameNumber = true"
+     ng-mouseleave="vm.showFrameNumber = false"
+     ng-click="vm.framePosition.goto(vm.location.frameNumber)"
+>
+    <div class="grid-block vertical shrink align-right">
+        <div class="frame-range grid-block shrink"
+             ng-hide="(!vm.showFrameNumber && !vm.isCurrent) || vm.location === null"
+        >
+            <span ng-if="!vm.isCurrent" class="current">{{vm.location.frameNumber}}</span>
+            <frame-number-input ng-if="vm.isCurrent"
+                                ng-model="vm.currentFrameNumber"
+            ></frame-number-input>
+            <span class="divider">/</span>
+            <span class="endFrameNumber">{{vm.endFrameNumber}}</span>
+        </div>
+    </div>
+</div>
