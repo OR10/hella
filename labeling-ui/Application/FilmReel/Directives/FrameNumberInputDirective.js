@@ -16,7 +16,12 @@ class FrameNumberInputDirective {
       if (html === '<br>' ) {
         html = '';
       }
-      ngModel.$setViewValue(html);
+
+
+      // Only numbers are allowed everything else is removed
+      const cleaned = html.replace(/[^0-9]/g, '');
+      ngModel.$setViewValue(cleaned);
+      ngModel.$render();
     }
 
     // Specify how UI should be updated
@@ -25,7 +30,7 @@ class FrameNumberInputDirective {
     };
 
     // Listen for change events to enable binding
-    element.on('blur keyup change', () => {
+    editable.on('blur keyup change', () => {
       scope.$evalAsync(read);
     });
     read(); // initialize

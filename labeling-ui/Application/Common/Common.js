@@ -6,6 +6,7 @@ import StatusGateway from './Gateways/StatusGateway';
 import BufferedHttpProvider from './Services/BufferedHttpProvider';
 import EntityIdService from './Services/EntityIdService';
 import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryProvider';
+import AnimationFrameService from './Services/AnimationFrameService';
 
 /**
  * Common Module
@@ -24,6 +25,7 @@ class Common extends Module {
     this.module.service('authInterceptor', AuthInterceptor);
     this.module.service('revisionManager', RevisionManager);
     this.module.service('entityIdService', EntityIdService);
+    this.module.service('animationFrameService', AnimationFrameService);
     this.module.service('statusGateway', StatusGateway);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);

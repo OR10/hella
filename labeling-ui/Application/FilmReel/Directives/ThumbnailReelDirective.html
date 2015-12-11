@@ -1,5 +1,5 @@
-<ul class="thumbnail-reel-list grid-block">
-    <li class="thumbnail-spacer"
+<div class="thumbnail-reel-list grid-block">
+    <div class="thumbnail-spacer"
         data-jqyoui-options="{}"
         data-drop="true"
         jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
@@ -9,11 +9,13 @@
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
         <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
-    </li>
-    <li class="thumbnail grid-block" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
+    </div>
+    <div class="thumbnail grid-block" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
         ng-class="{'active': vm.thumbnailInFrameRange($index)}"
     >
-        <thumbnail class="grid-block align-center"
+        <thumbnail ng-style="{width: vm.thumbnailDimensions.width + 'px', height: vm.thumbnailDimensions.height + 'px'}"
+                   class="grid-block align-center"
+                   dimensions="vm.thumbnailDimensions"
                    end-frame-number="vm.task.frameRange.endFrameNumber"
                    location="thumbnail.location"
                    filters="vm.filters"
@@ -22,8 +24,8 @@
                    labeled-thing-in-frame="thumbnail.labeledThingInFrame"
                    labeled-thing-viewport="{width: vm.video.metaData.width, height: vm.video.metaData.height}"
         ></thumbnail>
-    </li>
-    <li ng-repeat-end
+    </div>
+    <div ng-repeat-end
         class="thumbnail-spacer"
         data-jqyoui-options="{}"
         data-drop="true"
@@ -34,5 +36,5 @@
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
         <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}" jqyoui-draggable="{animate:true}"></div>
-    </li>
-</ul>
+    </div>
+</div>
