@@ -20,7 +20,7 @@ class FrameNumberInputDirective {
 
       // Only numbers are allowed everything else is removed
       const cleaned = html.replace(/[^0-9]/g, '');
-      ngModel.$setViewValue(cleaned);
+      ngModel.$setViewValue(Number.parseInt(cleaned));
       ngModel.$render();
     }
 
