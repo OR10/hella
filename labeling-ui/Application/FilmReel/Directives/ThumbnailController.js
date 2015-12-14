@@ -275,6 +275,12 @@ class ThumbnailController {
       }
     });
   }
+
+  handleThumbnailClick() {
+    if (this.location && this.location.frameNumber) {
+      this.framePosition.goto(this.location.frameNumber);
+    }
+  }
 }
 
 ThumbnailController.$inject = [
