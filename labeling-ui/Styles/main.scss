@@ -61,6 +61,10 @@ div.viewer{
     .zoom {
       .zoom-controls {
         padding: 2rem 0;
+
+        button {
+          overflow: hidden;
+        }
       }
     }
 
