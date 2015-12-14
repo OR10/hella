@@ -11,6 +11,8 @@ import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor';
 import ip from 'ip';
 import chokidar from 'chokidar';
 import {exec} from 'child_process';
+import chalk from 'chalk';
+import beepbeep from 'beepbeep';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -275,12 +277,19 @@ gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line n
 gulp.task('build-sass', () => {
   return gulp.src(paths.files.sass.entrypoints)
     .pipe($$.sourcemaps.init())
+    .pipe($$.plumber(function onError(error) {
+      beepbeep();
+      console.error(chalk.red('Error compiling Sass file.')); //eslint-disable-line no-console
+      console.error(chalk.red(error.message)); //eslint-disable-line no-console
+      this.emit('end');
+    }))
     .pipe($$.sass({
       precision: 8,
-      errLogToConsole: true,
+      errLogToConsole: false,
       functions: sassJspm.resolve_function('Application/vendor/'),
       importer: sassJspm.importer,
     }))
+    .pipe($$.plumber.stop())
     .pipe($$.autoprefixer())
     .pipe($$.sourcemaps.write('./', {sourceRoot: null}))
     .pipe(gulp.dest(`${paths.dir.css}`));
