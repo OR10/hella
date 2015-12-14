@@ -36,8 +36,7 @@ class ThumbnailController {
     /**
      * @type {int}
      */
-    this.currentFrameNumber = null;
-
+    this.currentFrameNumber = this.framePosition.position;
 
     /**
      * @type {DrawingContext}
@@ -111,12 +110,13 @@ class ThumbnailController {
     this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
 
     $scope.$watch('vm.currentFrameNumber', newFrameNumber => {
-      if (newFrameNumber < this.framePosition.startFrameNumber) {
+      const frameInt = Number.parseInt(newFrameNumber);
+      if (frameInt < this.framePosition.startFrameNumber) {
         this.framePosition.goto(this.framePosition.startFrameNumber);
-      } else if (newFrameNumber > this.framePosition.endFrameNumber) {
+      } else if (frameInt > this.framePosition.endFrameNumber) {
         this.framePosition.goto(this.framePosition.endFrameNumber);
       } else {
-        this.framePosition.goto(newFrameNumber);
+        this.framePosition.goto(frameInt);
       }
       this.currentFrameNumber = this.framePosition.position;
     });
