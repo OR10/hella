@@ -7,6 +7,9 @@ import BufferedHttpProvider from './Services/BufferedHttpProvider';
 import EntityIdService from './Services/EntityIdService';
 import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryProvider';
 import AnimationFrameService from './Services/AnimationFrameService';
+import LoggerServiceProvider from './Loggers/LoggerServiceProvider';
+
+import ConsoleLogger from './Loggers/ConsoleLogger';
 
 /**
  * Common Module
@@ -29,10 +32,14 @@ class Common extends Module {
     this.module.service('statusGateway', StatusGateway);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
+    this.module.provider('loggerService', LoggerServiceProvider);
 
-    this.module.config(['$httpProvider', ($httpProvider) => {
+    this.module.config(['$httpProvider', 'loggerServiceProvider', ($httpProvider, loggerServiceProvider) => {
       $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
       $httpProvider.interceptors.push('authInterceptor');
+
+      loggerServiceProvider.registerLogger(new ConsoleLogger());
+      loggerServiceProvider.addContexts('*');
     }]);
 
     this.module.run(['$rootScope', '$location', ($rootScope) => {

@@ -10,7 +10,7 @@
      class="thumbnail-frame-range grid-block align-center"
      ng-mouseover="vm.showFrameNumber = true"
      ng-mouseleave="vm.showFrameNumber = false"
-     ng-click="vm.framePosition.goto(vm.location.frameNumber)"
+     ng-click="vm.handleThumbnailClick()"
 >
     <div class="grid-block vertical shrink align-right">
         <div class="frame-range grid-block shrink"

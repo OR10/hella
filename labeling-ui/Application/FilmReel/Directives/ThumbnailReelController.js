@@ -385,6 +385,14 @@ class ThumbnailReelController {
 
     this._setEndFrameNumber(index);
   }
+
+  placeBracketSpacer(index) {
+    const currentFramePosition = this.framePosition.position - this._thumbnailLookahead + index;
+
+    // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
+    return currentFramePosition + 1 >= this.framePosition.startFrameNumber
+      && currentFramePosition <= this.framePosition.endFrameNumber;
+  }
 }
 
 ThumbnailReelController.$inject = [
