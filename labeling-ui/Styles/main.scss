@@ -47,6 +47,7 @@ div.viewer{
   position: relative;
   background-color: $element-background;
   border-right: 1px solid $element-divider;
+  min-width: 200px;
 
   div.popup-panel {
     width: 100%;
@@ -94,6 +95,7 @@ div.viewer{
 .sidebar-right{
   background-color: $element-background;
   border-left: 1px solid $element-divider;
+  min-width: 200px;
 }
 
 .task-bar{
