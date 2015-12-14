@@ -40,6 +40,19 @@ class FrameNumberInputDirective {
           editable.blur();
           event.preventDefault();
           break;
+        // arrow up
+        case (event.keyCode === 38):
+          const value = Number.parseInt(getEditableValue());
+          if (value > 1) {
+            editable.html(value - 1);
+          }
+          event.preventDefault();
+          break;
+        // arrow down
+        case (event.keyCode === 40):
+          editable.html(Number.parseInt(getEditableValue()) + 1);
+          event.preventDefault();
+          break;
 
         default:
           event.preventDefault();
