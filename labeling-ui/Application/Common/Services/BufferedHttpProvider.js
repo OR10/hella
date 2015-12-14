@@ -63,10 +63,11 @@ class BufferedHttpProvider {
    * @param {angular.$http} $http
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortable
+   * @param {LoggerService} logger
    */
-  $get($q, $http, revisionManager, abortable) {
+  $get($q, $http, revisionManager, abortable, logger) {
     if (this._bufferedHttp === null) {
-      this._bufferedHttp = this.createBufferedHttp($q, $http, revisionManager, abortable);
+      this._bufferedHttp = this.createBufferedHttp($q, $http, revisionManager, abortable, logger);
     }
 
     return this._bufferedHttp;
@@ -79,8 +80,9 @@ class BufferedHttpProvider {
    * @param {angular.$http} $http
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortable
+   * @param {LoggerService} logger
    */
-  createBufferedHttp($q, $http, revisionManager, abortable) {
+  createBufferedHttp($q, $http, revisionManager, abortable, logger) {
     /**
      * Mapping between buffer names and their corresponding Buffer Promise
      *
@@ -122,7 +124,7 @@ class BufferedHttpProvider {
         try {
           revisionManager.injectRevision(model);
         } catch (error) {
-          console.warn(`Could not auto-inject revision into model: `, model); // eslint-disable-line no-console
+          logger.warn('bufferedHttp:revisionManager', `Could not auto-inject revision into model: `, model);
         }
       });
     }
@@ -138,7 +140,7 @@ class BufferedHttpProvider {
     function _extractRevision(data) {
       if (!data.result) {
         // Assume we do not need to map the data
-        console.warn(`Encountered backend request without the usual {result: ...} structure. ${data}`); // eslint-disable-line no-console
+        logger.warn('bufferedHttp:revisionManager', `Encountered backend request without the usual {result: ...} structure. ${data}`);
         return;
       }
 
@@ -151,7 +153,7 @@ class BufferedHttpProvider {
         try {
           revisionManager.extractRevision(model);
         } catch (error) {
-          console.warn(`Could not auto-extract revision: `, model); // eslint-disable-line no-console
+          logger.warn('bufferedHttp:revisionManager', `Could not auto-extract revision: `, model);
         }
       });
     }
@@ -297,6 +299,7 @@ BufferedHttpProvider.prototype.$get.$inject = [
   '$http',
   'revisionManager',
   'abortablePromiseFactory',
+  'loggerService',
 ];
 
 export default BufferedHttpProvider;
