@@ -197,6 +197,13 @@ div.viewer{
   flex: 1 1 percentage(13/24);
 }
 
+.popup-panel button {
+  background-color: $button;
+}
+
+.task-bar button, .header button {
+  background-color: $element-background;
+}
 
 button{
   background-color: inherit;
