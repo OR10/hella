@@ -6,3 +6,4 @@ Logs/*
 npm-debug.log
 Tests/Exports/
 Resources/icons/.fontcustom-manifest.json
+.DS_Store
