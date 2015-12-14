@@ -49,7 +49,7 @@ div.viewer{
 
   div.popup-panel {
     width: 100%;
-    font-size: 16pt;
+    font-size: 16px;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -150,10 +150,10 @@ div.viewer{
 
 .task-description-content{
   padding-top: 10px;
-  font-size: 16pt;
+  font-size: 16px;
 
   h1 {
-    font-size: 16pt;
+    font-size: 16px;
     color: $sub-headlines;
     font-weight: bold;
   }
@@ -197,6 +197,13 @@ div.viewer{
   flex: 1 1 percentage(13/24);
 }
 
+.popup-panel button {
+  background-color: $button;
+}
+
+.task-bar button, .header button {
+  background-color: $element-background;
+}
 
 button{
   background-color: inherit;

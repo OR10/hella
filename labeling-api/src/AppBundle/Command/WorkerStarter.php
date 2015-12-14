@@ -66,13 +66,19 @@ class WorkerStarter extends Base
         $instructionInstances = $this->AMQPPoolConfig->instructionInstances;
         $container            = $this->getContainer();
         $serviceInstances     = new JobInstructionFactory\ServicesInstances($instructionInstances, $container);
+        $newRelicWrapper      = array();
+
+        $tidewaysApiKey = ini_get('tideways.api_key');
+        if ($tidewaysApiKey !== false && $tidewaysApiKey !== '') {
+            $newRelicWrapper[] = new NewRelic\QafooProfiler($tidewaysApiKey, gethostname());
+        }
 
         $worker = new WorkerPool\Worker(
             $jobSource,
             $serviceInstances,
             $loggerFacade,
             $rescheduleManager,
-            new NewRelic\Aggregated(array())
+            new NewRelic\Aggregated($newRelicWrapper)
         );
 
         try {
