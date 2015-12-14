@@ -12,6 +12,15 @@ class PanAndZoom {
      * @type {paper.View}
      */
     this.view = view;
+
+    this._scaleToFitZoom = 1;
+  }
+
+  /**
+   * @param {Number} zoom
+   */
+  setScaleToFitZoom(zoom) {
+    this._scaleToFitZoom = zoom;
   }
 
   /**
@@ -74,18 +83,26 @@ class PanAndZoom {
     const width = this.view.bounds.width;
     const height = this.view.bounds.height;
 
-    const unscaledViewWidth = this.view.viewSize.getWidth();
-    const unscaledViewHeight = this.view.viewSize.getHeight();
+    const unscaledViewWidth = this.view.viewSize.width / this._scaleToFitZoom;
+    const unscaledViewHeight = this.view.viewSize.height / this._scaleToFitZoom;
 
     let correctedX = newCenter.x;
     let correctedY = newCenter.y;
 
-    if (newCenter.x - width / 2 < 0 || newCenter.x + width / 2 > unscaledViewWidth) {
-      correctedX = width / 2;
+    if (newCenter.x - this.view.bounds.width / 2 < 0) {
+      correctedX = this.view.bounds.width / 2;
     }
 
-    if (newCenter.y - height / 2 < 0 || newCenter.y + height / 2 > unscaledViewHeight) {
-      correctedY = height / 2;
+    if (newCenter.y - this.view.bounds.height / 2 < 0) {
+      correctedY = this.view.bounds.height / 2;
+    }
+
+    if (newCenter.x + this.view.bounds.width / 2 > unscaledViewWidth) {
+      correctedX = unscaledViewWidth - width / 2;
+    }
+
+    if (newCenter.y + this.view.bounds.height / 2 > unscaledViewHeight) {
+      correctedY = unscaledViewHeight - height / 2;
     }
 
     return new paper.Point(correctedX, correctedY);

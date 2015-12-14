@@ -47,6 +47,12 @@ class PanAndZoomPaperLayer extends PaperLayer {
     this._panAndZoom.zoom(newZoom, focalPoint);
   }
 
+  resize(width, height) {
+    super.resize(width, height);
+
+    this._panAndZoom.setScaleToFitZoom(this._scaleToFitZoom);
+  }
+
   /**
    * Pan the view by the given offsets
    *
