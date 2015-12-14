@@ -13,7 +13,7 @@ import 'jquery-mousewheel';
  */
 export default class Viewer extends Module {
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.Viewer', ['cfp.hotkeys', 'angularRangeSlider', 'ui.bootstrap.popover']);
+    this.module = angular.module('AnnoStation.Viewer', ['cfp.hotkeys']);
 
     this.registerDirective('viewer', ViewerDirective);
 
