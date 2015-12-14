@@ -279,6 +279,19 @@ class ThumbnailReelController {
       .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
   }
 
+  thumbnailSpacerInFrameRange(index) {
+    if (!this.selectedPaperShape) {
+      return false;
+    }
+
+    const currentFramePosition = this.framePosition.position - this._thumbnailLookahead + index;
+    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
+    // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
+    return currentFramePosition + 1 >= selectedLabeledThing.frameRange.startFrameNumber
+      && currentFramePosition <= selectedLabeledThing.frameRange.endFrameNumber;
+  }
+
   thumbnailInFrameRange(index) {
     if (!this.selectedPaperShape || index < 0) {
       return false;

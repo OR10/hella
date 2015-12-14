@@ -1,7 +1,7 @@
 <!--data-drop="{{vm.isValidDropTarget($index)}}"-->
 <div class="thumbnail-reel-list grid-block">
     <div class="thumbnail-spacer"
-         ng-class="{'drop-target': vm.placeBracketSpacer(-1)}"
+         ng-class="{'drop-target': vm.placeBracketSpacer(-1), 'active': vm.thumbnailSpacerInFrameRange(-1)}"
          data-jqyoui-options="{}"
          data-drop="true"
          jqyoui-droppable="{onDrop: 'vm.handleDrop(-1)'}"
@@ -31,7 +31,7 @@
     </div>
     <div ng-repeat-end
          class="thumbnail-spacer"
-         ng-class="{'drop-target': vm.placeBracketSpacer($index)}"
+         ng-class="{'drop-target': vm.placeBracketSpacer($index), 'active': vm.thumbnailSpacerInFrameRange($index)}"
          data-jqyoui-options="{}"
          data-drop="true"
          jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
