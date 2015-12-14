@@ -11,3 +11,4 @@ labeling_api::params::rabbitmq_host: 'workerqueue'
 
 php::fpm::settings:
   tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.framework: symfony2
