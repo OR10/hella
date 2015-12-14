@@ -58,7 +58,9 @@ class PanAndZoom {
    * @param {Point} newCenter
    */
   panTo(newCenter) {
+    console.log(this.view.bounds.center);
     this.view.center = this._restrictViewportToViewBounds(newCenter);
+    console.log(this.view.bounds.center);
   }
 
   /**
@@ -80,15 +82,37 @@ class PanAndZoom {
     let correctedX = newCenter.x;
     let correctedY = newCenter.y;
 
-    if (newCenter.x - width / 2 < 0 || newCenter.x + width / 2 > unscaledViewWidth) {
-      correctedX = width / 2;
+    if (this.view.bounds.topLeft.x < 0) {
+      correctedX = this.view.bounds.width / 2;
     }
 
-    if (newCenter.y - height / 2 < 0 || newCenter.y + height / 2 > unscaledViewHeight) {
-      correctedY = height / 2;
+    if (this.view.bounds.topLeft.y < 0) {
+      correctedY = this.view.bounds.height / 2;
     }
 
-    return new paper.Point(correctedX, correctedY);
+    if (this.view.bounds.bottomRight.x > unscaledViewWidth) {
+      correctedX = unscaledViewWidth - width / 2;
+    }
+
+    if (this.view.bounds.bottomRight.y > unscaledViewHeight) {
+      correctedY = unscaledViewHeight - height / 2;
+    }
+
+    //console.log('==========');
+    //console.log(width, height);
+    //console.log(this.view.size.width, this.view.size.height)
+    //console.log(unscaledViewWidth, unscaledViewHeight);
+    //console.log(width / unscaledViewWidth);
+    //console.log(this.view.bounds.width);
+    //console.log(this.view.viewSize.width);
+    //console.log(this.view.size.width);
+    //console.log(this.view.bounds.topLeft.x, this.view.bounds.topLeft.y, this.view.bounds.bottomRight.x, this.view.bounds.bottomRight.y)
+    //console.log(correctedX, correctedY);
+    //console.log(this.view.center.x, this.view.center.y);
+    //console.log('==========');
+
+    return newCenter;
+    //return new paper.Point(correctedX, correctedY);
   }
 }
 
