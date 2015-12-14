@@ -8,6 +8,8 @@
     }
 
     > .thumbnail {
+      border-top: 2px solid transparent;
+      border-bottom: 2px solid transparent;
       overflow: hidden;
       text-align: center;
 
@@ -32,7 +34,6 @@
             content: '/';
           }
 
-
           .divider, .endFrameNumber {
             color: darkgray;
           }
@@ -41,18 +42,22 @@
     }
 
     > .thumbnail.active {
-      margin: 0;
-      border-top: 2px solid greenyellow;
-      border-bottom: 2px solid greenyellow;
+      border-color: $selected-frame;
+    }
+
+    .thumbnail-spacer.active {
+      border-color: $selected-frame;
     }
 
     > .thumbnail-spacer {
+      border-top: 2px solid transparent;
+      border-bottom: 2px solid transparent;
       display: block;
       width: 8px;
       position: relative;
 
       div.frame-range-bracket {
-        background-color: greenyellow;
+        background-color: $selected-frame;
         width: 8px;
         position: absolute;
         top: 0;
@@ -64,11 +69,6 @@
         position: absolute;
         top: 0;
         bottom: 0;
-      }
-
-      > .thumbnail-spacer.active {
-        border-top: 2px solid greenyellow;
-        border-bottom: 2px solid greenyellow;
       }
     }
   }

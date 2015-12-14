@@ -80,7 +80,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/php-stdlib.git",
-                "reference": "3db251b5bef638c8e2fca5603ad9db1da90e9429"
+                "reference": "615c818f514f202dac8c201a957b3bc14150d342"
             },
             "require": {
                 "phake/phake": "dev-master",
@@ -115,7 +115,7 @@
                 "stdlib",
                 "utils"
             ],
-            "time": "2015-05-15 11:47:21"
+            "time": "2015-12-14 10:41:32"
         },
         {
             "name": "crosscan/worker-pool",
@@ -447,7 +447,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/couchdb-client/zipball/9ef577e6507baf39d17424937c1a0e6d86f81c40",
+                "url": "https://api.github.com/repos/doctrine/couchdb-client/zipball/4d3aa736649d12d1c65cfff6fa6b0e251de112b1",
                 "reference": "9ef577e6507baf39d17424937c1a0e6d86f81c40",
                 "shasum": ""
             },
@@ -501,7 +501,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/couchdb-odm/zipball/425625d88729630f42908d5ab6e4f7fdbd6e0f18",
+                "url": "https://api.github.com/repos/doctrine/couchdb-odm/zipball/51d328892dbe1097b049ee42c66b49da0789b68a",
                 "reference": "425625d88729630f42908d5ab6e4f7fdbd6e0f18",
                 "shasum": ""
             },
@@ -1178,7 +1178,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/45d6f40178216a840885b4ca6d7de9e67068568a",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/e39b040e272c72f0a090c67d802e1d3b2d0b0313",
                 "reference": "45d6f40178216a840885b4ca6d7de9e67068568a",
                 "shasum": ""
             },
@@ -1857,7 +1857,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mlively/Phake/zipball/9919929da137fac79624188386edeaa3f9b81ed2",
+                "url": "https://api.github.com/repos/mlively/Phake/zipball/9c3c287ef3f23d5ca438917ab1a4f8c47b654b4b",
                 "reference": "9919929da137fac79624188386edeaa3f9b81ed2",
                 "shasum": ""
             },
@@ -2825,7 +2825,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/19a1753fc1d7ea5b1b1d0de732b551df54ce8a98",
+                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/d6bda387d753b04b134c038a2a5c78b97bfea45a",
                 "reference": "19a1753fc1d7ea5b1b1d0de732b551df54ce8a98",
                 "shasum": ""
             },
