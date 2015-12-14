@@ -12,6 +12,15 @@ class PanAndZoom {
      * @type {paper.View}
      */
     this.view = view;
+
+    this._scaleToFitZoom = 1;
+  }
+
+  /**
+   * @param {Number} zoom
+   */
+  setScaleToFitZoom(zoom) {
+    this._scaleToFitZoom = zoom;
   }
 
   /**
@@ -58,9 +67,7 @@ class PanAndZoom {
    * @param {Point} newCenter
    */
   panTo(newCenter) {
-    console.log(this.view.bounds.center);
     this.view.center = this._restrictViewportToViewBounds(newCenter);
-    console.log(this.view.bounds.center);
   }
 
   /**
@@ -76,43 +83,29 @@ class PanAndZoom {
     const width = this.view.bounds.width;
     const height = this.view.bounds.height;
 
-    const unscaledViewWidth = this.view.viewSize.getWidth();
-    const unscaledViewHeight = this.view.viewSize.getHeight();
+    const unscaledViewWidth = this.view.viewSize.width / this._scaleToFitZoom;
+    const unscaledViewHeight = this.view.viewSize.height / this._scaleToFitZoom;
 
     let correctedX = newCenter.x;
     let correctedY = newCenter.y;
 
-    if (this.view.bounds.topLeft.x < 0) {
+    if (newCenter.x - this.view.bounds.width / 2 < 0) {
       correctedX = this.view.bounds.width / 2;
     }
 
-    if (this.view.bounds.topLeft.y < 0) {
+    if (newCenter.y - this.view.bounds.height / 2 < 0) {
       correctedY = this.view.bounds.height / 2;
     }
 
-    if (this.view.bounds.bottomRight.x > unscaledViewWidth) {
+    if (newCenter.x + this.view.bounds.width / 2 > unscaledViewWidth) {
       correctedX = unscaledViewWidth - width / 2;
     }
 
-    if (this.view.bounds.bottomRight.y > unscaledViewHeight) {
+    if (newCenter.y + this.view.bounds.height / 2 > unscaledViewHeight) {
       correctedY = unscaledViewHeight - height / 2;
     }
 
-    //console.log('==========');
-    //console.log(width, height);
-    //console.log(this.view.size.width, this.view.size.height)
-    //console.log(unscaledViewWidth, unscaledViewHeight);
-    //console.log(width / unscaledViewWidth);
-    //console.log(this.view.bounds.width);
-    //console.log(this.view.viewSize.width);
-    //console.log(this.view.size.width);
-    //console.log(this.view.bounds.topLeft.x, this.view.bounds.topLeft.y, this.view.bounds.bottomRight.x, this.view.bounds.bottomRight.y)
-    //console.log(correctedX, correctedY);
-    //console.log(this.view.center.x, this.view.center.y);
-    //console.log('==========');
-
-    return newCenter;
-    //return new paper.Point(correctedX, correctedY);
+    return new paper.Point(correctedX, correctedY);
   }
 }
 
