@@ -9,6 +9,10 @@ labeling_api::params::database_host: 'mysql'
 labeling_api::params::couchdb_host: 'couch'
 labeling_api::params::rabbitmq_host: 'workerqueue'
 
+php::cli::settings:
+  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.framework: symfony2
+
 php::fpm::settings:
   tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
   tideways/tideways.framework: symfony2
