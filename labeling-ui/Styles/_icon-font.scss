@@ -20,7 +20,9 @@
   }
 }
 
-[data-icon]:before { content: attr(data-icon); }
+[data-icon]:before {
+  content: attr(data-icon);
+}
 
 [data-icon]:before,
 .icon-area-city:before,
@@ -138,53 +140,54 @@
 .icon-view-zoom-resize:before { content: "\f130"; }
 .icon-weather-sunny:before { content: "\f131"; }
 
-$font-icon-font-area-city: "\f100";
-$font-icon-font-area-city-big: "\f101";
-$font-icon-font-area-residential: "\f102";
-$font-icon-font-area-residential2: "\f103";
-$font-icon-font-area-siburban-big: "\f104";
-$font-icon-font-area-suburban: "\f105";
-$font-icon-font-bookmark: "\f106";
-$font-icon-font-control-backwards: "\f107";
-$font-icon-font-control-forwards: "\f108";
-$font-icon-font-control-next: "\f109";
-$font-icon-font-control-pause: "\f10a";
-$font-icon-font-control-play: "\f10b";
-$font-icon-font-control-play-steps: "\f10c";
-$font-icon-font-control-previous: "\f10d";
-$font-icon-font-down: "\f10e";
-$font-icon-font-general-chat: "\f10f";
-$font-icon-font-general-faq: "\f110";
-$font-icon-font-general-loggedin: "\f111";
-$font-icon-font-general-loggedout: "\f112";
-$font-icon-font-general-settings: "\f113";
-$font-icon-font-general-timer: "\f114";
-$font-icon-font-help: "\f115";
-$font-icon-font-left: "\f116";
-$font-icon-font-next: "\f117";
-$font-icon-font-ok: "\f118";
-$font-icon-font-precipitation-norain: "\f119";
-$font-icon-font-precipitation-rain: "\f11a";
-$font-icon-font-previous: "\f11b";
-$font-icon-font-right: "\f11c";
-$font-icon-font-selection-add: "\f11d";
-$font-icon-font-selection-delete: "\f11e";
-$font-icon-font-selection-end: "\f11f";
-$font-icon-font-selection-forwards: "\f120";
-$font-icon-font-selection-generate: "\f121";
-$font-icon-font-selection-goend: "\f122";
-$font-icon-font-selection-gostart: "\f123";
-$font-icon-font-selection-off: "\f124";
-$font-icon-font-selection-off2: "\f125";
-$font-icon-font-selection-on: "\f126";
-$font-icon-font-selection-start: "\f132";
-$font-icon-font-selection-view: "\f127";
-$font-icon-font-traffic-moderate: "\f129";
-$font-icon-font-up: "\f12a";
-$font-icon-font-view-brightness: "\f12b";
-$font-icon-font-view-fullscreen: "\f12c";
-$font-icon-font-view-zoom: "\f12d";
-$font-icon-font-view-zoom-in: "\f12e";
-$font-icon-font-view-zoom-out: "\f12f";
-$font-icon-font-view-zoom-resize: "\f130";
-$font-icon-font-weather-sunny: "\f131";
+
+$font-icon-font-area-city: "\f100"; 
+$font-icon-font-area-city-big: "\f101"; 
+$font-icon-font-area-residential: "\f102"; 
+$font-icon-font-area-residential2: "\f103"; 
+$font-icon-font-area-siburban-big: "\f104"; 
+$font-icon-font-area-suburban: "\f105"; 
+$font-icon-font-bookmark: "\f106"; 
+$font-icon-font-control-backwards: "\f107"; 
+$font-icon-font-control-forwards: "\f108"; 
+$font-icon-font-control-next: "\f109"; 
+$font-icon-font-control-pause: "\f10a"; 
+$font-icon-font-control-play: "\f10b"; 
+$font-icon-font-control-play-steps: "\f10c"; 
+$font-icon-font-control-previous: "\f10d"; 
+$font-icon-font-down: "\f10e"; 
+$font-icon-font-general-chat: "\f10f"; 
+$font-icon-font-general-faq: "\f110"; 
+$font-icon-font-general-loggedin: "\f111"; 
+$font-icon-font-general-loggedout: "\f112"; 
+$font-icon-font-general-settings: "\f113"; 
+$font-icon-font-general-timer: "\f114"; 
+$font-icon-font-help: "\f115"; 
+$font-icon-font-left: "\f116"; 
+$font-icon-font-next: "\f117"; 
+$font-icon-font-ok: "\f118"; 
+$font-icon-font-precipitation-norain: "\f119"; 
+$font-icon-font-precipitation-rain: "\f11a"; 
+$font-icon-font-previous: "\f11b"; 
+$font-icon-font-right: "\f11c"; 
+$font-icon-font-selection-add: "\f11d"; 
+$font-icon-font-selection-delete: "\f11e"; 
+$font-icon-font-selection-end: "\f11f"; 
+$font-icon-font-selection-forwards: "\f120"; 
+$font-icon-font-selection-generate: "\f121"; 
+$font-icon-font-selection-goend: "\f122"; 
+$font-icon-font-selection-gostart: "\f123"; 
+$font-icon-font-selection-off: "\f124"; 
+$font-icon-font-selection-off2: "\f125"; 
+$font-icon-font-selection-on: "\f126"; 
+$font-icon-font-selection-start: "\f132"; 
+$font-icon-font-selection-view: "\f127"; 
+$font-icon-font-traffic-moderate: "\f129"; 
+$font-icon-font-up: "\f12a"; 
+$font-icon-font-view-brightness: "\f12b"; 
+$font-icon-font-view-fullscreen: "\f12c"; 
+$font-icon-font-view-zoom: "\f12d"; 
+$font-icon-font-view-zoom-in: "\f12e"; 
+$font-icon-font-view-zoom-out: "\f12f"; 
+$font-icon-font-view-zoom-resize: "\f130"; 
+$font-icon-font-weather-sunny: "\f131"; 

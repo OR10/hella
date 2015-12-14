@@ -69,11 +69,11 @@ output:
 # -----------------------------------------------------------------------------
 
 templates:
-- scss
+- _icon-font.scss
 #- preview
 #- my-custom-template.yml
 
-#preprocessor_path: ../fonts/
+preprocessor_path: ../Fonts/icons/
 
 
 # -----------------------------------------------------------------------------
