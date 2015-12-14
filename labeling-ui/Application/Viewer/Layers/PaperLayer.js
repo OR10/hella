@@ -1,4 +1,5 @@
 import EventEmitter from 'event-emitter';
+import paper from 'paper';
 
 /**
  * Base class for all layers using PaperJs
@@ -8,11 +9,25 @@ import EventEmitter from 'event-emitter';
  */
 class PaperLayer extends EventEmitter {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor($scope, drawingContextService) {
+  constructor(width, height, $scope, drawingContextService) {
     super();
+
+    /**
+     * @type {Number}
+     * @protected
+     */
+    this._height = height;
+
+    /**
+     * @type {Number}
+     * @protected
+     */
+    this._width = width;
 
     /**
      * @type {$rootScope.Scope}
@@ -31,6 +46,12 @@ class PaperLayer extends EventEmitter {
      * @private
      */
     this._element = null;
+
+    /**
+     * @type {number}
+     * @protected
+     */
+    this._scaleToFitZoom = 1;
   }
 
   render() {
@@ -66,6 +87,33 @@ class PaperLayer extends EventEmitter {
       scope.project.clear();
       scope.view.update();
     });
+  }
+
+  resize(width, height) {
+    this._context.withScope(scope => {
+      scope.view.viewSize = new paper.Size(width, height);
+
+      // Scale the view
+      scope.view.center = new paper.Point(0, 0);
+      scope.view.zoom = width / this._width;
+      scope.view.center = new paper.Point(Math.round(scope.view.size.width / 2), Math.round(scope.view.size.height / 2));
+
+      this._scaleToFitZoom = scope.view.zoom;
+
+      scope.view.update(true);
+    });
+  }
+
+  get zoom() {
+    return this._context.withScope(scope => scope.view.zoom);
+  }
+
+  get center() {
+    return this._context.withScope(scope => scope.view.center);
+  }
+
+  get bounds() {
+    return this._context.withScope(scope => scope.view.bounds);
   }
 
   exportData() {

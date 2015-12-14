@@ -44,6 +44,7 @@ System.config({
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
+    "raf": "npm:raf@3.1.0",
     "uuid": "npm:uuid@2.0.1",
     "github:angular-ui/ui-router@0.2.15": {
       "angular": "github:angular/bower-angular@1.4.7"
@@ -592,6 +593,9 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
+    "npm:performance-now@0.2.0": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:process@0.11.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0"
     },
@@ -605,6 +609,10 @@ System.config({
       "randombytes": "npm:randombytes@2.0.1"
     },
     "npm:punycode@1.3.2": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:raf@3.1.0": {
+      "performance-now": "npm:performance-now@0.2.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:randombytes@2.0.1": {

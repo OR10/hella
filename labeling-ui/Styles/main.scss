@@ -19,9 +19,12 @@ $button-selected: #353b42;
 @import "label-selection-wizard";
 @import "angular-range-slider";
 @import "viewer";
+@import "filmreel";
+@import "timeline";
 @import "icon-font";
 @import "icons";
 @import "header";
+@import "minimap";
 
 html, body {
   // Prevent overscroll
@@ -36,7 +39,7 @@ html, body {
 
 div.viewer{
   text-align: center;
-  box-shadow: inset 0px 0px 10px 0px #000000;
+  box-shadow: inset 0 0 10px 0 #000000;
 }
 
 .sidebar-left {
@@ -50,12 +53,27 @@ div.viewer{
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 2rem 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     background-color: $button;
     border-top: 2px solid $element-inline-divider;
 
-    .grid-block {
-      margin-bottom: 10px;
+    .zoom {
+      .zoom-controls {
+        padding: 2rem 0;
+      }
+    }
+
+    .settings {
+      padding: 2rem 0;
+
+      .grid-block {
+        margin-bottom: 10px;
+
+        .grid-content {
+          overflow: hidden;
+        }
+      }
     }
 
     .grid-block:last-child {
@@ -108,6 +126,10 @@ div.viewer{
   color: $headlines;
   border-bottom: 2px solid $element-inline-divider;
   cursor: pointer;
+
+  .grid-content {
+    overflow: hidden;
+  }
   
   .icon{
     color: $text;
@@ -144,55 +166,7 @@ div.viewer{
   display: block;
 }
 
-.thumbnail-reel-list{
-  margin-top: 5px;
-}
 
-.thumbnail {
-  text-align: center;
-
-  thumbnail {
-    cursor: pointer;
-    z-index: -1;
-  }
-
-  .frame-range {
-    position: relative;
-    border-radius: 20px;
-    width: 100px;
-    background-color: $button;
-    margin-top: -40px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    z-index: 10;
-
-    .current {
-      display: inline-block;
-      text-align: right;
-      width: 40%;
-    }
-
-    input[type=number] {
-      -moz-appearance: textfield;
-      -webkit-appearance: textfield;
-      margin: 0;
-      padding: 0;
-      border: none;
-      background: transparent;
-      display: inline;
-    }
-
-    input[type=number]:focus {
-      outline: none;
-    }
-
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-    }
-  }
-}
 
 .thumbnail-zone {
   flex: 0 0 percentage(3/24);

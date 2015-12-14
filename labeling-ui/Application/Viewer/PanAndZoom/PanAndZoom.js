@@ -6,64 +6,59 @@ import paper from 'paper';
 class PanAndZoom {
   /**
    * @param {paper.View} view
-   * @param {Number} zoomFactor
    */
-  constructor(view, zoomFactor = 1.05) {
+  constructor(view) {
     /**
      * @type {paper.View}
      */
     this.view = view;
-
-    /**
-     * @type {Number}
-     */
-    this.zoomFactor = zoomFactor;
   }
 
   /**
    * Adjust the view's zoom while keeping the given focal point stable
    *
-   * @param {Number} deltaY
-   * @param {Point} focalPoint
+   * @param {Number} newZoom
+   * @param {Point} [focalPoint]
    */
-  changeZoom(deltaY, focalPoint) {
-    const localFocalPoint = this.view.viewToProject(focalPoint);
-    let newZoom = this.view.zoom;
+  zoom(newZoom, focalPoint = null) {
+    let newCenter = this.view.center;
 
-    if (deltaY < 0) {
-      newZoom *= this.zoomFactor;
-    } else if (deltaY > 0) {
-      newZoom /= this.zoomFactor;
+    if (focalPoint !== null) {
+      const localFocalPoint = this.view.viewToProject(focalPoint);
+      const deltaZoom = this.view.zoom / newZoom;
+
+      const deltaCenter = localFocalPoint.subtract(this.view.center);
+      const centerTranslation = localFocalPoint.subtract(deltaCenter.multiply(deltaZoom)).subtract(this.view.center);
+
+      newCenter = this.view.center.add(centerTranslation);
     }
 
-    newZoom = Math.max(newZoom, 1);
-
-    const deltaZoom = this.view.zoom / newZoom;
-
-    const deltaCenter = localFocalPoint.subtract(this.view.center);
-    const centerTranslation = localFocalPoint.subtract(deltaCenter.multiply(deltaZoom)).subtract(this.view.center);
-
-    let newCenter = this.view.center.add(centerTranslation);
-
-    newCenter = this._restrictViewportToViewBounds(newCenter);
-
     this.view.zoom = newZoom;
-    this.view.center = newCenter;
+    this.view.center = this._restrictViewportToViewBounds(newCenter);
   }
 
   /**
    * Adjust the views center by the given deltas in x and y direction, panning the view
    *
-   * @param deltaX
-   * @param deltaY
+   * @param {Number} deltaX
+   * @param {Number} deltaY
    */
-  changeCenter(deltaX, deltaY) {
-    let offset = (new paper.Point(deltaX, deltaY));
+  panBy(deltaX, deltaY) {
+    let offset = new paper.Point(deltaX, deltaY);
 
     // Account for view to client pixel ratio when zoomed
     offset = offset.divide(this.view.zoom);
 
-    this.view.center = this._restrictViewportToViewBounds(this.view.center.add(offset));
+    this.panTo(this.view.center.add(offset));
+  }
+
+  /**
+   * Center the view on the given point. View bounds restrictions are enforced.
+   *
+   * @param {Point} newCenter
+   */
+  panTo(newCenter) {
+    this.view.center = this._restrictViewportToViewBounds(newCenter);
   }
 
   /**

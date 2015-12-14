@@ -8,7 +8,7 @@ import PaperShape from './PaperShape';
  */
 class PaperCircle extends PaperShape {
   /**
-   * @param {LabeledThing} labeledThingInFrame
+   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Point} center
    * @param {Number} radius

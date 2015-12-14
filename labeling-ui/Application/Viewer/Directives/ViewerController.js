@@ -3,6 +3,8 @@ import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
 import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
+import Viewport from '../Models/Viewport';
+import paper from 'paper';
 
 /**
  * @class ViewerController
@@ -18,6 +20,7 @@ class ViewerController {
   /**
    * @param {angular.Scope} $scope
    * @param {angular.element} $element
+   * @param {angular.window} $window
    * @param {DrawingContextService} drawingContextService
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {FrameGateway} frameGateway
@@ -28,10 +31,12 @@ class ViewerController {
    * @param {$interval} $interval
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
+   * @param {AnimationFrameService} animationFrameService
    * @param {angular.$q} $q
    */
   constructor($scope,
               $element,
+              $window,
               drawingContextService,
               taskFrameLocationGateway,
               frameGateway,
@@ -42,8 +47,8 @@ class ViewerController {
               $interval,
               labeledThingGateway,
               abortablePromiseFactory,
-              $q
-  ) {
+              animationFrameService,
+              $q) {
     /**
      * List of supported image types for this component
      *
@@ -57,6 +62,12 @@ class ViewerController {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {angular.element}
+     * @private
+     */
+    this._$element = $element;
 
     /**
      * @type {TaskFrameLocationGateway}
@@ -205,24 +216,54 @@ class ViewerController {
      */
     this._labeledThingGateway = labeledThingGateway;
 
-    const eventDelegationLayer = new EventDelegationLayer();
-    const thingLayer = new ThingLayer($scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
-    this._backgroundLayer = new BackgroundLayer($scope.$new(), drawingContextService);
+    /**
+     * @type {HtmlElement}
+     */
+    this._layerContainer = $element.find('.layer-container');
 
-    eventDelegationLayer.attachToDom($element.find('.event-delegation-layer')[0]);
-    thingLayer.attachToDom($element.find('.annotation-layer')[0]);
+    const {width, height} = this.video.metaData;
+    this._contentWidth = width;
+    this._contentHeight = height;
+
+    const eventDelegationLayer = new EventDelegationLayer();
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
+    this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
+
+    this._resizeDebounced = animationFrameService.debounce(() => this._resize());
+
+    // TODO needs to be called on side element resize as well
+    $window.addEventListener('resize', this._resizeDebounced);
+
+    $scope.$on('$destroy', () => {
+      $window.removeEventListener('resize', this._resizeDebounced);
+    });
+
+    const eventDelegationLayerElement = $element.find('.event-delegation-layer');
+    eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
+
+    eventDelegationLayerElement.on('mousewheel', this._handleScroll.bind(this));
+    eventDelegationLayerElement.on('mousedown', this._handleMouseDown.bind(this));
+    eventDelegationLayerElement.on('mousemove', this._handleMouseMove.bind(this));
+    eventDelegationLayerElement.on('mouseup', this._handleMouseUp.bind(this));
+    eventDelegationLayerElement.on('mouseleave', this._handleMouseLeave.bind(this));
+
+    this._thingLayer.attachToDom($element.find('.annotation-layer')[0]);
     this._backgroundLayer.attachToDom($element.find('.background-layer')[0]);
 
-    thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
+    // Something seemingly still resizes after this point. We simply bump
+    // the resize to the next animation frame to avoid this.
+    this._resizeDebounced();
+
+    this._thingLayer.on('shape:new', shape => this._onNewShape(shape));
+    this._thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
-    this._layerManager.addLayer('annotations', thingLayer);
+    this._layerManager.addLayer('annotations', this._thingLayer);
     this._layerManager.addLayer('background', this._backgroundLayer);
 
 
     $scope.$watch('vm.activeTool', newActiveTool => {
-      thingLayer.activateTool(newActiveTool);
+      this._thingLayer.activateTool(newActiveTool);
     });
 
     // Reapply filters if they changed
@@ -254,11 +295,70 @@ class ViewerController {
       this._stopPlaying();
     });
 
+    $scope.$watchGroup([
+      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
+      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
+    ], ([newStart, newEnd], [oldStart, oldEnd]) => {
+      if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
+        // TODO this is still subject to a race condition. The LabeledThing model has changed here but
+        // the change might not yet have arrived at the backend. Loading the (potentially) updated
+        // LabeledThingInFrame data now might thus provide stale state.
+        this._updateLabeledThingsInFrame();
+      }
+    });
+
+    $scope.$watchGroup(['vm.viewport.zoom', 'vm.viewport.center'], ([newZoom, newCenter]) => {
+      if (newZoom && newZoom !== this._backgroundLayer.zoom) {
+        this._zoom(newZoom);
+      }
+
+      const currentCenter = this._backgroundLayer.center;
+      if (newCenter && newCenter.x !== currentCenter.x && newCenter.y !== currentCenter.y) {
+        this._panTo(newCenter);
+      }
+    });
+
     $scope.$on('destroy', () => {
       if (this._renderLoopPromise) {
         this._$interval.cancel(this._renderLoopPromise);
       }
     });
+  }
+
+  _resize() {
+    const viewerHeight = this._$element.outerHeight(true);
+    const viewerWidth = this._$element.outerWidth(true);
+
+    const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
+    const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;
+
+    const layerContainerWidth = fittedWidth <= viewerWidth ? fittedWidth : viewerWidth;
+    const layerContainerHeight = fittedWidth <= viewerWidth ? viewerHeight : fittedHeight;
+
+    this._layerContainer.width(layerContainerWidth);
+    this._layerContainer.height(layerContainerHeight);
+
+    this._resizeLayers(layerContainerWidth, layerContainerHeight);
+    this._updateViewport();
+  }
+
+  _resizeLayers(width, height) {
+    this._backgroundLayer.resize(width, height);
+    this._thingLayer.resize(width, height);
+  }
+
+  _updateViewport() {
+    if (!this.viewport) {
+      this.viewport = new Viewport(
+        this._backgroundLayer.zoom,
+        this._backgroundLayer.center,
+        this._backgroundLayer.bounds
+      );
+    } else {
+      this.viewport.center = this._backgroundLayer.center;
+      this.viewport.zoom = this._backgroundLayer.zoom;
+      this.viewport.bounds = this._backgroundLayer.bounds;
+    }
   }
 
   /**
@@ -292,6 +392,24 @@ class ViewerController {
         this._backgroundLayer.applyFilter(filter);
       });
       this._backgroundLayer.render();
+
+      // Update labeledThingsInFrame
+      this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+
+      if (ghostedLabeledThingInFrame) {
+        this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+      }
+    });
+  }
+
+  _updateLabeledThingsInFrame() {
+    this._$q.all([
+      this._labeledThingInFrameBuffer.add(
+        this._loadLabeledThingsInFrame(this.framePosition.position)
+      ),
+      this._fetchGhostedLabeledThingInFrame(this.framePosition.position),
+    ]).then(([labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+      this.labeledThingsInFrame = [];
 
       // Update labeledThingsInFrame
       this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
@@ -423,8 +541,6 @@ class ViewerController {
    * @private
    */
   _onNewShape(shape) {
-    console.log('new shape: ', shape);
-
     const newLabeledThingInFrame = shape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
 
@@ -498,11 +614,110 @@ class ViewerController {
       this.playing = false;
     }
   }
+
+  _currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd) {
+    const currentPosition = this.framePosition.position;
+    let removedCurrentFramFromRange = false;
+
+    if (oldStart !== undefined && newStart !== undefined && newStart !== oldStart) {
+      if (newStart > oldStart && oldStart <= currentPosition && newStart > currentPosition) {
+        removedCurrentFramFromRange = true;
+      }
+    }
+
+    if (oldEnd !== undefined && newEnd !== undefined && newEnd !== oldEnd) {
+      if (newEnd < oldEnd && oldEnd >= currentPosition && newEnd < currentPosition) {
+        removedCurrentFramFromRange = true;
+      }
+    }
+
+    return removedCurrentFramFromRange;
+  }
+
+  _handleScroll(event) {
+    if (event.altKey) {
+      const focalPoint = new paper.Point(event.offsetX, event.offsetY);
+
+      if (event.deltaY < 0) {
+        this._$scope.$apply(() => {
+          this._zoomIn(focalPoint, 1.05);
+        });
+      } else if (event.deltaY > 0) {
+        this._$scope.$apply(() => {
+          this._zoomOut(focalPoint, 1.05);
+        });
+      }
+    }
+  }
+
+  _handleMouseDown(event) {
+    if (event.shiftKey) {
+      this._dragging = true;
+      this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
+    }
+  }
+
+  _handleMouseMove(event) {
+    if (this._dragging) {
+      const deltaX = this._lastKnownMousePosition.x - event.offsetX;
+      const deltaY = this._lastKnownMousePosition.y - event.offsetY;
+
+      this._$scope.$apply(() => {
+        this._panBy(deltaX, deltaY);
+      });
+
+      this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
+    }
+  }
+
+  _handleMouseUp() {
+    this._dragging = false;
+  }
+
+  _handleMouseLeave() {
+    this._dragging = false;
+  }
+
+  _zoom(newZoom) {
+    this._backgroundLayer.setZoom(newZoom);
+    this._thingLayer.setZoom(newZoom);
+
+    this._updateViewport();
+  }
+
+  _zoomIn(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
+    this._thingLayer.zoomIn(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
+  _zoomOut(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
+    this._thingLayer.zoomOut(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
+  _panTo(newCenter) {
+    this._backgroundLayer.panTo(newCenter);
+    this._thingLayer.panTo(newCenter);
+
+    this._updateViewport();
+  }
+
+  _panBy(deltaX, deltaY) {
+    this._backgroundLayer.panBy(deltaX, deltaY);
+    this._thingLayer.panBy(deltaX, deltaY);
+
+    this._updateViewport();
+  }
 }
 
 ViewerController.$inject = [
   '$scope',
   '$element',
+  '$window',
   'drawingContextService',
   'taskFrameLocationGateway',
   'frameGateway',
@@ -513,6 +728,7 @@ ViewerController.$inject = [
   '$interval',
   'labeledThingGateway',
   'abortablePromiseFactory',
+  'animationFrameService',
   '$q',
 ];
 

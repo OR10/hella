@@ -19,13 +19,15 @@ import PaperShape from '../Shapes/PaperShape';
  */
 class ThingLayer extends PanAndZoomPaperLayer {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    */
-  constructor($scope, drawingContextService, entityIdService, paperShapeFactory) {
-    super($scope, drawingContextService);
+  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory) {
+    super(width, height, $scope, drawingContextService);
 
     /**
      * @type {PaperShapeFactory}
@@ -122,7 +124,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
       if (oldShape !== null) {
-        console.log('deselect shape: ', oldShape.id);
         oldShape.deselect();
 
         // Remove a Ghost upon deselection
@@ -136,7 +137,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
 
       if (newShape) {
-        console.log('select shape: ', newShape.id);
         newShape.select();
       }
 

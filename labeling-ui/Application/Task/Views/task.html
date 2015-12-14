@@ -17,13 +17,18 @@
             <popup-panel popup-panel-state="vm.popupPanelState"
                          brightness-slider-value="vm.brightnessSliderValue"
                          contrast-slider-value="vm.contrastSliderValue"
+                         viewer-viewport="vm.viewerViewport"
+                         video="vm.video"
+                         task="vm.task"
+                         frame-position="vm.framePosition"
+                         filters="vm.filters"
             ></popup-panel>
-
         </div>
     </div>
 
-    <div class="grid-content viewer">
-        <viewer labeled-things-in-frame="vm.labeledThingsInFrame"
+    <div class="grid-block viewer">
+        <viewer class="grid-block align-center"
+                labeled-things-in-frame="vm.labeledThingsInFrame"
                 selected-paper-shape="vm.selectedPaperShape"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"
@@ -32,9 +37,10 @@
                 frame-position="vm.framePosition"
                 filters="vm.filters"
                 playing="vm.playing"
+                viewport="vm.viewerViewport"
         ></viewer>
     </div>
-    <div class="grid-content small-5 contain-right sidebar-right">
+    <div class="grid-content small-5 sidebar-right">
         <label-selector class="uses-bootstrap-3"
                         labeled-object="vm.labeledFrame"
                         structure="vm.labeledFrameStructure"
@@ -67,8 +73,8 @@
 
 <div class="thumbnail-zone grid-block">
     <div class="thumbnail-zone-layer small-3 grid-content"></div>
-    <div class="viewer-film-reel-container">
-        <film-reel class="grid-content" frame-position="vm.framePosition"
+    <div class="viewer-film-reel-container grid-block small-21">
+        <film-reel class="grid-block" frame-position="vm.framePosition"
                    task="vm.task"
                    video="vm.video"
                    filters="vm.filters"
@@ -79,10 +85,9 @@
 </div>
 <div class="timeline-container grid-block">
     <div class="timeline-layer small-3 grid-content">
-        <p class="text-center">Timeline header placeholder</p>
     </div>
-    <div class="timeline-inner grid-content">
-        <p class="text-center">Timeline main placeholder</p>
+    <div class="timeline-inner vertical align-center grid-block">
+        <h1>Timeline</h1>
     </div>
 </div>
 

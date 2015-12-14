@@ -11,17 +11,27 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 class ThumbnailReelController {
   /**
    * @param {$rootScope.Scope} $scope
+   * @param {window} $window
+   * @param {HTMLElement} $element
    * @param {$q} $q
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {AnimationFrameService} animationFrameService
    */
-  constructor($scope, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway) {
+  constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
     this.thumbnails = new Array(7).fill().map(() => ({location: null, labeledThingInFrame: null}));
+
+    /**
+     * Dimensions each thumbnail is allowed to consume
+     *
+     * @type {{width: int, height: int}}
+     */
+    this.thumbnailDimensions = {width: 0, height: 0};
 
     /**
      * List of supported image types for this component
@@ -36,6 +46,12 @@ class ThumbnailReelController {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {HTMLElement}
+     * @private
+     */
+    this._$element = $element;
 
     /**
      * @type {$q}
@@ -85,6 +101,19 @@ class ThumbnailReelController {
      */
     this._thumbnailLookahead = 3;
 
+    this._recalculateViewSizeDebounced = animationFrameService.debounce(() => this._recalculateViewSize());
+
+    const onWindowResized = () => {
+      this._recalculateViewSizeDebounced();
+    };
+
+    this._recalculateViewSizeDebounced();
+
+    $window.addEventListener('resize', onWindowResized);
+    $scope.$on('$destroy', () => {
+      $window.removeEventListener('resize', onWindowResized);
+    });
+
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
       // Pause updating during playback
@@ -112,6 +141,22 @@ class ThumbnailReelController {
     );
 
     this.handleDrop = this.handleDrop.bind(this);
+  }
+
+  _recalculateViewSize() {
+    const reelWidth = this._$element.outerWidth();
+    const reelHeight = this._$element.outerHeight();
+
+    const spacerWidth = this._$element.find('.thumbnail-spacer').outerWidth();
+    const spacerLength = this._$element.find('.thumbnail-spacer').length;
+
+    const thumbnailHeight = reelHeight;
+
+    const thumbnailWidth = Math.floor((reelWidth - (spacerLength * spacerWidth)) / 7);
+
+    this._$scope.$apply(
+      () => this.thumbnailDimensions = {width: thumbnailWidth, height: thumbnailHeight}
+    );
   }
 
   _updateLabeledThingInFrames(newPaperShape) {
@@ -278,6 +323,12 @@ class ThumbnailReelController {
     return thumbnail.location && thumbnail.location.frameNumber === selectedLabeledThing.frameRange.endFrameNumber;
   }
 
+  /**
+   * Update the start frame number for the currently selected thing
+   *
+   * @param index
+   * @private
+   */
   _setStartFrameNumber(index) {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
@@ -285,12 +336,26 @@ class ThumbnailReelController {
       const frameNumber = this.thumbnails[index + 1].location.frameNumber;
 
       if (frameNumber <= selectedLabeledThing.frameRange.endFrameNumber) {
+        const oldStartFrameNumber = selectedLabeledThing.frameRange.startFrameNumber;
+
         selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
+          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+          if (frameNumber > oldStartFrameNumber) {
+            this._updateLabeledThingInFrames(this.selectedPaperShape);
+          }
+        });
       }
     }
   }
 
+  /**
+   * Update the end frame number for the currently selected thing
+   *
+   * @param index
+   * @private
+   */
   _setEndFrameNumber(index) {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
@@ -298,8 +363,16 @@ class ThumbnailReelController {
       const frameNumber = this.thumbnails[index].location.frameNumber;
 
       if (frameNumber >= selectedLabeledThing.frameRange.startFrameNumber) {
+        const oldEndFrameNumber = selectedLabeledThing.frameRange.endFrameNumber;
+
         selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
+          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+          if (frameNumber < oldEndFrameNumber) {
+            this._updateLabeledThingInFrames(this.selectedPaperShape);
+          }
+        });
       }
     }
   }
@@ -316,11 +389,14 @@ class ThumbnailReelController {
 
 ThumbnailReelController.$inject = [
   '$scope',
+  '$window',
+  '$element',
   '$q',
   'abortablePromiseFactory',
   'taskFrameLocationGateway',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
+  'animationFrameService',
 ];
 
 export default ThumbnailReelController;

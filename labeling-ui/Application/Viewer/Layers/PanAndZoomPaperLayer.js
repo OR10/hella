@@ -1,7 +1,5 @@
 import PaperLayer from './PaperLayer';
 import PanAndZoom from '../PanAndZoom/PanAndZoom';
-import paper from 'paper';
-import angular from 'angular';
 
 /**
  * Special PaperLayer which provides basic pan and zoom functionality
@@ -10,11 +8,13 @@ import angular from 'angular';
  */
 class PanAndZoomPaperLayer extends PaperLayer {
   /**
+   * @param {int} width
+   * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContextService} drawingContextService
    */
-  constructor($scope, drawingContextService) {
-    super($scope, drawingContextService);
+  constructor(width, height, $scope, drawingContextService) {
+    super(width, height, $scope, drawingContextService);
   }
 
   attachToDom(element) {
@@ -23,54 +23,42 @@ class PanAndZoomPaperLayer extends PaperLayer {
     this._context.withScope(scope => {
       this._panAndZoom = new PanAndZoom(scope.view);
     });
-
-    angular.element(this._element).on('mousewheel', this._handleScroll.bind(this));
-    this._element.addEventListener('mousedown', this._handleMouseDown.bind(this));
-    this._element.addEventListener('mousemove', this._handleMouseMove.bind(this));
-    this._element.addEventListener('mouseup', this._handleMouseUp.bind(this));
-    this._element.addEventListener('mouseleave', this._handleMouseLeave.bind(this));
   }
 
-  _zoom(deltaY, focalPointX, focalPointY) {
-    const focalPoint = new paper.Point(focalPointX, focalPointY);
-
-    this._panAndZoom.changeZoom(deltaY, focalPoint);
+  setZoom(zoom, focalPoint = null) {
+    this._panAndZoom.zoom(zoom, focalPoint);
   }
 
-  _pan(deltaX, deltaY) {
-    this._panAndZoom.changeCenter(deltaX, deltaY);
+  /**
+   * @param {Point} focalPoint
+   * @param {Number} [zoomFactor]
+   */
+  zoomOut(focalPoint, zoomFactor = 1.05) {
+    const newZoom = Math.max(this.zoom / zoomFactor, this._scaleToFitZoom);
+
+    this._panAndZoom.zoom(newZoom, focalPoint);
+  }
+  /**
+   * Zoom the view in on the given point
+   */
+  zoomIn(focalPoint, zoomFactor) {
+    const newZoom = this.zoom * zoomFactor;
+
+    this._panAndZoom.zoom(newZoom, focalPoint);
   }
 
-  _handleScroll(event) {
-    if (event.altKey) {
-      this._zoom(event.deltaY, event.offsetX, event.offsetY);
-    }
+  /**
+   * Pan the view by the given offsets
+   *
+   * @param deltaX
+   * @param deltaY
+   */
+  panBy(deltaX, deltaY) {
+    this._panAndZoom.panBy(deltaX, deltaY);
   }
 
-  _handleMouseDown(event) {
-    if (event.shiftKey) {
-      this._dragging = true;
-      this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
-    }
-  }
-
-  _handleMouseMove(event) {
-    if (this._dragging) {
-      const deltaX = this._lastKnownMousePosition.x - event.offsetX;
-      const deltaY = this._lastKnownMousePosition.y - event.offsetY;
-
-      this._pan(deltaX, deltaY);
-
-      this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
-    }
-  }
-
-  _handleMouseUp() {
-    this._dragging = false;
-  }
-
-  _handleMouseLeave() {
-    this._dragging = false;
+  panTo(newCenter) {
+    this._panAndZoom.panTo(newCenter);
   }
 }
 

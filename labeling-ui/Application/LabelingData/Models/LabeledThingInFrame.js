@@ -1,4 +1,3 @@
-import {copy} from 'angular';
 import LabeledObject from './LabeledObject';
 
 /**
