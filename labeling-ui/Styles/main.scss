@@ -102,6 +102,13 @@ div.viewer{
   border-bottom: 2px solid $element-divider;
   align-items: center;
   flex: 0 0 percentage(1/24);
+
+
+  .grid-content{
+    padding: 0;
+    text-align: center;
+    min-width: 40px;
+  }
 }
 
 
@@ -112,10 +119,12 @@ div.viewer{
 
 .task-bar-left {
   border-right: 2px solid $element-divider;
+  min-width: 200px;
 }
 
 .task-bar-right {
   border-left: 2px solid $element-divider;
+  min-width: 200px;
 }
 
 

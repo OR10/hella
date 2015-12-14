@@ -26,87 +26,98 @@
             </button>
         </div>
     </div>
-    <div class="grid-content task-bar-center">
-        <button ng-hide="vm.selectedPaperShape === null"
-                class="button"
-                ng-click="vm.handleSetOpenBracketClicked()">
-            <i class="icon icon-selection-start"></i>
-        </button>
+    <div class="grid-block task-bar-center">
+        <div class="grid-content small-5"></div>
 
-        <button ng-hide="vm.selectedPaperShape === null"
-                class="button"
-                ng-click="vm.handleGotoOpenBracketClicked()">
-            <i class="icon icon-selection-gostart"></i>
-        </button>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
+                    class="button"
+                    ng-click="vm.handleGotoOpenBracketClicked()">
+                <i class="icon icon-selection-gostart"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
+                    class="button"
+                    ng-click="vm.handleSetOpenBracketClicked()">
+                <i class="icon icon-selection-start"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button tabIndex="3"
+                    class="button"
+                    ng-click="vm.handlePreviousFrameClicked()">
+                <i class="icon icon-control-previous"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button class="button"
+                    ng-click="vm.handlePlay()"
+                    ng-if="!vm.playing && vm.selectedPaperShape !== null"
+            >
+                <i class="icon icon-control-play-steps"></i>
+            </button>
+            <button class="button"
+                    ng-click="vm.handlePlay()"
+                    ng-if="!vm.playing && vm.selectedPaperShape === null"
+            >
+                <i class="icon icon-control-play"></i>
+            </button>
+            <button class="button"
+                    ng-click="vm.handlePause()"
+                    ng-if="vm.playing"
+            >
+                <i class="icon icon-control-pause"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button tabIndex="4"
+                    class="button"
+                    ng-click="vm.handleNextFrameClicked()">
+                <i class="icon icon-control-next"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
+                    class="button"
+                    ng-click="vm.handleSetCloseBracketClicked()">
+                <i class="icon icon-selection-end"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
+                    class="button"
+                    ng-click="vm.handleGotoCloseBracketClicked()">
+                <i class="icon icon-selection-goend"></i>
+            </button>
+        </div>
 
-        <button tabIndex="3"
-                class="button"
-                ng-click="vm.handlePreviousFrameClicked()">
-            <i class="icon icon-control-previous"></i>
-        </button>
-
-        <button class="button"
-                ng-click="vm.handlePlay()"
-                ng-if="!vm.playing && vm.selectedPaperShape !== null"
-        >
-            <i class="icon icon-control-play-steps"></i>
-        </button>
-
-        <button class="button"
-                ng-click="vm.handlePlay()"
-                ng-if="!vm.playing && vm.selectedPaperShape === null"
-        >
-            <i class="icon icon-control-play"></i>
-        </button>
-
-        <button class="button"
-                ng-click="vm.handlePause()"
-                ng-if="vm.playing"
-        >
-            <i class="icon icon-control-pause"></i>
-        </button>
-
-        <button tabIndex="4"
-                class="button"
-                ng-click="vm.handleNextFrameClicked()">
-            <i class="icon icon-control-next"></i>
-        </button>
-
-        <button ng-hide="vm.selectedPaperShape === null"
-                class="button"
-                ng-click="vm.handleGotoCloseBracketClicked()">
-            <i class="icon icon-selection-goend"></i>
-        </button>
-
-        <button ng-hide="vm.selectedPaperShape === null"
-                class="button"
-                ng-click="vm.handleSetCloseBracketClicked()">
-            <i class="icon icon-selection-end"></i>
-        </button>
-
+        <div class="grid-content small-5"></div>
     </div>
-    <div class="grid-content small-5 task-bar-right">
-
-        <button tabIndex="5"
-                class="button"
-                name="controls-button-move-tool"
-                ng-click="vm.handleMoveToolClicked()">
-            <i class="icon icon-selection-forwards"></i>
-        </button>
-
-        <button tabIndex="6"
-                class="button"
-                name="controls-button-scale-tool"
-                ng-click="vm.handleScaleToolClicked()">
-            <i class="icon icon-selection-off2"></i>
-        </button>
-
-        <button tabIndex="7"
-                class="button"
-                ng-click="vm.handleNewLabeledThingClicked()">
-            <i class="icon icon-selection-add"></i>
-        </button>
-        </li>
+    <div class="grid-block small-5 task-bar-right">
+        <div class="grid-content noscroll">
+            <button tabIndex="5"
+                    class="button"
+                    name="controls-button-move-tool"
+                    ng-click="vm.handleMoveToolClicked()">
+                <i class="icon icon-selection-forwards"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button tabIndex="6"
+                    class="button"
+                    name="controls-button-scale-tool"
+                    ng-click="vm.handleScaleToolClicked()">
+                <i class="icon icon-selection-off2"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button tabIndex="7"
+                    class="button"
+                    ng-click="vm.handleNewLabeledThingClicked()">
+                <i class="icon icon-selection-add"></i>
+            </button>
+        </div>
         <!--<li>
         <button tabIndex="8"
                 class="button"
@@ -143,10 +154,12 @@
                 ng-click="vm.handleNewPointClicked()">
             Point
         </button>>-->
-        <button ng-hide="vm.selectedPaperShape=== null"
-                class="button"
-                ng-click="vm.handleInterpolation()">
-            <i class="icon icon-selection-generate"></i>
-        </button>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape=== null"
+                    class="button"
+                    ng-click="vm.handleInterpolation()">
+                <i class="icon icon-selection-generate"></i>
+            </button>
+        </div>
     </div>
 </div>
