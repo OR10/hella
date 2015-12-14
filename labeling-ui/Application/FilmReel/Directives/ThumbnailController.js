@@ -21,8 +21,9 @@ class ThumbnailController {
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
    * @param {AnimationFrameService} animationFrameService
+   * @param {LoggerService} logger
    */
-  constructor($scope, $element, paperShapeFactory, drawingContextService, frameGateway, animationFrameService) {
+  constructor($scope, $element, paperShapeFactory, drawingContextService, frameGateway, animationFrameService, logger) {
     /**
      * Flag to indicate whether the frame number is shown or not
      *
@@ -123,14 +124,22 @@ class ThumbnailController {
     $scope.$watch('vm.dimensions', newDimensions => {
       const {width, height} = newDimensions;
 
+      logger.groupStart('thumbnail:dimensions', `Thumbnail (${$canvas.attr('id')}): vm.dimensions changed`);
+      logger.log('thumbnail:dimensions', `new    dimensions: ${width}x${height}`);
+
       // Original video width and height
       const {width: videoWidth, height: videoHeight} = this.labeledThingViewport;
 
       const fittedWidth = Math.round(videoWidth / videoHeight * height);
       const fittedHeight = Math.round(videoHeight / videoWidth * width);
 
+      logger.log('thumbnail:dimensions', `fitted dimensions: ${fittedWidth}x${fittedHeight}`);
+
       const canvasWidth = fittedWidth <= width ? fittedWidth : width;
       const canvasHeight = fittedWidth <= width ? height : fittedHeight;
+      logger.log('thumbnail:dimensions', `canvas dimensions: ${canvasWidth}x${canvasHeight}`);
+
+      logger.groupEnd('thumbnail:dimensions');
 
       this._context.withScope(scope => {
         scope.view.viewSize = new scope.Size(
@@ -275,6 +284,7 @@ ThumbnailController.$inject = [
   'drawingContextService',
   'frameGateway',
   'animationFrameService',
+  'loggerService',
 ];
 
 export default ThumbnailController;
