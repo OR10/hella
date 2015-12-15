@@ -5,6 +5,8 @@ import PaperCircle from '../Shapes/PaperCircle';
 
 /**
  * A Tool for scaling annotation shapes
+ *
+ * @implements ToolEvents
  */
 export default class ShapeScaleTool extends Tool {
   /**
@@ -28,42 +30,25 @@ export default class ShapeScaleTool extends Tool {
      * @private
      */
     this._modified = false;
-
-    this._tool.onMouseDown = this._mouseDown.bind(this);
-    this._tool.onMouseUp = this._mouseUp.bind(this);
-    this._tool.onMouseDrag = this._mouseDrag.bind(this);
   }
 
-  _mouseDown(event) {
+  onMouseDown(event, hitResult) {
     const point = event.point;
 
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        class: PaperShape,
-        fill: true,
-        bounds: true,
-        tolerance: this._options.hitTestTolerance,
-      });
+    this._hitResult = hitResult;
 
-      if (hitResult) {
-        this._hitResult = hitResult;
-
-        if (this._hitResult.type === 'bounds') {
-          switch (true) {
-            case this._hitResult.item instanceof PaperCircle:
-              this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
-              break;
-            default:
-              this._scaleAnchor = this._getScaleAnchor(point, this._hitResult.item);
-          }
-        }
-      } else {
-        this._hitResult = null;
+    if (this._hitResult.type === 'bounds') {
+      switch (true) {
+        case this._hitResult.item instanceof PaperCircle:
+          this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
+          break;
+        default:
+          this._scaleAnchor = this._getScaleAnchor(point, this._hitResult.item);
       }
-    });
+    }
   }
 
-  _mouseUp() {
+  onMouseUp() {
     if (this._hitResult && this._hitResult.item) {
       if (this._modified) {
         this._modified = false;
@@ -74,7 +59,7 @@ export default class ShapeScaleTool extends Tool {
     this._scaleAnchor = null;
   }
 
-  _mouseDrag(event) {
+  onMouseDrag(event) {
     if (!this._hitResult || this._hitResult.type !== 'bounds') {
       return;
     }

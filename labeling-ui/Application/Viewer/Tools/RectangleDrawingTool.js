@@ -6,6 +6,7 @@ import PaperRectangle from '../Shapes/PaperRectangle';
  * A tool for drawing rectangle shapes with the mouse cursor
  *
  * @extends DrawingTool
+ * @implements ToolEvents
  */
 class RectangleDrawingTool extends DrawingTool {
   /**
@@ -19,13 +20,10 @@ class RectangleDrawingTool extends DrawingTool {
 
     this._rect = null;
     this._startPosition = null;
-
-    this._tool.onMouseDown = this._startNewRect.bind(this);
-    this._tool.onMouseDrag = this._updateRect.bind(this);
-    this._tool.onMouseUp = this._completeRect.bind(this);
   }
 
-  _startNewRect(event) {
+
+  onMouseDown(event) {
     this._startPosition = event.point;
 
     // PaperJs doesn't deal well with single point rectangles so we cheat a little on the first draw
@@ -48,7 +46,7 @@ class RectangleDrawingTool extends DrawingTool {
     this.emit('rectangle:new', this._rect);
   }
 
-  _updateRect(event) {
+  onMouseDrag(event) {
     const point = event.point;
 
     const width = Math.abs(point.x - this._startPosition.x) || 1;
@@ -62,7 +60,7 @@ class RectangleDrawingTool extends DrawingTool {
     this.emit('rectangle:update', this._rect);
   }
 
-  _completeRect() {
+  onMouseUp() {
     // Ensure the parent/child structure is intact
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());

@@ -172,7 +172,7 @@ class MediaControlsController {
    * Handle the switch to the move tool
    */
   handleMoveToolClicked() {
-    this.activeTool = 'move';
+    this.activeTool = 'multi';
   }
 
   /**

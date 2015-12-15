@@ -10,6 +10,7 @@ import PointDrawingTool from '../Tools/PointDrawingTool';
 import ShapeMoveTool from '../Tools/ShapeMoveTool';
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
 import ZoomTool from '../Tools/ZoomTool';
+import MultiTool from '../Tools/MultiTool';
 
 import PaperShape from '../Shapes/PaperShape';
 
@@ -42,6 +43,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._logger = logger;
+
+    /**
+     * Tool for moving shapes
+     *
+     * @type {ShapeMoveTool}
+     * @private
+     */
+    this._multiTool = new MultiTool(this._context);
 
     /**
      * Tool for moving shapes
@@ -126,6 +135,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context, entityIdService);
+
+    /**
+     * Register tool to the MultiTool
+     */
+    this._multiTool.registerMoveTool(this._shapeMoveTool);
+    this._multiTool.registerScaleTool(this._shapeScaleTool);
+    this._multiTool.registerCreateTool(this._rectangleDrawingTool);
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);
@@ -332,9 +348,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._zoomOutTool.activate();
         this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
-      case 'move':
+      case 'multi':
       default:
-        this._shapeMoveTool.activate();
+        this._multiTool.activate();
         this._logger.log('thinglayer:tool', this._shapeMoveTool);
     }
     this._logger.groupEnd('thinglayer:tool');
