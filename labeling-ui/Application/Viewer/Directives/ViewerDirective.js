@@ -19,6 +19,7 @@ export default class ViewerDirective {
       filters: '=',
       playing: '=',
       viewport: '=',
+      hideLabeledThingsInFrame: '=',
     };
 
     this.controller = ViewerController;

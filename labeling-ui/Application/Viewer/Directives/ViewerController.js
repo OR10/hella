@@ -15,6 +15,7 @@ import paper from 'paper';
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {Filters} filters
+ * @property {boolean} hideLabeledThingsInFrame
  */
 class ViewerController {
   /**
@@ -34,6 +35,7 @@ class ViewerController {
    * @param {AnimationFrameService} animationFrameService
    * @param {angular.$q} $q
    * @param {EntityColorService} entityColorService
+   * @param {LoggerService} logger
    */
   constructor($scope,
               $element,
@@ -50,8 +52,8 @@ class ViewerController {
               abortablePromiseFactory,
               animationFrameService,
               $q,
-              entityColorService
-  ) {
+              entityColorService,
+              logger) {
     /**
      * List of supported image types for this component
      *
@@ -107,6 +109,12 @@ class ViewerController {
      * @private
      */
     this._applicationConfig = applicationConfig;
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = logger;
 
     /**
      * @type {$interval}
@@ -172,11 +180,6 @@ class ViewerController {
     this.selectedDrawingTool = null;
 
     /**
-     * @type {LabeledThingInFrame|null}
-     */
-    this.selectedLabeledThingInFrame = null;
-
-    /**
      * A structure holding all LabeledThingInFrames for the currently active frame
      *
      * @type {Object<string|LabeledThingInFrame>|null}
@@ -229,7 +232,7 @@ class ViewerController {
     this._contentHeight = height;
 
     const eventDelegationLayer = new EventDelegationLayer();
-    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, entityColorService);
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
@@ -734,6 +737,7 @@ ViewerController.$inject = [
   'animationFrameService',
   '$q',
   'entityColorService',
+  'loggerService',
 ];
 
 export default ViewerController;

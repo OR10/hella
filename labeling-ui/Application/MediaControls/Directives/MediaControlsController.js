@@ -7,6 +7,7 @@
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
+ * @property {boolean} hideLabeledThingsInFrame
  */
 class MediaControlsController {
   /**
@@ -108,6 +109,13 @@ class MediaControlsController {
 
     selectedLabeledThing.frameRange.endFrameNumber = framePosition;
     this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+  }
+
+  /**
+   * Handle the toggle of hiding all non selected {@link LabeledThingsInFrame}
+   */
+  handleHideLabeledThingsInFrameToggle() {
+    this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
   }
 
 

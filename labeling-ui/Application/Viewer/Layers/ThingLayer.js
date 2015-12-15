@@ -26,8 +26,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {EntityColorService} entityColorService
+   * @param {LoggerService} logger
    */
-  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, entityColorService) {
+  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -35,6 +36,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._paperShapeFactory = paperShapeFactory;
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = logger;
 
     /**
      * Tool for moving shapes
@@ -118,9 +125,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.addLabeledThingsInFrame(addedLabeledThingsInFrame, false);
       this.removeLabeledThingsInFrame(removedLabeledThingsInFrame, false);
 
-      this._context.withScope((scope) => {
-        scope.view.update();
-      });
+      this._applyHiddenLabeledThingsInFrameFilter();
+    });
+
+    $scope.$watch('vm.hideLabeledThingsInFrame', hide => {
+      this._applyHiddenLabeledThingsInFrameFilter();
     });
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
@@ -139,11 +148,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
       if (newShape) {
         newShape.select();
+      } else {
+        // If shape is deselected in hidden LabeledThingInFrame mode switch it off
+        if (this._$scope.vm.hideLabeledThingsInFrame) {
+          this._$scope.vm.hideLabeledThingsInFrame = false;
+        }
       }
 
-      this._context.withScope((scope) => {
-        scope.view.update();
-      });
+      this._applyHiddenLabeledThingsInFrameFilter();
     });
 
     this._shapeMoveTool.on('shape:update', shape => {
@@ -161,6 +173,38 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
     this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
     this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
+  }
+
+  /**
+   * Hide/Show all {@link PaperShape}s according to the current value of `vm.hideLabeledThingsInFrame`
+   *
+   * @private
+   */
+  _applyHiddenLabeledThingsInFrameFilter() {
+    this._context.withScope(scope => {
+      const drawnShapes = scope.project
+        .getItems({
+          'class': PaperShape,
+        });
+
+      const toHideShapes = drawnShapes
+        .filter(
+          paperShape => paperShape !== this._$scope.vm.selectedPaperShape
+        );
+
+      this._logger.groupStart('thinglayer:hiddenlabels', `Update visibility of non-selected LabeledThingsInFrame (${toHideShapes.length}/${drawnShapes.length})`);
+      toHideShapes
+        .forEach(
+          paperShape => {
+            const visible = !this._$scope.vm.hideLabeledThingsInFrame;
+            this._logger.log('thinglayer:hiddenlabels', (visible ? 'Showing ' : 'Hiding '), paperShape);
+            paperShape.visible = visible;
+          }
+        );
+      this._logger.groupEnd('thinglayer:hiddenlabels');
+
+      scope.view.update();
+    });
   }
 
   _onLayerClick(event) {
@@ -280,20 +324,23 @@ class ThingLayer extends PanAndZoomPaperLayer {
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {boolean?} update
+   * @param {boolean|undefined} selected
    * @return {Array.<paper.Shape>}
    */
-  addLabeledThingInFrame(labeledThingInFrame, update = true) {
+  addLabeledThingInFrame(labeledThingInFrame, update = true, selected = undefined) {
     const selectedPaperShape = this._$scope.vm.selectedPaperShape;
     const selectedLabeledThingInFrame = selectedPaperShape ? selectedPaperShape.labeledThingInFrame : null;
     const selectedLabeledThing = selectedLabeledThingInFrame ? selectedLabeledThingInFrame.labeledThing : null;
 
     const paperShapes = labeledThingInFrame.shapes.map(shape => {
       // Transport selection between frame changes
-      const selected = (
-        selectedLabeledThingInFrame
-        && selectedLabeledThingInFrame !== labeledThingInFrame
-        && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
-      );
+      if (selected === undefined) {
+        selected = (
+          selectedLabeledThingInFrame
+          && selectedLabeledThingInFrame !== labeledThingInFrame
+          && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
+        );
+      }
 
       return this._addShape(labeledThingInFrame, shape, selected, false);
     });

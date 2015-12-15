@@ -59,6 +59,13 @@ class TaskController {
     this.contrastSliderValue = 0;
 
     /**
+     * Flag indicating whether all {@link LabeledThingsInFrame}, which are not selected should be hidden or not
+     *
+     * @type {boolean}
+     */
+    this.hideLabeledThingsInFrame = false;
+
+    /**
      * Currently active {@link BrightnessFilter}
      *
      * @type {BrightnessFilter|null}
