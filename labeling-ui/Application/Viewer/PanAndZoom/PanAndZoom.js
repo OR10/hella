@@ -13,6 +13,12 @@ class PanAndZoom {
      */
     this.view = view;
 
+    /**
+     * Initial Zoom value used for scaled-to-fit zooming
+     *
+     * @type {number}
+     * @private
+     */
     this._scaleToFitZoom = 1;
   }
 
