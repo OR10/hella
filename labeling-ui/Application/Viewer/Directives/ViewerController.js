@@ -51,6 +51,7 @@ class ViewerController {
               abortablePromiseFactory,
               animationFrameService,
               logger,
+              $timeout,
               $q) {
     /**
      * Mouse cursor used, while hovering the viewer
@@ -237,7 +238,7 @@ class ViewerController {
     this._contentHeight = height;
 
     const eventDelegationLayer = new EventDelegationLayer();
-    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, logger);
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, logger, $timeout);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
@@ -574,9 +575,7 @@ class ViewerController {
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
 
-    this._$scope.$apply(() => {
-      this.activeTool = 'move';
-    });
+    this.activeTool = 'move';
   }
 
   _calculatePlaybackStartPosition() {
@@ -741,6 +740,7 @@ ViewerController.$inject = [
   'abortablePromiseFactory',
   'animationFrameService',
   'loggerService',
+  '$timeout',
   '$q',
 ];
 

@@ -28,8 +28,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {LoggerService} logger
+   * @param {$timeout} $timeout
    */
-  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, logger) {
+  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, logger, $timeout) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -43,6 +44,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._logger = logger;
+
+    /**
+     * @type {$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
 
     /**
      * Tool for moving shapes
@@ -87,6 +94,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    $scope.vm.newShapeDrawingTool = this._rectangleDrawingTool;
 
     /**
      * Tool for drawing ellipses
@@ -266,27 +274,26 @@ class ThingLayer extends PanAndZoomPaperLayer {
     // the labeledThingsInFrame
     shape.remove();
 
-    this._$scope.$apply(() => {
-      this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
-    });
+    this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
 
-    // The new shape has been rerendered now lets find it
-    const newShape = this._context.withScope(scope =>
-      scope.project.getItem({
-        id: shape.id,
-      })
-    );
-    // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
-    //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
-    //        suffice, as backend requests should only be made upon selection
-    newShape.draft();
+    // Process the next steps after the rerendering took place in the next digest cycle
+    this._$timeout(() => {
+      // The new shape has been rerendered now lets find it
+      const newShape = this._context.withScope(scope =>
+        scope.project.getItem({
+          id: shape.id,
+        })
+      );
+      // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
+      //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
+      //        suffice, as backend requests should only be made upon selection
+      newShape.draft();
 
-    // Reselect the new Shape
-    this._$scope.$apply(() => {
+      // Reselect the new Shape
       this._$scope.vm.selectedPaperShape = newShape;
-    });
 
-    this.emit('shape:new', newShape);
+      this.emit('shape:new', newShape);
+    }, 0);
   }
 
   /**

@@ -22,9 +22,14 @@ class RectangleDrawingTool extends DrawingTool {
     this._startPosition = null;
   }
 
-
   onMouseDown(event) {
-    this._startPosition = event.point;
+    this._$scope.$apply(
+      () => this.startShape(event.point)
+    );
+  }
+
+  startShape(point) {
+    this._startPosition = point;
 
     // PaperJs doesn't deal well with single point rectangles so we cheat a little on the first draw
     const endPosition = new paper.Point(
@@ -47,8 +52,12 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseDrag(event) {
-    const point = event.point;
+    this._$scope.$apply(
+      () => this.updateShape(event.point)
+    );
+  }
 
+  updateShape(point) {
     const width = Math.abs(point.x - this._startPosition.x) || 1;
     const height = Math.abs(point.y - this._startPosition.y) || 1;
 
@@ -61,6 +70,12 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseUp() {
+    this._$scope.$apply(
+      () => this.completeShape()
+    );
+  }
+
+  completeShape() {
     // Ensure the parent/child structure is intact
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());
