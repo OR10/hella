@@ -41,23 +41,75 @@
         ></viewer>
     </div>
     <div class="grid-content small-5 sidebar-right">
-        <label-selector class="uses-bootstrap-3"
-                        labeled-object="vm.labeledFrame"
-                        structure="vm.labeledFrameStructure"
-                        annotation="vm.labeledFrameAnnotation"
-                        task="vm.task"
-                        frame-position="vm.framePosition"
-                        sections="[{header: 'Frame Label'}]"
-        ></label-selector>
-        <label-selector style="display: none;" class="uses-bootstrap-3"
-                        labeled-object="vm.selectedPaperShape.labeledThing"
-                        structure="vm.labeledThingStructure"
-                        annotation="vm.labeledThingAnnotation"
-                        task="vm.task"
-                        frame-position="vm.framePosition"
-                        sections="[{header: 'Objekt Kategorie', limit: 1}, {header: 'Objekt Subkategorie', offset: 1}]"
-                        is-completed="vm.selectedLabeledThingInFrameCompletelyLabeled"
-        ></label-selector>
+        <div class="label-selector">
+            <div class="label-selector-heading">
+                <div class="grid-block">
+                    <h1>headline</h1>
+                </div>
+                <div class="grid-block">
+                    <div class="grid-content shrink">
+                        <button>
+                            <i class="icon icon-left"></i>
+                        </button>
+                    </div>
+                    <div class="grid-block vertical">
+                        <div class="grid-content text-center">Heading</div>
+                        <div class="grid-content text-center">....</div>
+                    </div>
+                    <div class="grid-content shrink">
+                        <button>
+                            <i class="icon icon-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="label-selector-content">
+                <div class="grid-block">
+                    <div class="grid-content small-8 label-selector-item">
+                        <button>
+                            <i class="icon icon-area-city"></i>
+                        </button>
+                    </div>
+                    <div class="grid-content small-8 label-selector-item">
+                        <button>
+                            <i class="icon icon-area-city"></i>
+                        </button>
+                    </div>
+                    <div class="grid-content small-8 label-selector-item">
+                        <button>
+                            <i class="icon icon-area-city"></i>
+                        </button>
+                    </div>
+                    <div class="grid-content small-8 label-selector-item">
+                        <button>
+                            <i class="icon icon-area-city"></i>
+                        </button>
+                    </div>
+                    <div class="grid-content small-8 label-selector-item">
+                        <button>
+                            <i class="icon icon-area-city"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<label-selector class="uses-bootstrap-3"-->
+        <!--labeled-object="vm.labeledFrame"-->
+        <!--structure="vm.labeledFrameStructure"-->
+        <!--annotation="vm.labeledFrameAnnotation"-->
+        <!--task="vm.task"-->
+        <!--frame-position="vm.framePosition"-->
+        <!--sections="[{header: 'Frame Label'}]"-->
+        <!--&gt;</label-selector>-->
+        <!--<label-selector style="display: none;" class="uses-bootstrap-3"-->
+        <!--labeled-object="vm.selectedPaperShape.labeledThing"-->
+        <!--structure="vm.labeledThingStructure"-->
+        <!--annotation="vm.labeledThingAnnotation"-->
+        <!--task="vm.task"-->
+        <!--frame-position="vm.framePosition"-->
+        <!--sections="[{header: 'Objekt Kategorie', limit: 1}, {header: 'Objekt Subkategorie', offset: 1}]"-->
+        <!--is-completed="vm.selectedLabeledThingInFrameCompletelyLabeled"-->
+        <!--&gt;</label-selector>-->
     </div>
 </div>
 
