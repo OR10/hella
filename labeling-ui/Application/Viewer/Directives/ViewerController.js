@@ -15,6 +15,7 @@ import paper from 'paper';
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {Filters} filters
+ * @property {boolean} hideLabeledThingsInFrame
  */
 class ViewerController {
   /**
@@ -32,6 +33,7 @@ class ViewerController {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {AnimationFrameService} animationFrameService
+   * @param {LoggerService} logger
    * @param {angular.$q} $q
    */
   constructor($scope,
@@ -48,6 +50,7 @@ class ViewerController {
               labeledThingGateway,
               abortablePromiseFactory,
               animationFrameService,
+              logger,
               $q) {
     /**
      * List of supported image types for this component
@@ -104,6 +107,12 @@ class ViewerController {
      * @private
      */
     this._applicationConfig = applicationConfig;
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = logger;
 
     /**
      * @type {$interval}
@@ -169,11 +178,6 @@ class ViewerController {
     this.selectedDrawingTool = null;
 
     /**
-     * @type {LabeledThingInFrame|null}
-     */
-    this.selectedLabeledThingInFrame = null;
-
-    /**
      * A structure holding all LabeledThingInFrames for the currently active frame
      *
      * @type {Object<string|LabeledThingInFrame>|null}
@@ -226,7 +230,7 @@ class ViewerController {
     this._contentHeight = height;
 
     const eventDelegationLayer = new EventDelegationLayer();
-    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, logger);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
@@ -729,6 +733,7 @@ ViewerController.$inject = [
   'labeledThingGateway',
   'abortablePromiseFactory',
   'animationFrameService',
+  'loggerService',
   '$q',
 ];
 
