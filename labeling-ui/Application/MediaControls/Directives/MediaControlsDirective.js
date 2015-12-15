@@ -20,6 +20,7 @@ class MediaControlsDirective {
       labeledThingsInFrame: '=',
       playing: '=',
       popupPanelState: '=',
+      hideLabeledThingsInFrame: '=',
     };
   }
 }

@@ -4,4 +4,8 @@
   &:hover {
     color: $icon-hover;
   }
+
+  &.toggled {
+    color: $icon-hover;
+  }
 }

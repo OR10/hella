@@ -113,6 +113,15 @@
                 <i class="icon icon-selection-add"></i>
             </button>
         </div>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
+                    class="button"
+                    ng-click="vm.handleHideLabeledThingsInFrameToggle()">
+                <i class="icon icon-selection-off"
+                   ng-class="{'toggled': vm.hideLabeledThingsInFrame}"
+                ></i>
+            </button>
+        </div>
         <!--<li>
         <button class="button"
                 ng-click="vm.handleNewEllipseClicked()">
