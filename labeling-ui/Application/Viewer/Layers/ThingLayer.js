@@ -9,6 +9,7 @@ import LineDrawingTool from '../Tools/LineDrawingTool';
 import PointDrawingTool from '../Tools/PointDrawingTool';
 import ShapeMoveTool from '../Tools/ShapeMoveTool';
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
+import ZoomTool from '../Tools/ZoomTool';
 
 import PaperShape from '../Shapes/PaperShape';
 
@@ -57,6 +58,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._shapeScaleTool = new ShapeScaleTool(this._context);
+
+    /**
+     * @type {null}
+     * @private
+     */
+    this._zoomInTool = new ZoomTool(ZoomTool.ZOOM_IN, $scope.$new(), this._context);
+
+    /**
+     * @type {null}
+     * @private
+     */
+    this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
 
     /**
      * Tool for drawing rectangles
@@ -267,34 +280,64 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   activateTool(toolName) {
     switch (toolName) {
+      case 'zoomIn':
+        this._$scope.vm.activeMouseCursor = 'zoom-in';
+        break;
+      case 'zoomOut':
+        this._$scope.vm.activeMouseCursor = 'zoom-out';
+        break;
+      default:
+        this._$scope.vm.activeMouseCursor = 'auto';
+    }
+
+    this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}, with cursor ${this._$scope.vm.activeMouseCursor}`);
+    switch (toolName) {
       case 'rectangle':
         this._rectangleDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._rectangleDrawingTool);
         break;
       case 'ellipse':
         this._ellipseDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._ellipseDrawingTool);
         break;
       case 'circle':
         this._circleDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._circleDrawingTool);
         break;
       case 'path':
         this._pathDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._pathDrawingTool);
         break;
       case 'polygon':
         this._polygonDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._polygonDrawingTool);
         break;
       case 'line':
         this._lineDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._lineDrawingTool);
         break;
       case 'point':
         this._pointDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._pointDrawingTool);
         break;
       case 'scale':
         this._shapeScaleTool.activate();
+        this._logger.log('thinglayer:tool', this._shapeScaleTool);
+        break;
+      case 'zoomIn':
+        this._zoomInTool.activate();
+        this._logger.log('thinglayer:tool', this._zoomInTool);
+        break;
+      case 'zoomOut':
+        this._zoomOutTool.activate();
+        this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
       case 'move':
       default:
         this._shapeMoveTool.activate();
+        this._logger.log('thinglayer:tool', this._shapeMoveTool);
     }
+    this._logger.groupEnd('thinglayer:tool');
   }
 
   /**

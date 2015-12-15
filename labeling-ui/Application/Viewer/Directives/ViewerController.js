@@ -53,6 +53,13 @@ class ViewerController {
               logger,
               $q) {
     /**
+     * Mouse cursor used, while hovering the viewer
+     *
+     * @type {string}
+     */
+    this.activeMouseCursor = 'auto';
+
+    /**
      * List of supported image types for this component
      *
      * @type {string[]}

@@ -205,12 +205,20 @@ class PopupPanelController {
     });
   }
 
-  zoomIn() {
-    this.viewerViewport.zoomIn(1.5);
+  zoomInToggle() {
+    if (this.activeTool === 'zoomIn') {
+      this.activeTool = 'move';
+    } else {
+      this.activeTool = 'zoomIn';
+    }
   }
 
-  zoomOut() {
-    this.viewerViewport.zoomOut(1.5);
+  zoomOutToggle() {
+    if (this.activeTool === 'zoomOut') {
+      this.activeTool = 'move';
+    } else {
+      this.activeTool = 'zoomOut';
+    }
   }
 
   scaleToFit() {

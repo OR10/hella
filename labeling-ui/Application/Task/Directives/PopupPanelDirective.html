@@ -33,13 +33,17 @@
         </div>
         <div class="grid-block shrink vertical zoom-controls">
             <div class="grid-block">
-                <button ng-click="vm.zoomIn()">
-                    <i class="icon icon-view-zoom-in"></i>
+                <button ng-click="vm.zoomInToggle()">
+                    <i class="icon icon-view-zoom-in"
+                       ng-class="{'toggled': vm.activeTool === 'zoomIn'}"
+                    ></i>
                 </button>
             </div>
             <div class="grid-block">
-                <button ng-click="vm.zoomOut()">
-                    <i class="icon icon-view-zoom-out"></i>
+                <button ng-click="vm.zoomOutToggle()">
+                    <i class="icon icon-view-zoom-out"
+                       ng-class="{'toggled': vm.activeTool === 'zoomOut'}"
+                    ></i>
                 </button>
             </div>
             <div class="grid-block">
