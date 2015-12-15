@@ -11,7 +11,7 @@ class ConsoleLogger {
   }
 
   groupStart(context, ...args) {
-    console.group(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
+    console.groupCollapsed(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
   }
 
   groupEnd(context) {
