@@ -23,13 +23,12 @@ class EntityColorService {
   }
 
   /**
-   * Selects a color for the given entity from the given color palette
+   * Selects a color from the given color palette
    *
-   * @param {LabeledThing} entity
    * @param {String} [colorPalette]
    * @returns {String}
    */
-  getColorForEntity(entity, colorPalette = 'primary') {
+  getColor(colorPalette = 'primary') {
     const colors = this._colorPalettes[colorPalette];
 
     if (!colors) {
