@@ -2,10 +2,10 @@
   font-size: 30px;
   overflow: hidden;
   &:hover {
-    color: $icon-hover;
+    color: $icon-hover !important;
   }
 
   &.toggled {
-    color: $icon-hover;
+    color: $icon-hover !important;
   }
 }
