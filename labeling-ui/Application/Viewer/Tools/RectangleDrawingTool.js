@@ -12,10 +12,11 @@ class RectangleDrawingTool extends DrawingTool {
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
+   * @param {EntityColorService} entityColorService
    * @param {Object?} options
    */
-  constructor($scope, drawingContext, entityIdService, options) {
-    super($scope, drawingContext, entityIdService, options);
+  constructor($scope, drawingContext, entityIdService, entityColorService, options) {
+    super($scope, drawingContext, entityIdService, entityColorService, options);
 
     this._rect = null;
     this._startPosition = null;
@@ -40,7 +41,9 @@ class RectangleDrawingTool extends DrawingTool {
       this._rect = new PaperRectangle(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        this._startPosition, endPosition, 'red',
+        this._startPosition,
+        endPosition,
+        labeledThingInFrame.labeledThing.color,
         true
       );
     });

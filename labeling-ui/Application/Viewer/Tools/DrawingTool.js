@@ -12,9 +12,10 @@ class DrawingTool extends Tool {
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
+   * @param {EntityColorService} entityColorService
    * @param {Object} [options]
    */
-  constructor($scope, drawingContext, entityIdService, options) {
+  constructor($scope, drawingContext, entityIdService, entityColorService, options) {
     super(drawingContext, options);
 
     /**
@@ -28,6 +29,12 @@ class DrawingTool extends Tool {
      * @protected
      */
     this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
   }
 
   /**
@@ -53,6 +60,10 @@ class DrawingTool extends Tool {
         endFrameNumber: framePosition.position,
       },
     });
+
+    const color = this._entityColorService.getColor();
+
+    newLabeledThing.color = color;
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
       id: newLabeledThingInFrameId,

@@ -17,7 +17,7 @@ class PaperShapeFactory {
    * @private
    */
   _createRectangle(labeledThingInFrame, shape) {
-    return new PaperRectangle(labeledThingInFrame, shape.id, shape.topLeft, shape.bottomRight, 'red');
+    return new PaperRectangle(labeledThingInFrame, shape.id, shape.topLeft, shape.bottomRight);
   }
 
   /**
@@ -27,7 +27,7 @@ class PaperShapeFactory {
    * @private
    */
   _createEllipse(labeledThingInFrame, shape) {
-    return new PaperEllipse(labeledThingInFrame, shape.id, shape.point, shape.size, 'red');
+    return new PaperEllipse(labeledThingInFrame, shape.id, shape.point, shape.size);
   }
 
   /**

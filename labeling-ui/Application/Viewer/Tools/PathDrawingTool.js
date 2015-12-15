@@ -12,10 +12,11 @@ class PathDrawingTool extends DrawingTool {
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
+   * @param {EntityColorService} entityColorService
    * @param {Object?} options
    */
-  constructor($scope, drawingContext, entityIdService, options) {
-    super($scope, drawingContext, entityIdService, options);
+  constructor($scope, drawingContext, entityIdService, entityColorService, options) {
+    super($scope, drawingContext, entityIdService, entityColorService, options);
 
     this._path = null;
 
@@ -24,10 +25,6 @@ class PathDrawingTool extends DrawingTool {
 
   _addPoint(event) {
     const point = event.point;
-    const drawingOptions = {
-      strokeColor: 'red',
-      strokeWidth: 2,
-    };
 
     if (event.event.altKey) {
       // Ensure the parent/child structure is intact
@@ -39,7 +36,7 @@ class PathDrawingTool extends DrawingTool {
     }
 
     if (!this._path) {
-      this._draw(point, drawingOptions);
+      this._draw(point);
       this.emit('path:new', this._path);
     } else {
       this._path.add(new paper.Point(event.event.offsetX, event.event.offsetY));
@@ -54,7 +51,8 @@ class PathDrawingTool extends DrawingTool {
       this._path = new PaperPath(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        [point], 'red',
+        [point],
+        labeledThingInFrame.labeledThing.color,
         true
       );
     });

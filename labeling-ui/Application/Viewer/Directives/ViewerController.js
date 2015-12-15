@@ -33,6 +33,7 @@ class ViewerController {
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {AnimationFrameService} animationFrameService
    * @param {angular.$q} $q
+   * @param {EntityColorService} entityColorService
    */
   constructor($scope,
               $element,
@@ -48,7 +49,9 @@ class ViewerController {
               labeledThingGateway,
               abortablePromiseFactory,
               animationFrameService,
-              $q) {
+              $q,
+              entityColorService
+  ) {
     /**
      * List of supported image types for this component
      *
@@ -226,7 +229,7 @@ class ViewerController {
     this._contentHeight = height;
 
     const eventDelegationLayer = new EventDelegationLayer();
-    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory);
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, entityColorService);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
@@ -730,6 +733,7 @@ ViewerController.$inject = [
   'abortablePromiseFactory',
   'animationFrameService',
   '$q',
+  'entityColorService',
 ];
 
 export default ViewerController;

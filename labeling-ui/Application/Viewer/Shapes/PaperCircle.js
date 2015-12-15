@@ -12,14 +12,13 @@ class PaperCircle extends PaperShape {
    * @param {String} shapeId
    * @param {Point} center
    * @param {Number} radius
-   * @param {String} strokeColor
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, center, radius, strokeColor, draft) {
+  constructor(labeledThingInFrame, shapeId, center, radius, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     this._shape = new paper.Path.Circle({
-      strokeColor,
+      strokeColor: this._strokeColor,
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,

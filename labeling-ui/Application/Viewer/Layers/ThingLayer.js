@@ -25,8 +25,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {DrawingContextService} drawingContextService
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
+   * @param {EntityColorService} entityColorService
    */
-  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory) {
+  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, entityColorService) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -57,7 +58,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {RectangleDrawingTool}
      * @private
      */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     /**
      * Tool for drawing ellipses
@@ -65,7 +66,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {EllipseDrawingTool}
      * @private
      */
-    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     /**
      * Tool for drawing circles
@@ -73,7 +74,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {CircleDrawingTool}
      * @private
      */
-    this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     /**
      * Tool for drawing paths
@@ -81,7 +82,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {PathDrawingTool}
      * @private
      */
-    this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     /**
      * Tool for drawing closed polygons
@@ -89,7 +90,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {PolygonDrawingTool}
      * @private
      */
-    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     /**
      * Tool for drawing lines
@@ -97,7 +98,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {LineDrawingTool}
      * @private
      */
-    this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     /**
      * Tool for drawing points
@@ -105,7 +106,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {PointDrawingTool}
      * @private
      */
-    this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context, entityIdService);
+    this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);

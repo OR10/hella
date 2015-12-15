@@ -10,14 +10,13 @@ class PaperRectangle extends PaperShape {
    * @param {String} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
-   * @param {String} strokeColor
    * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, strokeColor, draft = false) {
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, draft = false) {
     super(labeledThingInFrame, shapeId, draft);
 
     this._shape = new paper.Path.Rectangle({
-      strokeColor,
+      strokeColor: this._strokeColor,
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,

@@ -12,10 +12,11 @@ class CircleDrawingTool extends EllipseDrawingTool {
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
+   * @param {EntityColorService} entityColorService
    * @param {Object?} options
    */
-  constructor($scope, drawingContext, entityIdService, options) {
-    super($scope, drawingContext, entityIdService, options);
+  constructor($scope, drawingContext, entityIdService, entityColorService, options) {
+    super($scope, drawingContext, entityIdService, entityColorService, options);
   }
 
   _startNewEllipse(event) {
@@ -30,7 +31,9 @@ class CircleDrawingTool extends EllipseDrawingTool {
       this._shape = new PaperCircle(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        this._startPosition, radius, 'red',
+        this._startPosition,
+        radius,
+        labeledThingInFrame.labeledThing.color,
         true
       );
     });

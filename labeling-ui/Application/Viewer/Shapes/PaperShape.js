@@ -51,6 +51,12 @@ class PaperShape extends paper.Group {
      * @private
      */
     this._draft = draft;
+
+    /**
+     * @type {String}
+     * @protected
+     */
+    this._strokeColor = labeledThingInFrame.labeledThing.color;
   }
 
   get id() {
