@@ -336,6 +336,20 @@ class ViewerController {
     });
   }
 
+  zoomIn(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
+    this._thingLayer.zoomIn(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
+  zoomOut(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
+    this._thingLayer.zoomOut(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
   _resize() {
     const viewerHeight = this._$element.outerHeight(true);
     const viewerWidth = this._$element.outerWidth(true);
@@ -651,11 +665,11 @@ class ViewerController {
 
       if (event.deltaY < 0) {
         this._$scope.$apply(() => {
-          this._zoomIn(focalPoint, 1.05);
+          this.zoomIn(focalPoint, 1.05);
         });
       } else if (event.deltaY > 0) {
         this._$scope.$apply(() => {
-          this._zoomOut(focalPoint, 1.05);
+          this.zoomOut(focalPoint, 1.05);
         });
       }
     }
@@ -692,20 +706,6 @@ class ViewerController {
   _zoom(newZoom) {
     this._backgroundLayer.setZoom(newZoom);
     this._thingLayer.setZoom(newZoom);
-
-    this._updateViewport();
-  }
-
-  _zoomIn(focalPoint, zoomFactor) {
-    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
-    this._thingLayer.zoomIn(focalPoint, zoomFactor);
-
-    this._updateViewport();
-  }
-
-  _zoomOut(focalPoint, zoomFactor) {
-    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
-    this._thingLayer.zoomOut(focalPoint, zoomFactor);
 
     this._updateViewport();
   }

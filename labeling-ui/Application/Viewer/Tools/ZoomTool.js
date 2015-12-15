@@ -1,3 +1,4 @@
+import paper from 'paper';
 import Tool from './Tool';
 
 /**
@@ -21,9 +22,15 @@ class ZoomTool extends Tool {
     this._tool.onMouseUp = this._mouseUp.bind(this);
   }
 
-  _mouseUp() {
+  _mouseUp(event) {
     this._$scope.$apply(
-      () => this._$scope.vm.viewport[this._zoomFn](1.5)
+      () => this._$scope.vm[this._zoomFn](
+        new paper.Point(
+          event.event.offsetX,
+          event.event.offsetY,
+        ),
+        1.5
+      )
     );
   }
 }
