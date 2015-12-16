@@ -31,6 +31,7 @@ export default class DevServer {
     const defaultConfig = {
       baseURL: process.cwd(),
       assetPath: `${process.cwd()}/Public`,
+      indexFilename: 'index.html',
       systemConfigPath: 'system.config.js',
       entryPointExpression: 'main.js',
       buildOptions: {},
@@ -141,8 +142,10 @@ export default class DevServer {
   }
 
   createOneForAllTheThingzMiddleware(assetDirectory, target) {
+    const {indexFilename} = this.config;
+
     return (req, res, next) => {
-      if (!req.url.match(/^\/labeling\//)) {
+      if (!req.url.match(/^\/labeling(\/|$)/)) {
         return next();
       }
 
@@ -152,8 +155,10 @@ export default class DevServer {
       if (path === '/' && originalUrl.pathname.substr(-1) !== '/') {
         path = '';
       }
+
       const stream = send(req, path, {
         root: assetDirectory,
+        index: indexFilename,
       });
 
       stream.on('error', error => {
@@ -191,7 +196,7 @@ export default class DevServer {
 
   serve() {
     let {port} = this.config;
-    const {livereloadPort, assetPath, proxy: proxyConfig} = this.config;
+    const {livereloadPort, assetPath, indexFilename, proxy: proxyConfig} = this.config;
 
     if (process.env.PORT) {
       port = process.env.PORT;
@@ -202,7 +207,7 @@ export default class DevServer {
         const app = connect();
         app.use(morgan('dev'));
         app.use(this.serveSystemJsBundle.bind(this));
-        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/index.html`));
+        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/${indexFilename}`));
         app.use(proxy(proxyConfig));
         return app;
       })

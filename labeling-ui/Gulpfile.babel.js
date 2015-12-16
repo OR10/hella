@@ -110,6 +110,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
       const devServer = new DevServer({
         'baseURL': './',
         'assetPath': `${__dirname}/Distribution`,
+        'indexFilename': 'index-dev.html',
         'buildOptions': {
           'sfx': true,
           'lowResSourceMaps': true,
