@@ -193,8 +193,6 @@ class TaskController {
   _loadLabeledFrame(frameNumber) {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
-
-  saveLabeled
 }
 
 TaskController.$inject = [

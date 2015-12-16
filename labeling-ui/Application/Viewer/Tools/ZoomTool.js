@@ -27,7 +27,7 @@ class ZoomTool extends Tool {
       () => this._$scope.vm[this._zoomFn](
         new paper.Point(
           event.event.offsetX,
-          event.event.offsetY,
+          event.event.offsetY
         ),
         1.5
       )
