@@ -11,22 +11,19 @@ class LineDrawingTool extends PathDrawingTool {
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    * @param {EntityIdService} entityIdService
+   * @param {EntityColorService} entityColorService
    */
-  constructor(drawingContext, options, entityIdService) {
-    super(drawingContext, options, entityIdService);
+  constructor(drawingContext, options, entityIdService, entityColorService) {
+    super(drawingContext, options, entityIdService, entityColorService);
     this._startPoint = null;
   }
 
   _addPoint(event) {
     const point = event.point;
-    const drawingOptions = {
-      strokeColor: 'red',
-      strokeWidth: 2,
-    };
 
     if (!this._path) {
       this._startPoint = point;
-      this._draw(this._startPoint, drawingOptions);
+      this._draw(this._startPoint);
       this.emit('path:new', this._path);
     } else {
       this._path.add(point);
@@ -47,7 +44,8 @@ class LineDrawingTool extends PathDrawingTool {
       this._path = new PaperLine(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        [point], 'red',
+        [point],
+        labeledThingInFrame.labeledThing.color,
         true
       );
     });

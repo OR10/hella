@@ -7,16 +7,6 @@ import PaperCircle from '../Shapes/PaperCircle';
  * @extends CircleDrawingTool
  */
 class PointDrawingTool extends CircleDrawingTool {
-  /**
-   * @param {$rootScope.Scope} $scope
-   * @param {DrawingContext} drawingContext
-   * @param {EntityIdService} entityIdService
-   * @param {Object?} options
-   */
-  constructor($scope, drawingContext, entityIdService, options) {
-    super($scope, drawingContext, entityIdService, options);
-  }
-
   _startNewEllipse(event) {
     this._startPosition = event.point;
 
@@ -29,7 +19,9 @@ class PointDrawingTool extends CircleDrawingTool {
       this._shape = new PaperCircle(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        this._startPosition, radius, 'red',
+        this._startPosition,
+        radius,
+        labeledThingInFrame.labeledThing.color,
         true
       );
     });

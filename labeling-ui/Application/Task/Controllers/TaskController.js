@@ -59,6 +59,29 @@ class TaskController {
     this.contrastSliderValue = 0;
 
     /**
+     * Flag indicating whether all {@link LabeledThingsInFrame}, which are not selected should be hidden or not
+     *
+     * @type {boolean}
+     */
+    this.hideLabeledThingsInFrame = false;
+
+    /**
+     * Currently active frame position to be displayed inside the MediaControls
+     *
+     * This model will be manipulated by different directives in order to switch between frames.
+     *
+     * @type {FramePosition}
+     */
+    this.framePosition = new FramePosition(this.task.frameRange);
+
+    /**
+     * Drawing Tool used for initializing new empty shapes
+     *
+     * @type {Tool}
+     */
+    this.newShapeDrawingTool = null;
+
+    /**
      * Currently active {@link BrightnessFilter}
      *
      * @type {BrightnessFilter|null}
@@ -73,15 +96,6 @@ class TaskController {
      * @private
      */
     this._constrastFilter = null;
-
-    /**
-     * Currently active frame position to be displayed inside the MediaControls
-     *
-     * This model will be manipulated by different directives in order to switch between frames.
-     *
-     * @type {FramePosition}
-     */
-    this.framePosition = new FramePosition(this.task.frameRange);
 
     /**
      * @type {LabeledFrameGateway}

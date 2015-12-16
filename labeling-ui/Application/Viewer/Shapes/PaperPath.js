@@ -9,14 +9,13 @@ class PaperPath extends PaperShape {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Array.<Point>} points
-   * @param {String} strokeColor
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, points, strokeColor, draft) {
+  constructor(labeledThingInFrame, shapeId, points, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     this._shape = new paper.Path({
-      strokeColor,
+      strokeColor: this._strokeColor,
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,

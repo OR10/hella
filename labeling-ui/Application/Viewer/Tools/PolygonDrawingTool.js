@@ -14,7 +14,8 @@ export default class PolygonDrawingTool extends PathDrawingTool {
       this._path = new PaperPolygon(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        [point], 'red',
+        [point],
+        labeledThingInFrame.labeledThing.color,
         true
       );
     });

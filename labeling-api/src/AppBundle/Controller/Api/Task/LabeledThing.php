@@ -98,8 +98,11 @@ class LabeledThing extends Controller\Base
         if (!is_array($classes = $request->request->get('classes', []))) {
             throw new Exception\BadRequestHttpException();
         }
+        if (($lineColor = $request->request->get('lineColor')) === null) {
+            throw new Exception\BadRequestHttpException();
+        }
 
-        $labeledThing = new Model\LabeledThing($task);
+        $labeledThing = new Model\LabeledThing($task, $lineColor);
         $labeledThing->setId($labeledThingId);
         $labeledThing->setFrameRange($frameRange);
         $labeledThing->setClasses($classes);
@@ -144,8 +147,12 @@ class LabeledThing extends Controller\Base
         HttpFoundation\Request $request,
         Model\LabeledThing $labeledThing = null
     ) {
+        if (($lineColor = $request->request->get('lineColor')) === null) {
+            throw new Exception\BadRequestHttpException();
+        }
+
         if ($labeledThing === null) {
-            $labeledThing = new Model\LabeledThing($task);
+            $labeledThing = new Model\LabeledThing($task, $lineColor);
             $labeledThing->setId($request->attributes->get('_unresolvedLabeledThingId'));
         }
 

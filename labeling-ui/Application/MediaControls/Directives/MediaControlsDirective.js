@@ -20,6 +20,9 @@ class MediaControlsDirective {
       labeledThingsInFrame: '=',
       playing: '=',
       popupPanelState: '=',
+      hideLabeledThingsInFrame: '=',
+      newShapeDrawingTool: '=',
+      video: '=',
     };
   }
 }

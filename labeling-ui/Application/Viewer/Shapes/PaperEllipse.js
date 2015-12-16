@@ -10,14 +10,13 @@ class PaperEllipse extends PaperShape {
    * @param {String} shapeId
    * @param {Point} center
    * @param {Size} size
-   * @param {String} strokeColor
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, center, size, strokeColor, draft) {
+  constructor(labeledThingInFrame, shapeId, center, size, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     this._shape = new paper.Path.Ellipse({
-      strokeColor,
+      strokeColor: this._strokeColor,
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,

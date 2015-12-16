@@ -135,11 +135,14 @@ describe('LabeledThingInFrameGateway', () => {
     });
 
     gateway.saveLabeledThingInFrame(labeledThinIngFrame)
+      .then(() => {
+        done(new Error('Ghost was saved but should not have been.'));
+      })
       .catch(() => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $rootScope.$digest();
   });
 
   it('should delete a labeled thing in frame', done => {

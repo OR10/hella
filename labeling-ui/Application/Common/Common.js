@@ -8,6 +8,7 @@ import EntityIdService from './Services/EntityIdService';
 import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryProvider';
 import AnimationFrameService from './Services/AnimationFrameService';
 import LoggerServiceProvider from './Loggers/LoggerServiceProvider';
+import EntityColorService from './Services/EntityColorService';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
 
@@ -30,6 +31,7 @@ class Common extends Module {
     this.module.service('entityIdService', EntityIdService);
     this.module.service('animationFrameService', AnimationFrameService);
     this.module.service('statusGateway', StatusGateway);
+    this.module.service('entityColorService', EntityColorService);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);

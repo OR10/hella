@@ -74,6 +74,7 @@ class LabeledThingTest extends Tests\WebTestCase
                     'id' => '11aa239108f1419967ed8d6a1f5a765t',
                     'classes' => array('class1' => 'test'),
                     'incomplete' => true,
+                    'lineColor' => 'blue',
                 )
             )
         );
@@ -94,6 +95,7 @@ class LabeledThingTest extends Tests\WebTestCase
                     'id' => '11aa239108f1419967ed8d6a1f5a765t',
                     'classes' => array('class1' => 'test'),
                     'incomplete' => true,
+                    'lineColor' => 'blue',
                 )
             )
         );
@@ -118,6 +120,8 @@ class LabeledThingTest extends Tests\WebTestCase
                     'rev' => $labelingThing->getRev(),
                     'classes' => array('class1' => 'test'),
                     'incomplete' => true,
+                    'lineColor' => 'blue',
+
                 )
             )
         );
@@ -149,6 +153,7 @@ class LabeledThingTest extends Tests\WebTestCase
                         'startFrameNumber' => 10,
                         'endFrameNumber' => 10,
                     ),
+                    'lineColor' => 'blue',
                 )
             )
         );
@@ -185,6 +190,7 @@ class LabeledThingTest extends Tests\WebTestCase
                         'startFrameNumber' => 10,
                         'endFrameNumber' => 10,
                     ),
+                    'lineColor' => 'blue',
                 )
             )
         );
@@ -221,6 +227,7 @@ class LabeledThingTest extends Tests\WebTestCase
                         'startFrameNumber' => 10,
                         'endFrameNumber' => 10,
                     ),
+                    'lineColor' => 'blue',
                 )
             )
         );
@@ -251,6 +258,7 @@ class LabeledThingTest extends Tests\WebTestCase
                     'rev' => '324jh2jk4hkh234h',
                     'classes' => array('class1' => 'test'),
                     'incomplete' => true,
+                    'lineColor' => 'blue',
                 )
             )
         );

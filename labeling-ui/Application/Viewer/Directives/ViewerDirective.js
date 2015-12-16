@@ -19,6 +19,8 @@ export default class ViewerDirective {
       filters: '=',
       playing: '=',
       viewport: '=',
+      hideLabeledThingsInFrame: '=',
+      newShapeDrawingTool: '=',
     };
 
     this.controller = ViewerController;
