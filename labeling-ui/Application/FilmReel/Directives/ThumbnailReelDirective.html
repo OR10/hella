@@ -3,16 +3,20 @@
     <div class="thumbnail-spacer"
          ng-class="{'drop-target': vm.placeBracketSpacer(-1), 'active': vm.thumbnailSpacerInFrameRange(-1)}"
          data-jqyoui-options="{}"
-         data-drop="true"
+         data-drop="{{vm.placeBrakcetSpacer(-1)}}"
          jqyoui-droppable="{onDrop: 'vm.handleDrop(-1)'}"
     >
         <div ng-if="!(vm.placeStartBracket(-1) || vm.placeEndBracket(-1))" class="frame-range-bracket-space"/>
         <div ng-if="vm.placeStartBracket(-1)" class="frame-range-bracket start-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}"></div>
+             jqyoui-draggable="{animate:true}">
+            <span class="bracket-drag-handle"></span>
+        </div>
         <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}"></div>
+             jqyoui-draggable="{animate:true}">
+            <span class="bracket-drag-handle"></span>
+        </div>
     </div>
     <div class="thumbnail grid-block" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
         ng-class="{'active': vm.thumbnailInFrameRange($index)}"
@@ -33,15 +37,19 @@
          class="thumbnail-spacer"
          ng-class="{'drop-target': vm.placeBracketSpacer($index), 'active': vm.thumbnailSpacerInFrameRange($index)}"
          data-jqyoui-options="{}"
-         data-drop="true"
+         data-drop="{{vm.placeBracketSpacer($index)}}"
          jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
     >
         <div ng-if="!(vm.placeStartBracket($index) || vm.placeEndBracket($index))" class="frame-range-bracket-space"/>
-        <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket" data-drag="true"
+        <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket grid-block vertical align-center" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}"></div>
-        <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket" data-drag="true"
+             jqyoui-draggable="{animate:true}">
+            <i class="bracket-drag-handle"></i>
+        </div>
+        <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket grid-block vertical align-center" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}"></div>
+             jqyoui-draggable="{animate:true}">
+            <i class="bracket-drag-handle"></i>
+        </div>
     </div>
 </div>
