@@ -56,7 +56,7 @@ class PaperShape extends paper.Group {
      * @type {String}
      * @protected
      */
-    this._strokeColor = labeledThingInFrame.labeledThing.color;
+    this._strokeColor = labeledThingInFrame.labeledThing.lineColor;
   }
 
   get id() {
@@ -117,10 +117,12 @@ class PaperShape extends paper.Group {
   }
 
   select() {
+    this._shape.dashArray = [6, 2];
     this._shape.selected = true;
   }
 
   deselect() {
+    this._shape.dashArray = [];
     this._shape.selected = false;
   }
 

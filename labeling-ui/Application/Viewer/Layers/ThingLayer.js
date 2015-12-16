@@ -473,6 +473,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
   attachToDom(element) {
     super.attachToDom(element);
 
+    // Make selection color transparent
+    this._context.withScope(scope => {
+      scope.project.activeLayer.selectedColor = new scope.Color(0, 0, 0, 0);
+      scope.settings.handleSize = 8;
+    });
+
     element.addEventListener('mousedown', this._onLayerClick.bind(this));
   }
 }
