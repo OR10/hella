@@ -49,9 +49,11 @@ class DrawingTool extends Tool {
     const framePosition = this._$scope.vm.framePosition;
     const newLabeledThingId = this._entityIdService.getUniqueId();
     const newLabeledThingInFrameId = this._entityIdService.getUniqueId();
+    const color = this._entityColorService.getColor();
 
     const newLabeledThing = new LabeledThing({
       id: newLabeledThingId,
+      lineColor: color,
       classes: [],
       incomplete: true,
       task: this._$scope.vm.task,
@@ -60,10 +62,6 @@ class DrawingTool extends Tool {
         endFrameNumber: framePosition.position,
       },
     });
-
-    const color = this._entityColorService.getColor();
-
-    newLabeledThing.color = color;
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
       id: newLabeledThingInFrameId,

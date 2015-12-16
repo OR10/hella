@@ -7,7 +7,7 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledThing extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameRange: FrameRange}} labeledThing
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameRange: FrameRange, lineColor: string}} labeledThing
    */
   constructor(labeledThing) {
     super(labeledThing);
@@ -24,6 +24,12 @@ class LabeledThing extends LabeledObject {
      * @private
      */
     this._task = labeledThing.task;
+
+    /**
+     * @type {String}
+     * @private
+     */
+    this._lineColor = labeledThing.lineColor;
   }
 
   /**
@@ -36,14 +42,22 @@ class LabeledThing extends LabeledObject {
   }
 
   /**
+   * @returns {String}
+   */
+  get lineColor() {
+    return this._lineColor;
+  }
+
+  /**
    * Convert this model into a datastructure suitable for backend storage
    *
    * @return {Object}
    */
   toJSON() {
-    const {frameRange, task} = this;
+    const {frameRange, lineColor, task} = this;
     return Object.assign(super.toJSON(), {
       frameRange,
+      lineColor,
       taskId: task.id,
     });
   }
