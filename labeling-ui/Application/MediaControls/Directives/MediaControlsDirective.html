@@ -2,7 +2,9 @@
     <div class="grid-block small-5 task-bar-left">
         <div class="grid-content noscroll">
             <button ng-click="vm.handleVideoSettingsClicked()">
-                <i class="icon icon-view-brightness"></i>
+                <i class="icon icon-view-brightness"
+                   ng-class="{'toggled': vm.popupPanelState === 'videosettings'}"
+                ></i>
             </button>
         </div>
         <div class="grid-content noscroll">
@@ -22,7 +24,9 @@
         </div>
         <div class="grid-content noscroll">
             <button ng-click="vm.handleZoomClicked()">
-                <i class="icon icon-view-zoom"></i>
+                <i class="icon icon-view-zoom"
+                   ng-class="{'toggled': vm.popupPanelState === 'zoom'}"
+                ></i>
             </button>
         </div>
     </div>

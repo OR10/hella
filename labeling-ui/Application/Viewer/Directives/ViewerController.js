@@ -36,6 +36,7 @@ class ViewerController {
    * @param {angular.$q} $q
    * @param {EntityColorService} entityColorService
    * @param {LoggerService} logger
+   * @param {$timeout} $timeout
    */
   constructor($scope,
               $element,
@@ -53,7 +54,15 @@ class ViewerController {
               animationFrameService,
               $q,
               entityColorService,
-              logger) {
+              logger,
+              $timeout) {
+    /**
+     * Mouse cursor used, while hovering the viewer
+     *
+     * @type {string}
+     */
+    this.activeMouseCursor = 'auto';
+
     /**
      * List of supported image types for this component
      *
@@ -232,7 +241,7 @@ class ViewerController {
     this._contentHeight = height;
 
     const eventDelegationLayer = new EventDelegationLayer();
-    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger);
+    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger, $timeout);
     this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
 
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
@@ -329,6 +338,20 @@ class ViewerController {
         this._$interval.cancel(this._renderLoopPromise);
       }
     });
+  }
+
+  zoomIn(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
+    this._thingLayer.zoomIn(focalPoint, zoomFactor);
+
+    this._updateViewport();
+  }
+
+  zoomOut(focalPoint, zoomFactor) {
+    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
+    this._thingLayer.zoomOut(focalPoint, zoomFactor);
+
+    this._updateViewport();
   }
 
   _resize() {
@@ -555,9 +578,7 @@ class ViewerController {
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
 
-    this._$scope.$apply(() => {
-      this.activeTool = 'move';
-    });
+    this.activeTool = 'move';
   }
 
   _calculatePlaybackStartPosition() {
@@ -646,11 +667,11 @@ class ViewerController {
 
       if (event.deltaY < 0) {
         this._$scope.$apply(() => {
-          this._zoomIn(focalPoint, 1.05);
+          this.zoomIn(focalPoint, 1.05);
         });
       } else if (event.deltaY > 0) {
         this._$scope.$apply(() => {
-          this._zoomOut(focalPoint, 1.05);
+          this.zoomOut(focalPoint, 1.05);
         });
       }
     }
@@ -691,20 +712,6 @@ class ViewerController {
     this._updateViewport();
   }
 
-  _zoomIn(focalPoint, zoomFactor) {
-    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
-    this._thingLayer.zoomIn(focalPoint, zoomFactor);
-
-    this._updateViewport();
-  }
-
-  _zoomOut(focalPoint, zoomFactor) {
-    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
-    this._thingLayer.zoomOut(focalPoint, zoomFactor);
-
-    this._updateViewport();
-  }
-
   _panTo(newCenter) {
     this._backgroundLayer.panTo(newCenter);
     this._thingLayer.panTo(newCenter);
@@ -738,6 +745,7 @@ ViewerController.$inject = [
   '$q',
   'entityColorService',
   'loggerService',
+  '$timeout',
 ];
 
 export default ViewerController;

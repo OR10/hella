@@ -20,6 +20,7 @@ export default class ViewerDirective {
       playing: '=',
       viewport: '=',
       hideLabeledThingsInFrame: '=',
+      newShapeDrawingTool: '=',
     };
 
     this.controller = ViewerController;

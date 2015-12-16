@@ -15,6 +15,7 @@ class PopupPanelDirective {
       task: '=',
       framePosition: '=',
       filters: '=',
+      activeTool: '=',
     };
 
     this.template = popupPanelTemplate;

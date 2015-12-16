@@ -9,6 +9,8 @@ import LineDrawingTool from '../Tools/LineDrawingTool';
 import PointDrawingTool from '../Tools/PointDrawingTool';
 import ShapeMoveTool from '../Tools/ShapeMoveTool';
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
+import ZoomTool from '../Tools/ZoomTool';
+import MultiTool from '../Tools/MultiTool';
 
 import PaperShape from '../Shapes/PaperShape';
 
@@ -27,8 +29,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {EntityColorService} entityColorService
    * @param {LoggerService} logger
+   * @param {$timeout} $timeout
    */
-  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger) {
+  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger, $timeout) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -42,6 +45,20 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._logger = logger;
+
+    /**
+     * @type {$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
+
+    /**
+     * Tool for moving shapes
+     *
+     * @type {ShapeMoveTool}
+     * @private
+     */
+    this._multiTool = new MultiTool(this._context);
 
     /**
      * Tool for moving shapes
@@ -60,12 +77,25 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._shapeScaleTool = new ShapeScaleTool(this._context);
 
     /**
+     * @type {null}
+     * @private
+     */
+    this._zoomInTool = new ZoomTool(ZoomTool.ZOOM_IN, $scope.$new(), this._context);
+
+    /**
+     * @type {null}
+     * @private
+     */
+    this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
+
+    /**
      * Tool for drawing rectangles
      *
      * @type {RectangleDrawingTool}
      * @private
      */
     this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
+    $scope.vm.newShapeDrawingTool = this._rectangleDrawingTool;
 
     /**
      * Tool for drawing ellipses
@@ -114,6 +144,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
+
+    /**
+     * Register tool to the MultiTool
+     */
+    this._multiTool.registerMoveTool(this._shapeMoveTool);
+    this._multiTool.registerScaleTool(this._shapeScaleTool);
+    this._multiTool.registerCreateTool(this._rectangleDrawingTool);
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);
@@ -238,27 +275,26 @@ class ThingLayer extends PanAndZoomPaperLayer {
     // the labeledThingsInFrame
     shape.remove();
 
-    this._$scope.$apply(() => {
-      this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
-    });
+    this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
 
-    // The new shape has been rerendered now lets find it
-    const newShape = this._context.withScope(scope =>
-      scope.project.getItem({
-        id: shape.id,
-      })
-    );
-    // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
-    //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
-    //        suffice, as backend requests should only be made upon selection
-    newShape.draft();
+    // Process the next steps after the rerendering took place in the next digest cycle
+    this._$timeout(() => {
+      // The new shape has been rerendered now lets find it
+      const newShape = this._context.withScope(scope =>
+        scope.project.getItem({
+          id: shape.id,
+        })
+      );
+      // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
+      //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
+      //        suffice, as backend requests should only be made upon selection
+      newShape.draft();
 
-    // Reselect the new Shape
-    this._$scope.$apply(() => {
+      // Reselect the new Shape
       this._$scope.vm.selectedPaperShape = newShape;
-    });
 
-    this.emit('shape:new', newShape);
+      this.emit('shape:new', newShape);
+    }, 0);
   }
 
   /**
@@ -268,34 +304,64 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   activateTool(toolName) {
     switch (toolName) {
+      case 'zoomIn':
+        this._$scope.vm.activeMouseCursor = 'zoom-in';
+        break;
+      case 'zoomOut':
+        this._$scope.vm.activeMouseCursor = 'zoom-out';
+        break;
+      default:
+        this._$scope.vm.activeMouseCursor = 'auto';
+    }
+
+    this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}, with cursor ${this._$scope.vm.activeMouseCursor}`);
+    switch (toolName) {
       case 'rectangle':
         this._rectangleDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._rectangleDrawingTool);
         break;
       case 'ellipse':
         this._ellipseDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._ellipseDrawingTool);
         break;
       case 'circle':
         this._circleDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._circleDrawingTool);
         break;
       case 'path':
         this._pathDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._pathDrawingTool);
         break;
       case 'polygon':
         this._polygonDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._polygonDrawingTool);
         break;
       case 'line':
         this._lineDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._lineDrawingTool);
         break;
       case 'point':
         this._pointDrawingTool.activate();
+        this._logger.log('thinglayer:tool', this._pointDrawingTool);
         break;
       case 'scale':
         this._shapeScaleTool.activate();
+        this._logger.log('thinglayer:tool', this._shapeScaleTool);
         break;
-      case 'move':
+      case 'zoomIn':
+        this._zoomInTool.activate();
+        this._logger.log('thinglayer:tool', this._zoomInTool);
+        break;
+      case 'zoomOut':
+        this._zoomOutTool.activate();
+        this._logger.log('thinglayer:tool', this._zoomOutTool);
+        break;
+      case 'multi':
       default:
-        this._shapeMoveTool.activate();
+        this._multiTool.activate();
+        this._logger.log('thinglayer:tool', this._shapeMoveTool);
     }
+    this._logger.groupEnd('thinglayer:tool');
   }
 
   /**

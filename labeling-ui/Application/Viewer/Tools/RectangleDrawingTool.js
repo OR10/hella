@@ -6,6 +6,7 @@ import PaperRectangle from '../Shapes/PaperRectangle';
  * A tool for drawing rectangle shapes with the mouse cursor
  *
  * @extends DrawingTool
+ * @implements ToolEvents
  */
 class RectangleDrawingTool extends DrawingTool {
   /**
@@ -20,14 +21,16 @@ class RectangleDrawingTool extends DrawingTool {
 
     this._rect = null;
     this._startPosition = null;
-
-    this._tool.onMouseDown = this._startNewRect.bind(this);
-    this._tool.onMouseDrag = this._updateRect.bind(this);
-    this._tool.onMouseUp = this._completeRect.bind(this);
   }
 
-  _startNewRect(event) {
-    this._startPosition = event.point;
+  onMouseDown(event) {
+    this._$scope.$apply(
+      () => this.startShape(event.point)
+    );
+  }
+
+  startShape(point) {
+    this._startPosition = point;
 
     // PaperJs doesn't deal well with single point rectangles so we cheat a little on the first draw
     const endPosition = new paper.Point(
@@ -51,9 +54,13 @@ class RectangleDrawingTool extends DrawingTool {
     this.emit('rectangle:new', this._rect);
   }
 
-  _updateRect(event) {
-    const point = event.point;
+  onMouseDrag(event) {
+    this._$scope.$apply(
+      () => this.updateShape(event.point)
+    );
+  }
 
+  updateShape(point) {
     const width = Math.abs(point.x - this._startPosition.x) || 1;
     const height = Math.abs(point.y - this._startPosition.y) || 1;
 
@@ -65,7 +72,13 @@ class RectangleDrawingTool extends DrawingTool {
     this.emit('rectangle:update', this._rect);
   }
 
-  _completeRect() {
+  onMouseUp() {
+    this._$scope.$apply(
+      () => this.completeShape()
+    );
+  }
+
+  completeShape() {
     // Ensure the parent/child structure is intact
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());

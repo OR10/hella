@@ -66,6 +66,22 @@ class TaskController {
     this.hideLabeledThingsInFrame = false;
 
     /**
+     * Currently active frame position to be displayed inside the MediaControls
+     *
+     * This model will be manipulated by different directives in order to switch between frames.
+     *
+     * @type {FramePosition}
+     */
+    this.framePosition = new FramePosition(this.task.frameRange);
+
+    /**
+     * Drawing Tool used for initializing new empty shapes
+     *
+     * @type {Tool}
+     */
+    this.newShapeDrawingTool = null;
+
+    /**
      * Currently active {@link BrightnessFilter}
      *
      * @type {BrightnessFilter|null}
@@ -80,15 +96,6 @@ class TaskController {
      * @private
      */
     this._constrastFilter = null;
-
-    /**
-     * Currently active frame position to be displayed inside the MediaControls
-     *
-     * This model will be manipulated by different directives in order to switch between frames.
-     *
-     * @type {FramePosition}
-     */
-    this.framePosition = new FramePosition(this.task.frameRange);
 
     /**
      * @type {LabeledFrameGateway}
@@ -186,6 +193,8 @@ class TaskController {
   _loadLabeledFrame(frameNumber) {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
+
+  saveLabeled
 }
 
 TaskController.$inject = [

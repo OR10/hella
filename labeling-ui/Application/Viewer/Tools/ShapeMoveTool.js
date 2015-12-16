@@ -6,6 +6,7 @@ import PaperShape from '../Shapes/PaperShape';
  * A Tool for moving annotation shapes
  *
  * @extends Tool
+ * @implements ToolEvents
  */
 export default class ShapeMoveTool extends Tool {
   /**
@@ -35,39 +36,19 @@ export default class ShapeMoveTool extends Tool {
      * @private
      */
     this._modified = false;
-
-    this._tool.onMouseDown = this._mouseDown.bind(this);
-    this._tool.onMouseUp = this._mouseUp.bind(this);
-    this._tool.onMouseDrag = this._mouseDrag.bind(this);
   }
 
-  _mouseDown(event) {
+  onMouseDown(event, hitResult) {
     const point = event.point;
 
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        class: PaperShape,
-        fill: true,
-        bounds: true,
-        segments: true,
-        curves: true,
-        center: true,
-        tolerance: this._options.hitTestTolerance,
-      });
-
-      if (hitResult) {
-        this._paperShape = hitResult.item;
-        this._offset = new paper.Point(
-          this._paperShape.position.x - point.x,
-          this._paperShape.position.y - point.y
-        );
-      } else {
-        this._paperShape = null;
-      }
-    });
+    this._paperShape = hitResult.item;
+    this._offset = new paper.Point(
+      this._paperShape.position.x - point.x,
+      this._paperShape.position.y - point.y
+    );
   }
 
-  _mouseUp() {
+  onMouseUp() {
     if (this._paperShape) {
       if (this._modified) {
         this._modified = false;
@@ -79,7 +60,7 @@ export default class ShapeMoveTool extends Tool {
     this._offset = null;
   }
 
-  _mouseDrag(event) {
+  onMouseDrag(event) {
     if (!this._paperShape) {
       return;
     }

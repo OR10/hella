@@ -1,13 +1,17 @@
+import paper from 'paper';
+
 /**
  * Controller handling the control elements below the viewer frame
  *
  * @property {Task} task
+ * @property {Video} video
  * @property {FramePosition} framePosition
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {Tool} newShapeDrawingTool
  */
 class MediaControlsController {
   /**
@@ -16,10 +20,10 @@ class MediaControlsController {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {InterpolationService} interpolationService
    * @param {EntityIdService} entityIdService
+   * @param {LoggerService} logger
    * @param {angular.$q} $q
    */
-  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, $q) {
-
+  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, logger, $q) {
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
@@ -45,6 +49,12 @@ class MediaControlsController {
     this._entityIdService = entityIdService;
 
     /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = logger;
+
+    /**
      * @type {angular.$q}
      * @private
      */
@@ -59,6 +69,7 @@ class MediaControlsController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     if (framePosition > selectedLabeledThing.frameRange.endFrameNumber) {
+
       return;
     }
 
@@ -123,7 +134,16 @@ class MediaControlsController {
    * Handle the creation of new rectangle
    */
   handleNewLabeledThingClicked() {
-    this.activeTool = 'rectangle';
+    const expanse = 50;
+    const center = new paper.Point(this.video.metaData.width / 2, this.video.metaData.height / 2);
+    const topLeft = new paper.Point(center.x - expanse, center.y - expanse);
+    const bottomRight = new paper.Point(center.x + expanse, center.y + expanse);
+
+    this._logger.log('mediacontrols:newlabeledthing', `Creating new Shape: topLeft: ${topLeft}, bottomRight: ${bottomRight} (center: ${center})`);
+
+    this.newShapeDrawingTool.startShape(topLeft);
+    this.newShapeDrawingTool.updateShape(bottomRight);
+    this.newShapeDrawingTool.completeShape();
   }
 
   /**
@@ -172,7 +192,7 @@ class MediaControlsController {
    * Handle the switch to the move tool
    */
   handleMoveToolClicked() {
-    this.activeTool = 'move';
+    this.activeTool = 'multi';
   }
 
   /**
@@ -228,6 +248,7 @@ MediaControlsController.$inject = [
   'labeledThingGateway',
   'interpolationService',
   'entityIdService',
+  'loggerService',
   '$q',
 ];
 
