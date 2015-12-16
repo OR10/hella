@@ -40,12 +40,19 @@ class LabeledThing
     private $incomplete = true;
 
     /**
-     * @param LabelingTask $task
+     * @CouchDB\Field(type="string")
      */
-    public function __construct(LabelingTask $task)
+    private $lineColor;
+
+    /**
+     * @param LabelingTask $task
+     * @param $lineColor
+     */
+    public function __construct(LabelingTask $task, $lineColor = 'red')
     {
         $this->taskId     = $task->getId();
         $this->frameRange = $task->getFrameRange();
+        $this->lineColor  = $lineColor;
     }
 
     /**
@@ -131,5 +138,13 @@ class LabeledThing
     public function getRev()
     {
         return $this->rev;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLineColor()
+    {
+        return $this->lineColor;
     }
 }
