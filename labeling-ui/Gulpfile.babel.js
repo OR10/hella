@@ -317,7 +317,7 @@ gulp.task('deploy', () => {
   return gulp.src('Distribution/**')
     .pipe($$.rsync({
       recurse: true,
-      exclude: ['index-protractor.html'],
+      exclude: ['index-protractor.html', 'index-dev.html'],
       root: 'Distribution/',
       hostname: deploymentIp,
       destination: '/var/www/labeling-ui',
