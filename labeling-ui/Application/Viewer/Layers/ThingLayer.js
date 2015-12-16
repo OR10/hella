@@ -58,7 +58,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeMoveTool}
      * @private
      */
-    this._multiTool = new MultiTool(this._context);
+    this._multiTool = new MultiTool($scope.$new(), this._context);
 
     /**
      * Tool for moving shapes
@@ -245,6 +245,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _onLayerClick(event) {
+    if (this._$scope.vm.activeTool !== null) {
+      return;
+    }
+
     this._context.withScope(scope => {
       const projectPoint = scope.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
 
@@ -259,13 +263,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
 
       if (hitResult) {
-        this._$scope.$apply(() => {
-          this._$scope.vm.selectedPaperShape = hitResult.item;
-        });
+        this._$scope.vm.selectedPaperShape = hitResult.item;
       } else {
-        this._$scope.$apply(() => {
-          this._$scope.vm.selectedPaperShape = null;
-        });
+        this._$scope.vm.selectedPaperShape = null;
       }
     });
   }
@@ -311,7 +311,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._$scope.vm.activeMouseCursor = 'zoom-out';
         break;
       default:
-        this._$scope.vm.activeMouseCursor = 'auto';
+        this._$scope.vm.activeMouseCursor = null;
     }
 
     this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}, with cursor ${this._$scope.vm.activeMouseCursor}`);
@@ -356,7 +356,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._zoomOutTool.activate();
         this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
-      case 'multi':
       default:
         this._multiTool.activate();
         this._logger.log('thinglayer:tool', this._shapeMoveTool);
@@ -479,7 +478,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       scope.settings.handleSize = 8;
     });
 
-    element.addEventListener('mousedown', this._onLayerClick.bind(this));
+    element.addEventListener('mousedown', event => this._$scope.$evalAsync(this._onLayerClick.bind(this, event)));
   }
 }
 

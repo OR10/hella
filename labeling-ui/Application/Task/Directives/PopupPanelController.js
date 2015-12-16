@@ -207,7 +207,7 @@ class PopupPanelController {
 
   zoomInToggle() {
     if (this.activeTool === 'zoomIn') {
-      this.activeTool = 'move';
+      this.activeTool = null;
     } else {
       this.activeTool = 'zoomIn';
     }
@@ -215,7 +215,7 @@ class PopupPanelController {
 
   zoomOutToggle() {
     if (this.activeTool === 'zoomOut') {
-      this.activeTool = 'move';
+      this.activeTool = null;
     } else {
       this.activeTool = 'zoomOut';
     }

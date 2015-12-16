@@ -61,7 +61,16 @@ class ViewerController {
      *
      * @type {string}
      */
-    this.activeMouseCursor = 'auto';
+    this.activeMouseCursor = null;
+
+    /**
+     * Mouse cursor used while hovering the viewer set by position inside the viewer
+     *
+     * This mouse cursor is overriden by the `activeMouseCursor`.
+     *
+     * @type {null}
+     */
+    this.actionMouseCursor = null;
 
     /**
      * List of supported image types for this component
@@ -578,7 +587,7 @@ class ViewerController {
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
 
-    this.activeTool = 'move';
+    this.activeTool = null;
   }
 
   _calculatePlaybackStartPosition() {

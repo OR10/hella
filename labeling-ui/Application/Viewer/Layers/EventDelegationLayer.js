@@ -3,9 +3,9 @@ import EventEmitter from 'event-emitter';
 /**
  * Layer handling event delegation to other {@link Layer}s of the {@link MediaControls}
  *
- * @class EventDelegationLayer
+ * @extends EventEmitter
  */
-export default class EventDelegationLayer extends EventEmitter {
+class EventDelegationLayer extends EventEmitter {
   constructor() {
     super();
     this._onDelegateEvent = this._onDelegateEvent.bind(this);
@@ -138,3 +138,5 @@ export default class EventDelegationLayer extends EventEmitter {
     this.emit('event:new', this, event);
   }
 }
+
+export default EventDelegationLayer;

@@ -1,5 +1,6 @@
 import paper from 'paper';
 import Tool from './Tool';
+
 import PaperShape from '../Shapes/PaperShape';
 
 /**
@@ -9,11 +10,18 @@ import PaperShape from '../Shapes/PaperShape';
  */
 export default class MultiTool extends Tool {
   /**
+   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
-  constructor(drawingContext, options) {
+  constructor($scope, drawingContext, options) {
     super(drawingContext, options);
+
+    /**
+     * @type {$rootScope.Scope}
+     * @private
+     */
+    this._$scope = $scope;
 
     /**
      * Tool handling the creation of things
@@ -50,9 +58,10 @@ export default class MultiTool extends Tool {
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
+    this._tool.onMouseMove = event => $scope.$evalAsync(this._mouseMove.bind(this, event));
   }
 
-  /**
+  A/**
    * Register a tool for handling the moving of things
    *
    * @param {ToolEvents} tool
@@ -77,6 +86,44 @@ export default class MultiTool extends Tool {
    */
   registerCreateTool(tool) {
     this._createTool = tool;
+  }
+
+  _mouseMove(event) {
+    this._context.withScope(scope => {
+      const point = event.point;
+      const hitResult = scope.project.hitTest(point, {
+        class: PaperShape,
+        fill: true,
+        bounds: true,
+        segments: true,
+        curves: true,
+        center: true,
+        tolerance: this._options.hitTestTolerance,
+      });
+
+      if (!hitResult) {
+        this._$scope.vm.actionMouseCursor = null;
+        return;
+      }
+
+      if (hitResult.type === 'fill') {
+        this._$scope.vm.actionMouseCursor = 'move';
+        return;
+      }
+
+      const center = hitResult.item.bounds.center;
+
+      switch (true) {
+        case (point.x < center.x - 10 && point.y < center.y - 10): // top-left
+        case (point.x > center.x + 10 && point.y > center.y + 10): // bottom-right
+          this._$scope.vm.actionMouseCursor = 'nwse-resize';
+          break;
+        case (point.x < center.x - 10 && point.y > center.y + 10): // bottom-left
+        case (point.x > center.x + 10 && point.y < center.y - 10): // top-right
+          this._$scope.vm.actionMouseCursor = 'nesw-resize';
+          break;
+      }
+    });
   }
 
   _mouseDown(event) {
