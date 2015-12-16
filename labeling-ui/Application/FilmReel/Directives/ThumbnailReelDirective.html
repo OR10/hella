@@ -10,12 +10,22 @@
         <div ng-if="vm.placeStartBracket(-1)" class="frame-range-bracket start-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
              jqyoui-draggable="{animate:true}">
-            <span class="bracket-drag-handle"></span>
+            <div class="bracket-drag-handle grid-block vertical align-center shrink">
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+            </div>
         </div>
         <div ng-if="vm.placeEndBracket(-1)" class="frame-range-bracket end-bracket" data-drag="true"
              data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}">
-            <span class="bracket-drag-handle"></span>
+             jqyoui-draggable="{animate:true, onStart: 'vm.onBracketDragStart()', onStop: 'vm.onBracketDragStop()'}">
+            <div class="bracket-drag-handle grid-block vertical align-center shrink">
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+            </div>
         </div>
     </div>
     <div class="thumbnail grid-block" ng-repeat-start="thumbnail in vm.thumbnails track by $index"
@@ -42,14 +52,24 @@
     >
         <div ng-if="!(vm.placeStartBracket($index) || vm.placeEndBracket($index))" class="frame-range-bracket-space"/>
         <div ng-if="vm.placeStartBracket($index)" class="frame-range-bracket start-bracket grid-block vertical align-center" data-drag="true"
-             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}">
-            <i class="bracket-drag-handle"></i>
+             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40, handle: '.bracket-drag-handle'}"
+             jqyoui-draggable="{animate:true, onStart: 'vm.onBracketDragStart()', onStop: 'vm.onBracketDragStop()'}">
+            <div class="bracket-drag-handle grid-block vertical align-center shrink">
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+            </div>
         </div>
         <div ng-if="vm.placeEndBracket($index)" class="frame-range-bracket end-bracket grid-block vertical align-center" data-drag="true"
-             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40}"
-             jqyoui-draggable="{animate:true}">
-            <i class="bracket-drag-handle"></i>
+             data-jqyoui-options="{axis: 'x', snap: '.thumbnail-spacer.drop-target', snapMode: 'inner', revert: 'invalid', revertDuration: 200, snapTolerance: 40, handle: '.bracket-drag-handle'}"
+             jqyoui-draggable="{animate:true, onStart: 'vm.onBracketDragStart()', onStop: 'vm.onBracketDragStop()'}">
+            <div class="bracket-drag-handle grid-block vertical align-center shrink">
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+                <div class="bracket-drag-handle-dot"></div>
+            </div>
         </div>
     </div>
 </div>

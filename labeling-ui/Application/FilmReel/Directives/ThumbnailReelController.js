@@ -141,6 +141,8 @@ class ThumbnailReelController {
     );
 
     this.handleDrop = this.handleDrop.bind(this);
+    this.onBracketDragStart = this.onBracketDragStart.bind(this);
+    this.onBracketDragStop = this.onBracketDragStop.bind(this);
   }
 
   _recalculateViewSize() {
@@ -405,6 +407,14 @@ class ThumbnailReelController {
     // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
     return currentFramePosition + 1 >= this.framePosition.startFrameNumber
       && currentFramePosition <= this.framePosition.endFrameNumber;
+  }
+
+  onBracketDragStart() {
+    this._$element.css({cursor: 'col-resize'});
+  }
+
+  onBracketDragStop() {
+    this._$element.css({cursor: 'auto'});
   }
 }
 
