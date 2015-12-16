@@ -46,12 +46,11 @@
     }
 
     .thumbnail-spacer.active {
-      border-color: $selected-frame;
+      border-top: 2px solid $selected-frame;
+      border-bottom: 2px solid $selected-frame;
     }
 
     > .thumbnail-spacer {
-      border-top: 2px solid transparent;
-      border-bottom: 2px solid transparent;
       display: block;
       width: 8px;
       position: relative;
@@ -62,6 +61,20 @@
         position: absolute;
         top: 0;
         bottom: 0;
+
+        .bracket-drag-handle {
+          align-items: center;
+          cursor: col-resize;
+
+          .bracket-drag-handle-dot {
+            width: 2px;
+            height: 2px;
+            margin-top: 2px;
+            margin-bottom: 1px;
+            opacity: 0.6;
+            background-color: $element-divider;
+          }
+        }
       }
 
       div.frame-range-bracket-space {
