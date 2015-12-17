@@ -1,12 +1,16 @@
-<div class="row">
-    <div class="col-md-10 col-md-offset-1">
-        <h1>Exportliste</h1>
-        <a href="/labeling" class="btn btn-default"><i class="fa fa-arrow-left"></i> back</a>
-        <button class="btn btn-default"
-                ng-click="vm.handleStartExportClicked()">
-            Start new Export
-        </button>
-        <hr>
-        <exportlist task="vm.task"/>
+<div class="grid-frame vertical">
+    <div class="grid-block shrink">
+        <div class="grid-content">
+            <div class="title-bar">
+                <span class="left"><a href="/labeling">Task List</a></span>
+                <div class="center title">Exportliste</div>
+                <span class="right">
+                    <button ng-click="vm.handleStartExportClicked()">Start new Export</button>
+                </span>
+            </div>
+        </div>
     </div>
+
+    <exportlist task="vm.task"/>
+
 </div>
