@@ -56,17 +56,9 @@ class ViewerController {
               entityColorService,
               logger,
               $timeout) {
-    /**
-     * Mouse cursor used, while hovering the viewer
-     *
-     * @type {string}
-     */
-    this.activeMouseCursor = null;
 
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
-     *
-     * This mouse cursor is overriden by the `activeMouseCursor`.
      *
      * @type {null}
      */

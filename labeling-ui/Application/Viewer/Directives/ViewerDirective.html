@@ -1,6 +1,6 @@
 <div class="viewer-inner grid-block noscroll shrink vertical align-center">
     <div class="layer-container grid-content noscroll shrink"
-         ng-style="{'cursor': vm.activeMouseCursor === null ? (vm.actionMouseCursor === null ? 'auto' : vm.actionMouseCursor) : vm.activeMouseCursor}">
+         ng-style="{'cursor': vm.actionMouseCursor === null ? 'auto' : vm.actionMouseCursor}">
         <canvas class="background-layer"></canvas>
         <canvas class="annotation-layer"></canvas>
         <div class="event-delegation-layer"></div>
