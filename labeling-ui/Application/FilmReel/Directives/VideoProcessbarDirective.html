@@ -1,10 +1,18 @@
 <div class="video-processbar grid-block">
-    <div class="thumbnail-position" ng-style="{
-        'left': vm.thumbnailStart + '%',
-        'width': vm.thumbnailWidth + '%'
-    }"></div>
-    <div class="range-position" ng-style="{
-        'left': vm.rangeStart + '%',
-        'width': vm.rangeWidth + '%'
-    }"></div>
+    <div class="thumbnail-position"
+         ng-style="{
+            'left': vm.thumbnailStart + '%',
+            'width': vm.thumbnailWidth + '%'
+        }"
+    >
+        <div class="inner-bar"></div>
+    </div>
+    <div class="range-position"
+         ng-style="{
+            'left': vm.rangeStart + '%',
+            'width': vm.rangeWidth + '%'
+        }"
+    >
+        <div class="inner-bar"></div>
+    </div>
 </div>
