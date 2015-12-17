@@ -22,8 +22,9 @@ class MediaControlsController {
    * @param {EntityIdService} entityIdService
    * @param {LoggerService} logger
    * @param {angular.$q} $q
+   * @param {Object} applicationState
    */
-  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, logger, $q) {
+  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, logger, $q, applicationState) {
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
@@ -59,6 +60,12 @@ class MediaControlsController {
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._applicationState = applicationState;
   }
 
   /**
@@ -192,9 +199,17 @@ class MediaControlsController {
    */
   handleInterpolation() {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-    this._interpolationService.interpolate('default', this.task, selectedLabeledThing);
+    this._applicationState.disableAll();
+    this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
+      .then(() => {
+        this._applicationState.enableAll();
+      })
+      .catch(error => {
+        this._applicationState.enableAll();
+        throw error;
+      });
+
     // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
-    // @TODO: Show some sort of loading indicator, while interpolation is running
   }
 
   handlePlay() {
@@ -235,6 +250,7 @@ MediaControlsController.$inject = [
   'entityIdService',
   'loggerService',
   '$q',
+  'applicationState',
 ];
 
 export default MediaControlsController;

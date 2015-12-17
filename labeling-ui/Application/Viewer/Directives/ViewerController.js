@@ -55,7 +55,9 @@ class ViewerController {
               $q,
               entityColorService,
               logger,
-              $timeout) {
+              $timeout,
+              applicationState
+  ) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -347,6 +349,10 @@ class ViewerController {
         this._$interval.cancel(this._renderLoopPromise);
       }
     });
+
+    applicationState.$watch('viewer.disabled', (viewerDisabled) => {
+      this.viewerDisabled = viewerDisabled;
+    });
   }
 
   zoomIn(focalPoint, zoomFactor) {
@@ -410,7 +416,7 @@ class ViewerController {
    */
   _handleFrameChange(frameNumber) {
     if (this._frameChangeInProgress) {
-      this._logger.warn('frame change already in progress');
+      this._logger.warn('ViewerController', 'frame change already in progress');
     }
 
     this._frameChangeInProgress = true;
@@ -616,7 +622,10 @@ class ViewerController {
     let nextFramePosition = this.framePosition.position + 1;
 
     if (this._frameChangeInProgress) {
-      this._logger.warn(`Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip} frames...`);
+      this._logger.warn(
+        'ViewerController',
+        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip} frames...`
+      );
       this._frameChangeInProgress = false;
       nextFramePosition += this._applicationConfig.Viewer.frameSkip;
     }
@@ -755,6 +764,7 @@ ViewerController.$inject = [
   'entityColorService',
   'loggerService',
   '$timeout',
+  'applicationState',
 ];
 
 export default ViewerController;
