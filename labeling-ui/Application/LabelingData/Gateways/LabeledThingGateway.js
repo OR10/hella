@@ -73,7 +73,7 @@ class LabeledThingGateway {
 
     return this._bufferedHttp.delete(url, undefined, 'labeledThing')
       .then(response => {
-        if (response.success === true) {
+        if (response.data && response.data.success === true) {
           return true;
         }
 
