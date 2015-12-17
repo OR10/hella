@@ -94,9 +94,6 @@ export default class MultiTool extends Tool {
         class: PaperShape,
         fill: true,
         bounds: true,
-        segments: true,
-        curves: true,
-        center: true,
         tolerance: this._options.hitTestTolerance,
       });
 
@@ -113,12 +110,12 @@ export default class MultiTool extends Tool {
       const center = hitResult.item.bounds.center;
 
       switch (true) {
-        case (point.x < center.x - 10 && point.y < center.y - 10): // top-left
-        case (point.x > center.x + 10 && point.y > center.y + 10): // bottom-right
+        case (point.x < center.x && point.y < center.y): // top-left
+        case (point.x > center.x && point.y > center.y): // bottom-right
           this._$scope.vm.actionMouseCursor = 'nwse-resize';
           break;
-        case (point.x < center.x - 10 && point.y > center.y + 10): // bottom-left
-        case (point.x > center.x + 10 && point.y < center.y - 10): // top-right
+        case (point.x < center.x && point.y > center.y): // bottom-left
+        case (point.x > center.x && point.y < center.y): // top-right
           this._$scope.vm.actionMouseCursor = 'nesw-resize';
           break;
         default:
@@ -134,9 +131,6 @@ export default class MultiTool extends Tool {
         class: PaperShape,
         fill: true,
         bounds: true,
-        segments: true,
-        curves: true,
-        center: true,
         tolerance: this._options.hitTestTolerance,
       });
 
@@ -149,7 +143,7 @@ export default class MultiTool extends Tool {
             break;
           case 'fill':
             this._activeTool = this._moveTool;
-            this._$scope.vm.actionMouseCursor = 'grabbing';
+            this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grabbing');
             this._activeTool.onMouseDown(event, hitResult);
             break;
           default:
@@ -163,8 +157,12 @@ export default class MultiTool extends Tool {
 
   _mouseUp(event) {
     if (this._activeTool) {
-      this._$scope.vm.actionMouseCursor = 'grab';
+      if (this._activeTool === this._moveTool) {
+        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grab');
+      }
+
       this._activeTool.onMouseUp(event);
+      this._activeTool = null;
     }
   }
 
