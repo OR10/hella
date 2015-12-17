@@ -143,10 +143,17 @@
             Point
         </button>>-->
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape=== null"
+            <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
                     ng-click="vm.handleInterpolation()">
                 <i class="icon icon-selection-generate"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
+                    class="button"
+                    ng-click="vm.handleDeleteSelectionClicked()">
+                <i class="icon icon-selection-delete"></i>
             </button>
         </div>
     </div>

@@ -218,6 +218,17 @@ class MediaControlsController {
     // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
   }
 
+  handleDeleteSelectionClicked() {
+    const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
+    const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
+    this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing).then(() => {
+      this.selectedPaperShape = null;
+      this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
+        labeledThingInFrame => labeledThingInFrame != selectedLabeledThingInFrame
+      );
+    });
+  }
+
   handlePlay() {
     this.playing = true;
   }
@@ -245,7 +256,6 @@ class MediaControlsController {
         this.popupPanelState = 'zoom';
     }
   }
-
 }
 
 MediaControlsController.$inject = [
