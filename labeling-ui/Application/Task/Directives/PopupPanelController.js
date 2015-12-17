@@ -222,6 +222,8 @@ class PopupPanelController {
   }
 
   scaleToFit() {
+    // Disable Zoom-Mode if it has been enabled
+    this.activeTool = null;
     this.viewerViewport.scaleToFit();
   }
 }
