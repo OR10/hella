@@ -140,11 +140,34 @@ class BufferedHttpProvider {
     function _extractRevision(data) {
       if (!data.result) {
         // Assume we do not need to map the data
-        logger.warn('bufferedHttp:revisionManager', `Encountered backend request without the usual {result: ...} structure. ${data}`);
+        logger.warn('bufferedHttp:revisionManager', 'Encountered backend request without the usual {result: ...} structure.', data);
         return;
       }
 
-      const processableData = isArray(data.result) ? data.result : [data.result];
+      let processableData = [];
+
+      const specialKeys = ['labeledThingsInFrame', 'labeledThings', 'labeledThing', 'labeledThingInFrame'];
+
+      if (specialKeys.reduce((find, key) => find || data.result[key] !== undefined, false)) {
+        specialKeys.forEach(key => {
+          const value = data.result[key];
+          if (value === undefined) {
+            return;
+          }
+          if (isArray(value)) {
+            processableData = processableData.concat(value);
+          } else {
+            processableData.push(value);
+          }
+        });
+      } else {
+        if (isArray(data.result)) {
+          processableData = processableData.concat(data.result);
+        } else {
+          processableData.push(data.result);
+        }
+      }
+
       processableData.forEach(model => {
         if (!model.id) {
           return;

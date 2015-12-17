@@ -10,6 +10,7 @@ describe('LabeledThingGateway', () => {
   let $httpBackend;
   let gateway;
   let bufferedHttp;
+  let revisionManager;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -32,6 +33,7 @@ describe('LabeledThingGateway', () => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingGateway);
       bufferedHttp = $injector.get('bufferedHttp');
+      revisionManager = $injector.get('revisionManager');
     });
   });
 
@@ -98,10 +100,12 @@ describe('LabeledThingGateway', () => {
     const labeledThingId = '123';
     const expectedUrl = `/backend/api/task/${task.id}/labeledThing/${labeledThingId}?rev=1-abcdef`;
 
+    revisionManager.updateRevision(labeledThingId, '1-abcdef');
+
     const labeledThing = new LabeledThing({
       task,
       id: labeledThingId,
-      rev: '1-abcdef',
+      rev: '1-xyz',
       frameRange: {startFrameNumber: 23, endFrameNumber: 42},
       classes: ['foo', 'bar'],
     });

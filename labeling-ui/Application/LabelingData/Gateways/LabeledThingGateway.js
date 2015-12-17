@@ -6,14 +6,21 @@ import LabeledThing from '../Models/LabeledThing';
 class LabeledThingGateway {
   /**
    * @param {ApiService} apiService
+   * @param {RevisionManager} revisionManager
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, revisionManager, bufferedHttp) {
     /**
      * @type {BufferedHttp}
      * @private
      */
     this._bufferedHttp = bufferedHttp;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
 
     /**
      * @type {ApiService}
@@ -67,7 +74,7 @@ class LabeledThingGateway {
     const url = this._apiService.getApiUrl(
       `/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`,
       {
-        rev: labeledThing.rev,
+        rev: this._revisionManager.getRevision(labeledThing.id),
       }
     );
 
@@ -84,6 +91,7 @@ class LabeledThingGateway {
 
 LabeledThingGateway.$inject = [
   'ApiService',
+  'revisionManager',
   'bufferedHttp',
 ];
 
