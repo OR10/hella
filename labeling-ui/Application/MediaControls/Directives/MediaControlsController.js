@@ -221,12 +221,18 @@ class MediaControlsController {
   handleDeleteSelectionClicked() {
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
+    this._applicationState.disableAll();
     this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing).then(() => {
-      this.selectedPaperShape = null;
-      this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
-        labeledThingInFrame => labeledThingInFrame != selectedLabeledThingInFrame
-      );
-    });
+        this.selectedPaperShape = null;
+        this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
+          labeledThingInFrame => labeledThingInFrame != selectedLabeledThingInFrame
+        );
+        this._applicationState.enableAll();
+      })
+      .catch(error => {
+        this._applicationState.enableAll();
+        throw error;
+      });
   }
 
   handlePlay() {
