@@ -23,10 +23,32 @@ class RectangleDrawingTool extends DrawingTool {
     this._startPosition = null;
   }
 
+  startShape(from, to) {
+    if (from.getDistance(to) > 5) {
+      const labeledThingInFrame = this._createLabeledThingHierarchy();
+
+      const endPoint = new paper.Point(
+        Math.abs(from.x - to.x) === 0 ? to.x + 1 : to.x,
+        Math.abs(from.y - to.y) === 0 ? to.y + 1 : to.y
+      );
+
+      this._context.withScope(() => {
+        this._rect = new PaperRectangle(
+          labeledThingInFrame,
+          this._entityIdService.getUniqueId(),
+          from,
+          endPoint,
+          labeledThingInFrame.labeledThing.color,
+          true
+        );
+      });
+
+      this.emit('rectangle:new', this._rect);
+    }
+  }
+
   onMouseDown(event) {
-    this._$scope.$apply(
-      () => this._startPosition = event.point
-    );
+    this._startPosition = event.point
   }
 
   onMouseDrag(event) {
@@ -36,26 +58,10 @@ class RectangleDrawingTool extends DrawingTool {
       this._$scope.$apply(
         () => this.updateShape(event.point)
       );
-    } else if (this._startPosition.getDistance(point) > 5) {
-      const labeledThingInFrame = this._createLabeledThingHierarchy();
-
-      const endPoint = new paper.Point(
-        Math.abs(this._startPosition.x - point.x) === 0 ? point.x + 1 : point.x,
-        Math.abs(this._startPosition.y - point.y) === 0 ? point.y + 1 : point.y
+    } else {
+      this._$scope.$apply(
+        () => this.startShape(this._startPosition, event.point)
       );
-
-      this._context.withScope(() => {
-        this._rect = new PaperRectangle(
-          labeledThingInFrame,
-          this._entityIdService.getUniqueId(),
-          this._startPosition,
-          endPoint,
-          labeledThingInFrame.labeledThing.color,
-          true
-        );
-      });
-
-      this.emit('rectangle:new', this._rect);
     }
   }
 

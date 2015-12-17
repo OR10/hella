@@ -147,8 +147,7 @@ class MediaControlsController {
 
     this._logger.log('mediacontrols:newlabeledthing', `Creating new Shape: topLeft: ${topLeft}, bottomRight: ${bottomRight} (center: ${center})`);
 
-    this.newShapeDrawingTool.startShape(topLeft);
-    this.newShapeDrawingTool.updateShape(bottomRight);
+    this.newShapeDrawingTool.startShape(topLeft, bottomRight);
     this.newShapeDrawingTool.completeShape();
   }
 
