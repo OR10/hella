@@ -1,0 +1,37 @@
+.menubar {
+  margin-bottom: 3rem;
+}
+
+.title-bar {
+  margin-bottom: 5rem;
+}
+
+.task-list-table {
+
+  th {
+    padding: 1rem 2rem;
+    color: $sub-headlines;
+    background-color: $button-selected;
+    border-bottom: 1px solid $element-divider;
+    font-weight: bold;
+  }
+  a {
+    color: $sub-headlines;
+    &:hover {
+      color: $icon-hover;
+    }
+  }
+
+  td {
+    padding: 1rem 2rem;
+  }
+
+  tr {
+    background-color: $element-background;
+  }
+
+  tr:nth-child(even) {
+
+  }
+
+}

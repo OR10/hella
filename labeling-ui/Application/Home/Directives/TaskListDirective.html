@@ -1,19 +1,29 @@
-<div ng-if="vm.tasks === null" class="alert alert-info">Loading Tasks...</div>
-<div ng-if="vm.tasks.length === 0" class="alert alert-warning">No tasks available!</div>
+<div class="grid-block text-center vertical">
 
-<table class="table table-striped" ng-if="vm.tasks.length > 0">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Task</th>
-            <th>Export Liste</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="task in vm.tasks">
-            <td class="col-md-1"><i class="fa fa-video-camera"></i></td>
-            <td><a href="" ui-sref="^.task({taskId: task.id})">{{task.id}}</a></td>
-            <td class="col-md-2"><a href="" ui-sref="export({taskId: task.id})"><i class="fa fa-list"></i></a></td>
-        </tr>
-    </tbody>
-</table>
+    <div class="grid-container menubar">
+        <div class="grid-content">
+            <div ng-if="vm.tasks === null" class="">Loading Tasks...</div>
+            <div ng-if="vm.tasks.length === 0" class="">No tasks available!</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-content task-list-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Export</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="task in vm.tasks">
+                    <td><a href="" ui-sref="^.task({taskId: task.id})">{{task.id}}</a></td>
+                    <td class="col-md-2"><a href="" ui-sref="export({taskId: task.id})">Export data</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
