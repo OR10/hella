@@ -56,6 +56,30 @@ class LabeledThingGateway {
         throw new Error('Received malformed response when requesting labeled thing.');
       });
   }
+
+  /**
+   * Delete a {@link LabeledThing} and all its descending {@link LabeledThingInFrame} objects
+   *
+   * @param {LabeledThing} labeledThing
+   * @returns {AbortablePromise}
+   */
+  deleteLabeledThing(labeledThing) {
+    const url = this._apiService.getApiUrl(
+      `/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`,
+      {
+        rev: labeledThing.rev,
+      }
+    );
+
+    return this._bufferedHttp.delete(url, undefined, 'labeledThing')
+      .then(response => {
+        if (response.success === true) {
+          return true;
+        }
+
+        throw new Error('Received malformed response when deleting labeled thing.');
+      });
+  }
 }
 
 LabeledThingGateway.$inject = [
