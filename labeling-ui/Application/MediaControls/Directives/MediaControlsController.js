@@ -189,20 +189,6 @@ class MediaControlsController {
   }
 
   /**
-   * Handle the switch to the move tool
-   */
-  handleMoveToolClicked() {
-    this.activeTool = 'multi';
-  }
-
-  /**
-   * Handle the switch to the scale tool
-   */
-  handleScaleToolClicked() {
-    this.activeTool = 'scale';
-  }
-
-  /**
    * Execute the interpolation
    */
   handleInterpolation() {

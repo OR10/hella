@@ -110,6 +110,7 @@ gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
       const devServer = new DevServer({
         'baseURL': './',
         'assetPath': `${__dirname}/Distribution`,
+        'indexFilename': 'index-dev.html',
         'buildOptions': {
           'sfx': true,
           'lowResSourceMaps': true,
@@ -316,7 +317,7 @@ gulp.task('deploy', () => {
   return gulp.src('Distribution/**')
     .pipe($$.rsync({
       recurse: true,
-      exclude: ['index-protractor.html'],
+      exclude: ['index-protractor.html', 'index-dev.html'],
       root: 'Distribution/',
       hostname: deploymentIp,
       destination: '/var/www/labeling-ui',

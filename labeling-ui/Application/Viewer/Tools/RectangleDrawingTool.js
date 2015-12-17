@@ -25,39 +25,38 @@ class RectangleDrawingTool extends DrawingTool {
 
   onMouseDown(event) {
     this._$scope.$apply(
-      () => this.startShape(event.point)
+      () => this._startPosition = event.point
     );
-  }
-
-  startShape(point) {
-    this._startPosition = point;
-
-    // PaperJs doesn't deal well with single point rectangles so we cheat a little on the first draw
-    const endPosition = new paper.Point(
-      this._startPosition.x + 1,
-      this._startPosition.y + 1
-    );
-
-    const labeledThingInFrame = this._createLabeledThingHierarchy();
-
-    this._context.withScope(() => {
-      this._rect = new PaperRectangle(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        this._startPosition,
-        endPosition,
-        labeledThingInFrame.labeledThing.color,
-        true
-      );
-    });
-
-    this.emit('rectangle:new', this._rect);
   }
 
   onMouseDrag(event) {
-    this._$scope.$apply(
-      () => this.updateShape(event.point)
-    );
+    const point = event.point;
+
+    if (this._rect) {
+      this._$scope.$apply(
+        () => this.updateShape(event.point)
+      );
+    } else if (this._startPosition.getDistance(point) > 5) {
+      const labeledThingInFrame = this._createLabeledThingHierarchy();
+
+      const endPoint = new paper.Point(
+        Math.abs(this._startPosition.x - point.x) === 0 ? point.x + 1 : point.x,
+        Math.abs(this._startPosition.y - point.y) === 0 ? point.y + 1 : point.y
+      );
+
+      this._context.withScope(() => {
+        this._rect = new PaperRectangle(
+          labeledThingInFrame,
+          this._entityIdService.getUniqueId(),
+          this._startPosition,
+          endPoint,
+          labeledThingInFrame.labeledThing.color,
+          true
+        );
+      });
+
+      this.emit('rectangle:new', this._rect);
+    }
   }
 
   updateShape(point) {
@@ -73,9 +72,11 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseUp() {
-    this._$scope.$apply(
-      () => this.completeShape()
-    );
+    if (this._rect) {
+      this._$scope.$apply(
+        () => this.completeShape()
+      );
+    }
   }
 
   completeShape() {
@@ -84,6 +85,7 @@ class RectangleDrawingTool extends DrawingTool {
     labeledThingInFrame.shapes.push(this._rect.toJSON());
 
     this.emit('shape:new', this._rect);
+    this._rect = null;
   }
 
   _getScaleAnchor(point) {

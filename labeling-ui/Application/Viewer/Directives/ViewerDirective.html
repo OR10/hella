@@ -1,8 +1,9 @@
 <div class="viewer-inner grid-block noscroll shrink vertical align-center">
     <div class="layer-container grid-content noscroll shrink"
-         ng-style="{'cursor': vm.activeMouseCursor}">
+         ng-style="{'cursor': vm.activeMouseCursor === null ? (vm.actionMouseCursor === null ? 'auto' : vm.actionMouseCursor) : vm.activeMouseCursor}">
         <canvas class="background-layer"></canvas>
         <canvas class="annotation-layer"></canvas>
         <div class="event-delegation-layer"></div>
     </div>
 </div>
+<loading-mask ng-hide="true" style="position: absolute; top: 0; left:0; width: 100%; height: 100%;"></loading-mask>
