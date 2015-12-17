@@ -1,6 +1,8 @@
 .icon {
   font-size: 30px;
   overflow: hidden;
+  color: $icon;
+
   &:hover {
     color: $icon-hover !important;
   }
