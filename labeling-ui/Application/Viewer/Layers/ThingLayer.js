@@ -228,6 +228,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         .filter(
           paperShape => paperShape !== this._$scope.vm.selectedPaperShape
         );
+      const toShowShapes = drawnShapes
+        .filter(
+          paperShape => paperShape === this._$scope.vm.selectedPaperShape
+        );
 
       this._logger.groupStart('thinglayer:hiddenlabels', `Update visibility of non-selected LabeledThingsInFrame (${toHideShapes.length}/${drawnShapes.length})`);
       toHideShapes
@@ -236,6 +240,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
             const visible = !this._$scope.vm.hideLabeledThingsInFrame;
             this._logger.log('thinglayer:hiddenlabels', (visible ? 'Showing ' : 'Hiding '), paperShape);
             paperShape.visible = visible;
+          }
+        );
+      toShowShapes
+        .forEach(
+          paperShape => {
+            this._logger.log('thinglayer:hiddenlabels', 'Showing ', paperShape);
+            paperShape.visible = true;
           }
         );
       this._logger.groupEnd('thinglayer:hiddenlabels');
