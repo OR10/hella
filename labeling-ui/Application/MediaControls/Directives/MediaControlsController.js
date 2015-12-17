@@ -59,6 +59,13 @@ class MediaControlsController {
      * @private
      */
     this._$q = $q;
+
+    // Disable Zoom Tool if the panel is closed
+    $scope.$watch('vm.popupPanelState', (newState, oldState) => {
+      if (oldState === 'zoom' && newState !== 'zoom') {
+        this.activeTool = null;
+      }
+    });
   }
 
   /**
@@ -122,7 +129,7 @@ class MediaControlsController {
   }
 
   /**
-   * Handle the toggle of hiding all non selected {@link LabeledThingsInFrame}
+   * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
    */
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
