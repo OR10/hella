@@ -138,19 +138,20 @@ div.viewer {
 }
 
 .task-description-header {
-  height: 44px;
   align-items: center;
   text-transform: uppercase;
   color: $headlines;
   border-bottom: 2px solid $element-inline-divider;
   cursor: pointer;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 
   .grid-content {
     overflow: hidden;
   }
 
   .icon {
-    color: $text;
+    color: $icon;
   }
 
   .handle {
@@ -165,6 +166,7 @@ div.viewer {
 .task-description-content {
   padding-top: 10px;
   font-size: 16px;
+  color: $text;
 
   h1 {
     font-size: 16px;
@@ -233,21 +235,36 @@ button:hover i {
 
 .label-selector {
 
+  .icon {
+    color: $icon;
+  }
+
   .label-selector-title {
     align-items: center;
     text-transform: uppercase;
     color: $headlines;
     border-bottom: 2px solid $element-inline-divider;
-    height: 44px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 
   .label-selector-controlls {
-    flex: 0 0 percentage(2/13);
+    flex: 2;
     border-bottom: 1px solid $element-inline-divider;
+    align-items: center;
+    min-height: 2.5rem;
+    height: 2.5rem;
   }
 
   .label-selector-content {
-    align-items: stretch;
+    flex: 10;
+
+    .label-selector-content-container {
+      align-items: stretch;
+    }
+
+    .label-selector-content-spacer {
+    }
 
     .label-selector-item {
       padding: 1rem 0.1rem;
@@ -266,10 +283,48 @@ button:hover i {
       }
 
       &.selected {
+        position: relative;
         background-color: $button-selected;
         z-index: 2;
         box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+
+        &:after{
+          content: '\f118';
+          display: inline-block;
+          font-family: "icon-font";
+          font-style: normal;
+          font-weight: normal;
+          font-variant: normal;
+          font-size: 20px;
+
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          color: $icon-hover;
+        }
       }
+
+      &:hover {
+        background-color: $button-selected;
+        cursor: pointer;
+
+        .icon {
+          color: $icon-hover;
+        }
+      }
+    }
+  }
+
+  .label-selector-button {
+    align-items: center;
+    flex: 1;
+    font-size: 18px;
+    background-color: $button-selected;
+    border-top: 1px solid $element-inline-divider;
+    cursor: pointer;
+
+    &:hover{
+      color: $icon-hover;
     }
   }
 
