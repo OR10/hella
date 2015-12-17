@@ -42,7 +42,7 @@ class FrameNumberInputDirective {
           break;
         // arrow up
         case (event.keyCode === 38):
-          const value = Number.parseInt(getEditableValue());
+          const value = Number.parseInt(getEditableValue(), 10);
           if (value > 1) {
             editable.html(value - 1);
           }
@@ -50,7 +50,7 @@ class FrameNumberInputDirective {
           break;
         // arrow down
         case (event.keyCode === 40):
-          editable.html(Number.parseInt(getEditableValue()) + 1);
+          editable.html(Number.parseInt(getEditableValue(), 10) + 1);
           event.preventDefault();
           break;
 

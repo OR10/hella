@@ -2,7 +2,7 @@
  * Controller of the {@link HeaderDirective}
  */
 class HeaderController {
-  constructor(){
+  constructor() {
     this.title = 'VideoTitle.avi';
   }
 }

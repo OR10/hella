@@ -1,5 +1,4 @@
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
-import angular from 'angular';
 
 /**
  * Controller managing the display of a single ThumbnailImage
@@ -110,7 +109,7 @@ class ThumbnailController {
     this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
 
     $scope.$watch('vm.currentFrameNumber', newFrameNumber => {
-      const frameInt = Number.parseInt(newFrameNumber);
+      const frameInt = Number.parseInt(newFrameNumber, 10);
       if (frameInt < this.framePosition.startFrameNumber) {
         this.framePosition.goto(this.framePosition.startFrameNumber);
       } else if (frameInt > this.framePosition.endFrameNumber) {
