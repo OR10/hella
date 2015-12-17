@@ -9,6 +9,7 @@ import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryPr
 import AnimationFrameService from './Services/AnimationFrameService';
 import LoggerServiceProvider from './Loggers/LoggerServiceProvider';
 import EntityColorService from './Services/EntityColorService';
+import LoadingMaskDirective from './Directives/LoadingMask';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
 
@@ -35,6 +36,8 @@ class Common extends Module {
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);
+
+    this.registerDirective('loadingMask', LoadingMaskDirective);
 
     this.module.config(['$httpProvider', 'loggerServiceProvider', ($httpProvider, loggerServiceProvider) => {
       $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
