@@ -113,7 +113,7 @@ class LabeledThingInFrame extends Controller\Base
             ['result' =>
                 [
                     'labeledThingInFrame' => $labeledThingInFrame,
-                    'labeledThing' => $labeledThing,
+                    'labeledThing' => $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId()),
                 ]
             ]
         );
