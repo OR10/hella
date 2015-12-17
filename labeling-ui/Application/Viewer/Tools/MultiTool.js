@@ -57,7 +57,7 @@ export default class MultiTool extends Tool {
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
-    this._tool.onMouseMove = event => $scope.$evalAsync(this._mouseMove.bind(this, event));
+    this._tool.onMouseMove = event => $scope.$evalAsync(() => this._mouseMove(event));
   }
 
   /**
@@ -106,7 +106,7 @@ export default class MultiTool extends Tool {
       }
 
       if (hitResult.type === 'fill') {
-        this._$scope.vm.actionMouseCursor = 'move';
+        this._$scope.vm.actionMouseCursor = 'grab';
         return;
       }
 
@@ -149,6 +149,7 @@ export default class MultiTool extends Tool {
             break;
           case 'fill':
             this._activeTool = this._moveTool;
+            this._$scope.vm.actionMouseCursor = 'grabbing';
             this._activeTool.onMouseDown(event, hitResult);
             break;
           default:
@@ -162,6 +163,7 @@ export default class MultiTool extends Tool {
 
   _mouseUp(event) {
     if (this._activeTool) {
+      this._$scope.vm.actionMouseCursor = 'grab';
       this._activeTool.onMouseUp(event);
     }
   }
