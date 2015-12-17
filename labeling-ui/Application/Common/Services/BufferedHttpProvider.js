@@ -156,6 +156,8 @@ class BufferedHttpProvider {
           }
           if (isArray(value)) {
             processableData = processableData.concat(value);
+          } else if (key === 'labeledThings' || key === 'labeledThingsInFrame') {
+            processableData = processableData.concat(Object.values(value));
           } else {
             processableData.push(value);
           }
