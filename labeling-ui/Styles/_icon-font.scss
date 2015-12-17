@@ -32,6 +32,7 @@
 .icon-area-siburban-big:before,
 .icon-area-suburban:before,
 .icon-bookmark:before,
+.icon-check:before,
 .icon-control-backwards:before,
 .icon-control-forwards:before,
 .icon-control-next:before,
@@ -96,6 +97,7 @@
 .icon-area-siburban-big:before { content: "\f104"; }
 .icon-area-suburban:before { content: "\f105"; }
 .icon-bookmark:before { content: "\f106"; }
+.icon-check:before { content: "\f132"; }
 .icon-control-backwards:before { content: "\f107"; }
 .icon-control-forwards:before { content: "\f108"; }
 .icon-control-next:before { content: "\f109"; }
@@ -128,8 +130,8 @@
 .icon-selection-off:before { content: "\f124"; }
 .icon-selection-off2:before { content: "\f125"; }
 .icon-selection-on:before { content: "\f126"; }
-.icon-selection-start:before { content: "\f132"; }
-.icon-selection-view:before { content: "\f127"; }
+.icon-selection-start:before { content: "\f127"; }
+.icon-selection-view:before { content: "\f128"; }
 .icon-traffic-moderate:before { content: "\f129"; }
 .icon-up:before { content: "\f12a"; }
 .icon-view-brightness:before { content: "\f12b"; }
@@ -148,6 +150,7 @@ $font-icon-font-area-residential2: "\f103";
 $font-icon-font-area-siburban-big: "\f104"; 
 $font-icon-font-area-suburban: "\f105"; 
 $font-icon-font-bookmark: "\f106"; 
+$font-icon-font-check: "\f132"; 
 $font-icon-font-control-backwards: "\f107"; 
 $font-icon-font-control-forwards: "\f108"; 
 $font-icon-font-control-next: "\f109"; 
@@ -180,8 +183,8 @@ $font-icon-font-selection-gostart: "\f123";
 $font-icon-font-selection-off: "\f124"; 
 $font-icon-font-selection-off2: "\f125"; 
 $font-icon-font-selection-on: "\f126"; 
-$font-icon-font-selection-start: "\f132"; 
-$font-icon-font-selection-view: "\f127"; 
+$font-icon-font-selection-start: "\f127"; 
+$font-icon-font-selection-view: "\f128"; 
 $font-icon-font-traffic-moderate: "\f129"; 
 $font-icon-font-up: "\f12a"; 
 $font-icon-font-view-brightness: "\f12b"; 

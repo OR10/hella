@@ -144,8 +144,10 @@ div.viewer {
   color: $headlines;
   border-bottom: 2px solid $element-inline-divider;
   cursor: pointer;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  height: 2.8rem;
+  min-height: 2.8rem;
+  flex: 0;
+  font-weight: bold;
 
   .grid-content {
     overflow: hidden;
@@ -166,11 +168,10 @@ div.viewer {
 
 .task-description-content {
   padding-top: 10px;
-  font-size: 16px;
   color: $text;
 
   h1 {
-    font-size: 16px;
+    font-size: 18px;
     color: $sub-headlines;
     font-weight: bold;
   }
@@ -247,14 +248,26 @@ button:hover i {
     border-bottom: 2px solid $element-inline-divider;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    height: 2.8rem;
+    min-height: 2.8rem;
+    flex: 0;
+    font-weight: bold;
+
   }
 
   .label-selector-controlls {
-    flex: 2;
     border-bottom: 1px solid $element-inline-divider;
     align-items: center;
-    min-height: 2.5rem;
-    height: 2.5rem;
+    height: 5.6rem;
+    min-height: 5.6rem;
+    flex: 0;
+    font-size: 19px;
+    line-height: 20px;
+    font-weight: bold;
+
+    .icon {
+      font-size: 3rem;
+    }
   }
 
   .label-selector-content {
@@ -289,18 +302,18 @@ button:hover i {
         z-index: 2;
         box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 
-        &:after{
-          content: '\f118';
+        &:after {
+          content: '\f132';
           display: inline-block;
           font-family: "icon-font";
           font-style: normal;
           font-weight: normal;
           font-variant: normal;
-          font-size: 20px;
+          font-size: 30px;
 
           position: absolute;
-          top: 10px;
-          right: 10px;
+          top: 7px;
+          right: 7px;
           color: $icon-hover;
         }
       }
@@ -318,13 +331,16 @@ button:hover i {
 
   .label-selector-button {
     align-items: center;
-    flex: 1;
-    font-size: 18px;
+    flex: 0;
+    height: 2.8rem;
+    min-height: 2.8rem;
+    font-size: 19px;
     background-color: $button-selected;
     border-top: 1px solid $element-inline-divider;
     cursor: pointer;
+    font-weight: bold;
 
-    &:hover{
+    &:hover {
       color: $icon-hover;
     }
   }
