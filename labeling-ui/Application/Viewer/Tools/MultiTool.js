@@ -61,7 +61,7 @@ export default class MultiTool extends Tool {
     this._tool.onMouseMove = event => $scope.$evalAsync(this._mouseMove.bind(this, event));
   }
 
-  A/**
+  /**
    * Register a tool for handling the moving of things
    *
    * @param {ToolEvents} tool
@@ -171,5 +171,4 @@ export default class MultiTool extends Tool {
       this._activeTool.onMouseDrag(event);
     }
   }
-
 }
