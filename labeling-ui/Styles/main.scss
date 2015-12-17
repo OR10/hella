@@ -32,7 +32,6 @@ $button-selected: #353b42;
 html, body {
   // Prevent overscroll
   overflow: hidden;
-  font-size: 20px;
 }
 
 // Carefull with 'height: 100%'. This causes strange bugs with the ToolEvent.point coordinates.
@@ -148,6 +147,7 @@ div.viewer {
   height: 2.8rem;
   min-height: 2.8rem;
   flex: 0;
+  font-weight: bold;
 
   .grid-content {
     overflow: hidden;
@@ -171,7 +171,7 @@ div.viewer {
   color: $text;
 
   h1 {
-    font-size: 20px;
+    font-size: 18px;
     color: $sub-headlines;
     font-weight: bold;
   }
@@ -251,6 +251,7 @@ button:hover i {
     height: 2.8rem;
     min-height: 2.8rem;
     flex: 0;
+    font-weight: bold;
 
   }
 
@@ -262,6 +263,7 @@ button:hover i {
     flex: 0;
     font-size: 19px;
     line-height: 20px;
+    font-weight: bold;
 
     .icon {
       font-size: 3rem;
@@ -336,6 +338,7 @@ button:hover i {
     background-color: $button-selected;
     border-top: 1px solid $element-inline-divider;
     cursor: pointer;
+    font-weight: bold;
 
     &:hover {
       color: $icon-hover;
