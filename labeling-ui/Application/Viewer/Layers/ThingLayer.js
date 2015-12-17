@@ -303,18 +303,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {String} toolName
    */
   activateTool(toolName) {
-    switch (toolName) {
-      case 'zoomIn':
-        this._$scope.vm.activeMouseCursor = 'zoom-in';
-        break;
-      case 'zoomOut':
-        this._$scope.vm.activeMouseCursor = 'zoom-out';
-        break;
-      default:
-        this._$scope.vm.activeMouseCursor = null;
-    }
+    // Reset possible mouse cursor left-overs from the last tool
+    this._$scope._actionMouseCursor = null;
 
-    this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}, with cursor ${this._$scope.vm.activeMouseCursor}`);
+    this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}`);
     switch (toolName) {
       case 'rectangle':
         this._rectangleDrawingTool.activate();

@@ -37,6 +37,7 @@ class ViewerController {
    * @param {EntityColorService} entityColorService
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
+   * @param {Object} applicationState
    */
   constructor($scope,
               $element,
@@ -67,8 +68,6 @@ class ViewerController {
 
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
-     *
-     * This mouse cursor is overriden by the `activeMouseCursor`.
      *
      * @type {null}
      */

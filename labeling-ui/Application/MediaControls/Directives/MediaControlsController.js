@@ -66,6 +66,13 @@ class MediaControlsController {
      * @private
      */
     this._applicationState = applicationState;
+
+    // Disable Zoom Tool if the panel is closed
+    $scope.$watch('vm.popupPanelState', (newState, oldState) => {
+      if (oldState === 'zoom' && newState !== 'zoom') {
+        this.activeTool = null;
+      }
+    });
   }
 
   /**
@@ -129,7 +136,7 @@ class MediaControlsController {
   }
 
   /**
-   * Handle the toggle of hiding all non selected {@link LabeledThingsInFrame}
+   * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
    */
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
@@ -147,8 +154,7 @@ class MediaControlsController {
 
     this._logger.log('mediacontrols:newlabeledthing', `Creating new Shape: topLeft: ${topLeft}, bottomRight: ${bottomRight} (center: ${center})`);
 
-    this.newShapeDrawingTool.startShape(topLeft);
-    this.newShapeDrawingTool.updateShape(bottomRight);
+    this.newShapeDrawingTool.startShape(topLeft, bottomRight);
     this.newShapeDrawingTool.completeShape();
   }
 

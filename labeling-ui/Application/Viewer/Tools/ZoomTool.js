@@ -19,19 +19,28 @@ class ZoomTool extends Tool {
     this._zoomFn = zoomFn;
     this._$scope = $scope;
 
-    this._tool.onMouseUp = this._mouseUp.bind(this);
+    this._tool.onMouseUp = event => this._$scope.$evalAsync(this._mouseUp.bind(this, event));
   }
 
   _mouseUp(event) {
-    this._$scope.$apply(
-      () => this._$scope.vm[this._zoomFn](
-        new paper.Point(
-          event.event.offsetX,
-          event.event.offsetY
-        ),
-        1.5
-      )
+    this._$scope.vm[this._zoomFn](
+      new paper.Point(
+        event.event.offsetX,
+        event.event.offsetY
+      ),
+      1.5
     );
+  }
+
+  activate() {
+    super.activate();
+
+    const mouseCursor = {
+      [ZoomTool.ZOOM_IN]: 'zoom-in',
+      [ZoomTool.ZOOM_OUT]: 'zoom-out',
+    };
+
+    this._$scope.$evalAsync(() => this._$scope.vm.actionMouseCursor = mouseCursor[this._zoomFn]);
   }
 }
 
