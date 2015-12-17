@@ -39,7 +39,7 @@ html, body {
   margin-right: 2px;
 }
 
-div.viewer{
+div.viewer {
   text-align: center;
   box-shadow: inset 0 0 10px 0 #000000;
 }
@@ -93,33 +93,32 @@ div.viewer{
   }
 }
 
-.sidebar-right{
+.sidebar-right {
   background-color: $element-background;
   border-left: 1px solid $element-divider;
   min-width: 200px;
 }
 
-.task-bar{
-  box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.5);
+.task-bar {
+  box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.5);
   background-color: $element-background;
   border-top: 2px solid $element-divider;
   border-bottom: 2px solid $element-divider;
   align-items: center;
   flex: 0 0 percentage(1/24);
 
-  .icon {
-    color: $icon;
-  }
-
-  .grid-content{
+  .grid-content {
     padding: 0;
     text-align: center;
     min-width: 40px;
+
+    .icon {
+      color: $icon;
+    }
   }
 }
 
-
-.task-bar-left, .task-bar-right, .task-bar-center{
+.task-bar-left, .task-bar-right, .task-bar-center {
   text-align: center;
   overflow: hidden;
 }
@@ -134,28 +133,28 @@ div.viewer{
   min-width: 200px;
 }
 
-
 .task-description {
   align-items: center;
 }
 
-.task-description-header{
-  height: 44px;
+.task-description-header {
   align-items: center;
   text-transform: uppercase;
   color: $headlines;
   border-bottom: 2px solid $element-inline-divider;
   cursor: pointer;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 
   .grid-content {
     overflow: hidden;
   }
-  
-  .icon{
-    color: $text;
+
+  .icon {
+    color: $icon;
   }
 
-  .handle{
+  .handle {
     padding-left: 10px;
     padding-right: 10px;
     text-transform: lowercase;
@@ -164,9 +163,10 @@ div.viewer{
   }
 }
 
-.task-description-content{
+.task-description-content {
   padding-top: 10px;
   font-size: 16px;
+  color: $text;
 
   h1 {
     font-size: 16px;
@@ -175,18 +175,16 @@ div.viewer{
   }
 }
 
-.panel{
+.panel {
   display: block;
   width: 300px;
   min-height: 100px;
   float: left;
 }
 
-.panel-collapse{
+.panel-collapse {
   display: block;
 }
-
-
 
 .thumbnail-zone {
   flex: 0 0 percentage(3/24);
@@ -195,7 +193,7 @@ div.viewer{
   .thumbnail-zone-layer {
     background-color: $element-background;
     border-right: 2px solid $element-divider;
-    box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.5);
+    box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -205,7 +203,7 @@ div.viewer{
   .timeline-layer {
     background-color: $element-background;
     border-right: 2px solid $element-divider;
-    box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.5);
+    box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -221,16 +219,113 @@ div.viewer{
   background-color: $element-background;
 }
 
-button{
+button {
   background-color: inherit;
   border: 0;
 }
 
-button:focus{
+button:focus {
   border: none;
   outline: none;
 }
 
-button:hover i{
+button:hover i {
   color: $icon-hover;
+}
+
+.label-selector {
+
+  .icon {
+    color: $icon;
+  }
+
+  .label-selector-title {
+    align-items: center;
+    text-transform: uppercase;
+    color: $headlines;
+    border-bottom: 2px solid $element-inline-divider;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .label-selector-controlls {
+    flex: 2;
+    border-bottom: 1px solid $element-inline-divider;
+    align-items: center;
+    min-height: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .label-selector-content {
+    flex: 10;
+
+    .label-selector-content-container {
+      align-items: stretch;
+    }
+
+    .label-selector-content-spacer {
+    }
+
+    .label-selector-item {
+      padding: 1rem 0.1rem;
+      text-align: center;
+      background-color: $button;
+      border-right: 1px solid $element-inline-divider;
+      border-bottom: 1px solid $element-inline-divider;
+      font-size: 16px;
+
+      button {
+        margin-bottom: 0.2rem;
+      }
+
+      p {
+        margin-bottom: 0.5rem;
+      }
+
+      &.selected {
+        position: relative;
+        background-color: $button-selected;
+        z-index: 2;
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+
+        &:after{
+          content: '\f118';
+          display: inline-block;
+          font-family: "icon-font";
+          font-style: normal;
+          font-weight: normal;
+          font-variant: normal;
+          font-size: 20px;
+
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          color: $icon-hover;
+        }
+      }
+
+      &:hover {
+        background-color: $button-selected;
+        cursor: pointer;
+
+        .icon {
+          color: $icon-hover;
+        }
+      }
+    }
+  }
+
+  .label-selector-button {
+    align-items: center;
+    flex: 1;
+    font-size: 18px;
+    background-color: $button-selected;
+    border-top: 1px solid $element-inline-divider;
+    cursor: pointer;
+
+    &:hover{
+      color: $icon-hover;
+    }
+  }
+
 }

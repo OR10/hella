@@ -1,6 +1,5 @@
 import Tool from './Tool';
 import paper from 'paper';
-import PaperShape from '../Shapes/PaperShape';
 import PaperCircle from '../Shapes/PaperCircle';
 
 /**

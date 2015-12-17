@@ -402,7 +402,7 @@ class ViewerController {
    */
   _handleFrameChange(frameNumber) {
     if (this._frameChangeInProgress) {
-      console.warn('frame change already in progress');
+      this._logger.warn('frame change already in progress');
     }
 
     this._frameChangeInProgress = true;
@@ -608,7 +608,7 @@ class ViewerController {
     let nextFramePosition = this.framePosition.position + 1;
 
     if (this._frameChangeInProgress) {
-      console.warn(`Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip} frames...`);
+      this._logger.warn(`Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip} frames...`);
       this._frameChangeInProgress = false;
       nextFramePosition += this._applicationConfig.Viewer.frameSkip;
     }

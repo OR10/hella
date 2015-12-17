@@ -1,4 +1,3 @@
-import paper from 'paper';
 import Tool from './Tool';
 
 import PaperShape from '../Shapes/PaperShape';
@@ -122,6 +121,7 @@ export default class MultiTool extends Tool {
         case (point.x > center.x + 10 && point.y < center.y - 10): // top-right
           this._$scope.vm.actionMouseCursor = 'nesw-resize';
           break;
+        default:
       }
     });
   }
@@ -171,5 +171,4 @@ export default class MultiTool extends Tool {
       this._activeTool.onMouseDrag(event);
     }
   }
-
 }

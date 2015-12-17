@@ -3,7 +3,7 @@
  */
 class User {
   /**
-   * @param {{username: string}} user
+   * @param {{username: string, id: string, email: string}} user
    */
   constructor(user) {
     // Required properties
@@ -35,6 +35,8 @@ class User {
    * @return {Object}
    */
   toJSON() {
+    const {id, username, email} = this;
+
     return {id, username, email};
   }
 }

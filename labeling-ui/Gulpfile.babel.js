@@ -280,8 +280,8 @@ gulp.task('build-sass', () => {
     .pipe($$.sourcemaps.init())
     .pipe($$.plumber(function onError(error) {
       beepbeep();
-      console.error(chalk.red('Error compiling Sass file.')); //eslint-disable-line no-console
-      console.error(chalk.red(error.message)); //eslint-disable-line no-console
+      console.error(chalk.red('Error compiling Sass file.')); // eslint-disable-line no-console
+      console.error(chalk.red(error.message)); // eslint-disable-line no-console
       this.emit('end');
     }))
     .pipe($$.sass({

@@ -14,7 +14,7 @@ class ConsoleLogger {
     console.groupCollapsed(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
   }
 
-  groupEnd(context) {
+  groupEnd(context) { // eslint-disable-line no-unused-vars
     console.groupEnd(); // eslint-disable-line no-console
   }
 
@@ -56,7 +56,7 @@ class ConsoleLogger {
       return {formatString: '%o', formatArguments: [value]};
     }
 
-    if (Number.parseInt(value) === value) {
+    if (Number.parseInt(value, 10) === value) {
       return {formatString: '%i', formatArguments: [value]};
     }
 

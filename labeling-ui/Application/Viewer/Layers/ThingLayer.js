@@ -165,7 +165,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
-    $scope.$watch('vm.hideLabeledThingsInFrame', hide => {
+    $scope.$watch('vm.hideLabeledThingsInFrame', () => {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 

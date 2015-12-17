@@ -69,7 +69,6 @@ class MediaControlsController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     if (framePosition > selectedLabeledThing.frameRange.endFrameNumber) {
-
       return;
     }
 
