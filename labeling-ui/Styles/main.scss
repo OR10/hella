@@ -46,21 +46,17 @@ div.viewer {
 }
 
 .sidebar-left {
-  position: relative;
   background-color: $element-background;
   border-right: 1px solid $element-divider;
   min-width: 200px;
 
   div.popup-panel {
-    width: 100%;
     font-size: 16px;
-    position: absolute;
-    left: 0;
-    bottom: 0;
     padding-left: 1rem;
     padding-right: 1rem;
     background-color: $button;
     border-top: 2px solid $element-inline-divider;
+    flex: 0;
 
     .zoom {
       .zoom-controls {

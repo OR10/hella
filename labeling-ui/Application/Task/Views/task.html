@@ -2,7 +2,7 @@
         user="vm.user"
 ></header>
 <div class="main grid-block">
-    <div class="grid-block small-5 contain-left sidebar-left">
+    <div class="grid-block small-5 contain-left sidebar-left vertical">
         <div class="grid-block vertical">
             <task-description title="Task Description"
                               heading="vm.task.descriptionTitle"
@@ -13,18 +13,17 @@
                               heading="vm.task.descriptionTitle"
                               content="vm.task.descriptionText"
             ></task-description>
-
-            <popup-panel popup-panel-state="vm.popupPanelState"
-                         brightness-slider-value="vm.brightnessSliderValue"
-                         contrast-slider-value="vm.contrastSliderValue"
-                         viewer-viewport="vm.viewerViewport"
-                         video="vm.video"
-                         task="vm.task"
-                         frame-position="vm.framePosition"
-                         filters="vm.filters"
-                         active-tool="vm.activeTool"
-            ></popup-panel>
         </div>
+        <popup-panel popup-panel-state="vm.popupPanelState"
+                     brightness-slider-value="vm.brightnessSliderValue"
+                     contrast-slider-value="vm.contrastSliderValue"
+                     viewer-viewport="vm.viewerViewport"
+                     video="vm.video"
+                     task="vm.task"
+                     frame-position="vm.framePosition"
+                     filters="vm.filters"
+                     active-tool="vm.activeTool"
+        ></popup-panel>
     </div>
 
     <div class="grid-block viewer">
