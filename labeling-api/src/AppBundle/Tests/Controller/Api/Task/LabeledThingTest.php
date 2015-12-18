@@ -275,14 +275,10 @@ class LabeledThingTest extends Tests\WebTestCase
         $response      = $this->doRequest(
             'DELETE',
             sprintf(
-                '/api/task/%s/labeledThing/%s',
+                '/api/task/%s/labeledThing/%s?rev=%s',
                 $labelingTask->getId(),
-                $labelingThing->getId()
-            ),
-            json_encode(
-                array(
-                    'rev' => $labelingThing->getRev(),
-                )
+                $labelingThing->getId(),
+                $labelingThing->getRev()
             )
         );
 

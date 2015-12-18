@@ -6,14 +6,21 @@ import LabeledThing from '../Models/LabeledThing';
 class LabeledThingGateway {
   /**
    * @param {ApiService} apiService
+   * @param {RevisionManager} revisionManager
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, revisionManager, bufferedHttp) {
     /**
      * @type {BufferedHttp}
      * @private
      */
     this._bufferedHttp = bufferedHttp;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
 
     /**
      * @type {ApiService}
@@ -56,10 +63,35 @@ class LabeledThingGateway {
         throw new Error('Received malformed response when requesting labeled thing.');
       });
   }
+
+  /**
+   * Delete a {@link LabeledThing} and all its descending {@link LabeledThingInFrame} objects
+   *
+   * @param {LabeledThing} labeledThing
+   * @returns {AbortablePromise}
+   */
+  deleteLabeledThing(labeledThing) {
+    const url = this._apiService.getApiUrl(
+      `/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`,
+      {
+        rev: this._revisionManager.getRevision(labeledThing.id),
+      }
+    );
+
+    return this._bufferedHttp.delete(url, undefined, 'labeledThing')
+      .then(response => {
+        if (response.data && response.data.success === true) {
+          return true;
+        }
+
+        throw new Error('Received malformed response when deleting labeled thing.');
+      });
+  }
 }
 
 LabeledThingGateway.$inject = [
   'ApiService',
+  'revisionManager',
   'bufferedHttp',
 ];
 

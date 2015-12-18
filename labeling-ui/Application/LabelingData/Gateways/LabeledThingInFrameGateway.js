@@ -132,7 +132,21 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledThingInFrame(Object.assign({}, response.data.result, {labeledThing: labeledThingInFrame.labeledThing}));
+          return new LabeledThingInFrame(
+            Object.assign(
+              {},
+              response.data.result.labeledThingInFrame,
+              {
+                labeledThing: new LabeledThing(
+                  Object.assign(
+                    {},
+                    response.data.result.labeledThing,
+                    {task: labeledThingInFrame.labeledThing.task}
+                  )
+                ),
+              }
+            )
+          );
         }
 
         throw new Error('Failed updating labeled thing in frame');

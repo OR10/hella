@@ -1,3 +1,4 @@
+import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
@@ -267,9 +268,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
         class: PaperShape,
         fill: true,
         bounds: true,
-        segments: true,
-        curves: true,
-        center: true,
         tolerance: 3,
       });
 
@@ -481,7 +479,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
       scope.settings.handleSize = 8;
     });
 
-    element.addEventListener('mousedown', event => this._$scope.$evalAsync(this._onLayerClick.bind(this, event)));
+    // Use `angular.element` here, to normalize the event properties.
+    angular.element(element).on(
+      'mousedown',
+      event => this._$scope.$evalAsync(
+        this._onLayerClick.bind(this, event)
+      )
+    );
   }
 }
 

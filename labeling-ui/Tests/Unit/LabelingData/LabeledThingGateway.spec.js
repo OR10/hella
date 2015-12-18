@@ -10,6 +10,7 @@ describe('LabeledThingGateway', () => {
   let $httpBackend;
   let gateway;
   let bufferedHttp;
+  let revisionManager;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -32,6 +33,7 @@ describe('LabeledThingGateway', () => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingGateway);
       bufferedHttp = $injector.get('bufferedHttp');
+      revisionManager = $injector.get('revisionManager');
     });
   });
 
@@ -87,6 +89,36 @@ describe('LabeledThingGateway', () => {
     gateway.saveLabeledThing(labeledThing)
       .then(result => {
         expect(result).toEqual(labeledThing);
+        done();
+      });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
+  it('should delete a labeled thing', done => {
+    const task = {id: '456'};
+    const labeledThingId = '123';
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThing/${labeledThingId}?rev=1-abcdef`;
+
+    revisionManager.updateRevision(labeledThingId, '1-abcdef');
+
+    const labeledThing = new LabeledThing({
+      task,
+      id: labeledThingId,
+      rev: '1-xyz',
+      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      classes: ['foo', 'bar'],
+    });
+
+    const expectedResult = {success: true};
+
+    $httpBackend
+      .expect('DELETE', expectedUrl)
+      .respond(200, expectedResult);
+
+    gateway.deleteLabeledThing(labeledThing)
+      .then(result => {
+        expect(result).toBeTruthy();
         done();
       });
 

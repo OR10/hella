@@ -210,7 +210,7 @@ class LabeledThing extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
-        if ($request->request->get('rev') !== $labeledThing->getRev()) {
+        if ($request->query->get('rev') !== $labeledThing->getRev()) {
             throw new Exception\ConflictHttpException();
         }
 

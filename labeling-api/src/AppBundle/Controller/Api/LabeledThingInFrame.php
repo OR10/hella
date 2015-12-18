@@ -46,12 +46,9 @@ class LabeledThingInFrame extends Controller\Base
     /**
      * @Rest\Get("/{labeledThingInFrame}")
      *
-     * @param Model\LabeledThingInFrame $documentId
-     * @param HttpFoundation\Request    $request
-     *
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param HttpFoundation\Request $request
      * @return \FOS\RestBundle\View\View
-     *
-     * @internal param HttpFoundation\Request $request
      */
     public function getLabeledThingInFrameAction(
         Model\LabeledThingInFrame $labeledThingInFrame,
@@ -112,7 +109,14 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThingInFrame->setIncomplete($request->request->get('incomplete'));
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 
-        return View\View::create()->setData(['result' => $labeledThingInFrame]);
+        return View\View::create()->setData(
+            ['result' =>
+                [
+                    'labeledThingInFrame' => $labeledThingInFrame,
+                    'labeledThing' => $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId()),
+                ]
+            ]
+        );
     }
 
     /**
