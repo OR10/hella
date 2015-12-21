@@ -222,10 +222,11 @@ class MediaControlsController {
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
-    this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing).then(() => {
+    this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
+      .then(() => {
         this.selectedPaperShape = null;
         this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
-          labeledThingInFrame => labeledThingInFrame != selectedLabeledThingInFrame
+          labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
         );
         this._applicationState.enableAll();
       })

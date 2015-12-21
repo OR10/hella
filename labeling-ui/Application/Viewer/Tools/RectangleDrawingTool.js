@@ -48,12 +48,10 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseDown(event) {
-    this._startPosition = event.point
+    this._startPosition = event.point;
   }
 
   onMouseDrag(event) {
-    const point = event.point;
-
     if (this._rect) {
       this._$scope.$apply(
         () => this.updateShape(event.point)
