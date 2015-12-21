@@ -2,14 +2,14 @@
   "backendPrefix": "/",
   "apiPrefix": "/api",
   "colorPalettes": {
-    "primary": [
-      "#731FB2",
-      "#E53C12",
-      "#29B295",
-      "#39CC4A",
-      "#FFB932",
-      "#B21D10"
-    ]
+    "primary": {
+     "1": "#731FB2",
+     "2": "#E53C12",
+     "3": "#29B295",
+     "4": "#39CC4A",
+     "5": "#FFB932",
+     "6": "#B21D10"
+    }
   }
 }
 

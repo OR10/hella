@@ -32,25 +32,25 @@ describe('ApiService', () => {
   });
 
   it('should pick colors from the right palette', () => {
-    const service = getEntityColorService({'primary': ['abc', 'ghi'], 'secondary': ['def']});
+    const service = getEntityColorService({'primary': {'1': 'abc', '2': 'ghi'}, 'secondary': {'1': 'def'}});
 
-    expect(service.getColor('primary')).toEqual('abc');
-    expect(service.getColor('secondary')).toEqual('def');
-    expect(service.getColor('primary')).toEqual('ghi');
+    expect(service.getColorById('1', 'primary')).toEqual('abc');
+    expect(service.getColorById('1', 'secondary')).toEqual('def');
+    expect(service.getColorById('2', 'primary')).toEqual('ghi');
   });
 
   it('should pick colors in order on successive calls', () => {
-    const service = getEntityColorService({'primary': ['abc', 'def']});
+    const service = getEntityColorService({'primary': {'1': 'abc', '2': 'def'}});
 
-    expect(service.getColor('primary')).toEqual('abc');
-    expect(service.getColor('primary')).toEqual('def');
+    expect(service.getColorId()).toEqual('1');
+    expect(service.getColorId()).toEqual('2');
   });
 
   it('should loop around to the first color when requesting more colors than available', () => {
-    const service = getEntityColorService({'primary': ['abc', 'def']});
+    const service = getEntityColorService({'primary': {'1': 'abc', '2': 'def'}});
 
-    expect(service.getColor('primary')).toEqual('abc');
-    expect(service.getColor('primary')).toEqual('def');
-    expect(service.getColor('primary')).toEqual('abc');
+    expect(service.getColorId()).toEqual('1');
+    expect(service.getColorId()).toEqual('2');
+    expect(service.getColorId()).toEqual('1');
   });
 });

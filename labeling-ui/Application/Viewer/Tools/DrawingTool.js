@@ -49,7 +49,7 @@ class DrawingTool extends Tool {
     const framePosition = this._$scope.vm.framePosition;
     const newLabeledThingId = this._entityIdService.getUniqueId();
     const newLabeledThingInFrameId = this._entityIdService.getUniqueId();
-    const color = this._entityColorService.getColor();
+    const color = this._entityColorService.getColorId();
 
     const newLabeledThing = new LabeledThing({
       id: newLabeledThingId,

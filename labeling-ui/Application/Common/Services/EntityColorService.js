@@ -15,27 +15,45 @@ class EntityColorService {
      * @type {number}
      * @private
      */
-    this._counters = {};
-
-    Object.keys(this._colorPalettes).forEach(paletteName => {
-      this._counters[paletteName] = 0;
-    });
+    this._counter = 0;
   }
 
   /**
-   * Selects a color from the given color palette
+   * Selects a new color
    *
-   * @param {String} [colorPalette]
+   * Note that the returned color is not guaranteed to be unique.
+   *
    * @returns {String}
    */
-  getColor(colorPalette = 'primary') {
+  getColorId() {
+    const colors = this._colorPalettes.primary;
+
+    const colorIds = Object.keys(colors);
+
+    return colorIds[this._counter++ % colorIds.length];
+  }
+
+  /**
+   * Retrieves the matching color for the given id from the given color palette.
+   *
+   * @param {string} colorId
+   * @param {string} colorPalette
+   * @returns {string}
+   */
+  getColorById(colorId, colorPalette = 'primary') {
     const colors = this._colorPalettes[colorPalette];
 
     if (!colors) {
       throw new Error(`Unknown color palette ${colorPalette}`);
     }
 
-    return colors[this._counters[colorPalette]++ % colors.length];
+    const color = colors[colorId];
+
+    if (!color) {
+      throw new Error(`Unknown color with id ${colorId} in palette ${colorPalette}`);
+    }
+
+    return color;
   }
 }
 

@@ -45,7 +45,7 @@ class LineDrawingTool extends PathDrawingTool {
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         [point],
-        labeledThingInFrame.labeledThing.color,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });

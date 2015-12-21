@@ -33,7 +33,7 @@ class CircleDrawingTool extends EllipseDrawingTool {
         this._entityIdService.getUniqueId(),
         this._startPosition,
         radius,
-        labeledThingInFrame.labeledThing.color,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });

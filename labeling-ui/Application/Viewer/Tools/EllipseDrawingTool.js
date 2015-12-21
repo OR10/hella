@@ -39,7 +39,7 @@ class EllipseDrawingTool extends DrawingTool {
         this._entityIdService.getUniqueId(),
         this._startPosition,
         size,
-        labeledThingInFrame.labeledThing.color,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });
