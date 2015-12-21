@@ -195,7 +195,7 @@ describe('LabeledThingInFrameGateway', () => {
           result: {
             labeledThingsInFrame: [],
             labeledThings: {},
-          }
+          },
         });
 
       gateway.listLabeledThingInFrame(task, frameNumber)
@@ -221,7 +221,7 @@ describe('LabeledThingInFrameGateway', () => {
           result: {
             labeledThingsInFrame: [],
             labeledThings: {},
-          }
+          },
         });
 
       gateway.listLabeledThingInFrame(task, frameNumber)
