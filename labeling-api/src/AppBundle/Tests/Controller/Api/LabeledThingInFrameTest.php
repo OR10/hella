@@ -247,7 +247,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $video = new Model\Video('foobar');
         $this->videoFacade->save($video);
         $frameRange   = new Model\FrameRange(10, 20);
-        $labelingTask = new Model\LabelingTask($video, $frameRange);
+        $labelingTask = new Model\LabelingTask($video, $frameRange, Model\LabelingTask::TYPE_OBJECT_LABELING);
         $this->labelingTaskFacade->save($labelingTask);
         $labeledThing = new Model\LabeledThing($labelingTask);
         $labeledThing->setId('11dd639108f1419967ed8d6a1f5a76e7');

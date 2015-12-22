@@ -243,7 +243,7 @@ class KittiTest extends Tests\KernelTestCase
         $video = new Model\Video('test video');
         $this->videoFacade->save($video);
 
-        $task = new Model\LabelingTask($video, $frameRange);
+        $task = new Model\LabelingTask($video, $frameRange, Model\LabelingTask::TYPE_OBJECT_LABELING);
         $this->labelingTaskFacade->save($task);
 
         return $task;

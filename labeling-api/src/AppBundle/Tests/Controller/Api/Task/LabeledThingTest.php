@@ -336,7 +336,7 @@ class LabeledThingTest extends Tests\WebTestCase
         $video = new Model\Video('foobar');
         $this->videoFacade->save($video);
         $frameRange   = new Model\FrameRange($startRange, $endRange);
-        $labelingTask = new Model\LabelingTask($video, $frameRange);
+        $labelingTask = new Model\LabelingTask($video, $frameRange, Model\LabelingTask::TYPE_OBJECT_LABELING);
         $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;

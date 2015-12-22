@@ -373,7 +373,7 @@ class LinearTest extends Tests\KernelTestCase
      */
     private function createTask()
     {
-        $task = new Model\LabelingTask($this->createVideo(), new Model\FrameRange(1, 10), []);
+        $task = new Model\LabelingTask($this->createVideo(), new Model\FrameRange(1, 10), Model\LabelingTask::TYPE_OBJECT_LABELING);
         $this->labelingTaskFacade->save($task);
         return $task;
     }

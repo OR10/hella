@@ -59,11 +59,11 @@ class ImporterService
     }
 
     /**
-     * @param string $name       The name for the video (usually the basename).
-     * @param string $path       The filesystem path to the video file.
+     * @param string $name The name for the video (usually the basename).
+     * @param string $path The filesystem path to the video file.
      * @param array  $compressed Wether or not the UI should use compressed images.
      *
-     * @return Model\LabelingTask
+     * @return Model\LabelingTask[]
      *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
@@ -75,7 +75,6 @@ class ImporterService
         $this->videoFacade->save($video, $path);
 
         $imageTypes = $this->getImageTypes($compressed);
-        $task       = $this->addTask($video, $imageTypes);
 
         foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
@@ -89,23 +88,43 @@ class ImporterService
             $this->facadeAMQP->addJob($job);
         }
 
+        $tasks = [];
 
-        return $task;
+        $tasks[] = $this->addTask($video, Model\LabelingTask::TYPE_META_LABELING, null, [], $imageTypes);
+        $tasks[] = $this->addTask(
+            $video,
+            Model\LabelingTask::TYPE_OBJECT_LABELING,
+            Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+            ['pedestrian'],
+            $imageTypes
+        );
+
+        return $tasks;
     }
 
     /**
      * Add a LabelingTask
      *
      * @param Model\Video $video
-     *
+     * @param string      $taskType
+     * @param string|null $drawingTool
+     * @param string[]    $predefinedClasses
      * @param             $imageTypes
+     *
      * @return Model\LabelingTask
      */
-    private function addTask(Model\Video $video, $imageTypes)
+    private function addTask(Model\Video $video, $taskType, $drawingTool, $predefinedClasses, $imageTypes)
     {
         $metadata     = $video->getMetaData();
         $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
-        $labelingTask = new Model\LabelingTask($video, $frameRange, $imageTypes);
+        $labelingTask = new Model\LabelingTask(
+            $video,
+            $frameRange,
+            $taskType,
+            $drawingTool,
+            $predefinedClasses,
+            $imageTypes
+        );
         $labelingTask->setDescriptionTitle('Identify the person');
         $labelingTask->setDescriptionText(
             'How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?'

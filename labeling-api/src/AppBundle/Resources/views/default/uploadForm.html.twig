@@ -12,7 +12,9 @@
 
             {% if taskId is defined %}
                 <div class="col-md-12">
-                    <div class="alert alert-info" role="alert">Task angelegt: {{ taskId }}</div>
+                    {% for taskId in taskIds %}
+                        <div class="alert alert-info" role="alert">Task angelegt: {{ taskId }}</div>
+                    {% endfor %}
                 </div>
             {% endif %}
 

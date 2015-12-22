@@ -144,7 +144,7 @@ class InterpolateTest extends Tests\WebTestCase
         $task = new Model\LabelingTask(
             $video ?: $this->createVideo(),
             new Model\FrameRange(1, 10),
-            []
+            Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $this->labelingTaskFacade->save($task);
         return $task;

@@ -44,10 +44,17 @@ class ImportVideo extends Base
 
         try {
             $stream   = fopen($filename, 'r+');
-            $task = $this->importerService->import(basename($filename), $filename, $input->getOption('compressed'));
+            $tasks = $this->importerService->import(basename($filename), $filename, $input->getOption('compressed'));
 
-            $this->writeInfo($output, "VideoId: <comment>{$task->getVideoId()}</>");
-            $this->writeInfo($output, "TaskId:  <comment>{$task->getId()}</>");
+            if (count($tasks) > 0) {
+                $this->writeInfo($output, "VideoId: <comment>{$tasks[0]->getVideoId()}</>");
+            }
+
+            foreach ($tasks as $task) {
+                $this->writeInfo($output, "Task type: <comment> {$task->getTaskType()}</>");
+                $this->writeInfo($output, "TaskId:  <comment>{$task->getId()}</>");
+            }
+
             $this->writeInfo($output, "<info>Video successfully imported!</info>");
         } catch (\Exception $e) {
             $this->writeError($output, "Error importing {$filename}: {$e->getMessage()}");

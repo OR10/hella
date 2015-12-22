@@ -9,6 +9,10 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
  */
 class LabelingTask
 {
+    const TYPE_META_LABELING = 'meta-labeling';
+    const TYPE_OBJECT_LABELING = 'object-labeling';
+    const DRAWING_TOOL_RECTANGLE = 'rectangle';
+
     /**
      * @var string
      * @CouchDB\Id
@@ -66,14 +70,44 @@ class LabelingTask
     private $enabled = false;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $taskType;
+
+    /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $predefinedClasses;
+
+    /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $drawingTool;
+
+    /**
      * @param Video      $video
      * @param FrameRange $frameRange
+     * @param string     $taskType
+     * @param string     $drawingTool
+     * @param array      $predefinedClasses
      * @param array      $requiredImageTypes
      */
-    public function __construct(Video $video, FrameRange $frameRange, array $requiredImageTypes = array())
-    {
+    public function __construct(
+        Video $video,
+        FrameRange $frameRange,
+        $taskType,
+        $drawingTool = null,
+        $predefinedClasses = array(),
+        array $requiredImageTypes = array()
+    ) {
         $this->videoId            = $video->getId();
         $this->frameRange         = clone $frameRange;
+        $this->taskType           = $taskType;
+        $this->drawingTool        = $drawingTool;
+        $this->predefinedClasses  = $predefinedClasses;
         $this->requiredImageTypes = $requiredImageTypes;
     }
 
@@ -150,13 +184,36 @@ class LabelingTask
     }
 
     /**
+     * @return string
+     */
+    public function getTaskType()
+    {
+        return $this->taskType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDrawingTool()
+    {
+        return $this->drawingTool;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPredefinedClasses()
+    {
+        return $this->predefinedClasses;
+    }
+
+    /**
      * @param boolean $enabled
      */
     public function setEnabled($enabled = true)
     {
         $this->enabled = (bool) $enabled;
     }
-
 
     /**
      * @return boolean

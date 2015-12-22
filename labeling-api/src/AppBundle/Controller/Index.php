@@ -74,8 +74,13 @@ class Index extends Base
         if ($file === null) {
             $viewData['error'] = 'No file given';
         } else {
-            $task = $this->importerService->import($file->getClientOriginalName(), $file, $compressed);
-            $viewData['taskId'] = $task->getId();
+            $tasks = $this->importerService->import($file->getClientOriginalName(), $file, $compressed);
+            $viewData['taskIds'] = array_map(
+                function ($task) {
+                    return $task->getId();
+                },
+                $tasks
+            );
         }
 
         return new Response(
