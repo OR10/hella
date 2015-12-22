@@ -3,7 +3,7 @@
     <div class="thumbnail-spacer"
          ng-class="{'drop-target': vm.placeBracketSpacer(-1), 'active': vm.thumbnailSpacerInFrameRange(-1)}"
          data-jqyoui-options="{}"
-         data-drop="{{vm.placeBrakcetSpacer(-1)}}"
+         data-drop="vm.placeBracketSpacer(-1)"
          jqyoui-droppable="{onDrop: 'vm.handleDrop(-1)'}"
     >
         <div ng-if="!(vm.placeStartBracket(-1) || vm.placeEndBracket(-1))" class="frame-range-bracket-space"/>
@@ -47,7 +47,7 @@
          class="thumbnail-spacer"
          ng-class="{'drop-target': vm.placeBracketSpacer($index), 'active': vm.thumbnailSpacerInFrameRange($index)}"
          data-jqyoui-options="{}"
-         data-drop="{{vm.placeBracketSpacer($index)}}"
+         data-drop="vm.placeBracketSpacer($index)"
          jqyoui-droppable="{onDrop: 'vm.handleDrop($index)'}"
     >
         <div ng-if="!(vm.placeStartBracket($index) || vm.placeEndBracket($index))" class="frame-range-bracket-space"/>
