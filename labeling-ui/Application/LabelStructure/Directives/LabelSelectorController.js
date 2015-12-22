@@ -36,13 +36,6 @@ export default class LabelSelectorController {
     this.choices = {};
 
     /**
-     * Storage for open panels state
-     *
-     * @type {Array}
-     */
-    this.openPanels = [true];
-
-    /**
      * @type {LinearLabelStructureVisitor}
      * @private
      */
@@ -72,17 +65,21 @@ export default class LabelSelectorController {
      */
     this._entityIdService = entityIdService;
 
+    /**
+     * @type {Number|null}
+     */
+    this.activePageIndex = null;
+
     // Handle changes of `labeledObject`s
     $scope.$watch('vm.labeledObject', newLabeledObject => {
-      if (newLabeledObject === null) {
+      if (!newLabeledObject) {
         this.pages = null;
+        this.activePageIndex = null;
         this.choices = {};
       }
-
-      this.openPanels = [true];
     });
 
-    // Update our Wizzard View if the classes list changes
+    // Update our Wizard View if the classes list changes
     $scope.$watchCollection('vm.labeledObject.classes', (newClasses) => {
       if (newClasses) {
         this._updatePagesAndChoices();
@@ -120,8 +117,8 @@ export default class LabelSelectorController {
     const labels = this.labeledObject.classes || [];
     const linearStructure = this._linearLabelStructureVisitor.visit(this.structure, labels);
     const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this.annotation);
-    const wizzardList = annotatedStructure.children;
-    return wizzardList;
+
+    return annotatedStructure.children;
   }
 
   /**
@@ -146,7 +143,7 @@ export default class LabelSelectorController {
 
       page.challenge = node.metadata.challenge;
       page.responses = node.children.map(
-        child => ({id: child.name, response: child.metadata.response})
+        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
       );
     });
 
@@ -170,6 +167,10 @@ export default class LabelSelectorController {
 
     this.pages = newPages;
     this.choices = newChoices;
+
+    if (this.activePageIndex === null && this.pages.length > 0) {
+      this.activePageIndex = 0;
+    }
   }
 
   /**
@@ -239,6 +240,31 @@ export default class LabelSelectorController {
       (isCompleted, page) => isCompleted === true && this.choices[page.id] !== null,
       true
     );
+  }
+
+  isPageActive(index) {
+    return index === this.activePageIndex;
+  }
+
+  selectResponse(page, response) {
+    this.choices[page.id] = response.id;
+    this.nextPage();
+  }
+
+  isResponseSelected(page, response) {
+    return this.choices[page.id] === response.id;
+  }
+
+  selectPage(index) {
+    this.activePageIndex = index;
+  }
+
+  nextPage() {
+    this.activePageIndex = Math.min(this.activePageIndex + 1, this.pages.length - 1);
+  }
+
+  previousPage() {
+    this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 }
 

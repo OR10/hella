@@ -1,13 +1,38 @@
-<div class="label-selector grid-content" ng-hide="vm.labeledObject === null || vm.labeledObject.shapes.length === 0">
-    <uib-accordion close-others="{{true}}">
-        <uib-accordion-group ng-repeat="section in vm.sections track by $index"
-                             heading="{{section.header}}"
-                             is-open="vm.openPanels[$index]">
-            <label-wizard pages="vm.pages"
-                          choices="vm.choices"
-                          offset="{{section.offset}}"
-                          limit="{{section.limit}}"
-            ></label-wizard>
-        </uib-accordion-group>
-    </uib-accordion>
+<div class="grid-block label-selector vertical">
+    <div class="grid-block label-selector-title">
+        <div class="grid-content noscroll">Categories</div>
+    </div>
+    <div class="grid-block label-selector-controlls" ng-if="vm.labeledObject">
+        <div class="grid-content shrink noscroll">
+            <button ng-click="vm.previousPage()"><i class="icon icon-left"></i></button>
+        </div>
+        <div class="grid-block vertical page-header">
+            <div class="grid-content text-center noscroll">{{vm.pages[vm.activePageIndex].challenge}}</div>
+            <div class="grid-content text-center noscroll">
+                <ol class="page-indicators">
+                    <li ng-repeat="page in vm.pages" ng-class="{active: vm.isPageActive($index)}" ng-click="vm.selectPage($index)"></li>
+                </ol>
+            </div>
+        </div>
+        <div class="grid-content shrink noscroll">
+            <button ng-click="vm.nextPage()"><i class="icon icon-right"></i></button>
+        </div>
+    </div>
+    <div class="grid-block label-selector-content vertical ">
+        <div class="grid-block">
+            <div ng-if="!vm.pages" class="grid-block label-selector-placeholder align-center">
+                <h1>Placeholder</h1>
+            </div>
+            <div ng-repeat="page in vm.pages" ng-show="vm.isPageActive($index)" class="grid-block label-selector-content-container wrap">
+                <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8" ng-class="{selected: vm.isResponseSelected(page, response)}" ng-click="vm.selectResponse(page, response)">
+                    <button><i class="icon {{response.iconClass}} noscroll"></i></button>
+                    <p>{{response.response}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-block label-selector-content-spacer"></div>
+    </div>
+    <div class="grid-block label-selector-button" ng-if="vm.labeledObject">
+        <div class="grid-content text-center noscroll">Done</div>
+    </div>
 </div>

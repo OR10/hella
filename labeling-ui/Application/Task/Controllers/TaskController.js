@@ -108,9 +108,6 @@ class TaskController {
      */
     this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
 
-    this.labeledThingStructure = labeledThingStructure;
-    this.labeledThingAnnotation = labeledThingAnnotation;
-
     /**
      * @TODO Move into LabelSelector when refactoring for different task types
      * The LabeledFrame for the currently active frame
@@ -118,9 +115,6 @@ class TaskController {
      * @type {LabeledFrame|null}
      */
     this.labeledFrame = null;
-
-    this.labeledFrameStructure = labeledFrameStructure;
-    this.labeledFrameAnnotation = labeledFrameAnnotation;
 
     /**
      * @type {Tool|null}
@@ -154,12 +148,16 @@ class TaskController {
      */
     this.popupPanelState = false;
 
-    // Watch for changes of the Frame position to correctly update all
-    // data structures for the new frame
-    $scope.$watch('vm.framePosition.position', newFramePosition => {
-      this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
-        .then(labeledFrame => this.labeledFrame = labeledFrame);
-    });
+    this._initializeLabelingStructure();
+
+    if (this.task.taskType === 'meta-labeling') {
+      // Watch for changes of the Frame position to correctly update all
+      // data structures for the new frame
+      $scope.$watch('vm.framePosition.position', newFramePosition => {
+        this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
+          .then(labeledFrame => this.labeledFrame = labeledFrame);
+      });
+    }
 
     // Update BrightnessFilter if value changed
     $scope.$watch('vm.brightnessSliderValue', newBrightness => {
@@ -182,6 +180,21 @@ class TaskController {
       }
       this._constrastFilter = newFilter;
     });
+  }
+
+  _initializeLabelingStructure() {
+    switch (this.task.taskType) {
+      case 'object-labeling':
+        this.labelingStructure = labeledThingStructure;
+        this.labelingAnnotation = labeledThingAnnotation;
+        break;
+      case 'meta-labeling':
+        this.labelingStructure = labeledFrameStructure;
+        this.labelingAnnotation = labeledFrameAnnotation;
+        break;
+      default:
+        throw new Error(`Unknown task type ${this.task.taskType}.`);
+    }
   }
 
   /**

@@ -11,7 +11,6 @@ export default class LabelSelectorDirective {
       labeledObject: '=',
       structure: '=',
       annotation: '=',
-      sections: '=',
       task: '=',
       framePosition: '=',
       isCompleted: '=?',

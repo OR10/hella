@@ -4,71 +4,91 @@
   },
   "pedestrian": {
     "response": "Fußgänger",
+    "iconClass": "icon-area-residential",
     "challenge": "Führt die Person weitere Gegenstände mit sich?"
   },
   "cyclist": {
-    "response": "Radfahrer"
+    "response": "Radfahrer",
+    "iconClass": "icon-area-residential"
   },
   "car": {
-    "response": "Auto"
+    "response": "Auto",
+    "iconClass": "icon-area-residential"
   },
   "movementDirection": {
     "challenge": "In welche Richtung bewegt sich das Objekt?"
   },
   "left": {
-    "response": "Nach Links"
+    "response": "Nach Links",
+    "iconClass": "icon-area-residential"
   },
   "right": {
-    "response": "Nach Rechts"
+    "response": "Nach Rechts",
+    "iconClass": "icon-area-residential"
   },
   "front": {
-    "response": "Nach Vorne"
+    "response": "Nach Vorne",
+    "iconClass": "icon-area-residential"
   },
   "back": {
-    "response": "Nach Hinten"
+    "response": "Nach Hinten",
+    "iconClass": "icon-area-residential"
   },
   "visibility": {
     "challenge": "Ist das Objekt sichtbar?"
   },
   "visible": {
     "challenge": "Zu wieviel Prozent ist das Objekt sichtbar?",
-    "response": "Ja"
+    "response": "Ja",
+    "iconClass": "icon-area-residential"
   },
   "invisible": {
-    "response": "Nein"
+    "response": "Nein",
+    "iconClass": "icon-area-residential"
   },
   "visible-10": {
-    "response": "10%"
+    "response": "10%",
+    "iconClass": "icon-area-residential"
   },
   "visible-30": {
-    "response": "30%"
+    "response": "30%",
+    "iconClass": "icon-area-residential"
   },
   "visible-50": {
-    "response": "50%"
+    "response": "50%",
+    "iconClass": "icon-area-residential"
   },
   "visible-80": {
-    "response": "80%"
+    "response": "80%",
+    "iconClass": "icon-area-residential"
   },
   "visible-100": {
-    "response": "100%"
+    "response": "100%",
+    "iconClass": "icon-area-residential"
   },
   "hasAccessory": {
     "challenge": "Was für einen Gegenstand führt die Person mit sich?",
-    "response": "Ja"
+    "response": "Ja",
+    "iconClass": "icon-area-residential"
   },
   "noAccessory": {
-    "response": "Nein"
+    "response": "Nein",
+    "iconClass": "icon-area-residential"
   },
   "hat": {
-    "response": "Hut"
+    "response": "Hut",
+    "iconClass": "icon-area-residential"
   },
   "umbrella": {
-    "response": "Regenschirm"
+    "response": "Regenschirm",
+    "iconClass": "icon-area-residential"
   },
   "stroller": {
-    "response": "Kinderwagen"
+    "response": "Kinderwagen",
+    "iconClass": "icon-area-residential"
   },
   "skateboard": {
-    "response": "Skateboard"
+    "response": "Skateboard",
+    "iconClass": "icon-area-residential"
   }
 }

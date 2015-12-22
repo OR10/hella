@@ -3,58 +3,73 @@
     "challenge": "Wie ist das Wetter?"
   },
   "sunny": {
-    "response": "Sonne"
+    "response": "Sonne",
+    "iconClass": "icon-area-residential"
   },
   "rainy-day": {
-    "response": "Regen"
+    "response": "Regen",
+    "iconClass": "icon-area-residential"
   },
   "foggy": {
     "challenge": "Wie nebelig ist es denn so?",
-    "response": "Nebel"
+    "response": "Nebel",
+    "iconClass": "icon-area-residential"
   },
   "really-foggy": {
-    "response": "Dichter Nebel"
+    "response": "Dichter Nebel",
+    "iconClass": "icon-area-residential"
   },
   "not-so-foggy": {
-    "response": "Leichter Nebel"
+    "response": "Leichter Nebel",
+    "iconClass": "icon-area-residential"
   },
   "country": {
     "challenge": "In welchem Land befinden wir uns?"
   },
   "germany": {
-    "response": "Deutschland"
+    "response": "Deutschland",
+    "iconClass": "icon-area-residential"
   },
   "england": {
-    "response": "England"
+    "response": "England",
+    "iconClass": "icon-area-residential"
   },
   "france": {
-    "response": "Frankreich"
+    "response": "Frankreich",
+    "iconClass": "icon-area-residential"
   },
   "landscape": {
     "challenge": "Welcher Landschaftstyp liegt vor?"
   },
   "urban": {
-    "response": "Städtisch"
+    "response": "Städtisch",
+    "iconClass": "icon-area-residential"
   },
   "suburban": {
-    "response": "Vorort"
+    "response": "Vorort",
+    "iconClass": "icon-area-residential"
   },
   "rural": {
-    "response": "Ländlich"
+    "response": "Ländlich",
+    "iconClass": "icon-area-residential"
   },
   "traffic-density": {
     "challenge": "Wie ist das Verkehrsaufkommen?"
   },
   "no-traffic": {
-    "response": "Kein Verkehr"
+    "response": "Kein Verkehr",
+    "iconClass": "icon-area-residential"
   },
   "light-traffic": {
-    "response": "Leichtes Verkehrsaufkommen"
+    "response": "Leichtes Verkehrsaufkommen",
+    "iconClass": "icon-area-residential"
   },
   "heavy-traffic": {
-    "response": "Hohes Verkehrsaufkommen"
+    "response": "Hohes Verkehrsaufkommen",
+    "iconClass": "icon-area-residential"
   },
   "congestion": {
-    "response": "Stau"
+    "response": "Stau",
+    "iconClass": "icon-area-residential"
   }
 }
