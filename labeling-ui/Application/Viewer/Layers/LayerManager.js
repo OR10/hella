@@ -128,4 +128,15 @@ export default class LayerManager {
 
     return data;
   }
+
+  /**
+   * Execute the given function for each layer known to the layer manager
+   *
+   * @param operation
+   */
+  forEachLayer(operation) {
+    Object.values(this.layers).forEach(layer => {
+      operation(layer.layer);
+    });
+  }
 }

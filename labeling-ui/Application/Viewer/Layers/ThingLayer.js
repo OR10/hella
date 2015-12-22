@@ -54,6 +54,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._$timeout = $timeout;
 
     /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
+
+    /**
      * Tool for moving shapes
      *
      * @type {ShapeMoveTool}
@@ -88,70 +100,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
-
-    /**
-     * Tool for drawing rectangles
-     *
-     * @type {RectangleDrawingTool}
-     * @private
-     */
-    this._rectangleDrawingTool = new RectangleDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-    $scope.vm.newShapeDrawingTool = this._rectangleDrawingTool;
-
-    /**
-     * Tool for drawing ellipses
-     *
-     * @type {EllipseDrawingTool}
-     * @private
-     */
-    this._ellipseDrawingTool = new EllipseDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-
-    /**
-     * Tool for drawing circles
-     *
-     * @type {CircleDrawingTool}
-     * @private
-     */
-    this._circleDrawingTool = new CircleDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-
-    /**
-     * Tool for drawing paths
-     *
-     * @type {PathDrawingTool}
-     * @private
-     */
-    this._pathDrawingTool = new PathDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-
-    /**
-     * Tool for drawing closed polygons
-     *
-     * @type {PolygonDrawingTool}
-     * @private
-     */
-    this._polygonDrawingTool = new PolygonDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-
-    /**
-     * Tool for drawing lines
-     *
-     * @type {LineDrawingTool}
-     * @private
-     */
-    this._lineDrawingTool = new LineDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-
-    /**
-     * Tool for drawing points
-     *
-     * @type {PointDrawingTool}
-     * @private
-     */
-    this._pointDrawingTool = new PointDrawingTool(this._$scope.$new(), this._context, entityIdService, entityColorService);
-
     /**
      * Register tool to the MultiTool
      */
     this._multiTool.registerMoveTool(this._shapeMoveTool);
     this._multiTool.registerScaleTool(this._shapeScaleTool);
-    this._multiTool.registerCreateTool(this._rectangleDrawingTool);
+
+    this._initializeShapeCreationTool();
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);
@@ -203,14 +158,38 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._shapeScaleTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
+  }
 
-    this._rectangleDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._ellipseDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._circleDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._pointDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._pathDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._polygonDrawingTool.on('shape:new', this._onNewShape.bind(this));
-    this._lineDrawingTool.on('shape:new', this._onNewShape.bind(this));
+  _initializeShapeCreationTool() {
+    let tool = null;
+
+    switch (this._$scope.vm.task.drawingTool) {
+      case 'rectangle':
+        tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
+      case 'ellipse':
+        tool = new EllipseDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
+      case 'circle':
+        tool = new CircleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
+      case 'path':
+        tool = new PathDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
+      case 'polygon':
+        tool = new PolygonDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
+      case 'line':
+        tool = new LineDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
+      default:
+        throw new Error(`Cannot instantiate tool of unknown type ${this._$scope.vm.task.drawingTool}.`);
+    }
+
+    tool.on('shape:new', this._onNewShape.bind(this));
+
+    this._$scope.vm.newShapeDrawingTool = tool;
+    this._multiTool.registerCreateTool(tool);
   }
 
   /**
@@ -317,34 +296,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}`);
     switch (toolName) {
-      case 'rectangle':
-        this._rectangleDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._rectangleDrawingTool);
-        break;
-      case 'ellipse':
-        this._ellipseDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._ellipseDrawingTool);
-        break;
-      case 'circle':
-        this._circleDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._circleDrawingTool);
-        break;
-      case 'path':
-        this._pathDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._pathDrawingTool);
-        break;
-      case 'polygon':
-        this._polygonDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._polygonDrawingTool);
-        break;
-      case 'line':
-        this._lineDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._lineDrawingTool);
-        break;
-      case 'point':
-        this._pointDrawingTool.activate();
-        this._logger.log('thinglayer:tool', this._pointDrawingTool);
-        break;
       case 'scale':
         this._shapeScaleTool.activate();
         this._logger.log('thinglayer:tool', this._shapeScaleTool);

@@ -39,25 +39,26 @@ class ViewerController {
    * @param {$timeout} $timeout
    * @param {Object} applicationState
    */
-  constructor($scope,
-              $element,
-              $window,
-              drawingContextService,
-              taskFrameLocationGateway,
-              frameGateway,
-              labeledThingInFrameGateway,
-              entityIdService,
-              paperShapeFactory,
-              applicationConfig,
-              $interval,
-              labeledThingGateway,
-              abortablePromiseFactory,
-              animationFrameService,
-              $q,
-              entityColorService,
-              logger,
-              $timeout,
-              applicationState
+  constructor(
+    $scope,
+    $element,
+    $window,
+    drawingContextService,
+    taskFrameLocationGateway,
+    frameGateway,
+    labeledThingInFrameGateway,
+    entityIdService,
+    paperShapeFactory,
+    applicationConfig,
+    $interval,
+    labeledThingGateway,
+    abortablePromiseFactory,
+    animationFrameService,
+    $q,
+    entityColorService,
+    logger,
+    $timeout,
+    applicationState
   ) {
     /**
      * Mouse cursor used, while hovering the viewer
@@ -72,6 +73,30 @@ class ViewerController {
      * @type {null}
      */
     this.actionMouseCursor = null;
+
+    /**
+     * @type {DrawingContextService}
+     * @private
+     */
+    this._drawingContextService = drawingContextService;
+
+    /**
+     * @type {PaperShapeFactory}
+     * @private
+     */
+    this._paperShapeFactory = paperShapeFactory;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
+
+    /**
+     * @type {$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
 
     /**
      * List of supported image types for this component
@@ -250,20 +275,100 @@ class ViewerController {
     this._contentWidth = width;
     this._contentHeight = height;
 
-    const eventDelegationLayer = new EventDelegationLayer();
-    this._thingLayer = new ThingLayer(width, height, $scope.$new(), drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger, $timeout);
-    this._backgroundLayer = new BackgroundLayer(width, height, $scope.$new(), drawingContextService);
+    this.setupLayers();
 
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
+
+    // Something seemingly still resizes after this point. We simply bump
+    // the resize to the next animation frame to avoid this.
+    this._resizeDebounced();
 
     // TODO needs to be called on side element resize as well
     $window.addEventListener('resize', this._resizeDebounced);
 
-    $scope.$on('$destroy', () => {
-      $window.removeEventListener('resize', this._resizeDebounced);
-    });
+    $scope.$on(
+      '$destroy', () => {
+        $window.removeEventListener('resize', this._resizeDebounced);
+      }
+    );
 
-    const eventDelegationLayerElement = $element.find('.event-delegation-layer');
+    // Update the Background once the `framePosition` changes
+    // Update selectedPaperShape across frame change
+    $scope.$watch(
+      'vm.framePosition.position', newPosition => {
+        this._handleFrameChange(newPosition);
+      }
+    );
+
+    $scope.$watch(
+      'vm.playing', (playingNow, playingBefore) => {
+        if (playingNow === playingBefore) {
+          return;
+        }
+
+        if (playingNow) {
+          this._startPlaying();
+          return;
+        }
+
+        this._stopPlaying();
+      }
+    );
+
+    $scope.$watchGroup(
+      [
+        'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
+        'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
+      ], ([newStart, newEnd], [oldStart, oldEnd]) => {
+        if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
+          // TODO this is still subject to a race condition. The LabeledThing model has changed here but
+          // the change might not yet have arrived at the backend. Loading the (potentially) updated
+          // LabeledThingInFrame data now might thus provide stale state.
+          this._updateLabeledThingsInFrame();
+        }
+      }
+    );
+
+    $scope.$watchGroup(
+      ['vm.viewport.zoom', 'vm.viewport.center'], ([newZoom, newCenter]) => {
+        if (newZoom && newZoom !== this._backgroundLayer.zoom) {
+          this._zoom(newZoom);
+        }
+
+        const currentCenter = this._backgroundLayer.center;
+        if (newCenter && newCenter.x !== currentCenter.x && newCenter.y !== currentCenter.y) {
+          this._panTo(newCenter);
+        }
+      }
+    );
+
+    $scope.$on(
+      'destroy', () => {
+        if (this._renderLoopPromise) {
+          this._$interval.cancel(this._renderLoopPromise);
+        }
+      }
+    );
+
+    applicationState.$watch(
+      'viewer.disabled', (viewerDisabled) => {
+        this.viewerDisabled = viewerDisabled;
+      }
+    );
+  }
+
+  setupLayers() {
+    this._backgroundLayer = new BackgroundLayer(
+      this._contentWidth,
+      this._contentHeight,
+      this._$scope.$new(),
+      this._drawingContextService
+    );
+
+    this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
+
+    const eventDelegationLayer = new EventDelegationLayer();
+    const eventDelegationLayerElement = this._$element.find('.event-delegation-layer');
     eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
 
     eventDelegationLayerElement.on('mousewheel', this._handleScroll.bind(this));
@@ -272,98 +377,67 @@ class ViewerController {
     eventDelegationLayerElement.on('mouseup', this._handleMouseUp.bind(this));
     eventDelegationLayerElement.on('mouseleave', this._handleMouseLeave.bind(this));
 
-    this._thingLayer.attachToDom($element.find('.annotation-layer')[0]);
-    this._backgroundLayer.attachToDom($element.find('.background-layer')[0]);
-
-    // Something seemingly still resizes after this point. We simply bump
-    // the resize to the next animation frame to avoid this.
-    this._resizeDebounced();
-
-    this._thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    this._thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
-
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
-    this._layerManager.addLayer('annotations', this._thingLayer);
     this._layerManager.addLayer('background', this._backgroundLayer);
 
 
-    $scope.$watch('vm.activeTool', newActiveTool => {
-      this._thingLayer.activateTool(newActiveTool);
-    });
-
     // Reapply filters if they changed
-    $scope.$watchCollection('vm.filters.filters', filters => {
-      this._backgroundLayer.resetLayer();
-      filters.forEach(filter => {
-        this._backgroundLayer.applyFilter(filter);
-      });
-      this._backgroundLayer.render();
-    });
-
-
-    // Update the Background once the `framePosition` changes
-    // Update selectedPaperShape across frame change
-    $scope.$watch('vm.framePosition.position', newPosition => {
-      this._handleFrameChange(newPosition);
-    });
-
-    $scope.$watch('vm.playing', (playingNow, playingBefore) => {
-      if (playingNow === playingBefore) {
-        return;
+    this._$scope.$watchCollection(
+      'vm.filters.filters', filters => {
+        this._backgroundLayer.resetLayer();
+        filters.forEach(
+          filter => {
+            this._backgroundLayer.applyFilter(filter);
+          }
+        );
+        this._backgroundLayer.render();
       }
+    );
 
-      if (playingNow) {
-        this._startPlaying();
-        return;
+    if (this.task.taskType === 'object-labeling') {
+      this._addThingLayer();
+    }
+  }
+
+  _addThingLayer() {
+    const thingLayer = new ThingLayer(
+      this._contentWidth,
+      this._contentHeight,
+      this._$scope.$new(),
+      this._drawingContextService,
+      this._entityIdService,
+      this._paperShapeFactory,
+      this._entityColorService,
+      this._logger,
+      this._$timeout
+    );
+
+    thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
+
+    thingLayer.on('shape:new', shape => this._onNewShape(shape));
+    thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
+
+    this._layerManager.addLayer('annotations', thingLayer);
+
+    this._$scope.$watch(
+      'vm.activeTool', newActiveTool => {
+        thingLayer.activateTool(newActiveTool);
       }
-
-      this._stopPlaying();
-    });
-
-    $scope.$watchGroup([
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
-    ], ([newStart, newEnd], [oldStart, oldEnd]) => {
-      if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
-        // TODO this is still subject to a race condition. The LabeledThing model has changed here but
-        // the change might not yet have arrived at the backend. Loading the (potentially) updated
-        // LabeledThingInFrame data now might thus provide stale state.
-        this._updateLabeledThingsInFrame();
-      }
-    });
-
-    $scope.$watchGroup(['vm.viewport.zoom', 'vm.viewport.center'], ([newZoom, newCenter]) => {
-      if (newZoom && newZoom !== this._backgroundLayer.zoom) {
-        this._zoom(newZoom);
-      }
-
-      const currentCenter = this._backgroundLayer.center;
-      if (newCenter && newCenter.x !== currentCenter.x && newCenter.y !== currentCenter.y) {
-        this._panTo(newCenter);
-      }
-    });
-
-    $scope.$on('destroy', () => {
-      if (this._renderLoopPromise) {
-        this._$interval.cancel(this._renderLoopPromise);
-      }
-    });
-
-    applicationState.$watch('viewer.disabled', (viewerDisabled) => {
-      this.viewerDisabled = viewerDisabled;
-    });
+    );
   }
 
   zoomIn(focalPoint, zoomFactor) {
-    this._backgroundLayer.zoomIn(focalPoint, zoomFactor);
-    this._thingLayer.zoomIn(focalPoint, zoomFactor);
+    this._layerManager.forEachLayer((layer) => {
+      layer.zoomIn(focalPoint, zoomFactor);
+    });
 
     this._updateViewport();
   }
 
   zoomOut(focalPoint, zoomFactor) {
-    this._backgroundLayer.zoomOut(focalPoint, zoomFactor);
-    this._thingLayer.zoomOut(focalPoint, zoomFactor);
+    this._layerManager.forEachLayer((layer) => {
+      layer.zoomOut(focalPoint, zoomFactor);
+    });
 
     this._updateViewport();
   }
@@ -386,8 +460,9 @@ class ViewerController {
   }
 
   _resizeLayers(width, height) {
-    this._backgroundLayer.resize(width, height);
-    this._thingLayer.resize(width, height);
+    this._layerManager.forEachLayer((layer) => {
+      layer.resize(width, height);
+    });
   }
 
   _updateViewport() {
@@ -420,47 +495,57 @@ class ViewerController {
 
     this._frameChangeInProgress = true;
 
-    this._$q.all([
-      this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
-      this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber)),
-      this._fetchGhostedLabeledThingInFrame(frameNumber),
-    ]).then(([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
-      this._frameChangeInProgress = false;
-      this.labeledThingsInFrame = [];
-      this.labeledFrame = null;
+    this._$q.all(
+      [
+        this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
+        this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber)),
+        this._fetchGhostedLabeledThingInFrame(frameNumber),
+      ]
+    ).then(
+      ([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+        this._frameChangeInProgress = false;
+        this.labeledThingsInFrame = [];
+        this.labeledFrame = null;
 
-      // Update background
-      this._backgroundLayer.setBackgroundImage(newFrameImage);
-      this.filters.filters.forEach(filter => {
-        this._backgroundLayer.applyFilter(filter);
-      });
-      this._backgroundLayer.render();
+        // Update background
+        this._backgroundLayer.setBackgroundImage(newFrameImage);
+        this.filters.filters.forEach(
+          filter => {
+            this._backgroundLayer.applyFilter(filter);
+          }
+        );
+        this._backgroundLayer.render();
 
-      // Update labeledThingsInFrame
-      this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+        // Update labeledThingsInFrame
+        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
 
-      if (ghostedLabeledThingInFrame) {
-        this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+        if (ghostedLabeledThingInFrame) {
+          this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+        }
       }
-    });
+    );
   }
 
   _updateLabeledThingsInFrame() {
-    this._$q.all([
-      this._labeledThingInFrameBuffer.add(
-        this._loadLabeledThingsInFrame(this.framePosition.position)
-      ),
-      this._fetchGhostedLabeledThingInFrame(this.framePosition.position),
-    ]).then(([labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
-      this.labeledThingsInFrame = [];
+    this._$q.all(
+      [
+        this._labeledThingInFrameBuffer.add(
+          this._loadLabeledThingsInFrame(this.framePosition.position)
+        ),
+        this._fetchGhostedLabeledThingInFrame(this.framePosition.position),
+      ]
+    ).then(
+      ([labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+        this.labeledThingsInFrame = [];
 
-      // Update labeledThingsInFrame
-      this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+        // Update labeledThingsInFrame
+        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
 
-      if (ghostedLabeledThingInFrame) {
-        this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+        if (ghostedLabeledThingInFrame) {
+          this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
+        }
       }
-    });
+    );
   }
 
   /**
@@ -481,15 +566,17 @@ class ViewerController {
         frameNumber,
         selectedLabeledThing
       )
-    ).then(labeledThingsInFrame => {
-      const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
+    ).then(
+      labeledThingsInFrame => {
+        const ghostedLabeledThingsInFrame = labeledThingsInFrame.filter(item => item.ghost === true);
 
-      if (ghostedLabeledThingsInFrame.length > 0) {
-        return ghostedLabeledThingsInFrame[0];
+        if (ghostedLabeledThingsInFrame.length > 0) {
+          return ghostedLabeledThingsInFrame[0];
+        }
+
+        return null;
       }
-
-      return null;
-    });
+    );
   }
 
   /**
@@ -512,9 +599,11 @@ class ViewerController {
    * @private
    */
   _loadFrameLocations() {
-    const imageTypes = this.task.requiredImageTypes.filter((imageType) => {
-      return (this._supportedImageTypes.indexOf(imageType) !== -1);
-    });
+    const imageTypes = this.task.requiredImageTypes.filter(
+      (imageType) => {
+        return (this._supportedImageTypes.indexOf(imageType) !== -1);
+      }
+    );
     if (!imageTypes.length) {
       throw new Error('No supported image type found');
     }
@@ -554,26 +643,32 @@ class ViewerController {
     if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
       labeledThing.frameRange.endFrameNumber = this.framePosition.position;
 
-      labeledThingUpdatePromise = labeledThingUpdatePromise.then(() => {
-        return this._labeledThingGateway.saveLabeledThing(labeledThing);
-      });
+      labeledThingUpdatePromise = labeledThingUpdatePromise.then(
+        () => {
+          return this._labeledThingGateway.saveLabeledThing(labeledThing);
+        }
+      );
     }
 
     if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
       labeledThing.frameRange.startFrameNumber = this.framePosition.position;
 
-      labeledThingUpdatePromise = labeledThingUpdatePromise.then(() => {
-        return this._labeledThingGateway.saveLabeledThing(labeledThing);
-      });
+      labeledThingUpdatePromise = labeledThingUpdatePromise.then(
+        () => {
+          return this._labeledThingGateway.saveLabeledThing(labeledThing);
+        }
+      );
     }
 
     // @TODO this needs to be fixed for supporting multiple shapes
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    labeledThingUpdatePromise.then(() => {
-      this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
-    });
+    labeledThingUpdatePromise.then(
+      () => {
+        this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+      }
+    );
   }
 
   /**
@@ -683,13 +778,17 @@ class ViewerController {
       const focalPoint = new paper.Point(event.offsetX, event.offsetY);
 
       if (event.deltaY < 0) {
-        this._$scope.$apply(() => {
-          this.zoomIn(focalPoint, 1.05);
-        });
+        this._$scope.$apply(
+          () => {
+            this.zoomIn(focalPoint, 1.05);
+          }
+        );
       } else if (event.deltaY > 0) {
-        this._$scope.$apply(() => {
-          this.zoomOut(focalPoint, 1.05);
-        });
+        this._$scope.$apply(
+          () => {
+            this.zoomOut(focalPoint, 1.05);
+          }
+        );
       }
     }
   }
@@ -706,9 +805,11 @@ class ViewerController {
       const deltaX = this._lastKnownMousePosition.x - event.offsetX;
       const deltaY = this._lastKnownMousePosition.y - event.offsetY;
 
-      this._$scope.$apply(() => {
-        this._panBy(deltaX, deltaY);
-      });
+      this._$scope.$apply(
+        () => {
+          this._panBy(deltaX, deltaY);
+        }
+      );
 
       this._lastKnownMousePosition = {x: event.offsetX, y: event.offsetY};
     }
@@ -723,22 +824,25 @@ class ViewerController {
   }
 
   _zoom(newZoom) {
-    this._backgroundLayer.setZoom(newZoom);
-    this._thingLayer.setZoom(newZoom);
+    this._layerManager.forEachLayer((layer) => {
+      layer.setZoom(newZoom);
+    });
 
     this._updateViewport();
   }
 
   _panTo(newCenter) {
-    this._backgroundLayer.panTo(newCenter);
-    this._thingLayer.panTo(newCenter);
+    this._layerManager.forEachLayer((layer) => {
+      layer.panTo(newCenter);
+    });
 
     this._updateViewport();
   }
 
   _panBy(deltaX, deltaY) {
-    this._backgroundLayer.panBy(deltaX, deltaY);
-    this._thingLayer.panBy(deltaX, deltaY);
+    this._layerManager.forEachLayer((layer) => {
+      layer.panBy(deltaX, deltaY);
+    });
 
     this._updateViewport();
   }
