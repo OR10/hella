@@ -248,7 +248,6 @@ export default class LabelSelectorController {
 
   selectResponse(page, response) {
     this.choices[page.id] = response.id;
-    this.nextPage();
   }
 
   isResponseSelected(page, response) {
