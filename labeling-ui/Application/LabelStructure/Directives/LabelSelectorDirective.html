@@ -1,5 +1,8 @@
 <div class="grid-block label-selector vertical">
-    <div class="grid-block label-selector-title">
+    <div ng-if="!vm.labeledObject" class="grid-block label-selector-placeholder align-center">
+        <h1>Placeholder</h1>
+    </div>
+    <div class="grid-block label-selector-title" ng-show="vm.labeledObject">
         <div class="grid-content noscroll">Categories</div>
     </div>
     <div class="grid-block label-selector-controlls" ng-if="vm.labeledObject">
@@ -20,9 +23,6 @@
     </div>
     <div class="grid-block label-selector-content vertical ">
         <div class="grid-block">
-            <div ng-if="!vm.pages" class="grid-block label-selector-placeholder align-center">
-                <h1>Placeholder</h1>
-            </div>
             <div ng-repeat="page in vm.pages" ng-show="vm.isPageActive($index)" class="grid-block label-selector-content-container wrap">
                 <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8" ng-class="{selected: vm.isResponseSelected(page, response)}" ng-click="vm.selectResponse(page, response)">
                     <button><i class="icon {{response.iconClass}} noscroll"></i></button>

@@ -4,15 +4,20 @@
 <div class="main grid-block">
     <div class="grid-block small-5 contain-left sidebar-left vertical">
         <div class="grid-block vertical">
-            <task-description title="Task Description"
+            <task-description ng-show="vm.currentLabelingInstructions.shortDescription"
+                              title="Task Description"
                               heading="vm.currentLabelingInstructions.shortDescription.title"
                               content="vm.currentLabelingInstructions.shortDescription.content"
             ></task-description>
 
-            <task-description title="Labeling FAQ"
+            <task-description ng-show="vm.currentLabelingInstructions.details"
+                              title="Labeling FAQ"
                               heading="vm.currentLabelingInstructions.details.title"
                               content="vm.currentLabelingInstructions.details.content"
             ></task-description>
+            <div ng-show="!vm.currentLabelingInstructions" class="grid-block task-description-placeholder align-center">
+                <h1>Placeholder</h1>
+            </div>
         </div>
         <popup-panel popup-panel-state="vm.popupPanelState"
                      brightness-slider-value="vm.brightnessSliderValue"

@@ -1,33 +1,63 @@
 {
   "weather": {
-    "challenge": "Wie ist das Wetter?"
+    "challenge": "Weather condition",
+    "instructions": {
+      "shortDescription": {
+        "title": "Weather",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Weather details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "sunny": {
-    "response": "Sonne",
+    "response": "Sunny",
     "iconClass": "icon-area-residential"
   },
   "rainy-day": {
-    "response": "Regen",
+    "response": "Rainy",
     "iconClass": "icon-area-residential"
   },
   "foggy": {
-    "challenge": "Wie nebelig ist es denn so?",
-    "response": "Nebel",
+    "challenge": "Fog density",
+    "instructions": {
+      "shortDescription": {
+        "title": "Fog",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Fog details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    },
+    "response": "Foggy",
     "iconClass": "icon-area-residential"
   },
   "really-foggy": {
-    "response": "Dichter Nebel",
+    "response": "Dense fog",
     "iconClass": "icon-area-residential"
   },
   "not-so-foggy": {
-    "response": "Leichter Nebel",
+    "response": "Light fog",
     "iconClass": "icon-area-residential"
   },
   "country": {
-    "challenge": "In welchem Land befinden wir uns?"
+    "challenge": "Country",
+    "instructions": {
+      "shortDescription": {
+        "title": "Country",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Country details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "germany": {
-    "response": "Deutschland",
+    "response": "Germany",
     "iconClass": "icon-area-residential"
   },
   "england": {
@@ -35,41 +65,61 @@
     "iconClass": "icon-area-residential"
   },
   "france": {
-    "response": "Frankreich",
+    "response": "France",
     "iconClass": "icon-area-residential"
   },
   "landscape": {
-    "challenge": "Welcher Landschaftstyp liegt vor?"
+    "challenge": "Landscape",
+    "instructions": {
+      "shortDescription": {
+        "title": "Landscape",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Landscape details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "urban": {
-    "response": "Städtisch",
+    "response": "Urban",
     "iconClass": "icon-area-residential"
   },
   "suburban": {
-    "response": "Vorort",
+    "response": "Suburban",
     "iconClass": "icon-area-residential"
   },
   "rural": {
-    "response": "Ländlich",
+    "response": "Rural",
     "iconClass": "icon-area-residential"
   },
   "traffic-density": {
-    "challenge": "Wie ist das Verkehrsaufkommen?"
+    "challenge": "Traffic",
+    "instructions": {
+      "shortDescription": {
+        "title": "Traffic",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Traffic details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    },
   },
   "no-traffic": {
-    "response": "Kein Verkehr",
+    "response": "No traffic",
     "iconClass": "icon-area-residential"
   },
   "light-traffic": {
-    "response": "Leichtes Verkehrsaufkommen",
+    "response": "Light traffic",
     "iconClass": "icon-area-residential"
   },
   "heavy-traffic": {
-    "response": "Hohes Verkehrsaufkommen",
+    "response": "Heavy traffic",
     "iconClass": "icon-area-residential"
   },
   "congestion": {
-    "response": "Stau",
+    "response": "Congestion",
     "iconClass": "icon-area-residential"
   }
 }

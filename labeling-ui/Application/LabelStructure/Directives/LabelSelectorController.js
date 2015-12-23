@@ -75,6 +75,7 @@ export default class LabelSelectorController {
       if (!newLabeledObject) {
         this.pages = null;
         this.activePageIndex = null;
+        this.labelingInstructions = null;
         this.choices = {};
       } else {
         if (oldLabeledObject && oldLabeledObject.id !== newLabeledObject.id) {
