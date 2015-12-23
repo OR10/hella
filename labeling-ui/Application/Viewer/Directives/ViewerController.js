@@ -691,7 +691,7 @@ class ViewerController {
   }
 
   _calculatePlaybackStartPosition() {
-    if (this.selectedPaperShape) {
+    if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
       return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber;
     }
 
