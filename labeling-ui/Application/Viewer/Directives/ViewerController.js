@@ -699,11 +699,13 @@ class ViewerController {
   }
 
   _calculatePlaybackEndPosition() {
-    if (this.selectedPaperShape) {
-      return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber;
+    const limitingProperty = this.playbackDirection === 'forwards' ? 'endFrameNumber' : 'startFrameNumber';
+
+    if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+      return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange[limitingProperty];
     }
 
-    return this.framePosition.endFrameNumber;
+    return this.framePosition[limitingProperty];
   }
 
   _playNext() {
@@ -712,16 +714,25 @@ class ViewerController {
       return;
     }
 
+    if (this.playbackDirection === 'forwards') {
+      this._playNextForwards();
+    } else {
+      this._playNextBackwards();
+    }
+  }
+
+  _playNextForwards() {
     const endPosition = this._calculatePlaybackEndPosition();
-    let nextFramePosition = this.framePosition.position + 1;
+
+    let nextFramePosition = this.framePosition.position + this.playbackSpeedFactor;
 
     if (this._frameChangeInProgress) {
       this._logger.warn(
         'ViewerController',
-        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip} frames...`
+        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor} frames...`
       );
       this._frameChangeInProgress = false;
-      nextFramePosition += this._applicationConfig.Viewer.frameSkip;
+      nextFramePosition += this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor;
     }
 
     if (nextFramePosition < endPosition) {
@@ -735,10 +746,37 @@ class ViewerController {
     }
   }
 
-  _startPlaying() {
-    const startPosition = this._calculatePlaybackStartPosition();
+  _playNextBackwards() {
+    const endPosition = this._calculatePlaybackEndPosition();
 
-    this.framePosition.goto(startPosition);
+    let nextFramePosition = this.framePosition.position - this.playbackSpeedFactor;
+
+    if (this._frameChangeInProgress) {
+      this._logger.warn(
+        'ViewerController',
+        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor} frames...`
+      );
+      this._frameChangeInProgress = false;
+      nextFramePosition -= this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor;
+    }
+
+    if (nextFramePosition > endPosition) {
+      this.framePosition.goto(nextFramePosition);
+    } else {
+      if (this.framePosition.position > endPosition) {
+        this.framePosition.goto(endPosition);
+      }
+
+      this._stopPlaying();
+    }
+  }
+
+  _startPlaying() {
+    if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+      const startPosition = this._calculatePlaybackStartPosition();
+
+      this.framePosition.goto(startPosition);
+    }
 
     this._renderLoopPromise = this._$interval(
       this._playNext.bind(this),

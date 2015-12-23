@@ -49,6 +49,12 @@
         </div>
         <div class="grid-content noscroll">
             <button class="button"
+                    ng-click="vm.rewind()">
+                <i class="icon icon-control-backwards"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button class="button"
                     ng-click="vm.handlePreviousFrameClicked()">
                 <i class="icon icon-control-previous"></i>
             </button>
@@ -77,6 +83,12 @@
             <button class="button"
                     ng-click="vm.handleNextFrameClicked()">
                 <i class="icon icon-control-next"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button class="button"
+                    ng-click="vm.fastForward()">
+                <i class="icon icon-control-forwards"></i>
             </button>
         </div>
         <div class="grid-content noscroll">

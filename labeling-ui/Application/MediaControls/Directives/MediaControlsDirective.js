@@ -19,6 +19,8 @@ class MediaControlsDirective {
       selectedPaperShape: '=',
       labeledThingsInFrame: '=',
       playing: '=',
+      playbackSpeedFactor: '=',
+      playbackDirection: '=',
       popupPanelState: '=',
       hideLabeledThingsInFrame: '=',
       newShapeDrawingTool: '=',

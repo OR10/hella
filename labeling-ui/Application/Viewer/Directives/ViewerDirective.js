@@ -18,6 +18,8 @@ export default class ViewerDirective {
       framePosition: '=',
       filters: '=',
       playing: '=',
+      playbackSpeedFactor: '=',
+      playbackDirection: '=',
       viewport: '=',
       hideLabeledThingsInFrame: '=',
       newShapeDrawingTool: '=',

@@ -238,10 +238,24 @@ class MediaControlsController {
 
   handlePlay() {
     this.playing = true;
+    this.playbackDirection = 'forwards';
+    this.playbackSpeedFactor = 1;
   }
 
   handlePause() {
     this.playing = false;
+  }
+
+  fastForward() {
+    this.playing = true;
+    this.playbackDirection = 'forwards';
+    this.playbackSpeedFactor = 22;
+  }
+
+  rewind() {
+    this.playing = true;
+    this.playbackDirection = 'backwards';
+    this.playbackSpeedFactor = 22;
   }
 
   handleVideoSettingsClicked() {
