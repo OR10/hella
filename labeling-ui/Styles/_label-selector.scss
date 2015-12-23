@@ -125,12 +125,16 @@
     min-height: 2.8rem;
     font-size: 19px;
     background-color: $button-selected;
-    border-top: 1px solid $element-inline-divider;
+    border-top: 2px solid $element-inline-divider;
     cursor: pointer;
     font-weight: bold;
 
     .label-selector-button {
       height: 100%;
+
+      &:first-child {
+        border-right: 1px solid $element-inline-divider;
+      }
 
       &:hover {
         color: $icon-hover;
