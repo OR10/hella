@@ -285,6 +285,11 @@ class ViewerController {
 
     // TODO needs to be called on side element resize as well
     $window.addEventListener('resize', this._resizeDebounced);
+    $window.document.addEventListener('visibilitychange', () => {
+      if ($window.document.visibilityState === 'visible') {
+        this._resizeDebounced();
+      }
+    });
 
     $scope.$on(
       '$destroy', () => {
