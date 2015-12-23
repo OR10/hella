@@ -71,11 +71,16 @@ export default class LabelSelectorController {
     this.activePageIndex = null;
 
     // Handle changes of `labeledObject`s
-    $scope.$watch('vm.labeledObject', newLabeledObject => {
+    $scope.$watch('vm.labeledObject', (newLabeledObject, oldLabeledObject) => {
       if (!newLabeledObject) {
         this.pages = null;
         this.activePageIndex = null;
         this.choices = {};
+      } else {
+        if (oldLabeledObject && oldLabeledObject.id !== newLabeledObject.id) {
+          this.activePageIndex = null;
+          this._updatePagesAndChoices();
+        }
       }
     });
 
