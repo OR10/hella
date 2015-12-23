@@ -1,49 +1,49 @@
 {
   "objectType": {
-    "challenge": "Welche Art von Objekt möchten Sie labeln?"
+    "challenge": "Type of object"
   },
   "pedestrian": {
-    "response": "Fußgänger",
+    "response": "Pedestrian",
     "iconClass": "icon-area-residential",
-    "challenge": "Führt die Person weitere Gegenstände mit sich?"
+    "challenge": "Additional items"
   },
   "cyclist": {
-    "response": "Radfahrer",
+    "response": "Cyclist",
     "iconClass": "icon-area-residential"
   },
   "car": {
-    "response": "Auto",
+    "response": "Car",
     "iconClass": "icon-area-residential"
   },
   "movementDirection": {
-    "challenge": "In welche Richtung bewegt sich das Objekt?"
+    "challenge": "Movement direction"
   },
   "left": {
-    "response": "Nach Links",
+    "response": "Left",
     "iconClass": "icon-area-residential"
   },
   "right": {
-    "response": "Nach Rechts",
+    "response": "Right",
     "iconClass": "icon-area-residential"
   },
   "front": {
-    "response": "Nach Vorne",
+    "response": "Front",
     "iconClass": "icon-area-residential"
   },
   "back": {
-    "response": "Nach Hinten",
+    "response": "Back",
     "iconClass": "icon-area-residential"
   },
   "visibility": {
-    "challenge": "Ist das Objekt sichtbar?"
+    "challenge": "Visibility"
   },
   "visible": {
-    "challenge": "Zu wieviel Prozent ist das Objekt sichtbar?",
-    "response": "Ja",
+    "challenge": "Sight on person",
+    "response": "Yes",
     "iconClass": "icon-area-residential"
   },
   "invisible": {
-    "response": "Nein",
+    "response": "No",
     "iconClass": "icon-area-residential"
   },
   "visible-10": {
@@ -67,24 +67,24 @@
     "iconClass": "icon-area-residential"
   },
   "hasAccessory": {
-    "challenge": "Was für einen Gegenstand führt die Person mit sich?",
-    "response": "Ja",
+    "challenge": "Type of accessory",
+    "response": "Yes",
     "iconClass": "icon-area-residential"
   },
   "noAccessory": {
-    "response": "Nein",
+    "response": "No",
     "iconClass": "icon-area-residential"
   },
   "hat": {
-    "response": "Hut",
+    "response": "Hat",
     "iconClass": "icon-area-residential"
   },
   "umbrella": {
-    "response": "Regenschirm",
+    "response": "Umbrella",
     "iconClass": "icon-area-residential"
   },
   "stroller": {
-    "response": "Kinderwagen",
+    "response": "Stroller",
     "iconClass": "icon-area-residential"
   },
   "skateboard": {

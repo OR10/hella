@@ -1,27 +1,20 @@
 {
   "name": "root",
   "children": [
-    {
-      "name": "objectType",
-      "children": [
-        {"name": "pedestrian", "children": [
-          {
-            "name": "hasAccessory",
-            "children": [
-              {"name": "hat"},
-              {"name": "umbrella"},
-              {"name": "stroller"},
-              {"name": "skateboard"}
-            ]
-          },
-          {
-            "name": "noAccessory"
-          }
-        ]},
-        {"name": "cyclist"},
-        {"name": "car"}
-      ]
-    },
+    {"name": "pedestrian", "children": [
+      {
+        "name": "hasAccessory",
+        "children": [
+          {"name": "hat"},
+          {"name": "umbrella"},
+          {"name": "stroller"},
+          {"name": "skateboard"}
+        ]
+      },
+      {
+        "name": "noAccessory"
+      }
+    ]},
     {
       "name": "movementDirection",
       "children": [
