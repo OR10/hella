@@ -5,13 +5,13 @@
     <div class="grid-block small-5 contain-left sidebar-left vertical">
         <div class="grid-block vertical">
             <task-description title="Task Description"
-                              heading="vm.task.descriptionTitle"
-                              content="vm.task.descriptionText"
+                              heading="vm.currentLabelingInstructions.shortDescription.title"
+                              content="vm.currentLabelingInstructions.shortDescription.content"
             ></task-description>
 
             <task-description title="Labeling FAQ"
-                              heading="vm.task.descriptionTitle"
-                              content="vm.task.descriptionText"
+                              heading="vm.currentLabelingInstructions.details.title"
+                              content="vm.currentLabelingInstructions.details.content"
             ></task-description>
         </div>
         <popup-panel popup-panel-state="vm.popupPanelState"
@@ -50,6 +50,7 @@
                 annotation="vm.labelingAnnotation"
                 task="vm.task"
                 frame-position="vm.framePosition"
+                labeling-instructions="vm.currentLabelingInstructions"
         ></label-selector>
     </div>
 </div>

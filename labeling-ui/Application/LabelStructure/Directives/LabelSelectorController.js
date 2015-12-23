@@ -111,6 +111,12 @@ export default class LabelSelectorController {
 
       this._storeUpdatedLabeledObject();
     }, true);
+
+    $scope.$watch('vm.activePageIndex', (newPageIndex) => {
+      if (newPageIndex !== undefined && newPageIndex !== null) {
+        this.labelingInstructions = this.pages[newPageIndex].instructions;
+      }
+    });
   }
 
   /**
@@ -147,6 +153,7 @@ export default class LabelSelectorController {
       newPages.push(page);
 
       page.challenge = node.metadata.challenge;
+      page.instructions = node.metadata.instructions;
       page.responses = node.children.map(
         child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
       );

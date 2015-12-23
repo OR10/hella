@@ -13,6 +13,7 @@ export default class LabelSelectorDirective {
       task: '=',
       framePosition: '=',
       isCompleted: '=?',
+      labelingInstructions: '=',
     };
 
     this.template = labelSelectorTemplate;

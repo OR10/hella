@@ -1,11 +1,31 @@
 {
   "objectType": {
-    "challenge": "Type of object"
+    "challenge": "Object type",
+    "instructions": {
+      "shortDescription": {
+        "title": "Determine the object type",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Object type details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "pedestrian": {
     "response": "Pedestrian",
     "iconClass": "icon-area-residential",
-    "challenge": "Additional items"
+    "challenge": "Additional items",
+    "instructions": {
+      "shortDescription": {
+        "title": "Pedestrian labeling",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Pedestrian details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "cyclist": {
     "response": "Cyclist",
@@ -16,7 +36,17 @@
     "iconClass": "icon-area-residential"
   },
   "movementDirection": {
-    "challenge": "Movement direction"
+    "challenge": "Movement direction",
+    "instructions": {
+      "shortDescription": {
+        "title": "Determine the movement direction",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Movement direction details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "left": {
     "response": "Left",
@@ -35,10 +65,30 @@
     "iconClass": "icon-area-residential"
   },
   "visibility": {
-    "challenge": "Visibility"
+    "challenge": "Visibility",
+    "instructions": {
+      "shortDescription": {
+        "title": "Visibility",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Visibility details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    }
   },
   "visible": {
     "challenge": "Sight on person",
+    "instructions": {
+      "shortDescription": {
+        "title": "Sight on person",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Sight details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    },
     "response": "Yes",
     "iconClass": "icon-area-residential"
   },
@@ -68,6 +118,16 @@
   },
   "hasAccessory": {
     "challenge": "Type of accessory",
+    "instructions": {
+      "shortDescription": {
+        "title": "Accessory items",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      },
+      "details": {
+        "title": "Accessory item details",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+      }
+    },
     "response": "Yes",
     "iconClass": "icon-area-residential"
   },
