@@ -97,7 +97,7 @@
         <div class="grid-content small-5"></div>
     </div>
     <div class="grid-block small-5 task-bar-right">
-        <div class="grid-content noscroll">
+        <div class="grid-content noscroll" ng-if="vm.task.taskType === 'object-labeling'">
             <button class="button"
                     ng-click="vm.handleNewLabeledThingClicked()">
                 <i class="icon icon-selection-add"></i>
