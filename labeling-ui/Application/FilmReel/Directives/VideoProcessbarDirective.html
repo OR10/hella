@@ -1,4 +1,12 @@
 <div class="video-processbar grid-block">
+    <div class="video-position"
+         ng-style="{
+            'left': vm.videoStart + '%',
+            'width': vm.videoWidth + '%'
+        }"
+    >
+        <div class="inner-bar"></div>
+    </div>
     <div class="thumbnail-position"
          ng-style="{
             'left': vm.thumbnailStart + '%',

@@ -92,7 +92,7 @@
     margin: 0 2px 1px 1px;
     background: $element-background;
 
-    .thumbnail-position, .range-position {
+    .thumbnail-position, .range-position, .video-position {
       position: absolute;
       background: $element-background;
       top: 0;
@@ -105,6 +105,10 @@
         margin-left: 1px;
         margin-right: 1px;
       }
+    }
+
+    .video-position .inner-bar {
+      background: $text;
     }
 
     .thumbnail-position .inner-bar {

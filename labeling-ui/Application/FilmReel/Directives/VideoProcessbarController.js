@@ -7,15 +7,23 @@
 class VideoProcessbarController {
   constructor($scope) {
     this.frameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
+    // @TODO this needs to be dynamic at some point
+    this.visibleThumbnailCount = 7;
+    this.virtualFramesInBar = 2 * this.frameCount - 1;
+    this.frameSize = 100 / this.virtualFramesInBar;
 
-    this.thumbnailWidth = 100 / this.frameCount * 7;
-    this.thumbnailStart = 0;
+    this.thumbnailWidth = this.frameSize * this.visibleThumbnailCount;
+    this.thumbnailStart = 50 - this.thumbnailWidth / 2;
 
-    this.rangeWidth = 0;
-    this.rangeStart = 0;
+    this.videoWidth = this.frameSize * this.frameCount;
 
     $scope.$watch('vm.framePosition.position', position => {
-      this.thumbnailStart = 100 / this.frameCount * (position - 4);
+      this.videoStart = this.thumbnailStart - this.frameSize * (position - 1) + this.frameSize * Math.floor(this.visibleThumbnailCount / 2);
+
+      if (this.selectedPaperShape) {
+        const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
+        this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - 1);
+      }
     });
 
     $scope.$watchGroup([
@@ -31,8 +39,8 @@ class VideoProcessbarController {
 
       const frameRange = paperShape.labeledThingInFrame.labeledThing.frameRange;
 
-      this.rangeWidth = 100 / this.frameCount * (frameRange.endFrameNumber - frameRange.startFrameNumber + 1);
-      this.rangeStart = 100 / this.frameCount * (frameRange.startFrameNumber - 1);
+      this.rangeWidth = this.frameSize * (frameRange.endFrameNumber - frameRange.startFrameNumber + 1);
+      this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - 1);
     });
   }
 }
