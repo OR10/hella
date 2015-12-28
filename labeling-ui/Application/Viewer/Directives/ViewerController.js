@@ -360,6 +360,10 @@ class ViewerController {
         this.viewerDisabled = viewerDisabled;
       }
     );
+
+    $scope.$on('viewer.resized', () => {
+      this._resizeDebounced();
+    });
   }
 
   setupLayers() {
@@ -373,6 +377,7 @@ class ViewerController {
     this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
 
     const eventDelegationLayer = new EventDelegationLayer();
+    console.log(this._$element);
     const eventDelegationLayerElement = this._$element.find('.event-delegation-layer');
     eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
 

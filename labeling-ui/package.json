@@ -99,6 +99,7 @@
       "jquery-ui": "github:components/jqueryui@^1.11.4",
       "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
       "raf": "npm:raf@^3.1.0",
+      "splitjs": "github:nathancahill/Split.js@^1.0.6",
       "uuid": "npm:uuid@^2.0.1"
     },
     "devDependencies": {

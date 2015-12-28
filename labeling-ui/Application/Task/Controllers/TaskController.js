@@ -11,6 +11,9 @@ import Filters from '../../Viewer/Models/Filters';
 import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
 import ContrastFilter from '../../Common/Filters/ContrastFilter';
 
+import {default as split} from 'splitjs';
+import angular from 'angular';
+
 class TaskController {
   /**
    * @param {angular.Scope} $scope
@@ -18,7 +21,7 @@ class TaskController {
    * @param {User} user
    * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor($scope, initialData, user, labeledFrameGateway) {
+  constructor($scope, initialData, user, labeledFrameGateway, $timeout) {
     /**
      * @type {angular.Scope}
      */
@@ -38,6 +41,8 @@ class TaskController {
      * @type {User}
      */
     this.user = user;
+
+    this._$timeout = $timeout;
 
     /**
      * @type {Filters}
@@ -159,6 +164,8 @@ class TaskController {
       });
     }
 
+    this._initializeLayout();
+
     // Update BrightnessFilter if value changed
     $scope.$watch('vm.brightnessSliderValue', newBrightness => {
       const newFilter = new BrightnessFilter(parseInt(newBrightness, 10));
@@ -206,6 +213,27 @@ class TaskController {
   _loadLabeledFrame(frameNumber) {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
+
+  // @TODO wrap this in a directive to control compile order directly instead of using the $timeout hack
+  _initializeLayout() {
+    const leftSidebar = angular.element('.sidebar-left');
+    const rightSidebar = angular.element('.sidebar-right');
+    const viewer = angular.element('viewer');
+
+    const gutterSize = 10;
+    const sidebarSizeCss = `calc(${5 / 24 * 100}% - ${gutterSize}px)`;
+    const viewerSizeCss = `${14 / 24 * 100}%`;
+
+    this._$timeout(() => {
+      split([leftSidebar.get(0), viewer.get(0), rightSidebar.get(0)], {
+        sizes: [sidebarSizeCss, viewerSizeCss, sidebarSizeCss],
+        gutterSize: gutterSize,
+        onDrag: () => this.$scope.$broadcast('viewer.resized'),
+      });
+
+      this.$scope.$broadcast('viewer.resized');
+    }, 0);
+  }
 }
 
 TaskController.$inject = [
@@ -213,6 +241,7 @@ TaskController.$inject = [
   'initialData',
   'user',
   'labeledFrameGateway',
+  '$timeout',
 ];
 
 export default TaskController;

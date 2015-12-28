@@ -45,6 +45,7 @@ System.config({
     "json": "github:systemjs/plugin-json@0.1.0",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "raf": "npm:raf@3.1.0",
+    "splitjs": "github:nathancahill/Split.js@1.0.6",
     "uuid": "npm:uuid@2.0.1",
     "github:angular-ui/ui-router@0.2.15": {
       "angular": "github:angular/bower-angular@1.4.7"

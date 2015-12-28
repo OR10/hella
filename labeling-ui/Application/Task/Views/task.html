@@ -2,7 +2,7 @@
         user="vm.user"
 ></header>
 <div class="main grid-block">
-    <div class="grid-block small-5 contain-left sidebar-left vertical">
+    <div class="grid-block sidebar-left vertical">
         <div class="grid-block vertical">
             <task-description ng-show="vm.currentLabelingInstructions.shortDescription"
                               title="Task Description"
@@ -31,33 +31,31 @@
         ></popup-panel>
     </div>
 
-    <div class="grid-block viewer">
-        <viewer class="grid-block align-center"
-                labeled-things-in-frame="vm.labeledThingsInFrame"
-                selected-paper-shape="vm.selectedPaperShape"
-                active-tool="vm.activeTool"
-                selected-drawing-tool="vm.selectedDrawingTool"
-                task="vm.task"
-                video="vm.video"
-                frame-position="vm.framePosition"
-                filters="vm.filters"
-                playing="vm.playing"
-                playback-speed-factor="vm.playbackSpeedFactor"
-                playback-direction="vm.playbackDirection"
-                viewport="vm.viewerViewport"
-                hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
-                new-shape-drawing-tool="vm.newShapeDrawingTool"
-        ></viewer>
-    </div>
-    <div class="grid-block small-5 sidebar-right ">
+    <viewer class="grid-block align-center"
+            labeled-things-in-frame="vm.labeledThingsInFrame"
+            selected-paper-shape="vm.selectedPaperShape"
+            active-tool="vm.activeTool"
+            selected-drawing-tool="vm.selectedDrawingTool"
+            task="vm.task"
+            video="vm.video"
+            frame-position="vm.framePosition"
+            filters="vm.filters"
+            playing="vm.playing"
+            playback-speed-factor="vm.playbackSpeedFactor"
+            playback-direction="vm.playbackDirection"
+            viewport="vm.viewerViewport"
+            hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
+            new-shape-drawing-tool="vm.newShapeDrawingTool"
+    ></viewer>
+    <div class="grid-block sidebar-right ">
 
         <label-selector class="grid-block"
-                labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
-                structure="vm.labelingStructure"
-                annotation="vm.labelingAnnotation"
-                task="vm.task"
-                frame-position="vm.framePosition"
-                labeling-instructions="vm.currentLabelingInstructions"
+                        labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
+                        structure="vm.labelingStructure"
+                        annotation="vm.labelingAnnotation"
+                        task="vm.task"
+                        frame-position="vm.framePosition"
+                        labeling-instructions="vm.currentLabelingInstructions"
         ></label-selector>
     </div>
 </div>

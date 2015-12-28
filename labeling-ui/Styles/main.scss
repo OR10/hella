@@ -41,14 +41,13 @@ html, body {
   margin-right: 2px;
 }
 
-div.viewer {
+viewer {
   text-align: center;
   box-shadow: inset 0 0 10px 0 #000000;
 }
 
 .sidebar-left {
   background-color: $element-background;
-  border-right: 1px solid $element-divider;
   min-width: 200px;
 
   div.popup-panel {
@@ -93,7 +92,6 @@ div.viewer {
 
 .sidebar-right {
   background-color: $element-background;
-  border-left: 1px solid $element-divider;
   min-width: 200px;
 }
 
@@ -221,6 +219,27 @@ div.viewer {
 
 .main {
   flex: 1 1 percentage(13/24);
+
+  .gutter {
+    background-color: $element-background;
+
+    background-repeat: no-repeat;
+    background-position: 50%;
+
+  }
+
+  .sidebar-left + .gutter {
+    border-right: 2px solid $element-divider;
+  }
+
+  viewer + .gutter {
+    border-left: 2px solid $element-divider;
+  }
+
+  .gutter.gutter-horizontal {
+    background-image: url('../Images/drag_handle_vertical.png');
+    cursor: ew-resize;
+  }
 }
 
 .popup-panel button {
@@ -244,4 +263,3 @@ button:focus {
 button:hover i {
   color: $icon-hover;
 }
-
