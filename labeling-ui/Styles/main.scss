@@ -48,6 +48,7 @@ viewer {
 
 .sidebar-left {
   background-color: $element-background;
+  border-right: 2px solid $element-divider;
   min-width: 200px;
 
   div.popup-panel {
@@ -92,6 +93,7 @@ viewer {
 
 .sidebar-right {
   background-color: $element-background;
+  border-left: 2px solid $element-divider;
   min-width: 200px;
 }
 
@@ -221,19 +223,17 @@ viewer {
   flex: 1 1 percentage(13/24);
 
   .gutter {
-    background-color: $element-background;
-
-    background-repeat: no-repeat;
-    background-position: 50%;
-
+    background: transparent no-repeat 50%;
+    z-index: 1000;
   }
 
   .sidebar-left + .gutter {
-    border-right: 2px solid $element-divider;
+    margin-left: -10px
   }
 
   viewer + .gutter {
     border-left: 2px solid $element-divider;
+    margin-right: -10px;
   }
 
   .gutter.gutter-horizontal {

@@ -221,7 +221,7 @@ class TaskController {
     const viewer = angular.element('viewer');
 
     const gutterSize = 10;
-    const sidebarSizeCss = `calc(${5 / 24 * 100}% - ${gutterSize}px)`;
+    const sidebarSizeCss = `${5 / 24 * 100}%`;
     const viewerSizeCss = `${14 / 24 * 100}%`;
 
     this._$timeout(() => {
