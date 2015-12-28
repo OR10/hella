@@ -8,10 +8,19 @@
     }
 
     > .thumbnail {
-      border-top: 2px solid transparent;
-      border-bottom: 2px solid transparent;
       overflow: hidden;
       text-align: center;
+
+      .center-thumbnail-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid $sub-headlines;
+        border-right-width: 8px;
+        border-left-width: 8px;
+      }
 
       .thumbnail-frame-range {
         position: absolute;
