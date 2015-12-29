@@ -158,35 +158,41 @@ class TaskController {
     if (this.task.taskType === 'meta-labeling') {
       // Watch for changes of the Frame position to correctly update all
       // data structures for the new frame
-      $scope.$watch('vm.framePosition.position', newFramePosition => {
-        this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
-          .then(labeledFrame => this.labeledFrame = labeledFrame);
-      });
+      $scope.$watch(
+        'vm.framePosition.position', newFramePosition => {
+          this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
+            .then(labeledFrame => this.labeledFrame = labeledFrame);
+        }
+      );
     }
 
     this._initializeLayout();
 
     // Update BrightnessFilter if value changed
-    $scope.$watch('vm.brightnessSliderValue', newBrightness => {
-      const newFilter = new BrightnessFilter(parseInt(newBrightness, 10));
-      if (!this._brightnessFilter) {
-        this.filters.addFilter(newFilter);
-      } else {
-        this.filters.replaceFilter(this._brightnessFilter, newFilter);
+    $scope.$watch(
+      'vm.brightnessSliderValue', newBrightness => {
+        const newFilter = new BrightnessFilter(parseInt(newBrightness, 10));
+        if (!this._brightnessFilter) {
+          this.filters.addFilter(newFilter);
+        } else {
+          this.filters.replaceFilter(this._brightnessFilter, newFilter);
+        }
+        this._brightnessFilter = newFilter;
       }
-      this._brightnessFilter = newFilter;
-    });
+    );
 
     // Update ContrastFilter if value changed
-    $scope.$watch('vm.contrastSliderValue', newContrast => {
-      const newFilter = new ContrastFilter(parseInt(newContrast, 10));
-      if (!this._constrastFilter) {
-        this.filters.addFilter(newFilter);
-      } else {
-        this.filters.replaceFilter(this._constrastFilter, newFilter);
+    $scope.$watch(
+      'vm.contrastSliderValue', newContrast => {
+        const newFilter = new ContrastFilter(parseInt(newContrast, 10));
+        if (!this._constrastFilter) {
+          this.filters.addFilter(newFilter);
+        } else {
+          this.filters.replaceFilter(this._constrastFilter, newFilter);
+        }
+        this._constrastFilter = newFilter;
       }
-      this._constrastFilter = newFilter;
-    });
+    );
   }
 
   _initializeLabelingStructure() {
@@ -214,25 +220,20 @@ class TaskController {
     return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
   }
 
+  onSplitViewInitialized() {
+    this.$scope.$broadcast('viewer.resized');
+  }
+
   // @TODO wrap this in a directive to control compile order directly instead of using the $timeout hack
   _initializeLayout() {
-    const leftSidebar = angular.element('.sidebar-left');
-    const rightSidebar = angular.element('.sidebar-right');
-    const viewer = angular.element('viewer');
-
-    const gutterSize = 10;
     const sidebarSizeCss = `${5 / 24 * 100}%`;
     const viewerSizeCss = `${14 / 24 * 100}%`;
 
-    this._$timeout(() => {
-      split([leftSidebar.get(0), viewer.get(0), rightSidebar.get(0)], {
-        sizes: [sidebarSizeCss, viewerSizeCss, sidebarSizeCss],
-        gutterSize: gutterSize,
-        onDrag: () => this.$scope.$broadcast('viewer.resized'),
-      });
+    this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
+  }
 
-      this.$scope.$broadcast('viewer.resized');
-    }, 0);
+  onSidebarResize() {
+    this.$scope.$broadcast('viewer.resized');
   }
 }
 
