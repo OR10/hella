@@ -113,6 +113,15 @@ class MediaControlsController {
   }
 
   /**
+   * Switch to the currently bookmarked frame
+   */
+  goToBookmarkedFrame() {
+    if (this.bookmarkedFrameNumber) {
+      this.framePosition.goto(this.bookmarkedFrameNumber);
+    }
+  }
+
+  /**
    * Jump to the `endFrameNumber` of the selected {@link LabeledThing}
    */
   handleGotoCloseBracketClicked() {

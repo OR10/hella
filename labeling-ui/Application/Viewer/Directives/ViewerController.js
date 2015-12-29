@@ -700,6 +700,8 @@ class ViewerController {
       .then(() => shape.publish());
 
     this.activeTool = null;
+
+    this.bookmarkedFrameNumber = this.framePosition.position;
   }
 
   _calculatePlaybackStartPosition() {

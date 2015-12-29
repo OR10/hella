@@ -80,6 +80,13 @@ class TaskController {
     this.framePosition = new FramePosition(this.task.frameRange);
 
     /**
+     * Number of the currently bookmarked frame
+     *
+     * @type {Number|null}
+     */
+    this.bookmarkedFrameNumber = null;
+
+    /**
      * Drawing Tool used for initializing new empty shapes
      *
      * @type {Tool}
@@ -224,7 +231,6 @@ class TaskController {
     this.$scope.$broadcast('sidebar.resized');
   }
 
-  // @TODO wrap this in a directive to control compile order directly instead of using the $timeout hack
   _initializeLayout() {
     const sidebarSizeCss = `${5 / 24 * 100}%`;
     const viewerSizeCss = `${14 / 24 * 100}%`;

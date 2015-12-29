@@ -25,6 +25,7 @@ class MediaControlsDirective {
       hideLabeledThingsInFrame: '=',
       newShapeDrawingTool: '=',
       video: '=',
+      bookmarkedFrameNumber: '=',
     };
   }
 }
