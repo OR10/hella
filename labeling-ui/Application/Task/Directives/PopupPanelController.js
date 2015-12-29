@@ -68,7 +68,10 @@ class PopupPanelController {
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
     this._drawLayerDebounced = animationFrameService.debounce(() => {
       this._drawBackgroundImage();
-      this._drawViewportBounds();
+
+      if (this.viewerViewport) {
+        this._drawViewportBounds();
+      }
     });
 
     // TODO needs to be called on side element resize as well
@@ -133,10 +136,6 @@ class PopupPanelController {
     });
 
     this._drawLayerDebounced();
-
-    if (this.viewerViewport) {
-      this._drawViewportBounds();
-    }
   }
 
   _drawBackgroundImage() {
@@ -171,20 +170,24 @@ class PopupPanelController {
       this._thingLayer.removeChildren();
     });
 
-    this._context.withScope(scope => {
-      const viewportScaleX = scope.view.viewSize.width / this.video.metaData.width;
-      const {topLeft, bottomRight} = this.viewerViewport.bounds;
+    this._context.withScope(
+      scope => {
+        const viewportScaleX = scope.view.viewSize.width / this.video.metaData.width;
+        const {topLeft, bottomRight} = this.viewerViewport.bounds;
 
-      this._viewportBoundsRect = new scope.Path.Rectangle({
-        topLeft,
-        bottomRight,
-        strokeColor: '#bedb31',
-      });
+        this._viewportBoundsRect = new scope.Path.Rectangle(
+          {
+            topLeft,
+            bottomRight,
+            strokeColor: '#bedb31',
+          }
+        );
 
-      this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
+        this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
 
-      scope.view.update();
-    });
+        scope.view.update();
+      }
+    );
   }
 
   /**
