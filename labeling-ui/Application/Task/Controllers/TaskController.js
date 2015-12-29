@@ -11,9 +11,6 @@ import Filters from '../../Viewer/Models/Filters';
 import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
 import ContrastFilter from '../../Common/Filters/ContrastFilter';
 
-import {default as split} from 'splitjs';
-import angular from 'angular';
-
 class TaskController {
   /**
    * @param {angular.Scope} $scope
@@ -21,7 +18,7 @@ class TaskController {
    * @param {User} user
    * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor($scope, initialData, user, labeledFrameGateway, $timeout) {
+  constructor($scope, initialData, user, labeledFrameGateway) {
     /**
      * @type {angular.Scope}
      */
@@ -41,8 +38,6 @@ class TaskController {
      * @type {User}
      */
     this.user = user;
-
-    this._$timeout = $timeout;
 
     /**
      * @type {Filters}
@@ -248,7 +243,6 @@ TaskController.$inject = [
   'initialData',
   'user',
   'labeledFrameGateway',
-  '$timeout',
 ];
 
 export default TaskController;

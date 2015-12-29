@@ -324,7 +324,8 @@ class ViewerController {
       [
         'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
         'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
-      ], ([newStart, newEnd], [oldStart, oldEnd]) => {
+      ],
+      ([newStart, newEnd], [oldStart, oldEnd]) => {
         if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
           // TODO this is still subject to a race condition. The LabeledThing model has changed here but
           // the change might not yet have arrived at the backend. Loading the (potentially) updated
@@ -454,14 +455,12 @@ class ViewerController {
   _resize() {
     const viewerHeight = this._$element.outerHeight(true);
     const viewerWidth = this._$element.outerWidth(true);
-    console.log(viewerWidth, viewerHeight);
 
     const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
     const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;
 
     const layerContainerWidth = fittedWidth <= viewerWidth ? fittedWidth : viewerWidth;
     const layerContainerHeight = fittedWidth <= viewerWidth ? viewerHeight : fittedHeight;
-    console.log(layerContainerWidth, layerContainerHeight);
 
 
     this._layerContainer.width(layerContainerWidth);
