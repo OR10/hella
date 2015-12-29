@@ -182,6 +182,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       case 'line':
         tool = new LineDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
         break;
+      case 'point':
+        tool = new PointDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        break;
       default:
         throw new Error(`Cannot instantiate tool of unknown type ${this._$scope.vm.task.drawingTool}.`);
     }
