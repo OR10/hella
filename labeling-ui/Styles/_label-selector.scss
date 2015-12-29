@@ -63,7 +63,6 @@
 
     .label-selector-content-container {
       align-content: flex-start;
-      padding: 0 10px;
     }
 
     .label-selector-content-spacer {
@@ -76,7 +75,7 @@
       border-right: 1px solid $element-inline-divider;
       border-bottom: 1px solid $element-inline-divider;
       font-size: 16px;
-      height: 135px;
+      height: 115px;
 
       button {
         margin-bottom: 0.2rem;
