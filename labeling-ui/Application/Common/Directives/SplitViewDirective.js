@@ -7,7 +7,7 @@ class SplitViewDirective {
       sizes: '=',
       gutterSize: '@?',
       minSize: '=?',
-      direction: '=',
+      direction: '@?',
       onDrag: '&?',
       onDragStart: '&?',
       onDragEnd: '&?',
@@ -21,6 +21,11 @@ class SplitViewDirective {
     const gutterSize = parseInt($scope.gutterSize, 10) || 10;
     const minSize = $scope.minSize === undefined ? new Array(splitElements.length).fill(100) : $scope.minSize;
     const sizes = $scope.sizes;
+    const direction = $scope.direction || 'horizontal';
+
+    if (sizes.length !== splitElements.length) {
+      throw new Error(`Expected number of split pane sizes (${sizes.length}) to match number of panes (${splitElements.length}).`);
+    }
 
     const noop = () => {};
 
@@ -45,6 +50,7 @@ class SplitViewDirective {
       sizes,
       minSize,
       gutterSize,
+      direction,
       onDrag,
       onDragStart,
       onDragEnd,
