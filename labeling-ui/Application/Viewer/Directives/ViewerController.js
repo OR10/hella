@@ -283,8 +283,8 @@ class ViewerController {
     // the resize to the next animation frame to avoid this.
     this._resizeDebounced();
 
-    // TODO needs to be called on side element resize as well
     $window.addEventListener('resize', this._resizeDebounced);
+
     $window.document.addEventListener('visibilitychange', () => {
       if ($window.document.visibilityState === 'visible') {
         this._resizeDebounced();
@@ -377,7 +377,6 @@ class ViewerController {
     this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
 
     const eventDelegationLayer = new EventDelegationLayer();
-    console.log(this._$element);
     const eventDelegationLayerElement = this._$element.find('.event-delegation-layer');
     eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
 
@@ -455,12 +454,15 @@ class ViewerController {
   _resize() {
     const viewerHeight = this._$element.outerHeight(true);
     const viewerWidth = this._$element.outerWidth(true);
+    console.log(viewerWidth, viewerHeight);
 
     const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
     const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;
 
     const layerContainerWidth = fittedWidth <= viewerWidth ? fittedWidth : viewerWidth;
     const layerContainerHeight = fittedWidth <= viewerWidth ? viewerHeight : fittedHeight;
+    console.log(layerContainerWidth, layerContainerHeight);
+
 
     this._layerContainer.width(layerContainerWidth);
     this._layerContainer.height(layerContainerHeight);

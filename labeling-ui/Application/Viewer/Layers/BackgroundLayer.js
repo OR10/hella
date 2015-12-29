@@ -92,16 +92,32 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
     this._drawBackgroundImage();
   }
 
+  _getViewCenter() {
+    return this._context.withScope(scope => {
+      return new scope.Point(
+        scope.view.viewSize.width / this._scaleToFitZoom / 2,
+        scope.view.viewSize.height / this._scaleToFitZoom / 2
+      );
+    });
+  }
+
   _drawBackgroundImage() {
     if (this._raster) {
       this._raster.remove();
     }
+
+    this._context.withScope(() => {
+      this._raster = new paper.Raster(this._backgroundImage, this._getViewCenter());
+    });
+  }
+
+  resize(width, height) {
+    super.resize(width, height);
+
+    this._raster.position = this._getViewCenter();
+
     this._context.withScope(scope => {
-      const absoluteCenter = new scope.Point(
-        scope.view.viewSize.width / this._scaleToFitZoom / 2,
-        scope.view.viewSize.height / this._scaleToFitZoom / 2
-      );
-      this._raster = new paper.Raster(this._backgroundImage, absoluteCenter);
+      scope.view.update(true);
     });
   }
 }
