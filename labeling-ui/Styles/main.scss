@@ -242,6 +242,24 @@ viewer {
   }
 }
 
+
+popup-panel {
+  width: 100%;
+  transform: translateY(0%);
+}
+
+popup-panel.ng-hide {
+  transform: translateY(100%);
+}
+
+popup-panel.ng-hide-add {
+  transition: all linear 0.3s;
+}
+
+popup-panel.ng-hide-remove {
+  transition: all linear 0.3s;
+}
+
 .popup-panel button {
   background-color: $button;
 }

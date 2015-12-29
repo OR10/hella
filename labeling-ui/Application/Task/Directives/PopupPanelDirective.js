@@ -8,6 +8,7 @@ class PopupPanelDirective {
   constructor() {
     this.scope = {
       popupPanelState: '=',
+      popupPanelOpen: '=',
       brightnessSliderValue: '=',
       contrastSliderValue: '=',
       viewerViewport: '=',

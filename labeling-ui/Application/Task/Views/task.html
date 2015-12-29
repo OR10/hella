@@ -24,7 +24,9 @@
                 <h1>Placeholder</h1>
             </div>
         </div>
-        <popup-panel popup-panel-state="vm.popupPanelState"
+        <popup-panel ng-show="vm.popupPanelOpen"
+                     popup-panel-open="vm.popupPanelOpen"
+                     popup-panel-state="vm.popupPanelState"
                      brightness-slider-value="vm.brightnessSliderValue"
                      contrast-slider-value="vm.contrastSliderValue"
                      viewer-viewport="vm.viewerViewport"
@@ -75,6 +77,7 @@
                 playing="vm.playing"
                 playback-speed-factor="vm.playbackSpeedFactor"
                 playback-direction="vm.playbackDirection"
+                popup-panel-open="vm.popupPanelOpen"
                 popup-panel-state="vm.popupPanelState"
                 hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
                 new-shape-drawing-tool="vm.newShapeDrawingTool"

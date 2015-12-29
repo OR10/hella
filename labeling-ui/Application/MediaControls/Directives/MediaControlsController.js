@@ -67,6 +67,16 @@ class MediaControlsController {
      */
     this._applicationState = applicationState;
 
+    /**
+     * @type {string}
+     */
+    this.popupPanelState = 'zoom';
+
+    /**
+     * @type {boolean}
+     */
+    this.popupPanelOpen = false;
+
     // Disable Zoom Tool if the panel is closed
     $scope.$watch('vm.popupPanelState', (newState, oldState) => {
       if (oldState === 'zoom' && newState !== 'zoom') {
@@ -270,20 +280,22 @@ class MediaControlsController {
   handleVideoSettingsClicked() {
     switch (this.popupPanelState) {
       case 'videosettings':
-        this.popupPanelState = false;
+        this.popupPanelOpen = !this.popupPanelOpen;
         break;
       default:
         this.popupPanelState = 'videosettings';
+        this.popupPanelOpen = true;
     }
   }
 
   handleZoomClicked() {
     switch (this.popupPanelState) {
       case 'zoom':
-        this.popupPanelState = false;
+        this.popupPanelOpen = !this.popupPanelOpen;
         break;
       default:
         this.popupPanelState = 'zoom';
+        this.popupPanelOpen = true;
     }
   }
 }

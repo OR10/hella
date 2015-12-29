@@ -14,8 +14,9 @@ class PopupPanelController {
    * @param {FrameGateway} frameGateway
    * @param {TaskFrameLocationGateway} taskFrameLocationGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
+   * @param {$timeout} $timeout
    */
-  constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, taskFrameLocationGateway, abortablePromiseFactory) {
+  constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, taskFrameLocationGateway, abortablePromiseFactory, $timeout) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
 
@@ -41,6 +42,8 @@ class PopupPanelController {
      * @private
      */
     this._frameGateway = frameGateway;
+
+    this._$timeout = $timeout;
 
     this._activeBackgroundImage = null;
 
@@ -81,9 +84,13 @@ class PopupPanelController {
       $window.removeEventListener('resize', this._resizeDebounced);
     });
 
-    $scope.$watch('vm.popupPanelState', newState => {
-      if (newState === 'zoom') {
-        this._resizeDebounced();
+    $scope.$watchGroup(['vm.popupPanelState', 'vm.popupPanelOpen'], ([newState, open]) => {
+      if (open && newState === 'zoom') {
+        // @TODO We need to force the rendering into another cycle since otherwise the container layout won't be done
+        // resulting in a zero-sized canvas. There must be a better way to solve this problem at it's root though.
+        this._$timeout(() => {
+          this._resizeDebounced();
+        }, 0);
       }
     });
 
@@ -242,6 +249,7 @@ PopupPanelController.$inject = [
   'frameGateway',
   'taskFrameLocationGateway',
   'abortablePromiseFactory',
+  '$timeout',
 ];
 
 export default PopupPanelController;

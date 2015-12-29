@@ -1,6 +1,7 @@
 import angular from 'angular';
 import 'angular-hotkeys';
 import 'angular-ui-router';
+import 'angular-animate';
 
 import 'foundation-apps/js/angular/components/accordion/accordion';
 
@@ -85,6 +86,7 @@ export default class Application {
 
         this.app = angular.module(this.moduleName, [
           'ui.router',
+          'ngAnimate',
           'AnnoStation.AngularVendorTemplates',
           'AnnoStation.FoundationVendorTemplates',
           'foundation.accordion',

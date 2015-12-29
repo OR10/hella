@@ -22,6 +22,7 @@ class MediaControlsDirective {
       playbackSpeedFactor: '=',
       playbackDirection: '=',
       popupPanelState: '=',
+      popupPanelOpen: '=',
       hideLabeledThingsInFrame: '=',
       newShapeDrawingTool: '=',
       video: '=',
