@@ -348,7 +348,7 @@ class ViewerController {
     );
 
     $scope.$on(
-      'destroy', () => {
+      '$destroy', () => {
         if (this._renderLoopPromise) {
           this._$interval.cancel(this._renderLoopPromise);
         }
