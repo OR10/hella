@@ -92,7 +92,7 @@ class PopupPanelController {
       }
     });
 
-    $scope.$on('viewer.resized', () => this._resizeDebounced());
+    $scope.$on('sidebar.resized', () => this._resizeDebounced());
 
     this._resizeDebounced();
   }

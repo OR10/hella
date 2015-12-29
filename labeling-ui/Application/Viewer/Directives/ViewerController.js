@@ -361,7 +361,7 @@ class ViewerController {
       }
     );
 
-    $scope.$on('viewer.resized', () => {
+    $scope.$on('sidebar.resized', () => {
       this._resizeDebounced();
     });
   }

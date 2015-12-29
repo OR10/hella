@@ -221,7 +221,7 @@ class TaskController {
   }
 
   onSplitViewInitialized() {
-    this.$scope.$broadcast('viewer.resized');
+    this.$scope.$broadcast('sidebar.resized');
   }
 
   // @TODO wrap this in a directive to control compile order directly instead of using the $timeout hack
@@ -232,8 +232,8 @@ class TaskController {
     this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
   }
 
-  onSidebarResize() {
-    this.$scope.$broadcast('viewer.resized');
+  onSidebarResized() {
+    this.$scope.$broadcast('sidebar.resized');
   }
 }
 
