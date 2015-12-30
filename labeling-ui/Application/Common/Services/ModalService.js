@@ -11,6 +11,9 @@ class ModalService {
 
   _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
     const {message, headline, title, confirmButtonText, cancelButtonText} = scope;
+    const noop = () => {};
+    const onConfirm = confirmCallback || noop;
+    const onCancel = cancelCallback || noop;
 
     const modal = new this._ModalFactory(
       {
@@ -28,7 +31,7 @@ class ModalService {
           cancelButtonText,
           cancelCallback: () => {
             modal.deactivate();
-            cancelCallback();
+            onCancel();
             setTimeout(
               () => {
                 modal.destroy();
@@ -37,7 +40,7 @@ class ModalService {
           },
           confirmCallback: () => {
             modal.deactivate();
-            confirmCallback();
+            onConfirm();
             setTimeout(
               () => {
                 modal.destroy();

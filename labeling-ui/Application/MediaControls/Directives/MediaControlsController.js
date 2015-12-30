@@ -337,12 +337,6 @@ class MediaControlsController {
         message: 'You selected XX pedestrians until now!',
         confirmButtonText: 'Next',
         cancelButtonText: 'Done for today',
-      },
-      () => {
-        console.log('confirmed');
-      },
-      () => {
-        console.log('canceled');
       }
     );
     modal.activate();
@@ -353,16 +347,9 @@ class MediaControlsController {
       {
         title: 'Warning',
         headline: 'No category chosen',
-        //message: 'Do you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.',
-        message: 'Do you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\n',
+        message: 'Do you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.',
         confirmButtonText: 'Done',
         cancelButtonText: 'Cancel',
-      },
-      () => {
-        console.log('confirmed');
-      },
-      () => {
-        console.log('canceled');
       }
     );
     modal.activate();
