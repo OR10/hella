@@ -257,7 +257,7 @@ class TaskController {
     const hash = this._$location.hash();
     const matches = hash.match(/F(\d+)/);
 
-    if (!matches[1]) {
+    if (!matches || matches.length < 2 || !matches[1]) {
       return 1;
     }
 
