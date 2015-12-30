@@ -51,7 +51,12 @@
     }
 
     > .thumbnail.active {
-      border-color: $selected-frame;
+      border-top: 2px solid $selected-frame;
+      border-bottom: 2px solid $selected-frame;
+
+      .center-thumbnail-overlay {
+        display: none;
+      }
     }
 
     .thumbnail-spacer.active {
@@ -101,7 +106,7 @@
     margin: 0 2px 1px 1px;
     background: $element-background;
 
-    .thumbnail-position, .range-position, .video-position {
+    .thumbnail-position, .range-position, .video-position, .center-frame-position {
       position: absolute;
       background: $element-background;
       top: 0;
@@ -121,6 +126,10 @@
     }
 
     .thumbnail-position .inner-bar {
+      background: $sub-headlines;
+    }
+
+    .center-frame-position .inner-bar {
       background: $sub-headlines;
     }
 
