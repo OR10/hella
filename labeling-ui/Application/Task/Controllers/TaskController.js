@@ -17,8 +17,10 @@ class TaskController {
    * @param {{task: Task, video: Video}} initialData
    * @param {User} user
    * @param {LabeledFrameGateway} labeledFrameGateway
+   * @param {$stateParams} $stateParams
+   * @param {$location} $location
    */
-  constructor($scope, initialData, user, labeledFrameGateway) {
+  constructor($scope, initialData, user, labeledFrameGateway, $stateParams, $location) {
     /**
      * @type {angular.Scope}
      */
@@ -38,6 +40,12 @@ class TaskController {
      * @type {User}
      */
     this.user = user;
+
+    /**
+     * @type {$stateParams}
+     * @private
+     */
+    this._$stateParams = $stateParams;
 
     /**
      * @type {Filters}
@@ -72,7 +80,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition(this.task.frameRange);
+    this.framePosition = new FramePosition(this.task.frameRange, this._getInitialFrameNumber());
 
     /**
      * Number of the currently bookmarked frame
@@ -195,6 +203,10 @@ class TaskController {
         this._constrastFilter = newFilter;
       }
     );
+
+    $scope.$watch('vm.framePosition.position', newPosition => {
+      console.log($location.search('frame', newPosition));
+    });
   }
 
   _initializeLabelingStructure() {
@@ -236,6 +248,20 @@ class TaskController {
   onSidebarResized() {
     this.$scope.$broadcast('sidebar.resized');
   }
+
+  _getInitialFrameNumber() {
+    const initialFrameNumber = parseInt(this._$stateParams.frame, 10);
+
+    if (
+      !Number.isInteger(initialFrameNumber)
+      || initialFrameNumber < this.task.frameRange.startFrameNumber
+      || initialFrameNumber > this.task.frameRange.endFrameNumber
+    ) {
+      return 1;
+    }
+
+    return initialFrameNumber;
+  }
 }
 
 TaskController.$inject = [
@@ -243,6 +269,8 @@ TaskController.$inject = [
   'initialData',
   'user',
   'labeledFrameGateway',
+  '$stateParams',
+  '$location',
 ];
 
 export default TaskController;

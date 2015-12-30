@@ -37,10 +37,11 @@ class Task extends Module {
     initialDataResolver.$inject = ['$stateParams', 'taskGateway', 'videoGateway'];
 
     $stateProvider.state('labeling.task', {
-      url: 'task/:taskId',
+      url: 'task/:taskId?{frame}',
       controller: TaskController,
       controllerAs: 'vm',
       template: taskTemplate,
+      reloadOnSearch: false,
       resolve: {
         initialData: initialDataResolver,
       },
