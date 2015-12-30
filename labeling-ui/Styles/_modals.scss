@@ -1,0 +1,84 @@
+.modal-info, .modal-warning {
+  z-index: 10000;
+
+  .modal {
+    background-color: $element-background;
+    padding: 0;
+    margin-top: -20%;
+    z-index: 10001;
+
+    .modal-header {
+      padding: 0 20px;
+      border-bottom: 2px solid $element-inline-divider;
+
+      .modal-title {
+        color: $headlines;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 18px;
+        padding: 10px 0 5px 0;
+      }
+    }
+
+    .modal-body {
+      padding: 15px 20px;
+      overflow-y: scroll;
+      max-height: 20vh;
+
+      .modal-body-headline {
+        color: $sub-headlines;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .modal-body-content {
+        white-space: pre-wrap;
+        color: $text;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+
+    .modal-footer {
+      border-top: 2px solid $element-inline-divider;
+
+      button {
+        background-color: $button;
+        color: $sub-headlines;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 18px;
+        padding: 10px 0;
+
+        &:hover {
+          color: $icon-hover;
+        }
+
+        &:active {
+          background-color: $icon-hover;
+          color: $button-selected;
+        }
+      }
+
+      .modal-button-cancel {
+        border-right: 2px solid $element-inline-divider;
+      }
+
+      .modal-button-confirm {
+
+      }
+    }
+  }
+}
+
+.modal-info {
+  .modal {
+    border: 2px solid $element-divider;
+  }
+}
+
+.modal-warning {
+  .modal {
+    border: 2px solid $headlines;
+  }
+}

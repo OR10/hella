@@ -23,8 +23,19 @@ class MediaControlsController {
    * @param {LoggerService} logger
    * @param {angular.$q} $q
    * @param {Object} applicationState
+   * @param {ModalService} modalService
    */
-  constructor($scope, labeledThingInFrameGateway, labeledThingGateway, interpolationService, entityIdService, logger, $q, applicationState) {
+  constructor(
+    $scope,
+    labeledThingInFrameGateway,
+    labeledThingGateway,
+    interpolationService,
+    entityIdService,
+    logger,
+    $q,
+    applicationState,
+    modalService
+  ) {
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
@@ -68,6 +79,12 @@ class MediaControlsController {
     this._applicationState = applicationState;
 
     /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
      * @type {string}
      */
     this.popupPanelState = 'zoom';
@@ -78,11 +95,13 @@ class MediaControlsController {
     this.popupPanelOpen = false;
 
     // Disable Zoom Tool if the panel is closed
-    $scope.$watch('vm.popupPanelState', (newState, oldState) => {
-      if (oldState === 'zoom' && newState !== 'zoom') {
-        this.activeTool = null;
+    $scope.$watch(
+      'vm.popupPanelState', (newState, oldState) => {
+        if (oldState === 'zoom' && newState !== 'zoom') {
+          this.activeTool = null;
+        }
       }
-    });
+    );
   }
 
   /**
@@ -171,7 +190,10 @@ class MediaControlsController {
     const topLeft = new paper.Point(center.x - expanse, center.y - expanse);
     const bottomRight = new paper.Point(center.x + expanse, center.y + expanse);
 
-    this._logger.log('mediacontrols:newlabeledthing', `Creating new Shape: topLeft: ${topLeft}, bottomRight: ${bottomRight} (center: ${center})`);
+    this._logger.log(
+      'mediacontrols:newlabeledthing',
+      `Creating new Shape: topLeft: ${topLeft}, bottomRight: ${bottomRight} (center: ${center})`
+    );
 
     this.newShapeDrawingTool.startShape(topLeft, bottomRight);
     this.newShapeDrawingTool.completeShape();
@@ -226,13 +248,17 @@ class MediaControlsController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
     this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
-      .then(() => {
-        this._applicationState.enableAll();
-      })
-      .catch(error => {
-        this._applicationState.enableAll();
-        throw error;
-      });
+      .then(
+        () => {
+          this._applicationState.enableAll();
+        }
+      )
+      .catch(
+        error => {
+          this._applicationState.enableAll();
+          throw error;
+        }
+      );
 
     // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
   }
@@ -242,17 +268,21 @@ class MediaControlsController {
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
     this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
-      .then(() => {
-        this.selectedPaperShape = null;
-        this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
-          labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
-        );
-        this._applicationState.enableAll();
-      })
-      .catch(error => {
-        this._applicationState.enableAll();
-        throw error;
-      });
+      .then(
+        () => {
+          this.selectedPaperShape = null;
+          this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
+            labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+          );
+          this._applicationState.enableAll();
+        }
+      )
+      .catch(
+        error => {
+          this._applicationState.enableAll();
+          throw error;
+        }
+      );
   }
 
   handlePlay() {
@@ -298,6 +328,45 @@ class MediaControlsController {
         this.popupPanelOpen = true;
     }
   }
+
+  showGeneralSettings() {
+    const modal = this._modalService.getInfoDialog(
+      {
+        title: 'Good job!',
+        headline: 'Ready for next annotation?',
+        message: 'You selected XX pedestrians until now!',
+        confirmButtonText: 'Next',
+        cancelButtonText: 'Done for today',
+      },
+      () => {
+        console.log('confirmed');
+      },
+      () => {
+        console.log('canceled');
+      }
+    );
+    modal.activate();
+  }
+
+  toggleFullscreen() {
+    const modal = this._modalService.getWarningDialog(
+      {
+        title: 'Warning',
+        headline: 'No category chosen',
+        //message: 'Do you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.',
+        message: 'Do you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\nDo you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.\n',
+        confirmButtonText: 'Done',
+        cancelButtonText: 'Cancel',
+      },
+      () => {
+        console.log('confirmed');
+      },
+      () => {
+        console.log('canceled');
+      }
+    );
+    modal.activate();
+  }
 }
 
 MediaControlsController.$inject = [
@@ -309,6 +378,7 @@ MediaControlsController.$inject = [
   'loggerService',
   '$q',
   'applicationState',
+  'modalService',
 ];
 
 export default MediaControlsController;

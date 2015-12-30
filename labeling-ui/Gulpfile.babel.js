@@ -355,7 +355,7 @@ gulp.task('build-angular-bootstrap-templates', () => {
 });
 
 gulp.task('build-foundation-templates', () => {
-  return gulp.src(paths.dir.vendor + '/**/foundation-apps*/js/angular/components/accordion/*.html')
+  return gulp.src(paths.dir.vendor + '/**/foundation-apps*/js/angular/components/{accordion,modal}/*.html')
     .pipe($$.angularTemplateCache({
       filename: 'foundation-ui.js',
       module: 'AnnoStation.FoundationVendorTemplates',

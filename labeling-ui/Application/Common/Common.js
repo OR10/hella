@@ -9,11 +9,17 @@ import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryPr
 import AnimationFrameService from './Services/AnimationFrameService';
 import LoggerServiceProvider from './Loggers/LoggerServiceProvider';
 import EntityColorService from './Services/EntityColorService';
+import ModalService from './Services/ModalService';
 import LoadingMaskDirective from './Directives/LoadingMaskDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
+
+import 'foundation-apps/js/angular/services/foundation.core';
+import 'foundation-apps/js/angular/services/foundation.core.animation';
+import 'foundation-apps/js/angular/components/common/common';
+import 'foundation-apps/js/angular/components/modal/modal';
 
 /**
  * Common Module
@@ -27,7 +33,7 @@ class Common extends Module {
    * @param {angular} angular
    */
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.Common', []);
+    this.module = angular.module('AnnoStation.Common', ['foundation.common', 'foundation.modal']);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
     this.module.service('revisionManager', RevisionManager);
@@ -35,6 +41,7 @@ class Common extends Module {
     this.module.service('animationFrameService', AnimationFrameService);
     this.module.service('statusGateway', StatusGateway);
     this.module.service('entityColorService', EntityColorService);
+    this.module.service('modalService', ModalService);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);
