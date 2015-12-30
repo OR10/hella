@@ -42,10 +42,10 @@ class TaskController {
     this.user = user;
 
     /**
-     * @type {$stateParams}
+     * @type {$location}
      * @private
      */
-    this._$stateParams = $stateParams;
+    this._$location = $location;
 
     /**
      * @type {Filters}
@@ -80,7 +80,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition(this.task.frameRange, this._getInitialFrameNumber());
+    this.framePosition = new FramePosition(this.task.frameRange, this._getFrameNumberFromUrl());
 
     /**
      * Number of the currently bookmarked frame
@@ -205,7 +205,11 @@ class TaskController {
     );
 
     $scope.$watch('vm.framePosition.position', newPosition => {
-      console.log($location.search('frame', newPosition));
+      $location.hash('F' + newPosition);
+    });
+
+    $scope.$watch(() => $location.hash(), hash => {
+      this.framePosition.goto(this._getFrameNumberFromUrl());
     });
   }
 
@@ -249,8 +253,15 @@ class TaskController {
     this.$scope.$broadcast('sidebar.resized');
   }
 
-  _getInitialFrameNumber() {
-    const initialFrameNumber = parseInt(this._$stateParams.frame, 10);
+  _getFrameNumberFromUrl() {
+    const hash = this._$location.hash();
+    const matches = hash.match(/F(\d+)/);
+
+    if (!matches[1]) {
+      return 1;
+    }
+
+    const initialFrameNumber = parseInt(matches[1], 10);
 
     if (
       !Number.isInteger(initialFrameNumber)
