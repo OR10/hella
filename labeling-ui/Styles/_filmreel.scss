@@ -8,10 +8,19 @@
     }
 
     > .thumbnail {
-      border-top: 2px solid transparent;
-      border-bottom: 2px solid transparent;
       overflow: hidden;
       text-align: center;
+
+      .center-thumbnail-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid $sub-headlines;
+        border-right-width: 8px;
+        border-left-width: 8px;
+      }
 
       .thumbnail-frame-range {
         position: absolute;
@@ -42,7 +51,12 @@
     }
 
     > .thumbnail.active {
-      border-color: $selected-frame;
+      border-top: 2px solid $selected-frame;
+      border-bottom: 2px solid $selected-frame;
+
+      .center-thumbnail-overlay {
+        display: none;
+      }
     }
 
     .thumbnail-spacer.active {
@@ -92,7 +106,7 @@
     margin: 0 2px 1px 1px;
     background: $element-background;
 
-    .thumbnail-position, .range-position, .video-position {
+    .thumbnail-position, .range-position, .video-position, .center-frame-position {
       position: absolute;
       background: $element-background;
       top: 0;
@@ -112,6 +126,10 @@
     }
 
     .thumbnail-position .inner-bar {
+      background: $sub-headlines;
+    }
+
+    .center-frame-position .inner-bar {
       background: $sub-headlines;
     }
 

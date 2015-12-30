@@ -201,7 +201,6 @@ viewer {
 
 .thumbnail-zone {
   flex: 0 0 percentage(3/24);
-  border-bottom: 2px solid $element-divider;
 
   .thumbnail-zone-layer {
     background-color: $element-background;
@@ -212,6 +211,7 @@ viewer {
 
 .timeline-container {
   flex: 0 0 percentage(5/24);
+  border-top: 2px solid $element-divider;
 
   .timeline-layer {
     background-color: $element-background;

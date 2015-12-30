@@ -15,6 +15,9 @@ class VideoProcessbarController {
     this.thumbnailWidth = this.frameSize * this.visibleThumbnailCount;
     this.thumbnailStart = 50 - this.thumbnailWidth / 2;
 
+    this.centerFrameWidth = this.frameSize;
+    this.centerFrameStart = this.thumbnailStart + this.frameSize * Math.floor(this.visibleThumbnailCount / 2);
+
     this.videoWidth = this.frameSize * this.frameCount;
 
     $scope.$watch('vm.framePosition.position', position => {

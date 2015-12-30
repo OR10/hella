@@ -24,7 +24,7 @@ class ThumbnailReelController {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
-    this.thumbnails = new Array(7).fill().map(() => ({location: null, labeledThingInFrame: null}));
+    this.thumbnails = new Array(7).fill({location: null, labeledThingInFrame: null});
 
     /**
      * Dimensions each thumbnail is allowed to consume
