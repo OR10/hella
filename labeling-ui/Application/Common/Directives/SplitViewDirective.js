@@ -54,6 +54,7 @@ class SplitViewDirective {
       onDrag,
       onDragStart,
       onDragEnd,
+      snapOffset: 1,
     });
 
     if ($scope.onInit) {
