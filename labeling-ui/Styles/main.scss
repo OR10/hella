@@ -282,3 +282,7 @@ button:focus {
 button:hover i {
   color: $icon-hover;
 }
+
+.noscrollbars::-webkit-scrollbar{
+  display: none;
+}
