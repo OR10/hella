@@ -206,6 +206,27 @@ viewer {
     z-index: 1000;
     height: 100%;
     width: percentage(3/24);
+    align-items: flex-end;
+
+    input {
+      background-color: inherit;
+      border-radius: 0;
+    }
+
+    .thumbnail-zone-layer-inner {
+      padding-bottom: 10px;
+    }
+
+    .thumbnail-zone-zoom-label-wrapper {
+      padding-left: 0;
+
+      .thumbnail-zone-zoom-label {
+        border-radius: 10px;
+        background-color: #30363c;
+        padding: 0 5px;
+        color: $sub-headlines;
+      }
+    }
   }
 }
 
@@ -252,7 +273,6 @@ viewer {
   }
 }
 
-
 popup-panel {
   width: 100%;
   transform: translateY(0%);
@@ -263,11 +283,11 @@ popup-panel.ng-hide {
 }
 
 popup-panel.ng-hide-add {
-  transition: all linear 0.3s;
+  transition: all linear 0.15s;
 }
 
 popup-panel.ng-hide-remove {
-  transition: all linear 0.3s;
+  transition: all linear 0.15s;
 }
 
 .popup-panel button {
@@ -292,6 +312,6 @@ button:hover i {
   color: $icon-hover;
 }
 
-.noscrollbars::-webkit-scrollbar{
+.noscrollbars::-webkit-scrollbar {
   display: none;
 }

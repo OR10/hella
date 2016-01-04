@@ -163,6 +163,11 @@ class TaskController {
      */
     this.popupPanelState = false;
 
+    /**
+     * @type {number}
+     */
+    this.thumbnailZoomLevel = 100;
+
     this._initializeLabelingStructure();
 
     if (this.task.taskType === 'meta-labeling') {
