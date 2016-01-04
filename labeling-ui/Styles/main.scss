@@ -201,17 +201,31 @@ viewer {
     background-color: $element-background;
     border-right: 2px solid $element-divider;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 0;
+    z-index: 1000;
+    height: 100%;
+    width: percentage(3/24);
   }
 }
 
 .timeline-container {
   flex: 0 0 percentage(5/24);
-  border-top: 2px solid $element-divider;
 
   .timeline-layer {
+    border-top: 2px solid $element-divider;
     background-color: $element-background;
     border-right: 2px solid $element-divider;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 0;
+    z-index: 1000;
+    height: 100%;
+    width: percentage(3/24);
+  }
+
+  .timeline-inner {
+    border-top: 2px solid $element-divider;
   }
 }
 
