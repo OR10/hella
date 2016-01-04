@@ -50,7 +50,6 @@ viewer {
 .sidebar-left {
   background-color: $element-background;
   border-right: 2px solid $element-divider;
-  min-width: 200px;
 
   div.popup-panel {
     font-size: 16px;
@@ -95,7 +94,6 @@ viewer {
 .sidebar-right {
   background-color: $element-background;
   border-left: 2px solid $element-divider;
-  min-width: 200px;
 }
 
 .task-bar {
@@ -109,7 +107,6 @@ viewer {
   .grid-content {
     padding: 0;
     text-align: center;
-    min-width: 40px;
 
     .icon {
       color: $icon;
@@ -124,12 +121,10 @@ viewer {
 
 .task-bar-left {
   border-right: 2px solid $element-divider;
-  min-width: 200px;
 }
 
 .task-bar-right {
   border-left: 2px solid $element-divider;
-  min-width: 200px;
 }
 
 .task-description {
