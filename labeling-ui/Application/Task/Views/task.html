@@ -8,7 +8,7 @@
      sizes="vm.splitViewSizes"
      min-size="vm.minSizes"
      class="main grid-block">
-    <div class="grid-block sidebar-left vertical">
+    <div class="grid-block sidebar-left vertical noscrollbars">
         <div class="grid-block vertical noscrollbars">
             <task-description ng-show="vm.currentLabelingInstructions.shortDescription"
                               title="Task Description"
@@ -39,7 +39,7 @@
         ></popup-panel>
     </div>
 
-    <viewer class="grid-block align-center"
+    <viewer class="grid-block align-center noscroll"
             labeled-things-in-frame="vm.labeledThingsInFrame"
             selected-paper-shape="vm.selectedPaperShape"
             active-tool="vm.activeTool"
