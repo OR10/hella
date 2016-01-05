@@ -250,7 +250,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         class: PaperShape,
         fill: true,
         bounds: true,
-        tolerance: 3,
+        tolerance: 8,
       });
 
       if (hitResult) {
