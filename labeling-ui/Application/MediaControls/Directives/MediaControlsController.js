@@ -95,10 +95,12 @@ class MediaControlsController {
     this.popupPanelOpen = false;
 
     // Disable Zoom Tool if the panel is closed
-    $scope.$watch(
-      'vm.popupPanelState', (newState, oldState) => {
-        if (oldState === 'zoom' && newState !== 'zoom') {
-          this.activeTool = null;
+    $scope.$watchGroup(
+      ['vm.popupPanelState', 'vm.popupPanelOpen'], ([newState, newOpen], [oldState]) => {
+        if ((oldState === 'zoom' && newState !== 'zoom') || newOpen === false) {
+          if (typeof this.activeTool === 'string' && this.activeTool.indexOf('zoom') === 0) {
+            this.activeTool = null;
+          }
         }
       }
     );
