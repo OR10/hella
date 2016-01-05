@@ -6,18 +6,18 @@
         <div class="grid-content noscroll">Categories</div>
     </div>
     <div class="grid-block label-selector-controlls" ng-if="vm.labeledObject">
-        <div class="grid-content shrink noscroll">
+        <div class="grid-content control-left shrink noscroll">
             <button ng-click="vm.previousPage()"><i class="icon icon-left"></i></button>
         </div>
         <div class="grid-block vertical page-header">
-            <div class="grid-content text-center noscroll">{{vm.pages[vm.activePageIndex].challenge}}</div>
-            <div class="grid-content text-center noscroll">
+            <div class="grid-content page-title text-center noscroll">{{vm.pages[vm.activePageIndex].challenge}}</div>
+            <div class="grid-content page-indicator-container text-center noscroll">
                 <ol class="page-indicators">
                     <li ng-repeat="page in vm.pages" ng-class="{active: vm.isPageActive($index)}" ng-click="vm.selectPage($index)"></li>
                 </ol>
             </div>
         </div>
-        <div class="grid-content shrink noscroll">
+        <div class="grid-content control-right shrink noscroll">
             <button ng-click="vm.nextPage()"><i class="icon icon-right"></i></button>
         </div>
     </div>

@@ -28,11 +28,24 @@
     line-height: 20px;
     font-weight: bold;
 
+    .control-left {
+      padding: 0 0 0 1rem;
+    }
+
+    .control-right {
+      padding: 0 1rem 0 0;
+    }
+
     .icon {
       font-size: 3rem;
     }
     .page-header {
       padding-top: 25px;
+
+      .page-indicator-container, .page-title {
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
 
     .page-indicators {

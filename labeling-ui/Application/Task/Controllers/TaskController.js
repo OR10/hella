@@ -163,6 +163,11 @@ class TaskController {
      */
     this.popupPanelState = false;
 
+    /**
+     * @type {number}
+     */
+    this.thumbnailZoomLevel = 100;
+
     this._initializeLabelingStructure();
 
     if (this.task.taskType === 'meta-labeling') {
@@ -247,7 +252,7 @@ class TaskController {
     const viewerSizeCss = `${14 / 24 * 100}%`;
 
     this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
-    this.minSizes = [200, 500, 200];
+    this.minSizes = [260, 500, 260];
   }
 
   onSidebarResized() {

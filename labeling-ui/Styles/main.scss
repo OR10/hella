@@ -201,17 +201,52 @@ viewer {
     background-color: $element-background;
     border-right: 2px solid $element-divider;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 0;
+    z-index: 1000;
+    height: 100%;
+    width: percentage(3/24);
+    align-items: flex-end;
+
+    input {
+      background-color: inherit;
+      border-radius: 0;
+    }
+
+    .thumbnail-zone-layer-inner {
+      padding-bottom: 10px;
+    }
+
+    .thumbnail-zone-zoom-label-wrapper {
+      padding-left: 0;
+
+      .thumbnail-zone-zoom-label {
+        border-radius: 10px;
+        background-color: #30363c;
+        padding: 0 5px;
+        color: $sub-headlines;
+      }
+    }
   }
 }
 
 .timeline-container {
   flex: 0 0 percentage(5/24);
-  border-top: 2px solid $element-divider;
 
   .timeline-layer {
+    border-top: 2px solid $element-divider;
     background-color: $element-background;
     border-right: 2px solid $element-divider;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 0;
+    z-index: 1000;
+    height: 100%;
+    width: percentage(3/24);
+  }
+
+  .timeline-inner {
+    border-top: 2px solid $element-divider;
   }
 }
 
@@ -238,7 +273,6 @@ viewer {
   }
 }
 
-
 popup-panel {
   width: 100%;
   transform: translateY(0%);
@@ -249,11 +283,11 @@ popup-panel.ng-hide {
 }
 
 popup-panel.ng-hide-add {
-  transition: all linear 0.3s;
+  transition: all linear 0.15s;
 }
 
 popup-panel.ng-hide-remove {
-  transition: all linear 0.3s;
+  transition: all linear 0.15s;
 }
 
 .popup-panel button {
@@ -278,6 +312,6 @@ button:hover i {
   color: $icon-hover;
 }
 
-.noscrollbars::-webkit-scrollbar{
+.noscrollbars::-webkit-scrollbar {
   display: none;
 }

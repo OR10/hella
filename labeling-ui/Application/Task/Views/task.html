@@ -88,6 +88,22 @@
 ></media-controls>
 
 <div class="thumbnail-zone grid-block">
+    <div class="thumbnail-zone-layer grid-block small-3">
+        <div class="grid-block thumbnail-zone-layer-inner">
+            <input class="grid-content small-16"
+                   ng-model="vm.thumbnailZoomLevel"
+                   type="range"
+                   min="0"
+                   max="100"
+                   defaultValue="100"
+                   step="1">
+            <div class="grid-content thumbnail-zone-zoom-label-wrapper small-8 noscroll">
+                <div class="thumbnail-zone-zoom-label text-center">
+                    <span>{{vm.thumbnailZoomLevel}}</span><span>%</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="viewer-film-reel-container grid-block">
         <film-reel class="grid-block vertical" frame-position="vm.framePosition"
                    task="vm.task"
