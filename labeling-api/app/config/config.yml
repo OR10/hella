@@ -136,3 +136,4 @@ snc_redis:
             dsn: redis://%redis_host%:%redis_port%
     session:
         client: default
+        locking: false
