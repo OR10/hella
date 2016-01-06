@@ -5,6 +5,7 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
+import debounce from 'lodash.debounce';
 
 /**
  * @class ViewerController
@@ -425,7 +426,9 @@ class ViewerController {
     thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
     thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    thingLayer.on('shape:update', shape => this._onUpdatedShape(shape));
+    thingLayer.on('shape:update', debounce((shape) => {
+      this._onUpdatedShape(shape);
+    }, 500));
 
     this._layerManager.addLayer('annotations', thingLayer);
 
