@@ -22,9 +22,24 @@ class ThumbnailReelController {
    */
   constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService) {
     /**
+     * Count of thumbnails shown on the page
+     *
+     * @type {null}
+     */
+    this._thumbnailCount = null;
+
+    /**
+     * Number of frames to display both before and after the current frame
+     *
+     * @type {number}
+     * @private
+     */
+    this._thumbnailLookahead = null;
+
+    /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
-    this.thumbnails = new Array(7).fill({location: null, labeledThingInFrame: null});
+    this.thumbnails = [];
 
     /**
      * Dimensions each thumbnail is allowed to consume
@@ -93,14 +108,6 @@ class ThumbnailReelController {
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
-    /**
-     * Number of frames to display both before and after the current frame
-     *
-     * @type {number}
-     * @private
-     */
-    this._thumbnailLookahead = 3;
-
     this._recalculateViewSizeDebounced = animationFrameService.debounce(() => this._recalculateViewSize());
 
     const onWindowResized = () => {
@@ -146,15 +153,24 @@ class ThumbnailReelController {
   }
 
   _recalculateViewSize() {
+    const dimensonFactor = this.video.metaData.width / this.video.metaData.height;
+    const spacerWidth = this._$element.find('.thumbnail-spacer').outerWidth();
     const reelWidth = this._$element.outerWidth();
     const reelHeight = this._$element.outerHeight();
 
-    const spacerWidth = this._$element.find('.thumbnail-spacer').outerWidth();
-    const spacerLength = this._$element.find('.thumbnail-spacer').length;
-
     const thumbnailHeight = reelHeight;
+    const thumbnailWidth = thumbnailHeight * dimensonFactor;
 
-    const thumbnailWidth = Math.floor((reelWidth - (spacerLength * spacerWidth)) / 7);
+    const thumbnailsFitToReel = (reelWidth - spacerWidth) / (thumbnailWidth + spacerWidth);
+
+    this._thumbnailCount = Math.round((thumbnailsFitToReel) / 2) * 2 + 1;
+
+    console.log(thumbnailsFitToReel, this._thumbnailCount);
+
+    this._thumbnailLookahead = Math.floor(this._thumbnailCount / 2);
+
+    this.thumbnails = new Array(this._thumbnailCount).fill({location: null, labeledThingInFrame: null});
+    this._updateThumbnailData();
 
     this._$scope.$apply(
       () => this.thumbnailDimensions = {width: thumbnailWidth, height: thumbnailHeight}
@@ -206,7 +222,7 @@ class ThumbnailReelController {
   }
 
   /**
-   * Calculate needed `offset` and `limit` parameters to fetch all the 7 frames based on the current `framePosition`
+   * Calculate needed `offset` and `limit` parameters to fetch all the $frameCount frames based on the current `framePosition`
    *
    * @param {FramePosition} framePosition
    * @returns {{offset: number, limit: number}}
@@ -227,8 +243,8 @@ class ThumbnailReelController {
    * @private
    */
   _fillPositionalArrayWithResults(framePosition, offset, results) {
-    const positionalArray = new Array(7).fill(null);
-    const startIndex = offset - (framePosition.position - 1) + 3;
+    const positionalArray = new Array(this._thumbnailCount).fill(null);
+    const startIndex = offset - (framePosition.position - 1) + this._thumbnailLookahead;
     results.forEach((result, index) => positionalArray[startIndex + index] = result);
 
     return positionalArray;
@@ -267,7 +283,7 @@ class ThumbnailReelController {
    */
   _loadLabeledThingsInFrame(framePosition) {
     if (!this.selectedPaperShape) {
-      return this._abortablePromiseFactory(this._$q.resolve(new Array(7).fill(null)));
+      return this._abortablePromiseFactory(this._$q.resolve(new Array(this._thumbnailCount).fill(null)));
     }
 
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
@@ -279,6 +295,10 @@ class ThumbnailReelController {
       limit
       )
       .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
+  }
+
+  isCurrentThumbnail(index) {
+    return (this._thumbnailCount - 1) / index === 2;
   }
 
   thumbnailSpacerInFrameRange(index) {
