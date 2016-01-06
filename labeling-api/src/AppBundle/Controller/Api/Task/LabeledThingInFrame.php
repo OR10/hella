@@ -188,7 +188,7 @@ class LabeledThingInFrame extends Controller\Base
                     if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
                         return $currentItem;
                     } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
-                        $ghostLabeledThingInFrame = clone $currentItem;
+                        $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
                         $ghostLabeledThingInFrame->setGhost(true);
 
                         return $ghostLabeledThingInFrame;
@@ -197,7 +197,7 @@ class LabeledThingInFrame extends Controller\Base
                     next($labeledThingInFrames);
                 }
 
-                $ghostLabeledThingInFrame = clone $endLabeledThingInFrame;
+                $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
                 $ghostLabeledThingInFrame->setGhost(true);
 
                 return $ghostLabeledThingInFrame;

@@ -170,9 +170,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $expected = array(
             array(
-                'id' => $labeledThingInFrameNumber10->getId(),
-                'rev' => $labeledThingInFrameNumber10->getRev(),
-                'frameNumber' => 10,
+                'id' => null,
+                'rev' => null,
+                'frameNumber' => 9,
                 'classes' => array(),
                 'shapes' => array(),
                 'labeledThingId' => $labeledThingInFrameNumber10->getLabeledThingId(),
