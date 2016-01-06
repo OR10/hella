@@ -45,7 +45,7 @@
     "jasmine-core": "^2.3.4",
     "jasmine-reporters": "^2.0.7",
     "jsdoc": "git+https://github.com/jsdoc3/jsdoc.git#6519acee73883d82711dd39f7d9d939b0122d5c8",
-    "jspm": "^0.16.12",
+    "jspm": "^0.16.19",
     "karma": "^0.13.11",
     "karma-babel-preprocessor": "^5.2.2",
     "karma-chrome-launcher": "^0.2.1",
@@ -75,7 +75,7 @@
     "selenium-webdriver": "^2.47.0",
     "send": "^0.13.0",
     "serve-static": "^1.10.0",
-    "systemjs-builder": "git+https://github.com/systemjs/builder.git#master",
+    "systemjs-builder": "^0.14.15",
     "tiny-lr": "^0.2.1"
   },
   "jspm": {
@@ -95,7 +95,7 @@
       "event-emitter": "github:Olical/EventEmitter@^4.3.0",
       "font-awesome": "npm:font-awesome@^4.4.0",
       "foundation-apps": "npm:foundation-apps@^1.2.0",
-      "jquery": "github:components/jquery@^2.1.4",
+      "jquery": "github:components/jquery@2.1.4",
       "jquery-mousewheel": "github:jquery/jquery-mousewheel@^3.1.13",
       "jquery-ui": "github:components/jqueryui@^1.11.4",
       "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
