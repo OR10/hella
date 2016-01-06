@@ -55,11 +55,11 @@ class ModalService {
   }
 
   getInfoDialog(scope, confirmCallback, cancelCallback) {
-    return this._createModal('modal-info', infoModalTemplate, scope, cancelCallback, confirmCallback);
+    return this._createModal('modal-info', infoModalTemplate, scope, confirmCallback, cancelCallback);
   }
 
   getWarningDialog(scope, confirmCallback, cancelCallback) {
-    return this._createModal('modal-warning', warningModalTemplate, scope, cancelCallback, confirmCallback);
+    return this._createModal('modal-warning', warningModalTemplate, scope, confirmCallback, cancelCallback);
   }
 }
 
