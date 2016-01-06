@@ -1,5 +1,4 @@
 import 'jquery';
-import 'bootstrap';
 
 import Application from './Application';
 
