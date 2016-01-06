@@ -165,8 +165,6 @@ class ThumbnailReelController {
 
     this._thumbnailCount = Math.round((thumbnailsFitToReel) / 2) * 2 + 1;
 
-    console.log(thumbnailsFitToReel, this._thumbnailCount);
-
     this._thumbnailLookahead = Math.floor(this._thumbnailCount / 2);
 
     this.thumbnails = new Array(this._thumbnailCount).fill({location: null, labeledThingInFrame: null});
