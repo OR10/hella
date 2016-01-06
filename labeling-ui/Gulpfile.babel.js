@@ -337,21 +337,9 @@ gulp.task('optimize-css', () => {
 
 gulp.task('build-templates', (next) => {
   run(
-    ['build-angular-bootstrap-templates', 'build-foundation-templates'],
+    ['build-foundation-templates'],
     next
   );
-});
-
-gulp.task('build-angular-bootstrap-templates', () => {
-  return gulp.src(paths.dir.vendor + '/**/angular-ui/bootstrap*/template/{collapse,accordion,carousel,tooltip,popover}/*.html')
-    .pipe($$.angularTemplateCache({
-      filename: 'angular-ui-bootstrap.js',
-      module: 'AnnoStation.AngularVendorTemplates',
-      root: 'template/',
-      standalone: true,
-      base: template => path.basename(path.dirname(template.path)) + '/' + path.basename(template.path),
-    }))
-    .pipe(gulp.dest(paths.dir.distribution + '/Templates'));
 });
 
 gulp.task('build-foundation-templates', () => {

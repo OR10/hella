@@ -5,7 +5,6 @@ import 'angular-animate';
 
 import 'foundation-apps/js/angular/components/accordion/accordion';
 
-import 'Distribution/Templates/angular-ui-bootstrap';
 import 'Distribution/Templates/foundation-ui';
 
 import CommonModule from './Common/Common';
@@ -87,7 +86,6 @@ export default class Application {
         this.app = angular.module(this.moduleName, [
           'ui.router',
           'ngAnimate',
-          'AnnoStation.AngularVendorTemplates',
           'AnnoStation.FoundationVendorTemplates',
           'foundation.accordion',
           ...this.modules.map(mod => mod.module.name),
