@@ -151,6 +151,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
+    this._multiTool.on('shape:update', shape => {
+      this.emit('shape:update', shape);
+    });
+
     this._shapeMoveTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
