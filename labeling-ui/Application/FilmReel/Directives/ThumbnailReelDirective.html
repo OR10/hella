@@ -37,7 +37,7 @@
                    end-frame-number="vm.task.frameRange.endFrameNumber"
                    location="thumbnail.location"
                    filters="vm.filters"
-                   is-current="(vm.thumbnails.length - 1) / $index === 2"
+                   is-current="vm.isCurrentThumbnail($index)"
                    frame-position="vm.framePosition"
                    labeled-thing-in-frame="thumbnail.labeledThingInFrame"
                    labeled-thing-viewport="{width: vm.video.metaData.width, height: vm.video.metaData.height}"
