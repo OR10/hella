@@ -118,8 +118,10 @@ class LabeledThingInFrame extends Controller\Base
                 $labeledThingsInFrame
             );
 
-            foreach ($this->labeledThingFacade->getLabeledThingsById($labeledThingIds) as $labeledThing) {
-                $labeledThings[$labeledThing->getId()] = $labeledThing;
+            if (!empty($labeledThingIds)) {
+                foreach ($this->labeledThingFacade->getLabeledThingsById($labeledThingIds) as $labeledThing) {
+                    $labeledThings[$labeledThing->getId()] = $labeledThing;
+                }
             }
         }
 
