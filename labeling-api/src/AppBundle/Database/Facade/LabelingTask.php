@@ -183,6 +183,31 @@ class LabelingTask
             ->toArray();
     }
 
+    public function getLabeledThingsInFrameForFrameRange(
+        Model\LabelingTask $labelingTask,
+        $startFrameNumber = null,
+        $endFrameNumber = null
+    ) {
+        if ($startFrameNumber === null) {
+            $startFrameNumber = $labelingTask->getFrameRange()->getStartFrameNumber();
+        }
+
+        if ($endFrameNumber === null) {
+            $endFrameNumber = $labelingTask->getFrameRange()->getEndFrameNumber();
+        }
+
+        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($startFrameNumber);
+        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($endFrameNumber);
+
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
+            ->setStartKey([$labelingTask->getId(), (int) $startFrameNumber])
+            ->setEndKey([$labelingTask->getId(), (int) $endFrameNumber])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
     public function save(Model\LabelingTask $labelingTask)
     {
         $this->documentManager->persist($labelingTask);
