@@ -111,7 +111,7 @@
             }
 
 
-## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}]
+## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}{?offset,limit}]
 
 + Parameters
 
@@ -127,6 +127,11 @@ the same revision.
 By default, all associated labeled things are also returned. This can be
 controlled by a query parameter `labeledThings` which may be set to `false`
 when the associated labeled things are not required.
+
++ Parameters
+
+    + offset: `3` (number, optional) - The offset relative to the given frameNumber.
+    + limit: `10` (number, optional) - The maximum number of labeled things in frame that should be returned.
 
 + Response 200 (application/json)
 
@@ -170,7 +175,7 @@ when the associated labeled things are not required.
             {
             }
 
-## LabeledFrame [/api/task/{taskId}/labeledFrame/{frameNumber}]
+## LabeledFrame [/api/task/{taskId}/labeledFrame/{frameNumber}{?offset,limit}]
 
 + Parameters
 
@@ -179,23 +184,34 @@ when the associated labeled things are not required.
 
 ### Get [GET]
 
-Return the labeled frame document for this frame number. If no document exists for this frame the api will return the next existing previous frame.
+Return the labeled frame document for this frame number.
+
+If no document exists for this frame, the api will return a copy of the
+previous document or an empty document if no document exists for a previous
+frame.
+
+In case offset/limit are given as query parameters, a list instead of a single
+document is returned.
+
++ Parameters
+
+    + offset: `3` (number, optional) - The offset relative to the given frameNumber.
+    + limit: `10` (number, optional) - The maximum number of labeled frames that should be returned.
 
 + Response 200 (application/json)
 
     + Body
 
             {
-                "result": [
-                    {
-                        "id": "...",
-                        "rev": "...",
-                        "classes": [
-                            ...
-                        ]
-                    }
-                ]
+                "result": {
+                    "id": "...",
+                    "rev": "...",
+                    "classes": [
+                        ...
+                    ]
+                }
             }
+
 
 ### Save or update [PUT]
 
