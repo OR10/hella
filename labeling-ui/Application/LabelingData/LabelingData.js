@@ -4,6 +4,8 @@ import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
 import LabeledThingGateway from './Gateways/LabeledThingGateway';
 import InterpolationService from './Services/InterpolationService';
 import LinearBackendInterpolation from './Interpolations/LinearBackendInterpolation';
+import DataContainerProvider from './Services/DataContainerProvider';
+import DataPrefetcher from './Services/DataPrefetcher';
 
 /**
  * Module containing all functionality related to Labels and its Data
@@ -23,6 +25,12 @@ class LabelingData extends Module {
 
     this.module.service('interpolationService', InterpolationService);
     this.module.service('linearBackendInterpolation', LinearBackendInterpolation);
+
+    this.module.service('dataPrefetcher', DataPrefetcher);
+
+    this.module.provider('labeledThingInFrameData', DataContainerProvider);
+    this.module.provider('labeledThingData', DataContainerProvider);
+    this.module.provider('labeledFrameData', DataContainerProvider);
   }
 }
 

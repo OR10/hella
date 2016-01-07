@@ -39,6 +39,7 @@ class ViewerController {
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {Object} applicationState
+   * @param {DataPrefetcher} dataPrefetcher
    */
   constructor(
     $scope,
@@ -59,7 +60,8 @@ class ViewerController {
     entityColorService,
     logger,
     $timeout,
-    applicationState
+    applicationState,
+    dataPrefetcher
   ) {
     /**
      * Mouse cursor used, while hovering the viewer
@@ -154,6 +156,12 @@ class ViewerController {
      * @private
      */
     this._applicationConfig = applicationConfig;
+
+    /**
+     * @type {DataPrefetcher}
+     * @private
+     */
+    this._dataPrefetcher = dataPrefetcher;
 
     /**
      * @type {LoggerService}
@@ -286,11 +294,13 @@ class ViewerController {
 
     $window.addEventListener('resize', this._resizeDebounced);
 
-    $window.document.addEventListener('visibilitychange', () => {
-      if ($window.document.visibilityState === 'visible') {
-        this._resizeDebounced();
+    $window.document.addEventListener(
+      'visibilitychange', () => {
+        if ($window.document.visibilityState === 'visible') {
+          this._resizeDebounced();
+        }
       }
-    });
+    );
 
     $scope.$on(
       '$destroy', () => {
@@ -363,9 +373,13 @@ class ViewerController {
       }
     );
 
-    $scope.$on('sidebar.resized', () => {
-      this._resizeDebounced();
-    });
+    $scope.$on(
+      'sidebar.resized', () => {
+        this._resizeDebounced();
+      }
+    );
+
+    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.framePosition.position);
   }
 
   setupLayers() {
@@ -440,17 +454,21 @@ class ViewerController {
   }
 
   zoomIn(focalPoint, zoomFactor) {
-    this._layerManager.forEachLayer((layer) => {
-      layer.zoomIn(focalPoint, zoomFactor);
-    });
+    this._layerManager.forEachLayer(
+      (layer) => {
+        layer.zoomIn(focalPoint, zoomFactor);
+      }
+    );
 
     this._updateViewport();
   }
 
   zoomOut(focalPoint, zoomFactor) {
-    this._layerManager.forEachLayer((layer) => {
-      layer.zoomOut(focalPoint, zoomFactor);
-    });
+    this._layerManager.forEachLayer(
+      (layer) => {
+        layer.zoomOut(focalPoint, zoomFactor);
+      }
+    );
 
     this._updateViewport();
   }
@@ -474,9 +492,11 @@ class ViewerController {
   }
 
   _resizeLayers(width, height) {
-    this._layerManager.forEachLayer((layer) => {
-      layer.resize(width, height);
-    });
+    this._layerManager.forEachLayer(
+      (layer) => {
+        layer.resize(width, height);
+      }
+    );
   }
 
   _updateViewport() {
@@ -878,25 +898,31 @@ class ViewerController {
   }
 
   _zoom(newZoom) {
-    this._layerManager.forEachLayer((layer) => {
-      layer.setZoom(newZoom);
-    });
+    this._layerManager.forEachLayer(
+      (layer) => {
+        layer.setZoom(newZoom);
+      }
+    );
 
     this._updateViewport();
   }
 
   _panTo(newCenter) {
-    this._layerManager.forEachLayer((layer) => {
-      layer.panTo(newCenter);
-    });
+    this._layerManager.forEachLayer(
+      (layer) => {
+        layer.panTo(newCenter);
+      }
+    );
 
     this._updateViewport();
   }
 
   _panBy(deltaX, deltaY) {
-    this._layerManager.forEachLayer((layer) => {
-      layer.panBy(deltaX, deltaY);
-    });
+    this._layerManager.forEachLayer(
+      (layer) => {
+        layer.panBy(deltaX, deltaY);
+      }
+    );
 
     this._updateViewport();
   }
@@ -922,6 +948,7 @@ ViewerController.$inject = [
   'loggerService',
   '$timeout',
   'applicationState',
+  'dataPrefetcher',
 ];
 
 export default ViewerController;
