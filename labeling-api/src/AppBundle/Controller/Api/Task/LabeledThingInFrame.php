@@ -106,9 +106,23 @@ class LabeledThingInFrame extends Controller\Base
         $frameNumber
     ) {
         $fetchLabeledThings = $request->query->getBoolean('labeledThings', true);
+        $offset             = $request->query->get('offset');
+        $limit              = $request->query->get('limit');
+
+        if ($offset !== null && $limit !== null) {
+            $startFrameNumber = $frameNumber + $offset;
+            $endFrameNumber   = $frameNumber + $offset + $limit - 1;
+        } else {
+            $startFrameNumber = (int) $frameNumber;
+            $endFrameNumber   = (int) $frameNumber;
+        }
 
         $labeledThings        = [];
-        $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber);
+        $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameRange(
+            $task,
+            $startFrameNumber,
+            $endFrameNumber
+        );
 
         if ($fetchLabeledThings) {
             $labeledThingIds = array_map(

@@ -6,6 +6,8 @@ use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
+use JMS\Serializer;
+use Symfony\Component\HttpFoundation;
 
 class LabeledFrameTest extends Tests\WebTestCase
 {
@@ -23,6 +25,8 @@ class LabeledFrameTest extends Tests\WebTestCase
      * @var Facade\LabeledFrame
      */
     private $labeledFrameFacade;
+
+    private $serializer;
 
     public function testGetLabeledFrameDocument()
     {
@@ -203,6 +207,45 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
+    public function testGetMultipleLabeledFramesWithoutAnyExistingLabeledFrames()
+    {
+        $task = $this->createLabelingTask();
+
+        $response = $this->doRequest('GET', $task->getId(), 10, null, ['offset' => 0, 'limit' => 3]);
+
+        $expectedResult = [
+            'result' => [
+                $this->objectToArray(new Model\LabeledFrame($task, 10)),
+                $this->objectToArray(new Model\LabeledFrame($task, 11)),
+                $this->objectToArray(new Model\LabeledFrame($task, 12)),
+            ],
+        ];
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals($expectedResult, json_decode($response->getContent(), true));
+    }
+
+    public function testGetMultipleLabeledFramesWithSomeExistingLabeledFrames()
+    {
+        $task           = $this->createLabelingTask();
+        $labeledFrame11 = $this->createLabeledFrame($task, 11);
+        $labeledFrame13 = $this->createLabeledFrame($task, 13);
+
+        $response = $this->doRequest('GET', $task->getId(), 10, null, ['offset' => 0, 'limit' => 4]);
+
+        $expectedResult = [
+            'result' => [
+                $this->objectToArray(new Model\LabeledFrame($task, 10)),
+                $this->objectToArray($labeledFrame11),
+                $this->objectToArray($labeledFrame11->copyToFrameNumber(12)),
+                $this->objectToArray($labeledFrame13),
+            ],
+        ];
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals($expectedResult, json_decode($response->getContent(), true));
+    }
+
     protected function setUpImplementation()
     {
         $userManipulator = static::$kernel->getContainer()->get('fos_user.util.user_manipulator');
@@ -224,9 +267,11 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->labeledFrameFacade = static::$kernel->getContainer()->get(
             'annostation.labeling_api.database.facade.labeled_frame'
         );
+
+        $this->serializer = static::$kernel->getContainer()->get('serializer');
     }
 
-    private function doRequest($method, $taskId, $frameNumber, $content = null)
+    private function doRequest($method, $taskId, $frameNumber, $content = null, $requestParameters = [])
     {
         $client  = $this->createClient();
         $crawler = $client->request(
@@ -236,7 +281,7 @@ class LabeledFrameTest extends Tests\WebTestCase
                 $taskId,
                 $frameNumber
             ),
-            [],
+            $requestParameters,
             [],
             [
                 'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
@@ -260,10 +305,9 @@ class LabeledFrameTest extends Tests\WebTestCase
         return $labelingTask;
     }
 
-    private function createLabeledFrame(Model\LabelingTask $labelingTask)
+    private function createLabeledFrame(Model\LabelingTask $labelingTask, $frameNumber = 10)
     {
-        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
-        $labeledFrame->setId('22dd639108f1419967ed8d6a1f5a765c');
+        $labeledFrame = new Model\LabeledFrame($labelingTask, $frameNumber);
         $labeledFrame->setClasses(array(
             'foo' => 'bar'
         ));
@@ -271,5 +315,13 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->labeledFrameFacade->save($labeledFrame);
 
         return $labeledFrame;
+    }
+
+    private function objectToArray($object)
+    {
+        $context = new Serializer\SerializationContext();
+        $context->setSerializeNull(true);
+
+        return json_decode($this->serializer->serialize($object, 'json', $context), true);
     }
 }

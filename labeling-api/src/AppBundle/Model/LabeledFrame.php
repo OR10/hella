@@ -129,4 +129,21 @@ class LabeledFrame
     {
         return $this->id;
     }
+
+    /**
+     * @param int $frameNumber
+     *
+     * @return LabeledFrame
+     */
+    public function copyToFrameNumber($frameNumber)
+    {
+        $reflectionClass   = new \ReflectionClass(self::class);
+        $copy              = $reflectionClass->newInstanceWithoutConstructor();
+        $copy->taskId      = $this->taskId;
+        $copy->frameNumber = $frameNumber;
+        $copy->classes     = $this->classes;
+        $copy->incomplete  = $this->incomplete;
+
+        return $copy;
+    }
 }

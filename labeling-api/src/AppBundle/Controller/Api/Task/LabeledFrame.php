@@ -43,25 +43,54 @@ class LabeledFrame extends Controller\Base
     /**
      * @Rest\Get("/{task}/labeledFrame/{frameNumber}")
      *
-     * @param Model\LabelingTask $task
-     * @param int                $frameNumber
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask     $task
+     * @param int                    $frameNumber
      *
      * @return View\View
      */
-    public function getLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
-    {
+    public function getLabeledFrameAction(
+        HttpFoundation\Request $request,
+        Model\LabelingTask $task,
+        $frameNumber
+    ) {
         $frameNumber  = (int) $frameNumber;
+        $offset       = $request->query->get('offset');
+        $limit        = $request->query->get('limit');
+
         $labeledFrame = $this->labelingTaskFacade->getCurrentOrPreceedingLabeledFrame($task, $frameNumber);
 
         if ($labeledFrame === null) {
             $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
         } elseif ($labeledFrame->getFrameNumber() !== $frameNumber) {
-            $classes      = $labeledFrame->getClasses();
-            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
-            $labeledFrame->setClasses($classes);
+            $labeledFrame = $labeledFrame->copyToFrameNumber($frameNumber);
         }
 
-        return View\View::create()->setData(['result' => $labeledFrame]);
+        if ($offset !== null && $limit !== null) {
+            $labeledFrames = $this->labelingTaskFacade->getLabeledFrames(
+                $task,
+                $frameNumber + $offset + 1,
+                $frameNumber + $offset + $limit - 1
+            );
+
+            $result = [];
+
+            foreach (range($frameNumber + $offset, $frameNumber + $offset + $limit - 1) as $frameNumber) {
+                if (!empty($labeledFrames) && $labeledFrames[0]->getFrameNumber() <= $frameNumber) {
+                    $labeledFrame = array_shift($labeledFrames);
+                }
+
+                if ($frameNumber != $labeledFrame->getFrameNumber()) {
+                    $result[] = $labeledFrame->copyToFrameNumber($frameNumber);
+                } else {
+                    $result[] = $labeledFrame;
+                }
+            }
+
+            return View\View::create()->setData(['result' => $result]);
+        } else {
+            return View\View::create()->setData(['result' => $labeledFrame]);
+        }
     }
 
     /**
