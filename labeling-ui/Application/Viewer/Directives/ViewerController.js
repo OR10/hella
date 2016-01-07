@@ -379,7 +379,7 @@ class ViewerController {
       }
     );
 
-    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.framePosition.position);
+    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, 1);
   }
 
   setupLayers() {
