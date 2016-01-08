@@ -17,9 +17,22 @@ class DataPrefetcher {
     this._chunkSize = 20;
   }
 
-  prefetchGhosts(task, startFrameNumber, labeledThing) {
+  prefetchSingleLabeledThing(task, labeledThing, startFrameNumber, refetch = false) {
+    if (!refetch && this._labeledThingData.has(labeledThing.id)) {
+      return;
+    }
 
-  };
+    const frameCount = task.frameRange.endFrameNumber - startFrameNumber + 1;
+
+    this._labeledThingData.invalidate(labeledThing.id);
+
+    console.log(`Prefetching LabeledThing (${labeledThing.id}) for frames ${startFrameNumber} - ${task.frameRange.endFrameNumber}`);
+
+    return this._labeledThingInFrameGateway.getLabeledThingInFrame(task, startFrameNumber, labeledThing, 0, frameCount)
+      .then(data => {
+        this._labeledThingData.set(labeledThing.id, data);
+      });
+  }
 
   prefetchLabeledThingsInFrame(task, startFrameNumber) {
     return this._prefetchLabeledThingsInFrame(task, startFrameNumber, this._chunkSize);

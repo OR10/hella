@@ -214,6 +214,8 @@ class LabeledThingInFrameGateway {
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
+    this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
+
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
@@ -236,6 +238,24 @@ class LabeledThingInFrameGateway {
 
         throw new Error('Failed updating labeled thing in frame');
       });
+  }
+
+  _updateCacheForLabeledThingInFrame(labeledThingInFrame) {
+    const frameNumber = labeledThingInFrame.frameNumber;
+
+    if (this._labeledThingInFrameData.has(frameNumber)) {
+      const oldFrameData = this._labeledThingInFrameData.get(frameNumber);
+
+      const newFrameData = oldFrameData.filter(
+        oldLabeledThingInFrame => {
+          return oldLabeledThingInFrame.labeledThing.id !== labeledThingInFrame.labeledThing.id;
+        }
+      );
+
+      newFrameData.push(labeledThingInFrame);
+
+      this._labeledThingInFrameData.set(frameNumber, newFrameData);
+    }
   }
 
   /**

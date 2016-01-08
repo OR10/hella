@@ -89,6 +89,18 @@ class MediaControlsController {
     this._modalService = modalService;
 
     /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingInFrameData = labeledThingInFrameData;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingData = labeledThingData;
+
+    /**
      * @type {string}
      */
     this.popupPanelState = 'zoom';
@@ -276,6 +288,12 @@ class MediaControlsController {
     this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
       .then(
         () => {
+          this._labeledThingData.invalidate(selectedLabeledThing.id);
+          this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
+        }
+      )
+      .then(
+        () => {
           this.selectedPaperShape = null;
           this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
             labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
@@ -372,6 +390,8 @@ MediaControlsController.$inject = [
   '$q',
   'applicationState',
   'modalService',
+  'labeledThingData',
+  'labeledThingInFrameData',
 ];
 
 export default MediaControlsController;
