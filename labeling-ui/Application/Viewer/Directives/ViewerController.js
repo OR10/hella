@@ -336,6 +336,8 @@ class ViewerController {
       }
     );
 
+    const panViewportDebounced = animationFrameService.debounce((newCenter) => this._panTo(newCenter));
+
     $scope.$watchGroup(
       ['vm.viewport.zoom', 'vm.viewport.center'], ([newZoom, newCenter]) => {
         if (newZoom && newZoom !== this._backgroundLayer.zoom) {
@@ -343,8 +345,8 @@ class ViewerController {
         }
 
         const currentCenter = this._backgroundLayer.center;
-        if (newCenter && newCenter.x !== currentCenter.x && newCenter.y !== currentCenter.y) {
-          this._panTo(newCenter);
+        if (newCenter && (newCenter.x !== currentCenter.x || newCenter.y !== currentCenter.y)) {
+          panViewportDebounced(newCenter);
         }
       }
     );
