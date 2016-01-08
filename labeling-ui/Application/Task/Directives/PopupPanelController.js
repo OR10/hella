@@ -109,7 +109,7 @@ class PopupPanelController {
 
   _loadBackgroundImage() {
     this._frameLocationsBuffer.add(
-      this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', this.framePosition.position)
+      this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', this.framePosition.position - 1)
         .then(([frameLocation]) => {
           return this._frameGateway.getImage(frameLocation);
         })
