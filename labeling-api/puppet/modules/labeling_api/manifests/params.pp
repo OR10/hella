@@ -35,6 +35,9 @@ class labeling_api::params(
   $rabbitmq_use_dead_letter_exchange = true,
   $rabbitmq_use_alternate_exchange = true,
 
+  $redis_host = '127.0.0.1',
+  $redis_port = '6379',
+
   $frame_cdn_dir,
   $frame_cdn_base_url,
   $frame_cdn_port = 80,

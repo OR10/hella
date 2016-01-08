@@ -7,6 +7,7 @@ use AppBundle\Tests\Controller;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
 use Doctrine\ODM\CouchDB;
+use JMS\Serializer;
 use Symfony\Component\HttpFoundation;
 
 class LabeledThingInFrameTest extends Tests\WebTestCase
@@ -31,6 +32,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
      */
     private $labelingThingInFrameFacade;
 
+    private $serializer;
+
     public function testGetLabeledThingInFrameDocument()
     {
         $labelingTask        = $this->createLabelingTask();
@@ -41,6 +44,70 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
 
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testGetLabeledThingsInFrameForMultipleFramesWithoutAnyLabeledThingsInFrame()
+    {
+        $task = $this->createLabelingTask();
+
+        $response = $this->doRequest(
+            'GET',
+            $task->getId(),
+            10,
+            null,
+            [
+                'labeledThings' => true,
+                'offset' => 0,
+                'limit' => 3
+            ]
+        );
+
+        $expectedResult = [
+            'result' => [
+                'labeledThings' => [],
+                'labeledThingsInFrame' => [],
+            ],
+        ];
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals($expectedResult, json_decode($response->getContent(), true));
+    }
+
+    public function testGetLabeledThingsInFrameForMultipleFramesWithSomeLabeledThingsInFrame()
+    {
+        $task                       = $this->createLabelingTask();
+        $aLabeledThing              = $this->createLabeledThingDocument($task);
+        $aLabeledThingInFrame       = $this->createLabeledInFrameDocument($aLabeledThing, 11);
+        $anotherLabeledThing        = $this->createLabeledThingDocument($task);
+        $anotherLabeledThingInFrame = $this->createLabeledInFrameDocument($anotherLabeledThing, 12);
+
+        $response = $this->doRequest(
+            'GET',
+            $task->getId(),
+            10,
+            null,
+            [
+                'labeledThings' => true,
+                'offset' => 0,
+                'limit' => 3
+            ]
+        );
+
+        $expectedResult = [
+            'result' => [
+                'labeledThings' => [
+                    $aLabeledThing->getId() => $this->objectToArray($aLabeledThing),
+                    $anotherLabeledThing->getId() => $this->objectToArray($anotherLabeledThing),
+                ],
+                'labeledThingsInFrame' => [
+                    $this->objectToArray($aLabeledThingInFrame),
+                    $this->objectToArray($anotherLabeledThingInFrame),
+                ],
+            ],
+        ];
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals($expectedResult, json_decode($response->getContent(), true));
     }
 
     public function testGetLabeledThingInFrameDocumentWithInvalidTask()
@@ -170,9 +237,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $expected = array(
             array(
-                'id' => $labeledThingInFrameNumber10->getId(),
-                'rev' => $labeledThingInFrameNumber10->getRev(),
-                'frameNumber' => 10,
+                'id' => null,
+                'rev' => null,
+                'frameNumber' => 9,
                 'classes' => array(),
                 'shapes' => array(),
                 'labeledThingId' => $labeledThingInFrameNumber10->getLabeledThingId(),
@@ -233,9 +300,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingThingInFrameFacade = static::$kernel->getContainer()->get(
             'annostation.labeling_api.database.facade.labeled_thing_in_frame'
         );
+
+        $this->serializer = static::$kernel->getContainer()->get('serializer');
     }
 
-    private function doRequest($method, $taskId, $labeledThingInFrameNumber, $content = null)
+    private function doRequest($method, $taskId, $labeledThingInFrameNumber, $content = null, $requestParameters = [])
     {
         $client  = $this->createClient();
         $crawler = $client->request(
@@ -245,7 +314,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 $taskId,
                 $labeledThingInFrameNumber
             ),
-            [],
+            $requestParameters,
             [],
             [
                 'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
@@ -283,5 +352,13 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingThingInFrameFacade->save($labeledThingInFrame);
 
         return $labeledThingInFrame;
+    }
+
+    private function objectToArray($object)
+    {
+        $context = new Serializer\SerializationContext();
+        $context->setSerializeNull(true);
+
+        return json_decode($this->serializer->serialize($object, 'json', $context), true);
     }
 }

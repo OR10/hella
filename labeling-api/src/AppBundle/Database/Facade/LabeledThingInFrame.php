@@ -40,6 +40,26 @@ class LabeledThingInFrame
         $this->documentManager->flush();
     }
 
+    /**
+     * @param Model\LabeledThingInFrame[] $labeledThingsInFrame
+     */
+    public function saveAll(array $labeledThingsInFrame) {
+        foreach ($labeledThingsInFrame as $labeledThingInFrame) {
+            if ($labeledThingInFrame->getId() === null) {
+                // TODO: refactor this
+                $uuids = $this->documentManager->getCouchDBClient()->getUuids();
+                if (!is_array($uuids) || empty($uuids)) {
+                    throw new \RuntimeException("Error retrieving uuid for LabeledThingInFrame");
+                }
+                $labeledThingInFrame->setId($uuids[0]);
+            }
+
+            $this->documentManager->persist($labeledThingInFrame);
+        }
+
+        $this->documentManager->flush();
+    }
+
     public function getLabeledThingInFramesOutsideRange(Model\LabeledThing $labeledThing)
     {
         $frameRange = $labeledThing->getFrameRange();

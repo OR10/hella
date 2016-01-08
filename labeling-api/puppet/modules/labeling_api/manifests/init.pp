@@ -5,6 +5,7 @@ class labeling_api(
   $app = false,
   $run_composer_install = false,
   $tideways = false,
+  $redis = false,
 ) {
   include ::labeling_api::params
 
@@ -18,6 +19,10 @@ class labeling_api(
 
   if $worker_queue {
     include ::labeling_api::worker_queue
+  }
+
+  if $redis {
+    include ::labeling_api::redis
   }
 
   if $app {
