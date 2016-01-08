@@ -27,7 +27,7 @@ class LabeledThing
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $classes;
+    private $classes = [];
 
     /**
      * @CouchDB\Field(type="string")
