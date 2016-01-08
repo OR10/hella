@@ -65,20 +65,19 @@ class LabeledThingInFrameGateway {
 
   /**
    * @param {Task} task
-   * @param {Number} offset
+   * @param {Number} startFrameNumber
    * @param {Number} [limit=1]
    */
-  bulkFetchLabeledThingsInFrame(task, offset, limit = 1) {
+  bulkFetchLabeledThingsInFrame(task, startFrameNumber, limit = 1) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/`
+      `/task/${task.id}/labeledThingInFrame/${startFrameNumber}?offset=0&limit=${limit}`
     );
 
-    if (limit < 0) {
+    if (limit < 1) {
       return Promise.resolve([]);
     }
 
-    return Promise.all(this._getFrameNumberRange(task, offset, limit).map(frameNumber => this._$http.get(url + frameNumber)))
-      .then(responses => responses.map(response => this._associateWithLabeledThings(task, response.data.result)));
+    return this._$http.get(url).then(response => this._associateWithLabeledThings(task, response.data.result));
   }
 
   /**

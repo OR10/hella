@@ -3,6 +3,10 @@
  */
 class DataContainer {
   constructor() {
+    /**
+     * @type {Map}
+     * @protected
+     */
     this._data = new Map();
   }
 

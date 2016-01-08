@@ -14,7 +14,7 @@ class DataPrefetcher {
     this._labeledThingData = labeledThingData;
     this._labeledFrameData = labeledFrameData;
 
-    this._chunkSize = 10;
+    this._chunkSize = 20;
   }
 
   prefetchGhosts(task, startFrameNumber, labeledThing) {
@@ -25,53 +25,36 @@ class DataPrefetcher {
     return this._prefetchLabeledThingsInFrame(task, startFrameNumber, this._chunkSize);
   }
 
-  prefetchSingleLabeledThing(task, labeledThing, startFrameNumber) {
-    return this._prefetchSingleLabeledThing(task, labeledThing, startFrameNumber, this._chunkSize);
-  }
+  _prefetchLabeledThingsInFrame(task, startFrameNumber, limit) {
+    console.log(`Prefetching LabeledThingsInFrame for frames ${startFrameNumber} - ${startFrameNumber + limit - 1}`);
+    return this._labeledThingInFrameGateway.bulkFetchLabeledThingsInFrame(task, startFrameNumber, limit).then(labeledThingsInFrame => {
+      const dataByFrameNumber = {};
 
-  _prefetchSingleLabeledThing(task, labeledThing, offset, limit) {
-    console.log(`Prefetching LabeledThing (${labeledThing.id}) for frames ${offset} - ${offset + limit}`);
-
-    return this._labeledThingInFrameGateway.getLabeledThingInFrame(task, offset, labeledThing, 0, limit).then(dataByFrame => {
-      console.log(dataByFrame);
-      //dataByFrame.forEach((data, index) => {
-      //  this._labeledThingInFrameData.set(offset + index, data);
-      //});
-      //
-      //const newOffset = offset + this._chunkSize;
-      //let newLimit = this._chunkSize;
-      //
-      //if (newOffset > task.frameRange.endFrameNumber) {
-      //  return Promise.resolve();
-      //}
-      //
-      //if (newOffset + newLimit > task.frameRange.endFrameNumber) {
-      //  newLimit -= newOffset + newLimit - task.frameRange.endFrameNumber;
-      //}
-      //
-      //return this._prefetchLabeledThingsInFrame(task, newOffset, newLimit);
-    });
-  }
-
-  _prefetchLabeledThingsInFrame(task, offset, limit) {
-    console.log(`Prefetching LabeledThingsInFrame for frames ${offset} - ${offset + limit}`);
-    return this._labeledThingInFrameGateway.bulkFetchLabeledThingsInFrame(task, offset, limit).then(dataByFrame => {
-      dataByFrame.forEach((data, index) => {
-        this._labeledThingInFrameData.set(offset + index, data);
+      labeledThingsInFrame.forEach(labeledThingInFrame => {
+        if (dataByFrameNumber[labeledThingInFrame.frameNumber]) {
+          dataByFrameNumber[labeledThingInFrame.frameNumber].push(labeledThingInFrame);
+        } else {
+          dataByFrameNumber[labeledThingInFrame.frameNumber] = [labeledThingInFrame];
+        }
       });
 
-      const newOffset = offset + this._chunkSize;
+      Object.keys(dataByFrameNumber).forEach(key => {
+        const frameNumber = parseInt(key, 10);
+        this._labeledThingInFrameData.set(frameNumber, dataByFrameNumber[frameNumber]);
+      });
+
+      const newStartFrameNumber = startFrameNumber + this._chunkSize;
       let newLimit = this._chunkSize;
 
-      if (newOffset > task.frameRange.endFrameNumber) {
+      if (newStartFrameNumber > task.frameRange.endFrameNumber) {
         return Promise.resolve();
       }
 
-      if (newOffset + newLimit > task.frameRange.endFrameNumber) {
-        newLimit -= newOffset + newLimit - task.frameRange.endFrameNumber;
+      if (newStartFrameNumber + newLimit > task.frameRange.endFrameNumber) {
+        newLimit -= newStartFrameNumber + newLimit - task.frameRange.endFrameNumber;
       }
 
-      return this._prefetchLabeledThingsInFrame(task, newOffset, newLimit);
+      return this._prefetchLabeledThingsInFrame(task, newStartFrameNumber, newLimit);
     });
   }
 }
