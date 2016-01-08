@@ -41,7 +41,7 @@ labeling_api::app::app_main_script: 'app_dev.php'
 labeling_api::app:client_max_body_size: '512M'
 
 labeling_api::cdn::allowed_origin: '*'
-labeling_api::cdn::expires: '1m'
+labeling_api::cdn::expires: '1h'
 
 labeling_api::worker::app_dir: '/vagrant'
 labeling_api::worker::user: vagrant
