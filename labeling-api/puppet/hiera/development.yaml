@@ -22,6 +22,8 @@ supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running
 
+labeling_api::common::sslCert: 'devel'
+
 labeling_api::params::config_dir: '/vagrant/app/config'
 labeling_api::params::cache_dir: '/var/cache/labeling_api'
 labeling_api::params::database_name: 'labeling_api'

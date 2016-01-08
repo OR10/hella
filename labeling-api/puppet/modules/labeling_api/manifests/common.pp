@@ -11,6 +11,7 @@
 class labeling_api::common(
   $cacheDir = $labeling_api::params::cache_dir,
   $frameCdnDir = $labeling_api::params::frame_cdn_dir,
+  $sslCert = undef,
 ) {
   if $frameCdnDir =~ /^(\/.+)\/[^\/]+/ {
     $frameCdnDirectory = [$1, $frameCdnDir]
@@ -26,5 +27,19 @@ class labeling_api::common(
   file { $frameCdnDirectory:
     ensure => 'directory',
     mode   => "777",
+  }
+
+  if $sslCert {
+    file { '/etc/nginx/ssl-certificate.crt':
+      ensure  => file,
+      source  => "puppet:///modules/labeling_api/${sslCert}.crt",
+      require => Package['nginx'],
+    }
+
+    file { '/etc/nginx/ssl-certificate.key':
+      ensure  => file,
+      source  => "puppet:///modules/labeling_api/${sslCert}.key",
+      require => Package['nginx'],
+    }
   }
 }
