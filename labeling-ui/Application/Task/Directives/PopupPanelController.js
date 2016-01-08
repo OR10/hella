@@ -19,6 +19,7 @@ class PopupPanelController {
   constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, taskFrameLocationGateway, abortablePromiseFactory, $timeout) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
+    this._supportedImageTypes = ['sourceJpg', 'source'];
 
     /**
      * @type {AbortablePromiseFactory}
@@ -108,8 +109,18 @@ class PopupPanelController {
   }
 
   _loadBackgroundImage() {
+    const imageTypes = this.task.requiredImageTypes.filter(
+      (imageType) => {
+        return (this._supportedImageTypes.indexOf(imageType) !== -1);
+      }
+    );
+
+    if (!imageTypes.length) {
+      throw new Error('No supported image type found');
+    }
+
     this._frameLocationsBuffer.add(
-      this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', this.framePosition.position - 1)
+      this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], this.framePosition.position - 1)
         .then(([frameLocation]) => {
           return this._frameGateway.getImage(frameLocation);
         })
