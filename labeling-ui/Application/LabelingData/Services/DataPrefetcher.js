@@ -2,8 +2,8 @@ class DataPrefetcher {
   /**
    * @param apiService
    * @param $q
+   * @param labeledThingInFrameGateway
    * @param labeledThingInFrameData
-   * @param labeledThingData
    * @param labeledFrameData
    */
   constructor(apiService, $q, labeledThingInFrameGateway, labeledThingInFrameData, labeledThingData, labeledFrameData) {

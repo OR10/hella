@@ -331,6 +331,12 @@ class ViewerController {
       }
     );
 
+    $scope.$watch('vm.selectedPaperShape', (newShape) => {
+      if (newShape) {
+        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, 1);
+      }
+    });
+
     $scope.$watchGroup(
       [
         'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
@@ -702,7 +708,9 @@ class ViewerController {
       () => {
         this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
       }
-    );
+    ).then(() => {
+      this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, 1, true);
+    });
   }
 
   /**
@@ -719,7 +727,8 @@ class ViewerController {
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
-      .then(() => shape.publish());
+      .then(() => shape.publish())
+      .then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, 1));
 
     this.activeTool = null;
 

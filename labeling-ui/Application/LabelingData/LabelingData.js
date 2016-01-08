@@ -4,7 +4,8 @@ import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
 import LabeledThingGateway from './Gateways/LabeledThingGateway';
 import InterpolationService from './Services/InterpolationService';
 import LinearBackendInterpolation from './Interpolations/LinearBackendInterpolation';
-import DataContainerProvider from './Services/DataContainerProvider';
+import DataContainer from './Support/DataContainer';
+import LabeledThingInFrameDataContainer from './Support/LabeledThingInFrameDataContainer';
 import DataPrefetcher from './Services/DataPrefetcher';
 
 /**
@@ -28,9 +29,9 @@ class LabelingData extends Module {
 
     this.module.service('dataPrefetcher', DataPrefetcher);
 
-    this.module.provider('labeledThingInFrameData', DataContainerProvider);
-    this.module.provider('labeledThingData', DataContainerProvider);
-    this.module.provider('labeledFrameData', DataContainerProvider);
+    this.module.constant('labeledThingInFrameData', new LabeledThingInFrameDataContainer());
+    this.module.constant('labeledThingData', new DataContainer());
+    this.module.constant('labeledFrameData', new DataContainer());
   }
 }
 

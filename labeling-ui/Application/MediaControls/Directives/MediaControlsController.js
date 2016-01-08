@@ -24,6 +24,8 @@ class MediaControlsController {
    * @param {angular.$q} $q
    * @param {Object} applicationState
    * @param {ModalService} modalService
+   * @param {DataContainer} labeledThingData
+   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    */
   constructor(
     $scope,
@@ -34,7 +36,9 @@ class MediaControlsController {
     logger,
     $q,
     applicationState,
-    modalService
+    modalService,
+    labeledThingData,
+    labeledThingInFrameData
   ) {
     /**
      * @type {LabeledThingInFrameGateway}
