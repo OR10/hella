@@ -1,5 +1,6 @@
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 import LabeledThing from '../Models/LabeledThing';
+import DataContainer from '../Support/DataContainer';
 
 /**
  * Gateway for saving and retrieving {@link LabeledThingInFrame}s
@@ -9,9 +10,13 @@ class LabeledThingInFrameGateway {
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
    * @param {$q} $q
+   * @param {$http} $http
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {DataContainer} labeledThingInFrameData
+   * @param {DataContainer} labeledThingData
+   * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor(apiService, bufferedHttp, $q, labeledThingGateway) {
+  constructor(apiService, bufferedHttp, $q, $http, labeledThingGateway, labeledThingInFrameData, labeledThingData, abortablePromiseFactory) {
     /**
      * @type {BufferedHttp}
      */
@@ -27,14 +32,82 @@ class LabeledThingInFrameGateway {
      */
     this._$q = $q;
 
+    /**
+     * @type {$http}
+     * @private
+     */
+    this._$http = $http;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingInFrameData = labeledThingInFrameData;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingData = labeledThingData;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromiseFactory = abortablePromiseFactory;
+  }
+
+  /**
+   * @param {Task} task
+   * @param {Number} startFrameNumber
+   * @param {Number} [limit=1]
+   */
+  bulkFetchLabeledThingsInFrame(task, startFrameNumber, limit = 1) {
+    const url = this._apiService.getApiUrl(
+      `/task/${task.id}/labeledThingInFrame/${startFrameNumber}?offset=0&limit=${limit}`
+    );
+
+    if (limit < 1) {
+      return Promise.resolve([]);
+    }
+
+    return this._$http.get(url).then(response => this._associateWithLabeledThings(task, response.data.result));
+  }
+
+  /**
+   * @param {Task} task
+   * @param {Number} offset
+   * @param {Number} limit
+   *
+   * @returns {Number[]}
+   * @private
+   */
+  _getFrameNumberRange(task, offset, limit) {
+    const endFrameNumber = offset + limit;
+    let actualLimit = limit;
+
+    if (endFrameNumber > task.frameRange.endFrameNumber) {
+      return [];
+    }
+
+    if (endFrameNumber > task.frameRange.endFrameNumber) {
+      actualLimit = endFrameNumber - task.frameRange.endFrameNumber;
+    }
+
+    return new Array(actualLimit).fill(null).map((ignored, index) => index + offset);
   }
 
   /**
    * Returns the {@link LabeledThingInFrame} object for the given {@link Task} and `frameNumber`
    *
    * @param {Task} task
-   * @param {Integer} frameNumber
+   * @param {Number} frameNumber
    *
    * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
@@ -42,6 +115,11 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}`
     );
+
+    if (this._labeledThingInFrameData.has(frameNumber)) {
+      return this._abortablePromiseFactory(this._$q.resolve(this._labeledThingInFrameData.get(frameNumber)));
+    }
+
     return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
@@ -69,6 +147,13 @@ class LabeledThingInFrameGateway {
    * @param {int?} limit
    */
   getLabeledThingInFrame(task, frameNumber, labeledThing, offset = 0, limit = 1) {
+    if (this._labeledThingData.has(labeledThing.id)) {
+      const startIndex = frameNumber - 1 + offset;
+      const labeledThingData = this._labeledThingData.get(labeledThing.id).slice(startIndex, startIndex + limit);
+
+      return this._abortablePromiseFactory(this._$q.resolve(labeledThingData));
+    }
+
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThing.id}`,
       {offset, limit}
@@ -129,6 +214,8 @@ class LabeledThingInFrameGateway {
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
+    this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
+
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {
         if (response.data && response.data.result) {
@@ -151,6 +238,24 @@ class LabeledThingInFrameGateway {
 
         throw new Error('Failed updating labeled thing in frame');
       });
+  }
+
+  _updateCacheForLabeledThingInFrame(labeledThingInFrame) {
+    const frameNumber = labeledThingInFrame.frameNumber;
+
+    if (this._labeledThingInFrameData.has(frameNumber)) {
+      const oldFrameData = this._labeledThingInFrameData.get(frameNumber);
+
+      const newFrameData = oldFrameData.filter(
+        oldLabeledThingInFrame => {
+          return oldLabeledThingInFrame.labeledThing.id !== labeledThingInFrame.labeledThing.id;
+        }
+      );
+
+      newFrameData.push(labeledThingInFrame);
+
+      this._labeledThingInFrameData.set(frameNumber, newFrameData);
+    }
   }
 
   /**
@@ -179,7 +284,11 @@ LabeledThingInFrameGateway.$inject = [
   'ApiService',
   'bufferedHttp',
   '$q',
+  '$http',
   'labeledThingGateway',
+  'labeledThingInFrameData',
+  'labeledThingData',
+  'abortablePromiseFactory',
 ];
 
 export default LabeledThingInFrameGateway;

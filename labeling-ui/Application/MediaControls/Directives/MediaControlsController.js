@@ -24,6 +24,9 @@ class MediaControlsController {
    * @param {angular.$q} $q
    * @param {Object} applicationState
    * @param {ModalService} modalService
+   * @param {DataContainer} labeledThingData
+   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
+   * @param {DataPrefetcher} dataPrefetcher
    */
   constructor(
     $scope,
@@ -34,7 +37,10 @@ class MediaControlsController {
     logger,
     $q,
     applicationState,
-    modalService
+    modalService,
+    labeledThingData,
+    labeledThingInFrameData,
+    dataPrefetcher
   ) {
     /**
      * @type {LabeledThingInFrameGateway}
@@ -83,6 +89,24 @@ class MediaControlsController {
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingInFrameData = labeledThingInFrameData;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingData = labeledThingData;
+
+    /**
+     * @type {DataPrefetcher}
+     * @private
+     */
+    this._dataPrefetcher = dataPrefetcher;
 
     /**
      * @type {string}
@@ -249,9 +273,13 @@ class MediaControlsController {
   handleInterpolation() {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
+    this._labeledThingData.invalidate(selectedLabeledThing.id);
+    this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
     this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
       .then(
         () => {
+          this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, 1);
+          this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, 1, true);
           this._applicationState.enableAll();
         }
       )
@@ -270,6 +298,12 @@ class MediaControlsController {
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
     this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
+      .then(
+        () => {
+          this._labeledThingData.invalidate(selectedLabeledThing.id);
+          this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
+        }
+      )
       .then(
         () => {
           this.selectedPaperShape = null;
@@ -300,13 +334,13 @@ class MediaControlsController {
   fastForward() {
     this.playing = true;
     this.playbackDirection = 'forwards';
-    this.playbackSpeedFactor = 22;
+    this.playbackSpeedFactor = 11;
   }
 
   rewind() {
     this.playing = true;
     this.playbackDirection = 'backwards';
-    this.playbackSpeedFactor = 22;
+    this.playbackSpeedFactor = 11;
   }
 
   handleVideoSettingsClicked() {
@@ -368,6 +402,9 @@ MediaControlsController.$inject = [
   '$q',
   'applicationState',
   'modalService',
+  'labeledThingData',
+  'labeledThingInFrameData',
+  'dataPrefetcher',
 ];
 
 export default MediaControlsController;
