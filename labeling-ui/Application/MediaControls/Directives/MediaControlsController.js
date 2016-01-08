@@ -26,6 +26,7 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {DataContainer} labeledThingData
    * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
+   * @param {DataPrefetcher} dataPrefetcher
    */
   constructor(
     $scope,
@@ -38,7 +39,8 @@ class MediaControlsController {
     applicationState,
     modalService,
     labeledThingData,
-    labeledThingInFrameData
+    labeledThingInFrameData,
+    dataPrefetcher
   ) {
     /**
      * @type {LabeledThingInFrameGateway}
@@ -99,6 +101,12 @@ class MediaControlsController {
      * @private
      */
     this._labeledThingData = labeledThingData;
+
+    /**
+     * @type {DataPrefetcher}
+     * @private
+     */
+    this._dataPrefetcher = dataPrefetcher;
 
     /**
      * @type {string}
@@ -265,9 +273,13 @@ class MediaControlsController {
   handleInterpolation() {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
+    this._labeledThingData.invalidate(selectedLabeledThing.id);
+    this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
     this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
       .then(
         () => {
+          this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, 1);
+          this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, 1, true);
           this._applicationState.enableAll();
         }
       )
@@ -392,6 +404,7 @@ MediaControlsController.$inject = [
   'modalService',
   'labeledThingData',
   'labeledThingInFrameData',
+  'dataPrefetcher',
 ];
 
 export default MediaControlsController;

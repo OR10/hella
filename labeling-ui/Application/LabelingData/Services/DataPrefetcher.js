@@ -51,10 +51,9 @@ class DataPrefetcher {
         }
       });
 
-      Object.keys(dataByFrameNumber).forEach(key => {
-        const frameNumber = parseInt(key, 10);
-        this._labeledThingInFrameData.set(frameNumber, dataByFrameNumber[frameNumber]);
-      });
+      for (let index = startFrameNumber; index <= startFrameNumber + limit - 1; index++) {
+        this._labeledThingInFrameData.set(index, dataByFrameNumber[index] || []);
+      }
 
       const newStartFrameNumber = startFrameNumber + this._chunkSize;
       let newLimit = this._chunkSize;
