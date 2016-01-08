@@ -116,6 +116,8 @@ class ThumbnailReelController {
 
     this._recalculateViewSizeDebounced();
 
+    this.prefetchThumbnailLocations();
+
     $window.addEventListener('resize', onWindowResized);
     $scope.$on('$destroy', () => {
       $window.removeEventListener('resize', onWindowResized);
@@ -433,6 +435,11 @@ class ThumbnailReelController {
 
   onBracketDragStop() {
     this._$element.css({cursor: 'auto'});
+  }
+
+  prefetchThumbnailLocations() {
+    const frameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
+    this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', 0, frameCount);
   }
 }
 
