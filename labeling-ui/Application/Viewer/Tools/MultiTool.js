@@ -104,6 +104,9 @@ export default class MultiTool extends Tool {
           break;
         case 'down':
           paperShape.position.y += moveDistance;
+          break;
+        default:
+          return;
       }
       this.emit('shape:update', paperShape);
     }
