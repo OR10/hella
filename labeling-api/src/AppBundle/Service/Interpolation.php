@@ -122,12 +122,12 @@ class Interpolation
                 $labeledThing,
                 $frameRange,
                 function(Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
+                    $labeledThingsInFrame[] = $labeledThingInFrame;
+
                     // TODO: make the number configurable
                     if (count($labeledThingsInFrame) == 10) {
                         $this->persistLabeledThingsInFrame($labeledThingsInFrame);
                         $labeledThingsInFrame = [];
-                    } else {
-                        $labeledThingsInFrame[] = $labeledThingInFrame;
                     }
                 }
             );
