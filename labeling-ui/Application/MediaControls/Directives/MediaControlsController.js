@@ -322,13 +322,13 @@ class MediaControlsController {
   fastForward() {
     this.playing = true;
     this.playbackDirection = 'forwards';
-    this.playbackSpeedFactor = 22;
+    this.playbackSpeedFactor = 11;
   }
 
   rewind() {
     this.playing = true;
     this.playbackDirection = 'backwards';
-    this.playbackSpeedFactor = 22;
+    this.playbackSpeedFactor = 11;
   }
 
   handleVideoSettingsClicked() {
