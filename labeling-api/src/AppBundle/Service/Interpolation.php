@@ -33,6 +33,11 @@ class Interpolation
     private $statusFacade;
 
     /**
+     * @var int
+     */
+    private $numberOfBulkUpdates = 100;
+
+    /**
      * @param Facade\LabeledThingInFrame
      */
     public function __construct(
@@ -69,6 +74,18 @@ class Interpolation
         }
 
         return $this->algorithms[(string) $name];
+    }
+
+    /**
+     * @param int $numberOfBulkUpdates
+     */
+    public function setNumberOfBulkUpdates($numberOfBulkUpdates)
+    {
+        if ($numberOfBulkUpdates < 1 || $numberOfBulkUpdates > 1000) {
+            throw new \InvalidArgumentException("Invalid number of bulk updates '{$numberOfBulkUpdates}'");
+        }
+
+        $this->numberOfBulkUpdates = (int) $numberOfBulkUpdates;
     }
 
     /**
@@ -122,33 +139,23 @@ class Interpolation
                 $labeledThing,
                 $frameRange,
                 function(Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
+                    $labeledThingsInFrame[] = $labeledThingInFrame;
+
                     // TODO: make the number configurable
-                    if (count($labeledThingsInFrame) == 10) {
-                        $this->persistLabeledThingsInFrame($labeledThingsInFrame);
+                    if (count($labeledThingsInFrame) === $this->numberOfBulkUpdates) {
+                        $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
                         $labeledThingsInFrame = [];
-                    } else {
-                        $labeledThingsInFrame[] = $labeledThingInFrame;
                     }
                 }
             );
 
             if (!empty($labeledThingsInFrame)) {
-                $this->persistLabeledThingsInFrame($labeledThingsInFrame);
+                $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
             }
 
             $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
         } catch (\Exception $e) {
             $this->updateStatus($status, Model\Interpolation\Status::ERROR);
-        }
-    }
-
-    /**
-     * FIXME: improve performance with bulk insert/update
-     */
-    private function persistLabeledThingsInFrame(array $labeledThingsInFrame)
-    {
-        foreach ($labeledThingsInFrame as $labeledThingInFrame) {
-            $this->labeledThingInFrameFacade->save($labeledThingInFrame);
         }
     }
 

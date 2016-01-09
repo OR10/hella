@@ -1,6 +1,8 @@
 .viewer-film-reel-container {
   .thumbnail-reel-list {
     margin: 0;
+    justify-content: center;
+    overflow: hidden;
 
     canvas {
       width: 100%;
@@ -10,13 +12,16 @@
     > .thumbnail {
       overflow: hidden;
       text-align: center;
+      flex-shrink: 0;
+      border-top: 2px solid rgba(0,0,0,0);
+      border-bottom: 2px solid rgba(0,0,0,0);
 
       .center-thumbnail-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: calc(100% - 4px);
         border: 2px solid $sub-headlines;
         border-right-width: 8px;
         border-left-width: 8px;
@@ -65,9 +70,9 @@
     }
 
     > .thumbnail-spacer {
-      display: block;
       width: 8px;
       position: relative;
+      flex-shrink: 0;
 
       div.frame-range-bracket {
         background-color: $selected-frame;

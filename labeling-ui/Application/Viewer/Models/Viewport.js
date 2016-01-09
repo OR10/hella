@@ -42,6 +42,10 @@ class Viewport {
   scaleToFit() {
     this.zoom = this._scaleToFitZoom;
   }
+
+  panTo(point) {
+    this.center = point;
+  }
 }
 
 export default Viewport;

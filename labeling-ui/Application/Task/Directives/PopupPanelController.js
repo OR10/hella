@@ -1,4 +1,6 @@
+import paper from 'paper';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
+import ZoomViewerMoveTool from '../../Viewer/Tools/ZoomViewerMoveTool';
 
 /**
  * Controller of the {@link PopupPanelDirective}
@@ -19,6 +21,7 @@ class PopupPanelController {
   constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, taskFrameLocationGateway, abortablePromiseFactory, $timeout) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
+    this._supportedImageTypes = ['sourceJpg', 'source'];
 
     /**
      * @type {AbortablePromiseFactory}
@@ -68,6 +71,17 @@ class PopupPanelController {
       this._thingLayer = new scope.Layer();
     });
 
+    this._zoomViewerMoveTool = new ZoomViewerMoveTool(this._context);
+    this._zoomViewerMoveTool.on('shape:update', shape => {
+      $scope.$apply(() => {
+        const scaleFactor = this._context.withScope((scope) => {
+          return scope.view.viewSize.width / this.video.metaData.width;
+        });
+        this.viewerViewport.panTo(shape.position.divide(scaleFactor));
+      });
+    });
+
+
     this._resizeDebounced = animationFrameService.debounce(() => this._resize());
     this._drawLayerDebounced = animationFrameService.debounce(() => {
       this._drawBackgroundImage();
@@ -96,9 +110,20 @@ class PopupPanelController {
 
     $scope.$watch('vm.framePosition.position', () => this._loadBackgroundImage());
 
-    $scope.$watch('vm.viewerViewport.bounds', (newBounds) => {
+    $scope.$watch('vm.viewerViewport.bounds', (newBounds, oldBounds) => {
+      let newCenterRounded = null;
+      let oldCenterRounded = null;
+
       if (newBounds) {
-        this._drawViewportBounds();
+        newCenterRounded = {x: Math.round(newBounds.center.x), y: Math.round(newBounds.center.y)};
+      }
+      if (oldBounds) {
+        oldCenterRounded = {x: Math.round(oldBounds.center.x), y: Math.round(oldBounds.center.y)};
+      }
+      if (newCenterRounded) {
+        if (oldCenterRounded && (newCenterRounded.x !== oldCenterRounded.x || newCenterRounded.y !== oldCenterRounded.y)) {
+          this._drawViewportBounds();
+        }
       }
     });
 
@@ -108,8 +133,18 @@ class PopupPanelController {
   }
 
   _loadBackgroundImage() {
+    const imageTypes = this.task.requiredImageTypes.filter(
+      (imageType) => {
+        return (this._supportedImageTypes.indexOf(imageType) !== -1);
+      }
+    );
+
+    if (!imageTypes.length) {
+      throw new Error('No supported image type found');
+    }
+
     this._frameLocationsBuffer.add(
-      this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'source', this.framePosition.position)
+      this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], this.framePosition.position - 1)
         .then(([frameLocation]) => {
           return this._frameGateway.getImage(frameLocation);
         })
@@ -187,6 +222,7 @@ class PopupPanelController {
             topLeft,
             bottomRight,
             strokeColor: '#bedb31',
+            fillColor: new paper.Color(0, 0, 0, 0),
           }
         );
 

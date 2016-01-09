@@ -27,13 +27,11 @@ System.config({
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",
-    "angular-ui-bootstrap": "github:angular-ui/bootstrap@0.14.3",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "base64-js": "github:beatgammit/base64-js@1.0.0",
-    "bootstrap": "github:twbs/bootstrap-sass@3.3.5",
-    "clean-css": "npm:clean-css@3.4.7",
+    "clean-css": "npm:clean-css@3.4.9",
     "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.19",
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
@@ -44,6 +42,7 @@ System.config({
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
+    "lodash.debounce": "npm:lodash.debounce@3.1.1",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
@@ -279,7 +278,7 @@ System.config({
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "string_decoder": "github:jspm/nodelibs-string_decoder@0.1.0"
     },
-    "npm:clean-css@3.4.7": {
+    "npm:clean-css@3.4.9": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "commander": "npm:commander@2.8.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -316,6 +315,9 @@ System.config({
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:core-util-is@1.0.1": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0"
+    },
+    "npm:core-util-is@1.0.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
     "npm:create-ecdh@4.0.0": {
@@ -535,6 +537,9 @@ System.config({
       "prelude-ls": "npm:prelude-ls@1.1.2",
       "type-check": "npm:type-check@0.3.1"
     },
+    "npm:lodash.debounce@3.1.1": {
+      "lodash._getnative": "npm:lodash._getnative@3.9.1"
+    },
     "npm:miller-rabin@4.0.0": {
       "bn.js": "npm:bn.js@4.1.1",
       "brorand": "npm:brorand@1.0.5"
@@ -637,7 +642,7 @@ System.config({
     },
     "npm:readable-stream@1.1.13": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "core-util-is": "npm:core-util-is@1.0.1",
+      "core-util-is": "npm:core-util-is@1.0.2",
       "events": "github:jspm/nodelibs-events@0.1.1",
       "inherits": "npm:inherits@2.0.1",
       "isarray": "npm:isarray@0.0.1",

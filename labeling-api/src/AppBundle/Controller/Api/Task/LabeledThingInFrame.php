@@ -106,9 +106,23 @@ class LabeledThingInFrame extends Controller\Base
         $frameNumber
     ) {
         $fetchLabeledThings = $request->query->getBoolean('labeledThings', true);
+        $offset             = $request->query->get('offset');
+        $limit              = $request->query->get('limit');
+
+        if ($offset !== null && $limit !== null) {
+            $startFrameNumber = $frameNumber + $offset;
+            $endFrameNumber   = $frameNumber + $offset + $limit - 1;
+        } else {
+            $startFrameNumber = (int) $frameNumber;
+            $endFrameNumber   = (int) $frameNumber;
+        }
 
         $labeledThings        = [];
-        $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameNumber($task, $frameNumber);
+        $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrameForFrameRange(
+            $task,
+            $startFrameNumber,
+            $endFrameNumber
+        );
 
         if ($fetchLabeledThings) {
             $labeledThingIds = array_map(
@@ -118,8 +132,10 @@ class LabeledThingInFrame extends Controller\Base
                 $labeledThingsInFrame
             );
 
-            foreach ($this->labeledThingFacade->getLabeledThingsById($labeledThingIds) as $labeledThing) {
-                $labeledThings[$labeledThing->getId()] = $labeledThing;
+            if (!empty($labeledThingIds)) {
+                foreach ($this->labeledThingFacade->getLabeledThingsById($labeledThingIds) as $labeledThing) {
+                    $labeledThings[$labeledThing->getId()] = $labeledThing;
+                }
             }
         }
 
@@ -186,7 +202,7 @@ class LabeledThingInFrame extends Controller\Base
                     if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
                         return $currentItem;
                     } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
-                        $ghostLabeledThingInFrame = clone $currentItem;
+                        $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
                         $ghostLabeledThingInFrame->setGhost(true);
 
                         return $ghostLabeledThingInFrame;
@@ -195,7 +211,7 @@ class LabeledThingInFrame extends Controller\Base
                     next($labeledThingInFrames);
                 }
 
-                $ghostLabeledThingInFrame = clone $endLabeledThingInFrame;
+                $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
                 $ghostLabeledThingInFrame->setGhost(true);
 
                 return $ghostLabeledThingInFrame;

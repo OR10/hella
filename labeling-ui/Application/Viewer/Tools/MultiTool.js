@@ -54,6 +54,7 @@ export default class MultiTool extends Tool {
      */
     this._activeTool = null;
 
+    this._tool.onKeyDown = this._keyDown.bind(this);
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
@@ -85,6 +86,30 @@ export default class MultiTool extends Tool {
    */
   registerCreateTool(tool) {
     this._createTool = tool;
+  }
+
+  _keyDown(event) {
+    const paperShape = this._$scope.vm.selectedPaperShape;
+    if (paperShape) {
+      const moveDistance = event.event.shiftKey ? 10 : 1;
+      switch (event.key) {
+        case 'right':
+          paperShape.position.x += moveDistance;
+          break;
+        case 'left':
+          paperShape.position.x -= moveDistance;
+          break;
+        case 'up':
+          paperShape.position.y -= moveDistance;
+          break;
+        case 'down':
+          paperShape.position.y += moveDistance;
+          break;
+        default:
+          return;
+      }
+      this.emit('shape:update', paperShape);
+    }
   }
 
   _mouseMove(event) {
