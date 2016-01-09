@@ -3,6 +3,7 @@
 <head>
   <title>HAGL AnnoStation</title>
   <link rel="stylesheet" href="chrome.css"/>
+  <link rel="stylesheet" href="loading-mask.css"/>
 </head>
 <body>
 <div id="window-controls">
@@ -13,7 +14,19 @@
     <button class="close"><i class="fa fa-times"></i></button>
   </div>
 </div>
-<iframe src="http://localhost:54321/"></iframe>
+
+<div class="loading-mask">
+  <div class="loading-mask-inner">
+    <div class="loading-spinner">
+      <div class="spinner-shadow"></div>
+      <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path-background" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+      </svg>
+    </div>
+  </div>
+</div>
+<iframe></iframe>
 <script src="Vendor/system.js"></script>
 <script src="system.config.js"></script>
 <script>
