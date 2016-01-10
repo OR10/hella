@@ -67,7 +67,7 @@ end
 
 task :reload_php_fpm do
   on roles(:app) do
-    execute "sudo service php5-fpm reload"
+    execute "sudo service php7.0-fpm reload"
   end
 end
 
