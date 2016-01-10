@@ -7,7 +7,7 @@ resource "openstack_compute_instance_v2" "server" {
         fixed_ip_v4 = "${var.ipv4_address}"
     }
     image_name = "trusty-annostation"
-    flavor_name = "m1.small"
+    flavor_name = "${var.flavor}"
     security_groups = ["default"]
 
     user_data = "${template_file.user_data.rendered}"

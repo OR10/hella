@@ -9,6 +9,7 @@ module "couch" {
     source = "./modules/server"
     server_type = "couch"
     count = 1
+    flavor = "annostation.couchdb"
     ipv4_address = ""
 }
 
@@ -23,6 +24,7 @@ module "app" {
     source = "./modules/server"
     server_type = "app"
     count = 1
+    flavor = "annostation.app-server"
     ipv4_address = "192.168.217.212"
 }
 
