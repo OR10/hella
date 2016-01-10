@@ -29,10 +29,10 @@ class ImportVideo extends Base
             ->setDescription('Import a video from a filename')
             ->addArgument('file', Input\InputArgument::REQUIRED, 'Path to the video file.')
             ->addOption(
-                'compressed',
+                'lossless',
                 null,
                 Input\InputOption::VALUE_NONE,
-                'Generate compressed JPGs instead of lossless compressed PNGs.'
+                'Generate lossless compressed PNGs instead of JPGs.'
             );
     }
 
@@ -44,7 +44,7 @@ class ImportVideo extends Base
 
         try {
             $stream   = fopen($filename, 'r+');
-            $tasks = $this->importerService->import(basename($filename), $filename, $input->getOption('compressed'));
+            $tasks = $this->importerService->import(basename($filename), $filename, $input->getOption('lossless'));
 
             if (count($tasks) > 0) {
                 $this->writeInfo($output, "VideoId: <comment>{$tasks[0]->getVideoId()}</>");

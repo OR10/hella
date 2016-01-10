@@ -65,10 +65,10 @@ class Init extends Base
                 'Skip import of initial video file.'
             )
             ->addOption(
-                'compressed',
+                'lossless',
                 null,
                 InputOption::VALUE_NONE,
-                'Generate compressed JPGs instead of lossless compressed PNGs.'
+                'Generate lossless compressed PNGs instead of JPGs.'
             );
     }
 
@@ -94,7 +94,7 @@ class Init extends Base
             return 1;
         }
 
-        if (!$this->downloadSampleVideo($output, $input->getOption('skip-import'), $input->getOption('compressed'))) {
+        if (!$this->downloadSampleVideo($output, $input->getOption('skip-import'), $input->getOption('lossless'))) {
             return 1;
         }
     }
@@ -242,7 +242,7 @@ class Init extends Base
         return true;
     }
 
-    private function downloadSampleVideo(OutputInterface $output, $skipImport, $compressed)
+    private function downloadSampleVideo(OutputInterface $output, $skipImport, $lossless)
     {
         $this->writeSection($output, 'Video Import');
 
@@ -261,7 +261,7 @@ class Init extends Base
                 $path,
                 file_get_contents("http://192.168.123.7/anno_short.avi")
             );
-            $this->importerService->import('example.avi', $path, $compressed);
+            $this->importerService->import('example.avi', $path, $lossless);
         } catch (\Exception $e) {
             $this->writeError(
                 $output,
