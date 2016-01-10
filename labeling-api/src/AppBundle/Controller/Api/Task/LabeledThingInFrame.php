@@ -124,12 +124,17 @@ class LabeledThingInFrame extends Controller\Base
             $endFrameNumber
         );
 
+
         if ($fetchLabeledThings) {
-            $labeledThingIds = array_map(
-                function ($labeledThingInFrame) {
-                    return $labeledThingInFrame->getLabeledThingId();
+            $labeledThingIds = array_reduce(
+                $labeledThingsInFrame,
+                function($labeledThingIds, $labeledThingInFrame) {
+                    if (!in_array($labeledThingInFrame->getId(), $labeledThingIds)) {
+                        $labeledThingIds[] = $labeledThingInFrame->getLabeledThingId();
+                    }
+                    return $labeledThingIds;
                 },
-                $labeledThingsInFrame
+                []
             );
 
             if (!empty($labeledThingIds)) {
