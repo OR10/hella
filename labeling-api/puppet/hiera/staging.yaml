@@ -19,6 +19,8 @@ supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running
 
+labeling_api::common::sslCert: 'anno.crosscan.com'
+
 labeling_api::params::config_dir: '/etc/AnnoStation/labeling-api'
 labeling_api::params::cache_dir: '/var/cache/labeling_api'
 labeling_api::params::database_name: 'labeling_api'
@@ -26,8 +28,8 @@ labeling_api::params::database_password: 'pEid4oShu'
 labeling_api::params::database_user: 'labeling_api'
 labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
 labeling_api::params::frame_cdn_port: 81
-labeling_api::params::frame_cdn_base_url: 'http://anno.crosscan.com:81'
-labeling_api::params::frame_cdn_allowed_origin: 'http://anno.crosscan.com'
+labeling_api::params::frame_cdn_base_url: 'https://anno.crosscan.com:444'
+labeling_api::params::frame_cdn_allowed_origin: 'https://anno.crosscan.com'
 labeling_api::params::frame_cdn_expires: '1d'
 labeling_api::params::prepare_test_environment: true
 labeling_api::params::secret: 'saddassadasd'

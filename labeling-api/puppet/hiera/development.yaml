@@ -13,7 +13,8 @@ php::fpm::settings:
 
 php::extensions:
   mysql: {}
-  xdebug: {}
+  xdebug:
+    package_prefix: 'php-'
 
 rabbitmq::version: present
 
@@ -21,6 +22,8 @@ supervisord::install_pip: true
 supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running
+
+labeling_api::common::sslCert: 'devel'
 
 labeling_api::params::config_dir: '/vagrant/app/config'
 labeling_api::params::cache_dir: '/var/cache/labeling_api'
@@ -39,7 +42,7 @@ labeling_api::app::app_main_script: 'app_dev.php'
 labeling_api::app:client_max_body_size: '512M'
 
 labeling_api::cdn::allowed_origin: '*'
-labeling_api::cdn::expires: '1m'
+labeling_api::cdn::expires: '1h'
 
 labeling_api::worker::app_dir: '/vagrant'
 labeling_api::worker::user: vagrant

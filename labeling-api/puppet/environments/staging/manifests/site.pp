@@ -14,7 +14,7 @@ node /^app\-server\-.*/ {
 node /^(?:mysql|couch|workerqueue|app)(\-?\d+)\.annostation\..*/ {
 }
 
-node /^annostation\-ci\-slave\-.*/ {
+node /^annostation\-ci\-slave\-.*|trusty\-jenkins/ {
   include ::annostation_base::nodejs
   include ::annostation_base::jenkins
 

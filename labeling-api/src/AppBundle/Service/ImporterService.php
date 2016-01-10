@@ -59,22 +59,22 @@ class ImporterService
     }
 
     /**
-     * @param string $name The name for the video (usually the basename).
-     * @param string $path The filesystem path to the video file.
-     * @param array  $compressed Wether or not the UI should use compressed images.
+     * @param string $name     The name for the video (usually the basename).
+     * @param string $path     The filesystem path to the video file.
+     * @param bool   $lossless Wether or not the UI should use lossless compressed images.
      *
      * @return Model\LabelingTask[]
      *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
      */
-    public function import($name, $path, $compressed = false)
+    public function import($name, $path, $lossless = false)
     {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         $this->videoFacade->save($video, $path);
 
-        $imageTypes = $this->getImageTypes($compressed);
+        $imageTypes = $this->getImageTypes($lossless);
 
         foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
@@ -139,19 +139,19 @@ class ImporterService
      *
      * TODO: Currently, we don't know how the image types are actually
      *       determined, so the list is hardcoded and depends only on wether or
-     *       not we are allowed to use compressed images or not but this will
-     *       change in the future.
+     *       not we are allowed to use lossy compressed images or not but this
+     *       will change in the future.
      *
-     * @param bool $compressed
+     * @param bool $lossless
      *
      * @return array List of image types to generate for the task.
      */
-    private function getImageTypes($compressed)
+    private function getImageTypes($lossless)
     {
-        if ($compressed) {
-            return ['sourceJpg', 'thumbnail'];
+        if ($lossless) {
+            return ['source', 'thumbnail'];
         }
 
-        return ['source', 'thumbnail'];
+        return ['sourceJpg', 'thumbnail'];
     }
 }

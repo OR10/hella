@@ -44,16 +44,23 @@ class LabeledThingInFrame
      * @param Model\LabeledThingInFrame[] $labeledThingsInFrame
      */
     public function saveAll(array $labeledThingsInFrame) {
+        $numberOfMissingIds = array_reduce(
+            $labeledThingsInFrame,
+            function($numberOfMissingIds, $labeledThingInFrame) {
+                if ($labeledThingInFrame->getId() === null) {
+                    return $numberOfMissingIds + 1;
+                }
+                return $numberOfMissingIds;
+            },
+            0
+        );
+
+        $uuids = $numberOfMissingIds > 0 ? $this->documentManager->getCouchDBClient()->getUuids($numberOfMissingIds) : [];
+
         foreach ($labeledThingsInFrame as $labeledThingInFrame) {
             if ($labeledThingInFrame->getId() === null) {
-                // TODO: refactor this
-                $uuids = $this->documentManager->getCouchDBClient()->getUuids();
-                if (!is_array($uuids) || empty($uuids)) {
-                    throw new \RuntimeException("Error retrieving uuid for LabeledThingInFrame");
-                }
-                $labeledThingInFrame->setId($uuids[0]);
+                $labeledThingInFrame->setId(array_shift($uuids));
             }
-
             $this->documentManager->persist($labeledThingInFrame);
         }
 
