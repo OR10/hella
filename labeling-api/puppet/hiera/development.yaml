@@ -13,7 +13,8 @@ php::fpm::settings:
 
 php::extensions:
   mysql: {}
-  xdebug: {}
+  xdebug:
+    package_prefix: 'php-'
 
 rabbitmq::version: present
 
