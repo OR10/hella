@@ -323,15 +323,18 @@ describe('LabeledThingInFrameGateway', () => {
     ['foo', 42, 5],
     ['abc', 23, 15],
   ], (taskId, frameNumber, limit) => {
+    const expectedUrl = `/backend/api/task/${taskId}/labeledThingInFrame/${frameNumber}?offset=0&limit=${limit}`;
     const task = {id: taskId};
-    const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameNumber}?limit=${limit}&offset=0`;
-    const response = [{labeledThingId, id: 'testResult'}];
-    const expectedResult = response.map(
+    const labeledThingId = 1;
+    const labeledThingResponseData = {task, id: labeledThingId};
+    const labeledThing = new LabeledThing(labeledThingResponseData);
+    const labeledThings = {1: labeledThingResponseData};
+    const response = {labeledThingsInFrame: [{labeledThingId, id: 'testResult'}], labeledThings};
+    const expectedResult = response.labeledThingsInFrame.map(
       () => new LabeledThingInFrame({labeledThing, id: 'testResult'})
     );
-    pending('WIP');
 
-    it('should request labeledThings by task, frameNumber and labeledThingId', done => {
+    fit('should request labeledThingsInFrame for multiple frames at once', done => {
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: response});
@@ -342,7 +345,7 @@ describe('LabeledThingInFrameGateway', () => {
           done();
         });
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 });
