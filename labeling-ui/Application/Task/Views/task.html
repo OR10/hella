@@ -114,6 +114,7 @@
                    filters="vm.filters"
                    selected-paper-shape="vm.selectedPaperShape"
                    playing="vm.playing"
+                   freeze-thumbnails="vm.freezeThumbnails"
         ></film-reel>
     </div>
 </div>
@@ -125,6 +126,9 @@
             </label><br />
             <label style="color: white">Skip:
                 <input style="width: 30px; color: black;" class="frameskip-input" ng-model="vm.frameSkip">
+            </label>
+            <label style="color: white">Freeze thumbnails:
+                <input type="checkbox" style="width: 30px; color: black;" class="frameskip-input" ng-model="vm.freezeThumbnails">
             </label>
         </div>
     </div>

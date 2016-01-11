@@ -108,6 +108,8 @@ class ThumbnailReelController {
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
+    this.freezeThumbnails = false;
+
     this._recalculateViewSizeDebounced = animationFrameService.debounce(() => this._recalculateViewSize());
 
     const onWindowResized = () => {
@@ -126,7 +128,7 @@ class ThumbnailReelController {
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
       // Pause updating during playback
-      if (this.playing) {
+      if (this.playing && this.freezeThumbnails) {
         return;
       }
 
