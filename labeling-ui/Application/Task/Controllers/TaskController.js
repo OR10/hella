@@ -213,7 +213,7 @@ class TaskController {
       $location.hash('F' + newPosition);
     });
 
-    $scope.$watch(() => $location.hash(), hash => {
+    $scope.$watch(() => $location.hash(), () => {
       this.framePosition.goto(this._getFrameNumberFromUrl());
     });
   }

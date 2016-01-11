@@ -1,6 +1,5 @@
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 import LabeledThing from '../Models/LabeledThing';
-import DataContainer from '../Support/DataContainer';
 
 /**
  * Gateway for saving and retrieving {@link LabeledThingInFrame}s
@@ -64,9 +63,15 @@ class LabeledThingInFrameGateway {
   }
 
   /**
+   * Fetches {@link LabeledThingInFrame} data for multiple frames at once.
+   *
+   * The request for fetching the data will not inherently be synchronized with other requests.
+   *
    * @param {Task} task
    * @param {Number} startFrameNumber
    * @param {Number} [limit=1]
+   *
+   * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
   bulkFetchLabeledThingsInFrame(task, startFrameNumber, limit = 1) {
     const url = this._apiService.getApiUrl(
@@ -240,6 +245,10 @@ class LabeledThingInFrameGateway {
       });
   }
 
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @private
+   */
   _updateCacheForLabeledThingInFrame(labeledThingInFrame) {
     const frameNumber = labeledThingInFrame.frameNumber;
 
