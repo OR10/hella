@@ -17,6 +17,7 @@ class annostation_base::nodejs() {
   ensure_packages([
     'jspm',
     'gulp',
+	'protagonist',
     'aglio',
   ], {
     provider => 'npm',
