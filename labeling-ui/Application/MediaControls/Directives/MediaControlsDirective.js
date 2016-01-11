@@ -27,6 +27,7 @@ class MediaControlsDirective {
       newShapeDrawingTool: '=',
       video: '=',
       bookmarkedFrameNumber: '=',
+      fpsInputVisible: '=',
     };
   }
 }

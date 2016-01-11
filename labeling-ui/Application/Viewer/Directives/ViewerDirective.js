@@ -24,6 +24,8 @@ export default class ViewerDirective {
       hideLabeledThingsInFrame: '=',
       newShapeDrawingTool: '=',
       bookmarkedFrameNumber: '=',
+      fps: '=',
+      frameSkip: '=',
     };
 
     this.controller = ViewerController;
