@@ -105,6 +105,14 @@ class ThumbnailController {
      */
     this._editMode = false;
 
+    /**
+     * Promise representing the state of the latest image request
+     *
+     * @type {AbortablePromise|null}
+     * @private
+     */
+    this._imagePromise = null;
+
     this._drawBackgroundLayerDebounced = animationFrameService.debounce((redraw) => this._drawBackgroundLayer(redraw));
     this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
 
@@ -156,15 +164,22 @@ class ThumbnailController {
     $scope.$watch('vm.location', newLocation => {
       if (newLocation === null) {
         this._activeBackgroundImage = null;
+
+        if (this._imagePromise) {
+          this._imagePromise.abort();
+        }
+
         this._drawBackgroundLayerDebounced();
         return;
       }
 
       this.currentFrameNumber = this.framePosition.position;
 
-      this._frameLocationsBuffer.add(
+      this._imagePromise = this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)
-      ).then(image => {
+      );
+
+      this._imagePromise.then(image => {
         this._activeBackgroundImage = image;
         this._drawBackgroundLayerDebounced();
       });
