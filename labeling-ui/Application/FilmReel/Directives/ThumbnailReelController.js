@@ -125,22 +125,7 @@ class ThumbnailReelController {
 
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
-      // Pause updating during playback
-      if (this.playing) {
-        return;
-      }
-
       this._updateThumbnailData();
-    });
-
-    // Update Thumbnails after playing stopped.
-    $scope.$watch('vm.playing', (playingNow, playingBefore) => {
-      if (playingBefore) {
-        this._updateThumbnailData();
-        if (this.selectedPaperShape !== null) {
-          this._updateLabeledThingInFrames(this.selectedPaperShape);
-        }
-      }
     });
 
     // @TODO: Only supports single shaped LabeledThingInFrames at the moment.
