@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
@@ -68,13 +69,24 @@ class Index extends Base
         /**
          * @var UploadedFile $file
          */
-        $file     = $request->files->get('file');
-        $lossless = $request->request->get('lossless', false);
+        $file        = $request->files->get('file');
+        $splitLength = $request->request->getInt('splitLength', 0);
+        $lossless    = $request->request->get('lossless', false);
+
+        if ($splitLength < 0) {
+            throw new Exception\BadRequestHttpException();
+        }
 
         if ($file === null) {
             $viewData['error'] = 'No file given';
         } else {
-            $tasks = $this->importerService->import($file->getClientOriginalName(), $file, $lossless);
+            $tasks = $this->importerService->import(
+                $file->getClientOriginalName(),
+                $file,
+                $lossless,
+                $splitLength
+            );
+
             $viewData['taskIds'] = array_map(
                 function ($task) {
                     return $task->getId();
