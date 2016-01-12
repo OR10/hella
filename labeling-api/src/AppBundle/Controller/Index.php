@@ -68,13 +68,13 @@ class Index extends Base
         /**
          * @var UploadedFile $file
          */
-        $file       = $request->files->get('file');
-        $compressed = $request->request->get('compressed', false);
+        $file     = $request->files->get('file');
+        $lossless = $request->request->get('lossless', false);
 
         if ($file === null) {
             $viewData['error'] = 'No file given';
         } else {
-            $tasks = $this->importerService->import($file->getClientOriginalName(), $file, $compressed);
+            $tasks = $this->importerService->import($file->getClientOriginalName(), $file, $lossless);
             $viewData['taskIds'] = array_map(
                 function ($task) {
                     return $task->getId();
