@@ -334,7 +334,7 @@ describe('LabeledThingInFrameGateway', () => {
       () => new LabeledThingInFrame({labeledThing, id: 'testResult'})
     );
 
-    fit('should request labeledThingsInFrame for multiple frames at once', done => {
+    it('should request labeledThingsInFrame for multiple frames at once', done => {
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: response});

@@ -2,39 +2,26 @@ import 'jquery';
 import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
+import LabelingData from 'Application/LabelingData/LabelingData';
 
-import BackendInterpolation from 'Application/LabelingData/Interpolations/BackendInterpolation';
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
+import DataPrefetcher from 'Application/LabelingData/Services/DataPrefetcher';
 
-describe('DataPrefetcher', () => {
-  let $httpBackend;
+xdescribe('DataPrefetcher', () => {
   let dataPrefetcher;
-  let bufferedHttp;
-  let statusGateway;
-  let labeledThingGateway;
-  let $q;
+  let labeledThingInFrameGateway;
+  let labeledThingInFrameData;
+  let labeledThingData;
   let $rootScope;
-
-  class MockedBackendInterpolation extends BackendInterpolation {
-    _getRemoteType() {
-      return 'mocked-interpolation-type';
-    }
-  }
-
-  function createLabeledThing(startFrameNumber = 1, endFrameNumber = 100, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
-    return new LabeledThing({
-      id,
-      task,
-      classes: [],
-      incomplete: false,
-      frameRange: {startFrameNumber, endFrameNumber},
-    });
-  }
+  let $q;
 
   beforeEach(() => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
+
+    const labelingDataModule = new LabelingData();
+    labelingDataModule.registerWithAngular(angular);
+    module('AnnoStation.LabelingData');
 
     module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {
@@ -47,84 +34,124 @@ describe('DataPrefetcher', () => {
       bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
 
-      statusGateway = {};
-      $provide.value('statusGateway', statusGateway);
-      labeledThingGateway = {};
-      $provide.value('labeledThingGateway', labeledThingGateway);
+      labeledThingInFrameGateway = {};
+      $provide.value('labeledThingInFrameGateway', labeledThingInFrameGateway);
+
+      $provide.value('loggerService', {
+        log: () => {},
+      });
     });
 
     inject($injector => {
-      $httpBackend = $injector.get('$httpBackend');
-      bufferedHttp = $injector.get('bufferedHttp');
-      $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
+      $q = $injector.get('$q');
+      labeledThingInFrameData = $injector.get('labeledThingInFrameData');
+      labeledThingData = $injector.get('labeledThingData');
 
-      statusGateway.waitForJob = jasmine.createSpy('StatusGateway#waitForJob')
-        .and.returnValue(
-          $q.resolve({status: 'success'})
-        );
-
-      labeledThingGateway.getLabeledThing = jasmine.createSpy('LabeledThingGateway#getLabeledThing')
-        .and.returnValue(
-          $q.resolve(createLabeledThing())
-        );
-
-      interpolation = $injector.instantiate(DataPrefetcher);
+      dataPrefetcher = $injector.instantiate(DataPrefetcher);
     });
   });
 
   it('should be able to instantiate without non injected arguments', () => {
-    expect(interpolation instanceof BackendInterpolation).toEqual(true);
+    expect(dataPrefetcher instanceof DataPrefetcher).toEqual(true);
   });
 
-  it('should communicate with backend', done => {
-    const task = {id: 'some-task-id'};
-    const labeledThingId = 'some-labeled-thing-id';
-    const labeledThing = createLabeledThing(1, 200, task, labeledThingId);
-    const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
-    const frameRange = {startFrameNumber: 1, endFrameNumber: 100};
-    const status = {status: 'success'};
-    const expectedResult = {result: status};
+  it('should fetch LabeledThingInFrame data in chunks', () => {
+    const startFrameNumber = 1;
+    const task = {
+      frameRange: {
+        startFrameNumber: 1,
+        endFrameNumber: 30,
+      },
+    };
 
-    $httpBackend
-      .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 0, limit: 100})
-      .respond(200, expectedResult);
-
-    interpolation.execute(task, labeledThing, frameRange)
-      .then(result => {
-        expect(result).toEqual(status);
-        done();
+    labeledThingInFrameGateway.bulkFetchLabeledThingsInFrame = jasmine.createSpy('LabeledThingInFrameGateway#bulkFetchLabeledThingsInFrame')
+      .and.callFake((taskObject, startFrame) => {
+        switch (startFrame) {
+          case 1:
+            return $q.resolve([{frameNumber: 2}, {frameNumber: 14}]);
+          case 21:
+            return $q.resolve([{frameNumber: 23}]);
+          default:
+            return $q.resolve([]);
+        }
       });
 
+    dataPrefetcher.prefetchLabeledThingsInFrame(task, startFrameNumber);
+
     $rootScope.$digest();
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+
+    expect(labeledThingInFrameGateway.bulkFetchLabeledThingsInFrame.calls.count()).toEqual(2);
+    expect(labeledThingInFrameGateway.bulkFetchLabeledThingsInFrame.calls.argsFor(0)).toEqual([task, 1, 20]);
+    expect(labeledThingInFrameGateway.bulkFetchLabeledThingsInFrame.calls.argsFor(1)).toEqual([task, 21, 10]);
+
+    expect(labeledThingInFrameData.get(2)).toEqual([{frameNumber: 2}]);
+    expect(labeledThingInFrameData.get(14)).toEqual([{frameNumber: 14}]);
+    expect(labeledThingInFrameData.get(23)).toEqual([{frameNumber: 23}]);
   });
 
-  it('should calculate limit and offset', done => {
-    const task = {id: 'some-task-id'};
-    const labeledThingId = 'some-labeled-thing-id';
-    const labeledThing = createLabeledThing(50, 200, task, labeledThingId);
-    const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
-    const frameRange = {startFrameNumber: 101, endFrameNumber: 150};
-    const status = {status: 'success'};
-    const expectedResult = {result: status};
+  using([
+    [1, 'foobar', 'barbaz', 'bazfoo'],
+    [2, 'barbaz', 'bazfoo', 'foobar'],
+  ], (startFrameNumber, expectedData, ignoredNewData, newData) => {
+    it('should fetch LabeledThingInFrame data for a single LabeledThing', () => {
+      const labeledThing = {
+        id: 'some-test-id',
+      };
+      const task = {
+        frameRange: {
+          startFrameNumber: 1,
+          endFrameNumber: 4,
+        },
+      };
 
-    labeledThingGateway.getLabeledThing = jasmine.createSpy('LabeledThingGateway#getLabeledThing')
-      .and.returnValue(
-        $q.resolve(labeledThing)
+      labeledThingInFrameGateway.getLabeledThingInFrame = jasmine.createSpy('LabeledThingInFrameGateway#getLabeledThingInFrame')
+        .and.returnValue($q.resolve(expectedData));
+
+      dataPrefetcher.prefetchSingleLabeledThing(task, labeledThing, startFrameNumber);
+      $rootScope.$digest();
+
+      expect(labeledThingInFrameGateway.getLabeledThingInFrame.calls.count()).toEqual(1);
+      expect(labeledThingInFrameGateway.getLabeledThingInFrame.calls.argsFor(0)).toEqual(
+        [
+          task,
+          startFrameNumber,
+          labeledThing,
+          0,
+          task.frameRange.endFrameNumber - startFrameNumber + 1,
+        ]
       );
 
-    $httpBackend
-      .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 51, limit: 50})
-      .respond(200, expectedResult);
+      expect(labeledThingData.get(labeledThing.id)).toEqual(expectedData);
 
-    interpolation.execute(task, labeledThing, frameRange)
-      .then(result => {
-        expect(result).toEqual(status);
-        done();
-      });
+      labeledThingInFrameGateway.getLabeledThingInFrame.calls.reset();
 
-    $rootScope.$digest();
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      dataPrefetcher.prefetchSingleLabeledThing(task, labeledThing, startFrameNumber);
+      $rootScope.$digest();
+
+      expect(labeledThingInFrameGateway.getLabeledThingInFrame).not.toHaveBeenCalled();
+      expect(labeledThingData.get(labeledThing.id)).toEqual(expectedData);
+
+      labeledThingInFrameGateway.getLabeledThingInFrame.calls.reset();
+
+      labeledThingInFrameGateway.getLabeledThingInFrame = jasmine.createSpy('LabeledThingInFrameGateway#getLabeledThingInFrame')
+        .and.returnValue($q.resolve(newData));
+
+      dataPrefetcher.prefetchSingleLabeledThing(task, labeledThing, startFrameNumber, true);
+      $rootScope.$digest();
+
+      expect(labeledThingInFrameGateway.getLabeledThingInFrame.calls.count()).toEqual(1);
+      expect(labeledThingInFrameGateway.getLabeledThingInFrame.calls.argsFor(0)).toEqual(
+        [
+          task,
+          startFrameNumber,
+          labeledThing,
+          0,
+          task.frameRange.endFrameNumber - startFrameNumber + 1,
+        ]
+      );
+
+      expect(labeledThingData.get(labeledThing.id)).toEqual(newData);
+    });
   });
 });
