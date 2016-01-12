@@ -16,6 +16,8 @@ class KernelTestCase extends Test\KernelTestCase
 
     const ENTITY_MANAGER = 'doctrine.orm.entity_manager';
 
+    const ANNOSTATION_SERVICE_PATTERN = 'annostation.labeling_api.%s';
+
     /**
      * @var \Doctrine\CouchDB\CouchDBClient
      */
@@ -44,12 +46,10 @@ class KernelTestCase extends Test\KernelTestCase
 
         static::bootKernel(['test', true]);
 
-        $container = static::$kernel->getContainer();
+        $this->couchdbClient = $this->getService(self::COUCHDB_CLIENT);
+        $this->entityManager = $this->getService(self::ENTITY_MANAGER);
 
-        $this->couchdbClient = $container->get(self::COUCHDB_CLIENT);
-        $this->entityManager = $container->get(self::ENTITY_MANAGER);
-
-        $this->couchDbName = $container->getParameter('database_name');
+        $this->couchDbName = $this->getContainer()->getParameter('database_name');
 
         $this->dropSchema();
         $this->generateSchema();
@@ -127,5 +127,37 @@ class KernelTestCase extends Test\KernelTestCase
     protected function getMetadata()
     {
         return $this->entityManager->getMetadataFactory()->getAllMetadata();
+    }
+
+    /**
+     * Get the DI container.
+     */
+    protected function getContainer()
+    {
+        return static::$kernel->getContainer();
+    }
+
+    /**
+     * Get the service identified by $name.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    protected function getService($name)
+    {
+        return $this->getContainer()->get($name);
+    }
+
+    /**
+     * Get the annostation service identified by $name.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    protected function getAnnostationService($name)
+    {
+        return $this->getService(sprintf(self::ANNOSTATION_SERVICE_PATTERN, $name));
     }
 }
