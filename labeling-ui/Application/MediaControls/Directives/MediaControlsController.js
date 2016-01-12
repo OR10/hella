@@ -118,6 +118,8 @@ class MediaControlsController {
      */
     this.popupPanelOpen = false;
 
+    this.fpsInputVisible = false;
+
     // Disable Zoom Tool if the panel is closed
     $scope.$watchGroup(
       ['vm.popupPanelState', 'vm.popupPanelOpen'], ([newState, newOpen], [oldState]) => {
@@ -366,16 +368,7 @@ class MediaControlsController {
   }
 
   showGeneralSettings() {
-    const modal = this._modalService.getInfoDialog(
-      {
-        title: 'Good job!',
-        headline: 'Ready for next annotation?',
-        message: 'You selected XX pedestrians until now!',
-        confirmButtonText: 'Next',
-        cancelButtonText: 'Done for today',
-      }
-    );
-    modal.activate();
+    this.fpsInputVisible = !this.fpsInputVisible;
   }
 
   toggleFullscreen() {

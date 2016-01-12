@@ -13,6 +13,7 @@ class FilmReelDirective {
       filters: '=',
       selectedPaperShape: '=',
       playing: '=',
+      freezeThumbnails: '=',
     };
 
     this.template = FilmReelTemplate;

@@ -10,6 +10,13 @@ class annostation_base(
       include ::annostation_base::authorized_keys
     }
 
+    file { "/etc/apt/apt.conf.d/99auth":
+      owner     => root,
+      group     => root,
+      content   => "APT::Get::AllowUnauthenticated yes;",
+      mode      => '644',
+    }
+
     $packages = [
         'ant',
         'git',

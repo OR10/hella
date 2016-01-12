@@ -770,16 +770,17 @@ class ViewerController {
 
   _playNextForwards() {
     const endPosition = this._calculatePlaybackEndPosition();
+    const speedFactor = this.frameSkip ? parseInt(this.frameSkip, 10) : this.playbackSpeedFactor;
 
-    let nextFramePosition = this.framePosition.position + this.playbackSpeedFactor;
+    let nextFramePosition = this.framePosition.position + speedFactor;
 
     if (this._frameChangeInProgress) {
       this._logger.warn(
         'ViewerController',
-        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor} frames...`
+        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip * speedFactor} frames...`
       );
       this._frameChangeInProgress = false;
-      nextFramePosition += this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor;
+      nextFramePosition += this._applicationConfig.Viewer.frameSkip * speedFactor;
     }
 
     if (nextFramePosition < endPosition) {
@@ -795,16 +796,17 @@ class ViewerController {
 
   _playNextBackwards() {
     const endPosition = this._calculatePlaybackEndPosition();
+    const speedFactor = this.frameSkip ? parseInt(this.frameSkip, 10) : this.playbackSpeedFactor;
 
-    let nextFramePosition = this.framePosition.position - this.playbackSpeedFactor;
+    let nextFramePosition = this.framePosition.position - speedFactor;
 
     if (this._frameChangeInProgress) {
       this._logger.warn(
         'ViewerController',
-        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor} frames...`
+        `Could not finish rendering, skipping ${this._applicationConfig.Viewer.frameSkip * speedFactor} frames...`
       );
       this._frameChangeInProgress = false;
-      nextFramePosition -= this._applicationConfig.Viewer.frameSkip * this.playbackSpeedFactor;
+      nextFramePosition -= this._applicationConfig.Viewer.frameSkip * speedFactor;
     }
 
     if (nextFramePosition > endPosition) {
@@ -819,6 +821,8 @@ class ViewerController {
   }
 
   _startPlaying() {
+    const fps = this.fps ? parseInt(this.fps, 10) : this._applicationConfig.Viewer.framesPerSecond;
+
     if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
       const startPosition = this._calculatePlaybackStartPosition();
 
@@ -827,7 +831,7 @@ class ViewerController {
 
     this._renderLoopPromise = this._$interval(
       this._playNext.bind(this),
-      1000 / this._applicationConfig.Viewer.framesPerSecond
+      1000 / fps
     );
   }
 

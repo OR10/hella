@@ -14,6 +14,7 @@ class ThumbnailReelDirective {
       filters: '=',
       selectedPaperShape: '=',
       playing: '=',
+      freezeThumbnails: '=',
     };
 
     this.template = ThumbnailReelTemplate;

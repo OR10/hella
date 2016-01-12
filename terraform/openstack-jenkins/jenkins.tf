@@ -4,6 +4,7 @@ resource "openstack_compute_instance_v2" "jenkins" {
   name = "annostation-ci-slave-${count.index}"
   #image_name = "trusty"
   image_name = "trusty-jenkins"
+  image_id = "9216d04d-666f-499c-b15e-e9ef34627587"
   flavor_name = "m1.small"
   key_pair = "chh"
   security_groups = ["default"]
