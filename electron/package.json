@@ -9,6 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "devDependencies": {
+    "electron-packager": "^5.2.0",
     "electron-prebuilt": "^0.36.2",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^3.0.2",
@@ -26,12 +27,11 @@
     "configFile": "Chrome/system.config.js",
     "dependencies": {
       "domready": "npm:domready@^1.0.8",
-      "font-awesome": "npm:font-awesome@^4.5.0"
-    },
-    "devDependencies": {
+      "font-awesome": "npm:font-awesome@^4.5.0",
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4"
-    }
+    },
+    "devDependencies": {}
   }
 }

@@ -37,5 +37,6 @@ domReady(() => {
     iframe.style.display = 'block';
     document.querySelector('.loading-mask').style.display = 'none';
   });
-  iframe.src = 'http://anno.crosscan.com';
+  iframe.src = 'https://anno.crosscan.com';
+  //iframe.src = 'http://localhost:54321';
 });
