@@ -4,7 +4,12 @@
   "description": "Electron packaged AnnoStation runner",
   "main": "index.js",
   "scripts": {
-    "start": "node_modules/.bin/electron ."
+    "start": "node_modules/.bin/electron .",
+    "clean": "rm -rf Packages/",
+    "package:osx": "node_modules/.bin/electron-packager . 'AnnoStation' --out=Packages/ --platform=darwin --arch=all --version=0.36.2 --asar --ignore='node_modules/(electron-packager|electron-prebuilt|eslint|eslint-config-airbnb|jspm)|Packages|Distribution|README.md'",
+    "package:win": "node_modules/.bin/electron-packager . 'AnnoStation' --out=Packages/ --platform=win32 --arch=all --version=0.36.2 --asar --ignore='node_modules/(electron-packager|electron-prebuilt|eslint|eslint-config-airbnb|jspm)|Packages|Distribution|README.md'",
+    "package:linux": "node_modules/.bin/electron-packager . 'AnnoStation' --out=Packages/ --platform=linux --arch=all --version=0.36.2 --asar --ignore='node_modules/(electron-packager|electron-prebuilt|eslint|eslint-config-airbnb|jspm)|Packages|Distribution|README.md'",
+    "package": "npm run clean && npm run package:osx && npm run package:win && npm run package:linux"
   },
   "author": "",
   "license": "UNLICENSED",
