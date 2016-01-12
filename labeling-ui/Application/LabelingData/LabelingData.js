@@ -31,7 +31,6 @@ class LabelingData extends Module {
 
     this.module.constant('labeledThingInFrameData', new LabeledThingInFrameDataContainer());
     this.module.constant('labeledThingData', new DataContainer());
-    this.module.constant('labeledFrameData', new DataContainer());
   }
 }
 
