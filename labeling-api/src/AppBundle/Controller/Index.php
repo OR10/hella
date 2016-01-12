@@ -25,20 +25,20 @@ class Index extends Base
      */
     private $twigEngine;
     /**
-     * @var Service\ImporterService
+     * @var Service\VideoImporter
      */
-    private $importerService;
+    private $videoImporterService;
 
     /**
-     * @param Twig\TwigEngine          $twigEngine
-     * @param Service\ImporterService  $importerService
+     * @param Twig\TwigEngine       $twigEngine
+     * @param Service\VideoImporter $videoImporterService
      */
     public function __construct(
         Twig\TwigEngine $twigEngine,
-        Service\ImporterService $importerService
+        Service\VideoImporter $videoImporterService
     ) {
-        $this->twigEngine      = $twigEngine;
-        $this->importerService = $importerService;
+        $this->twigEngine           = $twigEngine;
+        $this->videoImporterService = $videoImporterService;
     }
 
     /**
@@ -80,7 +80,7 @@ class Index extends Base
         if ($file === null) {
             $viewData['error'] = 'No file given';
         } else {
-            $tasks = $this->importerService->import(
+            $tasks = $this->videoImporterService->import(
                 $file->getClientOriginalName(),
                 $file,
                 $lossless,

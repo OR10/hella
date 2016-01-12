@@ -9,7 +9,7 @@ use AppBundle\Service;
 use crosscan\WorkerPool\AMQP;
 use AppBundle\Worker\Jobs;
 
-class ImporterService
+class VideoImporter
 {
     /**
      * @var Facade\Video
@@ -37,8 +37,6 @@ class ImporterService
     private $facadeAMQP;
 
     /**
-     * ImportVideoCommand constructor.
-     *
      * @param Facade\Video                 $videoFacade
      * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader

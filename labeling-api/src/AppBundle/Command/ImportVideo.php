@@ -10,17 +10,18 @@ use Symfony\Component\Console\Output;
 
 class ImportVideo extends Base
 {
+    /**
+     * @var Service\VideoImporter
+     */
+    private $videoImporterService;
 
     /**
-     * @var Service\ImporterService
+     * @param Service\VideoImporter $videoImporterService
      */
-    private $importerService;
-
-    public function __construct(
-        Service\ImporterService $importerService
-    ) {
+    public function __construct(Service\VideoImporter $videoImporterService)
+    {
         parent::__construct();
-        $this->importerService = $importerService;
+        $this->videoImporterService = $videoImporterService;
     }
 
     protected function configure()
@@ -43,8 +44,9 @@ class ImportVideo extends Base
         $this->writeSection($output, "Importing video from file <comment>{$filename}</>");
 
         try {
-            $stream   = fopen($filename, 'r+');
-            $tasks = $this->importerService->import(basename($filename), $filename, $input->getOption('lossless'));
+            $stream    = fopen($filename, 'r+');
+            $videoName = basename($filename);
+            $tasks     = $this->videoImporterService->import($videoName, $filename, $input->getOption('lossless'));
 
             if (count($tasks) > 0) {
                 $this->writeInfo($output, "VideoId: <comment>{$tasks[0]->getVideoId()}</>");
