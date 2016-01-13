@@ -247,6 +247,12 @@ class ViewerController {
     this.labeledThings = null;
 
     /**
+     * @type {Object}
+     * @private
+     */
+    this._applicationState = applicationState;
+
+    /**
      * RingBuffer to ensure only the last requested Background image is loaded
      *
      * @type {AbortablePromiseRingBuffer}

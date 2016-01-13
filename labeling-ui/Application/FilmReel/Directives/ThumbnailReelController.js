@@ -19,8 +19,37 @@ class ThumbnailReelController {
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AnimationFrameService} animationFrameService
+   * @param {Object} applicationState
    */
-  constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService) {
+  constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState) {
+    /**
+     * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
+     */
+    this.thumbnails = [];
+
+    /**
+     * Dimensions each thumbnail is allowed to consume
+     *
+     * @type {{width: int, height: int}}
+     */
+    this.thumbnailDimensions = {width: 0, height: 0};
+
+    /**
+     * @type {boolean}
+     */
+    this.showLoadingSpinner = false;
+
+    /**
+     * @type {boolean}
+     */
+    this.showLoadingMask = false;
+
+    /**
+     * @type {ApplicationState}
+     * @private
+     */
+    this._applicationState = applicationState;
+
     /**
      * Count of thumbnails shown on the page
      *
@@ -35,18 +64,6 @@ class ThumbnailReelController {
      * @private
      */
     this._thumbnailLookahead = null;
-
-    /**
-     * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
-     */
-    this.thumbnails = [];
-
-    /**
-     * Dimensions each thumbnail is allowed to consume
-     *
-     * @type {{width: int, height: int}}
-     */
-    this.thumbnailDimensions = {width: 0, height: 0};
 
     /**
      * List of supported image types for this component
@@ -108,7 +125,10 @@ class ThumbnailReelController {
      */
     this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
 
-    this.freezeThumbnails = false;
+    /**
+     * @type {boolean}
+     */
+    this.freezeThumbnails = true;
 
     this._recalculateViewSizeDebounced = animationFrameService.debounce(() => this._recalculateViewSize());
 
@@ -125,6 +145,8 @@ class ThumbnailReelController {
       $window.removeEventListener('resize', onWindowResized);
     });
 
+    this._applicationState.$watch('thumbnails.disabled', disabled => this.showLoadingMask = disabled);
+
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
       // Pause updating during playback
@@ -137,10 +159,18 @@ class ThumbnailReelController {
 
     // Update Thumbnails after playing stopped.
     $scope.$watch('vm.playing', (playingNow, playingBefore) => {
-      if (playingBefore) {
-        this._updateThumbnailData();
-        if (this.selectedPaperShape !== null) {
-          this._updateLabeledThingInFrames(this.selectedPaperShape);
+      if (this.freezeThumbnails && playingNow) {
+        this.showLoadingMask = true;
+      } else {
+        if (this._applicationState.thumbnails.disabled !== true) {
+          this.showLoadingMask = false;
+        }
+
+        if (playingBefore) {
+          this._updateThumbnailData();
+          if (this.selectedPaperShape !== null) {
+            this._updateLabeledThingInFrames(this.selectedPaperShape);
+          }
         }
       }
     });
@@ -291,7 +321,7 @@ class ThumbnailReelController {
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
-      offset + 1,
+        offset + 1,
       this.selectedPaperShape.labeledThingInFrame.labeledThing,
       0,
       limit
@@ -455,6 +485,7 @@ ThumbnailReelController.$inject = [
   'labeledThingInFrameGateway',
   'labeledThingGateway',
   'animationFrameService',
+  'applicationState',
 ];
 
 export default ThumbnailReelController;
