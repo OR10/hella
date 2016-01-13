@@ -58,16 +58,17 @@ class VideoImporter
     }
 
     /**
-     * @param string $name     The name for the video (usually the basename).
-     * @param string $path     The filesystem path to the video file.
-     * @param bool   $lossless Wether or not the UI should use lossless compressed images.
+     * @param string $name        The name for the video (usually the basename).
+     * @param string $path        The filesystem path to the video file.
+     * @param bool   $lossless    Wether or not the UI should use lossless compressed images.
+     * @param int    $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
      *
      * @return Model\LabelingTask[]
      *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
      */
-    public function import($name, $path, $lossless = false)
+    public function import($name, $path, $lossless = false, $splitLength = 0)
     {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -87,16 +88,41 @@ class VideoImporter
             $this->facadeAMQP->addJob($job);
         }
 
+        $framesPerChunk = $video->getMetaData()->numberOfFrames;
+        if ($splitLength > 0) {
+            $framesPerChunk = min($framesPerChunk, $splitLength * $video->getMetaData()->fps);
+        }
+
         $tasks = [];
 
-        $tasks[] = $this->addTask($video, Model\LabelingTask::TYPE_META_LABELING, null, [], $imageTypes);
-        $tasks[] = $this->addTask(
-            $video,
-            Model\LabelingTask::TYPE_OBJECT_LABELING,
-            Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
-            ['pedestrian'],
-            $imageTypes
-        );
+        for (
+            $startFrameNumber = 1;
+            $startFrameNumber <= $video->getMetaData()->numberOfFrames;
+            $startFrameNumber += $framesPerChunk
+        ) {
+            $frameRange = new Model\FrameRange(
+                $startFrameNumber,
+                min($video->getMetaData()->numberOfFrames, $startFrameNumber + $framesPerChunk - 1)
+            );
+
+            $tasks[] = $this->addTask(
+                $video,
+                $frameRange,
+                Model\LabelingTask::TYPE_META_LABELING,
+                null,
+                [],
+                $imageTypes
+            );
+
+            $tasks[] = $this->addTask(
+                $video,
+                $frameRange,
+                Model\LabelingTask::TYPE_OBJECT_LABELING,
+                Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                ['pedestrian'],
+                $imageTypes
+            );
+        }
 
         return $tasks;
     }
@@ -104,21 +130,27 @@ class VideoImporter
     /**
      * Add a LabelingTask
      *
-     * @param Model\Video $video
-     * @param string      $taskType
-     * @param string|null $drawingTool
-     * @param string[]    $predefinedClasses
-     * @param             $imageTypes
+     * @param Model\Video      $video
+     * @param Model\FrameRange $frameRange
+     * @param string           $taskType
+     * @param string|null      $drawingTool
+     * @param string[]         $predefinedClasses
+     * @param                  $imageTypes
      *
      * @return Model\LabelingTask
      */
-    private function addTask(Model\Video $video, $taskType, $drawingTool, $predefinedClasses, $imageTypes)
-    {
+    private function addTask(
+        Model\Video $video,
+        Model\FrameRange $frameRange,
+        $taskType,
+        $drawingTool,
+        $predefinedClasses,
+        $imageTypes
+    ) {
         $metadata     = $video->getMetaData();
-        $frameRange   = new Model\FrameRange(1, $metadata->numberOfFrames);
         $labelingTask = new Model\LabelingTask(
             $video,
-            $frameRange,
+            clone $frameRange,
             $taskType,
             $drawingTool,
             $predefinedClasses,
@@ -126,7 +158,8 @@ class VideoImporter
         );
         $labelingTask->setDescriptionTitle('Identify the person');
         $labelingTask->setDescriptionText(
-            'How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?'
+            'How is the view on the person? ' .
+            'Which side does one see from the person and from which side is the person entering the screen?'
         );
         $this->labelingTaskFacade->save($labelingTask);
 

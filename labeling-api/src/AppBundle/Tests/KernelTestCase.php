@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Test;
  */
 class KernelTestCase extends Test\KernelTestCase
 {
+    const BUNDLE_NAME = 'AppBundle';
+
     const COUCHDB_CLIENT = 'doctrine_couchdb.client.default_connection';
 
     const ENTITY_MANAGER = 'doctrine.orm.entity_manager';
@@ -159,5 +161,13 @@ class KernelTestCase extends Test\KernelTestCase
     protected function getAnnostationService($name)
     {
         return $this->getService(sprintf(self::ANNOSTATION_SERVICE_PATTERN, $name));
+    }
+
+    /**
+     * Get an absolute path to the bundle.
+     */
+    protected function getBundlePath()
+    {
+        return static::$kernel->locateResource(sprintf('@%s', self::BUNDLE_NAME));
     }
 }
