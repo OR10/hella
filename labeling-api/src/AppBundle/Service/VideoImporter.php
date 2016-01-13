@@ -6,8 +6,8 @@ use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
-use crosscan\WorkerPool\AMQP;
 use AppBundle\Worker\Jobs;
+use crosscan\WorkerPool;
 
 class VideoImporter
 {
@@ -41,13 +41,14 @@ class VideoImporter
      * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
      * @param Video\VideoFrameSplitter     $frameCdnSplitter
+     * @param WorkerPool\Facade            $facadeAMQP
      */
     public function __construct(
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
-        AMQP\FacadeAMQP $facadeAMQP
+        WorkerPool\Facade $facadeAMQP
     ) {
         $this->videoFacade        = $videoFacade;
         $this->metaDataReader     = $metaDataReader;
