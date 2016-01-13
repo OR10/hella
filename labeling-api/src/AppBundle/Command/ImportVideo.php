@@ -30,6 +30,12 @@ class ImportVideo extends Base
             ->setDescription('Import a video from a filename')
             ->addArgument('file', Input\InputArgument::REQUIRED, 'Path to the video file.')
             ->addOption(
+                'chunk-size',
+                0,
+                Input\InputOption::VALUE_OPTIONAL,
+                "Create tasks for each <chunk-size> seconds of the video (0 = don't split)."
+            )
+            ->addOption(
                 'lossless',
                 null,
                 Input\InputOption::VALUE_NONE,
@@ -46,7 +52,12 @@ class ImportVideo extends Base
         try {
             $stream    = fopen($filename, 'r+');
             $videoName = basename($filename);
-            $tasks     = $this->videoImporterService->import($videoName, $filename, $input->getOption('lossless'));
+            $tasks     = $this->videoImporterService->import(
+                $videoName,
+                $filename,
+                $input->getOption('lossless'),
+                $input->getOption('chunk-size')
+            );
 
             if (count($tasks) > 0) {
                 $this->writeInfo($output, "VideoId: <comment>{$tasks[0]->getVideoId()}</>");
