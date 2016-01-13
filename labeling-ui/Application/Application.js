@@ -4,8 +4,6 @@ import 'angular-hotkeys';
 import 'angular-ui-router';
 import 'angular-animate';
 
-import 'foundation-apps/js/angular/components/accordion/accordion';
-
 import 'Distribution/Templates/foundation-ui';
 
 import CommonModule from './Common/Common';
@@ -88,7 +86,6 @@ export default class Application {
           'ui.router',
           'ngAnimate',
           'AnnoStation.FoundationVendorTemplates',
-          'foundation.accordion',
           ...this.modules.map(mod => mod.module.name),
         ]);
 
