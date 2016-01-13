@@ -130,6 +130,13 @@ class VideoImporterTest extends Tests\KernelTestCase
             }
         ));
 
+        $tasks = $this->videoImporterService->import(
+            'testVideo',
+            $this->getTestVideoPath(),
+            false,
+            $chunkSizeInSeconds
+        );
+
         // Currently, we expect on meta- and one object-labeling task per video.
         $this->assertCount(2, $jobs);
 
@@ -144,12 +151,7 @@ class VideoImporterTest extends Tests\KernelTestCase
             $this->videoFrameSplitterInstruction->run(array_shift($jobs), $logger);
         }
 
-        return $this->videoImporterService->import(
-            'testVideo',
-            $this->getTestVideoPath(),
-            false,
-            $chunkSizeInSeconds
-        );
+        return $tasks;
     }
 
     private function getTestVideoPath()
