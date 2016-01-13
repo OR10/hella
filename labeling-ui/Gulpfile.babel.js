@@ -13,6 +13,7 @@ import chokidar from 'chokidar';
 import {exec} from 'child_process';
 import chalk from 'chalk';
 import beepbeep from 'beepbeep';
+import mkdirp from 'mkdirp';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -183,19 +184,21 @@ gulp.task('build-public', () => {
 });
 
 gulp.task('build-release-config', next => {
-  const releaseConfigFilepath = `${paths.dir.distribution}/Library/release.config.json`;
+  const releaseConfigPath = `${paths.dir.distribution}/Library`;
+  const releaseConfigFile = `${releaseConfigPath}/release.config.json`;
   const releaseConfig = {};
 
   execReturn('git rev-parse --short HEAD', ({stdout}) => {
     releaseConfig.revision = stdout.trim();
-    fs.writeFile(releaseConfigFilepath, JSON.stringify(releaseConfig), next);
+    mkdirp(releaseConfigPath, () => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
   });
 });
 
 gulp.task('build', next => run(
   'build-public',
   'build-templates',
-  ['build-javascript', 'build-sass', 'build-fonts', 'build-release-config'],
+  'build-release-config',
+  ['build-javascript', 'build-sass', 'build-fonts'],
   next
 ));
 
