@@ -29,6 +29,25 @@ class ApiService {
 
     return location;
   }
+
+  /**
+   * Create a url to request a certain api path on the backend
+   *
+   * @param {string} path
+   * @param {Object} query
+   * @returns {string}
+   */
+  getFrontendUrl(path, query = {}) {
+    const {Common: {frontendPrefix, appPrefix}} = this.configuration;
+    const location = `${frontendPrefix}/${appPrefix}/${path}`.replace(/\/\/+/g, '/');
+    const encodedQuery = this.$httpParamSerializer(query);
+
+    if (encodedQuery !== '') {
+      return `${location}?${encodedQuery}`;
+    }
+
+    return location;
+  }
 }
 
 ApiService.$inject = ['applicationConfig', '$httpParamSerializer'];

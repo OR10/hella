@@ -25,75 +25,151 @@ describe('ApiService', () => {
     expect(getApiService() instanceof ApiService).toEqual(true);
   });
 
-  it('should provide url based on configuration', () => {
-    const service = getApiService({backendPrefix: '/backend', apiPrefix: '/api'});
-    const apiUrl = service.getApiUrl('/');
-    expect(apiUrl).toEqual('/backend/api/');
-  });
-
-  it('should handle unneeded slashes correctly', () => {
-    const service = getApiService({backendPrefix: '/backend/', apiPrefix: '/api/'});
-    const apiUrl = service.getApiUrl('/');
-    expect(apiUrl).toEqual('/backend/api/');
-  });
-
-  using([
-    ['/', '/'],
-    ['', ''],
-    ['/', ''],
-    ['', '/'],
-  ], (backendPrefix, apiPrefix) => {
-    it('should work with two empty prefixes', () => {
-      const service = getApiService({backendPrefix, apiPrefix});
+  describe('getApiUrl', () => {
+    it('should provide url based on configuration', () => {
+      const service = getApiService({backendPrefix: '/backend', apiPrefix: '/api'});
       const apiUrl = service.getApiUrl('/');
+      expect(apiUrl).toEqual('/backend/api/');
+    });
+
+    it('should handle unneeded slashes correctly', () => {
+      const service = getApiService({backendPrefix: '/backend/', apiPrefix: '/api/'});
+      const apiUrl = service.getApiUrl('/');
+      expect(apiUrl).toEqual('/backend/api/');
+    });
+
+    using([
+      ['/', '/'],
+      ['', ''],
+      ['/', ''],
+      ['', '/'],
+    ], (backendPrefix, apiPrefix) => {
+      it('should work with two empty prefixes', () => {
+        const service = getApiService({backendPrefix, apiPrefix});
+        const apiUrl = service.getApiUrl('/');
+        expect(apiUrl).toEqual('/');
+      });
+    });
+
+    using([
+      ['', '/api'],
+      ['/', '/api'],
+    ], (backendPrefix, apiPrefix) => {
+      it('should work with empty apiPrefix', () => {
+        const service = getApiService({backendPrefix, apiPrefix});
+        const apiUrl = service.getApiUrl('/');
+        expect(apiUrl).toEqual('/api/');
+      });
+    });
+
+    using([
+      ['/backend', ''],
+      ['/backend', '/'],
+    ], (backendPrefix, apiPrefix) => {
+      it('should work with empty apiPrefix', () => {
+        const service = getApiService({backendPrefix, apiPrefix});
+        const apiUrl = service.getApiUrl('/');
+        expect(apiUrl).toEqual('/backend/');
+      });
+    });
+
+    it('should append given path', () => {
+      const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
+      const apiUrl = service.getApiUrl('/some/path/I/specified');
+      expect(apiUrl).toEqual('/some/path/I/specified');
+    });
+
+    it('should encode and append given query string', () => {
+      const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
+      const apiUrl = service.getApiUrl('/', {param: 'value'});
+      expect(apiUrl).toEqual('/?param=value');
+    });
+
+    it('should properly handle empty query object', () => {
+      const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
+      const apiUrl = service.getApiUrl('/', {});
       expect(apiUrl).toEqual('/');
     });
-  });
 
-  using([
-    ['', '/api'],
-    ['/', '/api'],
-  ], (backendPrefix, apiPrefix) => {
-    it('should work with empty apiPrefix', () => {
-      const service = getApiService({backendPrefix, apiPrefix});
-      const apiUrl = service.getApiUrl('/');
-      expect(apiUrl).toEqual('/api/');
+    it('should always create a deterministic order of query paramaters', () => {
+      const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
+      const firstApiUrl = service.getApiUrl('/', {foo: 'foo', bar: 'bar'});
+      const secondApiUrl = service.getApiUrl('/', {bar: 'bar', foo: 'foo'});
+      expect(firstApiUrl).toEqual(secondApiUrl);
     });
   });
 
-  using([
-    ['/backend', ''],
-    ['/backend', '/'],
-  ], (backendPrefix, apiPrefix) => {
-    it('should work with empty apiPrefix', () => {
-      const service = getApiService({backendPrefix, apiPrefix});
-      const apiUrl = service.getApiUrl('/');
-      expect(apiUrl).toEqual('/backend/');
+  describe('getFrontendUrl', () => {
+    it('should provide url based on configuration', () => {
+      const service = getApiService({frontendPrefix: '/frontend', appPrefix: '/labeling'});
+      const frontendUrl = service.getFrontendUrl('/');
+      expect(frontendUrl).toEqual('/frontend/labeling/');
     });
-  });
 
-  it('should append given path', () => {
-    const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
-    const apiUrl = service.getApiUrl('/some/path/I/specified');
-    expect(apiUrl).toEqual('/some/path/I/specified');
-  });
+    it('should handle unneeded slashes correctly', () => {
+      const service = getApiService({frontendPrefix: '/frontend/', appPrefix: '/labeling/'});
+      const frontendUrl = service.getFrontendUrl('/');
+      expect(frontendUrl).toEqual('/frontend/labeling/');
+    });
 
-  it('should encode and append given query string', () => {
-    const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
-    const apiUrl = service.getApiUrl('/', {param: 'value'});
-    expect(apiUrl).toEqual('/?param=value');
-  });
+    using([
+      ['/', '/'],
+      ['', ''],
+      ['/', ''],
+      ['', '/'],
+    ], (frontendPrefix, appPrefix) => {
+      it('should work with two empty prefixes', () => {
+        const service = getApiService({frontendPrefix, appPrefix});
+        const frontendUrl = service.getFrontendUrl('/');
+        expect(frontendUrl).toEqual('/');
+      });
+    });
 
-  it('should properly handle empty query object', () => {
-    const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
-    const apiUrl = service.getApiUrl('/', {});
-    expect(apiUrl).toEqual('/');
-  });
+    using([
+      ['', '/labeling'],
+      ['/', '/labeling'],
+    ], (frontendPrefix, appPrefix) => {
+      it('should work with empty frontendPrefix', () => {
+        const service = getApiService({frontendPrefix, appPrefix});
+        const frontendUrl = service.getFrontendUrl('/');
+        expect(frontendUrl).toEqual('/labeling/');
+      });
+    });
 
-  it('should always create a deterministic order of query paramaters', () => {
-    const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
-    const firstApiUrl = service.getApiUrl('/', {foo: 'foo', bar: 'bar'});
-    const secondApiUrl = service.getApiUrl('/', {bar: 'bar', foo: 'foo'});
-    expect(firstApiUrl).toEqual(secondApiUrl);
+    using([
+      ['/frontend', ''],
+      ['/frontend', '/'],
+    ], (frontendPrefix, appPrefix) => {
+      it('should work with empty appPrefix', () => {
+        const service = getApiService({frontendPrefix, appPrefix});
+        const frontendUrl = service.getFrontendUrl('/');
+        expect(frontendUrl).toEqual('/frontend/');
+      });
+    });
+
+    it('should append given path', () => {
+      const service = getApiService({frontendPrefix: '/', appPrefix: '/'});
+      const frontendUrl = service.getFrontendUrl('/some/path/I/specified');
+      expect(frontendUrl).toEqual('/some/path/I/specified');
+    });
+
+    it('should encode and append given query string', () => {
+      const service = getApiService({frontendPrefix: '/', appPrefix: '/'});
+      const frontendUrl = service.getFrontendUrl('/', {param: 'value'});
+      expect(frontendUrl).toEqual('/?param=value');
+    });
+
+    it('should properly handle empty query object', () => {
+      const service = getApiService({frontendPrefix: '/', appPrefix: '/'});
+      const frontendUrl = service.getFrontendUrl('/', {});
+      expect(frontendUrl).toEqual('/');
+    });
+
+    it('should always create a deterministic order of query paramaters', () => {
+      const service = getApiService({frontendPrefix: '/', appPrefix: '/'});
+      const firstFrontendUrl = service.getFrontendUrl('/', {foo: 'foo', bar: 'bar'});
+      const secondFrontendUrl = service.getFrontendUrl('/', {bar: 'bar', foo: 'foo'});
+      expect(firstFrontendUrl).toEqual(secondFrontendUrl);
+    });
   });
 });

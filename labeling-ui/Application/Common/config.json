@@ -1,6 +1,8 @@
 {
   "backendPrefix": "/",
   "apiPrefix": "/api",
+  "frontendPrefix": "/",
+  "appPrefix": "/labeling",
   "colorPalettes": {
     "primary": {
      "1": "#731FB2",
