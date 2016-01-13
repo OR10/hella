@@ -14,6 +14,8 @@ describe('LabeledThingInFrameGateway', () => {
   let bufferedHttp;
   let $q;
   let $rootScope;
+  let labeledThingInFrameData;
+  let labeledThingData;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -48,6 +50,8 @@ describe('LabeledThingInFrameGateway', () => {
       bufferedHttp = $injector.get('bufferedHttp');
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
+      labeledThingInFrameData = $injector.get('labeledThingInFrameData');
+      labeledThingData = $injector.get('labeledThingData');
     });
   });
 
@@ -263,6 +267,85 @@ describe('LabeledThingInFrameGateway', () => {
         });
 
       bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    });
+  });
+
+  it('should fetch frame data from cache where available', done => {
+    const expectedResult = {foo: 'bar'};
+    const task = {id: 123};
+    const frameNumber = 1;
+
+    labeledThingInFrameData.set(frameNumber, expectedResult);
+
+    gateway.listLabeledThingInFrame(task, frameNumber)
+      .then(result => {
+        expect(result).toEqual(expectedResult);
+        done();
+      });
+
+    $rootScope.$digest();
+  });
+
+  it('should fetch LabeledThing data from cache where available', done => {
+    const data = [
+      {frameNumber: 1},
+      {frameNumber: 2},
+      {frameNumber: 3},
+      {frameNumber: 4},
+      {frameNumber: 5},
+      {frameNumber: 6},
+      {frameNumber: 7},
+    ];
+
+    const expectedResult = [
+      {frameNumber: 3},
+      {frameNumber: 4},
+      {frameNumber: 5},
+    ];
+
+    const task = {id: 123};
+    const labeledThing = {id: 4711};
+    const frameNumber = 3;
+
+    labeledThingData.set(labeledThing.id, data);
+
+    gateway.getLabeledThingInFrame(task, frameNumber, labeledThing, 0, 3)
+      .then(result => {
+        expect(result).toEqual(expectedResult);
+        done();
+      });
+
+    $rootScope.$digest();
+  });
+
+  using([
+    ['abc', 23, 1],
+    ['foo', 42, 5],
+    ['abc', 23, 15],
+  ], (taskId, frameNumber, limit) => {
+    const expectedUrl = `/backend/api/task/${taskId}/labeledThingInFrame/${frameNumber}?offset=0&limit=${limit}`;
+    const task = {id: taskId};
+    const labeledThingId = 1;
+    const labeledThingResponseData = {task, id: labeledThingId};
+    const labeledThing = new LabeledThing(labeledThingResponseData);
+    const labeledThings = {1: labeledThingResponseData};
+    const response = {labeledThingsInFrame: [{labeledThingId, id: 'testResult'}], labeledThings};
+    const expectedResult = response.labeledThingsInFrame.map(
+      () => new LabeledThingInFrame({labeledThing, id: 'testResult'})
+    );
+
+    it('should request labeledThingsInFrame for multiple frames at once', done => {
+      $httpBackend
+        .expect('GET', expectedUrl)
+        .respond(200, {result: response});
+
+      gateway.bulkFetchLabeledThingsInFrame(task, frameNumber, limit)
+        .then(result => {
+          expect(result).toEqual(expectedResult);
+          done();
+        });
+
+      $httpBackend.flush();
     });
   });
 });

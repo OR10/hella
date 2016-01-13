@@ -11,16 +11,14 @@ class DataPrefetcher {
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    * @param {DataContainer} labeledThingData
-   * @param {DataContainer} labeledFrameData
    * @param {Logger} logger
    */
-  constructor(apiService, $q, labeledThingInFrameGateway, labeledThingInFrameData, labeledThingData, labeledFrameData, logger) {
+  constructor(apiService, $q, labeledThingInFrameGateway, labeledThingInFrameData, labeledThingData, logger) {
     this._apiService = apiService;
     this._$q = $q;
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
     this._labeledThingInFrameData = labeledThingInFrameData;
     this._labeledThingData = labeledThingData;
-    this._labeledFrameData = labeledFrameData;
     this._logger = logger;
 
     this._logFacility = 'DataPrefetcher';
@@ -93,14 +91,10 @@ class DataPrefetcher {
         }
 
         const newStartFrameNumber = startFrameNumber + this._chunkSize;
-        let newLimit = this._chunkSize;
+        const newLimit = Math.min(this._chunkSize, task.frameRange.endFrameNumber - newStartFrameNumber + 1);
 
         if (newStartFrameNumber > task.frameRange.endFrameNumber) {
           return Promise.resolve();
-        }
-
-        if (newStartFrameNumber + newLimit > task.frameRange.endFrameNumber) {
-          newLimit -= newStartFrameNumber + newLimit - task.frameRange.endFrameNumber;
         }
 
         return this._prefetchLabeledThingsInFrame(task, newStartFrameNumber, newLimit);
@@ -115,7 +109,6 @@ DataPrefetcher.$inject = [
   'labeledThingInFrameGateway',
   'labeledThingInFrameData',
   'labeledThingData',
-  'labeledFrameData',
   'loggerService',
 ];
 
