@@ -6,7 +6,7 @@
     <services>
         <service id="annostation.labeling_api.command.init" class="AppBundle\Command\Init">
             <argument type="service" id="doctrine_couchdb.client.default_connection" />
-            <argument type="service" id="annostation.labeling_api.service.importer_service"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument>%database_name%</argument>
             <argument>%user_password%</argument>
             <argument>%cache_dir%</argument>
@@ -15,7 +15,7 @@
         </service>
 
         <service id="annostation.labeling_api.command.import_video_command" class="AppBundle\Command\ImportVideo">
-            <argument type="service" id="annostation.labeling_api.service.importer_service" />
+            <argument type="service" id="annostation.labeling_api.service.video_importer" />
             <tag name="console.command"/>
         </service>
 

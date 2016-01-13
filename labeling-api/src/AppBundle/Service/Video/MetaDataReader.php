@@ -37,13 +37,17 @@ class MetaDataReader
 
         $metaData = new Model\Video\MetaData();
 
-        $metaData->format         = $this->extractFormat($json);
-        $metaData->sizeInBytes    = $this->extractSizeInBytes($json);
-        $metaData->width          = $this->extractWidth($json);
-        $metaData->height         = $this->extractHeight($json);
-        $metaData->duration       = $this->extractDuration($json);
-        $metaData->numberOfFrames = $this->extractNumberOfFrames($json);
+        $videoStreamData = $this->getFirstVideoStream($json);
+
         $metaData->raw            = $json;
+        $metaData->format         = $this->getArrayKey($json['format'], 'format_name');
+        $metaData->sizeInBytes    = $this->getArrayKey($json['format'], 'size');
+        $metaData->width          = $this->getArrayKey($videoStreamData, 'width');
+        $metaData->height         = $this->getArrayKey($videoStreamData, 'height');
+        $metaData->duration       = $this->getArrayKey($videoStreamData, 'duration');
+        $metaData->numberOfFrames = $this->getArrayKey($videoStreamData, 'nb_frames');
+
+        $metaData->fps = (int) $metaData->numberOfFrames / $metaData->duration;
 
         return $metaData;
     }
@@ -68,56 +72,23 @@ class MetaDataReader
         return sprintf(self::COMMANDLINE, $this->ffprobeExecutable, $sourceFileFilename);
     }
 
-    private function extractFormat(array $json)
+    private function getFirstVideoStream(array $json)
     {
-        if (isset($json['format']['format_name'])) {
-            return $json['format']['format_name'];
+        foreach ($json['streams'] as $stream) {
+            if ($stream['codec_type'] === 'video') {
+                return $stream;
+            }
         }
-        return null;
+
+        throw new Exception\MetaDataReader('no video stream found');
     }
 
-    private function extractSizeInBytes(array $json)
+    private function getArrayKey(array $array, $key)
     {
-        if (isset($json['format']['size'])) {
-            return $json['format']['size'];
+        if (isset($array[$key])) {
+            return $array[$key];
         }
 
-        throw new Exception\MetaDataReader('reading size in bytes');
-    }
-
-    private function extractWidth(array $json)
-    {
-        if (isset($json['streams'][0]['width'])) {
-            return (int) $json['streams'][0]['width'];
-        }
-
-        throw new Exception\MetaDataReader('reading width');
-    }
-
-    private function extractHeight(array $json)
-    {
-        if (isset($json['streams'][0]['height'])) {
-            return (int) $json['streams'][0]['height'];
-        }
-
-        throw new Exception\MetaDataReader('reading height');
-    }
-
-    private function extractNumberOfFrames(array $json)
-    {
-        if (isset($json['streams'][0]['nb_frames'])) {
-            return (int) $json['streams'][0]['nb_frames'];
-        }
-
-        throw new Exception\MetaDataReader('number of frames');
-    }
-
-    private function extractDuration(array $json)
-    {
-        if (isset($json['streams'][0]['duration'])) {
-            return (float) $json['streams'][0]['duration'];
-        }
-
-        throw new Exception\MetaDataReader('duration');
+        throw new Exception\MetaDataReader("Key {$key} does not exist");
     }
 }

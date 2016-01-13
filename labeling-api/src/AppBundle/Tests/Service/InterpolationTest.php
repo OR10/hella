@@ -36,21 +36,11 @@ class InterpolationTest extends Tests\KernelTestCase
 
     public function setUpImplementation()
     {
-        $this->videoFacade               = $this->getAnnoService('database.facade.video');
-        $this->labelingTaskFacade        = $this->getAnnoService('database.facade.labeling_task');
-        $this->labeledThingFacade        = $this->getAnnoService('database.facade.labeled_thing');
-        $this->labeledThingInFrameFacade = $this->getAnnoService('database.facade.labeled_thing_in_frame');
-        $this->interpolationService      = $this->getAnnoService('service.interpolation');
-    }
-
-    private function getAnnoService($name)
-    {
-        return $this->getService(sprintf('annostation.labeling_api.%s', $name));
-    }
-
-    private function getService($name)
-    {
-        return static::$kernel->getContainer()->get($name);
+        $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
+        $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->interpolationService      = $this->getAnnostationService('service.interpolation');
     }
 
     public function testInterpolateSetsErrorStatusWhenUnknownAlgorithmShouldBeUsed()

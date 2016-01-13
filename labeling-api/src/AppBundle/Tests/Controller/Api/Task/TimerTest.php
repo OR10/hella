@@ -141,8 +141,8 @@ class TimerTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $this->videoFacade        = $this->getAnnoService('database.facade.video');
-        $this->labelingTaskFacade = $this->getAnnoService('database.facade.labeling_task');
+        $this->videoFacade        = $this->getAnnostationService('database.facade.video');
+        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
 
         $this->user = $this->getService('fos_user.util.user_manipulator')->create(
             Controller\IndexTest::USERNAME,
@@ -158,16 +158,6 @@ class TimerTest extends Tests\WebTestCase
             true,
             false
         );
-    }
-
-    private function getAnnoService($name)
-    {
-        return $this->getService(sprintf('annostation.labeling_api.%s', $name));
-    }
-
-    private function getService($name)
-    {
-        return static::$kernel->getContainer()->get($name);
     }
 
     private function doRequest($method, $taskId, $userId, array $content = null)
