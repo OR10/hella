@@ -28,6 +28,8 @@ class FrameNumberInputDirective {
       switch (true) {
         // Numbers
         case (event.keyCode >= 48 && event.keyCode <= 57):
+        // Keypad Numbers (why are these different?)
+        case (event.keyCode >= 96 && event.keyCode <= 105):
         // Arrow keys left/right
         case (event.keyCode === 37 || event.keyCode === 39):
         // Backspace / del
