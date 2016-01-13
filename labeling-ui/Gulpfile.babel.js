@@ -36,6 +36,20 @@ function execLive(command, next) {
   });
 }
 
+function execReturn(command, next) {
+  let stdout = '';
+  let stderr = '';
+
+  const child = exec(
+    command,
+    {maxBuffer: Number.MAX_SAFE_INTEGER},
+    () => next({stdout, stderr})
+  );
+
+  child.stdout.on('data', data => stdout += data);
+  child.stderr.on('data', data => stderr += data);
+}
+
 const $$ = gulpLoadPlugins({
   rename: {
     'gulp-angular-templatecache': 'angularTemplateCache',
@@ -168,10 +182,20 @@ gulp.task('build-public', () => {
     .pipe(gulp.dest(paths.dir.distribution));
 });
 
+gulp.task('build-release-config', next => {
+  const releaseConfigFilepath = `${paths.dir.distribution}/Library/release.config.json`;
+  const releaseConfig = {};
+
+  execReturn('git rev-parse --short HEAD', ({stdout}) => {
+    releaseConfig.revision = stdout.trim();
+    fs.writeFile(releaseConfigFilepath, JSON.stringify(releaseConfig), next);
+  });
+});
+
 gulp.task('build', next => run(
   'build-public',
   'build-templates',
-  ['build-javascript', 'build-sass', 'build-fonts'],
+  ['build-javascript', 'build-sass', 'build-fonts', 'build-release-config'],
   next
 ));
 

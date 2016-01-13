@@ -36,6 +36,7 @@ export default class DevServer {
       entryPointExpression: 'main.js',
       buildOptions: {},
       bundleTargetUrl: '/labeling/Library/bundle.js',
+      releaseConfigUrl: '/labeling/Library/release.config.json',
       proxy: {
         protocol: 'http:',
         host: '192.168.222.20',
@@ -116,6 +117,20 @@ export default class DevServer {
     }
 
     return this.sourceCache.get(file);
+  }
+
+  serveReleaseConfiguration(req, res, next) {
+    const {releaseConfigUrl} = this.config;
+
+    if (req.url === releaseConfigUrl) {
+      res.end(
+        JSON.stringify({
+          revision: 'dev',
+        })
+      );
+    } else {
+      next();
+    }
   }
 
   serveSystemJsBundle(req, res, next) {
@@ -206,6 +221,7 @@ export default class DevServer {
       .then(() => {
         const app = connect();
         app.use(morgan('dev'));
+        app.use(this.serveReleaseConfiguration.bind(this));
         app.use(this.serveSystemJsBundle.bind(this));
         app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/${indexFilename}`));
         app.use(proxy(proxyConfig));

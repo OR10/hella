@@ -10,6 +10,7 @@ import AnimationFrameService from './Services/AnimationFrameService';
 import LoggerServiceProvider from './Loggers/LoggerServiceProvider';
 import EntityColorService from './Services/EntityColorService';
 import ModalService from './Services/ModalService';
+import ReleaseConfigService from './Services/ReleaseConfigService';
 import LoadingMaskDirective from './Directives/LoadingMaskDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
@@ -42,6 +43,7 @@ class Common extends Module {
     this.module.service('statusGateway', StatusGateway);
     this.module.service('entityColorService', EntityColorService);
     this.module.service('modalService', ModalService);
+    this.module.service('releaseConfigService', ReleaseConfigService);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);

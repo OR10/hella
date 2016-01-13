@@ -4,8 +4,13 @@
             <i class="icon icon-previous"></i>
         </a>
     </div>
-    <div class="grid-content text-left small-15 noscroll">
-        {{vm.task.id}}
+    <div class="grid-content text-left small-15 noscroll" ng-click="vm.handleTitleClick($event)">
+        <span ng-show="vm.releaseInformation === null">
+            {{vm.task.id}}
+        </span>
+        <span ng-show="vm.releaseInformation !== null">
+            Revision: {{vm.releaseInformation.revision}}
+        </span>
     </div>
     <div class="grid-block header-right small-8 noscroll">
 
