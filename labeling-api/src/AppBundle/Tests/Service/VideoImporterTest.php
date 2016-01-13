@@ -78,7 +78,7 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForTheWholeVideoPerDefault()
     {
-        $tasks = $this->videoImporterService->import('testVideo', $this->getTestVideoPath());
+        $tasks = $this->importVideo();
 
         $this->assertCount(2, $tasks);
 
@@ -91,35 +91,9 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunk()
     {
-        $jobs = [];
-        $this->workerPoolFacade->expects($this->any())->method('addJob')->with($this->callback(
-            function($job) use (&$jobs) {
-                if ($job instanceof Jobs\VideoFrameSplitter) {
-                    $jobs[] = $job;
-                    return true;
-                }
-                return false;
-            }
-        ));
-
-        $tasks = $this->videoImporterService->import('testVideo', $this->getTestVideoPath(), false, 3);
-
-        $this->assertCount(2, $jobs);
-
-        $this->workerPoolFacade->expects($this->never())->method('addJob');
-
-        $logger = $this->getMockBuilder(\crosscan\Logger\Facade\LoggerFacade::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        while (!empty($jobs)) {
-            $this->videoFrameSplitterInstruction->run(array_shift($jobs), $logger);
-        }
-
-        $video = $this->videoFacade->find($tasks[0]->getVideoId());
+        $tasks = $this->importVideo($chunkSizeInSeconds = 3);
 
         $this->assertCount(4, $tasks);
-
         $this->assertEquals(new Model\FrameRange( 1,  75), $tasks[0]->getFrameRange());
         $this->assertEquals(new Model\FrameRange( 1,  75), $tasks[1]->getFrameRange());
         $this->assertEquals(new Model\FrameRange(76, 132), $tasks[2]->getFrameRange());
@@ -127,6 +101,23 @@ class VideoImporterTest extends Tests\KernelTestCase
     }
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameNumberPerChunk()
+    {
+        $tasks = $this->importVideo($chunkSizeInSeconds = 1.23);
+
+        $this->assertCount(10, $tasks);
+        $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[0]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[1]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange( 32,  62), $tasks[2]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange( 32,  62), $tasks[3]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange( 63,  93), $tasks[4]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange( 63,  93), $tasks[5]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange( 94, 124), $tasks[6]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange( 94, 124), $tasks[7]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange(125, 132), $tasks[8]->getFrameRange());
+        $this->assertEquals(new Model\FrameRange(125, 132), $tasks[9]->getFrameRange());
+    }
+
+    private function importVideo($chunkSizeInSeconds = 0)
     {
         $jobs = [];
         $this->workerPoolFacade->expects($this->any())->method('addJob')->with($this->callback(
@@ -139,8 +130,7 @@ class VideoImporterTest extends Tests\KernelTestCase
             }
         ));
 
-        $tasks = $this->videoImporterService->import('testVideo', $this->getTestVideoPath(), false, 1.23);
-
+        // Currently, we expect on meta- and one object-labeling task per video.
         $this->assertCount(2, $jobs);
 
         $this->workerPoolFacade->expects($this->never())->method('addJob');
@@ -149,24 +139,17 @@ class VideoImporterTest extends Tests\KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        // let's execute the jobs
         while (!empty($jobs)) {
             $this->videoFrameSplitterInstruction->run(array_shift($jobs), $logger);
         }
 
-        $video = $this->videoFacade->find($tasks[0]->getVideoId());
-
-        $this->assertCount(10, $tasks);
-
-        $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[0]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[1]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 32,  62), $tasks[2]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 32,  62), $tasks[3]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 63,  93), $tasks[4]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 63,  93), $tasks[5]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 94, 124), $tasks[6]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 94, 124), $tasks[7]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(125, 132), $tasks[8]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(125, 132), $tasks[9]->getFrameRange());
+        return $this->videoImporterService->import(
+            'testVideo',
+            $this->getTestVideoPath(),
+            false,
+            $chunkSizeInSeconds
+        );
     }
 
     private function getTestVideoPath()
