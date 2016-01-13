@@ -90,7 +90,7 @@ class VideoImporter
 
         $framesPerChunk = $video->getMetaData()->numberOfFrames;
         if ($splitLength > 0) {
-            $framesPerChunk = min($framesPerChunk, $splitLength * $video->getMetaData()->fps);
+            $framesPerChunk = min($framesPerChunk, round($splitLength * $video->getMetaData()->fps));
         }
 
         $tasks = [];
