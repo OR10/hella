@@ -6,7 +6,7 @@ import LabelingData from 'Application/LabelingData/LabelingData';
 
 import DataPrefetcher from 'Application/LabelingData/Services/DataPrefetcher';
 
-xdescribe('DataPrefetcher', () => {
+describe('DataPrefetcher', () => {
   let dataPrefetcher;
   let labeledThingInFrameGateway;
   let labeledThingInFrameData;
@@ -90,14 +90,15 @@ xdescribe('DataPrefetcher', () => {
     expect(labeledThingInFrameData.get(23)).toEqual([{frameNumber: 23}]);
   });
 
+  const labeledThing = {
+    id: 'some-test-id',
+  };
+
   using([
-    [1, 'foobar', 'barbaz', 'bazfoo'],
-    [2, 'barbaz', 'bazfoo', 'foobar'],
+    [1, [{id: 'foobar', labeledThing}], [{id: 'barbaz', labeledThing}], [{id: 'bazfoo', labeledThing}]],
+    [2, [{id: 'barbaz', labeledThing}], [{id: 'bazfoo', labeledThing}], [{id: 'foobar', labeledThing}]],
   ], (startFrameNumber, expectedData, ignoredNewData, newData) => {
     it('should fetch LabeledThingInFrame data for a single LabeledThing', () => {
-      const labeledThing = {
-        id: 'some-test-id',
-      };
       const task = {
         frameRange: {
           startFrameNumber: 1,

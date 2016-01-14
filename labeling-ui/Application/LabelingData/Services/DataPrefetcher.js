@@ -48,6 +48,7 @@ class DataPrefetcher {
       .then(
         data => {
           this._labeledThingData.set(labeledThing.id, data);
+          this._labeledThingInFrameData.setLabeledThingData(labeledThing, data);
         }
       );
   }

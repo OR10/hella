@@ -587,7 +587,7 @@ class ViewerController {
   }
 
   _updateLabeledThingsInFrame() {
-    this._$q.all(
+    return this._$q.all(
       [
         this._labeledThingInFrameBuffer.add(
           this._loadLabeledThingsInFrame(this.framePosition.position)
@@ -729,7 +729,7 @@ class ViewerController {
         this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
       }
     ).then(() => {
-      this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, 1, true);
+      this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true);
     });
   }
 

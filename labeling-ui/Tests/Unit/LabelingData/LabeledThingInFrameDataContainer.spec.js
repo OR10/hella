@@ -2,19 +2,7 @@ import LabeledThingInFrameDataContainer from 'Application/LabelingData/Support/L
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
-describe('DataContainer', () => {
-  function initializeDataContainer(data) {
-    const dataContainer = new LabeledThingInFrameDataContainer();
-
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        dataContainer.set(key, data[key]);
-      }
-    }
-
-    return dataContainer;
-  }
-
+describe('LabeledThingInFrameDataContainer', () => {
   it('should invalidate data for a single LabeledThing', () => {
     const dataContainer = new LabeledThingInFrameDataContainer();
 
@@ -93,5 +81,36 @@ describe('DataContainer', () => {
     expect(dataContainer.get(1)).toEqual(expectedFirstFrameData);
     expect(dataContainer.get(2)).toEqual(expectedSecondFrameData);
     expect(dataContainer.get(3)).toEqual(expectedThirdFrameData);
+  });
+
+  it('should replace data for a single labeled thing', () => {
+    const dataContainer = new LabeledThingInFrameDataContainer();
+
+    const labeledThing = new LabeledThing({id: 42});
+    const otherLabeledThing = new LabeledThing({id: 4711});
+
+    const labeledThingInFrame = new LabeledThingInFrame({
+      id: 1,
+      frameNumber: 1,
+      labeledThing: labeledThing,
+    });
+
+    const otherLabeledThingInFrame = new LabeledThingInFrame({
+      id: 2,
+      frameNumber: 1,
+      labeledThing: otherLabeledThing,
+    });
+
+    const newLabeledThingInFrame = new LabeledThingInFrame({
+      id: 3,
+      frameNumber: 1,
+      labeledThing: labeledThing,
+    });
+
+    dataContainer.set(1, [labeledThingInFrame, otherLabeledThingInFrame]);
+
+    dataContainer.setLabeledThingData(labeledThing, [newLabeledThingInFrame]);
+
+    expect(dataContainer.get(1)).toEqual([otherLabeledThingInFrame, newLabeledThingInFrame]);
   });
 });

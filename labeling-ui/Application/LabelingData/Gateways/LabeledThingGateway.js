@@ -8,8 +8,10 @@ class LabeledThingGateway {
    * @param {ApiService} apiService
    * @param {RevisionManager} revisionManager
    * @param {BufferedHttp} bufferedHttp
+   * @param {DataContainer} labeledThingData
+   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    */
-  constructor(apiService, revisionManager, bufferedHttp) {
+  constructor(apiService, revisionManager, bufferedHttp, labeledThingData, labeledThingInFrameData) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -27,6 +29,18 @@ class LabeledThingGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._labeledThingData = labeledThingData;
+
+    /**
+     * @type {LabeledThingInFrameDataContainer}
+     * @private
+     */
+    this._labeledThingInFrameData = labeledThingInFrameData;
   }
 
   /**
@@ -35,6 +49,9 @@ class LabeledThingGateway {
    */
   saveLabeledThing(labeledThing) {
     const url = this._apiService.getApiUrl(`/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`);
+
+    this._labeledThingData.invalidate(labeledThing.id);
+    this._labeledThingInFrameData.invalidateLabeledThing(labeledThing);
 
     return this._bufferedHttp.put(url, labeledThing, undefined, 'labeledThing')
       .then(response => {
@@ -93,6 +110,8 @@ LabeledThingGateway.$inject = [
   'ApiService',
   'revisionManager',
   'bufferedHttp',
+  'labeledThingData',
+  'labeledThingInFrameData',
 ];
 
 export default LabeledThingGateway;
