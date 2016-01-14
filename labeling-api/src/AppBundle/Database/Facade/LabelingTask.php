@@ -145,7 +145,7 @@ class LabelingTask
     public function getLabeledThings(Model\LabelingTask $labelingTask)
     {
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'by_taskid')
+            ->createQuery('annostation_labeled_thing', 'by_taskId')
             ->setStartKey($labelingTask->getId())
             ->setEndKey($labelingTask->getId())
             ->onlyDocs(true)
