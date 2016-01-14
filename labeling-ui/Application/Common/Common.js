@@ -16,6 +16,7 @@ import SplitViewDirective from './Directives/SplitViewDirective';
 import RightClickDirective from './Directives/RightClickDirective';
 import TooltipDirective from './Directives/TooltipDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
+import LockService from './Services/LockService';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
 
@@ -46,6 +47,7 @@ class Common extends Module {
     this.module.service('entityColorService', EntityColorService);
     this.module.service('modalService', ModalService);
     this.module.service('releaseConfigService', ReleaseConfigService);
+    this.module.service('lockService', LockService);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);

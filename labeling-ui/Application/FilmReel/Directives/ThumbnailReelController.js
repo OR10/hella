@@ -20,8 +20,9 @@ class ThumbnailReelController {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AnimationFrameService} animationFrameService
    * @param {Object} applicationState
+   * @param {LockService} lockService
    */
-  constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState) {
+  constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState, lockService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -49,6 +50,12 @@ class ThumbnailReelController {
      * @private
      */
     this._applicationState = applicationState;
+
+    /**
+     * @type {LockService}
+     * @private
+     */
+    this._lockService = lockService;
 
     /**
      * Count of thumbnails shown on the page
@@ -407,11 +414,15 @@ class ThumbnailReelController {
 
         selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
 
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
-          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-          if (frameNumber > oldStartFrameNumber) {
-            this._updateLabeledThingInFrames(this.selectedPaperShape);
-          }
+        // Synchronize operations on this LabeledThing
+        this._lockService.acquire(selectedLabeledThing.id, release =>{
+          this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
+            release();
+            // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+            if (frameNumber > oldStartFrameNumber) {
+              this._updateLabeledThingInFrames(this.selectedPaperShape);
+            }
+          });
         });
       }
     }
@@ -486,6 +497,7 @@ ThumbnailReelController.$inject = [
   'labeledThingGateway',
   'animationFrameService',
   'applicationState',
+  'lockService',
 ];
 
 export default ThumbnailReelController;

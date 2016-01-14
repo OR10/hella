@@ -1,7 +1,9 @@
 import 'jquery';
 import angular from 'angular';
 import {module, inject} from 'angular-mocks';
+
 import Common from 'Application/Common/Common';
+import LabelingData from 'Application/LabelingData/LabelingData';
 
 import LabeledThingGateway from 'Application/LabelingData/Gateways/LabeledThingGateway';
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
@@ -16,6 +18,10 @@ describe('LabeledThingGateway', () => {
     const commonModule = new Common();
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
+
+    const labelingDataModule = new LabelingData();
+    labelingDataModule.registerWithAngular(angular);
+    module('AnnoStation.LabelingData');
 
     module(($provide, bufferedHttpProvider) => {
       $provide.value('applicationConfig', {

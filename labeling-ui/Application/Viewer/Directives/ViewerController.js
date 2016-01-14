@@ -40,6 +40,7 @@ class ViewerController {
    * @param {$timeout} $timeout
    * @param {Object} applicationState
    * @param {DataPrefetcher} dataPrefetcher
+   * @param {LockService} lockService
    */
   constructor(
     $scope,
@@ -61,7 +62,8 @@ class ViewerController {
     logger,
     $timeout,
     applicationState,
-    dataPrefetcher
+    dataPrefetcher,
+    lockService
   ) {
     /**
      * Mouse cursor used, while hovering the viewer
@@ -198,6 +200,12 @@ class ViewerController {
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {LockService}
+     * @private
+     */
+    this._lockService = lockService;
 
     /**
      * @type {LayerManager}
@@ -350,10 +358,14 @@ class ViewerController {
       ],
       ([newStart, newEnd], [oldStart, oldEnd]) => {
         if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
-          // TODO this is still subject to a race condition. The LabeledThing model has changed here but
-          // the change might not yet have arrived at the backend. Loading the (potentially) updated
-          // LabeledThingInFrame data now might thus provide stale state.
-          this._updateLabeledThingsInFrame();
+          const labeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+
+          // Synchronize operations on this LabeledThing
+          this._lockService.acquire(labeledThing.id, release => {
+            this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
+              .then(() => this._updateLabeledThingsInFrame())
+              .then(release);
+          });
         }
       }
     );
@@ -393,7 +405,7 @@ class ViewerController {
       }
     );
 
-    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, 1);
+    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
   }
 
   setupLayers() {
@@ -575,7 +587,7 @@ class ViewerController {
   }
 
   _updateLabeledThingsInFrame() {
-    this._$q.all(
+    return this._$q.all(
       [
         this._labeledThingInFrameBuffer.add(
           this._loadLabeledThingsInFrame(this.framePosition.position)
@@ -717,7 +729,7 @@ class ViewerController {
         this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
       }
     ).then(() => {
-      this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, 1, true);
+      this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true);
     });
   }
 
@@ -970,6 +982,7 @@ ViewerController.$inject = [
   '$timeout',
   'applicationState',
   'dataPrefetcher',
+  'lockService',
 ];
 
 export default ViewerController;

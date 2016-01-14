@@ -308,14 +308,13 @@ class MediaControlsController {
   _deleteSelectedShape() {
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
+
     this._applicationState.disableAll();
+
+    this._labeledThingData.invalidate(selectedLabeledThing.id);
+    this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
+
     this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
-      .then(
-        () => {
-          this._labeledThingData.invalidate(selectedLabeledThing.id);
-          this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
-        }
-      )
       .then(
         () => {
           this.selectedPaperShape = null;
