@@ -36,6 +36,16 @@ html, body {
   overflow: hidden;
 }
 
+body {
+  /* disable text selection anywhere */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 // Carefull with 'height: 100%'. This causes strange bugs with the ToolEvent.point coordinates.
 
 .label-summary span.label-padding {
