@@ -18,6 +18,7 @@
         <service
                 id="annostation.labeling_api.controller.api.task"
                 class="AppBundle\Controller\Api\Task">
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem"/>
         </service>

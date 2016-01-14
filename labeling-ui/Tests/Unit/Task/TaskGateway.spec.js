@@ -40,16 +40,19 @@ describe('TaskGateway', () => {
 
   it('should load a list of tasks', (done) => {
     const tasksResponse = {
-      result: [
-        {foo: 'bar'},
-        {bar: 'baz'},
-      ],
+      result: {
+        tasks: [
+          {foo: 'bar'},
+          {bar: 'baz'},
+        ],
+        videos: {},
+      }
     };
 
     $httpBackend.expectGET('/backend/api/task').respond(tasksResponse);
 
     gateway.getTasks().then((tasks) => {
-      expect(tasks).toEqual(tasksResponse.result);
+      expect(tasks).toEqual(tasksResponse.result.tasks);
       done();
     });
 
