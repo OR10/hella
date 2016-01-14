@@ -209,13 +209,19 @@ class ThumbnailReelController {
     this._thumbnailLookahead = Math.floor(this._thumbnailCount / 2);
 
     this.thumbnails = new Array(this._thumbnailCount).fill({location: null, labeledThingInFrame: null});
-    this._updateThumbnailData();
+    this._updateLabeledThingInFrames(this.selectedPaperShape)
+      .then(() => this._updateThumbnailData());
 
     this._$scope.$apply(
       () => this.thumbnailDimensions = {width: thumbnailWidth, height: thumbnailHeight}
     );
   }
 
+  /**
+   * @param newPaperShape
+   * @returns {Promise}
+   * @private
+   */
   _updateLabeledThingInFrames(newPaperShape) {
     if (!newPaperShape || newPaperShape.isDraft) {
       // Clear all thumbnail shape previews
@@ -226,10 +232,10 @@ class ThumbnailReelController {
           this.thumbnails[index] = {location, labeledThingInFrame};
         }
       );
-      return;
+      return Promise.resolve();
     }
 
-    this._lockService.acquire(newPaperShape.labeledThingInFrame.labeledThing.id, release => {
+    return this._lockService.acquire(newPaperShape.labeledThingInFrame.labeledThing.id, release => {
       release();
       this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(this.framePosition))
         .then(labeledThingsInFrame => {
