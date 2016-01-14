@@ -2,12 +2,13 @@
  * Directive allowing to place arbitrary tooltips using the `tooltip` attribute
  */
 class TooltipDirective {
-  constructor($document, $compile) {
+  constructor($document, $compile, $timeout) {
     this.restrict = 'A';
     this.scope = true;
 
     this._$document = $document;
     this._$compile = $compile;
+    this._$timeout = $timeout;
   }
 
   /**
@@ -48,12 +49,29 @@ class TooltipDirective {
    * @private
    */
   _attachEventHandler($body, $targetElement, $tooltipElement, $arrowElement) {
-    $targetElement.on('mouseover', () => this._showTooltip($body, $targetElement, $tooltipElement, $arrowElement));
+    let hoverTimeout = null;
+
+    $targetElement.on('mouseover', () => {
+      if (hoverTimeout !== null) {
+        return;
+      }
+
+      hoverTimeout = this._$timeout(
+        () => this._showTooltip($body, $targetElement, $tooltipElement, $arrowElement),
+        800
+      );
+    });
+
+    $targetElement.on('mouseout', () => {
+      if (hoverTimeout !== null) {
+        this._$timeout.cancel(hoverTimeout);
+        hoverTimeout = null;
+      }
+      this._hideTooltip($tooltipElement);
+    });
 
     // Keep active as long as the mouse is inside the tooltip
     $tooltipElement.on('mouseover', () => $tooltipElement.addClass('active'));
-
-    $targetElement.on('mouseout', () => this._hideTooltip($tooltipElement));
     $tooltipElement.on('mouseout', () => this._hideTooltip($tooltipElement));
   }
 
@@ -160,6 +178,7 @@ class TooltipDirective {
 TooltipDirective.$inject = [
   '$document',
   '$compile',
+  '$timeout',
 ];
 
 export default TooltipDirective;
