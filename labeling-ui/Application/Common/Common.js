@@ -14,6 +14,7 @@ import ReleaseConfigService from './Services/ReleaseConfigService';
 import LoadingMaskDirective from './Directives/LoadingMaskDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
 import RightClickDirective from './Directives/RightClickDirective';
+import TooltipDirective from './Directives/TooltipDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
@@ -53,14 +54,18 @@ class Common extends Module {
     this.registerDirective('loadingMask', LoadingMaskDirective);
     this.registerDirective('splitView', SplitViewDirective);
     this.registerDirective('asRightClick', RightClickDirective);
+    this.registerDirective('tooltip', TooltipDirective);
 
-    this.module.config(['$httpProvider', 'loggerServiceProvider', ($httpProvider, loggerServiceProvider) => {
-      $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-      $httpProvider.interceptors.push('authInterceptor');
+    this.module.config(
+      ['$httpProvider', 'loggerServiceProvider',
+        ($httpProvider, loggerServiceProvider) => {
+          $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          $httpProvider.interceptors.push('authInterceptor');
 
-      loggerServiceProvider.registerLogger(new ConsoleLogger());
-      loggerServiceProvider.addContexts('*');
-    }]);
+          loggerServiceProvider.registerLogger(new ConsoleLogger());
+          loggerServiceProvider.addContexts('*');
+        },
+      ]);
 
     this.module.run(['$rootScope', '$location', ($rootScope) => {
       $rootScope.$on('unauthorized', () => {

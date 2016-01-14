@@ -17,7 +17,6 @@ $button-selected: #353b42;
 @import "font-awesome";
 @import "fonts";
 @import "label-selection-wizard";
-@import "angular-range-slider";
 @import "viewer";
 @import "filmreel";
 @import "timeline";
@@ -30,6 +29,7 @@ $button-selected: #353b42;
 @import "mouse-cursor";
 @import "label-selector";
 @import "modals";
+@import "tooltips";
 
 html, body {
   // Prevent overscroll
