@@ -38,6 +38,8 @@ class LockService {
     lock = lock.then(() => this._$q(onLockAvailable));
 
     this._locks.set(lockId, lock);
+
+    return lock;
   }
 }
 
