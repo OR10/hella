@@ -175,54 +175,65 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        $offset = (int) $request->query->get('offset', 0);
-        $limit  = (int) $request->query->get('limit', 1);
+        $includeGhosts = $request->query->getBoolean('includeGhosts', true);
+        $offset        = (int) $request->query->get('offset', 0);
+        $limit         = (int) $request->query->get('limit', 1);
 
         if ($limit <= 0) {
             return View\View::create()->setData(['result' => []]);
         }
 
-        $labeledThingInFrames = array_reverse($this->labeledThingFacade->getLabeledThingInFrames($labeledThing));
+        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
         $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
-        $result = array_map(
-            function ($expectedFrameNumber) use (&$labeledThingInFrames) {
-                reset($labeledThingInFrames);
-                while ($item = current($labeledThingInFrames)) {
-                    $currentItem = current($labeledThingInFrames);
-                    $prevItem    = prev($labeledThingInFrames);
-                    if (!$prevItem) {
-                        reset($labeledThingInFrames);
-                    } else {
+        if ($includeGhosts) {
+            $labeledThingInFrames = array_reverse($labeledThingInFrames);
+            $result = array_map(
+                function ($expectedFrameNumber) use (&$labeledThingInFrames) {
+                    reset($labeledThingInFrames);
+                    while ($item = current($labeledThingInFrames)) {
+                        $currentItem = current($labeledThingInFrames);
+                        $prevItem    = prev($labeledThingInFrames);
+                        if (!$prevItem) {
+                            reset($labeledThingInFrames);
+                        } else {
+                            next($labeledThingInFrames);
+                        }
+
+                        $nextItem = next($labeledThingInFrames);
+                        if (!$nextItem) {
+                            $endLabeledThingInFrame = end($labeledThingInFrames);
+                        } else {
+                            prev($labeledThingInFrames);
+                        }
+
+                        if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
+                            return $currentItem;
+                        } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
+                            $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
+                            $ghostLabeledThingInFrame->setGhost(true);
+
+                            return $ghostLabeledThingInFrame;
+                        }
+
                         next($labeledThingInFrames);
                     }
 
-                    $nextItem = next($labeledThingInFrames);
-                    if (!$nextItem) {
-                        $endLabeledThingInFrame = end($labeledThingInFrames);
-                    } else {
-                        prev($labeledThingInFrames);
-                    }
+                    $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
+                    $ghostLabeledThingInFrame->setGhost(true);
 
-                    if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
-                        return $currentItem;
-                    } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
-                        $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
-                        $ghostLabeledThingInFrame->setGhost(true);
-
-                        return $ghostLabeledThingInFrame;
-                    }
-
-                    next($labeledThingInFrames);
+                    return $ghostLabeledThingInFrame;
+                },
+                $expectedFrameNumbers
+            );
+        } else {
+            $result = array_filter(
+                $labeledThingInFrames,
+                function($labeledThingInFrame) use ($expectedFrameNumbers) {
+                    return in_array($labeledThingInFrame->getFrameNumber(), $expectedFrameNumbers);
                 }
-
-                $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
-                $ghostLabeledThingInFrame->setGhost(true);
-
-                return $ghostLabeledThingInFrame;
-            },
-            $expectedFrameNumbers
-        );
+            );
+        }
 
         return View\View::create()->setData(['result' => $result]);
     }
