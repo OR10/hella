@@ -3,7 +3,20 @@
 }
 
 .title-bar {
+
   margin-bottom: 5rem;
+  background-color: $element-background;
+  color: $sub-headlines;
+
+  a {
+    color: $icon;
+  }
+
+  a:hover {
+    color: $icon-hover;
+  }
+
+  border-bottom: 0;
 }
 
 .task-list-table {

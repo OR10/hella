@@ -1,15 +1,14 @@
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
 <div class="grid-block text-center vertical">
-
     <div class="grid-container menubar">
         <div class="grid-content">
-            <div ng-if="vm.tasksWithVideos === null" class="">Loading Tasks...</div>
-            <div ng-if="vm.tasksWithVideos.length === 0" class="">No tasks available!</div>
+            <div ng-if="vm.tasksWithVideo.length === 0" class="">No tasks available!</div>
         </div>
     </div>
 
     <div class="grid-container">
         <div class="grid-content task-list-table">
-            <table>
+            <table ng-if="vm.tasksWithVideo.length > 0">
                 <thead>
                 <tr>
                     <th>Task</th>

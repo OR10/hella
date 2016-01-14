@@ -12,6 +12,10 @@ class TaskListController {
      */
     this.tasks = null;
 
+    /**
+     * @type {boolean}
+     */
+    this.loadingInProgress = false;
 
     /**
      * @type {TaskGateway}
@@ -31,10 +35,12 @@ class TaskListController {
    * @private
    */
   _loadTaskList() {
+    this.loadingInProgress = true;
     this._taskGateway.getTasksAndVideos()
       .then(({tasks, videos}) => {
         tasks.forEach(task => task.video = videos[task.videoId]);
         this.tasksWithVideo = tasks;
+        this.loadingInProgress = false;
       });
   }
 }
