@@ -37,7 +37,7 @@ class MetaData
     /**
      * @var integer
      */
-    public $frames;
+    public $numberOfFrames;
 
     /**
      * Holds the raw meta data which was extracted during the import process.

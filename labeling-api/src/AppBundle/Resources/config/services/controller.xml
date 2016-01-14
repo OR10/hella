@@ -8,7 +8,7 @@
                 id="annostation.labeling_api.controller.index"
                 class="AppBundle\Controller\Index">
             <argument type="service" id="templating"/>
-            <argument type="service" id="annostation.labeling_api.service.importer_service"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.video"

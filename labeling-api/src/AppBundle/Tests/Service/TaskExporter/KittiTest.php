@@ -42,22 +42,12 @@ class KittiTest extends Tests\KernelTestCase
 
     protected function setUpImplementation()
     {
-        $this->videoFacade               = $this->getAnnoService('database.facade.video');
-        $this->labelingTaskFacade        = $this->getAnnoService('database.facade.labeling_task');
-        $this->labeledThingFacade        = $this->getAnnoService('database.facade.labeled_thing');
-        $this->labeledThingInFrameFacade = $this->getAnnoService('database.facade.labeled_thing_in_frame');
-        $this->exporter                  = $this->getAnnoService('service.task_exporter.kitti');
+        $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
+        $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->exporter                  = $this->getAnnostationService('service.task_exporter.kitti');
         $this->documentManager           = $this->getService('doctrine_couchdb.odm.default_document_manager');
-    }
-
-    private function getAnnoService($name)
-    {
-        return $this->getService(sprintf('annostation.labeling_api.%s', $name));
-    }
-
-    private function getService($name)
-    {
-        return static::$kernel->getContainer()->get($name);
     }
 
     public function testExportingTaskWithoutLabeledDataReturnsEmptyZipArchive()

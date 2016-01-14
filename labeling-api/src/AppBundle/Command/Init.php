@@ -16,9 +16,9 @@ class Init extends Base
     private $couchClient;
 
     /**
-     * @var ImporterService
+     * @var Service\VideoImporter
      */
-    private $importerService;
+    private $videoImporterService;
 
     /**
      * @var string
@@ -32,7 +32,7 @@ class Init extends Base
 
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
-        Service\ImporterService $importerService,
+        Service\VideoImporter $videoImporterService,
         $couchDatabase,
         $userPassword,
         $cacheDir,
@@ -40,12 +40,12 @@ class Init extends Base
     ) {
         parent::__construct();
 
-        $this->couchClient     = $couchClient;
-        $this->importerService = $importerService;
-        $this->couchDatabase   = (string) $couchDatabase;
-        $this->userPassword    = (string) $userPassword;
-        $this->cacheDir        = (string) $cacheDir;
-        $this->frameCdnDir     = (string) $frameCdnDir;
+        $this->couchClient          = $couchClient;
+        $this->videoImporterService = $videoImporterService;
+        $this->couchDatabase        = (string) $couchDatabase;
+        $this->userPassword         = (string) $userPassword;
+        $this->cacheDir             = (string) $cacheDir;
+        $this->frameCdnDir          = (string) $frameCdnDir;
     }
 
     protected function configure()
@@ -261,7 +261,7 @@ class Init extends Base
                 $path,
                 file_get_contents("http://192.168.123.7/anno_short.avi")
             );
-            $this->importerService->import('example.avi', $path, $lossless);
+            $this->videoImporterService->import('example.avi', $path, $lossless);
         } catch (\Exception $e) {
             $this->writeError(
                 $output,
