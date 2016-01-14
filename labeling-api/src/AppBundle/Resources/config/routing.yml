@@ -61,3 +61,8 @@ api_current_user:
     resource: "annostation.labeling_api.controller.api.current_user"
     type: rest
     name_prefix: app_api_current_user_
+
+api_statistics:
+    resource: "annostation.labeling_api.controller.api.statistics"
+    type: rest
+    name_prefix: app_api_statistics_

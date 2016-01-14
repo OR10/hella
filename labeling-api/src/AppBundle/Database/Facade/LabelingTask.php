@@ -236,4 +236,26 @@ class LabelingTask
         $this->documentManager->persist($taskTimer);
         $this->documentManager->flush();
     }
+
+    public function getTotalTimesGroupedByTaskId()
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_task_timer', 'sum_by_taskId')
+            ->setGroup(true)
+            ->execute()
+            ->toArray();
+
+        return array_column($result, 'value', 'key');
+    }
+
+    public function getTotalNumberOfLabeledThingsGroupedByTaskId()
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'count_by_taskId')
+            ->setGroup(true)
+            ->execute()
+            ->toArray();
+
+        return array_column($result, 'value', 'key');
+    }
 }
