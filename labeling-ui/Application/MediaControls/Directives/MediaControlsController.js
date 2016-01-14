@@ -296,6 +296,16 @@ class MediaControlsController {
   }
 
   handleDeleteSelectionClicked() {
+    const deleteQuestion = this._modalService.getWarningDialog({
+      title: 'Remove shape',
+      headline: 'The selected shape is going to be removed. Proceed?',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }, () => this._deleteSelectedShape());
+    deleteQuestion.activate();
+  }
+
+  _deleteSelectedShape() {
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
