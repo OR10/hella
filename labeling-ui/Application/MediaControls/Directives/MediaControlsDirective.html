@@ -1,29 +1,34 @@
 <div class="task-bar button-bar grid-block">
     <div class="grid-block small-5 task-bar-left">
         <div class="grid-content noscroll">
-            <button ng-click="vm.handleVideoSettingsClicked()">
+            <button ng-click="vm.handleVideoSettingsClicked()"
+                    tooltip="Show videosettings">
                 <i class="icon icon-view-brightness"
                    ng-class="{'toggled': vm.popupPanelOpen && vm.popupPanelState === 'videosettings'}"
                 ></i>
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-click="vm.showGeneralSettings()">
+            <button ng-click="vm.showGeneralSettings()"
+                    tooltip="Show general settings">
                 <i class="icon icon-general-settings"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-click="vm.toggleFullscreen()">
+            <button ng-click="vm.toggleFullscreen()"
+                    tooltip="Toogle fullscreen mode">
                 <i class="icon icon-view-fullscreen"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-click="vm.goToBookmarkedFrame()">
+            <button ng-click="vm.goToBookmarkedFrame()"
+                    tooltip="Jump to shape creation frame">
                 <i class="icon icon-bookmark"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-click="vm.handleZoomClicked()">
+            <button ng-click="vm.handleZoomClicked()"
+                    tooltip="Open zoom controls">
                 <i class="icon icon-view-zoom"
                    ng-class="{'toggled': vm.popupPanelOpen && vm.popupPanelState === 'zoom'}"
                 ></i>
@@ -36,26 +41,30 @@
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleGotoOpenBracketClicked()">
+                    ng-click="vm.handleGotoOpenBracketClicked()"
+                    tooltip="Jump to start frame of the active shape">
                 <i class="icon icon-selection-gostart"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleSetOpenBracketClicked()">
+                    ng-click="vm.handleSetOpenBracketClicked()"
+                    tooltip="Set the start frame of the active shape">
                 <i class="icon icon-selection-start"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button class="button"
-                    ng-click="vm.rewind()">
+                    ng-click="vm.rewind()"
+                    tooltip="Fast backwards">
                 <i class="icon icon-control-backwards"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button class="button"
-                    ng-click="vm.handlePreviousFrameClicked()">
+                    ng-click="vm.handlePreviousFrameClicked()"
+                    tooltip="Jump to previous frame">
                 <i class="icon icon-control-previous"></i>
             </button>
         </div>
@@ -63,45 +72,52 @@
             <button class="button"
                     ng-click="vm.handlePlay()"
                     ng-if="!vm.playing && vm.selectedPaperShape !== null"
+                    tooltip="Play within frame range of active shape"
             >
                 <i class="icon icon-control-play-steps"></i>
             </button>
             <button class="button"
                     ng-click="vm.handlePlay()"
                     ng-if="!vm.playing && vm.selectedPaperShape === null"
+                    tooltip="Play video"
             >
                 <i class="icon icon-control-play"></i>
             </button>
             <button class="button"
                     ng-click="vm.handlePause()"
                     ng-if="vm.playing"
+                    tooltip="Pause video"
             >
                 <i class="icon icon-control-pause"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button class="button"
-                    ng-click="vm.handleNextFrameClicked()">
+                    ng-click="vm.handleNextFrameClicked()"
+                    tooltip="Jump to next frame">
                 <i class="icon icon-control-next"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button class="button"
-                    ng-click="vm.fastForward()">
+                    ng-click="vm.fastForward()"
+                    tooltip="Fast forward">
                 <i class="icon icon-control-forwards"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleSetCloseBracketClicked()">
+                    ng-click="vm.handleSetCloseBracketClicked()"
+                    tooltip="Set the end frame of the active shape">
                 <i class="icon icon-selection-end"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleGotoCloseBracketClicked()">
+                    ng-click="vm.handleGotoCloseBracketClicked()"
+                    tooltip="Jump to the end frame of the active shape">
                 <i class="icon icon-selection-goend"></i>
             </button>
         </div>
@@ -111,14 +127,17 @@
     <div class="grid-block small-5 task-bar-right">
         <div class="grid-content noscroll" ng-if="vm.task.taskType === 'object-labeling'">
             <button class="button"
-                    ng-click="vm.handleNewLabeledThingClicked()">
+                    ng-click="vm.handleNewLabeledThingClicked()"
+                    tooltip="Create new shape"
+            >
                 <i class="icon icon-selection-add"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleHideLabeledThingsInFrameToggle()">
+                    ng-click="vm.handleHideLabeledThingsInFrameToggle()"
+                    tooltip="Toggle hiding all, but the active shape">
                 <i class="icon icon-selection-off"
                    ng-class="{'toggled': vm.hideLabeledThingsInFrame}"
                 ></i>
@@ -157,14 +176,16 @@
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleInterpolation()">
+                    ng-click="vm.handleInterpolation()"
+                    tooltip="Interpolate shape between its start and end frames">
                 <i class="icon icon-selection-generate"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
                     class="button"
-                    ng-click="vm.handleDeleteSelectionClicked()">
+                    ng-click="vm.handleDeleteSelectionClicked()"
+                    tooltip="Delete the active shape">
                 <i class="icon icon-selection-delete"></i>
             </button>
         </div>
