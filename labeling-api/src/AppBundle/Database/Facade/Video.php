@@ -45,6 +45,21 @@ class Video
         return $this->documentManager->find(Model\Video::class, $id);
     }
 
+    /**
+     * @param string[] $ids
+     *
+     * @return Video[]
+     */
+    public function findById(array $ids)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_video', 'by_id')
+            ->setKeys($ids)
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
     public function getPrelabeledFrames(Model\Video $video)
     {
         //TODO: implement

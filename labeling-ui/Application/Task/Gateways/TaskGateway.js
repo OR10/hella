@@ -27,8 +27,8 @@ class TaskGateway {
     const url = this._apiService.getApiUrl('/task');
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
+        if (response.data && response.data.result && response.data.result.tasks) {
+          return response.data.result.tasks;
         }
 
         throw new Error('Failed loading task list');

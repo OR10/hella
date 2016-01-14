@@ -21,6 +21,10 @@ use Symfony\Component\HttpFoundation;
  */
 class Task extends Controller\Base
 {
+    /**
+     * @var Facade\Video
+     */
+    private $videoFacade;
 
     /**
      * @var Facade\LabelingTask
@@ -36,8 +40,12 @@ class Task extends Controller\Base
      * @param Facade\LabelingTask $labelingTaskFacade
      * @param Service\FrameCdn    $frameCdn
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade, Service\FrameCdn $frameCdn)
-    {
+    public function __construct(
+        Facade\Video $videoFacade,
+        Facade\LabelingTask $labelingTaskFacade,
+        Service\FrameCdn $frameCdn
+    ) {
+        $this->videoFacade        = $videoFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->frameCdn           = $frameCdn;
     }
@@ -47,15 +55,41 @@ class Task extends Controller\Base
      *
      * @Rest\Get("")
      *
+     * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function listAction()
+    public function listAction(HttpFoundation\Request $request)
     {
-        $tasks = $this->labelingTaskFacade->findAllEnabled(null);
+        $fetchVideos = $request->query->getBoolean('includeVideos', false);
+
+        $videos = [];
+        $tasks  = $this->labelingTaskFacade->findAllEnabled(null);
+
+        if ($fetchVideos) {
+            $videoIds = array_values(
+                array_unique(
+                    array_map(
+                        function($task) {
+                            return $task->getVideoId();
+                        },
+                        $tasks
+                    )
+                )
+            );
+
+            if (!empty($videoIds)) {
+                foreach ($this->videoFacade->findById($videoIds) as $video) {
+                    $videos[$video->getId()] = $video;
+                }
+            }
+        }
 
         return View\View::create()->setData([
-            'totalCount' => count($tasks),
-            'result'     => $tasks,
+            'result' => [
+                'tasks' => $tasks,
+                'videos' => $videos,
+            ]
         ]);
     }
 
