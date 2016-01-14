@@ -194,13 +194,13 @@ class ThumbnailReelController {
   }
 
   _recalculateViewSize() {
-    const dimensonFactor = this.video.metaData.width / this.video.metaData.height;
+    const dimensionFactor = this.video.metaData.width / this.video.metaData.height;
     const spacerWidth = this._$element.find('.thumbnail-spacer').outerWidth();
     const reelWidth = this._$element.outerWidth();
     const reelHeight = this._$element.outerHeight();
 
     const thumbnailHeight = reelHeight;
-    const thumbnailWidth = thumbnailHeight * dimensonFactor;
+    const thumbnailWidth = thumbnailHeight * dimensionFactor;
 
     const thumbnailsFitToReel = (reelWidth - spacerWidth) / (thumbnailWidth + spacerWidth);
 
@@ -229,18 +229,19 @@ class ThumbnailReelController {
       return;
     }
 
-    this._labeledThingInFrameBuffer.add(
-      this._loadLabeledThingsInFrame(this.framePosition)
-      )
-      .then(labeledThingsInFrame => {
-        labeledThingsInFrame.forEach(
-          (labeledThingInFrame, index) => {
-            const thumbnail = this.thumbnails[index];
-            const location = thumbnail.location;
-            this.thumbnails[index] = {location, labeledThingInFrame};
-          }
-        );
-      });
+    this._lockService.acquire(newPaperShape.labeledThingInFrame.labeledThing.id, release => {
+      release();
+      this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(this.framePosition))
+        .then(labeledThingsInFrame => {
+          labeledThingsInFrame.forEach(
+            (labeledThingInFrame, index) => {
+              const thumbnail = this.thumbnails[index];
+              const location = thumbnail.location;
+              this.thumbnails[index] = {location, labeledThingInFrame};
+            }
+          );
+        });
+    });
   }
 
   _updateThumbnailData() {

@@ -697,39 +697,41 @@ class ViewerController {
       );
     }
 
-    // Update the frame range for the associated LabeledThing if we made a modification outside of it
-    let labeledThingUpdatePromise = Promise.resolve();
+    this._lockService.acquire(labeledThing.id, release => {
+      // Update the frame range for the associated LabeledThing if we made a modification outside of it
+      let labeledThingUpdatePromise = Promise.resolve();
 
-    if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
-      labeledThing.frameRange.endFrameNumber = this.framePosition.position;
+      if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
+        labeledThing.frameRange.endFrameNumber = this.framePosition.position;
 
-      labeledThingUpdatePromise = labeledThingUpdatePromise.then(
-        () => {
-          return this._labeledThingGateway.saveLabeledThing(labeledThing);
-        }
-      );
-    }
-
-    if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
-      labeledThing.frameRange.startFrameNumber = this.framePosition.position;
-
-      labeledThingUpdatePromise = labeledThingUpdatePromise.then(
-        () => {
-          return this._labeledThingGateway.saveLabeledThing(labeledThing);
-        }
-      );
-    }
-
-    // @TODO this needs to be fixed for supporting multiple shapes
-    //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
-    labeledThingInFrame.shapes[0] = shape.toJSON();
-
-    labeledThingUpdatePromise.then(
-      () => {
-        this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+        labeledThingUpdatePromise = labeledThingUpdatePromise.then(
+          () => {
+            return this._labeledThingGateway.saveLabeledThing(labeledThing);
+          }
+        );
       }
-    ).then(() => {
-      this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true);
+
+      if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
+        labeledThing.frameRange.startFrameNumber = this.framePosition.position;
+
+        labeledThingUpdatePromise = labeledThingUpdatePromise.then(
+          () => {
+            return this._labeledThingGateway.saveLabeledThing(labeledThing);
+          }
+        );
+      }
+
+      // @TODO this needs to be fixed for supporting multiple shapes
+      //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
+      labeledThingInFrame.shapes[0] = shape.toJSON();
+
+      labeledThingUpdatePromise.then(
+        () => {
+          return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+        }
+      ).then(() => {
+        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true);
+      }).then(release);
     });
   }
 
