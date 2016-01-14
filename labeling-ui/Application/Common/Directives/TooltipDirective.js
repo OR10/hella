@@ -64,7 +64,7 @@ class TooltipDirective {
    * @private
    */
   _onTargetMouseEnter(targetElement, tooltipElement) {
-    const tooltipPositioningOffset = 10;
+    const tooltipPositioningOffset = 4;
 
     const targetPosition = targetElement.getBoundingClientRect();
 

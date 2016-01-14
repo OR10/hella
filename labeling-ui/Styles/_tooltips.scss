@@ -2,6 +2,9 @@
   z-index: 9999;
   display: none;
   position: absolute;
+  border-radius: 4px;
+  text-align: center;
+
   background-color: $body-background;
   padding: 7px 10px;
   max-width: 250px;
