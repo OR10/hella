@@ -11,3 +11,7 @@
     color: $icon-hover !important;
   }
 }
+
+.icon.no-hover:hover {
+  color: $icon !important;
+}
