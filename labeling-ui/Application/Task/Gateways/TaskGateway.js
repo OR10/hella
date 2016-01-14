@@ -27,11 +27,28 @@ class TaskGateway {
     const url = this._apiService.getApiUrl('/task');
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (response.data && response.data.result && response.data.result.tasks) {
-          return response.data.result.tasks;
+        if (!response.data || !response.data.result || !response.data.result.tasks) {
+          throw new Error('Failed loading task list');
         }
 
-        throw new Error('Failed loading task list');
+        return response.data.result.tasks;
+      });
+  }
+
+  /**
+   * Retrieves a list of available {@link Task}s and their associated videos
+   *
+   * @return {AbortablePromise<{tasks: Task[], videos: Object<string, Video>}|Error>}
+   */
+  getTasksAndVideos() {
+    const url = this._apiService.getApiUrl('/task', {includeVideos: true});
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos) {
+          throw new Error('Failed loading task list');
+        }
+
+        return response.data.result;
       });
   }
 

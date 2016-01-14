@@ -2,8 +2,8 @@
 
     <div class="grid-container menubar">
         <div class="grid-content">
-            <div ng-if="vm.tasks === null" class="">Loading Tasks...</div>
-            <div ng-if="vm.tasks.length === 0" class="">No tasks available!</div>
+            <div ng-if="vm.tasksWithVideos === null" class="">Loading Tasks...</div>
+            <div ng-if="vm.tasksWithVideos.length === 0" class="">No tasks available!</div>
         </div>
     </div>
 
@@ -17,8 +17,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in vm.tasks">
-                    <td><a href="" ui-sref="^.task({taskId: task.id})">{{task.id}}</a></td>
+                <tr ng-repeat="task in vm.tasksWithVideo track by task.id">
+                    <td >
+                        <a href="" ui-sref="^.task({taskId: task.id})"
+                           ng-class="{'type-object-labeling': task.taskType === 'object-labeling', 'type-meta-labeling': task.taskType === 'meta-labeling'}"
+                        >
+                            <span class="video-name">{{task.video.name}}</span>
+                            <span class="frame-range">{{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}</span>
+                        </a>
+                    </td>
                     <td class="col-md-2"><a href="" ui-sref="export({taskId: task.id})">Export data</a>
                     </td>
                 </tr>

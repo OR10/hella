@@ -31,9 +31,10 @@ class TaskListController {
    * @private
    */
   _loadTaskList() {
-    this._taskGateway.getTasks()
-      .then((tasks) => {
-        this.tasks = tasks;
+    this._taskGateway.getTasksAndVideos()
+      .then(({tasks, videos}) => {
+        tasks.forEach(task => task.video = videos[task.videoId]);
+        this.tasksWithVideo = tasks;
       });
   }
 }
