@@ -4,7 +4,7 @@
             <i class="icon icon-previous"></i>
         </a>
     </div>
-    <div class="grid-content text-left small-15 noscroll" ng-click="vm.handleTitleClick($event)">
+    <div class="grid-content text-left small-15 noscroll" as-right-click="vm.showReleaseInformation()">
         <span ng-show="vm.releaseInformation === null">
             {{vm.task.id}}
         </span>

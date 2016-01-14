@@ -50,18 +50,14 @@ class HeaderController {
     modal.activate();
   }
 
-  handleTitleClick(event) {
-    const timesClicked = event.originalEvent.detail || 0;
-
-    if (timesClicked === 4) {
-      this._releaseConfigService.getReleaseConfig().then(releaseConfig => {
-        if (this._releaseInformationTimeout !== null) {
-          this._$timeout.cancel(this._releaseInformationTimeout);
-        }
-        this.releaseInformation = releaseConfig;
-        this._releaseInformationTimeout = this._$timeout(() => this.releaseInformation = null, 3000);
-      });
-    }
+  showReleaseInformation() {
+    this._releaseConfigService.getReleaseConfig().then(releaseConfig => {
+      if (this._releaseInformationTimeout !== null) {
+        this._$timeout.cancel(this._releaseInformationTimeout);
+      }
+      this.releaseInformation = releaseConfig;
+      this._releaseInformationTimeout = this._$timeout(() => this.releaseInformation = null, 6000);
+    });
   }
 }
 

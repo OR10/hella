@@ -13,6 +13,7 @@ import ModalService from './Services/ModalService';
 import ReleaseConfigService from './Services/ReleaseConfigService';
 import LoadingMaskDirective from './Directives/LoadingMaskDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
+import RightClickDirective from './Directives/RightClickDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
@@ -51,6 +52,7 @@ class Common extends Module {
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
     this.registerDirective('splitView', SplitViewDirective);
+    this.registerDirective('asRightClick', RightClickDirective);
 
     this.module.config(['$httpProvider', 'loggerServiceProvider', ($httpProvider, loggerServiceProvider) => {
       $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
