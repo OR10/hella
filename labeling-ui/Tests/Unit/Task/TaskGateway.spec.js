@@ -96,4 +96,19 @@ describe('TaskGateway', () => {
 
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
+
+  it('should mark tasks as labeled', (done) => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/123asdf/mark/labeled').respond(markResponse);
+
+    gateway.markTaskAsLabeled({id: '123asdf'}).then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
 });
