@@ -7,6 +7,8 @@ class LoadingMaskDirective
     this.template = loadingMaskTemplate;
     this.scope = {
       spinner: '=?',
+      backdrop: '=?',
+      blockInteraction: '=?',
     };
     this.bindToController = true;
     this.controllerAs = 'vm';
@@ -15,3 +17,4 @@ class LoadingMaskDirective
 }
 
 export default LoadingMaskDirective;
+

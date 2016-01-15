@@ -10,6 +10,7 @@
      min-size="vm.minSizes"
      class="main grid-block noscroll">
     <div class="grid-block sidebar-left vertical noscrollbars">
+        <loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true" spinner="vm.leftSidebarWorking"></loading-mask>
         <div class="grid-block vertical noscrollbars">
             <task-description ng-show="vm.currentLabelingInstructions.shortDescription"
                               title="Task Description"
@@ -60,7 +61,7 @@
             frame-skip="vm.frameSkip"
     ></viewer>
     <div class="grid-block sidebar-right ">
-
+        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true" spinner="vm.rightSidebarWorking"></loading-mask>
         <label-selector class="grid-block"
                         labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
                         structure="vm.labelingStructure"
@@ -86,7 +87,6 @@
                 hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
                 new-shape-drawing-tool="vm.newShapeDrawingTool"
                 video="vm.video"
-                application-state="vm.applicationState"
                 bookmarked-frame-number="vm.bookmarkedFrameNumber"
                 fps-input-visible="vm.fpsInputVisible"
 ></media-controls>

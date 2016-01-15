@@ -1,4 +1,5 @@
 <div class="task-bar button-bar grid-block">
+    <loading-mask ng-if="vm.mediaControlsDisabled" backdrop="false" block-interaction="true" spinner="false" ></loading-mask>
     <div class="grid-block small-5 task-bar-left">
         <div class="grid-content noscroll">
             <button ng-click="vm.handleVideoSettingsClicked()"
@@ -36,6 +37,7 @@
         </div>
     </div>
     <div class="grid-block task-bar-center">
+        <loading-mask ng-if="vm.mediaControlsDisabled" backdrop="false" block-interaction="true" spinner="false" ></loading-mask>
         <div class="grid-content small-5"></div>
 
         <div class="grid-content noscroll">
@@ -125,6 +127,7 @@
         <div class="grid-content small-5"></div>
     </div>
     <div class="grid-block small-5 task-bar-right">
+        <loading-mask ng-if="vm.mediaControlsDisabled" backdrop="false" block-interaction="true" spinner="false" ></loading-mask>
         <div class="grid-content noscroll" ng-if="vm.task.taskType === 'object-labeling'">
             <button class="button"
                     ng-click="vm.handleNewLabeledThingClicked()"

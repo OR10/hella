@@ -70,6 +70,22 @@ class TaskGateway {
         throw new Error(`Failed loading task with id ${id}`);
       });
   }
+
+  /**
+   * @param {Task} task
+   * @returns {AbortablePromise}
+   */
+  markTaskAsLabeled(task) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/mark/labeled`);
+    return this._bufferedHttp.post(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed marking task (${task.id}) as labeled.`);
+      });
+  }
 }
 
 TaskGateway.$inject = [

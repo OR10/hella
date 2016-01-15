@@ -15,13 +15,17 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 export default class LabelSelectorController {
   /**
    * @param {angular.$scope} $scope
+   * @param {angular.$location} $location
    * @param {LinearLabelStructureVisitor} linearLabelStructureVisitor
    * @param {AnnotationLabelStructureVisitor} annotationStructureVisitor
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {EntityIdService} entityIdService
+   * @param {ModalService} modalService
+   * @param {ApplicationState} applicationState
+   * @param {TaskGateway} taskGateway
    */
-  constructor($scope, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway, entityIdService) {
+  constructor($scope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -34,6 +38,12 @@ export default class LabelSelectorController {
      * @type {Object.<string, string>}
      */
     this.choices = {};
+
+    /**
+     * @type {angular.$location}
+     * @private
+     */
+    this._$location = $location;
 
     /**
      * @type {LinearLabelStructureVisitor}
@@ -64,6 +74,24 @@ export default class LabelSelectorController {
      * @private
      */
     this._entityIdService = entityIdService;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
+     * @type {ApplicationState}
+     * @private
+     */
+    this._applicationState = applicationState;
+
+    /**
+     * @type {TaskGateway}
+     * @private
+     */
+    this._taskGateway = taskGateway;
 
     /**
      * @type {Number|null}
@@ -278,13 +306,40 @@ export default class LabelSelectorController {
   previousPage() {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
+
+  markTaskAsLabeled() {
+    const modal = this._modalService.getInfoDialog(
+      {
+        title: 'Finish Task',
+        headline: 'Mark this task as finished?',
+        message: 'You are about to mark this task as being finished. After that it will be assigned back to the Label-Coordinator for review. You will not be able to change anything in this task from this point on.',
+        confirmButtonText: 'Finish',
+        cancelButtonText: 'Cancel',
+      },
+      () => {
+        this._applicationState.disableAll();
+        this._applicationState.viewer.work();
+        this._taskGateway.markTaskAsLabeled(this.task)
+          .then(() => {
+            this._$location.path('/labeling/tasks');
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+          });
+      }
+    );
+    modal.activate();
+  }
 }
 
 LabelSelectorController.$inject = [
   '$scope',
+  '$location',
   'linearLabelStructureVisitor',
   'annotationLabelStructureVisitor',
   'labeledFrameGateway',
   'labeledThingInFrameGateway',
   'entityIdService',
+  'modalService',
+  'applicationState',
+  'taskGateway',
 ];

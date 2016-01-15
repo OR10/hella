@@ -394,8 +394,14 @@ class ViewerController {
     );
 
     applicationState.$watch(
-      'viewer.disabled', (viewerDisabled) => {
+      'viewer.isDisabled', (viewerDisabled) => {
         this.viewerDisabled = viewerDisabled;
+      }
+    );
+
+    applicationState.$watch(
+      'viewer.isWorking', (viewerWorking) => {
+        this.viewerWorking = viewerWorking;
       }
     );
 
