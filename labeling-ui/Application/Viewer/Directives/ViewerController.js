@@ -347,7 +347,7 @@ class ViewerController {
 
     $scope.$watch('vm.selectedPaperShape', (newShape) => {
       if (newShape) {
-        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, 1);
+        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
       }
     });
 
@@ -752,7 +752,7 @@ class ViewerController {
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish())
-      .then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, 1));
+      .then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
 
     this.activeTool = null;
 

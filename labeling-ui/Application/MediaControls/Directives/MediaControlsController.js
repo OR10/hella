@@ -280,8 +280,8 @@ class MediaControlsController {
     this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
       .then(
         () => {
-          this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, 1);
-          this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, 1, true);
+          this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
+          this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
           this._applicationState.enableAll();
         }
       )
