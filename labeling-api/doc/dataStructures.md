@@ -98,3 +98,13 @@
 + username: `user` (string) - The username of the current user.
 + email: `user@example.com` (string) - The email address of the current user.
 
+## Task Statistics
+
++ task:
+    + id: `36047d429d50548893be41c6880632fd` (string) - The id of the task.
+    + frameRange: (FrameRange)
++ video:
+    + id: `16b00780792d045c496513f01f006f09` (string) - The id of the video.
+    + name: `example.avi` (string) - The name of the video.
++ totalLabelingTimeInSeconds: `12345` (number) - The total time in seconds all labelers spent on the task.
++ totalNumberOfLabeledThings: `123` (number) - The total number of LabeledThings of the task.
