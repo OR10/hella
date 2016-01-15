@@ -54,7 +54,7 @@ class DrawingTool extends Tool {
     const newLabeledThing = new LabeledThing({
       id: newLabeledThingId,
       lineColor: color,
-      classes: [],
+      classes: this._$scope.vm.task.predefinedClasses || [],
       incomplete: true,
       task: this._$scope.vm.task,
       frameRange: {
@@ -65,7 +65,7 @@ class DrawingTool extends Tool {
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
       id: newLabeledThingInFrameId,
-      classes: this._$scope.vm.task.predefinedClasses || [],
+      classes: [],
       incomplete: true,
       frameNumber: framePosition.position,
       labeledThing: newLabeledThing,
