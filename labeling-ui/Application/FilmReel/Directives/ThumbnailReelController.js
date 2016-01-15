@@ -275,7 +275,7 @@ class ThumbnailReelController {
    * @private
    */
   _calculateOffsetAndLimitByPosition(framePosition) {
-    const relativeFrameNumber = framePosition.position - this.task.frameRange.startFrameNumber;
+    const relativeFrameNumber = framePosition.position - this.task.frameRange.startFrameNumber + 1;
     const relativeEndFrameNumber = framePosition.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
 
     const offset = Math.max(0, relativeFrameNumber - this._thumbnailLookahead);
