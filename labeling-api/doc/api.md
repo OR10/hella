@@ -21,3 +21,4 @@ broken a 400 status code should be returned.
 <!-- include(labeledThing.md) -->
 <!-- include(status.md) -->
 <!-- include(currentUser.md) -->
+<!-- include(statistics.md) -->
