@@ -1,5 +1,7 @@
 <div class="loading-mask-inner">
-    <div class="loading-mask-backdrop">
+    <div class="loading-mask-backdrop" ng-if="vm.blockInteraction && vm.backdrop">
+    </div>
+    <div class="loading-mask-backdrop invisible" ng-if="vm.blockInteraction && !vm.backdrop">
     </div>
     <div class="loading-spinner" ng-if="vm.spinner">
         <div class="spinner-shadow"></div>

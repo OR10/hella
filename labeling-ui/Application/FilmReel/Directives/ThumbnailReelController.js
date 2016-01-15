@@ -38,12 +38,12 @@ class ThumbnailReelController {
     /**
      * @type {boolean}
      */
-    this.showLoadingSpinner = false;
+    this.thumbnailsWorking = false;
 
     /**
      * @type {boolean}
      */
-    this.showLoadingMask = false;
+    this.thumbnailsDisabled = false;
 
     /**
      * @type {ApplicationState}
@@ -152,7 +152,8 @@ class ThumbnailReelController {
       $window.removeEventListener('resize', onWindowResized);
     });
 
-    this._applicationState.$watch('thumbnails.disabled', disabled => this.showLoadingMask = disabled);
+    this._applicationState.$watch('thumbnails.isDisabled', disabled => this.thumbnailsDisabled = disabled);
+    this._applicationState.$watch('thumbnails.isWorking', working => this.thumbnailsWorking = working);
 
     // Update thumbnails on frame and/or selection change change
     $scope.$watch('vm.framePosition.position', () => {
@@ -167,13 +168,10 @@ class ThumbnailReelController {
     // Update Thumbnails after playing stopped.
     $scope.$watch('vm.playing', (playingNow, playingBefore) => {
       if (this.freezeThumbnails && playingNow) {
-        this.showLoadingMask = true;
+        this._applicationState.thumbnails.disable();
       } else {
-        if (this._applicationState.thumbnails.disabled !== true) {
-          this.showLoadingMask = false;
-        }
-
         if (playingBefore) {
+          this._applicationState.thumbnails.enable();
           this._updateThumbnailData();
           if (this.selectedPaperShape !== null) {
             this._updateLabeledThingInFrames(this.selectedPaperShape);

@@ -19,8 +19,9 @@ class TaskController {
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {$stateParams} $stateParams
    * @param {$location} $location
+   * @param {ApplicationState} applicationState
    */
-  constructor($scope, initialData, user, labeledFrameGateway, $stateParams, $location) {
+  constructor($scope, initialData, user, labeledFrameGateway, $stateParams, $location, applicationState) {
     /**
      * @type {angular.Scope}
      */
@@ -95,6 +96,26 @@ class TaskController {
      * @type {Tool}
      */
     this.newShapeDrawingTool = null;
+
+    /**
+     * @type {boolean}
+     */
+    this.leftSideDisabled = false;
+
+    /**
+     * @type {boolean}
+     */
+    this.leftSideWorking = false;
+
+    /**
+     * @type {boolean}
+     */
+    this.rightSidebarDisabled = false;
+
+    /**
+     * @type {boolean}
+     */
+    this.rightSidebarWorking = false;
 
     /**
      * Currently active {@link BrightnessFilter}
@@ -216,6 +237,11 @@ class TaskController {
     $scope.$watch(() => $location.hash(), () => {
       this.framePosition.goto(this._getFrameNumberFromUrl());
     });
+
+    applicationState.$watch('sidebarLeft.isDisabled', disabled => this.leftSidebarDisabled = disabled);
+    applicationState.$watch('sidebarLeft.isWorking', working => this.leftSidebarWorking = working);
+    applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
+    applicationState.$watch('sidebarRight.isWorking', working => this.rightSidebarWorking = working);
   }
 
   _initializeLabelingStructure() {
@@ -288,6 +314,7 @@ TaskController.$inject = [
   'labeledFrameGateway',
   '$stateParams',
   '$location',
+  'applicationState',
 ];
 
 export default TaskController;

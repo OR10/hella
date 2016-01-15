@@ -43,6 +43,11 @@ class MediaControlsController {
     dataPrefetcher
   ) {
     /**
+     * @type {boolean}
+     */
+    this.mediaControlsDisabled = false;
+
+    /**
      * @type {LabeledThingInFrameGateway}
      * @private
      */
@@ -130,6 +135,8 @@ class MediaControlsController {
         }
       }
     );
+
+    this._applicationState.$watch('mediaControls.isDisabled', disabled => this.mediaControlsDisabled = disabled);
   }
 
   /**

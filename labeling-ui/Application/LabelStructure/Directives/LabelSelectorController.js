@@ -318,9 +318,11 @@ export default class LabelSelectorController {
       },
       () => {
         this._applicationState.disableAll();
+        this._applicationState.viewer.work();
         this._taskGateway.markTaskAsLabeled(this.task)
           .then(() => {
             this._$location.path('/labeling/tasks');
+            this._applicationState.viewer.finish();
             this._applicationState.enableAll();
           });
       }

@@ -1,6 +1,6 @@
 <!--data-drop="{{vm.isValidDropTarget($index)}}"-->
 <div class="thumbnail-reel-list grid-block">
-    <loading-mask spinner="vm.showLoadingSpinner" ng-if="vm.showLoadingMask"></loading-mask>
+    <loading-mask ng-if="vm.thumbnailsDisabled" spinner="vm.thumbnailsWorking" backdrop="true"></loading-mask>
     <div class="thumbnail-spacer"
          ng-class="{'drop-target': vm.placeBracketSpacer(-1), 'active': vm.thumbnailSpacerInFrameRange(-1)}"
          data-jqyoui-options="{}"
