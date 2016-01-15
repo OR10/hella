@@ -6,11 +6,12 @@ use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
-use JMS\Serializer;
 use Symfony\Component\HttpFoundation;
 
 class LabeledFrameTest extends Tests\WebTestCase
 {
+    const ROUTE = "/api/task/%s/labeledFrame/%s";
+
     /**
      * @var Facade\Video
      */
@@ -26,302 +27,243 @@ class LabeledFrameTest extends Tests\WebTestCase
      */
     private $labeledFrameFacade;
 
-    private $serializer;
+    /**
+     * @var Model\Video
+     */
+    private $video;
+
+    /**
+     * @var Model\LabelingTask
+     */
+    private $task;
 
     public function testGetLabeledFrameDocument()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $response     = $this->doRequest('GET', $labelingTask->getId(), $labeledFrame->getFrameNumber());
+        $frame   = $this->createLabeledFrame($this->task);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])->execute();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
     }
 
     public function testGetLabeledFrameDocumentInvalidTaskId()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $response     = $this->doRequest('GET', 1111, $labeledFrame->getFrameNumber());
+        $frame   = $this->createLabeledFrame($this->task);
+        $request = $this->createRequest(self::ROUTE, [1111, $frame->getFrameNumber()])->execute();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $request->getResponse()->getStatusCode());
     }
 
     public function testGetLabeledFrameDocumentInvalidFrameNumber()
     {
-        $labelingTask = $this->createLabelingTask();
-        $response     = $this->doRequest('GET', $labelingTask->getId(), 1111);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 1111])->execute();
 
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(
+            HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR,
+            $request->getResponse()->getStatusCode()
+        );
     }
 
     public function testDeleteLabeledFrame()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $response     = $this->doRequest('DELETE', $labelingTask->getId(), $labeledFrame->getFrameNumber());
+        $frame   = $this->createLabeledFrame($this->task);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->execute();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
     }
 
     public function testDeleteLabeledFrameInvalidTaskId()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $response     = $this->doRequest('DELETE', 1111, $labeledFrame->getFrameNumber());
+        $frame   = $this->createLabeledFrame($this->task);
+        $request = $this->createRequest(self::ROUTE, [1111, $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->execute();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $request->getResponse()->getStatusCode());
     }
 
     public function testDeleteLabeledFrameInvalidFrameId()
     {
-        $labelingTask = $this->createLabelingTask();
-        $response     = $this->doRequest('DELETE', $labelingTask->getId(), 1111);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 1111])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->execute();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $request->getResponse()->getStatusCode());
     }
 
     public function testSaveLabeledFrame()
     {
-        $labelingTask = $this->createLabelingTask();
-        $response = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            10,
-            json_encode(
-                array(
-                    'id' => '22dd639108f1419967ed8d6a1f5a744b',
-                    'classes' => array('class1' => 'test'),
-                    'frameNumber' => 10,
-                )
-            )
-        );
-        $this->assertEquals(200, $response->getStatusCode());
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'id' => '22dd639108f1419967ed8d6a1f5a744b',
+                'classes' => [
+                    'class1' => 'test',
+                ],
+                'frameNumber' => 10,
+            ])
+            ->execute();
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
     }
 
     public function testSaveLabeledFrameWithoutClasses()
     {
-        $labelingTask = $this->createLabelingTask();
-        $response = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            10,
-            json_encode(
-                array(
-                    'id' => '22dd639108f1419967ed8d6a1f5a744a',
-                    'frameNumber' => 10,
-                )
-            )
-        );
-        $this->assertEquals(200, $response->getStatusCode());
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'id' => '22dd639108f1419967ed8d6a1f5a744a',
+                'frameNumber' => 10,
+            ])
+            ->execute();
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
     }
 
     public function testUpdateLabeledFrame()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $response = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            $labeledFrame->getFrameNumber(),
-            json_encode(
-                array(
-                    'id' => $labeledFrame->getId(),
-                    'frameNumber' => $labeledFrame->getFrameNumber(),
-                    'rev' => $labeledFrame->getRev()
-                )
-            )
-        );
+        $frame   = $this->createLabeledFrame($this->task);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'id'          => $frame->getId(),
+                'rev'         => $frame->getRev(),
+                'frameNumber' => $frame->getFrameNumber(),
+            ])
+            ->execute();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
     }
 
     public function testUpdateLabeledFrameWithInvalidRevision()
     {
         $this->markTestIncomplete('Temporary skipping the revision check :(');
 
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = $this->createLabeledFrame($labelingTask);
-        $response     = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            $labeledFrame->getFrameNumber(),
-            json_encode(
-                array(
-                    'frameNumber' => 10,
-                    'rev' => 'this_revision_invalid'
-                )
-            )
-        );
+        $frame   = $this->createLabeledFrame($this->task);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'id'          => $frame->getId(),
+                'rev'         => 'this_revision_invalid',
+                'frameNumber' => $frame->getFrameNumber(),
+            ])
+            ->execute();
 
-        $this->assertEquals(409, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_CONFLICT, $request->getResponse()->getStatusCode());
     }
 
     public function testSaveLabeledFrameWithInvalidBody()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
-        $response = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            $labeledFrame->getFrameNumber(),
-            json_encode(array('invalid' => 'body'))
-        );
+        $frame   = new Model\LabeledFrame($this->task, 10);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'invalid' => 'body',
+            ])
+            ->execute();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $request->getResponse()->getStatusCode());
     }
 
     public function testSaveLabeledFrameWithInvalidFrameNumbers()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
-        $response = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            $labeledFrame->getFrameNumber(),
-            json_encode(
-                array(
-                    'frameNumber' => 20
-                )
-            )
-        );
+        $frame   = Model\LabeledFrame::create($this->task, 10);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'frameNumber' => 20,
+            ])
+            ->execute();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $request->getResponse()->getStatusCode());
     }
 
     public function testSaveLabeledFrameWithInvalidClasses()
     {
-        $labelingTask = $this->createLabelingTask();
-        $labeledFrame = new Model\LabeledFrame($labelingTask, 10);
-        $response = $this->doRequest(
-            'PUT',
-            $labelingTask->getId(),
-            $labeledFrame->getFrameNumber(),
-            json_encode(
-                array(
-                    'classes' => 'test_class',
-                    'frameNumber' => 20
-                )
-            )
-        );
+        $frame = Model\LabeledFrame::create($this->task, 10);
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'frameNumber' => 20,
+                'classes' => 'test_class',
+            ])
+            ->execute();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $request->getResponse()->getStatusCode());
     }
 
     public function testGetMultipleLabeledFramesWithoutAnyExistingLabeledFrames()
     {
-        $task = $this->createLabelingTask();
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+            ->setParameters([
+                'offset' => 0,
+                'limit'  => 3,
+            ])
+            ->execute();
 
-        $response = $this->doRequest('GET', $task->getId(), 10, null, ['offset' => 0, 'limit' => 3]);
-
-        $expectedResult = [
-            'result' => [
-                $this->objectToArray(new Model\LabeledFrame($task, 10)),
-                $this->objectToArray(new Model\LabeledFrame($task, 11)),
-                $this->objectToArray(new Model\LabeledFrame($task, 12)),
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
+        $this->assertEquals(
+            [
+                'result' => [
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 10)),
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 11)),
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 12)),
+                ],
             ],
-        ];
-
-        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals($expectedResult, json_decode($response->getContent(), true));
+            $request->getJsonResponseBody()
+        );
     }
 
     public function testGetMultipleLabeledFramesWithSomeExistingLabeledFrames()
     {
-        $task           = $this->createLabelingTask();
-        $labeledFrame11 = $this->createLabeledFrame($task, 11);
-        $labeledFrame13 = $this->createLabeledFrame($task, 13);
+        $labeledFrame11 = $this->createLabeledFrame($this->task, 11);
+        $labeledFrame13 = $this->createLabeledFrame($this->task, 13);
+        $request        = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+            ->setParameters([
+                'offset' => 0,
+                'limit'  => 4,
+            ])
+            ->execute();
 
-        $response = $this->doRequest('GET', $task->getId(), 10, null, ['offset' => 0, 'limit' => 4]);
-
-        $expectedResult = [
-            'result' => [
-                $this->objectToArray(new Model\LabeledFrame($task, 10)),
-                $this->objectToArray($labeledFrame11),
-                $this->objectToArray($labeledFrame11->copyToFrameNumber(12)),
-                $this->objectToArray($labeledFrame13),
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
+        $this->assertEquals(
+            [
+                'result' => [
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 10)),
+                    $this->serializeObjectAsArray($labeledFrame11),
+                    $this->serializeObjectAsArray($labeledFrame11->copyToFrameNumber(12)),
+                    $this->serializeObjectAsArray($labeledFrame13),
+                ],
             ],
-        ];
-
-        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals($expectedResult, json_decode($response->getContent(), true));
+            $request->getJsonResponseBody()
+        );
     }
 
     protected function setUpImplementation()
     {
-        $userManipulator = static::$kernel->getContainer()->get('fos_user.util.user_manipulator');
-        $userManipulator->create(
-            Controller\IndexTest::USERNAME,
-            Controller\IndexTest::PASSWORD,
-            Controller\IndexTest::EMAIL,
-            true,
-            false
-        );
+        $this->videoFacade        = $this->getAnnostationService('database.facade.video');
+        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledFrameFacade = $this->getAnnostationService('database.facade.labeled_frame');
 
-        /** @var Facade\Video $videoFacade */
-        $this->videoFacade = static::$kernel->getContainer()->get('annostation.labeling_api.database.facade.video');
-        /** @var Facade\LabelingTask $labelingTaskFacade */
-        $this->labelingTaskFacade = static::$kernel->getContainer()->get(
-            'annostation.labeling_api.database.facade.labeling_task'
-        );
-        /** @var Facade\LabeledFrame $labeledFrameFacade */
-        $this->labeledFrameFacade = static::$kernel->getContainer()->get(
-            'annostation.labeling_api.database.facade.labeled_frame'
-        );
+        $this->getService('fos_user.util.user_manipulator')
+            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
 
-        $this->serializer = static::$kernel->getContainer()->get('serializer');
+        $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
+        $this->task = $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->video,
+                new Model\FrameRange(10, 20),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
+        );
     }
 
-    private function doRequest($method, $taskId, $frameNumber, $content = null, $requestParameters = [])
+    private function createLabeledFrame(Model\LabelingTask $task, $frameNumber = 10)
     {
-        $client  = $this->createClient();
-        $crawler = $client->request(
-            $method,
-            sprintf(
-                '/api/task/%s/labeledFrame/%s.json',
-                $taskId,
-                $frameNumber
-            ),
-            $requestParameters,
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
-                'CONTENT_TYPE' => 'application/json',
-            ],
-            $content
+        return $this->labeledFrameFacade->save(
+            Model\LabeledFrame::create($this->task, $frameNumber)
+                ->setClasses(array('foo' => 'bar'))
         );
-
-        return $client->getResponse();
-    }
-
-    private function createLabelingTask()
-    {
-        $video = new Model\Video('foobar');
-        $this->videoFacade->save($video);
-        $frameRange   = new Model\FrameRange(10, 20);
-        $labelingTask = new Model\LabelingTask($video, $frameRange, Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($labelingTask);
-
-        return $labelingTask;
-    }
-
-    private function createLabeledFrame(Model\LabelingTask $labelingTask, $frameNumber = 10)
-    {
-        $labeledFrame = new Model\LabeledFrame($labelingTask, $frameNumber);
-        $labeledFrame->setClasses(array(
-            'foo' => 'bar'
-        ));
-
-        $this->labeledFrameFacade->save($labeledFrame);
-
-        return $labeledFrame;
-    }
-
-    private function objectToArray($object)
-    {
-        $context = new Serializer\SerializationContext();
-        $context->setSerializeNull(true);
-
-        return json_decode($this->serializer->serialize($object, 'json', $context), true);
     }
 }

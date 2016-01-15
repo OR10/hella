@@ -3,42 +3,31 @@
 namespace AppBundle\Tests\Controller;
 
 use AppBundle\Tests;
+use Symfony\Component\HttpFoundation;
 
 class IndexTest extends Tests\WebTestCase
 {
-    const USERNAME = 'user';
-    const PASSWORD = 'password';
-    const EMAIL    = 'user@example.com';
+    const ROUTE = '/';
 
     protected function setUpImplementation()
     {
-        $userManipulator = static::$kernel->getContainer()->get('fos_user.util.user_manipulator');
-
-        $userManipulator->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->getService('fos_user.util.user_manipulator')
+            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
     }
 
     public function testIndexPageRequiresLogin()
     {
-        $client = $this->createClient();
+        $response = $this->createRequest(self::ROUTE)->setServerParameters([])->execute()->getResponse();
 
-        $crawler = $client->request('GET', '/');
-        $response = $client->getResponse();
-
-        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_FOUND, $response->getStatusCode());
         $this->assertEquals('/login', $response->headers->get('Location'));
     }
 
     public function testIndexPageWithValidLoginRedirectsToLabeling()
     {
-        $client = $this->createClient();
+        $response = $this->createRequest(self::ROUTE)->execute()->getResponse();
 
-        $crawler = $client->request('GET', '/', [], [], [
-            'PHP_AUTH_USER' => self::USERNAME,
-            'PHP_AUTH_PW'   => self::PASSWORD,
-        ]);
-        $response = $client->getResponse();
-
-        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_FOUND, $response->getStatusCode());
         $this->assertEquals('/labeling', $response->headers->get('Location'));
     }
 }

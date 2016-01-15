@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation;
 
 class LabeledThingInFrameTest extends Tests\WebTestCase
 {
+    const ROUTE = '/api/labeledThingInFrame/%s';
+
     /**
      * @var Facade\Video
      */
@@ -30,232 +32,190 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
      */
     private $labelingThingInFrameFacade;
 
+    /**
+     * @var Model\Video
+     */
+    private $video;
+
+    /**
+     * @var Model\LabelingTask
+     */
+    private $task;
+
+    /**
+     * @var Model\LabeledThing
+     */
+    private $labeledThing;
+
     public function testGetLabeledThingInFrameDocument()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'GET',
-            $labeledThingInFrame->getId()
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testGetLabeledThingInFrameDocumentNotExists()
     {
-        $response            = $this->doRequest(
-            'GET',
-            12345
-        );
+        $response = $this->createRequest(self::ROUTE, [12345])->execute()->getResponse();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testPutLabeledThingInFrameDocument()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'PUT',
-            $labeledThingInFrame->getId(),
-            json_encode(
-                array(
-                    'rev' => $labeledThingInFrame->getRev(),
-                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
-                    'shapes' => array('shape' => 1),
-                    'classes' => array('class' => 1),
-                    'frameNumber' => 15,
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'rev' => $labeledThingInFrame->getRev(),
+                'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
+                'shapes' => array('shape' => 1),
+                'classes' => array('class' => 1),
+                'frameNumber' => 15,
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testPutLabeledThingInFrameDocumentWithInvalidContent()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'PUT',
-            $labeledThingInFrame->getId(),
-            json_encode(
-                array(
-                    'rev' => $labeledThingInFrame->getRev(),
-                    'shapes' => 'shape_as_string',
-                    'classes' => 'some_class_as_string',
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'rev' => $labeledThingInFrame->getRev(),
+                'shapes' => 'shape_as_string',
+                'classes' => 'some_class_as_string',
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testPutLabeledThingInFrameDocumentMissingDocument()
     {
-        $response            = $this->doRequest(
-            'PUT',
-            1231231231231,
-            json_encode(
-                array(
-                    'labeledThingId' => 'some-non-existing-id',
-                    'rev' => 'some_rev_',
-                    'shapes' => array('shape' => 1),
-                    'classes' => array('class' => 1),
-                    'frameNumber' => 5,
-                )
-            )
-        );
+        $response = $this->createRequest(self::ROUTE, [1231231231231])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'labeledThingId' => 'some-non-existing-id',
+                'rev' => 'some_rev_',
+                'shapes' => array('shape' => 1),
+                'classes' => array('class' => 1),
+                'frameNumber' => 5,
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testPutLabeledThingInFrameDocumentInvalidRevision()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'PUT',
-            $labeledThingInFrame->getId(),
-            json_encode(
-                array(
-                    'rev' => 'some_invalid_revision',
-                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
-                    'shapes' => array('shape' => 1),
-                    'classes' => array('class' => 1),
-                    'frameNumber' => 5,
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'rev' => 'some_invalid_revision',
+                'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
+                'shapes' => array('shape' => 1),
+                'classes' => array('class' => 1),
+                'frameNumber' => 5,
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(409, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_CONFLICT, $response->getStatusCode());
     }
 
     public function testPutLabeledThingInFrameDocumentFrameNumberOutOfRange()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'PUT',
-            $labeledThingInFrame->getId(),
-            json_encode(
-                array(
-                    'rev' => $labeledThingInFrame->getRev(),
-                    'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
-                    'shapes' => array('shape' => 1),
-                    'classes' => array('class' => 1),
-                    'frameNumber' => 30,
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody([
+                'rev' => $labeledThingInFrame->getRev(),
+                'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
+                'shapes' => array('shape' => 1),
+                'classes' => array('class' => 1),
+                'frameNumber' => 30,
+            ])
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testDeleteLabeledThingInFrameDocument()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'DELETE',
-            $labeledThingInFrame->getId(),
-            json_encode(
-                array(
-                    'rev' => $labeledThingInFrame->getRev(),
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->setJsonBody([
+                'rev' => $labeledThingInFrame->getRev(),
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testDeleteLabeledThingInFrameDocumentMissingDocument()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'DELETE',
-            123123123123,
-            json_encode(
-                array(
-                    'rev' => $labeledThingInFrame->getRev(),
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [123123123123])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->setJsonBody([
+                'rev' => $labeledThingInFrame->getRev(),
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testDeleteLabeledThingInFrameDocumentInvalidRevision()
     {
-        $labeledThingInFrame = $this->createLabeledInFrameDocument();
-        $response            = $this->doRequest(
-            'DELETE',
-            $labeledThingInFrame->getId(),
-            json_encode(
-                array(
-                    'rev' => 'invalid_revision',
-                )
-            )
-        );
+        $labeledThingInFrame = $this->createLabeledThingInFrame();
+        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->setJsonBody([
+                'rev' => 'invalid_revision',
+            ])
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals(409, $response->getStatusCode());
-    }
-
-    private function doRequest($method, $labeledThingInFrameId, $content = null)
-    {
-        $client              = $this->createClient();
-        $crawler             = $client->request(
-            $method,
-            sprintf('/api/labeledThingInFrame/%s.json', $labeledThingInFrameId),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW'   => Controller\IndexTest::PASSWORD,
-                'CONTENT_TYPE'  => 'application/json',
-            ],
-            $content
-        );
-
-        return $client->getResponse();
+        $this->assertEquals(HttpFoundation\Response::HTTP_CONFLICT, $response->getStatusCode());
     }
 
     protected function setUpImplementation()
     {
-        $userManipulator = static::$kernel->getContainer()->get('fos_user.util.user_manipulator');
-        $userManipulator->create(
-            Controller\IndexTest::USERNAME,
-            Controller\IndexTest::PASSWORD,
-            Controller\IndexTest::EMAIL,
-            true,
-            false
-        );
+        $this->videoFacade                = $this->getAnnostationService('database.facade.video');
+        $this->labelingTaskFacade         = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labelingThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
+        $this->labelingThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
 
-        /** @var Facade\Video $videoFacade */
-        $this->videoFacade = static::$kernel->getContainer()->get('annostation.labeling_api.database.facade.video');
-        /** @var Facade\LabelingTask $labelingTaskFacade */
-        $this->labelingTaskFacade = static::$kernel->getContainer()->get(
-            'annostation.labeling_api.database.facade.labeling_task'
+        $this->getService('fos_user.util.user_manipulator')
+            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+
+        $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
+        $this->task  = $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->video,
+                new Model\FrameRange(10, 20),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
         );
-        /** @var Facade\LabeledThing $labelingThingFacade */
-        $this->labelingThingFacade = static::$kernel->getContainer()->get(
-            'annostation.labeling_api.database.facade.labeled_thing'
-        );
-        /** @var Facade\LabeledThingInFrame $labelingThingInFrameFacade */
-        $this->labelingThingInFrameFacade = static::$kernel->getContainer()->get(
-            'annostation.labeling_api.database.facade.labeled_thing_in_frame'
-        );
+        $this->labeledThing = $this->labelingThingFacade->save(Model\LabeledThing::create($this->task));
     }
 
-    private function createLabeledInFrameDocument($frameNumber = 15)
+    private function createLabeledThingInFrame($frameNumber = 15)
     {
-        $video = new Model\Video('foobar');
-        $this->videoFacade->save($video);
-        $frameRange   = new Model\FrameRange(10, 20);
-        $labelingTask = new Model\LabelingTask($video, $frameRange, Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($labelingTask);
-        $labeledThing = new Model\LabeledThing($labelingTask);
-        $labeledThing->setId('11dd639108f1419967ed8d6a1f5a76e7');
-        $this->labelingThingFacade->save($labeledThing);
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
-        $labeledThingInFrame->setId('22dd639108f1419967ed8d6a1f5a765t');
-        $this->labelingThingInFrameFacade->save($labeledThingInFrame);
-
-        return $labeledThingInFrame;
+        return $this->labelingThingInFrameFacade->save(Model\LabeledThingInFrame::create($this->labeledThing, $frameNumber));
     }
 }

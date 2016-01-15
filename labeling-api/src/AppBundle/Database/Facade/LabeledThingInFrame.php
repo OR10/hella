@@ -38,6 +38,8 @@ class LabeledThingInFrame
 
         $this->documentManager->persist($labeledThingInFrame);
         $this->documentManager->flush();
+
+        return $labeledThingInFrame;
     }
 
     /**

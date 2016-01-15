@@ -98,6 +98,27 @@ class LabelingTask
      * @param string     $drawingTool
      * @param array      $predefinedClasses
      * @param array      $requiredImageTypes
+     *
+     * @return LabelingTask
+     */
+    public static function create(
+        Video $video,
+        FrameRange $frameRange,
+        $taskType,
+        $drawingTool = null,
+        $predefinedClasses = array(),
+        array $requiredImageTypes = array()
+    ) {
+        return new static($video, $frameRange, $taskType, $drawingTool, $predefinedClasses, $requiredImageTypes);
+    }
+
+    /**
+     * @param Video      $video
+     * @param FrameRange $frameRange
+     * @param string     $taskType
+     * @param string     $drawingTool
+     * @param array      $predefinedClasses
+     * @param array      $requiredImageTypes
      */
     public function __construct(
         Video $video,
@@ -125,10 +146,13 @@ class LabelingTask
 
     /**
      * @param int $userId
+     *
+     * @return LabelingTask
      */
     public function setUserId($userId)
     {
         $this->userId = $userId;
+        return $this;
     }
 
     /**
@@ -165,10 +189,14 @@ class LabelingTask
 
     /**
      * @param string $descriptionText
+     *
+     * @return LabelingTask
      */
     public function setDescriptionText($descriptionText)
     {
         $this->descriptionText = $descriptionText;
+
+        return $this;
     }
 
     /**
@@ -181,10 +209,14 @@ class LabelingTask
 
     /**
      * @param string $descriptionTitle
+     *
+     * @return LabelingTask
      */
     public function setDescriptionTitle($descriptionTitle)
     {
         $this->descriptionTitle = $descriptionTitle;
+
+        return $this;
     }
 
     /**
@@ -213,10 +245,14 @@ class LabelingTask
 
     /**
      * @param boolean $enabled
+     *
+     * @return LabelingTask
      */
     public function setEnabled($enabled = true)
     {
         $this->enabled = (bool) $enabled;
+
+        return $this;
     }
 
     /**
@@ -229,6 +265,8 @@ class LabelingTask
 
     /**
      * @param Video $video
+     *
+     * @return LabelingTask
      */
     public function setEnabledIfAllImagesAreConverted(Video $video)
     {
@@ -238,5 +276,7 @@ class LabelingTask
             }
         }
         $this->setEnabled();
+
+        return $this;
     }
 }

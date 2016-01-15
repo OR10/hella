@@ -39,6 +39,16 @@ class Video
     private $imageTypes;
 
     /**
+     * Static factory method for easy use of the fluent interface.
+     *
+     * @param string $name
+     */
+    public static function create($name)
+    {
+        return new static($name);
+    }
+
+    /**
      * @param string $name The name of the video.
      */
     public function __construct($name)
@@ -117,6 +127,7 @@ class Video
     public function setImageType($imageType, $key, $value)
     {
         $this->imageTypes[$imageType][$key] = $value;
+        return $this;
     }
 
     /**

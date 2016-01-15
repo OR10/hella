@@ -5,6 +5,7 @@ namespace AppBundle\Tests;
 use Doctrine\DBAL\Schema;
 use Doctrine\ORM;
 use Doctrine\ORM\Tools;
+use JMS\Serializer;
 use Symfony\Bundle\FrameworkBundle\Test;
 
 /**
@@ -169,5 +170,24 @@ class KernelTestCase extends Test\KernelTestCase
     protected function getBundlePath()
     {
         return static::$kernel->locateResource(sprintf('@%s', self::BUNDLE_NAME));
+    }
+
+    /**
+     * @param mixed $object
+     *
+     * @return array
+     */
+    protected function serializeObjectAsArray($object)
+    {
+        return json_decode(
+            $this->getService('serializer')
+                ->serialize(
+                    $object,
+                    'json',
+                    Serializer\SerializationContext::create()
+                        ->setSerializeNull(true)
+                ),
+            true
+        );
     }
 }

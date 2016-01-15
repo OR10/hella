@@ -70,6 +70,8 @@ class LabeledThing
 
         $this->documentManager->persist($labeledThing);
         $this->documentManager->flush();
+
+        return $labeledThing;
     }
 
     /**
