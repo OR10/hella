@@ -275,8 +275,12 @@ class ThumbnailReelController {
    * @private
    */
   _calculateOffsetAndLimitByPosition(framePosition) {
-    const offset = Math.max(0, (framePosition.position - 1) - this._thumbnailLookahead);
-    const limit = Math.min(framePosition.endFrameNumber, framePosition.position + this._thumbnailLookahead) - offset;
+    const relativeFrameNumber = framePosition.position - this.task.frameRange.startFrameNumber;
+    const relativeEndFrameNumber = framePosition.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
+
+    const offset = Math.max(0, relativeFrameNumber - this._thumbnailLookahead);
+    const limit = Math.min(relativeEndFrameNumber, relativeFrameNumber + this._thumbnailLookahead) - offset;
+
     return {offset, limit};
   }
 
@@ -290,7 +294,8 @@ class ThumbnailReelController {
    */
   _fillPositionalArrayWithResults(framePosition, offset, results) {
     const positionalArray = new Array(this._thumbnailCount).fill(null);
-    const startIndex = offset - (framePosition.position - 1) + this._thumbnailLookahead;
+    const startIndex = offset - (framePosition.position - this.task.frameRange.startFrameNumber) + this._thumbnailLookahead;
+
     results.forEach((result, index) => positionalArray[startIndex + index] = result);
 
     return positionalArray;

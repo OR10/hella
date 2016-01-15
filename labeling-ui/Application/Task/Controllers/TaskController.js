@@ -264,7 +264,7 @@ class TaskController {
     const matches = hash.match(/F(\d+)/);
 
     if (!matches || matches.length < 2 || !matches[1]) {
-      return 1;
+      return this.task.frameRange.startFrameNumber;
     }
 
     const initialFrameNumber = parseInt(matches[1], 10);

@@ -681,8 +681,10 @@ class ViewerController {
    * @private
    */
   _loadFrameImage(frameNumber) {
+    const relativeFrameNumber = frameNumber - this.task.frameRange.startFrameNumber;
+
     return this._frameLocations.then(
-      frameLocations => this._frameGateway.getImage(frameLocations[frameNumber - 1])
+      frameLocations => this._frameGateway.getImage(frameLocations[relativeFrameNumber])
     );
   }
 
