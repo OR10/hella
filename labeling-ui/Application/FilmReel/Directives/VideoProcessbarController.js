@@ -7,25 +7,27 @@
 class VideoProcessbarController {
   constructor($scope) {
     this.frameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
-    // @TODO this needs to be dynamic at some point
-    this.visibleThumbnailCount = 7;
+
     this.virtualFramesInBar = 2 * this.frameCount - 1;
     this.frameSize = 100 / this.virtualFramesInBar;
 
-    this.thumbnailWidth = this.frameSize * this.visibleThumbnailCount;
-    this.thumbnailStart = 50 - this.thumbnailWidth / 2;
+    $scope.$watch('vm.thumbnailCount', () => {
+      this.thumbnailWidth = this.frameSize * this.thumbnailCount;
+      this.thumbnailStart = 50 - this.thumbnailWidth / 2;
 
-    this.centerFrameWidth = this.frameSize;
-    this.centerFrameStart = this.thumbnailStart + this.frameSize * Math.floor(this.visibleThumbnailCount / 2);
+      this.centerFrameWidth = this.frameSize;
+      this.centerFrameStart = this.thumbnailStart + this.frameSize * Math.floor(this.thumbnailCount / 2);
+    });
 
-    this.videoWidth = this.frameSize * this.frameCount;
+    $scope.$watchGroup(['vm.framePosition.position', 'vm.thumbnailCount'], ([position]) => {
+      const relativePosition = position - this.framePosition.startFrameNumber;
 
-    $scope.$watch('vm.framePosition.position', position => {
-      this.videoStart = this.thumbnailStart - this.frameSize * (position - 1) + this.frameSize * Math.floor(this.visibleThumbnailCount / 2);
+      this.videoWidth = this.frameSize * this.frameCount;
+      this.videoStart = this.thumbnailStart - this.frameSize * (relativePosition) + this.frameSize * Math.floor(this.thumbnailCount / 2);
 
       if (this.selectedPaperShape) {
         const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - 1);
+        this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - this.framePosition.startFrameNumber);
       }
     });
 
@@ -43,7 +45,7 @@ class VideoProcessbarController {
       const frameRange = paperShape.labeledThingInFrame.labeledThing.frameRange;
 
       this.rangeWidth = this.frameSize * (frameRange.endFrameNumber - frameRange.startFrameNumber + 1);
-      this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - 1);
+      this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - this.framePosition.startFrameNumber);
     });
   }
 }

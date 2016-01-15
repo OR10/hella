@@ -62,7 +62,7 @@ class ThumbnailReelController {
      *
      * @type {null}
      */
-    this._thumbnailCount = null;
+    this.thumbnailCount = null;
 
     /**
      * Number of frames to display both before and after the current frame
@@ -204,11 +204,11 @@ class ThumbnailReelController {
 
     const thumbnailsFitToReel = (reelWidth - spacerWidth) / (thumbnailWidth + spacerWidth);
 
-    this._thumbnailCount = Math.round((thumbnailsFitToReel) / 2) * 2 + 1;
+    this.thumbnailCount = Math.round((thumbnailsFitToReel) / 2) * 2 + 1;
 
-    this._thumbnailLookahead = Math.floor(this._thumbnailCount / 2);
+    this._thumbnailLookahead = Math.floor(this.thumbnailCount / 2);
 
-    this.thumbnails = new Array(this._thumbnailCount).fill({location: null, labeledThingInFrame: null});
+    this.thumbnails = new Array(this.thumbnailCount).fill({location: null, labeledThingInFrame: null});
     this._updateLabeledThingInFrames(this.selectedPaperShape)
       .then(() => this._updateThumbnailData());
 
@@ -293,7 +293,7 @@ class ThumbnailReelController {
    * @private
    */
   _fillPositionalArrayWithResults(framePosition, offset, results) {
-    const positionalArray = new Array(this._thumbnailCount).fill(null);
+    const positionalArray = new Array(this.thumbnailCount).fill(null);
     const startIndex = offset - (framePosition.position - this.task.frameRange.startFrameNumber) + this._thumbnailLookahead;
 
     results.forEach((result, index) => positionalArray[startIndex + index] = result);
@@ -334,7 +334,7 @@ class ThumbnailReelController {
    */
   _loadLabeledThingsInFrame(framePosition) {
     if (!this.selectedPaperShape) {
-      return this._abortablePromiseFactory(this._$q.resolve(new Array(this._thumbnailCount).fill(null)));
+      return this._abortablePromiseFactory(this._$q.resolve(new Array(this.thumbnailCount).fill(null)));
     }
 
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
@@ -349,7 +349,7 @@ class ThumbnailReelController {
   }
 
   isCurrentThumbnail(index) {
-    return (this._thumbnailCount - 1) / index === 2;
+    return (this.thumbnailCount - 1) / index === 2;
   }
 
   thumbnailSpacerInFrameRange(index) {
