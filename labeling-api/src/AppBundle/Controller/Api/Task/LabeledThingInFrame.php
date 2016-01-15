@@ -183,52 +183,14 @@ class LabeledThingInFrame extends Controller\Base
             return View\View::create()->setData(['result' => []]);
         }
 
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
+        $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
         $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
         if ($includeGhosts) {
-            $labeledThingInFrames = array_reverse($labeledThingInFrames);
-            $result = array_map(
-                function ($expectedFrameNumber) use (&$labeledThingInFrames) {
-                    reset($labeledThingInFrames);
-                    while ($item = current($labeledThingInFrames)) {
-                        $currentItem = current($labeledThingInFrames);
-                        $prevItem    = prev($labeledThingInFrames);
-                        if (!$prevItem) {
-                            reset($labeledThingInFrames);
-                        } else {
-                            next($labeledThingInFrames);
-                        }
-
-                        $nextItem = next($labeledThingInFrames);
-                        if (!$nextItem) {
-                            $endLabeledThingInFrame = end($labeledThingInFrames);
-                        } else {
-                            prev($labeledThingInFrames);
-                        }
-
-                        if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
-                            return $currentItem;
-                        } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
-                            $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
-                            $ghostLabeledThingInFrame->setGhost(true);
-
-                            return $ghostLabeledThingInFrame;
-                        }
-
-                        next($labeledThingInFrames);
-                    }
-
-                    $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
-                    $ghostLabeledThingInFrame->setGhost(true);
-
-                    return $ghostLabeledThingInFrame;
-                },
-                $expectedFrameNumbers
-            );
+            $result = $this->createLabeledThingInFrameGhosts($labeledThingsInFrame, $expectedFrameNumbers);
         } else {
             $result = array_filter(
-                $labeledThingInFrames,
+                $labeledThingsInFrame,
                 function($labeledThingInFrame) use ($expectedFrameNumbers) {
                     return in_array($labeledThingInFrame->getFrameNumber(), $expectedFrameNumbers);
                 }
@@ -236,5 +198,49 @@ class LabeledThingInFrame extends Controller\Base
         }
 
         return View\View::create()->setData(['result' => $result]);
+    }
+
+    private function createLabeledThingInFrameGhosts(array $labeledThingsInFrame, array $expectedFrameNumbers)
+    {
+        $labeledThingsInFrame = array_reverse($labeledThingsInFrame);
+
+        return array_map(
+            function ($expectedFrameNumber) use (&$labeledThingsInFrame) {
+                reset($labeledThingsInFrame);
+                while ($item = current($labeledThingsInFrame)) {
+                    $currentItem = current($labeledThingsInFrame);
+                    $prevItem    = prev($labeledThingsInFrame);
+                    if (!$prevItem) {
+                        reset($labeledThingsInFrame);
+                    } else {
+                        next($labeledThingsInFrame);
+                    }
+
+                    $nextItem = next($labeledThingsInFrame);
+                    if (!$nextItem) {
+                        $endLabeledThingInFrame = end($labeledThingsInFrame);
+                    } else {
+                        prev($labeledThingsInFrame);
+                    }
+
+                    if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
+                        return $currentItem;
+                    } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
+                        $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
+                        $ghostLabeledThingInFrame->setGhost(true);
+
+                        return $ghostLabeledThingInFrame;
+                    }
+
+                    next($labeledThingsInFrame);
+                }
+
+                $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
+                $ghostLabeledThingInFrame->setGhost(true);
+
+                return $ghostLabeledThingInFrame;
+            },
+            $expectedFrameNumbers
+        );
     }
 }

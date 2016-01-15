@@ -32,7 +32,7 @@ class VideoImporter
     private $labelingTaskFacade;
 
     /**
-     * @var AMQP\FacadeAMQP
+     * @var WorkerPool\Facade
      */
     private $facadeAMQP;
 

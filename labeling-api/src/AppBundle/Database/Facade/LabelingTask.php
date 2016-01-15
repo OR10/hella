@@ -145,7 +145,7 @@ class LabelingTask
     public function getLabeledThings(Model\LabelingTask $labelingTask)
     {
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'by_taskid')
+            ->createQuery('annostation_labeled_thing', 'by_taskId')
             ->setStartKey($labelingTask->getId())
             ->setEndKey($labelingTask->getId())
             ->onlyDocs(true)
@@ -235,5 +235,27 @@ class LabelingTask
     {
         $this->documentManager->persist($taskTimer);
         $this->documentManager->flush();
+    }
+
+    public function getTotalTimesGroupedByTaskId()
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_task_timer', 'sum_by_taskId')
+            ->setGroup(true)
+            ->execute()
+            ->toArray();
+
+        return array_column($result, 'value', 'key');
+    }
+
+    public function getTotalNumberOfLabeledThingsGroupedByTaskId()
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'count_by_taskId')
+            ->setGroup(true)
+            ->execute()
+            ->toArray();
+
+        return array_column($result, 'value', 'key');
     }
 }

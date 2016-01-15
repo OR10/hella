@@ -1,34 +1,43 @@
 # Group Task
 
-## List all tasks [/api/task]
+## List all tasks [/api/task{?includeVideos}]
 
 ### Get a list of all tasks [GET]
+
++ Parameters
+
+    + includeVideos: `false` (boolean, optional) - Wether or not the referenced video entities should be included in the response.
 
 + Response 200 (application/json)
 
     + Body
 
             {
-                "totalCount": 5,
-                "result": [
-                    {
-                        "id": "05c1a74d8eda4a16a355519c0f002ee6",
-                        "userId": 5,
-                        "frameRange": {
-                            "startFrameNumber": 8,
-                            "endFrameNumber": 14
+                "result": {
+                    "tasks": [
+                        {
+                            "id": "05c1a74d8eda4a16a355519c0f002ee6",
+                            "userId": 5,
+                            "frameRange": {
+                                "startFrameNumber": 8,
+                                "endFrameNumber": 14
+                            }
+                        },
+                        {
+                            "id": "05c1a74d8eda4a16a355519c0f003504",
+                            "userId": 3,
+                            "frameRange": {
+                                "startFrameNumber": 3,
+                                "endFrameNumber": 12
+                            }
                         }
-                    },
-                    {
-                        "id": "05c1a74d8eda4a16a355519c0f003504",
-                        "userId": 3,
-                        "frameRange": {
-                            "startFrameNumber": 3,
-                            "endFrameNumber": 12
+                    ],
+                    "videos": {
+                        "<videoId>": {
+                            ...
                         }
-                    },
-                    ...
-                ]
+                    }
+                }
             }
 
 ## Get a specific task [/api/task/{id}]
@@ -79,7 +88,7 @@
                 ]
             }
 
-## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThingId}{?offset,limit}]
+## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThingId}{?offset,limit,includeGhosts}]
 
 + Parameters
 
@@ -88,6 +97,7 @@
     + labeledThingId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the labeled-thing-entity.
     + offset: `3` (number, optional) - The offset relative to the given frameNumber.
     + limit: `10` (number, optional) - The maximum number of results.
+    + includeGhosts: `true` (boolean, optional) - Wether or not ghosts should be created for frame without labeled things in frame.
 
 ### Get labeled things [GET]
 
