@@ -60,6 +60,37 @@ class Video
             ->toArray();
     }
 
+    /**
+     * Get all Videos for the given tasks indexed by the id of the video.
+     *
+     * @param LabelingTask[] $tasks
+     *
+     * @return Video[]
+     */
+    public function findAllForTasksIndexedById(array $tasks)
+    {
+        $videoIds = array_values(
+            array_unique(
+                array_map(
+                    function(Model\LabelingTask $task) {
+                        return $task->getVideoId();
+                    },
+                    $tasks
+                )
+            )
+        );
+
+        if (empty($videoIds)) {
+            return [];
+        }
+
+        foreach ($this->findById($videoIds) as $video) {
+            $videos[$video->getId()] = $video;
+        }
+
+        return $videos;
+    }
+
     public function getPrelabeledFrames(Model\Video $video)
     {
         //TODO: implement
