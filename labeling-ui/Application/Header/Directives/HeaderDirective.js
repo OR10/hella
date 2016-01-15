@@ -7,6 +7,7 @@ import HeaderController from './HeaderController';
 class HeaderDirective {
   constructor() {
     this.scope = {
+      video: '=',
       task: '=',
       user: '=',
     };
