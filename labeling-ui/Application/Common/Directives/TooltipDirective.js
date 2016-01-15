@@ -2,13 +2,35 @@
  * Directive allowing to place arbitrary tooltips using the `tooltip` attribute
  */
 class TooltipDirective {
-  constructor($document, $compile, $timeout) {
+  /**
+   * @param {$rootScope} $rootScope
+   * @param {jQuery} $document
+   * @param {angular.$compile} $compile
+   * @param {angular.$timeout} $timeout
+   */
+  constructor($rootScope, $document, $compile, $timeout) {
     this.restrict = 'A';
-    this.scope = true;
+    this.scope = false;
 
-    this._$document = $document;
-    this._$compile = $compile;
+    /**
+     * @type {angular.$timeout}
+     * @private
+     */
     this._$timeout = $timeout;
+
+    this._tooltipElement = angular.element(
+      '<div class="tooltip"><span class="tooltip-message"></span><div class="tooltip-arrow"></div></div>'
+    );
+
+    this._arrowElement = this._tooltipElement.find('.tooltip-arrow');
+    this._messageElement = this._tooltipElement.find('.tooltip-message');
+
+    // Keep active as long as the mouse is inside the tooltip
+    this._tooltipElement.on('mouseover', () => this._tooltipElement.addClass('active'));
+    this._tooltipElement.on('mouseout', () => this._tooltipElement.removeClass('active'));
+
+    this._body = $document.find('body');
+    this._body.append(this._tooltipElement);
   }
 
   /**
@@ -17,73 +39,45 @@ class TooltipDirective {
    * @param attrs
    */
   link(scope, element, attrs) {
-    const tooltipTemplate = this._$compile(
-      '<div ng-class="tooltipClasses">{{message}}<div class="tooltip-arrow"></div></div>'
-    );
-
-    const $tooltipElement = tooltipTemplate(scope);
-    const $arrowElement = $tooltipElement.find('.tooltip-arrow');
-    $tooltipElement.css({top: 0, left: 0});
-
-    scope.tooltipClasses = ['tooltip'];
-    scope.arrowStyle = {};
-    scope.message = attrs.tooltip;
-
-    if (attrs.tooltipPosition) {
-      scope.tooltipClasses.push(attrs.tooltipPosition);
-    } else {
-      scope.tooltipClasses.push('down');
-    }
-
-    const $body = this._$document.find('body');
-    $body.append($tooltipElement);
-
-    this._attachEventHandler($body, element, $tooltipElement, $arrowElement);
-  }
-
-  /**
-   * @param {jQuery} $body
-   * @param {jQuery} $targetElement
-   * @param {jQuery} $tooltipElement
-   * @param {jQuery} $arrowElement
-   * @private
-   */
-  _attachEventHandler($body, $targetElement, $tooltipElement, $arrowElement) {
     let hoverTimeout = null;
 
-    $targetElement.on('mouseover', () => {
+    element.on('mouseover', (event) => {
+      this._tooltipElement.removeClass('active');
       if (hoverTimeout !== null) {
         return;
       }
 
       hoverTimeout = this._$timeout(
-        () => this._showTooltip($body, $targetElement, $tooltipElement, $arrowElement),
+        () => this._showTooltip(element, attrs),
         800
       );
     });
 
-    $targetElement.on('mouseout', () => {
+    element.on('mouseout $destroy', () => {
+      this._tooltipElement.removeClass('active');
+
       if (hoverTimeout !== null) {
         this._$timeout.cancel(hoverTimeout);
         hoverTimeout = null;
       }
-      this._hideTooltip($tooltipElement);
     });
-
-    // Keep active as long as the mouse is inside the tooltip
-    $tooltipElement.on('mouseover', () => $tooltipElement.addClass('active'));
-    $tooltipElement.on('mouseout', () => this._hideTooltip($tooltipElement));
   }
 
   /**
-   * @param {jQuery} $body
    * @param {jQuery} $targetElement
-   * @param {jQuery} $tooltipElement
-   * @param {jQuery} $arrowElement
+   * @param {Object} attrs
    * @private
    */
-  _showTooltip($body, $targetElement, $tooltipElement, $arrowElement) {
-    $tooltipElement.css({top: 0, left: 0});
+  _showTooltip($targetElement, attrs) {
+    this._tooltipElement.removeClass('active up down left right');
+    this._tooltipElement.css({top: 0, left: 0});
+    this._messageElement.text(attrs.tooltip);
+
+    if (attrs.tooltipPosition) {
+      this._tooltipElement.addClass(attrs.tooltipPosition);
+    } else {
+      this._tooltipElement.addClass('down');
+    }
 
     const tooltipPositioningOffset = 4;
 
@@ -91,14 +85,14 @@ class TooltipDirective {
     const targetWidth = $targetElement.outerWidth();
     const targetHeight = $targetElement.outerHeight();
 
-    const tooltipWidth = $tooltipElement.outerWidth();
-    const tooltipHeight = $tooltipElement.outerHeight();
+    const tooltipWidth = this._tooltipElement.outerWidth();
+    const tooltipHeight = this._tooltipElement.outerHeight();
 
-    const bodyWidth = $body.innerWidth();
-    const bodyHeight = $body.innerHeight();
+    const bodyWidth = this._body.innerWidth();
+    const bodyHeight = this._body.innerHeight();
 
     let tooltipOffset = {};
-    if ($tooltipElement.hasClass('right')) {
+    if (attrs.tooltipPosition && attrs.tooltipPosition === 'right') {
       let arrowMovement = 0;
       const realPosition = targetOffset.top - (tooltipHeight / 2) + (targetHeight / 2);
       const maxPosition = bodyHeight - tooltipHeight - tooltipPositioningOffset;
@@ -111,10 +105,10 @@ class TooltipDirective {
       } else if (tooltipOffset.top < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      $arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
 
       tooltipOffset.left = targetOffset.left + targetWidth + tooltipPositioningOffset;
-    } else if ($tooltipElement.hasClass('left')) {
+    } else if (attrs.tooltipPosition && attrs.tooltipPosition === 'left') {
       let arrowMovement = 0;
       const realPosition = targetOffset.top - (tooltipHeight / 2) + (targetHeight / 2);
       const maxPosition = bodyHeight - tooltipHeight - tooltipPositioningOffset;
@@ -127,27 +121,10 @@ class TooltipDirective {
       } else if (tooltipOffset.top < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      $arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
 
       tooltipOffset.left = targetOffset.left - tooltipWidth - tooltipPositioningOffset;
-    } else if ($tooltipElement.hasClass('down')) {
-      let arrowMovement = 0;
-
-      tooltipOffset.top = targetOffset.top + targetHeight + tooltipPositioningOffset;
-
-      const realPosition = targetOffset.left - (tooltipWidth / 2) + (targetWidth / 2);
-      const maxPosition = bodyWidth - tooltipWidth - tooltipPositioningOffset;
-      const minPosition = tooltipPositioningOffset;
-      tooltipOffset.left = Math.max(minPosition, Math.min(realPosition, maxPosition));
-      if (tooltipOffset.left === realPosition) {
-        arrowMovement = 0;
-      } else if (tooltipOffset.left > realPosition) {
-        arrowMovement = realPosition - minPosition;
-      } else if (tooltipOffset.left < realPosition) {
-        arrowMovement = realPosition - maxPosition;
-      }
-      $arrowElement.css('left', `calc(50% + ${arrowMovement}px)`);
-    } else if ($tooltipElement.hasClass('up')) {
+    } else if (attrs.tooltipPosition && attrs.tooltipPosition === 'up') {
       let arrowMovement = 0;
 
       tooltipOffset.top = targetOffset.top - tooltipHeight - tooltipPositioningOffset;
@@ -163,19 +140,33 @@ class TooltipDirective {
       } else if (tooltipOffset.left < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      $arrowElement.css('left', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('left', `calc(50% + ${arrowMovement}px)`);
+    } else if (!attrs.tooltipPosition || attrs.tooltipPosition === 'down') {
+      let arrowMovement = 0;
+
+      tooltipOffset.top = targetOffset.top + targetHeight + tooltipPositioningOffset;
+
+      const realPosition = targetOffset.left - (tooltipWidth / 2) + (targetWidth / 2);
+      const maxPosition = bodyWidth - tooltipWidth - tooltipPositioningOffset;
+      const minPosition = tooltipPositioningOffset;
+      tooltipOffset.left = Math.max(minPosition, Math.min(realPosition, maxPosition));
+      if (tooltipOffset.left === realPosition) {
+        arrowMovement = 0;
+      } else if (tooltipOffset.left > realPosition) {
+        arrowMovement = realPosition - minPosition;
+      } else if (tooltipOffset.left < realPosition) {
+        arrowMovement = realPosition - maxPosition;
+      }
+      this._arrowElement.css('left', `calc(50% + ${arrowMovement}px)`);
     }
 
-    $tooltipElement.css(tooltipOffset);
-    $tooltipElement.addClass('active');
-  }
-
-  _hideTooltip($tooltipElement) {
-    $tooltipElement.removeClass('active');
+    this._tooltipElement.css(tooltipOffset);
+    this._tooltipElement.addClass('active');
   }
 }
 
 TooltipDirective.$inject = [
+  '$rootScope',
   '$document',
   '$compile',
   '$timeout',
