@@ -6,7 +6,13 @@
     </div>
     <div class="grid-content text-left small-15 noscroll" as-right-click="vm.showReleaseInformation()">
         <span ng-show="vm.releaseInformation === null">
-            {{vm.task.id}}
+            <span ng-switch on="vm.task.taskType">
+                <span ng-switch-when="meta-labeling">Meta labeling:</span>
+                <span ng-switch-when="object-labeling">Object labeling:</span>
+                <span ng-switch-default>Unknown:</span>
+            </span>
+            {{vm.video.name}}
+            [ {{vm.task.frameRange.startFrameNumber}} - {{vm.task.frameRange.endFrameNumber}} ]
         </span>
         <span ng-show="vm.releaseInformation !== null">
             Revision: {{vm.releaseInformation.revision}}
