@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -11,6 +12,7 @@ class Video
 {
     /**
      * @CouchDB\Id
+     * @Serializer\Groups({"statistics"})
      */
     private $id;
 
@@ -21,6 +23,7 @@ class Video
 
     /**
      * @CouchDB\Field(type="string")
+     * @Serializer\Groups({"statistics"})
      */
     private $name;
 

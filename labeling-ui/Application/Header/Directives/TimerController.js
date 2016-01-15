@@ -2,7 +2,7 @@
  * Controller of the {@link TimerDirective}
  */
 class TimerController {
-  constructor($interval, timerGateway) {
+  constructor($element, $interval, timerGateway) {
     this.$interval = $interval;
     this.timerGateway = timerGateway;
     /**
@@ -15,13 +15,23 @@ class TimerController {
     this.elapsedHours = 0;
     this.elapsedMinutes = 0;
 
+    this._intervalHandle = null;
+
+    $element.on('$destroy', () => this.deinit());
+    
     this.timerGateway.getTime(this.task.id, this.user.id).then(this.init.bind(this));
   }
 
   init(timer) {
     this.elapsedTime = timer.time;
     this.calculateTime();
-    this.$interval(this.interval.bind(this), this.waitTime * 1000);
+    this._intervalHandle = this.$interval(this.interval.bind(this), this.waitTime * 1000);
+  }
+
+  deinit() {
+    if (this._intervalHandle !== null) {
+      this.$interval.cancel(this._intervalHandle);
+    }
   }
 
   interval() {
@@ -36,6 +46,10 @@ class TimerController {
   }
 }
 
-TimerController.$inject = ['$interval', 'timerGateway'];
+TimerController.$inject = [
+  '$element',
+  '$interval',
+  'timerGateway'
+];
 
 export default TimerController;

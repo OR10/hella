@@ -1,6 +1,8 @@
 <div class="header header-left grid-block noscroll">
     <div class="grid-content small-1 text-center noscroll">
-        <a href="/labeling/tasks">
+        <a href="/labeling/tasks"
+           tooltip="Back to task overview"
+        >
             <i class="icon icon-previous"></i>
         </a>
     </div>
@@ -49,7 +51,9 @@
         </div>
 
         <div class="grid-content small-3 noscroll">
-            <button ng-click="vm.handleLogoutClick()">
+            <button ng-click="vm.handleLogoutClick()"
+                    tooltip="Logout / Leave application"
+            >
                 <i class="icon icon-general-loggedin"></i>
             </button>
         </div>

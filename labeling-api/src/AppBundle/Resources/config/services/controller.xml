@@ -84,6 +84,7 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.statistics" class="AppBundle\Controller\Api\Statistics">
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
     </services>

@@ -7,19 +7,8 @@
 This routes returns the current user profile data
 
 + Response 200 (application/json)
-
-    + Body
-
-            {
-              "result": [
-                {
-                    "id":1,
-                    "username":"user",
-                    "email":"user@example.com"
-                    ...
-                }
-              ]
-            }
+    + Attributes
+        + result (CurrentUser)
 
 ## Current user Profile Picture [/api/user/profile/picture]
 
@@ -27,4 +16,8 @@ This routes returns the current user profile data
 
 Current user Profile Picture
 
-+ Response 200 (application/json)
++ Response 200 (image/\*)
+
+    The returned data may be any image type.
+
+    + Attributes
