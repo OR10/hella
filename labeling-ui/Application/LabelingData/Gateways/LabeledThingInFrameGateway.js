@@ -153,7 +153,7 @@ class LabeledThingInFrameGateway {
    */
   getLabeledThingInFrame(task, frameNumber, labeledThing, offset = 0, limit = 1) {
     if (this._labeledThingData.has(labeledThing.id)) {
-      const startIndex = frameNumber - 1 + offset;
+      const startIndex = frameNumber - task.frameRange.startFrameNumber + offset;
       const labeledThingData = this._labeledThingData.get(labeledThing.id).slice(startIndex, startIndex + limit);
 
       return this._abortablePromiseFactory(this._$q.resolve(labeledThingData));

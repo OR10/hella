@@ -1,0 +1,39 @@
+<div class="grid-block text-center vertical">
+    <div class="grid-container menubar" ng-if="vm.taskStatistics.length === 0">
+        <div class="grid-content">
+            <div class="">No tasks available!</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-content task-list-table">
+            <table ng-if="vm.taskStatistics.length > 0">
+                <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Objects</th>
+                    <th>Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="stats in vm.taskStatistics track by stats.task.id">
+                    <td>
+                        <a href="" ui-sref="^.task({taskId: stats.task.id})"
+                           ng-class="{'type-object-labeling': stats.task.taskType === 'object-labeling', 'type-meta-labeling': stats.task.taskType === 'meta-labeling'}"
+                        >
+                            <span class="video-name">{{stats.video.name}}</span>
+                            <span class="frame-range">{{stats.task.frameRange.startFrameNumber}}-{{stats.task.frameRange.endFrameNumber}}</span>
+                        </a>
+                    </td>
+                    <td>
+                        {{stats.totalNumberOfLabeledThings}}
+                    </td>
+                    <td>
+                        <span>{{stats.timeSpent.hours}}h </span><span>{{stats.timeSpent.minutes}}m</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
