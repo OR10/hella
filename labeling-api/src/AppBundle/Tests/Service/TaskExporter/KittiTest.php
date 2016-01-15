@@ -253,15 +253,15 @@ class KittiTest extends Tests\KernelTestCase
         $labeledThing = new Model\LabeledThing($task);
         $labeledThing->setFrameRange($task->getFrameRange());
 
+        if ($type !== null) {
+            $labeledThing->setClasses([(string) $type]);
+        }
+
         $this->labeledThingFacade->save($labeledThing);
 
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
         $labeledThingInFrame->setShapesAsObjects($shapes);
         $labeledThingInFrame->setIncomplete($incomplete);
-
-        if ($type !== null) {
-            $labeledThingInFrame->setClasses([(string) $type]);
-        }
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 

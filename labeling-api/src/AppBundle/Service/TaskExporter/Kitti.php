@@ -137,7 +137,24 @@ class Kitti implements Service\TaskExporter
             []
         );
 
-        foreach ($this->labelingTaskFacade->getLabeledThingsInFrame($task) as $labeledThingInFrame) {
+        $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrame($task);
+        $labeledThingIds = array_values(
+            array_unique(
+                array_map(
+                    function(Model\LabeledThingInFrame $labeledThingInFrame) {
+                        return $labeledThingInFrame->getLabeledThingId();
+                    },
+                    $labeledThingsInFrame
+                )
+            )
+        );
+
+        $labeledThings = [];
+        foreach ($this->labeledThingFacade->getLabeledThingsById($labeledThingIds) as $labeledThing) {
+            $labeledThings[$labeledThing->getId()] = $labeledThing;
+        }
+
+        foreach ($labeledThingsInFrame as $labeledThingInFrame) {
             if ($labeledThingInFrame->getIncomplete()) {
                 // TODO: it makes no sense to export incomplete things but
                 // we may want to generate some warnings if incomplete
@@ -147,7 +164,7 @@ class Kitti implements Service\TaskExporter
 
             try {
                 $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
-                    $this->getObjectType($labeledThingInFrame),
+                    $this->getObjectType($labeledThings[$labeledThingInFrame->getLabeledThingId()]),
                     $labeledThingInFrame->getBoundingBox()
                 );
             } catch (\Exception $exception) {
@@ -169,14 +186,14 @@ class Kitti implements Service\TaskExporter
      *
      * @throws Exception\Kitti
      */
-    private function getObjectType(Model\LabeledThingInFrame $labeledThingInFrame)
+    private function getObjectType(Model\LabeledThing $labeledThing)
     {
-        foreach ($labeledThingInFrame->getClasses() as $class) {
+        foreach ($labeledThing->getClasses() as $class) {
             if (isset(static::$objectTypeMap[$class])) {
                 return static::$objectTypeMap[$class];
             }
         }
 
-        throw new Exception\Kitti('Unknown labeled thing in frame');
+        throw new Exception\Kitti('Unknown labeled thing');
     }
 }
