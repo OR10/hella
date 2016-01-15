@@ -34,10 +34,15 @@ class LabelingTask
             ->toArray();
     }
 
-    public function findAllEnabled(Model\Video $video = null, $enabled = true)
-    {
+    public function findAllEnabled(
+        Model\Video $video = null,
+        $enabled = true,
+        $skip = null,
+        $limit = null
+    ) {
         $startKey = [$enabled];
         $endKey = [$enabled];
+
         if ($video !== null) {
             $startKey[] = $video->getId();
             $endKey[] = $video->getId();
@@ -46,13 +51,20 @@ class LabelingTask
             $endKey[] = [];
         }
 
-        return $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_labeling_task', 'by_enabled_videoId')
             ->setStartKey($startKey)
-            ->setEndKey($endKey)
-            ->onlyDocs(true)
-            ->execute()
-            ->toArray();
+            ->setEndKey($endKey);
+
+        if ($skip !== null) {
+            $query->setSkip($skip);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        return $query->onlyDocs(true)->execute()->toArray();
     }
 
     public function getVideo(Model\LabelingTask $labelingTask)
@@ -237,25 +249,43 @@ class LabelingTask
         $this->documentManager->flush();
     }
 
-    public function getTotalTimesGroupedByTaskId()
+    public function getTotalTimesGroupedByTaskId(array $tasks = null)
     {
-        $result = $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_task_timer', 'sum_by_taskId')
-            ->setGroup(true)
-            ->execute()
-            ->toArray();
+            ->setGroup(true);
+
+        if ($tasks !== null) {
+            $query->setKeys($this->mapTasksToTaskIds($tasks));
+        }
+
+        $result = $query->execute()->toArray();
 
         return array_column($result, 'value', 'key');
     }
 
-    public function getTotalNumberOfLabeledThingsGroupedByTaskId()
+    public function getTotalNumberOfLabeledThingsGroupedByTaskId(array $tasks = null)
     {
-        $result = $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_labeled_thing', 'count_by_taskId')
-            ->setGroup(true)
-            ->execute()
-            ->toArray();
+            ->setGroup(true);
+
+        if ($tasks !== null) {
+            $query->setKeys($this->mapTasksToTaskIds($tasks));
+        }
+
+        $result = $query->execute()->toArray();
 
         return array_column($result, 'value', 'key');
+    }
+
+    public function mapTasksToTaskIds(array $tasks)
+    {
+        return array_map(
+            function(Model\LabelingTask $task) {
+                return $task->getId();
+            },
+            $tasks
+        );
     }
 }

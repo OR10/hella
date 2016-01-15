@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -16,6 +17,7 @@ class LabelingTask
     /**
      * @var string
      * @CouchDB\Id
+     * @Serializer\Groups({"statistics"})
      */
     private $id;
 
@@ -52,6 +54,7 @@ class LabelingTask
     /**
      * @var FrameRange
      * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
+     * @Serializer\Groups({"statistics"})
      */
     private $frameRange;
 
@@ -72,6 +75,7 @@ class LabelingTask
     /**
      * @var string
      * @CouchDB\Field(type="string")
+     * @Serializer\Groups({"statistics"})
      */
     private $taskType;
 

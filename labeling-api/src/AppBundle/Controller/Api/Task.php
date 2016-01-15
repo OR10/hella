@@ -12,6 +12,7 @@ use AppBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
+use Symfony\Component\HttpKernel\Exception;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -62,28 +63,15 @@ class Task extends Controller\Base
     public function listAction(HttpFoundation\Request $request)
     {
         $fetchVideos = $request->query->getBoolean('includeVideos', false);
+        $offset      = $request->query->has('offset') ? $request->query->getInt('offset') : null;
+        $limit       = $request->query->has('limit') ? $request->query->getInt('limit') : null;
 
-        $videos = [];
-        $tasks  = $this->labelingTaskFacade->findAllEnabled(null);
-
-        if ($fetchVideos) {
-            $videoIds = array_values(
-                array_unique(
-                    array_map(
-                        function($task) {
-                            return $task->getVideoId();
-                        },
-                        $tasks
-                    )
-                )
-            );
-
-            if (!empty($videoIds)) {
-                foreach ($this->videoFacade->findById($videoIds) as $video) {
-                    $videos[$video->getId()] = $video;
-                }
-            }
+        if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
+            throw new Exception\BadRequestHttpException();
         }
+
+        $tasks  = $this->labelingTaskFacade->findAllEnabled(null, true, $offset, $limit );
+        $videos = $fetchVideos ? $this->videoFacade->findAllForTasksIndexedById($tasks) : [];
 
         return View\View::create()->setData([
             'result' => [

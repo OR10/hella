@@ -26,12 +26,14 @@ class FrameRange
     /**
      * @var integer
      * @CouchDB\Field(type="integer")
+     * @Serializer\Groups({"statistics"})
      */
     public $startFrameNumber;
 
     /**
      * @var integer
      * @CouchDB\Field(type="integer")
+     * @Serializer\Groups({"statistics"})
      */
     public $endFrameNumber;
 

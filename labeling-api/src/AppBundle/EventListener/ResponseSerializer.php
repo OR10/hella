@@ -95,6 +95,7 @@ class ResponseSerializer
         $location = $view->getLocation();
         $route = $view->getRoute();
         $routeParameters = $view->getRouteParameters();
+        $serializationContext = $view->getSerializationContext();
 
         if ($templateData !== null) {
             $restBundleView->setTemplateData($templateData);
@@ -116,6 +117,9 @@ class ResponseSerializer
         }
         if ($routeParameters !== null) {
             $restBundleView->setRouteParameters($routeParameters);
+        }
+        if ($serializationContext !== null) {
+            $restBundleView->setSerializationContext($serializationContext);
         }
 
         return $restBundleView;
