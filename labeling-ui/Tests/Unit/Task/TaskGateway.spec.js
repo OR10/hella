@@ -59,6 +59,29 @@ describe('TaskGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
+  it('should load a list of tasks with videos', (done) => {
+    const tasksResponse = {
+      result: {
+        tasks: [
+          {foo: 'bar'},
+          {bar: 'baz'},
+        ],
+        videos: {
+          '123': {id: 'blub'},
+        },
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/task?includeVideos=true').respond(tasksResponse);
+
+    gateway.getTasksAndVideos().then(result => {
+      expect(result).toEqual(tasksResponse.result);
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
   it('should load information for a single task', (done) => {
     const taskResponse = {
       result: {foo: 'bar'},
