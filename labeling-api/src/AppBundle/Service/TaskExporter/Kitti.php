@@ -188,9 +188,9 @@ class Kitti implements Service\TaskExporter
      */
     private function getObjectType(Model\LabeledThing $labeledThing)
     {
-        foreach ($labeledThing->getClasses() as $class) {
-            if (isset(static::$objectTypeMap[$class])) {
-                return static::$objectTypeMap[$class];
+        foreach (static::$objectTypeMap as $class => $kittiType) {
+            if ($labeledThing->hasClass($class)) {
+                return $kittiType;
             }
         }
 

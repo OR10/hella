@@ -96,6 +96,16 @@ class LabeledThing
     }
 
     /**
+     * @param string $class
+     *
+     * @return boolean
+     */
+    public function hasClass($class)
+    {
+        return in_array($class, $this->classes);
+    }
+
+    /**
      * @param string $taskId
      */
     public function setTaskId($taskId)
