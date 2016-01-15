@@ -1,8 +1,8 @@
 <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
 <div class="grid-block text-center vertical">
-    <div class="grid-container menubar">
+    <div class="grid-container menubar" ng-if="vm.tasksWithVideo.length === 0">
         <div class="grid-content">
-            <div ng-if="vm.tasksWithVideo.length === 0" class="">No tasks available!</div>
+            <div class="">No tasks available!</div>
         </div>
     </div>
 
