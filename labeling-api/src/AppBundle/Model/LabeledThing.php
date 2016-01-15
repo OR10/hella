@@ -80,11 +80,29 @@ class LabeledThing
     }
 
     /**
-     * @param mixed $classes
+     * @return string[]
      */
-    public function setClasses($classes)
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+
+    /**
+     * @param string[] $classes
+     */
+    public function setClasses(array $classes)
     {
         $this->classes = $classes;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return boolean
+     */
+    public function hasClass($class)
+    {
+        return in_array($class, $this->classes);
     }
 
     /**
