@@ -249,25 +249,43 @@ class LabelingTask
         $this->documentManager->flush();
     }
 
-    public function getTotalTimesGroupedByTaskId()
+    public function getTotalTimesGroupedByTaskId(array $tasks = null)
     {
-        $result = $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_task_timer', 'sum_by_taskId')
-            ->setGroup(true)
-            ->execute()
-            ->toArray();
+            ->setGroup(true);
+
+        if ($tasks !== null) {
+            $query->setKeys($this->mapTasksToTaskIds($tasks));
+        }
+
+        $result = $query->execute()->toArray();
 
         return array_column($result, 'value', 'key');
     }
 
-    public function getTotalNumberOfLabeledThingsGroupedByTaskId()
+    public function getTotalNumberOfLabeledThingsGroupedByTaskId(array $tasks = null)
     {
-        $result = $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_labeled_thing', 'count_by_taskId')
-            ->setGroup(true)
-            ->execute()
-            ->toArray();
+            ->setGroup(true);
+
+        if ($tasks !== null) {
+            $query->setKeys($this->mapTasksToTaskIds($tasks));
+        }
+
+        $result = $query->execute()->toArray();
 
         return array_column($result, 'value', 'key');
+    }
+
+    public function mapTasksToTaskIds(array $tasks)
+    {
+        return array_map(
+            function(Model\LabelingTask $task) {
+                return $task->getId();
+            },
+            $tasks
+        );
     }
 }
