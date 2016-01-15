@@ -16,15 +16,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="taskStatistic in vm.taskStatistics track by taskStatistic.taskId">
+                <tr ng-repeat="stats in vm.taskStatistics track by stats.task.id">
                     <td>
-                        <a href="" ui-sref="^.task({taskId: taskStatistic.taskId})"><span>{{taskStatistic.taskId}}</span></a>
+                        <a href="" ui-sref="^.task({taskId: stats.task.id})"
+                           ng-class="{'type-object-labeling': stats.task.taskType === 'object-labeling', 'type-meta-labeling': stats.task.taskType === 'meta-labeling'}"
+                        >
+                            <span class="video-name">{{stats.video.name}}</span>
+                            <span class="frame-range">{{stats.task.frameRange.startFrameNumber}}-{{stats.task.frameRange.endFrameNumber}}</span>
+                        </a>
                     </td>
                     <td>
-                        {{taskStatistic.numberOfLabeledThings}}
+                        {{stats.totalNumberOfLabeledThings}}
                     </td>
                     <td>
-                        <span>{{taskStatistic.timeSpent.hours}}h </span><span>{{taskStatistic.timeSpent.minutes}}m </span><span>{{taskStatistic.timeSpent.seconds}}s</span>
+                        <span>{{stats.timeSpent.hours}}h </span><span>{{stats.timeSpent.minutes}}m</span>
                     </td>
                 </tr>
                 </tbody>

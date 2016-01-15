@@ -1,11 +1,10 @@
 class StatisticsController {
   constructor(taskStatistics) {
     this.taskStatistics = taskStatistics.map(stat => {
-      const hours = Math.floor(stat.totalTimeInSeconds / 3600);
-      const minutes = Math.floor(stat.totalTimeInSeconds % 3600 / 60);
-      const seconds = stat.totalTimeInSeconds % 60;
+      const hours = Math.floor(stat.totalLabelingTimeInSeconds / 3600);
+      const minutes = Math.floor(stat.totalLabelingTimeInSeconds % 3600 / 60);
 
-      stat.timeSpent = {hours, minutes, seconds};
+      stat.timeSpent = {hours, minutes};
 
       return stat;
     });

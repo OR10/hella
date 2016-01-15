@@ -24,7 +24,7 @@ class Statistics extends Module {
     taskStatisticsResolver.$inject = ['statisticsGateway'];
 
     $stateProvider.state('labeling.statistics', {
-      url: 'statistics',
+      url: 'tasks/statistics',
       controller: StatisticsController,
       controllerAs: 'vm',
       template: statisticsTemplate,

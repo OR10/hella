@@ -38,13 +38,13 @@ fdescribe('StatisticsGateway', () => {
       result: [
         {
           taskId: '7999cf8d8d5275330fa67fc69501d977',
-          numberOfLabeledThings: 1,
-          totalTimeInSeconds: 62580,
+          totalNumberOfLabeledThings: 1,
+          totalLabelingTimeInSeconds: 62580,
         },
         {
           taskId: '7999cf8d8d5275330fa67fc69502b446',
-          numberOfLabeledThings: 2,
-          totalTimeInSeconds: 3540,
+          totalNumberOfLabeledThings: 2,
+          totalLabelingTimeInSeconds: 3540,
         },
       ],
     };

@@ -14,13 +14,13 @@
 /**
  * Number of objects labeled in the respective task
  *
- * @name TaskStatistics#numberOfLabeledThings
+ * @name TaskStatistics#totalNumberOfLabeledThings
  * @type {int}
  */
 
 /**
  * Amount of time spent working on the respective task in seconds
  *
- * @name TaskStatistics#totalTimeInSeconds
+ * @name TaskStatistics#totalLabelingTimeInSeconds
  * @type {int}
  */
