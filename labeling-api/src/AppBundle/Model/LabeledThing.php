@@ -106,14 +106,6 @@ class LabeledThing
     }
 
     /**
-     * @param string $taskId
-     */
-    public function setTaskId($taskId)
-    {
-        $this->taskId = (string) $taskId;
-    }
-
-    /**
      * @return mixed
      */
     public function getId()
