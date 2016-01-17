@@ -18,6 +18,10 @@ class Video
      */
     private $fileSystem;
 
+    /**
+     * @param CouchDB\DocumentManager $documentManager
+     * @Flysystem\FileSystem          $fileSystem
+     */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Flysystem\FileSystem $fileSystem
