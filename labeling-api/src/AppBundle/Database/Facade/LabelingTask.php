@@ -220,10 +220,17 @@ class LabelingTask
             ->toArray();
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return Model\LabelingTask
+     */
     public function save(Model\LabelingTask $labelingTask)
     {
         $this->documentManager->persist($labelingTask);
         $this->documentManager->flush();
+
+        return $labelingTask;
     }
 
     public function getTimerForTaskAndUser(Model\LabelingTask $task, Model\User $user)

@@ -87,28 +87,13 @@ class InterpolationTest extends Tests\KernelTestCase
      */
     private function createLabeledThing()
     {
-        $labeledThing = new Model\LabeledThing($this->createTask());
-        $this->labeledThingFacade->save($labeledThing);
-        return $labeledThing;
-    }
-
-    /**
-     * @return Model\LabelingTask
-     */
-    private function createTask()
-    {
-        $task = new Model\LabelingTask($this->createVideo(), new Model\FrameRange(1, 10), Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($task);
-        return $task;
-    }
-
-    /**
-     * @return Model\Video
-     */
-    private function createVideo()
-    {
-        $video = new Model\Video('Testvideo');
-        $this->videoFacade->save($video);
-        return $video;
+        $task = $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->videoFacade->save(Model\Video::create('Testvideo')),
+                new Model\FrameRange(1, 10),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
+        );
+        return $this->labeledThingFacade->save(Model\LabeledThing::create($task));
     }
 }

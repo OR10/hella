@@ -43,6 +43,8 @@ class LabeledFrame
 
         $this->documentManager->persist($labeledFrame);
         $this->documentManager->flush();
+
+        return $labeledFrame;
     }
 
     /**

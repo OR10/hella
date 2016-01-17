@@ -42,6 +42,18 @@ class LabeledFrame
     /**
      * @param LabelingTask $task
      * @param int          $frameNumber
+     *
+     * @return LabeledFrame
+     */
+    public static function create(LabelingTask $task, $frameNumber)
+    {
+        return new static($task, $frameNumber);
+    }
+
+    /**
+    /**
+     * @param LabelingTask $task
+     * @param int          $frameNumber
      */
     public function __construct(LabelingTask $task, $frameNumber)
     {
@@ -62,11 +74,15 @@ class LabeledFrame
     }
 
     /**
-     * @param mixed $classes
+     * @param string[] $classes
+     *
+     * @return LabeledFrame
      */
     public function setClasses($classes)
     {
         $this->classes = $classes;
+
+        return $this;
     }
 
     /**
@@ -103,14 +119,20 @@ class LabeledFrame
 
     /**
      * @param boolean $incomplete
+     *
+     * @return LabeledFrame
      */
     public function setIncomplete($incomplete)
     {
         $this->incomplete = (bool) $incomplete;
+
+        return $this;
     }
 
     /**
-     * @param mixed $id
+     * @param string $id
+     *
+     * @return LabeledFrame
      *
      * @throw \LogicException if the id was already set.
      */
@@ -119,11 +141,13 @@ class LabeledFrame
         if ($this->id !== null) {
             throw new \LogicException("Trying to set an already assigned id from '{$this->id}' to '{$id}'");
         }
-        $this->id = $id;
+        $this->id = (string) $id;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getId()
     {

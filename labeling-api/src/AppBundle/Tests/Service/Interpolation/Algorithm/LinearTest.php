@@ -337,11 +337,8 @@ class LinearTest extends Tests\KernelTestCase
     /**
      * @return Model\LabeledThingInFrame
      */
-    private function createLabeledThingInFrame(
-        Model\LabeledThing $labeledThing,
-        $frameNumber,
-        array $shapes = []
-    ) {
+    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameNumber, array $shapes = [])
+    {
         $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
         $labeledThingInFrame->setShapes($this->convertShapesToArray($shapes));
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
@@ -351,30 +348,23 @@ class LinearTest extends Tests\KernelTestCase
     /**
      * @return Model\LabeledThing
      */
-    private function createLabeledThing()
+    private function createLabeledThing($endFrameNumber = 10)
     {
-        $labeledThing = new Model\LabeledThing($this->createTask());
-        $this->labeledThingFacade->save($labeledThing);
-        return $labeledThing;
+        return $this->labeledThingFacade->save(Model\LabeledThing::create($this->createTask($endFrameNumber)));
     }
 
     /**
      * @return Model\LabelingTask
      */
-    private function createTask()
+    private function createTask($endFrameNumber = 10)
     {
-        $task = new Model\LabelingTask($this->createVideo(), new Model\FrameRange(1, 10), Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($task);
-        return $task;
-    }
-
-    /**
-     * @return Model\Video
-     */
-    private function createVideo()
-    {
-        $video = new Model\Video('Testvideo');
-        $this->videoFacade->save($video);
-        return $video;
+        $video = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        return $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $video,
+                new Model\FrameRange(1, $endFrameNumber),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
+        );
     }
 }

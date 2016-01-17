@@ -8,6 +8,7 @@ use AppBundle\Model\Shapes;
 use AppBundle\Model\TaskExporter\Kitti;
 use AppBundle\Service\TaskExporter;
 use AppBundle\Tests;
+
 class KittiTest extends Tests\KernelTestCase
 {
     /**
@@ -35,11 +36,6 @@ class KittiTest extends Tests\KernelTestCase
      */
     private $exporter;
 
-    /**
-     * @var CouchDB\DocumentManager
-     */
-    private $documentManager;
-
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -47,7 +43,6 @@ class KittiTest extends Tests\KernelTestCase
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->exporter                  = $this->getAnnostationService('service.task_exporter.kitti');
-        $this->documentManager           = $this->getService('doctrine_couchdb.odm.default_document_manager');
     }
 
     public function testExportingTaskWithoutLabeledDataReturnsEmptyZipArchive()
@@ -230,13 +225,13 @@ class KittiTest extends Tests\KernelTestCase
      */
     private function createLabelingTask(Model\FrameRange $frameRange)
     {
-        $video = new Model\Video('test video');
-        $this->videoFacade->save($video);
-
-        $task = new Model\LabelingTask($video, $frameRange, Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($task);
-
-        return $task;
+        return $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->videoFacade->save(Model\Video::create('test video')),
+                $frameRange,
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
+        );
     }
 
     /**
@@ -250,22 +245,17 @@ class KittiTest extends Tests\KernelTestCase
         array $shapes = [],
         $incomplete = false
     ) {
-        $labeledThing = new Model\LabeledThing($task);
-        $labeledThing->setFrameRange($task->getFrameRange());
+        $labeledThing = $this->labeledThingFacade->save(
+            Model\LabeledThing::create($task)
+                ->setFrameRange($task->getFrameRange())
+                ->setClasses($type === null ? [] : [(string) $type])
+        );
 
-        if ($type !== null) {
-            $labeledThing->setClasses([(string) $type]);
-        }
-
-        $this->labeledThingFacade->save($labeledThing);
-
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
-        $labeledThingInFrame->setShapesAsObjects($shapes);
-        $labeledThingInFrame->setIncomplete($incomplete);
-
-        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
-
-        return $labeledThingInFrame;
+        return $this->labeledThingInFrameFacade->save(
+            Model\LabeledThingInFrame::create($labeledThing, $frameNumber)
+                ->setShapesAsObjects($shapes)
+                ->setIncomplete($incomplete)
+        );
     }
 
     /**
