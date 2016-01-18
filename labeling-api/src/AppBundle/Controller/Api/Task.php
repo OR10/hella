@@ -70,7 +70,7 @@ class Task extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
-        $tasks  = $this->labelingTaskFacade->findAllEnabled(null, true, $offset, $limit );
+        $tasks  = $this->labelingTaskFacade->findAllByStatus(null, 'Assigned', $offset, $limit );
         $videos = $fetchVideos ? $this->videoFacade->findAllForTasksIndexedById($tasks) : [];
 
         return View\View::create()->setData([
