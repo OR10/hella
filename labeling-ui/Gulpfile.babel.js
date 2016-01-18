@@ -188,10 +188,15 @@ gulp.task('build-release-config', next => {
   const releaseConfigFile = `${releaseConfigPath}/release.config.json`;
   const releaseConfig = {};
 
-  execReturn('git rev-parse --short HEAD', ({stdout}) => {
-    releaseConfig.revision = stdout.trim();
+  if (process.env.VERSION_STRING) {
+    releaseConfig.revision = process.env.VERSION_STRING;
     mkdirp(releaseConfigPath, () => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
-  });
+  } else {
+    execReturn('git rev-parse --short HEAD', ({stdout}) => {
+      releaseConfig.revision = stdout.trim();
+      mkdirp(releaseConfigPath, () => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
+    });
+  }
 });
 
 gulp.task('build', next => run(
