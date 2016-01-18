@@ -52,6 +52,11 @@ api_task_timer:
     type: rest
     name_prefix: app_api_task_timer_
 
+api_task_status:
+    resource: "annostation.labeling_api.controller.api.task.status"
+    type: rest
+    name_prefix: app_api_task_status_
+
 api_status:
     resource: "annostation.labeling_api.controller.api.status"
     type: rest
