@@ -61,6 +61,21 @@ class LabeledThingInFrame
      * @param int          $frameNumber
      * @param array        $classes
      * @param array        $shapes
+     */
+    public static function create(
+        LabeledThing $labeledThing,
+        $frameNumber,
+        array $classes = [],
+        array $shapes = []
+    ) {
+        return new static($labeledThing, $frameNumber, $classes, $shapes);
+    }
+
+    /**
+     * @param LabeledThing $labeledThing
+     * @param int          $frameNumber
+     * @param array        $classes
+     * @param array        $shapes
      *
      * @throws \RangeException if the given $frameNumber is outside of the
      *         `FrameRange` of the given `$labeledThing`.
@@ -110,10 +125,14 @@ class LabeledThingInFrame
 
     /**
      * @param array $classes
+     *
+     * @return LabeledThingInFrame
      */
     public function setClasses(array $classes)
     {
         $this->classes = $classes;
+
+        return $this;
     }
 
     /**
@@ -126,10 +145,14 @@ class LabeledThingInFrame
 
     /**
      * @param mixed $shapes
+     *
+     * @return LabeledThingInFrame
      */
     public function setShapes(array $shapes)
     {
         $this->shapes = $shapes;
+
+        return $this;
     }
 
     /**
@@ -142,10 +165,14 @@ class LabeledThingInFrame
 
     /**
      * @param int $frameNumber
+     *
+     * @return LabeledThingInFrame
      */
     public function setFrameNumber($frameNumber)
     {
         $this->frameNumber = (int) $frameNumber;
+
+        return $this;
     }
 
     /**
@@ -182,14 +209,20 @@ class LabeledThingInFrame
 
     /**
      * @param mixed $incomplete
+     *
+     * @return LabeledThingInFrame
      */
     public function setIncomplete($incomplete)
     {
         $this->incomplete = (bool) $incomplete;
+
+        return $this;
     }
 
     /**
      * @param mixed $id
+     *
+     * @return LabeledThingInFrame
      *
      * @throws \LogicException if the id was already set.
      */
@@ -198,7 +231,10 @@ class LabeledThingInFrame
         if ($this->id !== null) {
             throw new \LogicException("Trying to set an already assigned id from '{$this->id}' to '{$id}'");
         }
+
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -211,10 +247,14 @@ class LabeledThingInFrame
 
     /**
      * @param boolean $ghost
+     *
+     * @return LabeledThingInFrame
      */
     public function setGhost($ghost)
     {
         $this->ghost = $ghost;
+
+        return $this;
     }
 
     /**
@@ -231,6 +271,8 @@ class LabeledThingInFrame
      * Set an array of shapes as objects.
      *
      * @param Shape[]
+     *
+     * @return LabeledThingInFrame
      */
     public function setShapesAsObjects(array $shapes)
     {
@@ -240,6 +282,8 @@ class LabeledThingInFrame
             },
             $shapes
         );
+
+        return $this;
     }
 
     /**

@@ -129,7 +129,7 @@ class LabeledThingInFrame extends Controller\Base
             $labeledThingIds = array_reduce(
                 $labeledThingsInFrame,
                 function($labeledThingIds, $labeledThingInFrame) {
-                    if (!in_array($labeledThingInFrame->getId(), $labeledThingIds)) {
+                    if (!in_array($labeledThingInFrame->getLabeledThingId(), $labeledThingIds)) {
                         $labeledThingIds[] = $labeledThingInFrame->getLabeledThingId();
                     }
                     return $labeledThingIds;

@@ -47,6 +47,17 @@ class LabeledThing
     /**
      * @param LabelingTask $task
      * @param $lineColor
+     *
+     * @return LabeledThing
+     */
+    public static function create(LabelingTask $task, $lineColor = 'red')
+    {
+        return new static($task, $lineColor);
+    }
+
+    /**
+     * @param LabelingTask $task
+     * @param $lineColor
      */
     public function __construct(LabelingTask $task, $lineColor = 'red')
     {
@@ -73,26 +84,44 @@ class LabeledThing
 
     /**
      * @param FrameRange $frameRange
+     *
+     * @return LabeledThing
      */
     public function setFrameRange(FrameRange $frameRange)
     {
         $this->frameRange = $frameRange;
+
+        return $this;
     }
 
     /**
-     * @param mixed $classes
+     * @return string[]
      */
-    public function setClasses($classes)
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+
+    /**
+     * @param string[] $classes
+     *
+     * @return LabeledThing
+     */
+    public function setClasses(array $classes)
     {
         $this->classes = $classes;
+
+        return $this;
     }
 
     /**
-     * @param string $taskId
+     * @param string $class
+     *
+     * @return boolean
      */
-    public function setTaskId($taskId)
+    public function hasClass($class)
     {
-        $this->taskId = (string) $taskId;
+        return in_array($class, $this->classes);
     }
 
     /**
@@ -113,14 +142,20 @@ class LabeledThing
 
     /**
      * @param mixed $incomplete
+     *
+     * @return LabeledThing
      */
     public function setIncomplete($incomplete)
     {
         $this->incomplete = $incomplete;
+
+        return $this;
     }
 
     /**
      * @param mixed $id
+     *
+     * @return LabeledThing
      *
      * @throws \LogicException if the id was already set.
      */
@@ -129,7 +164,10 @@ class LabeledThing
         if ($this->id !== null) {
             throw new \LogicException("Trying to set an already assigned id from '{$this->id}' to '{$id}'");
         }
+
         $this->id = $id;
+
+        return $this;
     }
 
     /**

@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation;
 
 class InterpolateTest extends Tests\WebTestCase
 {
+    const ROUTE = '/api/task/%s/interpolate/%s';
+
     /**
      * @var Facade\Video
      */
@@ -30,123 +32,87 @@ class InterpolateTest extends Tests\WebTestCase
      */
     private $interpolationService;
 
+    /**
+     * @var Model\Video
+     */
+    private $video;
+
+    /**
+     * @var Model\LabelingTask
+     */
+    private $task;
+
+    /**
+     * @var Model\LabeledThing
+     */
+    private $labeledThing;
+
     public function testStartInterpolationActionReturnsNotFoundWithUnknownTaskId()
     {
-        $response = $this->startInterpolationRequest('unknown-task-id', 'dont-care');
+        $response = $this->createRequest(self::ROUTE, ['unknown-task-id', 'dont-care'])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testStartInterpolationActionReturnsNotFoundWithUnknownLabeledThingId()
     {
-        $task = $this->createTask();
-
-        $response = $this->startInterpolationRequest($task->getId(), 'unknown-labeled-thing-id');
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), 'unknown-labeled-thing-id'])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testStartInterpolationActionReturnsBadRequestWhenLabeledThingDoesNotBelongToLabelingTask()
     {
-        $task         = $this->createTask();
-        $labeledThing = $this->createLabeledThing($task);
-        $anotherTask  = $this->createTask();
+        $otherTask = $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->video,
+                new Model\FrameRange(1, 10),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
+        );
 
-        $response = $this->startInterpolationRequest($anotherTask->getId(), $labeledThing->getId());
+        $response = $this->createRequest(self::ROUTE, [$otherTask->getId(), $this->labeledThing->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testStartInterpolationActionReturnsBadRequestWhenTypeIsMissing()
     {
-        $task         = $this->createTask();
-        $labeledThing = $this->createLabeledThing($task);
-
-        $response = $this->startInterpolationRequest($task->getId(), $labeledThing->getId());
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->labeledThing->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     protected function setUpImplementation()
     {
-        $this->getService('fos_user.util.user_manipulator')->create(
-            Controller\IndexTest::USERNAME,
-            Controller\IndexTest::PASSWORD,
-            Controller\IndexTest::EMAIL,
-            true,
-            false
-        );
-
         $this->videoFacade          = $this->getAnnostationService('database.facade.video');
         $this->labelingTaskFacade   = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade   = $this->getAnnostationService('database.facade.labeled_thing');
         $this->interpolationService = $this->getAnnostationService('service.interpolation');
-    }
 
-    private function startInterpolationRequest($taskId, $labeledThingId, array $content = null)
-    {
-        return $this->doRequest(
-            HttpFoundation\Request::METHOD_POST,
-            $taskId,
-            $labeledThingId,
-            $content
+        $this->getService('fos_user.util.user_manipulator')
+            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+
+        $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $this->task  = $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->video,
+                new Model\FrameRange(1, 10),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
         );
-    }
-
-    private function doRequest($method, $taskId, $labeledThingId, array $content = null)
-    {
-        $client  = $this->createClient();
-        $crawler = $client->request(
-            $method,
-            sprintf(
-                '/api/task/%s/interpolate/%s.json',
-                $taskId,
-                $labeledThingId
-            ),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
-                'CONTENT_TYPE' => 'application/json',
-            ],
-            $content === null ? null : json_encode($content)
-        );
-
-        return $client->getResponse();
-    }
-
-    /**
-     * @return Model\LabeledThing
-     */
-    private function createLabeledThing(Model\LabelingTask $task = null)
-    {
-        $labeledThing = new Model\LabeledThing($task ?: $this->createTask());
-        $this->labeledThingFacade->save($labeledThing);
-        return $labeledThing;
-    }
-
-    /**
-     * @return Model\LabelingTask
-     */
-    private function createTask(Model\Video $video = null)
-    {
-        $task = new Model\LabelingTask(
-            $video ?: $this->createVideo(),
-            new Model\FrameRange(1, 10),
-            Model\LabelingTask::TYPE_OBJECT_LABELING
-        );
-        $this->labelingTaskFacade->save($task);
-        return $task;
-    }
-
-    /**
-     * @return Model\Video
-     */
-    private function createVideo()
-    {
-        $video = new Model\Video('Testvideo');
-        $this->videoFacade->save($video);
-        return $video;
+        $this->labeledThing = $this->labeledThingFacade->save(Model\LabeledThing::create($this->task));
     }
 }

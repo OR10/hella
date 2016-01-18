@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation;
 
 class TimerTest extends Tests\WebTestCase
 {
+    const ROUTE = '/api/task/%s/timer/%s';
+
     /**
      * @var Facade\Video
      */
@@ -30,111 +32,100 @@ class TimerTest extends Tests\WebTestCase
      */
     private $otherUser;
 
+    /**
+     * @var Model\Video
+     */
+    private $video;
+
+    /**
+     * @var Model\LabelingTask
+     */
+    private $task;
+
     public function testInitialTimeIsZero()
     {
-        $task = $this->createTask();
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])->execute();
 
-        $response = $this->doRequest(HttpFoundation\Request::METHOD_GET, $task->getId(), $this->user->getId());
-
-        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
         $this->assertEquals(
             [
                 "result" => [
                     "time" => 0,
                 ]
             ],
-            json_decode($response->getContent(), true)
+            $request->getJsonResponseBody()
         );
     }
 
     public function testGetAlreadySavedTime()
     {
-        $task = $this->createTask();
-        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($task, $this->user, 23));
+        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($this->task, $this->user, 23));
 
-        $response = $this->doRequest(HttpFoundation\Request::METHOD_GET, $task->getId(), $this->user->getId());
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])->execute();
 
-        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
         $this->assertEquals(
             [
                 "result" => [
                     "time" => 23,
                 ]
             ],
-            json_decode($response->getContent(), true)
+            $request->getJsonResponseBody()
         );
     }
 
     public function testUpdateTimer()
     {
-        $task = $this->createTask();
-        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($task, $this->user, 23));
+        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($this->task, $this->user, 23));
 
-        $response = $this->doRequest(
-            HttpFoundation\Request::METHOD_PUT,
-            $task->getId(),
-            $this->user->getId(),
-            [
-                "time" => 123,
-            ]
-        );
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['time' => 123])
+            ->execute();
 
-        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
         $this->assertEquals(
             [
                 "result" => [
                     "time" => 123,
                 ]
             ],
-            json_decode($response->getContent(), true)
+            $request->getJsonResponseBody()
         );
         $this->assertEquals(
             123,
-            $this->labelingTaskFacade->getTimerForTaskAndUser($task, $this->user)->getTimeInSeconds()
+            $this->labelingTaskFacade->getTimerForTaskAndUser($this->task, $this->user)->getTimeInSeconds()
         );
     }
 
     public function testUpdateTimerWithInvalidTimeRespondsWithBadRequest()
     {
-        $task = $this->createTask();
-
-        $response = $this->doRequest(
-            HttpFoundation\Request::METHOD_PUT,
-            $task->getId(),
-            $this->user->getId(),
-            [
-                "time" => "some-invalid-time",
-            ]
-        );
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['time' => 'some-invalid-time'])
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testGetTimerForOtherUserIsForbidden()
     {
-        $task = $this->createTask();
-
-        $response = $this->doRequest(
-            HttpFoundation\Request::METHOD_GET,
-            $task->getId(),
-            $this->otherUser->getId()
-        );
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->otherUser->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_GET)
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
     public function testChangeTimerForOtherUserIsForbidden()
     {
-        $task = $this->createTask();
-
-        $response = $this->doRequest(
-            HttpFoundation\Request::METHOD_PUT,
-            $task->getId(),
-            $this->otherUser->getId(),
-            [
-                "time" => 123,
-            ]
-        );
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->otherUser->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['time' => 123])
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -144,58 +135,20 @@ class TimerTest extends Tests\WebTestCase
         $this->videoFacade        = $this->getAnnostationService('database.facade.video');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
 
-        $this->user = $this->getService('fos_user.util.user_manipulator')->create(
-            Controller\IndexTest::USERNAME,
-            Controller\IndexTest::PASSWORD,
-            Controller\IndexTest::EMAIL,
-            true,
-            false
+        $userManipulator = $this->getService('fos_user.util.user_manipulator');
+
+        $this->user = $userManipulator
+            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->otherUser = $userManipulator
+            ->create('someOtherUser', 'someOtherPassword', 'some@other.email', true, false);
+
+        $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $this->task  = $this->labelingTaskFacade->save(
+            Model\LabelingTask::create(
+                $this->video,
+                new Model\FrameRange(1, 10),
+                Model\LabelingTask::TYPE_OBJECT_LABELING
+            )
         );
-        $this->otherUser = $this->getService('fos_user.util.user_manipulator')->create(
-            'someOtherUser',
-            'someOtherPassword',
-            'some@other.email',
-            true,
-            false
-        );
-    }
-
-    private function doRequest($method, $taskId, $userId, array $content = null)
-    {
-        $client  = $this->createClient();
-        $crawler = $client->request(
-            $method,
-            sprintf('/api/task/%s/timer/%s.json', $taskId, $userId),
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => Controller\IndexTest::USERNAME,
-                'PHP_AUTH_PW' => Controller\IndexTest::PASSWORD,
-                'CONTENT_TYPE' => 'application/json',
-            ],
-            $content === null ? null : json_encode($content)
-        );
-
-        return $client->getResponse();
-    }
-
-    /**
-     * @return Model\LabelingTask
-     */
-    private function createTask()
-    {
-        $task = new Model\LabelingTask($this->createVideo(), new Model\FrameRange(1, 10), Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($task);
-        return $task;
-    }
-
-    /**
-     * @return Model\Video
-     */
-    private function createVideo()
-    {
-        $video = new Model\Video('Testvideo');
-        $this->videoFacade->save($video);
-        return $video;
     }
 }

@@ -18,6 +18,10 @@ class Video
      */
     private $fileSystem;
 
+    /**
+     * @param CouchDB\DocumentManager $documentManager
+     * @Flysystem\FileSystem          $fileSystem
+     */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Flysystem\FileSystem $fileSystem
@@ -112,6 +116,12 @@ class Video
         $this->documentManager->flush();
     }
 
+    /**
+     * @param Model\Video $video
+     * @param mixed       $source Resource, filename or content of the video.
+     *
+     * @return Model\Video
+     */
     public function save(Model\Video $video, $source = null)
     {
         $this->documentManager->persist($video);
@@ -131,5 +141,7 @@ class Video
                 throw new \RuntimeException(sprintf('Unsupported source type: %s', gettype($source)));
             }
         }
+
+        return $video;
     }
 }
