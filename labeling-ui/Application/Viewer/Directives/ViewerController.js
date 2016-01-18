@@ -41,6 +41,8 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {DataPrefetcher} dataPrefetcher
    * @param {LockService} lockService
+   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
+   * @param {DataContainer} labeledThingData
    */
   constructor(
     $scope,
@@ -63,7 +65,9 @@ class ViewerController {
     $timeout,
     applicationState,
     dataPrefetcher,
-    lockService
+    lockService,
+    labeledThingInFrameData,
+    labeledThingData
   ) {
     /**
      * Mouse cursor used, while hovering the viewer
@@ -411,6 +415,8 @@ class ViewerController {
       }
     );
 
+    labeledThingInFrameData.invalidate();
+    labeledThingData.invalidate();
     dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
   }
 
@@ -993,6 +999,8 @@ ViewerController.$inject = [
   'applicationState',
   'dataPrefetcher',
   'lockService',
+  'labeledThingInFrameData',
+  'labeledThingData',
 ];
 
 export default ViewerController;
