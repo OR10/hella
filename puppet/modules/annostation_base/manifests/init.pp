@@ -38,4 +38,18 @@ class annostation_base(
         ensure => 'link',
         target => '/usr/share/zoneinfo/Europe/Berlin',
     }
+
+    # remove some obsolete files
+    # this may be removed once all vms were migrated
+    $_obsoleteFiles = [
+      '/etc/nginx/cdn-cors.conf',
+      '/etc/nginx/sites-available/_.conf',
+      '/etc/nginx/sites-enabled/_.conf',
+      '/etc/nginx/sites-available/cdn.conf',
+      '/etc/nginx/sites-enabled/cdn.conf',
+    ]
+
+    file { $_obsoleteFiles:
+      ensure => absent,
+    }
 }
