@@ -34,16 +34,15 @@ class Status extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{task}/status/{status}")
+     * @Rest\Post("/{task}/status/labeled")
      *
      * @param Model\LabelingTask $task
-     * @param $status
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function postStatusAction(Model\LabelingTask $task, $status)
+    public function postStatusAction(Model\LabelingTask $task)
     {
-        $task->setStatus($status);
+        $task->setStatus('labeled');
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['success' => true]);
