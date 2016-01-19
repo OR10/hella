@@ -40,7 +40,7 @@ class Status extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function postStatusAction(Model\LabelingTask $task)
+    public function postLabeledStatusAction(Model\LabelingTask $task)
     {
         $task->setStatus('labeled');
         $this->labelingTaskFacade->save($task);
