@@ -27,6 +27,7 @@ class annostation_base(
         'git',
         'htop',
         'libav-tools',
+        'openjdk-7-jdk',
         'vim',
     ]
 
