@@ -70,7 +70,7 @@ class LabelingTask
      * @var string
      * @CouchDB\Field(type="string")
      */
-    private $status = 'PreProcessing';
+    private $status = 'preprocessing';
 
     /**
      * @var string
@@ -273,7 +273,7 @@ class LabelingTask
                 return;
             }
         }
-        $this->setStatus('Assigned');
+        $this->setStatus('waiting');
 
         return $this;
     }

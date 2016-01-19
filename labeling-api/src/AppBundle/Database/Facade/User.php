@@ -5,6 +5,7 @@ use AppBundle\Model;
 use Doctrine\ORM;
 use FOS\UserBundle\Model as FosUserModel;
 use Doctrine\ODM\CouchDB;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 class User
 {
@@ -19,16 +20,24 @@ class User
     private $documentManager;
 
     /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * User constructor.
      * @param FosUserModel\UserManager $userManager
      * @param CouchDB\DocumentManager $documentManager
+     * @param Storage\TokenStorage $tokenStorage
      */
     public function __construct(
         FosUserModel\UserManager $userManager,
-        CouchDB\DocumentManager $documentManager
+        CouchDB\DocumentManager $documentManager,
+        Storage\TokenStorage $tokenStorage
     ) {
         $this->userManager = $userManager;
         $this->documentManager = $documentManager;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -81,5 +90,35 @@ class User
         $image = reset($userProfileImage);
 
         return $image->getRawData();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLabeler()
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return $user->hasRole('ROLE_LABELER');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLabelCoordinator()
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return $user->hasRole('ROLE_LABEL_COORDINATOR');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return $user->hasRole('ROLE_ADMIN');
     }
 }

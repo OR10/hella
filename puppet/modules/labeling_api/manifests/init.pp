@@ -32,7 +32,7 @@ class labeling_api(
   }
 
   if $run_composer_install {
-    include ::labeling_api::vagrant_composer_install
+    include ::annostation_base::vagrant_composer_install
   }
 
   if $tideways {
