@@ -1,7 +1,4 @@
 annostation_base::nodejs: false
-labeling_api::app::httpv2: true
-labeling_api::cdn::httpv2: true
-labeling_api::cdn::vhost_port: 444
 
 nginx::manage_repo: true
 nginx::package_source: nginx-mainline

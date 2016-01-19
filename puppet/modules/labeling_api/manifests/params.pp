@@ -1,6 +1,6 @@
 class labeling_api::params(
-  $config_dir,
-  $cache_dir,
+  $config_dir = undef,
+  $cache_dir = undef,
 
   $configure_nginx = true,
   $prepare_test_environment = false,
@@ -38,13 +38,13 @@ class labeling_api::params(
   $redis_host = '127.0.0.1',
   $redis_port = '6379',
 
-  $frame_cdn_dir,
-  $frame_cdn_base_url,
+  $frame_cdn_dir = undef,
+  $frame_cdn_base_url = undef,
   $frame_cdn_port = 80,
   $frame_cdn_allowed_origin = undef,
   $frame_cdn_expires = '30d',
 
-  $user_password,
+  $user_password = undef,
 
   $create_parameter_files = false,
 ) {
