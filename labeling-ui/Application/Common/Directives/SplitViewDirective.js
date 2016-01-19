@@ -16,11 +16,11 @@ class SplitViewDirective {
   }
 
   link($scope, $element) {
-    const splitElements = $element.children();
+    const splitElements = $element.children().toArray().filter((child, index) => $scope.sizes[index] !== null);
 
     const gutterSize = parseInt($scope.gutterSize, 10) || 10;
     const minSize = $scope.minSize === undefined ? new Array(splitElements.length).fill(100) : $scope.minSize;
-    const sizes = $scope.sizes;
+    const sizes = $scope.sizes.filter(size => size !== null);
     const direction = $scope.direction || 'horizontal';
 
     if (sizes.length !== splitElements.length) {

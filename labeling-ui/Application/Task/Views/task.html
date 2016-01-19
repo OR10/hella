@@ -9,9 +9,10 @@
      sizes="vm.splitViewSizes"
      min-size="vm.minSizes"
      class="main grid-block noscroll">
-    <div class="grid-block sidebar-left vertical noscrollbars">
-        <loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true" spinner="vm.leftSidebarWorking"></loading-mask>
-        <div class="grid-block vertical noscrollbars">
+    <div class="grid-block sidebar-left vertical noscrollbars" ng-show="vm.popupPanelOpen">
+        <loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true"
+                      spinner="vm.leftSidebarWorking"></loading-mask>
+        <!--<div class="grid-block vertical noscrollbars">
             <task-description ng-show="vm.currentLabelingInstructions.shortDescription"
                               title="Task Description"
                               heading="vm.currentLabelingInstructions.shortDescription.title"
@@ -26,7 +27,8 @@
             <div ng-show="!vm.currentLabelingInstructions" class="grid-block task-description-placeholder align-center">
                 <h1>Placeholder</h1>
             </div>
-        </div>
+        </div>-->
+        <div class="grid-block vertical noscrollbars"></div>
         <popup-panel ng-show="vm.popupPanelOpen"
                      popup-panel-open="vm.popupPanelOpen"
                      popup-panel-state="vm.popupPanelState"
@@ -61,7 +63,8 @@
             frame-skip="vm.frameSkip"
     ></viewer>
     <div class="grid-block sidebar-right ">
-        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true" spinner="vm.rightSidebarWorking"></loading-mask>
+        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"
+                      spinner="vm.rightSidebarWorking"></loading-mask>
         <label-selector class="grid-block"
                         labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
                         structure="vm.labelingStructure"
@@ -72,7 +75,6 @@
         ></label-selector>
     </div>
 </div>
-
 <media-controls labeled-things-in-frame="vm.labeledThingsInFrame"
                 frame-position="vm.framePosition"
                 active-tool="vm.activeTool"
@@ -124,12 +126,13 @@
         <div ng-show="vm.fpsInputVisible">
             <label style="color: white">FPS:
                 <input style="width: 30px; color: black;" class="fps-input" ng-model="vm.fps">
-            </label><br />
+            </label><br/>
             <label style="color: white">Skip:
                 <input style="width: 30px; color: black;" class="frameskip-input" ng-model="vm.frameSkip">
             </label>
             <label style="color: white">Freeze thumbnails:
-                <input type="checkbox" style="width: 30px; color: black;" class="frameskip-input" ng-model="vm.freezeThumbnails">
+                <input type="checkbox" style="width: 30px; color: black;" class="frameskip-input"
+                       ng-model="vm.freezeThumbnails">
             </label>
         </div>
     </div>
