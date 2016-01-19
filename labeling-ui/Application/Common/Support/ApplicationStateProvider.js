@@ -39,6 +39,10 @@ class PartialApplicationState {
 
 class ApplicationStateProvider {
   $get($rootScope) {
+    /**
+     * @name ApplicationState
+     * @type {$rootScope.$scope}
+     */
     const state = $rootScope.$new();
 
     state.viewer = new PartialApplicationState();
