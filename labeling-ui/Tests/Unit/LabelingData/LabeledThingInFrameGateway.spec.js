@@ -303,7 +303,7 @@ describe('LabeledThingInFrameGateway', () => {
       {frameNumber: 5},
     ];
 
-    const task = {id: 123};
+    const task = {id: 123, frameRange: {startFrameNumber: 1, endFrameNumber: 7}};
     const labeledThing = {id: 4711};
     const frameNumber = 3;
 
