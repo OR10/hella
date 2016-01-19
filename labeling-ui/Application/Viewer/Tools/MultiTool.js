@@ -1,4 +1,5 @@
 import Tool from './Tool';
+import paper from 'paper';
 
 import PaperShape from '../Shapes/PaperShape';
 
@@ -94,16 +95,16 @@ export default class MultiTool extends Tool {
       const moveDistance = event.event.shiftKey ? 10 : 1;
       switch (event.key) {
         case 'right':
-          paperShape.position.x += moveDistance;
+          paperShape.moveTo(new paper.Point(paperShape.position.x + moveDistance, paperShape.position.y));
           break;
         case 'left':
-          paperShape.position.x -= moveDistance;
+          paperShape.moveTo(new paper.Point(paperShape.position.x - moveDistance, paperShape.position.y));
           break;
         case 'up':
-          paperShape.position.y -= moveDistance;
+          paperShape.moveTo(new paper.Point(paperShape.position.x, paperShape.position.y - moveDistance));
           break;
         case 'down':
-          paperShape.position.y += moveDistance;
+          paperShape.moveTo(new paper.Point(paperShape.position.x, paperShape.position.y + moveDistance));
           break;
         default:
           return;
