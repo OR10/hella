@@ -70,7 +70,7 @@ class LabelingTask
      * @var string
      * @CouchDB\Field(type="string")
      */
-    private $status = 'PreProcessing';
+    private $status = 'preprocessing';
 
     /**
      * @var string
