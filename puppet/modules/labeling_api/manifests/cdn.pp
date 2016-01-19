@@ -11,10 +11,6 @@ class labeling_api::cdn(
     include ::nginx
     include ::labeling_api::common
 
-    $_locationCfgAppend = {
-      'include' => '/etc/nginx/cdn-cors.conf',
-    }
-
     $_addHeader = {
       'Pragma'        => 'public',
       'Cache-Control' => '"public"',
@@ -24,21 +20,33 @@ class labeling_api::cdn(
       'expires' => $expires,
     }
 
-    file { '/etc/nginx/cdn-cors.conf':
-      ensure  => file,
-      content => template('labeling_api/cdn/cors.conf.erb'),
-      require => Package['nginx'],
+    if $allowed_origin != undef {
+      $_locationRawPrepend = [
+        "if (\$request_method = 'OPTIONS') {",
+        "  add_header 'Access-Control-Allow-Origin' '${allowed_origin}';",
+        "  add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';",
+        "  add_header 'Content-Length' 0;",
+        "  return 204;",
+        "}",
+        "",
+        "if (\$request_method = 'GET') {",
+        "  add_header 'Access-Control-Allow-Origin' '${allowed_origin}';",
+        "  add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';",
+        "}",
+      ]
+    } else {
+      $_locationRawPrepend = []
     }
 
     annostation_base::nginx_vhost { 'cdn':
-      vhostDir          => $vhost_dir,
-      vhostPort         => $vhost_port,
-      httpv2            => $httpv2,
-      sslCertFile       => '/etc/nginx/ssl-certificate.crt',
-      sslKeyFile        => '/etc/nginx/ssl-certificate.key',
-      locationCfgAppend => $_locationCfgAppend,
-      addHeader         => $_addHeader,
-      vhostCfgAppend    => $_vhostCfgAppend,
+      vhostDir           => $vhost_dir,
+      vhostPort          => $vhost_port,
+      httpv2             => $httpv2,
+      sslCertFile        => '/etc/nginx/ssl-certificate.crt',
+      sslKeyFile         => '/etc/nginx/ssl-certificate.key',
+      locationRawPrepend => $_locationRawPrepend,
+      addHeader          => $_addHeader,
+      vhostCfgAppend     => $_vhostCfgAppend,
     }
   }
 }
