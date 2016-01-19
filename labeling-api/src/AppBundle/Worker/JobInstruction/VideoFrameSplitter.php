@@ -89,8 +89,8 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
         $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
-        foreach ($this->labelingTaskFacade->findAllEnabled($video, false) as $disabledTask) {
-            $disabledTask->setEnabledIfAllImagesAreConverted($video);
+        foreach ($this->labelingTaskFacade->findAllByStatus($video, 'PreProcessing') as $disabledTask) {
+            $disabledTask->setStatusIfAllImagesAreConverted($video);
             $this->labelingTaskFacade->save($disabledTask);
         }
 

@@ -34,14 +34,21 @@ class LabelingTask
             ->toArray();
     }
 
-    public function findAllEnabled(
+    /**
+     * @param Model\Video|null $video
+     * @param $status
+     * @param null $skip
+     * @param null $limit
+     * @return Model\LabelingTask[]
+     */
+    public function findAllByStatus(
         Model\Video $video = null,
-        $enabled = true,
+        $status,
         $skip = null,
         $limit = null
     ) {
-        $startKey = [$enabled];
-        $endKey = [$enabled];
+        $startKey = [$status];
+        $endKey = [$status];
 
         if ($video !== null) {
             $startKey[] = $video->getId();
@@ -52,7 +59,7 @@ class LabelingTask
         }
 
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'by_enabled_videoId')
+            ->createQuery('annostation_labeling_task', 'by_status_videoId')
             ->setStartKey($startKey)
             ->setEndKey($endKey);
 

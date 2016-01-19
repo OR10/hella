@@ -67,10 +67,10 @@ class LabelingTask
     private $requiredImageTypes;
 
     /**
-     * @var boolean
-     * @CouchDB\Field(type="boolean")
+     * @var string
+     * @CouchDB\Field(type="string")
      */
-    private $enabled = false;
+    private $status = 'PreProcessing';
 
     /**
      * @var string
@@ -244,38 +244,36 @@ class LabelingTask
     }
 
     /**
-     * @param boolean $enabled
-     *
-     * @return LabelingTask
+     * @param string $status
+     * @return $this
      */
-    public function setEnabled($enabled = true)
+    public function setStatus($status)
     {
-        $this->enabled = (bool) $enabled;
+        $this->status = $status;
 
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isEnabled()
+    public function getStatus()
     {
-        return $this->enabled;
+        return $this->status;
     }
 
     /**
      * @param Video $video
-     *
-     * @return LabelingTask
+     * @return $this|void
      */
-    public function setEnabledIfAllImagesAreConverted(Video $video)
+    public function setStatusIfAllImagesAreConverted(Video $video)
     {
         foreach ($this->getRequiredImageTypes() as $requiredImageType) {
             if (!$video->isImageTypeConverted($requiredImageType)) {
                 return;
             }
         }
-        $this->setEnabled();
+        $this->setStatus('Assigned');
 
         return $this;
     }
