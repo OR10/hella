@@ -38,17 +38,26 @@ class Task extends Controller\Base
     private $frameCdn;
 
     /**
+     * @var Facade\User
+     */
+    private $userFacade;
+
+    /**
+     * @param Facade\Video $videoFacade
      * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Service\FrameCdn    $frameCdn
+     * @param Service\FrameCdn $frameCdn
+     * @param Facade\User $userFacade
      */
     public function __construct(
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Service\FrameCdn $frameCdn
+        Service\FrameCdn $frameCdn,
+        Facade\User $userFacade
     ) {
         $this->videoFacade        = $videoFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->frameCdn           = $frameCdn;
+        $this->userFacade         = $userFacade;
     }
 
     /**
@@ -70,8 +79,27 @@ class Task extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
-        $tasks  = $this->labelingTaskFacade->findAllByStatus(null, 'waiting', $offset, $limit );
-        $videos = $fetchVideos ? $this->videoFacade->findAllForTasksIndexedById($tasks) : [];
+        $tasks = array(
+            'waiting' => $this->labelingTaskFacade->findAllByStatus(null, 'waiting', $offset, $limit )
+        );
+
+        if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
+            $tasks['preprocessing'] = $this->labelingTaskFacade->findAllByStatus(null, 'preprocessing', $offset, $limit );
+            $tasks['labeled']       = $this->labelingTaskFacade->findAllByStatus(null, 'labeled', $offset, $limit );
+        }else{
+            $tasks['preprocessing'] = null;
+            $tasks['labeled']       = null;
+        }
+
+        if ($fetchVideos){
+            $videos = $this->videoFacade->findAllForTasksIndexedById($tasks['waiting']);
+            if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
+                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks['preprocessing']), $videos);
+                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks['labeled']), $videos);
+            }
+        }else{
+            $videos = [];
+        }
 
         return View\View::create()->setData([
             'result' => [

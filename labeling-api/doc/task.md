@@ -10,7 +10,10 @@
 + Response 200 (application/json)
     + Attributes
         + result
-            + tasks (array[Task])
+            + tasks
+                + preprocessing (array[Task])
+                + waiting (array[Task])
+                + labeled (array[Task])
             + videos (array[Video])
 
 ## Get a specific task [/api/task/{id}]
