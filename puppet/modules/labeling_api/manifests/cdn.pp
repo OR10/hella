@@ -1,7 +1,6 @@
 class labeling_api::cdn(
   $configure_nginx = $labeling_api::params::configure_nginx,
   $vhost_dir = $labeling_api::params::frame_cdn_dir,
-  $vhost_name = '_',
   $vhost_port = $labeling_api::params::frame_cdn_port,
   $allowed_origin = $labeling_api::params::frame_cdn_allowed_origin,
   $expires = $labeling_api::params::frame_cdn_expires,
@@ -10,10 +9,6 @@ class labeling_api::cdn(
   if $configure_nginx {
     include ::nginx
     include ::labeling_api::common
-
-    $_locationCfgAppend = {
-      'include' => '/etc/nginx/cdn-cors.conf',
-    }
 
     $_addHeader = {
       'Pragma'        => 'public',
@@ -24,21 +19,33 @@ class labeling_api::cdn(
       'expires' => $expires,
     }
 
-    file { '/etc/nginx/cdn-cors.conf':
-      ensure  => file,
-      content => template('labeling_api/cdn/cors.conf.erb'),
-      require => Package['nginx'],
+    if $allowed_origin != undef {
+      $_locationRawPrepend = [
+        "if (\$request_method = 'OPTIONS') {",
+        "  add_header 'Access-Control-Allow-Origin' '${allowed_origin}';",
+        "  add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';",
+        "  add_header 'Content-Length' 0;",
+        "  return 204;",
+        "}",
+        "",
+        "if (\$request_method = 'GET') {",
+        "  add_header 'Access-Control-Allow-Origin' '${allowed_origin}';",
+        "  add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';",
+        "}",
+      ]
+    } else {
+      $_locationRawPrepend = []
     }
 
-    labeling_api::nginx_vhost { 'cdn':
-      vhostDir          => $vhost_dir,
-      vhostPort         => $vhost_port,
-      httpv2            => $httpv2,
-      sslCertFile       => '/etc/nginx/ssl-certificate.crt',
-      sslKeyFile        => '/etc/nginx/ssl-certificate.key',
-      locationCfgAppend => $_locationCfgAppend,
-      addHeader         => $_addHeader,
-      vhostCfgAppend    => $_vhostCfgAppend,
+    annostation_base::nginx_vhost { 'labeling_api_cdn':
+      vhostDir           => $vhost_dir,
+      vhostPort          => $vhost_port,
+      httpv2             => $httpv2,
+      sslCertFile        => '/etc/nginx/labeling_api-ssl-certificate.crt',
+      sslKeyFile         => '/etc/nginx/labeling_api-ssl-certificate.key',
+      locationRawPrepend => $_locationRawPrepend,
+      addHeader          => $_addHeader,
+      vhostCfgAppend     => $_vhostCfgAppend,
     }
   }
 }

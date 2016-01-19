@@ -45,6 +45,6 @@ class Status extends Controller\Base
         $task->setStatus('labeled');
         $this->labelingTaskFacade->save($task);
 
-        return View\View::create()->setData(['success' => true]);
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 }

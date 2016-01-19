@@ -307,28 +307,6 @@ export default class LabelSelectorController {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 
-  markTaskAsLabeled() {
-    const modal = this._modalService.getInfoDialog(
-      {
-        title: 'Finish Task',
-        headline: 'Mark this task as finished?',
-        message: 'You are about to mark this task as being finished. After that it will be assigned back to the Label-Coordinator for review. You will not be able to change anything in this task from this point on.',
-        confirmButtonText: 'Finish',
-        cancelButtonText: 'Cancel',
-      },
-      () => {
-        this._applicationState.disableAll();
-        this._applicationState.viewer.work();
-        this._taskGateway.markTaskAsLabeled(this.task)
-          .then(() => {
-            this._$location.path('/labeling/tasks');
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
-          });
-      }
-    );
-    modal.activate();
-  }
 }
 
 LabelSelectorController.$inject = [

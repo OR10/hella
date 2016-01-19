@@ -30,13 +30,13 @@ class labeling_api::common(
   }
 
   if $sslCert {
-    file { '/etc/nginx/ssl-certificate.crt':
+    file { '/etc/nginx/labeling_api-ssl-certificate.crt':
       ensure  => file,
       source  => "puppet:///modules/labeling_api/${sslCert}.crt",
       require => Package['nginx'],
     }
 
-    file { '/etc/nginx/ssl-certificate.key':
+    file { '/etc/nginx/labeling_api-ssl-certificate.key':
       ensure  => file,
       source  => "puppet:///modules/labeling_api/${sslCert}.key",
       require => Package['nginx'],

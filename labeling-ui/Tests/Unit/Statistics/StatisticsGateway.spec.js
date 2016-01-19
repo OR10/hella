@@ -5,7 +5,7 @@ import Common from 'Application/Common/Common';
 
 import StatisticsGateway from 'Application/Statistics/Gateways/StatisticsGateway';
 
-fdescribe('StatisticsGateway', () => {
+describe('StatisticsGateway', () => {
   let $httpBackend;
   let gateway;
 

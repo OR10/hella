@@ -1,9 +1,10 @@
-define labeling_api::nginx_vhost(
+define annostation_base::nginx_vhost(
   $vhostDir,
   $vhostPort = 80,
   $httpv2 = false,
   $indexFiles = [],
   $tryFiles = ['$uri', '=404'],
+  $locationRawPrepend = [],
   $locationCfgAppend = {},
   $addHeader = {},
   $vhostCfgAppend = {},
@@ -23,6 +24,7 @@ define labeling_api::nginx_vhost(
       ssl_port             => $vhostPort,
       index_files          => $indexFiles,
       try_files            => $tryFiles,
+      location_raw_prepend => $locationRawPrepend,
       location_cfg_append  => $locationCfgAppend,
       add_header           => $addHeader,
       vhost_cfg_prepend    => $vhostCfgAppend,
@@ -35,6 +37,7 @@ define labeling_api::nginx_vhost(
       listen_port          => $vhostPort,
       index_files          => $indexFiles,
       try_files            => $tryFiles,
+      location_raw_prepend => $locationRawPrepend,
       location_cfg_append  => $locationCfgAppend,
       add_header           => $addHeader,
       vhost_cfg_prepend    => $vhostCfgAppend,
