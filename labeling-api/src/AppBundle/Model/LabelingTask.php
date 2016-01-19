@@ -273,7 +273,7 @@ class LabelingTask
                 return;
             }
         }
-        $this->setStatus('Assigned');
+        $this->setStatus('waiting');
 
         return $this;
     }
