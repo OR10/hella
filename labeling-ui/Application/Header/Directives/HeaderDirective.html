@@ -6,7 +6,7 @@
             <i class="icon icon-previous"></i>
         </a>
     </div>
-    <div class="grid-content text-left small-15 noscroll" as-right-click="vm.showReleaseInformation()">
+    <div class="grid-content text-left noscroll" as-right-click="vm.showReleaseInformation()">
         <span ng-show="vm.releaseInformation === null">
             <span ng-switch on="vm.task.taskType">
                 <span ng-switch-when="meta-labeling">Meta labeling:</span>
@@ -20,41 +20,42 @@
             Revision: {{vm.releaseInformation.revision}}
         </span>
     </div>
-    <div class="grid-block header-right small-8 noscroll">
-        <button ng-click="vm.finishLabelingTask()"
-                tooltip="Finish the active task"
-        >
-            <i class="icon icon-ok"></i>
-        </button>
-        <timer class="grid-content text-right header-timer small-6 noscroll"
+    <div class="grid-block header-right shrink noscroll">
+        <timer class="grid-content text-right header-timer shrink noscroll"
                task="vm.task"
                user="vm.user"></timer>
 
-        <div class="grid-content text-left small-3 noscroll">
+        <div class="grid-content text-left shrink noscroll">
             <button>
                 <i class="icon no-hover icon-general-timer"></i>
             </button>
+            <button ng-click="vm.finishLabelingTask()"
+                    tooltip="Finish the active task"
+                    style="margin-left: -.7rem;"
+            >
+                <i class="icon icon-ok"></i>
+            </button>
         </div>
 
-        <div class="grid-content small-3 noscroll">
+        <div class="grid-content shrink noscroll">
             <button>
                 <i class="icon icon-help"></i>
             </button>
         </div>
 
-        <div class="grid-content small-3 noscroll">
+        <div class="grid-content shrink noscroll">
             <button>
                 <i class="icon icon-general-chat"></i>
             </button>
         </div>
 
-        <div class="grid-content text-center small-6 noscroll">
+        <div class="grid-content text-center shrink noscroll">
             <button>
                 {{vm.user.username}}
             </button>
         </div>
 
-        <div class="grid-content small-3 noscroll">
+        <div class="grid-content shrink noscroll">
             <button ng-click="vm.handleLogoutClick()"
                     tooltip="Logout / Leave application"
             >
