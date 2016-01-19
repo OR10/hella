@@ -21,7 +21,11 @@
         </span>
     </div>
     <div class="grid-block header-right small-8 noscroll">
-
+        <button ng-click="vm.finishLabelingTask()"
+                tooltip="Finish the active task"
+        >
+            <i class="icon icon-ok"></i>
+        </button>
         <timer class="grid-content text-right header-timer small-6 noscroll"
                task="vm.task"
                user="vm.user"></timer>
