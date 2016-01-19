@@ -37,7 +37,7 @@ class labeling_api::cdn(
       $_locationRawPrepend = []
     }
 
-    annostation_base::nginx_vhost { 'cdn':
+    annostation_base::nginx_vhost { 'labeling_api_cdn':
       vhostDir           => $vhost_dir,
       vhostPort          => $vhost_port,
       httpv2             => $httpv2,
