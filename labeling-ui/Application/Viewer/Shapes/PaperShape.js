@@ -107,7 +107,7 @@ class PaperShape extends paper.Group {
    * @param point
    */
   moveTo(point) {
-    this.position = point;
+    this.position = this._restrictToViewport(point);
   }
 
   select() {
@@ -122,6 +122,42 @@ class PaperShape extends paper.Group {
 
   scale() {
     this._shape.scale.apply(this._shape, arguments);
+  }
+
+  /**
+   * Restrict the position of the paper shape to within the bounds of the view
+   *
+   * @param {paper.Point} point
+   * @returns {paper.Point}
+   * @private
+   */
+  _restrictToViewport(point) {
+    this._viewportDimensions = {
+      width: this.view.viewSize.width / this.view.zoom,
+      height: this.view.viewSize.height / this.view.zoom,
+    };
+
+    let correctedX = point.x;
+    let correctedY = point.y;
+
+
+    if (point.x - this.bounds.width / 2 < 0) {
+      correctedX = this.bounds.width / 2;
+    }
+
+    if (point.y - this.bounds.height / 2 < 0) {
+      correctedY = this.bounds.height / 2;
+    }
+
+    if (point.x + this.bounds.width / 2 > this._viewportDimensions.width) {
+      correctedX = this._viewportDimensions.width - this.bounds.width / 2;
+    }
+
+    if (point.y + this.bounds.height / 2 > this._viewportDimensions.height) {
+      correctedY = this._viewportDimensions.height - this.bounds.height / 2;
+    }
+
+    return new paper.Point(correctedX, correctedY);
   }
 
   /**
