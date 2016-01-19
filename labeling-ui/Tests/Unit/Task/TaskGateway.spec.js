@@ -102,7 +102,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/mark/labeled').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/labeled').respond(markResponse);
 
     gateway.markTaskAsLabeled({id: '123asdf'}).then(result => {
       expect(result).toEqual(markResponse.result);

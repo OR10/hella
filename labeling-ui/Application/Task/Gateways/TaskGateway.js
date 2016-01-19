@@ -76,7 +76,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsLabeled(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/mark/labeled`);
+    const url = this._apiService.getApiUrl(`/task/${task.id}/status/labeled`);
     return this._bufferedHttp.post(url, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
