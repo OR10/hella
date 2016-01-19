@@ -1,7 +1,6 @@
 class labeling_api::cdn(
   $configure_nginx = $labeling_api::params::configure_nginx,
   $vhost_dir = $labeling_api::params::frame_cdn_dir,
-  $vhost_name = '_',
   $vhost_port = $labeling_api::params::frame_cdn_port,
   $allowed_origin = $labeling_api::params::frame_cdn_allowed_origin,
   $expires = $labeling_api::params::frame_cdn_expires,
