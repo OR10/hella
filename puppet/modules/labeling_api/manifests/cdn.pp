@@ -30,7 +30,7 @@ class labeling_api::cdn(
       require => Package['nginx'],
     }
 
-    labeling_api::nginx_vhost { 'cdn':
+    annostation_base::nginx_vhost { 'cdn':
       vhostDir          => $vhost_dir,
       vhostPort         => $vhost_port,
       httpv2            => $httpv2,

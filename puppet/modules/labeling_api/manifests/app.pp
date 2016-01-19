@@ -32,7 +32,7 @@ class labeling_api::app(
       $_vhostPort = $port
     }
 
-    labeling_api::nginx_vhost { '_':
+    annostation_base::nginx_vhost { '_':
       vhostDir          => "${root_dir}/web",
       vhostPort         => $_vhostPort,
       httpv2            => $httpv2,

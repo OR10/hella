@@ -1,4 +1,4 @@
-define labeling_api::nginx_vhost(
+define annostation_base::nginx_vhost(
   $vhostDir,
   $vhostPort = 80,
   $httpv2 = false,
