@@ -9,7 +9,18 @@ sudo aptitude -y install puppet-agent git openjdk-7-jre icedtea-7-plugin python-
 
 wget http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/2.0/swarm-client-2.0-jar-with-dependencies.jar
 
-sudo /opt/puppetlabs/bin/puppet apply \
+sudo \
+    FACTER_annostation_project=labeling \
+    /opt/puppetlabs/bin/puppet apply \
+    --modulepath /home/ubuntu/puppet/modules:/home/ubuntu/puppet/vendor:/etc/puppet/modules \
+    --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml  \
+    --environmentpath /home/ubuntu/puppet/environments/ \
+    --environment staging \
+    /home/ubuntu/puppet/environments/staging/manifests/site.pp
+
+sudo \
+    FACTER_annostation_project=audi-dv \
+    /opt/puppetlabs/bin/puppet apply \
     --modulepath /home/ubuntu/puppet/modules:/home/ubuntu/puppet/vendor:/etc/puppet/modules \
     --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml  \
     --environmentpath /home/ubuntu/puppet/environments/ \
@@ -45,7 +56,7 @@ EoP
     -username cho \\
     -password ef5a2b4ec677cbabd94ef3fc753922f2 \\
     -name `hostname` \\
-    -labels "AnnoStation swarm PHP56 MySQL NodeJS CouchDB `hostname`" \\
+    -labels "AnnoStation swarm PHP7 MySQL NodeJS CouchDB ElasticSearch `hostname`" \\
     -master https://jenkins.crosscan.com/ \\
     -disableClientsUniqueId
 EOF
@@ -54,7 +65,6 @@ chmod +x jenkinsSwarmSlaveScreen.sh
 sudo mv jenkinsSwarmSlaveScreen.sh /usr/local/bin/jenkinsSwarmSlaveScreen.sh
 
 echo '@reboot sleep 30 && /usr/local/bin/jenkinsSwarmSlaveScreen.sh' | crontab -u ubuntu -
-
 
 sleep 3
 sudo reboot
