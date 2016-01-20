@@ -23,7 +23,7 @@ class labeling_api::mysql(
     }
   }
 
-  exec { 'restart mysqld':
+  exec { "restart mysqld for ${database_name}":
     refreshonly => true,
     command => 'service mysql restart',
     path => '/bin:/usr/bin:/sbin:/usr/sbin',
