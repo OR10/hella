@@ -66,7 +66,7 @@ class HeaderController {
       confirmButtonText: 'Logout',
       cancelButtonText: 'Cancel',
     }, () => {
-      this._$location.path('/logout');
+      window.location.assign('/logout');
     });
     modal.activate();
   }
