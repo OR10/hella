@@ -2,7 +2,6 @@ import Module from 'Application/Module';
 import TaskListDirective from './Directives/TaskListDirective';
 import HomeController from './Controllers/HomeController';
 import homeTemplate from './Views/home.html!';
-import UserGateway from './Gateways/UserGateway';
 
 /**
  * Home Module
@@ -30,7 +29,6 @@ class Home extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Home', []);
-    this.module.service('userGateway', UserGateway);
     this.registerDirective('tasklist', TaskListDirective);
   }
 }

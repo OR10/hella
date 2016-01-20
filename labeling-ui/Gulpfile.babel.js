@@ -319,7 +319,7 @@ gulp.task('build-sass', () => {
     .pipe($$.sass({
       precision: 8,
       errLogToConsole: false,
-      functions: sassJspm.resolve_function('Application/vendor/'),
+      functions: sassJspm.resolve_function('Application/Vendor/'),
       importer: sassJspm.importer,
     }))
     .pipe($$.plumber.stop())
