@@ -20,8 +20,9 @@ class TaskController {
    * @param {$stateParams} $stateParams
    * @param {$location} $location
    * @param {ApplicationState} applicationState
+   * @param {angular.$timeout} $timeout
    */
-  constructor($scope, initialData, user, labeledFrameGateway, $stateParams, $location, applicationState) {
+  constructor($scope, initialData, user, labeledFrameGateway, $stateParams, $location, applicationState, $timeout) {
     /**
      * @type {angular.Scope}
      */
@@ -238,6 +239,9 @@ class TaskController {
       this.framePosition.goto(this._getFrameNumberFromUrl());
     });
 
+    // @TODO: Only needed as long as the left sidebar is not used and only shown for the panel
+    $scope.$watch('vm.popupPanelOpen', () => $timeout(() => $scope.$broadcast('sidebar.resized'), 1));
+
     applicationState.$watch('sidebarLeft.isDisabled', disabled => this.leftSidebarDisabled = disabled);
     applicationState.$watch('sidebarLeft.isWorking', working => this.leftSidebarWorking = working);
     applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
@@ -275,10 +279,13 @@ class TaskController {
 
   _initializeLayout() {
     const sidebarSizeCss = `${5 / 24 * 100}%`;
-    const viewerSizeCss = `${14 / 24 * 100}%`;
+    //const viewerSizeCss = `${14 / 24 * 100}%`;
+    const viewerSizeCss = `${19 / 24 * 100}%`;
 
-    this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
-    this.minSizes = [260, 500, 260];
+    //this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
+    this.splitViewSizes = [null, viewerSizeCss, sidebarSizeCss];
+    //this.minSizes = [260, 500, 260];
+    this.minSizes = [500, 260];
   }
 
   onSidebarResized() {
@@ -315,6 +322,7 @@ TaskController.$inject = [
   '$stateParams',
   '$location',
   'applicationState',
+  '$timeout',
 ];
 
 export default TaskController;
