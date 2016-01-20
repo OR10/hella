@@ -36,6 +36,7 @@ labeling_api::params::secret: 'saddassadasd'
 labeling_api::params::user_password: 'xoADo2iMO1okZJIvaQKX'
 labeling_api::params::create_parameter_files: true
 
+labeling_api::app::httpv2: true
 labeling_api::app::root_dir: '/var/www/labeling-api/current'
 
 labeling_api::mysql::database_name: 'labeling_api'
@@ -47,6 +48,8 @@ labeling_api::couch::prepare_test_environment: true
 
 labeling_api::worker::app_dir: '/var/www/labeling-api/current'
 labeling_api::worker::user: www-data
+
+labeling_api::cdn::httpv2: true
 
 labeling_api::mysql: true
 labeling_api::couch: true
