@@ -38,8 +38,30 @@ class TaskListController {
     this.loadingInProgress = true;
     this._taskGateway.getTasksAndVideos()
       .then(({tasks, videos}) => {
-        tasks.forEach(task => task.video = videos[task.videoId]);
-        this.tasksWithVideo = tasks;
+
+        this.preprocessingTasks = null;
+        this.waitingTasks = null;
+        this.labeledTasks = null;
+
+        if (tasks.preprocessing) {
+          this.preprocessingTasks = tasks.preprocessing.map(task => {
+            task.video = videos[task.videoId];
+            return task;
+          });
+        }
+        if (tasks.waiting) {
+          this.waitingTasks = tasks.waiting.map(task => {
+            task.video = videos[task.videoId];
+            return task;
+          });
+        }
+        if (tasks.labeled) {
+          this.labeledTasks = tasks.labeled.map(task => {
+            task.video = videos[task.videoId];
+            return task;
+          });
+        }
+
         this.loadingInProgress = false;
       });
   }
