@@ -6,10 +6,13 @@ import 'angular-animate';
 
 import 'Distribution/Templates/foundation-ui';
 
+import 'ag-grid';
+
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
 import TaskModule from './Task/Task';
 import HomeModule from './Home/Home';
+import UsersModule from './Users/Users';
 import ExportModule from './Export/Export';
 import FrameModule from './Frame/Frame';
 import ViewerModule from './Viewer/Viewer';
@@ -56,6 +59,7 @@ export default class Application {
     this.modules.push(new HeaderModule());
     this.modules.push(new TaskModule());
     this.modules.push(new HomeModule());
+    this.modules.push(new UsersModule());
     this.modules.push(new ExportModule());
     this.modules.push(new FrameModule());
     this.modules.push(new ViewerModule());
@@ -88,6 +92,7 @@ export default class Application {
           'ui.router',
           'ngAnimate',
           'AnnoStation.FoundationVendorTemplates',
+          'agGrid',
           ...this.modules.map(mod => mod.module.name),
         ]);
 
