@@ -170,26 +170,40 @@ class Init extends Base
     {
         $this->writeSection($output, 'Creating users');
 
-        if ($this->userPassword !== null) {
-            if (!$this->runCommand(
-                $output,
-                'fos:user:create',
-                [
-                    'username' => 'user',
-                    'email'    => 'user@example.com',
-                    'password' => $this->userPassword,
-                ]
-            )
-            ) {
-                return false;
-            }
+        $users = ['admin', 'label_coordinator', 'user'];
 
-            $this->writeInfo(
-                $output,
-                "Created user <comment>user</comment> with password: <comment>{$this->userPassword}</comment>"
-            );
+        if ($this->userPassword !== null) {
+
+            foreach ($users as $username) {
+                if (!$this->runCommand(
+                    $output,
+                    'fos:user:create',
+                    [
+                        'username' => $username,
+                        'email'    => $username . '@example.com',
+                        'password' => $this->userPassword,
+                    ]
+                )
+                ) {
+                    return false;
+                }
+
+                $this->runCommand(
+                    $output,
+                    'fos:user:promote',
+                    [
+                        'username' => $username,
+                        'role'     => 'ROLE_' . strtoupper($username),
+                    ]
+                );
+
+                $this->writeInfo(
+                    $output,
+                    "Created user <comment>{$username}</comment> with password: <comment>{$this->userPassword}</comment>"
+                );
+            }
         } else {
-            $this->writeInfo($output, "<comment>User 'user' is not created due to an empty password!</comment>");
+            $this->writeInfo($output, "<comment>Users are not created due to an empty password!</comment>");
         }
 
         return true;
