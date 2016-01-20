@@ -152,6 +152,10 @@ export default class MultiTool extends Tool {
   _mouseDown(event) {
     const point = event.point;
 
+    if (event.event.shiftKey) {
+      return;
+    }
+
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
         class: PaperShape,
