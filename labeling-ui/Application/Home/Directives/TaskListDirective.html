@@ -18,12 +18,11 @@
                 <tbody>
                 <tr ng-repeat="task in vm.preprocessingTasks track by task.id">
                     <td>
-                        <a href="" ui-sref="^.task({taskId: task.id})"
-                           ng-class="{'type-object-labeling': task.taskType === 'object-labeling', 'type-meta-labeling': task.taskType === 'meta-labeling'}"
+                        <span ng-class="{'type-object-labeling': task.taskType === 'object-labeling', 'type-meta-labeling': task.taskType === 'meta-labeling'}"
                         >
                             <span class="video-name">{{task.video.name}}</span>
                             <span class="frame-range">{{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}</span>
-                        </a>
+                        </span>
                     </td>
                 </tr>
                 </tbody>
