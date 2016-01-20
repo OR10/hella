@@ -57,48 +57,50 @@ viewer {
   box-shadow: inset 0 0 10px 0 #000000;
 }
 
+div.popup-panel {
+  font-size: 16px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: $button;
+  border-top: 2px solid $element-inline-divider;
+  flex: 0;
+
+  .zoom {
+    .zoom-controls {
+      padding: 2rem 0;
+
+      button {
+        overflow: hidden;
+      }
+    }
+  }
+
+  .settings {
+    padding: 2rem 0;
+
+    .grid-block {
+      margin-bottom: 10px;
+
+      .grid-content {
+        overflow: hidden;
+      }
+    }
+  }
+
+  .grid-block:last-child {
+    margin-bottom: 0;
+  }
+
+  input[type="range"] {
+    margin-top: 0.8rem;
+  }
+}
+
 .sidebar-left {
+  width: 330px;
   background-color: $element-background;
   border-right: 2px solid $element-divider;
 
-  div.popup-panel {
-    font-size: 16px;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    background-color: $button;
-    border-top: 2px solid $element-inline-divider;
-    flex: 0;
-
-    .zoom {
-      .zoom-controls {
-        padding: 2rem 0;
-
-        button {
-          overflow: hidden;
-        }
-      }
-    }
-
-    .settings {
-      padding: 2rem 0;
-
-      .grid-block {
-        margin-bottom: 10px;
-
-        .grid-content {
-          overflow: hidden;
-        }
-      }
-    }
-
-    .grid-block:last-child {
-      margin-bottom: 0;
-    }
-
-    input[type="range"] {
-      margin-top: 0.8rem;
-    }
-  }
 }
 
 .sidebar-right {

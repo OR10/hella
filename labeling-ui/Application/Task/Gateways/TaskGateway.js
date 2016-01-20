@@ -38,7 +38,7 @@ class TaskGateway {
   /**
    * Retrieves a list of available {@link Task}s and their associated videos
    *
-   * @return {AbortablePromise<{tasks: Task[], videos: Object<string, Video>}|Error>}
+   * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
    */
   getTasksAndVideos() {
     const url = this._apiService.getApiUrl('/task', {includeVideos: true});
