@@ -6,6 +6,8 @@ import DetailController from './Controllers/DetailController';
 import usersTemplate from './Views/Users.html!';
 import detailTemplate from './Views/Detail.html!';
 
+import UserGateway from './Gateways/UserGateway';
+
 /**
  * User Module
  *
@@ -19,7 +21,7 @@ class Users extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Users', []);
-    //this.module.service('ApiService', ApiService);
+    this.module.service('userGateway', UserGateway);
     //this.module.provider('bufferedHttp', BufferedHttpProvider);
 
     //this.registerDirective('loadingMask', LoadingMaskDirective);

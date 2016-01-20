@@ -4,6 +4,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import UserGateway from 'Application/Users/Gateways/UserGateway';
+import User from 'Application/Users/Models/User';
 
 describe('UserGateway', () => {
   let $httpBackend;
@@ -38,6 +39,21 @@ describe('UserGateway', () => {
     expect(gateway instanceof UserGateway).toBe(true);
   });
 
+  it('should load information for the currently logged in user', (done) => {
+    const userResponse = {
+      result: {id: 'me', email: 'foo@bar.baz'},
+    };
+
+    $httpBackend.expectGET('/backend/api/user/profile').respond(userResponse);
+
+    gateway.getCurrentUser().then((user) => {
+      expect(user).toEqual(new User(userResponse.result));
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
   it('should load a list of users', (done) => {
     const usersResponse = {
       result: {
@@ -51,7 +67,7 @@ describe('UserGateway', () => {
     $httpBackend.expectGET('/backend/api/users').respond(usersResponse);
 
     gateway.getUsers().then((users) => {
-      expect(users).toEqual(usersResponse.result.users);
+      expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
       done();
     });
 
@@ -68,7 +84,7 @@ describe('UserGateway', () => {
     $httpBackend.expectGET('/backend/api/users/me').respond(userResponse);
 
     gateway.getUser('me').then((user) => {
-      expect(user).toEqual(userResponse.result.user);
+      expect(user).toEqual(new User(userResponse.result.user));
       done();
     });
 

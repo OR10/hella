@@ -1,3 +1,5 @@
+import User from '../Models/User';
+
 /**
  * Gateway for managing User information
  */
@@ -21,6 +23,23 @@ class UserGateway {
   }
 
   /**
+   * Gets the currently loggedIn user
+   *
+   * @return {AbortablePromise<User|Error>}
+   */
+  getCurrentUser() {
+    const url = this._apiService.getApiUrl('/user/profile');
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return new User(response.data.result);
+        }
+
+        throw new Error('Failed loading currently logged in user');
+      });
+  }
+
+  /**
    * List all users from the backend
    *
    * @return {AbortablePromise.<Array.<User>>}
@@ -33,7 +52,7 @@ class UserGateway {
           throw new Error('Failed loading users list');
         }
 
-        return response.data.result.users;
+        return response.data.result.users.map(user => new User(user));
       });
   }
 
@@ -52,7 +71,7 @@ class UserGateway {
           throw new Error(`Failed loading user with id ${id}.`);
         }
 
-        return response.data.result.user;
+        return new User(response.data.result.user);
       });
   }
 
