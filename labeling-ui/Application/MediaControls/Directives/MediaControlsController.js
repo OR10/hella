@@ -386,19 +386,6 @@ class MediaControlsController {
   showGeneralSettings() {
     this.fpsInputVisible = !this.fpsInputVisible;
   }
-
-  toggleFullscreen() {
-    const modal = this._modalService.getWarningDialog(
-      {
-        title: 'Warning',
-        headline: 'No category chosen',
-        message: 'Do you really want to leave this task open?\nDetailed information can be found left-hand under FAQs.',
-        confirmButtonText: 'Done',
-        cancelButtonText: 'Cancel',
-      }
-    );
-    modal.activate();
-  }
 }
 
 MediaControlsController.$inject = [
