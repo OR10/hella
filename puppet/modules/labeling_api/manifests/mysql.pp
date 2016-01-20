@@ -11,7 +11,7 @@ class labeling_api::mysql(
     user     => $database_user,
     password => $database_password,
     host     => $allowed_host,
-    notify   => Exec['restart mysqld'],
+    notify   => Exec["restart mysqld for ${database_name}"],
   }
 
   if $prepare_test_environment {
@@ -19,7 +19,7 @@ class labeling_api::mysql(
       user     => $database_user,
       password => $database_password,
       host     => $allowed_host,
-      notify   => Exec['restart mysqld'],
+      notify   => Exec["restart mysqld for ${database_name}"],
     }
   }
 
