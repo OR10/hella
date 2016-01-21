@@ -11,6 +11,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use Symfony\Component\Security\Core\Encoder;
 
 /**
  * @Rest\Prefix("/api/user")
@@ -31,14 +32,21 @@ class CurrentUser extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Encoder\EncoderFactory
+     */
+    private $encoderFactory;
+
+    /**
      * CurrentUser constructor.
      * @param Storage\TokenStorage $tokenStorage
+     * @param Encoder\EncoderFactory $encoderFactory
      * @param Facade\User $userFacade
      */
-    public function __construct(Storage\TokenStorage $tokenStorage, Facade\User $userFacade)
+    public function __construct(Storage\TokenStorage $tokenStorage, Encoder\EncoderFactory $encoderFactory, Facade\User $userFacade)
     {
         $this->tokenStorage = $tokenStorage;
-        $this->userFacade = $userFacade;
+        $this->userFacade   = $userFacade;
+        $this->encoderFactory = $encoderFactory;
     }
 
     /**
@@ -77,5 +85,33 @@ class CurrentUser extends Controller\Base
                 'Content-Type' => 'image/jpeg',
             ]
         );
+    }
+
+    /**
+     * Edit a User
+     *
+     * @Rest\Put("/password")
+     *
+     * @param HttpFoundation\Request $request
+     * @return \FOS\RestBundle\View\View
+     */
+    public function editUserPasswordAction(HttpFoundation\Request $request)
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $oldPassword = $request->request->get('oldPassword');
+        $newPassword = $request->request->get('newPassword');
+
+        $encoder = $this->encoderFactory->getEncoder($user);
+
+        if ($encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
+            $user->setPassword($newPassword);
+            $this->userFacade->updateUser($user);
+
+            return View\View::create()->setData(['result' => ['success' => true]]);
+        }
+
+        throw new Exception\BadRequestHttpException();
     }
 }

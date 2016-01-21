@@ -86,6 +86,7 @@
 
         <service id="annostation.labeling_api.controller.api.current_user" class="AppBundle\Controller\Api\CurrentUser">
             <argument type="service" id="security.token_storage" />
+            <argument type="service" id="security.encoder_factory" />
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
         </service>
 
