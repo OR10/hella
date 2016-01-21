@@ -10,6 +10,7 @@ use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Rest\Prefix("/api/users")
@@ -38,6 +39,7 @@ class Users extends Controller\Base
      * Get all users
      *
      * @Rest\Get("")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @return \FOS\RestBundle\View\View
      */
@@ -64,6 +66,7 @@ class Users extends Controller\Base
      * Get a single user
      *
      * @Rest\Get("/{user}")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Model\User $user
      * @return \FOS\RestBundle\View\View
@@ -90,6 +93,7 @@ class Users extends Controller\Base
      * Add a new User
      *
      * @Rest\Post("")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param HttpFoundation\Request $request
      * @return \FOS\RestBundle\View\View
@@ -115,6 +119,7 @@ class Users extends Controller\Base
      * Edit a User
      *
      * @Rest\Put("/{user}")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param HttpFoundation\Request $request
      * @param Model\User $user
@@ -143,6 +148,7 @@ class Users extends Controller\Base
      * Delete a User
      *
      * @Rest\Delete("/{user}")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $user
      * @return \FOS\RestBundle\View\View
