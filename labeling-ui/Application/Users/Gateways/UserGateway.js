@@ -131,6 +131,28 @@ class UserGateway {
         return response.data.result.success;
       });
   }
+
+  /**
+   * Set a new passwort for the current user
+   *
+   * @param password
+   * @returns {AbortablePromise}
+   */
+  setPassword(oldPassword, newPassword){
+    const url = this._apiService.getApiUrl(`/user/password`);
+    const data = {
+      oldPassword: oldPassword,
+      newPassword: newPassword
+    };
+    return this._bufferedHttp.put(url, data, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.success) {
+          throw new Error(`Failed setting password`);
+        }
+
+        return response.data.result.success;
+      });
+  }
 }
 
 UserGateway.$inject = [
