@@ -50,7 +50,9 @@ thead, tfoot {
 
 tbody {
   tr:nth-child(even) {
-    background-color: transparent;
+    td {
+      background-color: lighten($element-background, 4%);
+    }
   }
 
   th, td {

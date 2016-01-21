@@ -6,7 +6,7 @@ import 'angular-animate';
 
 import 'Distribution/Templates/foundation-ui';
 
-import 'ag-grid';
+import 'angular-smart-table';
 
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
@@ -92,7 +92,7 @@ export default class Application {
           'ui.router',
           'ngAnimate',
           'AnnoStation.FoundationVendorTemplates',
-          'agGrid',
+          'smart-table',
           ...this.modules.map(mod => mod.module.name),
         ]);
 
