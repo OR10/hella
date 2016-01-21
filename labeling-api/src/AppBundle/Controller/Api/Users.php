@@ -96,11 +96,17 @@ class Users extends Controller\Base
      */
     public function addUserAction(HttpFoundation\Request $request)
     {
-        $this->userFacade->createUser(
+        $roles = $request->request->get('roles', array());
+        $user = $this->userFacade->createUser(
             $request->request->get('username'),
             $request->request->get('email'),
             $request->request->get('password')
         );
+
+        foreach($roles as $role) {
+            $user->addRole($role);
+        }
+        $this->userFacade->updateUser($user);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
@@ -116,11 +122,16 @@ class Users extends Controller\Base
      */
     public function editUserAction(HttpFoundation\Request $request, Model\User $user)
     {
+        $roles = $request->request->get('roles', array());
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
 
         if ($request->query->has('password')) {
             $user->setPassword($request->request->get('password'));
+        }
+        $this->removeAllUserRoles($user);
+        foreach($roles as $role) {
+            $user->addRole($role);
         }
 
         $this->userFacade->updateUser($user);
@@ -141,5 +152,22 @@ class Users extends Controller\Base
         $this->userFacade->deleteUser($user);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
+    }
+
+    /**
+     * Remove all user roles
+     *
+     * @param Model\User $user
+     * @return Model\User
+     */
+    private function removeAllUserRoles(Model\User $user)
+    {
+        $roles = $user->getRoles();
+        foreach($roles as $role) {
+            $user->removeRole($role);
+        }
+        $this->userFacade->updateUser($user);
+
+        return $user;
     }
 }
