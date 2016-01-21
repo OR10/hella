@@ -1,0 +1,34 @@
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<div class="grid-block text-center vertical">
+    <div class="grid-block">
+        <table st-table="vm.displayedUsers"
+               st-safe-src="vm.users"
+               class="users-list grid-content hover sortable"
+               ng-hide="vm.loadingInProgress"
+        >
+            <thead>
+            <tr>
+                <th st-sort="username">Username</th>
+                <th st-sort="email">Email</th>
+                <th st-sort="getSingleRoleForUser">Role</th>
+                <th st-sort="lastLogin">Last Login</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in vm.displayedUsers">
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.roles | singleRole}}</td>
+                <td>{{user.lastLogin === null ? 'Never' : (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}</td>
+                <td class="action-cell">
+                    <button tooltip="Delete: {{user.username}}"
+                            ng-click="vm.deleteUser(user)">
+                        <i class="icon icon-selection-delete"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

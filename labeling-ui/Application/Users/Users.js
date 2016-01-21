@@ -7,7 +7,8 @@ import usersTemplate from './Views/Users.html!';
 import detailTemplate from './Views/Detail.html!';
 
 import UserGateway from './Gateways/UserGateway';
-import UsersGridDirective from './Directives/UsersGridDirective';
+import UsersListDirective from './Directives/UsersListDirective';
+import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 
 /**
  * User Module
@@ -23,9 +24,9 @@ class Users extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Users', []);
     this.module.service('userGateway', UserGateway);
-    //this.module.provider('bufferedHttp', BufferedHttpProvider);
+    this.module.filter('singleRole', SingleRoleFilterProvider);
 
-    this.registerDirective('usersGrid', UsersGridDirective);
+    this.registerDirective('usersList', UsersListDirective);
   }
 
   /**

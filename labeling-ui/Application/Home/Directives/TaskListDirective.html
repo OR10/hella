@@ -9,82 +9,63 @@
     <div class="grid-block">
         <div class="grid-content task-list-table" ng-if="vm.preprocessingTasks != null">
             <h3>Importing</h3>
-            <table style="width: 100%;" class="hover">
+            <table style="width: 100%;">
                 <thead>
                 <tr>
-                    <th>Task-Type</th>
-                    <th>Task-Title</th>
-                    <th>Frame-Range</th>
+                    <th>Task</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="task in vm.preprocessingTasks track by task.id">
-                    <td>{{task.taskType}}</td>
-                    <td>
-                        {{task.video.name}}
+                    <td ng-class="{'type-object-labeling': task.taskType === 'object-labeling', 'type-meta-labeling': task.taskType === 'meta-labeling'}">
+                        <span>
+                            <span class="video-name">{{task.video.name}}</span>
+                            <span class="frame-range">{{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}</span>
+                        </span>
                     </td>
-                    <td>
-                        {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
-                    </td>
-                </tr>
-                <tr ng-show="!vm.preprocessingTasks.length">
-                    <td colspan="3" class="text-center">No tasks</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="grid-content task-list-table" ng-if="vm.waitingTasks != null">
             <h3>Ready to be labeled</h3>
-            <table style="width: 100%;" class="hover">
+            <table style="width: 100%;">
                 <thead>
                 <tr>
-                    <th>Task-Type</th>
-                    <th>Task-Title</th>
-                    <th>Frame-Range</th>
+                    <th>Task</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks track by task.id">
-                    <td>{{task.taskType}}</td>
-                    <td>
-                        {{task.video.name}}
+                <tr ng-repeat="task in vm.waitingTasks track by task.id">
+                    <td ng-class="{'type-object-labeling': task.taskType === 'object-labeling', 'type-meta-labeling': task.taskType === 'meta-labeling'}">
+                        <a href="" ui-sref="^.task({taskId: task.id})">
+                            <span class="video-name">{{task.video.name}}</span>
+                            <span class="frame-range">{{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}</span>
+                        </a>
                     </td>
-                    <td>
-                        {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
-                    </td>
-                </tr>
-                <tr ng-show="!vm.waitingTasks.length">
-                    <td colspan="3" class="text-center">No tasks</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="grid-content task-list-table" ng-if="vm.labeledTasks != null">
             <h3>Finished</h3>
-            <table style="width: 100%;" class="hover">
+            <table style="width: 100%;">
                 <thead>
                 <tr>
-                    <th>Task-Type</th>
-                    <th>Task-Title</th>
-                    <th>Frame-Range</th>
+                    <th>Task</th>
                     <th>Export</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.labeledTasks track by task.id">
-                    <td>{{task.taskType}}</td>
-                    <td>
-                        {{task.video.name}}
+                <tr ng-repeat="task in vm.labeledTasks track by task.id">
+                    <td ng-class="{'type-object-labeling': task.taskType === 'object-labeling', 'type-meta-labeling': task.taskType === 'meta-labeling'}">
+                        <a href="" ui-sref="^.task({taskId: task.id})">
+                            <span class="video-name">{{task.video.name}}</span>
+                            <span class="frame-range">{{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}</span>
+                        </a>
                     </td>
-                    <td>
-                        {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
-
+                    <td class="col-md-2"><a href="" ui-sref="export({taskId: task.id})">Export data</a>
                     </td>
-                    <td><a href="" ui-sref="export({taskId: task.id})">Export data</a>
-                    </td>
-                </tr>
-                <tr ng-show="!vm.labeledTasks.length">
-                    <td colspan="4" class="text-center">No tasks</td>
                 </tr>
                 </tbody>
             </table>

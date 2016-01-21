@@ -2,6 +2,14 @@ table {
   margin-bottom: 0.2rem;
   border-radius: 4px;
 
+  &.sortable {
+    thead {
+      th {
+        cursor: pointer;
+      }
+    }
+  }
+
   &.hover {
     tbody {
       tr:hover {
@@ -60,7 +68,23 @@ tbody {
   }
 }
 
-thead tr th{
-  border-bottom: 1px solid $icon-hover;
+thead {
+  tr {
+    th {
+      border-bottom: 1px solid $icon-hover;
+    }
+  }
+}
+
+th.st-sort-descent:after {
+  padding-left: .6rem;
+  color: $icon-hover;
+  content: "▲";
+}
+
+th.st-sort-ascent:after {
+  padding-left: .3rem;
+  color: $icon-hover;
+  content: "▼";
 }
 

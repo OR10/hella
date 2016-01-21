@@ -1,21 +1,21 @@
-import usersGridTemplate from './UsersGridDirective.html!';
-import UsersGridController from './UsersGridController';
+import usersListTemplate from './UsersListDirective.html!';
+import UsersListController from './UsersListController';
 
 /**
  * Directive to display a List of all {@link User}s currently available in the backend
  *
  * The directive retrieves the list automatically from the backend.
  */
-class UsersGridDirective {
+class UsersListDirective {
   constructor() {
     this.scope = true;
 
-    this.template = usersGridTemplate;
+    this.template = usersListTemplate;
 
-    this.controller = UsersGridController;
+    this.controller = UsersListController;
     this.controllerAs = 'vm';
     this.bindToController = true;
   }
 }
 
-export default UsersGridDirective;
+export default UsersListDirective;

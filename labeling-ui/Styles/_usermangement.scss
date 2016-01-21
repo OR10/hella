@@ -1,0 +1,20 @@
+.users-list {
+  .action-cell {
+    padding: 0;
+  }
+
+  &.hover {
+    tr:hover {
+      .action-cell {
+        .icon {
+          color: $element-background;
+        }
+      }
+    }
+  }
+
+  .icon:hover {
+    font-weight: bold;
+    color: white !important;
+  }
+}
