@@ -1,11 +1,16 @@
 <div class="grid-frame vertical">
     <div class="grid-block shrink">
-        <div class="grid-content" style="padding: 0">
-            <div class="title-bar">
-                <div class="center title">User Details</div>
-            </div>
+        <div class="grid-content title-bar shrink text-center noscroll">
+            <a ui-sref="labeling.users"
+               tooltip="Back to User overview"
+            >
+                <i class="icon icon-previous"></i>
+            </a>
+        </div>
+        <div class="grid-block align-center title-bar" style="flex: 1 1 auto;">
+            <div class="grid-content text-center">User Details</div>
         </div>
     </div>
 
-    <h1>User Details</h1>
+    <user-profile id="vm.userId" readonly="false"></user-profile>
 </div>

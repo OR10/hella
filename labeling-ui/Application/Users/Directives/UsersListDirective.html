@@ -1,26 +1,26 @@
 <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<div class="grid-block text-center vertical">
-    <div class="grid-block">
+<div class="grid-block align-center">
+    <div class="grid-content shrink">
         <table st-table="vm.displayedUsers"
                st-safe-src="vm.users"
-               class="users-list grid-content hover sortable"
+               class="users-list hover sortable"
                ng-hide="vm.loadingInProgress"
         >
             <thead>
             <tr>
                 <th st-sort="username">Username</th>
                 <th st-sort="email">Email</th>
-                <th st-sort="getSingleRoleForUser">Role</th>
+                <th st-sort="getReadableRoleForUser">Role</th>
                 <th st-sort="lastLogin">Last Login</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="user in vm.displayedUsers">
-                <td>{{user.username}}</td>
-                <td>{{user.email}}</td>
-                <td>{{user.roles | singleRole}}</td>
-                <td>{{user.lastLogin === null ? 'Never' : (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}</td>
+                <td ui-sref="labeling.user-detail({userid: user.id})">{{user.username}}</td>
+                <td ui-sref="labeling.user-detail({userid: user.id})">{{user.email}}</td>
+                <td ui-sref="labeling.user-detail({userid: user.id})">{{user.roles | singleRole | readableRole}}</td>
+                <td ui-sref="labeling.user-detail({userid: user.id})">{{user.lastLogin === null ? 'Never' : (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}</td>
                 <td class="action-cell">
                     <button tooltip="Delete: {{user.username}}"
                             ng-click="vm.deleteUser(user)">

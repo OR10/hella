@@ -76,7 +76,7 @@ class UserGateway {
   }
 
   /**
-   * Get a specific user by his/her id
+   * Create a new User as addition to the database
    *
    * @param {User} user
    *
@@ -86,11 +86,11 @@ class UserGateway {
     const url = this._apiService.getApiUrl(`/users`);
     return this._bufferedHttp.post(url, user, 'user')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.success) {
+        if (!response.data || !response.data.result || !response.data.result.user) {
           throw new Error(`Failed creating user ${user.id}`);
         }
 
-        return response.data.result.success;
+        return new User(response.data.result.user);
       });
   }
 

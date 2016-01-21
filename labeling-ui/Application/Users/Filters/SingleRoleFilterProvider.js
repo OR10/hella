@@ -2,13 +2,13 @@ function SingleRoleFilterProvider() {
   return function singleRoleFilter(roles) {
     switch(true) {
       case roles.indexOf('ROLE_ADMIN') !== -1:
-        return 'Administrator';
+        return 'ROLE_ADMIN';
       case roles.indexOf('ROLE_LABEL_COORDINATOR') !== -1:
-        return 'Label coordinator';
+        return 'ROLE_LABEL_COORDINATOR';
       case roles.indexOf('ROLE_USER') !== -1:
-        return 'Labeler';
+        return 'ROLE_USER';
       default:
-        return 'Unknown Role';
+        throw new Error(`Unknown Role setup for user: ${roles.toString()}`);
     }
   };
 }

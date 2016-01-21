@@ -40,12 +40,12 @@
 //   accordion: true,
 //   action-sheet: true,
 //   block-list: true,
-//   button: true,
+   button: true,
 //   button-group: true,
 //   card: true,
 //   coloring: true,
 //   extras: true,
-//   forms: true,
+   forms: true,
 //   grid: true,
 //   iconic: true,
 //   label: true,
@@ -256,7 +256,7 @@ $block-grid-max-size: 12;
 // );
 // $button-font-size: 0.9rem;
 // $button-opacity-disabled: 0.5;
-// $button-tag-selector: false; 
+// $button-tag-selector: false;
 
 // 7. Accordion
 // - - - - - - - - - - - - - - -
@@ -351,33 +351,33 @@ $block-grid-max-size: 12;
 // $form-padding: 0.5rem;
 
 // Text fields
-// $input-color: #000;
+ $input-color: $sub-headlines;
 // $input-color-hover: $input-color;
 // $input-color-focus: $input-color;
-// $input-background: #fff;
+ $input-background: $element-background;
 // $input-background-hover: $input-background;
 // $input-background-focus: $input-background;
 // $input-background-disabled: smartscale($input-background);
-// $input-border: 1px solid #ccc;
-// $input-border-hover: 1px solid #bbb;
-// $input-border-focus: 1px solid #999;
+ $input-border: 1px solid $button-selected;
+ $input-border-hover: 1px solid $sub-headlines;
+ $input-border-focus: 1px solid $icon-hover;
 // $input-cursor-disabled: not-allowed;
 
 // Select menus
-// $select-color: #000;
-// $select-background: #fafafa;
+ $select-color: $sub-headlines;
+ $select-background: $element-background;
 // $select-background-hover: smartscale($select-background, 4%);
 // $select-arrow: true;
-// $select-arrow-color: $select-color;
+$select-arrow-color: $icon-hover;
 
 // Labels
 // $form-label-fontsize: 0.9rem;
 // $form-label-margin: 0.5rem;
-// $form-label-color: #333;
+$form-label-color: $text;
 
 // Inline labels
-// $inlinelabel-color: #333;
-// $inlinelabel-background: #eee;
+$inlinelabel-color: $sub-headlines;
+$inlinelabel-background: $element-background;
 // $inlinelabel-border: $input-border;
 
 // Range slider

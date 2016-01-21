@@ -8,7 +8,9 @@ import detailTemplate from './Views/Detail.html!';
 
 import UserGateway from './Gateways/UserGateway';
 import UsersListDirective from './Directives/UsersListDirective';
+import UserProfileDirective from './Directives/UserProfileDirective';
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
+import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 
 /**
  * User Module
@@ -25,8 +27,10 @@ class Users extends Module {
     this.module = angular.module('AnnoStation.Users', []);
     this.module.service('userGateway', UserGateway);
     this.module.filter('singleRole', SingleRoleFilterProvider);
+    this.module.filter('readableRole', ReadableRoleFilterProvider);
 
     this.registerDirective('usersList', UsersListDirective);
+    this.registerDirective('userProfile', UserProfileDirective);
   }
 
   /**
@@ -40,7 +44,7 @@ class Users extends Module {
       template: usersTemplate,
     });
 
-    $stateProvider.state('labeling.users-detail', {
+    $stateProvider.state('labeling.user-detail', {
       url: 'users/:userid',
       controller: DetailController,
       controllerAs: 'vm',
