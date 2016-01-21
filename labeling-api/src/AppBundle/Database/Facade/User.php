@@ -59,12 +59,42 @@ class User
     }
 
     /**
+     * @param Model\User $user
+     * @return Model\User
+     */
+    public function updateUser(Model\User $user)
+    {
+        $this->userManager->updateUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param Model\User $user
+     * @return bool
+     */
+    public function deleteUser(Model\User $user)
+    {
+        $this->userManager->deleteUser($user);
+
+        return true;
+    }
+
+    /**
      * @param $id
      * @return FosUserModel\UserInterface
      */
     public function getUserById($id)
     {
         return $this->userManager->findUserBy(array('id' => $id));
+    }
+
+    /**
+     * @return \Traversable
+     */
+    public function getUserList()
+    {
+        return $this->userManager->findUsers();
     }
 
     /**

@@ -16,6 +16,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
         </service>
         <service
+                id="annostation.labeling_api.controller.api.users"
+                class="AppBundle\Controller\Api\Users">
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+        </service>
+        <service
                 id="annostation.labeling_api.controller.api.task"
                 class="AppBundle\Controller\Api\Task">
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
