@@ -45,6 +45,18 @@ class Users extends Controller\Base
     {
         $users = $this->userFacade->getUserList();
 
+        $users = array_map(function (Model\User $user) {
+            return array(
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                'enabled' => $user->isEnabled(),
+                'lastLogin' => $user->getLastLogin(),
+                'locked' => $user->isLocked(),
+                'roles' => $user->getRoles(),
+            );
+        }, $users);
+
         return View\View::create()->setData(['result' => ['users' => $users]]);
     }
 
@@ -58,7 +70,20 @@ class Users extends Controller\Base
      */
     public function getUserAction(Model\User $user)
     {
-        return View\View::create()->setData(['result' => ['user' => $user]]);
+        return View\View::create()->setData(
+            ['result' =>
+                ['user' =>
+                    array(
+                    'id' => $user->getId(),
+                    'username' => $user->getUsername(),
+                    'email' => $user->getEmail(),
+                    'enabled' => $user->isEnabled(),
+                    'lastLogin' => $user->getLastLogin(),
+                    'locked' => $user->isLocked(),
+                    'roles' => $user->getRoles(),
+                    )
+                ]
+            ]);
     }
 
     /**
