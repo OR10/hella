@@ -20,31 +20,21 @@
 }
 
 .task-list-table {
-  margin-bottom: 3rem;
 
-  th {
-    padding: 1rem 2rem;
-    color: $sub-headlines;
-    background-color: $button-selected;
-    border-bottom: 1px solid $element-divider;
-    font-weight: bold;
+  .type-object-labeling {
+    border-left: 3px solid goldenrod;
   }
+
+  .type-meta-labeling {
+    border-left: 3px solid cornflowerblue;
+  }
+
   a {
     display: block;
     width: 100%;
     height: 100%;
 
-    padding: 1rem 2rem;
-
     color: $sub-headlines;
-
-    &.type-object-labeling {
-      border-left: 3px solid goldenrod;
-    }
-
-    &.type-meta-labeling {
-      border-left: 3px solid cornflowerblue;
-    }
 
     &:hover {
       color: $icon-hover;
@@ -65,14 +55,4 @@
     display: inline;
     content: ']';
   }
-
-  tr {
-    background-color: $element-background;
-  }
-
-  tr:nth-child(even) {
-
-  }
-
-
 }

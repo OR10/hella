@@ -17,17 +17,22 @@ System.config({
       "deps": [
         "angular"
       ]
+    },
+    "npm:angular-smart-table@2.1.6/dist/*": {
+      "deps": [
+        "angular"
+      ]
     }
   },
 
   map: {
-    "ag-grid": "npm:ag-grid@3.0.0",
     "angular": "github:angular/bower-angular@1.4.8",
     "angular-animate": "github:angular/bower-angular-animate@1.4.8",
     "angular-dragdrop": "github:codef0rmer/angular-dragdrop@1.0.12",
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",
+    "angular-smart-table": "npm:angular-smart-table@2.1.6",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
@@ -38,6 +43,7 @@ System.config({
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
     "font-awesome": "npm:font-awesome@4.4.0",
     "foundation-apps": "npm:foundation-apps@1.2.0",
+    "foundation-sites": "npm:foundation-sites@6.1.1",
     "html": "github:systemjs/plugin-text@0.0.2",
     "jquery": "github:components/jquery@2.1.4",
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
@@ -156,16 +162,14 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
-    "npm:ag-grid@3.0.0": {
-      "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2",
-      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
-    },
     "npm:amdefine@1.0.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "module": "github:jspm/nodelibs-module@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:angular-smart-table@2.1.6": {
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:asn1.js@4.0.0": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -463,6 +467,10 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:foundation-sites@6.1.1": {
+      "jquery": "npm:jquery@2.2.0",
+      "what-input": "npm:what-input@1.1.4"
     },
     "npm:graceful-readlink@1.0.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2"
