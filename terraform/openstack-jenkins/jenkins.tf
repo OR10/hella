@@ -18,7 +18,6 @@ resource "openstack_compute_instance_v2" "jenkins" {
     manage_etc_hosts = true
   }
 
-
   provisioner "file" {
       source = "puppet"
       destination = "/home/ubuntu/puppet"
@@ -33,7 +32,4 @@ resource "openstack_compute_instance_v2" "jenkins" {
           user = "ubuntu"
       }
   }
-
-
 }
-
