@@ -162,4 +162,24 @@ describe('UserGateway', () => {
 
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
+
+  it('should update a users password', (done) => {
+    const oldPassword = 'password';
+    const newPassword = '123456';
+    const userResponse = {
+      result: {
+        success: true,
+      },
+    };
+
+    $httpBackend.expectPUT('/backend/api/user/password').respond(userResponse);
+
+    gateway.setPassword(oldPassword, newPassword).then(result => {
+      console.log('bla');
+      expect(result).toEqual(userResponse.result.success);
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
 });
