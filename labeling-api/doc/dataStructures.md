@@ -98,6 +98,15 @@
 + username: `user` (string) - The username of the current user.
 + email: `user@example.com` (string) - The email address of the current user.
 
+## User
+ + id: `1` (number) - The id of the current user.
+ + username: `user` (string) - The username of the current user.
+ + email: `user@example.com` (string) - The email address of the current user.
+ + enabled: `true` (boolean) - User enabled or not
+ + lastLogin: `2016-01-15T15:42:41+0100` (string)
+ + locked: `false` (boolean)
+ + roles: `[]` (array)
+
 ## Task Statistics
 
 + task:
