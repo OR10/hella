@@ -40,7 +40,8 @@ class MediaControlsController {
     modalService,
     labeledThingData,
     labeledThingInFrameData,
-    dataPrefetcher
+    dataPrefetcher,
+    hotkeys
   ) {
     /**
      * @type {boolean}
@@ -114,6 +115,11 @@ class MediaControlsController {
     this._dataPrefetcher = dataPrefetcher;
 
     /**
+     * @private
+     */
+    this._hotkeys = hotkeys;
+
+    /**
      * @type {string}
      */
     this.popupPanelState = 'zoom';
@@ -137,6 +143,8 @@ class MediaControlsController {
     );
 
     this._applicationState.$watch('mediaControls.isDisabled', disabled => this.mediaControlsDisabled = disabled);
+
+    this._registerHotkeys();
   }
 
   /**
@@ -386,6 +394,32 @@ class MediaControlsController {
   showGeneralSettings() {
     this.fpsInputVisible = !this.fpsInputVisible;
   }
+
+  _registerHotkeys() {
+    this._hotkeys.add({
+      combo: 'j',
+      description: 'Go one frame back',
+      callback: this.handlePreviousFrameClicked.bind(this)
+    });
+
+    this._hotkeys.add({
+      combo: 'l',
+      description: 'Go one frame forward',
+      callback: this.handleNextFrameClicked.bind(this)
+    });
+
+    this._hotkeys.add({
+      combo: 'k',
+      description: 'Toggle play funktion',
+      callback: () => {
+        if (this.playing) {
+          this.handlePause();
+        } else {
+          this.handlePlay();
+        }
+      }
+    });
+  }
 }
 
 MediaControlsController.$inject = [
@@ -401,6 +435,7 @@ MediaControlsController.$inject = [
   'labeledThingData',
   'labeledThingInFrameData',
   'dataPrefetcher',
+  'hotkeys',
 ];
 
 export default MediaControlsController;
