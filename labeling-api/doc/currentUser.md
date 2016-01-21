@@ -21,3 +21,14 @@ Current user Profile Picture
     The returned data may be any image type.
 
     + Attributes
+
+## Change own password [/api/user/password]
+
+### Change own password [PUT]
+
+Change own Password
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean)
