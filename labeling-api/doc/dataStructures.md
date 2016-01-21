@@ -98,6 +98,27 @@
 + username: `user` (string) - The username of the current user.
 + email: `user@example.com` (string) - The email address of the current user.
 
+## User
+ + id: `1` (number) - The id of the current user.
+ + username: `user` (string) - The username of the current user.
+ + usernameCanonical: `user` (string) - The username of the current user.
+ + email: `user@example.com` (string) - The email address of the current user.
+ + emailCanonical: `user@example.com` (string) - The email address of the current user.
+ + enabled: `true` (boolean) - User enabled or not
+ + salt: `hjdj6q64h748okksgcs44gcc4408kgw` (string)
+ + password: `$2y$13$hjdj6q64h748okksgcs44eXJJQfz4Rkf8Y.jZ1pkcqUnYjCyCliVG` (string)
+ + plainPassword: `null` (string)
+ + lastLogin: `2016-01-15T15:42:41+0100` (string)
+ + confirmationToken: `null` (string)
+ + passwordRequestedAt: `null` (string)
+ + groups: `null` (string)
+ + locked: `false` (boolean)
+ + expired: `false` (boolean)
+ + expiresAt: `null` (string)
+ + roles: `[]` (array)
+ + credentialsExpired: `false` (boolean)
+ + credentialsExpireAt: `null` (string)
+
 ## Task Statistics
 
 + task:
