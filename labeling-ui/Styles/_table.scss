@@ -1,0 +1,66 @@
+table {
+  margin-bottom: 0.2rem;
+  border-radius: 4px;
+
+  &.hover {
+    tbody {
+      tr:hover {
+        cursor: pointer;
+
+        td {
+          background: darken($icon-hover, 10%);
+          color: $element-background;
+        }
+      }
+    }
+  }
+}
+
+thead,
+tbody,
+tfoot {
+  background-color: $body-background;
+
+  td, th {
+    background-color: $element-background;
+    text-align: left;
+    border: 1px solid $element-divider;
+  }
+}
+
+thead,
+tfoot {
+  color: $sub-headlines;
+}
+
+thead,
+tfoot {
+  tr {
+    background: transparent;
+  }
+}
+
+thead, tfoot {
+  th, td {
+    background-color: $button-selected;
+    padding: 0.6rem 0.725rem 0.725rem;
+    font-weight: bold;
+  }
+}
+
+tbody {
+  tr:nth-child(even) {
+    td {
+      background-color: lighten($element-background, 4%);
+    }
+  }
+
+  th, td {
+    padding: 0.6rem 0.725rem 0.725rem;
+  }
+}
+
+thead tr th{
+  border-bottom: 1px solid $icon-hover;
+}
+

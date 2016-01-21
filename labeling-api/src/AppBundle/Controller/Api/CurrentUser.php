@@ -106,7 +106,7 @@ class CurrentUser extends Controller\Base
         $encoder = $this->encoderFactory->getEncoder($user);
 
         if ($encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
-            $user->setPassword($newPassword);
+            $user->setPlainPassword($newPassword);
             $this->userFacade->updateUser($user);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
