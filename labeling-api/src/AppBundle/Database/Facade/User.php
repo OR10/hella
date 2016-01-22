@@ -51,7 +51,7 @@ class User
         $user = $this->userManager->createUser();
         $user->setUsername($username);
         $user->setEmail($email);
-        $user->setPassword($password);
+        $user->setPlainPassword($password);
 
         $this->userManager->updateUser($user);
 
