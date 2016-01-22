@@ -43,6 +43,11 @@
     .modal-footer {
       border-top: 2px solid $element-inline-divider;
 
+      button {
+        text-transform: uppercase;
+        padding: 10px !important;
+      }
+
       .modal-button-cancel {
         border-right: 2px solid $element-inline-divider;
       }
