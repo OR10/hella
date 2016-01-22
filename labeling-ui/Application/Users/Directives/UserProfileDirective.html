@@ -1,17 +1,19 @@
-<loading-mask ng-if="vm.loadingInProgress" spinner="false"></loading-mask>
-<div class="grid-block">
-    <div class="grid-block align-center">
+<div class="grid-block align-center">
+    <div class="grid-container small-14">
         <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
+
         <form class="user-profile grid-content">
             <fieldset>
                 <legend>Information</legend>
                 <label>
                     Username
-                    <input id="username" type="text" placeholder="Username" ng-model="vm.user.username" ng-class="{error: !vm.validation.username}">
+                    <input id="username" type="text" placeholder="Username" ng-model="vm.user.username"
+                           ng-class="{error: !vm.validation.username}">
                 </label>
                 <label>
                     EMail
-                    <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email" ng-class="{error: !vm.validation.email}">
+                    <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email"
+                           ng-class="{error: !vm.validation.email}">
                 </label>
                 <label>Role</label>
                 <select id="role" ng-model="vm.singleRole" ng-class="{error: !vm.validation.role}">
@@ -24,11 +26,13 @@
                 <legend>Security</legend>
                 <label>
                     Password
-                    <input id="password" type="password" placeholder="••••••••••••••••" ng-model="vm.newPassword" ng-class="{error: !vm.validation.password}">
+                    <input id="password" type="password" placeholder="Password" ng-model="vm.newPassword"
+                           ng-class="{error: !vm.validation.password}">
                 </label>
                 <label>
                     Re-enter Password
-                    <input id="password-again" type="password" placeholder="••••••••••••••••" ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
+                    <input id="password-again" type="password" placeholder="Password validation"
+                           ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
                 </label>
             </fieldset>
             <div class="button-area">

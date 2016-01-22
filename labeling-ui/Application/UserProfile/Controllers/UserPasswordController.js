@@ -5,19 +5,25 @@ class UserPasswordController {
     this.oldUserPassword = '';
     this.newUserPassword = '';
 
+    this.loadingInProgress = false;
+
     this.message = null;
   }
 
   /**
    * Sets the new password for the user
    */
-  handleSetPassword() {
+  savePassword() {
+    this.message = '';
+    this.loadingInProgress = true;
+
     this.userGateway.setPassword(this.oldUserPassword, this.newUserPassword).then((result) => {
-      if (result == true) {
-        this.message = 'Updated password!'
-      } else {
-        this.message = "There was an error updating your password!"
+      if (!result) {
+        this.message = 'There was an error updating your password!';
       }
+      this.oldUserPassword = '';
+      this.newUserPassword = '';
+      this.loadingInProgress = false;
     });
   }
 }
