@@ -157,8 +157,26 @@ describe('UserGateway', () => {
     $httpBackend.expectPUT('/backend/api/user/password').respond(userResponse);
 
     gateway.setPassword(oldPassword, newPassword).then(result => {
-      console.log('bla');
       expect(result).toEqual(userResponse.result.success);
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
+  it('should return the users permissions', (done) => {
+    const userResponse = {
+      result: {
+        'canViewStatsButton': true,
+        'canViewUserListButton': true,
+        'canViewVideoUploadButton': true,
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/user/permissions').respond(userResponse);
+
+    gateway.getPermissions().then(result => {
+      expect(result).toEqual(userResponse.result);
       done();
     });
 
