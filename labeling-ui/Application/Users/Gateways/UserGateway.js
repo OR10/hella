@@ -155,6 +155,23 @@ class UserGateway {
         return false;
       });
   }
+
+  /**
+   * Return the users persmissions
+   *
+   * @returns {AbortablePromise}
+   */
+  getPermissions(){
+    const url = this._apiService.getApiUrl(`/user/permissions`);
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result) {
+          throw new Error('Failed loading users list');
+        }
+
+        return response.data.result;
+      });
+  }
 }
 
 UserGateway.$inject = [
