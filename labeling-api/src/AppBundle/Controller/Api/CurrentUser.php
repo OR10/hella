@@ -140,10 +140,12 @@ class CurrentUser extends Controller\Base
         }
 
         return View\View::create()->setData(
-            [
-                'canViewStatsButton' => $statsButton,
-                'canViewUserListButton' => $userListButton,
-                'canViewVideoUploadButton' => $videoUploadButton,
+            ['result' =>
+                [
+                    'canViewStatsButton' => $statsButton,
+                    'canViewUserListButton' => $userListButton,
+                    'canViewVideoUploadButton' => $videoUploadButton,
+                ]
             ]
         );
     }
