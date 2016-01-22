@@ -131,7 +131,7 @@ class Users extends Controller\Base
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
 
-        if ($request->query->has('password')) {
+        if ($request->request->has('password')) {
             $user->setPlainPassword($request->request->get('password'));
         }
         $this->removeAllUserRoles($user);
