@@ -21,6 +21,8 @@ class UserPasswordController {
       if (!result) {
         this.message = 'There was an error updating your password!';
       }
+      this.oldUserPassword = '';
+      this.newUserPassword = '';
       this.loadingInProgress = false;
     });
   }
