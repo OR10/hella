@@ -138,7 +138,7 @@ class UserGateway {
    * @param password
    * @returns {AbortablePromise}
    */
-  setPassword(oldPassword, newPassword){
+  setPassword(oldPassword, newPassword) {
     const url = this._apiService.getApiUrl(`/user/password`);
     const data = {
       oldPassword: oldPassword,
@@ -151,6 +151,8 @@ class UserGateway {
         }
 
         return response.data.result.success;
+      }).catch(() => {
+        return false;
       });
   }
 }
