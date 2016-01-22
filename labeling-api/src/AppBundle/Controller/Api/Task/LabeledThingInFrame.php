@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\ReadOnlyPrecondition;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
@@ -53,6 +54,7 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/labeledThingInFrame/{frameNumber}")
+     * @ReadOnlyPrecondition
      *
      * @param Model\LabelingTask     $task
      * @param int                    $frameNumber
@@ -93,6 +95,7 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
+     * @ReadOnlyPrecondition
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
