@@ -7,23 +7,27 @@
 
     <div class="grid-container">
         <div class="grid-content task-list-table">
-            <table ng-if="vm.taskStatistics.length > 0">
+            <table class="hover" ng-if="vm.taskStatistics.length > 0">
                 <thead>
                 <tr>
+                    <th>Type</th>
                     <th>Task</th>
+                    <th>Framerange</th>
                     <th>Objects</th>
                     <th>Time</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="stats in vm.taskStatistics track by stats.task.id">
+                <tr ng-repeat="stats in vm.taskStatistics track by stats.task.id"
+                    ui-sref="^.task({taskId: stats.task.id})">
                     <td>
-                        <a href="" ui-sref="^.task({taskId: stats.task.id})"
-                           ng-class="{'type-object-labeling': stats.task.taskType === 'object-labeling', 'type-meta-labeling': stats.task.taskType === 'meta-labeling'}"
-                        >
-                            <span class="video-name">{{stats.video.name}}</span>
-                            <span class="frame-range">{{stats.task.frameRange.startFrameNumber}}-{{stats.task.frameRange.endFrameNumber}}</span>
-                        </a>
+                        {{stats.task.taskType}}
+                    </td>
+                    <td>
+                        {{stats.video.name}}
+                    </td>
+                    <td>
+                        {{stats.task.frameRange.startFrameNumber}}-{{stats.task.frameRange.endFrameNumber}}
                     </td>
                     <td>
                         {{stats.totalNumberOfLabeledThings}}
