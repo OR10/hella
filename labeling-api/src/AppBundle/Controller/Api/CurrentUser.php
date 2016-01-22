@@ -114,4 +114,37 @@ class CurrentUser extends Controller\Base
 
         throw new Exception\BadRequestHttpException();
     }
+
+    /**
+     * @Rest\Get("/permissions")
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getUserPermissionsAction()
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $statsButton = false;
+        $userListButton = false;
+        $videoUploadButton = false;
+
+        if ($user->hasRole('ROLE_ADMIN')) {
+            $statsButton = true;
+            $userListButton = true;
+            $videoUploadButton = true;
+        }
+        if ($user->hasRole('ROLE_LABEL_COORDINATOR')) {
+            $statsButton = true;
+            $videoUploadButton = true;
+        }
+
+        return View\View::create()->setData(
+            [
+                'canViewStatsButton' => $statsButton,
+                'canViewUserListButton' => $userListButton,
+                'canViewVideoUploadButton' => $videoUploadButton,
+            ]
+        );
+    }
 }
