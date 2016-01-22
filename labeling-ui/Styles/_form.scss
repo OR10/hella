@@ -12,4 +12,8 @@ input {
   &.error {
     border: 2px solid orangered !important;
   }
+
 }
+  ::-webkit-input-placeholder{
+    color: darken($text, 23%);
+  }
