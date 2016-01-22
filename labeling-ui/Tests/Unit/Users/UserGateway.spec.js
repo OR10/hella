@@ -92,35 +92,17 @@ describe('UserGateway', () => {
   });
 
   it('should create a new user', (done) => {
-    const user = {id: 'me', email: 'foo@bar.baz'};
+    const user = {username: 'me', email: 'foo@bar.baz'};
     const userResponse = {
       result: {
-        success: true
+        user: {id: 23, username: 'me', email: 'foo@bar.baz'},
       },
     };
 
     $httpBackend.expectPOST('/backend/api/users').respond(userResponse);
 
     gateway.createUser(user).then(result => {
-      expect(result).toEqual(userResponse.result.success);
-      done();
-    });
-
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
-  });
-
-  it('should create a new user', (done) => {
-    const user = {email: 'foo@bar.baz'};
-    const userResponse = {
-      result: {
-        success: true,
-      },
-    };
-
-    $httpBackend.expectPOST('/backend/api/users').respond(userResponse);
-
-    gateway.createUser(user).then(result => {
-      expect(result).toEqual(userResponse.result.success);
+      expect(result).toEqual(new User(userResponse.result.user));
       done();
     });
 

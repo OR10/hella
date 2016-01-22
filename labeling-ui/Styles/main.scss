@@ -17,6 +17,8 @@ $button-selected: #353b42;
 @import "font-awesome";
 @import "fonts";
 @import "table";
+@import "form";
+@import "button";
 @import "label-selection-wizard";
 @import "viewer";
 @import "filmreel";
@@ -310,16 +312,6 @@ popup-panel.ng-hide-remove {
 
 .task-bar button, .header button {
   background-color: $element-background;
-}
-
-button {
-  background-color: inherit;
-  border: 0;
-}
-
-button:focus {
-  border: none;
-  outline: none;
 }
 
 .noscrollbars::-webkit-scrollbar {

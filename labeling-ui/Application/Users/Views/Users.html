@@ -1,10 +1,21 @@
 <div class="grid-frame vertical">
     <div class="grid-block shrink">
-        <div class="grid-content" style="padding: 0">
-            <div class="title-bar">
-                <div class="center title">User Management</div>
-                <span class="right"><button ng-click="vm.createNewUser()">Create User</button></span>
-            </div>
+        <div class="grid-content title-bar shrink text-center noscroll">
+            <a ui-sref="labeling.tasks"
+               tooltip="Back to Task List"
+            >
+                <i class="icon icon-previous"></i>
+            </a>
+        </div>
+        <div class="grid-block align-center title-bar" style="flex: 1 1 auto;">
+            <div class="grid-content text-center">User Details</div>
+        </div>
+        <div class="grid-content title-bar shrink text-center noscroll">
+            <a ui-sref="labeling.user-detail({userid: 'new'})"
+               tooltip="Create a new User"
+            >
+                <i class="icon icon-selection-add"></i>
+            </a>
         </div>
     </div>
 

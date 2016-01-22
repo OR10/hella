@@ -6,9 +6,10 @@ class UsersListController {
    * @param {$rootScope.$scope} $scope
    * @param {UserGateway} userGateway injected
    * @param {SingleRoleFilter} singleRoleFilter
+   * @param {ReadableRoleFilter} readableRoleFilter
    * @param {ModalService} modalService
    */
-  constructor($scope, userGateway, singleRoleFilter, modalService) {
+  constructor($scope, userGateway, singleRoleFilter, readableRoleFilter, modalService) {
     /**
      * List of tasks rendered by the directive
      * @type {null|Array.<Task>}
@@ -59,8 +60,8 @@ class UsersListController {
    * @param {User} user
    * @returns {string}
    */
-  getSingleRoleForUser(user) {
-    return this._singleRoleFilter(user.roles);
+  getReadableRoleForUser(user) {
+    return this._readableRoleFilter(this._singleRoleFilter(user.roles));
   }
 
   /**
@@ -102,6 +103,7 @@ UsersListController.$inject = [
   '$scope',
   'userGateway',
   'singleRoleFilter',
+  'readableRoleFilter',
   'modalService',
 ];
 

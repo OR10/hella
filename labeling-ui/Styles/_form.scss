@@ -1,0 +1,19 @@
+fieldset {
+  border: 1px solid lighten($button, 10%);
+  margin: 2rem 1rem;
+
+  legend {
+    color: $icon-hover;
+    padding: 1rem;
+  }
+}
+
+input {
+  &.error {
+    border: 2px solid orangered !important;
+  }
+
+}
+  ::-webkit-input-placeholder{
+    color: darken($text, 23%);
+  }

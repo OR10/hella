@@ -1,0 +1,56 @@
+<loading-mask ng-if="vm.loadingInProgress" spinner="false"></loading-mask>
+<div class="grid-block">
+    <div class="grid-block align-center">
+        <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
+        <form class="user-profile grid-content">
+            <fieldset>
+                <legend>Information</legend>
+                <label>
+                    Username
+                    <input id="username" type="text" placeholder="Username" ng-model="vm.user.username" ng-class="{error: !vm.validation.username}">
+                </label>
+                <label>
+                    EMail
+                    <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email" ng-class="{error: !vm.validation.email}">
+                </label>
+                <label>Role</label>
+                <select id="role" ng-model="vm.singleRole" ng-class="{error: !vm.validation.role}">
+                    <option value="ROLE_USER">Labeler</option>
+                    <option value="ROLE_LABEL_COORDINATOR">Label Coordinator</option>
+                    <option value="ROLE_ADMIN">Administrator</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <legend>Security</legend>
+                <label>
+                    Password
+                    <input id="password" type="password" placeholder="••••••••••••••••" ng-model="vm.newPassword" ng-class="{error: !vm.validation.password}">
+                </label>
+                <label>
+                    Re-enter Password
+                    <input id="password-again" type="password" placeholder="••••••••••••••••" ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
+                </label>
+            </fieldset>
+            <div class="button-area">
+                <button class="pull-right"
+                        ng-click="vm.saveChanges()"
+                >
+                    <span ng-if="vm.createMode">Create</span>
+                    <span ng-if="!vm.createMode">Save</span>
+                </button>
+                <button class="pull-right divider"
+                        ng-click="vm.cancelEdit()"
+                >
+                    Cancel
+                </button>
+                <button ng-hide="vm.createMode"
+                        class="pull-left"
+                        ng-click="vm.deleteUser(vm.user)"
+                >
+                    Delete
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
