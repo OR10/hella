@@ -138,7 +138,7 @@ class UserGateway {
    * @param password
    * @returns {AbortablePromise}
    */
-  setPassword(oldPassword, newPassword){
+  setPassword(oldPassword, newPassword) {
     const url = this._apiService.getApiUrl(`/user/password`);
     const data = {
       oldPassword: oldPassword,
@@ -151,6 +151,25 @@ class UserGateway {
         }
 
         return response.data.result.success;
+      }).catch(() => {
+        return false;
+      });
+  }
+
+  /**
+   * Return the users persmissions
+   *
+   * @returns {AbortablePromise}
+   */
+  getPermissions(){
+    const url = this._apiService.getApiUrl(`/user/permissions`);
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result) {
+          throw new Error('Failed loading users list');
+        }
+
+        return response.data.result;
       });
   }
 }

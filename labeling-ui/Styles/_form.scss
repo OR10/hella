@@ -14,6 +14,14 @@ input {
   }
 
 }
-  ::-webkit-input-placeholder{
-    color: darken($text, 23%);
+
+form{
+  button{
+    text-transform: uppercase;
+    padding: 10px !important;
   }
+}
+
+::-webkit-input-placeholder {
+  color: darken($text, 23%);
+}
