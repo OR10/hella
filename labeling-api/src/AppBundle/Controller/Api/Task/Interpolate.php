@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\ReadOnlyPrecondition;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -62,19 +63,20 @@ class Interpolate extends Controller\Base
     /**
      * TODO: add support for offset/limit to restrict the frame range
      *
-     * @Rest\Post("/{taskId}/interpolate/{labeledThing}")
+     * @Rest\Post("/{task}/interpolate/{labeledThing}")
+     * @ReadOnlyPrecondition
      *
-     * @param $taskId
+     * @param Model\LabelingTask $task
      * @param Model\LabeledThing $labeledThing
      * @param HttpFoundation\Request $request
      * @return \FOS\RestBundle\View\View
      */
     public function startInterpolationAction(
-        $taskId,
+        Model\LabelingTask $task,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getTaskId() !== $taskId) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
 
