@@ -5,6 +5,8 @@ namespace AppBundle\Service;
 use AppBundle\Model;
 
 /**
+ * This service is used by the read only precondition annotation.
+ * Depending on the user roles and the task-status the user is in readonly-mode
  *
  */
 class TaskReadOnlyDecider
