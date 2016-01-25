@@ -80,22 +80,22 @@ class Task extends Controller\Base
         }
 
         $tasks = array(
-            'waiting' => $this->labelingTaskFacade->findAllByStatus(null, 'waiting', $offset, $limit )
+            Model\LabelingTask::STATUS_WAITING => $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_WAITING, $offset, $limit )
         );
 
         if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-            $tasks['preprocessing'] = $this->labelingTaskFacade->findAllByStatus(null, 'preprocessing', $offset, $limit );
-            $tasks['labeled']       = $this->labelingTaskFacade->findAllByStatus(null, 'labeled', $offset, $limit );
+            $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_PREPROCESSING, $offset, $limit );
+            $tasks[Model\LabelingTask::STATUS_LABELED]       = $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_LABELED, $offset, $limit );
         }else{
-            $tasks['preprocessing'] = null;
-            $tasks['labeled']       = null;
+            $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = null;
+            $tasks[Model\LabelingTask::STATUS_LABELED]       = null;
         }
 
         if ($fetchVideos){
-            $videos = $this->videoFacade->findAllForTasksIndexedById($tasks['waiting']);
+            $videos = $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_WAITING]);
             if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks['preprocessing']), $videos);
-                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks['labeled']), $videos);
+                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_PREPROCESSING]), $videos);
+                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_LABELED]), $videos);
             }
         }else{
             $videos = [];

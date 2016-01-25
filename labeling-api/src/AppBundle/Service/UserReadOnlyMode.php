@@ -18,12 +18,12 @@ class UserReadOnlyMode
         foreach($user->getRoles() as $role) {
             switch ($role) {
                 case 'ROLE_LABELER':
-                    if ($labelStatus === 'waiting') {
+                    if ($labelStatus === Model\LabelingTask::STATUS_WAITING) {
                         return false;
                     }
                     break;
                 case 'ROLE_LABEL_COORDINATOR':
-                    if ($labelStatus === 'waiting') {
+                    if ($labelStatus === Model\LabelingTask::STATUS_WAITING) {
                         return false;
                     }
                     break;

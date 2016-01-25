@@ -44,7 +44,7 @@ class Status extends Controller\Base
      */
     public function postLabeledStatusAction(Model\LabelingTask $task)
     {
-        $task->setStatus('labeled');
+        $task->setStatus(Model\LabelingTask::STATUS_LABELED);
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
