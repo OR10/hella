@@ -3,7 +3,6 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ReadOnlyPrecondition;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -45,7 +44,8 @@ class Interpolate extends Controller\Base
     /**
      * @param Facade\LabelingTask $labelingTaskFacade
      * @param Facade\LabeledThing $labeledThingFacade
-     * @param AMQP\FacadeAMQP     $amqpFacade
+     * @param Facade\Status $statusFacade
+     * @param AMQP\FacadeAMQP $amqpFacade
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
@@ -63,7 +63,6 @@ class Interpolate extends Controller\Base
      * TODO: add support for offset/limit to restrict the frame range
      *
      * @Rest\Post("/{taskId}/interpolate/{labeledThing}")
-     * @ReadOnlyPrecondition
      *
      * @param $taskId
      * @param Model\LabeledThing $labeledThing
