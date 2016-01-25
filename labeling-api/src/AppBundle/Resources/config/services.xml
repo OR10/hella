@@ -30,7 +30,7 @@
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="session" />
             <argument type="service" id="security.token_storage" />
-            <argument type="service" id="annostation.labeling_api.service.user_read_only_mode" />
+            <argument type="service" id="annostation.labeling_api.service.task_read_only_decider" />
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" priority="-256"/>
         </service>
 
@@ -49,7 +49,7 @@
             <argument type="service" id="oneup_flysystem.cache_filesystem"/>
         </service>
 
-        <service id="annostation.labeling_api.service.user_read_only_mode" class="AppBundle\Service\UserReadOnlyMode">
+        <service id="annostation.labeling_api.service.task_read_only_decider" class="AppBundle\Service\TaskReadOnlyDecider">
         </service>
 
         <service id="annostation.labeling_api.service.video_importer" class="AppBundle\Service\VideoImporter">

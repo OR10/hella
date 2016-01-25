@@ -29,27 +29,27 @@ class ReadOnlyPrecondition
     private $tokenStorage;
 
     /**
-     * @var Service\UserReadOnlyMode
+     * @var Service\TaskReadOnlyDecider
      */
-    private $userReadOnlyMode;
+    private $taskReadOnlyDecider;
 
     /**
      * @param CommonAnnotations\Reader $reader
      * @param Session\SessionInterface $session
      * @param Storage\TokenStorage $tokenStorage
-     * @param Service\UserReadOnlyMode $userReadOnlyMode
+     * @param Service\TaskReadOnlyDecider $taskReadOnlyDecider
      */
     public function __construct(
         CommonAnnotations\Reader $reader,
         Session\SessionInterface $session,
         Storage\TokenStorage $tokenStorage,
-        Service\UserReadOnlyMode $userReadOnlyMode
+        Service\TaskReadOnlyDecider $taskReadOnlyDecider
     )
     {
         $this->reader = $reader;
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
-        $this->userReadOnlyMode = $userReadOnlyMode;
+        $this->taskReadOnlyDecider = $taskReadOnlyDecider;
     }
 
     /**
@@ -78,7 +78,7 @@ class ReadOnlyPrecondition
                 throw new Exception\HttpException(500);
             }
 
-            if ($this->userReadOnlyMode->isTaskReadOnlyForUser($user, $labelingTask)) {
+            if ($this->taskReadOnlyDecider->isTaskReadOnlyForUser($user, $labelingTask)) {
                 throw new Exception\PreconditionFailedHttpException();
             }
         }

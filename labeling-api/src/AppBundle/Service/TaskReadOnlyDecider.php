@@ -4,7 +4,10 @@ namespace AppBundle\Service;
 
 use AppBundle\Model;
 
-class UserReadOnlyMode
+/**
+ *
+ */
+class TaskReadOnlyDecider
 {
     /**
      * @param Model\User $user
