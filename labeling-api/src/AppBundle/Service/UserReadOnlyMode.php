@@ -13,23 +13,12 @@ class UserReadOnlyMode
      */
     public function isTaskReadOnlyForUser(Model\User $user, Model\LabelingTask $labelingTask)
     {
-        $labelStatus = $labelingTask->getStatus();
+        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
+            return false;
+        }
 
-        foreach($user->getRoles() as $role) {
-            switch ($role) {
-                case Model\User::ROLE_LABELER:
-                    if ($labelStatus === Model\LabelingTask::STATUS_WAITING) {
-                        return false;
-                    }
-                    break;
-                case Model\User::ROLE_LABEL_COORDINATOR:
-                    if ($labelStatus === Model\LabelingTask::STATUS_WAITING) {
-                        return false;
-                    }
-                    break;
-                case Model\User::ROLE_ADMIN:
-                    return false;
-            }
+        if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR])) {
+            return $labelingTask->getStatus() !== Model\LabelingTask::STATUS_WAITING;
         }
 
         return true;

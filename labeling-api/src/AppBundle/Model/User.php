@@ -26,4 +26,19 @@ class User extends BaseUser
     {
         parent::__construct();
     }
+
+    /**
+     * @param array $roles
+     * @return bool
+     */
+    public function hasOneRoleOf(array $roles)
+    {
+        foreach ($roles as $role) {
+            if ($this->hasRole($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
