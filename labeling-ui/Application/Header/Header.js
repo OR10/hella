@@ -1,6 +1,9 @@
 import Module from '../Module';
-import HeaderDirective from './Directives/HeaderDirective';
+import ViewerHeaderDirective from './Directives/ViewerHeaderDirective';
+import TaskTitleDirective from './Directives/TaskTitleDirective';
 import TimerDirective from './Directives/TimerDirective';
+import UserNameDirective from './Directives/UserNameDirective';
+import LogoutButtonDirective from './Directives/LogoutButtonDirective';
 import TimerGateway from './Gateways/TimerGateway';
 
 /**
@@ -15,8 +18,11 @@ class Header extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Header', []);
 
-    this.registerDirective('header', HeaderDirective);
+    this.registerDirective('viewerHeader', ViewerHeaderDirective);
     this.registerDirective('timer', TimerDirective);
+    this.registerDirective('taskTitle', TaskTitleDirective);
+    this.registerDirective('userName', UserNameDirective);
+    this.registerDirective('logoutButton', LogoutButtonDirective);
 
     this.module.service('timerGateway', TimerGateway);
   }
