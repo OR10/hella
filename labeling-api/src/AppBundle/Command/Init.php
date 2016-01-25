@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Service;
+use AppBundle\Model;
 use Doctrine\CouchDB;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -190,13 +191,13 @@ class Init extends Base
 
                 switch($username){
                     case 'admin':
-                        $roleName = 'ROLE_ADMIN';
+                        $roleName = Model\User::ROLE_ADMIN;
                         break;
                     case 'label_coordinator':
-                        $roleName = 'ROLE_LABEL_COORDINATOR';
+                        $roleName = Model\User::ROLE_LABEL_COORDINATOR;
                         break;
                     case 'user':
-                        $roleName = 'ROLE_LABELER';
+                        $roleName = Model\User::ROLE_LABELER;
                         break;
                     default:
                         $roleName = 'ROLE_USER';

@@ -17,17 +17,17 @@ class UserReadOnlyMode
 
         foreach($user->getRoles() as $role) {
             switch ($role) {
-                case 'ROLE_LABELER':
+                case Model\User::ROLE_LABELER:
                     if ($labelStatus === Model\LabelingTask::STATUS_WAITING) {
                         return false;
                     }
                     break;
-                case 'ROLE_LABEL_COORDINATOR':
+                case Model\User::ROLE_LABEL_COORDINATOR:
                     if ($labelStatus === Model\LabelingTask::STATUS_WAITING) {
                         return false;
                     }
                     break;
-                case 'ROLE_ADMIN':
+                case Model\User::ROLE_ADMIN:
                     return false;
             }
         }
