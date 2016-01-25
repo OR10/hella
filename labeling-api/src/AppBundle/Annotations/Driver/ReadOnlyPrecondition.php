@@ -2,11 +2,12 @@
 
 namespace AppBundle\Annotations\Driver;
 
-use AppBundle\Annotations;
+use Doctrine\Common\Annotations as CommonAnnotations;
 use Symfony\Component\HttpFoundation\Session;
 use Symfony\Component\HttpKernel\Event;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\HttpKernel\Exception;
+use AppBundle\Annotations;
 use AppBundle\Model;
 use AppBundle\Service;
 
@@ -33,13 +34,13 @@ class ReadOnlyPrecondition
     private $userReadOnlyMode;
 
     /**
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param CommonAnnotations\Reader $reader
      * @param Session\SessionInterface $session
      * @param Storage\TokenStorage $tokenStorage
      * @param Service\UserReadOnlyMode $userReadOnlyMode
      */
     public function __construct(
-        \Doctrine\Common\Annotations\Reader $reader,
+        CommonAnnotations\Reader $reader,
         Session\SessionInterface $session,
         Storage\TokenStorage $tokenStorage,
         Service\UserReadOnlyMode $userReadOnlyMode
@@ -66,14 +67,16 @@ class ReadOnlyPrecondition
         if ($annotation === null) {
             $method = $class->getMethod($controller[1]);
             $annotation = $this->reader->getMethodAnnotation($method, Annotations\ReadOnlyPrecondition::class);
-
         }
 
         if ($annotation !== null) {
-            $parameters = $event->getRequest()->attributes;
+            $attributes = $event->getRequest()->attributes;
             /** @var Model\LabelingTask $labelingTask */
-            $labelingTask = $parameters->get('task');
+            $labelingTask = $attributes->get($annotation->getTaskPropertyName());
             $user = $this->tokenStorage->getToken()->getUser();
+            if (!$labelingTask instanceof Model\LabelingTask || !$user instanceof Model\User) {
+                throw new Exception\HttpException(500);
+            }
 
             if ($this->userReadOnlyMode->isTaskReadOnlyForUser($user, $labelingTask)) {
                 throw new Exception\PreconditionFailedHttpException();
