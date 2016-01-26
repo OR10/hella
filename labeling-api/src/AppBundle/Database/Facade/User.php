@@ -46,12 +46,14 @@ class User
      * @param $password
      * @return FosUserModel\UserInterface
      */
-    public function createUser($username, $email, $password)
+    public function createUser($username, $email, $password, $enabled = true, $locked = false)
     {
         $user = $this->userManager->createUser();
         $user->setUsername($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);
+        $user->setEnabled($enabled);
+        $user->setLocked($locked);
 
         $this->userManager->updateUser($user);
 

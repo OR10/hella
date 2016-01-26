@@ -92,7 +92,7 @@ describe('UserGateway', () => {
   });
 
   it('should create a new user', (done) => {
-    const user = {username: 'me', email: 'foo@bar.baz'};
+    const user = {username: 'me', email: 'foo@bar.baz', password: 'foobar'};
     const userResponse = {
       result: {
         user: {id: 23, username: 'me', email: 'foo@bar.baz'},
@@ -113,14 +113,32 @@ describe('UserGateway', () => {
     const user = {id: 'me', email: 'foo@bar.baz'};
     const userResponse = {
       result: {
-        success: true,
+        user: {id: 23, username: 'me', email: 'foo@bar.baz'},
       },
     };
 
     $httpBackend.expectPUT('/backend/api/users/me').respond(userResponse);
 
     gateway.updateUser(user).then(result => {
-      expect(result).toEqual(userResponse.result.success);
+      expect(result).toEqual(new User(userResponse.result.user));
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
+  it('should update a users password', (done) => {
+    const user = {id: 'me', email: 'foo@bar.baz', password: 'foobar'};
+    const userResponse = {
+      result: {
+        user: {id: 23, username: 'me', email: 'foo@bar.baz'},
+      },
+    };
+
+    $httpBackend.expectPUT('/backend/api/users/me').respond(userResponse);
+
+    gateway.updateUser(user).then(result => {
+      expect(result).toEqual(new User(userResponse.result.user));
       done();
     });
 
@@ -145,7 +163,7 @@ describe('UserGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
-  it('should update a users password', (done) => {
+  it('should update currentUsers password', (done) => {
     const oldPassword = 'password';
     const newPassword = '123456';
     const userResponse = {
