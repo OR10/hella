@@ -18,7 +18,12 @@ System.config({
         "angular"
       ]
     },
-    "npm:angular-smart-table@2.1.6/dist/*": {
+    "npm:angular-smart-table@*/dist/*": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "npm:foundation-apps@*/js/**/*": {
       "deps": [
         "angular"
       ]
