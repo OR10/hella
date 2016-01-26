@@ -7,11 +7,14 @@ import HeaderController from './HeaderController';
 class HeaderDirective {
   constructor() {
     this.scope = {
-      video: '=',
-      task: '=',
       user: '=',
+      backLink: '@?',
+      backLinkText: '@?',
+      showUsername: '@?',
+      showLogoutButton: '@?',
     };
 
+    this.transclude = true;
 
     this.template = headerTemplate;
 
