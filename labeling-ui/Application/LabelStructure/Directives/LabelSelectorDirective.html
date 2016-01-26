@@ -4,33 +4,69 @@
     </div>
     <div class="grid-block label-selector-title" ng-show="vm.labeledObject">
         <div class="grid-content noscroll">Categories</div>
-    </div>
-    <div class="grid-block label-selector-controlls" ng-if="vm.labeledObject">
-        <div class="grid-content control-left shrink noscroll">
-            <button ng-click="vm.previousPage()"><i class="icon icon-left"></i></button>
+        <div class="grid-content shrink view-style">
+            <input id="view-style-icon-view"
+                   class="icon-view"
+                   type="radio"
+                   name="view-style"
+                   value="icon"
+                   ng-model="vm.viewStyle"
+            />
+            <label for="view-style-icon-view">Icon View</label>
+            <input id="view-style-list-view"
+                   class="list-view"
+                   type="radio"
+                   name="view-style"
+                   value="list"
+                   ng-model="vm.viewStyle"
+            />
+            <label for="view-style-list-view">List View</label>
         </div>
-        <div class="grid-block vertical page-header">
-            <div class="grid-content page-title text-center noscroll">{{vm.pages[vm.activePageIndex].challenge}}</div>
-            <div class="grid-content page-indicator-container text-center noscroll">
-                <ol class="page-indicators">
-                    <li ng-repeat="page in vm.pages" ng-class="{active: vm.isPageActive($index)}" ng-click="vm.selectPage($index)"></li>
-                </ol>
+    </div>
+    <zf-accordion auto-open="open" collapsible="true" multi-open="true" ng-if="vm.labeledObject" ng-show="vm.viewStyle === 'list'">
+            <zf-accordion-item ng-repeat="page in vm.pages track by page.id" title="{{page.challenge}}">
+                    <label ng-repeat="response in page.responses track by response.id"
+                           for="{{page.id}}-{{$index}}"
+                           ng-class="{active: vm.choices[page.id] === response.id}">
+                        <i class="icon icon-small no-hover {{response.iconClass}} noscroll"></i>
+                        <span class="response">{{response.response}}</span>
+                        <input id="{{page.id}}-{{$index}}"
+                               type="radio"
+                               name="{{page.id}}"
+                               value="{{response.id}}"
+                               ng-model="vm.choices[page.id]"
+                        />
+                    </label>
+            </zf-accordion-item>
+    </zf-accordion>
+    <div class="grid-block vertical " ng-if="vm.labeledObject" ng-show="vm.viewStyle === 'icon'">
+        <div class="grid-block label-selector-controlls">
+            <div class="grid-content control-left shrink noscroll">
+                <button ng-click="vm.previousPage()"><i class="icon icon-left"></i></button>
             </div>
-        </div>
-        <div class="grid-content control-right shrink noscroll">
-            <button ng-click="vm.nextPage()"><i class="icon icon-right"></i></button>
-        </div>
-    </div>
-    <div class="grid-block label-selector-content vertical ">
-        <div class="grid-block">
-            <div ng-repeat="page in vm.pages" ng-show="vm.isPageActive($index)" class="grid-block label-selector-content-container wrap">
-                <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8" ng-class="{selected: vm.isResponseSelected(page, response)}" ng-click="vm.selectResponse(page, response)">
-                    <button><i class="icon {{response.iconClass}} noscroll"></i></button>
-                    <p>{{response.response}}</p>
+            <div class="grid-block vertical page-header">
+                <div class="grid-content page-title text-center noscroll">{{vm.pages[vm.activePageIndex].challenge}}</div>
+                <div class="grid-content page-indicator-container text-center noscroll">
+                    <ol class="page-indicators">
+                        <li ng-repeat="page in vm.pages" ng-class="{active: vm.isPageActive($index)}" ng-click="vm.selectPage($index)"></li>
+                    </ol>
                 </div>
             </div>
+            <div class="grid-content control-right shrink noscroll">
+                <button ng-click="vm.nextPage()"><i class="icon icon-right"></i></button>
+            </div>
         </div>
-        <div class="grid-block label-selector-content-spacer"></div>
+        <div class="grid-block label-selector-content vertical ">
+            <div class="grid-block">
+                <div ng-repeat="page in vm.pages" ng-show="vm.isPageActive($index)" class="grid-block label-selector-content-container wrap">
+                    <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8" ng-class="{selected: vm.isResponseSelected(page, response)}" ng-click="vm.choices[page.id] = response.id">
+                        <button><i class="icon {{response.iconClass}} noscroll"></i></button>
+                        <p>{{response.response}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-block label-selector-content-spacer"></div>
+        </div>
     </div>
     <!--<div class="grid-block label-selector-button-wrapper" ng-if="vm.labeledObject">-->
         <!--<button class="grid-content label-selector-button text-center noscroll">Cancel</button>-->

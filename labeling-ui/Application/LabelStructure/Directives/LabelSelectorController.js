@@ -98,6 +98,11 @@ export default class LabelSelectorController {
      */
     this.activePageIndex = null;
 
+    /**
+     * @type {string}
+     */
+    this.viewStyle = 'list';
+
     // Handle changes of `labeledObject`s
     $scope.$watch('vm.labeledObject', (newLabeledObject, oldLabeledObject) => {
       if (!newLabeledObject) {
@@ -285,10 +290,6 @@ export default class LabelSelectorController {
 
   isPageActive(index) {
     return index === this.activePageIndex;
-  }
-
-  selectResponse(page, response) {
-    this.choices[page.id] = response.id;
   }
 
   isResponseSelected(page, response) {

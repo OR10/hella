@@ -1,7 +1,59 @@
 .label-selector {
 
-  .icon {
-    color: $icon;
+  .accordion-content {
+    .icon {
+      margin-right: 1rem;
+    }
+
+    label:hover {
+      color: $icon-hover;
+    }
+
+    .active {
+      .response {
+        color: $sub-headlines;
+      }
+    }
+
+    input[type="radio"] {
+      visibility: hidden;
+
+      float: right;
+
+      display: inline-block;
+      -webkit-appearance: none;
+      -moz-appearance : none;
+      outline: none;
+
+      font-family: "icon-font";
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      line-height: 1;
+      text-decoration: inherit;
+      text-rendering: optimizeLegibility;
+      text-transform: none;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-smoothing: antialiased;
+
+      font-size: 30px;
+      overflow: hidden;
+      color: $icon-hover;
+
+      margin: 0 .4rem 0 0;
+
+      &:checked {
+        visibility: visible;
+      }
+
+      &:after {
+        position: relative;
+        top: -.5rem;
+        left: -.5rem;
+        content: $font-icon-font-check;
+      }
+    }
   }
 
   .label-selector-title {
@@ -16,6 +68,47 @@
     flex: 0;
     font-weight: bold;
 
+    input[type="radio"] {
+      display: none;
+    }
+
+    label {
+      display: none;
+    }
+
+    .view-style {
+      margin-right: .7rem;
+    }
+
+    input[type="radio"] {
+      color: $text;
+      cursor: pointer;
+      display: inline-block;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      outline: none;
+
+      margin-left: .5rem;
+
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      &:checked {
+        color: $icon-hover;
+      }
+
+      &.icon-view:after {
+        content: "\f00a";
+
+      }
+
+      &.list-view:after {
+        content: "\f03a";
+      }
+    }
   }
 
   .label-selector-controlls {
