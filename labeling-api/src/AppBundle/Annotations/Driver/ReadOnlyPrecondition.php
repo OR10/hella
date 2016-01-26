@@ -74,8 +74,11 @@ class ReadOnlyPrecondition
             /** @var Model\LabelingTask $labelingTask */
             $labelingTask = $attributes->get($annotation->getTaskPropertyName());
             $user = $this->tokenStorage->getToken()->getUser();
-            if (!$labelingTask instanceof Model\LabelingTask || !$user instanceof Model\User) {
-                throw new Exception\HttpException(500);
+            if (!$labelingTask instanceof Model\LabelingTask) {
+                throw new \InvalidArgumentException('The given type of LabelingTask is invalid');
+            }
+            if (!$user instanceof Model\User) {
+                throw new Exception\AccessDeniedHttpException();
             }
 
             if ($this->taskReadOnlyDecider->isTaskReadOnlyForUser($user, $labelingTask)) {
