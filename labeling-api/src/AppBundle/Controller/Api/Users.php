@@ -92,7 +92,9 @@ class Users extends Controller\Base
         $user = $this->userFacade->createUser(
             $request->request->get('username'),
             $request->request->get('email'),
-            $request->request->get('password')
+            $request->request->get('password'),
+            $request->request->getBoolean('enabled'),
+            $request->request->getBoolean('locked')
         );
 
         foreach($roles as $role) {
