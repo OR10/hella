@@ -1,4 +1,4 @@
-table {
+table.table {
   margin: 2rem 1rem;
   border-radius: 4px;
 
@@ -22,69 +22,69 @@ table {
       }
     }
   }
-}
 
-thead,
-tbody,
-tfoot {
-  background-color: $body-background;
+  thead,
+  tbody,
+  tfoot {
+    background-color: $body-background;
 
-  td, th {
-    background-color: $element-background;
-    text-align: left;
-    border: 1px solid $element-divider;
-  }
-}
-
-thead,
-tfoot {
-  color: $sub-headlines;
-}
-
-thead,
-tfoot {
-  tr {
-    background: transparent;
-  }
-}
-
-thead, tfoot {
-  th, td {
-    background-color: $button-selected;
-    padding: 0.6rem 0.725rem 0.725rem;
-    font-weight: bold;
-  }
-}
-
-tbody {
-  tr:nth-child(even) {
-    td {
-      background-color: lighten($element-background, 4%);
+    td, th {
+      background-color: $element-background;
+      text-align: left;
+      border: 1px solid $element-divider;
     }
   }
 
-  th, td {
-    padding: 0.6rem 0.725rem 0.725rem;
+  thead,
+  tfoot {
+    color: $sub-headlines;
   }
-}
 
-thead {
-  tr {
-    th {
-      border-bottom: 1px solid $icon-hover;
+  thead,
+  tfoot {
+    tr {
+      background: transparent;
     }
   }
-}
 
-th.st-sort-descent:after {
-  padding-left: .6rem;
-  color: $icon-hover;
-  content: "▲";
-}
+  thead, tfoot {
+    th, td {
+      background-color: $button-selected;
+      padding: 0.6rem 0.725rem 0.725rem;
+      font-weight: bold;
+    }
+  }
 
-th.st-sort-ascent:after {
-  padding-left: .3rem;
-  color: $icon-hover;
-  content: "▼";
+  tbody {
+    tr:nth-child(even) {
+      td {
+        background-color: lighten($element-background, 4%);
+      }
+    }
+
+    th, td {
+      padding: 0.6rem 0.725rem 0.725rem;
+    }
+  }
+
+  thead {
+    tr {
+      th {
+        border-bottom: 1px solid $icon-hover;
+      }
+    }
+  }
+
+  th.st-sort-descent:after {
+    padding-left: .6rem;
+    color: $icon-hover;
+    content: "▲";
+  }
+
+  th.st-sort-ascent:after {
+    padding-left: .3rem;
+    color: $icon-hover;
+    content: "▼";
+  }
 }
 

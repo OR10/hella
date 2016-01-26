@@ -74,19 +74,7 @@ class Users extends Controller\Base
     public function getUserAction(Model\User $user)
     {
         return View\View::create()->setData(
-            ['result' =>
-                ['user' =>
-                    array(
-                    'id' => $user->getId(),
-                    'username' => $user->getUsername(),
-                    'email' => $user->getEmail(),
-                    'enabled' => $user->isEnabled(),
-                    'lastLogin' => $user->getLastLogin(),
-                    'locked' => $user->isLocked(),
-                    'roles' => $user->getRoles(),
-                    )
-                ]
-            ]);
+            ['result' => ['user' => $this->getUserResponse($user)]]);
     }
 
     /**
@@ -104,7 +92,9 @@ class Users extends Controller\Base
         $user = $this->userFacade->createUser(
             $request->request->get('username'),
             $request->request->get('email'),
-            $request->request->get('password')
+            $request->request->get('password'),
+            $request->request->getBoolean('enabled'),
+            $request->request->getBoolean('locked')
         );
 
         foreach($roles as $role) {
@@ -112,7 +102,7 @@ class Users extends Controller\Base
         }
         $this->userFacade->updateUser($user);
 
-        return View\View::create()->setData(['result' => ['success' => true]]);
+        return View\View::create()->setData(['result' => ['user' => $this->getUserResponse($user)]]);
     }
 
     /**
@@ -141,7 +131,24 @@ class Users extends Controller\Base
 
         $this->userFacade->updateUser($user);
 
-        return View\View::create()->setData(['result' => ['success' => true]]);
+        return View\View::create()->setData(['result' => ['user' => $this->getUserResponse($user)]]);
+    }
+
+    /**
+     * @param Model\User $user
+     * @return array
+     */
+    private function getUserResponse(Model\User $user)
+    {
+        return array(
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'enabled' => $user->isEnabled(),
+            'lastLogin' => $user->getLastLogin(),
+            'locked' => $user->isLocked(),
+            'roles' => $user->getRoles(),
+        );
     }
 
     /**
