@@ -928,7 +928,6 @@ class ViewerController {
 
       this._$scope.$apply(
         () => {
-          this._$scope.vm.activeTool = null;
           this._panBy(deltaX, deltaY);
         }
       );
