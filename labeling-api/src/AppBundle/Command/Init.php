@@ -188,12 +188,26 @@ class Init extends Base
                     return false;
                 }
 
+                switch($username){
+                    case 'admin':
+                        $roleName = 'ROLE_ADMIN';
+                        break;
+                    case 'label_coordinator':
+                        $roleName = 'ROLE_LABEL_COORDINATOR';
+                        break;
+                    case 'user':
+                        $roleName = 'ROLE_LABELER';
+                        break;
+                    default:
+                        $roleName = 'ROLE_USER';
+                }
+
                 $this->runCommand(
                     $output,
                     'fos:user:promote',
                     [
                         'username' => $username,
-                        'role'     => 'ROLE_' . strtoupper($username),
+                        'role'     => $roleName,
                     ]
                 );
 
