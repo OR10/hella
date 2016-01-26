@@ -1,18 +1,11 @@
 <div class="grid-frame vertical">
-    <div class="grid-block shrink">
-        <div class="grid-content" style="padding: 0">
-            <div class="title-bar">
-                <span class="left shrink">
-                    <a ui-sref="labeling.users"
-                       tooltip="Back to User overview">
-                        <i class="icon icon-previous"></i>
-                    </a>
-                </span>
-                <div class="center title">User Details</div>
-                <span class="right shrink"></span>
-            </div>
-        </div>
-    </div>
+    <header class="grid-block noscroll header"
+            back-link="labeling.users"
+            back-link-text="Back to Users List"
+            show-username="true"
+            show-logout-button="true"
+    >
+    </header>
 
 
     <user-profile id="vm.userId" readonly="false" class="grid-block"></user-profile>
