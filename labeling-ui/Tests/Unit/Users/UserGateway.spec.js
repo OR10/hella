@@ -174,7 +174,7 @@ describe('UserGateway', () => {
 
     $httpBackend.expectPUT('/backend/api/user/password').respond(userResponse);
 
-    gateway.setPassword(oldPassword, newPassword).then(result => {
+    gateway.setCurrentUserPassword(oldPassword, newPassword).then(result => {
       expect(result).toEqual(userResponse.result.success);
       done();
     });
@@ -193,7 +193,7 @@ describe('UserGateway', () => {
 
     $httpBackend.expectGET('/backend/api/user/permissions').respond(userResponse);
 
-    gateway.getPermissions().then(result => {
+    gateway.getCurrentUserPermissions().then(result => {
       expect(result).toEqual(userResponse.result);
       done();
     });

@@ -138,7 +138,7 @@ class UserGateway {
    * @param password
    * @returns {AbortablePromise}
    */
-  setPassword(oldPassword, newPassword) {
+  setCurrentUserPassword(oldPassword, newPassword) {
     const url = this._apiService.getApiUrl(`/user/password`);
     const data = {
       oldPassword: oldPassword,
@@ -161,7 +161,7 @@ class UserGateway {
    *
    * @returns {AbortablePromise}
    */
-  getPermissions(){
+  getCurrentUserPermissions() {
     const url = this._apiService.getApiUrl(`/user/permissions`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
