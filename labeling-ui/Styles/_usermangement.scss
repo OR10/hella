@@ -5,25 +5,6 @@
     button {
       padding: 0 !important;
     }
-
-    button, button:hover, button:active {
-      background: transparent;
-    }
-  }
-
-  &.hover {
-    tr:hover {
-      .action-cell {
-        .icon {
-          color: $element-background;
-        }
-      }
-    }
-  }
-
-  .icon:hover {
-    font-weight: bold;
-    color: white !important;
   }
 }
 

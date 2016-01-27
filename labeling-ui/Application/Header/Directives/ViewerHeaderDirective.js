@@ -10,6 +10,7 @@ class ViewerHeaderDirective {
       video: '=',
       task: '=',
       user: '=',
+      userPermissions: '=',
     };
 
 

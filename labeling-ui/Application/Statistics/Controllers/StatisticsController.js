@@ -1,5 +1,9 @@
 class StatisticsController {
-  constructor(taskStatistics) {
+  constructor(user, userPermissions, taskStatistics) {
+    this.user = user;
+
+    this.userPermissions = userPermissions;
+
     this.taskStatistics = taskStatistics.map(stat => {
       const hours = Math.floor(stat.totalLabelingTimeInSeconds / 3600);
       const minutes = Math.floor(stat.totalLabelingTimeInSeconds % 3600 / 60);
@@ -11,6 +15,10 @@ class StatisticsController {
   }
 }
 
-StatisticsController.$inject = ['taskStatistics'];
+StatisticsController.$inject = [
+  'user',
+  'userPermissions',
+  'taskStatistics',
+];
 
 export default StatisticsController;

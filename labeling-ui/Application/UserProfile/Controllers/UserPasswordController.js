@@ -17,7 +17,7 @@ class UserPasswordController {
     this.message = '';
     this.loadingInProgress = true;
 
-    this.userGateway.setPassword(this.oldUserPassword, this.newUserPassword).then((result) => {
+    this.userGateway.setCurrentUserPassword(this.oldUserPassword, this.newUserPassword).then((result) => {
       if (!result) {
         this.message = 'There was an error updating your password!';
       }
