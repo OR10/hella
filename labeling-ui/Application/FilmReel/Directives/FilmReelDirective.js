@@ -14,6 +14,7 @@ class FilmReelDirective {
       selectedPaperShape: '=',
       playing: '=',
       freezeThumbnails: '=',
+      readOnly: '@',
     };
 
     this.template = FilmReelTemplate;
@@ -21,6 +22,10 @@ class FilmReelDirective {
     this.controller = FilmReelController;
     this.controllerAs = 'vm';
     this.bindToController = true;
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }
 

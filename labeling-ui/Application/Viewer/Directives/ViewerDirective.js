@@ -26,6 +26,7 @@ export default class ViewerDirective {
       bookmarkedFrameNumber: '=',
       fps: '=',
       frameSkip: '=',
+      readOnly: '@',
     };
 
     this.controller = ViewerController;
@@ -33,5 +34,9 @@ export default class ViewerDirective {
     this.bindToController = true;
 
     this.template = viewerTemplate;
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }

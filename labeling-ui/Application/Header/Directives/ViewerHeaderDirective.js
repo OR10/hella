@@ -11,6 +11,7 @@ class ViewerHeaderDirective {
       task: '=',
       user: '=',
       userPermissions: '=',
+      readOnly: '@',
     };
 
 
@@ -19,6 +20,10 @@ class ViewerHeaderDirective {
     this.controller = ViewerHeaderController;
     this.controllerAs = 'vm';
     this.bindToController = true;
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }
 

@@ -2,6 +2,7 @@
         task="vm.task"
         user="vm.user"
         user-permissions="vm.userPermissions"
+        read-only="{{vm.task.readOnly}}"
 ></viewer-header>
 <div split-view
      on-init="vm.onSplitViewInitialized()"
@@ -32,7 +33,7 @@
         <div class="grid-block vertical noscrollbars"></div>
         <popup-panel ng-show="vm.popupPanelOpen"
                      popup-panel-open="vm.popupPanelOpen"
-                     popup-panel-state="vm.popupPanelState"
+                     popup-panel-state="vm.popupPanelState"a
                      brightness-slider-value="vm.brightnessSliderValue"
                      contrast-slider-value="vm.contrastSliderValue"
                      viewer-viewport="vm.viewerViewport"
@@ -62,6 +63,7 @@
             bookmarked-frame-number="vm.bookmarkedFrameNumber"
             fps="vm.fps"
             frame-skip="vm.frameSkip"
+            read-only="{{vm.task.readOnly}}"
     ></viewer>
     <div class="grid-block sidebar-right ">
         <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"
@@ -73,10 +75,12 @@
                         task="vm.task"
                         frame-position="vm.framePosition"
                         labeling-instructions="vm.currentLabelingInstructions"
+                        read-only="{{vm.task.readOnly}}"
         ></label-selector>
     </div>
 </div>
-<media-controls labeled-things-in-frame="vm.labeledThingsInFrame"
+<media-controls read-only="{{vm.task.readOnly}}"
+                labeled-things-in-frame="vm.labeledThingsInFrame"
                 frame-position="vm.framePosition"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"
@@ -103,6 +107,7 @@
                    selected-paper-shape="vm.selectedPaperShape"
                    playing="vm.playing"
                    freeze-thumbnails="vm.freezeThumbnails"
+                   read-only="{{vm.task.readOnly}}"
         ></film-reel>
     </div>
 </div>
