@@ -8,6 +8,7 @@ class HeaderDirective {
   constructor() {
     this.scope = {
       user: '=',
+      userPermissions: '=',
       backLink: '@?',
       backLinkText: '@?',
       showUsername: '@?',

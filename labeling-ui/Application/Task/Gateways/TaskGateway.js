@@ -86,6 +86,22 @@ class TaskGateway {
         throw new Error(`Failed marking task (${task.id}) as labeled.`);
       });
   }
+
+  /**
+   * @param {Task} task
+   * @returns {AbortablePromise}
+   */
+  markTaskAsWaiting(task) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/status/waiting`);
+    return this._bufferedHttp.post(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed marking task (${task.id}) as waiting.`);
+      });
+  }
 }
 
 TaskGateway.$inject = [

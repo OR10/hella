@@ -58,6 +58,29 @@ class ViewerHeaderController {
     );
     modal.activate();
   }
+
+  reOpenLabelingTask() {
+    const modal = this._modalService.getInfoDialog(
+      {
+        title: 'Reopen Task',
+        headline: 'Reopen this labeling task?',
+        message: 'You are about to reopen this tasked. After this operation the task will be editable again by the labeler.',
+        confirmButtonText: 'Reopen',
+        cancelButtonText: 'Cancel',
+      },
+      () => {
+        this._applicationState.disableAll();
+        this._applicationState.viewer.work();
+        this._taskGateway.markTaskAsWaiting(this.task)
+          .then(() => {
+            this._$state.go('labeling.tasks');
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+          });
+      }
+    );
+    modal.activate();
+  }
 }
 
 ViewerHeaderController.$inject = [

@@ -126,9 +126,15 @@ export default class Application {
       $urlRouterProvider.otherwise('/tasks');
 
       function userResolver(userGateway) {
-        return userGateway.getCurrentUser().then((user) => {
-          return user;
-        });
+        return userGateway.getCurrentUser()
+          .then(user => user);
+      }
+
+      userResolver.$inject = ['userGateway'];
+
+      function permissionsResolver(userGateway) {
+        return userGateway.getCurrentUserPermissions()
+          .then(permissions => permissions);
       }
 
       userResolver.$inject = ['userGateway'];
@@ -141,11 +147,16 @@ export default class Application {
           template: '<ui-view class="vertical grid-frame"/>',
           resolve: {
             user: userResolver,
+            userPermissions: permissionsResolver,
           },
         });
     }
 
-    routerConfigurator.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];
+    routerConfigurator.$inject = [
+      '$locationProvider',
+      '$stateProvider',
+      '$urlRouterProvider'
+    ];
 
     this.app.config(routerConfigurator);
 

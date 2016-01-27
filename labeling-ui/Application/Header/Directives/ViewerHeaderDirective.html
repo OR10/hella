@@ -21,11 +21,19 @@
             <button>
                 <i class="icon no-hover icon-general-timer"></i>
             </button>
-            <button ng-click="vm.finishLabelingTask()"
+            <button ng-hide="vm.task.status === 'labeled'"
+                    ng-click="vm.finishLabelingTask()"
                     tooltip="Finish the active task"
                     style="margin-left: -.7rem;"
             >
                 <i class="icon icon-ok"></i>
+            </button>
+            <button ng-show="vm.userPermissions.canViewReopenButton && vm.task.status === 'labeled'"
+                    ng-click="vm.reOpenLabelingTask()"
+                    tooltip="Reopen this task for Labelers"
+                    style="margin-left: -.7rem;"
+            >
+                <i class="icon-fa fa fa-lg fa-pencil-square-o"></i>
             </button>
         </div>
 
