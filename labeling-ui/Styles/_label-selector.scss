@@ -35,16 +35,17 @@
 
 /** List View **/
 .label-selector {
+  .accordion {
+    height: 0;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  
   .accordion-content {
     ul {
       margin: 0;
       padding: 0;
       list-style: none;
-    }
-
-    label {
-      width: 100%;
-
     }
 
     label:hover {
@@ -55,22 +56,24 @@
       display: none;
     }
 
-    .icon {
-      float: left;
-      margin-right: 1rem;
+    input[type="radio"] + label{
+      display: flex;
+      margin-right: .1rem;
+      cursor: pointer;
     }
 
-    .response {
-      display: block;
-      float: left;
-      width: calc(100% - 62px - .5rem);
+    .icon {
+      padding: 0;
     }
 
     input[type="radio"] + label:after {
-      float: right;
+      @include grid-content(
+              $size: shrink
+      );
+
+      padding: 0;
 
       visibility: hidden;
-      display: inline-block;
 
       font-family: "icon-font";
       font-style: normal;
@@ -89,7 +92,7 @@
       color: $icon-hover;
 
       content: $font-icon-font-check;
-      margin-right: .5rem;
+      //margin-right: .5rem;
     }
 
     input[type="radio"]:checked + label {
