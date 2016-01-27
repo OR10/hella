@@ -46,8 +46,10 @@
                 <i class="icon icon-selection-gostart"></i>
             </button>
         </div>
-        <div class="grid-content noscroll">
-            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
+        <div class="grid-content noscroll"
+             ng-hide="vm.readOnly"
+        >
+            <button ng-hide="vm.selectedPaperShape === null"
                     ng-click="vm.handleSetOpenBracketClicked()"
                     tooltip="Set the start frame of the active shape">
                 <i class="icon icon-selection-start"></i>
@@ -97,8 +99,10 @@
                 <i class="icon icon-control-forwards"></i>
             </button>
         </div>
-        <div class="grid-content noscroll">
-            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
+        <div class="grid-content noscroll"
+             ng-hide="vm.readOnly"
+        >
+            <button ng-hide="vm.selectedPaperShape === null"
                     ng-click="vm.handleSetCloseBracketClicked()"
                     tooltip="Set the end frame of the active shape">
                 <i class="icon icon-selection-end"></i>

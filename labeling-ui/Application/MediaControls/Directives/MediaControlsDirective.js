@@ -28,8 +28,12 @@ class MediaControlsDirective {
       video: '=',
       bookmarkedFrameNumber: '=',
       fpsInputVisible: '=',
-      readonly: '@',
+      readOnly: '@',
     };
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }
 
