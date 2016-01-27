@@ -69,6 +69,7 @@ class LabelingTask
     /**
      * @var string
      * @CouchDB\Field(type="string")
+     * @Serializer\Groups({"statistics"})
      */
     private $status = 'preprocessing';
 
