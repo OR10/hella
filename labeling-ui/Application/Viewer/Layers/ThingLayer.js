@@ -303,10 +303,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}`);
     switch (toolName) {
-      case 'scale':
-        this._shapeScaleTool.activate();
-        this._logger.log('thinglayer:tool', this._shapeScaleTool);
-        break;
       case 'zoomIn':
         this._zoomInTool.activate();
         this._logger.log('thinglayer:tool', this._zoomInTool);
@@ -316,8 +312,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
       default:
-        this._multiTool.activate();
-        this._logger.log('thinglayer:tool', this._shapeMoveTool);
+        if (!this._$scope.vm.readOnly) {
+          this._multiTool.activate();
+          this._logger.log('thinglayer:tool', this._multiTool);
+        } else {
+          this._context.withScope(scope => scope.tool = null);
+          this._$scope.vm.actionMouseCursor = null;
+          this._logger.log('thinglayer:tool', 'Disabled all tools due to readonly task');
+        }
     }
     this._logger.groupEnd('thinglayer:tool');
   }

@@ -63,6 +63,7 @@
             bookmarked-frame-number="vm.bookmarkedFrameNumber"
             fps="vm.fps"
             frame-skip="vm.frameSkip"
+            read-only="{{vm.task.readOnly}}"
     ></viewer>
     <div class="grid-block sidebar-right ">
         <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"
