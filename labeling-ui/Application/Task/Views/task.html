@@ -2,6 +2,7 @@
         task="vm.task"
         user="vm.user"
         user-permissions="vm.userPermissions"
+        read-only="{{vm.task.readOnly}}"
 ></viewer-header>
 <div split-view
      on-init="vm.onSplitViewInitialized()"

@@ -9,6 +9,7 @@ class TimerDirective {
     this.scope = {
       task: '=',
       user: '=',
+      readOnly: '@',
     };
 
     this.template = timerTemplate;
@@ -16,6 +17,10 @@ class TimerDirective {
     this.controller = TimerController;
     this.controllerAs = 'vm';
     this.bindToController = true;
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }
 

@@ -25,7 +25,9 @@ class TimerController {
   init(timer) {
     this.elapsedTime = timer.time;
     this.calculateTime();
-    this._intervalHandle = this.$interval(this.interval.bind(this), this.waitTime * 1000);
+    if (!this.readOnly) {
+      this._intervalHandle = this.$interval(this.interval.bind(this), this.waitTime * 1000);
+    }
   }
 
   deinit() {
@@ -49,7 +51,7 @@ class TimerController {
 TimerController.$inject = [
   '$element',
   '$interval',
-  'timerGateway'
+  'timerGateway',
 ];
 
 export default TimerController;
