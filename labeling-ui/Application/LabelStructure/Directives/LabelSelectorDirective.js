@@ -14,6 +14,7 @@ export default class LabelSelectorDirective {
       framePosition: '=',
       isCompleted: '=?',
       labelingInstructions: '=',
+      readOnly: '@',
     };
 
     this.template = labelSelectorTemplate;
@@ -21,5 +22,9 @@ export default class LabelSelectorDirective {
     this.controller = LabelSelectorController;
     this.controllerAs = 'vm';
     this.bindToController = true;
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }
