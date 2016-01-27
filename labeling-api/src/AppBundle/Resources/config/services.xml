@@ -93,7 +93,7 @@
         </service>
 
         <service id="annostation.labeling_api.view.serialization_listener"
-                 class="AppBundle\Service\View\CollectionSerializationSubscriber">
+                 class="AppBundle\Service\View\LabelingTaskSerializationSubscriber">
             <tag name="jms_serializer.event_subscriber"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.task_read_only_decider"/>

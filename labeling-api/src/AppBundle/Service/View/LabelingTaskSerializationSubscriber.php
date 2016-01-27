@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AppBundle\Model;
 use AppBundle\Service;
 
-class CollectionSerializationSubscriber implements EventDispatcher\EventSubscriberInterface
+class LabelingTaskSerializationSubscriber implements EventDispatcher\EventSubscriberInterface
 {
     /**
      * @var Service\TaskReadOnlyDecider
