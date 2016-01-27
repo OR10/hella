@@ -10,7 +10,13 @@ class ViewerHeaderController {
    * @param {TaskGateway} taskGateway
    * @param {ReleaseConfigService} releaseConfigService
    */
-  constructor(modalService, applicationState, taskGateway, userGateway) {
+  constructor($state, modalService, applicationState, taskGateway) {
+    /**
+     * @param {angular.$state} $state
+     * @private
+     */
+    this._$state = $state;
+
     /**
      * @type {ModalService}
      * @private
@@ -44,7 +50,7 @@ class ViewerHeaderController {
         this._applicationState.viewer.work();
         this._taskGateway.markTaskAsLabeled(this.task)
           .then(() => {
-            this._$location.path('/labeling/tasks');
+            this._$state.go('labeling.tasks');
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
           });
@@ -55,10 +61,10 @@ class ViewerHeaderController {
 }
 
 ViewerHeaderController.$inject = [
+  '$state',
   'modalService',
   'applicationState',
   'taskGateway',
-  'userGateway',
 ];
 
 export default ViewerHeaderController;
