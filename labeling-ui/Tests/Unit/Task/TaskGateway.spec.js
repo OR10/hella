@@ -131,4 +131,19 @@ describe('TaskGateway', () => {
 
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
+
+  it('should mark tasks as waiting', (done) => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/waiting').respond(markResponse);
+
+    gateway.markTaskAsWaiting({id: '123asdf'}).then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
 });
