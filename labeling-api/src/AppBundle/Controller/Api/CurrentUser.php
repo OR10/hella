@@ -129,12 +129,12 @@ class CurrentUser extends Controller\Base
         $userListButton = false;
         $videoUploadButton = false;
 
-        if ($user->hasRole('ROLE_ADMIN')) {
+        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton = true;
             $userListButton = true;
             $videoUploadButton = true;
         }
-        if ($user->hasRole('ROLE_LABEL_COORDINATOR')) {
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton = true;
             $videoUploadButton = true;
         }

@@ -131,7 +131,7 @@ class User
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
-        return $user->hasRole('ROLE_LABELER');
+        return $user->hasRole(Model\User::ROLE_LABELER);
     }
 
     /**
@@ -141,7 +141,7 @@ class User
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
-        return $user->hasRole('ROLE_LABEL_COORDINATOR');
+        return $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR);
     }
 
     /**
@@ -151,6 +151,6 @@ class User
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
-        return $user->hasRole('ROLE_ADMIN');
+        return $user->hasRole(Model\User::ROLE_ADMIN);
     }
 }
