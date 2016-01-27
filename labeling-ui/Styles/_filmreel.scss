@@ -13,8 +13,8 @@
       overflow: hidden;
       text-align: center;
       flex-shrink: 0;
-      border-top: 2px solid rgba(0,0,0,0);
-      border-bottom: 2px solid rgba(0,0,0,0);
+      border-top: 2px solid rgba(0, 0, 0, 0);
+      border-bottom: 2px solid rgba(0, 0, 0, 0);
 
       .center-thumbnail-overlay {
         position: absolute;
@@ -141,5 +141,11 @@
     .range-position .inner-bar {
       background: $selected-frame;
     }
+  }
+}
+
+.thumbnail-reel-list.read-only {
+  > .thumbnail-spacer div.frame-range-bracket .bracket-drag-handle {
+    cursor: auto;
   }
 }

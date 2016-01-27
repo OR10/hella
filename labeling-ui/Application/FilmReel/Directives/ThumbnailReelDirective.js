@@ -16,6 +16,7 @@ class ThumbnailReelDirective {
       playing: '=',
       freezeThumbnails: '=',
       thumbnailCount: '=',
+      readOnly: '@',
     };
 
     this.template = ThumbnailReelTemplate;
@@ -23,6 +24,10 @@ class ThumbnailReelDirective {
     this.controller = ThumbnailReelController;
     this.controllerAs = 'vm';
     this.bindToController = true;
+  }
+
+  link(scope, element, attrs) {
+    attrs.$observe('readOnly', () => scope.vm.readOnly = attrs.readOnly === 'true');
   }
 }
 
