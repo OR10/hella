@@ -1,5 +1,6 @@
 import Module from 'Application/Module';
 import TaskListDirective from './Directives/TaskListDirective';
+import HeaderDirective from '../Header/Directives/HeaderDirective';
 import HomeController from './Controllers/HomeController';
 import homeTemplate from './Views/home.html!';
 
@@ -30,6 +31,7 @@ class Home extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Home', []);
     this.registerDirective('tasklist', TaskListDirective);
+    this.registerDirective('header', HeaderDirective);
   }
 }
 

@@ -1,0 +1,48 @@
+<div class="header header-left grid-block noscroll">
+    <div class="grid-content small-1 text-center noscroll">
+        <a href="/labeling/tasks"
+           tooltip="Back to task overview"
+           class="dropdown-button"
+        >
+            <i class="icon icon-previous"></i>
+        </a>
+    </div>
+    <task-title class="grid-block"
+                task-type="vm.task.taskType"
+                name="vm.video.name"
+                frame-range="vm.task.frameRange"
+    ></task-title>
+    <div class="grid-block header-right shrink noscroll">
+        <timer class="grid-content text-right header-timer shrink noscroll"
+               task="vm.task"
+               user="vm.user"></timer>
+
+        <div class="grid-content text-left shrink noscroll">
+            <button>
+                <i class="icon no-hover icon-general-timer"></i>
+            </button>
+            <button ng-click="vm.finishLabelingTask()"
+                    tooltip="Finish the active task"
+                    style="margin-left: -.7rem;"
+            >
+                <i class="icon icon-ok"></i>
+            </button>
+        </div>
+
+        <!--<div class="grid-content shrink noscroll">-->
+        <!--<button>-->
+        <!--<i class="icon icon-help"></i>-->
+        <!--</button>-->
+        <!--</div>-->
+
+        <!--<div class="grid-content shrink noscroll">-->
+        <!--<button>-->
+        <!--<i class="icon icon-general-chat"></i>-->
+        <!--</button>-->
+        <!--</div>-->
+
+        <user-name class="grid-block" user="vm.user"></user-name>
+
+        <logout-button class="grid-block"></logout-button>
+    </div>
+</div>

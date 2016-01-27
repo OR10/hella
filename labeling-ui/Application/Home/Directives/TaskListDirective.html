@@ -71,16 +71,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.labeledTasks track by task.id">
-                    <td>{{task.taskType}}</td>
-                    <td>
+                <tr  ng-repeat="task in vm.labeledTasks track by task.id">
+                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
-                    <td>
+                    <td ui-sref="^.task({taskId: task.id})">
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
 
                     </td>
-                    <td><a href="" ui-sref="export({taskId: task.id})">Export data</a>
+                    <td>
+                        <a href="" ui-sref="export({taskId: task.id})">Export data</a>
                     </td>
                 </tr>
                 <tr ng-show="!vm.labeledTasks.length">

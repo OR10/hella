@@ -43,6 +43,9 @@ resource "null_resource" "provisioning" {
             "echo '${module.mysql.ipv4_address} mysql' >> /etc/hosts",
             "echo '${module.couch.ipv4_address} couch' >> /etc/hosts",
             "echo '${module.workerqueue.ipv4_address} workerqueue' >> /etc/hosts",
+            "echo '${module.mysql.ipv4_address} mysql' >> /etc/cloud/templates/hosts.debian.tmpl",
+            "echo '${module.couch.ipv4_address} couch' >> /etc/cloud/templates/hosts.debian.tmpl",
+            "echo '${module.workerqueue.ipv4_address} workerqueue' >> /etc/cloud/templates/hosts.debian.tmpl",
         ]
         connection {
             host = "${module.app.ipv4_address}"

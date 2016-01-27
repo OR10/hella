@@ -1,0 +1,14 @@
+<div class="grid-content text-left noscroll" as-right-click="vm.showReleaseInformation()">
+        <span ng-show="vm.releaseInformation === null">
+            <span ng-switch on="vm.taskType">
+                <span ng-switch-when="meta-labeling">Meta labeling:</span>
+                <span ng-switch-when="object-labeling">Object labeling:</span>
+                <span ng-switch-default>Unknown:</span>
+            </span>
+            {{vm.name}}
+            [ {{vm.frameRange.startFrameNumber}} - {{vm.frameRange.endFrameNumber}} ]
+        </span>
+        <span ng-show="vm.releaseInformation !== null">
+            Revision: {{vm.releaseInformation.revision}}
+        </span>
+</div>
