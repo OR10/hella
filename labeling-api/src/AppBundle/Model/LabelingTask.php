@@ -97,11 +97,6 @@ class LabelingTask
     private $drawingTool;
 
     /**
-     * @var bool
-     */
-    private $readOnly;
-
-    /**
      * @param Video      $video
      * @param FrameRange $frameRange
      * @param string     $taskType
