@@ -65,6 +65,12 @@ class TaskListController {
         this.loadingInProgress = false;
       });
   }
+
+  reOpenTask(task) {
+    this.loadingInProgress = true;
+    this._taskGateway.markTaskAsWaiting(task)
+      .then(() => this._loadTaskList());
+  }
 }
 
 TaskListController.$inject = ['taskGateway'];

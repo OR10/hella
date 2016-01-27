@@ -1,5 +1,7 @@
 <div class="grid-frame vertical">
     <header class="grid-block noscroll header"
+            user="vm.user"
+            user-permissions="vm.userPermissions"
             back-link=""
             back-link-text=""
             show-username="true"
@@ -7,6 +9,8 @@
     >
     </header>
 
-    <tasklist class="grid-block"/>
+    <tasklist class="grid-block"
+              show-reopen-button="vm.userPermissions.canViewReopenButton"
+    />
 
 </div>

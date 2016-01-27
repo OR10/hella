@@ -16,13 +16,14 @@ class TaskController {
    * @param {angular.Scope} $scope
    * @param {{task: Task, video: Video}} initialData
    * @param {User} user
+   * @param {Object} userPermissions
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {$stateParams} $stateParams
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    */
-  constructor($scope, initialData, user, labeledFrameGateway, $stateParams, $location, applicationState, $timeout) {
+  constructor($scope, initialData, user, userPermissions, labeledFrameGateway, $stateParams, $location, applicationState, $timeout) {
     /**
      * @type {angular.Scope}
      */
@@ -42,6 +43,11 @@ class TaskController {
      * @type {User}
      */
     this.user = user;
+
+    /**
+     * @type {Object}
+     */
+    this.userPermissions = userPermissions;
 
     /**
      * @type {$location}
@@ -318,6 +324,7 @@ TaskController.$inject = [
   '$scope',
   'initialData',
   'user',
+  'userPermissions',
   'labeledFrameGateway',
   '$stateParams',
   '$location',
