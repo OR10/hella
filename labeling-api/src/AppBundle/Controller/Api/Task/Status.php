@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -35,6 +36,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/labeled")
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
      *
@@ -42,7 +44,7 @@ class Status extends Controller\Base
      */
     public function postLabeledStatusAction(Model\LabelingTask $task)
     {
-        $task->setStatus('labeled');
+        $task->setStatus(Model\LabelingTask::STATUS_LABELED);
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);

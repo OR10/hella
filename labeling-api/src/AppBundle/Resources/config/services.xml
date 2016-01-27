@@ -26,6 +26,14 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
+        <service id="annostation.labeling_api.annotations.driver.forbid_readonly_tasks" class="AppBundle\Annotations\Driver\ForbidReadonlyTasks">
+            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="session" />
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="annostation.labeling_api.service.task_read_only_decider" />
+            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" priority="-256"/>
+        </service>
+
         <service id="annostation.labeling_api.service.video.meta_data_reader" class="AppBundle\Service\Video\MetaDataReader">
             <argument>%ffprobe_executable%</argument>
         </service>
@@ -39,6 +47,9 @@
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem" />
             <argument>%ffmpeg_executable%</argument>
             <argument type="service" id="oneup_flysystem.cache_filesystem"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.task_read_only_decider" class="AppBundle\Service\TaskReadOnlyDecider">
         </service>
 
         <service id="annostation.labeling_api.service.video_importer" class="AppBundle\Service\VideoImporter">

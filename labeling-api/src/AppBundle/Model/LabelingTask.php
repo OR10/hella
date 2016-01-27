@@ -14,6 +14,10 @@ class LabelingTask
     const TYPE_OBJECT_LABELING = 'object-labeling';
     const DRAWING_TOOL_RECTANGLE = 'rectangle';
 
+    const STATUS_PREPROCESSING = 'preprocessing';
+    const STATUS_WAITING = 'waiting';
+    const STATUS_LABELED = 'labeled';
+
     /**
      * @var string
      * @CouchDB\Id
@@ -274,7 +278,7 @@ class LabelingTask
                 return;
             }
         }
-        $this->setStatus('waiting');
+        $this->setStatus(self::STATUS_WAITING);
 
         return $this;
     }

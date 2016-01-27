@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
@@ -53,6 +54,7 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/labeledThingInFrame/{frameNumber}")
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask     $task
      * @param int                    $frameNumber
