@@ -47,7 +47,7 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
                     ng-click="vm.handleSetOpenBracketClicked()"
                     tooltip="Set the start frame of the active shape">
                 <i class="icon icon-selection-start"></i>
@@ -98,7 +98,7 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
                     ng-click="vm.handleSetCloseBracketClicked()"
                     tooltip="Set the end frame of the active shape">
                 <i class="icon icon-selection-end"></i>
@@ -117,7 +117,8 @@
     <div class="grid-block small-5 task-bar-right">
         <loading-mask ng-if="vm.mediaControlsDisabled" backdrop="false" block-interaction="true" spinner="false" ></loading-mask>
         <div class="grid-content noscroll" ng-if="vm.task.taskType === 'object-labeling'">
-            <button ng-click="vm.handleNewLabeledThingClicked()"
+            <button ng-hide="vm.readOnly"
+                    ng-click="vm.handleNewLabeledThingClicked()"
                     tooltip="Create new shape"
             >
                 <i class="icon icon-selection-add"></i>
@@ -157,14 +158,14 @@
             Point
         </button>>-->
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
                     ng-click="vm.handleInterpolation()"
                     tooltip="Interpolate shape between its start and end frames">
                 <i class="icon icon-selection-generate"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
                     ng-click="vm.handleDeleteSelectionClicked()"
                     tooltip="Delete the active shape">
                 <i class="icon icon-selection-delete"></i>

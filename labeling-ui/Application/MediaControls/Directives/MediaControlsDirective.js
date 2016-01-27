@@ -28,6 +28,7 @@ class MediaControlsDirective {
       video: '=',
       bookmarkedFrameNumber: '=',
       fpsInputVisible: '=',
+      readonly: '@',
     };
   }
 }

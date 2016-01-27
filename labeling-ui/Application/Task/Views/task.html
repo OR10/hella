@@ -32,7 +32,7 @@
         <div class="grid-block vertical noscrollbars"></div>
         <popup-panel ng-show="vm.popupPanelOpen"
                      popup-panel-open="vm.popupPanelOpen"
-                     popup-panel-state="vm.popupPanelState"
+                     popup-panel-state="vm.popupPanelState"a
                      brightness-slider-value="vm.brightnessSliderValue"
                      contrast-slider-value="vm.contrastSliderValue"
                      viewer-viewport="vm.viewerViewport"
@@ -76,7 +76,8 @@
         ></label-selector>
     </div>
 </div>
-<media-controls labeled-things-in-frame="vm.labeledThingsInFrame"
+<media-controls read-only="{{vm.task.readOnly}}"
+                labeled-things-in-frame="vm.labeledThingsInFrame"
                 frame-position="vm.framePosition"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"
