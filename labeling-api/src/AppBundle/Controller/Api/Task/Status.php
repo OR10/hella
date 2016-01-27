@@ -27,11 +27,18 @@ class Status extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @var Storage\TokenStorage
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade)
+    private $tokenStorage;
+
+    /**
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Storage\TokenStorage $tokenStorage
+     */
+    public function __construct(Facade\LabelingTask $labelingTaskFacade, Storage\TokenStorage $tokenStorage)
     {
         $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -48,5 +55,26 @@ class Status extends Controller\Base
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
+    }
+
+    /**
+     * @Rest\Post("/{task}/status/waiting")
+     *
+     * @param Model\LabelingTask $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function postWaitingStatusAction(Model\LabelingTask $task)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+            $this->labelingTaskFacade->save($task);
+
+            return View\View::create()->setData(['result' => ['success' => true]]);
+        }
+
+        throw new Exception\AccessDeniedHttpException();
     }
 }
