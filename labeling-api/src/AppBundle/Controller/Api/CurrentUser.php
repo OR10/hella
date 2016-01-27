@@ -128,15 +128,18 @@ class CurrentUser extends Controller\Base
         $statsButton = false;
         $userListButton = false;
         $videoUploadButton = false;
+        $reopenButton = false;
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton = true;
             $userListButton = true;
             $videoUploadButton = true;
+            $reopenButton = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton = true;
             $videoUploadButton = true;
+            $reopenButton = true;
         }
 
         return View\View::create()->setData(
@@ -145,6 +148,7 @@ class CurrentUser extends Controller\Base
                     'canViewStatsButton' => $statsButton,
                     'canViewUserListButton' => $userListButton,
                     'canViewVideoUploadButton' => $videoUploadButton,
+                    'canViewReopenButton' => $reopenButton,
                 ]
             ]
         );

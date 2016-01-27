@@ -95,7 +95,6 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
-     * @ForbidReadonlyTasks
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
