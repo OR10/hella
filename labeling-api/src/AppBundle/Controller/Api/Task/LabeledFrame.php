@@ -3,7 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ReadOnlyPrecondition;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -96,7 +96,7 @@ class LabeledFrame extends Controller\Base
 
     /**
      * @Rest\Delete("/{task}/labeledFrame/{frameNumber}")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
      * @param int                $frameNumber
@@ -119,7 +119,7 @@ class LabeledFrame extends Controller\Base
     /**
      *
      * @Rest\Put("/{task}/labeledFrame/{frameNumber}")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask     $task
      * @param int                    $frameNumber

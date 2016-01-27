@@ -26,7 +26,7 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
-        <service id="annostation.labeling_api.annotations.driver.read_only_precondition" class="AppBundle\Annotations\Driver\ReadOnlyPrecondition">
+        <service id="annostation.labeling_api.annotations.driver.forbid_readonly_tasks" class="AppBundle\Annotations\Driver\ForbidReadonlyTasks">
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="session" />
             <argument type="service" id="security.token_storage" />

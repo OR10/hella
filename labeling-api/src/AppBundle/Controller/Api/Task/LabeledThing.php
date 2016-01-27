@@ -3,7 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ReadOnlyPrecondition;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
@@ -75,7 +75,7 @@ class LabeledThing extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/labeledThing")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask     $task
      * @param HttpFoundation\Request $request
@@ -137,7 +137,7 @@ class LabeledThing extends Controller\Base
 
     /**
      * @Rest\Put("/{task}/labeledThing/{labeledThing}")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask      $task
      * @param HttpFoundation\Request  $request
@@ -197,7 +197,7 @@ class LabeledThing extends Controller\Base
      * TODO: move deletion of labeledThingsInFrame to labeledThingFacade?
      *
      * @Rest\Delete("/{taskId}/labeledThing/{labeledThing}")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param string                 $taskId
      * @param Model\LabeledThing     $labeledThing

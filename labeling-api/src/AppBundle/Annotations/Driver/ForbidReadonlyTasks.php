@@ -11,7 +11,7 @@ use AppBundle\Annotations;
 use AppBundle\Model;
 use AppBundle\Service;
 
-class ReadOnlyPrecondition
+class ForbidReadonlyTasks
 {
     /**
      * @var \Doctrine\Common\Annotations\Reader
@@ -62,11 +62,11 @@ class ReadOnlyPrecondition
         }
 
         $class = new \ReflectionClass($controller[0]);
-        $annotation = $this->reader->getClassAnnotation($class, Annotations\ReadOnlyPrecondition::class);
+        $annotation = $this->reader->getClassAnnotation($class, Annotations\ForbidReadonlyTasks::class);
 
         if ($annotation === null) {
             $method = $class->getMethod($controller[1]);
-            $annotation = $this->reader->getMethodAnnotation($method, Annotations\ReadOnlyPrecondition::class);
+            $annotation = $this->reader->getMethodAnnotation($method, Annotations\ForbidReadonlyTasks::class);
         }
 
         if ($annotation !== null) {

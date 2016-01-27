@@ -3,7 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ReadOnlyPrecondition;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -71,7 +71,7 @@ class Timer extends Controller\Base
 
     /**
      * @Rest\Put("/{task}/timer/{user}")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      */
     public function putTimerAction(
         HttpFoundation\Request $request,
