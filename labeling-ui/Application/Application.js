@@ -7,6 +7,7 @@ import 'angular-animate';
 import 'Distribution/Templates/foundation-ui';
 
 import 'angular-smart-table';
+import 'foundation-apps/js/angular/components/accordion/accordion';
 
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
@@ -95,6 +96,7 @@ export default class Application {
           'ngAnimate',
           'AnnoStation.FoundationVendorTemplates',
           'smart-table',
+          'foundation.accordion',
           ...this.modules.map(mod => mod.module.name),
         ]);
 

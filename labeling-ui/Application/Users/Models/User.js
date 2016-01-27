@@ -47,6 +47,11 @@ class User {
      * @type {Array.<string>}
      */
     this.roles = user.roles;
+
+    /**
+     * @type {string}
+     */
+    this.password = null;
   }
 
   /**
@@ -55,8 +60,8 @@ class User {
    * @return {Object}
    */
   toJSON() {
-    const {id, username, email, enabled, lastLogin, locked, roles} = this;
-    return {id, username, email, enabled, lastLogin, locked, roles};
+    const {id, username, email, enabled, lastLogin, locked, roles, password} = this;
+    return {id, username, email, enabled, lastLogin, locked, roles, password};
   }
 }
 
