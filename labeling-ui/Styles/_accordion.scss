@@ -1,0 +1,48 @@
+.accordion-title {
+  text-transform: uppercase;
+  border-bottom: 2px solid #232a33;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.accordion-title:after {
+  float: right;
+  margin-top: -0.5rem;
+  display: inline-block;
+  font-family: "icon-font";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+
+  font-size: 30px;
+  overflow: hidden;
+  color: $icon;
+
+
+  content: $font-icon-font-left;
+}
+
+.accordion-title:hover:after {
+  color: $icon-hover !important;
+}
+
+.accordion-item {
+  &.is-active {
+    .accordion-title:after {
+      content: $font-icon-font-down;
+    }
+  }
+
+}
+
+.accordion-content {
+
+}

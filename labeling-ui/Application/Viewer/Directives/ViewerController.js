@@ -897,22 +897,20 @@ class ViewerController {
   }
 
   _handleScroll(event) {
-    if (event.altKey) {
-      const focalPoint = new paper.Point(event.offsetX, event.offsetY);
+    const focalPoint = new paper.Point(event.offsetX, event.offsetY);
 
-      if (event.deltaY < 0) {
-        this._$scope.$apply(
-          () => {
-            this.zoomIn(focalPoint, 1.05);
-          }
-        );
-      } else if (event.deltaY > 0) {
-        this._$scope.$apply(
-          () => {
-            this.zoomOut(focalPoint, 1.05);
-          }
-        );
-      }
+    if (event.deltaY < 0) {
+      this._$scope.$apply(
+        () => {
+          this.zoomIn(focalPoint, 1.05);
+        }
+      );
+    } else if (event.deltaY > 0) {
+      this._$scope.$apply(
+        () => {
+          this.zoomOut(focalPoint, 1.05);
+        }
+      );
     }
   }
 

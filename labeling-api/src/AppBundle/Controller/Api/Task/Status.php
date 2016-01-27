@@ -3,7 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ReadOnlyPrecondition;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -36,7 +36,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/labeled")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
      *

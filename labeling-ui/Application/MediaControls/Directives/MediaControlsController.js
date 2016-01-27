@@ -290,6 +290,7 @@ class MediaControlsController {
   handleInterpolation() {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
     this._applicationState.disableAll();
+    this._applicationState.viewer.work();
     this._labeledThingData.invalidate(selectedLabeledThing.id);
     this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
     this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
@@ -297,11 +298,13 @@ class MediaControlsController {
         () => {
           this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
           this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
+          this._applicationState.viewer.finish();
           this._applicationState.enableAll();
         }
       )
       .catch(
         error => {
+          this._applicationState.viewer.finish();
           this._applicationState.enableAll();
           throw error;
         }

@@ -10,9 +10,16 @@
   &.toggled {
     color: $icon-hover !important;
   }
+
+  &.no-hover:hover {
+    color: $icon !important;
+    cursor: auto !important;
+  }
+
+  &.icon-small {
+    font-size: 16px;
+  }
 }
 
-.icon.no-hover:hover {
-  color: $icon !important;
-  cursor: auto !important;
-}
+
+

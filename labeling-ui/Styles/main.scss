@@ -13,9 +13,13 @@ $body-background: #181d23;
 $button: #30363c;
 $button-selected: #353b42;
 
+$accordion-header-background: #343b43;
+
 @import "foundation";
 @import "font-awesome";
+@import "icon-font";
 @import "fonts";
+@import "accordion";
 @import "table";
 @import "form";
 @import "button";
@@ -23,7 +27,6 @@ $button-selected: #353b42;
 @import "viewer";
 @import "filmreel";
 @import "timeline";
-@import "icon-font";
 @import "icons";
 @import "header";
 @import "minimap";
@@ -316,4 +319,8 @@ popup-panel.ng-hide-remove {
 
 .noscrollbars::-webkit-scrollbar {
   display: none;
+}
+
+.align-self-center {
+  align-self: center;
 }

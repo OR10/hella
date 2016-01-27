@@ -7,10 +7,11 @@
 
     <div class="grid-container">
         <div class="grid-content task-list-table">
-            <table class="hover" ng-if="vm.taskStatistics.length > 0">
+            <table class="hover table" ng-if="vm.taskStatistics.length > 0">
                 <thead>
                 <tr>
                     <th>Type</th>
+                    <th>Status</th>
                     <th>Task</th>
                     <th>Framerange</th>
                     <th>Objects</th>
@@ -22,6 +23,9 @@
                     ui-sref="^.task({taskId: stats.task.id})">
                     <td>
                         {{stats.task.taskType}}
+                    </td>
+                    <td>
+                        {{stats.task.status}}
                     </td>
                     <td>
                         {{stats.video.name}}

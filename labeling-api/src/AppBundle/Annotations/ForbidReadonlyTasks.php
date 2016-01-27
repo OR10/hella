@@ -6,7 +6,7 @@ namespace AppBundle\Annotations;
  * @Annotation
  * @Target({"METHOD"})
  */
-class ReadOnlyPrecondition
+class ForbidReadonlyTasks
 {
     /**
      * @var string

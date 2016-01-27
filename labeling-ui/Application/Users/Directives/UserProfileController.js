@@ -213,10 +213,12 @@ class UserProfileController {
       return true;
     }
 
-    this.user.password = this.password;
+    this.user.password = this.newPassword;
+
 
     this.newPassword = null;
     this.newPasswordValidation = null;
+
     return true;
   }
 

@@ -1,18 +1,15 @@
 <div class="grid-frame vertical">
-    <div class="grid-block shrink">
-        <div class="grid-content" style="padding: 0">
-            <div class="title-bar">
-                <span class="left shrink"><a tooltip="Back to task overview" ui-sref="labeling.tasks"><i
-                        class="icon icon-previous"></i></a></span>
-                <div class="center title">User Profile</div>
-                <span class="right shrink"></span>
-            </div>
-        </div>
-    </div>
+    <header class="grid-block noscroll header"
+            back-link="labeling.tasks"
+            back-link-text="Back to Task List"
+            show-username="true"
+            show-logout-button="true"
+    >
+    </header>
 
     <div class="grid-container">
         <div class="grid-content">
-            <table>
+            <table class="table">
                 <tr>
                     <td>Username:</td>
                     <td>{{vm.user.username}}</td>

@@ -105,11 +105,11 @@ class UserGateway {
     const url = this._apiService.getApiUrl(`/users/${user.id}`);
     return this._bufferedHttp.put(url, user, 'user')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.success) {
-          throw new Error(`Failed creating user ${user.id}`);
+        if (!response.data || !response.data.result || !response.data.result.user) {
+          throw new Error(`Failed updating user ${user.id}`);
         }
 
-        return response.data.result.success;
+        return new User(response.data.result.user);
       });
   }
 

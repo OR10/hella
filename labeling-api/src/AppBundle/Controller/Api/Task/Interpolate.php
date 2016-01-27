@@ -3,7 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ReadOnlyPrecondition;
+use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -64,7 +64,7 @@ class Interpolate extends Controller\Base
      * TODO: add support for offset/limit to restrict the frame range
      *
      * @Rest\Post("/{task}/interpolate/{labeledThing}")
-     * @ReadOnlyPrecondition
+     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
      * @param Model\LabeledThing $labeledThing

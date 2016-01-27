@@ -1,23 +1,111 @@
+/** Categories Title **/
+.label-selector .label-selector-title {
+  align-items: center;
+  text-transform: uppercase;
+  color: $headlines;
+  border-bottom: 2px solid $element-inline-divider;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  height: 2.8rem;
+  min-height: 2.8rem;
+  flex: 0;
+  font-weight: bold;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  input[type="radio"] + label {
+    cursor: pointer;
+    margin: 0 0 0 .5rem;
+  }
+
+  input[type="radio"]:checked + label {
+    color: $text;
+  }
+
+  input[type="radio"]:checked + label {
+    color: $icon-hover;
+  }
+
+  .view-style {
+    margin-right: .7rem;
+  }
+}
+
+/** List View **/
 .label-selector {
+  .accordion-content {
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
 
-  .icon {
-    color: $icon;
+    label {
+      width: 100%;
+
+    }
+
+    label:hover {
+      color: $icon-hover;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .icon {
+      float: left;
+      margin-right: 1rem;
+    }
+
+    .response {
+      display: block;
+      float: left;
+      width: calc(100% - 62px - .5rem);
+    }
+
+    input[type="radio"] + label:after {
+      float: right;
+
+      visibility: hidden;
+      display: inline-block;
+
+      font-family: "icon-font";
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      line-height: 1;
+      text-decoration: inherit;
+      text-rendering: optimizeLegibility;
+      text-transform: none;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-smoothing: antialiased;
+
+      font-size: 30px;
+      overflow: hidden;
+      color: $icon-hover;
+
+      content: $font-icon-font-check;
+      margin-right: .5rem;
+    }
+
+    input[type="radio"]:checked + label {
+      .response {
+        color: $sub-headlines;
+      }
+    }
+
+    input[type="radio"]:checked + label:after {
+      visibility: visible;
+    }
   }
+}
 
-  .label-selector-title {
-    align-items: center;
-    text-transform: uppercase;
-    color: $headlines;
-    border-bottom: 2px solid $element-inline-divider;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    height: 2.8rem;
-    min-height: 2.8rem;
-    flex: 0;
-    font-weight: bold;
-
-  }
-
+/** Icon View **/
+.label-selector {
   .label-selector-controlls {
     border-bottom: 1px solid $element-inline-divider;
     align-items: center;
@@ -130,48 +218,49 @@
       }
     }
   }
+}
 
-  .label-selector-button-wrapper {
-    align-items: center;
-    flex: 0;
-    height: 2.8rem;
-    min-height: 2.8rem;
-    font-size: 19px;
-    background-color: $button-selected;
-    border-top: 2px solid $element-inline-divider;
-    cursor: pointer;
+/** Buttons **/
+.label-selector .label-selector-button-wrapper {
+  align-items: center;
+  flex: 0;
+  height: 2.8rem;
+  min-height: 2.8rem;
+  font-size: 19px;
+  background-color: $button-selected;
+  border-top: 2px solid $element-inline-divider;
+  cursor: pointer;
+  font-weight: bold;
+
+  .label-selector-button {
+    height: 100%;
+    z-index: 2000;
+
+    &:first-child {
+      border-right: 1px solid $element-inline-divider;
+    }
+
+    &:hover {
+      color: $icon-hover;
+    }
+
+    &:active {
+      background-color: $icon-hover;
+      color: $button-selected;
+    }
+  }
+}
+
+/** Placeholder **/
+.label-selector .label-selector-placeholder {
+  h1 {
+    font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-
-    .label-selector-button {
-      height: 100%;
-      z-index: 2000;
-
-      &:first-child {
-        border-right: 1px solid $element-inline-divider;
-      }
-
-      &:hover {
-        color: $icon-hover;
-      }
-
-      &:active {
-        background-color: $icon-hover;
-        color: $button-selected;
-      }
-    }
+    font-size: 3rem;
+    line-height: 1em;
+    color: rgba(213, 217, 221, 0.3);
+    text-shadow: 1px 4px 6px #181d23, 0 0 0 #000, 1px 4px 6px #181d23;
+    text-align: center;
+    margin-top: 50%;
   }
-
-  .label-selector-placeholder {
-    h1 {
-      font-family: Helvetica, Arial, sans-serif;
-      font-weight: bold;
-      font-size: 3rem;
-      line-height: 1em;
-      color: rgba(213, 217, 221, 0.3);
-      text-shadow: 1px 4px 6px #181d23, 0 0 0 #000, 1px 4px 6px #181d23;
-      text-align: center;
-      margin-top: 50%;
-    }
-  }
-
 }
