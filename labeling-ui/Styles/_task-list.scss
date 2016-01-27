@@ -1,19 +1,40 @@
-.menubar {
-  margin-bottom: 3rem;
-}
+tasklist {
+  margin: 0;
 
-.title-bar {
-  height: 3rem;
-  background-color: $element-background;
-  color: $sub-headlines;
-
-  a {
-    color: $icon;
+  .tasklist-container {
+    margin: 2rem;
   }
 
-  a:hover {
-    color: $icon-hover;
+  table.table {
+    margin: 0;
+    width: 100%;
+
+    .btn-column {
+      text-align: center;
+    }
   }
 
-  border-bottom: 0;
+  .no-tasks {
+    text-align: center !important;
+  }
+
+  .no-tasks:hover {
+    cursor: auto;
+  }
+
+
+  .btn-container {
+    display: inline-block;
+  }
+
+  .btn-container:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+
+  button {
+    float: left;
+  }
 }
+

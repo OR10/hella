@@ -7,6 +7,10 @@ table.table {
     text-decoration: underline;
   }
 
+  button, button:hover, button:active {
+    background: transparent;
+  }
+
   &.sortable {
     thead {
       th {
@@ -17,12 +21,22 @@ table.table {
 
   &.hover {
     tbody {
-      tr:hover {
+      tr:not(.no-hover):hover {
         cursor: pointer;
 
         td {
           background: darken($icon-hover, 10%);
           color: $element-background;
+
+          .icon, .fa {
+            color: $element-background;
+          }
+
+          .icon:hover, .fa:hover {
+            font-weight: bold;
+            color: white !important;
+          }
+
         }
       }
     }

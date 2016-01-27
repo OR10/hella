@@ -1,5 +1,5 @@
 <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<div class="grid-block text-center vertical">
+<div class="grid-block text-center vertical tasklist-container">
     <div class="grid-container menubar" ng-if="vm.tasksWithVideo.length === 0">
         <div class="grid-content">
             <div class="">No tasks available!</div>
@@ -9,12 +9,12 @@
     <div class="grid-block">
         <div class="grid-content task-list-table" ng-if="vm.preprocessingTasks != null">
             <h3>Importing</h3>
-            <table style="width: 100%;" class="hover table">
+            <table class="hover table">
                 <thead>
                 <tr>
-                    <th>Task-Type</th>
-                    <th>Task-Title</th>
-                    <th>Frame-Range</th>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Range</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,20 +27,22 @@
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
                     </td>
                 </tr>
-                <tr ng-show="!vm.preprocessingTasks.length">
-                    <td colspan="3" class="text-center">No tasks</td>
+                <tr ng-show="!vm.preprocessingTasks.length"
+                    class="no-hover"
+                >
+                    <td colspan="3" class="no-tasks">No tasks</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="grid-content task-list-table" ng-if="vm.waitingTasks != null">
             <h3>Ready to be labeled</h3>
-            <table style="width: 100%;" class="hover table">
+            <table class="hover table">
                 <thead>
                 <tr>
-                    <th>Task-Type</th>
-                    <th>Task-Title</th>
-                    <th>Frame-Range</th>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Range</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,25 +55,27 @@
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
                     </td>
                 </tr>
-                <tr ng-show="!vm.waitingTasks.length">
-                    <td colspan="3" class="text-center">No tasks</td>
+                <tr ng-show="!vm.waitingTasks.length"
+                    class="no-hover"
+                >
+                    <td colspan="3" class="no-tasks">No tasks</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="grid-content task-list-table" ng-if="vm.labeledTasks != null">
             <h3>Finished</h3>
-            <table style="width: 100%;" class="hover table">
+            <table class="hover table">
                 <thead>
                 <tr>
-                    <th>Task-Type</th>
-                    <th>Task-Title</th>
-                    <th>Frame-Range</th>
-                    <th>Export</th>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Range</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr  ng-repeat="task in vm.labeledTasks track by task.id">
+                <tr ng-repeat="task in vm.labeledTasks track by task.id">
                     <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
@@ -80,12 +84,25 @@
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
 
                     </td>
-                    <td>
-                        <a href="" ui-sref="export({taskId: task.id})">Export data</a>
+                    <td class="btn-column">
+                        <div class="btn-container">
+                            <button ui-sref="export({taskId: task.id})"
+                                    tooltip="Export the finished task"
+                            >
+                                <i class="fa fa-external-link"></i>
+                            </button>
+                            <button ng-click="vm.reOpenTask(task)"
+                                    tooltip="Reopen this Task for Labelers"
+                            >
+                                <i class="fa fa-pencil-square-o"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
-                <tr ng-show="!vm.labeledTasks.length">
-                    <td colspan="4" class="text-center">No tasks</td>
+                <tr ng-show="!vm.labeledTasks.length"
+                    class="no-hover"
+                >
+                    <td colspan="4" class="no-tasks">No tasks</td>
                 </tr>
                 </tbody>
             </table>
