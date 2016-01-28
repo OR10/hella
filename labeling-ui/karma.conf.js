@@ -9,7 +9,7 @@ module.exports = function(config) {
 
     // This is not an officially documented config. I found this somewhere on the web.
     // If there are strange timeout problems, this might be the place to start debugging.
-    //browserNoActivityTimeout: 120000,
+    browserNoActivityTimeout: 120000,
 
     captureTimeout: 20000,
 
