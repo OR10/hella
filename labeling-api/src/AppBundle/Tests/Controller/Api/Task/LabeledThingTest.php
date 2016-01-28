@@ -232,7 +232,6 @@ class LabeledThingTest extends Tests\WebTestCase
             ->setQueryParameters(['rev' => $labeledThing->getRev()])
             ->execute()
             ->getResponse();
-
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
     }
 
@@ -243,20 +242,21 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
 
-        $this->getService('fos_user.util.user_manipulator')
+        $user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $user->addRole(Model\User::ROLE_ADMIN);
     }
 
     private function createLabelingTask($startRange = 10, $endRange = 20)
     {
         $video = $this->videoFacade->save(Model\Video::create('foobar'));
-        return $this->labelingTaskFacade->save(
-            Model\LabelingTask::create(
-                $video,
-                new Model\FrameRange($startRange, $endRange),
-                Model\LabelingTask::TYPE_OBJECT_LABELING
-            )
+        $task = Model\LabelingTask::create(
+            $video,
+            new Model\FrameRange($startRange, $endRange),
+            Model\LabelingTask::TYPE_OBJECT_LABELING
         );
+        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        return $this->labelingTaskFacade->save($task);
     }
 
     private function createLabeledThing(Model\LabelingTask $task)

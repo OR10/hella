@@ -196,21 +196,21 @@ class LabeledThing extends Controller\Base
     /**
      * TODO: move deletion of labeledThingsInFrame to labeledThingFacade?
      *
-     * @Rest\Delete("/{taskId}/labeledThing/{labeledThing}")
+     * @Rest\Delete("/{task}/labeledThing/{labeledThing}")
      * @ForbidReadonlyTasks
      *
-     * @param string                 $taskId
-     * @param Model\LabeledThing     $labeledThing
+     * @param Model\LabelingTask $task
+     * @param Model\LabeledThing $labeledThing
      * @param HttpFoundation\Request $request
-     *
      * @return \FOS\RestBundle\View\View
+     * @internal param string $taskId
      */
     public function deleteLabeledThingAction(
-        $taskId,
+        Model\LabelingTask $task,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getTaskId() !== $taskId) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException();
         }
 
