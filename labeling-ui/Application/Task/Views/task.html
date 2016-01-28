@@ -1,9 +1,9 @@
-<viewer-header video="vm.video"
+<viewer-title-bar video="vm.video"
         task="vm.task"
         user="vm.user"
         user-permissions="vm.userPermissions"
         read-only="{{vm.task.readOnly}}"
-></viewer-header>
+></viewer-title-bar>
 <div split-view
      on-init="vm.onSplitViewInitialized()"
      on-drag="vm.onSidebarResized()"

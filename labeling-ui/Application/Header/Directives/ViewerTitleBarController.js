@@ -1,7 +1,7 @@
 /**
- * Controller of the {@link ViewerHeaderDirective}
+ * Controller of the {@link ViewerTitleBarDirective}
  */
-class ViewerHeaderController {
+class ViewerTitleBarController {
   /**
    * @param {angular.$location} $location
    * @param {angular.$timeout} $timeout
@@ -83,11 +83,11 @@ class ViewerHeaderController {
   }
 }
 
-ViewerHeaderController.$inject = [
+ViewerTitleBarController.$inject = [
   '$state',
   'modalService',
   'applicationState',
   'taskGateway',
 ];
 
-export default ViewerHeaderController;
+export default ViewerTitleBarController;
