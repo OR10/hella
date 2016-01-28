@@ -1,10 +1,10 @@
-import headerTemplate from './HeaderDirective.html!';
-import HeaderController from './HeaderController';
+import titleBarTemplate from './TitleBarDirective.html!';
+import TitleBarController from './TitleBarController';
 
 /**
- * Directive to display the header bar of the page
+ * Directive to display the title bar of the page
  */
-class HeaderDirective {
+class TitleBarDirective {
   constructor() {
     this.scope = {
       user: '=',
@@ -17,12 +17,12 @@ class HeaderDirective {
 
     this.transclude = true;
 
-    this.template = headerTemplate;
+    this.template = titleBarTemplate;
 
-    this.controller = HeaderController;
+    this.controller = TitleBarController;
     this.controllerAs = 'vm';
     this.bindToController = true;
   }
 }
 
-export default HeaderDirective;
+export default TitleBarDirective;
