@@ -139,16 +139,18 @@ class TimerTest extends Tests\WebTestCase
 
         $this->user = $userManipulator
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->user->addRole(Model\User::ROLE_ADMIN);
+
         $this->otherUser = $userManipulator
             ->create('someOtherUser', 'someOtherPassword', 'some@other.email', true, false);
 
         $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
-        $this->task  = $this->labelingTaskFacade->save(
-            Model\LabelingTask::create(
-                $this->video,
-                new Model\FrameRange(1, 10),
-                Model\LabelingTask::TYPE_OBJECT_LABELING
-            )
+        $task = Model\LabelingTask::create(
+            $this->video,
+            new Model\FrameRange(1, 10),
+            Model\LabelingTask::TYPE_OBJECT_LABELING
         );
+        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $this->task = $this->labelingTaskFacade->save($task);
     }
 }

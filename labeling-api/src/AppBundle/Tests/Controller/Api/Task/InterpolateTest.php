@@ -102,17 +102,18 @@ class InterpolateTest extends Tests\WebTestCase
         $this->labeledThingFacade   = $this->getAnnostationService('database.facade.labeled_thing');
         $this->interpolationService = $this->getAnnostationService('service.interpolation');
 
-        $this->getService('fos_user.util.user_manipulator')
+        $user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $user->addRole(Model\User::ROLE_ADMIN);
 
         $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
-        $this->task  = $this->labelingTaskFacade->save(
-            Model\LabelingTask::create(
-                $this->video,
-                new Model\FrameRange(1, 10),
-                Model\LabelingTask::TYPE_OBJECT_LABELING
-            )
+        $task = Model\LabelingTask::create(
+            $this->video,
+            new Model\FrameRange(1, 10),
+            Model\LabelingTask::TYPE_OBJECT_LABELING
         );
+        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $this->task = $this->labelingTaskFacade->save($task);
         $this->labeledThing = $this->labeledThingFacade->save(Model\LabeledThing::create($this->task));
     }
 }

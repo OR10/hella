@@ -246,17 +246,18 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledFrameFacade = $this->getAnnostationService('database.facade.labeled_frame');
 
-        $this->getService('fos_user.util.user_manipulator')
+        $user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $user->addRole(Model\User::ROLE_ADMIN);
 
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $this->task = $this->labelingTaskFacade->save(
-            Model\LabelingTask::create(
-                $this->video,
-                new Model\FrameRange(10, 20),
-                Model\LabelingTask::TYPE_OBJECT_LABELING
-            )
+        $task = Model\LabelingTask::create(
+            $this->video,
+            new Model\FrameRange(10, 20),
+            Model\LabelingTask::TYPE_OBJECT_LABELING
         );
+        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $this->task = $this->labelingTaskFacade->save($task);
     }
 
     private function createLabeledFrame(Model\LabelingTask $task, $frameNumber = 10)
