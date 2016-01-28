@@ -137,7 +137,7 @@ export default class Application {
           .then(permissions => permissions);
       }
 
-      userResolver.$inject = ['userGateway'];
+      permissionsResolver.$inject = ['userGateway'];
 
       // Now set up the states
       $stateProvider
