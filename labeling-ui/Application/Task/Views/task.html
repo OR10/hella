@@ -1,10 +1,11 @@
 <viewer-title-bar video="vm.video"
-        task="vm.task"
-        user="vm.user"
-        user-permissions="vm.userPermissions"
-        read-only="{{vm.task.readOnly}}"
+                  task="vm.task"
+                  user="vm.user"
+                  user-permissions="vm.userPermissions"
+                  read-only="{{vm.task.readOnly}}"
+                  selected-paper-shape="vm.selectedPaperShape"
 ></viewer-title-bar>
-<div split-view
+<div
      on-init="vm.onSplitViewInitialized()"
      on-drag="vm.onSidebarResized()"
      gutter-size="10"
