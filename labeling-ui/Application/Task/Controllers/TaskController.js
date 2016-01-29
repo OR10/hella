@@ -284,9 +284,9 @@ class TaskController {
   }
 
   _initializeLayout() {
-    const sidebarSizeCss = `${5 / 24 * 100}%`;
+    const sidebarSizeCss = `${6 / 24 * 100}%`;
     //const viewerSizeCss = `${14 / 24 * 100}%`;
-    const viewerSizeCss = `${19 / 24 * 100}%`;
+    const viewerSizeCss = `${18 / 24 * 100}%`;
 
     //this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
     this.splitViewSizes = [null, viewerSizeCss, sidebarSizeCss];
