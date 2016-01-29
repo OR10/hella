@@ -1,5 +1,5 @@
 import Module from '../Module';
-import ViewerHeaderDirective from './Directives/ViewerHeaderDirective';
+import ViewerTitleBarDirective from './Directives/ViewerTitleBarDirective';
 import TaskTitleDirective from './Directives/TaskTitleDirective';
 import TimerDirective from './Directives/TimerDirective';
 import UserNameDirective from './Directives/UserNameDirective';
@@ -18,7 +18,7 @@ class Header extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Header', []);
 
-    this.registerDirective('viewerHeader', ViewerHeaderDirective);
+    this.registerDirective('viewerTitleBar', ViewerTitleBarDirective);
     this.registerDirective('timer', TimerDirective);
     this.registerDirective('taskTitle', TaskTitleDirective);
     this.registerDirective('userName', UserNameDirective);

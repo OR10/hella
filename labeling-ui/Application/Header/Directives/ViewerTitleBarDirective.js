@@ -1,10 +1,10 @@
-import viewHeaderTemplate from './ViewerHeaderDirective.html!';
-import ViewerHeaderController from './ViewerHeaderController';
+import viewTitleBarTemplate from './ViewerTitleBarDirective.html!';
+import ViewerTitleBarController from './ViewerTitleBarController';
 
 /**
  * Directive to display the header bar of the page
  */
-class ViewerHeaderDirective {
+class ViewerTitleBarDirective {
   constructor() {
     this.scope = {
       video: '=',
@@ -15,9 +15,9 @@ class ViewerHeaderDirective {
     };
 
 
-    this.template = viewHeaderTemplate;
+    this.template = viewTitleBarTemplate;
 
-    this.controller = ViewerHeaderController;
+    this.controller = ViewerTitleBarController;
     this.controllerAs = 'vm';
     this.bindToController = true;
   }
@@ -27,4 +27,4 @@ class ViewerHeaderDirective {
   }
 }
 
-export default ViewerHeaderDirective;
+export default ViewerTitleBarDirective;
