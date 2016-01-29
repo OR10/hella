@@ -281,16 +281,11 @@ class Init extends Base
         }
 
         try {
-            $this->writeInfo(
+            $path = $this->importVideos(
+                array('anno_short.avi', 'anno_night.avi'),
                 $output,
-                "Importing default video <comment>http://192.168.123.7/anno_short.avi</comment>"
+                $lossless
             );
-            $path = tempnam($this->cacheDir, 'anno_short');
-            file_put_contents(
-                $path,
-                file_get_contents("http://192.168.123.7/anno_short.avi")
-            );
-            $this->videoImporterService->import('example.avi', $path, $lossless);
         } catch (\Exception $e) {
             $this->writeError(
                 $output,
@@ -301,5 +296,26 @@ class Init extends Base
         }
 
         return true;
+    }
+
+    /**
+     * @param array $fileNames
+     * @param OutputInterface $output
+     * @param $lossless
+     */
+    private function importVideos(array $fileNames, OutputInterface $output, $lossless)
+    {
+        foreach($fileNames as $fileName) {
+            $this->writeInfo(
+                $output,
+                "Importing default video <comment>http://192.168.123.7/" . $fileName . "</comment>"
+            );
+            $path = tempnam($this->cacheDir, 'anno_sample_videos');
+            file_put_contents(
+                $path,
+                file_get_contents("http://192.168.123.7/" . $fileName)
+            );
+            $this->videoImporterService->import('example.avi', $path, $lossless);
+        }
     }
 }
