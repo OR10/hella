@@ -271,6 +271,7 @@ div.popup-panel {
 
 .main {
   flex: 1 1 percentage(13/24);
+  position: relative;
 
   .gutter {
     background: transparent no-repeat 50%;
@@ -293,20 +294,24 @@ div.popup-panel {
 }
 
 popup-panel {
-  width: 100%;
-  transform: translateY(0%);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 300px;
+  //transform: translateY(0%);
 }
 
 popup-panel.ng-hide {
-  transform: translateY(100%);
+  //transform: translateY(100%);
 }
 
 popup-panel.ng-hide-add {
-  transition: all linear 0.15s;
+  //transition: all linear 0.15s;
 }
 
 popup-panel.ng-hide-remove {
-  transition: all linear 0.15s;
+  //transition: all linear 0.15s;
 }
 
 .popup-panel button {
