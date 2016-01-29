@@ -1,7 +1,7 @@
 /**
  * Controller of the {@link HeaderDirective}
  */
-class HeaderController {
+class TitleBarController {
   constructor($state) {
     /**
      * @param {angular.$state} $state
@@ -16,8 +16,8 @@ class HeaderController {
   }
 }
 
-HeaderController.$inject = [
+TitleBarController.$inject = [
   '$state'
 ];
 
-export default HeaderController;
+export default TitleBarController;
