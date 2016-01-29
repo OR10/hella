@@ -87,7 +87,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeScaleTool}
      * @private
      */
-    this._shapeScaleTool = new ShapeScaleTool(this._context);
+    this._shapeScaleTool = new ShapeScaleTool($scope.$new(), this._context);
 
     /**
      * @type {null}

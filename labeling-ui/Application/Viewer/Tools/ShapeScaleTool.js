@@ -12,8 +12,14 @@ export default class ShapeScaleTool extends Tool {
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
-  constructor(drawingContext, options) {
+  constructor($scope, drawingContext, options) {
     super(drawingContext, options);
+    /**
+     * @type {angular.$scope}
+     * @private
+     */
+    this._$scope = $scope;
+
     /**
      * Hit test result
      *
@@ -66,13 +72,15 @@ export default class ShapeScaleTool extends Tool {
 
     this._modified = true;
 
-    switch (true) {
-      case this._hitResult.item instanceof PaperCircle:
-        this._scaleCircle(this._hitResult.item, point);
-        break;
-      default:
-        this._scale(this._hitResult.item, point);
-    }
+    this._$scope.$apply(() => {
+      switch (true) {
+        case this._hitResult.item instanceof PaperCircle:
+          this._scaleCircle(this._hitResult.item, point);
+          break;
+        default:
+          this._scale(this._hitResult.item, point);
+      }
+    });
   }
 
   /**
