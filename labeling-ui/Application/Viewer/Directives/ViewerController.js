@@ -44,31 +44,29 @@ class ViewerController {
    * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    * @param {DataContainer} labeledThingData
    */
-  constructor(
-    $scope,
-    $element,
-    $window,
-    drawingContextService,
-    taskFrameLocationGateway,
-    frameGateway,
-    labeledThingInFrameGateway,
-    entityIdService,
-    paperShapeFactory,
-    applicationConfig,
-    $interval,
-    labeledThingGateway,
-    abortablePromiseFactory,
-    animationFrameService,
-    $q,
-    entityColorService,
-    logger,
-    $timeout,
-    applicationState,
-    dataPrefetcher,
-    lockService,
-    labeledThingInFrameData,
-    labeledThingData
-  ) {
+  constructor($scope,
+              $element,
+              $window,
+              drawingContextService,
+              taskFrameLocationGateway,
+              frameGateway,
+              labeledThingInFrameGateway,
+              entityIdService,
+              paperShapeFactory,
+              applicationConfig,
+              $interval,
+              labeledThingGateway,
+              abortablePromiseFactory,
+              animationFrameService,
+              $q,
+              entityColorService,
+              logger,
+              $timeout,
+              applicationState,
+              dataPrefetcher,
+              lockService,
+              labeledThingInFrameData,
+              labeledThingData) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -526,7 +524,12 @@ class ViewerController {
     this._layerContainer.height(layerContainerHeight);
 
     this._resizeLayers(layerContainerWidth, layerContainerHeight);
-    this._updateViewport();
+
+    this.viewport = new Viewport(
+      this._backgroundLayer.zoom,
+      this._backgroundLayer.center,
+      this._backgroundLayer.bounds
+    );
   }
 
   _resizeLayers(width, height) {
@@ -538,17 +541,9 @@ class ViewerController {
   }
 
   _updateViewport() {
-    if (!this.viewport) {
-      this.viewport = new Viewport(
-        this._backgroundLayer.zoom,
-        this._backgroundLayer.center,
-        this._backgroundLayer.bounds
-      );
-    } else {
-      this.viewport.center = this._backgroundLayer.center;
-      this.viewport.zoom = this._backgroundLayer.zoom;
-      this.viewport.bounds = this._backgroundLayer.bounds;
-    }
+    this.viewport.center = this._backgroundLayer.center;
+    this.viewport.zoom = this._backgroundLayer.zoom;
+    this.viewport.bounds = this._backgroundLayer.bounds;
   }
 
   /**
