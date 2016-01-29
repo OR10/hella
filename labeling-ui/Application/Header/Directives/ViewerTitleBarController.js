@@ -10,7 +10,7 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param {ReleaseConfigService} releaseConfigService
    */
-  constructor($state, modalService, applicationState, taskGateway) {
+  constructor($scope, $state, modalService, applicationState, taskGateway) {
     /**
      * @param {angular.$state} $state
      * @private
@@ -34,6 +34,22 @@ class ViewerTitleBarController {
      * @private
      */
     this._taskGateway = taskGateway;
+
+    /**
+     * @type {string}
+     */
+    this.shapeBounds = null;
+
+    $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], (newValues) => {
+      const width = newValues[0];
+      const height = newValues[1];
+      if (width && height) {
+        this.shapeBounds = `${parseInt(width, 10)}px x ${parseInt(height, 10)}px`;
+      } else {
+        this.shapeBounds = null;
+      }
+    });
+
   }
 
   finishLabelingTask() {
@@ -84,6 +100,7 @@ class ViewerTitleBarController {
 }
 
 ViewerTitleBarController.$inject = [
+  '$scope',
   '$state',
   'modalService',
   'applicationState',

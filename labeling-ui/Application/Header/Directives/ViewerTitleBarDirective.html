@@ -12,6 +12,9 @@
                 name="vm.video.name"
                 frame-range="vm.task.frameRange"
     ></task-title>
+    <div class="grid-block text-center" ng-show="vm.shapeBounds">
+        <span class="align-self-center">{{vm.shapeBounds}}</span>
+    </div>
     <div class="grid-block header-right shrink noscroll">
         <timer class="grid-content text-right header-timer shrink noscroll"
                task="vm.task"
