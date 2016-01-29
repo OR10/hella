@@ -1,9 +1,9 @@
-<viewer-header video="vm.video"
+<viewer-title-bar video="vm.video"
         task="vm.task"
         user="vm.user"
         user-permissions="vm.userPermissions"
         read-only="{{vm.task.readOnly}}"
-></viewer-header>
+></viewer-title-bar>
 <div split-view
      on-init="vm.onSplitViewInitialized()"
      on-drag="vm.onSidebarResized()"
@@ -11,7 +11,8 @@
      sizes="vm.splitViewSizes"
      min-size="vm.minSizes"
      class="main grid-block noscroll">
-    <div class="grid-block sidebar-left vertical noscrollbars" ng-show="vm.popupPanelOpen">
+    <!--<div class="grid-block sidebar-left vertical noscrollbars" ng-show="vm.popupPanelOpen">-->
+    <div class="grid-block vertical">
         <loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true"
                       spinner="vm.leftSidebarWorking"></loading-mask>
         <!--<div class="grid-block vertical noscrollbars">
@@ -30,20 +31,22 @@
                 <h1>Placeholder</h1>
             </div>
         </div>-->
-        <div class="grid-block vertical noscrollbars"></div>
-        <popup-panel ng-show="vm.popupPanelOpen"
-                     popup-panel-open="vm.popupPanelOpen"
-                     popup-panel-state="vm.popupPanelState"a
-                     brightness-slider-value="vm.brightnessSliderValue"
-                     contrast-slider-value="vm.contrastSliderValue"
-                     viewer-viewport="vm.viewerViewport"
-                     video="vm.video"
-                     task="vm.task"
-                     frame-position="vm.framePosition"
-                     filters="vm.filters"
-                     active-tool="vm.activeTool"
-        ></popup-panel>
+        <!--<div class="grid-block vertical noscrollbars"></div>-->
     </div>
+
+    <popup-panel ng-show="vm.popupPanelOpen"
+                 popup-panel-open="vm.popupPanelOpen"
+                 popup-panel-state="vm.popupPanelState"
+                 brightness-slider-value="vm.brightnessSliderValue"
+                 contrast-slider-value="vm.contrastSliderValue"
+                 viewer-viewport="vm.viewerViewport"
+                 video="vm.video"
+                 task="vm.task"
+                 frame-position="vm.framePosition"
+                 filters="vm.filters"
+                 active-tool="vm.activeTool"
+    ></popup-panel>
+
 
     <viewer class="grid-block align-center noscroll"
             labeled-things-in-frame="vm.labeledThingsInFrame"
@@ -65,7 +68,7 @@
             frame-skip="vm.frameSkip"
             read-only="{{vm.task.readOnly}}"
     ></viewer>
-    <div class="grid-block sidebar-right ">
+    <div class="grid-block small-6 sidebar-right ">
         <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"
                       spinner="vm.rightSidebarWorking"></loading-mask>
         <label-selector class="grid-block"
