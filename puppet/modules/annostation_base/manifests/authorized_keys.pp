@@ -24,10 +24,10 @@ class annostation_base::authorized_keys() {
   }
 
   ssh_authorized_key { 'ses@crosscan.com for root':
-      user => 'root',
-      type => 'ssh-rsa',
-      key  => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDSdIDiYw7by3tsD46FOS3kEASU5bhoNHpI2GZbXYrQ4FMzAKiw7Kyki6165QfBH2BkD/SyuPLoe8hs4Km5lP0QANr40BxzZtmQVjlR7bT8KAHJM1115o8JsVKa9jNon8ISP9q/Ti3hiEQ4P2ocAnnt6N/6wCwAT0mFOkvFQ7iml+jJmh/DZ8FcHdUwVD/zJ0I8oD0IpTsnsQZck6ZWx3FL1lGFdOnZQ34DsMh3Bt+BnXAbgVRv8uF7AicvQa2I2UczKpLeSWTGyDrOnak71i9OcRLMW+lRi9fuGN8x0s+eaEMk5G+voTMXdKMsJOgwAw6prEhC6D/eBHkbmCPD9csh',
-    }
+    user => 'root',
+    type => 'ssh-rsa',
+    key  => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDSdIDiYw7by3tsD46FOS3kEASU5bhoNHpI2GZbXYrQ4FMzAKiw7Kyki6165QfBH2BkD/SyuPLoe8hs4Km5lP0QANr40BxzZtmQVjlR7bT8KAHJM1115o8JsVKa9jNon8ISP9q/Ti3hiEQ4P2ocAnnt6N/6wCwAT0mFOkvFQ7iml+jJmh/DZ8FcHdUwVD/zJ0I8oD0IpTsnsQZck6ZWx3FL1lGFdOnZQ34DsMh3Bt+BnXAbgVRv8uF7AicvQa2I2UczKpLeSWTGyDrOnak71i9OcRLMW+lRi9fuGN8x0s+eaEMk5G+voTMXdKMsJOgwAw6prEhC6D/eBHkbmCPD9csh',
+  }
 
   ssh_authorized_key { 'jad@crosscan.com for root':
     user => 'root',
