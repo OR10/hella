@@ -22,7 +22,7 @@ class Export extends Module {
     }
 
     taskResolver.$inject = ['$stateParams', 'taskGateway'];
-    $stateProvider.state('export', {
+    $stateProvider.state('labeling.export', {
       url: '/export/:taskId',
       controller: ExportController,
       controllerAs: 'vm',

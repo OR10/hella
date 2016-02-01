@@ -1,6 +1,7 @@
 class UserPasswordController {
 
-  constructor(userGateway) {
+  constructor(user, userGateway) {
+    this.user = user;
     this.userGateway = userGateway;
     this.oldUserPassword = '';
     this.newUserPassword = '';
@@ -29,6 +30,7 @@ class UserPasswordController {
 }
 
 UserPasswordController.$inject = [
+  'user',
   'userGateway',
 ];
 
