@@ -45,6 +45,7 @@ System.config({
     "clean-css": "npm:clean-css@3.4.9",
     "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.19",
+    "css-element-queries": "npm:css-element-queries@0.3.2",
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
     "font-awesome": "npm:font-awesome@4.4.0",
     "foundation-apps": "npm:foundation-apps@1.2.0",
