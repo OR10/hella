@@ -6,6 +6,8 @@ define annostation_base::symfony(
   $port = 80,
   $httpv2 = false,
   $not_found_redirect = '=404',
+  $authBasic = undef,
+  $authBasicFile = undef,
 ) {
   include ::php
   include ::nginx

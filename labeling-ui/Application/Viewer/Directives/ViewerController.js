@@ -6,6 +6,7 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import debounce from 'lodash.debounce';
+import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 /**
  * @class ViewerController
@@ -416,6 +417,11 @@ class ViewerController {
     labeledThingInFrameData.invalidate();
     labeledThingData.invalidate();
     dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
+
+    // Fix Firefox issue where resize event is not fired
+    new ResizeSensor($('.layer-container').get(0), () => {
+      this._resize();
+    })
   }
 
   setupLayers() {
@@ -897,13 +903,13 @@ class ViewerController {
     if (event.deltaY < 0) {
       this._$scope.$apply(
         () => {
-          this.zoomIn(focalPoint, 1.05);
+          this.zoomOut(focalPoint, 1.05);
         }
       );
     } else if (event.deltaY > 0) {
       this._$scope.$apply(
         () => {
-          this.zoomOut(focalPoint, 1.05);
+          this.zoomIn(focalPoint, 1.05);
         }
       );
     }

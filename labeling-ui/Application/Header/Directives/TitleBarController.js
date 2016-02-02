@@ -7,8 +7,6 @@ class TitleBarController {
      * @param {angular.$state} $state
      */
     this.$state = $state;
-
-    this.showBackButton = this.backLink ? true : false;
   }
 
   handleBackButton() {

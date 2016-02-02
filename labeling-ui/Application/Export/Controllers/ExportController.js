@@ -2,8 +2,9 @@
  * Controller for the export entrypoint route
  */
 class ExportController {
-  constructor(task, exportGateway) {
+  constructor(task, user, exportGateway) {
     this.task = task;
+    this.user = user;
     this.exportGateway = exportGateway;
   }
 
@@ -17,6 +18,7 @@ class ExportController {
 
 ExportController.$inject = [
   'task',
+  'user',
   'exportGateway',
 ];
 
