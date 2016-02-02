@@ -209,3 +209,14 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
 
 + Response 403 (application/json)
     + Attributes (object)
+
+## Get the task structures [/api/task/{id}/labelStructure]
+
++ Parameters
+    + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Get Structure [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result (Label Structure)

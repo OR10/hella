@@ -124,6 +124,26 @@ class Task extends Controller\Base
     }
 
     /**
+     *
+     * @Rest\Get("/{task}/labelStructure")
+     *
+     * @param $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getTaskLabelStructureAction(Model\LabelingTask $task)
+    {
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'structure'  => $this->labelingTaskFacade->getLabelStructure($task),
+                    'annotation' => $this->labelingTaskFacade->getLabelAnnotation($task),
+                ]
+            ]
+        );
+    }
+
+    /**
      * Get the frame locations for the given task id and type
      *
      * TODO: Maybe it's better to place nested routes into an own controller,

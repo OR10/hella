@@ -117,3 +117,17 @@
     + name: `example.avi` (string) - The name of the video.
 + totalLabelingTimeInSeconds: `12345` (number) - The total time in seconds all labelers spent on the task.
 + totalNumberOfLabeledThings: `123` (number) - The total number of LabeledThings of the task.
+
+## Label Structure
++ structure:
+    + name: `root`
+    + children:
+        + name: `pedestrian`
+        + children: `...`
++ annotation:
+    + pedestrian:
+        + response: `Pedestrian`
+        + iconClass: `icon-area-residential`
+    + cyclist:
+        + response: `Cyclist`
+        + iconClass: `icon-area-residential`
