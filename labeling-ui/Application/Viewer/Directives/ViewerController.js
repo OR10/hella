@@ -903,13 +903,13 @@ class ViewerController {
     if (event.deltaY < 0) {
       this._$scope.$apply(
         () => {
-          this.zoomIn(focalPoint, 1.05);
+          this.zoomOut(focalPoint, 1.05);
         }
       );
     } else if (event.deltaY > 0) {
       this._$scope.$apply(
         () => {
-          this.zoomOut(focalPoint, 1.05);
+          this.zoomIn(focalPoint, 1.05);
         }
       );
     }
