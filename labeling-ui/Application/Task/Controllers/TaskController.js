@@ -1,9 +1,3 @@
-// @TODO: Load from the server assigned to a certain task
-import labeledFrameStructure from 'Application/LabelStructure/Structure/meta-label-structure.json!';
-import labeledFrameAnnotation from 'Application/LabelStructure/Structure/meta-label-structure-ui-annotation.json!';
-import labeledThingStructure from 'Application/LabelStructure/Structure/object-label-structure.json!';
-import labeledThingAnnotation from 'Application/LabelStructure/Structure/object-label-structure-ui-annotation.json!';
-
 import FramePosition from '../Model/FramePosition';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 
@@ -18,12 +12,13 @@ class TaskController {
    * @param {User} user
    * @param {Object} userPermissions
    * @param {LabeledFrameGateway} labeledFrameGateway
+   * @param {LabelStructureGateway} labelStructureGateway
    * @param {$stateParams} $stateParams
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    */
-  constructor($scope, initialData, user, userPermissions, labeledFrameGateway, $stateParams, $location, applicationState, $timeout) {
+  constructor($scope, initialData, user, userPermissions, labeledFrameGateway, labelStructureGateway, $stateParams, $location, applicationState, $timeout) {
     /**
      * @type {angular.Scope}
      */
@@ -142,8 +137,15 @@ class TaskController {
 
     /**
      * @type {LabeledFrameGateway}
+     * @private
      */
     this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
+     * @type {LabelStructureGateway}
+     * @private
+     */
+    this._labelStructureGateway = labelStructureGateway;
 
     /**
      * @TODO Move into LabelSelector when refactoring for different task types
@@ -257,12 +259,11 @@ class TaskController {
   _initializeLabelingStructure() {
     switch (this.task.taskType) {
       case 'object-labeling':
-        this.labelingStructure = labeledThingStructure;
-        this.labelingAnnotation = labeledThingAnnotation;
-        break;
       case 'meta-labeling':
-        this.labelingStructure = labeledFrameStructure;
-        this.labelingAnnotation = labeledFrameAnnotation;
+        this._labelStructureGateway.getLabelStructureData(this.task.id).then((labelStructureData) => {
+          this.labelingStructure = labelStructureData.structure;
+          this.labelingAnnotation = labelStructureData.annotation;
+        });
         break;
       default:
         throw new Error(`Unknown task type ${this.task.taskType}.`);
@@ -326,6 +327,7 @@ TaskController.$inject = [
   'user',
   'userPermissions',
   'labeledFrameGateway',
+  'labelStructureGateway',
   '$stateParams',
   '$location',
   'applicationState',

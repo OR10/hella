@@ -1,5 +1,6 @@
 import Module from '../Module';
 import TaskGateway from './Gateways/TaskGateway';
+import LabelStructureGateway from './Gateways/LabelStructureGateway';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
@@ -19,6 +20,7 @@ class Task extends Module {
     this.module = angular.module('AnnoStation.Task', []);
 
     this.module.service('taskGateway', TaskGateway);
+    this.module.service('labelStructureGateway', LabelStructureGateway);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
   }
