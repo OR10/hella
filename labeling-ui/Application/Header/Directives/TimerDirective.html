@@ -1,3 +1,12 @@
-<div>
-    {{vm.elapsedHours}}h {{vm.elapsedMinutes}}min
+<div class="grid-block">
+    <span class="align-self-center">
+        {{vm.elapsedHours}}h {{vm.elapsedMinutes}}min
+    </span>
+    <button ng-hide="vm.isIdle">
+        <i class="icon no-hover icon-general-timer"></i>
+    </button>
+
+    <button ng-show="vm.isIdle">
+        <i class="fa fa-pause no-hover"></i>
+    </button>
 </div>

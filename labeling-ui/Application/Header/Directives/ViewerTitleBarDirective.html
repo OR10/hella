@@ -16,16 +16,13 @@
         <span class="align-self-center">{{vm.shapeBounds}}</span>
     </div>
     <div class="grid-block header-right shrink noscroll">
-        <timer class="grid-content text-right header-timer shrink noscroll"
+        <timer class="grid-block text-right header-timer shrink noscroll"
                task="vm.task"
                user="vm.user"
                read-only="{{vm.readOnly}}"
         ></timer>
 
         <div class="grid-content text-left shrink noscroll">
-            <button>
-                <i class="icon no-hover icon-general-timer"></i>
-            </button>
             <button ng-hide="vm.task.status === 'labeled'"
                     ng-click="vm.finishLabelingTask()"
                     tooltip="Finish the active task"
