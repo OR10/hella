@@ -28,21 +28,19 @@ class MediaControlsController {
    * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    * @param {DataPrefetcher} dataPrefetcher
    */
-  constructor(
-    $scope,
-    labeledThingInFrameGateway,
-    labeledThingGateway,
-    interpolationService,
-    entityIdService,
-    logger,
-    $q,
-    applicationState,
-    modalService,
-    labeledThingData,
-    labeledThingInFrameData,
-    dataPrefetcher,
-    hotkeys
-  ) {
+  constructor($scope,
+              labeledThingInFrameGateway,
+              labeledThingGateway,
+              interpolationService,
+              entityIdService,
+              logger,
+              $q,
+              applicationState,
+              modalService,
+              labeledThingData,
+              labeledThingInFrameData,
+              dataPrefetcher,
+              hotkeys) {
     /**
      * @type {boolean}
      */
@@ -288,29 +286,30 @@ class MediaControlsController {
    * Execute the interpolation
    */
   handleInterpolation() {
-    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-    this._applicationState.disableAll();
-    this._applicationState.viewer.work();
-    this._labeledThingData.invalidate(selectedLabeledThing.id);
-    this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
-    this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
-      .then(
-        () => {
-          this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
-          this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
-          this._applicationState.viewer.finish();
-          this._applicationState.enableAll();
-        }
-      )
-      .catch(
-        error => {
-          this._applicationState.viewer.finish();
-          this._applicationState.enableAll();
-          throw error;
-        }
-      );
-
-    // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
+    if (this.selectedPaperShape) {
+      const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+      this._applicationState.disableAll();
+      this._applicationState.viewer.work();
+      this._labeledThingData.invalidate(selectedLabeledThing.id);
+      this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
+      this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
+        .then(
+          () => {
+            this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
+            this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+          }
+        )
+        .catch(
+          error => {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+            throw error;
+          }
+        );
+      // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
+    }
   }
 
   handleDeleteSelectionClicked() {
@@ -421,6 +420,12 @@ class MediaControlsController {
           this.handlePlay();
         }
       }
+    });
+
+    this._hotkeys.add({
+      combo: 'i',
+      description: 'Interpolate the current selection',
+      callback: this.handleInterpolation.bind(this)
     });
   }
 }

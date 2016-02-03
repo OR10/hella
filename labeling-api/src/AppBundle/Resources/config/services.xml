@@ -98,5 +98,11 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.task_read_only_decider"/>
         </service>
+
+        <service id="annostation.labeling_api.service.task_incomplete" class="AppBundle\Service\TaskIncomplete">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+        </service>
     </services>
 </container>
