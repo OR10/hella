@@ -407,38 +407,26 @@ class MediaControlsController {
 
   _registerHotkeys() {
     this._hotkeys.add({
-      combo: 'left',
+      combo: ['j', 'shift+left'],
       description: 'Go one frame back',
       callback: this.handlePreviousFrameClicked.bind(this)
     });
     this._hotkeys.add({
-      combo: 'right',
+      combo: ['l', 'shift+right'],
       description: 'Go one frame forward',
       callback: this.handleNextFrameClicked.bind(this)
     });
 
     this._hotkeys.add({
-      combo: 'shift+left',
+      combo: ['command+shift+left', 'ctrl+shift+left'],
       description: 'Go 10 frames back',
       callback: this.handleJumpBackwardsClicked.bind(this)
     });
     this._hotkeys.add({
-      combo: 'shift+right',
+      combo: ['command+shift+right', 'ctrl+shift+right'],
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
     });
-
-    this._hotkeys.add({
-      combo: 'j',
-      description: 'Go one frame back',
-      callback: this.handlePreviousFrameClicked.bind(this)
-    });
-    this._hotkeys.add({
-      combo: 'l',
-      description: 'Go one frame forward',
-      callback: this.handleNextFrameClicked.bind(this)
-    });
-
 
     this._hotkeys.add({
       combo: 'k',
