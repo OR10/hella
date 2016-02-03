@@ -32,15 +32,23 @@ class LabeledThingInFrame extends Controller\Base
     private $labeledThingFacade;
 
     /**
+     * @var Service\TaskIncomplete
+     */
+    private $taskIncompleteService;
+
+    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\LabeledThing        $labeledThingFacade
+     * @param Facade\LabeledThing $labeledThingFacade
+     * @param Service\TaskIncomplete $taskIncompleteService
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\LabeledThing $labeledThingFacade
+        Facade\LabeledThing $labeledThingFacade,
+        Service\TaskIncomplete $taskIncompleteService
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
+        $this->taskIncompleteService     = $taskIncompleteService;
     }
 
     /**
@@ -80,8 +88,9 @@ class LabeledThingInFrame extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
+        $labeledThing = $this->labeledThingFacade->find($labeledThingId);
         if ($labeledThingInFrame === null) {
-            if (($labeledThing = $this->labeledThingFacade->find($labeledThingId)) === null) {
+            if ($labeledThing === null) {
                 throw new Exception\NotFoundHttpException();
             }
             try {
@@ -106,7 +115,12 @@ class LabeledThingInFrame extends Controller\Base
 
         $labeledThingInFrame->setClasses($classes);
         $labeledThingInFrame->setShapes($shapes);
-        $labeledThingInFrame->setIncomplete($request->request->get('incomplete'));
+        $labeledThingInFrame->setIncomplete(
+            $this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame)
+        );
+        $labeledThing->setIncomplete(
+            $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
+        );
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 
         return View\View::create()->setData(
