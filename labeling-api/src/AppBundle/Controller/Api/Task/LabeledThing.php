@@ -32,27 +32,36 @@ class LabeledThing extends Controller\Base
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
+
     /**
      * @var Facade\LabeledThingInFrame
      */
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Service\TaskIncomplete
+     */
+    private $taskIncompleteService;
+
+    /**
      * LabeledThing constructor.
      *
-     * @param Facade\LabeledThing        $labeledThingFacade
-     * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param Facade\LabeledThing $labeledThingFacade
+     * @param Facade\LabelingTask $labelingTaskFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Service\TaskIncomplete $taskIncompleteService
      */
     public function __construct(
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Service\TaskIncomplete $taskIncompleteService
     )
     {
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->taskIncompleteService     = $taskIncompleteService;
     }
 
     /**
@@ -108,7 +117,9 @@ class LabeledThing extends Controller\Base
         $labeledThing->setId($labeledThingId);
         $labeledThing->setFrameRange($frameRange);
         $labeledThing->setClasses($classes);
-        $labeledThing->setIncomplete($request->request->get('incomplete', true));
+        $labeledThing->setIncomplete(
+            $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
+        );
         $this->labeledThingFacade->save($labeledThing);
 
         return View\View::create()->setData(['result' => $labeledThing]);
@@ -169,7 +180,6 @@ class LabeledThing extends Controller\Base
 
         $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         $classes    = $request->request->get('classes', []);
-        $incomplete = $request->request->get('incomplete', true);
 
         if ($frameRange === null) {
             throw new Exception\BadRequestHttpException();
@@ -186,7 +196,9 @@ class LabeledThing extends Controller\Base
 
         $labeledThing->setClasses($classes);
         $labeledThing->setFrameRange($frameRange);
-        $labeledThing->setIncomplete($incomplete);
+        $labeledThing->setIncomplete(
+            $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
+        );
 
         $this->labeledThingFacade->save($labeledThing);
 
