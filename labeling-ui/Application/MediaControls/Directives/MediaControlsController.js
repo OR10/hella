@@ -398,11 +398,11 @@ class MediaControlsController {
   }
 
   handleJumpForwardsClicked() {
-    this.framePosition.jump(10);
+    this.framePosition.jumpBy(10);
   }
 
   handleJumpBackwardsClicked() {
-    this.framePosition.jump(-10);
+    this.framePosition.jumpBy(-10);
   }
 
   _registerHotkeys() {
