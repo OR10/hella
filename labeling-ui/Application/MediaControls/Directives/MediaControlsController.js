@@ -397,18 +397,48 @@ class MediaControlsController {
     this.fpsInputVisible = !this.fpsInputVisible;
   }
 
+  handleJumpForwardsClicked() {
+    this.framePosition.jumpBy(10);
+  }
+
+  handleJumpBackwardsClicked() {
+    this.framePosition.jumpBy(-10);
+  }
+
   _registerHotkeys() {
+    this._hotkeys.add({
+      combo: 'left',
+      description: 'Go one frame back',
+      callback: this.handlePreviousFrameClicked.bind(this)
+    });
+    this._hotkeys.add({
+      combo: 'right',
+      description: 'Go one frame forward',
+      callback: this.handleNextFrameClicked.bind(this)
+    });
+
+    this._hotkeys.add({
+      combo: 'shift+left',
+      description: 'Go 10 frames back',
+      callback: this.handleJumpBackwardsClicked.bind(this)
+    });
+    this._hotkeys.add({
+      combo: 'shift+right',
+      description: 'Go 10 frames forward',
+      callback: this.handleJumpForwardsClicked.bind(this)
+    });
+
     this._hotkeys.add({
       combo: 'j',
       description: 'Go one frame back',
       callback: this.handlePreviousFrameClicked.bind(this)
     });
-
     this._hotkeys.add({
       combo: 'l',
       description: 'Go one frame forward',
       callback: this.handleNextFrameClicked.bind(this)
     });
+
 
     this._hotkeys.add({
       combo: 'k',

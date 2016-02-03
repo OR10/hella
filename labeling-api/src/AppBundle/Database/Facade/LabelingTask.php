@@ -161,6 +161,10 @@ class LabelingTask
         return $result[0];
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @return Model\LabeledThing[]
+     */
     public function getLabeledThings(Model\LabelingTask $labelingTask)
     {
         return $this->documentManager
