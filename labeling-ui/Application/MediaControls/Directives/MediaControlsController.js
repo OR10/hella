@@ -418,12 +418,12 @@ class MediaControlsController {
     });
 
     this._hotkeys.add({
-      combo: ['command+shift+left', 'ctrl+shift+left'],
+      combo: ['ctrl+shift+left'],
       description: 'Go 10 frames back',
       callback: this.handleJumpBackwardsClicked.bind(this)
     });
     this._hotkeys.add({
-      combo: ['command+shift+right', 'ctrl+shift+right'],
+      combo: ['ctrl+shift+right'],
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
     });
