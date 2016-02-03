@@ -43,15 +43,15 @@ class FramePosition {
   /**
    * Jump to a specific position within this FrameRange.
    * @param {int} newPosition
-   *
-   * @throws {Error} if `newPosition` is not inside of the current frame range bounds.
    */
   goto(newPosition) {
-    if (newPosition < this.startFrameNumber || newPosition > this.endFrameNumber) {
-      throw new Error(`Tried to jump out of FrameRange (${this.startFrameNumber}-${this.endFrameNumber}) -> ${newPosition}`);
+    if (newPosition < this.startFrameNumber) {
+      this._position = this.startFrameNumber;
+    } else if (newPosition > this.endFrameNumber) {
+      this._position = this.endFrameNumber;
+    } else {
+      this._position = newPosition;
     }
-
-    this._position = newPosition;
   }
 
   /**
@@ -90,6 +90,16 @@ class FramePosition {
     }
 
     return true;
+  }
+
+  /**
+   * Jump by a give amount in forwards position (positive amount)
+   * or in backwards postition (negative amount)
+   * 
+   * @param amount
+   */
+  jumpBy(amount) {
+    this.goto(this.position + amount);
   }
 }
 
