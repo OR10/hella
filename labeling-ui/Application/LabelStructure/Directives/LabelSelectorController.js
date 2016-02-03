@@ -103,6 +103,16 @@ export default class LabelSelectorController {
      */
     this.viewStyle = 'list';
 
+    /**
+     * @type {boolean}
+     */
+    this.multiSelection = false;
+
+    /**
+     * @type {Object}
+     */
+    this.accordionControl = {};
+
     // Handle changes of `labeledObject`s
     $scope.$watch('vm.labeledObject', (newLabeledObject, oldLabeledObject) => {
       if (!newLabeledObject) {
@@ -306,6 +316,15 @@ export default class LabelSelectorController {
 
   previousPage() {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
+  }
+
+  handleLabelSelectionClick(id) {
+    const index = this.pages.findIndex((element) => {
+      return element.id === id;
+    });
+    if (this.pages[index + 1]) {
+      this.accordionControl.expand(this.pages[index + 1].id);
+    }
   }
 
 }

@@ -60,6 +60,7 @@ System.config({
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
     "uuid": "npm:uuid@2.0.1",
+    "v-accordion": "npm:v-accordion@1.4.1",
     "github:angular-ui/ui-router@0.2.15": {
       "angular": "github:angular/bower-angular@1.4.8"
     },
@@ -784,6 +785,9 @@ System.config({
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "os": "github:jspm/nodelibs-os@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:v-accordion@1.4.1": {
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:vm-browserify@0.0.4": {
       "indexof": "npm:indexof@0.0.1"

@@ -40,12 +40,21 @@
     overflow: hidden;
     overflow-y: auto;
   }
-  
-  .accordion-content {
+
+  v-pane-content {
     ul {
       margin: 0;
       padding: 0;
       list-style: none;
+
+      li {
+        padding-right: 15px;
+        padding-left: 8px;
+
+        label {
+          align-items: center;
+        }
+      }
     }
 
     label:hover {
@@ -56,7 +65,7 @@
       display: none;
     }
 
-    input[type="radio"] + label{
+    input[type="radio"] + label {
       display: flex;
       margin-right: .1rem;
       cursor: pointer;

@@ -5,6 +5,11 @@
 .icon {
   overflow: hidden;
   font-size: 30px;
+
+  &.active {
+    color: $icon-hover !important;
+  }
+
   &.icon-small {
     font-size: 16px;
   }
