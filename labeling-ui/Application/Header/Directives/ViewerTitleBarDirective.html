@@ -12,7 +12,7 @@
                 name="vm.video.name"
                 frame-range="vm.task.frameRange"
     ></task-title>
-    <div class="grid-block text-center" ng-show="vm.shapeBounds">
+    <div class="grid-block text-center noscroll" ng-show="vm.shapeBounds">
         <span class="align-self-center">{{vm.shapeBounds}}</span>
     </div>
     <div class="grid-block header-right shrink noscroll">
@@ -23,20 +23,22 @@
         ></timer>
 
         <div class="grid-content text-left shrink noscroll">
-            <button ng-hide="vm.task.status === 'labeled'"
-                    ng-click="vm.finishLabelingTask()"
-                    tooltip="Finish the active task"
-                    style="margin-left: -.7rem;"
-            >
-                <i class="icon icon-ok"></i>
-            </button>
-            <button ng-show="vm.userPermissions.canViewReopenButton && vm.task.status === 'labeled'"
-                    ng-click="vm.reOpenLabelingTask()"
-                    tooltip="Reopen this task for Labelers"
-                    style="margin-left: -.7rem;"
-            >
-                <i class="icon-fa fa fa-lg fa-pencil-square-o"></i>
-            </button>
+            <badge label="vm.incompleteCount">
+                <button ng-hide="vm.task.status === 'labeled'"
+                        ng-click="vm.finishLabelingTask()"
+                        tooltip="Finish the active task"
+                        style="margin-left: -.7rem;"
+                >
+                    <i class="icon icon-ok" ng-class="{'disabled': vm.incompleteCount}"></i>
+                </button>
+                <button ng-show="vm.userPermissions.canViewReopenButton && vm.task.status === 'labeled'"
+                        ng-click="vm.reOpenLabelingTask()"
+                        tooltip="Reopen this task for Labelers"
+                        style="margin-left: -.7rem;"
+                >
+                    <i class="icon-fa fa fa-lg fa-pencil-square-o"></i>
+                </button>
+            </badge>
         </div>
 
         <!--<div class="grid-content shrink noscroll">-->
