@@ -74,11 +74,31 @@ class LabeledThing extends Controller\Base
      */
     public function getAllLabeledThingsAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
+        if ($request->query->get('incompleteOnly', false) === 'true') {
+            $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
+        }else {
+            $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
+        }
 
         return View\View::create()->setData([
             'totalCount' => count($labeledThings),
             'result' => $labeledThings,
+        ]);
+    }
+
+    /**
+     * @Rest\Get("/{task}/labeledThingsIncompleteCount")
+     *
+     * @param Model\LabelingTask $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getAllIncompleteLabeledThingsCountAction(Model\LabelingTask $task)
+    {
+        $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
+
+        return View\View::create()->setData([
+            'result' => ['count' => count($labeledThings)],
         ]);
     }
 

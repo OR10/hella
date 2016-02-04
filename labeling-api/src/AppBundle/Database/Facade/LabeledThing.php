@@ -48,6 +48,21 @@ class LabeledThing
             ->toArray();
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @return mixed
+     */
+    public function getIncompleteLabeledThings(Model\LabelingTask $labelingTask)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'incomplete')
+            ->setStartKey([$labelingTask->getId(), true])
+            ->setEndKey([$labelingTask->getId(), true])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
     public function getLabeledThingsById(array $labeledThingIds)
     {
         return $this->documentManager
