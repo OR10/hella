@@ -104,6 +104,23 @@ class LabeledThingGateway {
         throw new Error('Received malformed response when deleting labeled thing.');
       });
   }
+
+  /**
+   * @param {Task} task
+   * @returns {AbortablePromise.<LabeledThing|Error>}
+   */
+  getIncompleteLabelThingCount(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/labeledThingsIncompleteCount`);
+
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error('Received malformed response when requesting incomplete labeled thing count.');
+      });
+  }
 }
 
 LabeledThingGateway.$inject = [
