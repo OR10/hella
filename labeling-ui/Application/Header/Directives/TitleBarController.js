@@ -1,5 +1,5 @@
 /**
- * Controller of the {@link HeaderDirective}
+ * Controller of the {@link TitleBarDirective}
  */
 class TitleBarController {
   constructor($state) {
