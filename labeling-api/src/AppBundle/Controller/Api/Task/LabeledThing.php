@@ -87,6 +87,22 @@ class LabeledThing extends Controller\Base
     }
 
     /**
+     * @Rest\Get("/{task}/labeledThingsIncompleteCount")
+     *
+     * @param Model\LabelingTask $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getAllIncompleteLabeledThingsCountAction(Model\LabelingTask $task)
+    {
+        $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
+
+        return View\View::create()->setData([
+            'result' => ['count' => count($labeledThings)],
+        ]);
+    }
+
+    /**
      * @Rest\Post("/{task}/labeledThing")
      * @ForbidReadonlyTasks
      *
