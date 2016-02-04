@@ -23,7 +23,7 @@
         ></timer>
 
         <div class="grid-content text-left shrink noscroll">
-            <badge label="vm.incompleteCount">
+            <badge class="grid-block noscroll" label="vm.incompleteCount">
                 <button ng-hide="vm.task.status === 'labeled'"
                         ng-click="vm.finishLabelingTask()"
                         tooltip="Finish the active task"
