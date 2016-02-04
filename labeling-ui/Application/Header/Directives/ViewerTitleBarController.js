@@ -69,7 +69,19 @@ class ViewerTitleBarController {
             this._$state.go('labeling.tasks');
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
-          });
+          }).catch((response) => {
+          if (response.status === 412) {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+            const alert = this._modalService.getAlertWarningDialog({
+              title: 'Finish Task',
+              headline: 'Incomplete labeling data',
+              message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
+              confirmButtonText: 'Ok'
+            });
+            alert.activate();
+          }
+        });
       }
     );
     modal.activate();
