@@ -1,0 +1,14 @@
+.badge-container {
+  position: relative;
+  overflow: visible;
+
+  .badge {
+    position: absolute;
+    right: 1px;
+    top: 2px;
+    background-color: #a00;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+  }
+}
