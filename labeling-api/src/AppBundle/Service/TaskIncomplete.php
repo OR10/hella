@@ -42,6 +42,9 @@ class TaskIncomplete
     public function isLabeledThingIncomplete(Model\LabeledThing $labeledThing)
     {
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
+        if (empty($labeledThingInFrames)) {
+            return true;
+        }
         foreach($labeledThingInFrames as $labeledThingInFrame) {
             if ($this->isLabeledThingInFrameIncomplete($labeledThingInFrame)) {
                 return true;
