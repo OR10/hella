@@ -104,7 +104,7 @@
         <div class="grid-block label-selector-content vertical ">
             <div class="grid-block">
                 <div ng-repeat="page in vm.pages" ng-show="vm.isPageActive($index)"
-                     class="grid-block label-selector-content-container wrap">
+                     class="grid-block label-selector-content-container wrap noscroll">
                     <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8"
                          ng-class="{selected: vm.isResponseSelected(page, response)}"
                          ng-click="!vm.readOnly && (vm.choices[page.id] = response.id)">
