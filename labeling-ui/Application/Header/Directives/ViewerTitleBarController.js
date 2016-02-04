@@ -10,7 +10,7 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param {ReleaseConfigService} releaseConfigService
    */
-  constructor($scope, $state, modalService, applicationState, taskGateway) {
+  constructor($scope, $state, modalService, applicationState, taskGateway, labeledThingGateway) {
     /**
      * @param {angular.$state} $state
      * @private
@@ -36,9 +36,18 @@ class ViewerTitleBarController {
     this._taskGateway = taskGateway;
 
     /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
+
+    /**
      * @type {string}
      */
     this.shapeBounds = null;
+
+    this.refreshIncompleteCount();
+    $scope.$watch('vm.selectedPaperShape', this.refreshIncompleteCount.bind(this));
 
     $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], (newValues) => {
       const width = newValues[0];
@@ -69,7 +78,19 @@ class ViewerTitleBarController {
             this._$state.go('labeling.tasks');
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
-          });
+          }).catch((response) => {
+          if (response.status === 412) {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+            const alert = this._modalService.getAlertWarningDialog({
+              title: 'Finish Task',
+              headline: 'Incomplete labeling data',
+              message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
+              confirmButtonText: 'Ok'
+            });
+            alert.activate();
+          }
+        });
       }
     );
     modal.activate();
@@ -97,6 +118,13 @@ class ViewerTitleBarController {
     );
     modal.activate();
   }
+
+  refreshIncompleteCount() {
+    this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then((result) => {
+      this.incompleteCount = result.count;
+    });
+  }
+
 }
 
 ViewerTitleBarController.$inject = [
@@ -105,6 +133,7 @@ ViewerTitleBarController.$inject = [
   'modalService',
   'applicationState',
   'taskGateway',
+  'labeledThingGateway',
 ];
 
 export default ViewerTitleBarController;

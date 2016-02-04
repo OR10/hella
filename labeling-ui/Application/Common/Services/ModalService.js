@@ -1,5 +1,6 @@
 import infoModalTemplate from './ModalService/InfoModal.html!';
 import warningModalTemplate from './ModalService/WarningModal.html!';
+import alertModalTemplate from './ModalService/AlertModal.html!';
 
 /**
  * Service providing an interface to create modal dialog windows
@@ -60,6 +61,10 @@ class ModalService {
 
   getWarningDialog(scope, confirmCallback, cancelCallback) {
     return this._createModal('modal-warning', warningModalTemplate, scope, confirmCallback, cancelCallback);
+  }
+
+  getAlertWarningDialog(scope, confirmCallback) {
+    return this._createModal('modal-warning', alertModalTemplate, scope, confirmCallback, () => {});
   }
 }
 

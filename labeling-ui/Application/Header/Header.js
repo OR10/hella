@@ -2,6 +2,7 @@ import Module from '../Module';
 import ViewerTitleBarDirective from './Directives/ViewerTitleBarDirective';
 import TaskTitleDirective from './Directives/TaskTitleDirective';
 import TimerDirective from './Directives/TimerDirective';
+import BadgeDirective from './Directives/BadgeDirective';
 import UserNameDirective from './Directives/UserNameDirective';
 import LogoutButtonDirective from './Directives/LogoutButtonDirective';
 import TimerGateway from './Gateways/TimerGateway';
@@ -20,6 +21,7 @@ class Header extends Module {
 
     this.registerDirective('viewerTitleBar', ViewerTitleBarDirective);
     this.registerDirective('timer', TimerDirective);
+    this.registerDirective('badge', BadgeDirective);
     this.registerDirective('taskTitle', TaskTitleDirective);
     this.registerDirective('userName', UserNameDirective);
     this.registerDirective('logoutButton', LogoutButtonDirective);

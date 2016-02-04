@@ -1,12 +1,12 @@
-<div class="grid-block">
-    <span class="align-self-center">
+<div class="grid-block noscroll timer-container">
+    <span class="timer-text">
         {{vm.elapsedHours}}h {{vm.elapsedMinutes}}min
     </span>
-    <button ng-hide="vm.isIdle">
+    <button ng-hide="vm.isIdle" class="grid-content noscroll">
         <i class="icon no-hover icon-general-timer"></i>
     </button>
 
-    <button ng-show="vm.isIdle">
+    <button ng-show="vm.isIdle" class="grid-content noscroll">
         <i class="fa fa-pause no-hover"></i>
     </button>
 </div>
