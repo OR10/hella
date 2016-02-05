@@ -112,7 +112,7 @@ class UserProfileController {
       enabled: true,
       lastLogin: null,
       locked: false,
-      roles: ['ROLE_USER'],
+      roles: ['ROLE_LABELER'],
     });
   }
 
@@ -188,13 +188,13 @@ class UserProfileController {
   _updateRoles() {
     switch (this.singleRole) {
       case 'ROLE_ADMIN':
-        this.user.roles = ['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_USER'];
+        this.user.roles = ['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
         break;
       case 'ROLE_LABEL_COORDINATOR':
-        this.user.roles = ['ROLE_LABEL_COORDINATOR', 'ROLE_USER'];
+        this.user.roles = ['ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
         break;
-      case 'ROLE_USER':
-        this.user.roles = ['ROLE_USER'];
+      case 'ROLE_LABELER':
+        this.user.roles = ['ROLE_LABELER'];
         break;
       default:
         throw new Error(`Unknown role: ${this.singleRole}`);
@@ -245,7 +245,7 @@ class UserProfileController {
       this.validation.email = valid = false;
     }
 
-    if (['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_USER'].indexOf(this.singleRole) === -1) {
+    if (['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'].indexOf(this.singleRole) === -1) {
       this.validation.role = valid = false;
     }
 

@@ -5,8 +5,8 @@ function SingleRoleFilterProvider() {
         return 'ROLE_ADMIN';
       case roles.indexOf('ROLE_LABEL_COORDINATOR') !== -1:
         return 'ROLE_LABEL_COORDINATOR';
-      case roles.indexOf('ROLE_USER') !== -1:
-        return 'ROLE_USER';
+      case roles.indexOf('ROLE_LABELER') !== -1:
+        return 'ROLE_LABELER';
       default:
         throw new Error(`Unknown Role setup for user: ${roles.toString()}`);
     }

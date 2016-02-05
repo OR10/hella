@@ -5,7 +5,7 @@ function ReadableRoleFilterProvider() {
         return 'Administrator';
       case 'ROLE_LABEL_COORDINATOR':
         return 'Label Coordinator';
-      case 'ROLE_USER':
+      case 'ROLE_LABELER':
         return 'Labeler';
       default:
         throw new Error(`Unknown Role: ${role}`);
