@@ -100,4 +100,45 @@ class LabeledThingInFrame
         }
         $this->documentManager->flush();
     }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param int $limit
+     * @return mixed
+     */
+    public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $limit = 0)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId')
+            ->setKey($labelingTask->getId())
+            ->onlyDocs(true);
+
+        if ($limit > 0) {
+            $documentManager->setLimit($limit);
+        }
+        return $documentManager
+            ->execute()
+            ->toArray();
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param int $limit
+     * @return mixed
+     */
+    public function getIncompleteLabeledThingsInFrame(Model\LabelingTask $labelingTask, $limit = 0)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'incomplete')
+            ->setStartKey([$labelingTask->getId(), true])
+            ->setEndKey([$labelingTask->getId(), true])
+            ->onlyDocs(true);
+
+        if ($limit > 0) {
+            $documentManager->setLimit($limit);
+        }
+        return $documentManager
+            ->execute()
+            ->toArray();
+    }
 }
