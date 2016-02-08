@@ -427,6 +427,11 @@ class MediaControlsController {
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
     });
+    this._hotkeys.add({
+      combo: ['del'],
+      description: 'Delete selected object',
+      callback: this.handleDeleteSelectionClicked.bind(this)
+    });
 
     this._hotkeys.add({
       combo: 'k',
