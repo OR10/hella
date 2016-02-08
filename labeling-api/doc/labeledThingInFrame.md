@@ -11,6 +11,18 @@
     + Attributes
         + result (LabeledThingInFrame)
 
+## LabeledThingInFrame [/api/labeledThingInFrame{?incompleteOnly}{?limit}]
+
+### Get [GET]
+
++ Parameters
+    + incompleteOnly: `false` (boolean, optional) - Only return incomplete LabeledThingsInFrame - Default is false
+    + limit: `10` (string, optional) - limit the number of labeledFrames
+
++ Response 200 (application/json)
+    + Attributes
+       + result (LabeledThingInFrame)
+
 ### Replace [PUT]
 
 + Request (application/json)

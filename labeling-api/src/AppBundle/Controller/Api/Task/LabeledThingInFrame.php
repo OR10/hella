@@ -94,6 +94,29 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
+     * @Rest\Get("/{task}/labeledThingInFrame")
+     *
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask     $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getLabeledThingInFrameAction(
+        HttpFoundation\Request $request,
+        Model\LabelingTask $task
+    ) {
+        $limit = $request->query->getInt('limit', 0);
+
+        if ($request->query->get('incompleteOnly', false) === 'true') {
+            $labeledThingInFrame = $this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame($task, $limit);
+        }else {
+            $labeledThingInFrame = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task, $limit);
+        }
+
+        return View\View::create()->setData(['result' => $labeledThingInFrame]);
+    }
+
+    /**
      * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
      *
      * @param HttpFoundation\Request $request
@@ -102,7 +125,7 @@ class LabeledThingInFrame extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getLabeledThingInFrameAction(
+    public function getLabeledThingInFrameForFrameAction(
         HttpFoundation\Request $request,
         Model\LabelingTask $task,
         $frameNumber
