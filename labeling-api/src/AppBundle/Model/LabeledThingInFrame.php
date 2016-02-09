@@ -31,6 +31,11 @@ class LabeledThingInFrame
     private $classes = [];
 
     /**
+     * @var null|array
+     */
+    private $ghostClasses = null;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $shapes = [];
@@ -304,5 +309,13 @@ class LabeledThingInFrame
                 return $boundingBox->merge($shape->getBoundingBox());
             }
         );
+    }
+
+    /**
+     * @param null $ghostClasses
+     */
+    public function setGhostClasses($ghostClasses)
+    {
+        $this->ghostClasses = $ghostClasses;
     }
 }
