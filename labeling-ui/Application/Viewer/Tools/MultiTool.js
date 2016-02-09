@@ -109,7 +109,6 @@ export default class MultiTool extends Tool {
         default:
           return;
       }
-      this.emit('shape:update', paperShape);
     }
   }
 
