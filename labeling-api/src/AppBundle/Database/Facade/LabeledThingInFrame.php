@@ -141,4 +141,26 @@ class LabeledThingInFrame
             ->execute()
             ->toArray();
     }
+
+    /**
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @return mixed
+     */
+    public function getPreviousLabeledThingInFrameWithClasses(Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber_count_by_classes')
+            ->setEndKey([$labeledThingInFrame->getLabeledThingId(), 0, 1])
+            ->setStartKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameNumber(), '*'])
+            ->onlyDocs(true)
+            ->setLimit(1)
+            ->setDescending(true)
+            ->execute()
+            ->toArray();
+
+        if (empty($result)) {
+            return null;
+        }
+        return $result[0];
+    }
 }
