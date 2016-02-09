@@ -19,6 +19,7 @@
                 id="annostation.labeling_api.controller.api.users"
                 class="AppBundle\Controller\Api\Users">
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <argument type="service" id="security.token_storage" />
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task"
