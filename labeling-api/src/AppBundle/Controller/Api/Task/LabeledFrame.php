@@ -32,13 +32,25 @@ class LabeledFrame extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @param Facade\LabeledFrame $labeledFrame
-     * @param Facade\LabelingTask $labelingTask
+     * @var Service\TaskIncomplete
      */
-    public function __construct(Facade\LabeledFrame $labeledFrameFacade, Facade\LabelingTask $labelingTaskFacade)
-    {
+    private $taskIncompleteService;
+
+    /**
+     * @param Facade\LabeledFrame $labeledFrameFacade
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Service\TaskIncomplete $taskIncompleteService
+     * @internal param Facade\LabeledFrame $labeledFrame
+     * @internal param Facade\LabelingTask $labelingTask
+     */
+    public function __construct(
+        Facade\LabeledFrame $labeledFrameFacade,
+        Facade\LabelingTask $labelingTaskFacade,
+        Service\TaskIncomplete $taskIncompleteService
+    ){
         $this->labeledFrameFacade = $labeledFrameFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->taskIncompleteService = $taskIncompleteService;
     }
 
     /**
@@ -138,7 +150,6 @@ class LabeledFrame extends Controller\Base
         $revision        = $request->request->get('rev');
         $bodyFrameNumber = (int) $request->request->get('frameNumber');
         $classes         = $request->request->get('classes', []);
-        $incomplete      = $request->request->get('incomplete');
 
         if (!is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $labeledFrameId === null) {
             throw new Exception\BadRequestHttpException();
@@ -161,9 +172,10 @@ class LabeledFrame extends Controller\Base
         }
 
         $labeledFrame->setClasses($classes);
-        if ($incomplete !== null) {
-            $labeledFrame->setIncomplete($incomplete);
-        }
+        $labeledFrame->setIncomplete(
+            $this->taskIncompleteService->isLabeledFrameIncomplete($labeledFrame)
+        );
+
         $this->labeledFrameFacade->save($labeledFrame);
 
         return View\View::create()->setData(['result' => $labeledFrame]);

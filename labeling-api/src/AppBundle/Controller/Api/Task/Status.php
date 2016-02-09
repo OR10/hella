@@ -51,12 +51,30 @@ class Status extends Controller\Base
      */
     public function postLabeledStatusAction(Model\LabelingTask $task)
     {
-        $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
-        foreach ($labeledThings as $labeledThing) {
-            if ($labeledThing->getIncomplete()) {
+
+        $isOneLabeledFrameComplete = false;
+        if ($task->getTaskType() === 'meta-labeling') {
+            $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task);
+            foreach ($labeledFrames as $labeledFrame) {
+                if (!$labeledFrame->getIncomplete()) {
+                    $isOneLabeledFrameComplete = true;
+                }
+            }
+            if (!$isOneLabeledFrameComplete) {
                 throw new Exception\PreconditionFailedHttpException();
             }
         }
+
+        if ($task->getTaskType() === 'object-labeling') {
+            $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
+            foreach ($labeledThings as $labeledThing) {
+                if ($labeledThing->getIncomplete()) {
+                    throw new Exception\PreconditionFailedHttpException();
+                }
+            }
+        }
+
+
         $task->setStatus(Model\LabelingTask::STATUS_LABELED);
         $this->labelingTaskFacade->save($task);
 
