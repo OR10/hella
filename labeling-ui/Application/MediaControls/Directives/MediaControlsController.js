@@ -331,22 +331,32 @@ class MediaControlsController {
     this._labeledThingData.invalidate(selectedLabeledThing.id);
     this._labeledThingInFrameData.invalidateLabeledThing(selectedLabeledThing);
 
-    this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
-      .then(
-        () => {
-          this.selectedPaperShape = null;
-          this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
-            labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
-          );
-          this._applicationState.enableAll();
-        }
-      )
-      .catch(
-        error => {
-          this._applicationState.enableAll();
-          throw error;
-        }
-      );
+    // TODO: fix the revision error in the backend
+    try {
+      this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
+        .then(
+          () => {
+            this.selectedPaperShape = null;
+            this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
+              labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+            );
+            this._applicationState.enableAll();
+          }
+        )
+        .catch(function (error) {
+            debugger;
+            this._applicationState.enableAll();
+            throw error;
+          }.bind(this)
+        );
+    } catch (error) {
+      const errorDialog = this._modalService.getAlertWarningDialog({
+        title: 'Error',
+        headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
+        confirmButtonText: 'Ok',
+      }, () => this._applicationState.enableAll());
+      errorDialog.activate();
+    }
   }
 
   handlePlay() {
@@ -426,6 +436,11 @@ class MediaControlsController {
       combo: ['shift+l'],
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
+    });
+    this._hotkeys.add({
+      combo: ['del'],
+      description: 'Delete selected object',
+      callback: this.handleDeleteSelectionClicked.bind(this)
     });
 
     this._hotkeys.add({

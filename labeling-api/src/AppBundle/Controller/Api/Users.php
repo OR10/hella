@@ -8,9 +8,12 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\RedirectView;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
+
 
 /**
  * @Rest\Prefix("/api/users")
@@ -26,12 +29,19 @@ class Users extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * Users constructor.
      * @param Facade\User $userFacade
+     * @param Storage\TokenStorage $tokenStorage
      */
-    public function __construct(Facade\User $userFacade)
+    public function __construct(Facade\User $userFacade, Storage\TokenStorage $tokenStorage)
     {
-        $this->userFacade = $userFacade;
+        $this->userFacade   = $userFacade;
+        $this->tokenStorage = $tokenStorage;
     }
 
 
@@ -117,6 +127,8 @@ class Users extends Controller\Base
      */
     public function editUserAction(HttpFoundation\Request $request, Model\User $user)
     {
+        $loginUser = $this->tokenStorage->getToken()->getUser();
+
         $roles = $request->request->get('roles', array());
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
@@ -130,6 +142,11 @@ class Users extends Controller\Base
         }
 
         $this->userFacade->updateUser($user);
+        if ($user->getUsername() === $loginUser->getUsername()) {
+            $this->tokenStorage->setToken(null);
+
+            return RedirectView::create('fos_user_security_logout');
+        }
 
         return View\View::create()->setData(['result' => ['user' => $this->getUserResponse($user)]]);
     }

@@ -75,6 +75,25 @@ class TaskIncomplete
     }
 
     /**
+     * @param Model\LabeledFrame $labeledFrame
+     * @return bool
+     */
+    public function isLabeledFrameIncomplete(Model\LabeledFrame $labeledFrame)
+    {
+        $classes = $labeledFrame->getClasses();
+        $task = $this->labelingTaskFacade->find($labeledFrame->getTaskId());
+        $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
+
+        foreach ($rootStructure['children'] as $child) {
+            if (!$this->searchStructureForClasses($classes, $child)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param $classes
      * @param $structure
      * @param int $level

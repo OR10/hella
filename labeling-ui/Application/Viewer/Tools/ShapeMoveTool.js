@@ -80,6 +80,7 @@ export default class ShapeMoveTool extends Tool {
 
   moveTo(shape, point) {
     shape.moveTo(this._restrictToViewport(shape, point));
+    this.emit('shape:update', shape);
   }
 
   /**
