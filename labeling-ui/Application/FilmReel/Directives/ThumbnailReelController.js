@@ -425,7 +425,7 @@ class ThumbnailReelController {
         selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
 
         // Synchronize operations on this LabeledThing
-        this._lockService.acquire(selectedLabeledThing.id, release =>{
+        this._lockService.acquire(selectedLabeledThing.id, release => {
           this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
             release();
             // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
