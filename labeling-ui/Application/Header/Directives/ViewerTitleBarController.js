@@ -135,9 +135,9 @@ class ViewerTitleBarController {
               return nextIncomplete.id === element.id;
             });
             const shape = labeledThingInFrame.paperShapes[0];
-            shape.select();
-            this.thingLayer.update();
             this.selectedPaperShape = shape;
+            this.selectedPaperShape.select();
+            this.thingLayer.update();
           });
         });
       });
