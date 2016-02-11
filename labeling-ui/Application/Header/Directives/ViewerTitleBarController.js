@@ -123,22 +123,25 @@ class ViewerTitleBarController {
   handleIncompleteState() {
     this._applicationState.viewer.finish();
     this._applicationState.enableAll();
-    this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
-      const nextIncomplete = result[0];
-      this.framePosition.goto(nextIncomplete.frameNumber, true);
 
-      this.framePosition.onFrameChangeComplete('selectNextIncomplete', () => {
-        this._$timeout(() => {
-          const labeledThingInFrame = this.labeledThingsInFrame.find((element) => {
-            return nextIncomplete.id === element.id;
+    if (this.task.taskType === 'object-labeling') {
+      this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
+        const nextIncomplete = result[0];
+        this.framePosition.goto(nextIncomplete.frameNumber, true);
+
+        this.framePosition.onFrameChangeComplete('selectNextIncomplete', () => {
+          this._$timeout(() => {
+            const labeledThingInFrame = this.labeledThingsInFrame.find((element) => {
+              return nextIncomplete.id === element.id;
+            });
+            const shape = labeledThingInFrame.paperShapes[0];
+            shape.select();
+            this.thingLayer.update();
+            this.selectedPaperShape = shape;
           });
-          const shape = labeledThingInFrame.paperShapes[0];
-          shape.select();
-          this.thingLayer.update();
-          this.selectedPaperShape = shape;
         });
       });
-    });
+    }
   }
 
   reOpenLabelingTask() {
