@@ -137,7 +137,7 @@ export default class LabelSelectorController {
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', () => {
-      this.isCompleted = this._isCompleted();
+      //this.isCompleted = this._isCompleted();
 
       if (!this.labeledObject) {
         return;
