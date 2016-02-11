@@ -54,7 +54,6 @@ class FramePosition {
   }
 
   onFrameChange(name, callback) {
-    console.log('New subscriber', name);
     this.subscribers[name] = callback;
   }
 
