@@ -40,6 +40,13 @@ class LabeledThingInFrame extends LabeledObject {
      * @type {boolean}
      */
     this.ghost = labeledThingInFrame.ghost;
+
+    /**
+     * Array of paper shapes
+     *
+     * @type {Array}
+     */
+    this.paperShapes = [];
   }
 
   /**

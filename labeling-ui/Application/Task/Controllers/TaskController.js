@@ -198,17 +198,20 @@ class TaskController {
      */
     this.thumbnailZoomLevel = 100;
 
+    this.thingLayer = null;
+
     this._initializeLabelingStructure();
 
     if (this.task.taskType === 'meta-labeling') {
-      // Watch for changes of the Frame position to correctly update all
-      // data structures for the new frame
-      $scope.$watch(
-        'vm.framePosition.position', newFramePosition => {
-          this._labeledFrameBuffer.add(this._loadLabeledFrame(newFramePosition))
-            .then(labeledFrame => this.labeledFrame = labeledFrame);
-        }
-      );
+      this.framePosition.onFrameChange('reloadLabeledFrame', (finish, newFrameNumber) => {
+        // Watch for changes of the Frame position to correctly update all
+        // data structures for the new frame
+        this._labeledFrameBuffer.add(this._loadLabeledFrame(newFrameNumber))
+          .then(labeledFrame => {
+            this.labeledFrame = labeledFrame;
+            finish();
+          });
+      });
     }
 
     this._initializeLayout();
@@ -239,8 +242,9 @@ class TaskController {
       }
     );
 
-    $scope.$watch('vm.framePosition.position', newPosition => {
-      $location.hash('F' + newPosition);
+    this.framePosition.onFrameChange('updateLocationHash', (finish, newFrameNumber) => {
+      $location.hash('F' + newFrameNumber);
+      finish();
     });
 
     $scope.$watch(() => $location.hash(), () => {

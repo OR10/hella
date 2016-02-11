@@ -26,6 +26,7 @@ export default class ViewerDirective {
       bookmarkedFrameNumber: '=',
       fps: '=',
       frameSkip: '=',
+      thingLayer: '=',
       readOnly: '@',
     };
 
