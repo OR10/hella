@@ -108,9 +108,7 @@ class PopupPanelController {
       }
     });
 
-    this.framePosition.onFrameChange('loadBackgroundImages', (finish, newFrameNumber) => {
-      this._loadBackgroundImage(finish);
-    });
+    $scope.$watch('vm.framePosition.position', () => this._loadBackgroundImage());
 
     $scope.$watch('vm.viewerViewport.bounds', (newBounds, oldBounds) => {
       let newCenterRounded = null;
@@ -134,7 +132,7 @@ class PopupPanelController {
     this._resizeDebounced();
   }
 
-  _loadBackgroundImage(finish) {
+  _loadBackgroundImage() {
     const imageTypes = this.task.requiredImageTypes.filter(
       (imageType) => {
         return (this._supportedImageTypes.indexOf(imageType) !== -1);
@@ -153,7 +151,6 @@ class PopupPanelController {
         .then(image => {
           this._activeBackgroundImage = image;
           this._drawLayerDebounced();
-          finish();
         })
     );
   }
