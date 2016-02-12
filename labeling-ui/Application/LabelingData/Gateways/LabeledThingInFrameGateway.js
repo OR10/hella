@@ -187,7 +187,7 @@ class LabeledThingInFrameGateway {
    *
    * @returns {AbortablePromise<LabeledThingInFrame>|Error}
    */
-  getNextIncomplete(task, count = 1) {
+  getNextIncomplete(task, count = 1){
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame`,
       {
@@ -248,10 +248,6 @@ class LabeledThingInFrameGateway {
     );
 
     this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
-
-    if (labeledThingInFrame.classes === null) {
-      delete labeledThingInFrame.classes;
-    }
 
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {

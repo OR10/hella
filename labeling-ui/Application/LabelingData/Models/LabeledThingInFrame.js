@@ -7,7 +7,7 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledThingInFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, ghostClasses: Array.<string>, incomplete: boolean, frameNumber: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, frameNumber: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
    */
   constructor(labeledThingInFrame) {
     super(labeledThingInFrame);
@@ -47,13 +47,6 @@ class LabeledThingInFrame extends LabeledObject {
      * @type {Array}
      */
     this.paperShapes = [];
-
-    /**
-     * The ghost labels inherited from earlier labels
-     *
-     * @type {Array.<String>}
-     */
-    this.ghostClasses = labeledThingInFrame.ghostClasses;
   }
 
   /**
@@ -95,18 +88,10 @@ class LabeledThingInFrame extends LabeledObject {
    */
   toJSON() {
     const {frameNumber, labeledThing, shapes, ghost} = this;
-    // Only send shapes with the data to the backend if they have been set in the frontend
-    if (shapes) {
-      return Object.assign(super.toJSON(), {
-        frameNumber, shapes, ghost,
-        labeledThingId: labeledThing.id,
-      });
-    } else {
-      return Object.assign(super.toJSON(), {
-        frameNumber, ghost,
-        labeledThingId: labeledThing.id,
-      });
-    }
+    return Object.assign(super.toJSON(), {
+      frameNumber, shapes, ghost,
+      labeledThingId: labeledThing.id,
+    });
   }
 }
 
