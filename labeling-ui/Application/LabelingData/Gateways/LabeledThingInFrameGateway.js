@@ -179,6 +179,34 @@ class LabeledThingInFrameGateway {
   }
 
   /**
+   * Returns the next incomplete labeled things in frame.
+   * The count can be specified, the default is one.
+   *
+   * @param {Task} task
+   * @param {int?} count
+   *
+   * @returns {AbortablePromise<LabeledThingInFrame>|Error}
+   */
+  getNextIncomplete(task, count = 1) {
+    const url = this._apiService.getApiUrl(
+      `/task/${task.id}/labeledThingInFrame`,
+      {
+        incompleteOnly: true,
+        limit: count
+      }
+    );
+
+    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error('Failed loading incomplete labeled thing in frame');
+      });
+  }
+
+  /**
    * Associate the labeledThingsInFrame with their labeledThings
    *
    * After the {@link LabeledThing} is Retrieved it will be combined into a new {@link LabeledThingInFrame}
@@ -220,6 +248,10 @@ class LabeledThingInFrameGateway {
     );
 
     this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
+
+    if (labeledThingInFrame.classes === null) {
+      delete labeledThingInFrame.classes;
+    }
 
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {

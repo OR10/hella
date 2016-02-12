@@ -410,6 +410,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 
+  update() {
+    this._context.withScope((scope) => {
+      scope.view.update();
+    });
+  }
+
   /**
    * Remove all {@link PaperShape}s belonging to any of the given {@link LabeledThingInFrame}s
    *

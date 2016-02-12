@@ -325,13 +325,14 @@ class ViewerController {
       }
     );
 
+    // Trigger initial loading of data
+    this._handleFrameChange(() => {}, this.framePosition.position);
+
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
-    $scope.$watch(
-      'vm.framePosition.position', newPosition => {
-        this._handleFrameChange(newPosition);
-      }
-    );
+    this.framePosition.onFrameChange('viewerHandleFrameChange', (finish, newFrameNumber) => {
+      this._handleFrameChange(finish, newFrameNumber);
+    });
 
     $scope.$watch(
       'vm.playing', (playingNow, playingBefore) => {
@@ -467,7 +468,7 @@ class ViewerController {
   }
 
   _addThingLayer() {
-    const thingLayer = new ThingLayer(
+    this.thingLayer = new ThingLayer(
       this._contentWidth,
       this._contentHeight,
       this._$scope.$new(),
@@ -479,18 +480,18 @@ class ViewerController {
       this._$timeout
     );
 
-    thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
+    this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
-    thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    thingLayer.on('shape:update', debounce((shape) => {
+    this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
+    this.thingLayer.on('shape:update', debounce((shape) => {
       this._onUpdatedShape(shape);
     }, 500));
 
-    this._layerManager.addLayer('annotations', thingLayer);
+    this._layerManager.addLayer('annotations', this.thingLayer);
 
     this._$scope.$watch(
       'vm.activeTool', newActiveTool => {
-        thingLayer.activateTool(newActiveTool);
+        this.thingLayer.activateTool(newActiveTool);
       }
     );
   }
@@ -561,7 +562,7 @@ class ViewerController {
    * @param {int} frameNumber
    * @private
    */
-  _handleFrameChange(frameNumber) {
+  _handleFrameChange(finish, frameNumber) {
     if (this._frameChangeInProgress) {
       this._logger.warn('ViewerController', 'frame change already in progress');
     }
@@ -595,6 +596,7 @@ class ViewerController {
         if (ghostedLabeledThingInFrame) {
           this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
         }
+        finish();
       }
     );
   }

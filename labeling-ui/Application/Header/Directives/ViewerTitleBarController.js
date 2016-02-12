@@ -10,7 +10,14 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param {ReleaseConfigService} releaseConfigService
    */
-  constructor($scope, $state, modalService, applicationState, taskGateway, labeledThingGateway) {
+  constructor($timeout, $scope, $state, modalService, applicationState, taskGateway, labeledThingGateway, labeledThingInFrameGateway) {
+    this._$timeout = $timeout;
+    /**
+     * @param {angular.$scope} $scope
+     * @private
+     */
+    this._$scope = $scope;
+
     /**
      * @param {angular.$state} $state
      * @private
@@ -42,6 +49,12 @@ class ViewerTitleBarController {
     this._labeledThingGateway = labeledThingGateway;
 
     /**
+     * @type {LabeledThingInFrameGateway}
+     * @private
+     */
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
      * @type {string}
      */
     this.shapeBounds = null;
@@ -62,6 +75,19 @@ class ViewerTitleBarController {
   }
 
   finishLabelingTask() {
+    this._applicationState.disableAll();
+    this._applicationState.viewer.work();
+
+    this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then((result) => {
+      if (result.count !== 0) {
+        this.handleIncompleteState();
+      } else {
+        this.handleCompleteState();
+      }
+    });
+  }
+
+  handleCompleteState() {
     const modal = this._modalService.getInfoDialog(
       {
         title: 'Finish Task',
@@ -71,8 +97,6 @@ class ViewerTitleBarController {
         cancelButtonText: 'Cancel',
       },
       () => {
-        this._applicationState.disableAll();
-        this._applicationState.viewer.work();
         this._taskGateway.markTaskAsLabeled(this.task)
           .then(() => {
             this._$state.go('labeling.tasks');
@@ -86,14 +110,38 @@ class ViewerTitleBarController {
               title: 'Finish Task',
               headline: 'Incomplete labeling data',
               message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
-              confirmButtonText: 'Ok'
-            });
+              confirmButtonText: 'Ok',
+            }, this.handleIncompleteState());
             alert.activate();
           }
         });
       }
     );
     modal.activate();
+  }
+
+  handleIncompleteState() {
+    this._applicationState.viewer.finish();
+    this._applicationState.enableAll();
+
+    if (this.task.taskType === 'object-labeling') {
+      this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
+        const nextIncomplete = result[0];
+        this.framePosition.goto(nextIncomplete.frameNumber, true);
+
+        this.framePosition.onFrameChangeComplete('selectNextIncomplete', () => {
+          this._$timeout(() => {
+            const labeledThingInFrame = this.labeledThingsInFrame.find((element) => {
+              return nextIncomplete.id === element.id;
+            });
+            const shape = labeledThingInFrame.paperShapes[0];
+            this.selectedPaperShape = shape;
+            this.selectedPaperShape.select();
+            this.thingLayer.update();
+          });
+        });
+      });
+    }
   }
 
   reOpenLabelingTask() {
@@ -128,12 +176,14 @@ class ViewerTitleBarController {
 }
 
 ViewerTitleBarController.$inject = [
+  '$timeout',
   '$scope',
   '$state',
   'modalService',
   'applicationState',
   'taskGateway',
   'labeledThingGateway',
+  'labeledThingInFrameGateway',
 ];
 
 export default ViewerTitleBarController;

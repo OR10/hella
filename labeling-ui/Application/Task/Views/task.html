@@ -4,6 +4,9 @@
                   user-permissions="vm.userPermissions"
                   read-only="{{vm.task.readOnly}}"
                   selected-paper-shape="vm.selectedPaperShape"
+                  frame-position="vm.framePosition"
+                  labeled-things-in-frame="vm.labeledThingsInFrame"
+                  thing-layer="vm.thingLayer"
 ></viewer-title-bar>
 <div
      on-init="vm.onSplitViewInitialized()"
@@ -68,6 +71,7 @@
             fps="vm.fps"
             frame-skip="vm.frameSkip"
             read-only="{{vm.task.readOnly}}"
+            thing-layer="vm.thingLayer"
     ></viewer>
     <div class="grid-block small-6 sidebar-right ">
         <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"

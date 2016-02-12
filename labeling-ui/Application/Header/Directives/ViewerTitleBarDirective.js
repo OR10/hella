@@ -12,6 +12,9 @@ class ViewerTitleBarDirective {
       user: '=',
       userPermissions: '=',
       selectedPaperShape: '=',
+      framePosition: '=',
+      labeledThingsInFrame: '=',
+      thingLayer: '=',
       readOnly: '@',
     };
 

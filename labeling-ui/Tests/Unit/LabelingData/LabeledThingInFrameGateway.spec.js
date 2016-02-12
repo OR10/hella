@@ -348,4 +348,28 @@ describe('LabeledThingInFrameGateway', () => {
       $httpBackend.flush();
     });
   });
+
+  it('should fetch the next incomplete LabeledThingInFrame', done => {
+    const task = {id: 'someTaskId234'};
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame?incompleteOnly=true&limit=1`;
+
+    const response = [{
+      frameNumber: 1,
+      classes: [],
+      incomplete: true,
+      ghost: false
+    }];
+
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, {result: response});
+
+    gateway.getNextIncomplete(task)
+      .then(result => {
+        expect(result).toEqual(response);
+        done();
+      });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
 });

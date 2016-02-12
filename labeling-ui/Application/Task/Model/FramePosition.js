@@ -30,6 +30,58 @@ class FramePosition {
      * @private
      */
     this._position = position;
+
+    /**
+     * Frame change subscribers
+     *
+     * @type {Object}
+     */
+    this.subscribers = {};
+
+    /**
+     * Subscriber locks
+     *
+     * @type {Array<string>}
+     */
+    this.locks = [];
+
+    /**
+     * Callbacks that are called if a frame change is complete
+     *
+     * @type {Object}
+     */
+    this.completeCallbacks = {};
+  }
+
+  onFrameChange(name, callback) {
+    this.subscribers[name] = callback;
+  }
+
+  onFrameChangeComplete(name, callback) {
+    this.completeCallbacks[name] = callback;
+  }
+
+  _frameChange() {
+    this.locks = Object.keys(this.subscribers);
+    Object.keys(this.subscribers).forEach((name) => {
+      const funct = this.subscribers[name];
+      funct(this._freeLock.bind(this, name), this._position);
+    })
+  }
+
+  _frameChangeComplete() {
+    Object.keys(this.completeCallbacks).forEach((name) => {
+      const funct = this.completeCallbacks[name];
+      funct(this._position);
+    });
+    this.completeCallbacks = {};
+  }
+
+  _freeLock(name) {
+    this.locks.splice(this.locks.indexOf(name), 1);
+    if (this.locks.length === 0) {
+      this._frameChangeComplete()
+    }
   }
 
   /**
@@ -44,13 +96,17 @@ class FramePosition {
    * Jump to a specific position within this FrameRange.
    * @param {int} newPosition
    */
-  goto(newPosition) {
+  goto(newPosition, notifySubscribers = false) {
+    const oldPosition = this._position;
     if (newPosition < this.startFrameNumber) {
       this._position = this.startFrameNumber;
     } else if (newPosition > this.endFrameNumber) {
       this._position = this.endFrameNumber;
     } else {
       this._position = newPosition;
+    }
+    if (newPosition !== oldPosition || notifySubscribers) {
+      this._frameChange()
     }
   }
 
@@ -95,7 +151,7 @@ class FramePosition {
   /**
    * Jump by a give amount in forwards position (positive amount)
    * or in backwards postition (negative amount)
-   * 
+   *
    * @param amount
    */
   jumpBy(amount) {

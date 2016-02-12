@@ -101,10 +101,12 @@ class PaperShapeFactory {
    */
   createPaperShape(labeledThingInFrame, shape) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
+    let result;
 
     switch (shape.type) {
       case 'rectangle':
-        return this._createRectangle(labeledThingInFrame, shape, color);
+        result = this._createRectangle(labeledThingInFrame, shape, color);
+        break;
       case 'ellipse':
         return this._createEllipse(labeledThingInFrame, shape, color);
       case 'circle':
@@ -120,6 +122,8 @@ class PaperShapeFactory {
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }
+    labeledThingInFrame.paperShapes.push(result);
+    return result;
   }
 }
 
