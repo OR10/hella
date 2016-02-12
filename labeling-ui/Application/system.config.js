@@ -55,6 +55,7 @@ System.config({
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
+    "lodash": "npm:lodash@4.3.0",
     "lodash.debounce": "npm:lodash.debounce@3.1.1",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "raf": "npm:raf@3.1.0",

@@ -11,7 +11,7 @@ class LabeledThingInFrameGateway {
    * @param {$q} $q
    * @param {$http} $http
    * @param {LabeledThingGateway} labeledThingGateway
-   * @param {DataContainer} labeledThingInFrameData
+   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    * @param {DataContainer} labeledThingData
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
@@ -44,7 +44,7 @@ class LabeledThingInFrameGateway {
     this._labeledThingGateway = labeledThingGateway;
 
     /**
-     * @type {DataContainer}
+     * @type {LabeledThingInFrameDataContainer}
      * @private
      */
     this._labeledThingInFrameData = labeledThingInFrameData;
@@ -187,7 +187,7 @@ class LabeledThingInFrameGateway {
    *
    * @returns {AbortablePromise<LabeledThingInFrame>|Error}
    */
-  getNextIncomplete(task, count = 1){
+  getNextIncomplete(task, count = 1) {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame`,
       {
@@ -248,6 +248,10 @@ class LabeledThingInFrameGateway {
     );
 
     this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
+
+    if (!Array.isArray(labeledThingInFrame.classes) || labeledThingInFrame.classes.length === 0) {
+      delete labeledThingInFrame.classes;
+    }
 
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {

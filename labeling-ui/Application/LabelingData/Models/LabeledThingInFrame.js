@@ -1,4 +1,5 @@
 import LabeledObject from './LabeledObject';
+import _ from 'lodash';
 
 /**
  * Model for a LabeledThingInFrame
@@ -7,7 +8,7 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledThingInFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, frameNumber: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
+   * @param {{id: string, classes: Array.<string>, ghostClasses: Array.<string>, incomplete: boolean, frameNumber: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
    */
   constructor(labeledThingInFrame) {
     super(labeledThingInFrame);
@@ -47,6 +48,13 @@ class LabeledThingInFrame extends LabeledObject {
      * @type {Array}
      */
     this.paperShapes = [];
+
+    /**
+     * The ghost labels inherited from earlier labels
+     *
+     * @type {Array.<String>}
+     */
+    this.ghostClasses = labeledThingInFrame.ghostClasses;
   }
 
   /**
@@ -81,6 +89,22 @@ class LabeledThingInFrame extends LabeledObject {
     this.frameNumber = frameNumber;
   }
 
+  persistClasses() {
+    if (!Array.isArray(this.classes)) {
+      return false;
+    }
+    if (this.classes.length === 0) {
+      return false;
+    }
+    if (Array.isArray(this.ghostClasses)) {
+      if (_.isEqual(this.classes.sort(), this.ghostClasses.sort())) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   /**
    * Convert this model into a datastructure suitable for backend storage
    *
@@ -88,10 +112,14 @@ class LabeledThingInFrame extends LabeledObject {
    */
   toJSON() {
     const {frameNumber, labeledThing, shapes, ghost} = this;
-    return Object.assign(super.toJSON(), {
+    let result = Object.assign(super.toJSON(), {
       frameNumber, shapes, ghost,
       labeledThingId: labeledThing.id,
     });
+    if (!this.persistClasses()) {
+      delete result.classes;
+    }
+    return result;
   }
 }
 

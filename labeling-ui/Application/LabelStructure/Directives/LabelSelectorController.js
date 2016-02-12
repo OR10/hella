@@ -169,11 +169,21 @@ export default class LabelSelectorController {
    * @private
    */
   _generateLinearList() {
-    const labels = this.labeledObject.classes || [];
+    const labels = this._getClasses(this.labeledObject);
     const linearStructure = this._linearLabelStructureVisitor.visit(this.structure, labels);
     const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this.annotation);
 
     return annotatedStructure.children;
+  }
+
+  _getClasses() {
+    if (Array.isArray(this.labeledObject.classes) && this.labeledObject.classes.length) {
+      return this.labeledObject.classes;
+    }
+    if (Array.isArray(this.labeledObject.ghostClasses) && this.labeledObject.ghostClasses.length) {
+      return this.labeledObject.ghostClasses;
+    }
+    return [];
   }
 
   /**
