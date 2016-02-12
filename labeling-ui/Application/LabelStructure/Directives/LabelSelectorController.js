@@ -177,10 +177,10 @@ export default class LabelSelectorController {
   }
 
   _getClasses() {
-    if (Array.isArray(this.labeledObject.classes) && this.labeledObject.classes.length) {
+    if (this.labeledObject.classes.length) {
       return this.labeledObject.classes;
     }
-    if (Array.isArray(this.labeledObject.ghostClasses) && this.labeledObject.ghostClasses.length) {
+    if (this.labeledObject.ghostClasses.length) {
       return this.labeledObject.ghostClasses;
     }
     return [];

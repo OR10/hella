@@ -1,5 +1,4 @@
 import LabeledObject from './LabeledObject';
-import _ from 'lodash';
 
 /**
  * Model for a LabeledThingInFrame
@@ -89,22 +88,6 @@ class LabeledThingInFrame extends LabeledObject {
     this.frameNumber = frameNumber;
   }
 
-  persistClasses() {
-    if (!Array.isArray(this.classes)) {
-      return false;
-    }
-    if (this.classes.length === 0) {
-      return false;
-    }
-    if (Array.isArray(this.ghostClasses)) {
-      if (_.isEqual(this.classes.sort(), this.ghostClasses.sort())) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   /**
    * Convert this model into a datastructure suitable for backend storage
    *
@@ -112,14 +95,18 @@ class LabeledThingInFrame extends LabeledObject {
    */
   toJSON() {
     const {frameNumber, labeledThing, shapes, ghost} = this;
-    let result = Object.assign(super.toJSON(), {
-      frameNumber, shapes, ghost,
-      labeledThingId: labeledThing.id,
-    });
-    if (!this.persistClasses()) {
-      delete result.classes;
+    // Only send shapes with the data to the backend if they have been set in the frontend
+    if (shapes) {
+      return Object.assign(super.toJSON(), {
+        frameNumber, shapes, ghost,
+        labeledThingId: labeledThing.id,
+      });
+    } else {
+      return Object.assign(super.toJSON(), {
+        frameNumber, ghost,
+        labeledThingId: labeledThing.id,
+      });
     }
-    return result;
   }
 }
 
