@@ -1,8 +1,8 @@
 <div class="popup-panel">
     <div ng-show="vm.popupPanelState=='videosettings'" class="grid-block settings vertical">
         <div class="grid-block align-center">
-            <div class="grid-content small-12 noscroll text-uppercase">Brightness</div>
-            <div class="grid-content small-12 text-right noscroll">
+            <div class="grid-content small-14 noscroll text-uppercase">Brightness <small ng-click="vm.brightnessSliderValue = 0" style="cursor: not-allowed;">({{vm.brightnessSliderValue}})</small></div>
+            <div class="grid-content small-10 text-right noscroll">
                 <input ng-model="vm.brightnessSliderValue"
                        type="range"
                        min="-150"
@@ -12,8 +12,8 @@
             </div>
         </div>
         <div class="grid-block align-center">
-            <div class="grid-content small-12 noscroll text-uppercase">Contrast</div>
-            <div class="grid-content small-12 text-right noscroll">
+            <div class="grid-content small-14 noscroll text-uppercase">Contrast <small ng-click="vm.contrastSliderValue = 0" style="cursor: not-allowed;">({{vm.contrastSliderValue}})</small></div>
+            <div class="grid-content small-10 text-right noscroll">
                 <input ng-model="vm.contrastSliderValue"
                        type="range"
                        min="-255"
