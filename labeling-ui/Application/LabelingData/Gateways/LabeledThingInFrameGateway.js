@@ -11,7 +11,7 @@ class LabeledThingInFrameGateway {
    * @param {$q} $q
    * @param {$http} $http
    * @param {LabeledThingGateway} labeledThingGateway
-   * @param {DataContainer} labeledThingInFrameData
+   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
    * @param {DataContainer} labeledThingData
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
@@ -44,7 +44,7 @@ class LabeledThingInFrameGateway {
     this._labeledThingGateway = labeledThingGateway;
 
     /**
-     * @type {DataContainer}
+     * @type {LabeledThingInFrameDataContainer}
      * @private
      */
     this._labeledThingInFrameData = labeledThingInFrameData;
@@ -249,7 +249,7 @@ class LabeledThingInFrameGateway {
 
     this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
 
-    if (labeledThingInFrame.classes === null) {
+    if (!Array.isArray(labeledThingInFrame.classes) || labeledThingInFrame.classes.length === 0) {
       delete labeledThingInFrame.classes;
     }
 
