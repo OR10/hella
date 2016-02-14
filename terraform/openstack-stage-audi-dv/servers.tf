@@ -15,7 +15,7 @@ resource "openstack_compute_instance_v2" "app-server" {
     fixed_ip_v4 = "192.168.217.214"
   }
   image_name = "trusty-annostation"
-  flavor_name = "m1.small"
+  flavor_name = "m1.large"
   security_groups = ["default"]
 
   user_data = "${template_file.user_data.rendered}"
