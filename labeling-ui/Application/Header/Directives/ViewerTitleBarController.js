@@ -115,6 +115,10 @@ class ViewerTitleBarController {
             alert.activate();
           }
         });
+      },
+      () => {
+        this._applicationState.viewer.finish();
+        this._applicationState.enableAll();
       }
     );
     modal.activate();
