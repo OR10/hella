@@ -97,7 +97,7 @@ describe('LabeledThingInFrameGateway', () => {
     bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
   });
 
-  it('should save a labeled thing in frame', done => {
+  it('should save a labeled thing in frame without classes', done => {
     const labeledThingInFrame = new LabeledThingInFrame({
       id: 'abc',
       rev: 'bcd',
@@ -119,7 +119,60 @@ describe('LabeledThingInFrameGateway', () => {
           id: 'abc',
           rev: 'bcd',
           shapes: [{type: 'rectangle'}],
+          incomplete: true,
+          frameNumber: 23,
+          ghost: false,
+          labeledThingId: 'some-labeled-thing-id',
+        },
+        labeledThing: {
+          taskId: 'task-xyz',
+          id: 'some-labeled-thing-id',
+          rev: '2-abc',
           classes: [],
+          incomplete: false,
+          frameRange: undefined,
+          lineColor: undefined,
+        },
+      },
+    };
+
+    $httpBackend
+      .expect('PUT', expectedUrl)
+      .respond(200, expectedResult);
+
+    gateway.saveLabeledThingInFrame(labeledThingInFrame)
+      .then(result => {
+        expect(result.toJSON()).toEqual(expectedResult.result.labeledThingInFrame);
+        expect(result.labeledThing.toJSON()).toEqual(expectedResult.result.labeledThing);
+        done();
+      });
+
+    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+  });
+
+  it('should save a labeled thing in frame with classes', done => {
+    const labeledThingInFrame = new LabeledThingInFrame({
+      id: 'abc',
+      rev: 'bcd',
+      shapes: [{type: 'rectangle'}],
+      classes: ['a', 'b'],
+      incomplete: true,
+      frameNumber: 23,
+      ghost: false,
+      labeledThing: new LabeledThing({
+        id: 'some-labeled-thing-id',
+        task: {id: 'task-xyz'},
+      }),
+    });
+
+    const expectedUrl = `/backend/api/labeledThingInFrame/${labeledThingInFrame.id}`;
+    const expectedResult = {
+      result: {
+        labeledThingInFrame: {
+          id: 'abc',
+          rev: 'bcd',
+          shapes: [{type: 'rectangle'}],
+          classes: ['a', 'b'],
           incomplete: true,
           frameNumber: 23,
           ghost: false,
