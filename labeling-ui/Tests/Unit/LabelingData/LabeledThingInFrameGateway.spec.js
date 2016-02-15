@@ -345,7 +345,7 @@ describe('LabeledThingInFrameGateway', () => {
           done();
         });
 
-      $httpBackend.flush();
+      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
     });
   });
 
