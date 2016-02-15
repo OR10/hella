@@ -82,7 +82,7 @@ class LabeledThingInFrameGateway {
       return Promise.resolve([]);
     }
 
-    return this._$http.get(url).then(response => this._associateWithLabeledThings(task, response.data.result));
+    return this.bufferedHttp.get(url, 'labeledThingInFrame-bulk').then(response => this._associateWithLabeledThings(task, response.data.result));
   }
 
   /**
