@@ -233,6 +233,17 @@ class LabeledThingInFrame extends Controller\Base
             );
         }
 
+        $result = array_map(function($labeledThingInFrame) {
+            if (empty($labeledThingInFrame->getClasses())) {
+                $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+                if ($previousClasses instanceof Model\LabeledThingInFrame) {
+                    $labeledThingInFrame->setGhostClasses($previousClasses->getClasses());
+                }
+            }
+
+            return $labeledThingInFrame;
+        }, $result);
+
         return View\View::create()->setData(['result' => $result]);
     }
 
