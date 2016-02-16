@@ -350,7 +350,7 @@ class ViewerController {
     );
 
     $scope.$watch('vm.selectedPaperShape', (newShape) => {
-      if (newShape) {
+      if (newShape && !newShape.isDraft) {
         this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
       }
     });
@@ -372,7 +372,7 @@ class ViewerController {
           });
         }
       }
-    );
+    )
 
     const panViewportDebounced = animationFrameService.debounce((newCenter) => this._panTo(newCenter));
 
