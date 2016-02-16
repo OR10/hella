@@ -25,7 +25,7 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    */
-  constructor($scope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway) {
+  constructor($scope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway, dataPrefetcher) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -112,6 +112,11 @@ export default class LabelSelectorController {
      * @type {Object}
      */
     this.accordionControl = {};
+
+    /**
+     * @type {DataPrefetcher}
+     */
+    this._dataPrefetcher = dataPrefetcher;
 
     // Handle changes of `labeledObject`s
     $scope.$watch('vm.labeledObject', (newLabeledObject, oldLabeledObject) => {
@@ -268,7 +273,14 @@ export default class LabelSelectorController {
 
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(
       labeledThingInFrame
-    );
+    ).then(() => {
+      this._dataPrefetcher.prefetchSingleLabeledThing(
+        this.task,
+        labeledThingInFrame.labeledThing,
+        labeledThingInFrame.labeledThing.frameRange.startFrameNumber,
+        true
+      );
+    });
   }
 
   /**
@@ -350,4 +362,5 @@ LabelSelectorController.$inject = [
   'modalService',
   'applicationState',
   'taskGateway',
+  'dataPrefetcher',
 ];

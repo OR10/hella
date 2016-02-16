@@ -11,7 +11,7 @@ class LabeledThingInFrameGateway {
    * @param {$q} $q
    * @param {$http} $http
    * @param {LabeledThingGateway} labeledThingGateway
-   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
+   * @param {DataContainer} labeledThingInFrameData
    * @param {DataContainer} labeledThingData
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
@@ -44,7 +44,7 @@ class LabeledThingInFrameGateway {
     this._labeledThingGateway = labeledThingGateway;
 
     /**
-     * @type {LabeledThingInFrameDataContainer}
+     * @type {DataContainer}
      * @private
      */
     this._labeledThingInFrameData = labeledThingInFrameData;
@@ -243,15 +243,18 @@ class LabeledThingInFrameGateway {
       );
     }
 
+    this._labeledThingInFrameData.invalidateLabeledThing(labeledThingInFrame.labeledThing);
+    this._labeledThingData.invalidate(labeledThingInFrame.labeledThing.id);
+
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
-    this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
-
     if (!Array.isArray(labeledThingInFrame.classes) || labeledThingInFrame.classes.length === 0) {
       delete labeledThingInFrame.classes;
     }
+
+    this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
 
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
       .then(response => {
