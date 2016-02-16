@@ -125,6 +125,14 @@ describe('BufferedHttp', () => {
     });
   });
 
+  it('should parallelize non destructive http requests', () => {
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.get('http://foo.bar/baz');
+
+    expect($http.calls.count()).toBe(3);
+  });
+
   // @TODO: More tests needed here
   // - buffering
   // - usage of entityManager
