@@ -102,14 +102,15 @@ class BufferedHttpProvider {
      */
     function _handleNextNonDestructive(buffer) {
       if (buffer.writeLock.isLocked) {
-        console.log("wait for non-destructive until write is finished.");
-        return;
+        logger.log('bufferedHttp:lock', 'Waiting for write operation to be finished before executing non-destructive request');
+        return false;
       }
 
       const nextInLine = buffer.queue.shift();
       buffer.readLock.acquire();
-      console.log("execute non-destructive.");
+      logger.log('bufferedHttp:execution', 'Executing queued operation: %s', nextInLine.method);
       nextInLine.execute(() => buffer.readLock.release());
+      return true;
     }
 
     /**
@@ -120,14 +121,15 @@ class BufferedHttpProvider {
      */
     function _handleNextDestructive(buffer) {
       if (buffer.readLock.isLocked || buffer.writeLock.isLocked) {
-        console.log("wait for destructive until read/write is finished.");
-        return;
+        logger.log('bufferedHttp:lock', 'Waiting for read/write operation to be finished before executing destructive request');
+        return false;
       }
 
       const nextInLine = buffer.queue.shift();
       buffer.writeLock.acquire();
-      console.log("execute destructive.");
+      logger.log('bufferedHttp:execution', 'Executing queued operation: %s', nextInLine.method);
       nextInLine.execute(() => buffer.writeLock.release());
+      return true;
     }
 
     /**
@@ -143,13 +145,19 @@ class BufferedHttpProvider {
 
       const nextInLine = buffer.queue[0];
 
+      let handled = false;
       switch (nextInLine.method) {
         case 'GET':
         case 'HEAD':
-          _handleNextNonDestructive(buffer);
+          handled = _handleNextNonDestructive(buffer);
           break;
         default:
-          _handleNextDestructive(buffer);
+          handled = _handleNextDestructive(buffer);
+      }
+
+      if (handled) {
+        // Look if we can handle the next one as well
+        _handleNext(buffer);
       }
     }
 
@@ -274,7 +282,6 @@ class BufferedHttpProvider {
      * @return {AbortablePromise}
      */
     const bufferedHttp = function BufferedHttp(options, bufferName = 'default') { // eslint-disable-line no-extra-bind
-      console.log("register $http operation", options);
       let timeoutDeferred;
       if (options.timeout) {
         timeoutDeferred = _createTimeoutDeferred(options.timeout);
@@ -286,6 +293,7 @@ class BufferedHttpProvider {
       return abortable($q((resolveExternal, rejectExternal) => {
         const buffer = _getBuffer(bufferName);
 
+        logger.log('bufferedHttp:queue', 'Queuing operation: %s %s', options.method, options.url);
         buffer.queue.push({
           method: options.method,
           execute: (resolveInternal) => {
@@ -293,14 +301,12 @@ class BufferedHttpProvider {
               _injectRevision(options.data);
             }
 
-            console.log("Executing http: ", options);
             $http(options)
               .then(result => {
                 if (result && result.data && this._autoExtractInject) {
                   _extractRevision(result.data);
                 }
                 resolveInternal();
-                console.log("resolve external: ", result);
                 resolveExternal(result);
               })
               .catch(error => {
@@ -345,6 +351,9 @@ class BufferedHttpProvider {
        * @returns {AbortablePromise}
        */
       bufferedHttp[method] = (url, config = {}, bufferName = 'default') => {
+        if(typeof config === 'string') {
+          throw new Error('Config is not allowed to be a string. Did you give me a bufferName as options?');
+        }
         const processedConfig = Object.assign({}, config, {url, method: method.toUpperCase()});
         return bufferedHttp(processedConfig, bufferName);
       };
@@ -377,6 +386,9 @@ class BufferedHttpProvider {
        * @returns {AbortablePromise}
        */
       bufferedHttp[method] = (url, data, config = {}, bufferName = 'default') => {
+        if(typeof config === 'string') {
+          throw new Error('Config is not allowed to be a string. Did you give me a bufferName as options?');
+        }
         const processedConfig = Object.assign({}, config, {url, data, method: method.toUpperCase()});
         return bufferedHttp(processedConfig, bufferName);
       };
