@@ -48,15 +48,6 @@ class BufferedHttpProvider {
   }
 
   /**
-   * Enable the exposure of a `flushBuffers` method
-   *
-   * This is useful for tests, which need to wait until all `$http` calls have been processed
-   */
-  enableFlushFunctionality() {
-    this._flushExposed = true;
-  }
-
-  /**
    * Create a BufferedHttp implementation and return it.
    *
    * @param {angular.$q} $q
@@ -393,14 +384,6 @@ class BufferedHttpProvider {
         return bufferedHttp(processedConfig, bufferName);
       };
     });
-
-    if (this._flushExposed) {
-      /**
-       * Flush all buffers returning a Promise fulfilled once all current buffers are flushed
-       * @returns {Promise}
-       */
-      bufferedHttp.flushBuffers = () => Promise.resolve();
-    }
 
     return bufferedHttp;
   }

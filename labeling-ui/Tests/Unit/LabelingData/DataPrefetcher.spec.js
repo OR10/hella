@@ -31,7 +31,6 @@ describe('DataPrefetcher', () => {
         },
       });
 
-      bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
 
       labeledThingInFrameGateway = {};
