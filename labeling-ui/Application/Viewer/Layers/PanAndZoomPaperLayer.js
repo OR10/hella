@@ -20,9 +20,7 @@ class PanAndZoomPaperLayer extends PaperLayer {
   attachToDom(element) {
     super.attachToDom(element);
 
-    this._context.withScope(scope => {
-      this._panAndZoom = new PanAndZoom(scope.view);
-    });
+    this._panAndZoom = new PanAndZoom(this._context);
   }
 
   setZoom(zoom, focalPoint = null) {
@@ -38,6 +36,7 @@ class PanAndZoomPaperLayer extends PaperLayer {
 
     this._panAndZoom.zoom(newZoom, focalPoint);
   }
+
   /**
    * Zoom the view in on the given point
    */
