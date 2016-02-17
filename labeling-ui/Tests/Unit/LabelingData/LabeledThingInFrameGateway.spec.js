@@ -41,7 +41,6 @@ describe('LabeledThingInFrameGateway', () => {
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
-      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -94,7 +93,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should save a labeled thing in frame without classes', done => {
@@ -147,7 +146,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should save a labeled thing in frame with classes', done => {
@@ -201,7 +200,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should error if trying to save a Ghosted LabeledThingInFrame', done => {
@@ -238,7 +237,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   using([
@@ -263,7 +262,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 
@@ -289,7 +288,7 @@ describe('LabeledThingInFrameGateway', () => {
       gateway.listLabeledThingInFrame(task, frameNumber)
         .then(done);
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 
@@ -319,7 +318,7 @@ describe('LabeledThingInFrameGateway', () => {
           done();
         });
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 
@@ -398,7 +397,7 @@ describe('LabeledThingInFrameGateway', () => {
           done();
         });
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 
@@ -423,6 +422,6 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 });

@@ -60,7 +60,7 @@ class LabeledFrameGateway {
       `/task/${taskId}/labeledFrame/${frameNumber}`
     );
 
-    return this._bufferedHttp.put(url, labeledFrame, 'labeledFrame')
+    return this._bufferedHttp.put(url, labeledFrame, undefined, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledFrame(response.data.result);

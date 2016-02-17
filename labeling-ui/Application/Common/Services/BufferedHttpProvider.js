@@ -48,15 +48,6 @@ class BufferedHttpProvider {
   }
 
   /**
-   * Enable the exposure of a `flushBuffers` method
-   *
-   * This is useful for tests, which need to wait until all `$http` calls have been processed
-   */
-  enableFlushFunctionality() {
-    this._flushExposed = true;
-  }
-
-  /**
    * Create a BufferedHttp implementation and return it.
    *
    * @param {angular.$q} $q
@@ -64,10 +55,11 @@ class BufferedHttpProvider {
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortable
    * @param {LoggerService} logger
+   * @param {LockService} lockService
    */
-  $get($q, $http, revisionManager, abortable, logger) {
+  $get($q, $http, revisionManager, abortable, logger, lockService) {
     if (this._bufferedHttp === null) {
-      this._bufferedHttp = this.createBufferedHttp($q, $http, revisionManager, abortable, logger);
+      this._bufferedHttp = this.createBufferedHttp($q, $http, revisionManager, abortable, logger, lockService);
     }
 
     return this._bufferedHttp;
@@ -81,15 +73,84 @@ class BufferedHttpProvider {
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortable
    * @param {LoggerService} logger
+   * @param {LockService} lockService
    */
-  createBufferedHttp($q, $http, revisionManager, abortable, logger) {
+  createBufferedHttp($q, $http, revisionManager, abortable, logger, lockService) {
     /**
-     * Mapping between buffer names and their corresponding Buffer Promise
+     * Mapping between buffer names and their corresponding Buffer Object
      *
-     * @type {Map.<string, {promise: Promise}>}
+     * @type {Map.<string, {queue: Array.<Function>, readLock: ReferenceCountingLock, writeLock: ReferenceCountingLock}>}
      * @private
      */
     const _buffers = new Map();
+
+
+    /**
+     * Handle non destructive operations
+     *
+     * @param {{queue: Array.<Function>, readLock: ReferenceCountingLock, writeLock: ReferenceCountingLock}} buffer
+     * @private
+     */
+    function _handleNextNonDestructive(buffer) {
+      if (buffer.writeLock.isLocked) {
+        logger.log('bufferedHttp:lock', 'Waiting for write operation to be finished before executing non-destructive request');
+        return false;
+      }
+
+      const nextInLine = buffer.queue.shift();
+      buffer.readLock.acquire();
+      logger.log('bufferedHttp:execution', 'Executing queued operation: %s', nextInLine.method);
+      nextInLine.execute(() => buffer.readLock.release());
+      return true;
+    }
+
+    /**
+     * Handle destructive operations
+     *
+     * @param {{queue: Array.<Function>, readLock: ReferenceCountingLock, writeLock: ReferenceCountingLock}} buffer
+     * @private
+     */
+    function _handleNextDestructive(buffer) {
+      if (buffer.readLock.isLocked || buffer.writeLock.isLocked) {
+        logger.log('bufferedHttp:lock', 'Waiting for read/write operation to be finished before executing destructive request');
+        return false;
+      }
+
+      const nextInLine = buffer.queue.shift();
+      buffer.writeLock.acquire();
+      logger.log('bufferedHttp:execution', 'Executing queued operation: %s', nextInLine.method);
+      nextInLine.execute(() => buffer.writeLock.release());
+      return true;
+    }
+
+    /**
+     * Handle invocation or wait for next operation based on a buffers queue
+     *
+     * @param {{queue: Array.<Function>, readLock: ReferenceCountingLock, writeLock: ReferenceCountingLock}} buffer
+     * @private
+     */
+    function _handleNext(buffer) {
+      if (buffer.queue.length === 0) {
+        return;
+      }
+
+      const nextInLine = buffer.queue[0];
+
+      let handled = false;
+      switch (nextInLine.method) {
+        case 'GET':
+        case 'HEAD':
+          handled = _handleNextNonDestructive(buffer);
+          break;
+        default:
+          handled = _handleNextDestructive(buffer);
+      }
+
+      if (handled) {
+        // Look if we can handle the next one as well
+        _handleNext(buffer);
+      }
+    }
 
     /**
      * Get the buffer with a specific name
@@ -102,7 +163,13 @@ class BufferedHttpProvider {
      */
     function _getBuffer(name) {
       if (!_buffers.has(name)) {
-        _buffers.set(name, {promise: Promise.resolve()});
+        const buffer = {
+          queue: [],
+          readLock: lockService.createRefCountLock(() => _handleNext(buffer)),
+          writeLock: lockService.createRefCountLock(() => _handleNext(buffer)),
+        };
+
+        _buffers.set(name, buffer);
       }
 
       return _buffers.get(name);
@@ -214,22 +281,33 @@ class BufferedHttpProvider {
       }
       options.timeout = timeoutDeferred.promise;
 
-      return abortable($q((resolve, reject) => {
+      return abortable($q((resolveExternal, rejectExternal) => {
         const buffer = _getBuffer(bufferName);
-        buffer.promise = buffer.promise.then(() => {
-          if (options.data && this._autoExtractInject) {
-            _injectRevision(options.data);
-          }
 
-          $http(options)
-            .then(result => {
-              if (result && result.data && this._autoExtractInject) {
-                _extractRevision(result.data);
-              }
-              resolve(result);
-            })
-            .catch(reject);
+        logger.log('bufferedHttp:queue', 'Queuing operation: %s %s', options.method, options.url);
+        buffer.queue.push({
+          method: options.method,
+          execute: (resolveInternal) => {
+            if (options.data && this._autoExtractInject) {
+              _injectRevision(options.data);
+            }
+
+            $http(options)
+              .then(result => {
+                if (result && result.data && this._autoExtractInject) {
+                  _extractRevision(result.data);
+                }
+                resolveInternal();
+                resolveExternal(result);
+              })
+              .catch(error => {
+                resolveInternal();
+                rejectExternal(error);
+              });
+          },
         });
+
+        _handleNext(buffer);
       }), timeoutDeferred);
     }.bind(this);
 
@@ -264,6 +342,9 @@ class BufferedHttpProvider {
        * @returns {AbortablePromise}
        */
       bufferedHttp[method] = (url, config = {}, bufferName = 'default') => {
+        if(typeof config === 'string') {
+          throw new Error('Config is not allowed to be a string. Did you give me a bufferName as options?');
+        }
         const processedConfig = Object.assign({}, config, {url, method: method.toUpperCase()});
         return bufferedHttp(processedConfig, bufferName);
       };
@@ -296,24 +377,13 @@ class BufferedHttpProvider {
        * @returns {AbortablePromise}
        */
       bufferedHttp[method] = (url, data, config = {}, bufferName = 'default') => {
+        if(typeof config === 'string') {
+          throw new Error('Config is not allowed to be a string. Did you give me a bufferName as options?');
+        }
         const processedConfig = Object.assign({}, config, {url, data, method: method.toUpperCase()});
         return bufferedHttp(processedConfig, bufferName);
       };
     });
-
-    if (this._flushExposed) {
-      /**
-       * Flush all buffers returning a Promise fulfilled once all current buffers are flushed
-       * @returns {Promise}
-       */
-      bufferedHttp.flushBuffers = () => {
-        const flushPromises = [];
-        _buffers.forEach((buffer) => {
-          flushPromises.push(buffer.promise);
-        });
-        return Promise.all(flushPromises);
-      };
-    }
 
     return bufferedHttp;
   }
@@ -325,6 +395,7 @@ BufferedHttpProvider.prototype.$get.$inject = [
   'revisionManager',
   'abortablePromiseFactory',
   'loggerService',
+  'lockService',
 ];
 
 export default BufferedHttpProvider;

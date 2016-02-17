@@ -84,7 +84,7 @@ class UserGateway {
    */
   createUser(user) {
     const url = this._apiService.getApiUrl(`/users`);
-    return this._bufferedHttp.post(url, user, 'user')
+    return this._bufferedHttp.post(url, user, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
           throw new Error(`Failed creating user ${user.id}`);
@@ -103,7 +103,7 @@ class UserGateway {
    */
   updateUser(user) {
     const url = this._apiService.getApiUrl(`/users/${user.id}`);
-    return this._bufferedHttp.put(url, user, 'user')
+    return this._bufferedHttp.put(url, user, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
           throw new Error(`Failed updating user ${user.id}`);
@@ -144,7 +144,7 @@ class UserGateway {
       oldPassword: oldPassword,
       newPassword: newPassword
     };
-    return this._bufferedHttp.put(url, data, 'user')
+    return this._bufferedHttp.put(url, data, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.success) {
           throw new Error(`Failed setting password`);

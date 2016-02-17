@@ -32,7 +32,6 @@ describe('LabeledThingGateway', () => {
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
-      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -70,7 +69,7 @@ describe('LabeledThingGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should save a labeled thing', done => {
@@ -98,7 +97,7 @@ describe('LabeledThingGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should delete a labeled thing', done => {
@@ -128,7 +127,7 @@ describe('LabeledThingGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should receive the labeled thing incomplete count', (done) => {
@@ -143,7 +142,7 @@ describe('LabeledThingGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
 });

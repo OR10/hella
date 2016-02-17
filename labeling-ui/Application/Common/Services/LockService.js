@@ -1,3 +1,4 @@
+import ReferenceCountingLock from '../Support/ReferenceCountingLock';
 /**
  * Service providing synchronization for operations on resources similar to a semaphore
  */
@@ -40,6 +41,10 @@ class LockService {
     this._locks.set(lockId, lock);
 
     return lock;
+  }
+
+  createRefCountLock(onReleased) {
+    return new ReferenceCountingLock(this._$q, onReleased);
   }
 }
 

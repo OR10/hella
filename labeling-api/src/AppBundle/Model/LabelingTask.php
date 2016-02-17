@@ -97,7 +97,7 @@ class LabelingTask
     private $drawingTool;
 
     /**
-     * @var string|null
+     * @var int|null
      * @CouchDB\Field(type="mixed")
      */
     private $assignedUser = null;
@@ -290,21 +290,20 @@ class LabelingTask
     }
 
     /**
-     * @return null|string
+     * @return null|int
      */
-    public function getAssignedUser()
+    public function getAssignedUserId()
     {
         return $this->assignedUser;
     }
 
     /**
-     * @param User $user
+     * @param $userId
      * @return LabelingTask
-     *
      */
-    public function setAssignedUser(User $user)
+    public function setAssignedUser($userId)
     {
-        $this->assignedUser = $user->getId();
+        $this->assignedUser = $userId;
 
         return $this;
     }

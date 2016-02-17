@@ -24,7 +24,6 @@ describe('TaskFrameLocationGateway', () => {
         },
       });
 
-      bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
@@ -54,7 +53,7 @@ describe('TaskFrameLocationGateway', () => {
     gateway.getFrameLocations(taskId, type)
       .then(done);
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   using([
@@ -91,7 +90,7 @@ describe('TaskFrameLocationGateway', () => {
       gateway.getFrameLocations(taskId, type, offset, limit)
         .then(done);
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
 
     it('should receive the extracted response', done => {
@@ -105,7 +104,7 @@ describe('TaskFrameLocationGateway', () => {
           done();
         });
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 
@@ -132,7 +131,7 @@ describe('TaskFrameLocationGateway', () => {
       gateway.getFrameLocations(taskId, type)
         .then(done);
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 
@@ -158,7 +157,7 @@ describe('TaskFrameLocationGateway', () => {
       gateway.getFrameLocations(taskId, type)
         .then(done);
 
-      bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+      $httpBackend.flush();
     });
   });
 });

@@ -24,7 +24,6 @@ describe('TaskGateway', () => {
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
-      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -66,7 +65,7 @@ describe('TaskGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should load a list of tasks with videos', (done) => {
@@ -99,7 +98,7 @@ describe('TaskGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should load information for a single task', (done) => {
@@ -114,7 +113,7 @@ describe('TaskGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should mark tasks as labeled', (done) => {
@@ -129,7 +128,7 @@ describe('TaskGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should mark tasks as waiting', (done) => {
@@ -144,6 +143,6 @@ describe('TaskGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 });

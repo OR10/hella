@@ -82,7 +82,9 @@ class LabeledThingInFrameGateway {
       return Promise.resolve([]);
     }
 
-    return this.bufferedHttp.get(url, 'labeledThingInFrame-bulk').then(response => this._associateWithLabeledThings(task, response.data.result));
+    return this.bufferedHttp.get(url, undefined, 'labeledThing').then(
+      response => this._associateWithLabeledThings(task, response.data.result)
+    );
   }
 
   /**
@@ -125,7 +127,7 @@ class LabeledThingInFrameGateway {
       return this._abortablePromiseFactory(this._$q.resolve(this._labeledThingInFrameData.get(frameNumber)));
     }
 
-    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
+    return this.bufferedHttp.get(url, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           return this._associateWithLabeledThings(task, response.data.result);
@@ -163,7 +165,7 @@ class LabeledThingInFrameGateway {
       `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThing.id}`,
       {offset, limit}
     );
-    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
+    return this.bufferedHttp.get(url, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           const labeledThingsInFrameData = response.data.result;
@@ -196,7 +198,7 @@ class LabeledThingInFrameGateway {
       }
     );
 
-    return this.bufferedHttp.get(url, undefined, 'labeledThingInFrame')
+    return this.bufferedHttp.get(url, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -256,7 +258,7 @@ class LabeledThingInFrameGateway {
 
     this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
 
-    return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThingInFrame')
+    return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           return new LabeledThingInFrame(
@@ -313,7 +315,7 @@ class LabeledThingInFrameGateway {
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrameId}`
     );
-    return this.bufferedHttp.delete(url, undefined, 'labeledThingInFrame')
+    return this.bufferedHttp.delete(url, undefined, 'labeledThing')
       .then(response => {
         if (response.data) {
           return true;

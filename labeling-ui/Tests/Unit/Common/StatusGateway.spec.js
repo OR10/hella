@@ -5,7 +5,7 @@ import Common from 'Application/Common/Common';
 
 import StatusGateway from 'Application/Common/Gateways/StatusGateway';
 
-describe('Status', () => {
+describe('StatusGateway', () => {
   let $httpBackend;
   let $timeout;
   let gateway;
@@ -25,7 +25,6 @@ describe('Status', () => {
         },
       });
 
-      bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
@@ -62,7 +61,7 @@ describe('Status', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should get status for errored jobs without failing', done => {
@@ -80,7 +79,7 @@ describe('Status', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should poll for jobs while not finished', done => {
@@ -90,41 +89,28 @@ describe('Status', () => {
     const resultInProgress = {result: statusInProgress};
     const resultFinished = {result: statusFinished};
 
-    const flush = (timeoutFlush = true) => bufferedHttp.flushBuffers()
-      .then(() => {
-        $httpBackend.flush();
-        if (timeoutFlush) {
-          return $timeout.flush();
-        }
+    gateway.waitForJob(job)
+      .then(result => {
+        expect(result).toEqual(statusFinished);
+        done();
       });
 
-    Promise.resolve()
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $httpBackend.flush();
 
-        gateway.waitForJob(job)
-          .then(result => {
-            expect(result).toEqual(statusFinished);
-            done();
-          });
-        return flush();
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $timeout.flush();
+    $httpBackend.flush();
 
-        return flush();
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultFinished);
-
-        return flush(false);
-      });
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultFinished);
+    $timeout.flush();
+    $httpBackend.flush();
   });
 
   it('should rejected failed jobs while polling', done => {
@@ -134,41 +120,28 @@ describe('Status', () => {
     const resultInProgress = {result: statusInProgress};
     const resultError = {result: statusError};
 
-    const flush = (timeoutFlush = true) => bufferedHttp.flushBuffers()
-      .then(() => {
-        $httpBackend.flush();
-        if (timeoutFlush) {
-          return $timeout.flush();
-        }
+    gateway.waitForJob(job)
+      .catch(result => {
+        expect(result).toEqual(statusError);
+        done();
       });
 
-    Promise.resolve()
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $httpBackend.flush();
 
-        gateway.waitForJob(job)
-          .catch(result => {
-            expect(result).toEqual(statusError);
-            done();
-          });
-        return flush();
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $timeout.flush();
+    $httpBackend.flush();
 
-        return flush();
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultError);
-
-        return flush(false);
-      });
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultError);
+    $timeout.flush();
+    $httpBackend.flush();
   });
 
   it('should only wait specified maxWait while polling for jobs to be finished', done => {
@@ -176,41 +149,27 @@ describe('Status', () => {
     const statusInProgress = {status: 'running'};
     const resultInProgress = {result: statusInProgress};
 
-    const flush = (timeoutFlush = true) => bufferedHttp.flushBuffers()
-      .then(() => {
-        $httpBackend.flush();
-        if (timeoutFlush) {
-          return $timeout.flush();
-        }
+    gateway.waitForJob(job, 7000)
+      .catch(() => {
+        done();
       });
 
-    Promise.resolve()
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $httpBackend.flush();
 
-        gateway.waitForJob(job, 7000)
-          .catch(() => {
-            done();
-          });
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $timeout.flush();
+    $httpBackend.flush();
 
-        return flush();
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
-
-        return flush();
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
-
-        return flush(false);
-      });
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $timeout.flush();
+    $httpBackend.flush();
   });
 
   it('should adhere to given interval', done => {
@@ -220,34 +179,22 @@ describe('Status', () => {
     const resultInProgress = {result: statusInProgress};
     const resultFinished = {result: statusFinished};
 
-    const flushHttp = () => bufferedHttp.flushBuffers()
-      .then(() => {
-        $httpBackend.flush();
+    gateway.waitForJob(job, 1000)
+      .then((result) => {
+        expect(result).toEqual(statusFinished);
+        done();
       });
 
-    Promise.resolve()
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultInProgress);
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultInProgress);
+    $httpBackend.flush();
+    $timeout.flush(800);
 
-        gateway.waitForJob(job, 1000)
-          .then((result) => {
-            expect(result).toEqual(statusFinished);
-            done();
-          });
-
-        return flushHttp().then(() => $timeout.flush(800));
-      })
-      .then(() => {
-        return $timeout.flush(500);
-      })
-      .then(() => {
-        $httpBackend
-          .expect('GET', expectedUrl)
-          .respond(200, resultFinished);
-
-        return flushHttp();
-      });
+    $httpBackend
+      .expect('GET', expectedUrl)
+      .respond(200, resultFinished);
+    $timeout.flush(500);
+    $httpBackend.flush();
   });
 });

@@ -24,7 +24,6 @@ describe('LabeledFrameGateway', () => {
         },
       });
 
-      bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
@@ -57,7 +56,7 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should save a labeled frame', done => {
@@ -77,7 +76,7 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
 
@@ -97,6 +96,6 @@ describe('LabeledFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 });

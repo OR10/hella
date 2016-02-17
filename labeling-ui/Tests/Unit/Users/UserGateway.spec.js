@@ -25,7 +25,6 @@ describe('UserGateway', () => {
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
-      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -51,7 +50,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should load a list of users', (done) => {
@@ -71,7 +70,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should load information for a single user', (done) => {
@@ -88,7 +87,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should create a new user', (done) => {
@@ -106,7 +105,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should update a user', (done) => {
@@ -124,7 +123,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should update a users password', (done) => {
@@ -142,7 +141,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should delete a user', (done) => {
@@ -160,7 +159,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should update currentUsers password', (done) => {
@@ -179,7 +178,7 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should return the users permissions', (done) => {
@@ -198,6 +197,6 @@ describe('UserGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 });

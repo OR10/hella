@@ -23,7 +23,6 @@ describe('VideoGateway', () => {
         },
       });
 
-      bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
@@ -60,7 +59,7 @@ describe('VideoGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should load information for a single video', (done) => {
@@ -80,6 +79,6 @@ describe('VideoGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 });

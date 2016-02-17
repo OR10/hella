@@ -44,7 +44,6 @@ describe('BackendInterpolation', () => {
         },
       });
 
-      bufferedHttpProvider.enableFlushFunctionality();
       bufferedHttpProvider.disableAutoExtractionAndInjection();
 
       statusGateway = {};
@@ -97,7 +96,7 @@ describe('BackendInterpolation', () => {
       });
 
     $rootScope.$digest();
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should calculate limit and offset', done => {
@@ -125,6 +124,6 @@ describe('BackendInterpolation', () => {
       });
 
     $rootScope.$digest();
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 });

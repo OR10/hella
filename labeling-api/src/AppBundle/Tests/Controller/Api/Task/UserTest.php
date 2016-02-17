@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation;
 
 class UserTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/task/%s/user/%s/assignToTask';
+    const ROUTE = '/api/task/%s/user/%s/assign';
 
     /**
      * @var Facade\Video
@@ -29,6 +29,24 @@ class UserTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ROUTE, [$task->getId(), $user->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->execute()
+            ->getResponse();
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testDeleteAssignedLabelingTask()
+    {
+        $user = $this->createUser();
+        $task = $this->createLabelingTask();
+
+        $this->createRequest(self::ROUTE, [$task->getId(), $user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->execute()
+            ->getResponse();
+
+        $response = $this->createRequest(self::ROUTE, [$task->getId(), $user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute()
             ->getResponse();
 

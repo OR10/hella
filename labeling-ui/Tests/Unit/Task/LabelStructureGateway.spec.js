@@ -24,7 +24,6 @@ describe('LabelStructureGateway', () => {
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
-      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -72,7 +71,7 @@ describe('LabelStructureGateway', () => {
       done();
     });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
 

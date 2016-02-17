@@ -50,6 +50,7 @@
         </service>
 
         <service id="annostation.labeling_api.service.task_read_only_decider" class="AppBundle\Service\TaskReadOnlyDecider">
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
         </service>
 
         <service id="annostation.labeling_api.service.video_importer" class="AppBundle\Service\VideoImporter">

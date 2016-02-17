@@ -10,7 +10,7 @@ describe('BufferedHttp', () => {
   let bufferedHttp;
   let revisionManager;
   let $http;
-  let $httpDeferred;
+  let $httpDefers;
   let $q;
 
   beforeEach(() => {
@@ -23,13 +23,15 @@ describe('BufferedHttp', () => {
       extractRevision: jasmine.createSpy('extractRevision'),
     };
 
-    $http = jasmine.createSpy('$http').and.callFake(() => $httpDeferred.promise);
+    $http = jasmine.createSpy('$http').and.callFake(() => {
+      const defer = $q.defer();
+      $httpDefers.push(defer);
+      return defer.promise;
+    });
 
-    module(($provide, bufferedHttpProvider) => {
+    module(($provide) => {
       $provide.value('revisionManager', revisionManager);
       $provide.value('$http', $http);
-
-      bufferedHttpProvider.enableFlushFunctionality();
     });
 
     inject($injector => {
@@ -38,7 +40,7 @@ describe('BufferedHttp', () => {
       $q = $injector.get('$q');
     });
 
-    $httpDeferred = $q.defer();
+    $httpDefers = [];
   });
 
   describe('Provider', () => {
@@ -60,31 +62,33 @@ describe('BufferedHttp', () => {
         expect(typeof bufferedHttp[alias]).toBe('function');
         expect(bufferedHttp[alias].length).toBe(arity);
       });
+
+      it('should throw an error if string is given as options value', () => {
+        if (arity === 1) {
+          expect(() => bufferedHttp[alias]('http://example.com/', 'string-which-shouldnt-be-here')).toThrow();
+        } else {
+          expect(() => bufferedHttp[alias]('http://example.com/', {}, 'string-which-shouldnt-be-here')).toThrow();
+        }
+      });
     });
   });
 
-  it('should proxy calls to $http', (done) => {
+  it('should proxy calls to $http', () => {
     bufferedHttp({method: 'GET', url: 'http://example.com'});
-    $httpDeferred.resolve();
+    $httpDefers[0].resolve();
 
-    bufferedHttp.flushBuffers().then(() => {
-      $rootScope.$digest();
-      expect($http).toHaveBeenCalled();
-      done();
-    });
+    $rootScope.$digest();
+    expect($http).toHaveBeenCalled();
   });
 
-  it('should proxy calls to $http with correct values', (done) => {
+  it('should proxy calls to $http with correct values', () => {
     const expectedOptions = {method: 'GET', url: 'http://example.com'};
 
     bufferedHttp(expectedOptions);
-    $httpDeferred.resolve();
+    $httpDefers[0].resolve();
 
-    bufferedHttp.flushBuffers().then(() => {
-      $rootScope.$digest();
-      expect($http).toHaveBeenCalledWith(expectedOptions);
-      done();
-    });
+    $rootScope.$digest();
+    expect($http).toHaveBeenCalledWith(expectedOptions);
   });
 
   it('should return promise', () => {
@@ -99,34 +103,102 @@ describe('BufferedHttp', () => {
     expect(result instanceof AbortablePromise).toBeTruthy();
   });
 
-  it('should resolve returned promise with $http result', (done) => {
+  it('should resolve returned promise with $http result', () => {
     const expectedResponse = {result: ['foo', 'bar']};
     const spy = jasmine.createSpy();
     bufferedHttp({}).then(spy);
-    $httpDeferred.resolve(expectedResponse);
+    $httpDefers[0].resolve(expectedResponse);
 
-    bufferedHttp.flushBuffers().then(() => {
-      $rootScope.$digest();
-      expect(spy).toHaveBeenCalledWith(expectedResponse);
-      done();
-    });
+    $rootScope.$digest();
+    expect(spy).toHaveBeenCalledWith(expectedResponse);
   });
 
-  it('should reject returned promise with $http error', (done) => {
+  it('should reject returned promise with $http error', () => {
     const expectedResponse = new Error('foo bar');
     const spy = jasmine.createSpy();
     bufferedHttp({}).catch(spy);
-    $httpDeferred.reject(expectedResponse);
+    $httpDefers[0].reject(expectedResponse);
 
-    bufferedHttp.flushBuffers().then(() => {
-      $rootScope.$digest();
-      expect(spy).toHaveBeenCalledWith(expectedResponse);
-      done();
-    });
+    $rootScope.$digest();
+    expect(spy).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it('should parallelize non destructive http requests', () => {
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.get('http://foo.bar/baz');
+
+    expect($http.calls.count()).toBe(3);
+  });
+
+  it('should parallelize non destructive http requests on non default queue', () => {
+    bufferedHttp.get('http://foo.bar/baz', undefined, 'foobar');
+    bufferedHttp.get('http://foo.bar/baz', undefined, 'foobar');
+    bufferedHttp.get('http://foo.bar/baz', undefined, 'foobar');
+    $rootScope.$digest();
+
+    expect($http.calls.count()).toBe(3);
+  });
+
+  it('should serialize destructive http requests', () => {
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
+    expect($http.calls.count()).toBe(1);
+    $httpDefers[0].resolve();
+    $rootScope.$digest();
+    expect($http.calls.count()).toBe(2);
+    $httpDefers[1].resolve();
+    $rootScope.$digest();
+    expect($http.calls.count()).toBe(3);
+    $httpDefers[2].resolve();
+    $rootScope.$digest();
+  });
+
+  it('should serialize destructive http requests on non default queue', () => {
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
+    expect($http.calls.count()).toBe(1);
+    $httpDefers[0].resolve();
+    $rootScope.$digest();
+    expect($http.calls.count()).toBe(2);
+    $httpDefers[1].resolve();
+    $rootScope.$digest();
+    expect($http.calls.count()).toBe(3);
+    $httpDefers[2].resolve();
+    $rootScope.$digest();
+  });
+
+  it('should wait with non destructive operations until destructives are finished', () => {
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
+    bufferedHttp.get('http://foo.bar/baz');
+    bufferedHttp.get('http://foo.bar/baz');
+    expect($http.calls.count()).toBe(2);
+    $httpDefers[0].resolve(); $rootScope.$digest();
+    expect($http.calls.count()).toBe(2);
+    $httpDefers[1].resolve(); $rootScope.$digest();
+    expect($http.calls.count()).toBe(3);
+    $httpDefers[2].resolve(); $rootScope.$digest();
+    expect($http.calls.count()).toBe(4);
+    $httpDefers[3].resolve(); $rootScope.$digest();
+    expect($http.calls.count()).toBe(6);
+    $httpDefers[4].resolve(); $httpDefers[5].resolve(); $rootScope.$digest();
+  });
+
+  it('should parallelize destructive operations on multiple queues', () => {
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
+    bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blib');
+    expect($http.calls.count()).toBe(2);
+    $httpDefers[0].resolve();
+    $httpDefers[1].resolve();
+    $rootScope.$digest();
   });
 
   // @TODO: More tests needed here
-  // - buffering
   // - usage of entityManager
   // - deferred timeout injection
 });
