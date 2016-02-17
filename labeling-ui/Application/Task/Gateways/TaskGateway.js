@@ -77,7 +77,7 @@ class TaskGateway {
    */
   markTaskAsLabeled(task) {
     const url = this._apiService.getApiUrl(`/task/${task.id}/status/labeled`);
-    return this._bufferedHttp.post(url, undefined, 'task')
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
@@ -93,7 +93,7 @@ class TaskGateway {
    */
   markTaskAsWaiting(task) {
     const url = this._apiService.getApiUrl(`/task/${task.id}/status/waiting`);
-    return this._bufferedHttp.post(url, undefined, 'task')
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
