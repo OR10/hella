@@ -103,5 +103,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="security.token_storage" />
         </service>
+        <service id="annostation.labeling_api.controller.api.task.user" class="AppBundle\Controller\Api\Task\User">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="security.token_storage" />
+        </service>
     </services>
 </container>
