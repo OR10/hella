@@ -132,18 +132,21 @@ export default class MultiTool extends Tool {
         return;
       }
 
-      const center = hitResult.item.bounds.center;
-
-      switch (true) {
-        case (point.x < center.x && point.y < center.y): // top-left
-        case (point.x > center.x && point.y > center.y): // bottom-right
+      switch (hitResult.name) {
+        case 'top-left':
           this._$scope.vm.actionMouseCursor = 'nwse-resize';
           break;
-        case (point.x < center.x && point.y > center.y): // bottom-left
-        case (point.x > center.x && point.y < center.y): // top-right
+        case 'bottom-right':
+          this._$scope.vm.actionMouseCursor = 'nwse-resize';
+          break;
+        case 'top-right':
+          this._$scope.vm.actionMouseCursor = 'nesw-resize';
+          break;
+        case 'bottom-left':
           this._$scope.vm.actionMouseCursor = 'nesw-resize';
           break;
         default:
+          this._$scope.vm.actionMouseCursor = null;
       }
     });
   }
