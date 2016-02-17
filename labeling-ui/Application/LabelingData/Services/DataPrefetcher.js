@@ -38,19 +38,42 @@ class DataPrefetcher {
       return this._$q.resolve();
     }
 
-    const frameCount = task.frameRange.endFrameNumber - startFrameNumber + 1;
+    return this._prefetchSingleLabeledThing(task, labeledThing, startFrameNumber, this._chunkSize);
+  }
 
-    this._labeledThingData.invalidate(labeledThing.id);
+  /**
+   * @param {Task} task
+   * @param {LabeledThing} labeledThing
+   * @param {Number} startFrameNumber
+   * @param {Number} chunkSize
+   *
+   * @returns {Promise}
+   */
+  _prefetchSingleLabeledThing(task, labeledThing, startFrameNumber, chunkSize) {
+    const collectedData = [];
 
-    this._logger.log(this._logFacility, `Prefetching LabeledThing (${labeledThing.id}) for frames ${startFrameNumber} - ${task.frameRange.endFrameNumber}`);
+    const fetchChunk = (start) => {
+      const limit = Math.min(chunkSize, task.frameRange.endFrameNumber - start + 1);
+      this._logger.log(this._logFacility, `Prefetching single LabeledThing (${labeledThing.id}) for frames ${start} - ${start + limit - 1}`);
 
-    return this._labeledThingInFrameGateway.getLabeledThingInFrame(task, startFrameNumber, labeledThing, 0, frameCount)
-      .then(
-        data => {
-          this._labeledThingData.set(labeledThing.id, data);
-          this._labeledThingInFrameData.setLabeledThingData(labeledThing, data);
-        }
-      );
+      return this._labeledThingInFrameGateway.getLabeledThingInFrame(task, start, labeledThing, 0, limit)
+        .then(data => {
+          data.forEach(entry => collectedData.push(entry));
+          const newStartFrame = start + limit;
+          if (newStartFrame > task.frameRange.endFrameNumber) {
+            return collectedData;
+          }
+
+          return fetchChunk(newStartFrame);
+        });
+    };
+
+    return fetchChunk(startFrameNumber)
+      .then(() => {
+        this._labeledThingData.invalidate(labeledThing.id);
+        this._labeledThingData.set(labeledThing.id, collectedData);
+        this._labeledThingInFrameData.setLabeledThingData(labeledThing, collectedData);
+      });
   }
 
   /**
