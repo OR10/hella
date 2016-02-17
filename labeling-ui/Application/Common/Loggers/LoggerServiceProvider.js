@@ -15,6 +15,9 @@ class LoggerServiceProvider {
   }
 
   $get() {
+    if (!!window && !!window.__karma__) {
+      return new LoggerService([], []);
+    }
     return new LoggerService(this._contexts, this._loggers);
   }
 }
