@@ -62,6 +62,11 @@ api_task_status:
     type: rest
     name_prefix: app_api_task_status_
 
+api_task_user:
+    resource: "annostation.labeling_api.controller.api.task.user"
+    type: rest
+    name_prefix: app_api_task_user_
+
 api_status:
     resource: "annostation.labeling_api.controller.api.status"
     type: rest
