@@ -35,12 +35,26 @@ export default class ShapeScaleTool extends Tool {
      * @private
      */
     this._modified = false;
+
+    /**
+     * Variable that holds the string representation of the drag handle position
+     *
+     * @type {string}
+     * @private
+     */
+    this._boundName = null;
   }
 
   onMouseDown(event, hitResult) {
     const point = event.point;
 
     this._hitResult = hitResult;
+
+    if (hitResult.name) {
+      this._boundName = hitResult.name;
+    } else {
+      this._boundName = null;
+    }
 
     if (this._hitResult.type === 'bounds') {
       switch (true) {
@@ -65,7 +79,7 @@ export default class ShapeScaleTool extends Tool {
   }
 
   onMouseDrag(event) {
-    if (!this._hitResult || this._hitResult.type !== 'bounds') {
+    if (!this._hitResult || this._hitResult.type !== 'bounds' || !this._scaleAnchor) {
       return;
     }
     const point = event.point;
@@ -95,9 +109,8 @@ export default class ShapeScaleTool extends Tool {
     const scaleX = width / item.bounds.width || 1;
     const scaleY = height / item.bounds.height || 1;
 
+    this._scaleAnchor = this._getScaleAnchor();
     item.scale(scaleX, scaleY, this._scaleAnchor);
-
-    this._scaleAnchor = this._getScaleAnchor(dragPoint, item);
   }
 
   _scaleCircle(item, dragPoint) {
@@ -110,23 +123,30 @@ export default class ShapeScaleTool extends Tool {
 
     item.scale(scale, scale, this._scaleAnchor);
 
-    this._scaleAnchor = this._getCircleScaleAnchor(dragPoint, item);
+    this._scaleAnchor = this._getCircleScaleAnchor();
   }
 
-  _getScaleAnchor(dragHandle, item) {
-    if (dragHandle.x > item.position.x && dragHandle.y > item.position.y) {
-      return this._hitResult.item.bounds.topLeft;
+  _getScaleAnchor() {
+    switch (this._boundName) {
+      case 'top-left':
+        return this._hitResult.item.bounds.bottomRight;
+        break;
+      case 'top-right':
+        return this._hitResult.item.bounds.bottomLeft;
+        break;
+      case 'bottom-left':
+        return this._hitResult.item.bounds.topRight;
+        break;
+      case 'bottom-right':
+        return this._hitResult.item.bounds.topLeft;
+        break;
+      case 'top-center':
+      case 'right-center':
+      case 'bottom-center':
+      case 'left-center':
+      default:
+        return null;
     }
-
-    if (dragHandle.x <= item.position.x && dragHandle.y > item.position.y) {
-      return this._hitResult.item.bounds.topRight;
-    }
-
-    if (dragHandle.x <= item.position.x && dragHandle.y <= item.position.y) {
-      return this._hitResult.item.bounds.bottomRight;
-    }
-
-    return this._hitResult.item.bounds.bottomLeft;
   }
 
   _getCircleScaleAnchor(dragHandle, item) {
