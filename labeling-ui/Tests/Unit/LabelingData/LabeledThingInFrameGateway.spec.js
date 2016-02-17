@@ -146,7 +146,7 @@ describe('LabeledThingInFrameGateway', () => {
         done();
       });
 
-    bufferedHttp.flushBuffers().then(() => $httpBackend.flush());
+    $httpBackend.flush();
   });
 
   it('should save a labeled thing in frame with classes', done => {
