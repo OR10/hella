@@ -7,11 +7,11 @@ class PanAndZoom {
   /**
    * @param {paper.View} view
    */
-  constructor(view) {
+  constructor(context) {
     /**
      * @type {paper.View}
      */
-    this.view = view;
+    this._context = context;
 
     /**
      * Initial Zoom value used for scaled-to-fit zooming
@@ -36,20 +36,26 @@ class PanAndZoom {
    * @param {Point} [focalPoint]
    */
   zoom(newZoom, focalPoint = null) {
-    let newCenter = this.view.center;
+    this._context.withScope((scope) => {
 
-    if (focalPoint !== null) {
-      const localFocalPoint = this.view.viewToProject(focalPoint);
-      const deltaZoom = this.view.zoom / newZoom;
+      const view = scope.view;
 
-      const deltaCenter = localFocalPoint.subtract(this.view.center);
-      const centerTranslation = localFocalPoint.subtract(deltaCenter.multiply(deltaZoom)).subtract(this.view.center);
+      let newCenter = view.center;
 
-      newCenter = this.view.center.add(centerTranslation);
-    }
+      if (focalPoint !== null) {
+        const localFocalPoint = view.viewToProject(focalPoint);
+        const deltaZoom = view.zoom / newZoom;
 
-    this.view.zoom = newZoom;
-    this.view.center = this._restrictViewportToViewBounds(newCenter);
+        const deltaCenter = localFocalPoint.subtract(view.center);
+        const centerTranslation = localFocalPoint.subtract(deltaCenter.multiply(deltaZoom)).subtract(view.center);
+
+        newCenter = view.center.add(centerTranslation);
+      }
+
+      view.zoom = newZoom;
+      view.center = this._restrictViewportToViewBounds(view, newCenter);
+
+    });
   }
 
   /**
@@ -59,12 +65,15 @@ class PanAndZoom {
    * @param {Number} deltaY
    */
   panBy(deltaX, deltaY) {
-    let offset = new paper.Point(deltaX, deltaY);
+    this._context.withScope((scope) => {
+      const view = scope.view;
+      let offset = new paper.Point(deltaX, deltaY);
 
-    // Account for view to client pixel ratio when zoomed
-    offset = offset.divide(this.view.zoom);
+      // Account for view to client pixel ratio when zoomed
+      offset = offset.divide(view.zoom);
 
-    this.panTo(this.view.center.add(offset));
+      this.panTo(view.center.add(offset));
+    });
   }
 
   /**
@@ -73,7 +82,9 @@ class PanAndZoom {
    * @param {Point} newCenter
    */
   panTo(newCenter) {
-    this.view.center = this._restrictViewportToViewBounds(newCenter);
+    this._context.withScope((scope) => {
+      scope.view.center = this._restrictViewportToViewBounds(scope.view, newCenter);
+    });
   }
 
   /**
@@ -85,29 +96,29 @@ class PanAndZoom {
    *
    * @private
    */
-  _restrictViewportToViewBounds(newCenter) {
-    const width = this.view.bounds.width;
-    const height = this.view.bounds.height;
+  _restrictViewportToViewBounds(view, newCenter) {
+    const width = view.bounds.width;
+    const height = view.bounds.height;
 
-    const unscaledViewWidth = this.view.viewSize.width / this._scaleToFitZoom;
-    const unscaledViewHeight = this.view.viewSize.height / this._scaleToFitZoom;
+    const unscaledViewWidth = view.viewSize.width / this._scaleToFitZoom;
+    const unscaledViewHeight = view.viewSize.height / this._scaleToFitZoom;
 
     let correctedX = newCenter.x;
     let correctedY = newCenter.y;
 
-    if (newCenter.x - this.view.bounds.width / 2 < 0) {
-      correctedX = this.view.bounds.width / 2;
+    if (newCenter.x - view.bounds.width / 2 < 0) {
+      correctedX = view.bounds.width / 2;
     }
 
-    if (newCenter.y - this.view.bounds.height / 2 < 0) {
-      correctedY = this.view.bounds.height / 2;
+    if (newCenter.y - view.bounds.height / 2 < 0) {
+      correctedY = view.bounds.height / 2;
     }
 
-    if (newCenter.x + this.view.bounds.width / 2 > unscaledViewWidth) {
+    if (newCenter.x + view.bounds.width / 2 > unscaledViewWidth) {
       correctedX = unscaledViewWidth - width / 2;
     }
 
-    if (newCenter.y + this.view.bounds.height / 2 > unscaledViewHeight) {
+    if (newCenter.y + view.bounds.height / 2 > unscaledViewHeight) {
       correctedY = unscaledViewHeight - height / 2;
     }
 

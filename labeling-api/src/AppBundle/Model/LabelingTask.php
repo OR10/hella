@@ -97,6 +97,12 @@ class LabelingTask
     private $drawingTool;
 
     /**
+     * @var int|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $assignedUser = null;
+
+    /**
      * @param Video      $video
      * @param FrameRange $frameRange
      * @param string     $taskType
@@ -279,6 +285,25 @@ class LabelingTask
             }
         }
         $this->setStatus(self::STATUS_WAITING);
+
+        return $this;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getAssignedUserId()
+    {
+        return $this->assignedUser;
+    }
+
+    /**
+     * @param $userId
+     * @return LabelingTask
+     */
+    public function setAssignedUser($userId)
+    {
+        $this->assignedUser = $userId;
 
         return $this;
     }

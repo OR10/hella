@@ -189,7 +189,7 @@ class LabeledThingInFrameGateway {
    *
    * @returns {AbortablePromise<LabeledThingInFrame>|Error}
    */
-  getNextIncomplete(task, count = 1){
+  getNextIncomplete(task, count = 1) {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame`,
       {
@@ -245,9 +245,16 @@ class LabeledThingInFrameGateway {
       );
     }
 
+    this._labeledThingInFrameData.invalidateLabeledThing(labeledThingInFrame.labeledThing);
+    this._labeledThingData.invalidate(labeledThingInFrame.labeledThing.id);
+
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
+
+    if (!Array.isArray(labeledThingInFrame.classes) || labeledThingInFrame.classes.length === 0) {
+      delete labeledThingInFrame.classes;
+    }
 
     this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
 

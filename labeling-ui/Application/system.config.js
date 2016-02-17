@@ -55,6 +55,7 @@ System.config({
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
+    "lodash": "npm:lodash@4.3.0",
     "lodash.debounce": "npm:lodash.debounce@3.1.1",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "raf": "npm:raf@3.1.0",
@@ -560,6 +561,10 @@ System.config({
     },
     "npm:lodash.debounce@3.1.1": {
       "lodash._getnative": "npm:lodash._getnative@3.9.1"
+    },
+    "npm:lodash@4.3.0": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:miller-rabin@4.0.0": {
       "bn.js": "npm:bn.js@4.1.1",

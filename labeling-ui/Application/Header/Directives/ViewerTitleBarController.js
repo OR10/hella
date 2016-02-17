@@ -115,6 +115,10 @@ class ViewerTitleBarController {
             alert.activate();
           }
         });
+      },
+      () => {
+        this._applicationState.viewer.finish();
+        this._applicationState.enableAll();
       }
     );
     modal.activate();
@@ -137,6 +141,7 @@ class ViewerTitleBarController {
             const shape = labeledThingInFrame.paperShapes[0];
             this.selectedPaperShape = shape;
             this.selectedPaperShape.select();
+            this.hideLabeledThingsInFrame = true;
             this.thingLayer.update();
           });
         });
