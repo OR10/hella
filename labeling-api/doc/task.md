@@ -221,12 +221,16 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
     + Attributes
         + result (Label Structure)
 
-## Assign a user to a LabelingTask [/api/task/{taskId}/user/{userId}/assignToTask]
+## Assign a user to a LabelingTask [/api/task/{taskId}/user/{userId}/assign]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
     + userId: `1` (string, required) - The id of the user.
 
 ### Assign a LabelingTask to a user [PUT]
+
++ Response 200 (application/json)
+
+### Delete a LabelingTask assignment [DELETE]
 
 + Response 200 (application/json)

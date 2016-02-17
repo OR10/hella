@@ -42,14 +42,46 @@ class User extends Controller\Base
     }
 
     /**
-     * @Rest\Put("/{task}/user/{user}/assignToTask")
+     * @Rest\Put("/{task}/user/{user}/assign")
      * @param Model\LabelingTask $task
      * @param Model\User $user
      * @return \FOS\RestBundle\View\View
      */
     public function assignLabelingTaskToUserAction(Model\LabelingTask $task, Model\User $user)
     {
-        /** @var Model\User $currentUser */
+        $this->isUserAllowedToAssignTo($user);
+
+        $task->setAssignedUser($user->getId());
+        $this->labelingTaskFacade->save($task);
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
+    }
+
+    /**
+     * @Rest\Delete("/{task}/user/{user}/assign")
+     * @param Model\LabelingTask $task
+     * @param Model\User $user
+     * @return \FOS\RestBundle\View\View
+     */
+    public function deleteAssignedLabelingTaskAction(Model\LabelingTask $task, Model\User $user)
+    {
+        $this->isUserAllowedToAssignTo($user);
+
+        if ($task->getAssignedUserId() !== $user->getId()) {
+            throw new Exception\BadRequestHttpException();
+        }
+
+        $task->setAssignedUser(null);
+        $this->labelingTaskFacade->save($task);
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
+    }
+
+    /**
+     * @param Model\User $user
+     */
+    private function isUserAllowedToAssignTo(Model\User $user)
+    {
         $currentUser = $this->tokenStorage->getToken()->getUser();
         $assignToOtherUserAllowed = $currentUser->hasOneRoleOf(
             array(Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR)
@@ -57,9 +89,5 @@ class User extends Controller\Base
         if (!$assignToOtherUserAllowed && $currentUser !== $user) {
             throw new Exception\AccessDeniedHttpException();
         }
-        $task->setAssignedUser($user);
-        $this->labelingTaskFacade->save($task);
-
-        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 }

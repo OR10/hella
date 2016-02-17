@@ -298,13 +298,12 @@ class LabelingTask
     }
 
     /**
-     * @param User $user
+     * @param $userId
      * @return LabelingTask
-     *
      */
-    public function setAssignedUser(User $user)
+    public function setAssignedUser($userId)
     {
-        $this->assignedUser = (int) $user->getId();
+        $this->assignedUser = $userId;
 
         return $this;
     }
