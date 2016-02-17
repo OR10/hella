@@ -46,7 +46,7 @@ class BackendInterpolation {
       type: this._getRemoteType(),
     };
 
-    return this._bufferedHttp.post(url, data, undefined, 'interpolate')
+    return this._bufferedHttp.post(url, data, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
