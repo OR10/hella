@@ -233,6 +233,17 @@ class LabeledThingInFrame extends Controller\Base
             );
         }
 
+        $result = array_map(function($labeledThingInFrame) {
+            if (empty($labeledThingInFrame->getClasses())) {
+                $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+                if ($previousClasses instanceof Model\LabeledThingInFrame) {
+                    $labeledThingInFrame->setGhostClasses($previousClasses->getClasses());
+                }
+            }
+
+            return $labeledThingInFrame;
+        }, $result);
+
         return View\View::create()->setData(['result' => $result]);
     }
 
@@ -264,8 +275,6 @@ class LabeledThingInFrame extends Controller\Base
                     } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
                         $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
                         $ghostLabeledThingInFrame->setGhost(true);
-                        $ghostLabeledThingInFrame->setClasses(array());
-                        $ghostLabeledThingInFrame->setGhostClasses($currentItem->getClasses());
 
                         return $ghostLabeledThingInFrame;
                     }
@@ -275,8 +284,6 @@ class LabeledThingInFrame extends Controller\Base
 
                 $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
                 $ghostLabeledThingInFrame->setGhost(true);
-                $ghostLabeledThingInFrame->setClasses(array());
-                $ghostLabeledThingInFrame->setGhostClasses($currentItem->getClasses());
 
                 return $ghostLabeledThingInFrame;
             },
