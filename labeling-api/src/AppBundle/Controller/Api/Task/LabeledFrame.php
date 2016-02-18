@@ -120,7 +120,7 @@ class LabeledFrame extends Controller\Base
     public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
     {
         if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber)) === null) {
-            throw new Exception\NotFoundHttpException();
+            throw new Exception\NotFoundHttpException('LabeledFrame not found');
         }
 
         $this->labeledFrameFacade->delete($labeledFrame);
@@ -152,7 +152,7 @@ class LabeledFrame extends Controller\Base
         $classes         = $request->request->get('classes', []);
 
         if (!is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $labeledFrameId === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing classes, labeledFrameId or invalid bodyFrameNumber');
         }
 
         if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber)) === null) {

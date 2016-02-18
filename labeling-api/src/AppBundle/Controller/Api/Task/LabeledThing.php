@@ -115,22 +115,22 @@ class LabeledThing extends Controller\Base
     {
         $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         if ($frameRange === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing FrameRange');
         }
 
         $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
 
         if (($labeledThingId = $request->request->get('id')) !== null) {
             if ($this->labeledThingFacade->find($labeledThingId) !== null) {
-                throw new Exception\ConflictHttpException();
+                throw new Exception\BadRequestHttpException('LabeledThing not found');
             }
         }
 
         if (!is_array($classes = $request->request->get('classes', []))) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing classes');
         }
         if (($lineColor = $request->request->get('lineColor')) === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing lineColor');
         }
 
         $labeledThing = new Model\LabeledThing($task, $lineColor);
@@ -160,7 +160,7 @@ class LabeledThing extends Controller\Base
         HttpFoundation\Request $request
     ) {
         if ($labeledThing->getTaskId() !== $taskId) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Requested LabeledThing is not valid for this task');
         }
 
         return View\View::create()->setData(['result' => $labeledThing]);
@@ -182,7 +182,7 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing = null
     ) {
         if (($lineColor = $request->request->get('lineColor')) === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing lineColor');
         }
 
         if ($labeledThing === null) {
@@ -191,18 +191,18 @@ class LabeledThing extends Controller\Base
         }
 
         if ($labeledThing->getTaskId() !== $task->getId()) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Requested LabeledThing is not valid for this task');
         }
 
         if ($request->request->get('rev') !== $labeledThing->getRev()) {
-            throw new Exception\ConflictHttpException();
+            throw new Exception\ConflictHttpException('Invalid revision');
         }
 
         $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         $classes    = $request->request->get('classes', []);
 
         if ($frameRange === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing frameRange');
         }
 
         $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
@@ -243,11 +243,11 @@ class LabeledThing extends Controller\Base
         HttpFoundation\Request $request
     ) {
         if ($labeledThing->getTaskId() !== $task->getId()) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Requested LabeledThing is not valid for this task');
         }
 
         if ($request->query->get('rev') !== $labeledThing->getRev()) {
-            throw new Exception\ConflictHttpException();
+            throw new Exception\ConflictHttpException('Invalid Revision');
         }
 
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);

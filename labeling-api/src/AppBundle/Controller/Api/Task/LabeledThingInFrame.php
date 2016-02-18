@@ -75,7 +75,7 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThing          = $this->labeledThingFacade->find($labeledThingId);
 
         if ($labeledThing === null || !is_array($shapes) || !is_array($classes)) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing labeledThing, shapes or classes');
         }
 
         try {
@@ -85,7 +85,7 @@ class LabeledThingInFrame extends Controller\Base
             $labeledThingInFrame->setClasses($classes);
             $labeledThingInFrame->setIncomplete($incomplete);
         } catch (\Exception $e) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Failed to create a new LabeledThingInFrame');
         }
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);

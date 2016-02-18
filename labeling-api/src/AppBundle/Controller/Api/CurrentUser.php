@@ -112,7 +112,7 @@ class CurrentUser extends Controller\Base
             return View\View::create()->setData(['result' => ['success' => true]]);
         }
 
-        throw new Exception\BadRequestHttpException();
+        throw new Exception\BadRequestHttpException('Failed to save the new password. The current password is not correct');
     }
 
     /**
