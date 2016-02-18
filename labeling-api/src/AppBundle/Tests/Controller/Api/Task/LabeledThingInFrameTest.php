@@ -226,7 +226,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'labeledThingId' => $labeledThingInFrameNumber10->getLabeledThingId(),
                         'incomplete' => true,
                         'ghost' => true,
-                        'ghostClasses' => null,
+                        'ghostClasses' => array(),
                     ),
                     array(
                         'id' => $labeledThingInFrameNumber10->getId(),
