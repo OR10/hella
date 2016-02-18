@@ -124,7 +124,7 @@ class Task extends Controller\Base
             'result' => [
                 'tasks' => $tasks,
                 'videos' => $videos,
-                'user' => array_map(function($userId) {
+                'users' => array_map(function($userId) {
                     $user = $this->userFacade->getUserById($userId);
                     return array(
                         'id' => $user->getId(),
