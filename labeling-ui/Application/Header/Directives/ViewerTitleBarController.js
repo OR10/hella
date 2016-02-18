@@ -84,6 +84,8 @@ class ViewerTitleBarController {
       } else {
         this.handleCompleteState();
       }
+      this._applicationState.viewer.finish();
+      this._applicationState.enableAll();
     });
   }
 
@@ -100,12 +102,8 @@ class ViewerTitleBarController {
         this._taskGateway.markTaskAsLabeled(this.task)
           .then(() => {
             this._$state.go('labeling.tasks');
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
           }).catch((response) => {
           if (response.status === 412) {
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
             const alert = this._modalService.getAlertWarningDialog({
               title: 'Finish Task',
               headline: 'Incomplete labeling data',
@@ -116,18 +114,12 @@ class ViewerTitleBarController {
           }
         });
       },
-      () => {
-        this._applicationState.viewer.finish();
-        this._applicationState.enableAll();
-      }
+      () => {}
     );
     modal.activate();
   }
 
   handleIncompleteState() {
-    this._applicationState.viewer.finish();
-    this._applicationState.enableAll();
-
     if (this.task.taskType === 'object-labeling') {
       this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
         const nextIncomplete = result[0];
