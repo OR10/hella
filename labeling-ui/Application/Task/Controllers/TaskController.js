@@ -13,12 +13,12 @@ class TaskController {
    * @param {Object} userPermissions
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {LabelStructureGateway} labelStructureGateway
-   * @param {$stateParams} $stateParams
+   * @param {TaskGateway} taskGateway
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    */
-  constructor($scope, initialData, user, userPermissions, labeledFrameGateway, labelStructureGateway, $stateParams, $location, applicationState, $timeout) {
+  constructor($scope, initialData, user, userPermissions, labeledFrameGateway, labelStructureGateway, taskGateway, $location, applicationState, $timeout) {
     /**
      * @type {angular.Scope}
      */
@@ -148,6 +148,12 @@ class TaskController {
     this._labelStructureGateway = labelStructureGateway;
 
     /**
+     * @type {TaskGateway}
+     * @private
+     */
+    this._taskGateway = taskGateway;
+
+    /**
      * @TODO Move into LabelSelector when refactoring for different task types
      * @type {AbortablePromiseRingBuffer}
      */
@@ -258,6 +264,10 @@ class TaskController {
     applicationState.$watch('sidebarLeft.isWorking', working => this.leftSidebarWorking = working);
     applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
     applicationState.$watch('sidebarRight.isWorking', working => this.rightSidebarWorking = working);
+
+    if(!this.task.assignedUser){
+      this._taskGateway.assignUserToTask(this.task, this.user);
+    }
   }
 
   _initializeLabelingStructure() {
@@ -332,7 +342,7 @@ TaskController.$inject = [
   'userPermissions',
   'labeledFrameGateway',
   'labelStructureGateway',
-  '$stateParams',
+  'taskGateway',
   '$location',
   'applicationState',
   '$timeout',

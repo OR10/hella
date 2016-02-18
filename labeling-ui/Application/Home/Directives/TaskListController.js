@@ -71,6 +71,12 @@ class TaskListController {
     this._taskGateway.markTaskAsWaiting(task)
       .then(() => this._loadTaskList());
   }
+
+  removeAssignment(task, user) {
+    this._taskGateway.dissociateUserFromTask(task, user).then(() => {
+      task.assignedUser = null;
+    });
+  }
 }
 
 TaskListController.$inject = ['taskGateway'];

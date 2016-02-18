@@ -102,6 +102,42 @@ class TaskGateway {
         throw new Error(`Failed marking task (${task.id}) as waiting.`);
       });
   }
+
+  /**
+   * @param {Task} task
+   * @param {User} user
+   * @returns {AbortablePromise}
+   */
+  assignUserToTask(task, user) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/user/${user.id}/assign`);
+
+    return this._bufferedHttp.put(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed assigning user (${user.id}) to task (${task.id}).`);
+      });
+  }
+
+  /**
+   * @param {Task} task
+   * @param {User} user
+   * @returns {AbortablePromise}
+   */
+  dissociateUserFromTask(task, user) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/user/${user.id}/assign`);
+
+    return this._bufferedHttp.delete(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed dissociating user (${user.id}) from task (${task.id}).`);
+      });
+  }
 }
 
 TaskGateway.$inject = [
