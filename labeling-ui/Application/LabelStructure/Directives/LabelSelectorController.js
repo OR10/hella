@@ -126,10 +126,11 @@ export default class LabelSelectorController {
         this.labelingInstructions = null;
         this.choices = {};
       } else {
-        if (oldLabeledObject && oldLabeledObject.id !== newLabeledObject.id) {
-          this.activePageIndex = null;
-          this._updatePagesAndChoices();
+        if (oldLabeledObject && oldLabeledObject.id === newLabeledObject.id) {
+          return;
         }
+        this.activePageIndex = null;
+        this._updatePagesAndChoices();
       }
     });
 
