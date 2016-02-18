@@ -18,7 +18,7 @@ class TaskController {
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    */
-  constructor($scope, initialData, user, userPermissions, labeledFrameGateway, labelStructureGateway, taskGateway, $location, applicationState, $timeout) {
+  constructor($scope, $q, initialData, user, userPermissions, labeledFrameGateway, labelStructureGateway, taskGateway, $location, applicationState, $timeout) {
     /**
      * @type {angular.Scope}
      */
@@ -83,7 +83,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition(this.task.frameRange, this._getFrameNumberFromUrl());
+    this.framePosition = new FramePosition($q, this.task.frameRange, this._getFrameNumberFromUrl());
 
     /**
      * Number of the currently bookmarked frame
@@ -204,18 +204,22 @@ class TaskController {
      */
     this.thumbnailZoomLevel = 100;
 
+    /**
+     * @type {ThingLayer}
+     */
     this.thingLayer = null;
 
     this._initializeLabelingStructure();
 
     if (this.task.taskType === 'meta-labeling') {
-      this.framePosition.onFrameChange('reloadLabeledFrame', (finish, newFrameNumber) => {
+      this.$scope.$watch('vm.framePosition.position', () => {
+        this.framePosition.lock.acquire();
         // Watch for changes of the Frame position to correctly update all
         // data structures for the new frame
-        this._labeledFrameBuffer.add(this._loadLabeledFrame(newFrameNumber))
+        this._labeledFrameBuffer.add(this._loadLabeledFrame(this.framePosition.position))
           .then(labeledFrame => {
             this.labeledFrame = labeledFrame;
-            finish();
+            this.framePosition.lock.release();
           });
       });
     }
@@ -248,9 +252,10 @@ class TaskController {
       }
     );
 
-    this.framePosition.onFrameChange('updateLocationHash', (finish, newFrameNumber) => {
-      $location.hash('F' + newFrameNumber);
-      finish();
+    $scope.$watch('vm.framePosition.position', newPosition => {
+      this.framePosition.lock.acquire();
+      $location.hash('F' + newPosition);
+      this.framePosition.lock.release();
     });
 
     $scope.$watch(() => $location.hash(), () => {
@@ -265,7 +270,7 @@ class TaskController {
     applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
     applicationState.$watch('sidebarRight.isWorking', working => this.rightSidebarWorking = working);
 
-    if(!this.task.assignedUser){
+    if (!this.task.assignedUser) {
       this._taskGateway.assignUserToTask(this.task, this.user);
     }
   }
@@ -337,6 +342,7 @@ class TaskController {
 
 TaskController.$inject = [
   '$scope',
+  '$q',
   'initialData',
   'user',
   'userPermissions',

@@ -1,3 +1,5 @@
+import ReferenceCountingLock from '../../Common/Support/ReferenceCountingLock';
+
 /**
  * A specific frame position inside a range of frames
  *
@@ -12,7 +14,7 @@ class FramePosition {
    * @param {FrameRange} frameRange
    * @param {int} position
    */
-  constructor({startFrameNumber, endFrameNumber}, position = startFrameNumber) {
+  constructor($q, {startFrameNumber, endFrameNumber}, position = startFrameNumber) {
     /**
      * @inheritDoc
      */
@@ -36,7 +38,7 @@ class FramePosition {
      *
      * @type {Object}
      */
-    this.subscribers = {};
+    this.oneTimeSubscribers = {};
 
     /**
      * Subscriber locks
@@ -51,37 +53,21 @@ class FramePosition {
      * @type {Object}
      */
     this.completeCallbacks = {};
+
+    this.lock = new ReferenceCountingLock($q, () => this._onFrameChangeComplete());
   }
 
-  onFrameChange(name, callback) {
-    this.subscribers[name] = callback;
+  registerOnFrameChangeOnce(name, callback) {
+    this.oneTimeSubscribers[name] = callback;
   }
 
-  onFrameChangeComplete(name, callback) {
-    this.completeCallbacks[name] = callback;
-  }
 
-  _frameChange() {
-    this.locks = Object.keys(this.subscribers);
-    Object.keys(this.subscribers).forEach((name) => {
-      const funct = this.subscribers[name];
-      funct(this._freeLock.bind(this, name), this._position);
-    })
-  }
-
-  _frameChangeComplete() {
-    Object.keys(this.completeCallbacks).forEach((name) => {
-      const funct = this.completeCallbacks[name];
+  _onFrameChangeComplete() {
+    Object.keys(this.oneTimeSubscribers).forEach((name) => {
+      const funct = this.oneTimeSubscribers[name];
       funct(this._position);
     });
-    this.completeCallbacks = {};
-  }
-
-  _freeLock(name) {
-    this.locks.splice(this.locks.indexOf(name), 1);
-    if (this.locks.length === 0) {
-      this._frameChangeComplete()
-    }
+    this.oneTimeSubscribers = {};
   }
 
   /**
@@ -96,17 +82,13 @@ class FramePosition {
    * Jump to a specific position within this FrameRange.
    * @param {int} newPosition
    */
-  goto(newPosition, notifySubscribers = false) {
-    const oldPosition = this._position;
+  goto(newPosition) {
     if (newPosition < this.startFrameNumber) {
       this._position = this.startFrameNumber;
     } else if (newPosition > this.endFrameNumber) {
       this._position = this.endFrameNumber;
     } else {
       this._position = newPosition;
-    }
-    if (newPosition !== oldPosition || notifySubscribers) {
-      this._frameChange()
     }
   }
 
