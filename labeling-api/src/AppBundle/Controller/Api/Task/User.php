@@ -68,7 +68,7 @@ class User extends Controller\Base
         $this->isUserAllowedToAssignTo($user);
 
         if ($task->getAssignedUserId() !== $user->getId()) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('You are not allowed to delete this task assignment');
         }
 
         $task->setAssignedUser(null);
@@ -87,7 +87,7 @@ class User extends Controller\Base
             array(Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR)
         );
         if (!$assignToOtherUserAllowed && $currentUser !== $user) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('You are not allowed to assign this task');
         }
     }
 }

@@ -70,13 +70,14 @@ class Export extends Controller\Base
     /**
      * @Rest\Get("/{taskId}/export/{taskExport}")
      *
-     * @param string           $taskId
+     * @param string $taskId
      * @param Model\TaskExport $taskExport
+     * @return HttpFoundation\Response
      */
     public function getExportAction($taskId, Model\TaskExport $taskExport)
     {
         if ($taskExport->getTaskId() !== $taskId) {
-            throw new Exception\NotFoundHttpException();
+            throw new Exception\NotFoundHttpException('Requested export is not valid for this task');
         }
 
         return new HttpFoundation\Response(

@@ -77,11 +77,11 @@ class Interpolate extends Controller\Base
         HttpFoundation\Request $request
     ) {
         if ($labeledThing->getTaskId() !== $task->getId()) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Requested export is not valid for this task');
         }
 
         if (($algorithm = $request->request->get('type')) === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing type');
         }
 
         $status = new Model\Interpolation\Status();

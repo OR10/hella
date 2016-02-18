@@ -54,7 +54,7 @@ class Statistics extends Controller\Base
         $limit  = $request->query->has('limit') ? $request->query->getInt('limit') : null;
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
         $tasksAssigned         = $this->taskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_WAITING, $offset, $limit);

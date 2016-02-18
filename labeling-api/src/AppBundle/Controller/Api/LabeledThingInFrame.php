@@ -85,31 +85,31 @@ class LabeledThingInFrame extends Controller\Base
         $shapes         = $request->request->get('shapes', []);
 
         if ($labeledThingId === null || $frameNumber === null || !is_array($classes) || !is_array($shapes)) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing labeledThingId, frameNumber, classes or shapes');
         }
 
         $labeledThing = $this->labeledThingFacade->find($labeledThingId);
         if ($labeledThingInFrame === null) {
             if ($labeledThing === null) {
-                throw new Exception\NotFoundHttpException();
+                throw new Exception\NotFoundHttpException('LabeledThing ' . $labeledThingId . ' not found');
             }
             try {
                 $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
                 $labeledThingInFrame->setId($request->attributes->get('_unresolvedLabeledThingInFrameId'));
             } catch (\Exception $e) {
-                throw new Exception\BadRequestHttpException();
+                throw new Exception\BadRequestHttpException('Failed to create a new LabeledThingInFrame.');
             }
         } else {
             if ($request->request->get('rev') !== $labeledThingInFrame->getRev()) {
-                throw new Exception\ConflictHttpException();
+                throw new Exception\ConflictHttpException('Revision mismatch');
             }
 
             if ($labeledThingId !== $labeledThingInFrame->getLabeledThingId()) {
-                throw new Exception\BadRequestHttpException();
+                throw new Exception\BadRequestHttpException('LabeledThingId did not match with the labeledThingInFrame thingId');
             }
 
             if ((int) $frameNumber !== $labeledThingInFrame->getFrameNumber()) {
-                throw new Exception\BadRequestHttpException();
+                throw new Exception\BadRequestHttpException('FrameNumber did not match with the labeledThingInFrame frameNumber');
             }
         }
 
@@ -148,7 +148,7 @@ class LabeledThingInFrame extends Controller\Base
         HttpFoundation\Request $request
     ) {
         if ($labeledThingInFrame->getRev() !== $request->request->get('rev')) {
-            throw new Exception\ConflictHttpException();
+            throw new Exception\ConflictHttpException('Revision mismatch');
         }
 
         $this->labeledThingInFrameFacade->delete(array($labeledThingInFrame));

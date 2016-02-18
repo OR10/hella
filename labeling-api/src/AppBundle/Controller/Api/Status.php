@@ -46,7 +46,7 @@ class Status extends Controller\Base
         $class = str_replace('.', '\\', $type);
 
         if (($status = $this->statusFacade->find($class, $statusId)) === null) {
-            throw new Exception\NotFoundHttpException();
+            throw new Exception\NotFoundHttpException('No status found');
         }
 
         return View\View::create()->setData(['result' => $status]);
