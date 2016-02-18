@@ -101,10 +101,36 @@ class Task extends Controller\Base
             $videos = [];
         }
 
+        $userIds = array();
+        foreach ($tasks as $tasksByStatus) {
+            $userIds =
+                array_merge(
+                    array_map(
+                        function ($task) {
+                            return $task->getAssignedUserId();
+                        },
+                        $tasksByStatus
+                    ),
+                    $userIds
+                );
+        }
+        $userIds = array_unique(
+            array_filter($userIds, function ($userId) {
+                return is_int($userId);
+            })
+        );
+
         return View\View::create()->setData([
             'result' => [
                 'tasks' => $tasks,
                 'videos' => $videos,
+                'user' => array_map(function($userId) {
+                    $user = $this->userFacade->getUserById($userId);
+                    return array(
+                        'id' => $user->getId(),
+                        'username' => $user->getUsername(),
+                    );
+                }, $userIds)
             ]
         ]);
     }
