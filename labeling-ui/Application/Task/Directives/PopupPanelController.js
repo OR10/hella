@@ -14,11 +14,11 @@ class PopupPanelController {
    * @param {AnimationFrameService} animationFrameService
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
-   * @param {TaskFrameLocationGateway} taskFrameLocationGateway
+   * @param {FrameLocationGateway} frameLocationGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {$timeout} $timeout
    */
-  constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, taskFrameLocationGateway, abortablePromiseFactory, $timeout) {
+  constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, frameLocationGateway, abortablePromiseFactory, $timeout) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
@@ -30,10 +30,10 @@ class PopupPanelController {
     this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
-     * @type {TaskFrameLocationGateway}
+     * @type {FrameLocationGateway}
      * @private
      */
-    this._taskFrameLocationGateway = taskFrameLocationGateway;
+    this._frameLocationGateway = frameLocationGateway;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -144,7 +144,7 @@ class PopupPanelController {
     }
 
     this._frameLocationsBuffer.add(
-      this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], this.framePosition.position - 1)
+      this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], this.framePosition.position - 1)
         .then(([frameLocation]) => {
           return this._frameGateway.getImage(frameLocation);
         })
@@ -283,7 +283,7 @@ PopupPanelController.$inject = [
   'animationFrameService',
   'drawingContextService',
   'frameGateway',
-  'taskFrameLocationGateway',
+  'frameLocationGateway',
   'abortablePromiseFactory',
   '$timeout',
 ];

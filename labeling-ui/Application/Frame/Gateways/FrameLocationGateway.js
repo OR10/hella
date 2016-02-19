@@ -3,7 +3,7 @@ import DataContainer from 'Application/LabelingData/Support/DataContainer';
 /**
  * Gateway to interact with {@link Task} related {@link Frame}s
  */
-class TaskFrameLocationGateway {
+class FrameLocationGateway {
   /**
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp injected
@@ -61,11 +61,11 @@ class TaskFrameLocationGateway {
   }
 }
 
-TaskFrameLocationGateway.$inject = [
+FrameLocationGateway.$inject = [
   'ApiService',
   'bufferedHttp',
   '$q',
   'abortablePromiseFactory',
 ];
 
-export default TaskFrameLocationGateway;
+export default FrameLocationGateway;

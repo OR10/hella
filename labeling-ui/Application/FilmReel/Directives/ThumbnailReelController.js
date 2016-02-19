@@ -15,14 +15,14 @@ class ThumbnailReelController {
    * @param {HTMLElement} $element
    * @param {$q} $q
    * @param {AbortablePromiseFactory} abortablePromiseFactory
-   * @param {TaskFrameLocationGateway} taskFrameLocationGateway
+   * @param {FrameLocationGateway} frameLocationGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AnimationFrameService} animationFrameService
    * @param {Object} applicationState
    * @param {LockService} lockService
    */
-  constructor($scope, $window, $element, $q, abortablePromiseFactory, taskFrameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState, lockService) {
+  constructor($scope, $window, $element, $q, abortablePromiseFactory, frameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState, lockService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -105,10 +105,10 @@ class ThumbnailReelController {
     this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
-     * @type {TaskFrameLocationGateway}
+     * @type {FrameLocationGateway}
      * @private
      */
-    this._taskFrameLocationGateway = taskFrameLocationGateway;
+    this._frameLocationGateway = frameLocationGateway;
 
     /**
      * @type {LabeledThingInFrameGateway}
@@ -316,7 +316,7 @@ class ThumbnailReelController {
     }
 
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], offset, limit)
+    return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], offset, limit)
       .then(locations => this._fillPositionalArrayWithResults(framePosition, offset, locations));
   }
 
@@ -492,7 +492,7 @@ class ThumbnailReelController {
 
   prefetchThumbnailLocations() {
     const frameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
-    this._taskFrameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', 0, frameCount);
+    this._frameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', 0, frameCount);
   }
 }
 
@@ -502,7 +502,7 @@ ThumbnailReelController.$inject = [
   '$element',
   '$q',
   'abortablePromiseFactory',
-  'taskFrameLocationGateway',
+  'frameLocationGateway',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
   'animationFrameService',

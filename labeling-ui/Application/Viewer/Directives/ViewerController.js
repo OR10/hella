@@ -25,7 +25,7 @@ class ViewerController {
    * @param {angular.element} $element
    * @param {angular.window} $window
    * @param {DrawingContextService} drawingContextService
-   * @param {TaskFrameLocationGateway} taskFrameLocationGateway
+   * @param {FrameLocationGateway} frameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {EntityIdService} entityIdService
@@ -47,7 +47,7 @@ class ViewerController {
               $element,
               $window,
               drawingContextService,
-              taskFrameLocationGateway,
+              frameLocationGateway,
               frameGateway,
               labeledThingInFrameGateway,
               entityIdService,
@@ -126,7 +126,7 @@ class ViewerController {
      * @type {TaskFrameLocationGateway}
      * @private
      */
-    this._taskFrameLocationGateway = taskFrameLocationGateway;
+    this._frameLocationGateway = frameLocationGateway;
 
     /**
      * @type {FrameGateway}
@@ -677,7 +677,7 @@ class ViewerController {
       throw new Error('No supported image type found');
     }
     const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
+    return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
   }
 
   /**
@@ -965,7 +965,7 @@ ViewerController.$inject = [
   '$element',
   '$window',
   'drawingContextService',
-  'taskFrameLocationGateway',
+  'frameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
   'entityIdService',
