@@ -34,12 +34,6 @@ class TaskFrameLocationGateway {
      * @private
      */
     this._abortablePromiseFactory = abortablePromiseFactory;
-
-    /**
-     * @type {DataContainer}
-     * @private
-     */
-    this._cache = new DataContainer();
   }
 
   /**
@@ -56,12 +50,6 @@ class TaskFrameLocationGateway {
    * @returns {AbortablePromise<Array<FrameLocation>>}
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
-    const keys = this._getKeySet(type, offset, limit);
-
-    if (this._cache.hasAll(keys)) {
-      return this._abortablePromiseFactory(this._$q.resolve(this._cache.getAll(keys)));
-    }
-
     return this._bufferedHttp({
       method: 'GET',
       url: this._apiService.getApiUrl(
@@ -69,17 +57,7 @@ class TaskFrameLocationGateway {
         {offset, limit}
       ),
     }, 'frameLocations')
-    .then(response => {
-      response.data.result.map(frameLocation => {
-        this._cache.set(`${type}-${frameLocation.frameNumber}`, frameLocation);
-      });
-
-      return response.data.result;
-    });
-  }
-
-  _getKeySet(type, offset, limit) {
-    return new Array(limit).fill(null).map((ignored, index) => `${type}-${index + offset + 1}`);
+    .then(response => response.data.result);
   }
 }
 
