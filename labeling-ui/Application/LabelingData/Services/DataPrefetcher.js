@@ -131,8 +131,8 @@ DataPrefetcher.$inject = [
   'ApiService',
   '$q',
   'labeledThingInFrameGateway',
-  'labeledThingInFrameData',
-  'labeledThingData',
+  //'labeledThingInFrameData',
+  //'labeledThingData',
   'loggerService',
 ];
 

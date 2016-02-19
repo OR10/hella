@@ -42,8 +42,6 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {DataPrefetcher} dataPrefetcher
    * @param {LockService} lockService
-   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
-   * @param {DataContainer} labeledThingData
    */
   constructor($scope,
               $element,
@@ -65,9 +63,7 @@ class ViewerController {
               $timeout,
               applicationState,
               dataPrefetcher,
-              lockService,
-              labeledThingInFrameData,
-              labeledThingData) {
+              lockService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -352,7 +348,7 @@ class ViewerController {
 
     $scope.$watch('vm.selectedPaperShape', (newShape) => {
       if (newShape && !newShape.isDraft) {
-        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
+        //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
       }
     });
 
@@ -367,8 +363,9 @@ class ViewerController {
 
           // Synchronize operations on this LabeledThing
           this._lockService.acquire(labeledThing.id, release => {
-            this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
-              .then(() => this._updateLabeledThingsInFrame())
+            //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
+            //  .then(() => this._updateLabeledThingsInFrame())
+            this._updateLabeledThingsInFrame()
               .then(release);
           });
         }
@@ -416,9 +413,7 @@ class ViewerController {
       }
     );
 
-    labeledThingInFrameData.invalidate();
-    labeledThingData.invalidate();
-    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
+    //dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
 
     // Fix Firefox issue where resize event is not fired
     new ResizeSensor($('.layer-container').get(0), () => {
@@ -736,9 +731,9 @@ class ViewerController {
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
-      .then(() =>
-        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
-      );
+      //.then(() =>
+        //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
+      //);
   }
 
   /**
@@ -756,7 +751,7 @@ class ViewerController {
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish())
-      .then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
+      //.then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
 
     this.activeTool = null;
 
@@ -989,8 +984,6 @@ ViewerController.$inject = [
   'applicationState',
   'dataPrefetcher',
   'lockService',
-  'labeledThingInFrameData',
-  'labeledThingData',
 ];
 
 export default ViewerController;

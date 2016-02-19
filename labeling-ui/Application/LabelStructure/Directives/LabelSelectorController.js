@@ -274,12 +274,12 @@ export default class LabelSelectorController {
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(
       labeledThingInFrame
     ).then(() => {
-      this._dataPrefetcher.prefetchSingleLabeledThing(
-        this.task,
-        labeledThingInFrame.labeledThing,
-        labeledThingInFrame.labeledThing.frameRange.startFrameNumber,
-        true
-      );
+      //this._dataPrefetcher.prefetchSingleLabeledThing(
+      //  this.task,
+      //  labeledThingInFrame.labeledThing,
+      //  labeledThingInFrame.labeledThing.frameRange.startFrameNumber,
+      //  true
+      //);
     });
   }
 

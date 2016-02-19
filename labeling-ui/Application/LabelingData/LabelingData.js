@@ -29,8 +29,6 @@ class LabelingData extends Module {
 
     this.module.service('dataPrefetcher', DataPrefetcher);
 
-    this.module.constant('labeledThingInFrameData', new LabeledThingInFrameDataContainer());
-    this.module.constant('labeledThingData', new DataContainer());
   }
 }
 
