@@ -128,13 +128,15 @@ class Task extends Controller\Base
                 'tasks' => $tasks,
                 'videos' => $videos,
                 'users' => array(
-                    array_map(function ($userId) {
-                        $user = $this->userFacade->getUserById($userId);
-                        return array(
-                            'id' => $user->getId(),
-                            'username' => $user->getUsername(),
-                        );
-                    }, $userIds)
+                    array_values(
+                        array_map(function ($userId) {
+                            $user = $this->userFacade->getUserById($userId);
+                            return array(
+                                'id' => $user->getId(),
+                                'username' => $user->getUsername(),
+                            );
+                        }, $userIds)
+                    )
                 )
 
             ]
