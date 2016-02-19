@@ -103,6 +103,9 @@ class Task extends Controller\Base
 
         $userIds = array();
         foreach ($tasks as $tasksByStatus) {
+            if ($tasksByStatus === null) {
+                continue;
+            }
             $userIds =
                 array_merge(
                     array_map(
