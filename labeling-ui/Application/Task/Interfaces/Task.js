@@ -33,3 +33,10 @@
  * @type {Array.<string>}
  */
 
+/**
+ * User assigned to this Task
+ *
+ * @name Task#assignedUser
+ * @type {integer}
+ */
+

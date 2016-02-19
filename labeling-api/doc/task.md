@@ -15,6 +15,9 @@
                 + waiting (array[Task])
                 + labeled (array[Task])
             + videos (array[Video])
+            + users (array)
+                + id: 1
+                + username: 'foobar'
 
 ## Get a specific task [/api/task/{id}]
 

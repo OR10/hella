@@ -76,7 +76,7 @@ class Task extends Controller\Base
         $limit       = $request->query->has('limit') ? $request->query->getInt('limit') : null;
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
         $tasks = array(
@@ -101,10 +101,42 @@ class Task extends Controller\Base
             $videos = [];
         }
 
+        $userIds = array();
+        foreach ($tasks as $tasksByStatus) {
+            if ($tasksByStatus === null) {
+                continue;
+            }
+            $userIds =
+                array_merge(
+                    array_map(
+                        function ($task) {
+                            return $task->getAssignedUserId();
+                        },
+                        $tasksByStatus
+                    ),
+                    $userIds
+                );
+        }
+        $userIds = array_unique(
+            array_filter($userIds, function ($userId) {
+                return is_int($userId);
+            })
+        );
+
         return View\View::create()->setData([
             'result' => [
                 'tasks' => $tasks,
                 'videos' => $videos,
+                'users' =>
+                    array_values(
+                        array_map(function ($userId) {
+                            $user = $this->userFacade->getUserById($userId);
+                            return array(
+                                'id' => $user->getId(),
+                                'username' => $user->getUsername(),
+                            );
+                        }, $userIds)
+                    )
             ]
         ]);
     }

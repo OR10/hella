@@ -35,8 +35,44 @@
                 </tbody>
             </table>
         </div>
-        <div class="grid-content task-list-table" ng-if="vm.waitingTasks != null">
-            <h3>Ready to be labeled</h3>
+        <div class="grid-content task-list-table">
+            <h3>My Tasks</h3>
+            <table class="hover table">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Range</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="task in vm.waitingTasks | myTasks:vm.user.id"
+                    track-by="task.id">
+                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        {{task.video.name}}
+                    </td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
+                    </td>
+                    <td>
+                        <button ng-click="vm.removeAssignment(task, vm.user)"
+                                tooltip="Remove my assignment from this task"
+                        >
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr ng-show="!vm.waitingTasks.length"
+                    class="no-hover"
+                >
+                    <td colspan="3" class="no-tasks">No tasks</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Unassigned Tasks</h3>
             <table class="hover table">
                 <thead>
                 <tr>
@@ -46,7 +82,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks track by task.id">
+                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks | unassignedTasks"
+                    track-by="task.id">
                     <td>{{task.taskType}}</td>
                     <td>
                         {{task.video.name}}
@@ -54,6 +91,36 @@
                     <td>
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
                     </td>
+                </tr>
+                <tr ng-show="!vm.waitingTasks.length"
+                    class="no-hover"
+                >
+                    <td colspan="3" class="no-tasks">No tasks</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Assigned to someone else</h3>
+            <table class="hover table">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Range</th>
+                    <th>Assignee</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks | otherPeopleTasks:vm.user.id"
+                    track-by="task.id">
+                    <td>{{task.taskType}}</td>
+                    <td>
+                        {{task.video.name}}
+                    </td>
+                    <td>
+                        {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
+                    </td>
+                    <td>{{task.user.username}}</td>
                 </tr>
                 <tr ng-show="!vm.waitingTasks.length"
                     class="no-hover"

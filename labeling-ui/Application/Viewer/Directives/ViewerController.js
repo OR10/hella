@@ -321,14 +321,11 @@ class ViewerController {
       }
     );
 
-    // Trigger initial loading of data
-    this._handleFrameChange(() => {
-    }, this.framePosition.position);
-
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
-    this.framePosition.onFrameChange('viewerHandleFrameChange', (finish, newFrameNumber) => {
-      this._handleFrameChange(finish, newFrameNumber);
+
+    $scope.$watch('vm.framePosition.position', newPosition => {
+      this._handleFrameChange(newPosition);
     });
 
     $scope.$watch(
@@ -558,13 +555,14 @@ class ViewerController {
    * @param {int} frameNumber
    * @private
    */
-  _handleFrameChange(finish, frameNumber) {
+  _handleFrameChange(frameNumber) {
     if (this._frameChangeInProgress) {
       this._logger.warn('ViewerController', 'frame change already in progress');
     }
 
     this._frameChangeInProgress = true;
 
+    this.framePosition.lock.acquire(true);
     this._$q.all(
       [
         this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
@@ -592,7 +590,7 @@ class ViewerController {
         if (ghostedLabeledThingInFrame) {
           this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
         }
-        finish();
+        this.framePosition.lock.release(true);
       }
     );
   }

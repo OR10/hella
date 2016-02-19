@@ -10,6 +10,7 @@ import 'angular-smart-table';
 import 'v-accordion';
 import 'v-accordion/dist/v-accordion.css!';
 
+import ApplicationController from './ApplicationController';
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
 import TaskModule from './Task/Task';
@@ -144,6 +145,7 @@ export default class Application {
       $stateProvider
         .state('labeling', {
           abstract: true,
+          controller: ApplicationController,
           url: '/',
           template: '<ui-view class="vertical grid-frame"/>',
           resolve: {

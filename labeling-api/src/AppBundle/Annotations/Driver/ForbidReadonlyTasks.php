@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception;
 use AppBundle\Annotations;
 use AppBundle\Model;
 use AppBundle\Service;
+use AppBundle\Controller\CustomException;
 
 class ForbidReadonlyTasks
 {
@@ -82,7 +83,7 @@ class ForbidReadonlyTasks
             }
 
             if ($this->taskReadOnlyDecider->isTaskReadOnlyForUser($user, $labelingTask)) {
-                throw new Exception\PreconditionFailedHttpException();
+                throw new CustomException\ReadOnlyHttpException('You are not allowed to to this in read-only mode');
             }
         }
     }

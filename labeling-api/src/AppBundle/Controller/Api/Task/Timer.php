@@ -57,7 +57,7 @@ class Timer extends Controller\Base
     public function getTimerAction(Model\LabelingTask $task, Model\User $user)
     {
         if ($user !== $this->tokenStorage->getToken()->getUser()) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
         }
 
         $timer = $this->labelingTaskFacade->getTimerForTaskAndUser($task, $user);
@@ -79,15 +79,15 @@ class Timer extends Controller\Base
         Model\User $user
     ) {
         if ($user !== $this->tokenStorage->getToken()->getUser()) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
         }
 
         if (($timeInSeconds = $request->request->get('time')) === null) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Missing time');
         }
 
         if (!is_int($timeInSeconds)) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('Time must be an integer');
         }
 
         if (($timer = $this->labelingTaskFacade->getTimerForTaskAndUser($task, $user)) === null) {

@@ -3,6 +3,9 @@ import TaskListDirective from './Directives/TaskListDirective';
 import TitleBarDirective from '../Header/Directives/TitleBarDirective';
 import HomeController from './Controllers/HomeController';
 import homeTemplate from './Views/home.html!';
+import UnassignedTasksFilterProvider from './Filters/UnassignesTasksFilterProvider';
+import MyTasksFilterProvider from './Filters/MyTasksFilterProvider';
+import OtherPeopleTasksFilterProvider from './Filters/OtherPeopleTasksFilterProvider';
 
 /**
  * Home Module
@@ -32,6 +35,9 @@ class Home extends Module {
     this.module = angular.module('AnnoStation.Home', []);
     this.registerDirective('tasklist', TaskListDirective);
     this.registerDirective('titleBar', TitleBarDirective);
+    this.module.filter('unassignedTasks', UnassignedTasksFilterProvider);
+    this.module.filter('myTasks', MyTasksFilterProvider);
+    this.module.filter('otherPeopleTasks', OtherPeopleTasksFilterProvider);
   }
 }
 

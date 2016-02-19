@@ -84,6 +84,8 @@ class ViewerTitleBarController {
       } else {
         this.handleCompleteState();
       }
+      this._applicationState.viewer.finish();
+      this._applicationState.enableAll();
     });
   }
 
@@ -100,12 +102,8 @@ class ViewerTitleBarController {
         this._taskGateway.markTaskAsLabeled(this.task)
           .then(() => {
             this._$state.go('labeling.tasks');
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
           }).catch((response) => {
           if (response.status === 412) {
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
             const alert = this._modalService.getAlertWarningDialog({
               title: 'Finish Task',
               headline: 'Incomplete labeling data',
@@ -117,36 +115,39 @@ class ViewerTitleBarController {
         });
       },
       () => {
-        this._applicationState.viewer.finish();
-        this._applicationState.enableAll();
       }
     );
     modal.activate();
   }
 
   handleIncompleteState() {
-    this._applicationState.viewer.finish();
-    this._applicationState.enableAll();
-
     if (this.task.taskType === 'object-labeling') {
       this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
         const nextIncomplete = result[0];
-        this.framePosition.goto(nextIncomplete.frameNumber, true);
 
-        this.framePosition.onFrameChangeComplete('selectNextIncomplete', () => {
-          this._$timeout(() => {
-            const labeledThingInFrame = this.labeledThingsInFrame.find((element) => {
-              return nextIncomplete.id === element.id;
-            });
-            const shape = labeledThingInFrame.paperShapes[0];
-            this.selectedPaperShape = shape;
-            this.selectedPaperShape.select();
-            this.hideLabeledThingsInFrame = true;
-            this.thingLayer.update();
+        if (this.framePosition.position === nextIncomplete.frameNumber) {
+          this._selectLabeledThingInFrame(nextIncomplete);
+        } else {
+          this.framePosition.registerOnFrameChangeOnce('selectNextIncomplete', () => {
+            this._selectLabeledThingInFrame(nextIncomplete);
           });
-        });
+          this.framePosition.goto(nextIncomplete.frameNumber);
+        }
       });
     }
+  }
+
+  _selectLabeledThingInFrame(nextIncomplete) {
+    this._$timeout(() => {
+      const labeledThingInFrame = this.labeledThingsInFrame.find((element) => {
+        return nextIncomplete.id === element.id;
+      });
+      const shape = labeledThingInFrame.paperShapes[0];
+      this.selectedPaperShape = shape;
+      this.selectedPaperShape.select();
+      this.hideLabeledThingsInFrame = true;
+      this.thingLayer.update();
+    });
   }
 
   reOpenLabelingTask() {

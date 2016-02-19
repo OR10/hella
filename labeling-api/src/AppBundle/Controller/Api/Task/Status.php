@@ -61,7 +61,7 @@ class Status extends Controller\Base
                 }
             }
             if (!$isOneLabeledFrameComplete) {
-                throw new Exception\PreconditionFailedHttpException();
+                throw new Exception\PreconditionFailedHttpException('No LabeledThing is incomplete');
             }
         }
 
@@ -69,7 +69,7 @@ class Status extends Controller\Base
             $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
             foreach ($labeledThings as $labeledThing) {
                 if ($labeledThing->getIncomplete()) {
-                    throw new Exception\PreconditionFailedHttpException();
+                    throw new Exception\PreconditionFailedHttpException('One or more LabeledThings are incomplete');
                 }
             }
         }
@@ -99,6 +99,6 @@ class Status extends Controller\Base
             return View\View::create()->setData(['result' => ['success' => true]]);
         }
 
-        throw new Exception\AccessDeniedHttpException();
+        throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
     }
 }
