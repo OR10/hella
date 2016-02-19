@@ -7,10 +7,8 @@ class FrameLocationGateway {
   /**
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp injected
-   * @param {$q} $q injected
-   * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor(apiService, bufferedHttp, $q, abortablePromiseFactory) {
+  constructor(apiService, bufferedHttp) {
     /**
      * @type {ApiService}
      * @private
@@ -22,18 +20,6 @@ class FrameLocationGateway {
      * @private
      */
     this._bufferedHttp = bufferedHttp;
-
-    /**
-     * @type {$q}
-     * @private
-     */
-    this._$q = $q;
-
-    /**
-     * @type {AbortablePromiseFactory}
-     * @private
-     */
-    this._abortablePromiseFactory = abortablePromiseFactory;
   }
 
   /**
@@ -51,21 +37,19 @@ class FrameLocationGateway {
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
     return this._bufferedHttp({
-      method: 'GET',
-      url: this._apiService.getApiUrl(
-        `/task/${taskId}/frameLocations/${type}`,
-        {offset, limit}
-      ),
-    }, 'frameLocations')
-    .then(response => response.data.result);
+        method: 'GET',
+        url: this._apiService.getApiUrl(
+          `/task/${taskId}/frameLocations/${type}`,
+          {offset, limit}
+        ),
+      }, 'frameLocations')
+      .then(response => response.data.result);
   }
 }
 
 FrameLocationGateway.$inject = [
   'ApiService',
   'bufferedHttp',
-  '$q',
-  'abortablePromiseFactory',
 ];
 
 export default FrameLocationGateway;
