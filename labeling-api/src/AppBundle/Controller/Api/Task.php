@@ -127,7 +127,7 @@ class Task extends Controller\Base
             'result' => [
                 'tasks' => $tasks,
                 'videos' => $videos,
-                'users' => array(
+                'users' =>
                     array_values(
                         array_map(function ($userId) {
                             $user = $this->userFacade->getUserById($userId);
@@ -137,8 +137,6 @@ class Task extends Controller\Base
                             );
                         }, $userIds)
                     )
-                )
-
             ]
         ]);
     }
