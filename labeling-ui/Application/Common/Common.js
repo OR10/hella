@@ -1,6 +1,8 @@
 import Module from '../Module';
 import ApiService from './Services/ApiService';
 import AuthInterceptor from './Services/AuthInterceptor';
+import ReadOnlyInterceptor from './Services/ReadOnlyInterceptor';
+import ErrorInterceptor from './Services/ErrorInterceptor';
 import RevisionManager from './Services/RevisionManager';
 import StatusGateway from './Gateways/StatusGateway';
 import BufferedHttpProvider from './Services/BufferedHttpProvider';
@@ -40,6 +42,8 @@ class Common extends Module {
     this.module = angular.module('AnnoStation.Common', ['foundation.common', 'foundation.modal']);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
+    this.module.service('readOnlyInterceptor', ReadOnlyInterceptor);
+    this.module.service('errorInterceptor', ErrorInterceptor);
     this.module.service('revisionManager', RevisionManager);
     this.module.service('entityIdService', EntityIdService);
     this.module.service('animationFrameService', AnimationFrameService);
@@ -62,6 +66,8 @@ class Common extends Module {
       ['$httpProvider', 'loggerServiceProvider',
         ($httpProvider, loggerServiceProvider) => {
           $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          $httpProvider.interceptors.push('errorInterceptor');
+          $httpProvider.interceptors.push('readOnlyInterceptor');
           $httpProvider.interceptors.push('authInterceptor');
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
