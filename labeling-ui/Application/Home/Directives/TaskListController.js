@@ -37,7 +37,7 @@ class TaskListController {
   _loadTaskList() {
     this.loadingInProgress = true;
     this._taskGateway.getTasksAndVideos()
-      .then(({tasks, videos}) => {
+      .then(({tasks, videos, users}) => {
 
         this.preprocessingTasks = null;
         this.waitingTasks = null;
@@ -52,12 +52,22 @@ class TaskListController {
         if (tasks.waiting) {
           this.waitingTasks = tasks.waiting.map(task => {
             task.video = videos[task.videoId];
+            if (task.assignedUser !== null) {
+              task.user = users.find((user) => {
+                return user.id === task.assignedUser;
+              });
+            }
             return task;
           });
         }
         if (tasks.labeled) {
           this.labeledTasks = tasks.labeled.map(task => {
             task.video = videos[task.videoId];
+            if (task.assignedUser !== null) {
+              task.user = users.find((user) => {
+                return user.id === task.assignedUser;
+              });
+            }
             return task;
           });
         }

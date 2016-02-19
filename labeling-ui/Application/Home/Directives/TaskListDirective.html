@@ -120,7 +120,7 @@
                     <td>
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
                     </td>
-                    <td>{{task.assignedUser}}</td>
+                    <td>{{task.user.username}}</td>
                 </tr>
                 <tr ng-show="!vm.waitingTasks.length"
                     class="no-hover"
