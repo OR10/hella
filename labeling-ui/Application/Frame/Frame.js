@@ -1,6 +1,6 @@
 import Module from '../Module';
 import FrameGateway from './Gateways/FrameGateway';
-import FrameLocationGateway from './Gateways/FrameLocationGateway';
+import CachingFrameLocationGateway from './Gateways/CachingFrameLocationGateway';
 
 /**
  * Frame Module
@@ -18,7 +18,7 @@ class Frame extends Module {
     this.module = angular.module('AnnoStation.Frame', []);
 
     this.module.service('frameGateway', FrameGateway);
-    this.module.service('frameLocationGateway', FrameLocationGateway);
+    this.module.service('frameLocationGateway', CachingFrameLocationGateway);
   }
 }
 
