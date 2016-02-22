@@ -72,12 +72,16 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     const cacheKeys = this._generateLtifCacheKeysForRange(task.id, start, end).map(obj => obj.key);
 
     if (this._ltifCache.hasAll(cacheKeys.map(key => `${key}.complete`))) {
-      const ltifDataMap = this._collapseLtifDataList(this._ltifCache.getAll(cacheKeys));
-      const ltDataObj = this._retrieveLtForLtifFromCache(ltifDataMap);
-      if (ltDataObj !== false) {
+      const ltifDataMap = this._filterCompleteEntries(
+        this._collapseLtifDataList(
+          this._ltifCache.getAll(cacheKeys)
+        )
+      );
+      const ltDataMap = this._retrieveLtForLtifFromCache(task, ltifDataMap);
+      if (ltDataMap !== false) {
         this._logger.log('cache:labeledThingInFrame', `Cache Hit (listLabeledThingInFrame) {start: ${start}, end: ${end}}`);
         return this._resolve(
-          this._createLabeledThingsInFrameByCacheData(task, ltifDataMap, ltDataObj)
+          this._createLabeledThingsInFrameByCacheData(task, ltifDataMap, ltDataMap)
         );
       }
       // If data is not available proceed fetching it
@@ -99,7 +103,6 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
         return labeledThingsInFrames;
       });
   }
-
 
   /**
    * Retrieve a {@link LabeledThingInFrame} which is associated to a specific
@@ -398,14 +401,15 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
   }
 
   /**
+   * @param {Task} task
    * @param {Map.<Object>} ltifDataMap
    * @returns {Object}
    * @private
    */
-  _retrieveLtForLtifFromCache(ltifDataMap) {
-    const ltDataObj = {};
+  _retrieveLtForLtifFromCache(task, ltifDataMap) {
+    const ltDataMap = new Map();
     let allFound = true;
-    ltifDataMap.forEach(ltifData => {
+    ltifDataMap.forEach((ltifData, subkey) => {
       const ltKey = `${task.id}.${ltifData.labeledThingId}`;
 
       if (allFound === false || !this._ltCache.has(ltKey)) {
@@ -414,14 +418,14 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       }
 
       const ltData = this._ltCache.get(ltKey);
-      ltDataObj[ltData.id] = ltData;
+      ltDataMap.set(ltData.id, ltData);
     });
 
     if (allFound === false) {
       return false;
     }
 
-    return ltDataObj;
+    return ltDataMap;
   }
 
   _mapIterator(iterator, mapper) {
@@ -463,6 +467,19 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       );
     });
   }
+  _filterCompleteEntries(dataMap) {
+    const filteredMap = new Map();
+    dataMap.forEach((data, subkey) => {
+      if (subkey === 'complete') {
+        return;
+      }
+
+      filteredMap.set(subkey, data);
+    });
+
+    return filteredMap;
+  }
+
 }
 
 CachingLabeledThingInFrameGateway.$inject = [
