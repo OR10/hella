@@ -85,7 +85,7 @@ class InterpolationService {
       interpolationFrameRange = labeledThing.frameRange;
     }
 
-    this._invalidateCaches(labeledThing, frameRange.startFrameNumber, frameRange.endFrameNumber);
+    this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameNumber, interpolationFrameRange.endFrameNumber);
 
     return interpolation.execute(task, labeledThing, interpolationFrameRange);
   }
