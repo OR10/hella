@@ -562,7 +562,7 @@ class ViewerController {
 
     this._frameChangeInProgress = true;
 
-    this.framePosition.lock.acquire(true);
+    this.framePosition.lock.acquire();
     this._$q.all(
       [
         this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
@@ -590,7 +590,7 @@ class ViewerController {
         if (ghostedLabeledThingInFrame) {
           this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
         }
-        this.framePosition.lock.release(true);
+        this.framePosition.lock.release();
       }
     );
   }
