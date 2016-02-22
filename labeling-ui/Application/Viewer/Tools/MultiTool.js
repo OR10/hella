@@ -203,4 +203,8 @@ export default class MultiTool extends Tool {
       this._activeTool.onMouseDrag(event);
     }
   }
+
+  onMouseLeave(event) {
+    this._mouseUp(event);
+  }
 }
