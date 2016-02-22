@@ -108,19 +108,27 @@
                     <th>Title</th>
                     <th>Range</th>
                     <th>Assignee</th>
+                    <th ng-show="vm.userPermissions.unassignPermission"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks | otherPeopleTasks:vm.user.id"
+                <tr ng-repeat="task in vm.waitingTasks | otherPeopleTasks:vm.user.id"
                     track-by="task.id">
-                    <td>{{task.taskType}}</td>
-                    <td>
+                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
-                    <td>
+                    <td ui-sref="^.task({taskId: task.id})">
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
                     </td>
-                    <td>{{task.user.username}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">{{task.user.username}}</td>
+                    <td ng-show="vm.userPermissions.unassignPermission">
+                        <button ng-click="vm.removeAssignment(task, task.user)"
+                                tooltip="Remove user assignment from this task"
+                        >
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </td>
                 </tr>
                 <tr ng-show="!vm.waitingTasks.length"
                     class="no-hover"

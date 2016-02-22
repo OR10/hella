@@ -25,7 +25,7 @@ class ViewerController {
    * @param {angular.element} $element
    * @param {angular.window} $window
    * @param {DrawingContextService} drawingContextService
-   * @param {TaskFrameLocationGateway} taskFrameLocationGateway
+   * @param {FrameLocationGateway} frameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {EntityIdService} entityIdService
@@ -42,14 +42,12 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {DataPrefetcher} dataPrefetcher
    * @param {LockService} lockService
-   * @param {LabeledThingInFrameDataContainer} labeledThingInFrameData
-   * @param {DataContainer} labeledThingData
    */
   constructor($scope,
               $element,
               $window,
               drawingContextService,
-              taskFrameLocationGateway,
+              frameLocationGateway,
               frameGateway,
               labeledThingInFrameGateway,
               entityIdService,
@@ -65,9 +63,7 @@ class ViewerController {
               $timeout,
               applicationState,
               dataPrefetcher,
-              lockService,
-              labeledThingInFrameData,
-              labeledThingData) {
+              lockService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -130,7 +126,7 @@ class ViewerController {
      * @type {TaskFrameLocationGateway}
      * @private
      */
-    this._taskFrameLocationGateway = taskFrameLocationGateway;
+    this._frameLocationGateway = frameLocationGateway;
 
     /**
      * @type {FrameGateway}
@@ -349,7 +345,7 @@ class ViewerController {
 
     $scope.$watch('vm.selectedPaperShape', (newShape) => {
       if (newShape && !newShape.isDraft) {
-        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
+        //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
       }
     });
 
@@ -364,8 +360,9 @@ class ViewerController {
 
           // Synchronize operations on this LabeledThing
           this._lockService.acquire(labeledThing.id, release => {
-            this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
-              .then(() => this._updateLabeledThingsInFrame())
+            //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
+            //  .then(() => this._updateLabeledThingsInFrame())
+            this._updateLabeledThingsInFrame()
               .then(release);
           });
         }
@@ -413,9 +410,7 @@ class ViewerController {
       }
     );
 
-    labeledThingInFrameData.invalidate();
-    labeledThingData.invalidate();
-    dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
+    //dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
 
     // Fix Firefox issue where resize event is not fired
     new ResizeSensor($('.layer-container').get(0), () => {
@@ -567,7 +562,7 @@ class ViewerController {
 
     this._frameChangeInProgress = true;
 
-    this.framePosition.lock.acquire(true);
+    this.framePosition.lock.acquire();
     this._$q.all(
       [
         this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
@@ -595,7 +590,7 @@ class ViewerController {
         if (ghostedLabeledThingInFrame) {
           this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
         }
-        this.framePosition.lock.release(true);
+        this.framePosition.lock.release();
       }
     );
   }
@@ -682,7 +677,7 @@ class ViewerController {
       throw new Error('No supported image type found');
     }
     const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
-    return this._taskFrameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
+    return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
   }
 
   /**
@@ -734,9 +729,9 @@ class ViewerController {
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
-      .then(() =>
-        this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
-      );
+      //.then(() =>
+        //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
+      //);
   }
 
   /**
@@ -754,7 +749,7 @@ class ViewerController {
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish())
-      .then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
+      //.then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
 
     this.activeTool = null;
 
@@ -970,7 +965,7 @@ ViewerController.$inject = [
   '$element',
   '$window',
   'drawingContextService',
-  'taskFrameLocationGateway',
+  'frameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
   'entityIdService',
@@ -987,8 +982,6 @@ ViewerController.$inject = [
   'applicationState',
   'dataPrefetcher',
   'lockService',
-  'labeledThingInFrameData',
-  'labeledThingData',
 ];
 
 export default ViewerController;

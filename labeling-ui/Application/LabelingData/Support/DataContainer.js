@@ -17,7 +17,7 @@ class DataContainer {
    * @returns {boolean}
    */
   has(key) {
-    return this._data.has(key);
+    return this._getKeyWithParents(key) !== undefined;
   }
 
   /**
@@ -26,7 +26,7 @@ class DataContainer {
    */
   hasAll(keys) {
     return keys.reduce((hadAllPrevious, key) => {
-      return hadAllPrevious && this._data.has(key);
+      return hadAllPrevious && this.has(key);
     }, true);
   }
 
@@ -42,10 +42,11 @@ class DataContainer {
    */
   invalidate(key) {
     if (key) {
-      return this._data.delete(key);
+      return this._deleteKeyWithParents(key);
     }
 
-    return this._data.clear();
+    this._data.clear();
+    return true;
   }
 
   /**
@@ -54,8 +55,8 @@ class DataContainer {
    * @param {*} key
    * @param {*} value
    */
-  set(key, value) {
-    this._data.set(key, value);
+  store(key, value) {
+    this._setKeyWithParents(key, value)
   }
 
   /**
@@ -65,7 +66,7 @@ class DataContainer {
    * @returns {*}
    */
   get(key) {
-    return this._data.get(key);
+    return this._getKeyWithParents(key);
   }
 
   /**
@@ -75,7 +76,67 @@ class DataContainer {
    * @returns {Array}
    */
   getAll(keys) {
-    return keys.map(key => this._data.get(key));
+    return keys.map(key => this.get(key));
+  }
+
+  _setKeyWithParents(key, value) {
+    const parts = key.split('.');
+    const valueKey = parts.pop();
+
+    let currentMap = this._data;
+    parts.forEach(part => {
+      if (!currentMap.has(part)) {
+        currentMap.set(part, new Map());
+      }
+
+      currentMap = currentMap.get(part);
+    });
+
+    currentMap.set(valueKey, value);
+    return currentMap;
+  }
+
+  _getKeyWithParents(key) {
+    const parts = key.split('.');
+    const valueKey = parts.pop();
+
+    let currentMap = this._data;
+    parts.forEach(part => {
+      if (!currentMap.has(part)) {
+        return undefined;
+      }
+
+      currentMap = currentMap.get(part);
+    });
+
+    return currentMap.get(valueKey);
+  }
+
+  _deleteKeyWithParents(key) {
+    const parts = key.split('.');
+    const valueKey = parts.pop();
+    const possibleCleanups = [];
+
+    let currentMap = this._data;
+    parts.forEach(part => {
+      if (!currentMap.has(part)) {
+        return undefined;
+      }
+
+      const parent = currentMap;
+      currentMap = currentMap.get(part);
+      possibleCleanups.push({parent, map: currentMap, parentKey: part});
+    });
+
+    const retVal = currentMap.delete(valueKey);
+
+    possibleCleanups.reverse().forEach(({parent, map, parentKey}) => {
+      if (map.size === 0) {
+        parent.delete(parentKey);
+      }
+    });
+
+    return retVal;
   }
 }
 

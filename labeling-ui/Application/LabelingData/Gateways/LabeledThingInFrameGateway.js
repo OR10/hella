@@ -8,14 +8,8 @@ class LabeledThingInFrameGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
-   * @param {$q} $q
-   * @param {$http} $http
-   * @param {LabeledThingGateway} labeledThingGateway
-   * @param {DataContainer} labeledThingInFrameData
-   * @param {DataContainer} labeledThingData
-   * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor(apiService, bufferedHttp, $q, $http, labeledThingGateway, labeledThingInFrameData, labeledThingData, abortablePromiseFactory) {
+  constructor(apiService, bufferedHttp) {
     /**
      * @type {BufferedHttp}
      */
@@ -25,89 +19,6 @@ class LabeledThingInFrameGateway {
      * @type {ApiService}
      */
     this._apiService = apiService;
-
-    /**
-     * @type {$q}
-     */
-    this._$q = $q;
-
-    /**
-     * @type {$http}
-     * @private
-     */
-    this._$http = $http;
-
-    /**
-     * @type {LabeledThingGateway}
-     * @private
-     */
-    this._labeledThingGateway = labeledThingGateway;
-
-    /**
-     * @type {DataContainer}
-     * @private
-     */
-    this._labeledThingInFrameData = labeledThingInFrameData;
-
-    /**
-     * @type {DataContainer}
-     * @private
-     */
-    this._labeledThingData = labeledThingData;
-
-    /**
-     * @type {AbortablePromiseFactory}
-     * @private
-     */
-    this._abortablePromiseFactory = abortablePromiseFactory;
-  }
-
-  /**
-   * Fetches {@link LabeledThingInFrame} data for multiple frames at once.
-   *
-   * The request for fetching the data will not inherently be synchronized with other requests.
-   *
-   * @param {Task} task
-   * @param {Number} startFrameNumber
-   * @param {Number} [limit=1]
-   *
-   * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
-   */
-  bulkFetchLabeledThingsInFrame(task, startFrameNumber, limit = 1) {
-    const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${startFrameNumber}?offset=0&limit=${limit}`
-    );
-
-    if (limit < 1) {
-      return Promise.resolve([]);
-    }
-
-    return this.bufferedHttp.get(url, undefined, 'labeledThing').then(
-      response => this._associateWithLabeledThings(task, response.data.result)
-    );
-  }
-
-  /**
-   * @param {Task} task
-   * @param {Number} offset
-   * @param {Number} limit
-   *
-   * @returns {Number[]}
-   * @private
-   */
-  _getFrameNumberRange(task, offset, limit) {
-    const endFrameNumber = offset + limit;
-    let actualLimit = limit;
-
-    if (endFrameNumber > task.frameRange.endFrameNumber) {
-      return [];
-    }
-
-    if (endFrameNumber > task.frameRange.endFrameNumber) {
-      actualLimit = endFrameNumber - task.frameRange.endFrameNumber;
-    }
-
-    return new Array(actualLimit).fill(null).map((ignored, index) => index + offset);
   }
 
   /**
@@ -115,17 +26,16 @@ class LabeledThingInFrameGateway {
    *
    * @param {Task} task
    * @param {Number} frameNumber
+   * @param {Number} offset
+   * @param {Number} limit
    *
    * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
-  listLabeledThingInFrame(task, frameNumber) {
+  listLabeledThingInFrame(task, frameNumber, offset = 0, limit = 1) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${frameNumber}`
+      `/task/${task.id}/labeledThingInFrame/${frameNumber}`,
+      {offset, limit}
     );
-
-    if (this._labeledThingInFrameData.has(frameNumber)) {
-      return this._abortablePromiseFactory(this._$q.resolve(this._labeledThingInFrameData.get(frameNumber)));
-    }
 
     return this.bufferedHttp.get(url, undefined, 'labeledThing')
       .then(response => {
@@ -154,13 +64,6 @@ class LabeledThingInFrameGateway {
    * @param {int?} limit
    */
   getLabeledThingInFrame(task, frameNumber, labeledThing, offset = 0, limit = 1) {
-    if (this._labeledThingData.has(labeledThing.id)) {
-      const startIndex = frameNumber - task.frameRange.startFrameNumber + offset;
-      const labeledThingData = this._labeledThingData.get(labeledThing.id).slice(startIndex, startIndex + limit);
-
-      return this._abortablePromiseFactory(this._$q.resolve(labeledThingData));
-    }
-
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThing.id}`,
       {offset, limit}
@@ -168,8 +71,8 @@ class LabeledThingInFrameGateway {
     return this.bufferedHttp.get(url, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
-          const labeledThingsInFrameData = response.data.result;
-          return labeledThingsInFrameData.map(
+          const result = response.data.result;
+          return result.map(
             data => new LabeledThingInFrame(
               Object.assign({}, data, {labeledThing})
             )
@@ -194,7 +97,7 @@ class LabeledThingInFrameGateway {
       `/task/${task.id}/labeledThingInFrame`,
       {
         incompleteOnly: true,
-        limit: count
+        limit: count,
       }
     );
 
@@ -209,29 +112,6 @@ class LabeledThingInFrameGateway {
   }
 
   /**
-   * Associate the labeledThingsInFrame with their labeledThings
-   *
-   * After the {@link LabeledThing} is Retrieved it will be combined into a new {@link LabeledThingInFrame}
-   *
-   * @param {Task} task
-   * @param {Object} labeledThingsInFrameData
-   * @returns {Array.<LabeledThingInFrame>}
-   * @private
-   */
-  _associateWithLabeledThings(task, labeledThingsInFrameData) {
-    return labeledThingsInFrameData.labeledThingsInFrame.map(data => {
-      const labeledThing = labeledThingsInFrameData.labeledThings[data.labeledThingId];
-      labeledThing.task = task;
-
-      return new LabeledThingInFrame(
-        Object.assign({}, data, {
-          labeledThing: new LabeledThing(labeledThing),
-        })
-      );
-    });
-  }
-
-  /**
    * Update the {@link LabeledThingInFrame} with the given `id`.
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
@@ -240,13 +120,8 @@ class LabeledThingInFrameGateway {
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
     if (labeledThingInFrame.ghost === true) {
-      return this._$q.reject(
-        new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!')
-      );
+      throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
-
-    this._labeledThingInFrameData.invalidateLabeledThing(labeledThingInFrame.labeledThing);
-    this._labeledThingData.invalidate(labeledThingInFrame.labeledThing.id);
 
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrame.id}`
@@ -255,8 +130,6 @@ class LabeledThingInFrameGateway {
     if (!Array.isArray(labeledThingInFrame.classes) || labeledThingInFrame.classes.length === 0) {
       delete labeledThingInFrame.classes;
     }
-
-    this._updateCacheForLabeledThingInFrame(labeledThingInFrame);
 
     return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThing')
       .then(response => {
@@ -278,63 +151,38 @@ class LabeledThingInFrameGateway {
           );
         }
 
-        throw new Error('Failed updating labeled thing in frame');
+        throw new Error('Failed updating LabeledThingInFrame');
       });
   }
 
   /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @private
+   * Associate the labeledThingsInFrame with their labeledThings
+   *
+   * After the {@link LabeledThing} is Retrieved it will be combined into a new {@link LabeledThingInFrame}
+   *
+   * @param {Task} task
+   * @param {Object} result
+   * @returns {Array.<LabeledThingInFrame>}
+   * @protected
    */
-  _updateCacheForLabeledThingInFrame(labeledThingInFrame) {
-    const frameNumber = labeledThingInFrame.frameNumber;
+  _associateWithLabeledThings(task, result) {
+    return result.labeledThingsInFrame.map(data => {
+      const labeledThing = result.labeledThings[data.labeledThingId];
+      labeledThing.task = task;
 
-    if (this._labeledThingInFrameData.has(frameNumber)) {
-      const oldFrameData = this._labeledThingInFrameData.get(frameNumber);
-
-      const newFrameData = oldFrameData.filter(
-        oldLabeledThingInFrame => {
-          return oldLabeledThingInFrame.labeledThing.id !== labeledThingInFrame.labeledThing.id;
-        }
+      return new LabeledThingInFrame(
+        Object.assign({}, data, {
+          labeledThing: new LabeledThing(labeledThing),
+        })
       );
-
-      newFrameData.push(labeledThingInFrame);
-
-      this._labeledThingInFrameData.set(frameNumber, newFrameData);
-    }
+    });
   }
 
-  /**
-   * Deletes the {@link LabeledThingInFrame} in the database
-   *
-   * @param {String} labeledThingInFrameId
-   *
-   * @returns {AbortablePromise<true|Error>}
-   */
-  deleteLabeledThingInFrame(labeledThingInFrameId) {
-    const url = this._apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrameId}`
-    );
-    return this.bufferedHttp.delete(url, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data) {
-          return true;
-        }
-
-        throw new Error('Failed deleting labeled thing in frame');
-      });
-  }
 }
 
 LabeledThingInFrameGateway.$inject = [
   'ApiService',
   'bufferedHttp',
-  '$q',
-  '$http',
-  'labeledThingGateway',
-  'labeledThingInFrameData',
-  'labeledThingData',
-  'abortablePromiseFactory',
 ];
 
 export default LabeledThingInFrameGateway;

@@ -1,11 +1,10 @@
 import Module from '../Module';
-import LabeledThingInFrameGateway from './Gateways/LabeledThingInFrameGateway';
+import CachingLabeledThingInFrameGateway from './Gateways/CachingLabeledThingInFrameGateway';
 import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
-import LabeledThingGateway from './Gateways/LabeledThingGateway';
+import CachingLabeledThingGateway from './Gateways/CachingLabeledThingGateway';
 import InterpolationService from './Services/InterpolationService';
 import LinearBackendInterpolation from './Interpolations/LinearBackendInterpolation';
-import DataContainer from './Support/DataContainer';
-import LabeledThingInFrameDataContainer from './Support/LabeledThingInFrameDataContainer';
+import CacheService from './Services/CacheService';
 import DataPrefetcher from './Services/DataPrefetcher';
 
 /**
@@ -20,17 +19,16 @@ class LabelingData extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.LabelingData', []);
 
-    this.module.service('labeledThingInFrameGateway', LabeledThingInFrameGateway);
+    this.module.service('labeledThingInFrameGateway', CachingLabeledThingInFrameGateway);
     this.module.service('labeledFrameGateway', LabeledFrameGateway);
-    this.module.service('labeledThingGateway', LabeledThingGateway);
+    this.module.service('labeledThingGateway', CachingLabeledThingGateway);
 
     this.module.service('interpolationService', InterpolationService);
     this.module.service('linearBackendInterpolation', LinearBackendInterpolation);
 
     this.module.service('dataPrefetcher', DataPrefetcher);
 
-    this.module.constant('labeledThingInFrameData', new LabeledThingInFrameDataContainer());
-    this.module.constant('labeledThingData', new DataContainer());
+    this.module.service('cacheService', CacheService);
   }
 }
 

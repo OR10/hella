@@ -5,9 +5,10 @@ class InterpolationService {
   /**
    * @param {$q} $q
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {CacheService} cache
    * @param {Array.<Interpolation>} interpolations
    */
-  constructor($q, labeledThingGateway, ...interpolations) {
+  constructor($q, labeledThingGateway, cache, ...interpolations) {
     /**
      * @type {$q}
      * @private
@@ -19,6 +20,24 @@ class InterpolationService {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._ltifCache = cache.container('labeledThingsInFrame-by-frame');
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._ltifGhostCache = cache.container('ghosted-labeledThingsInFrame-by-id');
+
+    /**
+     * @type {DataContainer}
+     * @private
+     */
+    this._ltCache = cache.container('labeledThing-by-id');
 
     /**
      * All registered Interpolations
@@ -66,7 +85,38 @@ class InterpolationService {
       interpolationFrameRange = labeledThing.frameRange;
     }
 
+    this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameNumber, interpolationFrameRange.endFrameNumber);
+
     return interpolation.execute(task, labeledThing, interpolationFrameRange);
+  }
+
+  /**
+   * Invalidate every cached ltif associated with a certain lt within the given frame range
+   *
+   * @param {LabeledThing} labeledThing
+   * @param {number} start
+   * @param {number} end
+   * @private
+   */
+  _invalidateCaches(labeledThing, start, end) {
+    const {task} = labeledThing;
+    for(let frameNumber = start; frameNumber <= end; frameNumber++) {
+      // Invalidate ghosts
+      this._ltifGhostCache.invalidate(`${task.id}.${frameNumber}.${labeledThing.id}`);
+
+      // Invalidate non-ghosts
+      const ltifFrameMap = this._ltifCache.get(`${task.id}.${frameNumber}`);
+      if (ltifFrameMap !== undefined) {
+        ltifFrameMap.forEach(ltifData => {
+          if (ltifData.labeledThingId !== labeledThing.id) {
+            return;
+          }
+
+          this._ltifCache.invalidate(`${task.id}.${frameNumber}.${ltifData.id}`);
+          this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
+        });
+      }
+    }
   }
 
   /**
@@ -90,6 +140,7 @@ class InterpolationService {
 InterpolationService.$inject = [
   '$q',
   'labeledThingGateway',
+  'cacheService',
   // All Interpolations listed here will be auto registered.
   'linearBackendInterpolation',
 ];
