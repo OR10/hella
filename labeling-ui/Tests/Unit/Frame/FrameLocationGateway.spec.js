@@ -1,4 +1,3 @@
-import 'jquery';
 import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
