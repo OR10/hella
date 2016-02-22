@@ -3,9 +3,9 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import TaskFrameLocationGateway from 'Application/Frame/Gateways/TaskFrameLocationGateway';
+import FrameLocationGateway from 'Application/Frame/Gateways/FrameLocationGateway';
 
-describe('TaskFrameLocationGateway', () => {
+describe('FrameLocationGateway', () => {
   let $httpBackend;
   let $httpParamSerializer;
   let gateway;
@@ -30,13 +30,13 @@ describe('TaskFrameLocationGateway', () => {
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       $httpParamSerializer = $injector.get('$httpParamSerializer');
-      gateway = $injector.instantiate(TaskFrameLocationGateway);
+      gateway = $injector.instantiate(FrameLocationGateway);
       bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 
   it('should be able to instantiate without non injected arguments', () => {
-    expect(gateway instanceof TaskFrameLocationGateway).toEqual(true);
+    expect(gateway instanceof FrameLocationGateway).toEqual(true);
   });
 
   it('should by default request offset 0 with 1 frame', (done) => {
