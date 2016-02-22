@@ -140,6 +140,14 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       });
   }
 
+  /**
+   * @param {Task} task
+   * @param {LabeledThing} labeledThing
+   * @param {number} start
+   * @param {number} end
+   * @returns {Array.<LabeledThingInFrame>}
+   * @private
+   */
   _lookupLabeledThingInFrame(task, labeledThing, start, end) {
     const ltifKeys = this._generateLtifCacheKeysForRange(task.id, start, end);
 
@@ -227,6 +235,12 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       });
   }
 
+  /**
+   * Invalidate the Ghost cache for a certain `LabeledThingInFrame`
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @private
+   */
   _invalidateGhostsFor(labeledThingInFrame) {
     const {frameNumber, labeledThing, labeledThing: {task}} = labeledThingInFrame;
     let currentFrame = null;
@@ -275,6 +289,18 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     }
   }
 
+  /**
+   * Try to fillup holes in a LtifMap using cached Ghosts
+   *
+   * This method modified the given `ltifDataByFrameMap`!
+   *
+   * @param {Map} ltifDataByFrameMap
+   * @param {string} taskId
+   * @param {string} ltId
+   * @param {number} startFrame
+   * @returns {Object}
+   * @private
+   */
   _fillUpLtifHoles(ltifDataByFrameMap, taskId, ltId, startFrame) {
     let lastFrame = startFrame;
     let lastLtifData = null;
@@ -305,6 +331,12 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     return {frame: lastFrame, ltifData: lastLtifData, ghost: lastLtifData.ghost}
   }
 
+  /**
+   * @param {Map} ltifDataMap
+   * @param {string} ltId
+   * @returns {Object|undefined}
+   * @private
+   */
   _extractLtifByLt(ltifDataMap, ltId) {
     if (ltifDataMap === undefined) {
       return undefined;
@@ -316,6 +348,14 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     );
   }
 
+  /**
+   * Extract the first value of an iterator which fullfills a given condition
+   *
+   * @param {Iterator} iterator
+   * @param {Function} condition
+   * @returns {*}
+   * @private
+   */
   _extractFirstFromIterator(iterator, condition = () => true) {
     let current;
     while (true) {
@@ -428,6 +468,13 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     return ltDataMap;
   }
 
+  /**
+   * Execute a `map` operation on any `iterator`
+   * @param {Iterator} iterator
+   * @param {Function} mapper
+   * @returns {Array}
+   * @private
+   */
   _mapIterator(iterator, mapper) {
     const result = [];
     let index = 0;
@@ -467,6 +514,12 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       );
     });
   }
+
+  /**
+   * @param {Map} dataMap
+   * @returns {Map}
+   * @private
+   */
   _filterCompleteEntries(dataMap) {
     const filteredMap = new Map();
     dataMap.forEach((data, subkey) => {
