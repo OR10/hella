@@ -10,6 +10,7 @@ class TaskListDirective {
   constructor() {
     this.scope = {
       user: '=',
+      userPermissions: '=',
     };
 
     this.template = taskListTemplate;
