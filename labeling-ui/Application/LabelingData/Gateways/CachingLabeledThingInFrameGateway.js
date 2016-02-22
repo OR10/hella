@@ -1,3 +1,4 @@
+import {equals} from 'angular';
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 import LabeledThing from '../Models/LabeledThing';
 import LabeledThingsInFrameGateway from './LabeledThingInFrameGateway';
@@ -141,6 +142,60 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
   }
 
   /**
+   * Update the {@link LabeledThingInFrame} with the given `id`.
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   *
+   * @returns {AbortablePromise<LabeledThingInFrame|Error>}
+   */
+  saveLabeledThingInFrame(labeledThingInFrame) {
+    const {frameNumber, labeledThing, labeledThing: {task}} = labeledThingInFrame;
+    const cachedLabeledThingsInFrame = this._lookupLabeledThingInFrame(task, labeledThing, frameNumber, frameNumber);
+    const cachedLabeledThingInFrame = cachedLabeledThingsInFrame === false ? undefined : cachedLabeledThingsInFrame.pop();
+
+    // Ghosts always become invalid for this ltif
+    this._invalidateGhostsFor(labeledThingInFrame);
+
+    const classesChanged = (
+      cachedLabeledThingInFrame === undefined ||
+      (
+        cachedLabeledThingInFrame.ghost === false && !equals(cachedLabeledThingInFrame.classes, labeledThingInFrame.classes)
+      ) ||
+      (
+        cachedLabeledThingInFrame.ghost === true && !equals(cachedLabeledThingInFrame.ghostClasses, labeledThingInFrame.classes)
+      )
+    );
+
+    let invalidatedFrameCompletion = false;
+    if (classesChanged) {
+      // We need to invalidate all correspondng LabeledThingsInFrame right of this frame, as classes propagate as ghostClasses
+      this._invalidateLtifsForLt(labeledThing, frameNumber + 1);
+    } else {
+      // We only need to invalidate this specific ltif
+      this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}`);
+      invalidatedFrameCompletion = this._ltifCache.has(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
+      this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
+    }
+
+    return super.saveLabeledThingInFrame(labeledThingInFrame)
+      .then(newLabeledThingInFrame => {
+        const newLabeledThing = newLabeledThingInFrame.labeledThing;
+        const ltifKey = `${task.id}.${frameNumber}.${newLabeledThingInFrame.id}`;
+        const ltKey = `${task.id}.${newLabeledThing.id}`;
+
+        // Restore frame completion after update, if it was set before
+        if (invalidatedFrameCompletion) {
+          this._ltifCache.store(`${ltifKey}.complete`, true);
+        }
+
+        this._ltifCache.store(ltifKey, newLabeledThingInFrame.toJSON());
+        this._ltCache.store(ltKey, newLabeledThing.toJSON());
+
+        return newLabeledThingInFrame;
+      });
+  }
+
+  /**
    * @param {Task} task
    * @param {LabeledThing} labeledThing
    * @param {number} start
@@ -201,38 +256,28 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
   }
 
   /**
-   * Update the {@link LabeledThingInFrame} with the given `id`.
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   *
-   * @returns {AbortablePromise<LabeledThingInFrame|Error>}
+   * @param {LabeledThing} labeledThing
+   * @param {number} start
+   * @private
    */
-  saveLabeledThingInFrame(labeledThingInFrame) {
-    const {frameNumber, labeledThing, labeledThing: {task}} = labeledThingInFrame;
-    this._invalidateGhostsFor(labeledThingInFrame);
+  _invalidateLtifsForLt(labeledThing, start) {
+    const {task} = labeledThing;
 
-    this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}`);
-    const invalidatedFrameCompletion = this._ltifCache.has(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
-    this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
+    const frameMap = this._ltifCache.get(`${task.id}`);
 
-    //@TODO: ghostClasses?
+    frameMap.forEach((ltifMap, frameNumber) => {
+      if (frameNumber < start) {
+        return;
+      }
 
-    return super.saveLabeledThingInFrame(labeledThingInFrame)
-      .then(newLabeledThingInFrame => {
-        const newLabeledThing = newLabeledThingInFrame.labeledThing;
-        const ltifKey = `${task.id}.${frameNumber}.${newLabeledThingInFrame.id}`;
-        const ltKey = `${task.id}.${newLabeledThing.id}`;
+      const ltifData = this._extractLtifByLt(ltifMap, labeledThing.id);
+      if (ltifData === undefined) {
+        return;
+      }
 
-        // Restore frame completion after update, if it was set before
-        if (invalidatedFrameCompletion) {
-          this._ltifCache.store(`${ltifKey}.complete`, true);
-        }
-
-        this._ltifCache.store(ltifKey, newLabeledThingInFrame.toJSON());
-        this._ltCache.store(ltKey, newLabeledThing.toJSON());
-
-        return newLabeledThingInFrame;
-      });
+      this._ltifCache.invalidate(`${task.id}.${frameNumber}.${ltifData.id}`);
+      this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
+    });
   }
 
   /**
@@ -358,7 +403,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
    */
   _extractFirstFromIterator(iterator, condition = () => true) {
     let current;
-    while (true) {
+    while (true) { // eslint-disable-line no-constant-condition
       current = iterator.next();
       if (current.done) {
         break;
@@ -479,7 +524,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     const result = [];
     let index = 0;
     let current;
-    while (true) {
+    while (true) { // eslint-disable-line no-constant-condition
       current = iterator.next();
       if (current.done) {
         break;
