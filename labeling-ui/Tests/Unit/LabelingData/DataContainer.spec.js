@@ -6,7 +6,7 @@ describe('DataContainer', () => {
 
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
-        dataContainer.set(key, data[key]);
+        dataContainer.store(key, data[key]);
       }
     }
 
@@ -62,7 +62,7 @@ describe('DataContainer', () => {
     [['baz', 'barbaz'], [undefined, undefined]],
     [['baz'], [undefined]],
   ], (keys, expectedResult) => {
-    it('should check for multiple keys to be present', () => {
+    it('should retrieve multiple keys', () => {
       const dataContainer = initializeDataContainer({
         foo: 'bar',
         bar: 'baz',
