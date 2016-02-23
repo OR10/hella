@@ -106,6 +106,10 @@ class InterpolationService {
 
       // Invalidate non-ghosts
       const ltifFrameMap = this._ltifCache.get(`${task.id}.${frameNumber}`);
+
+      // Invalidate all incomplete pages within the interpolation range
+      this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
+
       if (ltifFrameMap !== undefined) {
         ltifFrameMap.forEach(ltifData => {
           if (ltifData.labeledThingId !== labeledThing.id) {
@@ -113,7 +117,6 @@ class InterpolationService {
           }
 
           this._ltifCache.invalidate(`${task.id}.${frameNumber}.${ltifData.id}`);
-          this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
         });
       }
     }
