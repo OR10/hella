@@ -1,4 +1,3 @@
-import toEqualIterator from '../../Support/Jasmine/Matchers/EqualIterator';
 import DataContainer from 'Application/LabelingData/Support/DataContainer';
 
 describe('DataContainer', () => {

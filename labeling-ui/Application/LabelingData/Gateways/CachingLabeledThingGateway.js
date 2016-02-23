@@ -53,7 +53,9 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
    * @returns {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing) {
-    this._ltCache.invalidate(labeledThing.id);
+    const {task} = labeledThing;
+    this._ltCache.invalidate(`${task.id}.${labeledThing.id}`);
+
     return super.saveLabeledThing(labeledThing)
       .then(storedLabeledThing => {
         const taskId = storedLabeledThing.task.id;

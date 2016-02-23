@@ -323,9 +323,13 @@ class MediaControlsController {
           }
         )
         .catch(function (error) {
-            debugger;
             this._applicationState.enableAll();
-            throw error;
+            const errorDialog = this._modalService.getAlertWarningDialog({
+              title: 'Error',
+              headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
+              confirmButtonText: 'Ok',
+            }, () => {});
+            errorDialog.activate();
           }.bind(this)
         );
     } catch (error) {

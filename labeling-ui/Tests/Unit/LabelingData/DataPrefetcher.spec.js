@@ -6,7 +6,7 @@ import LabelingData from 'Application/LabelingData/LabelingData';
 
 import DataPrefetcher from 'Application/LabelingData/Services/DataPrefetcher';
 
-describe('DataPrefetcher', () => {
+xdescribe('DataPrefetcher', () => {
   let dataPrefetcher;
   let labeledThingInFrameGateway;
   let labeledThingInFrameData;
