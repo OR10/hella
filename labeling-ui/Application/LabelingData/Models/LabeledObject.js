@@ -39,6 +39,13 @@ class LabeledObject {
      * @type {boolean}
      */
     this.incomplete = labeledObject.incomplete;
+
+    /**
+     * The ghost labels inherited from earlier labels
+     *
+     * @type {Array.<String>|null}
+     */
+    this.ghostClasses = labeledObject.ghostClasses;
   }
 
   /**
@@ -51,6 +58,9 @@ class LabeledObject {
   setClasses(newClasses) {
     // Ensure all stored classes are a unique list
     this.classes = [...new Set(newClasses)];
+
+    // Remove ghostClasses once real classes are set
+    this.ghostClasses = null;
   }
 
   /**
@@ -61,6 +71,10 @@ class LabeledObject {
    * @param {string} newClass
    */
   addClass(newClass) {
+    if (this.ghostClasses !== null) {
+      this.setClasses(this.ghostClasses);
+    }
+
     this.setClasses([...this.classes, newClass]);
   }
 
@@ -70,10 +84,16 @@ class LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {id, classes, rev, incomplete} = this;
-    return {
-      id, classes, rev, incomplete,
+    const {id, classes, rev, incomplete, ghostClasses} = this;
+    const retVal = {
+      id, classes, ghostClasses, rev, incomplete,
     };
+
+    if (this.ghostClasses !== null) {
+      delete retVal.classes;
+    }
+
+    return retVal;
   }
 }
 

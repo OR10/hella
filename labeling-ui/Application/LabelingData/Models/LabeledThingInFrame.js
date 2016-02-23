@@ -49,12 +49,6 @@ class LabeledThingInFrame extends LabeledObject {
      */
     this.paperShapes = [];
 
-    /**
-     * The ghost labels inherited from earlier labels
-     *
-     * @type {Array.<String>}
-     */
-    this.ghostClasses = labeledThingInFrame.ghostClasses;
   }
 
   /**
@@ -89,22 +83,6 @@ class LabeledThingInFrame extends LabeledObject {
     this.frameNumber = frameNumber;
   }
 
-  persistClasses() {
-    if (!Array.isArray(this.classes)) {
-      return false;
-    }
-    if (this.classes.length === 0) {
-      return false;
-    }
-    if (Array.isArray(this.ghostClasses)) {
-      if (_.isEqual(this.classes.sort(), this.ghostClasses.sort())) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   /**
    * Convert this model into a datastructure suitable for backend storage
    *
@@ -112,14 +90,10 @@ class LabeledThingInFrame extends LabeledObject {
    */
   toJSON() {
     const {frameNumber, labeledThing, shapes, ghost} = this;
-    let result = Object.assign(super.toJSON(), {
+    return Object.assign(super.toJSON(), {
       frameNumber, shapes, ghost,
       labeledThingId: labeledThing.id,
     });
-    if (!this.persistClasses()) {
-      delete result.classes;
-    }
-    return result;
   }
 }
 

@@ -19,13 +19,14 @@ export default class LabelSelectorController {
    * @param {LinearLabelStructureVisitor} linearLabelStructureVisitor
    * @param {AnnotationLabelStructureVisitor} annotationStructureVisitor
    * @param {LabeledFrameGateway} labeledFrameGateway
+   * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {EntityIdService} entityIdService
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    */
-  constructor($scope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway, dataPrefetcher) {
+  constructor($scope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway, dataPrefetcher) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -62,6 +63,12 @@ export default class LabelSelectorController {
      * @private
      */
     this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
 
     /**
      * @type {LabeledThingInFrameGateway}
@@ -143,9 +150,8 @@ export default class LabelSelectorController {
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', () => {
-      //this.isCompleted = this._isCompleted();
-
-      if (!this.labeledObject) {
+      const labeledObject = this.labeledObject;
+      if (!labeledObject) {
         return;
       }
 
@@ -153,11 +159,41 @@ export default class LabelSelectorController {
         choice => choice !== null
       );
 
-      if (equals(this.labeledObject.classes, labels)) {
+      if (equals(labeledObject.classes, labels)) {
         return;
       }
 
-      this.labeledObject.setClasses(labels);
+      labeledObject.setClasses(labels);
+
+      if (labeledObject instanceof LabeledThingInFrame) {
+        const labeledThingInFrame = labeledObject;
+        const {labeledThing} = labeledThingInFrame;
+
+        if (labeledThingInFrame.ghost === true) {
+          const {frameNumber} = labeledThingInFrame;
+          const ltifId = this._entityIdService.getUniqueId();
+
+          labeledThingInFrame.ghostBust(ltifId, labeledThingInFrame.frameNumber);
+
+          let frameRangeUpdated = false;
+
+          if (frameNumber > labeledThing.frameRange.endFrameNumber) {
+            labeledThing.frameRange.endFrameNumber = frameNumber;
+            frameRangeUpdated = true;
+          }
+
+          if (frameNumber < labeledThing.frameRange.startFrameNumber) {
+            labeledThing.frameRange.startFrameNumber = frameNumber;
+            frameRangeUpdated = true;
+          }
+
+          if (frameRangeUpdated) {
+            this._labeledThingGateway.saveLabeledThing(labeledThing)
+              .then(() => this._storeUpdatedLabeledObject());
+            return;
+          }
+        }
+      }
 
       this._storeUpdatedLabeledObject();
     }, true);
@@ -175,21 +211,18 @@ export default class LabelSelectorController {
    * @private
    */
   _generateLinearList() {
-    const labels = this._getClasses(this.labeledObject);
+    const labels = this._getViewClasses(this.labeledObject);
     const linearStructure = this._linearLabelStructureVisitor.visit(this.structure, labels);
     const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this.annotation);
 
     return annotatedStructure.children;
   }
 
-  _getClasses() {
-    if (Array.isArray(this.labeledObject.classes) && this.labeledObject.classes.length) {
-      return this.labeledObject.classes;
-    }
-    if (Array.isArray(this.labeledObject.ghostClasses) && this.labeledObject.ghostClasses.length) {
+  _getViewClasses() {
+    if (this.labeledObject.ghostClasses !== null) {
       return this.labeledObject.ghostClasses;
     }
-    return [];
+    return this.labeledObject.classes;
   }
 
   /**
@@ -358,6 +391,7 @@ LabelSelectorController.$inject = [
   'linearLabelStructureVisitor',
   'annotationLabelStructureVisitor',
   'labeledFrameGateway',
+  'labeledThingGateway',
   'labeledThingInFrameGateway',
   'entityIdService',
   'modalService',
