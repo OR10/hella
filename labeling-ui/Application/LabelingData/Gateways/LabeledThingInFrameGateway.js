@@ -127,7 +127,7 @@ class LabeledThingInFrameGateway {
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
-    if (!Array.isArray(labeledThingInFrame.classes) || labeledThingInFrame.classes.length === 0) {
+    if (labeledThingInFrame.ghostClasses !== null && !!labeledThingInFrame.classes) {
       delete labeledThingInFrame.classes;
     }
 

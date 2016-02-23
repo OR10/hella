@@ -66,6 +66,7 @@ class DrawingTool extends Tool {
     const newLabeledThingInFrame = new LabeledThingInFrame({
       id: newLabeledThingInFrameId,
       classes: [],
+      ghostClasses: null,
       incomplete: true,
       frameNumber: framePosition.position,
       labeledThing: newLabeledThing,
