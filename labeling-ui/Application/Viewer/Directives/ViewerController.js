@@ -748,7 +748,7 @@ class ViewerController {
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
-      .then(() => shape.publish())
+      .then(() => shape.publish());
       //.then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
 
     this.activeTool = null;
