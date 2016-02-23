@@ -49,6 +49,12 @@ class LabeledThingInFrame extends LabeledObject {
      */
     this.paperShapes = [];
 
+    /**
+     * The ghost labels inherited from earlier labels
+     *
+     * @type {Array.<String>|null}
+     */
+    this.ghostClasses = labeledThingInFrame.ghostClasses;
   }
 
   /**
@@ -58,6 +64,35 @@ class LabeledThingInFrame extends LabeledObject {
    */
   get labeledThing() {
     return this._labeledThing;
+  }
+
+  /**
+   * Store a new set of labels.
+   *
+   * The setter ensures that a unique set of labels is stored
+   *
+   * @param {Array.<string>} newClasses
+   */
+  setClasses(newClasses) {
+    super.setClasses(newClasses);
+
+    // Remove ghostClasses once real classes are set
+    this.ghostClasses = null;
+  }
+
+  /**
+   * Add a new label to the currently stored list of labels
+   *
+   * It is ensured, that the label list stays unique
+   *
+   * @param {string} newClass
+   */
+  addClass(newClass) {
+    if (this.ghostClasses !== null) {
+      this.setClasses(this.ghostClasses);
+    }
+
+    super.addClass(newClass);
   }
 
   /**
@@ -89,9 +124,9 @@ class LabeledThingInFrame extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {frameNumber, labeledThing, shapes, ghost} = this;
+    const {frameNumber, labeledThing, shapes, ghost, ghostClasses} = this;
     return Object.assign(super.toJSON(), {
-      frameNumber, shapes, ghost,
+      frameNumber, shapes, ghost, ghostClasses,
       labeledThingId: labeledThing.id,
     });
   }

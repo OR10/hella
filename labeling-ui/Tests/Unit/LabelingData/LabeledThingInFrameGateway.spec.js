@@ -100,6 +100,7 @@ describe('LabeledThingInFrameGateway', () => {
       classes: [],
       incomplete: true,
       frameNumber: 23,
+      ghostClasses: ['foo', 'bar'],
       ghost: false,
       labeledThing: new LabeledThing({
         id: 'some-labeled-thing-id',
@@ -117,6 +118,8 @@ describe('LabeledThingInFrameGateway', () => {
           incomplete: true,
           frameNumber: 23,
           ghost: false,
+          classes: [],
+          ghostClasses: ['foo', 'bar'],
           labeledThingId: 'some-labeled-thing-id',
         },
         labeledThing: {
@@ -151,6 +154,7 @@ describe('LabeledThingInFrameGateway', () => {
       rev: 'bcd',
       shapes: [{type: 'rectangle'}],
       classes: ['a', 'b'],
+      ghostClasses: null,
       incomplete: true,
       frameNumber: 23,
       ghost: false,
@@ -168,6 +172,7 @@ describe('LabeledThingInFrameGateway', () => {
           rev: 'bcd',
           shapes: [{type: 'rectangle'}],
           classes: ['a', 'b'],
+          ghostClasses: null,
           incomplete: true,
           frameNumber: 23,
           ghost: false,
