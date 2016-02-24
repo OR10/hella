@@ -46,6 +46,12 @@ class TimerController {
      */
     this.isIdle = false;
 
+    /**
+     *
+     * @type {boolean}
+     */
+    this.listenToEvents = true;
+
 
     this._intervalHandle = null;
     this._idleTimeoutHandle = null;
@@ -53,9 +59,11 @@ class TimerController {
     $element.on('$destroy', () => this.deinit());
 
     $document.on('mousedown', () => {
-      this.isIdle = false;
-      this.$interval.cancel(this._idleTimeoutHandle);
-      this.startIdleTimer();
+      if (this.listenToEvents) {
+        this.isIdle = false;
+        this.$interval.cancel(this._idleTimeoutHandle);
+        this.startIdleTimer();
+      }
     });
 
     this.timerGateway.getTime(this.task.id, this.user.id).then(this.init.bind(this));
@@ -87,7 +95,13 @@ class TimerController {
     if (!this.isIdle) {
       this.elapsedTime += this.saveFrequency;
       this.calculateTime();
-      this.timerGateway.updateTime(this.task.id, this.user.id, this.elapsedTime);
+      this.timerGateway.updateTime(this.task.id, this.user.id, this.elapsedTime).then(() => {
+        this.listenToEvents = true;
+      }).catch(() => {
+        this.setIdle();
+        this.deinit();
+        this.listenToEvents = false;
+      });
     }
   }
 
