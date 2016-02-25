@@ -169,11 +169,12 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     let invalidatedFrameCompletion = false;
     if (classesChanged) {
       // We need to invalidate all correspondng LabeledThingsInFrame right of this frame, as classes propagate as ghostClasses
+      // @TODO if there is no hole in cache data this can be optimized to only invalidate to next ltif with classes.
       this._invalidateLtifsForLt(labeledThing, frameNumber + 1);
     } else {
       // We only need to invalidate this specific ltif
       this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}`);
-      invalidatedFrameCompletion = this._ltifCache.has(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
+      invalidatedFrameCompletion = this._ltifCache.has(`${task.id}.${frameNumber}.complete`);
       this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
     }
 
@@ -185,7 +186,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
         // Restore frame completion after update, if it was set before
         if (invalidatedFrameCompletion) {
-          this._ltifCache.store(`${ltifKey}.complete`, true);
+          this._ltifCache.store(`${task.id}.${frameNumber}.complete`, true);
         }
 
         this._ltifCache.store(ltifKey, newLabeledThingInFrame.toJSON());
@@ -200,7 +201,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
    * @param {LabeledThing} labeledThing
    * @param {number} start
    * @param {number} end
-   * @returns {Array.<LabeledThingInFrame>}
+   * @returns {Array.<LabeledThingInFrame>|boolean}
    * @private
    */
   _lookupLabeledThingInFrame(task, labeledThing, start, end) {
@@ -220,6 +221,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       ltifDataByFrameMap.set(ltifKey.frame, this._extractLtifByLt(ltifDataMap, labeledThing.id));
     });
 
+
     // Try to fill up holes from ghost cache
     // 1. Find first non ghost
     const firstLtif = this._extractFirstFromIterator(
@@ -229,7 +231,24 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
     // If no ltif could be found at all we have a cache miss
     if (firstLtif === undefined) {
-      return false;
+      // Our whole resultset may consist of ghosts, if we did not find any ltif here
+      // Check if we have all ghosts
+      const ltifGhostData = [];
+      for (let frameNumber = start; frameNumber <= end; frameNumber++) {
+        const possibleGhost = this._ltifGhostCache.get(`${task.id}.${frameNumber}.${labeledThing.id}`);
+        if (possibleGhost === undefined) {
+          // A ghost is missing, we do have a cache miss
+          return false;
+        }
+
+        ltifGhostData.push(possibleGhost);
+      }
+
+      return ltifGhostData.map(ghostData =>
+        new LabeledThingInFrame(
+          Object.assign({}, ghostData, {labeledThing})
+        )
+      );
     }
 
     let lastNonGhost = false;
@@ -307,7 +326,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
         }
       }
 
-      this._ltifGhostCache.invalidate(`${task.id}.${frameNumber}.${labeledThing.id}`);
+      this._ltifGhostCache.invalidate(`${task.id}.${currentFrame}.${labeledThing.id}`);
 
       currentFrame += 1;
     }
@@ -328,7 +347,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
         }
       }
 
-      this._ltifGhostCache.invalidate(`${task.id}.${frameNumber}.${labeledThing.id}`);
+      this._ltifGhostCache.invalidate(`${task.id}.${currentFrame}.${labeledThing.id}`);
 
       currentFrame -= 1;
     }

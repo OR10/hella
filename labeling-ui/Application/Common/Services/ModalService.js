@@ -8,6 +8,7 @@ import alertModalTemplate from './ModalService/AlertModal.html!';
 class ModalService {
   constructor(ModalFactory) {
     this._ModalFactory = ModalFactory;
+    this._modal = undefined;
   }
 
   _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
@@ -16,7 +17,11 @@ class ModalService {
     const onConfirm = confirmCallback || noop;
     const onCancel = cancelCallback || noop;
 
-    const modal = new this._ModalFactory(
+    if(this._modal && this._modal.isActive()){
+      throw new Error('Only one modal at a time is allowed open');
+    }
+
+    this._modal = new this._ModalFactory(
       {
         class: modalClass,
         overlay: true,
@@ -31,20 +36,22 @@ class ModalService {
           confirmButtonText,
           cancelButtonText,
           cancelCallback: () => {
-            modal.deactivate();
+            this._modal.deactivate();
+            this._modalOpen = false;
             onCancel();
             setTimeout(
               () => {
-                modal.destroy();
+                this._modal.destroy();
               }, 1000
             );
           },
           confirmCallback: () => {
-            modal.deactivate();
+            this._modal.deactivate();
+            this._modalOpen = false;
             onConfirm();
             setTimeout(
               () => {
-                modal.destroy();
+                this._modal.destroy();
               }, 1000
             );
           },
@@ -52,7 +59,7 @@ class ModalService {
       }
     );
 
-    return modal;
+    return this._modal;
   }
 
   getInfoDialog(scope, confirmCallback, cancelCallback) {
@@ -64,7 +71,7 @@ class ModalService {
   }
 
   getAlertWarningDialog(scope, confirmCallback) {
-    return this._createModal('modal-warning', alertModalTemplate, scope, confirmCallback, () => {});
+    return this._createModal('modal-warning', alertModalTemplate, scope, confirmCallback);
   }
 }
 
