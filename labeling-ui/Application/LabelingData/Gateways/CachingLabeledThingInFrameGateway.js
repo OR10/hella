@@ -596,7 +596,6 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
     return filteredMap;
   }
-
 }
 
 CachingLabeledThingInFrameGateway.$inject = [

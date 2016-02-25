@@ -24,7 +24,6 @@ class MediaControlsController {
    * @param {angular.$q} $q
    * @param {Object} applicationState
    * @param {ModalService} modalService
-   * @param {DataPrefetcher} dataPrefetcher
    */
   constructor($scope,
               labeledThingInFrameGateway,
@@ -35,7 +34,6 @@ class MediaControlsController {
               $q,
               applicationState,
               modalService,
-              dataPrefetcher,
               hotkeys) {
     /**
      * @type {boolean}
@@ -89,12 +87,6 @@ class MediaControlsController {
      * @private
      */
     this._modalService = modalService;
-
-    /**
-     * @type {DataPrefetcher}
-     * @private
-     */
-    this._dataPrefetcher = dataPrefetcher;
 
     /**
      * @private
@@ -277,8 +269,6 @@ class MediaControlsController {
       this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
         .then(
           () => {
-            //this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
-            //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
           }
@@ -456,7 +446,6 @@ MediaControlsController.$inject = [
   '$q',
   'applicationState',
   'modalService',
-  'dataPrefetcher',
   'hotkeys',
 ];
 

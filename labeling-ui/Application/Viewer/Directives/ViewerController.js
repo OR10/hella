@@ -28,6 +28,7 @@ class ViewerController {
    * @param {FrameLocationGateway} frameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {CacheHeaterService} cacheHeater
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {Object} applicationConfig
@@ -40,7 +41,6 @@ class ViewerController {
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {Object} applicationState
-   * @param {DataPrefetcher} dataPrefetcher
    * @param {LockService} lockService
    */
   constructor($scope,
@@ -50,6 +50,7 @@ class ViewerController {
               frameLocationGateway,
               frameGateway,
               labeledThingInFrameGateway,
+              cacheHeater,
               entityIdService,
               paperShapeFactory,
               applicationConfig,
@@ -62,7 +63,6 @@ class ViewerController {
               logger,
               $timeout,
               applicationState,
-              dataPrefetcher,
               lockService) {
     /**
      * Mouse cursor used, while hovering the viewer
@@ -141,6 +141,12 @@ class ViewerController {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
+     * @type {CacheHeaterService}
+     * @private
+     */
+    this._cacheHeater = cacheHeater;
+
+    /**
      * @type {LabeledThingGateway}
      * @private
      */
@@ -157,12 +163,6 @@ class ViewerController {
      * @private
      */
     this._applicationConfig = applicationConfig;
-
-    /**
-     * @type {DataPrefetcher}
-     * @private
-     */
-    this._dataPrefetcher = dataPrefetcher;
 
     /**
      * @type {LoggerService}
@@ -345,7 +345,7 @@ class ViewerController {
 
     $scope.$watch('vm.selectedPaperShape', (newShape) => {
       if (newShape && !newShape.isDraft) {
-        //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newShape.labeledThingInFrame.labeledThing, this.task.frameRange.startFrameNumber);
+        this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
     });
 
@@ -360,14 +360,12 @@ class ViewerController {
 
           // Synchronize operations on this LabeledThing
           this._lockService.acquire(labeledThing.id, release => {
-            //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
-            //  .then(() => this._updateLabeledThingsInFrame())
             this._updateLabeledThingsInFrame()
               .then(release);
           });
         }
       }
-    )
+    );
 
     const panViewportDebounced = animationFrameService.debounce((newCenter) => this._panTo(newCenter));
 
@@ -410,7 +408,8 @@ class ViewerController {
       }
     );
 
-    //dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
+    // Initial prefetching of all frames
+    setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
 
     // Fix Firefox issue where resize event is not fired
     new ResizeSensor($('.layer-container').get(0), () => {
@@ -728,10 +727,7 @@ class ViewerController {
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
-      //.then(() =>
-        //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, labeledThing, this.task.frameRange.startFrameNumber, true)
-      //);
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   /**
@@ -749,7 +745,6 @@ class ViewerController {
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
-      //.then(() => this._dataPrefetcher.prefetchSingleLabeledThing(this.task, newLabeledThing, this.task.frameRange.startFrameNumber));
 
     this.activeTool = null;
 
@@ -968,6 +963,7 @@ ViewerController.$inject = [
   'frameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
+  'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
   'applicationConfig',
@@ -980,7 +976,6 @@ ViewerController.$inject = [
   'loggerService',
   '$timeout',
   'applicationState',
-  'dataPrefetcher',
   'lockService',
 ];
 

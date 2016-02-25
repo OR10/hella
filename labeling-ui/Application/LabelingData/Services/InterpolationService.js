@@ -6,9 +6,10 @@ class InterpolationService {
    * @param {$q} $q
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {CacheService} cache
+   * @param {CacheHeaterService} cacheHeater
    * @param {Array.<Interpolation>} interpolations
    */
-  constructor($q, labeledThingGateway, cache, ...interpolations) {
+  constructor($q, labeledThingGateway, cache, cacheHeater, ...interpolations) {
     /**
      * @type {$q}
      * @private
@@ -38,6 +39,12 @@ class InterpolationService {
      * @private
      */
     this._ltCache = cache.container('labeledThing-by-id');
+
+    /**
+     * @type {CacheHeaterService}
+     * @private
+     */
+    this._cacheHeater = cacheHeater;
 
     /**
      * All registered Interpolations
@@ -87,7 +94,12 @@ class InterpolationService {
 
     this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameNumber, interpolationFrameRange.endFrameNumber);
 
-    return interpolation.execute(task, labeledThing, interpolationFrameRange);
+    return interpolation
+      .execute(task, labeledThing, interpolationFrameRange)
+      .then((result) => {
+        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameNumber, interpolation.endFrameNumber);
+        return result;
+      })
   }
 
   /**
@@ -107,7 +119,7 @@ class InterpolationService {
       // Invalidate non-ghosts
       const ltifFrameMap = this._ltifCache.get(`${task.id}.${frameNumber}`);
 
-      // Invalidate all incomplete pages within the interpolation range
+      // Invalidate all complete pages within the interpolation range
       this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
 
       if (ltifFrameMap !== undefined) {
@@ -144,6 +156,7 @@ InterpolationService.$inject = [
   '$q',
   'labeledThingGateway',
   'cacheService',
+  'cacheHeaterService',
   // All Interpolations listed here will be auto registered.
   'linearBackendInterpolation',
 ];
