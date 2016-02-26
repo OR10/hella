@@ -46,6 +46,11 @@
       button {
         text-transform: uppercase;
         padding: 10px !important;
+
+        &:focus{
+          color: $element-background;
+          background-color: $headlines;
+        }
       }
 
       .modal-button-cancel {
