@@ -34,7 +34,6 @@ class MediaControlsController {
               $q,
               applicationState,
               modalService,
-              dataPrefetcher,
               keyboardShortcutService) {
     /**
      * @type {boolean}
@@ -88,12 +87,6 @@ class MediaControlsController {
      * @private
      */
     this._modalService = modalService;
-
-    /**
-     * @type {DataPrefetcher}
-     * @private
-     */
-    this._dataPrefetcher = dataPrefetcher;
 
     /**
      * @type {KeyboardShortcutService}
@@ -459,7 +452,6 @@ MediaControlsController.$inject = [
   '$q',
   'applicationState',
   'modalService',
-  'dataPrefetcher',
   'keyboardShortcutService',
 ];
 
