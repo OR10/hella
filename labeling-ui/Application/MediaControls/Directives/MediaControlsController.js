@@ -36,7 +36,7 @@ class MediaControlsController {
               applicationState,
               modalService,
               dataPrefetcher,
-              hotkeys) {
+              keyboardShortcutService) {
     /**
      * @type {boolean}
      */
@@ -97,9 +97,10 @@ class MediaControlsController {
     this._dataPrefetcher = dataPrefetcher;
 
     /**
+     * @type {KeyboardShortcutService}
      * @private
      */
-    this._hotkeys = hotkeys;
+    this._keyboardShortcutService = keyboardShortcutService;
 
     /**
      * @type {string}
@@ -300,7 +301,9 @@ class MediaControlsController {
       headline: 'The selected shape is going to be removed. Proceed?',
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
-    }, () => this._deleteSelectedShape());
+    }, () => {
+      this._deleteSelectedShape();
+    });
     deleteQuestion.activate();
   }
 
@@ -328,7 +331,8 @@ class MediaControlsController {
               title: 'Error',
               headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
               confirmButtonText: 'Ok',
-            }, () => {});
+            }, () => {
+            });
             errorDialog.activate();
           }.bind(this)
         );
@@ -399,34 +403,34 @@ class MediaControlsController {
   }
 
   _registerHotkeys() {
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['j'],
       description: 'Go one frame back',
       callback: this.handlePreviousFrameClicked.bind(this)
     });
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['l'],
       description: 'Go one frame forward',
       callback: this.handleNextFrameClicked.bind(this)
     });
 
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['shift+j'],
       description: 'Go 10 frames back',
       callback: this.handleJumpBackwardsClicked.bind(this)
     });
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['shift+l'],
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
     });
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['del'],
       description: 'Delete selected object',
       callback: this.handleDeleteSelectionClicked.bind(this)
     });
 
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: 'k',
       description: 'Toggle play funktion',
       callback: () => {
@@ -438,11 +442,13 @@ class MediaControlsController {
       }
     });
 
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: 'i',
       description: 'Interpolate the current selection',
       callback: this.handleInterpolation.bind(this)
     });
+
+    this._keyboardShortcutService.activateContext('mediaControlls');
   }
 }
 
@@ -457,7 +463,7 @@ MediaControlsController.$inject = [
   'applicationState',
   'modalService',
   'dataPrefetcher',
-  'hotkeys',
+  'keyboardShortcutService',
 ];
 
 export default MediaControlsController;
