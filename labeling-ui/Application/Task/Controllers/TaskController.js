@@ -8,6 +8,7 @@ import ContrastFilter from '../../Common/Filters/ContrastFilter';
 class TaskController {
   /**
    * @param {angular.Scope} $scope
+   * @param {angular.$q} $q
    * @param {{task: Task, video: Video}} initialData
    * @param {User} user
    * @param {Object} userPermissions
@@ -17,8 +18,20 @@ class TaskController {
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
+   * @param {KeyboardShortcutService} keyboardShortcutService
    */
-  constructor($scope, $q, initialData, user, userPermissions, labeledFrameGateway, labelStructureGateway, taskGateway, $location, applicationState, $timeout) {
+  constructor($scope,
+              $q,
+              initialData,
+              user,
+              userPermissions,
+              labeledFrameGateway,
+              labelStructureGateway,
+              taskGateway,
+              $location,
+              applicationState,
+              $timeout,
+              keyboardShortcutService) {
     /**
      * @type {angular.Scope}
      */
@@ -209,6 +222,12 @@ class TaskController {
      */
     this.thingLayer = null;
 
+    keyboardShortcutService.pushContext('labeling-task');
+
+    $scope.$on('$destroy', () => {
+      keyboardShortcutService.clearContext('labeling-task');
+    });
+
     this._initializeLabelingStructure();
 
     if (this.task.taskType === 'meta-labeling') {
@@ -350,6 +369,7 @@ TaskController.$inject = [
   '$location',
   'applicationState',
   '$timeout',
+  'keyboardShortcutService',
 ];
 
 export default TaskController;

@@ -25,7 +25,7 @@ class KeyboardShortcutService {
      * @type {Array<string>}
      * @private
      */
-    this._contextStack = new Array();
+    this._contextStack = [];
   }
 
   /**
@@ -40,17 +40,20 @@ class KeyboardShortcutService {
     } else {
       this._contexts.set(context, [hotkeyConfig]);
     }
+
+    // Allow activation of context before addition of hotkeys
+    if (this._contextStack.length > 0 && this._contextStack[this._contextStack.length - 1] === context) {
+      this._hotkeys.add(hotkeyConfig);
+    }
   }
 
   /**
    * Activate the provided context and all the
    * @param {string} context
    */
-  activateContext(context) {
-    this._logger.log('KeyboardShortcutService', `Activating context '${context}'`);
-    if (!this._contexts.has(context)) {
-      throw new Error(`There is no context with the Identifier '${context}' to activate!`)
-    }
+  pushContext(context) {
+    this._logger.log('keyboardShortcutService:context', `Activating context '${context}'`);
+
     this._deactivateAllHotkeys();
     this._activateHotkeysForContext(context);
     this._contextStack.push(context);
@@ -59,17 +62,28 @@ class KeyboardShortcutService {
   /**
    * Deactivate the currently active context and activate the previous context
    */
-  deactivateActiveContext() {
-    this._logger.log('KeyboardShortcutService', `Deactivating current context (${this._contextStack[this._contextStack.length - 1]})`);
+  popContext() {
+    this._logger.log('keyboardShortcutService:context', `Deactivating current context (${this._contextStack[this._contextStack.length - 1]})`);
     if (this._contextStack.length <= 0) {
       throw new Error('There is no context to deactivate!');
     }
     this._deactivateHotkeysForContext(this._contextStack.pop());
-    this._activateCurrentContext();
+
+    if (this._contextStack.length > 0) {
+      this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
+    }
   }
 
-  deleteContext(context) {
-    this._logger.log('KeyboardShortcutService', `Delete context '${context}'`);
+  clearContext(context) {
+    this._logger.log('keyboardShortcutService:context', `Clear context '${context}'`);
+    this._contextStack = this._contextStack.filter(
+      stackedContext => stackedContext !== context
+    );
+    this._deactivateAllHotkeys();
+    if (this._contextStack.length > 0) {
+      this._activateHotkeysForContext(this._contextStack.length - 1);
+    }
+
     this._contexts.delete(context);
   }
 
@@ -79,12 +93,9 @@ class KeyboardShortcutService {
    * @private
    */
   _deactivateAllHotkeys() {
-    if (this._contexts.length <= 0) {
-      throw new Error('There is no context to deactivate!')
-    }
-    this._contexts.forEach((val, context) => {
-      this._deactivateHotkeysForContext(context);
-    });
+    this._contexts.forEach((hotkeys, context) =>
+      this._deactivateHotkeysForContext(context)
+    );
   }
 
   /**
@@ -94,7 +105,14 @@ class KeyboardShortcutService {
    * @private
    */
   _deactivateHotkeysForContext(context) {
-    this._contexts.get(context).forEach((hotkey)=> this._hotkeys.del(hotkey.combo));
+    const hotkeys = this._contexts.get(context);
+    if (hotkeys === undefined) {
+      return;
+    }
+
+    hotkeys.forEach(
+      hotkey => this._hotkeys.del(hotkey.combo)
+    );
   }
 
   /**
@@ -104,17 +122,14 @@ class KeyboardShortcutService {
    * @private
    */
   _activateHotkeysForContext(context) {
-    this._contexts.get(context).forEach((hotkey) => this._hotkeys.add(hotkey));
-  }
+    const hotkeys = this._contexts.get(context);
+    if (hotkeys === undefined) {
+      return;
+    }
 
-  /**
-   * Activate the hotkeys for the current context
-   *
-   * @private
-   */
-  _activateCurrentContext() {
-    const currentContext = this._contextStack[this._contextStack.length - 1];
-    this.activateContext(currentContext);
+    hotkeys.forEach(
+      hotkey => this._hotkeys.add(hotkey)
+    );
   }
 }
 
