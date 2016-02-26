@@ -40,11 +40,10 @@ class ModalService {
     let modal;
 
     const cancelCallbackWrapper = () => {
-      console.log('cancel callback called');
       modal.deactivate();
       this._modalOpen = false;
-      this._keyboardShortcutService.deactivateActiveContext();
-      this._keyboardShortcutService.deleteContext('modal');
+      this._keyboardShortcutService.popContext();
+      this._keyboardShortcutService.clearContext('modal');
       onCancel();
       setTimeout(
         () => {
@@ -69,11 +68,10 @@ class ModalService {
           cancelButtonText,
           cancelCallback: cancelCallbackWrapper,
           confirmCallback: () => {
-            console.log('confirm callback called');
             modal.deactivate();
             this._modalOpen = false;
-            this._keyboardShortcutService.deactivateActiveContext();
-            this._keyboardShortcutService.deleteContext('modal');
+            this._keyboardShortcutService.popContext();
+            this._keyboardShortcutService.clearContext('modal');
             onConfirm();
             setTimeout(
               () => {
@@ -88,8 +86,6 @@ class ModalService {
 
     return {
       activate: () => {
-        console.log('activate function called');
-
         this._keyboardShortcutService.addHotkey('modal', {
           combo: 'esc',
           description: 'Close the modal',
@@ -107,7 +103,7 @@ class ModalService {
         });
 
         this._modalOpen = true;
-        this._keyboardShortcutService.activateContext('modal');
+        this._keyboardShortcutService.pushContext('modal');
         modal.activate();
 
         // @Hack: Autofocus seems not to work and direkt selection of the element is also not possible

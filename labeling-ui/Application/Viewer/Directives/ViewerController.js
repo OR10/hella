@@ -409,7 +409,9 @@ class ViewerController {
     );
 
     // Initial prefetching of all frames
-    setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
+    if (this.task.taskType === 'object-labeling') {
+      setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
+    }
 
     // Fix Firefox issue where resize event is not fired
     new ResizeSensor($('.layer-container').get(0), () => {

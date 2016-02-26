@@ -30,6 +30,11 @@ class LabeledFrame
     private $classes = [];
 
     /**
+     * @var null|array
+     */
+    private $ghostClasses = null;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $taskId;
@@ -161,13 +166,32 @@ class LabeledFrame
      */
     public function copyToFrameNumber($frameNumber)
     {
-        $reflectionClass   = new \ReflectionClass(self::class);
-        $copy              = $reflectionClass->newInstanceWithoutConstructor();
-        $copy->taskId      = $this->taskId;
-        $copy->frameNumber = $frameNumber;
-        $copy->classes     = $this->classes;
-        $copy->incomplete  = $this->incomplete;
+        $reflectionClass    = new \ReflectionClass(self::class);
+        $copy               = $reflectionClass->newInstanceWithoutConstructor();
+        $copy->frameNumber  = $frameNumber;
+        $copy->classes      = [];
+        if (!empty($this->classes)) {
+            $copy->ghostClasses = $this->classes;
+        }
+        $copy->incomplete   = $this->incomplete;
+        $copy->taskId       = $this->taskId;
 
         return $copy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGhostClasses()
+    {
+        return $this->ghostClasses;
+    }
+
+    /**
+     * @param mixed $ghostClasses
+     */
+    public function setGhostClasses($ghostClasses)
+    {
+        $this->ghostClasses = $ghostClasses;
     }
 }
