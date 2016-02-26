@@ -11,10 +11,11 @@ import PaperShape from '../Shapes/PaperShape';
 export default class MultiTool extends Tool {
   /**
    * @param {$rootScope.Scope} $scope
+   * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
-  constructor($scope, drawingContext, options) {
+  constructor($scope, keyboardShortcutService, drawingContext, options) {
     super(drawingContext, options);
 
     /**
@@ -22,6 +23,12 @@ export default class MultiTool extends Tool {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {KeyboardShortcutService}
+     * @private
+     */
+    this._keyboardShortcutService = keyboardShortcutService;
 
     /**
      * Tool handling the creation of things
@@ -55,11 +62,57 @@ export default class MultiTool extends Tool {
      */
     this._activeTool = null;
 
-    this._tool.onKeyDown = this._keyDown.bind(this);
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
     this._tool.onMouseMove = event => $scope.$evalAsync(() => this._mouseMove(event));
+
+    // Register keyboard shortcuts
+    const keyboardMoveDistance = 1;
+    const keyboardFastMoveDistance = 10;
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'up',
+      description: 'Move selected shape up',
+      callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+up',
+      description: 'Move selected shape up (fast)',
+      callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'down',
+      description: 'Move selected shape down',
+      callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+down',
+      description: 'Move selected shape down (fast)',
+      callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'left',
+      description: 'Move selected shape left',
+      callback: () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+left',
+      description: 'Move selected shape left (fast)',
+      callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'right',
+      description: 'Move selected shape right',
+      callback: () => this._moveSelectedShapeBy(keyboardMoveDistance, 0),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+right',
+      description: 'Move selected shape right (fast)',
+      callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
+    });
   }
 
   /**
@@ -89,27 +142,19 @@ export default class MultiTool extends Tool {
     this._createTool = tool;
   }
 
-  _keyDown(event) {
+  _moveSelectedShapeBy(deltaX, deltaY) {
     const paperShape = this._$scope.vm.selectedPaperShape;
-    if (paperShape) {
-      const moveDistance = event.event.shiftKey ? 10 : 1;
-      switch (event.key) {
-        case 'right':
-          this._moveTool.moveTo(paperShape, new paper.Point(paperShape.position.x + moveDistance, paperShape.position.y));
-          break;
-        case 'left':
-          this._moveTool.moveTo(paperShape, new paper.Point(paperShape.position.x - moveDistance, paperShape.position.y));
-          break;
-        case 'up':
-          this._moveTool.moveTo(paperShape, new paper.Point(paperShape.position.x, paperShape.position.y - moveDistance));
-          break;
-        case 'down':
-          this._moveTool.moveTo(paperShape, new paper.Point(paperShape.position.x, paperShape.position.y + moveDistance));
-          break;
-        default:
-          return;
-      }
+    if (!paperShape) {
+      return;
     }
+
+    this._moveTool.moveTo(
+      paperShape,
+      new paper.Point(
+        paperShape.position.x + deltaX,
+        paperShape.position.y + deltaY
+      )
+    );
   }
 
   _mouseMove(event) {

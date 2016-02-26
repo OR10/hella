@@ -9,6 +9,7 @@ import Tool from './Tool';
  */
 export default class ShapeMoveTool extends Tool {
   /**
+   * @param {$rootScope.$scope} $scope
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
@@ -79,7 +80,10 @@ export default class ShapeMoveTool extends Tool {
   }
 
   moveTo(shape, point) {
-    shape.moveTo(this._restrictToViewport(shape, point));
+    this._context.withScope(scope => {
+      shape.moveTo(this._restrictToViewport(shape, point));
+      scope.view.update();
+    });
     this.emit('shape:update', shape);
   }
 
