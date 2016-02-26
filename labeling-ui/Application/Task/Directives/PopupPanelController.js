@@ -111,17 +111,31 @@ class PopupPanelController {
     $scope.$watch('vm.framePosition.position', () => this._loadBackgroundImage());
 
     $scope.$watch('vm.viewerViewport.bounds', (newBounds, oldBounds) => {
-      let newCenterRounded = null;
-      let oldCenterRounded = null;
+      const newRounded = {};
+      const oldRounded = {};
 
       if (newBounds) {
-        newCenterRounded = {x: Math.round(newBounds.center.x), y: Math.round(newBounds.center.y)};
+        newRounded.center = {x: Math.round(newBounds.center.x), y: Math.round(newBounds.center.y)};
+        newRounded.width = Math.round(newBounds.width);
+        newRounded.height = Math.round(newBounds.height);
       }
+
       if (oldBounds) {
-        oldCenterRounded = {x: Math.round(oldBounds.center.x), y: Math.round(oldBounds.center.y)};
+        oldRounded.center = {x: Math.round(oldBounds.center.x), y: Math.round(oldBounds.center.y)};
+        oldRounded.width = Math.round(oldBounds.width);
+        oldRounded.height = Math.round(oldBounds.height);
       }
-      if (newCenterRounded) {
-        if (oldCenterRounded && (newCenterRounded.x !== oldCenterRounded.x || newCenterRounded.y !== oldCenterRounded.y)) {
+
+      if (newBounds) {
+        if (oldBounds) {
+          if (oldRounded.center.x !== newRounded.center.x ||
+            oldRounded.center.y !== newRounded.center.y ||
+            oldRounded.width !== newRounded.width ||
+            oldRounded.height !== newRounded.height
+          ) {
+            this._drawViewportBounds();
+          }
+        } else {
           this._drawViewportBounds();
         }
       }
@@ -207,13 +221,11 @@ class PopupPanelController {
   }
 
   _drawViewportBounds() {
-    this._context.withScope(() => {
-      this._thingLayer.activate();
-      this._thingLayer.removeChildren();
-    });
-
     this._context.withScope(
       scope => {
+        this._thingLayer.activate();
+        this._thingLayer.removeChildren();
+
         const viewportScaleX = scope.view.viewSize.width / this.video.metaData.width;
         const {topLeft, bottomRight} = this.viewerViewport.bounds;
 

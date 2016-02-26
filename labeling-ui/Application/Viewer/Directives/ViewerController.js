@@ -42,6 +42,7 @@ class ViewerController {
    * @param {$timeout} $timeout
    * @param {Object} applicationState
    * @param {LockService} lockService
+   * @param {KeyboardShortcutService} keyboardShortcutService
    */
   constructor($scope,
               $element,
@@ -63,7 +64,8 @@ class ViewerController {
               logger,
               $timeout,
               applicationState,
-              lockService) {
+              lockService,
+              keyboardShortcutService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -123,7 +125,7 @@ class ViewerController {
     this._$element = $element;
 
     /**
-     * @type {TaskFrameLocationGateway}
+     * @type {FrameLocationGateway}
      * @private
      */
     this._frameLocationGateway = frameLocationGateway;
@@ -320,6 +322,22 @@ class ViewerController {
         $window.removeEventListener('resize', this._resizeDebounced);
       }
     );
+
+    // Register keyboard shortcuts
+    keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '+',
+      description: 'Zoom in',
+      callback: () =>
+        $scope.$applyAsync(() => this.zoomIn(null, 1.2)),
+    });
+
+    keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '-',
+      description: 'Zoom out',
+      callback: () =>
+        $scope.$applyAsync(() => this.zoomOut(null, 1.2)),
+    });
+
 
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
@@ -542,7 +560,6 @@ class ViewerController {
   }
 
   _updateViewport() {
-    this.viewport.center = this._backgroundLayer.center;
     this.viewport.zoom = this._backgroundLayer.zoom;
     this.viewport.bounds = this._backgroundLayer.bounds;
   }
@@ -979,6 +996,7 @@ ViewerController.$inject = [
   '$timeout',
   'applicationState',
   'lockService',
+  'keyboardShortcutService',
 ];
 
 export default ViewerController;
