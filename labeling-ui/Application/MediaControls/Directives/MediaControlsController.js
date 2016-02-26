@@ -24,6 +24,7 @@ class MediaControlsController {
    * @param {angular.$q} $q
    * @param {Object} applicationState
    * @param {ModalService} modalService
+   * @param {KeyboardShortcutService} keyboardShortcutService
    */
   constructor($scope,
               labeledThingInFrameGateway,
@@ -393,34 +394,34 @@ class MediaControlsController {
   }
 
   _registerHotkeys() {
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['j'],
       description: 'Go one frame back',
       callback: this.handlePreviousFrameClicked.bind(this)
     });
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['l'],
       description: 'Go one frame forward',
       callback: this.handleNextFrameClicked.bind(this)
     });
 
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['shift+j'],
       description: 'Go 10 frames back',
       callback: this.handleJumpBackwardsClicked.bind(this)
     });
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['shift+l'],
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
     });
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['del'],
       description: 'Delete selected object',
       callback: this.handleDeleteSelectionClicked.bind(this)
     });
 
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'k',
       description: 'Toggle play funktion',
       callback: () => {
@@ -432,13 +433,11 @@ class MediaControlsController {
       }
     });
 
-    this._keyboardShortcutService.addHotkey('mediaControlls', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'i',
       description: 'Interpolate the current selection',
       callback: this.handleInterpolation.bind(this)
     });
-
-    this._keyboardShortcutService.activateContext('mediaControlls');
   }
 }
 

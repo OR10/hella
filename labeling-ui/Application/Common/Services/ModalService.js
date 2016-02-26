@@ -42,8 +42,8 @@ class ModalService {
     const cancelCallbackWrapper = () => {
       modal.deactivate();
       this._modalOpen = false;
-      this._keyboardShortcutService.deactivateActiveContext();
-      this._keyboardShortcutService.deleteContext('modal');
+      this._keyboardShortcutService.popContext();
+      this._keyboardShortcutService.clearContext('modal');
       onCancel();
       setTimeout(
         () => {
@@ -70,8 +70,8 @@ class ModalService {
           confirmCallback: () => {
             modal.deactivate();
             this._modalOpen = false;
-            this._keyboardShortcutService.deactivateActiveContext();
-            this._keyboardShortcutService.deleteContext('modal');
+            this._keyboardShortcutService.popContext();
+            this._keyboardShortcutService.clearContext('modal');
             onConfirm();
             setTimeout(
               () => {
@@ -103,7 +103,7 @@ class ModalService {
         });
 
         this._modalOpen = true;
-        this._keyboardShortcutService.activateContext('modal');
+        this._keyboardShortcutService.pushContext('modal');
         modal.activate();
 
         // @Hack: Autofocus seems not to work and direkt selection of the element is also not possible
