@@ -38,7 +38,7 @@ class CacheHeaterService {
     const start = startFrame === null ? task.frameRange.startFrameNumber : startFrame;
     const end = endFrame === null ? task.frameRange.endFrameNumber : endFrame;
 
-    this._logger.log(`${CacheHeaterService.LOG_FACILITY}:turnOn`, 'Heating labeledThingInFrame (%s) %d - %d (%d)', labeledThingInFrame.id, start, end, end - start + 1);
+    this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Heating labeledThingInFrame (%s) %d - %d (%d)', labeledThingInFrame.id, start, end, end - start + 1);
 
     this._setHeater('labeledThingInFrame', () => {
       this._chunkRequests('labeledThingInFrame', start, end, (chunkedStart, chunkedEnd) =>
@@ -64,7 +64,7 @@ class CacheHeaterService {
     const start = startFrame === null ? task.frameRange.startFrameNumber : startFrame;
     const end = endFrame === null ? task.frameRange.endFrameNumber : endFrame;
 
-    this._logger.log(`${CacheHeaterService.LOG_FACILITY}:turnOn`, 'Heating frames %d - %d (%d)', start, end, end - start + 1);
+    this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Heating frames %d - %d (%d)', start, end, end - start + 1);
 
     this._setHeater('frames', () => {
       this._chunkRequests('frames', start, end, (chunkedStart, chunkedEnd) =>
@@ -117,7 +117,7 @@ class CacheHeaterService {
             currentStart += CacheHeaterService.CHUNK_SIZE;
             requestAnimationFrame(() => this._nextHeaterFns.get(id)());
           } else {
-            this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heatDown`, 'Cache is warm %s (%d - %d) (%d)', id, start, end, end - start + 1);
+            this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Cache is warm %s (%d - %d) (%d)', id, start, end, end - start + 1);
             this._nextHeaterFns.delete(id);
           }
         })

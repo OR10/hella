@@ -42,6 +42,7 @@ class ViewerController {
    * @param {$timeout} $timeout
    * @param {Object} applicationState
    * @param {LockService} lockService
+   * @param {KeyboardShortcutService} keyboardShortcutService
    */
   constructor($scope,
               $element,
@@ -63,7 +64,8 @@ class ViewerController {
               logger,
               $timeout,
               applicationState,
-              lockService) {
+              lockService,
+              keyboardShortcutService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -123,7 +125,7 @@ class ViewerController {
     this._$element = $element;
 
     /**
-     * @type {TaskFrameLocationGateway}
+     * @type {FrameLocationGateway}
      * @private
      */
     this._frameLocationGateway = frameLocationGateway;
@@ -205,6 +207,12 @@ class ViewerController {
      * @private
      */
     this._lockService = lockService;
+
+    /**
+     * @type {KeyboardShortcutService}
+     * @private
+     */
+    this._keyboardShortcutService = keyboardShortcutService;
 
     /**
      * @type {LayerManager}
@@ -320,6 +328,51 @@ class ViewerController {
         $window.removeEventListener('resize', this._resizeDebounced);
       }
     );
+
+    // Register keyboard shortcuts
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '+',
+      description: 'Zoom in',
+      callback: () =>
+        $scope.$applyAsync(() => this.zoomIn(null, 1.2)),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '-',
+      description: 'Zoom out',
+      callback: () =>
+        $scope.$applyAsync(() => this.zoomOut(null, 1.2)),
+    });
+
+    const keyboardMovementSpeed = 30;
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'w',
+      description: 'Move viewport up',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(0, keyboardMovementSpeed * -1)),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 's',
+      description: 'Move viewport down',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(0, keyboardMovementSpeed)),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'a',
+      description: 'Move viewport left',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(keyboardMovementSpeed * -1, 0)),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'd',
+      description: 'Move viewport right',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(keyboardMovementSpeed, 0)),
+    });
 
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
@@ -470,6 +523,7 @@ class ViewerController {
       this._entityIdService,
       this._paperShapeFactory,
       this._entityColorService,
+      this._keyboardShortcutService,
       this._logger,
       this._$timeout
     );
@@ -979,6 +1033,7 @@ ViewerController.$inject = [
   '$timeout',
   'applicationState',
   'lockService',
+  'keyboardShortcutService',
 ];
 
 export default ViewerController;
