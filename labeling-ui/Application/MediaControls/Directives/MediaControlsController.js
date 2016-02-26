@@ -24,7 +24,6 @@ class MediaControlsController {
    * @param {angular.$q} $q
    * @param {Object} applicationState
    * @param {ModalService} modalService
-   * @param {DataPrefetcher} dataPrefetcher
    */
   constructor($scope,
               labeledThingInFrameGateway,
@@ -278,8 +277,6 @@ class MediaControlsController {
       this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
         .then(
           () => {
-            //this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
-            //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
           }
