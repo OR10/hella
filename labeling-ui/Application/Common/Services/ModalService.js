@@ -1,27 +1,59 @@
 import infoModalTemplate from './ModalService/InfoModal.html!';
 import warningModalTemplate from './ModalService/WarningModal.html!';
 import alertModalTemplate from './ModalService/AlertModal.html!';
+import angular from 'angular';
 
 /**
  * Service providing an interface to create modal dialog windows
  */
 class ModalService {
-  constructor(ModalFactory) {
+  constructor(ModalFactory, keyboardShortcutService) {
+    /**
+     * @private
+     */
     this._ModalFactory = ModalFactory;
-    this._modal = undefined;
+
+    /**
+     * @type {KeyboardShortcutService}
+     * @private
+     */
+    this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._modalOpen = false;
   }
 
   _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
     const {message, headline, title, confirmButtonText, cancelButtonText} = scope;
-    const noop = () => {};
+    const noop = () => {
+    };
     const onConfirm = confirmCallback || noop;
     const onCancel = cancelCallback || noop;
 
-    if(this._modal && this._modal.isActive()){
+    if (this._modalOpen) {
       throw new Error('Only one modal at a time is allowed open');
     }
 
-    this._modal = new this._ModalFactory(
+    let modal;
+
+    const cancelCallbackWrapper = () => {
+      console.log('cancel callback called');
+      modal.deactivate();
+      this._modalOpen = false;
+      this._keyboardShortcutService.deactivateActiveContext();
+      this._keyboardShortcutService.deleteContext('modal');
+      onCancel();
+      setTimeout(
+        () => {
+          modal.destroy();
+        }, 1000
+      );
+    };
+
+    modal = new this._ModalFactory(
       {
         class: modalClass,
         overlay: true,
@@ -35,23 +67,17 @@ class ModalService {
           title,
           confirmButtonText,
           cancelButtonText,
-          cancelCallback: () => {
-            this._modal.deactivate();
-            this._modalOpen = false;
-            onCancel();
-            setTimeout(
-              () => {
-                this._modal.destroy();
-              }, 1000
-            );
-          },
+          cancelCallback: cancelCallbackWrapper,
           confirmCallback: () => {
-            this._modal.deactivate();
+            console.log('confirm callback called');
+            modal.deactivate();
             this._modalOpen = false;
+            this._keyboardShortcutService.deactivateActiveContext();
+            this._keyboardShortcutService.deleteContext('modal');
             onConfirm();
             setTimeout(
               () => {
-                this._modal.destroy();
+                modal.destroy();
               }, 1000
             );
           },
@@ -59,7 +85,36 @@ class ModalService {
       }
     );
 
-    return this._modal;
+
+    return {
+      activate: () => {
+        console.log('activate function called');
+
+        this._keyboardShortcutService.addHotkey('modal', {
+          combo: 'esc',
+          description: 'Close the modal',
+          callback: cancelCallbackWrapper
+        });
+
+        this._keyboardShortcutService.addHotkey('modal', {
+          combo: ['tab', 'shift+tab'],
+          description: 'Select the other button in the dialog',
+          callback: (event) => {
+            // Select the other button in the modal that is not in focus
+            angular.element(document.body).find('button:focus').parent().find('button:not(:focus)').focus();
+            event.preventDefault();
+          }
+        });
+
+        this._modalOpen = true;
+        this._keyboardShortcutService.activateContext('modal');
+        modal.activate();
+
+        // @Hack: Autofocus seems not to work and direkt selection of the element is also not possible
+        // in the same Frame. Therefore the almighty setTimeout comes to save the day...
+        setTimeout(() => angular.element(document.body).find('.modal.is-active button.modal-button-confirm').focus(), 50);
+      }
+    }
   }
 
   getInfoDialog(scope, confirmCallback, cancelCallback) {
@@ -75,6 +130,6 @@ class ModalService {
   }
 }
 
-ModalService.$inject = ['ModalFactory'];
+ModalService.$inject = ['ModalFactory', 'keyboardShortcutService'];
 
 export default ModalService;

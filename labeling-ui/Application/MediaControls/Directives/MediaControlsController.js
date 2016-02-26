@@ -24,7 +24,6 @@ class MediaControlsController {
    * @param {angular.$q} $q
    * @param {Object} applicationState
    * @param {ModalService} modalService
-   * @param {DataPrefetcher} dataPrefetcher
    */
   constructor($scope,
               labeledThingInFrameGateway,
@@ -35,8 +34,7 @@ class MediaControlsController {
               $q,
               applicationState,
               modalService,
-              dataPrefetcher,
-              hotkeys) {
+              keyboardShortcutService) {
     /**
      * @type {boolean}
      */
@@ -91,15 +89,10 @@ class MediaControlsController {
     this._modalService = modalService;
 
     /**
-     * @type {DataPrefetcher}
+     * @type {KeyboardShortcutService}
      * @private
      */
-    this._dataPrefetcher = dataPrefetcher;
-
-    /**
-     * @private
-     */
-    this._hotkeys = hotkeys;
+    this._keyboardShortcutService = keyboardShortcutService;
 
     /**
      * @type {string}
@@ -277,8 +270,6 @@ class MediaControlsController {
       this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
         .then(
           () => {
-            //this._dataPrefetcher.prefetchLabeledThingsInFrame(this.task, this.task.frameRange.startFrameNumber);
-            //this._dataPrefetcher.prefetchSingleLabeledThing(this.task, selectedLabeledThing, this.task.frameRange.startFrameNumber, true);
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
           }
@@ -300,7 +291,9 @@ class MediaControlsController {
       headline: 'The selected shape is going to be removed. Proceed?',
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
-    }, () => this._deleteSelectedShape());
+    }, () => {
+      this._deleteSelectedShape();
+    });
     deleteQuestion.activate();
   }
 
@@ -328,7 +321,8 @@ class MediaControlsController {
               title: 'Error',
               headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
               confirmButtonText: 'Ok',
-            }, () => {});
+            }, () => {
+            });
             errorDialog.activate();
           }.bind(this)
         );
@@ -399,34 +393,34 @@ class MediaControlsController {
   }
 
   _registerHotkeys() {
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['j'],
       description: 'Go one frame back',
       callback: this.handlePreviousFrameClicked.bind(this)
     });
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['l'],
       description: 'Go one frame forward',
       callback: this.handleNextFrameClicked.bind(this)
     });
 
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['shift+j'],
       description: 'Go 10 frames back',
       callback: this.handleJumpBackwardsClicked.bind(this)
     });
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['shift+l'],
       description: 'Go 10 frames forward',
       callback: this.handleJumpForwardsClicked.bind(this)
     });
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: ['del'],
       description: 'Delete selected object',
       callback: this.handleDeleteSelectionClicked.bind(this)
     });
 
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: 'k',
       description: 'Toggle play funktion',
       callback: () => {
@@ -438,11 +432,13 @@ class MediaControlsController {
       }
     });
 
-    this._hotkeys.add({
+    this._keyboardShortcutService.addHotkey('mediaControlls', {
       combo: 'i',
       description: 'Interpolate the current selection',
       callback: this.handleInterpolation.bind(this)
     });
+
+    this._keyboardShortcutService.activateContext('mediaControlls');
   }
 }
 
@@ -456,8 +452,7 @@ MediaControlsController.$inject = [
   '$q',
   'applicationState',
   'modalService',
-  'dataPrefetcher',
-  'hotkeys',
+  'keyboardShortcutService',
 ];
 
 export default MediaControlsController;
