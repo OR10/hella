@@ -40,7 +40,6 @@ class ModalService {
     let modal;
 
     const cancelCallbackWrapper = () => {
-      console.log('cancel callback called');
       modal.deactivate();
       this._modalOpen = false;
       this._keyboardShortcutService.deactivateActiveContext();
@@ -69,7 +68,6 @@ class ModalService {
           cancelButtonText,
           cancelCallback: cancelCallbackWrapper,
           confirmCallback: () => {
-            console.log('confirm callback called');
             modal.deactivate();
             this._modalOpen = false;
             this._keyboardShortcutService.deactivateActiveContext();
@@ -88,8 +86,6 @@ class ModalService {
 
     return {
       activate: () => {
-        console.log('activate function called');
-
         this._keyboardShortcutService.addHotkey('modal', {
           combo: 'esc',
           description: 'Close the modal',

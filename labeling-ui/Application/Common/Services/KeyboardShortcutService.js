@@ -3,11 +3,17 @@
  * and other convenience functions
  */
 class KeyboardShortcutService {
-  constructor(hotkeys) {
+  constructor(hotkeys, logger) {
     /**
      * @private
      */
     this._hotkeys = hotkeys;
+
+    /**
+     * @type {Logger}
+     * @private
+     */
+    this._logger = logger;
 
     /**
      * @type {Map}
@@ -41,11 +47,10 @@ class KeyboardShortcutService {
    * @param {string} context
    */
   activateContext(context) {
+    this._logger.log('KeyboardShortcutService', `Activating context '${context}'`);
     if (!this._contexts.has(context)) {
       throw new Error(`There is no context with the Identifier '${context}' to activate!`)
     }
-    console.log('activate context: ', context);
-    console.log(this._contexts);
     this._deactivateAllHotkeys();
     this._activateHotkeysForContext(context);
     this._contextStack.push(context);
@@ -55,6 +60,7 @@ class KeyboardShortcutService {
    * Deactivate the currently active context and activate the previous context
    */
   deactivateActiveContext() {
+    this._logger.log('KeyboardShortcutService', `Deactivating current context (${this._contextStack[this._contextStack.length - 1]})`);
     if (this._contextStack.length <= 0) {
       throw new Error('There is no context to deactivate!');
     }
@@ -63,6 +69,7 @@ class KeyboardShortcutService {
   }
 
   deleteContext(context) {
+    this._logger.log('KeyboardShortcutService', `Delete context '${context}'`);
     this._contexts.delete(context);
   }
 
@@ -111,6 +118,6 @@ class KeyboardShortcutService {
   }
 }
 
-KeyboardShortcutService.$inject = ['hotkeys'];
+KeyboardShortcutService.$inject = ['hotkeys', 'loggerService'];
 
 export default KeyboardShortcutService;
