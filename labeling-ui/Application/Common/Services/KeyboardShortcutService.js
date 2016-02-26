@@ -44,8 +44,6 @@ class KeyboardShortcutService {
     if (!this._contexts.has(context)) {
       throw new Error(`There is no context with the Identifier '${context}' to activate!`)
     }
-    console.log('activate context: ', context);
-    console.log(this._contexts);
     this._deactivateAllHotkeys();
     this._activateHotkeysForContext(context);
     this._contextStack.push(context);
