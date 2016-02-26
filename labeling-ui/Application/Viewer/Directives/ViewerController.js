@@ -338,6 +338,35 @@ class ViewerController {
         $scope.$applyAsync(() => this.zoomOut(null, 1.2)),
     });
 
+    const keyboardMovementSpeed = 30;
+
+    keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'w',
+      description: 'Move viewport up',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(0, keyboardMovementSpeed * -1)),
+    });
+
+    keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 's',
+      description: 'Move viewport down',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(0, keyboardMovementSpeed)),
+    });
+
+    keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'a',
+      description: 'Move viewport left',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(keyboardMovementSpeed * -1, 0)),
+    });
+
+    keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'd',
+      description: 'Move viewport right',
+      callback: () =>
+        $scope.$applyAsync(() => this._panBy(keyboardMovementSpeed, 0)),
+    });
 
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
@@ -560,6 +589,7 @@ class ViewerController {
   }
 
   _updateViewport() {
+    this.viewport.center = this._backgroundLayer.center;
     this.viewport.zoom = this._backgroundLayer.zoom;
     this.viewport.bounds = this._backgroundLayer.bounds;
   }
