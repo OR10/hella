@@ -68,7 +68,6 @@ class KeyboardShortcutService {
       throw new Error('There is no context to deactivate!');
     }
     this._deactivateHotkeysForContext(this._contextStack.pop());
-
     if (this._contextStack.length > 0) {
       this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
     }
@@ -81,7 +80,7 @@ class KeyboardShortcutService {
     );
     this._deactivateAllHotkeys();
     if (this._contextStack.length > 0) {
-      this._activateHotkeysForContext(this._contextStack.length - 1);
+      this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
     }
 
     this._contexts.delete(context);
