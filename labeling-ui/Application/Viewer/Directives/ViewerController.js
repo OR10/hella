@@ -209,6 +209,12 @@ class ViewerController {
     this._lockService = lockService;
 
     /**
+     * @type {KeyboardShortcutService}
+     * @private
+     */
+    this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
      * @type {LayerManager}
      * @private
      */
@@ -324,14 +330,14 @@ class ViewerController {
     );
 
     // Register keyboard shortcuts
-    keyboardShortcutService.addHotkey('labeling-task', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: '+',
       description: 'Zoom in',
       callback: () =>
         $scope.$applyAsync(() => this.zoomIn(null, 1.2)),
     });
 
-    keyboardShortcutService.addHotkey('labeling-task', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: '-',
       description: 'Zoom out',
       callback: () =>
@@ -340,28 +346,28 @@ class ViewerController {
 
     const keyboardMovementSpeed = 30;
 
-    keyboardShortcutService.addHotkey('labeling-task', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'w',
       description: 'Move viewport up',
       callback: () =>
         $scope.$applyAsync(() => this._panBy(0, keyboardMovementSpeed * -1)),
     });
 
-    keyboardShortcutService.addHotkey('labeling-task', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 's',
       description: 'Move viewport down',
       callback: () =>
         $scope.$applyAsync(() => this._panBy(0, keyboardMovementSpeed)),
     });
 
-    keyboardShortcutService.addHotkey('labeling-task', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'a',
       description: 'Move viewport left',
       callback: () =>
         $scope.$applyAsync(() => this._panBy(keyboardMovementSpeed * -1, 0)),
     });
 
-    keyboardShortcutService.addHotkey('labeling-task', {
+    this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'd',
       description: 'Move viewport right',
       callback: () =>
@@ -517,6 +523,7 @@ class ViewerController {
       this._entityIdService,
       this._paperShapeFactory,
       this._entityColorService,
+      this._keyboardShortcutService,
       this._logger,
       this._$timeout
     );

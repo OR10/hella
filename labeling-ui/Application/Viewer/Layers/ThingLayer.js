@@ -29,10 +29,20 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {EntityColorService} entityColorService
+   * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    */
-  constructor(width, height, $scope, drawingContextService, entityIdService, paperShapeFactory, entityColorService, logger, $timeout) {
+  constructor(width,
+              height,
+              $scope,
+              drawingContextService,
+              entityIdService,
+              paperShapeFactory,
+              entityColorService,
+              keyboardShortcutService,
+              logger,
+              $timeout) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -71,7 +81,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeMoveTool}
      * @private
      */
-    this._multiTool = new MultiTool($scope.$new(), this._context);
+    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, this._context);
 
     /**
      * Tool for moving shapes
