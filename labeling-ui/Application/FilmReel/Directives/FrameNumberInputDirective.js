@@ -40,6 +40,7 @@ class FrameNumberInputDirective {
         case (event.keyCode === 13):
           // Blur for update
           editable.blur();
+          window.getSelection().removeAllRanges();
           event.preventDefault();
           break;
         // arrow up
