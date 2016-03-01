@@ -363,6 +363,7 @@ class MediaControlsController {
     switch (this.popupPanelState) {
       case 'videosettings':
         this.popupPanelOpen = !this.popupPanelOpen;
+        this.popupPanelState = '';
         break;
       default:
         this.popupPanelState = 'videosettings';
@@ -374,6 +375,7 @@ class MediaControlsController {
     switch (this.popupPanelState) {
       case 'zoom':
         this.popupPanelOpen = !this.popupPanelOpen;
+        this.popupPanelState = '';
         break;
       default:
         this.popupPanelState = 'zoom';
@@ -382,7 +384,15 @@ class MediaControlsController {
   }
 
   showGeneralSettings() {
-    this.fpsInputVisible = !this.fpsInputVisible;
+    switch (this.popupPanelState) {
+      case 'settings':
+        this.popupPanelOpen = !this.popupPanelOpen;
+        this.popupPanelState = '';
+        break;
+      default:
+        this.popupPanelState = 'settings';
+        this.popupPanelOpen = true;
+    }
   }
 
   handleJumpForwardsClicked() {

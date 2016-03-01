@@ -50,6 +50,9 @@
                  frame-position="vm.framePosition"
                  filters="vm.filters"
                  active-tool="vm.activeTool"
+                 freeze-thumbnails="vm.freezeThumbnails"
+                 fps="vm.fps"
+                 fps-skip="vm.fpsSkip"
     ></popup-panel>
 
 
@@ -104,7 +107,6 @@
                 new-shape-drawing-tool="vm.newShapeDrawingTool"
                 video="vm.video"
                 bookmarked-frame-number="vm.bookmarkedFrameNumber"
-                fps-input-visible="vm.fpsInputVisible"
 ></media-controls>
 
 <div class="thumbnail-zone grid-block">
@@ -120,22 +122,10 @@
         ></film-reel>
     </div>
 </div>
-<div class="timeline-container grid-block">
-    <div class="timeline-layer small-3 grid-content">
-        <div ng-show="vm.fpsInputVisible">
-            <label style="color: white">FPS:
-                <input style="width: 30px; color: black;" class="fps-input" ng-model="vm.fps">
-            </label><br/>
-            <label style="color: white">Skip:
-                <input style="width: 30px; color: black;" class="frameskip-input" ng-model="vm.frameSkip">
-            </label>
-            <label style="color: white">Freeze thumbnails:
-                <input type="checkbox" style="width: 30px; color: black;" class="frameskip-input"
-                       ng-model="vm.freezeThumbnails">
-            </label>
-        </div>
-    </div>
-    <div class="timeline-inner vertical align-center grid-block">
-        <h1>Timeline</h1>
-    </div>
-</div>
+<!--<div class="timeline-container grid-block">-->
+    <!--<div class="timeline-layer small-3 grid-content">-->
+    <!--</div>-->
+    <!--<div class="timeline-inner vertical align-center grid-block">-->
+        <!--<h1>Timeline</h1>-->
+    <!--</div>-->
+<!--</div>-->

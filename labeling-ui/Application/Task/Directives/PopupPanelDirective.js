@@ -17,6 +17,9 @@ class PopupPanelDirective {
       framePosition: '=',
       filters: '=',
       activeTool: '=',
+      freezeThumbnails: '=',
+      fps: '=',
+      fpsSkip: '='
     };
 
     this.template = popupPanelTemplate;

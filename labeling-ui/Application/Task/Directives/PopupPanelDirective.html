@@ -1,7 +1,11 @@
 <div class="popup-panel">
     <div ng-show="vm.popupPanelState=='videosettings'" class="grid-block settings vertical">
         <div class="grid-block align-center">
-            <div class="grid-content small-14 noscroll text-uppercase">Brightness <small ng-click="vm.brightnessSliderValue = 0" style="cursor: not-allowed;">({{vm.brightnessSliderValue}})</small></div>
+            <div class="grid-content small-14 noscroll text-uppercase">Brightness
+                <small ng-click="vm.brightnessSliderValue = 0" style="cursor: not-allowed;">
+                    ({{vm.brightnessSliderValue}})
+                </small>
+            </div>
             <div class="grid-content small-10 text-right noscroll">
                 <input ng-model="vm.brightnessSliderValue"
                        type="range"
@@ -12,7 +16,10 @@
             </div>
         </div>
         <div class="grid-block align-center">
-            <div class="grid-content small-14 noscroll text-uppercase">Contrast <small ng-click="vm.contrastSliderValue = 0" style="cursor: not-allowed;">({{vm.contrastSliderValue}})</small></div>
+            <div class="grid-content small-14 noscroll text-uppercase">Contrast
+                <small ng-click="vm.contrastSliderValue = 0" style="cursor: not-allowed;">({{vm.contrastSliderValue}})
+                </small>
+            </div>
             <div class="grid-content small-10 text-right noscroll">
                 <input ng-model="vm.contrastSliderValue"
                        type="range"
@@ -23,6 +30,7 @@
             </div>
         </div>
     </div>
+
     <div ng-show="vm.popupPanelState=='zoom'" class="grid-block zoom align-justify">
         <div class="grid-block align-center minimap-container">
             <div class="grid-block align-center shrink vertical">
@@ -42,7 +50,7 @@
             </div>
             <div class="grid-block">
                 <button ng-click="vm.zoomOutToggle()"
-                    tooltip-position="right" tooltip="Toggle zoom-out">
+                        tooltip-position="right" tooltip="Toggle zoom-out">
                     <i class="icon icon-view-zoom-out"
                        ng-class="{'toggled': vm.activeTool === 'zoomOut'}"
                     ></i>
@@ -54,6 +62,21 @@
                     <i class="icon icon-view-zoom-resize"></i>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div ng-show="vm.popupPanelState=='settings'" class="grid-block settings vertical">
+        <div class="grid-block align-center">
+            <label style="color: white">FPS:
+                <input style="width: 30px; color: black;" class="fps-input" ng-model="vm.fps">
+            </label><br/>
+            <label style="color: white">Skip:
+                <input style="width: 30px; color: black;" class="frameskip-input" ng-model="vm.frameSkip">
+            </label>
+            <label style="color: white">Freeze thumbnails:
+                <input type="checkbox" style="width: 30px; color: black;" class="frameskip-input"
+                       ng-model="vm.freezeThumbnails">
+            </label>
         </div>
     </div>
 </div>
