@@ -1,25 +1,45 @@
 import mock from 'protractor-http-mock';
 import ViewerDataManager from '../Support/ViewerDataManager';
+import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {getMockRequestsMade} from '../Support/Protractor/Helpers';
 
 const taskDataMock = require('../ProtractorMocks/Task/Data.json');
+const videoDataMock = require('../ProtractorMocks/Video.json');
 const sourceFrameLocationsMock = require('../ProtractorMocks/Task/FrameLocations/Source.json');
+const sourceJpgFrameLocationsMock = require('../ProtractorMocks/Task/FrameLocations/SourceJpg.json');
+const sourceJpg2FrameLocationsMock = require('../ProtractorMocks/Task/FrameLocations/SourceJpg2.json');
 const thumbnailFrameLocationsMock = require('../ProtractorMocks/Task/FrameLocations/Thumbnail.json');
+const labelStructureMock = require('../ProtractorMocks/Task/Labelstructure.json');
+const labeledThingIncompleteCountMock = require('../ProtractorMocks/Task/LabeledThingIncompleteCount.json');
+const timerMock = require('../ProtractorMocks/Task/Timer.json');
+const saveTimerMock = require('../ProtractorMocks/Task/SaveTimer.json');
 const labeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectangles.json');
+const labeledThingsPreloadingMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectanglesPreloading.json');
 const labeledFrameMock = require('../ProtractorMocks/Task/LabeledFrame.json');
 const movedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/MovedRectangle.json');
 const resizedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedRectangle.json');
 const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedAndMovedRectangle.json');
 
+const loadRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadRectangles.json');
+
 const viewerDataManager = new ViewerDataManager(browser);
+const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Rectangle drawing', () => {
   beforeEach(() => {
     mock([
       taskDataMock,
+      videoDataMock,
       sourceFrameLocationsMock,
+      sourceJpgFrameLocationsMock,
+      sourceJpg2FrameLocationsMock,
       thumbnailFrameLocationsMock,
+      labelStructureMock,
+      labeledThingIncompleteCountMock,
+      timerMock,
+      saveTimerMock,
       labeledThingsMock,
+      labeledThingsPreloadingMock,
       labeledFrameMock,
       movedRectangleMock,
       resizedRectangleMock,
@@ -30,45 +50,10 @@ describe('Rectangle drawing', () => {
   it('should draw the background and initial shapes as provided by the backend', (done) => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
-    /*
-     * NOTE! This seems to be required to make the first test run on jenkins even though the first thing
-     * exportData does is wait for angular to settle. I don't completely understand what is happening,
-     * but it seems to work for now. If this is no longer the first executed spec it might be safe to
-     * remove it.
-     */
-    browser.waitForAngular();
-
-    viewerDataManager.exportData()
-      .then((data) => {
-        const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/initialState.json.gz');
-
-        expect(data).toEqualViewerData(expectedData);
-
-        expect(getMockRequestsMade(mock)).toHaveSameItems([
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
-            method: 'GET',
-          },
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/source?limit=2&offset=0',
-            method: 'GET',
-          },
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
-            method: 'GET',
-          },
-          {
-            method: 'GET',
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1',
-          },
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
-            method: 'GET',
-          },
-        ], true);
-
-        done();
-      });
+    canvasInstructionLogManager.getCanvasLogs().then((logs) => {
+      expect(loadRectanglesExpectation).toEqual(logs);
+      done();
+    })
   });
 
   it('should correctly move a rectangle on canvas and save the changed coordinates', (done) => {
