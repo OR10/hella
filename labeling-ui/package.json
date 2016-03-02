@@ -92,6 +92,7 @@
       "angular-smart-table": "npm:angular-smart-table@^2.1.6",
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "base64-js": "github:beatgammit/base64-js@^1.0.0",
+      "canteen": "github:platfora/Canteen@master",
       "css": "github:systemjs/plugin-css@^0.1.18",
       "css-element-queries": "npm:css-element-queries@^0.3.2",
       "event-emitter": "github:Olical/EventEmitter@^4.3.0",

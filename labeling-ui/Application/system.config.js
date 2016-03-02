@@ -42,6 +42,7 @@ System.config({
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "base64-js": "github:beatgammit/base64-js@1.0.0",
+    "canteen": "github:platfora/Canteen@master",
     "clean-css": "npm:clean-css@3.4.9",
     "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.19",
