@@ -269,6 +269,12 @@ gulp.task('test-unit-continuous', () => {
   karmaServer.start();
 });
 
+gulp.task('copy-canteen', () => {
+  return gulp.src(paths.dir.vendor + '/github/platfora/Canteen*/build/canteen.js')
+    .pipe($$.rename('canteen.js'))
+    .pipe(gulp.dest(paths.dir.distribution + '/Library'));
+});
+
 gulp.task('webdriver-update', webdriverUpdate);
 
 gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
@@ -304,7 +310,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
 });
 
 gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
-  run('clean', 'build', 'optimize', 'test-e2e-run');
+  run('clean', 'build', 'copy-canteen', 'optimize', 'test-e2e-run');
 });
 
 gulp.task('build-sass', () => {
