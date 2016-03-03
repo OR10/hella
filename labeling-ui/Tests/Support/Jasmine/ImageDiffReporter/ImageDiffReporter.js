@@ -91,23 +91,22 @@ class ImageDiffReporter {
         expectationPathSegment = `/${index}`;
       }
 
-      Object.keys(expectation.expected).forEach(key => {
-        const expectationImagePath = `${imageBasePath}${expectationPathSegment}/${key}`;
-        mkdirp.sync(expectationImagePath);
+      const expectationImagePath = `${imageBasePath}${expectationPathSegment}`;
+      mkdirp.sync(expectationImagePath);
 
-        const expectedDrawingStack = expectation.expected[key];
-        const actualDrawingStack = expectation.actual[key];
+      const expectedDrawingStack = expectation.expected;
+      const actualDrawingStack = expectation.actual;
 
-        const renderer = new CanteenStackRenderer();
-        const expectedCanvas = renderer.render(expectedDrawingStack);
-        const actualCanvas = renderer.render(actualDrawingStack);
 
-        const diffCanvas = this._canvasDiff(expectedCanvas, actualCanvas);
+      const renderer = new CanteenStackRenderer();
+      const expectedCanvas = renderer.render(expectedDrawingStack);
+      const actualCanvas = renderer.render(actualDrawingStack);
 
-        this._storeCanvas(expectationImagePath + '/actual.png', actualCanvas);
-        this._storeCanvas(expectationImagePath + '/expected.png', expectedCanvas);
-        this._storeCanvas(expectationImagePath + '/diff.png', diffCanvas);
-      });
+      const diffCanvas = this._canvasDiff(expectedCanvas, actualCanvas);
+
+      this._storeCanvas(expectationImagePath + '/actual.png', actualCanvas);
+      this._storeCanvas(expectationImagePath + '/expected.png', expectedCanvas);
+      this._storeCanvas(expectationImagePath + '/diff.png', diffCanvas);
     });
   }
 }
