@@ -32,5 +32,8 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.create_label_structure" class="AppBundle\Command\CreateLabelStructure">
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
