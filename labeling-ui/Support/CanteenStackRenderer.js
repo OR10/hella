@@ -5,24 +5,9 @@ import Canvas from 'canvas';
  */
 class CanteenStackRenderer {
   /**
-   * @param {Integer} width
-   * @param {Integer} height
    * @param {String} background
    */
-  constructor(width, height, background) {
-    /**
-     * @type {Integer}
-     * @private
-     */
-    this._width = width;
-
-    /**
-     *
-     * @type {Integer}
-     * @private
-     */
-    this._height = height;
-
+  constructor(background) {
     /**
      * @type {String}
      * @private
@@ -33,19 +18,19 @@ class CanteenStackRenderer {
   /**
    * Render the given stack information into a canvas
    *
-   * @param {Array.<Object>} stack
+   * @param {Array.<Object>} drawingStack
    * @return {Canvas}
    */
-  render(stack) {
-    const canvas = new Canvas(this._width, this._height);
+  render(drawingStack) {
+    const canvas = new Canvas(drawingStack.width, drawingStack.height);
     const ctx = canvas.getContext('2d');
 
     ctx.save();
     ctx.fillStyle = this._background;
-    ctx.clearRect(0, 0, this._width, this._height);
+    ctx.clearRect(0, 0, drawingStack.width, drawingStack.height);
     ctx.restore();
 
-    this._visitStack(ctx, stack);
+    this._visitOperations(ctx, drawingStack.operations);
 
     return canvas;
   }
@@ -56,8 +41,8 @@ class CanteenStackRenderer {
    * @param {Array.<Object>} stack
    * @private
    */
-  _visitStack(ctx, stack) {
-    stack.forEach(operation => this._visitCanvasOperation(ctx, operation));
+  _visitOperations(ctx, stack) {
+    stack.forEach(operation => this._visitOperation(ctx, operation));
   }
 
   /**
@@ -67,13 +52,13 @@ class CanteenStackRenderer {
    * @param {Object} operation
    * @private
    */
-  _visitCanvasOperation(ctx, operation) {
+  _visitOperation(ctx, operation) {
     switch (true) {
       case operation.method !== undefined:
-        this._visitMethodCall(ctx, operation);
+        this._visitMethodCallOperation(ctx, operation);
         break;
       case operation.attr !== undefined:
-        this._visitAttributeSetter(ctx, operation);
+        this._visitAttributeSetterOperation(ctx, operation);
         break;
       default:
         throw new Error(`Unknown operation: ${operation}`);
@@ -87,7 +72,7 @@ class CanteenStackRenderer {
    * @param {Object} operation
    * @private
    */
-  _visitMethodCall(ctx, operation) {
+  _visitMethodCallOperation(ctx, operation) {
     ctx[operation.method].apply(ctx, operation.arguments);
   }
 
@@ -98,7 +83,7 @@ class CanteenStackRenderer {
    * @param {Object} operation
    * @private
    */
-  _visitAttributeSetter(ctx, operation) {
+  _visitAttributeSetterOperation(ctx, operation) {
     ctx[operation.attr] = operation.val;
   }
 }

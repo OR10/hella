@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
 import path from 'path';
-import {default as Canvas, ImageData} from 'canvas';
+import Canvas, {ImageData} from 'canvas';
+import CanteenStackRenderer from '../../../../Support/CanteenStackRenderer';
 
 /**
  * Jasmine reporter for visualizing image diffs
@@ -39,8 +39,11 @@ class ImageDiffReporter {
     this._currentSuite = suite;
   }
 
-  _imageDiff(lhs, rhs) {
-    const diffImageData = new ImageData(lhs.width, lhs.height);
+  _diffCanvas(lhsCanvas, rhsCanvas) {
+    const lhs = lhsCanvas.getContext('2d').getImageData(0, 0, lhsCanvas.width, lhsCanvas.height);
+    const rhs = rhsCanvas.getContext('2d').getImageData(0, 0, rhsCanvas.width, rhsCanvas.height);
+
+    const diffImageData = new ImageData(lhsCanvas.width, lhsCanvas.height);
 
     for (let i = 0; i < lhs.data.length; i += 4) {
       diffImageData.data[i] = Math.abs(lhs.data[i] - rhs.data[i]);
@@ -49,7 +52,9 @@ class ImageDiffReporter {
       diffImageData.data[i + 3] = Math.abs(255 - Math.abs(lhs.data[i + 3] - rhs.data[i + 3]));
     }
 
-    return diffImageData;
+    const canvas = new Canvas(lhsCanvas.width, lhsCanvas.height);
+    canvas.getContext('2d').putImageData(diffImageData, 0, 0);
+    return canvas;
   }
 
   _storeScreenShot(imageBasePath) {
@@ -60,23 +65,8 @@ class ImageDiffReporter {
     });
   }
 
-  _storeImage(targetPath, imageData) {
-    const canvas = new Canvas(imageData.width, imageData.height);
-    const context = canvas.getContext('2d');
-
-    context.putImageData(imageData, 0, 0);
-
+  _storeCanvas(targetPath, canvas) {
     fs.writeFileSync(targetPath, canvas.toBuffer());
-  }
-
-  _createImageData(rawImageData) {
-    const imageData = new ImageData(rawImageData.width, rawImageData.height);
-
-    for (let i = 0; i < rawImageData.data.length; i++) {
-      imageData.data[i] = rawImageData.data[i];
-    }
-
-    return imageData;
   }
 
   specDone(spec) {
@@ -90,7 +80,9 @@ class ImageDiffReporter {
       this._storeScreenShot(imageBasePath);
     }
 
-    const failedViewerDataExpectations = spec.failedExpectations.filter(expectation => expectation.matcherName === 'toEqualViewerData');
+    const failedViewerDataExpectations = spec.failedExpectations.filter(
+      expectation => expectation.matcherName === 'toEqualDrawingStack'
+    );
 
     failedViewerDataExpectations.forEach((expectation, index) => {
       let expectationPathSegment = '';
@@ -99,21 +91,22 @@ class ImageDiffReporter {
         expectationPathSegment = `/${index}`;
       }
 
-      Object.keys(expectation.expected).forEach(key => {
-        const expectationImagePath = `${imageBasePath}${expectationPathSegment}/${key}`;
-        mkdirp.sync(expectationImagePath);
+      const expectationImagePath = `${imageBasePath}${expectationPathSegment}`;
+      mkdirp.sync(expectationImagePath);
 
-        const expectedImageRawData = expectation.expected[key];
-        const actualImageRawData = expectation.actual[key];
+      const expectedDrawingStack = expectation.expected;
+      const actualDrawingStack = expectation.actual;
 
-        const actualImageData = this._createImageData(actualImageRawData);
-        const expectedImageData = this._createImageData(expectedImageRawData);
-        const diffImageData = this._imageDiff(expectedImageRawData, actualImageRawData);
 
-        this._storeImage(expectationImagePath + '/actual.png', actualImageData);
-        this._storeImage(expectationImagePath + '/expected.png', expectedImageData);
-        this._storeImage(expectationImagePath + '/diff.png', diffImageData);
-      });
+      const renderer = new CanteenStackRenderer();
+      const expectedCanvas = renderer.render(expectedDrawingStack);
+      const actualCanvas = renderer.render(actualDrawingStack);
+
+      const diffCanvas = this._canvasDiff(expectedCanvas, actualCanvas);
+
+      this._storeCanvas(expectationImagePath + '/actual.png', actualCanvas);
+      this._storeCanvas(expectationImagePath + '/expected.png', expectedCanvas);
+      this._storeCanvas(expectationImagePath + '/diff.png', diffCanvas);
     });
   }
 }
