@@ -15,7 +15,7 @@ class EntityColorService {
      * @type {number}
      * @private
      */
-    this._counter = 0;
+    this._counter = Math.round(Math.random() * Object.keys(this._colorPalettes.primary).length);
   }
 
   /**

@@ -6,19 +6,28 @@
   "response": {
     "data": {
       "result": {
-        "id": "0115bd97fa0c1d86f8d1f65ff4095ed8",
+        "id": "1c9a2622db2a5509fdb26c972a007a54",
+        "rev": "23-82233c481638426cba6d51ff93309485",
         "userId": null,
-        "videoId": "0115bd97fa0c1d86f8d1f65ff4096bda",
+        "videoId": "a22e30441a07a5cedeab5f77f1916fc0",
+        "descriptionTitle": "Identify the person",
+        "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
         "frameRange": {
-          "id": null,
           "startFrameNumber": 1,
           "endFrameNumber": 2
         },
         "requiredImageTypes": [
-          "source",
           "sourceJpg",
           "thumbnail"
-        ]
+        ],
+        "status": "waiting",
+        "taskType": "object-labeling",
+        "predefinedClasses": [
+          "pedestrian"
+        ],
+        "drawingTool": "rectangle",
+        "assignedUser": 3,
+        "readOnly": false
       }
     }
   }

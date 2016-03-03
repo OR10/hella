@@ -3,7 +3,7 @@
     "path": "/api/task/1c9a2622db2a5509fdb26c972a007a54/labeledThingInFrame/1",
     "method": "GET",
     "queryString": {
-      "limit": "1",
+      "limit": "2",
       "offset": "0"
     }
   },

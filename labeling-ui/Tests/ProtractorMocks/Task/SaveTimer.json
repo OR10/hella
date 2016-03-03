@@ -1,0 +1,13 @@
+{
+  "request": {
+    "path": "/api/task/1c9a2622db2a5509fdb26c972a007a54/timer/3",
+    "method": "PUT"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "time": 3380
+      }
+    }
+  }
+}
