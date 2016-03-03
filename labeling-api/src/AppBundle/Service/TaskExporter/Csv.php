@@ -135,24 +135,28 @@ class Csv implements Service\TaskExporter
         return array_map(function ($labeledThingInFrame) use (&$idCounter) {
             $idCounter++;
 
-            $directionBuilder = new Service\TaskExporter\Extractor\RegexBuilder();
-            $directionBuilder->setRegexPattern('/^(left|right|front|back)$/');
-            $directionBuilder->setGroupName(0);
-            $directionRegexExtractor = $directionBuilder->getRegexExtractor();
-            $direction = $directionRegexExtractor->extract($labeledThingInFrame);
-
-            $visibleBuilder = new Service\TaskExporter\Extractor\RegexBuilder();
-            $visibleBuilder->setRegexPattern('/^(visible-(\d+))$/');
-            $visibleBuilder->setGroupName(2);
-            $visibleRegexExtractor = $visibleBuilder->getRegexExtractor();
-            $visible = $visibleRegexExtractor->extract($labeledThingInFrame);
+            $vehicleType = $this->getClassByRegex('/^(car|truck|2-wheeler-vehicle|bus|misc-vehicle|ignore-vehicle)$/', 0, $labeledThingInFrame);
+            $direction = $this->getClassByRegex('/^(direction-(\w+))$/', 2, $labeledThingInFrame);
+            $occlusion = $this->getClassByRegex('/^(occlusion-(\d{2}|(\d{2}-\d{2})))$/', 2, $labeledThingInFrame);
+            $truncation = $this->getClassByRegex('/^(truncation-(\d{2}|\d{2}-\d{2}))$/', 2, $labeledThingInFrame);
 
             return array(
                 'id' => $idCounter,
                 'frame_number' => $labeledThingInFrame->getFrameNumber(),
+                'vehicleType' => $vehicleType,
                 'direction' => $direction,
-                'visible' => $visible
+                'occlusion' => $occlusion,
+                'truncation' => $truncation,
             );
         }, $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task));
+    }
+
+    private function getClassByRegex($regex, $groupName, Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $builder = new Service\TaskExporter\Extractor\RegexBuilder();
+        $builder->setRegexPattern($regex);
+        $builder->setGroupName($groupName);
+        $regexExtractor = $builder->getRegexExtractor();
+        return $regexExtractor->extract($labeledThingInFrame);
     }
 }

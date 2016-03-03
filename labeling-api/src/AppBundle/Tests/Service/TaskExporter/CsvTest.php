@@ -56,26 +56,30 @@ class CsvTest extends Tests\KernelTestCase
                     array(
                         'frameNumber' => 5,
                         'type' => 'vehicle',
-                        'classes' => array('hasAccessory', 'skateboard', 'left', 'visible', 'visible-80'),
+                        'classes' => array('vehicle-type', 'truck', 'direction', 'direction-left', 'occlusion', 'occlusion-80', 'truncation', 'truncation-20-80'),
                     ),
                     array(
                         'frameNumber' => 6,
                         'type' => 'vehicle',
-                        'classes' => array('hasAccessory', 'skateboard', 'right', 'visible', 'visible-50'),
+                        'classes' => array('vehicle-type', 'car', 'direction', 'direction-front', 'occlusion', 'occlusion-80', 'truncation', 'truncation-20'),
                     ),
                 ),
                 array(
                     array(
                         'id' => 1,
                         'frame_number' => 5,
+                        'vehicleType' => 'truck',
                         'direction' => 'left',
-                        'visible' => '80',
+                        'occlusion' => '80',
+                        'truncation' => '20-80',
                     ),
                     array(
                         'id' => 2,
                         'frame_number' => 6,
-                        'direction' => 'right',
-                        'visible' => '50',
+                        'vehicleType' => 'car',
+                        'direction' => 'front',
+                        'occlusion' => '80',
+                        'truncation' => '20',
                     )
                 )
             )
