@@ -102,7 +102,7 @@ class ImageDiffReporter {
       const expectedCanvas = renderer.render(expectedDrawingStack);
       const actualCanvas = renderer.render(actualDrawingStack);
 
-      const diffCanvas = this._canvasDiff(expectedCanvas, actualCanvas);
+      const diffCanvas = this._diffCanvas(expectedCanvas, actualCanvas);
 
       this._storeCanvas(expectationImagePath + '/actual.png', actualCanvas);
       this._storeCanvas(expectationImagePath + '/expected.png', expectedCanvas);
