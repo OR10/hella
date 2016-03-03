@@ -17,7 +17,9 @@ class CanvasInstructionLogManager {
     return this._browser.executeScript(() => {
       const context = document.getElementsByClassName('annotation-layer')[0].getContext('2d');
 
-      return context.json();
+      return context.json({
+        decimalPoints: 8
+      });
     }).then((logs) => {
       return JSON.parse(logs);
     });

@@ -270,9 +270,14 @@ gulp.task('test-unit-continuous', () => {
 });
 
 gulp.task('copy-canteen', () => {
-  return gulp.src(paths.dir.vendor + '/github/platfora/Canteen*/build/canteen.js')
-    .pipe($$.rename('canteen.js'))
-    .pipe(gulp.dest(paths.dir.distribution + '/Library'));
+  return jspm.normalize('canteen').then((normalizedFile) => {
+    const normalizedPath = normalizedFile
+      .replace(/file:\/\//, '')
+      .replace(/\.js$/, '');
+    return gulp.src(normalizedPath + '/build/canteen.js')
+      .pipe($$.rename('canteen.js'))
+      .pipe(gulp.dest(paths.dir.distribution + '/Library'));
+  });
 });
 
 gulp.task('webdriver-update', webdriverUpdate);
