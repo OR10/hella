@@ -179,7 +179,9 @@ describe('Rectangle drawing', () => {
     browser.actions()
       .mouseMove(viewer, {x: 110, y: 110}) // initial position
       .click()
-      .mouseMove(viewer, {x: 250, y: 100}) // initial position
+      .perform();
+    browser.actions()
+      .mouseMove(viewer, {x: 300, y: 150}) // initial position
       .click()
       .perform();
 

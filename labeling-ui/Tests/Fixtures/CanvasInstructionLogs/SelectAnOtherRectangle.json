@@ -2176,6 +2176,19 @@
       "val": 10
     },
     {
+      "method": "setLineDash",
+      "arguments": [
+        [
+          6,
+          2
+        ]
+      ]
+    },
+    {
+      "attr": "lineDashOffset",
+      "val": 0
+    },
+    {
       "method": "fill",
       "arguments": [
         "nonzero"
@@ -2200,6 +2213,169 @@
     {
       "method": "restore",
       "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        263.671875,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        263.671875,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        351.5625,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        351.5625,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        263.671875,
+        175.78125
+      ]
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        259.671875,
+        171.78125,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        260.671875,
+        172.78125,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        259.671875,
+        83.890625,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        260.671875,
+        84.890625,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        347.5625,
+        83.890625,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        348.5625,
+        84.890625,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        347.5625,
+        171.78125,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        348.5625,
+        172.78125,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
     },
     {
       "method": "restore",
