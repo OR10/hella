@@ -142,11 +142,11 @@ class CreateLabelStructure extends Base
         );
 
         file_put_contents(
-            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-label-structure.json'),
+            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-vehicle.json'),
             json_encode($this->buildBackendLabelStructure($data))
         );
         file_put_contents(
-            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-label-structure-ui-annotation.json'),
+            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-vehicle-ui.json'),
             json_encode($this->buildFrontendLabelStructure($data))
         );
     }
