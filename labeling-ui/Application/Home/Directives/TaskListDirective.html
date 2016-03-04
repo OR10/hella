@@ -19,7 +19,11 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="task in vm.preprocessingTasks track by task.id">
-                    <td>{{task.taskType}}</td>
+                    <td>
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td>
                         {{task.video.name}}
                     </td>
@@ -49,7 +53,11 @@
                 <tbody>
                 <tr ng-repeat="task in vm.waitingTasks | myTasks:vm.user.id"
                     track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
@@ -84,7 +92,11 @@
                 <tbody>
                 <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks | unassignedTasks"
                     track-by="task.id">
-                    <td>{{task.taskType}}</td>
+                    <td>
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td>
                         {{task.video.name}}
                     </td>
@@ -114,7 +126,11 @@
                 <tbody>
                 <tr ng-repeat="task in vm.waitingTasks | otherPeopleTasks:vm.user.id"
                     track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
@@ -151,7 +167,11 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="task in vm.labeledTasks track by task.id">
-                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
