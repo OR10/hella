@@ -24,8 +24,10 @@ const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThi
 
 const loadOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/LoadOneRectangle.json');
 const loadTwoRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadTwoRectangles.json');
-const selectOneRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/SelectOneRectangle.json');
-const selectAnOtherRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAnOtherRectangle.json');
+const selectOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectOneRectangle.json');
+const selectAndDeselectRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAndDeselectRectangle.json');
+
+const selectAnOtherRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAnOtherRectangle.json');
 
 const viewerDataManager = new ViewerDataManager(browser);
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -111,7 +113,44 @@ describe('Rectangle drawing', () => {
       .perform();
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(selectOneRectanglesExpectation).toEqualDrawingStack(drawingStack);
+      expect(selectOneRectangleExpectation).toEqualDrawingStack(drawingStack);
+      done();
+    })
+  });
+
+  it('should select and deselect a rectangle', (done) => {
+    mock([
+      taskDataMock,
+      videoDataMock,
+      sourceFrameLocationsMock,
+      sourceJpgFrameLocationsMock,
+      sourceJpg2FrameLocationsMock,
+      thumbnailFrameLocationsMock,
+      labelStructureMock,
+      labeledThingIncompleteCountMock,
+      timerMock,
+      saveTimerMock,
+      labeledFrameMock,
+
+      twoRectanglesLabeledThingsMock,
+      twoRectanglesLabeledThingsPreloadingMock
+    ]);
+    browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
+
+    const viewer = element(by.css('.layer-container'));
+
+    browser.actions()
+      .mouseMove(viewer, {x: 110, y: 110}) // initial position
+      .click()
+      .perform();
+    browser.actions()
+      .mouseMove(viewer, {x: 1, y: 1})
+      .click()
+      .perform();
+
+    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
+      expect(selectAndDeselectRectangleExpectation).toEqualDrawingStack(drawingStack);
+      console.log(JSON.stringify(drawingStack));
       done();
     })
   });
@@ -145,7 +184,7 @@ describe('Rectangle drawing', () => {
       .perform();
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(selectAnOtherRectanglesExpectation).toEqualDrawingStack(drawingStack);
+      expect(selectAnOtherRectangleExpectation).toEqualDrawingStack(drawingStack);
       done();
     })
   });
