@@ -133,7 +133,7 @@ class CacheHeaterService {
 }
 
 CacheHeaterService.LOG_FACILITY = 'cacheHeater';
-CacheHeaterService.CHUNK_SIZE = 20;
+CacheHeaterService.CHUNK_SIZE = 60;
 
 CacheHeaterService.$inject = [
   'cachingLabeledThingInFrameGateway',
