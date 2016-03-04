@@ -266,13 +266,13 @@ class LabeledThingInFrame extends Controller\Base
                     if ($previousClasses instanceof Model\LabeledThingInFrame) {
                         $lastClassesForLabeledThing = $previousClasses->getClasses();
                     }else{
-                        $lastClassesForLabeledThing = null;
+                        $lastClassesForLabeledThing = array();
                     }
                 }
 
                 $labeledThingInFrame->setGhostClasses($lastClassesForLabeledThing);
             }else{
-                $lastClassesForLabeledThing = $labeledThingInFrame;
+                $lastClassesForLabeledThing = $labeledThingInFrame->getClasses();
             }
             return $labeledThingInFrame;
         }, $labeledThingsInFrame);
