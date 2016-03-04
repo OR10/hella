@@ -169,14 +169,20 @@ class LabeledThingInFrame extends Controller\Base
             }
         }
 
-        $labeledThingsInFrame = array_map(function($labeledThingInFrame) {
+        $lastLabeledThingInFrameWithClasses = array();
+        $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastLabeledThingInFrameWithClasses) {
             if (empty($labeledThingInFrame->getClasses())) {
-                $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
-                if ($previousClasses instanceof Model\LabeledThingInFrame) {
-                    $labeledThingInFrame->setGhostClasses($previousClasses->getClasses());
+                if (!array_key_exists($labeledThingInFrame->getLabeledThingId(), $lastLabeledThingInFrameWithClasses)) {
+                    $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+                    if ($previousClasses instanceof Model\LabeledThingInFrame) {
+                        $lastLabeledThingInFrameWithClasses[$labeledThingInFrame->getLabeledThingId()] = $previousClasses;
+                    }else{
+                        $lastLabeledThingInFrameWithClasses[$labeledThingInFrame->getLabeledThingId()] = null;
+                    }
                 }
-            }
 
+                $labeledThingInFrame->setGhostClasses($lastLabeledThingInFrameWithClasses[$labeledThingInFrame->getLabeledThingId()]);
+            }
             return $labeledThingInFrame;
         }, $labeledThingsInFrame);
 
