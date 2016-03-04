@@ -258,15 +258,15 @@ class LabeledThingInFrame extends Controller\Base
         });
 
 
-        $lastClassesForLabeledThing = null;
+        $lastClassesForLabeledThing = false;
         $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastClassesForLabeledThing) {
             if (empty($labeledThingInFrame->getClasses())) {
-                if ($lastClassesForLabeledThing === null) {
+                if ($lastClassesForLabeledThing === false) {
                     $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
                     if ($previousClasses instanceof Model\LabeledThingInFrame) {
                         $lastClassesForLabeledThing = $previousClasses->getClasses();
                     }else{
-                        $lastClassesForLabeledThing = array();
+                        $lastClassesForLabeledThing = null;
                     }
                 }
 
