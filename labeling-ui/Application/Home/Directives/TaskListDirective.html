@@ -56,7 +56,7 @@
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
                         <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
                         &nbsp;{{task.taskType}}
                     </td>
@@ -131,7 +131,7 @@
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
                         <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
                         &nbsp;{{task.taskType}}
                     </td>
@@ -173,7 +173,7 @@
                 <tr ng-repeat="task in vm.labeledTasks track by task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
                         <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
                         &nbsp;{{task.taskType}}
                     </td>
