@@ -13,20 +13,25 @@ const labelStructureMock = require('../ProtractorMocks/Task/Labelstructure.json'
 const labeledThingIncompleteCountMock = require('../ProtractorMocks/Task/LabeledThingIncompleteCount.json');
 const timerMock = require('../ProtractorMocks/Task/Timer.json');
 const saveTimerMock = require('../ProtractorMocks/Task/SaveTimer.json');
-const labeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectangles.json');
-const labeledThingsPreloadingMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectanglesPreloading.json');
+const oneRectangleLabeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/OneRectangle.json');
+const oneRectangleLabeledThingsPreloadingMock = require('../ProtractorMocks/Task/LabeledThingInFrame/OneRectanglePreloading.json');
+const twoRectanglesLabeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectangles.json');
+const twoRectanglesLabeledThingsPreloadingMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectanglesPreloading.json');
 const labeledFrameMock = require('../ProtractorMocks/Task/LabeledFrame.json');
 const movedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/MovedRectangle.json');
 const resizedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedRectangle.json');
 const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedAndMovedRectangle.json');
 
-const loadRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadRectangles.json');
+const loadOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/LoadOneRectangle.json');
+const loadTwoRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadTwoRectangles.json');
 
 const viewerDataManager = new ViewerDataManager(browser);
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Rectangle drawing', () => {
-  beforeEach(() => {
+
+
+  fit('should load and draw one rectangles', (done) => {
     mock([
       taskDataMock,
       videoDataMock,
@@ -38,20 +43,42 @@ describe('Rectangle drawing', () => {
       labeledThingIncompleteCountMock,
       timerMock,
       saveTimerMock,
-      labeledThingsMock,
-      labeledThingsPreloadingMock,
       labeledFrameMock,
-      movedRectangleMock,
-      resizedRectangleMock,
-      resizedAndMovedRectangleMock,
-    ]);
-  });
 
-  it('should draw the background and initial shapes as provided by the backend', (done) => {
+      oneRectangleLabeledThingsMock,
+      oneRectangleLabeledThingsPreloadingMock
+    ]);
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
-    canvasInstructionLogManager.getCanvasLogs().then((logs) => {
-      expect(loadRectanglesExpectation).toEqual(logs);
+    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
+      console.log(JSON.stringify(drawingStack));
+      expect(loadOneRectangleExpectation).toEqualDrawingStack(drawingStack);
+      done();
+    })
+  });
+
+
+  it('should load and draw two rectangles', (done) => {
+    mock([
+      taskDataMock,
+      videoDataMock,
+      sourceFrameLocationsMock,
+      sourceJpgFrameLocationsMock,
+      sourceJpg2FrameLocationsMock,
+      thumbnailFrameLocationsMock,
+      labelStructureMock,
+      labeledThingIncompleteCountMock,
+      timerMock,
+      saveTimerMock,
+      labeledFrameMock,
+
+      twoRectanglesLabeledThingsMock,
+      twoRectanglesLabeledThingsPreloadingMock
+    ]);
+    browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
+
+    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
+      expect(loadTwoRectanglesExpectation).toEqualDrawingStack(drawingStack);
       done();
     })
   });
