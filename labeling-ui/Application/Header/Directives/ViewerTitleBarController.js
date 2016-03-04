@@ -3,12 +3,14 @@
  */
 class ViewerTitleBarController {
   /**
-   * @param {angular.$location} $location
    * @param {angular.$timeout} $timeout
+   * @param {$rootScope.$scope} $scope
+   * @param {angular.$state} $state
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
-   * @param {ReleaseConfigService} releaseConfigService
+   * @param labeledThingGateway
+   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    */
   constructor($timeout, $scope, $state, modalService, applicationState, taskGateway, labeledThingGateway, labeledThingInFrameGateway) {
     this._$timeout = $timeout;
@@ -60,7 +62,7 @@ class ViewerTitleBarController {
     this.shapeBounds = null;
 
     this.refreshIncompleteCount();
-    $scope.$watch('vm.selectedPaperShape', this.refreshIncompleteCount.bind(this));
+    $scope.$watch('vm.selectedPaperShape', () => this.refreshIncompleteCount());
 
     $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], (newValues) => {
       const width = newValues[0];
@@ -174,8 +176,10 @@ class ViewerTitleBarController {
   }
 
   refreshIncompleteCount() {
-    this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then((result) => {
-      this.incompleteCount = result.count;
+    this._$scope.$applyAsync(() => {
+      this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then(result => {
+        this.incompleteCount = result.count;
+      });
     });
   }
 
