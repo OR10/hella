@@ -15,11 +15,9 @@ module.exports = function toEqualDrawingStack() {
     compare: function compare(actual, expected) {
       const result = {pass: true};
 
-      Object.keys(expected).forEach((key) => {
-        if (!equalDrawingStack(expected[key], actual[key])) {
-          result.pass = false;
-        }
-      });
+      if (!equalDrawingStack(expected, actual)) {
+        result.pass = false;
+      }
 
       if (result.pass) {
         result.message = 'Expected drawing stacks not to be equal.';

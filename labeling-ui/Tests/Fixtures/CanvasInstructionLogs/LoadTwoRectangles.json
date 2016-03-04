@@ -1,6 +1,5 @@
 {
   "width": 900,
-  "height": 544,
   "operations": [
     {
       "method": "clearRect",
@@ -1169,7 +1168,7 @@
       "method": "moveTo",
       "arguments": [
         87.890625,
-        219.7265625
+        175.78125
       ]
     },
     {
@@ -1182,22 +1181,22 @@
     {
       "method": "lineTo",
       "arguments": [
-        219.7265625,
+        175.78125,
         87.890625
       ]
     },
     {
       "method": "lineTo",
       "arguments": [
-        219.7265625,
-        219.7265625
+        175.78125,
+        175.78125
       ]
     },
     {
       "method": "lineTo",
       "arguments": [
         87.890625,
-        219.7265625
+        175.78125
       ]
     },
     {
@@ -1392,5 +1391,6 @@
       "method": "restore",
       "arguments": []
     }
-  ]
+  ],
+  "height": 544
 }
