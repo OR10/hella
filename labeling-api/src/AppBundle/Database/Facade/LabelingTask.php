@@ -313,15 +313,7 @@ class LabelingTask
      */
     public function getLabelStructure(Model\LabelingTask $task)
     {
-        if ($task->getTaskType() === 'meta-labeling') {
-            $structure  = file_get_contents(__DIR__ . '/../../Resources/LabelStructures/meta-label-structure.json');
-        }
-
-        if ($task->getTaskType() === 'object-labeling') {
-            $structure  = file_get_contents(__DIR__ . '/../../Resources/LabelStructures/object-label-structure.json');
-        }
-
-        return json_decode($structure, true);
+        return $task->getLabelStructure();
     }
 
     /**
@@ -330,14 +322,6 @@ class LabelingTask
      */
     public function getLabelAnnotation(Model\LabelingTask $task)
     {
-        if ($task->getTaskType() === 'meta-labeling') {
-            $annotation = file_get_contents(__DIR__ . '/../../Resources/LabelStructures/meta-label-structure-ui-annotation.json');
-        }
-
-        if ($task->getTaskType() === 'object-labeling') {
-            $annotation = file_get_contents(__DIR__ . '/../../Resources/LabelStructures/object-label-structure-ui-annotation.json');
-        }
-
-        return json_decode($annotation, true);
+        return $task->getLabelStructureUi();
     }
 }
