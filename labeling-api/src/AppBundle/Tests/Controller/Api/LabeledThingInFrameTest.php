@@ -204,13 +204,26 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
 
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $this->task  = $this->labelingTaskFacade->save(
-            Model\LabelingTask::create(
-                $this->video,
-                new Model\FrameRange(10, 20),
-                Model\LabelingTask::TYPE_OBJECT_LABELING
+        $task = Model\LabelingTask::create(
+            $this->video,
+            new Model\FrameRange(10, 20),
+            Model\LabelingTask::TYPE_OBJECT_LABELING
+        );
+        $task->setLabelStructure(
+            json_decode(
+                file_get_contents(
+                    sprintf(
+                        '%s/../../Resources/LabelStructures/%s-%s.json',
+                        __DIR__,
+                        Model\LabelingTask::TYPE_OBJECT_LABELING,
+                        Model\LabelingTask::INSTRUCTION_PEDESTRIAN
+                    )
+                ),
+                true
             )
         );
+        $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_PEDESTRIAN);
+        $this->task  = $this->labelingTaskFacade->save($task);
         $this->labeledThing = $this->labelingThingFacade->save(Model\LabeledThing::create($this->task));
     }
 

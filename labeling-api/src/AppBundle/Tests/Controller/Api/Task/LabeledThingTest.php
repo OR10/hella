@@ -256,6 +256,20 @@ class LabeledThingTest extends Tests\WebTestCase
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $task->setLabelStructure(
+            json_decode(
+                file_get_contents(
+                    sprintf(
+                        '%s/../../../Resources/LabelStructures/%s-%s.json',
+                        __DIR__,
+                        Model\LabelingTask::TYPE_OBJECT_LABELING,
+                        Model\LabelingTask::INSTRUCTION_PEDESTRIAN
+                    )
+                ),
+                true
+            )
+        );
+        $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_PEDESTRIAN);
         return $this->labelingTaskFacade->save($task);
     }
 
