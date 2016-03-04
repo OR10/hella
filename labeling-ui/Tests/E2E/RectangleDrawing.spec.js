@@ -24,6 +24,7 @@ const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThi
 
 const loadOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/LoadOneRectangle.json');
 const loadTwoRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadTwoRectangles.json');
+const selectOnwRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/SelectOneRectangle.json');
 
 const viewerDataManager = new ViewerDataManager(browser);
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -31,7 +32,7 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 describe('Rectangle drawing', () => {
 
 
-  fit('should load and draw one rectangles', (done) => {
+  it('should load and draw one rectangle', (done) => {
     mock([
       taskDataMock,
       videoDataMock,
@@ -51,7 +52,6 @@ describe('Rectangle drawing', () => {
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      console.log(JSON.stringify(drawingStack));
       expect(loadOneRectangleExpectation).toEqualDrawingStack(drawingStack);
       done();
     })
@@ -79,6 +79,38 @@ describe('Rectangle drawing', () => {
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
       expect(loadTwoRectanglesExpectation).toEqualDrawingStack(drawingStack);
+      done();
+    })
+  });
+
+  it('should select a rectangle', (done) => {
+    mock([
+      taskDataMock,
+      videoDataMock,
+      sourceFrameLocationsMock,
+      sourceJpgFrameLocationsMock,
+      sourceJpg2FrameLocationsMock,
+      thumbnailFrameLocationsMock,
+      labelStructureMock,
+      labeledThingIncompleteCountMock,
+      timerMock,
+      saveTimerMock,
+      labeledFrameMock,
+
+      twoRectanglesLabeledThingsMock,
+      twoRectanglesLabeledThingsPreloadingMock
+    ]);
+    browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
+
+    const viewer = element(by.css('.layer-container'));
+
+    browser.actions()
+      .mouseMove(viewer, {x: 110, y: 110}) // initial position
+      .click()
+      .perform();
+
+    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
+      expect(selectOnwRectanglesExpectation).toEqualDrawingStack(drawingStack);
       done();
     })
   });
