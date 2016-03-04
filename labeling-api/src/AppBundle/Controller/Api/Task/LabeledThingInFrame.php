@@ -169,19 +169,29 @@ class LabeledThingInFrame extends Controller\Base
             }
         }
 
-        $lastLabeledThingInFrameWithClasses = array();
-        $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastLabeledThingInFrameWithClasses) {
+        usort($labeledThingsInFrame, function($a, $b) {
+            if ($a->getFrameNumber() === $b->getFrameNumber()) {
+                return 0;
+            }
+
+            return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
+        });
+
+        $lastClassesForLabeledThing = array();
+        $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastClassesForLabeledThing) {
             if (empty($labeledThingInFrame->getClasses())) {
-                if (!array_key_exists($labeledThingInFrame->getLabeledThingId(), $lastLabeledThingInFrameWithClasses)) {
+                if (!array_key_exists($labeledThingInFrame->getLabeledThingId(), $lastClassesForLabeledThing)) {
                     $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
                     if ($previousClasses instanceof Model\LabeledThingInFrame) {
-                        $lastLabeledThingInFrameWithClasses[$labeledThingInFrame->getLabeledThingId()] = $previousClasses;
+                        $lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()] = $previousClasses->getClasses();
                     }else{
-                        $lastLabeledThingInFrameWithClasses[$labeledThingInFrame->getLabeledThingId()] = null;
+                        $lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()] = null;
                     }
                 }
 
-                $labeledThingInFrame->setGhostClasses($lastLabeledThingInFrameWithClasses[$labeledThingInFrame->getLabeledThingId()]);
+                $labeledThingInFrame->setGhostClasses($lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()]);
+            }else{
+                $lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()] = $labeledThingInFrame;
             }
             return $labeledThingInFrame;
         }, $labeledThingsInFrame);
@@ -239,16 +249,33 @@ class LabeledThingInFrame extends Controller\Base
             );
         }
 
-        $result = array_map(function($labeledThingInFrame) {
-            if (empty($labeledThingInFrame->getClasses())) {
-                $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
-                if ($previousClasses instanceof Model\LabeledThingInFrame) {
-                    $labeledThingInFrame->setGhostClasses($previousClasses->getClasses());
-                }
+        usort($labeledThingsInFrame, function($a, $b) {
+            if ($a->getFrameNumber() === $b->getFrameNumber()) {
+                return 0;
             }
 
+            return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
+        });
+
+
+        $lastClassesForLabeledThing = null;
+        $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastClassesForLabeledThing) {
+            if (empty($labeledThingInFrame->getClasses())) {
+                if ($lastClassesForLabeledThing === null) {
+                    $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+                    if ($previousClasses instanceof Model\LabeledThingInFrame) {
+                        $lastClassesForLabeledThing = $previousClasses->getClasses();
+                    }else{
+                        $lastClassesForLabeledThing = null;
+                    }
+                }
+
+                $labeledThingInFrame->setGhostClasses($lastClassesForLabeledThing);
+            }else{
+                $lastClassesForLabeledThing = $labeledThingInFrame;
+            }
             return $labeledThingInFrame;
-        }, $result);
+        }, $labeledThingsInFrame);
 
         return View\View::create()->setData(['result' => $result]);
     }
