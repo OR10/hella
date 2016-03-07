@@ -11,8 +11,12 @@ class ExportController {
   /**
    * Starts a new export for the given task
    */
-  handleStartExportClicked() {
-    this.exportGateway.startExport(this.task.id, undefined);
+  handleStartKittiExportClicked() {
+    this.exportGateway.startExport(this.task.id, 'kitti');
+  }
+
+  handleStartCsvExportClicked() {
+    this.exportGateway.startExport(this.task.id, 'csv');
   }
 }
 
