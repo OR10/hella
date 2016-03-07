@@ -18,22 +18,19 @@ const oneRectangleLabeledThingsPreloadingMock = require('../ProtractorMocks/Task
 const twoRectanglesLabeledThingsMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectangles.json');
 const twoRectanglesLabeledThingsPreloadingMock = require('../ProtractorMocks/Task/LabeledThingInFrame/TwoRectanglesPreloading.json');
 const labeledFrameMock = require('../ProtractorMocks/Task/LabeledFrame.json');
+const rectangleSelected = require('../ProtractorMocks/Task/LabeledThingInFrame/RectangleSelected.json');
 const movedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/MovedRectangle.json');
-const resizedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedRectangle.json');
-const resizedAndMovedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizedAndMovedRectangle.json');
 
 const loadOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/LoadOneRectangle.json');
 const loadTwoRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadTwoRectangles.json');
 const selectOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectOneRectangle.json');
 const selectAndDeselectRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAndDeselectRectangle.json');
-
 const selectAnOtherRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAnOtherRectangle.json');
+const moveOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/MoveOneRectangle.json');
 
-const viewerDataManager = new ViewerDataManager(browser);
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Rectangle drawing', () => {
-
 
   it('should load and draw one rectangle', (done) => {
     mock([
@@ -59,7 +56,6 @@ describe('Rectangle drawing', () => {
       done();
     })
   });
-
 
   it('should load and draw two rectangles', (done) => {
     mock([
@@ -150,7 +146,6 @@ describe('Rectangle drawing', () => {
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
       expect(selectAndDeselectRectangleExpectation).toEqualDrawingStack(drawingStack);
-      console.log(JSON.stringify(drawingStack));
       done();
     })
   });
@@ -193,71 +188,47 @@ describe('Rectangle drawing', () => {
 
 
   it('should correctly move a rectangle on canvas and save the changed coordinates', (done) => {
+    mock([
+      taskDataMock,
+      videoDataMock,
+      sourceFrameLocationsMock,
+      sourceJpgFrameLocationsMock,
+      sourceJpg2FrameLocationsMock,
+      thumbnailFrameLocationsMock,
+      labelStructureMock,
+      labeledThingIncompleteCountMock,
+      timerMock,
+      saveTimerMock,
+      labeledFrameMock,
+      rectangleSelected,
+
+      twoRectanglesLabeledThingsMock,
+      twoRectanglesLabeledThingsPreloadingMock,
+      movedRectangleMock
+    ]);
+
     browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
 
     const viewer = element(by.css('.layer-container'));
 
     browser.actions()
-      .mouseMove(viewer, {x: 60, y: 60}) // initial position
+      .mouseMove(viewer, {x: 110, y: 110}) // initial position
       .mouseDown()
-      .mouseMove(viewer, {x: 70, y: 70}) // drag
+      .mouseMove(viewer, {x: 110, y: 130}) // drag
       .mouseUp()
-      .mouseMove(viewer, {x: 0, y: 0}) // click somewhere outside to deselect element
+      .mouseMove(viewer, {x: 1, y: 1}) // click somewhere outside to deselect element
       .click()
       .perform();
 
-    viewerDataManager.exportData()
-      .then((data) => {
-        const expectedData = viewerDataManager.readViewerData('Tests/Fixtures/ViewerData/RectangleDrawing/movedRectangle.json.gz');
+    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
+      expect(moveOneRectangleExpectation).toEqualDrawingStack(drawingStack);
+      browser.sleep(1000);
+      getMockRequestsMade(mock).then(requests => {
 
-        expect(data).toEqualViewerData(expectedData);
-
-        expect(getMockRequestsMade(mock)).toHaveSameItems([
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8',
-            method: 'GET',
-          },
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/source?limit=2&offset=0',
-            method: 'GET',
-          },
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledThingInFrame/1',
-            method: 'GET',
-          },
-          {
-            method: 'GET',
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/frameLocations/thumbnail?limit=2&offset=1',
-          },
-          {
-            url: '/api/task/0115bd97fa0c1d86f8d1f65ff4095ed8/labeledFrame/1',
-            method: 'GET',
-          },
-          {
-            data: {
-              classes: [],
-              id: '0115bd97fa0c1d86f8d1f65ff409f0b8',
-              labeledThingId: '0115bd97fa0c1d86f8d1f65ff409faa6',
-              rev: '14-547b5f8221abb7327b156d7c1591b14e',
-              incomplete: true,
-              ghost: false,
-              frameNumber: 1,
-              shapes: [
-                {
-                  type: 'rectangle',
-                  labeledThingInFrameId: '0115bd97fa0c1d86f8d1f65ff409f0b8',
-                  bottomRight: {y: 190, x: 140},
-                  topLeft: {y: 60, x: 60},
-                },
-              ],
-            },
-            url: '/api/labeledThingInFrame/0115bd97fa0c1d86f8d1f65ff409f0b8',
-            method: 'PUT',
-          },
-        ], true);
-
+        expect(requests).toContain(movedRectangleMock.request);
         done();
       });
+    });
   });
 
 
