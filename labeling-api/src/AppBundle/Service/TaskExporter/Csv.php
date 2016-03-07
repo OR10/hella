@@ -4,6 +4,7 @@ namespace AppBundle\Service\TaskExporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\Shape;
 use AppBundle\Model\TaskExporter;
 use AppBundle\Service;
 use AppBundle\Service\TaskExporter\Exception;
@@ -130,8 +131,20 @@ class Csv implements Service\TaskExporter
      */
     public function getVehicleLabelingData(Model\LabelingTask $task)
     {
-
         $idCounter = 0;
+
+        $sortedLabeledThingsInFrame = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
+        usort(
+            $sortedLabeledThingsInFrame,
+            function ($a, $b) {
+                if ($a->getFrameNumber() === $b->getFrameNumber()) {
+                    return 0;
+                }
+
+                return $a->getFrameNumber() < $b->getFrameNumber() ? -1 : 1;
+            }
+        );
+
         return array_map(function ($labeledThingInFrame) use (&$idCounter) {
             $idCounter++;
 
@@ -147,8 +160,12 @@ class Csv implements Service\TaskExporter
                 'direction' => $direction,
                 'occlusion' => $occlusion,
                 'truncation' => $truncation,
+                'position_x' => $this->getPosition($labeledThingInFrame)['x'],
+                'position_y' => $this->getPosition($labeledThingInFrame)['y'],
+                'width' => $this->getDimensions($labeledThingInFrame)['width'],
+                'height' => $this->getDimensions($labeledThingInFrame)['height'],
             );
-        }, $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task));
+        }, $sortedLabeledThingsInFrame);
     }
 
     private function getClassByRegex($regex, $groupName, Model\LabeledThingInFrame $labeledThingInFrame)
@@ -158,5 +175,59 @@ class Csv implements Service\TaskExporter
         $builder->setGroupName($groupName);
         $regexExtractor = $builder->getRegexExtractor();
         return $regexExtractor->extract($labeledThingInFrame);
+    }
+
+    private function getPosition($labeledThingInFrame)
+    {
+        $shapes = $labeledThingInFrame->getShapes();
+        if (count($shapes) === 0) {
+            return array(
+                'x' => 'NAN',
+                'y' => 'NAN',
+            );
+        }
+
+        $shape = Shape::createFromArray($shapes[0]);
+
+        switch ($shape->getType()) {
+            case 'rectangle':
+                return array(
+                    'x' => round($shape->getLeft()),
+                    'y' => round($shape->getTop()),
+                );
+                break;
+            default:
+                return array(
+                    'x' => 'NAN',
+                    'y' => 'NAN',
+                );
+        }
+    }
+
+    private function getDimensions($labeledThingInFrame)
+    {
+        $shapes = $labeledThingInFrame->getShapes();
+        if (count($shapes) === 0) {
+            return array(
+                'width'  => 'NAN',
+                'height' => 'NAN',
+            );
+        }
+
+        $shape = Shape::createFromArray($shapes[0]);
+
+        switch ($shape->getType()) {
+            case 'rectangle':
+                return array(
+                    'width'  => round($shape->getWidth()),
+                    'height' => round($shape->getHeight()),
+                );
+                break;
+            default:
+                return array(
+                    'width'  => 'NAN',
+                    'height' => 'NAN',
+                );
+        }
     }
 }
