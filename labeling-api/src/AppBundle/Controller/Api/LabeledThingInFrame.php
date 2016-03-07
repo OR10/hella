@@ -115,9 +115,17 @@ class LabeledThingInFrame extends Controller\Base
 
         $labeledThingInFrame->setClasses($classes);
         $labeledThingInFrame->setShapes($shapes);
+
+        $incompleteBefore = $labeledThingInFrame->getIncomplete();
+
         $labeledThingInFrame->setIncomplete(
             $this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame)
         );
+
+        if ($incompleteBefore !== $labeledThingInFrame->getIncomplete()) {
+            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
+        }
+
         $labeledThing->setIncomplete(
             $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
         );

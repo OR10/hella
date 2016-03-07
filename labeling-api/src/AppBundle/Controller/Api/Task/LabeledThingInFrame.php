@@ -258,10 +258,10 @@ class LabeledThingInFrame extends Controller\Base
         });
 
 
-        $lastClassesForLabeledThing = null;
+        $lastClassesForLabeledThing = false;
         $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastClassesForLabeledThing) {
             if (empty($labeledThingInFrame->getClasses())) {
-                if ($lastClassesForLabeledThing === null) {
+                if ($lastClassesForLabeledThing === false) {
                     $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
                     if ($previousClasses instanceof Model\LabeledThingInFrame) {
                         $lastClassesForLabeledThing = $previousClasses->getClasses();
@@ -272,7 +272,7 @@ class LabeledThingInFrame extends Controller\Base
 
                 $labeledThingInFrame->setGhostClasses($lastClassesForLabeledThing);
             }else{
-                $lastClassesForLabeledThing = $labeledThingInFrame;
+                $lastClassesForLabeledThing = $labeledThingInFrame->getClasses();
             }
             return $labeledThingInFrame;
         }, $labeledThingsInFrame);

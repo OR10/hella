@@ -39,6 +39,32 @@ class TaskIncomplete
         $this->labeledThingFacade = $labeledThingFacade;
     }
 
+    public function revalideLabeledThingInFrameIncompleteStatus(Model\LabeledThing $labeledThing, Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameNumber()+1, 0 , null);
+
+        usort($labeledThingInFrames, function($a, $b) {
+            if ($a->getFrameNumber() === $b->getFrameNumber()) {
+                return 0;
+            }
+
+            return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
+        });
+
+        $incompleteStatus = $labeledThingInFrame->getIncomplete();
+
+        $updatedLabeledThingInFrame = array();
+        foreach($labeledThingInFrames as $labeledThingInFrameToCheck) {
+            if (!empty($labeledThingInFrameToCheck->getClasses())) {
+                break;
+            }
+            $labeledThingInFrameToCheck->setIncomplete($incompleteStatus);
+            $updatedLabeledThingInFrame[] = $labeledThingInFrameToCheck;
+        }
+
+        $this->labeledThingInFrameFacade->saveAll($updatedLabeledThingInFrame);
+    }
+
     public function isLabeledThingIncomplete(Model\LabeledThing $labeledThing)
     {
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
@@ -60,6 +86,13 @@ class TaskIncomplete
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
+        if (empty($labeledThingInFrame->getClasses())) {
+            $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+            if ($labeledThingInFrame === null) {
+                return true;
+            }
+        }
+
         $classes = $labeledThingInFrame->getClasses();
         $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
         $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
