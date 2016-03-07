@@ -302,7 +302,6 @@ class BufferedHttpProvider {
 
             $http(options)
               .then(result => {
-                console.warn('$http result: ', JSON.stringify(result.data));
                 if (result && result.data && this._autoExtractInject) {
                   _extractRevision(result.data);
                 }
