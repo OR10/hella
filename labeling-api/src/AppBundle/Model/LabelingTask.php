@@ -14,6 +14,9 @@ class LabelingTask
     const TYPE_OBJECT_LABELING = 'object-labeling';
     const DRAWING_TOOL_RECTANGLE = 'rectangle';
 
+    const INSTRUCTION_VEHICLE = 'vehicle';
+    const INSTRUCTION_PEDESTRIAN = 'pedestrian';
+
     const STATUS_PREPROCESSING = 'preprocessing';
     const STATUS_WAITING = 'waiting';
     const STATUS_LABELED = 'labeled';
@@ -101,6 +104,24 @@ class LabelingTask
      * @CouchDB\Field(type="mixed")
      */
     private $assignedUser = null;
+
+    /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $labelStructure = null;
+
+    /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $labelStructureUi = null;
+
+    /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $labelInstruction = null;
 
     /**
      * @param Video      $video
@@ -306,5 +327,53 @@ class LabelingTask
         $this->assignedUser = $userId;
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLabelStructureUi()
+    {
+        return $this->labelStructureUi;
+    }
+
+    /**
+     * @param null|string $labelStructureUi
+     */
+    public function setLabelStructureUi($labelStructureUi)
+    {
+        $this->labelStructureUi = $labelStructureUi;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLabelStructure()
+    {
+        return $this->labelStructure;
+    }
+
+    /**
+     * @param null|string $labelStructure
+     */
+    public function setLabelStructure($labelStructure)
+    {
+        $this->labelStructure = $labelStructure;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLabelInstruction()
+    {
+        return $this->labelInstruction;
+    }
+
+    /**
+     * @param null|string $labelInstruction
+     */
+    public function setLabelInstruction($labelInstruction)
+    {
+        $this->labelInstruction = $labelInstruction;
     }
 }

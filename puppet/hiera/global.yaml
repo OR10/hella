@@ -5,7 +5,7 @@ nginx::package_source: nginx-mainline
 
 php::ensure: latest
 php::manage_repos: true
-php::repo::ubuntu::ppa: "ondrej/php-7.0"
+php::repo::ubuntu::ppa: "ondrej/php"
 php::package_prefix: 'php7.0-'
 php::params::package_prefix: 'php7.0-'
 php::params::fpm_service_name: 'php7.0-fpm'

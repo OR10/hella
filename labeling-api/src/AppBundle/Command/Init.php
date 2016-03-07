@@ -315,7 +315,7 @@ class Init extends Base
                 $path,
                 file_get_contents("http://192.168.123.7/" . $fileName)
             );
-            $this->videoImporterService->import('example.avi', $path, $lossless);
+            $this->videoImporterService->import('example.avi', $path, $lossless, 0, true, true, true, true);
         }
     }
 }

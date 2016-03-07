@@ -56,7 +56,11 @@ class ImportVideo extends Base
                 $videoName,
                 $filename,
                 $input->getOption('lossless'),
-                $input->getOption('chunk-size')
+                $input->getOption('chunk-size'),
+                true,
+                true,
+                true,
+                false
             );
 
             if (count($tasks) > 0) {

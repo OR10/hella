@@ -260,6 +260,10 @@ class BufferedHttpProvider {
       return deferred;
     }
 
+    function _transformToJSON(object) {
+      return JSON.parse(JSON.stringify(object));
+    }
+
     /**
      * Fire a new bufferedHttp request using the given `options`
      *
@@ -288,7 +292,11 @@ class BufferedHttpProvider {
         buffer.queue.push({
           method: options.method,
           execute: (resolveInternal) => {
-            if (options.data && this._autoExtractInject) {
+            if (!!options.data) {
+              options.data = _transformToJSON(options.data);
+            }
+
+            if (!!options.data && this._autoExtractInject) {
               _injectRevision(options.data);
             }
 

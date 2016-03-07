@@ -3,7 +3,7 @@ export function getMockRequestsMade(mock) {
     return requests.map(request => {
       const strippedRequest = {
         method: request.method,
-        url: request.url,
+        path: request.url,
       };
 
       if (request.data) {

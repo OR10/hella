@@ -15,13 +15,21 @@ class CanvasInstructionLogManager {
     this._browser.waitForAngular();
 
     return this._browser.executeScript(() => {
-      const context = document.getElementsByClassName('annotation-layer')[0].getContext('2d');
+      const canvas = document.getElementsByClassName('annotation-layer')[0];
+      const context = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
 
-      return context.json({
-        decimalPoints: 8
-      });
-    }).then((logs) => {
-      return JSON.parse(logs);
+      return {
+        width,
+        height,
+        operations: context.json({
+          decimalPoints: 8
+        })
+      };
+    }).then((obj) => {
+      obj.operations = JSON.parse(obj.operations);
+      return obj;
     });
   }
 }

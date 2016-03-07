@@ -69,9 +69,13 @@ class Index extends Base
         /**
          * @var UploadedFile $file
          */
-        $file        = $request->files->get('file');
+        $file = $request->files->get('file');
         $splitLength = $request->request->getInt('splitLength', 0);
-        $lossless    = $request->request->get('lossless', false);
+        $lossless = $request->request->get('lossless', false);
+        $objectLabeling = $request->request->get('object-labeling', false);
+        $metaLabeling = $request->request->get('meta-labeling', false);
+        $pedestrian = $request->request->get('pedestrian', false);
+        $vehicle = $request->request->get('vehicle', false);
 
         if ($splitLength < 0) {
             throw new Exception\BadRequestHttpException();
@@ -84,7 +88,11 @@ class Index extends Base
                 $file->getClientOriginalName(),
                 $file,
                 $lossless,
-                $splitLength
+                $splitLength,
+                $objectLabeling,
+                $metaLabeling,
+                $vehicle,
+                $pedestrian
             );
 
             $viewData['taskIds'] = array_map(

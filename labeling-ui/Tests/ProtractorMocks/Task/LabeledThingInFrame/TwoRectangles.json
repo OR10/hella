@@ -52,12 +52,12 @@
                 "type": "rectangle",
                 "id": "316c43b0-c064-4c4e-8b3c-3e47c083a4f2",
                 "topLeft": {
-                  "x": 582,
-                  "y": 168
+                  "x": 100,
+                  "y": 100
                 },
                 "bottomRight": {
-                  "x": 762,
-                  "y": 398
+                  "x": 200,
+                  "y": 200
                 },
                 "labeledThingInFrameId": "19190294-16ad-4097-a796-68b35bb3e0a2"
               }
@@ -77,12 +77,12 @@
                 "type": "rectangle",
                 "id": "7ac12deb-08c7-4640-be5a-ac09fc23c731",
                 "topLeft": {
-                  "x": 210,
-                  "y": 188
+                  "x": 300,
+                  "y": 100
                 },
                 "bottomRight": {
-                  "x": 384,
-                  "y": 370
+                  "x": 400,
+                  "y": 200
                 },
                 "labeledThingInFrameId": "f520fe6a-8de9-40d9-be26-e4326d7463fd"
               }

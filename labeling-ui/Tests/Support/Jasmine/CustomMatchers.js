@@ -1,5 +1,5 @@
 beforeEach(function() {
   jasmine.addMatchers({
-    toEqualViewerData: require('./Matchers/EqualViewerData'),
+    toEqualDrawingStack: require('./Matchers/EqualDrawingStack'),
   });
 });

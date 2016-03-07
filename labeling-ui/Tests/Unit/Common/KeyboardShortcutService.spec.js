@@ -5,7 +5,7 @@ import {module, inject} from 'angular-mocks';
 
 import KeyboardShortcutService from 'Application/Common/Services/KeyboardShortcutService';
 
-fdescribe('KeyboardShortcutService', () => {
+describe('KeyboardShortcutService', () => {
   let keyboardShortcutService;
   let hotkeys;
 

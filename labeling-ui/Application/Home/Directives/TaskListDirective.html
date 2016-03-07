@@ -19,7 +19,12 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="task in vm.preprocessingTasks track by task.id">
-                    <td>{{task.taskType}}</td>
+                    <td>
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td>
                         {{task.video.name}}
                     </td>
@@ -49,7 +54,12 @@
                 <tbody>
                 <tr ng-repeat="task in vm.waitingTasks | myTasks:vm.user.id"
                     track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
@@ -67,7 +77,7 @@
                 <tr ng-show="!vm.waitingTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="3" class="no-tasks">No tasks</td>
+                    <td colspan="4" class="no-tasks">No tasks</td>
                 </tr>
                 </tbody>
             </table>
@@ -84,7 +94,12 @@
                 <tbody>
                 <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks | unassignedTasks"
                     track-by="task.id">
-                    <td>{{task.taskType}}</td>
+                    <td>
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td>
                         {{task.video.name}}
                     </td>
@@ -114,7 +129,12 @@
                 <tbody>
                 <tr ng-repeat="task in vm.waitingTasks | otherPeopleTasks:vm.user.id"
                     track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>
@@ -133,7 +153,7 @@
                 <tr ng-show="!vm.waitingTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="3" class="no-tasks">No tasks</td>
+                    <td colspan="5" class="no-tasks">No tasks</td>
                 </tr>
                 </tbody>
             </table>
@@ -151,7 +171,12 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="task in vm.labeledTasks track by task.id">
-                    <td ui-sref="^.task({taskId: task.id})">{{task.taskType}}</td>
+                    <td ui-sref="^.task({taskId: task.id})">
+                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        &nbsp;{{task.taskType}}
+                    </td>
                     <td ui-sref="^.task({taskId: task.id})">
                         {{task.video.name}}
                     </td>

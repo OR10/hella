@@ -134,7 +134,11 @@ class VideoImporterTest extends Tests\KernelTestCase
             'testVideo',
             $this->getTestVideoPath(),
             false,
-            $chunkSizeInSeconds
+            $chunkSizeInSeconds,
+            true,
+            true,
+            false,
+            true
         );
 
         // Currently, we expect on meta- and one object-labeling task per video.

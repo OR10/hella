@@ -58,18 +58,29 @@ class VideoImporter
     }
 
     /**
-     * @param string $name        The name for the video (usually the basename).
-     * @param string $path        The filesystem path to the video file.
-     * @param bool   $lossless    Wether or not the UI should use lossless compressed images.
-     * @param int    $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param string $name The name for the video (usually the basename).
+     * @param string $path The filesystem path to the video file.
+     * @param bool $lossless Wether or not the UI should use lossless compressed images.
+     * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
      *
+     * @param $isObjectLabeling
+     * @param $isMetaLabeling
+     * @param $isVehicleInstruction
+     * @param $isPedestrianInstruction
      * @return Model\LabelingTask[]
-     *
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
      */
-    public function import($name, $path, $lossless = false, $splitLength = 0)
-    {
+    public function import(
+        $name,
+        $path,
+        $lossless = false,
+        $splitLength = 0,
+        $isObjectLabeling,
+        $isMetaLabeling,
+        $isVehicleInstruction,
+        $isPedestrianInstruction
+    ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         $this->videoFacade->save($video, $path);
@@ -104,24 +115,40 @@ class VideoImporter
                 $startFrameNumber,
                 min($video->getMetaData()->numberOfFrames, $startFrameNumber + $framesPerChunk - 1)
             );
+            if ($isMetaLabeling) {
+                $tasks[] = $this->addTask(
+                    $video,
+                    $frameRange,
+                    Model\LabelingTask::TYPE_META_LABELING,
+                    null,
+                    [],
+                    $imageTypes,
+                    null
+                );
+            }
 
-            $tasks[] = $this->addTask(
-                $video,
-                $frameRange,
-                Model\LabelingTask::TYPE_META_LABELING,
-                null,
-                [],
-                $imageTypes
-            );
-
-            $tasks[] = $this->addTask(
-                $video,
-                $frameRange,
-                Model\LabelingTask::TYPE_OBJECT_LABELING,
-                Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
-                ['pedestrian'],
-                $imageTypes
-            );
+            if ($isObjectLabeling && $isPedestrianInstruction) {
+                $tasks[] = $this->addTask(
+                    $video,
+                    $frameRange,
+                    Model\LabelingTask::TYPE_OBJECT_LABELING,
+                    Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    ['pedestrian'],
+                    $imageTypes,
+                    Model\LabelingTask::INSTRUCTION_PEDESTRIAN
+                );
+            }
+            if ($isObjectLabeling && $isVehicleInstruction) {
+                $tasks[] = $this->addTask(
+                    $video,
+                    $frameRange,
+                    Model\LabelingTask::TYPE_OBJECT_LABELING,
+                    Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    ['pedestrian'],
+                    $imageTypes,
+                    Model\LabelingTask::INSTRUCTION_VEHICLE
+                );
+            }
         }
 
         return $tasks;
@@ -130,13 +157,13 @@ class VideoImporter
     /**
      * Add a LabelingTask
      *
-     * @param Model\Video      $video
+     * @param Model\Video $video
      * @param Model\FrameRange $frameRange
-     * @param string           $taskType
-     * @param string|null      $drawingTool
-     * @param string[]         $predefinedClasses
+     * @param string $taskType
+     * @param string|null $drawingTool
+     * @param string[] $predefinedClasses
      * @param                  $imageTypes
-     *
+     * @param $instruction
      * @return Model\LabelingTask
      */
     private function addTask(
@@ -145,7 +172,8 @@ class VideoImporter
         $taskType,
         $drawingTool,
         $predefinedClasses,
-        $imageTypes
+        $imageTypes,
+        $instruction
     ) {
         $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
@@ -161,6 +189,9 @@ class VideoImporter
             'How is the view on the person? ' .
             'Which side does one see from the person and from which side is the person entering the screen?'
         );
+        $labelingTask->setLabelStructure($this->getLabelStructureForTypeAndInstruction($taskType,$instruction));
+        $labelingTask->setLabelStructureUi($this->getLabelStructureUiForTypeAndInstruction($taskType,$instruction));
+        $labelingTask->setLabelInstruction($instruction);
         $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;
@@ -185,5 +216,52 @@ class VideoImporter
         }
 
         return ['sourceJpg', 'thumbnail'];
+    }
+
+    private function getLabelStructureForTypeAndInstruction($type, $instruction)
+    {
+        if ($type === Model\LabelingTask::TYPE_META_LABELING) {
+            $structure = file_get_contents(
+                sprintf(
+                    '%s/../Resources/LabelStructures/%s.json',
+                    __DIR__,
+                    $type
+                )
+            );
+        }else{
+            $structure = file_get_contents(
+                sprintf(
+                    '%s/../Resources/LabelStructures/%s-%s.json',
+                    __DIR__,
+                    $type,
+                    $instruction
+                )
+            );
+        }
+
+        return json_decode($structure, true);
+    }
+
+    private function getLabelStructureUiForTypeAndInstruction($type, $instruction)
+    {
+        if ($type === Model\LabelingTask::TYPE_META_LABELING) {
+            $structure = file_get_contents(
+                sprintf(
+                    '%s/../Resources/LabelStructures/%s-ui.json',
+                    __DIR__,
+                    $type
+                )
+            );
+        }else{
+            $structure = file_get_contents(
+                sprintf(
+                    '%s/../Resources/LabelStructures/%s-%s-ui.json',
+                    __DIR__,
+                    $type,
+                    $instruction
+                )
+            );
+        }
+        return json_decode($structure, true);
     }
 }
