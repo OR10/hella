@@ -1,0 +1,42 @@
+{
+  "request": {
+    "path": "/api/task/1c9a2622db2a5509fdb26c972a007a54/labeledThingInFrame/1/34614320-d737-4e71-84fe-58cf40b46441",
+    "method": "GET",
+    "queryString": {
+      "limit": "2",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "19190294-16ad-4097-a796-68b35bb3e0a2",
+          "rev": "1-46a5186d7e62a006d02c440d0a98c2e1",
+          "frameNumber": 1,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "rectangle",
+              "id": "316c43b0-c064-4c4e-8b3c-3e47c083a4f2",
+              "topLeft": {
+                "x": 100,
+                "y": 100
+              },
+              "bottomRight": {
+                "x": 200,
+                "y": 200
+              },
+              "labeledThingInFrameId": "19190294-16ad-4097-a796-68b35bb3e0a2"
+            }
+          ],
+          "labeledThingId": "34614320-d737-4e71-84fe-58cf40b46441",
+          "incomplete": true,
+          "ghost": false
+        }
+      ]
+    }
+  }
+}
+
