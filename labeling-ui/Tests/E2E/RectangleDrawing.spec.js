@@ -20,6 +20,7 @@ const twoRectanglesLabeledThingsPreloadingMock = require('../ProtractorMocks/Tas
 const labeledFrameMock = require('../ProtractorMocks/Task/LabeledFrame.json');
 const rectangleSelected = require('../ProtractorMocks/Task/LabeledThingInFrame/RectangleSelected.json');
 const movedRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/MovedRectangle.json');
+const resizeRectangleMock = require('../ProtractorMocks/Task/LabeledThingInFrame/ResizeRectangle.json');
 
 const loadOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/LoadOneRectangle.json');
 const loadTwoRectanglesExpectation = require('../Fixtures/CanvasInstructionLogs/LoadTwoRectangles.json');
@@ -27,6 +28,7 @@ const selectOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs
 const selectAndDeselectRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAndDeselectRectangle.json');
 const selectAnOtherRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/SelectAnOtherRectangle.json');
 const moveOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/MoveOneRectangle.json');
+const resizeOneRectangleExpectation = require('../Fixtures/CanvasInstructionLogs/ResizeOneRectangle.json');
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
@@ -183,7 +185,7 @@ describe('Rectangle drawing', () => {
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
       expect(selectAnOtherRectangleExpectation).toEqualDrawingStack(drawingStack);
       done();
-    })
+    });
   });
 
 
@@ -226,6 +228,49 @@ describe('Rectangle drawing', () => {
       getMockRequestsMade(mock).then(requests => {
 
         expect(requests).toContain(movedRectangleMock.request);
+        done();
+      });
+    });
+  });
+
+  it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
+    mock([
+      taskDataMock,
+      videoDataMock,
+      sourceFrameLocationsMock,
+      sourceJpgFrameLocationsMock,
+      sourceJpg2FrameLocationsMock,
+      thumbnailFrameLocationsMock,
+      labelStructureMock,
+      labeledThingIncompleteCountMock,
+      timerMock,
+      saveTimerMock,
+      labeledFrameMock,
+      rectangleSelected,
+
+      twoRectanglesLabeledThingsMock,
+      twoRectanglesLabeledThingsPreloadingMock,
+      resizeRectangleMock
+    ]);
+
+    browser.get('/labeling/task/0115bd97fa0c1d86f8d1f65ff4095ed8');
+
+    const viewer = element(by.css('.layer-container'));
+
+    browser.actions()
+      .mouseMove(viewer, {x: 176, y: 176}) // bottom right drag handle
+      .mouseDown()
+      .mouseMove(viewer, {x: 200, y: 200}) // drag
+      .mouseUp()
+      .perform();
+
+
+    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
+      expect(resizeOneRectangleExpectation).toEqualDrawingStack(drawingStack);
+      browser.sleep(1000);
+      getMockRequestsMade(mock).then(requests => {
+
+        expect(requests).toContain(resizeRectangleMock.request);
         done();
       });
     });
