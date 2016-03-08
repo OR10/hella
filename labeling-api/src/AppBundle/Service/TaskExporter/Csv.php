@@ -213,8 +213,8 @@ class Csv implements Service\TaskExporter
         switch ($shape->getType()) {
             case 'rectangle':
                 return array(
-                    'x' => round($shape->getLeft()),
-                    'y' => round($shape->getTop()),
+                    'x' => (int)round($shape->getLeft()),
+                    'y' => (int)round($shape->getTop()),
                 );
                 break;
             default:
@@ -245,8 +245,8 @@ class Csv implements Service\TaskExporter
         switch ($shape->getType()) {
             case 'rectangle':
                 return array(
-                    'width'  => round($shape->getWidth()),
-                    'height' => round($shape->getHeight()),
+                    'width'  => (int)round($shape->getWidth()),
+                    'height' => (int)round($shape->getHeight()),
                 );
                 break;
             default:
