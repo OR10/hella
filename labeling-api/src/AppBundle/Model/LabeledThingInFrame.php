@@ -324,10 +324,17 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param null $ghostClasses
+     * @param null|string[] $ghostClasses
      */
     public function setGhostClasses($ghostClasses)
     {
         $this->ghostClasses = $ghostClasses;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getGhostClasses() {
+        return $this->ghostClasses;
     }
 }

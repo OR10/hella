@@ -45,7 +45,6 @@ class GhostClassesPropagation
 
         $propagatedClassesCache = array();
 
-        $resultSet = array();
         foreach ($workingCopy as $labeledThingInFrame) {
             if (!empty($labeledThingInFrame->getClasses())) {
                 // No ghost class look behind needed. LabeledThingInFrame is complete
@@ -55,7 +54,6 @@ class GhostClassesPropagation
             }
 
             // No classes set. Need to check for ghostClasses
-
             if (!array_key_exists($labeledThingInFrame->getLabeledThingId(), $propagatedClassesCache)) {
                 $previousLabeledThingInFrameWithClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
                     $labeledThingInFrame
@@ -70,8 +68,7 @@ class GhostClassesPropagation
                 }
 
                 // We found a previous LabeledThingInFrame with classes. The cache needs to be filled
-                $propagatedClassesCache[$labeledThingInFrame->getLabeledThingId(
-                )] = $previousLabeledThingInFrameWithClasses->getClasses();
+                $propagatedClassesCache[$labeledThingInFrame->getLabeledThingId()] = $previousLabeledThingInFrameWithClasses->getClasses();
             }
 
             // Update the ghost classes for this LabeledThingInFrame with data from the cache, which is correctly filled
@@ -106,7 +103,7 @@ class GhostClassesPropagation
      *
      * @param Model\LabeledThingInFrame[] $labeledThingsInFrame
      */
-    private function sortLabeledThingsInFrameByFrame(array $labeledThingsInFrame)
+    private function sortLabeledThingsInFrameByFrame(array &$labeledThingsInFrame)
     {
         usort(
             $labeledThingsInFrame,
