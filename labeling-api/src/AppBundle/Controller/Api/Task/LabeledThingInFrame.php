@@ -38,18 +38,26 @@ class LabeledThingInFrame extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\LabeledThing        $labeledThingFacade
-     * @param Facade\LabelingTask        $labelingTaskFacade
+     * @var Service\GhostClassesPropagation
+     */
+    private $ghostClassesPropagationService;
+
+    /**
+     * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
+     * @param Facade\LabeledThing             $labeledThingFacade
+     * @param Facade\LabelingTask             $labelingTaskFacade
+     * @param Service\GhostClassesPropagation $ghostClassesPropagationService
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabelingTask $labelingTaskFacade
+        Facade\LabelingTask $labelingTaskFacade,
+        Service\GhostClassesPropagation $ghostClassesPropagationService
     ) {
-        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->labeledThingFacade        = $labeledThingFacade;
-        $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
+        $this->labeledThingFacade             = $labeledThingFacade;
+        $this->labelingTaskFacade             = $labelingTaskFacade;
+        $this->ghostClassesPropagationService = $ghostClassesPropagationService;
     }
 
     /**
@@ -109,7 +117,7 @@ class LabeledThingInFrame extends Controller\Base
 
         if ($request->query->get('incompleteOnly', false) === 'true') {
             $labeledThingInFrame = $this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame($task, $limit);
-        }else {
+        } else {
             $labeledThingInFrame = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task, $limit);
         }
 
@@ -149,14 +157,14 @@ class LabeledThingInFrame extends Controller\Base
             $endFrameNumber
         );
 
-
         if ($fetchLabeledThings) {
             $labeledThingIds = array_reduce(
                 $labeledThingsInFrame,
-                function($labeledThingIds, $labeledThingInFrame) {
+                function ($labeledThingIds, $labeledThingInFrame) {
                     if (!in_array($labeledThingInFrame->getLabeledThingId(), $labeledThingIds)) {
                         $labeledThingIds[] = $labeledThingInFrame->getLabeledThingId();
                     }
+
                     return $labeledThingIds;
                 },
                 []
@@ -169,39 +177,18 @@ class LabeledThingInFrame extends Controller\Base
             }
         }
 
-        usort($labeledThingsInFrame, function($a, $b) {
-            if ($a->getFrameNumber() === $b->getFrameNumber()) {
-                return 0;
-            }
+        $labeledThingsInFrameWithGhostClasses = $this->ghostClassesPropagationService->propagateGhostClasses(
+            $labeledThingsInFrame
+        );
 
-            return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
-        });
-
-        $lastClassesForLabeledThing = array();
-        $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastClassesForLabeledThing) {
-            if (empty($labeledThingInFrame->getClasses())) {
-                if (!array_key_exists($labeledThingInFrame->getLabeledThingId(), $lastClassesForLabeledThing)) {
-                    $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
-                    if ($previousClasses instanceof Model\LabeledThingInFrame) {
-                        $lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()] = $previousClasses->getClasses();
-                    }else{
-                        $lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()] = null;
-                    }
-                }
-
-                $labeledThingInFrame->setGhostClasses($lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()]);
-            }else{
-                $lastClassesForLabeledThing[$labeledThingInFrame->getLabeledThingId()] = $labeledThingInFrame;
-            }
-            return $labeledThingInFrame;
-        }, $labeledThingsInFrame);
-
-        return View\View::create()->setData([
-            'result' => [
-                'labeledThings' => $labeledThings,
-                'labeledThingsInFrame' => $labeledThingsInFrame,
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'labeledThings'        => $labeledThings,
+                    'labeledThingsInFrame' => $labeledThingsInFrameWithGhostClasses,
+                ],
             ]
-        ]);
+        );
     }
 
     /**
@@ -215,7 +202,7 @@ class LabeledThingInFrame extends Controller\Base
      * @Rest\Get("/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThing}")
      *
      * @param string                 $taskId
-     * @param                        $frameNumber
+     * @param int                    $frameNumber
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
      *
@@ -238,48 +225,36 @@ class LabeledThingInFrame extends Controller\Base
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
         $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
 
+        $labeledThingsInFrameWithinRangeWithGhosts = array();
         if ($includeGhosts) {
-            $result = $this->createLabeledThingInFrameGhosts($labeledThingsInFrame, $expectedFrameNumbers);
-        } else {
-            $result = array_filter(
+            $labeledThingsInFrameWithinRangeWithGhosts = $this->createLabeledThingInFrameGhosts(
                 $labeledThingsInFrame,
-                function($labeledThingInFrame) use ($expectedFrameNumbers) {
+                $expectedFrameNumbers
+            );
+        } else {
+            $labeledThingsInFrameWithinRangeWithGhosts = array_filter(
+                $labeledThingsInFrame,
+                function ($labeledThingInFrame) use ($expectedFrameNumbers) {
                     return in_array($labeledThingInFrame->getFrameNumber(), $expectedFrameNumbers);
                 }
             );
         }
 
-        usort($labeledThingsInFrame, function($a, $b) {
-            if ($a->getFrameNumber() === $b->getFrameNumber()) {
-                return 0;
-            }
+        // @TODO: May be optimized as we already fetched a list of all LabeledThingsInFrame before
+        //        Therefore a refetch of the one needed for ghost class calculation is not really needed here
+        $labeledThingsInFrameWithinRangeWithGhostsAndGhostClasses = $this->ghostClassesPropagationService->propagateGhostClasses(
+            $labeledThingsInFrameWithinRangeWithGhosts
+        );
 
-            return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
-        });
-
-
-        $lastClassesForLabeledThing = false;
-        $labeledThingsInFrame = array_map(function($labeledThingInFrame) use (&$lastClassesForLabeledThing) {
-            if (empty($labeledThingInFrame->getClasses())) {
-                if ($lastClassesForLabeledThing === false) {
-                    $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
-                    if ($previousClasses instanceof Model\LabeledThingInFrame) {
-                        $lastClassesForLabeledThing = $previousClasses->getClasses();
-                    }else{
-                        $lastClassesForLabeledThing = null;
-                    }
-                }
-
-                $labeledThingInFrame->setGhostClasses($lastClassesForLabeledThing);
-            }else{
-                $lastClassesForLabeledThing = $labeledThingInFrame->getClasses();
-            }
-            return $labeledThingInFrame;
-        }, $labeledThingsInFrame);
-
-        return View\View::create()->setData(['result' => $result]);
+        return View\View::create()->setData(['result' => $labeledThingsInFrameWithinRangeWithGhostsAndGhostClasses]);
     }
 
+    /**
+     * @param Model\LabeledThingInFrame[] $labeledThingsInFrame
+     * @param int[]                       $expectedFrameNumbers
+     *
+     * @return Model\LabeledThingInFrame[]
+     */
     private function createLabeledThingInFrameGhosts(array $labeledThingsInFrame, array $expectedFrameNumbers)
     {
         $labeledThingsInFrame = array_reverse($labeledThingsInFrame);
@@ -310,7 +285,6 @@ class LabeledThingInFrame extends Controller\Base
                         $ghostLabeledThingInFrame->setGhost(true);
                         $ghostLabeledThingInFrame->setGhostClasses($ghostLabeledThingInFrame->getClasses());
                         $ghostLabeledThingInFrame->setClasses(array());
-
 
                         return $ghostLabeledThingInFrame;
                     }

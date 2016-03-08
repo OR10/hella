@@ -105,5 +105,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
         </service>
+
+        <service id="annostation.labeling_api.service.ghost_classes_propagation" class="AppBundle\Service\GhostClassesPropagation">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+        </service>
     </services>
 </container>
