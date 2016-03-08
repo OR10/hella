@@ -101,21 +101,26 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param int $toFrameNumber
+     * @param int|null $toFrameNumber
      *
      * @return LabeledThingInFrame
      */
-    public function copy($toFrameNumber)
+    public function copy($toFrameNumber = null)
     {
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
         $copy->taskId         = $this->taskId;
         $copy->labeledThingId = $this->labeledThingId;
-        $copy->frameNumber    = (int) $toFrameNumber;
         $copy->classes        = $this->classes;
         $copy->shapes         = $this->shapes;
         $copy->incomplete     = $this->incomplete;
         $copy->ghost          = $this->ghost;
+
+        if ($toFrameNumber === null) {
+            $copy->frameNumber = $this->frameNumber;
+        } else {
+            $copy->frameNumber = (int) $toFrameNumber;
+        }
 
         return $copy;
     }
@@ -275,14 +280,14 @@ class LabeledThingInFrame
     /**
      * Set an array of shapes as objects.
      *
-     * @param Shape[]
+     * @param Shape []
      *
      * @return LabeledThingInFrame
      */
     public function setShapesAsObjects(array $shapes)
     {
         $this->shapes = array_map(
-            function($shape) {
+            function ($shape) {
                 return $shape->toArray();
             },
             $shapes
@@ -302,10 +307,11 @@ class LabeledThingInFrame
 
         return array_reduce(
             $this->getShapesAsObjects(),
-            function(Shapes\BoundingBox $boundingBox = null, Shape $shape) {
+            function (Shapes\BoundingBox $boundingBox = null, Shape $shape) {
                 if ($boundingBox === null) {
                     return $shape->getBoundingBox();
                 }
+
                 return $boundingBox->merge($shape->getBoundingBox());
             }
         );
