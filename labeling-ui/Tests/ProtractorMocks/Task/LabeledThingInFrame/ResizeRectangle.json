@@ -14,11 +14,11 @@
           "id": "316c43b0-c064-4c4e-8b3c-3e47c083a4f2",
           "topLeft": {
             "x": 100,
-            "y": 123
+            "y": 100
           },
           "bottomRight": {
-            "x": 200,
-            "y": 223
+            "x": 228,
+            "y": 228
           },
           "labeledThingInFrameId": "19190294-16ad-4097-a796-68b35bb3e0a2"
         }
@@ -57,11 +57,11 @@
               "id": "316c43b0-c064-4c4e-8b3c-3e47c083a4f2",
               "topLeft": {
                 "x": 100,
-                "y": 123
+                "y": 100
               },
               "bottomRight": {
-                "x": 200,
-                "y": 223
+                "x": 228,
+                "y": 228
               },
               "labeledThingInFrameId": "19190294-16ad-4097-a796-68b35bb3e0a2"
             }

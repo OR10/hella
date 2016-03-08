@@ -111,6 +111,22 @@ class Rectangle extends Model\Shape
     /**
      * @return float
      */
+    public function getWidth()
+    {
+        return $this->right - $this->left;
+    }
+
+    /**
+     * @return float
+     */
+    public function getHeight()
+    {
+        return $this->bottom - $this->top;
+    }
+
+    /**
+     * @return float
+     */
     public function getBottom()
     {
         return $this->bottom;

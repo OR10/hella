@@ -71,6 +71,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
         </service>
 
+        <service id="annostation.labeling_api.service.task_exporter.csv" class="AppBundle\Service\TaskExporter\Csv">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
+        </service>
+
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger" />
 
         <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">

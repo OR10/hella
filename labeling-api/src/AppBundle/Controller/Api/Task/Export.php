@@ -94,6 +94,22 @@ class Export extends Controller\Base
     }
 
     /**
+     * @Rest\Post("/{task}/export/csv")
+     *
+     * @param Model\LabelingTask $task
+     *
+     * @return HttpFoundation\Response
+     */
+    public function getCsvExportAction(Model\LabelingTask $task)
+    {
+        $this->amqpFacade->addJob(new Jobs\CsvExporter($task->getId()));
+
+        return View\View::create()
+            ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
+            ->setData(['message' => 'Export started']);
+    }
+
+    /**
      * @Rest\Post("/{task}/export/kitti")
      *
      * @param Model\LabelingTask $task
