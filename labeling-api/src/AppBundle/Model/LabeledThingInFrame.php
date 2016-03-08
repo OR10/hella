@@ -102,10 +102,11 @@ class LabeledThingInFrame
 
     /**
      * @param int|null $toFrameNumber
+     * @param bool     $cloneIdAndRevision
      *
      * @return LabeledThingInFrame
      */
-    public function copy($toFrameNumber = null)
+    public function copy($toFrameNumber = null, $cloneIdAndRevision = false)
     {
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
@@ -120,6 +121,11 @@ class LabeledThingInFrame
             $copy->frameNumber = $this->frameNumber;
         } else {
             $copy->frameNumber = (int) $toFrameNumber;
+        }
+
+        if ($cloneIdAndRevision === true) {
+            $copy->id = $this->id;
+            $copy->rev = $this->rev;
         }
 
         return $copy;
