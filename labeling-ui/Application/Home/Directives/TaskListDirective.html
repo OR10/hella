@@ -34,7 +34,7 @@
                 <tr ng-show="!vm.preprocessingTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="3" class="no-tasks">No tasks</td>
+                    <td colspan="3" class="no-tasks">No are being processed right now.</td>
                 </tr>
                 </tbody>
             </table>
@@ -51,7 +51,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in vm.waitingTasks | myTasks:vm.user.id"
+                <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id)"
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
@@ -73,10 +73,10 @@
                         </button>
                     </td>
                 </tr>
-                <tr ng-show="!vm.waitingTasks.length"
+                <tr ng-show="!myTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="4" class="no-tasks">No tasks</td>
+                    <td colspan="4" class="no-tasks">No tasks assigned to you.</td>
                 </tr>
                 </tbody>
             </table>
@@ -91,7 +91,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in vm.waitingTasks | unassignedTasks"
+                <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks)"
                     track-by="task.id">
                     <td>
                         <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
@@ -106,10 +106,10 @@
                         {{task.frameRange.startFrameNumber}}-{{task.frameRange.endFrameNumber}}
                     </td>
                 </tr>
-                <tr ng-show="!vm.waitingTasks.length"
+                <tr ng-show="!unassignedTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="3" class="no-tasks">No tasks</td>
+                    <td colspan="3" class="no-tasks">No unassigned Tasks.</td>
                 </tr>
                 </tbody>
             </table>
@@ -126,7 +126,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in vm.waitingTasks | otherPeopleTasks:vm.user.id"
+                <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id)"
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
@@ -149,10 +149,10 @@
                         </button>
                     </td>
                 </tr>
-                <tr ng-show="!vm.waitingTasks.length"
+                <tr ng-show="!otherPeoplesTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="5" class="no-tasks">No tasks</td>
+                    <td colspan="5" class="no-tasks">No tasks assigned to others.</td>
                 </tr>
                 </tbody>
             </table>
@@ -201,7 +201,7 @@
                 <tr ng-show="!vm.labeledTasks.length"
                     class="no-hover"
                 >
-                    <td colspan="4" class="no-tasks">No tasks</td>
+                    <td colspan="4" class="no-tasks">No finished tasks.</td>
                 </tr>
                 </tbody>
             </table>
