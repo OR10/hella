@@ -93,7 +93,7 @@ class GhostClassesPropagation
     {
         $clones = array();
         foreach ($labeledThingsInFrame as $labeledThingInFrame) {
-            $clones[] = $labeledThingInFrame->copy();
+            $clones[] = $labeledThingInFrame->copy(null, true);
         }
 
         return $clones;
