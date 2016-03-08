@@ -28,6 +28,10 @@ table.table {
           background: darken($icon-hover, 10%);
           color: $element-background;
 
+          a {
+            color: $element-background;
+          }
+
           .icon, .fa {
             color: $element-background;
           }

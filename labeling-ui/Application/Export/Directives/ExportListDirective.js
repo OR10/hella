@@ -15,7 +15,7 @@ class ExportListDirective {
     this.bindToController = true;
 
     this.scope = {
-      task: '=',
+      exports: '=',
     };
   }
 }
