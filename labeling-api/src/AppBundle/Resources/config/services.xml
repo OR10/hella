@@ -72,6 +72,7 @@
         </service>
 
         <service id="annostation.labeling_api.service.task_exporter.csv" class="AppBundle\Service\TaskExporter\Csv">
+            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
         </service>
