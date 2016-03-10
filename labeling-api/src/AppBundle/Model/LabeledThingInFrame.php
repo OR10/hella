@@ -101,21 +101,32 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param int $toFrameNumber
+     * @param int|null $toFrameNumber
+     * @param bool     $cloneIdAndRevision
      *
      * @return LabeledThingInFrame
      */
-    public function copy($toFrameNumber)
+    public function copy($toFrameNumber = null, $cloneIdAndRevision = false)
     {
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
         $copy->taskId         = $this->taskId;
         $copy->labeledThingId = $this->labeledThingId;
-        $copy->frameNumber    = (int) $toFrameNumber;
         $copy->classes        = $this->classes;
         $copy->shapes         = $this->shapes;
         $copy->incomplete     = $this->incomplete;
         $copy->ghost          = $this->ghost;
+
+        if ($toFrameNumber === null) {
+            $copy->frameNumber = $this->frameNumber;
+        } else {
+            $copy->frameNumber = (int) $toFrameNumber;
+        }
+
+        if ($cloneIdAndRevision === true) {
+            $copy->id = $this->id;
+            $copy->rev = $this->rev;
+        }
 
         return $copy;
     }
@@ -275,14 +286,14 @@ class LabeledThingInFrame
     /**
      * Set an array of shapes as objects.
      *
-     * @param Shape[]
+     * @param Shape []
      *
      * @return LabeledThingInFrame
      */
     public function setShapesAsObjects(array $shapes)
     {
         $this->shapes = array_map(
-            function($shape) {
+            function ($shape) {
                 return $shape->toArray();
             },
             $shapes
@@ -302,20 +313,28 @@ class LabeledThingInFrame
 
         return array_reduce(
             $this->getShapesAsObjects(),
-            function(Shapes\BoundingBox $boundingBox = null, Shape $shape) {
+            function (Shapes\BoundingBox $boundingBox = null, Shape $shape) {
                 if ($boundingBox === null) {
                     return $shape->getBoundingBox();
                 }
+
                 return $boundingBox->merge($shape->getBoundingBox());
             }
         );
     }
 
     /**
-     * @param null $ghostClasses
+     * @param null|string[] $ghostClasses
      */
     public function setGhostClasses($ghostClasses)
     {
         $this->ghostClasses = $ghostClasses;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getGhostClasses() {
+        return $this->ghostClasses;
     }
 }

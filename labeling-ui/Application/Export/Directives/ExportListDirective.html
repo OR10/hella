@@ -1,26 +1,28 @@
-<div class="grid-block text-center vertical">
+<div class="grid-block text-center vertical container">
 
-    <div class="grid-container menubar">
-        <div class="grid-content">
-            <div ng-if="vm.exports === null">Loading Exports...</div>
-            <div ng-if="vm.exports.length === 0">No Exports available!</div>
-        </div>
-    </div>
-
+    <h2>Available Exports</h2>
     <div class="grid-container" ng-if="vm.exports.length > 0">
-        <div class="grid-content task-list-table">
+        <div class="grid-content">
             <table class="table hover">
                 <thead>
                 <tr>
                     <th>Filename</th>
+                    <th>Id</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="export in vm.exports">
+                <tr ng-show="vm.exports.length" ng-repeat="export in vm.exports track by export.id">
                     <td>
-                        <a href="" ng-href="{{vm.downloadUrl(export.taskId, export.id)}}">
-                            {{export.filename}} -{{export.id}}</a>
+                       <a ng-href="{{vm.downloadUrl(export.taskId, export.id)}}">{{export.filename}}</a>
                     </td>
+                    <td>
+                        <a ng-href="{{vm.downloadUrl(export.taskId, export.id)}}">{{export.id}}</a>
+                    </td>
+                </tr>
+                <tr ng-show="!vm.exports.length"
+                    class="no-hover"
+                >
+                    <td colspan="2" class="no-tasks">No Exports avaialble.</td>
                 </tr>
                 </tbody>
             </table>

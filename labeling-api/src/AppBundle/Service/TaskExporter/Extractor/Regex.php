@@ -20,7 +20,15 @@ class Regex
 
     public function extract(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        foreach($labeledThingInFrame->getClasses() as $class) {
+        $classesToExtract = array();
+
+        if ($labeledThingInFrame->getGhostClasses() !== null) {
+            $classesToExtract = $labeledThingInFrame->getGhostClasses();
+        } else {
+            $classesToExtract = $labeledThingInFrame->getClasses();
+        }
+
+        foreach($classesToExtract as $class) {
             preg_match($this->regexPattern, $class, $matches);
             if (isset($matches[$this->groupName])) {
                 return $matches[$this->groupName];

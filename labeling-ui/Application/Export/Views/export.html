@@ -6,10 +6,11 @@
                show-username="true"
                show-logout-button="true"
     >
-        <a class="header-button" ng-click="vm.handleStartKittiExportClicked()">Start new Kitti Export</a>
-        <a class="header-button" ng-show="vm.task.labelInstruction === 'vehicle'" ng-click="vm.handleStartCsvExportClicked()">Start new Csv Export</a>
+        <a class="header-button" ng-click="vm.startExport('kitti')">Start new Kitti Export</a>
+        <a class="header-button" ng-show="vm.task.labelInstruction === 'vehicle'" ng-click="vm.startExport('csv')">Start new Csv Export</a>
     </title-bar>
 
-    <exportlist task="vm.task"/>
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <exportlist exports="vm.exports" />
 
 </div>
