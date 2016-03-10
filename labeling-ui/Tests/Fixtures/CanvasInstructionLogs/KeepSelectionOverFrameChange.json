@@ -1,0 +1,2177 @@
+{
+  "width": 900,
+  "operations": [
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        301,
+        151
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        481,
+        291.625
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        481,
+        291.625
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        240,
+        145.3125
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        481,
+        291.625
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.46875,
+        0,
+        0,
+        0.46875,
+        240,
+        145.3125
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        481,
+        291.625
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.46875,
+        0,
+        0,
+        0.46875,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        481,
+        291.625
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.46875,
+        0,
+        0,
+        0.46875,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        721,
+        436.9375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.46875,
+        0,
+        0,
+        0.46875,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        721,
+        436.9375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.46875,
+        0,
+        0,
+        0.46875,
+        360,
+        217.96875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        721,
+        436.9375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.703125,
+        0,
+        0,
+        0.703125,
+        360,
+        217.96875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        721,
+        436.9375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.703125,
+        0,
+        0,
+        0.703125,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        721,
+        436.9375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.703125,
+        0,
+        0,
+        0.703125,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        841,
+        509.59375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.703125,
+        0,
+        0,
+        0.703125,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        841,
+        509.59375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.703125,
+        0,
+        0,
+        0.703125,
+        420,
+        254.296875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        841,
+        509.59375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.8203125,
+        0,
+        0,
+        0.8203125,
+        420,
+        254.296875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        841,
+        509.59375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.8203125,
+        0,
+        0,
+        0.8203125,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        841,
+        509.59375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.8203125,
+        0,
+        0,
+        0.8203125,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.8203125,
+        0,
+        0,
+        0.8203125,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.8203125,
+        0,
+        0,
+        0.8203125,
+        450,
+        272.4609375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        450,
+        272.4609375
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "setTransform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "translate",
+      "arguments": [
+        0,
+        0
+      ]
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        87.890625,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        87.890625,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        175.78125,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        175.78125,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        87.890625,
+        175.78125
+      ]
+    },
+    {
+      "method": "closePath",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgb(237,166,212)"
+    },
+    {
+      "attr": "lineWidth",
+      "val": 2
+    },
+    {
+      "attr": "lineJoin",
+      "val": "miter"
+    },
+    {
+      "attr": "lineCap",
+      "val": "butt"
+    },
+    {
+      "attr": "miterLimit",
+      "val": 10
+    },
+    {
+      "method": "fill",
+      "arguments": [
+        "nonzero"
+      ]
+    },
+    {
+      "attr": "shadowColor",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "setTransform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "translate",
+      "arguments": [
+        0,
+        0
+      ]
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        87.890625,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        87.890625,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        175.78125,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        175.78125,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        87.890625,
+        175.78125
+      ]
+    },
+    {
+      "method": "closePath",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgb(237,166,212)"
+    },
+    {
+      "attr": "lineWidth",
+      "val": 2
+    },
+    {
+      "attr": "lineJoin",
+      "val": "miter"
+    },
+    {
+      "attr": "lineCap",
+      "val": "butt"
+    },
+    {
+      "attr": "miterLimit",
+      "val": 10
+    },
+    {
+      "method": "setLineDash",
+      "arguments": [
+        [
+          6,
+          2
+        ]
+      ]
+    },
+    {
+      "attr": "lineDashOffset",
+      "val": 0
+    },
+    {
+      "method": "fill",
+      "arguments": [
+        "nonzero"
+      ]
+    },
+    {
+      "attr": "shadowColor",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        87.890625,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        87.890625,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        175.78125,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        175.78125,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        87.890625,
+        175.78125
+      ]
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        83.890625,
+        171.78125,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        84.890625,
+        172.78125,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        83.890625,
+        83.890625,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        84.890625,
+        84.890625,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        171.78125,
+        83.890625,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        172.78125,
+        84.890625,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        171.78125,
+        171.78125,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        172.78125,
+        172.78125,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "setTransform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "translate",
+      "arguments": [
+        0,
+        0
+      ]
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        96.6796875,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        96.6796875,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        184.5703125,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        184.5703125,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        96.6796875,
+        175.78125
+      ]
+    },
+    {
+      "method": "closePath",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgb(237,166,212)"
+    },
+    {
+      "attr": "lineWidth",
+      "val": 2
+    },
+    {
+      "attr": "lineJoin",
+      "val": "miter"
+    },
+    {
+      "attr": "lineCap",
+      "val": "butt"
+    },
+    {
+      "attr": "miterLimit",
+      "val": 10
+    },
+    {
+      "method": "fill",
+      "arguments": [
+        "nonzero"
+      ]
+    },
+    {
+      "attr": "shadowColor",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        901,
+        545.921875
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        0.87890625,
+        0,
+        0,
+        0.87890625,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "setTransform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "translate",
+      "arguments": [
+        0,
+        0
+      ]
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        96.6796875,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        96.6796875,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        184.5703125,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        184.5703125,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        96.6796875,
+        175.78125
+      ]
+    },
+    {
+      "method": "closePath",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgb(237,166,212)"
+    },
+    {
+      "attr": "lineWidth",
+      "val": 2
+    },
+    {
+      "attr": "lineJoin",
+      "val": "miter"
+    },
+    {
+      "attr": "lineCap",
+      "val": "butt"
+    },
+    {
+      "attr": "miterLimit",
+      "val": 10
+    },
+    {
+      "method": "setLineDash",
+      "arguments": [
+        [
+          6,
+          2
+        ]
+      ]
+    },
+    {
+      "attr": "lineDashOffset",
+      "val": 0
+    },
+    {
+      "method": "fill",
+      "arguments": [
+        "nonzero"
+      ]
+    },
+    {
+      "attr": "shadowColor",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "attr": "strokeStyle",
+      "val": "rgba(0,0,0,0)"
+    },
+    {
+      "method": "beginPath",
+      "arguments": []
+    },
+    {
+      "method": "moveTo",
+      "arguments": [
+        96.6796875,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        96.6796875,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        184.5703125,
+        87.890625
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        184.5703125,
+        175.78125
+      ]
+    },
+    {
+      "method": "lineTo",
+      "arguments": [
+        96.6796875,
+        175.78125
+      ]
+    },
+    {
+      "method": "stroke",
+      "arguments": []
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        92.6796875,
+        171.78125,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        93.6796875,
+        172.78125,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        92.6796875,
+        83.890625,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        93.6796875,
+        84.890625,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        180.5703125,
+        83.890625,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        181.5703125,
+        84.890625,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        180.5703125,
+        171.78125,
+        8,
+        8
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "#ffffff"
+    },
+    {
+      "method": "fillRect",
+      "arguments": [
+        181.5703125,
+        172.78125,
+        6,
+        6
+      ]
+    },
+    {
+      "attr": "fillStyle",
+      "val": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    }
+  ],
+  "height": 544
+}

@@ -1,12 +1,12 @@
 {
   "request": {
-    "path": "/api/task/1c9a2622db2a5509fdb26c972a007a54/timer/3",
+    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/timer/1",
     "method": "GET"
   },
   "response": {
     "data": {
       "result": {
-        "time": 3380
+        "time": 0
       }
     }
   }

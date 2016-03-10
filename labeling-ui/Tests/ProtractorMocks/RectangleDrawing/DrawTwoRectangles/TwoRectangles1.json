@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/1c9a2622db2a5509fdb26c972a007a54/labeledThingInFrame/1",
+    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/labeledThingInFrame/1",
     "method": "GET",
     "queryString": {
       "limit": "1",
@@ -11,9 +11,9 @@
     "data": {
       "result": {
         "labeledThings": {
-          "34614320-d737-4e71-84fe-58cf40b46441": {
-            "id": "34614320-d737-4e71-84fe-58cf40b46441",
-            "rev": "1-7275ec7e205ea63a11b30c614b8f08e1",
+          "38024ab8-c6bc-4363-a634-8802aa2626c8": {
+            "id": "38024ab8-c6bc-4363-a634-8802aa2626c8",
+            "rev": "1-591ab5fd97dad30e60633f0f12d71c81",
             "frameRange": {
               "startFrameNumber": 1,
               "endFrameNumber": 1
@@ -21,36 +21,36 @@
             "classes": [
               "pedestrian"
             ],
-            "taskId": "1c9a2622db2a5509fdb26c972a007a54",
-            "incomplete": true,
-            "lineColor": "6"
-          },
-          "1423da1e-fd93-4f48-a803-22ae44abeb50": {
-            "id": "1423da1e-fd93-4f48-a803-22ae44abeb50",
-            "rev": "1-b718aa8fee80c6900e9978f30cf55220",
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
-            },
-            "classes": [
-              "pedestrian"
-            ],
-            "taskId": "1c9a2622db2a5509fdb26c972a007a54",
+            "taskId": "FEDCBA9876543210-TaskId-FEDCBA9876543210",
             "incomplete": true,
             "lineColor": "5"
+          },
+          "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045": {
+            "id": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 1
+            },
+            "classes": [
+              "pedestrian"
+            ],
+            "taskId": "FEDCBA9876543210-TaskId-FEDCBA9876543210",
+            "incomplete": true,
+            "lineColor": "6"
           }
         },
         "labeledThingsInFrame": [
           {
-            "id": "19190294-16ad-4097-a796-68b35bb3e0a2",
-            "rev": "1-46a5186d7e62a006d02c440d0a98c2e1",
+            "id": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
             "frameNumber": 1,
             "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "316c43b0-c064-4c4e-8b3c-3e47c083a4f2",
+                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
                 "topLeft": {
                   "x": 100,
                   "y": 100
@@ -59,23 +59,24 @@
                   "x": 200,
                   "y": 200
                 },
-                "labeledThingInFrameId": "19190294-16ad-4097-a796-68b35bb3e0a2"
+                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
               }
             ],
-            "labeledThingId": "34614320-d737-4e71-84fe-58cf40b46441",
+            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
             "incomplete": true,
             "ghost": false
           },
           {
-            "id": "f520fe6a-8de9-40d9-be26-e4326d7463fd",
-            "rev": "1-4241237bca2809eb972ebd1023cdd5ce",
+            "id": "47179a8f-2392-45b1-8927-393a174abfc2",
+            "rev": "2-daf2bb2bca130d250200428b142a31ba",
             "frameNumber": 1,
-            "classes": [],
+            "classes": [
+            ],
             "ghostClasses": null,
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "7ac12deb-08c7-4640-be5a-ac09fc23c731",
+                "id": "2820ebb1-68bb-4dc2-8130-faed11953530",
                 "topLeft": {
                   "x": 300,
                   "y": 100
@@ -84,10 +85,10 @@
                   "x": 400,
                   "y": 200
                 },
-                "labeledThingInFrameId": "f520fe6a-8de9-40d9-be26-e4326d7463fd"
+                "labeledThingInFrameId": "47179a8f-2392-45b1-8927-393a174abfc2"
               }
             ],
-            "labeledThingId": "1423da1e-fd93-4f48-a803-22ae44abeb50",
+            "labeledThingId": "38024ab8-c6bc-4363-a634-8802aa2626c8",
             "incomplete": true,
             "ghost": false
           }

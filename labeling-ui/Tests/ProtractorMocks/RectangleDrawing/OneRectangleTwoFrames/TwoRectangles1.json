@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/1c9a2622db2a5509fdb26c972a007a54/labeledThingInFrame/1",
+    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/labeledThingInFrame/1",
     "method": "GET",
     "queryString": {
       "limit": "1",
@@ -11,32 +11,32 @@
     "data": {
       "result": {
         "labeledThings": {
-          "34614320-d737-4e71-84fe-58cf40b46441": {
-            "id": "34614320-d737-4e71-84fe-58cf40b46441",
-            "rev": "1-7275ec7e205ea63a11b30c614b8f08e1",
+          "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045": {
+            "id": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
             "frameRange": {
               "startFrameNumber": 1,
-              "endFrameNumber": 1
+              "endFrameNumber": 2
             },
             "classes": [
               "pedestrian"
             ],
-            "taskId": "1c9a2622db2a5509fdb26c972a007a54",
+            "taskId": "FEDCBA9876543210-TaskId-FEDCBA9876543210",
             "incomplete": true,
             "lineColor": "6"
           }
         },
         "labeledThingsInFrame": [
           {
-            "id": "19190294-16ad-4097-a796-68b35bb3e0a2",
-            "rev": "1-46a5186d7e62a006d02c440d0a98c2e1",
+            "id": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
             "frameNumber": 1,
             "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "316c43b0-c064-4c4e-8b3c-3e47c083a4f2",
+                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
                 "topLeft": {
                   "x": 100,
                   "y": 100
@@ -45,10 +45,10 @@
                   "x": 200,
                   "y": 200
                 },
-                "labeledThingInFrameId": "19190294-16ad-4097-a796-68b35bb3e0a2"
+                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
               }
             ],
-            "labeledThingId": "34614320-d737-4e71-84fe-58cf40b46441",
+            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
             "incomplete": true,
             "ghost": false
           }
@@ -57,4 +57,3 @@
     }
   }
 }
-
