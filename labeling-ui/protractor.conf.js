@@ -35,7 +35,6 @@ exports.config = {
 
   specs: ['Tests/E2E/**/*.spec.js'],
   mocks: {
-    default: ['User/Profile', 'User/Permissions'],
     dir: 'Tests/ProtractorMocks'
   },
 };
