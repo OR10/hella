@@ -70,7 +70,7 @@ describe('Rectangle drawing', () => {
       oneRectangle1Mock,
       oneRectangle1_5Mock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
       expect(drawingStack).toEqualDrawingStack(loadOneRectangleExpectation);
@@ -95,7 +95,7 @@ describe('Rectangle drawing', () => {
       twoRectangles1Mock,
       twoRectangles1_5Mock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
       expect(drawingStack).toEqualDrawingStack(loadTwoRectanglesExpectation);
@@ -120,7 +120,7 @@ describe('Rectangle drawing', () => {
       twoRectangles1Mock,
       twoRectangles1_5Mock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     const viewer = element(by.css('.layer-container'));
 
@@ -152,7 +152,7 @@ describe('Rectangle drawing', () => {
       twoRectangles1Mock,
       twoRectangles1_5Mock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     const viewer = element(by.css('.layer-container'));
 
@@ -188,7 +188,7 @@ describe('Rectangle drawing', () => {
       twoRectangles1Mock,
       twoRectangles1_5Mock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     const viewer = element(by.css('.layer-container'));
 
@@ -226,7 +226,7 @@ describe('Rectangle drawing', () => {
 
       movedOneRectangleMock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     const viewer = element(by.css('.layer-container'));
 
@@ -268,7 +268,7 @@ describe('Rectangle drawing', () => {
 
       resizeOneRectangleMock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     const viewer = element(by.css('.layer-container'));
 
@@ -310,7 +310,7 @@ describe('Rectangle drawing', () => {
       oneRectangleTwoFrames1_5Mock,
       oneRectangleTwoFramesLabeledThing1_5Mock
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
+    browser.get('/labeling/task/TASKID-TASKID');
 
     const viewer = element(by.css('.layer-container'));
     const nextFrameButton = element(by.css('.next-frame-button'));
@@ -346,9 +346,7 @@ describe('Rectangle drawing', () => {
       limitIgnoringLabeledThingInFrameRequestMock1,
       limitIgnoringLabeledThingInFrameRequestMock1_5
     ]);
-    browser.get('/labeling/task/FEDCBA9876543210-TaskId-FEDCBA9876543210');
-
-    const viewer = element(by.css('.layer-container'));
+    browser.get('/labeling/task/TASKID-TASKID');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
       expect(drawingStack).toEqualDrawingStack(loadOneRectangleExpectation);
