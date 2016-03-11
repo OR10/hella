@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/labelStructure",
+    "path": "/api/task/TASKID-TASKID/labelStructure",
     "method": "GET"
   },
   "response": {

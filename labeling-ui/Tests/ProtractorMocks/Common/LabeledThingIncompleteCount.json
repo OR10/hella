@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/labeledThingsIncompleteCount",
+    "path": "/api/task/TASKID-TASKID/labeledThingsIncompleteCount",
     "method": "GET"
   },
   "response": {

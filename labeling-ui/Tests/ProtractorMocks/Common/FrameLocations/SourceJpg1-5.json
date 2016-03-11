@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/frameLocations/sourceJpg",
+    "path": "/api/task/TASKID-TASKID/frameLocations/sourceJpg",
     "queryString": {
       "limit": "5",
       "offset": "0"
@@ -12,23 +12,23 @@
       "result": [
         {
           "frameNumber": 1,
-          "url": "\/fixtures\/images\/01234556789ABCDEF-VideoId-01234556789ABCDEF\/sourceJpg\/1.jpg"
+          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/sourceJpg\/1.jpg"
         },
         {
           "frameNumber": 2,
-          "url": "\/fixtures\/images\/01234556789ABCDEF-VideoId-01234556789ABCDEF\/sourceJpg\/2.jpg"
+          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/sourceJpg\/2.jpg"
         },
         {
           "frameNumber": 3,
-          "url": "\/fixtures\/images\/01234556789ABCDEF-VideoId-01234556789ABCDEF\/sourceJpg\/3.jpg"
+          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/sourceJpg\/3.jpg"
         },
         {
           "frameNumber": 4,
-          "url": "\/fixtures\/images\/01234556789ABCDEF-VideoId-01234556789ABCDEF\/sourceJpg\/4.jpg"
+          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/sourceJpg\/4.jpg"
         },
         {
           "frameNumber": 5,
-          "url": "\/fixtures\/images\/01234556789ABCDEF-VideoId-01234556789ABCDEF\/sourceJpg\/5.jpg"
+          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/sourceJpg\/5.jpg"
         }
       ]
     }

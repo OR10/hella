@@ -1,15 +1,15 @@
 {
   "request": {
-    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210",
+    "path": "/api/task/TASKID-TASKID",
     "method": "GET"
   },
   "response": {
     "data": {
       "result": {
-        "id": "FEDCBA9876543210-TaskId-FEDCBA9876543210",
+        "id": "TASKID-TASKID",
         "rev": "3-f5f607d02b030a04c2c01dbe80957ece",
         "userId": null,
-        "videoId": "01234556789ABCDEF-VideoId-01234556789ABCDEF",
+        "videoId": "VIDEOID-VIDEOID",
         "descriptionTitle": "Identify the person",
         "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
         "frameRange": {

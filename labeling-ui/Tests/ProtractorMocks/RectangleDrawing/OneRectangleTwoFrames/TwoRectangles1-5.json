@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/FEDCBA9876543210-TaskId-FEDCBA9876543210/labeledThingInFrame/1",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/1",
     "method": "GET",
     "queryString": {
       "limit": "5",
@@ -11,8 +11,8 @@
     "data": {
       "result": {
         "labeledThings": {
-          "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045": {
-            "id": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+          "LABELED-THING-ID-1": {
+            "id": "LABELED-THING-ID-1",
             "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
             "frameRange": {
               "startFrameNumber": 1,
@@ -21,14 +21,14 @@
             "classes": [
               "pedestrian"
             ],
-            "taskId": "FEDCBA9876543210-TaskId-FEDCBA9876543210",
+            "taskId": "TASKID-TASKID",
             "incomplete": true,
             "lineColor": "6"
           }
         },
         "labeledThingsInFrame": [
           {
-            "id": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d",
+            "id": "LABELED-THING-IN-FRAME-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
             "frameNumber": 1,
             "classes": [],
@@ -36,7 +36,7 @@
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
+                "id": "SHAPE-ID-1",
                 "topLeft": {
                   "x": 100,
                   "y": 100
@@ -45,15 +45,15 @@
                   "x": 200,
                   "y": 200
                 },
-                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
               }
             ],
-            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "labeledThingId": "LABELED-THING-ID-1",
             "incomplete": true,
             "ghost": false
           },
           {
-            "id": "f33bb6fe-1c65-4971-a9e5-00eb1200f01e",
+            "id": "LABELED-THING-IN-FRAME-ID-2",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
             "frameNumber": 2,
             "classes": [],
@@ -61,7 +61,7 @@
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
+                "id": "SHAPE-ID-1",
                 "topLeft": {
                   "x": 110,
                   "y": 100
@@ -70,10 +70,10 @@
                   "x": 210,
                   "y": 200
                 },
-                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
               }
             ],
-            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "labeledThingId": "LABELED-THING-ID-1",
             "incomplete": true,
             "ghost": false
           },
@@ -86,7 +86,7 @@
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
+                "id": "SHAPE-ID-1",
                 "topLeft": {
                   "x": 110,
                   "y": 100
@@ -95,10 +95,10 @@
                   "x": 210,
                   "y": 200
                 },
-                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
               }
             ],
-            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "labeledThingId": "LABELED-THING-ID-1",
             "incomplete": true,
             "ghost": true
           },
@@ -111,7 +111,7 @@
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
+                "id": "SHAPE-ID-1",
                 "topLeft": {
                   "x": 110,
                   "y": 100
@@ -120,10 +120,10 @@
                   "x": 210,
                   "y": 200
                 },
-                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
               }
             ],
-            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "labeledThingId": "LABELED-THING-ID-1",
             "incomplete": true,
             "ghost": true
           },
@@ -136,7 +136,7 @@
             "shapes": [
               {
                 "type": "rectangle",
-                "id": "7a8cb9df-5db8-4155-a9de-7871aaa228c0",
+                "id": "SHAPE-ID-1",
                 "topLeft": {
                   "x": 110,
                   "y": 100
@@ -145,10 +145,10 @@
                   "x": 210,
                   "y": 200
                 },
-                "labeledThingInFrameId": "f33bb6fe-1c65-4971-a9e5-00eb1200f01d"
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
               }
             ],
-            "labeledThingId": "6d8ffe5d-93ae-43b3-9c9e-c60cf8c06045",
+            "labeledThingId": "LABELED-THING-ID-1",
             "incomplete": true,
             "ghost": true
           }

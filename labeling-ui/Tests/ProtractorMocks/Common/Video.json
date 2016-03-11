@@ -1,12 +1,12 @@
 {
   "request": {
-    "path": "/api/video/01234556789ABCDEF-VideoId-01234556789ABCDEF",
+    "path": "/api/video/VIDEOID-VIDEOID",
     "method": "GET"
   },
   "response": {
     "data": {
       "result": {
-        "id": "01234556789ABCDEF-VideoId-01234556789ABCDEF",
+        "id": "VIDEOID-VIDEOID",
         "rev": "5-dcb77099065234c9462b39c3dede007d",
         "name": "example.avi",
         "metaData": {
