@@ -5,7 +5,6 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
-import debounce from 'lodash.debounce';
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 /**
@@ -43,6 +42,7 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {LockService} lockService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {DebouncerService} debouncerService
    */
   constructor($scope,
               $element,
@@ -65,7 +65,8 @@ class ViewerController {
               $timeout,
               applicationState,
               lockService,
-              keyboardShortcutService) {
+              keyboardShortcutService,
+              debouncerService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -213,6 +214,12 @@ class ViewerController {
      * @private
      */
     this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
+     * @type {DebouncerService}
+     * @private
+     */
+    this._debouncerService = debouncerService;
 
     /**
      * @type {LayerManager}
@@ -378,6 +385,8 @@ class ViewerController {
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
+      console.log('FrameChange: ', newPosition);
+      console.log('FramePosition.position', this.framePosition.position);
       this._handleFrameChange(newPosition);
     });
 
@@ -531,9 +540,18 @@ class ViewerController {
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
     this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    this.thingLayer.on('shape:update', debounce((shape) => {
-      this._onUpdatedShape(shape);
-    }, 500));
+
+    const debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
+      (shape, frameNumber) => this._onUpdatedShape(shape, frameNumber),
+      (shape, frameNumber) => `${frameNumber}.${shape.id}`,
+      500
+    );
+
+    this.thingLayer.on('shape:update', shape => {
+      const frameNumber = this.framePosition.position;
+      console.log('shape:update frameNumber', frameNumber);
+      debouncedOnShapeUpdate(shape, frameNumber);
+    });
 
     this._layerManager.addLayer('annotations', this.thingLayer);
 
@@ -752,26 +770,31 @@ class ViewerController {
     );
   }
 
-  _onUpdatedShape(shape) {
+  /**
+   * @param {PaperShape} shape
+   * @param {Integer} frameNumber
+   * @private
+   */
+  _onUpdatedShape(shape, frameNumber) {
     const labeledThingInFrame = shape.labeledThingInFrame;
     const labeledThing = labeledThingInFrame.labeledThing;
 
     if (labeledThingInFrame.ghost) {
       labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
-        this.framePosition.position
+        frameNumber
       );
     }
 
     let frameRangeUpdated = false;
 
-    if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
-      labeledThing.frameRange.endFrameNumber = this.framePosition.position;
+    if (frameNumber > labeledThing.frameRange.endFrameNumber) {
+      labeledThing.frameRange.endFrameNumber = frameNumber;
       frameRangeUpdated = true;
     }
 
-    if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
-      labeledThing.frameRange.startFrameNumber = this.framePosition.position;
+    if (frameNumber < labeledThing.frameRange.startFrameNumber) {
+      labeledThing.frameRange.startFrameNumber = frameNumber;
       frameRangeUpdated = true;
     }
 
@@ -1034,6 +1057,7 @@ ViewerController.$inject = [
   'applicationState',
   'lockService',
   'keyboardShortcutService',
+  'debouncerService',
 ];
 
 export default ViewerController;
