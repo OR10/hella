@@ -311,21 +311,22 @@ class ViewerController {
 
     // Something seemingly still resizes after this point. We simply bump
     // the resize to the next animation frame to avoid this.
-    this._resizeDebounced();
+    $scope.$evalAsync(() => this._resizeDebounced());
 
     $window.addEventListener('resize', this._resizeDebounced);
 
-    $window.document.addEventListener(
-      'visibilitychange', () => {
-        if ($window.document.visibilityState === 'visible') {
-          this._resizeDebounced();
-        }
+    const onVisibilityChange = () => {
+      if ($window.document.visibilityState === 'visible') {
+        this._resizeDebounced();
       }
-    );
+    };
+
+    $window.document.addEventListener('visibilitychange', onVisibilityChange);
 
     $scope.$on(
       '$destroy', () => {
         $window.removeEventListener('resize', this._resizeDebounced);
+        $window.removeEventListener('visibilitychange', onVisibilityChange);
       }
     );
 
@@ -376,7 +377,6 @@ class ViewerController {
 
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
-
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._handleFrameChange(newPosition);
     });
@@ -466,10 +466,10 @@ class ViewerController {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
     }
 
-    // Fix Firefox issue where resize event is not fired
-    new ResizeSensor($('.layer-container').get(0), () => {
+    //Fix Firefox issue where resize event is not fired
+    const resizeSensor = new ResizeSensor(this._$element.get(0), () => {
       this._resize();
-    })
+    });
   }
 
   setupLayers() {

@@ -17,27 +17,27 @@
      min-size="vm.minSizes"
      class="main grid-block noscroll">
     <!--<div class="grid-block sidebar-left vertical noscrollbars" ng-show="vm.popupPanelOpen">-->
-    <div class="grid-block vertical">
-        <loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true"
-                      spinner="vm.leftSidebarWorking"></loading-mask>
-        <!--<div class="grid-block vertical noscrollbars">
-            <task-description ng-show="vm.currentLabelingInstructions.shortDescription"
-                              title="Task Description"
-                              heading="vm.currentLabelingInstructions.shortDescription.title"
-                              content="vm.currentLabelingInstructions.shortDescription.content"
-            ></task-description>
+    <!--<div class="grid-block vertical">-->
+        <!--<loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true"-->
+                      <!--spinner="vm.leftSidebarWorking"></loading-mask>-->
+        <!--&lt;!&ndash;<div class="grid-block vertical noscrollbars">-->
+            <!--<task-description ng-show="vm.currentLabelingInstructions.shortDescription"-->
+                              <!--title="Task Description"-->
+                              <!--heading="vm.currentLabelingInstructions.shortDescription.title"-->
+                              <!--content="vm.currentLabelingInstructions.shortDescription.content"-->
+            <!--&gt;</task-description>-->
 
-            <task-description ng-show="vm.currentLabelingInstructions.details"
-                              title="Labeling FAQ"
-                              heading="vm.currentLabelingInstructions.details.title"
-                              content="vm.currentLabelingInstructions.details.content"
-            ></task-description>
-            <div ng-show="!vm.currentLabelingInstructions" class="grid-block task-description-placeholder align-center">
-                <h1>Placeholder</h1>
-            </div>
-        </div>-->
-        <!--<div class="grid-block vertical noscrollbars"></div>-->
-    </div>
+            <!--<task-description ng-show="vm.currentLabelingInstructions.details"-->
+                              <!--title="Labeling FAQ"-->
+                              <!--heading="vm.currentLabelingInstructions.details.title"-->
+                              <!--content="vm.currentLabelingInstructions.details.content"-->
+            <!--&gt;</task-description>-->
+            <!--<div ng-show="!vm.currentLabelingInstructions" class="grid-block task-description-placeholder align-center">-->
+                <!--<h1>Placeholder</h1>-->
+            <!--</div>-->
+        <!--</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;<div class="grid-block vertical noscrollbars"></div>&ndash;&gt;-->
+    <!--</div>-->
 
     <popup-panel ng-show="vm.popupPanelOpen"
                  popup-panel-open="vm.popupPanelOpen"
