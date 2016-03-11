@@ -20,6 +20,7 @@ import TooltipDirective from './Directives/TooltipDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
+import DebouncerService from './Services/DebouncerService';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
 
@@ -54,6 +55,7 @@ class Common extends Module {
     this.module.service('releaseConfigService', ReleaseConfigService);
     this.module.service('lockService', LockService);
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
+    this.module.service('debouncerService', DebouncerService);
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);
@@ -73,7 +75,7 @@ class Common extends Module {
           $httpProvider.interceptors.push('authInterceptor');
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
-          loggerServiceProvider.addContexts('*');
+          //loggerServiceProvider.addContexts('*');
         },
       ]);
 
