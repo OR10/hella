@@ -2,6 +2,7 @@ require('babel-core/register');
 
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/ImageDiffReporter/ImageDiffReporter');
+const ViewportResizeHelper = require('./Tests/Support/Protractor/ViewportResizeHelper');
 
 exports.config = {
   framework: 'jasmine2',
@@ -11,26 +12,30 @@ exports.config = {
     require('./Tests/Support/Jasmine/CustomMatchers');
     require('jasmine-collection-matchers');
 
-    const jasmineReporters = require('jasmine-reporters');
+    const resizeHelper = new ViewportResizeHelper(browser);
+    return resizeHelper.setViewportSize(640, 480)
+      .then(() => {
+        return browser.getCapabilities();
+      })
+      .then(capabilities => {
+        const jasmineReporters = require('jasmine-reporters');
+        const browserName = capabilities.caps_.browserName.toUpperCase();
+        const browserVersion = capabilities.caps_.version;
+        const platform = capabilities.caps_.platform;
 
-    return browser.getCapabilities().then(capabilities => {
-      const browserName = capabilities.caps_.browserName.toUpperCase();
-      const browserVersion = capabilities.caps_.version;
-      const platform = capabilities.caps_.platform;
+        const browserIdentifier = `${platform}-${browserName}-${browserVersion}`;
 
-      const browserIdentifier = `${platform}-${browserName}-${browserVersion}`;
+        jasmine.getEnv().addReporter(new jasmineReporters.JUnitXmlReporter({
+          consolidateAll: true,
+          filePrefix: browserIdentifier + '-test-e2e-results.xml',
+          savePath: './Logs/E2E',
+        }));
 
-      jasmine.getEnv().addReporter(new jasmineReporters.JUnitXmlReporter({
-        consolidateAll: true,
-        filePrefix: browserIdentifier + '-test-e2e-results.xml',
-        savePath: './Logs/E2E',
-      }));
-
-      jasmine.getEnv().addReporter(new ImageDiffReporter({
-        outputDir: './Logs/E2E/Images',
-        browserIdentifier: browserIdentifier,
-      }));
-    });
+        jasmine.getEnv().addReporter(new ImageDiffReporter({
+          outputDir: './Logs/E2E/Images',
+          browserIdentifier: browserIdentifier,
+        }));
+      });
   },
 
   specs: ['Tests/E2E/**/*.spec.js'],
@@ -48,7 +53,7 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
         'mobileEmulation': {
           'deviceName': 'Laptop with MDPI screen',
         },
-      },
+      }
     },
     {
       'browserName': 'firefox',
