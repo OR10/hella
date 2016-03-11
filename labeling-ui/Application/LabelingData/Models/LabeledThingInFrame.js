@@ -109,7 +109,6 @@ class LabeledThingInFrame extends LabeledObject {
    * @param {int} frameNumber
    */
   ghostBust(id, frameNumber) {
-    console.log('Busting ghost with frameNumber: ', frameNumber);
     if (this.ghost !== true) {
       throw new Error('Can\'t realize ghosted LabeledThingInFrame, as it is no ghost');
     }

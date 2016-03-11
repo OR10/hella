@@ -385,8 +385,6 @@ class ViewerController {
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
-      console.log('FrameChange: ', newPosition);
-      console.log('FramePosition.position', this.framePosition.position);
       this._handleFrameChange(newPosition);
     });
 
@@ -543,13 +541,14 @@ class ViewerController {
 
     const debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
       (shape, frameNumber) => this._onUpdatedShape(shape, frameNumber),
-      (shape, frameNumber) => `${frameNumber}.${shape.id}`,
+      (shape, frameNumber) => shape.labeledThingInFrame.ghost
+        ? `${frameNumber}.${shape.id}`
+        : `${shape.labeledThingInFrame.frameNumber}.${shape.id}`,
       500
     );
 
     this.thingLayer.on('shape:update', shape => {
       const frameNumber = this.framePosition.position;
-      console.log('shape:update frameNumber', frameNumber);
       debouncedOnShapeUpdate(shape, frameNumber);
     });
 

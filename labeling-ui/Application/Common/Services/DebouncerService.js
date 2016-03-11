@@ -50,7 +50,6 @@ class DebouncerService {
     return (...args) => {
       const multiplexerId = multiplexer(...args);
       if (debounceTimeouts.has(multiplexerId)) {
-        console.log('multiplex debounce: ', multiplexerId);
         this._$window.clearTimeout(debounceTimeouts.get(multiplexerId));
       } else if (leading === true) {
         fn(...args);
@@ -58,7 +57,6 @@ class DebouncerService {
 
       const timeoutId = this._$window.setTimeout(() => {
         if (leading === false) {
-          console.log('debounce execute: ', multiplexerId);
           fn(...args);
         }
 

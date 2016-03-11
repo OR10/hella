@@ -119,7 +119,6 @@ class LabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
-    console.warn('Storage: ', labeledThingInFrame.frameNumber);
     if (labeledThingInFrame.ghost === true) {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
