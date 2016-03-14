@@ -29,6 +29,7 @@ class annostation_base(
         'libav-tools',
         'openjdk-7-jdk',
         'tree',
+        'unzip',
         'vim',
     ]
 
