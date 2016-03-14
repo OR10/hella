@@ -53,4 +53,9 @@ class annostation_base(
     file { $_obsoleteFiles:
       ensure => absent,
     }
+
+    file { '/etc/inputrc':
+      ensure => present,
+      source => 'puppet:///modules/annostation_base/inputrc',
+    }
 }
