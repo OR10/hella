@@ -117,7 +117,19 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->assertEquals(new Model\FrameRange(125, 132), $tasks[9]->getFrameRange());
     }
 
-    private function importVideo($chunkSizeInSeconds = 0)
+    public function testVideoImporterProperlySetsMinimalVisibleShapeOverflow() {
+        $tasks = $this->importVideo(0, 16);
+
+        $this->assertEquals(2, count($tasks));
+
+        $this->assertEquals('meta-labeling', $tasks[0]->getTaskType());
+        $this->assertEquals(null, $tasks[0]->getMinimalVisibleShapeOverflow());
+
+        $this->assertEquals('object-labeling', $tasks[1]->getTaskType());
+        $this->assertEquals(16, $tasks[1]->getMinimalVisibleShapeOverflow());
+    }
+
+    private function importVideo($chunkSizeInSeconds = 0, $minimalVisibleShapeOverflow = null)
     {
         $jobs = [];
         $this->workerPoolFacade->expects($this->any())->method('addJob')->with($this->callback(
@@ -138,7 +150,8 @@ class VideoImporterTest extends Tests\KernelTestCase
             true,
             true,
             false,
-            true
+            true,
+            $minimalVisibleShapeOverflow
         );
 
         // Currently, we expect on meta- and one object-labeling task per video.
