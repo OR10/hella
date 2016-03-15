@@ -124,6 +124,12 @@ class LabelingTask
     private $labelInstruction = null;
 
     /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $minimalVisibleShapeOverflow = null;
+
+    /**
      * @param Video      $video
      * @param FrameRange $frameRange
      * @param string     $taskType
@@ -375,5 +381,21 @@ class LabelingTask
     public function setLabelInstruction($labelInstruction)
     {
         $this->labelInstruction = $labelInstruction;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMinimalVisibleShapeOverflow()
+    {
+        return $this->minimalVisibleShapeOverflow;
+    }
+
+    /**
+     * @param null|string $minimalVisibleShapeOverflow
+     */
+    public function setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow)
+    {
+        $this->minimalVisibleShapeOverflow = $minimalVisibleShapeOverflow;
     }
 }
