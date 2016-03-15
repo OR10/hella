@@ -30,6 +30,9 @@ exports.config = {
         outputDir: './Logs/E2E/Images',
         browserIdentifier: browserIdentifier,
       }));
+    }).then(() => {
+      // Hack to bring browser to foreground
+      return browser.takeScreenshot();
     });
   },
 
