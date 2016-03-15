@@ -90,6 +90,7 @@ class PanAndZoom {
   /**
    * Ensure the viewport cannot be moved out of bounds
    *
+   * @param {paper.View} view
    * @param {paper.Point} newCenter
    *
    * @returns {paper.Point}
