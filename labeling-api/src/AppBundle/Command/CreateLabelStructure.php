@@ -191,20 +191,14 @@ class CreateLabelStructure extends Base
             array(
                 'name' => 'truncation-25',
                 'response' => '< 25%',
-                'challenge' => 'Direction',
-                'children' => $directions,
             ),
             array(
                 'name' => 'truncation-25-50',
                 'response' => '25% - 50%',
-                'challenge' => 'Direction',
-                'children' => $directions,
             ),
             array(
                 'name' => 'truncation-50',
                 'response' => '> 50%',
-                'challenge' => 'Direction',
-                'children' => $directions,
             ),
         );
 
@@ -212,51 +206,32 @@ class CreateLabelStructure extends Base
             array(
                 'name' => 'occlusion-25',
                 'response' => '< 25%',
-                'challenge' => 'Truncation',
-                'children' => $truncations,
             ),
             array(
                 'name' => 'occlusion-25-50',
                 'response' => '25% - 50%',
-                'challenge' => 'Truncation',
-                'children' => $truncations,
             ),
             array(
                 'name' => 'occlusion-50',
                 'response' => '> 50%',
-                'challenge' => 'Truncation',
-                'children' => $truncations,
-            ),
-        );
-
-        $classes = array(
-            array(
-                'name' => 'person',
-                'response' => 'Person',
-                'challenge' => 'Occlusion',
-                'children' => $occlusions,
-            ),
-            array(
-                'name' => 'cyclist',
-                'response' => 'Cyclist',
-                'challenge' => 'Occlusion',
-                'children' => $occlusions,
-            ),
-            array(
-                'name' => 'ignore-person',
-                'response' => 'Ignore Person'
-            ),
-            array(
-                'name' => 'ignore-cyclist',
-                'response' => 'Ignore Cyclist'
             ),
         );
 
         $data = array(
             array(
-                'name' => 'type',
-                'challenge' => 'Type',
-                'children' => $classes,
+                'name' => 'occlusion',
+                'challenge' => 'Occlusion',
+                'children' => $occlusions,
+            ),
+            array(
+                'name' => 'truncation',
+                'challenge' => 'Truncation',
+                'children' => $truncations,
+            ),
+            array(
+                'name' => 'direction',
+                'challenge' => 'Direction',
+                'children' => $directions,
             ),
         );
 
