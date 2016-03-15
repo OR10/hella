@@ -1,17 +1,29 @@
 {
-  "type": {
-    "challenge": "Type"
-  },
-  "person": {
-    "response": "Person",
+  "occlusion": {
     "challenge": "Occlusion"
   },
   "occlusion-25": {
-    "response": "< 25%",
+    "response": "< 25%"
+  },
+  "occlusion-25-50": {
+    "response": "25% - 50%"
+  },
+  "occlusion-50": {
+    "response": "> 50%"
+  },
+  "truncation": {
     "challenge": "Truncation"
   },
   "truncation-25": {
-    "response": "< 25%",
+    "response": "< 25%"
+  },
+  "truncation-25-50": {
+    "response": "25% - 50%"
+  },
+  "truncation-50": {
+    "response": "> 50%"
+  },
+  "direction": {
     "challenge": "Direction"
   },
   "direction-back": {
@@ -37,31 +49,5 @@
   },
   "direction-back-left": {
     "response": "\u2196 Back Left"
-  },
-  "truncation-25-50": {
-    "response": "25% - 50%",
-    "challenge": "Direction"
-  },
-  "truncation-50": {
-    "response": "> 50%",
-    "challenge": "Direction"
-  },
-  "occlusion-25-50": {
-    "response": "25% - 50%",
-    "challenge": "Truncation"
-  },
-  "occlusion-50": {
-    "response": "> 50%",
-    "challenge": "Truncation"
-  },
-  "cyclist": {
-    "response": "Cyclist",
-    "challenge": "Occlusion"
-  },
-  "ignore-person": {
-    "response": "Ignore Person"
-  },
-  "ignore-cyclist": {
-    "response": "Ignore Cyclist"
   }
 }
