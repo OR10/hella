@@ -28,6 +28,8 @@ class annostation_base(
         'htop',
         'libav-tools',
         'openjdk-7-jdk',
+        'tree',
+        'unzip',
         'vim',
     ]
 
@@ -52,5 +54,10 @@ class annostation_base(
 
     file { $_obsoleteFiles:
       ensure => absent,
+    }
+
+    file { '/etc/inputrc':
+      ensure => present,
+      source => 'puppet:///modules/annostation_base/inputrc',
     }
 }
