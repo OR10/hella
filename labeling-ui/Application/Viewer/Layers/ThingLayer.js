@@ -2,7 +2,7 @@ import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
-import CenterLineRectangleDrawingTool from '../Tools/CenterLineRectangleDrawingTool';
+import PedestrianDrawingTool from '../Tools/PedestrianDrawingTool';
 import EllipseDrawingTool from '../Tools/EllipseDrawingTool';
 import CircleDrawingTool from '../Tools/CircleDrawingTool';
 import PathDrawingTool from '../Tools/PathDrawingTool';
@@ -190,8 +190,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       case 'rectangle':
         tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
         break;
-      case 'center-line':
-        tool = new CenterLineRectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+      case 'pedestrian':
+        tool = new PedestrianDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
         break;
       case 'ellipse':
         tool = new EllipseDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
