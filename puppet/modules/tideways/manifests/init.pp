@@ -43,7 +43,7 @@ class tideways(
       ],
     }
 
-    file { '/etc/php/mods-available/tideways.ini':
+    file { '/etc/php/7.0/mods-available/tideways.ini':
       ensure => link,
       target => '/etc/php5/mods-available/tideways.ini',
       require => Package['tideways-php'],
@@ -51,8 +51,8 @@ class tideways(
 
     file { ['/etc/php/7.0/cli/conf.d/20-tideways.ini', '/etc/php/7.0/fpm/conf.d/20-tideways.ini']:
       ensure => link,
-      target => '/etc/php/mods-available/tideways.ini',
-      require => File['/etc/php/mods-available/tideways.ini'],
+      target => '/etc/php/7.0/mods-available/tideways.ini',
+      require => File['/etc/php/7.0/mods-available/tideways.ini'],
       notify => Service[$::php::fpm::service::service_name],
     }
   }
