@@ -32,6 +32,17 @@ class PaperShapeFactory {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
    * @param {String} color
+   * @returns {PaperRectangle}
+   * @private
+   */
+  _createCenterLineRectangle(labeledThingInFrame, shape, color) {
+    return new PaperLine(labeledThingInFrame, shape.id, shape.from, shape.to, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @param {String} color
    * @returns {PaperEllipse}
    * @private
    */
@@ -107,18 +118,27 @@ class PaperShapeFactory {
       case 'rectangle':
         result = this._createRectangle(labeledThingInFrame, shape, color);
         break;
+      case 'center-line':
+        result = this._createCenterLineRectangle(labeledThingInFrame, shape, color);
+        break;
       case 'ellipse':
-        return this._createEllipse(labeledThingInFrame, shape, color);
+        result = this._createEllipse(labeledThingInFrame, shape, color);
+        break;
       case 'circle':
-        return this._createCircle(labeledThingInFrame, shape, color);
+        result = this._createCircle(labeledThingInFrame, shape, color);
+        break;
       case 'point':
-        return this._createPoint(labeledThingInFrame, shape, color);
+        result = this._createPoint(labeledThingInFrame, shape, color);
+        break;
       case 'path':
-        return this._createPath(labeledThingInFrame, shape, color);
+        result = this._createPath(labeledThingInFrame, shape, color);
+        break;
       case 'polygon':
-        return this._createPolygon(labeledThingInFrame, shape, color);
+        result = this._createPolygon(labeledThingInFrame, shape, color);
+        break;
       case 'line':
-        return this._createLine(labeledThingInFrame, shape, color);
+        result = this._createLine(labeledThingInFrame, shape, color);
+        break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }
