@@ -17,6 +17,9 @@ class PaperShape extends paper.Group {
     // This needs to be called due to how PaperJS does inheritance
     super.initialize();
 
+    // Make sure transformations are applied to the underlying shapes directly
+    this.applyMatrix = true;
+
     /**
      * Internal id for this shape.
      *
@@ -120,8 +123,18 @@ class PaperShape extends paper.Group {
     this._shape.selected = false;
   }
 
-  scale() {
-    this._shape.scale.apply(this._shape, arguments);
+  /**
+   * Scale the paperShape (and therefore all its child shapes)
+   *
+   * This method specifies the interface for scale to be used, as Paper itself specifies more than one
+   * calling convention.
+   *
+   * @param {Number} horizontalScale
+   * @param {Number} verticalScale
+   * @param {paper.Point} centerPoint
+   */
+  scale(horizontalScale, verticalScale, centerPoint) {
+    super.scale(horizontalScale, verticalScale, centerPoint);
   }
 
   /**
