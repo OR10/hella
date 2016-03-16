@@ -78,26 +78,10 @@ class RectangleDrawingTool extends DrawingTool {
     const {topCenter, bottomCenter} = this._pedestrian.getCenterPoints();
     let anchorPoint;
 
-    if (this._startPoint.getDistance(topCenter) <= 4) {
-      // TopCenter handle clicked
-      if (point.y < bottomCenter.y) {
-        // Top of bottom handle
-        anchorPoint = bottomCenter;
-      } else {
-        // Bottom of bottom handle
-        // Handle flip!
-        anchorPoint = topCenter;
-      }
+    if (point.y < this._startPoint.y) {
+      anchorPoint = bottomCenter;
     } else {
-      // BottomCenter handle clicked
-      if (point.y > topCenter.y) {
-        // Bottom of top handle
-        anchorPoint = topCenter;
-      } else {
-        // Top of top handle
-        // Handle flip!
-        anchorPoint = bottomCenter;
-      }
+      anchorPoint = topCenter;
     }
 
     const scaleFactor = Math.abs(anchorPoint.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
