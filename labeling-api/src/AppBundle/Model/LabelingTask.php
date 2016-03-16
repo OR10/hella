@@ -13,6 +13,7 @@ class LabelingTask
     const TYPE_META_LABELING = 'meta-labeling';
     const TYPE_OBJECT_LABELING = 'object-labeling';
     const DRAWING_TOOL_RECTANGLE = 'rectangle';
+    const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
 
     const INSTRUCTION_VEHICLE = 'vehicle';
     const INSTRUCTION_PEDESTRIAN = 'pedestrian';

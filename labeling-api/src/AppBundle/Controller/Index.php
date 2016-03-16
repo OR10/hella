@@ -77,6 +77,7 @@ class Index extends Base
         $pedestrian = $request->request->get('pedestrian', false);
         $vehicle = $request->request->get('vehicle', false);
         $overflow = (bool)$request->request->get('overflow', false);
+        $drawingTool = $request->request->get('drawingTool', 'rectangle');
 
         if ($splitLength < 0) {
             throw new Exception\BadRequestHttpException();
@@ -94,7 +95,8 @@ class Index extends Base
                 $metaLabeling,
                 $vehicle,
                 $pedestrian,
-                $overflow ? 16 : null
+                $overflow ? 16 : null,
+                $drawingTool
             );
 
             $viewData['taskIds'] = array_map(

@@ -58,15 +58,16 @@ class VideoImporter
     }
 
     /**
-     * @param string     $name The name for the video (usually the basename).
-     * @param string     $path The filesystem path to the video file.
-     * @param bool       $lossless Wether or not the UI should use lossless compressed images.
-     * @param int        $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param            $isObjectLabeling
-     * @param            $isMetaLabeling
-     * @param            $isVehicleInstruction
-     * @param            $isPedestrianInstruction
-     * @param int|null   $minimalVisibleShapeOverflow
+     * @param string      $name The name for the video (usually the basename).
+     * @param string      $path The filesystem path to the video file.
+     * @param bool        $lossless Wether or not the UI should use lossless compressed images.
+     * @param int         $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param             $isObjectLabeling
+     * @param             $isMetaLabeling
+     * @param             $isVehicleInstruction
+     * @param             $isPedestrianInstruction
+     * @param int|null    $minimalVisibleShapeOverflow
+     * @param string|null $drawingTool
      *
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
@@ -81,7 +82,8 @@ class VideoImporter
         $isMetaLabeling,
         $isVehicleInstruction,
         $isPedestrianInstruction,
-        $minimalVisibleShapeOverflow = null
+        $minimalVisibleShapeOverflow = null,
+        $drawingTool = null
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -135,7 +137,7 @@ class VideoImporter
                     $video,
                     $frameRange,
                     Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    $drawingTool,
                     ['pedestrian'],
                     $imageTypes,
                     Model\LabelingTask::INSTRUCTION_PEDESTRIAN,
@@ -147,7 +149,7 @@ class VideoImporter
                     $video,
                     $frameRange,
                     Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    $drawingTool,
                     ['pedestrian'],
                     $imageTypes,
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
