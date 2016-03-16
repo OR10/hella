@@ -51,6 +51,9 @@ class PaperPedestrian extends PaperShape {
       from: topCenter,
       to: bottomCenter,
       strokeColor: this._color,
+      selected: false,
+      strokeWidth: 2,
+      strokeScaling: false,
       dashArray: PaperPedestrian.CENTER_DASH,
     });
   }
@@ -81,6 +84,10 @@ class PaperPedestrian extends PaperShape {
     return new paper.Path.Rectangle({
       rectangle,
       strokeColor: this._color,
+      selected: false,
+      strokeWidth: 2,
+      strokeScaling: false,
+      fillColor: new paper.Color(0, 0, 0, 0),
     });
   }
 
