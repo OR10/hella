@@ -1,6 +1,7 @@
 import Tool from './Tool';
 import paper from 'paper';
 import PaperCircle from '../Shapes/PaperCircle';
+import PaperPedestrian from '../Shapes/PaperPedestrian';
 
 /**
  * A Tool for scaling annotation shapes
@@ -43,10 +44,20 @@ export default class ShapeScaleTool extends Tool {
      * @private
      */
     this._boundName = null;
+
+    /**
+     * Position of the initial mousedown of one certain scaling operation
+     *
+     * @type {paper.Point|null}
+     * @private
+     */
+    this._startPoint = null;
   }
 
   onMouseDown(event, hitResult) {
     const point = event.point;
+
+    this._startPoint = point;
 
     this._hitResult = hitResult;
 
@@ -60,6 +71,9 @@ export default class ShapeScaleTool extends Tool {
       switch (true) {
         case this._hitResult.item instanceof PaperCircle:
           this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
+          break;
+        case this._hitResult.item instanceof PaperPedestrian:
+          this._scaleAnchor = undefined;
           break;
         default:
           this._scaleAnchor = this._getScaleAnchor(point, this._hitResult.item);
@@ -76,10 +90,11 @@ export default class ShapeScaleTool extends Tool {
     }
 
     this._scaleAnchor = null;
+    this._startPoint = null;
   }
 
   onMouseDrag(event) {
-    if (!this._hitResult || this._hitResult.type !== 'bounds' || !this._scaleAnchor) {
+    if (!this._hitResult || this._hitResult.type !== 'bounds' || this._scaleAnchor === null) {
       return;
     }
     const point = event.point;
@@ -90,6 +105,9 @@ export default class ShapeScaleTool extends Tool {
       switch (true) {
         case this._hitResult.item instanceof PaperCircle:
           this._scaleCircle(this._hitResult.item, point);
+          break;
+        case this._hitResult.item instanceof PaperPedestrian:
+          this._scalePedestrian(this._hitResult.item, point);
           break;
         default:
           this._scale(this._hitResult.item, point);
@@ -111,6 +129,36 @@ export default class ShapeScaleTool extends Tool {
 
     this._scaleAnchor = this._getScaleAnchor();
     item.scale(scaleX, scaleY, this._scaleAnchor);
+  }
+
+  _scalePedestrian(pedestrian, point) {
+    const {topCenter, bottomCenter} = pedestrian.getCenterPoints();
+    let anchorPoint;
+
+    if (this._startPoint.getDistance(topCenter) <= 4) {
+      // TopCenter handle clicked
+      if (point.y < bottomCenter.y) {
+        // Top of bottom handle
+        anchorPoint = bottomCenter;
+      } else {
+        // Bottom of bottom handle
+        // Handle flip!
+        anchorPoint = topCenter;
+      }
+    } else {
+      // BottomCenter handle clicked
+      if (point.y > topCenter.y) {
+        // Bottom of top handle
+        anchorPoint = topCenter;
+      } else {
+        // Top of top handle
+        // Handle flip!
+        anchorPoint = bottomCenter;
+      }
+    }
+
+    const scaleFactor = Math.abs(anchorPoint.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
+    pedestrian.scale(1, scaleFactor, anchorPoint);
   }
 
   _scaleCircle(item, dragPoint) {
