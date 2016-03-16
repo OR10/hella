@@ -135,9 +135,10 @@ class PaperPedestrian extends PaperShape {
     this._centerLine.scale(verticalScale, centerPoint);
 
     const {topCenter, bottomCenter} = this.getCenterPoints();
-    this._aspectRectangle.replaceWith(
-      this._createAspectRectangle(topCenter, bottomCenter)
-    );
+    const oldAspectRectangle = this._aspectRectangle;
+    this._aspectRectangle = this._createAspectRectangle(topCenter, bottomCenter);
+    this.addChild(this._aspectRectangle);
+    oldAspectRectangle.remove();
   }
 
   /**
