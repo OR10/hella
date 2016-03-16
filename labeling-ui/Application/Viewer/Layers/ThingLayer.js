@@ -280,8 +280,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
 
       if (hitResult) {
+        this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitResult.item);
         this._$scope.vm.selectedPaperShape = hitResult.item;
       } else {
+        this._logger.log('thinglayer:selection', 'HitTest negative. Deselecting');
         this._$scope.vm.selectedPaperShape = null;
       }
     });
