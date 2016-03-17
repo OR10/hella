@@ -73,7 +73,7 @@ export default class ShapeScaleTool extends Tool {
           this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
           break;
         case this._hitResult.item instanceof PaperPedestrian:
-          this._scaleAnchor = undefined;
+          this._scaleAnchor = this._getPedestrianScaleAnchor(point, this._hitResult.item);
           break;
         default:
           this._scaleAnchor = this._getScaleAnchor(point, this._hitResult.item);
@@ -133,32 +133,16 @@ export default class ShapeScaleTool extends Tool {
 
   _scalePedestrian(pedestrian, point) {
     const {topCenter, bottomCenter} = pedestrian.getCenterPoints();
-    let anchorPoint;
 
-    if (this._startPoint.getDistance(topCenter) <= 4) {
-      // TopCenter handle clicked
-      if (point.y < bottomCenter.y) {
-        // Top of bottom handle
-        anchorPoint = bottomCenter;
-      } else {
-        // Bottom of bottom handle
-        // Handle flip!
-        anchorPoint = topCenter;
-      }
-    } else {
-      // BottomCenter handle clicked
-      if (point.y > topCenter.y) {
-        // Bottom of top handle
-        anchorPoint = topCenter;
-      } else {
-        // Top of top handle
-        // Handle flip!
-        anchorPoint = bottomCenter;
-      }
+    const scaleFactor = Math.abs(this._scaleAnchor.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
+    if (scaleFactor !== 0) {
+      pedestrian.scale(1, scaleFactor, this._scaleAnchor);
     }
 
-    const scaleFactor = Math.abs(anchorPoint.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
-    pedestrian.scale(1, scaleFactor, anchorPoint);
+    if ((this._scaleAnchor.equals(topCenter) && point.y < topCenter.y) ||
+      (this._scaleAnchor.equals(bottomCenter) && point.y > bottomCenter.y)) {
+      pedestrian.flipHorizontally(this._scaleAnchor);
+    }
   }
 
   _scaleCircle(item, dragPoint) {
@@ -215,5 +199,16 @@ export default class ShapeScaleTool extends Tool {
     }
 
     return new paper.Point(item.position.x, item.bounds.bottom);
+  }
+
+  _getPedestrianScaleAnchor(point, pedestrian) {
+    const {topCenter, bottomCenter} = pedestrian.getCenterPoints();
+
+    if (point.y >= topCenter.y - 8 && point.y <= topCenter.y + 8) {
+      return bottomCenter;
+    } else {
+      return topCenter;
+    }
+
   }
 }
