@@ -136,9 +136,12 @@ class PedestrianDrawingTool extends DrawingTool {
    */
   onMouseUp(event) {
     if (this._pedestrian) {
-      this._$scope.$apply(
-        () => this.completeShape()
-      );
+      try {
+        this._pedestrian.enforceMinimalLength(this._startPoint, 100);
+      } catch(e) {}
+      this._$scope.$apply(() => {
+        this.completeShape();
+      });
     }
   }
 }

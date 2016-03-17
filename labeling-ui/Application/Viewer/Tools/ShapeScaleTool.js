@@ -84,6 +84,14 @@ export default class ShapeScaleTool extends Tool {
   onMouseUp() {
     if (this._hitResult && this._hitResult.item) {
       if (this._modified) {
+        if (this._hitResult.type === 'bounds') {
+          switch (true) {
+            case this._hitResult.item instanceof PaperPedestrian:
+              this._hitResult.item.enforceMinimalLength(this._scaleAnchor, 100);
+              break;
+          }
+        }
+
         this._modified = false;
         this.emit('shape:update', this._hitResult.item);
       }
