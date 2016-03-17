@@ -241,6 +241,28 @@ class PaperPedestrian extends PaperShape {
   }
 
   /**
+   * Make sure the size restriction of the element is matched
+   */
+  enforceMinimalLength(anchorPoint, length) {
+    const {topCenter, bottomCenter} = this.getCenterPoints();
+
+    if (!anchorPoint.isClose(topCenter, 0.0001)  && !anchorPoint.isClose(bottomCenter, 0.0001)) {
+      throw new Error('Only topCenter and bottomCenter are allowed as achorPoints');
+    }
+
+    const currentLength = bottomCenter.y - topCenter.y;
+
+    if (currentLength >= length) {
+      // Everything alright
+      return;
+    }
+
+    const scaleFactor = length / currentLength;
+    this.scale(1, scaleFactor, anchorPoint);
+  }
+
+
+  /**
    * Create a new Aspect rectangle based on the current centerLine
    *
    * @private
