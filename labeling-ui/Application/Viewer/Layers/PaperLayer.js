@@ -76,7 +76,9 @@ class PaperLayer extends EventEmitter {
    * @param event
    */
   dispatchDOMEvent(event) {
-    this._element.dispatchEvent(event);
+    this._context.withScope(
+      scope => this._element.dispatchEvent(event)
+    );
   }
 
   /**

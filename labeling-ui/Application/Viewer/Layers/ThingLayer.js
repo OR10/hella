@@ -176,11 +176,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   dispatchDOMEvent(event) {
-    if (event.type === 'mouseleave') {
-      this._multiTool.onMouseLeave(event);
-    } else {
-      this._element.dispatchEvent(event);
-    }
+    this._context.withScope(scope => {
+      if (event.type === 'mouseleave') {
+        this._multiTool.onMouseLeave(event);
+      } else {
+        this._element.dispatchEvent(event);
+      }
+    });
   }
 
   _initializeShapeCreationTool() {
