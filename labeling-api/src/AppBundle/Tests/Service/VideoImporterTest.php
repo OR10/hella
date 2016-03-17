@@ -78,7 +78,7 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForTheWholeVideoPerDefault()
     {
-        $tasks = $this->importVideo();
+        $tasks = $this->importVideo(0, null, array('foo' => 'bar'));
 
         $this->assertCount(2, $tasks);
 
@@ -91,7 +91,7 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunk()
     {
-        $tasks = $this->importVideo($chunkSizeInSeconds = 3);
+        $tasks = $this->importVideo($chunkSizeInSeconds = 3, null, array('foo' => 'bar'));
 
         $this->assertCount(4, $tasks);
         $this->assertEquals(new Model\FrameRange( 1,  75), $tasks[0]->getFrameRange());
@@ -102,7 +102,7 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameNumberPerChunk()
     {
-        $tasks = $this->importVideo($chunkSizeInSeconds = 1.23);
+        $tasks = $this->importVideo($chunkSizeInSeconds = 1.23, null, array('foo' => 'bar'));
 
         $this->assertCount(10, $tasks);
         $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[0]->getFrameRange());
@@ -118,7 +118,7 @@ class VideoImporterTest extends Tests\KernelTestCase
     }
 
     public function testVideoImporterProperlySetsMinimalVisibleShapeOverflow() {
-        $tasks = $this->importVideo(0, 16);
+        $tasks = $this->importVideo(0, 16, array('foo' => 'bar'));
 
         $this->assertEquals(2, count($tasks));
 
@@ -129,7 +129,7 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->assertEquals(16, $tasks[1]->getMinimalVisibleShapeOverflow());
     }
 
-    private function importVideo($chunkSizeInSeconds = 0, $minimalVisibleShapeOverflow = null)
+    private function importVideo($chunkSizeInSeconds = 0, $minimalVisibleShapeOverflow = null, $drawingToolOptions)
     {
         $jobs = [];
         $this->workerPoolFacade->expects($this->any())->method('addJob')->with($this->callback(
@@ -151,7 +151,8 @@ class VideoImporterTest extends Tests\KernelTestCase
             true,
             false,
             true,
-            $minimalVisibleShapeOverflow
+            $minimalVisibleShapeOverflow,
+            $drawingToolOptions
         );
 
         // Currently, we expect on meta- and one object-labeling task per video.

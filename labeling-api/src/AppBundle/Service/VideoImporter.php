@@ -58,16 +58,17 @@ class VideoImporter
     }
 
     /**
-     * @param string      $name The name for the video (usually the basename).
-     * @param string      $path The filesystem path to the video file.
-     * @param bool        $lossless Wether or not the UI should use lossless compressed images.
-     * @param int         $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param string $name The name for the video (usually the basename).
+     * @param string $path The filesystem path to the video file.
+     * @param bool $lossless Wether or not the UI should use lossless compressed images.
+     * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
      * @param             $isObjectLabeling
      * @param             $isMetaLabeling
      * @param             $isVehicleInstruction
      * @param             $isPedestrianInstruction
-     * @param int|null    $minimalVisibleShapeOverflow
+     * @param int|null $minimalVisibleShapeOverflow
      * @param string|null $drawingTool
+     * @param array $drawingToolOptions
      *
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
@@ -83,7 +84,8 @@ class VideoImporter
         $isVehicleInstruction,
         $isPedestrianInstruction,
         $minimalVisibleShapeOverflow = null,
-        $drawingTool = null
+        $drawingTool = null,
+        $drawingToolOptions = array()
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -128,7 +130,8 @@ class VideoImporter
                     [],
                     $imageTypes,
                     null,
-                    null
+                    null,
+                    $drawingToolOptions
                 );
             }
 
@@ -141,7 +144,8 @@ class VideoImporter
                     ['pedestrian'],
                     $imageTypes,
                     Model\LabelingTask::INSTRUCTION_PEDESTRIAN,
-                    $minimalVisibleShapeOverflow
+                    $minimalVisibleShapeOverflow,
+                    $drawingToolOptions
                 );
             }
             if ($isObjectLabeling && $isVehicleInstruction) {
@@ -153,7 +157,8 @@ class VideoImporter
                     ['pedestrian'],
                     $imageTypes,
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
-                    $minimalVisibleShapeOverflow
+                    $minimalVisibleShapeOverflow,
+                    $drawingToolOptions
                 );
             }
         }
@@ -164,14 +169,15 @@ class VideoImporter
     /**
      * Add a LabelingTask
      *
-     * @param Model\Video      $video
+     * @param Model\Video $video
      * @param Model\FrameRange $frameRange
-     * @param string           $taskType
-     * @param string|null      $drawingTool
-     * @param string[]         $predefinedClasses
+     * @param string $taskType
+     * @param string|null $drawingTool
+     * @param string[] $predefinedClasses
      * @param                  $imageTypes
      * @param                  $instruction
-     * @param int|null         $minimalVisibleShapeOverflow
+     * @param int|null $minimalVisibleShapeOverflow
+     * @param $drawingToolOptions
      *
      * @return Model\LabelingTask
      */
@@ -183,7 +189,8 @@ class VideoImporter
         $predefinedClasses,
         $imageTypes,
         $instruction,
-        $minimalVisibleShapeOverflow
+        $minimalVisibleShapeOverflow,
+        $drawingToolOptions
     ) {
         $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
@@ -206,6 +213,7 @@ class VideoImporter
         $labelingTask->setLabelInstruction($instruction);
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
+        $labelingTask->setDrawingToolOptions($drawingToolOptions);
 
         $this->labelingTaskFacade->save($labelingTask);
 

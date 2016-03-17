@@ -78,6 +78,11 @@ class Index extends Base
         $vehicle = $request->request->get('vehicle', false);
         $overflow = (bool)$request->request->get('overflow', false);
         $drawingTool = $request->request->get('drawingTool', 'rectangle');
+        $drawingToolOptions = array(
+            'pedestrian' => array(
+                'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22')
+            )
+        );
 
         if ($splitLength < 0) {
             throw new Exception\BadRequestHttpException();
@@ -96,7 +101,8 @@ class Index extends Base
                 $vehicle,
                 $pedestrian,
                 $overflow ? 16 : null,
-                $drawingTool
+                $drawingTool,
+                $drawingToolOptions
             );
 
             $viewData['taskIds'] = array_map(

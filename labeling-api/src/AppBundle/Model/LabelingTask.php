@@ -101,6 +101,12 @@ class LabelingTask
     private $drawingTool;
 
     /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $drawingToolOptions = array();
+
+    /**
      * @var int|null
      * @CouchDB\Field(type="mixed")
      */
@@ -398,5 +404,21 @@ class LabelingTask
     public function setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow)
     {
         $this->minimalVisibleShapeOverflow = $minimalVisibleShapeOverflow;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDrawingToolOptions()
+    {
+        return $this->drawingToolOptions;
+    }
+
+    /**
+     * @param array $drawingToolOptions
+     */
+    public function setDrawingToolOptions($drawingToolOptions)
+    {
+        $this->drawingToolOptions = $drawingToolOptions;
     }
 }
