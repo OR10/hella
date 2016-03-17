@@ -139,8 +139,8 @@ export default class ShapeScaleTool extends Tool {
       pedestrian.scale(1, scaleFactor, this._scaleAnchor);
     }
 
-    if ((this._scaleAnchor.equals(topCenter) && point.y < topCenter.y) ||
-      (this._scaleAnchor.equals(bottomCenter) && point.y > bottomCenter.y)) {
+    if ((this._scaleAnchor.isClose(topCenter, 0.0001) && point.y < topCenter.y) ||
+      (this._scaleAnchor.isClose(bottomCenter, 0.0001) && point.y > bottomCenter.y)) {
       pedestrian.flipHorizontally(this._scaleAnchor);
     }
   }

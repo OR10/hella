@@ -202,13 +202,13 @@ class PaperPedestrian extends PaperShape {
   flipHorizontally(anchorPoint) {
     const {topCenter, bottomCenter} = this.getCenterPoints();
 
-    if (!anchorPoint.equals(topCenter) && !anchorPoint.equals(bottomCenter)) {
+    if (!anchorPoint.isClose(topCenter, 0.0001)  && !anchorPoint.isClose(bottomCenter, 0.0001)) {
       throw new Error('Horizontal flipping is only allowed around the top or bottom center points');
     }
 
     let newTopCenter;
     let newBottomCenter;
-    if (anchorPoint.equals(topCenter)) {
+    if (anchorPoint.isClose(topCenter, 0.0001)) {
       newBottomCenter = topCenter;
       newTopCenter = new paper.Point(
         bottomCenter.x,

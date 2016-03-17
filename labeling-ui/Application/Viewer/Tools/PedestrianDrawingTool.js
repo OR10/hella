@@ -76,16 +76,17 @@ class PedestrianDrawingTool extends DrawingTool {
    */
   updateShape(point) {
     const {topCenter, bottomCenter} = this._pedestrian.getCenterPoints();
-    let anchorPoint;
 
-    if (point.y < this._startPoint.y) {
-      anchorPoint = bottomCenter;
-    } else {
-      anchorPoint = topCenter;
+    const scaleFactor = Math.abs(this._startPoint.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
+    if (scaleFactor !== 0) {
+      this._pedestrian.scale(1, scaleFactor, this._startPoint);
     }
 
-    const scaleFactor = Math.abs(anchorPoint.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
-    this._pedestrian.scale(1, scaleFactor, anchorPoint);
+    if ((this._startPoint.isClose(topCenter, 0.0001) && point.y < topCenter.y) ||
+      (this._startPoint.isClose(bottomCenter, 0.0001) && point.y > bottomCenter.y)) {
+      this._pedestrian.flipHorizontally(this._startPoint);
+    }
+
     this.emit('rectangle:update', this._pedestrian);
   }
 
@@ -100,6 +101,7 @@ class PedestrianDrawingTool extends DrawingTool {
     this.emit('shape:new', this._pedestrian);
     this._pedestrian = null;
   }
+
 
   /**
    * Handle mousedown events
