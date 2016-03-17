@@ -113,6 +113,15 @@ class PaperPedestrian extends PaperShape {
   }
 
   /**
+   * Overwrite the `hasFill` for this group to ensure a hitTest matches :>
+   *
+   * @returns {boolean}
+   */
+  hasFill() {
+    return true;
+  }
+
+  /**
    * Select the shape
    *
    * @param {Boolean} handles
