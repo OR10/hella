@@ -8,7 +8,7 @@ import PaperPedestrian from '../Shapes/PaperPedestrian';
  * @extends DrawingTool
  * @implements ToolEvents
  */
-class RectangleDrawingTool extends DrawingTool {
+class PedestrianDrawingTool extends DrawingTool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
@@ -141,4 +141,4 @@ class RectangleDrawingTool extends DrawingTool {
   }
 }
 
-export default RectangleDrawingTool;
+export default PedestrianDrawingTool;
