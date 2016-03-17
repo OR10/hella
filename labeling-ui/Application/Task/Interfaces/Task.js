@@ -50,3 +50,16 @@
  * @type {integer|null}
  */
 
+/**
+ * Default drawingTool to be used
+ *
+ * @name Task#drawingTool
+ * @type {string}
+ */
+
+/**
+ * Options to be used for specific DrawingTools
+ *
+ * @name Task#drawingToolOptions
+ * @type {Object.<string, Object>}
+ */

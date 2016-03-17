@@ -186,14 +186,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _initializeShapeCreationTool() {
+    const task = this._$scope.vm.task;
     let tool = null;
 
-    switch (this._$scope.vm.task.drawingTool) {
+    switch (task.drawingTool) {
       case 'rectangle':
-        tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, task.drawingToolOptions.rectangle);
         break;
       case 'pedestrian':
-        tool = new PedestrianDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        tool = new PedestrianDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, task.drawingToolOptions.pedestrian);
         break;
       case 'ellipse':
         tool = new EllipseDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);

@@ -87,7 +87,11 @@ export default class ShapeScaleTool extends Tool {
         if (this._hitResult.type === 'bounds') {
           switch (true) {
             case this._hitResult.item instanceof PaperPedestrian:
-              this._hitResult.item.enforceMinimalLength(this._scaleAnchor, 100);
+              const drawingToolOptions = this._$scope.vm.task.drawingToolOptions;
+              const minimalHeight = (drawingToolOptions && drawingToolOptions.pedestrian && drawingToolOptions.pedestrian.minimalHeight)
+                ? drawingToolOptions.pedestrian.minimalHeight
+                : 1;
+              this._hitResult.item.enforceMinimalLength(this._scaleAnchor, minimalHeight);
               break;
           }
         }

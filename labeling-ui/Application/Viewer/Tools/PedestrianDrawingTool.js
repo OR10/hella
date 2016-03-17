@@ -17,7 +17,12 @@ class PedestrianDrawingTool extends DrawingTool {
    * @param {Object?} options
    */
   constructor($scope, drawingContext, entityIdService, entityColorService, options) {
-    super($scope, drawingContext, entityIdService, entityColorService, options);
+    const defaultOptions = {
+      minimalHeight: 1,
+    };
+
+    const mergedOptions = Object.assign({}, defaultOptions, options);
+    super($scope, drawingContext, entityIdService, entityColorService, mergedOptions);
 
     /**
      * @type {PaperPedestrian|null}
@@ -137,7 +142,7 @@ class PedestrianDrawingTool extends DrawingTool {
   onMouseUp(event) {
     if (this._pedestrian) {
       try {
-        this._pedestrian.enforceMinimalLength(this._startPoint, 100);
+        this._pedestrian.enforceMinimalLength(this._startPoint, this._options.minimalHeight);
       } catch(e) {}
       this._$scope.$apply(() => {
         this.completeShape();
