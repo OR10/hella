@@ -55,7 +55,7 @@ class CacheHeaterService {
    */
   stopHeatingLabeledThing(labeledThing) {
     const heater = this._nextHeaters.get('labeledThingInFrame');
-    if (heater.id === labeledThing.id) {
+    if (heater && heater.id === labeledThing.id) {
       this._nextHeaters.delete('labeledThingInFrame');
     }
   }
