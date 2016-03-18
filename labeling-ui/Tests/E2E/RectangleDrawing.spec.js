@@ -364,7 +364,7 @@ describe('Rectangle drawing', () => {
       labeledThingIncompleteCountMock,
 
       limitIgnoringLabeledThingInFrameRequestMock1,
-      limitIgnoringLabeledThingInFrameRequestMock1_5
+      limitIgnoringLabeledThingInFrameRequestMock1_5,
     ]);
     browser.get('/labeling/task/TASKID-TASKID');
 
