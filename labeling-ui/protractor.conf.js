@@ -13,7 +13,7 @@ exports.config = {
     require('jasmine-collection-matchers');
 
     const resizeHelper = new ViewportHelper(browser);
-    return resizeHelper.setViewportSize(1280, 720) // 16:9
+    return resizeHelper.setViewportSize(1453, 808) // Try to be as close to the original video size as possible
       .then(() => {
         return browser.getCapabilities();
       })
