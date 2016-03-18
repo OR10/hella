@@ -17,8 +17,8 @@
             "y": 100
           },
           "bottomRight": {
-            "x": 228,
-            "y": 228
+            "x": 300,
+            "y": 300
           },
           "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
         }
@@ -60,8 +60,8 @@
                 "y": 100
               },
               "bottomRight": {
-                "x": 228,
-                "y": 228
+                "x": 300,
+                "y": 300
               },
               "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
             }
