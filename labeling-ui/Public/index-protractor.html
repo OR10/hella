@@ -1,6 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="application/javascript">
+        function extractHash() {
+            var hash = {};
+            var keyValuePairs = window.location.hash.split('&');
+            keyValuePairs.forEach(function(keyValuePair) {
+                var pair = keyValuePair.split('=');
+
+                if (pair.length !== 2) {
+                    return;
+                }
+
+                var key = decodeURIComponent(pair[0].trim());
+                var value = decodeURIComponent(pair[1].trim());
+
+                hash[key] = value;
+            });
+
+            return hash;
+        }
+
+        var dpr = 1;
+
+        var hash = extractHash();
+        if (!!hash['PROTRACTOR__devivePixelRatio']) {
+            dpr = parseInt(hash['PROTRACTOR_devicePixelRatio']);
+        }
+
+        if (!!console.groupCollapsed) {
+            console.groupCollapsed('PROTRACTOR: window.devicePixelRation emulation');
+        }
+
+        console.log('Setting window.devicePixelRatio = %d', dpr);
+        window.devicePixelRatio = dpr;
+        console.log('Now set window.devicePixelRatio = %d', window.devicePixelRatio);
+
+        if (!!console.groupEnd) {
+            console.groupEnd();
+        }
+    </script>
     <meta charset="UTF-8">
     <title>Yo!</title>
     <base href="/labeling/" />
