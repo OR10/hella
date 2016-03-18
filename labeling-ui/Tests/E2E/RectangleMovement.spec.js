@@ -1,6 +1,7 @@
 import mock from 'protractor-http-mock';
 import ViewerDataManager from '../Support/ViewerDataManager';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
+import CoordinatesTransformer from '../Support/CoordinatesTransformer';
 import {getMockRequestsMade} from '../Support/Protractor/Helpers';
 
 // Shared Mocks
@@ -23,17 +24,16 @@ const overflowBottomRight = require('../ProtractorMocks/RectangleMovement/ShapeO
 const nonOverflowTopLeft = require('../ProtractorMocks/RectangleMovement/ShapeOverflow/NonOverflowTopLeftRectangle.json');
 const nonOverflowBottomRight = require('../ProtractorMocks/RectangleMovement/ShapeOverflow/NonOverflowBottomRightRectangle.json');
 
-const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
-
 const overflowTopLeftInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/OverflowTopLeftRectangle.json');
 const overflowBottomRightInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/OverflowBottomRightRectangle.json');
 const nonOverflowTopLeftInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/NonOverflowTopLeftRectangle.json');
 const nonOverflowBottomRightInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/NonOverflowBottomRightRectangle.json');
 
-function videoToViewerCoords(x, y, viewerSize) {
-  const factor = viewerSize.width / videoMock.response.data.result.metaData.width;
-  return {x: x * factor, y: y * factor};
-}
+const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
+const coords = new CoordinatesTransformer({
+  width: videoMock.response.data.result.metaData.width,
+  height: videoMock.response.data.result.metaData.height
+});
 
 describe('Rectangle moving', () => {
   describe('Shape Overflow', () => {
@@ -56,15 +56,12 @@ describe('Rectangle moving', () => {
       ]);
       browser.get('/labeling/task/TASKID-TASKID');
 
-      const viewer = element(by.css('.layer-container'));
-
-      viewer.getSize()
-        .then(viewerSize => {
-
+      coords.autoSetViewerDimensions()
+        .then(({viewer, viewerSize}) => {
           browser.actions()
-            .mouseMove(viewer, videoToViewerCoords(195, 195, viewerSize)) // initial position
+            .mouseMove(viewer, coords.toViewer(190, 190)) // initial position
             .mouseDown()
-            .mouseMove(viewer, videoToViewerCoords(1, 1, viewerSize)) // drag
+            .mouseMove(viewer, coords.toViewer(1, 1)) // drag
             .mouseUp()
             .perform();
 
@@ -99,15 +96,12 @@ describe('Rectangle moving', () => {
       ]);
       browser.get('/labeling/task/TASKID-TASKID');
 
-      const viewer = element(by.css('.layer-container'));
-
-      viewer.getSize()
-        .then(viewerSize => {
-
+      coords.autoSetViewerDimensions()
+        .then(({viewer, viewerSize}) => {
           browser.actions()
-            .mouseMove(viewer, videoToViewerCoords(110, 110, viewerSize)) // initial position
+            .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
             .mouseDown()
-            .mouseMove(viewer, videoToViewerCoords(1023, 619, viewerSize)) // drag
+            .mouseMove(viewer, coords.toViewer(1023, 619)) // drag
             .mouseUp()
             .perform();
 
@@ -142,15 +136,12 @@ describe('Rectangle moving', () => {
       ]);
       browser.get('/labeling/task/TASKID-TASKID');
 
-      const viewer = element(by.css('.layer-container'));
-
-      viewer.getSize()
-        .then(viewerSize => {
-
+      coords.autoSetViewerDimensions()
+        .then(({viewer, viewerSize}) => {
           browser.actions()
-            .mouseMove(viewer, videoToViewerCoords(110, 110, viewerSize)) // initial position
+            .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
             .mouseDown()
-            .mouseMove(viewer, videoToViewerCoords(1023, 619, viewerSize)) // drag
+            .mouseMove(viewer, coords.toViewer(1023, 619)) // drag
             .mouseUp()
             .perform();
 
@@ -185,15 +176,12 @@ describe('Rectangle moving', () => {
       ]);
       browser.get('/labeling/task/TASKID-TASKID');
 
-      const viewer = element(by.css('.layer-container'));
-
-      viewer.getSize()
-        .then(viewerSize => {
-
+      coords.autoSetViewerDimensions()
+        .then(({viewer, viewerSize}) => {
           browser.actions()
-            .mouseMove(viewer, videoToViewerCoords(190, 190, viewerSize)) // initial position
+            .mouseMove(viewer, coords.toViewer(190, 190)) // initial position
             .mouseDown()
-            .mouseMove(viewer, videoToViewerCoords(1, 1, viewerSize)) // drag
+            .mouseMove(viewer, coords.toViewer(1, 1)) // drag
             .mouseUp()
             .perform();
 
