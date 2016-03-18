@@ -50,9 +50,9 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
     {
       'browserName': 'chrome',
       'chromeOptions': {
-        'mobileEmulation': {
-          'deviceName': 'Laptop with MDPI screen',
-        },
+        //'mobileEmulation': {
+        //  'deviceName': 'Laptop with MDPI screen',
+        //},
       }
     },
     {
@@ -63,9 +63,9 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   exports.config.capabilities = {
     'browserName': 'chrome',
     'chromeOptions': {
-      'mobileEmulation': {
-        'deviceName': 'Laptop with MDPI screen',
-      },
+      //'mobileEmulation': {
+      //  'deviceName': 'Laptop with MDPI screen',
+      //},
     },
   };
 }
