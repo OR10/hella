@@ -2,7 +2,7 @@ require('babel-core/register');
 
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/ImageDiffReporter/ImageDiffReporter');
-const ViewportResizeHelper = require('./Tests/Support/Protractor/ViewportResizeHelper');
+const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 
 exports.config = {
   framework: 'jasmine2',
@@ -12,8 +12,8 @@ exports.config = {
     require('./Tests/Support/Jasmine/CustomMatchers');
     require('jasmine-collection-matchers');
 
-    const resizeHelper = new ViewportResizeHelper(browser);
-    return resizeHelper.setViewportSize(640, 480)
+    const resizeHelper = new ViewportHelper(browser);
+    return resizeHelper.setViewportSize(1280, 720) // 16:9
       .then(() => {
         return browser.getCapabilities();
       })

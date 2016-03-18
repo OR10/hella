@@ -1,10 +1,10 @@
 /**
- * Webdriver/Protractor helper to ensure deterministic sizing of the Viewport
+ * Webdriver/Protractor helper to ensure deterministic properties of the Viewport
  * during test runs.
  *
  * Most likely protractors `onPrepare` method is where you want to use the `ViewportResizeHelper`
  */
-class ViewportResizeHelper {
+class ViewportHelper {
   /**
    * @param {WebDriver.Browser} browser
    */
@@ -140,7 +140,7 @@ class ViewportResizeHelper {
       .then(() => this.getViewportSize())
       .then((newViewportSize) => {
         if (
-          retryCount < ViewportResizeHelper.MAX_RETRY_COUNT &&
+          retryCount < ViewportHelper.MAX_RETRY_COUNT &&
           (newViewportSize.width !== desiredWidth || newViewportSize.height !== desiredHeight)
         ) {
           // The size is not yet fully adapted. try again
@@ -150,6 +150,6 @@ class ViewportResizeHelper {
   }
 }
 
-ViewportResizeHelper.MAX_RETRY_COUNT = 10;
+ViewportHelper.MAX_RETRY_COUNT = 10;
 
-module.exports = ViewportResizeHelper;
+module.exports = ViewportHelper;
