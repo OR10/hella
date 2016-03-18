@@ -152,6 +152,8 @@ class Linear implements Interpolation\Algorithm
             return $this->interpolateRectangle($current, $end, $steps);
         case Shapes\Ellipse::class:
             return $this->interpolateEllipse($current, $end, $steps);
+        case Shapes\Pedestrian::class:
+            return $this->interpolatePedestrian($current, $end, $steps);
         }
 
         throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
@@ -190,6 +192,24 @@ class Linear implements Interpolation\Algorithm
             $current->getY() + ($end->getY() - $current->getY()) / $steps,
             $current->getWidth() + ($end->getWidth() - $current->getWidth()) / $steps,
             $current->getHeight() + ($end->getHeight() - $current->getHeight()) / $steps
+        );
+    }
+
+    /**
+     * @param Shapes\Pedestrian $current
+     * @param Shapes\Pedestrian $end
+     * @param $steps
+     *
+     * @return Shapes\Pedestrian
+     */
+    private function interpolatePedestrian(Shapes\Pedestrian $current, Shapes\Pedestrian $end, $steps)
+    {
+        return new Shapes\Pedestrian(
+            $current->getId(),
+            $current->getTopCenterX() + ($end->getTopCenterX() - $current->getTopCenterX()) / $steps,
+            $current->getTopCenterY() + ($end->getTopCenterY() - $current->getTopCenterY()) / $steps,
+            $current->getBottomCenterX() + ($end->getBottomCenterX() - $current->getBottomCenterX()) / $steps,
+            $current->getBottomCenterY() + ($end->getBottomCenterY() - $current->getBottomCenterY()) / $steps
         );
     }
 }
