@@ -32,7 +32,7 @@ class DrawingTool extends Tool {
 
     /**
      * @type {EntityColorService}
-     * @private
+     * @protected
      */
     this._entityColorService = entityColorService;
   }

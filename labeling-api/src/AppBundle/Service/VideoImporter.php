@@ -62,11 +62,14 @@ class VideoImporter
      * @param string $path The filesystem path to the video file.
      * @param bool $lossless Wether or not the UI should use lossless compressed images.
      * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param             $isObjectLabeling
+     * @param             $isMetaLabeling
+     * @param             $isVehicleInstruction
+     * @param             $isPedestrianInstruction
+     * @param int|null $minimalVisibleShapeOverflow
+     * @param string|null $drawingTool
+     * @param array $drawingToolOptions
      *
-     * @param $isObjectLabeling
-     * @param $isMetaLabeling
-     * @param $isVehicleInstruction
-     * @param $isPedestrianInstruction
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
@@ -79,7 +82,10 @@ class VideoImporter
         $isObjectLabeling,
         $isMetaLabeling,
         $isVehicleInstruction,
-        $isPedestrianInstruction
+        $isPedestrianInstruction,
+        $minimalVisibleShapeOverflow = null,
+        $drawingTool = null,
+        $drawingToolOptions = array()
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -123,7 +129,9 @@ class VideoImporter
                     null,
                     [],
                     $imageTypes,
-                    null
+                    null,
+                    null,
+                    $drawingToolOptions
                 );
             }
 
@@ -132,10 +140,12 @@ class VideoImporter
                     $video,
                     $frameRange,
                     Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    $drawingTool,
                     ['pedestrian'],
                     $imageTypes,
-                    Model\LabelingTask::INSTRUCTION_PEDESTRIAN
+                    Model\LabelingTask::INSTRUCTION_PEDESTRIAN,
+                    $minimalVisibleShapeOverflow,
+                    $drawingToolOptions
                 );
             }
             if ($isObjectLabeling && $isVehicleInstruction) {
@@ -143,10 +153,12 @@ class VideoImporter
                     $video,
                     $frameRange,
                     Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    $drawingTool,
                     ['pedestrian'],
                     $imageTypes,
-                    Model\LabelingTask::INSTRUCTION_VEHICLE
+                    Model\LabelingTask::INSTRUCTION_VEHICLE,
+                    $minimalVisibleShapeOverflow,
+                    $drawingToolOptions
                 );
             }
         }
@@ -163,7 +175,10 @@ class VideoImporter
      * @param string|null $drawingTool
      * @param string[] $predefinedClasses
      * @param                  $imageTypes
-     * @param $instruction
+     * @param                  $instruction
+     * @param int|null $minimalVisibleShapeOverflow
+     * @param $drawingToolOptions
+     *
      * @return Model\LabelingTask
      */
     private function addTask(
@@ -173,7 +188,9 @@ class VideoImporter
         $drawingTool,
         $predefinedClasses,
         $imageTypes,
-        $instruction
+        $instruction,
+        $minimalVisibleShapeOverflow,
+        $drawingToolOptions
     ) {
         $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
@@ -184,14 +201,20 @@ class VideoImporter
             $predefinedClasses,
             $imageTypes
         );
+
         $labelingTask->setDescriptionTitle('Identify the person');
         $labelingTask->setDescriptionText(
             'How is the view on the person? ' .
             'Which side does one see from the person and from which side is the person entering the screen?'
         );
-        $labelingTask->setLabelStructure($this->getLabelStructureForTypeAndInstruction($taskType,$instruction));
-        $labelingTask->setLabelStructureUi($this->getLabelStructureUiForTypeAndInstruction($taskType,$instruction));
+
+        $labelingTask->setLabelStructure($this->getLabelStructureForTypeAndInstruction($taskType, $instruction));
+        $labelingTask->setLabelStructureUi($this->getLabelStructureUiForTypeAndInstruction($taskType, $instruction));
         $labelingTask->setLabelInstruction($instruction);
+
+        $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
+        $labelingTask->setDrawingToolOptions($drawingToolOptions);
+
         $this->labelingTaskFacade->save($labelingTask);
 
         return $labelingTask;
@@ -228,7 +251,7 @@ class VideoImporter
                     $type
                 )
             );
-        }else{
+        } else {
             $structure = file_get_contents(
                 sprintf(
                     '%s/../Resources/LabelStructures/%s-%s.json',
@@ -252,7 +275,7 @@ class VideoImporter
                     $type
                 )
             );
-        }else{
+        } else {
             $structure = file_get_contents(
                 sprintf(
                     '%s/../Resources/LabelStructures/%s-%s-ui.json',
@@ -262,6 +285,7 @@ class VideoImporter
                 )
             );
         }
+
         return json_decode($structure, true);
     }
 }

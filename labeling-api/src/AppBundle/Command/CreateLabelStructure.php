@@ -32,7 +32,6 @@ class CreateLabelStructure extends Base
                 break;
             case 'pedestrian':
                 $this->createPedestrianStructure();
-                $this->writeError($output, "Pedestrian structure not implemented yet!");
                 break;
             default:
                 $this->writeError($output, "Type '$type' is not supported!");
@@ -153,7 +152,97 @@ class CreateLabelStructure extends Base
 
     private function createPedestrianStructure()
     {
-        // TODO: Implement createPedestrianStructure() method.
+        $directions = array(
+            array(
+                'name' => 'direction-back',
+                'response' => '↑ Back',
+            ),
+            array(
+                'name' => 'direction-back-right',
+                'response' => '↗ Back Right'
+            ),
+            array(
+                'name' => 'direction-right',
+                'response' => '→ Right'
+            ),
+            array(
+                'name' => 'direction-front-right',
+                'response' => '↘ Front Right'
+            ),
+            array(
+                'name' => 'direction-front',
+                'response' => '↓ Front'
+            ),
+            array(
+                'name' => 'direction-front-left',
+                'response' => '↙ Front Left'
+            ),
+            array(
+                'name' => 'direction-left',
+                'response' => '← Left'
+            ),
+            array(
+                'name' => 'direction-back-left',
+                'response' => '↖ Back Left'
+            ),
+        );
+
+        $truncations = array(
+            array(
+                'name' => 'truncation-25',
+                'response' => '< 25%',
+            ),
+            array(
+                'name' => 'truncation-25-50',
+                'response' => '25% - 50%',
+            ),
+            array(
+                'name' => 'truncation-50',
+                'response' => '> 50%',
+            ),
+        );
+
+        $occlusions = array(
+            array(
+                'name' => 'occlusion-25',
+                'response' => '< 25%',
+            ),
+            array(
+                'name' => 'occlusion-25-50',
+                'response' => '25% - 50%',
+            ),
+            array(
+                'name' => 'occlusion-50',
+                'response' => '> 50%',
+            ),
+        );
+
+        $data = array(
+            array(
+                'name' => 'occlusion',
+                'challenge' => 'Occlusion',
+                'children' => $occlusions,
+            ),
+            array(
+                'name' => 'truncation',
+                'challenge' => 'Truncation',
+                'children' => $truncations,
+            ),
+            array(
+                'name' => 'direction',
+                'challenge' => 'Direction',
+                'children' => $directions,
+            ),
+        );
+
+        file_put_contents(
+            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-pedestrian.json'),
+            json_encode($this->buildBackendLabelStructure($data))
+        );
+        file_put_contents(
+            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-pedestrian-ui.json'),
+            json_encode($this->buildFrontendLabelStructure($data))
+        );
     }
 
     private function buildBackendLabelStructure(array $data)

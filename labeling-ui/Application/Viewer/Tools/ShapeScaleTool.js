@@ -1,6 +1,7 @@
 import Tool from './Tool';
 import paper from 'paper';
 import PaperCircle from '../Shapes/PaperCircle';
+import PaperPedestrian from '../Shapes/PaperPedestrian';
 
 /**
  * A Tool for scaling annotation shapes
@@ -43,10 +44,20 @@ export default class ShapeScaleTool extends Tool {
      * @private
      */
     this._boundName = null;
+
+    /**
+     * Position of the initial mousedown of one certain scaling operation
+     *
+     * @type {paper.Point|null}
+     * @private
+     */
+    this._startPoint = null;
   }
 
   onMouseDown(event, hitResult) {
     const point = event.point;
+
+    this._startPoint = point;
 
     this._hitResult = hitResult;
 
@@ -61,6 +72,9 @@ export default class ShapeScaleTool extends Tool {
         case this._hitResult.item instanceof PaperCircle:
           this._scaleAnchor = this._getCircleScaleAnchor(point, this._hitResult.item);
           break;
+        case this._hitResult.item instanceof PaperPedestrian:
+          this._scaleAnchor = this._getPedestrianScaleAnchor(point, this._hitResult.item);
+          break;
         default:
           this._scaleAnchor = this._getScaleAnchor(point, this._hitResult.item);
       }
@@ -70,16 +84,29 @@ export default class ShapeScaleTool extends Tool {
   onMouseUp() {
     if (this._hitResult && this._hitResult.item) {
       if (this._modified) {
+        if (this._hitResult.type === 'bounds') {
+          switch (true) {
+            case this._hitResult.item instanceof PaperPedestrian:
+              const drawingToolOptions = this._$scope.vm.task.drawingToolOptions;
+              const minimalHeight = (drawingToolOptions && drawingToolOptions.pedestrian && drawingToolOptions.pedestrian.minimalHeight)
+                ? drawingToolOptions.pedestrian.minimalHeight
+                : 1;
+              this._hitResult.item.enforceMinimalLength(this._scaleAnchor, minimalHeight);
+              break;
+          }
+        }
+
         this._modified = false;
         this.emit('shape:update', this._hitResult.item);
       }
     }
 
     this._scaleAnchor = null;
+    this._startPoint = null;
   }
 
   onMouseDrag(event) {
-    if (!this._hitResult || this._hitResult.type !== 'bounds' || !this._scaleAnchor) {
+    if (!this._hitResult || this._hitResult.type !== 'bounds' || this._scaleAnchor === null) {
       return;
     }
     const point = event.point;
@@ -90,6 +117,9 @@ export default class ShapeScaleTool extends Tool {
       switch (true) {
         case this._hitResult.item instanceof PaperCircle:
           this._scaleCircle(this._hitResult.item, point);
+          break;
+        case this._hitResult.item instanceof PaperPedestrian:
+          this._scalePedestrian(this._hitResult.item, point);
           break;
         default:
           this._scale(this._hitResult.item, point);
@@ -111,6 +141,20 @@ export default class ShapeScaleTool extends Tool {
 
     this._scaleAnchor = this._getScaleAnchor();
     item.scale(scaleX, scaleY, this._scaleAnchor);
+  }
+
+  _scalePedestrian(pedestrian, point) {
+    const {topCenter, bottomCenter} = pedestrian.getCenterPoints();
+
+    const scaleFactor = Math.abs(this._scaleAnchor.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
+    if (scaleFactor !== 0) {
+      pedestrian.scale(1, scaleFactor, this._scaleAnchor);
+    }
+
+    if ((this._scaleAnchor.isClose(topCenter, 0.0001) && point.y < topCenter.y) ||
+      (this._scaleAnchor.isClose(bottomCenter, 0.0001) && point.y > bottomCenter.y)) {
+      pedestrian.flipHorizontally(this._scaleAnchor);
+    }
   }
 
   _scaleCircle(item, dragPoint) {
@@ -167,5 +211,16 @@ export default class ShapeScaleTool extends Tool {
     }
 
     return new paper.Point(item.position.x, item.bounds.bottom);
+  }
+
+  _getPedestrianScaleAnchor(point, pedestrian) {
+    const {topCenter, bottomCenter} = pedestrian.getCenterPoints();
+
+    if (point.y >= topCenter.y - 8 && point.y <= topCenter.y + 8) {
+      return bottomCenter;
+    } else {
+      return topCenter;
+    }
+
   }
 }

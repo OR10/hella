@@ -164,7 +164,7 @@
         },
         "labelInstruction": "vehicle",
         "readOnly": false,
-        "minimalVisibleShapeOverflow": null
+        "minimalVisibleShapeOverflow": 16
       }
     }
   }

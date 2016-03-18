@@ -2,72 +2,59 @@
   "name": "root",
   "children": [
     {
-      "name": "pedestrian",
+      "name": "occlusion",
       "children": [
         {
-          "name": "hasAccessory",
-          "children": [
-            {
-              "name": "hat"
-            },
-            {
-              "name": "umbrella"
-            },
-            {
-              "name": "stroller"
-            },
-            {
-              "name": "skateboard"
-            }
-          ]
+          "name": "occlusion-25"
         },
         {
-          "name": "noAccessory"
+          "name": "occlusion-25-50"
+        },
+        {
+          "name": "occlusion-50"
         }
       ]
     },
     {
-      "name": "movementDirection",
+      "name": "truncation",
       "children": [
         {
-          "name": "left"
+          "name": "truncation-25"
         },
         {
-          "name": "right"
+          "name": "truncation-25-50"
         },
         {
-          "name": "front"
-        },
-        {
-          "name": "back"
+          "name": "truncation-50"
         }
       ]
     },
     {
-      "name": "visibility",
+      "name": "direction",
       "children": [
         {
-          "name": "visible",
-          "children": [
-            {
-              "name": "visible-10"
-            },
-            {
-              "name": "visible-30"
-            },
-            {
-              "name": "visible-50"
-            },
-            {
-              "name": "visible-80"
-            },
-            {
-              "name": "visible-100"
-            }
-          ]
+          "name": "direction-back"
         },
         {
-          "name": "invisible"
+          "name": "direction-back-right"
+        },
+        {
+          "name": "direction-right"
+        },
+        {
+          "name": "direction-front-right"
+        },
+        {
+          "name": "direction-front"
+        },
+        {
+          "name": "direction-front-left"
+        },
+        {
+          "name": "direction-left"
+        },
+        {
+          "name": "direction-back-left"
         }
       ]
     }

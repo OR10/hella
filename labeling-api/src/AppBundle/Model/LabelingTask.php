@@ -13,6 +13,7 @@ class LabelingTask
     const TYPE_META_LABELING = 'meta-labeling';
     const TYPE_OBJECT_LABELING = 'object-labeling';
     const DRAWING_TOOL_RECTANGLE = 'rectangle';
+    const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
 
     const INSTRUCTION_VEHICLE = 'vehicle';
     const INSTRUCTION_PEDESTRIAN = 'pedestrian';
@@ -100,6 +101,12 @@ class LabelingTask
     private $drawingTool;
 
     /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $drawingToolOptions = array();
+
+    /**
      * @var int|null
      * @CouchDB\Field(type="mixed")
      */
@@ -122,6 +129,12 @@ class LabelingTask
      * @CouchDB\Field(type="mixed")
      */
     private $labelInstruction = null;
+
+    /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $minimalVisibleShapeOverflow = null;
 
     /**
      * @param Video      $video
@@ -375,5 +388,37 @@ class LabelingTask
     public function setLabelInstruction($labelInstruction)
     {
         $this->labelInstruction = $labelInstruction;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMinimalVisibleShapeOverflow()
+    {
+        return $this->minimalVisibleShapeOverflow;
+    }
+
+    /**
+     * @param null|string $minimalVisibleShapeOverflow
+     */
+    public function setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow)
+    {
+        $this->minimalVisibleShapeOverflow = $minimalVisibleShapeOverflow;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDrawingToolOptions()
+    {
+        return $this->drawingToolOptions;
+    }
+
+    /**
+     * @param array $drawingToolOptions
+     */
+    public function setDrawingToolOptions($drawingToolOptions)
+    {
+        $this->drawingToolOptions = $drawingToolOptions;
     }
 }

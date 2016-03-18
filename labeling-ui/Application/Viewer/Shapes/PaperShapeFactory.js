@@ -1,4 +1,5 @@
 import PaperRectangle from './PaperRectangle';
+import PaperPedestrian from './PaperPedestrian';
 import PaperEllipse from './PaperEllipse';
 import PaperCircle from './PaperCircle';
 import PaperPoint from './PaperPoint';
@@ -26,6 +27,17 @@ class PaperShapeFactory {
    */
   _createRectangle(labeledThingInFrame, shape, color) {
     return new PaperRectangle(labeledThingInFrame, shape.id, shape.topLeft, shape.bottomRight, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @param {String} color
+   * @returns {PaperPedestrian}
+   * @private
+   */
+  _createPedestrian(labeledThingInFrame, shape, color) {
+    return new PaperPedestrian(labeledThingInFrame, shape.id, shape.topCenter, shape.bottomCenter, color);
   }
 
   /**
@@ -107,18 +119,21 @@ class PaperShapeFactory {
       case 'rectangle':
         result = this._createRectangle(labeledThingInFrame, shape, color);
         break;
-      case 'ellipse':
-        return this._createEllipse(labeledThingInFrame, shape, color);
-      case 'circle':
-        return this._createCircle(labeledThingInFrame, shape, color);
-      case 'point':
-        return this._createPoint(labeledThingInFrame, shape, color);
-      case 'path':
-        return this._createPath(labeledThingInFrame, shape, color);
-      case 'polygon':
-        return this._createPolygon(labeledThingInFrame, shape, color);
-      case 'line':
-        return this._createLine(labeledThingInFrame, shape, color);
+      case 'pedestrian':
+        result = this._createPedestrian(labeledThingInFrame, shape, color);
+        break;
+      //case 'ellipse':
+      //  return this._createEllipse(labeledThingInFrame, shape, color);
+      //case 'circle':
+      //  return this._createCircle(labeledThingInFrame, shape, color);
+      //case 'point':
+      //  return this._createPoint(labeledThingInFrame, shape, color);
+      //case 'path':
+      //  return this._createPath(labeledThingInFrame, shape, color);
+      //case 'polygon':
+      //  return this._createPolygon(labeledThingInFrame, shape, color);
+      //case 'line':
+      //  return this._createLine(labeledThingInFrame, shape, color);
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }

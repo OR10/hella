@@ -302,6 +302,17 @@ class MediaControlsController {
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
 
+    const onDeletionError = () => {
+      this._applicationState.enableAll();
+      const errorDialog = this._modalService.getAlertWarningDialog({
+        title: 'Error',
+        headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
+        confirmButtonText: 'Ok',
+      }, () => {
+      });
+      errorDialog.activate();
+    };
+
     this._applicationState.disableAll();
 
     // TODO: fix the revision error in the backend
@@ -316,24 +327,9 @@ class MediaControlsController {
             this._applicationState.enableAll();
           }
         )
-        .catch(function (error) {
-            this._applicationState.enableAll();
-            const errorDialog = this._modalService.getAlertWarningDialog({
-              title: 'Error',
-              headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
-              confirmButtonText: 'Ok',
-            }, () => {
-            });
-            errorDialog.activate();
-          }.bind(this)
-        );
+        .catch(() => onDeletionError());
     } catch (error) {
-      const errorDialog = this._modalService.getAlertWarningDialog({
-        title: 'Error',
-        headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
-        confirmButtonText: 'Ok',
-      }, () => this._applicationState.enableAll());
-      errorDialog.activate();
+      onDeletionError();
     }
   }
 

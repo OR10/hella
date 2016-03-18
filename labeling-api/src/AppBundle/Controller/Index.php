@@ -76,6 +76,13 @@ class Index extends Base
         $metaLabeling = $request->request->get('meta-labeling', false);
         $pedestrian = $request->request->get('pedestrian', false);
         $vehicle = $request->request->get('vehicle', false);
+        $overflow = (bool)$request->request->get('overflow', false);
+        $drawingTool = $request->request->get('drawingTool', 'rectangle');
+        $drawingToolOptions = array(
+            'pedestrian' => array(
+                'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22')
+            )
+        );
 
         if ($splitLength < 0) {
             throw new Exception\BadRequestHttpException();
@@ -92,7 +99,10 @@ class Index extends Base
                 $objectLabeling,
                 $metaLabeling,
                 $vehicle,
-                $pedestrian
+                $pedestrian,
+                $overflow ? 16 : null,
+                $drawingTool,
+                $drawingToolOptions
             );
 
             $viewData['taskIds'] = array_map(

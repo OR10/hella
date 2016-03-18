@@ -1,14 +1,14 @@
 module.exports = function toEqualDrawingStack() {
   function equalDimensions(lhs, rhs) {
-    return lhs.height === rhs.height && lhs.width === rhs.width;
+    return (lhs.height === rhs.height && lhs.width === rhs.width);
   }
 
   function equalStack(actual, expected) {
-    return JSON.stringify(expected) === JSON.stringify(actual);
+    return (JSON.stringify(expected) === JSON.stringify(actual));
   }
 
   function equalDrawingStack(actual, expected) {
-    return equalDimensions(actual, expected) && equalStack(actual.operations, expected.operations);
+    return (equalDimensions(actual, expected) && equalStack(actual.operations, expected.operations));
   }
 
   return {

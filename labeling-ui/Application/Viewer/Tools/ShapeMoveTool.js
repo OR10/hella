@@ -90,6 +90,9 @@ export default class ShapeMoveTool extends Tool {
   /**
    * Restrict the position of the paper shape to within the bounds of the view
    *
+   * The provided as well as returned point is supposed to be the center point of the shape.
+   *
+   * @param {PaperShape} shape
    * @param {paper.Point} point
    * @returns {paper.Point}
    * @private
@@ -100,26 +103,37 @@ export default class ShapeMoveTool extends Tool {
     const shapeWidth = shape.bounds.width;
     const shapeHeight = shape.bounds.height;
 
-    let correctedX = point.x;
-    let correctedY = point.y;
+    let minimalVisibleShapeOverflowX = this._$scope.vm.task.minimalVisibleShapeOverflow;
+    let minimalVisibleShapeOverflowY = this._$scope.vm.task.minimalVisibleShapeOverflow;
 
-    if (point.x - shapeWidth / 2 < 0) {
-      correctedX = shapeWidth / 2;
+    if (minimalVisibleShapeOverflowX === null) {
+      minimalVisibleShapeOverflowX = shapeWidth;
     }
 
-    if (point.y - shapeHeight / 2 < 0) {
-      correctedY = shapeHeight / 2;
+    if (minimalVisibleShapeOverflowY === null) {
+      minimalVisibleShapeOverflowY = shapeHeight;
     }
 
-    if (point.x + shapeWidth / 2 > viewWidth) {
-      correctedX = viewWidth - shapeWidth / 2;
-    }
+    const minX = (shapeWidth / 2) - (shapeWidth - minimalVisibleShapeOverflowX);
+    const maxX = viewWidth - (shapeWidth / 2) + (shapeWidth - minimalVisibleShapeOverflowX);
+    const minY = (shapeHeight / 2) - (shapeHeight - minimalVisibleShapeOverflowY);
+    const maxY = viewHeight - (shapeHeight / 2) + (shapeHeight - minimalVisibleShapeOverflowY);
 
-    if (point.y + shapeHeight / 2 > viewHeight) {
-      correctedY = viewHeight - shapeHeight / 2;
-    }
-
-    return new paper.Point(correctedX, correctedY);
+    return new paper.Point(
+      this._clampTo(minX, maxX, point.x),
+      this._clampTo(minY, maxY, point.y)
+    );
   }
 
+  /**
+   * Clamp a value to a given range
+   *
+   * @param {number} minClamp
+   * @param {number} maxClamp
+   * @param {number} value
+   * @private
+   */
+  _clampTo(minClamp, maxClamp, value) {
+    return Math.max(minClamp, Math.min(maxClamp, value));
+  }
 }

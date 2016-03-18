@@ -5,7 +5,6 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
-import debounce from 'lodash.debounce';
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 /**
@@ -43,6 +42,7 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {LockService} lockService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {DebouncerService} debouncerService
    */
   constructor($scope,
               $element,
@@ -65,7 +65,8 @@ class ViewerController {
               $timeout,
               applicationState,
               lockService,
-              keyboardShortcutService) {
+              keyboardShortcutService,
+              debouncerService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -215,6 +216,12 @@ class ViewerController {
     this._keyboardShortcutService = keyboardShortcutService;
 
     /**
+     * @type {DebouncerService}
+     * @private
+     */
+    this._debouncerService = debouncerService;
+
+    /**
      * @type {LayerManager}
      * @private
      */
@@ -311,21 +318,22 @@ class ViewerController {
 
     // Something seemingly still resizes after this point. We simply bump
     // the resize to the next animation frame to avoid this.
-    this._resizeDebounced();
+    $scope.$evalAsync(() => this._resizeDebounced());
 
     $window.addEventListener('resize', this._resizeDebounced);
 
-    $window.document.addEventListener(
-      'visibilitychange', () => {
-        if ($window.document.visibilityState === 'visible') {
-          this._resizeDebounced();
-        }
+    const onVisibilityChange = () => {
+      if ($window.document.visibilityState === 'visible') {
+        this._resizeDebounced();
       }
-    );
+    };
+
+    $window.document.addEventListener('visibilitychange', onVisibilityChange);
 
     $scope.$on(
       '$destroy', () => {
         $window.removeEventListener('resize', this._resizeDebounced);
+        $window.removeEventListener('visibilitychange', onVisibilityChange);
       }
     );
 
@@ -376,7 +384,6 @@ class ViewerController {
 
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
-
     $scope.$watch('vm.framePosition.position', newPosition => {
       this._handleFrameChange(newPosition);
     });
@@ -466,10 +473,10 @@ class ViewerController {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
     }
 
-    // Fix Firefox issue where resize event is not fired
-    new ResizeSensor($('.layer-container').get(0), () => {
+    //Fix Firefox issue where resize event is not fired
+    const resizeSensor = new ResizeSensor(this._$element.get(0), () => {
       this._resize();
-    })
+    });
   }
 
   setupLayers() {
@@ -531,9 +538,19 @@ class ViewerController {
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
     this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
-    this.thingLayer.on('shape:update', debounce((shape) => {
-      this._onUpdatedShape(shape);
-    }, 500));
+
+    const debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
+      (shape, frameNumber) => this._onUpdatedShape(shape, frameNumber),
+      (shape, frameNumber) => shape.labeledThingInFrame.ghost
+        ? `${frameNumber}.${shape.id}`
+        : `${shape.labeledThingInFrame.frameNumber}.${shape.id}`,
+      500
+    );
+
+    this.thingLayer.on('shape:update', shape => {
+      const frameNumber = this.framePosition.position;
+      debouncedOnShapeUpdate(shape, frameNumber);
+    });
 
     this._layerManager.addLayer('annotations', this.thingLayer);
 
@@ -752,26 +769,31 @@ class ViewerController {
     );
   }
 
-  _onUpdatedShape(shape) {
+  /**
+   * @param {PaperShape} shape
+   * @param {Integer} frameNumber
+   * @private
+   */
+  _onUpdatedShape(shape, frameNumber) {
     const labeledThingInFrame = shape.labeledThingInFrame;
     const labeledThing = labeledThingInFrame.labeledThing;
 
     if (labeledThingInFrame.ghost) {
       labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
-        this.framePosition.position
+        frameNumber
       );
     }
 
     let frameRangeUpdated = false;
 
-    if (this.framePosition.position > labeledThing.frameRange.endFrameNumber) {
-      labeledThing.frameRange.endFrameNumber = this.framePosition.position;
+    if (frameNumber > labeledThing.frameRange.endFrameNumber) {
+      labeledThing.frameRange.endFrameNumber = frameNumber;
       frameRangeUpdated = true;
     }
 
-    if (this.framePosition.position < labeledThing.frameRange.startFrameNumber) {
-      labeledThing.frameRange.startFrameNumber = this.framePosition.position;
+    if (frameNumber < labeledThing.frameRange.startFrameNumber) {
+      labeledThing.frameRange.startFrameNumber = frameNumber;
       frameRangeUpdated = true;
     }
 
@@ -1034,6 +1056,7 @@ ViewerController.$inject = [
   'applicationState',
   'lockService',
   'keyboardShortcutService',
+  'debouncerService',
 ];
 
 export default ViewerController;

@@ -2,6 +2,7 @@ import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
+import PedestrianDrawingTool from '../Tools/PedestrianDrawingTool';
 import EllipseDrawingTool from '../Tools/EllipseDrawingTool';
 import CircleDrawingTool from '../Tools/CircleDrawingTool';
 import PathDrawingTool from '../Tools/PathDrawingTool';
@@ -175,19 +176,26 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   dispatchDOMEvent(event) {
-    if (event.type === 'mouseleave') {
-      this._multiTool.onMouseLeave(event);
-    } else {
-      this._element.dispatchEvent(event);
-    }
+    this._context.withScope(scope => {
+      if (event.type === 'mouseleave') {
+        this._multiTool.onMouseLeave(event);
+      } else {
+        this._element.dispatchEvent(event);
+      }
+    });
   }
 
   _initializeShapeCreationTool() {
+    const task = this._$scope.vm.task;
+    const drawingToolOptions = task.drawingToolOptions || {};
     let tool = null;
 
-    switch (this._$scope.vm.task.drawingTool) {
+    switch (task.drawingTool) {
       case 'rectangle':
-        tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
+        tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, drawingToolOptions.rectangle);
+        break;
+      case 'pedestrian':
+        tool = new PedestrianDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, drawingToolOptions.pedestrian);
         break;
       case 'ellipse':
         tool = new EllipseDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
@@ -276,8 +284,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
 
       if (hitResult) {
+        this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitResult.item);
         this._$scope.vm.selectedPaperShape = hitResult.item;
       } else {
+        this._logger.log('thinglayer:selection', 'HitTest negative. Deselecting');
         this._$scope.vm.selectedPaperShape = null;
       }
     });
