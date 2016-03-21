@@ -19,9 +19,11 @@
                 <tbody>
                 <tr ng-repeat="task in vm.preprocessingTasks track by task.id">
                     <td>
-                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                         &nbsp;{{task.taskType}}
                     </td>
                     <td>
@@ -54,9 +56,11 @@
                 <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id)"
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
-                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                         &nbsp;{{task.taskType}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">
@@ -94,9 +98,11 @@
                 <tr ui-sref="^.task({taskId: task.id})" ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks)"
                     track-by="task.id">
                     <td>
-                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                         &nbsp;{{task.taskType}}
                     </td>
                     <td>
@@ -129,9 +135,11 @@
                 <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id)"
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
-                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                         &nbsp;{{task.taskType}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">
@@ -171,9 +179,11 @@
                 <tbody>
                 <tr ng-repeat="task in vm.labeledTasks track by task.id">
                     <td ui-sref="^.task({taskId: task.id})">
-                        <i ng-show="task.labelInstruction === 'pedestrian'" class="fa fa-users"></i>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                         &nbsp;{{task.taskType}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">

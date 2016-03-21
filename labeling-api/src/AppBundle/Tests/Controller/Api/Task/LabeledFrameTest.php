@@ -264,13 +264,13 @@ class LabeledFrameTest extends Tests\WebTestCase
                         '%s/../../../Resources/LabelStructures/%s-%s.json',
                         __DIR__,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
-                        Model\LabelingTask::INSTRUCTION_PEDESTRIAN
+                        Model\LabelingTask::INSTRUCTION_PERSON
                     )
                 ),
                 true
             )
         );
-        $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_PEDESTRIAN);
+        $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_PERSON);
         $this->task = $this->labelingTaskFacade->save($task);
     }
 
