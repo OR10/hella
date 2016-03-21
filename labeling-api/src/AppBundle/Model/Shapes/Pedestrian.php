@@ -88,7 +88,12 @@ class Pedestrian extends Model\Shape
      */
     public function getBoundingBox()
     {
-        // TODO: Implement getBoundingBox() method.
+        return new BoundingBox(
+            $this->getTopCenterX(),
+            $this->getTopCenterY(),
+            $this->getBottomCenterX(),
+            $this->getBottomCenterY()
+        );
     }
 
     /**

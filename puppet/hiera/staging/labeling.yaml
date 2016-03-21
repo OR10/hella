@@ -13,6 +13,7 @@ php::extensions:
   bcmath: {}
   mbstring: {}
   mysql: {}
+  zip: {}
 
 rabbitmq::version: present
 
