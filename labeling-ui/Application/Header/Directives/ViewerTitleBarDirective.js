@@ -17,6 +17,7 @@ class ViewerTitleBarDirective {
       thingLayer: '=',
       readOnly: '@',
       hideLabeledThingsInFrame: '=',
+      labelInstruction: '=',
     };
 
 

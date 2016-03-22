@@ -10,6 +10,7 @@ class TaskTitleDirective {
       name: '=',
       taskType: '=',
       frameRange: '=',
+      labelInstruction: '=',
     };
 
     this.template = taskTitleTemplate;
