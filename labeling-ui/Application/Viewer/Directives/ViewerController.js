@@ -227,6 +227,12 @@ class ViewerController {
      */
     this._layerManager = new LayerManager();
 
+    /**
+     * @type {Debouncer}
+     * @private
+     */
+    this._debouncedOnShapeUpdate = null;
+
     // Store a reference to the LayerManager for E2E tests.
     // NEVER USE THIS INSIDE PRODUCTION CODE!
     $element[0].__endToEndTestOnlyLayerManager__ = this._layerManager;
@@ -380,7 +386,7 @@ class ViewerController {
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
-      this._handleFrameChange(newPosition);
+      this._debouncedOnShapeUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
     $scope.$watch(
@@ -534,7 +540,7 @@ class ViewerController {
 
     this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
 
-    const debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
+    this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
       (shape, frameNumber) => this._onUpdatedShape(shape, frameNumber),
       (shape, frameNumber) => shape.labeledThingInFrame.ghost
         ? `${frameNumber}.${shape.id}`
@@ -544,7 +550,7 @@ class ViewerController {
 
     this.thingLayer.on('shape:update', shape => {
       const frameNumber = this.framePosition.position;
-      debouncedOnShapeUpdate(shape, frameNumber);
+      this._debouncedOnShapeUpdate.debounce(shape, frameNumber);
     });
 
     this._layerManager.addLayer('annotations', this.thingLayer);

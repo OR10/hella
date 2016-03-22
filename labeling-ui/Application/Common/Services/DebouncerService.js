@@ -1,4 +1,5 @@
 import lodashDebounce from 'lodash.debounce';
+import Debouncer from './DebouncerService/Debouncer';
 
 /**
  * Configurable debounce generator service
@@ -6,13 +7,20 @@ import lodashDebounce from 'lodash.debounce';
 class DebouncerService {
   /**
    * @param {angular.$window} $window
+   * @param {angular.$q} $q
    */
-  constructor($window) {
+  constructor($window, $q) {
     /**
      * @type {angular.$window}
      * @private
      */
     this._$window = $window;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
   }
 
   /**
@@ -46,30 +54,13 @@ class DebouncerService {
    * @param {Boolean} leading
    */
   multiplexDebounce(fn, multiplexer, wait, leading = false) {
-    const debounceTimeouts = new Map();
-    return (...args) => {
-      const multiplexerId = multiplexer(...args);
-      if (debounceTimeouts.has(multiplexerId)) {
-        this._$window.clearTimeout(debounceTimeouts.get(multiplexerId));
-      } else if (leading === true) {
-        fn(...args);
-      }
-
-      const timeoutId = this._$window.setTimeout(() => {
-        if (leading === false) {
-          fn(...args);
-        }
-
-        debounceTimeouts.delete(multiplexerId);
-      }, wait);
-
-      debounceTimeouts.set(multiplexerId, timeoutId);
-    };
+    return new Debouncer(this._$window, this._$q, fn, multiplexer, wait, leading);
   }
 }
 
 DebouncerService.$inject = [
   '$window',
+  '$q'
 ];
 
 export default DebouncerService;
