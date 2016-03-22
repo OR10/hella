@@ -149,8 +149,7 @@ class VideoImporterTest extends Tests\KernelTestCase
             $chunkSizeInSeconds,
             true,
             true,
-            false,
-            true,
+            array(Model\LabelingTask::INSTRUCTION_PERSON),
             $minimalVisibleShapeOverflow,
             $drawingToolOptions
         );

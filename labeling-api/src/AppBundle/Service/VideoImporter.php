@@ -64,12 +64,10 @@ class VideoImporter
      * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
      * @param             $isObjectLabeling
      * @param             $isMetaLabeling
-     * @param             $isVehicleInstruction
-     * @param             $isPedestrianInstruction
+     * @param $labelInstructions
      * @param int|null $minimalVisibleShapeOverflow
      * @param string|null $drawingTool
      * @param array $drawingToolOptions
-     *
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
@@ -81,8 +79,7 @@ class VideoImporter
         $splitLength = 0,
         $isObjectLabeling,
         $isMetaLabeling,
-        $isVehicleInstruction,
-        $isPedestrianInstruction,
+        $labelInstructions,
         $minimalVisibleShapeOverflow = null,
         $drawingTool = null,
         $drawingToolOptions = array()
@@ -135,31 +132,20 @@ class VideoImporter
                 );
             }
 
-            if ($isObjectLabeling && $isPedestrianInstruction) {
-                $tasks[] = $this->addTask(
-                    $video,
-                    $frameRange,
-                    Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    $drawingTool,
-                    ['pedestrian'],
-                    $imageTypes,
-                    Model\LabelingTask::INSTRUCTION_PEDESTRIAN,
-                    $minimalVisibleShapeOverflow,
-                    $drawingToolOptions
-                );
-            }
-            if ($isObjectLabeling && $isVehicleInstruction) {
-                $tasks[] = $this->addTask(
-                    $video,
-                    $frameRange,
-                    Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    $drawingTool,
-                    ['pedestrian'],
-                    $imageTypes,
-                    Model\LabelingTask::INSTRUCTION_VEHICLE,
-                    $minimalVisibleShapeOverflow,
-                    $drawingToolOptions
-                );
+            if ($isObjectLabeling) {
+                foreach ($labelInstructions as $labelInstruction) {
+                    $tasks[] = $this->addTask(
+                        $video,
+                        $frameRange,
+                        Model\LabelingTask::TYPE_OBJECT_LABELING,
+                        $drawingTool,
+                        ['pedestrian'],
+                        $imageTypes,
+                        $labelInstruction,
+                        $minimalVisibleShapeOverflow,
+                        $drawingToolOptions
+                    );
+                }
             }
         }
 

@@ -1,0 +1,53 @@
+{
+  "occlusion": {
+    "challenge": "Occlusion"
+  },
+  "occlusion-25": {
+    "response": "< 25%"
+  },
+  "occlusion-25-50": {
+    "response": "25% - 50%"
+  },
+  "occlusion-50": {
+    "response": "> 50%"
+  },
+  "truncation": {
+    "challenge": "Truncation"
+  },
+  "truncation-25": {
+    "response": "< 25%"
+  },
+  "truncation-25-50": {
+    "response": "25% - 50%"
+  },
+  "truncation-50": {
+    "response": "> 50%"
+  },
+  "direction": {
+    "challenge": "Direction"
+  },
+  "direction-back": {
+    "response": "\u2191 Back"
+  },
+  "direction-back-right": {
+    "response": "\u2197 Back Right"
+  },
+  "direction-right": {
+    "response": "\u2192 Right"
+  },
+  "direction-front-right": {
+    "response": "\u2198 Front Right"
+  },
+  "direction-front": {
+    "response": "\u2193 Front"
+  },
+  "direction-front-left": {
+    "response": "\u2199 Front Left"
+  },
+  "direction-left": {
+    "response": "\u2190 Left"
+  },
+  "direction-back-left": {
+    "response": "\u2196 Back Left"
+  }
+}

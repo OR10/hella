@@ -61,6 +61,9 @@ class Index extends Base
     /**
      * @Configuration\Route("/upload")
      * @Configuration\Method({"POST"})
+     *
+     * @param HttpFoundation\Request $request
+     * @return Response
      */
     public function uploadPostAction(HttpFoundation\Request $request)
     {
@@ -74,8 +77,6 @@ class Index extends Base
         $lossless = $request->request->get('lossless', false);
         $objectLabeling = $request->request->get('object-labeling', false);
         $metaLabeling = $request->request->get('meta-labeling', false);
-        $pedestrian = $request->request->get('pedestrian', false);
-        $vehicle = $request->request->get('vehicle', false);
         $overflow = (bool)$request->request->get('overflow', false);
         $drawingTool = $request->request->get('drawingTool', 'rectangle');
         $drawingToolOptions = array(
@@ -83,6 +84,21 @@ class Index extends Base
                 'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22')
             )
         );
+
+        //Label instructions
+        $labelInstructions = array();
+        if ($request->request->get('vehicle', false)) {
+            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_VEHICLE;
+        }
+        if ($request->request->get('person', false)) {
+            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_PERSON;
+        }
+        if ($request->request->get('cyclist', false)) {
+            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_CYCLIST;
+        }
+        if ($request->request->get('ignore', false)) {
+            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_IGNORE;
+        }
 
         if ($splitLength < 0) {
             throw new Exception\BadRequestHttpException();
@@ -98,8 +114,7 @@ class Index extends Base
                 $splitLength,
                 $objectLabeling,
                 $metaLabeling,
-                $vehicle,
-                $pedestrian,
+                $labelInstructions,
                 $overflow ? 16 : null,
                 $drawingTool,
                 $drawingToolOptions

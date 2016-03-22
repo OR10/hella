@@ -1,0 +1,11 @@
+{
+  "type": {
+    "challenge": "Type"
+  },
+  "person": {
+    "response": "Person"
+  },
+  "cyclist": {
+    "response": "Cyclist"
+  }
+}
