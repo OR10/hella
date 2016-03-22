@@ -50,7 +50,7 @@ class ViewerController {
               drawingContextService,
               frameLocationGateway,
               frameGateway,
-              labeledThingInFrameGateway,
+              cachingLabeledThingInFrameGateway,
               cacheHeater,
               entityIdService,
               paperShapeFactory,
@@ -141,7 +141,7 @@ class ViewerController {
      * @type {LabeledThingInFrameGateway}
      * @private
      */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+    this._cachingLabeledThingInFrameGateway = cachingLabeledThingInFrameGateway;
 
     /**
      * @type {CacheHeaterService}
@@ -227,6 +227,12 @@ class ViewerController {
      */
     this._layerManager = new LayerManager();
 
+    /**
+     * @type {Debouncer}
+     * @private
+     */
+    this._debouncedOnShapeUpdate = null;
+
     // Store a reference to the LayerManager for E2E tests.
     // NEVER USE THIS INSIDE PRODUCTION CODE!
     $element[0].__endToEndTestOnlyLayerManager__ = this._layerManager;
@@ -287,11 +293,6 @@ class ViewerController {
      * @type {AbortablePromiseRingBuffer}
      */
     this._ghostedLabeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
-
-    /**
-     * @type {LabeledThingInFrameGateway}
-     */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -385,7 +386,7 @@ class ViewerController {
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
-      this._handleFrameChange(newPosition);
+      this._debouncedOnShapeUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
     $scope.$watch(
@@ -539,7 +540,7 @@ class ViewerController {
 
     this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
 
-    const debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
+    this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
       (shape, frameNumber) => this._onUpdatedShape(shape, frameNumber),
       (shape, frameNumber) => shape.labeledThingInFrame.ghost
         ? `${frameNumber}.${shape.id}`
@@ -549,7 +550,7 @@ class ViewerController {
 
     this.thingLayer.on('shape:update', shape => {
       const frameNumber = this.framePosition.position;
-      debouncedOnShapeUpdate(shape, frameNumber);
+      this._debouncedOnShapeUpdate.debounce(shape, frameNumber);
     });
 
     this._layerManager.addLayer('annotations', this.thingLayer);
@@ -702,7 +703,7 @@ class ViewerController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
-      this._labeledThingInFrameGateway.getLabeledThingInFrame(
+      this._cachingLabeledThingInFrameGateway.getLabeledThingInFrame(
         this.task,
         frameNumber,
         selectedLabeledThing
@@ -730,7 +731,7 @@ class ViewerController {
    * @private
    */
   _loadLabeledThingsInFrame(frameNumber) {
-    return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
+    return this._cachingLabeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
   }
 
   /**
@@ -805,7 +806,7 @@ class ViewerController {
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    this._cachingLabeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   /**
@@ -821,7 +822,7 @@ class ViewerController {
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
-      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .then(() => this._cachingLabeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
 
     this.activeTool = null;
@@ -1040,7 +1041,7 @@ ViewerController.$inject = [
   'drawingContextService',
   'frameLocationGateway',
   'frameGateway',
-  'labeledThingInFrameGateway',
+  'cachingLabeledThingInFrameGateway',
   'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
