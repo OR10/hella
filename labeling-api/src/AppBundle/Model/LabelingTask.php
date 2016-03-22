@@ -16,7 +16,9 @@ class LabelingTask
     const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
 
     const INSTRUCTION_VEHICLE = 'vehicle';
-    const INSTRUCTION_PEDESTRIAN = 'pedestrian';
+    const INSTRUCTION_PERSON = 'person';
+    const INSTRUCTION_CYCLIST = 'cyclist';
+    const INSTRUCTION_IGNORE = 'ignore';
 
     const STATUS_PREPROCESSING = 'preprocessing';
     const STATUS_WAITING = 'waiting';

@@ -1,0 +1,16 @@
+{
+  "name": "root",
+  "children": [
+    {
+      "name": "type",
+      "children": [
+        {
+          "name": "person"
+        },
+        {
+          "name": "cyclist"
+        }
+      ]
+    }
+  ]
+}
