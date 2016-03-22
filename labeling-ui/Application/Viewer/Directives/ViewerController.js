@@ -50,7 +50,7 @@ class ViewerController {
               drawingContextService,
               frameLocationGateway,
               frameGateway,
-              labeledThingInFrameGateway,
+              cachingLabeledThingInFrameGateway,
               cacheHeater,
               entityIdService,
               paperShapeFactory,
@@ -141,7 +141,7 @@ class ViewerController {
      * @type {LabeledThingInFrameGateway}
      * @private
      */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+    this._cachingLabeledThingInFrameGateway = cachingLabeledThingInFrameGateway;
 
     /**
      * @type {CacheHeaterService}
@@ -287,11 +287,6 @@ class ViewerController {
      * @type {AbortablePromiseRingBuffer}
      */
     this._ghostedLabeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
-
-    /**
-     * @type {LabeledThingInFrameGateway}
-     */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -702,7 +697,7 @@ class ViewerController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
-      this._labeledThingInFrameGateway.getLabeledThingInFrame(
+      this._cachingLabeledThingInFrameGateway.getLabeledThingInFrame(
         this.task,
         frameNumber,
         selectedLabeledThing
@@ -730,7 +725,7 @@ class ViewerController {
    * @private
    */
   _loadLabeledThingsInFrame(frameNumber) {
-    return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
+    return this._cachingLabeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
   }
 
   /**
@@ -805,7 +800,7 @@ class ViewerController {
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    this._cachingLabeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   /**
@@ -821,7 +816,7 @@ class ViewerController {
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
-      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .then(() => this._cachingLabeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
 
     this.activeTool = null;
@@ -1040,7 +1035,7 @@ ViewerController.$inject = [
   'drawingContextService',
   'frameLocationGateway',
   'frameGateway',
-  'labeledThingInFrameGateway',
+  'cachingLabeledThingInFrameGateway',
   'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
