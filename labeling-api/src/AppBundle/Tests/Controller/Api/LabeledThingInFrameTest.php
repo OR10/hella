@@ -66,8 +66,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocument()
     {
-        $labeledThingInFrame = $this->createLabeledThingInFrame();
-        $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
+        $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, 15);
+        $response            = $this->createRequest(self::ROUTE, ['foooobar-foooobar-foooobar-foooobar'])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
                 'rev' => $labeledThingInFrame->getRev(),

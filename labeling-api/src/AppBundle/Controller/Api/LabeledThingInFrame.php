@@ -93,6 +93,9 @@ class LabeledThingInFrame extends Controller\Base
             if ($labeledThing === null) {
                 throw new Exception\NotFoundHttpException('LabeledThing ' . $labeledThingId . ' not found');
             }
+            if (count($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameNumber)) > 0) {
+                throw new Exception\BadRequestHttpException('Duplicate LabeledThingInFrame for this LabeledThing');
+            }
             try {
                 $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
                 $labeledThingInFrame->setId($request->attributes->get('_unresolvedLabeledThingInFrameId'));
