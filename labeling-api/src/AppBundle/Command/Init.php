@@ -322,7 +322,9 @@ class Init extends Base
                 0,
                 true,
                 true,
-                array(Model\LabelingTask::INSTRUCTION_PERSON, Model\LabelingTask::INSTRUCTION_VEHICLE)
+                array(Model\LabelingTask::INSTRUCTION_PERSON, Model\LabelingTask::INSTRUCTION_VEHICLE),
+                null,
+                'rectangle'
             );
         }
     }
