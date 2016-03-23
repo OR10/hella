@@ -38,7 +38,15 @@ class FramePosition {
      *
      * @type {Object}
      */
-    this.oneTimeSubscribers = {};
+    this._subscribers = {
+      before: {
+        always: {}
+      },
+      after: {
+        oneTime: {},
+        always: {}
+      }
+    };
 
     /**
      * Subscriber locks
@@ -54,24 +62,76 @@ class FramePosition {
      */
     this.completeCallbacks = {};
 
-    this.lock = new ReferenceCountingLock($q, () => this._onFrameChangeComplete());
+    this.lock = new ReferenceCountingLock(
+      $q,
+      () => this._onFrameChangeBefore(),
+      () => this._onFrameChangeAfter()
+    );
   }
 
-  registerOnFrameChangeOnce(name, callback) {
-    this.oneTimeSubscribers[name] = callback;
+  /**
+   * Subscribe always to a before frame change event
+   *
+   * @param {String} name
+   * @param {Function} callback
+   */
+  beforeFrameChangeAlways(name, callback) {
+    this._subscribers.before.always[name] = callback;
   }
 
+  /**
+   * Subscribe once to a after frame change event
+   *
+   * @param {String} name
+   * @param {Function} callback
+   */
+  afterFrameChangeOnce(name, callback) {
+    this._subscribers.after.oneTime[name] = callback;
+  }
+  
+  /**
+   * Subscribe to every after frame change event
+   *
+   * @param {String} name
+   * @param {Function} callback
+   */
+  afterFrameChangeAlways(name, callback) {
+    this._subscribers.after.always[name] = callback;
+  }
 
-  _onFrameChangeComplete() {
-    Object.keys(this.oneTimeSubscribers).forEach((name) => {
-      const funct = this.oneTimeSubscribers[name];
-      funct(this._position);
+  /**
+   * Handle the subscribers for the before frame change event
+   *
+   * @private
+   */
+  _onFrameChangeBefore() {
+    // Trigger all reapeated subscribers
+    Object.keys(this._subscribers.before.always).forEach((name) => {
+      this._subscribers.before.always[name](this._position);
     });
-    this.oneTimeSubscribers = {};
+  }
+
+  /**
+   * Handle the subscribers for the after frame change event
+   *
+   * @private
+   */
+  _onFrameChangeAfter() {
+    // Trigger all one time subscribers and clear the list afterwards
+    Object.keys(this._subscribers.after.oneTime).forEach((name) => {
+      this._subscribers.after.oneTime[name](this._position);
+    });
+    this._subscribers.after.oneTime = {};
+
+    // Trigger all reapeated subscribers
+    Object.keys(this._subscribers.after.always).forEach((name) => {
+      this._subscribers.after.always[name](this._position);
+    });
   }
 
   /**
    * Retrieve the currently active position
+   *
    * @returns {int}
    */
   get position() {
@@ -80,6 +140,7 @@ class FramePosition {
 
   /**
    * Jump to a specific position within this FrameRange.
+   *
    * @param {int} newPosition
    */
   goto(newPosition) {
