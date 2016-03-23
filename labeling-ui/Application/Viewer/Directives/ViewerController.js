@@ -478,6 +478,15 @@ class ViewerController {
     const resizeSensor = new ResizeSensor(this._$element.get(0), () => {
       this._resize();
     });
+
+    applicationState.$watch('viewer.showBackdrop', showBackdrop => this.showBackdrop = showBackdrop);
+
+    this.framePosition.beforeFrameChangeAlways('disableViewer', () => {
+      this._applicationState.startFrameChange();
+    });
+    this.framePosition.afterFrameChangeAlways('disableViewer', () => {
+      this._applicationState.endFrameChange();
+    });
   }
 
   setupLayers() {
@@ -533,7 +542,8 @@ class ViewerController {
       this._entityColorService,
       this._keyboardShortcutService,
       this._logger,
-      this._$timeout
+      this._$timeout,
+      this.framePosition,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);

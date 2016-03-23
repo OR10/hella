@@ -130,7 +130,7 @@ class ViewerTitleBarController {
         if (this.framePosition.position === nextIncomplete.frameNumber) {
           this._selectLabeledThingInFrame(nextIncomplete);
         } else {
-          this.framePosition.registerOnFrameChangeOnce('selectNextIncomplete', () => {
+          this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
             this._selectLabeledThingInFrame(nextIncomplete);
           });
           this.framePosition.goto(nextIncomplete.frameNumber);
