@@ -36,6 +36,8 @@ define annostation_base::symfony(
       indexFiles        => [$app_main_script],
       tryFiles          => ['$uri', "/${app_main_script}\$is_args\$args"],
       clientMaxBodySize => $client_max_body_size,
+      authBasic         => $authBasic,
+      authBasicFile     => $authBasicFile,
     }
 
     nginx::resource::location { '~ \.php(/|$)':
