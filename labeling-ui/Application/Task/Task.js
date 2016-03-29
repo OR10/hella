@@ -31,6 +31,12 @@ class Task extends Module {
    * @inheritDoc
    */
   config($stateProvider) {
+    /**
+     * @param {Object} $stateParams
+     * @param {TaskGateway} taskGateway
+     * @param {VideoGateway} videoGateway
+     * @returns {AbortablePromise}
+     */
     function initialDataResolver($stateParams, taskGateway, videoGateway) {
       return taskGateway.getTask($stateParams.taskId)
         .then(
@@ -38,7 +44,12 @@ class Task extends Module {
             .then(video => ({task, video}))
         );
     }
-    initialDataResolver.$inject = ['$stateParams', 'taskGateway', 'videoGateway'];
+
+    initialDataResolver.$inject = [
+      '$stateParams',
+      'taskGateway',
+      'videoGateway',
+    ];
 
     $stateProvider.state('labeling.task', {
       url: 'task/:taskId',
@@ -53,6 +64,8 @@ class Task extends Module {
   }
 }
 
-Task.prototype.config.$inject = ['$stateProvider'];
+Task.prototype.config.$inject = [
+  '$stateProvider',
+];
 
 export default Task;
