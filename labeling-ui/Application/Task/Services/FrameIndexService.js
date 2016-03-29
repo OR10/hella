@@ -77,6 +77,7 @@ class FrameIndexService {
    * @returns {{lowerLimit: number, upperLimit: number}}
    */
   getFrameNumberLimits() {
+    this._ensureTaskIsSet();
     return {
       lowerLimit: Math.min(...this._task.frameNumberMapping),
       upperLimit: Math.max(...this._task.frameNumberMapping),
@@ -87,6 +88,7 @@ class FrameIndexService {
    * @returns {{lowerLimit: number, upperLimit: number}}
    */
   getFrameIndexLimits() {
+    this._ensureTaskIsSet();
     return {
       lowerLimit: 0,
       upperLimit: this._task.frameNumberMapping.length - 1,
@@ -132,11 +134,13 @@ class FrameIndexService {
       frameNumber += step
     ) {
       if (this._frameNumberToFrameIndex.has(frameNumber)) {
-        return this._frameNumberToFrameIndex.get(frameNumber);
+        return frameNumber;
       }
     }
 
-    return undefined;
+    return (Math.abs(startFrameNumber - frameNumberLimits.lowerLimit) < Math.abs(startFrameNumber - frameNumberLimits.upperLimit))
+      ? frameNumberLimits.lowerLimit
+      : frameNumberLimits.upperLimit;
   }
 
 }
