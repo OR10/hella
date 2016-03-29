@@ -139,6 +139,12 @@ class LabelingTask
     private $minimalVisibleShapeOverflow = null;
 
     /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $frameNumberMapping = array();
+
+    /**
      * @param Video      $video
      * @param FrameRange $frameRange
      * @param string     $taskType
