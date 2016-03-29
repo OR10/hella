@@ -1,6 +1,7 @@
 import Module from '../Module';
 import TaskGateway from './Gateways/TaskGateway';
 import LabelStructureGateway from './Gateways/LabelStructureGateway';
+import FrameIndexService from './Services/FrameIndexService';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
@@ -21,6 +22,7 @@ class Task extends Module {
 
     this.module.service('taskGateway', TaskGateway);
     this.module.service('labelStructureGateway', LabelStructureGateway);
+    this.module.service('FrameIndexService', FrameIndexService);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
   }
