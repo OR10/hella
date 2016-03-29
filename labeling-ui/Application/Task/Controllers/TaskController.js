@@ -19,6 +19,7 @@ class TaskController {
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {FrameIndexService} frameIndexService
    */
   constructor($scope,
               $q,
@@ -31,7 +32,8 @@ class TaskController {
               $location,
               applicationState,
               $timeout,
-              keyboardShortcutService) {
+              keyboardShortcutService,
+              frameIndexService) {
     /**
      * @type {angular.Scope}
      */
@@ -222,6 +224,9 @@ class TaskController {
      */
     this.thingLayer = null;
 
+    // Ensure the FrameIndexService knows the currently active Task
+    frameIndexService.setTask(this.task);
+
     keyboardShortcutService.pushContext('labeling-task');
 
     $scope.$on('$destroy', () => {
@@ -370,6 +375,7 @@ TaskController.$inject = [
   'applicationState',
   '$timeout',
   'keyboardShortcutService',
+  'frameIndexService',
 ];
 
 export default TaskController;
