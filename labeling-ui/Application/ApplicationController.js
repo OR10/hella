@@ -1,6 +1,7 @@
 class LabelingController {
   /**
    * @param {angular.Scope} $scope
+   * @param {angular.$location} $location
    * @param {ModalService} modalService
    */
   constructor($scope, $location, modalService) {
