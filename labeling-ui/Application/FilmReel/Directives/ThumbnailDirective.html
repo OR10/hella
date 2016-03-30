@@ -19,10 +19,10 @@
         >
             <span ng-if="!vm.isCurrent" class="current">{{vm.location.frameIndex | toFrameNumber}}</span>
             <frame-number-input ng-if="vm.isCurrent"
-                                ng-model="vm.currentFrameNumber"
+                                ng-model="vm.currentFrameIndex"
             ></frame-number-input>
             <span class="divider" ng-if="vm.isCurrent"></span>
-            <span class="endFrameNumber" ng-if="vm.isCurrent">{{vm.endFrameIndex | toFrameNumber}}</span>
+            <span class="endFrameNumber" ng-if="vm.isCurrent">{{vm.frameIndexLimits.upperLimit | toFrameNumber}}</span>
         </div>
     </div>
 </div>

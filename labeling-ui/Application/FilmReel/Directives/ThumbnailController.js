@@ -5,7 +5,6 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
  *
  * @property {FrameLocation} location
  * @property {Filters} filters
- * @property {int} endFrameNumber
  * @property {bool} isCurrent
  * @property {FramePosition} framePosition
  * @property {LabeledThingInFrame|null} labeledThingInFrame
@@ -21,8 +20,16 @@ class ThumbnailController {
    * @param {FrameGateway} frameGateway
    * @param {AnimationFrameService} animationFrameService
    * @param {LoggerService} logger
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor($scope, $element, paperShapeFactory, drawingContextService, frameGateway, animationFrameService, logger) {
+  constructor($scope,
+              $element,
+              paperShapeFactory,
+              drawingContextService,
+              frameGateway,
+              animationFrameService,
+              logger,
+              frameIndexService) {
     /**
      * Flag to indicate whether the frame number is shown or not
      *
@@ -58,6 +65,12 @@ class ThumbnailController {
      * @private
      */
     this._frameGateway = frameGateway;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     this._context.withScope(scope => {
       /**
@@ -284,10 +297,22 @@ class ThumbnailController {
     });
   }
 
+  /**
+   * Handle the click to a thumbnail
+   */
   handleThumbnailClick() {
     if (this.location && this.location.frameIndex) {
       this.framePosition.goto(this.location.frameIndex);
     }
+  }
+
+  /**
+   * Provide the template with a proper way to access the frameIndex limits
+   *
+   * @returns {{lowerLimit: number, upperLimit: number}}
+   */
+  get frameIndexLimits() {
+    return this._frameIndexService.getFrameIndexLimits();
   }
 }
 
@@ -299,6 +324,7 @@ ThumbnailController.$inject = [
   'frameGateway',
   'animationFrameService',
   'loggerService',
+  'frameIndexService',
 ];
 
 export default ThumbnailController;

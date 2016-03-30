@@ -1,8 +1,17 @@
 class FrameNumberInputDirective {
-  constructor() {
+  /**
+   * @param {FrameIndexService} frameIndexService
+   */
+  constructor(frameIndexService) {
     this.restrict = 'E';
     this.require = 'ngModel';
     this.template = '<span contenteditable="true"></span>';
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
   }
 
   link(scope, element, attrs, ngModel) {
@@ -62,13 +71,24 @@ class FrameNumberInputDirective {
       }
     }
 
-    function onBlur() {
-      ngModel.$setViewValue(getEditableValue());
-    }
+    const onBlur = () => {
+      const frameNumber = getEditableValue();
+      const frameIndex = this._frameIndexService.getNearestFrameIndex(frameNumber);
+      ngModel.$setViewValue(frameIndex);
+      ngModel.$render();
+    };
 
     // Specify how UI should be updated
     ngModel.$render = () => {
-      editable.html(ngModel.$viewValue || '');
+      if (!ngModel.$viewValue) {
+        editable.html('');
+        return;
+      }
+      
+      const frameIndex = ngModel.$viewValue;
+      const frameNumber = this._frameIndexService.getFrameNumber(frameIndex);
+      
+      editable.html(frameNumber);
     };
 
     // Listen for change events to enable binding
@@ -81,5 +101,9 @@ class FrameNumberInputDirective {
     ngModel.$render();
   }
 }
+
+FrameNumberInputDirective.$inject = [
+  'frameIndexService',
+];
 
 export default FrameNumberInputDirective;
