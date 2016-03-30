@@ -82,7 +82,8 @@ class VideoImporter
         $labelInstructions,
         $minimalVisibleShapeOverflow = null,
         $drawingTool = null,
-        $drawingToolOptions = array()
+        $drawingToolOptions = array(),
+        $frameStepSize = 1
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -128,7 +129,8 @@ class VideoImporter
                     $imageTypes,
                     null,
                     null,
-                    $drawingToolOptions
+                    $drawingToolOptions,
+                    $frameStepSize
                 );
             }
 
@@ -143,7 +145,8 @@ class VideoImporter
                         $imageTypes,
                         $labelInstruction,
                         $minimalVisibleShapeOverflow,
-                        $drawingToolOptions
+                        $drawingToolOptions,
+                        $frameStepSize
                     );
                 }
             }
@@ -176,7 +179,8 @@ class VideoImporter
         $imageTypes,
         $instruction,
         $minimalVisibleShapeOverflow,
-        $drawingToolOptions
+        $drawingToolOptions,
+        $frameStepSize = 1
     ) {
         $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
@@ -201,7 +205,7 @@ class VideoImporter
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
         $labelingTask->setFrameNumberMapping(
-            range(1, $video->getMetaData()->numberOfFrames)
+            range(1, $video->getMetaData()->numberOfFrames, $frameStepSize)
         );
 
         $this->labelingTaskFacade->save($labelingTask);
