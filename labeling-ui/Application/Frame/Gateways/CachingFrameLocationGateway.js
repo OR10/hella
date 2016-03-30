@@ -68,7 +68,7 @@ class CachingFrameLocationGateway extends FrameLocationGateway {
     return super.getFrameLocations(taskId, type, offset, limit)
       .then(locations => {
         locations.forEach(
-          location => this._locationCache.store(`${taskId}.${type}.${location.frameNumber}`, location)
+          location => this._locationCache.store(`${taskId}.${type}.${location.frameIndex}`, location)
         );
         return locations;
       });
