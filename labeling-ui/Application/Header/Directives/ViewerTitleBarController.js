@@ -11,8 +11,17 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor($timeout, $scope, $state, modalService, applicationState, taskGateway, labeledThingGateway, labeledThingInFrameGateway) {
+  constructor($timeout,
+              $scope,
+              $state,
+              modalService,
+              applicationState,
+              taskGateway,
+              labeledThingGateway,
+              labeledThingInFrameGateway,
+              frameIndexService) {
     this._$timeout = $timeout;
     /**
      * @param {angular.$scope} $scope
@@ -55,6 +64,12 @@ class ViewerTitleBarController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     /**
      * @type {string}
@@ -183,6 +198,12 @@ class ViewerTitleBarController {
     });
   }
 
+  /**
+   * @returns {{lowerLimit: number, upperLimit: number}}
+   */
+  get frameNumberLimits() {
+    return this._frameIndexService.getFrameNumberLimits();
+  }
 }
 
 ViewerTitleBarController.$inject = [
@@ -194,6 +215,7 @@ ViewerTitleBarController.$inject = [
   'taskGateway',
   'labeledThingGateway',
   'labeledThingInFrameGateway',
+  'frameIndexService',
 ];
 
 export default ViewerTitleBarController;
