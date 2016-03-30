@@ -8,15 +8,25 @@ import paper from 'paper';
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 /**
- * @class ViewerController
- *
- * @property {Task} task
- * @property {FramePosition} framePosition
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
- * @property {PaperShape} selectedPaperShape
+ * @property {PaperShape|null} selectedPaperShape
  * @property {string} activeTool
+ * @property {string} selectedDrawingTool
+ * @property {Task} task
+ * @property {Video} video
+ * @property {FramePosition} framePosition
  * @property {Filters} filters
+ * @property {boolean} playing
+ * @property {number} playbackSpeedFactor
+ * @property {string} playbackDirection
+ * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {string} newShapeDrawingTool
+ * @property {integer} bookmarkedFrameNumber
+ * @property {integer} fps
+ * @property {integer} frameSkip
+ * @property {ThingLayer} thingLayer
+ * @property {boolean} readOnly
  */
 class ViewerController {
   /**
@@ -43,6 +53,7 @@ class ViewerController {
    * @param {LockService} lockService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {DebouncerService} debouncerService
+   * @param {FrameIndexService} frameIndexService
    */
   constructor($scope,
               $element,
@@ -66,7 +77,8 @@ class ViewerController {
               applicationState,
               lockService,
               keyboardShortcutService,
-              debouncerService) {
+              debouncerService,
+              frameIndexService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -220,6 +232,12 @@ class ViewerController {
      * @private
      */
     this._debouncerService = debouncerService;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     /**
      * @type {LayerManager}
@@ -749,7 +767,8 @@ class ViewerController {
     if (!imageTypes.length) {
       throw new Error('No supported image type found');
     }
-    const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const totalFrameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
     return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
   }
 
@@ -835,17 +854,17 @@ class ViewerController {
       return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber;
     }
 
-    return this.framePosition.startFrameNumber;
+    return this._frameIndexService.getFrameIndexLimits().lowerLimit;
   }
 
   _calculatePlaybackEndPosition() {
-    const limitingProperty = this.playbackDirection === 'forwards' ? 'endFrameNumber' : 'startFrameNumber';
-
     if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+      const limitingProperty = this.playbackDirection === 'forwards' ? 'endFrameNumber' : 'startFrameNumber';
       return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange[limitingProperty];
     }
 
-    return this.framePosition[limitingProperty];
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    return this.playbackDirection === 'forwards' ? frameIndexLimits.upperLimit : frameIndexLimits.lowerLimit;
   }
 
   _playNext() {
@@ -1058,6 +1077,7 @@ ViewerController.$inject = [
   'lockService',
   'keyboardShortcutService',
   'debouncerService',
+  'frameIndexService',
 ];
 
 export default ViewerController;
