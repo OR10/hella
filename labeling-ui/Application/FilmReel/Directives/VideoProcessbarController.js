@@ -5,8 +5,14 @@
  * @property {PaperShape|null} selectedPaperShape
  */
 class VideoProcessbarController {
-  constructor($scope) {
-    this.frameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
+  /**
+   * @param {$rootScope.$scope} $scope
+   * @param {FrameIndexService} frameIndexService
+   */
+  constructor($scope, frameIndexService) {
+    const frameIndexLimits = frameIndexService.getFrameIndexLimits();
+
+    this.frameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
 
     this.virtualFramesInBar = 2 * this.frameCount - 1;
     this.frameSize = 100 / this.virtualFramesInBar;
@@ -20,7 +26,7 @@ class VideoProcessbarController {
     });
 
     $scope.$watchGroup(['vm.framePosition.position', 'vm.thumbnailCount'], ([position]) => {
-      const relativePosition = position - this.framePosition.startFrameNumber;
+      const relativePosition = position - frameIndexLimits.lowerLimit;
 
       this.videoWidth = this.frameSize * this.frameCount;
       this.videoStart = this.thumbnailStart - this.frameSize * (relativePosition) + this.frameSize * Math.floor(this.thumbnailCount / 2);
@@ -52,6 +58,7 @@ class VideoProcessbarController {
 
 VideoProcessbarController.$inject = [
   '$scope',
+  'frameIndexService',
 ];
 
 export default VideoProcessbarController;
