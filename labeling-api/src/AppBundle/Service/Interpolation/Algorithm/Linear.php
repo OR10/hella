@@ -35,7 +35,7 @@ class Linear implements Interpolation\Algorithm
     ) {
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
-            $frameRange->getStartFrameNumber(),
+            $frameRange->getStartFrameIndex(),
             0,
             $frameRange->getNumberOfFrames()
         );
@@ -45,7 +45,7 @@ class Linear implements Interpolation\Algorithm
         }
 
         $this->clonePrecedingLabeledThingsInFrame(
-            $frameRange->getStartFrameNumber(),
+            $frameRange->getStartFrameIndex(),
             $labeledThingsInFrame[0],
             $emit
         );
@@ -60,36 +60,36 @@ class Linear implements Interpolation\Algorithm
 
         $this->cloneSubsequentLabeledThingsInFrame(
             $labeledThingsInFrame[0],
-            $frameRange->getEndFrameNumber(),
+            $frameRange->getEndFrameIndex(),
             $emit
         );
     }
 
     private function clonePrecedingLabeledThingsInFrame(
-        $startFrameNumber,
+        $startFrameIndex,
         Model\LabeledThingInFrame $labeledThingInFrame,
         callable $emit
     ) {
-        if ($startFrameNumber >= $labeledThingInFrame->getFrameIndex()) {
+        if ($startFrameIndex >= $labeledThingInFrame->getFrameIndex()) {
             return;
         }
 
-        foreach (range($startFrameNumber, $labeledThingInFrame->getFrameIndex() - 1) as $frameNumber) {
-            $emit($labeledThingInFrame->copy($frameNumber));
+        foreach (range($startFrameIndex, $labeledThingInFrame->getFrameIndex() - 1) as $frameIndex) {
+            $emit($labeledThingInFrame->copy($frameIndex));
         }
     }
 
     private function cloneSubsequentLabeledThingsInFrame(
         Model\LabeledThingInFrame $labeledThingInFrame,
-        $endFrameNumber,
+        $endFrameIndex,
         callable $emit
     ) {
-        if ($endFrameNumber <= $labeledThingInFrame->getFrameIndex()) {
+        if ($endFrameIndex <= $labeledThingInFrame->getFrameIndex()) {
             return;
         }
 
-        foreach (range($labeledThingInFrame->getFrameIndex() + 1, $endFrameNumber) as $frameNumber) {
-            $emit($labeledThingInFrame->copy($frameNumber));
+        foreach (range($labeledThingInFrame->getFrameIndex() + 1, $endFrameIndex) as $frameIndex) {
+            $emit($labeledThingInFrame->copy($frameIndex));
         }
     }
 
@@ -108,7 +108,7 @@ class Linear implements Interpolation\Algorithm
         $currentShapes  = $start->getShapesAsObjects();
         $endShapes      = $this->createShapeIndex($end->getShapesAsObjects());
 
-        foreach (range($start->getFrameIndex() + 1, $end->getFrameIndex() - 1) as $frameNumber) {
+        foreach (range($start->getFrameIndex() + 1, $end->getFrameIndex() - 1) as $frameIndex) {
             $currentShapes = array_map(
                 function($shape) use ($endShapes, $remainingSteps) {
                     return $this->interpolateShape($shape, $endShapes[$shape->getId()], $remainingSteps);
@@ -116,7 +116,7 @@ class Linear implements Interpolation\Algorithm
                 $currentShapes
             );
 
-            $current = $previous->copy($frameNumber);
+            $current = $previous->copy($frameIndex);
             $current->setShapesAsObjects($currentShapes);
             $emit($current);
             $previous = $current;

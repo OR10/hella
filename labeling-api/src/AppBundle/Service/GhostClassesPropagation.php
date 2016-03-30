@@ -97,7 +97,7 @@ class GhostClassesPropagation
     }
 
     /**
-     * Sort the given `LabeledThingsInFrame` by their FrameNumber.
+     * Sort the given `LabeledThingsInFrame` by their FrameIndex.
      *
      * Sorting is done in place.
      *

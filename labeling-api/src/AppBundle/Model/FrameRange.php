@@ -28,35 +28,38 @@ class FrameRange
      * @CouchDB\Field(type="integer")
      * @Serializer\Groups({"statistics"})
      */
-    public $startFrameNumber;
+    public $startFrameIndex;
 
     /**
      * @var integer
      * @CouchDB\Field(type="integer")
      * @Serializer\Groups({"statistics"})
      */
-    public $endFrameNumber;
+    public $endFrameIndex;
 
     /**
-     * @param integer      $startFrameNumber First frame number of this range.
-     * @param integer|null $endFrameNumber   Last frame number of this range.
+     * @param integer $startFrameIndex First frame index of this range.
+     * @param integer|null $endFrameIndex Last frame index of this range.
+     * 
+     * @throws Exception\InvalidRange
+     * @throws Exception\InvalidStartFrameIndex
      */
-    public function __construct($startFrameNumber, $endFrameNumber = null)
+    public function __construct($startFrameIndex, $endFrameIndex = null)
     {
-        $this->startFrameNumber = (int) $startFrameNumber;
+        $this->startFrameIndex = (int) $startFrameIndex;
 
-        if (is_null($endFrameNumber)) {
-            $this->endFrameNumber = $this->startFrameNumber;
+        if (is_null($endFrameIndex)) {
+            $this->endFrameIndex = $this->startFrameIndex;
         } else {
-            $this->endFrameNumber = (int) $endFrameNumber;
+            $this->endFrameIndex = (int) $endFrameIndex;
         }
 
-        if ($this->startFrameNumber < 1) {
-            throw new Exception\InvalidStartFrameNumber($this->startFrameNumber);
+        if ($this->startFrameIndex < 1) {
+            throw new Exception\InvalidStartFrameIndex($this->startFrameIndex);
         }
 
-        if ($this->startFrameNumber > $this->endFrameNumber) {
-            throw new Exception\InvalidRange($this->startFrameNumber, $this->endFrameNumber);
+        if ($this->startFrameIndex > $this->endFrameIndex) {
+            throw new Exception\InvalidRange($this->startFrameIndex, $this->endFrameIndex);
         }
     }
 
@@ -68,12 +71,12 @@ class FrameRange
      */
     public static function createFromOffsetAndLimit($offset, $limit = null)
     {
-        $startFrameNumber = 1 + $offset;
-        $endFrameNumber   = $limit
+        $startFrameIndex = 1 + $offset;
+        $endFrameIndex   = $limit
                           ? $offset + $limit
-                          : $startFrameNumber;
+                          : $startFrameIndex;
 
-        return new FrameRange($startFrameNumber, $endFrameNumber);
+        return new FrameRange($startFrameIndex, $endFrameIndex);
     }
 
     /**
@@ -81,39 +84,39 @@ class FrameRange
      */
     public static function createFromArray(array $array)
     {
-        if (!isset($array['startFrameNumber']) || !isset($array['endFrameNumber'])) {
+        if (!isset($array['startFrameIndex']) || !isset($array['endFrameIndex'])) {
             throw new Exception\FrameRange();
         }
 
-        return new FrameRange($array['startFrameNumber'], $array['endFrameNumber']);
+        return new FrameRange($array['startFrameIndex'], $array['endFrameIndex']);
     }
 
     /**
-     * Get the starting frame number.
+     * Get the starting frame index.
      *
      * @return integer
      */
-    public function getStartFrameNumber()
+    public function getStartFrameIndex()
     {
-        return $this->startFrameNumber;
+        return $this->startFrameIndex;
     }
 
     /**
-     * Get the last frame number.
+     * Get the last frame index.
      *
      * @return integer
      */
-    public function getEndFrameNumber()
+    public function getEndFrameIndex()
     {
-        return $this->endFrameNumber;
+        return $this->endFrameIndex;
     }
 
     /**
-     * Get the number of frames covered by this range.
+     * Get the index of frames covered by this range.
      */
     public function getNumberOfFrames()
     {
-        return $this->endFrameNumber - $this->startFrameNumber + 1;
+        return $this->endFrameIndex - $this->startFrameIndex + 1;
     }
 
     /**
@@ -123,7 +126,7 @@ class FrameRange
      */
     public function getRange()
     {
-        return range($this->getStartFrameNumber(), $this->getEndFrameNumber());
+        return range($this->getStartFrameIndex(), $this->getEndFrameIndex());
     }
 
     /**
@@ -135,30 +138,30 @@ class FrameRange
      */
     public function createSubRangeForOffsetAndLimit($offset = null, $limit = null)
     {
-        $startFrameNumber = $this->getStartFrameNumber();
-        $endFrameNumber   = $this->getEndFrameNumber();
+        $startFrameIndex = $this->getStartFrameIndex();
+        $endFrameIndex   = $this->getEndFrameIndex();
 
         if ($offset !== null) {
-            $startFrameNumber = max(
-                $startFrameNumber,
+            $startFrameIndex = max(
+                $startFrameIndex,
                 min(
-                    $endFrameNumber,
-                    $startFrameNumber + (int) $offset
+                    $endFrameIndex,
+                    $startFrameIndex + (int) $offset
                 )
             );
         }
 
         if ($limit !== null) {
-            $endFrameNumber = max(
-                $startFrameNumber,
+            $endFrameIndex = max(
+                $startFrameIndex,
                 min(
-                    $endFrameNumber,
-                    $startFrameNumber + (int) $limit - 1
+                    $endFrameIndex,
+                    $startFrameIndex + (int) $limit - 1
                 )
             );
         }
 
-        return new FrameRange($startFrameNumber, $endFrameNumber);
+        return new FrameRange($startFrameIndex, $endFrameIndex);
     }
 
     /**
@@ -170,8 +173,8 @@ class FrameRange
      */
     public function coversFrameRange(FrameRange $otherFrameRange)
     {
-        return $this->coversFrameIndex($otherFrameRange->getStartFrameNumber())
-            && $this->coversFrameIndex($otherFrameRange->getEndFrameNumber());
+        return $this->coversFrameIndex($otherFrameRange->getStartFrameIndex())
+            && $this->coversFrameIndex($otherFrameRange->getEndFrameIndex());
     }
 
     /**
@@ -186,41 +189,41 @@ class FrameRange
             throw new \RangeException(
                 sprintf(
                     "FrameRange '%d - %d' is not completly covered by FrameRange '%d - %d'",
-                    $otherFrameRange->getStartFrameNumber(),
-                    $otherFrameRange->getEndFrameNumber(),
-                    $this->getStartFrameNumber(),
-                    $this->getEndFrameNumber()
+                    $otherFrameRange->getStartFrameIndex(),
+                    $otherFrameRange->getEndFrameIndex(),
+                    $this->getStartFrameIndex(),
+                    $this->getEndFrameIndex()
                 )
             );
         }
     }
 
     /**
-     * Check wether or not the given frame number is covered by this frame range.
+     * Check wether or not the given frame index is covered by this frame range.
      *
-     * @param int $frameNumber
+     * @param int $frameIndex
      *
      * @return boolean
      */
-    public function coversFrameIndex($frameNumber)
+    public function coversFrameIndex($frameIndex)
     {
-        return $this->startFrameNumber <= (int) $frameNumber && (int) $frameNumber <= $this->endFrameNumber;
+        return $this->startFrameIndex <= (int) $frameIndex && (int) $frameIndex <= $this->endFrameIndex;
     }
 
     /**
-     * Throw exception if given `$frameNumber` is not covered by this frame range.
+     * Throw exception if given `$frameIndex` is not covered by this frame range.
      *
      * @throws \RangeException
      */
-    public function throwIfFrameNumberIsNotCovered($frameNumber)
+    public function throwIfFrameIndexIsNotCovered($frameIndex)
     {
-        if (!$this->coversFrameIndex($frameNumber)) {
+        if (!$this->coversFrameIndex($frameIndex)) {
             throw new \RangeException(
                 sprintf(
-                    "FrameNumber '%d' outside of FrameRange '%d - %d'",
-                    $frameNumber,
-                    $this->getStartFrameNumber(),
-                    $this->getEndFrameNumber()
+                    "FrameIndex '%d' outside of FrameRange '%d - %d'",
+                    $frameIndex,
+                    $this->getStartFrameIndex(),
+                    $this->getEndFrameIndex()
                 )
             );
         }

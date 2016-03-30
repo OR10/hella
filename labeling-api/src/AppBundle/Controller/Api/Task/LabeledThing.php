@@ -266,20 +266,20 @@ class LabeledThing extends Controller\Base
     {
         $previousFrameRange = $labeledThing->getFrameRange();
 
-        if ($newFrameRange->getStartFrameNumber() <= $previousFrameRange->getStartFrameNumber()) {
+        if ($newFrameRange->getStartFrameIndexf() <= $previousFrameRange->getStartFrameIndex()) {
             return [];
         }
 
         $preceedingLabeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
-            $previousFrameRange->getStartFrameNumber(),
+            $previousFrameRange->getStartFrameIndex(),
             0,
-            $newFrameRange->getStartFrameNumber() - $previousFrameRange->getStartFrameNumber() + 1
+            $newFrameRange->getStartFrameIndex() - $previousFrameRange->getStartFrameIndex() + 1
         );
         if (!empty($preceedingLabeledThingsInFrame)) {
             $lastPreceedingLabeledThingInFrame = array_pop($preceedingLabeledThingsInFrame);
-            if ($lastPreceedingLabeledThingInFrame->getFrameIndex() < $newFrameRange->getStartFrameNumber()) {
-                $lastPreceedingLabeledThingInFrame->getFrameIndex($newFrameRange->getStartFrameNumber());
+            if ($lastPreceedingLabeledThingInFrame->getFrameIndex() < $newFrameRange->getStartFrameIndex()) {
+                $lastPreceedingLabeledThingInFrame->getFrameIndex($newFrameRange->getStartFrameIndex());
                 $this->labeledThingInFrameFacade->save($lastPreceedingLabeledThingInFrame);
             }
         }
@@ -295,21 +295,21 @@ class LabeledThing extends Controller\Base
     {
         $previousFrameRange = $labeledThing->getFrameRange();
 
-        if ($newFrameRange->getEndFrameNumber() >= $previousFrameRange->getEndFrameNumber()) {
+        if ($newFrameRange->getEndFrameIndex() >= $previousFrameRange->getEndFrameIndex()) {
             return [];
         }
 
         $succeedingLabeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
-            $newFrameRange->getEndFrameNumber(),
+            $newFrameRange->getEndFrameIndex(),
             0,
-            $previousFrameRange->getEndFrameNumber() - $newFrameRange->getEndFrameNumber() + 1
+            $previousFrameRange->getEndFrameIndex() - $newFrameRange->getEndFrameIndex() + 1
         );
 
         if (!empty($succeedingLabeledThingsInFrame)) {
             $lastSucceedingLabeledThingInFrame = array_shift($succeedingLabeledThingsInFrame);
-            if ($lastSucceedingLabeledThingInFrame->getFrameIndex() > $newFrameRange->getEndFrameNumber()) {
-                $lastSucceedingLabeledThingInFrame->setFrameIndex($newFrameRange->getEndFrameNumber());
+            if ($lastSucceedingLabeledThingInFrame->getFrameIndex() > $newFrameRange->getEndFrameIndex()) {
+                $lastSucceedingLabeledThingInFrame->setFrameIndex($newFrameRange->getEndFrameIndex());
                 $this->labeledThingInFrameFacade->save($lastSucceedingLabeledThingInFrame);
             }
         }

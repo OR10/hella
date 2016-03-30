@@ -111,13 +111,13 @@ class VideoImporter
         $tasks = [];
 
         for (
-            $startFrameNumber = 1;
-            $startFrameNumber <= $video->getMetaData()->numberOfFrames;
-            $startFrameNumber += $framesPerChunk
+            $startFrameIndex = 1;
+            $startFrameIndex <= $video->getMetaData()->numberOfFrames;
+            $startFrameIndex += $framesPerChunk
         ) {
             $frameRange = new Model\FrameRange(
-                $startFrameNumber,
-                min($video->getMetaData()->numberOfFrames, $startFrameNumber + $framesPerChunk - 1)
+                $startFrameIndex,
+                min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1)
             );
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(

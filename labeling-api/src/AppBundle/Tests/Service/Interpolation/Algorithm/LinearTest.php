@@ -352,21 +352,21 @@ class LinearTest extends Tests\KernelTestCase
     /**
      * @return Model\LabeledThing
      */
-    private function createLabeledThing($endFrameNumber = 10)
+    private function createLabeledThing($endFrameIndex = 10)
     {
-        return $this->labeledThingFacade->save(Model\LabeledThing::create($this->createTask($endFrameNumber)));
+        return $this->labeledThingFacade->save(Model\LabeledThing::create($this->createTask($endFrameIndex)));
     }
 
     /**
      * @return Model\LabelingTask
      */
-    private function createTask($endFrameNumber = 10)
+    private function createTask($endFrameIndex = 10)
     {
         $video = $this->videoFacade->save(Model\Video::create('Testvideo'));
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $video,
-                new Model\FrameRange(1, $endFrameNumber),
+                new Model\FrameRange(1, $endFrameIndex),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );
