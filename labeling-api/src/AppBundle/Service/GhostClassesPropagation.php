@@ -108,11 +108,11 @@ class GhostClassesPropagation
         usort(
             $labeledThingsInFrame,
             function (Model\LabeledThingInFrame $a, Model\LabeledThingInFrame $b) {
-                if ($a->getFrameNumber() === $b->getFrameNumber()) {
+                if ($a->getFrameIndex() === $b->getFrameIndex()) {
                     return 0;
                 }
 
-                return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
+                return ($a->getFrameIndex() < $b->getFrameIndex()) ? -1 : 1;
             }
         );
     }

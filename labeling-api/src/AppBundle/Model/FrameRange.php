@@ -170,8 +170,8 @@ class FrameRange
      */
     public function coversFrameRange(FrameRange $otherFrameRange)
     {
-        return $this->coversFrameNumber($otherFrameRange->getStartFrameNumber())
-            && $this->coversFrameNumber($otherFrameRange->getEndFrameNumber());
+        return $this->coversFrameIndex($otherFrameRange->getStartFrameNumber())
+            && $this->coversFrameIndex($otherFrameRange->getEndFrameNumber());
     }
 
     /**
@@ -202,7 +202,7 @@ class FrameRange
      *
      * @return boolean
      */
-    public function coversFrameNumber($frameNumber)
+    public function coversFrameIndex($frameNumber)
     {
         return $this->startFrameNumber <= (int) $frameNumber && (int) $frameNumber <= $this->endFrameNumber;
     }
@@ -214,7 +214,7 @@ class FrameRange
      */
     public function throwIfFrameNumberIsNotCovered($frameNumber)
     {
-        if (!$this->coversFrameNumber($frameNumber)) {
+        if (!$this->coversFrameIndex($frameNumber)) {
             throw new \RangeException(
                 sprintf(
                     "FrameNumber '%d' outside of FrameRange '%d - %d'",

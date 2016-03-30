@@ -144,7 +144,7 @@ class GhostClassesPropagationTest extends KernelTestCase
                 $labeledThingInFrameWithGhostClasses->getClasses(),
                 sprintf(
                     'Wrong classes for frame %s (index %d). Expected %s, got %s',
-                    $labeledThingInFrameWithGhostClasses->getFrameNumber(),
+                    $labeledThingInFrameWithGhostClasses->getFrameIndex(),
                     $key,
                     var_export($expectedClasses[$key]['classes'], true),
                     var_export($labeledThingInFrameWithGhostClasses->getClasses(), true)
@@ -155,7 +155,7 @@ class GhostClassesPropagationTest extends KernelTestCase
                 $labeledThingInFrameWithGhostClasses->getGhostClasses(),
                 sprintf(
                     'Wrong ghostClasses for frame %s (index %d). Expected %s, got %s',
-                    $labeledThingInFrameWithGhostClasses->getFrameNumber(),
+                    $labeledThingInFrameWithGhostClasses->getFrameIndex(),
                     $key,
                     var_export($expectedClasses[$key]['ghostClasses'], true),
                     var_export($labeledThingInFrameWithGhostClasses->getGhostClasses(), true)

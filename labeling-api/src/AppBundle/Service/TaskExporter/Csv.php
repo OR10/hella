@@ -161,7 +161,7 @@ class Csv implements Service\TaskExporter
 
                 return array(
                     'id'           => $idCounter,
-                    'frame_number' => $labeledThingInFrame->getFrameNumber(),
+                    'frame_number' => $labeledThingInFrame->getFrameIndex(),
                     'vehicleType'  => $vehicleType,
                     'direction'    => $direction,
                     'occlusion'    => $occlusion,

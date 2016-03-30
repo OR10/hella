@@ -54,47 +54,47 @@ class LabeledFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{task}/labeledFrame/{frameNumber}")
+     * @Rest\Get("/{task}/labeledFrame/{frameIndex}")
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
-     * @param int                    $frameNumber
+     * @param int                    $frameIndex
      *
      * @return View\View
      */
     public function getLabeledFrameAction(
         HttpFoundation\Request $request,
         Model\LabelingTask $task,
-        $frameNumber
+        $frameIndex
     ) {
-        $frameNumber  = (int) $frameNumber;
+        $frameIndex  = (int) $frameIndex;
         $offset       = $request->query->get('offset');
         $limit        = $request->query->get('limit');
 
-        $labeledFrame = $this->labelingTaskFacade->getCurrentOrPreceedingLabeledFrame($task, $frameNumber);
+        $labeledFrame = $this->labelingTaskFacade->getCurrentOrPreceedingLabeledFrame($task, $frameIndex);
 
         if ($labeledFrame === null) {
-            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
-        } elseif ($labeledFrame->getFrameNumber() !== $frameNumber) {
-            $labeledFrame = $labeledFrame->copyToFrameNumber($frameNumber);
+            $labeledFrame = new Model\LabeledFrame($task, $frameIndex);
+        } elseif ($labeledFrame->getFrameIndex() !== $frameIndex) {
+            $labeledFrame = $labeledFrame->copyToFrameIndex($frameIndex);
         }
 
         if ($offset !== null && $limit !== null) {
             $labeledFrames = $this->labelingTaskFacade->getLabeledFrames(
                 $task,
-                $frameNumber + $offset + 1,
-                $frameNumber + $offset + $limit - 1
+                $frameIndex + $offset + 1,
+                $frameIndex + $offset + $limit - 1
             );
 
             $result = [];
 
-            foreach (range($frameNumber + $offset, $frameNumber + $offset + $limit - 1) as $frameNumber) {
-                if (!empty($labeledFrames) && $labeledFrames[0]->getFrameNumber() <= $frameNumber) {
+            foreach (range($frameIndex + $offset, $frameIndex + $offset + $limit - 1) as $frameIndex) {
+                if (!empty($labeledFrames) && $labeledFrames[0]->getFrameIndex() <= $frameIndex) {
                     $labeledFrame = array_shift($labeledFrames);
                 }
 
-                if ($frameNumber != $labeledFrame->getFrameNumber()) {
-                    $result[] = $labeledFrame->copyToFrameNumber($frameNumber);
+                if ($frameIndex != $labeledFrame->getFrameIndex()) {
+                    $result[] = $labeledFrame->copyToFrameIndex($frameIndex);
                 } else {
                     $result[] = $labeledFrame;
                 }
@@ -107,19 +107,19 @@ class LabeledFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Delete("/{task}/labeledFrame/{frameNumber}")
+     * @Rest\Delete("/{task}/labeledFrame/{frameIndex}")
      * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
-     * @param int                $frameNumber
+     * @param int                $frameIndex
      *
      * @return \FOS\RestBundle\View\View
      * @internal param $documentId
      *
      */
-    public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameNumber)
+    public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameIndex)
     {
-        if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber)) === null) {
+        if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameIndex)) === null) {
             throw new Exception\NotFoundHttpException('LabeledFrame not found');
         }
 
@@ -130,11 +130,11 @@ class LabeledFrame extends Controller\Base
 
     /**
      *
-     * @Rest\Put("/{task}/labeledFrame/{frameNumber}")
+     * @Rest\Put("/{task}/labeledFrame/{frameIndex}")
      * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask     $task
-     * @param int                    $frameNumber
+     * @param int                    $frameIndex
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
@@ -143,20 +143,20 @@ class LabeledFrame extends Controller\Base
      */
     public function putLabeledThingInFrameAction(
         Model\LabelingTask $task,
-        $frameNumber,
+        $frameIndex,
         HttpFoundation\Request $request
     ) {
         $labeledFrameId  = $request->request->get('id');
         $revision        = $request->request->get('rev');
-        $bodyFrameNumber = (int) $request->request->get('frameNumber');
+        $bodyFrameIndex = (int) $request->request->get('frameIndex');
         $classes         = $request->request->get('classes', []);
 
-        if (!is_array($classes) || $bodyFrameNumber !== (int) $frameNumber || $labeledFrameId === null) {
-            throw new Exception\BadRequestHttpException('Missing classes, labeledFrameId or invalid bodyFrameNumber');
+        if (!is_array($classes) || $bodyFrameIndex !== (int) $frameIndex || $labeledFrameId === null) {
+            throw new Exception\BadRequestHttpException('Missing classes, labeledFrameId or invalid bodyFrameIndex');
         }
 
-        if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameNumber)) === null) {
-            $labeledFrame = new Model\LabeledFrame($task, $frameNumber);
+        if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameIndex)) === null) {
+            $labeledFrame = new Model\LabeledFrame($task, $frameIndex);
             $labeledFrame->setId($labeledFrameId);
         } elseif ($labeledFrame->getRev() !== $revision) {
             // TODO: Synchronize with frontend team to find a better solution here!
@@ -164,7 +164,7 @@ class LabeledFrame extends Controller\Base
         }
 
         // I'm not quite sure about changing the id but since we are requesting
-        // the labeledFrame by task and frameNumber, the id might be able to
+        // the labeledFrame by task and frameIndex, the id might be able to
         // change.
         // Maybe it's better to throw an exception in this case.
         if ($labeledFrame->getId() !== $labeledFrameId) {

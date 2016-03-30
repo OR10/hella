@@ -70,11 +70,11 @@ class Linear implements Interpolation\Algorithm
         Model\LabeledThingInFrame $labeledThingInFrame,
         callable $emit
     ) {
-        if ($startFrameNumber >= $labeledThingInFrame->getFrameNumber()) {
+        if ($startFrameNumber >= $labeledThingInFrame->getFrameIndex()) {
             return;
         }
 
-        foreach (range($startFrameNumber, $labeledThingInFrame->getFrameNumber() - 1) as $frameNumber) {
+        foreach (range($startFrameNumber, $labeledThingInFrame->getFrameIndex() - 1) as $frameNumber) {
             $emit($labeledThingInFrame->copy($frameNumber));
         }
     }
@@ -84,11 +84,11 @@ class Linear implements Interpolation\Algorithm
         $endFrameNumber,
         callable $emit
     ) {
-        if ($endFrameNumber <= $labeledThingInFrame->getFrameNumber()) {
+        if ($endFrameNumber <= $labeledThingInFrame->getFrameIndex()) {
             return;
         }
 
-        foreach (range($labeledThingInFrame->getFrameNumber() + 1, $endFrameNumber) as $frameNumber) {
+        foreach (range($labeledThingInFrame->getFrameIndex() + 1, $endFrameNumber) as $frameNumber) {
             $emit($labeledThingInFrame->copy($frameNumber));
         }
     }
@@ -98,17 +98,17 @@ class Linear implements Interpolation\Algorithm
         Model\LabeledThingInFrame $end,
         callable $emit
     ) {
-        if ($end->getFrameNumber() - $start->getFrameNumber() < 2) {
+        if ($end->getFrameIndex() - $start->getFrameIndex() < 2) {
             // nothing to do when there is no frame in between
             return;
         }
 
         $previous       = $start;
-        $remainingSteps = $end->getFrameNumber() - $start->getFrameNumber();
+        $remainingSteps = $end->getFrameIndex() - $start->getFrameIndex();
         $currentShapes  = $start->getShapesAsObjects();
         $endShapes      = $this->createShapeIndex($end->getShapesAsObjects());
 
-        foreach (range($start->getFrameNumber() + 1, $end->getFrameNumber() - 1) as $frameNumber) {
+        foreach (range($start->getFrameIndex() + 1, $end->getFrameIndex() - 1) as $frameNumber) {
             $currentShapes = array_map(
                 function($shape) use ($endShapes, $remainingSteps) {
                     return $this->interpolateShape($shape, $endShapes[$shape->getId()], $remainingSteps);

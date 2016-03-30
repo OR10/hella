@@ -99,7 +99,7 @@ class LinearTest extends Tests\KernelTestCase
         $this->assertLabeledThingsInFrameAreEqual($thingsInFrame, $emitted);
     }
 
-    public function testInterpolationClonesFirstFoundLabeledThingInFrameWhenStartFrameIsLowerThanFoundFrameNumber()
+    public function testInterpolationClonesFirstFoundLabeledThingInFrameWhenStartFrameIsLowerThanFoundFrameIndex()
     {
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
@@ -119,8 +119,8 @@ class LinearTest extends Tests\KernelTestCase
         );
 
         $expected = array_map(
-            function($frameNumber) use ($thingsInFrame) {
-                return $thingsInFrame[0]->copy($frameNumber);
+            function($frameIndex) use ($thingsInFrame) {
+                return $thingsInFrame[0]->copy($frameIndex);
             },
             range(1, 3)
         );
@@ -128,7 +128,7 @@ class LinearTest extends Tests\KernelTestCase
         $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
     }
 
-    public function testInterpolationClonesLastFoundLabeledThingInFrameWhenEndFrameIsGreaterThanFoundFrameNumber()
+    public function testInterpolationClonesLastFoundLabeledThingInFrameWhenEndFrameIsGreaterThanFoundFrameIndex()
     {
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
@@ -148,8 +148,8 @@ class LinearTest extends Tests\KernelTestCase
         );
 
         $expected = array_map(
-            function($frameNumber) use ($thingsInFrame) {
-                return $thingsInFrame[0]->copy($frameNumber);
+            function($frameIndex) use ($thingsInFrame) {
+                return $thingsInFrame[0]->copy($frameIndex);
             },
             range(3, 10)
         );
@@ -180,8 +180,8 @@ class LinearTest extends Tests\KernelTestCase
         );
 
         $expected = array_map(
-            function($frameNumber) use ($thingsInFrame) {
-                return $thingsInFrame[0]->copy($frameNumber);
+            function($frameIndex) use ($thingsInFrame) {
+                return $thingsInFrame[0]->copy($frameIndex);
             },
             range(4, 6)
         );
@@ -318,7 +318,7 @@ class LinearTest extends Tests\KernelTestCase
     {
         return array_map(function($labeledThingInFrame) {
             return [
-                'frameNumber' => $labeledThingInFrame->getFrameNumber(),
+                'frameIndex' => $labeledThingInFrame->getFrameIndex(),
                 'shapes' => $labeledThingInFrame->getShapes(),
             ];
         }, $labeledThingsInFrame);
@@ -335,11 +335,15 @@ class LinearTest extends Tests\KernelTestCase
     }
 
     /**
+     * @param Model\LabeledThing $labeledThing
+     * @param $frameIndex
+     * @param array $shapes
+     *
      * @return Model\LabeledThingInFrame
      */
-    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameNumber, array $shapes = [])
+    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameIndex, array $shapes = [])
     {
-        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+        $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
         $labeledThingInFrame->setShapes($this->convertShapesToArray($shapes));
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
         return $labeledThingInFrame;

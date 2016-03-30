@@ -1,5 +1,5 @@
 function(doc) {
   if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
-    emit([doc.taskId, doc.frameNumber]);
+    emit([doc.taskId, doc.frameIndex]);
   }
 }

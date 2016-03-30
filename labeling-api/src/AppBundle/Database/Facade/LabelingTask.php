@@ -110,13 +110,13 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param int                $frameNumber
+     * @param int                $frameIndex
      *
      * @return Model\LabeledFrame|null
      */
-    public function getLabeledFrame(Model\LabelingTask $labelingTask, $frameNumber)
+    public function getLabeledFrame(Model\LabelingTask $labelingTask, $frameIndex)
     {
-        $result = $this->getLabeledFrames($labelingTask, $frameNumber, $frameNumber);
+        $result = $this->getLabeledFrames($labelingTask, $frameIndex, $frameIndex);
 
         if (empty($result)) {
             return null;
@@ -127,16 +127,16 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $task
-     * @param int                $frameNumber
+     * @param int                $frameIndex
      *
      * @return Model\LabeledFrame|null
      */
-    public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameNumber)
+    public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameIndex)
     {
-        $task->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
+        $task->getFrameRange()->throwIfFrameNumberIsNotCovered($frameIndex);
 
         $startFrameNumber = $task->getFrameRange()->getStartFrameNumber();
-        $endFrameNumber   = $frameNumber;
+        $endFrameNumber   = $frameIndex;
 
         if ($startFrameNumber > $endFrameNumber) {
             $tmp = $startFrameNumber;
@@ -194,13 +194,13 @@ class LabelingTask
         return $query->onlyDocs(true)->execute()->toArray();
     }
 
-    public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
+    public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameIndex)
     {
-        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
+        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($frameIndex);
 
         return $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
-            ->setKey([$labelingTask->getId(), (int) $frameNumber])
+            ->setKey([$labelingTask->getId(), (int) $frameIndex])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

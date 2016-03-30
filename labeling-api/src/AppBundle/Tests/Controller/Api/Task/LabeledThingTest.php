@@ -145,7 +145,7 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
-        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 9);
+        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 10);
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -278,8 +278,8 @@ class LabeledThingTest extends Tests\WebTestCase
         return $this->labeledThingFacade->save(Model\LabeledThing::create($task));
     }
 
-    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameNumber = 10)
+    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameIndex = 10)
     {
-        return $this->labeledThingInFrameFacade->save(Model\LabeledThingInFrame::create($labeledThing, $frameNumber));
+        return $this->labeledThingInFrameFacade->save(Model\LabeledThingInFrame::create($labeledThing, $frameIndex));
     }
 }

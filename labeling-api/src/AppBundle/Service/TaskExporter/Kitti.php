@@ -163,14 +163,14 @@ class Kitti implements Service\TaskExporter
             }
 
             try {
-                $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
+                $result[$labeledThingInFrame->getFrameIndex()][] = new TaskExporter\Kitti\Object(
                     $this->getObjectType($labeledThings[$labeledThingInFrame->getLabeledThingId()]),
                     $labeledThingInFrame->getBoundingBox()
                 );
             } catch (\Exception $exception) {
                 throw new Exception\Kitti(
                     $exception->getMessage(),
-                    $labeledThingInFrame->getFrameNumber(),
+                    $labeledThingInFrame->getFrameIndex(),
                     $exception
                 );
             }

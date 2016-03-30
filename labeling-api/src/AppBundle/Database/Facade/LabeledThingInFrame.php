@@ -151,7 +151,7 @@ class LabeledThingInFrame
         $result = $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber_count_by_classes')
             ->setEndKey([$labeledThingInFrame->getLabeledThingId(), 0, 1])
-            ->setStartKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameNumber(), '*'])
+            ->setStartKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameIndex(), '*'])
             ->onlyDocs(true)
             ->setLimit(1)
             ->setDescending(true)

@@ -61,18 +61,18 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{task}/labeledThingInFrame/{frameNumber}")
+     * @Rest\Post("/{task}/labeledThingInFrame/{frameIndex}")
      * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask     $task
-     * @param int                    $frameNumber
+     * @param int                    $frameIndex
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
     public function saveLabeledThingInFrameAction(
         Model\LabelingTask $task,
-        $frameNumber,
+        $frameIndex,
         HttpFoundation\Request $request
     ) {
         $labeledThingInFrameId = $request->request->get('id', null);
@@ -87,7 +87,7 @@ class LabeledThingInFrame extends Controller\Base
         }
 
         try {
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
             $labeledThingInFrame->setId($labeledThingInFrameId);
             $labeledThingInFrame->setShapes($shapes);
             $labeledThingInFrame->setClasses($classes);
@@ -125,29 +125,29 @@ class LabeledThingInFrame extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{task}/labeledThingInFrame/{frameNumber}")
+     * @Rest\Get("/{task}/labeledThingInFrame/{frameIndex}")
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
-     * @param int                    $frameNumber
+     * @param int                    $frameIndex
      *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingInFrameForFrameAction(
         HttpFoundation\Request $request,
         Model\LabelingTask $task,
-        $frameNumber
+        $frameIndex
     ) {
         $fetchLabeledThings = $request->query->getBoolean('labeledThings', true);
         $offset             = $request->query->get('offset');
         $limit              = $request->query->get('limit');
 
         if ($offset !== null && $limit !== null) {
-            $startFrameNumber = $frameNumber + $offset;
-            $endFrameNumber   = $frameNumber + $offset + $limit - 1;
+            $startFrameNumber = $frameIndex + $offset;
+            $endFrameNumber   = $frameIndex + $offset + $limit - 1;
         } else {
-            $startFrameNumber = (int) $frameNumber;
-            $endFrameNumber   = (int) $frameNumber;
+            $startFrameNumber = (int) $frameIndex;
+            $endFrameNumber   = (int) $frameIndex;
         }
 
         $labeledThings        = [];
@@ -195,22 +195,22 @@ class LabeledThingInFrame extends Controller\Base
      * Get labeled things in frame for the given frame range identified by
      * frame number, offset and limit.
      * Missing `LabeledThingInFrame`s are cloned from existing ones and marked
-     * as `ghost`. Those `ghosts` have the same `frameNumber` like the
+     * as `ghost`. Those `ghosts` have the same `frameIndex` like the
      * clone-source (for now) because of historical reasons.
      * This may change sometime.
      *
-     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameNumber}/{labeledThing}")
+     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameIndex}/{labeledThing}")
      *
      * @param string                 $taskId
-     * @param int                    $frameNumber
+     * @param int                    $frameIndex
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getLabeledThingInFrameWithinFrameNumberAction(
+    public function getLabeledThingInFrameWithinFrameIndexAction(
         $taskId,
-        $frameNumber,
+        $frameIndex,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
@@ -223,19 +223,19 @@ class LabeledThingInFrame extends Controller\Base
         }
 
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
-        $expectedFrameNumbers = range($frameNumber + $offset, $frameNumber + $offset + $limit - 1);
+        $expectedFrameIndexes = range($frameIndex + $offset, $frameIndex + $offset + $limit - 1);
 
         $labeledThingsInFrameWithinRangeWithGhosts = array();
         if ($includeGhosts) {
             $labeledThingsInFrameWithinRangeWithGhosts = $this->createLabeledThingInFrameGhosts(
                 $labeledThingsInFrame,
-                $expectedFrameNumbers
+                $expectedFrameIndexes
             );
         } else {
             $labeledThingsInFrameWithinRangeWithGhosts = array_filter(
                 $labeledThingsInFrame,
-                function ($labeledThingInFrame) use ($expectedFrameNumbers) {
-                    return in_array($labeledThingInFrame->getFrameNumber(), $expectedFrameNumbers);
+                function ($labeledThingInFrame) use ($expectedFrameIndexes) {
+                    return in_array($labeledThingInFrame->getFrameIndex(), $expectedFrameIndexes);
                 }
             );
         }
@@ -251,16 +251,16 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @param Model\LabeledThingInFrame[] $labeledThingsInFrame
-     * @param int[]                       $expectedFrameNumbers
+     * @param int[]                       $expectedFrameIndexes
      *
      * @return Model\LabeledThingInFrame[]
      */
-    private function createLabeledThingInFrameGhosts(array $labeledThingsInFrame, array $expectedFrameNumbers)
+    private function createLabeledThingInFrameGhosts(array $labeledThingsInFrame, array $expectedFrameIndexes)
     {
         $labeledThingsInFrame = array_reverse($labeledThingsInFrame);
 
         return array_map(
-            function ($expectedFrameNumber) use (&$labeledThingsInFrame) {
+            function ($expectedFrameIndex) use (&$labeledThingsInFrame) {
                 reset($labeledThingsInFrame);
                 while ($item = current($labeledThingsInFrame)) {
                     $currentItem = current($labeledThingsInFrame);
@@ -278,10 +278,10 @@ class LabeledThingInFrame extends Controller\Base
                         prev($labeledThingsInFrame);
                     }
 
-                    if ($expectedFrameNumber === $currentItem->getFrameNumber()) {
+                    if ($expectedFrameIndex === $currentItem->getFrameIndex()) {
                         return $currentItem;
-                    } elseif ($expectedFrameNumber > $currentItem->getFrameNumber()) {
-                        $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameNumber);
+                    } elseif ($expectedFrameIndex > $currentItem->getFrameIndex()) {
+                        $ghostLabeledThingInFrame = $currentItem->copy($expectedFrameIndex);
                         $ghostLabeledThingInFrame->setGhost(true);
                         $ghostLabeledThingInFrame->setGhostClasses($ghostLabeledThingInFrame->getClasses());
                         $ghostLabeledThingInFrame->setClasses(array());
@@ -292,14 +292,14 @@ class LabeledThingInFrame extends Controller\Base
                     next($labeledThingsInFrame);
                 }
 
-                $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameNumber);
+                $ghostLabeledThingInFrame = $endLabeledThingInFrame->copy($expectedFrameIndex);
                 $ghostLabeledThingInFrame->setGhost(true);
                 $ghostLabeledThingInFrame->setGhostClasses($ghostLabeledThingInFrame->getClasses());
                 $ghostLabeledThingInFrame->setClasses(array());
 
                 return $ghostLabeledThingInFrame;
             },
-            $expectedFrameNumbers
+            $expectedFrameIndexes
         );
     }
 }

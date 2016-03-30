@@ -100,7 +100,7 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->assertEquals(new Model\FrameRange(76, 132), $tasks[3]->getFrameRange());
     }
 
-    public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameNumberPerChunk()
+    public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameIndexPerChunk()
     {
         $tasks = $this->importVideo($chunkSizeInSeconds = 1.23, null, array('foo' => 'bar'));
 

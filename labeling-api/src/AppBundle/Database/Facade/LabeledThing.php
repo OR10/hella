@@ -18,7 +18,7 @@ class LabeledThing
 
     /**
      * @param Model\LabeledThing $labeledThing
-     * @param int|null           $frameNumber
+     * @param int|null           $frameIndex
      * @param int                $offset
      * @param int                $limit
      *
@@ -26,15 +26,15 @@ class LabeledThing
      */
     public function getLabeledThingInFrames(
         Model\LabeledThing $labeledThing,
-        $frameNumber = null,
+        $frameIndex = null,
         $offset = 0,
         $limit = 0
     ) {
         $frameRange = $labeledThing->getFrameRange();
 
-        if ($frameNumber !== null) {
+        if ($frameIndex !== null) {
             $frameRange = $frameRange->createSubRangeForOffsetAndLimit(
-                $frameNumber - $frameRange->getStartFrameNumber() + $offset,
+                $frameIndex - $frameRange->getStartFrameNumber() + $offset,
                 $limit
             );
         }

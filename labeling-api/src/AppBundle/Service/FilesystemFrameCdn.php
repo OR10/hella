@@ -32,16 +32,16 @@ class FilesystemFrameCdn extends FrameCdn
     /**
      * @param Model\Video    $video
      * @param ImageType\Base $imageType
-     * @param int            $frameNumber
+     * @param int            $frameIndex
      * @param string         $imageData
      *
      * @return void
      * @throws \Exception
      */
-    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $imageData)
+    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameIndex, $imageData)
     {
         $cdnPath  = sprintf('%s/%s', $video->getId(), $imageType->getName());
-        $filePath = sprintf('%s/%s.%s', $cdnPath, $frameNumber, $imageType->getExtension());
+        $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());
 
         $this->fileSystem->createDir($cdnPath);
         $this->fileSystem->write($filePath, $imageData);
@@ -60,15 +60,15 @@ class FilesystemFrameCdn extends FrameCdn
         Model\FrameRange $frameRange
     ) {
         $urls = [];
-        foreach ($frameRange->getRange() as $frameNumber) {
+        foreach ($frameRange->getRange() as $frameIndex) {
             $urls[] = [
-                "frameNumber" => $frameNumber,
+                "frameIndex" => $frameIndex,
                 'url' => sprintf(
                     '%s/%s/%s/%s.%s',
                     $this->frameCdnBaseUrl,
                     $labelingTask->getVideoId(),
                     $imageType->getName(),
-                    $frameNumber,
+                    $frameIndex,
                     $imageType->getExtension()
                 ),
             ];

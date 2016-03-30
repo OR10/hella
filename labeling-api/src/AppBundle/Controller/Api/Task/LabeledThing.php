@@ -278,8 +278,8 @@ class LabeledThing extends Controller\Base
         );
         if (!empty($preceedingLabeledThingsInFrame)) {
             $lastPreceedingLabeledThingInFrame = array_pop($preceedingLabeledThingsInFrame);
-            if ($lastPreceedingLabeledThingInFrame->getFrameNumber() < $newFrameRange->getStartFrameNumber()) {
-                $lastPreceedingLabeledThingInFrame->setFrameNumber($newFrameRange->getStartFrameNumber());
+            if ($lastPreceedingLabeledThingInFrame->getFrameIndex() < $newFrameRange->getStartFrameNumber()) {
+                $lastPreceedingLabeledThingInFrame->getFrameIndex($newFrameRange->getStartFrameNumber());
                 $this->labeledThingInFrameFacade->save($lastPreceedingLabeledThingInFrame);
             }
         }
@@ -308,8 +308,8 @@ class LabeledThing extends Controller\Base
 
         if (!empty($succeedingLabeledThingsInFrame)) {
             $lastSucceedingLabeledThingInFrame = array_shift($succeedingLabeledThingsInFrame);
-            if ($lastSucceedingLabeledThingInFrame->getFrameNumber() > $newFrameRange->getEndFrameNumber()) {
-                $lastSucceedingLabeledThingInFrame->setFrameNumber($newFrameRange->getEndFrameNumber());
+            if ($lastSucceedingLabeledThingInFrame->getFrameIndex() > $newFrameRange->getEndFrameNumber()) {
+                $lastSucceedingLabeledThingInFrame->setFrameIndex($newFrameRange->getEndFrameNumber());
                 $this->labeledThingInFrameFacade->save($lastSucceedingLabeledThingInFrame);
             }
         }

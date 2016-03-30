@@ -1,8 +1,8 @@
 function(doc) {
-  var frameNumber = 0;
+  var frameIndex = 0;
   if (doc.type === 'AppBundle.Model.LabeledThing') {
-    for (frameNumber = doc.frameRange.startFrameNumber; frameNumber <= doc.frameRange.endFrameNumber; ++frameNumber) {
-      emit([doc.taskId, frameNumber]);
+    for (frameIndex = doc.frameRange.startFrameNumber; frameIndex <= doc.frameRange.endFrameNumber; ++frameIndex) {
+      emit([doc.taskId, frameIndex]);
     }
   }
 }
