@@ -33,15 +33,15 @@ class VideoProcessbarController {
 
       if (this.selectedPaperShape) {
         const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - this.framePosition.startFrameNumber);
+        this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
       }
     });
 
     $scope.$watchGroup([
       'vm.selectedPaperShape',
       'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange',
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
+      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex',
+      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex',
     ], ([paperShape]) => {
       if (paperShape === null) {
         this.rangeWidth = 0;
@@ -50,8 +50,8 @@ class VideoProcessbarController {
 
       const frameRange = paperShape.labeledThingInFrame.labeledThing.frameRange;
 
-      this.rangeWidth = this.frameSize * (frameRange.endFrameNumber - frameRange.startFrameNumber + 1);
-      this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameNumber - this.framePosition.startFrameNumber);
+      this.rangeWidth = this.frameSize * (frameRange.endFrameIndex - frameRange.startFrameIndex + 1);
+      this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
     });
   }
 }
