@@ -266,7 +266,7 @@ class LabeledThing extends Controller\Base
     {
         $previousFrameRange = $labeledThing->getFrameRange();
 
-        if ($newFrameRange->getStartFrameIndexf() <= $previousFrameRange->getStartFrameIndex()) {
+        if ($newFrameRange->getStartFrameIndex() <= $previousFrameRange->getStartFrameIndex()) {
             return [];
         }
 
