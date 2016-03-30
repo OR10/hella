@@ -285,8 +285,8 @@ class ThumbnailController {
   }
 
   handleThumbnailClick() {
-    if (this.location && this.location.frameNumber) {
-      this.framePosition.goto(this.location.frameNumber);
+    if (this.location && this.location.frameIndex) {
+      this.framePosition.goto(this.location.frameIndex);
     }
   }
 }
