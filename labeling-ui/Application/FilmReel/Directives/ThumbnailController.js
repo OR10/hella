@@ -35,7 +35,7 @@ class ThumbnailController {
     /**
      * @type {int}
      */
-    this.currentFrameNumber = this.framePosition.position;
+    this.currentFrameIndex = this.framePosition.position;
 
     /**
      * @type {DrawingContext}
@@ -116,16 +116,10 @@ class ThumbnailController {
     this._drawBackgroundLayerDebounced = animationFrameService.debounce((redraw) => this._drawBackgroundLayer(redraw));
     this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
 
-    $scope.$watch('vm.currentFrameNumber', newFrameNumber => {
-      const frameInt = Number.parseInt(newFrameNumber, 10);
-      if (frameInt < this.framePosition.startFrameNumber) {
-        this.framePosition.goto(this.framePosition.startFrameNumber);
-      } else if (frameInt > this.framePosition.endFrameNumber) {
-        this.framePosition.goto(this.framePosition.endFrameNumber);
-      } else {
-        this.framePosition.goto(frameInt);
-      }
-      this.currentFrameNumber = this.framePosition.position;
+    $scope.$watch('vm.currentFrameIndex', newFrameIndex => {
+      const numericalFrameIndex = Number.parseInt(newFrameIndex, 10);
+      this.framePosition.goto(numericalFrameIndex);
+      this.currentFrameIndex = this.framePosition.position;
     });
 
     $scope.$watch('vm.dimensions', newDimensions => {
@@ -173,7 +167,7 @@ class ThumbnailController {
         return;
       }
 
-      this.currentFrameNumber = this.framePosition.position;
+      this.currentFrameIndex = this.framePosition.position;
 
       this._imagePromise = this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)
