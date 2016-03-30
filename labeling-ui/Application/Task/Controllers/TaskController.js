@@ -34,6 +34,10 @@ class TaskController {
               $timeout,
               keyboardShortcutService,
               frameIndexService) {
+
+    // Ensure the FrameIndexService knows the currently active Task
+    frameIndexService.setTask(this.task);
+
     /**
      * @type {angular.Scope}
      */
@@ -98,7 +102,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition($q, this.task.frameRange, this._getFrameNumberFromUrl());
+    this.framePosition = new FramePosition($q, frameIndexService.getFrameIndexLimits(), this._getFrameNumberFromUrl());
 
     /**
      * Number of the currently bookmarked frame
@@ -223,9 +227,6 @@ class TaskController {
      * @type {ThingLayer}
      */
     this.thingLayer = null;
-
-    // Ensure the FrameIndexService knows the currently active Task
-    frameIndexService.setTask(this.task);
 
     keyboardShortcutService.pushContext('labeling-task');
 
