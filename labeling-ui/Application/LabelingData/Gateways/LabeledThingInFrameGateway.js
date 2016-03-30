@@ -90,7 +90,7 @@ class LabeledThingInFrameGateway {
    * @param {Task} task
    * @param {int?} count
    *
-   * @returns {AbortablePromise<LabeledThingInFrame>|Error}
+   * @returns {AbortablePromise<Array.<LabeledThingInFrame>>|Error}
    */
   getNextIncomplete(task, count = 1) {
     const url = this._apiService.getApiUrl(

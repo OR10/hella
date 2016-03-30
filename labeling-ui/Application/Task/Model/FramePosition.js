@@ -73,7 +73,7 @@ class FramePosition {
 
   /**
    * Retrieve the currently active position
-   * @returns {int}
+   * @returns {integer}
    */
   get position() {
     return this._position;
@@ -81,7 +81,7 @@ class FramePosition {
 
   /**
    * Jump to a specific position within this frameIndexLimits.
-   * @param {int} newPosition
+   * @param {integer} newPosition
    */
   goto(newPosition) {
     if (newPosition < this._lowerLimit) {
