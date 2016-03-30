@@ -429,4 +429,20 @@ class LabelingTask
     {
         $this->drawingToolOptions = $drawingToolOptions;
     }
+
+    /**
+     * @return array
+     */
+    public function getFrameNumberMapping()
+    {
+        return $this->frameNumberMapping;
+    }
+
+    /**
+     * @param array $frameNumberMapping
+     */
+    public function setFrameNumberMapping($frameNumberMapping)
+    {
+        $this->frameNumberMapping = $frameNumberMapping;
+    }
 }

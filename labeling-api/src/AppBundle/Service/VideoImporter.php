@@ -200,6 +200,9 @@ class VideoImporter
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
+        $labelingTask->setFrameNumberMapping(
+            range(1, $video->getMetaData()->numberOfFrames)
+        );
 
         $this->labelingTaskFacade->save($labelingTask);
 
