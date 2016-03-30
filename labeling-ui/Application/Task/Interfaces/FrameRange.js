@@ -1,19 +1,19 @@
 /**
- * A specific range of frames
+ * A specific range of frames by their index
  *
  * @interface FrameRange
  */
 
 /**
- * First frame of the given {@link FrameRange} (inclusive)
+ * First frameIndex of the given {@link FrameRange} (inclusive)
  *
- * @name FrameRange#startFrameNumber
+ * @name FrameRange#startFrameIndex
  * @type {int}
  */
 
 /**
- * Last frame of the given {@link FrameRange} (inclusive)
+ * Last frameIndex of the given {@link FrameRange} (inclusive)
  *
- * @name FrameRange#endFrameNumber
+ * @name FrameRange#endFrameIndex
  * @type {int}
  */
