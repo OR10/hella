@@ -21,8 +21,20 @@ class ThumbnailReelController {
    * @param {AnimationFrameService} animationFrameService
    * @param {Object} applicationState
    * @param {LockService} lockService
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor($scope, $window, $element, $q, abortablePromiseFactory, frameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState, lockService) {
+  constructor($scope,
+              $window,
+              $element,
+              $q,
+              abortablePromiseFactory,
+              frameLocationGateway,
+              labeledThingInFrameGateway,
+              labeledThingGateway,
+              animationFrameService,
+              applicationState,
+              lockService,
+              frameIndexService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -56,6 +68,12 @@ class ThumbnailReelController {
      * @private
      */
     this._lockService = lockService;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     /**
      * Count of thumbnails shown on the page
@@ -143,14 +161,14 @@ class ThumbnailReelController {
       this._recalculateViewSizeDebounced();
     };
 
-    this._recalculateViewSizeDebounced();
-
-    this.prefetchThumbnailLocations();
-
     $window.addEventListener('resize', onWindowResized);
     $scope.$on('$destroy', () => {
       $window.removeEventListener('resize', onWindowResized);
     });
+
+    this._recalculateViewSizeDebounced();
+
+    this.prefetchThumbnailLocations();
 
     this._applicationState.$watch('thumbnails.isDisabled', disabled => this.thumbnailsDisabled = disabled);
     this._applicationState.$watch('thumbnails.isWorking', working => this.thumbnailsWorking = working);
@@ -338,11 +356,11 @@ class ThumbnailReelController {
     const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
-      offset + this.task.frameRange.startFrameNumber,
+        offset + this.task.frameRange.startFrameNumber,
       this.selectedPaperShape.labeledThingInFrame.labeledThing,
       0,
       limit
-    )
+      )
       .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
   }
 
@@ -476,10 +494,11 @@ class ThumbnailReelController {
 
   placeBracketSpacer(index) {
     const currentFramePosition = this.framePosition.position - this._thumbnailLookahead + index;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
 
     // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
-    return currentFramePosition + 1 >= this.framePosition.startFrameNumber
-      && currentFramePosition <= this.framePosition.endFrameNumber;
+    return currentFramePosition + 1 >= frameIndexLimits.lowerLimit
+      && currentFramePosition <= frameIndexLimits.upperLimit;
   }
 
   onBracketDragStart() {
@@ -508,6 +527,7 @@ ThumbnailReelController.$inject = [
   'animationFrameService',
   'applicationState',
   'lockService',
+  'frameIndexService',
 ];
 
 export default ThumbnailReelController;
