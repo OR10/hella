@@ -1,6 +1,7 @@
 import Module from '../Module';
 import TaskGateway from './Gateways/TaskGateway';
 import LabelStructureGateway from './Gateways/LabelStructureGateway';
+import FrameIndexService from './Services/FrameIndexService';
 import TaskController from './Controllers/TaskController';
 import taskTemplate from './Views/task.html!';
 
@@ -21,6 +22,7 @@ class Task extends Module {
 
     this.module.service('taskGateway', TaskGateway);
     this.module.service('labelStructureGateway', LabelStructureGateway);
+    this.module.service('FrameIndexService', FrameIndexService);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
   }
@@ -29,6 +31,12 @@ class Task extends Module {
    * @inheritDoc
    */
   config($stateProvider) {
+    /**
+     * @param {Object} $stateParams
+     * @param {TaskGateway} taskGateway
+     * @param {VideoGateway} videoGateway
+     * @returns {AbortablePromise}
+     */
     function initialDataResolver($stateParams, taskGateway, videoGateway) {
       return taskGateway.getTask($stateParams.taskId)
         .then(
@@ -36,7 +44,12 @@ class Task extends Module {
             .then(video => ({task, video}))
         );
     }
-    initialDataResolver.$inject = ['$stateParams', 'taskGateway', 'videoGateway'];
+
+    initialDataResolver.$inject = [
+      '$stateParams',
+      'taskGateway',
+      'videoGateway',
+    ];
 
     $stateProvider.state('labeling.task', {
       url: 'task/:taskId',
@@ -51,6 +64,8 @@ class Task extends Module {
   }
 }
 
-Task.prototype.config.$inject = ['$stateProvider'];
+Task.prototype.config.$inject = [
+  '$stateProvider',
+];
 
 export default Task;
