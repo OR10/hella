@@ -3,6 +3,7 @@ import TaskGateway from './Gateways/TaskGateway';
 import LabelStructureGateway from './Gateways/LabelStructureGateway';
 import FrameIndexService from './Services/FrameIndexService';
 import TaskController from './Controllers/TaskController';
+import toFrameNumberFilterProvider from './Filters/toFrameNumberFilterProvider';
 import taskTemplate from './Views/task.html!';
 
 import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
@@ -25,6 +26,7 @@ class Task extends Module {
     this.module.service('FrameIndexService', FrameIndexService);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
+    this.module.filter('toFrameNumber', toFrameNumberFilterProvider);
   }
 
   /**
