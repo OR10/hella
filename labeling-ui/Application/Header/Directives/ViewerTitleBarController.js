@@ -139,16 +139,16 @@ class ViewerTitleBarController {
 
   handleIncompleteState() {
     if (this.task.taskType === 'object-labeling') {
-      this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
-        const nextIncomplete = result[0];
+      this._labeledThingInFrameGateway.getNextIncomplete(this.task).then(labeledThingsInFrames => {
+        const nextIncomplete = labeledThingsInFrames[0];
 
-        if (this.framePosition.position === nextIncomplete.frameNumber) {
+        if (this.framePosition.position === nextIncomplete.frameIndex) {
           this._selectLabeledThingInFrame(nextIncomplete);
         } else {
           this.framePosition.registerOnFrameChangeOnce('selectNextIncomplete', () => {
             this._selectLabeledThingInFrame(nextIncomplete);
           });
-          this.framePosition.goto(nextIncomplete.frameNumber);
+          this.framePosition.goto(nextIncomplete.frameIndex);
         }
       });
     }
