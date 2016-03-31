@@ -8,7 +8,7 @@ import _ from 'lodash';
  */
 class LabeledThingInFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, ghostClasses: Array.<string>, incomplete: boolean, frameNumber: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
+   * @param {{id: string, classes: Array.<string>, ghostClasses: Array.<string>, incomplete: boolean, frameIndex: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
    */
   constructor(labeledThingInFrame) {
     super(labeledThingInFrame);
@@ -18,7 +18,7 @@ class LabeledThingInFrame extends LabeledObject {
      *
      * @type {int}
      */
-    this.frameNumber = labeledThingInFrame.frameNumber;
+    this.frameIndex = labeledThingInFrame.frameIndex;
 
     /**
      * {@link LabeledThing} associated with this `LabeledThingInFrame`
@@ -101,21 +101,21 @@ class LabeledThingInFrame extends LabeledObject {
    * ** Who you gonna .call? **
    *
    * A new id for the realized `LabeledThingInFrame` as well as its newly attached
-   * `frameNumber` needs to be provided
+   * `frameIndex` needs to be provided
    *
    * The correction is executed in place
    *
    * @param {string} id
-   * @param {int} frameNumber
+   * @param {int} frameIndex
    */
-  ghostBust(id, frameNumber) {
+  ghostBust(id, frameIndex) {
     if (this.ghost !== true) {
       throw new Error('Can\'t realize ghosted LabeledThingInFrame, as it is no ghost');
     }
 
     this.ghost = false;
     this.id = id;
-    this.frameNumber = frameNumber;
+    this.frameIndex = frameIndex;
   }
 
   /**
@@ -124,9 +124,9 @@ class LabeledThingInFrame extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {frameNumber, labeledThing, shapes, ghost, ghostClasses} = this;
+    const {frameIndex, labeledThing, shapes, ghost, ghostClasses} = this;
     return Object.assign(super.toJSON(), {
-      frameNumber, shapes, ghost, ghostClasses,
+      frameIndex, shapes, ghost, ghostClasses,
       labeledThingId: labeledThing.id,
     });
   }
