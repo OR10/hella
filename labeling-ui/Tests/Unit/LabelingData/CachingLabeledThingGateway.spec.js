@@ -30,7 +30,7 @@ describe('CachingLabeledThingGateway', () => {
       task: {id: 'some-task'},
       id: 'some-labeled-thing',
       rev: '1-abcdef',
-      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
       classes: ['foo', 'bar'],
     });
 
