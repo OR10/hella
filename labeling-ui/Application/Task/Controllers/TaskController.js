@@ -109,7 +109,7 @@ class TaskController {
      *
      * @type {Number|null}
      */
-    this.bookmarkedFrameNumber = null;
+    this.bookmarkedFrameIndex = null;
 
     /**
      * Drawing Tool used for initializing new empty shapes
