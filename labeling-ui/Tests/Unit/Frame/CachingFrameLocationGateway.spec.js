@@ -19,8 +19,8 @@ describe('CachingFrameLocationGateway', () => {
     spyOn(proto, [
       'getFrameLocations',
     ]).and.callFake(() => Promise.resolve([
-      {frameNumber: 1, url: 'http://example.com/2'},
-      {frameNumber: 2, url: 'http://example.com/2'},
+      {frameIndex: 0, url: 'http://example.com/1'},
+      {frameIndex: 1, url: 'http://example.com/2'},
     ]));
 
     const commonModule = new Common();
@@ -62,8 +62,8 @@ describe('CachingFrameLocationGateway', () => {
   });
 
   it('should use cache if present', (done) => {
-    const location = {frameNumber: 1, url: 'http://example.com'};
-    locationCache.store('some-task.some-type.1', location);
+    const location = {frameIndex: 0, url: 'http://example.com'};
+    locationCache.store('some-task.some-type.0', location);
     gateway.getFrameLocations('some-task', 'some-type', 0, 1).then(locations => {
       expect(proto.getFrameLocations).not.toHaveBeenCalled();
       expect(locations).toEqual([location]);
@@ -75,8 +75,8 @@ describe('CachingFrameLocationGateway', () => {
 
   it('should store results in cache', (done) => {
     gateway.getFrameLocations('some-task', 'some-type', 0, 2).then(locations => {
-      expect(locationCache.get('some-task.some-type.1')).toEqual(locations[0]);
-      expect(locationCache.get('some-task.some-type.2')).toEqual(locations[1]);
+      expect(locationCache.get('some-task.some-type.0')).toEqual(locations[0]);
+      expect(locationCache.get('some-task.some-type.1')).toEqual(locations[1]);
       done();
     });
 
@@ -84,15 +84,15 @@ describe('CachingFrameLocationGateway', () => {
   });
 
   it('should call through if cache has gaps', (done) => {
-    const locations = [
-      {frameNumber: 1, url: 'http://example.com/1'},
-      {frameNumber: 2, url: 'http://example.com/2'},
+    const expectedLocations = [
+      {frameIndex: 0, url: 'http://example.com/1'},
+      {frameIndex: 1, url: 'http://example.com/2'},
     ];
 
-    locationCache.store('some-task.some-type.2', location[1]);
+    locationCache.store('some-task.some-type.1', expectedLocations[1]);
     gateway.getFrameLocations('some-task', 'some-type', 0, 2).then(locations => {
       expect(proto.getFrameLocations).toHaveBeenCalled();
-      expect(locations).toEqual(locations);
+      expect(locations).toEqual(expectedLocations);
       done();
     });
 
