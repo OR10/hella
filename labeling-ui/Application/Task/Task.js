@@ -23,7 +23,7 @@ class Task extends Module {
 
     this.module.service('taskGateway', TaskGateway);
     this.module.service('labelStructureGateway', LabelStructureGateway);
-    this.module.service('FrameIndexService', FrameIndexService);
+    this.module.service('frameIndexService', FrameIndexService);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
     this.module.filter('toFrameNumber', toFrameNumberFilterProvider);
