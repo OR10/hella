@@ -11,7 +11,6 @@ import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 describe('LabeledThingInFrameGateway', () => {
   let $httpBackend;
   let gateway;
-  let bufferedHttp;
   let $q;
   let $rootScope;
 
@@ -44,7 +43,6 @@ describe('LabeledThingInFrameGateway', () => {
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingInFrameGateway);
-      bufferedHttp = $injector.get('bufferedHttp');
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
     });
