@@ -36,7 +36,7 @@ class TaskController {
               frameIndexService) {
 
     // Ensure the FrameIndexService knows the currently active Task
-    frameIndexService.setTask(this.task);
+    frameIndexService.setTask(initialData.task);
 
     /**
      * @type {FrameIndexService}
