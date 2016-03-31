@@ -2,6 +2,7 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
+import Task from 'Application/Task/Task';
 
 import LabeledThingInFrameGateway from 'Application/LabelingData/Gateways/LabeledThingInFrameGateway';
 import CachingLabeledThingInFrameGateway from 'Application/LabelingData/Gateways/CachingLabeledThingInFrameGateway';
@@ -117,6 +118,10 @@ describe('CachingLabeledThingInFrameGateway', () => {
     const labelingDataModule = new LabelingData();
     labelingDataModule.registerWithAngular(angular);
     module('AnnoStation.LabelingData');
+
+    const taskModule = new Task();
+    taskModule.registerWithAngular(angular);
+    module('AnnoStation.Task');
 
     module($provide => {
       $provide.value('applicationConfig', {
