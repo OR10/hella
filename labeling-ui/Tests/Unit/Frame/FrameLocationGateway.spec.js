@@ -77,8 +77,8 @@ describe('FrameLocationGateway', () => {
       expectedUrl = `${path}?${expectedQuery}`;
 
       expectedResult = [
-        {id: 'xyz', frameNumber: 1, url: 'http://example.com', type: 'source'},
-        {id: 'abc', frameNumber: 2, url: 'http://example.com', type: 'source'},
+        {id: 'xyz', frameIndex: 0, url: 'http://example.com', type: 'source'},
+        {id: 'abc', frameIndex: 1, url: 'http://example.com', type: 'source'},
       ];
     });
     it('should request frame ranges as specified', done => {
