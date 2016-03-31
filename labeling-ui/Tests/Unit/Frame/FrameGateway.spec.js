@@ -17,7 +17,7 @@ describe('FrameGateway', () => {
     module('AnnoStation.Common');
 
     inject($injector => {
-      frameLocation = {id: 'abc', type: 'source', frameNumber: 23, url: 'http://example.com/frame/23.png'};
+      frameLocation = {id: 'abc', type: 'source', frameIndex: 23, url: 'http://example.com/frame/23.png'};
 
       createImageMock = (error = false) => {
         const OriginalImage = Image;
