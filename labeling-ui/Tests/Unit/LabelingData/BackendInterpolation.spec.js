@@ -21,13 +21,13 @@ describe('BackendInterpolation', () => {
     }
   }
 
-  function createLabeledThing(startFrameNumber = 1, endFrameNumber = 100, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
+  function createLabeledThing(startFrameIndex = 0, endFrameIndex = 99, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
     return new LabeledThing({
       id,
       task,
       classes: [],
       incomplete: false,
-      frameRange: {startFrameNumber, endFrameNumber},
+      frameRange: {startFrameIndex, endFrameIndex},
     });
   }
 
@@ -79,14 +79,14 @@ describe('BackendInterpolation', () => {
   it('should communicate with backend', done => {
     const task = {id: 'some-task-id'};
     const labeledThingId = 'some-labeled-thing-id';
-    const labeledThing = createLabeledThing(1, 200, task, labeledThingId);
+    const labeledThing = createLabeledThing(0, 200, task, labeledThingId);
     const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
-    const frameRange = {startFrameNumber: 1, endFrameNumber: 100};
+    const frameRange = {startFrameIndex: 0, endFrameIndex: 10};
     const status = {status: 'success'};
     const expectedResult = {result: status};
 
     $httpBackend
-      .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 0, limit: 100})
+      .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 0, limit: 11})
       .respond(200, expectedResult);
 
     interpolation.execute(task, labeledThing, frameRange)
@@ -104,7 +104,7 @@ describe('BackendInterpolation', () => {
     const labeledThingId = 'some-labeled-thing-id';
     const labeledThing = createLabeledThing(50, 200, task, labeledThingId);
     const expectedUrl = `/backend/api/task/${task.id}/interpolate/${labeledThingId}`;
-    const frameRange = {startFrameNumber: 101, endFrameNumber: 150};
+    const frameRange = {startFrameIndex: 100, endFrameIndex: 150};
     const status = {status: 'success'};
     const expectedResult = {result: status};
 
@@ -114,7 +114,7 @@ describe('BackendInterpolation', () => {
       );
 
     $httpBackend
-      .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 51, limit: 50})
+      .expect('POST', expectedUrl, {type: 'mocked-interpolation-type', offset: 50, limit: 51})
       .respond(200, expectedResult);
 
     interpolation.execute(task, labeledThing, frameRange)
