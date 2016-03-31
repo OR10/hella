@@ -76,6 +76,11 @@ class ViewerTitleBarController {
      */
     this.shapeBounds = null;
 
+    /**
+     * @type {{lowerLimit, upperLimit}|{lowerLimit: number, upperLimit: number}}
+     */
+    this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
+
     this.refreshIncompleteCount();
     $scope.$watch('vm.selectedPaperShape', () => this.refreshIncompleteCount());
 
@@ -196,13 +201,6 @@ class ViewerTitleBarController {
         this.incompleteCount = result.count;
       });
     });
-  }
-
-  /**
-   * @returns {{lowerLimit: number, upperLimit: number}}
-   */
-  get frameNumberLimits() {
-    return this._frameIndexService.getFrameNumberLimits();
   }
 }
 
