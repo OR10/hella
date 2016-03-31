@@ -39,6 +39,12 @@ class TaskController {
     frameIndexService.setTask(this.task);
 
     /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
+
+    /**
      * @type {angular.Scope}
      */
     this.$scope = $scope;
@@ -102,7 +108,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition($q, frameIndexService.getFrameIndexLimits(), this._getFrameNumberFromUrl());
+    this.framePosition = new FramePosition($q, frameIndexService.getFrameIndexLimits(), this._getFrameIndexFromUrl());
 
     /**
      * Number of the currently bookmarked frame
@@ -282,7 +288,7 @@ class TaskController {
     });
 
     $scope.$watch(() => $location.hash(), () => {
-      this.framePosition.goto(this._getFrameNumberFromUrl());
+      this.framePosition.goto(this._getFrameIndexFromUrl());
     });
 
     // @TODO: Only needed as long as the left sidebar is not used and only shown for the panel
@@ -314,12 +320,12 @@ class TaskController {
 
   /**
    * Load the {@link LabeledFrame} structure for the given frame
-   * @param frameNumber
+   * @param frameIndex
    * @returns {AbortablePromise<LabeledFrame>}
    * @private
    */
-  _loadLabeledFrame(frameNumber) {
-    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
+  _loadLabeledFrame(frameIndex) {
+    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameIndex);
   }
 
   onSplitViewInitialized() {
@@ -341,25 +347,27 @@ class TaskController {
     this.$scope.$broadcast('sidebar.resized');
   }
 
-  _getFrameNumberFromUrl() {
+  _getFrameIndexFromUrl() {
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+
     const hash = this._$location.hash();
-    const matches = hash.match(/F(\d+)/);
+    const matches = hash.match(/(\d+)/);
 
     if (!matches || matches.length < 2 || !matches[1]) {
-      return this.task.frameRange.startFrameNumber;
+      return frameIndexLimits.lowerLimit;
     }
 
-    const initialFrameNumber = parseInt(matches[1], 10);
+    const frameIndex = parseInt(matches[1], 10);
 
     if (
-      !Number.isInteger(initialFrameNumber)
-      || initialFrameNumber < this.task.frameRange.startFrameNumber
-      || initialFrameNumber > this.task.frameRange.endFrameNumber
+      !Number.isInteger(frameIndex)
+      || frameIndex < frameIndexLimits.lowerLimit
+      || frameIndex > frameIndexLimits.upperLimit
     ) {
-      return 1;
+      return frameIndexLimits.lowerLimit;
     }
 
-    return initialFrameNumber;
+    return frameIndex;
   }
 }
 
