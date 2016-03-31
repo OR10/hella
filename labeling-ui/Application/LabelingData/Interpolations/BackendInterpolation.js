@@ -41,8 +41,8 @@ class BackendInterpolation {
     );
 
     const data = {
-      offset: frameRange.startFrameNumber - labeledThing.frameRange.startFrameNumber,
-      limit: frameRange.endFrameNumber - frameRange.startFrameNumber + 1,
+      offset: frameRange.startFrameIndex - labeledThing.frameRange.startFrameIndex,
+      limit: frameRange.endFrameIndex - frameRange.startFrameIndex + 1,
       type: this._getRemoteType(),
     };
 
