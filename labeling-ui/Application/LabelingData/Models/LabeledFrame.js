@@ -7,7 +7,7 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, taskId: string, frameNumber: int}} labeledFrame
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, taskId: string, frameIndex: int}} labeledFrame
    */
   constructor(labeledFrame) {
     super(labeledFrame);
@@ -25,7 +25,7 @@ class LabeledFrame extends LabeledObject {
      *
      * @type {Number}
      */
-    this.frameNumber = labeledFrame.frameNumber;
+    this.frameIndex = labeledFrame.frameIndex;
 
     /**
      * The ghost labels inherited from earlier labels
@@ -70,9 +70,11 @@ class LabeledFrame extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {taskId, frameNumber, ghostClasses} = this;
+    const {taskId, frameIndex, ghostClasses} = this;
     return Object.assign(super.toJSON(), {
-      taskId, frameNumber, ghostClasses
+      taskId,
+      frameIndex,
+      ghostClasses,
     });
   }
 }
