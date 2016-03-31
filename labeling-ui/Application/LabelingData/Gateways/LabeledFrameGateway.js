@@ -24,16 +24,16 @@ class LabeledFrameGateway {
 
 
   /**
-   * Returns the {@link LabeledFrame} for the given `taskId` and `frameNumber`
+   * Returns the {@link LabeledFrame} for the given `taskId` and `frameIndex`
    *
    * @param {String} taskId
-   * @param {Integer} frameNumber
+   * @param {Integer} frameIndex
    *
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
-  getLabeledFrame(taskId, frameNumber) {
+  getLabeledFrame(taskId, frameIndex) {
     const url = this._apiService.getApiUrl(
-      `/task/${taskId}/labeledFrame/${frameNumber}`
+      `/task/${taskId}/labeledFrame/${frameIndex}`
     );
     return this._bufferedHttp.get(url, undefined, 'labeledFrame')
       .then(response => {
@@ -50,14 +50,14 @@ class LabeledFrameGateway {
    * Updates the labeled frame for the given task and frame number in the database
    *
    * @param {String} taskId
-   * @param {Integer} frameNumber
+   * @param {Integer} frameIndex
    * @param {LabeledFrame} labeledFrame
    *
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
-  saveLabeledFrame(taskId, frameNumber, labeledFrame) {
+  saveLabeledFrame(taskId, frameIndex, labeledFrame) {
     const url = this._apiService.getApiUrl(
-      `/task/${taskId}/labeledFrame/${frameNumber}`
+      `/task/${taskId}/labeledFrame/${frameIndex}`
     );
 
     return this._bufferedHttp.put(url, labeledFrame, undefined, 'labeledFrame')
@@ -74,13 +74,13 @@ class LabeledFrameGateway {
    * Deletes the labeled thing in frame object in the database
    *
    * @param {String} taskId
-   * @param {Integer} frameNumber
+   * @param {Integer} frameIndex
    *
    * @returns {AbortablePromise<Boolean|Error>}
    */
-  deleteLabeledFrame(taskId, frameNumber) {
+  deleteLabeledFrame(taskId, frameIndex) {
     const url = this._apiService.getApiUrl(
-      `/task/${taskId}/labeledFrame/${frameNumber}`
+      `/task/${taskId}/labeledFrame/${frameIndex}`
     );
     return this._bufferedHttp.delete(url, undefined, 'labeledFrame')
       .then(response => {
