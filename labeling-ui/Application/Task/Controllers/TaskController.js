@@ -283,8 +283,10 @@ class TaskController {
       }
     );
 
-    $scope.$watch('vm.framePosition.position', newPosition => {
-      $location.hash('F' + newPosition);
+    $scope.$watch('vm.framePosition.position', (newPosition, oldPosition) => {
+      if (newPosition !== oldPosition) {
+        $location.hash(newPosition);
+      }
     });
 
     $scope.$watch(() => $location.hash(), () => {
