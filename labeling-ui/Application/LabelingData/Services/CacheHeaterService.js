@@ -5,8 +5,11 @@ class CacheHeaterService {
   /**
    * @param {CachingLabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {Logger} logger
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor(labeledThingInFrameGateway, logger) {
+  constructor(labeledThingInFrameGateway,
+              logger,
+              frameIndexService) {
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
@@ -20,6 +23,12 @@ class CacheHeaterService {
     this._logger = logger;
 
     /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
+
+    /**
      * @type {Map}
      * @private
      */
@@ -29,14 +38,17 @@ class CacheHeaterService {
   /**
    * Heat up the cache regarding all information needed to properly display one specific {@link LabeledThingInFrame}
    *
+   * If `startIndex` or `endIndex` are not specified the corresponding frameIndexLimit will be used.
+   *
    * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {number} startFrame
-   * @param {number} endFrame
+   * @param {number} startIndex
+   * @param {number} endIndex
    */
-  heatLabeledThingInFrame(labeledThingInFrame, startFrame = null, endFrame = null) {
+  heatLabeledThingInFrame(labeledThingInFrame, startIndex = null, endIndex = null) {
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
     const {labeledThing, labeledThing: {task}} = labeledThingInFrame;
-    const start = startFrame === null ? task.frameRange.startFrameNumber : startFrame;
-    const end = endFrame === null ? task.frameRange.endFrameNumber : endFrame;
+    const start = startIndex === null ? frameIndexLimits.lowerLimit : startIndex;
+    const end = endIndex === null ? frameIndexLimits.upperLimit : endIndex;
 
     this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Heating labeledThingInFrame (%s) %d - %d (%d)', labeledThingInFrame.id, start, end, end - start + 1);
 
@@ -63,18 +75,21 @@ class CacheHeaterService {
   /**
    * Heat up the cache to have all the information needed to display a certain range of frames
    *
+   * If `startIndex` or `endIndex` are not specified the corresponding frameIndexLimit will be used.
+   *
    * This does include the {@link LabeledThingInFrame}s on those frames as well as the required location urls
    *
    * It does however not include specific {@link LabeledThingInFrame} ghosts. Use
    * {@link CacheHeaterService#heatLabeledThingInFrame} for this.
    *
    * @param {Task} task
-   * @param {number} startFrame
-   * @param {number} endFrame
+   * @param {number} startIndex
+   * @param {number} endIndex
    */
-  heatFrames(task, startFrame = null, endFrame = null) {
-    const start = startFrame === null ? task.frameRange.startFrameNumber : startFrame;
-    const end = endFrame === null ? task.frameRange.endFrameNumber : endFrame;
+  heatFrames(task, startIndex = null, endIndex = null) {
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const start = startIndex === null ? frameIndexLimits.lowerLimit : startIndex;
+    const end = endIndex === null ? frameIndexLimits.upperLimit : endIndex;
 
     this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Heating frames %d - %d (%d)', start, end, end - start + 1);
 
@@ -157,6 +172,7 @@ CacheHeaterService.CHUNK_SIZE = 60;
 CacheHeaterService.$inject = [
   'cachingLabeledThingInFrameGateway',
   'loggerService',
+  'frameIndexService',
 ];
 
 export default CacheHeaterService;
