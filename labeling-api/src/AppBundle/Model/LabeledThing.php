@@ -62,7 +62,10 @@ class LabeledThing
     public function __construct(LabelingTask $task, $lineColor = 'red')
     {
         $this->taskId     = $task->getId();
-        $this->frameRange = $task->getFrameRange();
+        $this->frameRange = new FrameRange(
+                min($task->getFrameNumberMapping()),
+                max($task->getFrameNumberMapping())
+            );
         $this->lineColor  = $lineColor;
     }
 

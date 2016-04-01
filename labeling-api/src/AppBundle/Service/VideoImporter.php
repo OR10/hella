@@ -115,14 +115,14 @@ class VideoImporter
             $startFrameIndex <= $video->getMetaData()->numberOfFrames;
             $startFrameIndex += $framesPerChunk
         ) {
-            $frameRange = new Model\FrameRange(
-                $startFrameIndex,
-                min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1)
+            $frameNumberMapping = range(
+                (int) $startFrameIndex,
+                (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1)
             );
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(
                     $video,
-                    $frameRange,
+                    $frameNumberMapping,
                     Model\LabelingTask::TYPE_META_LABELING,
                     null,
                     [],
@@ -138,7 +138,7 @@ class VideoImporter
                 foreach ($labelInstructions as $labelInstruction) {
                     $tasks[] = $this->addTask(
                         $video,
-                        $frameRange,
+                        $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         $drawingTool,
                         ['pedestrian'],
@@ -159,7 +159,7 @@ class VideoImporter
      * Add a LabelingTask
      *
      * @param Model\Video $video
-     * @param Model\FrameRange $frameRange
+     * @param $frameNumberMapping
      * @param string $taskType
      * @param string|null $drawingTool
      * @param string[] $predefinedClasses
@@ -167,12 +167,13 @@ class VideoImporter
      * @param                  $instruction
      * @param int|null $minimalVisibleShapeOverflow
      * @param $drawingToolOptions
+     * @param int $frameStepSize
      *
      * @return Model\LabelingTask
      */
     private function addTask(
         Model\Video $video,
-        Model\FrameRange $frameRange,
+        $frameNumberMapping,
         $taskType,
         $drawingTool,
         $predefinedClasses,
@@ -185,7 +186,7 @@ class VideoImporter
         $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
             $video,
-            clone $frameRange,
+            $frameNumberMapping,
             $taskType,
             $drawingTool,
             $predefinedClasses,
@@ -204,9 +205,6 @@ class VideoImporter
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
-        $labelingTask->setFrameNumberMapping(
-            range(1, $video->getMetaData()->numberOfFrames, $frameStepSize)
-        );
 
         $this->labelingTaskFacade->save($labelingTask);
 

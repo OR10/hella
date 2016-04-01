@@ -132,8 +132,8 @@ class Kitti implements Service\TaskExporter
     public function getInternalExportData(Model\LabelingTask $task)
     {
         $result = array_fill(
-            $task->getFrameRange()->getStartFrameIndex(),
-            $task->getFrameRange()->getNumberOfFrames(),
+            min($task->getFrameNumberMapping()),
+            count($task->getFrameNumberMapping()),
             []
         );
 

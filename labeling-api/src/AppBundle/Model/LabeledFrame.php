@@ -62,12 +62,8 @@ class LabeledFrame
      */
     public function __construct(LabelingTask $task, $frameIndex)
     {
-        if (!$task->getFrameRange()->coversFrameIndex($frameIndex)) {
-            throw new \RangeException("Invalid frameIndex '{$frameIndex}'");
-        }
-
-        $this->taskId      = $task->getId();
-        $this->frameIndex = (int)$frameIndex;
+        $this->taskId     = $task->getId();
+        $this->frameIndex = $frameIndex;
     }
 
     /**

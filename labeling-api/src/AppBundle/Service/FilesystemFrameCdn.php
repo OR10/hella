@@ -49,26 +49,26 @@ class FilesystemFrameCdn extends FrameCdn
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param ImageType\Base     $imageType
-     * @param Model\FrameRange   $frameRange
-     *
+     * @param ImageType\Base $imageType
+     * @param Model\FrameRange|array $frameNumbers
+     * 
      * @return array
      */
     public function getFrameLocations(
         Model\LabelingTask $labelingTask,
         ImageType\Base $imageType,
-        Model\FrameRange $frameRange
+        array $frameNumbers
     ) {
         $urls = [];
-        foreach ($frameRange->getRange() as $frameIndex) {
+        foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
-                "frameIndex" => $frameIndex,
+                "frameIndex" => $index,
                 'url' => sprintf(
                     '%s/%s/%s/%s.%s',
                     $this->frameCdnBaseUrl,
                     $labelingTask->getVideoId(),
                     $imageType->getName(),
-                    $frameIndex,
+                    $frameNumber,
                     $imageType->getExtension()
                 ),
             ];

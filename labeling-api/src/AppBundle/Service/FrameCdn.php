@@ -20,14 +20,13 @@ abstract class FrameCdn
 
     /**
      * @param Model\LabelingTask $labeledFrame
-     * @param ImageType\Base     $imageType
-     * @param Model\FrameRange   $frameRange
-     *
+     * @param ImageType\Base $imageType
+     * @param array $frameNumbers
      * @return array
      */
     abstract public function getFrameLocations(
         Model\LabelingTask $labeledFrame,
         ImageType\Base $imageType,
-        Model\FrameRange $frameRange
+        array $frameNumbers
     );
 }

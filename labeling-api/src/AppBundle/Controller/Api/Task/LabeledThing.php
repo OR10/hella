@@ -113,13 +113,6 @@ class LabeledThing extends Controller\Base
      */
     public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
-        $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
-        if ($frameRange === null) {
-            throw new Exception\BadRequestHttpException('Missing FrameRange');
-        }
-
-        $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
-
         if (($labeledThingId = $request->request->get('id')) !== null) {
             if ($this->labeledThingFacade->find($labeledThingId) !== null) {
                 throw new Exception\BadRequestHttpException('LabeledThing not found');
@@ -135,7 +128,6 @@ class LabeledThing extends Controller\Base
 
         $labeledThing = new Model\LabeledThing($task, $lineColor);
         $labeledThing->setId($labeledThingId);
-        $labeledThing->setFrameRange($frameRange);
         $labeledThing->setClasses($classes);
         $labeledThing->setIncomplete(
             $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
@@ -197,25 +189,9 @@ class LabeledThing extends Controller\Base
         if ($request->request->get('rev') !== $labeledThing->getRev()) {
             throw new Exception\ConflictHttpException('Invalid revision');
         }
-
-        $frameRange = $this->createFrameRange($request->request->get('frameRange'), $task->getFrameRange());
         $classes    = $request->request->get('classes', []);
 
-        if ($frameRange === null) {
-            throw new Exception\BadRequestHttpException('Missing frameRange');
-        }
-
-        $task->getFrameRange()->throwIfFrameRangeIsNotCovered($frameRange);
-
-        $this->labeledThingInFrameFacade->delete(
-            array_merge(
-                $this->adjustFrameRangeStart($labeledThing, $frameRange),
-                $this->adjustFrameRangeEnd($labeledThing, $frameRange)
-            )
-        );
-
         $labeledThing->setClasses($classes);
-        $labeledThing->setFrameRange($frameRange);
         $labeledThing->setIncomplete(
             $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
         );
