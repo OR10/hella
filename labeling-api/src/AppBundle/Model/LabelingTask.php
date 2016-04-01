@@ -138,6 +138,12 @@ class LabelingTask
     private $frameNumberMapping = array();
 
     /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $metadata = array();
+
+    /**
      * @param Video $video
      * @param array $frameNumberMapping
      * @param string $taskType
@@ -428,5 +434,21 @@ class LabelingTask
     public function setFrameNumberMapping($frameNumberMapping)
     {
         $this->frameNumberMapping = $frameNumberMapping;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @param array $metadata
+     */
+    public function setMetadata($metadata)
+    {
+        $this->metadata = $metadata;
     }
 }

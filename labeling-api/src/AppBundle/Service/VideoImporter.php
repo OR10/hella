@@ -120,6 +120,14 @@ class VideoImporter
                 (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1),
                 $frameStepSize
             );
+            $frameRange = new Model\FrameRange(
+                0,
+                $video->getMetaData()->numberOfFrames - 1
+            );
+            $metadata = array(
+                'frameRange' => $frameRange,
+                'frameSkip' => $frameStepSize,
+            );
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(
                     $video,
@@ -130,7 +138,8 @@ class VideoImporter
                     $imageTypes,
                     null,
                     null,
-                    $drawingToolOptions
+                    $drawingToolOptions,
+                    $metadata
                 );
             }
 
@@ -145,7 +154,8 @@ class VideoImporter
                         $imageTypes,
                         $labelInstruction,
                         $minimalVisibleShapeOverflow,
-                        $drawingToolOptions
+                        $drawingToolOptions,
+                        $metadata
                     );
                 }
             }
@@ -166,8 +176,10 @@ class VideoImporter
      * @param                  $instruction
      * @param int|null $minimalVisibleShapeOverflow
      * @param $drawingToolOptions
+     * @param $metadata
      *
      * @return Model\LabelingTask
+     *
      */
     private function addTask(
         Model\Video $video,
@@ -178,9 +190,9 @@ class VideoImporter
         $imageTypes,
         $instruction,
         $minimalVisibleShapeOverflow,
-        $drawingToolOptions
+        $drawingToolOptions,
+        $metadata
     ) {
-        $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
             $video,
             $frameNumberMapping,
@@ -202,6 +214,7 @@ class VideoImporter
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
+        $labelingTask->setMetadata($metadata);
 
         $this->labelingTaskFacade->save($labelingTask);
 
