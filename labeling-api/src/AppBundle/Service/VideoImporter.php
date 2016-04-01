@@ -117,7 +117,8 @@ class VideoImporter
         ) {
             $frameNumberMapping = range(
                 (int) $startFrameIndex,
-                (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1)
+                (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1),
+                $frameStepSize
             );
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(
@@ -129,8 +130,7 @@ class VideoImporter
                     $imageTypes,
                     null,
                     null,
-                    $drawingToolOptions,
-                    $frameStepSize
+                    $drawingToolOptions
                 );
             }
 
@@ -145,8 +145,7 @@ class VideoImporter
                         $imageTypes,
                         $labelInstruction,
                         $minimalVisibleShapeOverflow,
-                        $drawingToolOptions,
-                        $frameStepSize
+                        $drawingToolOptions
                     );
                 }
             }
@@ -167,7 +166,6 @@ class VideoImporter
      * @param                  $instruction
      * @param int|null $minimalVisibleShapeOverflow
      * @param $drawingToolOptions
-     * @param int $frameStepSize
      *
      * @return Model\LabelingTask
      */
@@ -180,8 +178,7 @@ class VideoImporter
         $imageTypes,
         $instruction,
         $minimalVisibleShapeOverflow,
-        $drawingToolOptions,
-        $frameStepSize = 1
+        $drawingToolOptions
     ) {
         $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
