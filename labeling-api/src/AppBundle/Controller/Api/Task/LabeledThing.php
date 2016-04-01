@@ -207,6 +207,7 @@ class LabeledThing extends Controller\Base
         );
 
         $labeledThing->setClasses($classes);
+        $labeledThing->setFrameRange($frameRange);
         $labeledThing->setIncomplete(
             $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
         );

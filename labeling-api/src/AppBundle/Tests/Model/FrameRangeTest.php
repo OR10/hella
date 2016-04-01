@@ -27,8 +27,6 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
     public function getDataForConstructorThrowsInvalidStartFrameIndexForInvalidStartFrames()
     {
         return [
-            ['startFrameIndex' => null],
-            ['startFrameIndex' => 0],
             ['startFrameIndex' => -3],
         ];
     }

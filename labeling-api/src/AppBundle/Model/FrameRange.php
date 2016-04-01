@@ -54,7 +54,7 @@ class FrameRange
             $this->endFrameIndex = (int) $endFrameIndex;
         }
 
-        if ($this->startFrameIndex < 1) {
+        if ($this->startFrameIndex < 0) {
             throw new Exception\InvalidStartFrameIndex($this->startFrameIndex);
         }
 
