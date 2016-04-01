@@ -301,7 +301,7 @@ class ThumbnailController {
    * Handle the click to a thumbnail
    */
   handleThumbnailClick() {
-    if (this.location && this.location.frameIndex) {
+    if (this.location && this.location.frameIndex !== undefined) {
       this.framePosition.goto(this.location.frameIndex);
     }
   }
