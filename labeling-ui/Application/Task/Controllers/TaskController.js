@@ -284,13 +284,15 @@ class TaskController {
     );
 
     $scope.$watch('vm.framePosition.position', (newPosition, oldPosition) => {
-      if (newPosition !== oldPosition) {
+      if (newPosition !== oldPosition || $location.hash() === '') {
         $location.hash(newPosition);
       }
     });
 
-    $scope.$watch(() => $location.hash(), () => {
-      this.framePosition.goto(this._getFrameIndexFromUrl());
+    $scope.$watch(() => $location.hash(), (newHash, oldHash) => {
+      if (newHash !== oldHash) {
+        this.framePosition.goto(this._getFrameIndexFromUrl());
+      }
     });
 
     // @TODO: Only needed as long as the left sidebar is not used and only shown for the panel
