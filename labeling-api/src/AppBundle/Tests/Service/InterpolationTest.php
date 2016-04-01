@@ -90,7 +90,7 @@ class InterpolationTest extends Tests\KernelTestCase
         $task = $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('Testvideo')),
-                new Model\FrameRange(1, 10),
+                range(1, 10),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );

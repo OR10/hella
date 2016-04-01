@@ -147,7 +147,7 @@ class TimerTest extends Tests\WebTestCase
         $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
         $task = Model\LabelingTask::create(
             $this->video,
-            new Model\FrameRange(1, 10),
+            range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);

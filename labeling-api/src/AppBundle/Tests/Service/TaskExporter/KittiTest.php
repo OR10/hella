@@ -47,7 +47,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithoutLabeledDataReturnsEmptyZipArchive()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 10));
+        $task = $this->createLabelingTask(range(1, 10));
 
         $this->assertEquals(
             array_fill(1, 10, []),
@@ -57,7 +57,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithOneLabeledThingInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
+        $task = $this->createLabelingTask(range(1, 9));
         $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
             new Shapes\Rectangle('test', 10, 10, 100, 100),
         ]);
@@ -81,7 +81,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithOneLabeledThingWithMultipleShapesInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
+        $task = $this->createLabelingTask(range(1, 9));
         $this->createLabeledThingInFrame($task, 1, 'cyclist', [
             new Shapes\Rectangle('test', 10, 10, 100, 100),
             new Shapes\Rectangle('test', 5, 5, 150, 150),
@@ -105,7 +105,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithTwoLabeledThingsWithMultipleShapesInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
+        $task = $this->createLabelingTask(range(1, 9));
         $this->createLabeledThingInFrame($task, 1, 'car', [
             new Shapes\Rectangle('test', 10, 10, 100, 100),
             new Shapes\Rectangle('test', 5, 5, 150, 150),
@@ -136,7 +136,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithLabeledThingsInMultipleFrames()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 9));
+        $task = $this->createLabelingTask(range(1, 9));
 
         foreach (range(5, 9) as $frameNumber) {
             $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
@@ -162,7 +162,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithEllipseShapeInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $task = $this->createLabelingTask(range(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
             new Shapes\Ellipse('test', 10, 10, 100, 10),
         ]);
@@ -177,7 +177,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithPolygonShapeInOneFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $task = $this->createLabelingTask(range(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
             new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
@@ -197,7 +197,7 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithIncompleteLabeledThingsInFrame()
     {
-        $task = $this->createLabelingTask(new Model\FrameRange(1, 1));
+        $task = $this->createLabelingTask(range(1, 1));
         $this->createLabeledThingInFrame($task, 1, 'car', [
             new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
@@ -219,16 +219,15 @@ class KittiTest extends Tests\KernelTestCase
     /**
      * Create a labeling task in the database.
      *
-     * @param Model\FrameRange $frameRange
-     *
+     * @param array $frameNumberMapping
      * @return Model\LabelingTask
      */
-    private function createLabelingTask(Model\FrameRange $frameRange)
+    private function createLabelingTask(array $frameNumberMapping)
     {
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('test video')),
-                $frameRange,
+                $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );
@@ -245,9 +244,10 @@ class KittiTest extends Tests\KernelTestCase
         array $shapes = [],
         $incomplete = false
     ) {
+        $frameRange = new Model\FrameRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping()));
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
-                ->setFrameRange($task->getFrameRange())
+                ->setFrameRange($frameRange)
                 ->setClasses($type === null ? [] : [(string) $type])
         );
 

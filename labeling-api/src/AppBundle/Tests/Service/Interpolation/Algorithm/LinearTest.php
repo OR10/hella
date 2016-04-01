@@ -366,7 +366,7 @@ class LinearTest extends Tests\KernelTestCase
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $video,
-                new Model\FrameRange(1, $endFrameIndex),
+                range(1, $endFrameIndex),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );

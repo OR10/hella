@@ -137,7 +137,7 @@ class CsvTest extends Tests\KernelTestCase
      */
     public function testCsvExport($frameRangeStart, $frameRangeEnd, $labeledThingInFrames, $expected)
     {
-        $task = $this->createLabelingTask(new Model\FrameRange($frameRangeStart, $frameRangeEnd));
+        $task = $this->createLabelingTask(range($frameRangeStart, $frameRangeEnd));
         foreach ($labeledThingInFrames as $labeledThingInFrame) {
             $this->createLabeledThingInFrame(
                 $task,
@@ -157,16 +157,16 @@ class CsvTest extends Tests\KernelTestCase
     /**
      * Create a labeling task in the database.
      *
-     * @param Model\FrameRange $frameRange
-     *
+     * @param array $frameNumberMapping
      * @return Model\LabelingTask
+     *
      */
-    private function createLabelingTask(Model\FrameRange $frameRange)
+    private function createLabelingTask(array $frameNumberMapping)
     {
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('test video')),
-                $frameRange,
+                $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );
@@ -195,8 +195,13 @@ class CsvTest extends Tests\KernelTestCase
     ) {
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
-                ->setFrameRange($task->getFrameRange())
-                ->setClasses($type === null ? [] : [(string) $type])
+                ->setFrameRange(
+                    new Model\FrameRange(
+                        min($task->getFrameNumberMapping()),
+                        max($task->getFrameNumberMapping())
+                    )
+                )
+                ->setClasses($type === null ? [] : [(string)$type])
         );
 
         return $this->labeledThingInFrameFacade->save(

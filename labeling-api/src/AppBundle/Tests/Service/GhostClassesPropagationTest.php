@@ -45,11 +45,6 @@ class GhostClassesPropagationTest extends KernelTestCase
     private $labeledThingTwo;
 
     /**
-     * @var Model\FrameRange
-     */
-    private $frameRange;
-
-    /**
      * Initialize test environment before each test
      */
     public function setUpImplementation()
@@ -170,8 +165,7 @@ class GhostClassesPropagationTest extends KernelTestCase
     private function setUpLabeledThingsInFrame()
     {
         $this->video           = Model\Video::create('some video');
-        $this->frameRange      = new Model\FrameRange(1, 200);
-        $this->task            = Model\LabelingTask::create($this->video, $this->frameRange, 'object-labeling');
+        $this->task            = Model\LabelingTask::create($this->video, range(1, 200), 'object-labeling');
         $this->labeledThingOne = Model\LabeledThing::create($this->task)->setId('labeled-thing-one');
         $this->labeledThingTwo = Model\LabeledThing::create($this->task)->setId('labeled-thing-two');
 

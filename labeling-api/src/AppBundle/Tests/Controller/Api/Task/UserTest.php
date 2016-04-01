@@ -77,7 +77,7 @@ class UserTest extends Tests\WebTestCase
         $video = $this->videoFacade->save(Model\Video::create('foobar'));
         $task = Model\LabelingTask::create(
             $video,
-            new Model\FrameRange($startRange, $endRange),
+            range($startRange, $endRange),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);

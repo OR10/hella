@@ -190,6 +190,21 @@ class LabeledThing extends Controller\Base
             throw new Exception\ConflictHttpException('Invalid revision');
         }
         $classes    = $request->request->get('classes', []);
+        $frameRange = $this->createFrameRange(
+            $request->request->get('frameRange'),
+            new Model\FrameRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
+            )
+        );
+        if ($frameRange === null) {
+            throw new Exception\BadRequestHttpException('Missing frameRange');
+        }
+
+        $this->labeledThingInFrameFacade->delete(
+            array_merge(
+                $this->adjustFrameRangeStart($labeledThing, $frameRange),
+                $this->adjustFrameRangeEnd($labeledThing, $frameRange)
+            )
+        );
 
         $labeledThing->setClasses($classes);
         $labeledThing->setIncomplete(

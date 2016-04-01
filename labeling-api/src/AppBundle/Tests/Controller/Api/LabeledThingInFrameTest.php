@@ -206,7 +206,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
         $task = Model\LabelingTask::create(
             $this->video,
-            new Model\FrameRange(10, 20),
+            range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setLabelStructure(
