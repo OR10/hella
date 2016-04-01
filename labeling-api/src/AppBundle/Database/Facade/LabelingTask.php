@@ -92,11 +92,11 @@ class LabelingTask
         $endFrameIndex = null
     ) {
         if ($startFrameIndex === null) {
-            $startFrameIndex = $labelingTask->getFrameRange()->getStartFrameIndex();
+            $startFrameIndex = min($labelingTask->getFrameNumberMapping());
         }
 
         if ($endFrameIndex === null) {
-            $endFrameIndex = $labelingTask->getFrameRange()->getEndFrameIndex();
+            $endFrameIndex = max($labelingTask->getFrameNumberMapping());
         }
 
         return $this->documentManager
@@ -133,9 +133,7 @@ class LabelingTask
      */
     public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameIndex)
     {
-        $task->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
-
-        $startFrameIndex = $task->getFrameRange()->getStartFrameIndex();
+        $startFrameIndex = min($task->getFrameNumberMapping());
         $endFrameIndex   = $frameIndex;
 
         if ($startFrameIndex > $endFrameIndex) {
@@ -196,8 +194,6 @@ class LabelingTask
 
     public function getLabeledThingsInFrameForFrameIndex(Model\LabelingTask $labelingTask, $frameIndex)
     {
-        $labelingTask->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
-
         return $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameIndex')
             ->setKey([$labelingTask->getId(), (int) $frameIndex])
@@ -212,15 +208,12 @@ class LabelingTask
         $endFrameIndex = null
     ) {
         if ($startFrameIndex === null) {
-            $startFrameIndex = $labelingTask->getFrameRange()->getStartFrameIndex();
+            $startFrameIndex = min($labelingTask->getFrameNumberMapping());
         }
 
         if ($endFrameIndex === null) {
-            $endFrameIndex = $labelingTask->getFrameRange()->getEndFrameIndex();
+            $endFrameIndex = max($labelingTask->getFrameNumberMapping());
         }
-
-        $labelingTask->getFrameRange()->throwIfFrameIndexIsNotCovered($startFrameIndex);
-        $labelingTask->getFrameRange()->throwIfFrameIndexIsNotCovered($endFrameIndex);
 
         return $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameIndex')
