@@ -72,7 +72,7 @@ class FrameNumberInputDirective {
     }
 
     const onBlur = () => {
-      const frameNumber = getEditableValue();
+      const frameNumber = Number.parseInt(getEditableValue(), 10);
       const frameIndex = this._frameIndexService.getNearestFrameIndex(frameNumber);
       ngModel.$setViewValue(frameIndex);
       ngModel.$render();
