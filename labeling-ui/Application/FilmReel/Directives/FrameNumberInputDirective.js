@@ -80,14 +80,14 @@ class FrameNumberInputDirective {
 
     // Specify how UI should be updated
     ngModel.$render = () => {
-      if (!ngModel.$viewValue) {
+      if (ngModel.$viewValue === null || ngModel.$viewValue === undefined) {
         editable.html('');
         return;
       }
-      
+
       const frameIndex = ngModel.$viewValue;
       const frameNumber = this._frameIndexService.getFrameNumber(frameIndex);
-      
+
       editable.html(frameNumber);
     };
 
