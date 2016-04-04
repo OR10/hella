@@ -57,14 +57,15 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithOneLabeledThingInOneFrame()
     {
-        $task = $this->createLabelingTask(range(1, 9));
-        $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
+        $task = $this->createLabelingTask(range(0, 8));
+        $this->createLabeledThingInFrame($task, 0, 'pedestrian', [
             new Shapes\Rectangle('test', 10, 10, 100, 100),
         ]);
 
         $this->assertEquals(
             [
-                1 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                0 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
+                1 => [],
                 2 => [],
                 3 => [],
                 4 => [],
@@ -72,8 +73,6 @@ class KittiTest extends Tests\KernelTestCase
                 6 => [],
                 7 => [],
                 8 => [],
-                9 => [],
-                9 => [],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
@@ -81,15 +80,16 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithOneLabeledThingWithMultipleShapesInOneFrame()
     {
-        $task = $this->createLabelingTask(range(1, 9));
-        $this->createLabeledThingInFrame($task, 1, 'cyclist', [
+        $task = $this->createLabelingTask(range(0, 8));
+        $this->createLabeledThingInFrame($task, 0, 'cyclist', [
             new Shapes\Rectangle('test', 10, 10, 100, 100),
             new Shapes\Rectangle('test', 5, 5, 150, 150),
         ]);
 
         $this->assertEquals(
             [
-                1 => [new Kitti\Object('Cyclist', new Shapes\BoundingBox(5, 5, 150, 150))],
+                0 => [new Kitti\Object('Cyclist', new Shapes\BoundingBox(5, 5, 150, 150))],
+                1 => [],
                 2 => [],
                 3 => [],
                 4 => [],
@@ -97,7 +97,6 @@ class KittiTest extends Tests\KernelTestCase
                 6 => [],
                 7 => [],
                 8 => [],
-                9 => [],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
@@ -105,22 +104,23 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithTwoLabeledThingsWithMultipleShapesInOneFrame()
     {
-        $task = $this->createLabelingTask(range(1, 9));
-        $this->createLabeledThingInFrame($task, 1, 'car', [
+        $task = $this->createLabelingTask(range(0, 8));
+        $this->createLabeledThingInFrame($task, 0, 'car', [
             new Shapes\Rectangle('test', 10, 10, 100, 100),
             new Shapes\Rectangle('test', 5, 5, 150, 150),
         ]);
-        $this->createLabeledThingInFrame($task, 1, 'pedestrian', [
+        $this->createLabeledThingInFrame($task, 0, 'pedestrian', [
             new Shapes\Rectangle('test', 300, 10, 400, 100),
             new Shapes\Rectangle('test', 290, 5, 350, 95),
         ]);
 
         $this->assertEquals(
             [
-                1 => [
+                0 => [
                     new Kitti\Object('Car', new Shapes\BoundingBox(5, 5, 150, 150)),
                     new Kitti\Object('Pedestrian', new Shapes\BoundingBox(290, 5, 400, 100)),
                 ],
+                1 => [],
                 2 => [],
                 3 => [],
                 4 => [],
@@ -128,7 +128,6 @@ class KittiTest extends Tests\KernelTestCase
                 6 => [],
                 7 => [],
                 8 => [],
-                9 => [],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
@@ -136,9 +135,9 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithLabeledThingsInMultipleFrames()
     {
-        $task = $this->createLabelingTask(range(1, 9));
+        $task = $this->createLabelingTask(range(0, 8));
 
-        foreach (range(5, 9) as $frameNumber) {
+        foreach (range(4, 8) as $frameNumber) {
             $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
                 new Shapes\Rectangle('test', 10, 10, 100, 100),
             ]);
@@ -146,15 +145,15 @@ class KittiTest extends Tests\KernelTestCase
 
         $this->assertEquals(
             [
+                0 => [],
                 1 => [],
                 2 => [],
                 3 => [],
-                4 => [],
+                4 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
                 5 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
                 6 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
                 7 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
                 8 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
-                9 => [new Kitti\Object('Pedestrian', new Shapes\BoundingBox(10, 10, 100, 100))],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
@@ -162,14 +161,14 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithEllipseShapeInOneFrame()
     {
-        $task = $this->createLabelingTask(range(1, 1));
-        $this->createLabeledThingInFrame($task, 1, 'car', [
+        $task = $this->createLabelingTask(range(0, 0));
+        $this->createLabeledThingInFrame($task, 0, 'car', [
             new Shapes\Ellipse('test', 10, 10, 100, 10),
         ]);
 
         $this->assertEquals(
             [
-                1 => [new Kitti\Object('Car', new Shapes\BoundingBox(10, 10, 110, 20))],
+                0 => [new Kitti\Object('Car', new Shapes\BoundingBox(10, 10, 110, 20))],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
@@ -177,8 +176,8 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithPolygonShapeInOneFrame()
     {
-        $task = $this->createLabelingTask(range(1, 1));
-        $this->createLabeledThingInFrame($task, 1, 'car', [
+        $task = $this->createLabelingTask(range(0, 0));
+        $this->createLabeledThingInFrame($task, 0, 'car', [
             new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
                 ['x' =>  17, 'y' =>  28],
@@ -189,7 +188,7 @@ class KittiTest extends Tests\KernelTestCase
 
         $this->assertEquals(
             [
-                1 => [new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308))],
+                0 => [new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308))],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
@@ -197,8 +196,8 @@ class KittiTest extends Tests\KernelTestCase
 
     public function testExportingTaskWithIncompleteLabeledThingsInFrame()
     {
-        $task = $this->createLabelingTask(range(1, 1));
-        $this->createLabeledThingInFrame($task, 1, 'car', [
+        $task = $this->createLabelingTask(range(0, 0));
+        $this->createLabeledThingInFrame($task, 0, 'car', [
             new Shapes\Polygon('test', [
                 ['x' =>   7, 'y' =>   8],
                 ['x' =>  17, 'y' =>  28],
@@ -206,11 +205,11 @@ class KittiTest extends Tests\KernelTestCase
                 ['x' => 107, 'y' => 308],
             ]),
         ]);
-        $incompleteThing = $this->createLabeledThingInFrame($task, 1, null, [], true);
+        $incompleteThing = $this->createLabeledThingInFrame($task, 0, null, [], true);
 
         $this->assertEquals(
             [
-                1 => [new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308))],
+                0 => [new Kitti\Object('Car', new Shapes\BoundingBox(-7, -8, 107, 308))],
             ],
             $this->sortResult($this->exporter->getInternalExportData($task))
         );
