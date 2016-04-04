@@ -13,6 +13,7 @@ define annostation_base::nginx_vhost(
   $clientMaxBodySize = '2M',
   $authBasic = undef,
   $authBasicFile = undef,
+  $useDefaultLocation = true,
 ) {
   if $authBasic and $authBasicFile {
     $_authBasic = $authBasic
@@ -41,6 +42,7 @@ define annostation_base::nginx_vhost(
       client_max_body_size => $clientMaxBodySize,
       auth_basic           => $_authBasic,
       auth_basic_user_file => $_authBasicFile,
+      use_default_location => $useDefaultLocation,
     }
   } else {
     nginx::resource::vhost { $name:
@@ -56,6 +58,7 @@ define annostation_base::nginx_vhost(
       client_max_body_size => $clientMaxBodySize,
       auth_basic           => $_authBasic,
       auth_basic_user_file => $_authBasicFile,
+      use_default_location => $useDefaultLocation,
     }
   }
 }
