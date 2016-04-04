@@ -31,6 +31,7 @@ class AbstractSimpleMigration extends AbstractMigration {
     });
 
     this._powerline = new PowerlineStatus(
+      new StaticSegment('CouchDB Migration', {foreground: Solarized.base3, background: Solarized.violet}),
       new StaticSegment(migration, {foreground: Solarized.base3, background: Solarized.yellow}),
       new StartTimeSegment('', {foreground: Solarized.base3, background: Solarized.orange}),
       this._taskStats,
@@ -43,21 +44,22 @@ class AbstractSimpleMigration extends AbstractMigration {
     return Promise.resolve()
       .then(() => this._updateStatus())
       .then(() => {
+        this._logger.storage('Creating needed views');
+        return this._createMigrationViews();
+      })
+      .then(() => {
         this._logger.info('Retrieving Tasks');
-        return this._pouchdb.query(
-          document => {
-            if (document.type === 'AppBundle.Model.LabelingTask') {
-              emit(document._id);
-            }
-          },
-          {
-            include_docs: false,
-          }
-        );
+        return this._pouchdb.query('migration__/tasks', {
+          include_docs: false,
+        });
       })
       .then(
         resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitTaskId(row.key))
-      );
+      )
+      .then(() => {
+        this._logger.storage('Removing migration views');
+        return this._removeMigrationViews();
+      });
   }
 
   migrateTask(task) {
@@ -75,6 +77,47 @@ class AbstractSimpleMigration extends AbstractMigration {
     return labeledThingInFrame;
   }
 
+  _createMigrationViews() {
+    return this._pouchdb.put({
+      _id: `_design/migration__`,
+      views: {
+        tasks: {
+          map: function (document) {
+            if (document.type === 'AppBundle.Model.LabelingTask') {
+              emit(document._id);
+            }
+          }.toString(),
+        },
+        labeledThingsByTaskId: {
+          map: function (document) {
+            if (document.type === 'AppBundle.Model.LabeledThing') {
+              emit(document.taskId, document._id);
+            }
+          }.toString(),
+        },
+        labeledThingsInFrameByLabeledThingId: {
+          map: function (document) {
+            if (document.type === 'AppBundle.Model.LabeledThingInFrame') {
+              emit(document.labeledThingId, document._id);
+            }
+          }.toString(),
+        },
+      },
+    }).catch(error => {
+      if (error.status === 409) {
+        return Promise.reject(
+          new Error('Design document "_design/migrate__" does already exist. Delete it before migration.')
+        );
+      }
+      
+      return Promise.reject(error);
+    });
+  }
+
+  _removeMigrationViews() {
+    return this._pouchdb.remove('_design/migration__');
+  }
+
   _visitTaskId(id) {
     this._logger.info(`Loading Task: ${id}`);
     return this._pouchdb.get(id)
@@ -82,19 +125,15 @@ class AbstractSimpleMigration extends AbstractMigration {
   }
 
   _visitTask(task) {
-    this._logger.info(`Retrieving LabeledThings for task ${task._id}`);
-    return this._pouchdb.query(document => {
-        if (
-          document.type === 'AppBundle.Model.LabeledThing' &&
-          document.taskId === task._id
-        ) {
-          emit(document._id);
-        }
-      },
-      {include_docs: false})
+    this._logger.info(`├── Retrieving LabeledThings for task ${task._id}`);
+    return this._pouchdb.query('migration__/labeledThingsByTaskId', {
+        key: task._id,
+        include_docs: false
+      })
       .then(
-        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingId(row.key, task))
-      )
+        resultSet => {
+          return this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingId(row.value, task));
+        })
       .then(() => {
         this._logger.storage(`Migrating Task ${task._id}`);
         return this._pouchdb.put(
@@ -108,27 +147,22 @@ class AbstractSimpleMigration extends AbstractMigration {
   }
 
   _visitLabeledThingId(id, task) {
-    this._logger.info(`Loading LabeledThing: ${id}`);
+    this._logger.info(`├── Loading LabeledThing: ${id}`);
     return this._pouchdb.get(id)
       .then(labeledThing => this._visitLabeledThing(labeledThing, task));
   }
 
   _visitLabeledThing(labeledThing, task) {
-    this._logger.info(`Retrieving LabeledThingInFrame for labeldThing ${labeledThing._id}`);
-    return this._pouchdb.query(document => {
-        if (
-          document.type === 'AppBundle.Model.LabeledThingInFrame' &&
-          document.labeledThingId === labeledThing._id
-        ) {
-          emit(document._id);
-        }
-      },
-      {include_docs: false})
+    this._logger.info(`│   ├── Retrieving LabeledThingInFrames for labeldThing ${labeledThing._id}`);
+    return this._pouchdb.query('migration__/labeledThingsInFrameByLabeledThingId', {
+        key: labeledThing._id,
+        include_docs: false
+      })
       .then(
-        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingInFrameId(row.key, labeledThing, task))
+        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingInFrameId(row.value, labeledThing, task))
       )
       .then(() => {
-        this._logger.storage(`Migrating LabeledThing ${labeledThing._id}`);
+        this._logger.storage(`├── Migrating LabeledThing ${labeledThing._id}`);
         return this._pouchdb.put(
           this.migrateLabeledThing(labeledThing, task)
         );
@@ -140,7 +174,7 @@ class AbstractSimpleMigration extends AbstractMigration {
   }
 
   _visitLabeledThingInFrameId(id, labeledThing, task) {
-    this._logger.info(`Loading LabeledThingInFrame: ${id}`);
+    this._logger.info(`│   │   ├── Loading LabeledThingInFrame: ${id}`);
     return this._pouchdb.get(id)
       .then(labeledThingInFrame => this._visitLabeledThingInFrame(labeledThingInFrame, labeledThing, task));
   }
@@ -148,7 +182,7 @@ class AbstractSimpleMigration extends AbstractMigration {
   _visitLabeledThingInFrame(labeledThingInFrame, labeledThing, task) {
     return Promise.resolve()
       .then(() => {
-        this._logger.storage(`Migrating LabeledThingInFrame ${labeledThingInFrame._id}`);
+        this._logger.storage(`│   │   ├── Migrating LabeledThingInFrame ${labeledThingInFrame._id}`);
         return this._pouchdb.put(
           this.migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task)
         );
