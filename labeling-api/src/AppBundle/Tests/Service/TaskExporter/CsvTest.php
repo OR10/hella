@@ -49,11 +49,11 @@ class CsvTest extends Tests\KernelTestCase
     {
         return array(
             array(
+                1,
                 5,
-                10,
                 array(
                     array(
-                        'frameNumber' => 5,
+                        'frameIndex'  => 0,
                         'type'        => 'vehicle',
                         'classes'     => array(
                             'vehicle-type',
@@ -75,7 +75,7 @@ class CsvTest extends Tests\KernelTestCase
                         ),
                     ),
                     array(
-                        'frameNumber' => 6,
+                        'frameIndex'  => 1,
                         'type'        => 'vehicle',
                         'classes'     => array(
                             'vehicle-type',
@@ -100,7 +100,7 @@ class CsvTest extends Tests\KernelTestCase
                 array(
                     array(
                         'id'           => 1,
-                        'frame_number' => 5,
+                        'frame_number' => 1,
                         'vehicleType'  => 'truck',
                         'direction'    => 'left',
                         'occlusion'    => '80',
@@ -112,7 +112,7 @@ class CsvTest extends Tests\KernelTestCase
                     ),
                     array(
                         'id'           => 2,
-                        'frame_number' => 6,
+                        'frame_number' => 2,
                         'vehicleType'  => 'car',
                         'direction'    => 'front',
                         'occlusion'    => '80',
@@ -141,7 +141,7 @@ class CsvTest extends Tests\KernelTestCase
         foreach ($labeledThingInFrames as $labeledThingInFrame) {
             $this->createLabeledThingInFrame(
                 $task,
-                $labeledThingInFrame['frameNumber'],
+                $labeledThingInFrame['frameIndex'],
                 $labeledThingInFrame['type'],
                 $labeledThingInFrame['classes'],
                 $labeledThingInFrame['shapes']
@@ -173,21 +173,21 @@ class CsvTest extends Tests\KernelTestCase
     }
 
     /**
-     * Store a labeled thing for the given frame number and the given shapes in
+     * Store a labeled thing for the given frame index and the given shapes in
      * the database.
      *
      * @param Model\LabelingTask $task
-     * @param                    $frameNumber
-     * @param null               $type
-     * @param array              $classes
-     * @param array              $shapes
-     * @param bool               $incomplete
+     * @param $frameIndex
+     * @param null $type
+     * @param array $classes
+     * @param array $shapes
+     * @param bool $incomplete
      *
      * @return Model\LabeledThingInFrame
      */
     private function createLabeledThingInFrame(
         Model\LabelingTask $task,
-        $frameNumber,
+        $frameIndex,
         $type = null,
         $classes = [],
         array $shapes = [],
@@ -197,15 +197,15 @@ class CsvTest extends Tests\KernelTestCase
             Model\LabeledThing::create($task)
                 ->setFrameRange(
                     new Model\FrameRange(
-                        min($task->getFrameNumberMapping()),
-                        max($task->getFrameNumberMapping())
+                        $frameIndex,
+                        $frameIndex
                     )
                 )
                 ->setClasses($type === null ? [] : [(string)$type])
         );
 
         return $this->labeledThingInFrameFacade->save(
-            Model\LabeledThingInFrame::create($labeledThing, $frameNumber)
+            Model\LabeledThingInFrame::create($labeledThing, $frameIndex)
                 ->setShapes($shapes)
                 ->setIncomplete($incomplete)
                 ->setClasses($classes)
