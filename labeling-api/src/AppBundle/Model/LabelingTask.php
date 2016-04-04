@@ -141,7 +141,7 @@ class LabelingTask
      * @var array
      * @CouchDB\Field(type="mixed")
      */
-    private $metadata = array();
+    private $metaData = array();
 
     /**
      * @param Video $video
@@ -439,16 +439,16 @@ class LabelingTask
     /**
      * @return array
      */
-    public function getMetadata()
+    public function getMetaData()
     {
-        return $this->metadata;
+        return $this->metaData;
     }
 
     /**
-     * @param array $metadata
+     * @param array $metaData
      */
-    public function setMetadata($metadata)
+    public function setMetaData($metaData)
     {
-        $this->metadata = $metadata;
+        $this->metaData = $metaData;
     }
 }

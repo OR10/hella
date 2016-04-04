@@ -214,7 +214,7 @@ class VideoImporter
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
-        $labelingTask->setMetadata($metadata);
+        $labelingTask->setMetaData($metadata);
 
         $this->labelingTaskFacade->save($labelingTask);
 
