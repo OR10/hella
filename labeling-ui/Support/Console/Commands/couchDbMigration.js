@@ -1,19 +1,10 @@
 import yargs from 'yargs';
 import Logger from '../Logger';
+import chalk from 'chalk';
 import fs from 'mz/fs';
 import path from 'path';
 import inquirer from '../Inquirer';
 import request from 'request-promise';
-import {
-  PowerlineStatus,
-  StaticSegment,
-  StartTimeSegment,
-  CounterSegment,
-  PerSecondSegment,
-  palette
-} from 'powerline-statusbar';
-
-const Solarized = palette.Solarized;
 
 class CouchDbMigrationCommand {
   constructor() {
@@ -25,7 +16,6 @@ class CouchDbMigrationCommand {
     let argv;
     let migration;
     let database;
-    let status;
 
     return Promise.resolve()
       .then(() => {
@@ -61,8 +51,7 @@ class CouchDbMigrationCommand {
           throw new Error('Migration aborted.');
         }
       })
-      .then(() => status = this.setupStatusBar(argv.host, argv.port, migration, database))
-      .then(() => this.runMigration(argv.host, argv.port, migration, database, status));
+      .then(() => this.runMigration(argv.host, argv.port, migration, database));
   }
 
   askForMigration() {
@@ -110,32 +99,9 @@ class CouchDbMigrationCommand {
         .then(answer => answer.confirmation);
   }
 
-  setupStatusBar(host, port, migration, database) {
-    const tasks = new CounterSegment(0, {
-      foreground: Solarized.base0, background: Solarized.base2, separator: 'thin',
-      prefix: 'Tasks: '
-    });
-    const labeledThings = new CounterSegment(0, {
-      foreground: Solarized.base0, background: Solarized.base2, separator: 'thin',
-      prefix: 'LabeledThings: '
-    });
-    const labeledThingsInFrame = new CounterSegment(0, {
-      foreground: Solarized.base0, background: Solarized.base2, separator: 'thin',
-      prefix: 'LabeledThingsInFrame: '
-    });
-
-    const powerline = new PowerlineStatus(
-      new StaticSegment(migration, {foreground: Solarized.base3, background: Solarized.yellow}),
-      new StartTimeSegment('', {foreground: Solarized.base3, background: Solarized.orange}),
-      tasks, labeledThings, labeledThingsInFrame
-    );
-
-    return {powerline, tasks, labeledThings, labeledThingsInFrame};
-  }
-  
-  runMigration(host, port, migration, database, status) {
+  runMigration(host, port, migration, database) {
     const migrationClass = require(`${__dirname}/../CouchDbMigrations/${migration}.js`);
-    const migrationInstance = new migrationClass(host, port, database, status);
+    const migrationInstance = new migrationClass(host, port, migration, database, Logger);
     return migrationInstance.run();
   }
 }
