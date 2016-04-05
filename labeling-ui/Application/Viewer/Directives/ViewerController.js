@@ -643,13 +643,34 @@ class ViewerController {
       this._logger.warn('ViewerController', 'frame change already in progress');
     }
 
+    this.framePosition.lock.acquire();
     this._frameChangeInProgress = true;
 
-    this.framePosition.lock.acquire();
+    let abortRelease = false;
+
+    const backendBufferPromise = this._backgroundBuffer.add(this._loadFrameImage(frameNumber))
+      .aborted(() => {
+        if (abortRelease) {
+          return;
+        }
+        abortRelease = true;
+        this.framePosition.lock.release();
+      });
+
+    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber))
+      .aborted(() => {
+        if (abortRelease) {
+          return;
+        }
+        abortRelease = true;
+        this.framePosition.lock.release();
+      });
+
+
     this._$q.all(
       [
-        this._backgroundBuffer.add(this._loadFrameImage(frameNumber)),
-        this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber)),
+        backendBufferPromise,
+        labeledThingInFrameBufferPromise,
         this._fetchGhostedLabeledThingInFrame(frameNumber),
       ]
     ).then(

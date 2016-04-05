@@ -239,7 +239,8 @@ class TaskController {
           .then(labeledFrame => {
             this.labeledFrame = labeledFrame;
             this.framePosition.lock.release();
-          });
+          })
+          .aborted(() => this.framePosition.lock.release());
       });
     }
 
