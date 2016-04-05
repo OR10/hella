@@ -287,6 +287,7 @@ class TaskController {
     applicationState.$watch('sidebarLeft.isWorking', working => this.leftSidebarWorking = working);
     applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
     applicationState.$watch('sidebarRight.isWorking', working => this.rightSidebarWorking = working);
+    applicationState.$watch('sidebarRight.isInFrameChange', inFrameChange => this.rightSidebarShowBackdrop = !inFrameChange);
 
     if (!this.task.assignedUser) {
       this._taskGateway.assignUserToTask(this.task, this.user);

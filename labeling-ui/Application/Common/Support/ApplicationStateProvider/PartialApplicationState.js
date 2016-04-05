@@ -2,6 +2,23 @@ class PartialApplicationState {
   constructor() {
     this._disabled = 0;
     this._working = 0;
+    this._frameChange = 0;
+  }
+
+  get isInFrameChange() {
+    return this._frameChange !== 0;
+  }
+
+  startFrameChange() {
+    this._frameChange += 1;
+  }
+
+  endFrameChange() {
+    if (this._frameChange === 0) {
+      throw new Error('Tried to end frame change, after is already ended. Possible frameChangeStart/frameChangeEnd mismatch,')
+    }
+
+    this._frameChange -= 1;
   }
 
   get isDisabled() {

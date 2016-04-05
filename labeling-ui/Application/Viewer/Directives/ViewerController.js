@@ -452,15 +452,15 @@ class ViewerController {
     );
 
     applicationState.$watch(
-      'viewer.isDisabled', (viewerDisabled) => {
-        this.viewerDisabled = viewerDisabled;
-      }
+      'viewer.isDisabled', viewerDisabled => this.viewerDisabled = viewerDisabled
     );
 
     applicationState.$watch(
-      'viewer.isWorking', (viewerWorking) => {
-        this.viewerWorking = viewerWorking;
-      }
+      'viewer.isWorking', viewerWorking => this.viewerWorking = viewerWorking
+    );
+
+    applicationState.$watch(
+      'viewer.isInFrameChange', inFrameChange => this.showBackdrop = !inFrameChange
     );
 
     $scope.$on(
@@ -479,7 +479,6 @@ class ViewerController {
       this._resize();
     });
 
-    applicationState.$watch('viewer.showBackdrop', showBackdrop => this.showBackdrop = showBackdrop);
 
     this.framePosition.beforeFrameChangeAlways('disableViewer', () => {
       this._applicationState.startFrameChange();

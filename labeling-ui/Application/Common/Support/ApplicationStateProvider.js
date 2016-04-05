@@ -1,5 +1,4 @@
 import PartialApplicationState from './ApplicationStateProvider/PartialApplicationState';
-import ApplicationViewerState from './ApplicationStateProvider/ApplicationViewerState';
 
 class ApplicationStateProvider {
   $get($rootScope) {
@@ -9,7 +8,7 @@ class ApplicationStateProvider {
      */
     const state = $rootScope.$new();
 
-    state.viewer = new ApplicationViewerState();
+    state.viewer = new  PartialApplicationState();
     state.mediaControls = new PartialApplicationState();
     state.thumbnails = new PartialApplicationState();
     state.sidebarLeft = new PartialApplicationState();
@@ -30,19 +29,21 @@ class ApplicationStateProvider {
     };
 
     state.startFrameChange = () => {
-      ['mediaControls', 'sidebarRight'].forEach(component => {
-        state[component].disable();
-        state[component].work();
-      });
-      state.viewer.disable(false);
+      state.sidebarRight.disable();
+      state.sidebarRight.startFrameChange();
+
+      state.viewer.disable();
+      state.viewer.startFrameChange();
       state.viewer.work();
     };
 
     state.endFrameChange = () => {
-      ['viewer', 'mediaControls', 'sidebarRight'].forEach(component => {
-        state[component].finish();
-        state[component].enable();
-      });
+      state.viewer.finish();
+      state.viewer.endFrameChange();
+      state.viewer.enable();
+
+      state.sidebarRight.endFrameChange();
+      state.sidebarRight.enable();
     };
 
     return state;

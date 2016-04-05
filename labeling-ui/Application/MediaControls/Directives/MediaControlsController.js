@@ -127,6 +127,9 @@ class MediaControlsController {
    * Set new `startFrameNumber` based once **Bracket open** button is clicked
    */
   handleSetOpenBracketClicked() {
+    if (this.mediaControlsDisabled) {
+      return;
+    }
     const framePosition = this.framePosition.position;
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
@@ -181,6 +184,9 @@ class MediaControlsController {
    * Set new `endFrameNumber` based once **Bracket close** button is clicked
    */
   handleSetCloseBracketClicked() {
+    if (this.mediaControlsDisabled) {
+      return;
+    }
     const framePosition = this.framePosition.position;
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 

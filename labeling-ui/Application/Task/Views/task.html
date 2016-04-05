@@ -79,7 +79,7 @@
             thing-layer="vm.thingLayer"
     ></viewer>
     <div class="grid-block small-6 sidebar-right ">
-        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"
+        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarShowBackdrop" block-interaction="true"
                       spinner="vm.rightSidebarWorking"></loading-mask>
         <label-selector class="grid-block"
                         labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
