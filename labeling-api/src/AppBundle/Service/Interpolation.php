@@ -128,8 +128,8 @@ class Interpolation
         $this->updateStatus($status, Model\Interpolation\Status::RUNNING);
 
         try {
-            $labeledThing->getFrameRange()->throwIfFrameNumberIsNotCovered($frameRange->getStartFrameNumber());
-            $labeledThing->getFrameRange()->throwIfFrameNumberIsNotCovered($frameRange->getEndFrameNumber());
+            $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getStartFrameIndex());
+            $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getEndFrameIndex());
 
             $algorithm = $this->getAlgorithm($algorithmName);
 

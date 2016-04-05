@@ -165,20 +165,20 @@ export default class LabelSelectorController {
         const {labeledThing} = labeledThingInFrame;
 
         if (labeledThingInFrame.ghost === true) {
-          const {frameNumber} = labeledThingInFrame;
+          const {frameIndex} = labeledThingInFrame;
           const ltifId = this._entityIdService.getUniqueId();
 
-          labeledThingInFrame.ghostBust(ltifId, labeledThingInFrame.frameNumber);
+          labeledThingInFrame.ghostBust(ltifId, labeledThingInFrame.frameIndex);
 
           let frameRangeUpdated = false;
 
-          if (frameNumber > labeledThing.frameRange.endFrameNumber) {
-            labeledThing.frameRange.endFrameNumber = frameNumber;
+          if (frameIndex > labeledThing.frameRange.endFrameIndex) {
+            labeledThing.frameRange.endFrameIndex = frameIndex;
             frameRangeUpdated = true;
           }
 
-          if (frameNumber < labeledThing.frameRange.startFrameNumber) {
-            labeledThing.frameRange.startFrameNumber = frameNumber;
+          if (frameIndex < labeledThing.frameRange.startFrameIndex) {
+            labeledThing.frameRange.startFrameIndex = frameIndex;
             frameRangeUpdated = true;
           }
 

@@ -41,14 +41,14 @@ class TaskIncomplete
 
     public function revalideLabeledThingInFrameIncompleteStatus(Model\LabeledThing $labeledThing, Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameNumber()+1, 0 , null);
+        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameIndex()+1, 0 , null);
 
         usort($labeledThingInFrames, function($a, $b) {
-            if ($a->getFrameNumber() === $b->getFrameNumber()) {
+            if ($a->getFrameIndex() === $b->getFrameIndex()) {
                 return 0;
             }
 
-            return ($a->getFrameNumber() < $b->getFrameNumber()) ? -1 : 1;
+            return ($a->getFrameIndex() < $b->getFrameIndex()) ? -1 : 1;
         });
 
         $incompleteStatus = $labeledThingInFrame->getIncomplete();

@@ -4,14 +4,14 @@ namespace AppBundle\Model\Exception;
 
 class InvalidRange extends FrameRange
 {
-    public $startFrameNumber;
-    public $endFrameNumber;
+    public $startFrameIndex;
+    public $endFrameIndex;
 
-    public function __construct($startFrameNumber, $endFrameNumber)
+    public function __construct($startFrameIndex, $endFrameIndex)
     {
-        parent::__construct("Invalid range: {$startFrameNumber} - {$endFrameNumber}");
+        parent::__construct("Invalid range: {$startFrameIndex} - {$endFrameIndex}");
 
-        $this->startFrameNumber = $startFrameNumber;
-        $this->endFrameNumber   = $endFrameNumber;
+        $this->startFrameIndex = $startFrameIndex;
+        $this->endFrameIndex   = $endFrameIndex;
     }
 }

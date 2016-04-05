@@ -58,8 +58,8 @@ class DrawingTool extends Tool {
       incomplete: true,
       task: this._$scope.vm.task,
       frameRange: {
-        startFrameNumber: framePosition.position,
-        endFrameNumber: framePosition.position,
+        startFrameIndex: framePosition.position,
+        endFrameIndex: framePosition.position,
       },
     });
 
@@ -68,7 +68,7 @@ class DrawingTool extends Tool {
       classes: [],
       ghostClasses: null,
       incomplete: true,
-      frameNumber: framePosition.position,
+      frameIndex: framePosition.position,
       labeledThing: newLabeledThing,
       shapes: [],
     });

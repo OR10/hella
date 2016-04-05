@@ -28,9 +28,9 @@
  */
 
 /**
- * Number of the frame within the requested sequence
+ * frameIndex the current location belongs to
  *
- * @type {number}
- * @name FrameLocation#frameNumber
+ * @type {integer}
+ * @name FrameLocation#frameIndex
  */
 

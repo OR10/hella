@@ -74,7 +74,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                 'shapes' => array('shape' => 1),
                 'classes' => array('class' => 1),
-                'frameNumber' => 15,
+                'frameIndex' => 15,
             ])
             ->execute()
             ->getResponse();
@@ -107,7 +107,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'rev' => 'some_rev_',
                 'shapes' => array('shape' => 1),
                 'classes' => array('class' => 1),
-                'frameNumber' => 5,
+                'frameIndex' => 5,
             ])
             ->execute()
             ->getResponse();
@@ -125,7 +125,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                 'shapes' => array('shape' => 1),
                 'classes' => array('class' => 1),
-                'frameNumber' => 5,
+                'frameIndex' => 5,
             ])
             ->execute()
             ->getResponse();
@@ -133,7 +133,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->assertEquals(HttpFoundation\Response::HTTP_CONFLICT, $response->getStatusCode());
     }
 
-    public function testPutLabeledThingInFrameDocumentFrameNumberOutOfRange()
+    public function testPutLabeledThingInFrameDocumentframeIndexOutOfRange()
     {
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
@@ -143,7 +143,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
                 'shapes' => array('shape' => 1),
                 'classes' => array('class' => 1),
-                'frameNumber' => 30,
+                'frameIndex' => 30,
             ])
             ->execute()
             ->getResponse();
@@ -206,7 +206,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
         $task = Model\LabelingTask::create(
             $this->video,
-            new Model\FrameRange(10, 20),
+            range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setLabelStructure(
@@ -227,8 +227,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labeledThing = $this->labelingThingFacade->save(Model\LabeledThing::create($this->task));
     }
 
-    private function createLabeledThingInFrame($frameNumber = 15)
+    private function createLabeledThingInFrame($frameIndex = 15)
     {
-        return $this->labelingThingInFrameFacade->save(Model\LabeledThingInFrame::create($this->labeledThing, $frameNumber));
+        return $this->labelingThingInFrameFacade->save(Model\LabeledThingInFrame::create($this->labeledThing, $frameIndex));
     }
 }

@@ -23,7 +23,7 @@ class LabeledThingInFrame
     /**
      * @CouchDB\Field(type="integer")
      */
-    private $frameNumber;
+    private $frameIndex;
 
     /**
      * @CouchDB\Field(type="mixed")
@@ -63,50 +63,52 @@ class LabeledThingInFrame
 
     /**
      * @param LabeledThing $labeledThing
-     * @param int          $frameNumber
-     * @param array        $classes
-     * @param array        $shapes
+     * @param int $frameIndex
+     * @param array $classes
+     * @param array $shapes
+     *
+     * @return static
      */
     public static function create(
         LabeledThing $labeledThing,
-        $frameNumber,
+        $frameIndex,
         array $classes = [],
         array $shapes = []
     ) {
-        return new static($labeledThing, $frameNumber, $classes, $shapes);
+        return new static($labeledThing, $frameIndex, $classes, $shapes);
     }
 
     /**
      * @param LabeledThing $labeledThing
-     * @param int          $frameNumber
+     * @param int          $frameIndex
      * @param array        $classes
      * @param array        $shapes
      *
-     * @throws \RangeException if the given $frameNumber is outside of the
+     * @throws \RangeException if the given $frameIndex is outside of the
      *         `FrameRange` of the given `$labeledThing`.
      */
     public function __construct(
         LabeledThing $labeledThing,
-        $frameNumber,
+        $frameIndex,
         array $classes = [],
         array $shapes = []
     ) {
-        $labeledThing->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
+        $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
 
         $this->taskId         = $labeledThing->getTaskId();
         $this->labeledThingId = $labeledThing->getId();
-        $this->frameNumber    = (int) $frameNumber;
+        $this->frameIndex    = (int) $frameIndex;
         $this->classes        = $classes;
         $this->shapes         = $shapes;
     }
 
     /**
-     * @param int|null $toFrameNumber
+     * @param int|null $toFrameIndex
      * @param bool     $cloneIdAndRevision
      *
      * @return LabeledThingInFrame
      */
-    public function copy($toFrameNumber = null, $cloneIdAndRevision = false)
+    public function copy($toFrameIndex = null, $cloneIdAndRevision = false)
     {
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
@@ -117,10 +119,10 @@ class LabeledThingInFrame
         $copy->incomplete     = $this->incomplete;
         $copy->ghost          = $this->ghost;
 
-        if ($toFrameNumber === null) {
-            $copy->frameNumber = $this->frameNumber;
+        if ($toFrameIndex === null) {
+            $copy->frameIndex = $this->frameIndex;
         } else {
-            $copy->frameNumber = (int) $toFrameNumber;
+            $copy->frameIndex = (int) $toFrameIndex;
         }
 
         if ($cloneIdAndRevision === true) {
@@ -174,19 +176,19 @@ class LabeledThingInFrame
     /**
      * @return mixed
      */
-    public function getFrameNumber()
+    public function getFrameIndex()
     {
-        return $this->frameNumber;
+        return $this->frameIndex;
     }
 
     /**
-     * @param int $frameNumber
+     * @param int $frameIndex
      *
      * @return LabeledThingInFrame
      */
-    public function setFrameNumber($frameNumber)
+    public function setFrameIndex($frameIndex)
     {
-        $this->frameNumber = (int) $frameNumber;
+        $this->frameIndex = (int) $frameIndex;
 
         return $this;
     }

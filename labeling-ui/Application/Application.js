@@ -158,7 +158,7 @@ export default class Application {
     routerConfigurator.$inject = [
       '$locationProvider',
       '$stateProvider',
-      '$urlRouterProvider'
+      '$urlRouterProvider',
     ];
 
     this.app.config(routerConfigurator);

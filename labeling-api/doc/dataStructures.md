@@ -8,8 +8,8 @@
 
 ## FrameRange
 
-+ startFrameNumber: `1` (number) - The first frame number of the frame range.
-+ endFrameNumber: `23` (number) - The last frame number of the frame range.
++ startFrameIndex: `1` (number) - The first frame number of the frame range.
++ endFrameIndex: `23` (number) - The last frame number of the frame range.
 
 ## Video
 

@@ -22,18 +22,18 @@ class LabeledThingInFrameGateway {
   }
 
   /**
-   * Returns the {@link LabeledThingInFrame} object for the given {@link Task} and `frameNumber`
+   * Returns the {@link LabeledThingInFrame} object for the given {@link Task} and `frameIndex`
    *
    * @param {Task} task
-   * @param {Number} frameNumber
+   * @param {Number} frameIndex
    * @param {Number} offset
    * @param {Number} limit
    *
    * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
-  listLabeledThingInFrame(task, frameNumber, offset = 0, limit = 1) {
+  listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${frameNumber}`,
+      `/task/${task.id}/labeledThingInFrame/${frameIndex}`,
       {offset, limit}
     );
 
@@ -50,22 +50,22 @@ class LabeledThingInFrameGateway {
 
   /**
    * Retrieve a {@link LabeledThingInFrame} which is associated to a specific
-   * {@link Task}, {@link LabeledThing} and `frameNumber`.
+   * {@link Task}, {@link LabeledThing} and `frameIndex`.
    *
    * If the `LabeledThingInFrame` does not exist in the database an interpolated ghost frame is returned
    *
-   * Optionally an `offset` and `limit` may be specified, which relates to the specified `frameNumber`.
+   * Optionally an `offset` and `limit` may be specified, which relates to the specified `frameIndex`.
    * By default `offset = 0` and `limit = 1` is assumed.
    *
    * @param {Task} task
-   * @param {int} frameNumber
+   * @param {int} frameIndex
    * @param {LabeledThing} labeledThing
    * @param {int?} offset
    * @param {int?} limit
    */
-  getLabeledThingInFrame(task, frameNumber, labeledThing, offset = 0, limit = 1) {
+  getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledThingInFrame/${frameNumber}/${labeledThing.id}`,
+      `/task/${task.id}/labeledThingInFrame/${frameIndex}/${labeledThing.id}`,
       {offset, limit}
     );
     return this.bufferedHttp.get(url, undefined, 'labeledThing')
@@ -90,7 +90,7 @@ class LabeledThingInFrameGateway {
    * @param {Task} task
    * @param {int?} count
    *
-   * @returns {AbortablePromise<LabeledThingInFrame>|Error}
+   * @returns {AbortablePromise<Array.<LabeledThingInFrame>>|Error}
    */
   getNextIncomplete(task, count = 1) {
     const url = this._apiService.getApiUrl(

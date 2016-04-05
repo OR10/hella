@@ -40,7 +40,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testGetLabeledFrameDocument()
     {
         $frame   = $this->createLabeledFrame($this->task);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])->execute();
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
     }
@@ -48,12 +48,12 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testGetLabeledFrameDocumentInvalidTaskId()
     {
         $frame   = $this->createLabeledFrame($this->task);
-        $request = $this->createRequest(self::ROUTE, [1111, $frame->getFrameNumber()])->execute();
+        $request = $this->createRequest(self::ROUTE, [1111, $frame->getFrameIndex()])->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $request->getResponse()->getStatusCode());
     }
 
-    public function testGetLabeledFrameDocumentInvalidFrameNumber()
+    public function testGetLabeledFrameDocumentInvalidFrameIndex()
     {
         $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 1111])->execute();
 
@@ -66,7 +66,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testDeleteLabeledFrame()
     {
         $frame   = $this->createLabeledFrame($this->task);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
 
@@ -76,7 +76,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testDeleteLabeledFrameInvalidTaskId()
     {
         $frame   = $this->createLabeledFrame($this->task);
-        $request = $this->createRequest(self::ROUTE, [1111, $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [1111, $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
 
@@ -101,7 +101,7 @@ class LabeledFrameTest extends Tests\WebTestCase
                 'classes' => [
                     'class1' => 'test',
                 ],
-                'frameNumber' => 10,
+                'frameIndex' => 10,
             ])
             ->execute();
 
@@ -114,7 +114,7 @@ class LabeledFrameTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
                 'id' => '22dd639108f1419967ed8d6a1f5a744a',
-                'frameNumber' => 10,
+                'frameIndex' => 10,
             ])
             ->execute();
 
@@ -124,12 +124,12 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testUpdateLabeledFrame()
     {
         $frame   = $this->createLabeledFrame($this->task);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
                 'id'          => $frame->getId(),
                 'rev'         => $frame->getRev(),
-                'frameNumber' => $frame->getFrameNumber(),
+                'frameIndex' => $frame->getFrameIndex(),
             ])
             ->execute();
 
@@ -141,12 +141,12 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->markTestIncomplete('Temporary skipping the revision check :(');
 
         $frame   = $this->createLabeledFrame($this->task);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
                 'id'          => $frame->getId(),
                 'rev'         => 'this_revision_invalid',
-                'frameNumber' => $frame->getFrameNumber(),
+                'frameIndex' => $frame->getFrameIndex(),
             ])
             ->execute();
 
@@ -156,7 +156,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testSaveLabeledFrameWithInvalidBody()
     {
         $frame   = new Model\LabeledFrame($this->task, 10);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
                 'invalid' => 'body',
@@ -166,13 +166,13 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $request->getResponse()->getStatusCode());
     }
 
-    public function testSaveLabeledFrameWithInvalidFrameNumbers()
+    public function testSaveLabeledFrameWithInvalidFrameIndex()
     {
         $frame   = Model\LabeledFrame::create($this->task, 10);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
-                'frameNumber' => 20,
+                'frameIndex' => 20,
             ])
             ->execute();
 
@@ -182,10 +182,10 @@ class LabeledFrameTest extends Tests\WebTestCase
     public function testSaveLabeledFrameWithInvalidClasses()
     {
         $frame = Model\LabeledFrame::create($this->task, 10);
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameNumber()])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), $frame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody([
-                'frameNumber' => 20,
+                'frameIndex' => 20,
                 'classes' => 'test_class',
             ])
             ->execute();
@@ -232,7 +232,7 @@ class LabeledFrameTest extends Tests\WebTestCase
                 'result' => [
                     $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 10)),
                     $this->serializeObjectAsArray($labeledFrame11),
-                    $this->serializeObjectAsArray($labeledFrame11->copyToFrameNumber(12)),
+                    $this->serializeObjectAsArray($labeledFrame11->copyToFrameIndex(12)),
                     $this->serializeObjectAsArray($labeledFrame13),
                 ],
             ],
@@ -253,7 +253,7 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
         $task = Model\LabelingTask::create(
             $this->video,
-            new Model\FrameRange(10, 20),
+            range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);
@@ -274,10 +274,10 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->task = $this->labelingTaskFacade->save($task);
     }
 
-    private function createLabeledFrame(Model\LabelingTask $task, $frameNumber = 10)
+    private function createLabeledFrame(Model\LabelingTask $task, $frameIndex = 10)
     {
         return $this->labeledFrameFacade->save(
-            Model\LabeledFrame::create($this->task, $frameNumber)
+            Model\LabeledFrame::create($this->task, $frameIndex)
                 ->setClasses(array('foo' => 'bar'))
         );
     }

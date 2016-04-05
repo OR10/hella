@@ -194,8 +194,17 @@ class Task extends Controller\Base
     {
         $offset   = $request->query->getDigits('offset');
         $limit    = $request->query->getDigits('limit');
-        $subRange = $task->getFrameRange()->createSubRangeForOffsetAndLimit($offset, $limit);
-        $data     = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $subRange);
+        $frameIndexMapping = $task->getFrameNumberMapping();
+
+        if ($offset !== '') {
+            $frameIndexMapping = array_slice($frameIndexMapping, $offset, null, true);
+        }
+
+        if ($limit !== '') {
+            $frameIndexMapping = array_slice($frameIndexMapping, 0, $limit, true);
+        }
+
+        $data     = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $frameIndexMapping);
 
         return View\View::create()->setData(['result' => $data]);
     }

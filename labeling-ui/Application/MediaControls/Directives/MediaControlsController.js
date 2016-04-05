@@ -124,7 +124,7 @@ class MediaControlsController {
   }
 
   /**
-   * Set new `startFrameNumber` based once **Bracket open** button is clicked
+   * Set new `startFrameIndex` once **Bracket open** button is clicked
    */
   handleSetOpenBracketClicked() {
     if (this.mediaControlsDisabled) {
@@ -133,20 +133,20 @@ class MediaControlsController {
     const framePosition = this.framePosition.position;
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
-    if (framePosition > selectedLabeledThing.frameRange.endFrameNumber) {
+    if (framePosition > selectedLabeledThing.frameRange.endFrameIndex) {
       return;
     }
 
-    selectedLabeledThing.frameRange.startFrameNumber = framePosition;
+    selectedLabeledThing.frameRange.startFrameIndex = framePosition;
     this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
   }
 
   /**
-   * Jump to the `startFrameNumber` of the selected {@link LabeledThing}
+   * Jump to the `startFrameIndex` of the selected {@link LabeledThing}
    */
   handleGotoOpenBracketClicked() {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-    this.framePosition.goto(selectedLabeledThing.frameRange.startFrameNumber);
+    this.framePosition.goto(selectedLabeledThing.frameRange.startFrameIndex);
   }
 
   /**
@@ -167,21 +167,21 @@ class MediaControlsController {
    * Switch to the currently bookmarked frame
    */
   goToBookmarkedFrame() {
-    if (this.bookmarkedFrameNumber) {
-      this.framePosition.goto(this.bookmarkedFrameNumber);
+    if (this.bookmarkedFrameIndex) {
+      this.framePosition.goto(this.bookmarkedFrameIndex);
     }
   }
 
   /**
-   * Jump to the `endFrameNumber` of the selected {@link LabeledThing}
+   * Jump to the `endFrameIndex` of the selected {@link LabeledThing}
    */
   handleGotoCloseBracketClicked() {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-    this.framePosition.goto(selectedLabeledThing.frameRange.endFrameNumber);
+    this.framePosition.goto(selectedLabeledThing.frameRange.endFrameIndex);
   }
 
   /**
-   * Set new `endFrameNumber` based once **Bracket close** button is clicked
+   * Set new `endFrameIndex` once **Bracket close** button is clicked
    */
   handleSetCloseBracketClicked() {
     if (this.mediaControlsDisabled) {
@@ -190,11 +190,11 @@ class MediaControlsController {
     const framePosition = this.framePosition.position;
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
-    if (framePosition < selectedLabeledThing.frameRange.startFrameNumber) {
+    if (framePosition < selectedLabeledThing.frameRange.startFrameIndex) {
       return;
     }
 
-    selectedLabeledThing.frameRange.endFrameNumber = framePosition;
+    selectedLabeledThing.frameRange.endFrameIndex = framePosition;
     this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
   }
 

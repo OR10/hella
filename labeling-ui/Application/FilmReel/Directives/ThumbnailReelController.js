@@ -21,8 +21,20 @@ class ThumbnailReelController {
    * @param {AnimationFrameService} animationFrameService
    * @param {Object} applicationState
    * @param {LockService} lockService
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor($scope, $window, $element, $q, abortablePromiseFactory, frameLocationGateway, labeledThingInFrameGateway, labeledThingGateway, animationFrameService, applicationState, lockService) {
+  constructor($scope,
+              $window,
+              $element,
+              $q,
+              abortablePromiseFactory,
+              frameLocationGateway,
+              labeledThingInFrameGateway,
+              labeledThingGateway,
+              animationFrameService,
+              applicationState,
+              lockService,
+              frameIndexService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -56,6 +68,12 @@ class ThumbnailReelController {
      * @private
      */
     this._lockService = lockService;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     /**
      * Count of thumbnails shown on the page
@@ -143,14 +161,14 @@ class ThumbnailReelController {
       this._recalculateViewSizeDebounced();
     };
 
-    this._recalculateViewSizeDebounced();
-
-    this.prefetchThumbnailLocations();
-
     $window.addEventListener('resize', onWindowResized);
     $scope.$on('$destroy', () => {
       $window.removeEventListener('resize', onWindowResized);
     });
+
+    this._recalculateViewSizeDebounced();
+
+    this.prefetchThumbnailLocations();
 
     this._applicationState.$watch('thumbnails.isDisabled', disabled => this.thumbnailsDisabled = disabled);
     this._applicationState.$watch('thumbnails.isWorking', working => this.thumbnailsWorking = working);
@@ -266,35 +284,47 @@ class ThumbnailReelController {
   }
 
   /**
-   * Calculate needed `offset` and `limit` parameters to fetch all the $frameCount frames based on the current `framePosition`
+   * Calculate needed lower and upper request bounds to fetch all the needed frames based on the current `framePosition`
    *
    * @param {FramePosition} framePosition
-   * @returns {{offset: number, limit: number}}
+   * @returns {{lowerLimit: integer, upperLimit: integer}}
    * @private
    */
-  _calculateOffsetAndLimitByPosition(framePosition) {
-    const relativeFrameNumber = framePosition.position - this.task.frameRange.startFrameNumber + 1;
-    const relativeEndFrameNumber = framePosition.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
+  _calculateLowerAndUpperLimitByPosition(framePosition) {
+    const currentFrameIndex = framePosition.position;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const thumbnailBeforeCount = this._thumbnailLookahead;
+    const thumbnailAfterCount = this._thumbnailLookahead;
 
-    const offset = Math.max(0, relativeFrameNumber - this._thumbnailLookahead);
-    const limit = Math.min(relativeEndFrameNumber, relativeFrameNumber + this._thumbnailLookahead) - offset;
+    const lowerLimit = Math.max(frameIndexLimits.lowerLimit, currentFrameIndex - thumbnailBeforeCount);
+    const upperLimit = Math.min(frameIndexLimits.upperLimit, currentFrameIndex + thumbnailAfterCount);
 
-    return {offset, limit};
+    return {
+      lowerLimit,
+      upperLimit,
+      count: Math.abs(upperLimit - lowerLimit) + 1,
+    };
   }
 
   /**
-   * Correctly fill up the positional array based on the current `framePosition` and the `offset`
+   * Correctly fill up the positional array based on the current `framePosition` and the `lowerLimit`
    *
    * @param {FramePosition} framePosition
-   * @param {int} offset
+   * @param {int} lowerLimit
    * @param {Array.<*>} results
    * @private
    */
-  _fillPositionalArrayWithResults(framePosition, offset, results) {
-    const positionalArray = new Array(this.thumbnailCount).fill(null);
-    const startIndex = offset - (framePosition.position - this.task.frameRange.startFrameNumber) + this._thumbnailLookahead;
+  _fillPositionalArrayWithResults(framePosition, lowerLimit, results) {
+    const currentFrameIndex = framePosition.position;
+    const thumbnailBeforeCount = this._thumbnailLookahead;
 
-    results.forEach((result, index) => positionalArray[startIndex + index] = result);
+    const positionalArray = new Array(this.thumbnailCount).fill(null);
+
+    const startIndex = lowerLimit - currentFrameIndex + thumbnailBeforeCount;
+
+    results.forEach(
+      (result, index) => positionalArray[startIndex + index] = result
+    );
 
     return positionalArray;
   }
@@ -315,9 +345,9 @@ class ThumbnailReelController {
       throw new Error('No supported image type found');
     }
 
-    const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
-    return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], offset, limit)
-      .then(locations => this._fillPositionalArrayWithResults(framePosition, offset, locations));
+    const {lowerLimit, count} = this._calculateLowerAndUpperLimitByPosition(framePosition);
+    return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], lowerLimit, count)
+      .then(locations => this._fillPositionalArrayWithResults(framePosition, lowerLimit, locations));
   }
 
   /**
@@ -335,15 +365,16 @@ class ThumbnailReelController {
       return this._abortablePromiseFactory(this._$q.resolve(new Array(this.thumbnailCount).fill(null)));
     }
 
-    const {offset, limit} = this._calculateOffsetAndLimitByPosition(framePosition);
+    const {lowerLimit, count} = this._calculateLowerAndUpperLimitByPosition(framePosition);
     return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
-      offset + this.task.frameRange.startFrameNumber,
+      lowerLimit,
       this.selectedPaperShape.labeledThingInFrame.labeledThing,
       0,
-      limit
-    )
-      .then(labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, offset, labeledThingInFrames));
+      count
+    ).then(
+      labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, lowerLimit, labeledThingInFrames)
+    );
   }
 
   isCurrentThumbnail(index) {
@@ -359,8 +390,8 @@ class ThumbnailReelController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
-    return currentFramePosition + 1 > selectedLabeledThing.frameRange.startFrameNumber
-      && currentFramePosition < selectedLabeledThing.frameRange.endFrameNumber;
+    return currentFramePosition + 1 > selectedLabeledThing.frameRange.startFrameIndex
+      && currentFramePosition < selectedLabeledThing.frameRange.endFrameIndex;
   }
 
   thumbnailInFrameRange(index) {
@@ -375,8 +406,8 @@ class ThumbnailReelController {
     }
 
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-    return selectedLabeledThing.frameRange.startFrameNumber <= thumbnail.location.frameNumber
-      && selectedLabeledThing.frameRange.endFrameNumber >= thumbnail.location.frameNumber;
+    return selectedLabeledThing.frameRange.startFrameIndex <= thumbnail.location.frameIndex
+      && selectedLabeledThing.frameRange.endFrameIndex >= thumbnail.location.frameIndex;
   }
 
   placeStartBracket(index) {
@@ -387,12 +418,12 @@ class ThumbnailReelController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     if (index < 0) {
-      return selectedLabeledThing.frameRange.startFrameNumber === this.framePosition.position - this._thumbnailLookahead;
+      return selectedLabeledThing.frameRange.startFrameIndex === this.framePosition.position - this._thumbnailLookahead;
     }
 
     const thumbnail = this.thumbnails[index + 1];
 
-    return thumbnail && thumbnail.location && thumbnail.location.frameNumber === selectedLabeledThing.frameRange.startFrameNumber;
+    return thumbnail && thumbnail.location && thumbnail.location.frameIndex === selectedLabeledThing.frameRange.startFrameIndex;
   }
 
   placeEndBracket(index) {
@@ -404,32 +435,32 @@ class ThumbnailReelController {
 
     const thumbnail = this.thumbnails[index];
 
-    return thumbnail.location && thumbnail.location.frameNumber === selectedLabeledThing.frameRange.endFrameNumber;
+    return thumbnail.location && thumbnail.location.frameIndex === selectedLabeledThing.frameRange.endFrameIndex;
   }
 
   /**
-   * Update the start frame number for the currently selected thing
+   * Update the start frame index for the currently selected thing
    *
    * @param index
    * @private
    */
-  _setStartFrameNumber(index) {
+  _setStartFrameIndex(index) {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
-      const frameNumber = this.thumbnails[index + 1].location.frameNumber;
+      const frameIndex = this.thumbnails[index + 1].location.frameIndex;
 
-      if (frameNumber <= selectedLabeledThing.frameRange.endFrameNumber) {
-        const oldStartFrameNumber = selectedLabeledThing.frameRange.startFrameNumber;
+      if (frameIndex <= selectedLabeledThing.frameRange.endFrameIndex) {
+        const oldStartFrameIndex = selectedLabeledThing.frameRange.startFrameIndex;
 
-        selectedLabeledThing.frameRange.startFrameNumber = frameNumber;
+        selectedLabeledThing.frameRange.startFrameIndex = frameIndex;
 
         // Synchronize operations on this LabeledThing
         this._lockService.acquire(selectedLabeledThing.id, release => {
           this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
             release();
             // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-            if (frameNumber > oldStartFrameNumber) {
+            if (frameIndex > oldStartFrameIndex) {
               this._updateLabeledThingInFrames(this.selectedPaperShape);
             }
           });
@@ -439,25 +470,25 @@ class ThumbnailReelController {
   }
 
   /**
-   * Update the end frame number for the currently selected thing
+   * Update the end frame index for the currently selected thing
    *
    * @param index
    * @private
    */
-  _setEndFrameNumber(index) {
+  _setEndFrameIndex(index) {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
-      const frameNumber = this.thumbnails[index].location.frameNumber;
+      const frameIndex = this.thumbnails[index].location.frameIndex;
 
-      if (frameNumber >= selectedLabeledThing.frameRange.startFrameNumber) {
-        const oldEndFrameNumber = selectedLabeledThing.frameRange.endFrameNumber;
+      if (frameIndex >= selectedLabeledThing.frameRange.startFrameIndex) {
+        const oldEndFrameIndex = selectedLabeledThing.frameRange.endFrameIndex;
 
-        selectedLabeledThing.frameRange.endFrameNumber = frameNumber;
+        selectedLabeledThing.frameRange.endFrameIndex = frameIndex;
 
         this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
           // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-          if (frameNumber < oldEndFrameNumber) {
+          if (frameIndex < oldEndFrameIndex) {
             this._updateLabeledThingInFrames(this.selectedPaperShape);
           }
         });
@@ -467,19 +498,20 @@ class ThumbnailReelController {
 
   handleDrop(event, dragObject, index) {
     if (dragObject.draggable.hasClass('start-bracket')) {
-      this._setStartFrameNumber(index);
+      this._setStartFrameIndex(index);
       return;
     }
 
-    this._setEndFrameNumber(index);
+    this._setEndFrameIndex(index);
   }
 
   placeBracketSpacer(index) {
     const currentFramePosition = this.framePosition.position - this._thumbnailLookahead + index;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
 
     // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
-    return currentFramePosition + 1 >= this.framePosition.startFrameNumber
-      && currentFramePosition <= this.framePosition.endFrameNumber;
+    return currentFramePosition + 1 >= frameIndexLimits.lowerLimit
+      && currentFramePosition <= frameIndexLimits.upperLimit;
   }
 
   onBracketDragStart() {
@@ -491,7 +523,10 @@ class ThumbnailReelController {
   }
 
   prefetchThumbnailLocations() {
-    const frameCount = this.task.frameRange.endFrameNumber - this.task.frameRange.startFrameNumber + 1;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const frameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
+
+    // After this call the locations should be inside their respective cache
     this._frameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', 0, frameCount);
   }
 }
@@ -508,6 +543,7 @@ ThumbnailReelController.$inject = [
   'animationFrameService',
   'applicationState',
   'lockService',
+  'frameIndexService',
 ];
 
 export default ThumbnailReelController;

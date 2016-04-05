@@ -54,7 +54,7 @@ class CachingFrameLocationGateway extends FrameLocationGateway {
    * @returns {AbortablePromise<Array<FrameLocation>>}
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
-    const start = offset + 1;
+    const start = offset;
     const end = start + limit - 1;
     const cacheKeys = this._generateLocationCacheKeysForRange(taskId, type, start, end);
 
@@ -68,7 +68,7 @@ class CachingFrameLocationGateway extends FrameLocationGateway {
     return super.getFrameLocations(taskId, type, offset, limit)
       .then(locations => {
         locations.forEach(
-          location => this._locationCache.store(`${taskId}.${type}.${location.frameNumber}`, location)
+          location => this._locationCache.store(`${taskId}.${type}.${location.frameIndex}`, location)
         );
         return locations;
       });

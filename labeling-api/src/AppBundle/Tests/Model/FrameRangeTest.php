@@ -10,26 +10,24 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
     {
         $frameRange = new FrameRange(3);
 
-        $this->assertEquals(3, $frameRange->getStartFrameNumber());
-        $this->assertEquals(3, $frameRange->getEndFrameNumber());
+        $this->assertEquals(3, $frameRange->getStartFrameIndex());
+        $this->assertEquals(3, $frameRange->getEndFrameIndex());
         $this->assertEquals(1, $frameRange->getNumberOfFrames());
     }
 
     /**
-     * @expectedException \AppBundle\Model\Exception\InvalidStartFrameNumber
-     * @dataProvider getDataForConstructorThrowsInvalidStartFrameNumberForInvalidStartFrames
+     * @expectedException \AppBundle\Model\Exception\InvalidStartFrameIndex
+     * @dataProvider getDataForConstructorThrowsInvalidStartFrameIndexForInvalidStartFrames
      */
-    public function testConstructorThrowsInvalidStartFrameNumberForInvalidStartFrames($startFrameNumber)
+    public function testConstructorThrowsInvalidstartFrameIndexForInvalidStartFrames($startFrameIndex)
     {
-        new FrameRange($startFrameNumber, 1000);
+        new FrameRange($startFrameIndex, 1000);
     }
 
-    public function getDataForConstructorThrowsInvalidStartFrameNumberForInvalidStartFrames()
+    public function getDataForConstructorThrowsInvalidStartFrameIndexForInvalidStartFrames()
     {
         return [
-            ['startFrameNumber' => null],
-            ['startFrameNumber' => 0],
-            ['startFrameNumber' => -3],
+            ['startFrameIndex' => -3],
         ];
     }
 
@@ -37,25 +35,25 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
      * @expectedException \AppBundle\Model\Exception\InvalidRange
      * @dataProvider getDataForConstructorThrowsInvalidRangeForInvalidRanges
      */
-    public function testConstructorThrowsInvalidRangeForInvalidRanges($startFrameNumber, $endFrameNumber)
+    public function testConstructorThrowsInvalidRangeForInvalidRanges($startFrameIndex, $endFrameIndex)
     {
-        new FrameRange($startFrameNumber, $endFrameNumber);
+        new FrameRange($startFrameIndex, $endFrameIndex);
     }
 
     public function getDataForConstructorThrowsInvalidRangeForInvalidRanges()
     {
         return [
             [
-                'startFrameNumber' => 1,
-                'endFrameNumber'   => 0,
+                'startFrameIndex' => 1,
+                'endFrameIndex'   => 0,
             ],
             [
-                'startFrameNumber' => 1,
-                'endFrameNumber'   => -3,
+                'startFrameIndex' => 1,
+                'endFrameIndex'   => -3,
             ],
             [
-                'startFrameNumber' => 3,
-                'endFrameNumber'   => 2,
+                'startFrameIndex' => 3,
+                'endFrameIndex'   => 2,
             ],
         ];
     }
@@ -71,8 +69,8 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
     ) {
         $frameRange = $givenRange->createSubRangeForOffsetAndLimit($offset, $limit);
 
-        $this->assertEquals($expectedFrameRange->getStartFrameNumber(), $frameRange->getStartFrameNumber());
-        $this->assertEquals($expectedFrameRange->getEndFrameNumber(), $frameRange->getEndFrameNumber());
+        $this->assertEquals($expectedFrameRange->getStartFrameIndex(), $frameRange->getStartFrameIndex());
+        $this->assertEquals($expectedFrameRange->getEndFrameIndex(), $frameRange->getEndFrameIndex());
     }
 
     public function getDataForCreateSubRangeForOffsetAndLimit()
@@ -96,7 +94,7 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
                 'limit' => null,
                 'expectedFrameRange' => new FrameRange(4, 10),
             ],
-            'negative offset is set to startFrameNumber - 1 and limit is adjusted' => [
+            'negative offset is set to startFrameIndex - 1 and limit is adjusted' => [
                 'givenRange' => new FrameRange(1, 10),
                 'offset' => -3,
                 'limit' => 30,
@@ -108,7 +106,7 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
                 'limit' => 6,
                 'expectedFrameRange' => new FrameRange(3, 8),
             ],
-            'offset beyond endFrameNumber' => [
+            'offset beyond endFrameIndex' => [
                 'givenRange' => new FrameRange(10, 20),
                 'offset' => 30,
                 'limit' => 10,

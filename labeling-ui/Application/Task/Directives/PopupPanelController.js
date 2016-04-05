@@ -158,7 +158,7 @@ class PopupPanelController {
     }
 
     this._frameLocationsBuffer.add(
-      this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], this.framePosition.position - 1)
+      this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], this.framePosition.position)
         .then(([frameLocation]) => {
           return this._frameGateway.getImage(frameLocation);
         })

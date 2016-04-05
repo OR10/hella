@@ -9,26 +9,34 @@ class FramePosition {
   /**
    * Create a new FramePosition object
    *
-   * If no `position` is specified `startFrameNumber` will be used.
+   * If no `position` is specified `lowerLimit` from the `frameIndexLimits` will be used.
    *
-   * @param {FrameRange} frameRange
-   * @param {int} position
+   * @param {angular.$q} $q
+   * @param {{lowerLimit: integer, upperLimit: integer}} frameIndexLimits
+   * @param {integer} position
    */
-  constructor($q, {startFrameNumber, endFrameNumber}, position = startFrameNumber) {
+  constructor($q, frameIndexLimits, position = frameIndexLimits.lowerLimit) {
     /**
-     * @inheritDoc
+     * @type {ReferenceCountingLock}
      */
-    this.startFrameNumber = startFrameNumber;
+    this.lock = new ReferenceCountingLock($q, () => this._onFrameChangeComplete());
 
     /**
-     * @inheritDoc
+     * @type {integer}
+     * @private
      */
-    this.endFrameNumber = endFrameNumber;
+    this._lowerLimit = frameIndexLimits.lowerLimit;
+
+    /**
+     * @type {integer}
+     * @private
+     */
+    this._upperLimit = frameIndexLimits.upperLimit;
 
     /**
      * Current Frame position, within the FrameRange
      *
-     * @type {int}
+     * @type {integer}
      * @private
      */
     this._position = position;
@@ -37,6 +45,7 @@ class FramePosition {
      * Frame change subscribers
      *
      * @type {Object}
+     * @private
      */
     this._subscribers = {
       before: {
@@ -59,6 +68,7 @@ class FramePosition {
      * Callbacks that are called if a frame change is complete
      *
      * @type {Object}
+     * @private
      */
     this.completeCallbacks = {};
 
@@ -123,6 +133,7 @@ class FramePosition {
     });
     this._subscribers.after.oneTime = {};
 
+ HEAD
     // Trigger all reapeated subscribers
     Object.keys(this._subscribers.after.always).forEach((name) => {
       this._subscribers.after.always[name](this._position);
@@ -132,7 +143,7 @@ class FramePosition {
   /**
    * Retrieve the currently active position
    *
-   * @returns {int}
+   * @returns {integer}
    */
   get position() {
     return this._position;
@@ -141,22 +152,33 @@ class FramePosition {
   /**
    * Jump to a specific position within this FrameRange.
    *
-   * @param {int} newPosition
+   * @param {integer} newPosition
    */
   goto(newPosition) {
-    if (newPosition < this.startFrameNumber) {
-      this._position = this.startFrameNumber;
-    } else if (newPosition > this.endFrameNumber) {
-      this._position = this.endFrameNumber;
+    if (newPosition < this._lowerLimit) {
+      this._position = this._lowerLimit;
+    } else if (newPosition > this._upperLimit) {
+      this._position = this._upperLimit;
     } else {
       this._position = newPosition;
     }
   }
 
   /**
-   * Jump to the next position inside the current framerange
+   * Jump by given amount of frame indices.
    *
-   * If the next position is outside of the current framerange `false` is returned and the jump is aborted
+   * Negative values correlate to a backwards jump
+   *
+   * @param {number} amount
+   */
+  jumpBy(amount) {
+    this.goto(this._position + amount);
+  }
+
+  /**
+   * Jump to the next position inside the current frameIndexLimits
+   *
+   * If the next position is outside of the current frameIndexLimits `false` is returned and the jump is aborted
    *
    * On successful change to the next position `true` is returned.
    *
@@ -164,7 +186,7 @@ class FramePosition {
    */
   next() {
     try {
-      this.goto(this._position + 1);
+      this.jumpBy(+1);
     } catch (error) {
       return false;
     }
@@ -173,9 +195,9 @@ class FramePosition {
   }
 
   /**
-   * Jump to the previous position inside the current framerange
+   * Jump to the previous position inside the current frameIndexLimits
    *
-   * If the previous position is outside of the current framerange `false` is returned and the jump is aborted
+   * If the previous position is outside of the current frameIndexLimits `false` is returned and the jump is aborted
    *
    * On successful change to the previous position `true` is returned.
    *
@@ -183,22 +205,12 @@ class FramePosition {
    */
   previous() {
     try {
-      this.goto(this._position - 1);
+      this.jumpBy(-1);
     } catch (error) {
       return false;
     }
 
     return true;
-  }
-
-  /**
-   * Jump by a give amount in forwards position (positive amount)
-   * or in backwards postition (negative amount)
-   *
-   * @param amount
-   */
-  jumpBy(amount) {
-    this.goto(this.position + amount);
   }
 }
 

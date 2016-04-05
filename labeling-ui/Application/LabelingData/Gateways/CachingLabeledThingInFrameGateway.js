@@ -14,8 +14,15 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
    * @param {AbortablePromiseFactory} abortable
    * @param {CacheService} cache
    * @param {LoggerService} logger
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor(apiService, bufferedHttp, $q, abortable, cache, logger) {
+  constructor(apiService,
+              bufferedHttp,
+              $q,
+              abortable,
+              cache,
+              logger,
+              frameIndexService) {
     super(apiService, bufferedHttp);
 
     /**
@@ -53,22 +60,28 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
      * @private
      */
     this._logger = logger;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
   }
 
   /**
-   * Returns the {@link LabeledThingInFrame} object for the given {@link Task} and `frameNumber`
+   * Returns the {@link LabeledThingInFrame} object for the given {@link Task} and `frameIndex`
    *
    * Ghosts will not be outputted here, only *real* {@link LabeledThingInFrame} objects
    *
    * @param {Task} task
-   * @param {Number} frameNumber
+   * @param {Number} frameIndex
    * @param {Number} offset
    * @param {Number} limit
    *
    * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
-  listLabeledThingInFrame(task, frameNumber, offset = 0, limit = 1) {
-    const start = frameNumber + offset;
+  listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
+    const start = frameIndex + offset;
     const end = start + limit - 1;
     const cacheKeys = this._generateLtifCacheKeysForRange(task.id, start, end).map(obj => obj.key);
 
@@ -90,14 +103,14 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
     // No cache available
     this._logger.log('cache:labeledThingInFrame', `Cache Miss (listLabeledThingInFrame) {start: ${start}, end: ${end}}`);
-    return super.listLabeledThingInFrame(task, frameNumber, offset, limit)
+    return super.listLabeledThingInFrame(task, frameIndex, offset, limit)
       .then(labeledThingsInFrames => {
         // Mark the retrieved frames as complete
         cacheKeys.map(key => `${key}.complete`).forEach(key => this._ltifCache.store(key, true));
 
         labeledThingsInFrames.forEach(labeledThingInFrame => {
           const labeledThing = labeledThingInFrame.labeledThing;
-          this._ltifCache.store(`${task.id}.${labeledThingInFrame.frameNumber}.${labeledThingInFrame.id}`, labeledThingInFrame.toJSON());
+          this._ltifCache.store(`${task.id}.${labeledThingInFrame.frameIndex}.${labeledThingInFrame.id}`, labeledThingInFrame.toJSON());
           this._ltCache.store(`${task.id}.${labeledThing.id}`, labeledThing.toJSON());
         });
 
@@ -107,21 +120,21 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
   /**
    * Retrieve a {@link LabeledThingInFrame} which is associated to a specific
-   * {@link Task}, {@link LabeledThing} and `frameNumber`.
+   * {@link Task}, {@link LabeledThing} and `frameIndex`.
    *
    * If the `LabeledThingInFrame` does not exist in the database an interpolated ghost frame is returned
    *
-   * Optionally an `offset` and `limit` may be specified, which relates to the specified `frameNumber`.
+   * Optionally an `offset` and `limit` may be specified, which relates to the specified `frameIndex`.
    * By default `offset = 0` and `limit = 1` is assumed.
    *
    * @param {Task} task
-   * @param {int} frameNumber
+   * @param {int} frameIndex
    * @param {LabeledThing} labeledThing
    * @param {int?} offset
    * @param {int?} limit
    */
-  getLabeledThingInFrame(task, frameNumber, labeledThing, offset = 0, limit = 1) {
-    const start = frameNumber + offset;
+  getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
+    const start = frameIndex + offset;
     const end = start + limit - 1;
 
     const cacheResult = this._lookupLabeledThingInFrame(task, labeledThing, start, end);
@@ -131,7 +144,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     }
 
     this._logger.log('cache:labeledThingInFrame', `Cache Miss (getLabeledThingInFrame) {start: ${start}, end: ${end}, labeledThingId: ${labeledThing.id}}`);
-    return super.getLabeledThingInFrame(task, frameNumber, labeledThing, offset, limit)
+    return super.getLabeledThingInFrame(task, frameIndex, labeledThing, offset, limit)
       .then(labeledThingInFrames => {
         labeledThingInFrames.forEach(labeledThingInFrame =>
           this._updateSingleLabeledThingInFrameInCache(labeledThingInFrame)
@@ -149,8 +162,8 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
-    const {frameNumber, labeledThing, labeledThing: {task}} = labeledThingInFrame;
-    const cachedLabeledThingsInFrame = this._lookupLabeledThingInFrame(task, labeledThing, frameNumber, frameNumber);
+    const {frameIndex, labeledThing, labeledThing: {task}} = labeledThingInFrame;
+    const cachedLabeledThingsInFrame = this._lookupLabeledThingInFrame(task, labeledThing, frameIndex, frameIndex);
     const cachedLabeledThingInFrame = cachedLabeledThingsInFrame === false ? undefined : cachedLabeledThingsInFrame.pop();
 
     // Ghosts always become invalid for this ltif
@@ -170,23 +183,23 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     if (classesChanged) {
       // We need to invalidate all correspondng LabeledThingsInFrame right of this frame, as classes propagate as ghostClasses
       // @TODO if there is no hole in cache data this can be optimized to only invalidate to next ltif with classes.
-      this._invalidateLtifsForLt(labeledThing, frameNumber + 1);
+      this._invalidateLtifsForLt(labeledThing, frameIndex + 1);
     } else {
       // We only need to invalidate this specific ltif
-      this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}`);
-      invalidatedFrameCompletion = this._ltifCache.has(`${task.id}.${frameNumber}.complete`);
-      this._ltifCache.invalidate(`${task.id}.${frameNumber}.${labeledThingInFrame.id}.complete`);
+      this._ltifCache.invalidate(`${task.id}.${frameIndex}.${labeledThingInFrame.id}`);
+      invalidatedFrameCompletion = this._ltifCache.has(`${task.id}.${frameIndex}.complete`);
+      this._ltifCache.invalidate(`${task.id}.${frameIndex}.${labeledThingInFrame.id}.complete`);
     }
 
     return super.saveLabeledThingInFrame(labeledThingInFrame)
       .then(newLabeledThingInFrame => {
         const newLabeledThing = newLabeledThingInFrame.labeledThing;
-        const ltifKey = `${task.id}.${frameNumber}.${newLabeledThingInFrame.id}`;
+        const ltifKey = `${task.id}.${frameIndex}.${newLabeledThingInFrame.id}`;
         const ltKey = `${task.id}.${newLabeledThing.id}`;
 
         // Restore frame completion after update, if it was set before
         if (invalidatedFrameCompletion) {
-          this._ltifCache.store(`${task.id}.${frameNumber}.complete`, true);
+          this._ltifCache.store(`${task.id}.${frameIndex}.complete`, true);
         }
 
         this._ltifCache.store(ltifKey, newLabeledThingInFrame.toJSON());
@@ -234,8 +247,8 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       // Our whole resultset may consist of ghosts, if we did not find any ltif here
       // Check if we have all ghosts
       const ltifGhostData = [];
-      for (let frameNumber = start; frameNumber <= end; frameNumber++) {
-        const possibleGhost = this._ltifGhostCache.get(`${task.id}.${frameNumber}.${labeledThing.id}`);
+      for (let frameIndex = start; frameIndex <= end; frameIndex++) {
+        const possibleGhost = this._ltifGhostCache.get(`${task.id}.${frameIndex}.${labeledThing.id}`);
         if (possibleGhost === undefined) {
           // A ghost is missing, we do have a cache miss
           return false;
@@ -284,8 +297,8 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
     const frameMap = this._ltifCache.get(`${task.id}`);
 
-    frameMap.forEach((ltifMap, frameNumber) => {
-      if (frameNumber < start) {
+    frameMap.forEach((ltifMap, frameIndex) => {
+      if (frameIndex < start) {
         return;
       }
 
@@ -294,8 +307,8 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
         return;
       }
 
-      this._ltifCache.invalidate(`${task.id}.${frameNumber}.${ltifData.id}`);
-      this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
+      this._ltifCache.invalidate(`${task.id}.${frameIndex}.${ltifData.id}`);
+      this._ltifCache.invalidate(`${task.id}.${frameIndex}.complete`);
     });
   }
 
@@ -306,18 +319,19 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
    * @private
    */
   _invalidateGhostsFor(labeledThingInFrame) {
-    const {frameNumber, labeledThing, labeledThing: {task}} = labeledThingInFrame;
-    let currentFrame = null;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const {frameIndex, labeledThing, labeledThing: {task}} = labeledThingInFrame;
+    let currentIndex = null;
 
-    // 1. Invalidate any associated ghost at the new frameNumber
-    this._ltifGhostCache.invalidate(`${task.id}.${frameNumber}.${labeledThing.id}`);
+    // 1. Invalidate any associated ghost at the new frameIndex
+    this._ltifGhostCache.invalidate(`${task.id}.${frameIndex}.${labeledThing.id}`);
 
     // 2. Find and invalidate all ghosts right of the labeledThingInFrame belonging to the same labeledThing
     //    Abort the search once the next associated non-ghost labeledThingInFrame is found
-    currentFrame = frameNumber + 1;
-    while (currentFrame <= task.frameRange.endFrameNumber) {
+    currentIndex = frameIndex + 1;
+    while (currentIndex <= frameIndexLimits.upperLimit) {
       // Lookup if there is a real ltif here
-      const frameLtifMap = this._ltifCache.get(`${task.id}.${currentFrame}`);
+      const frameLtifMap = this._ltifCache.get(`${task.id}.${currentIndex}`);
       if (frameLtifMap !== undefined) {
         const ltifData = this._extractLtifByLt(frameLtifMap, labeledThing.id);
         if (ltifData !== undefined) {
@@ -326,19 +340,19 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
         }
       }
 
-      this._ltifGhostCache.invalidate(`${task.id}.${currentFrame}.${labeledThing.id}`);
+      this._ltifGhostCache.invalidate(`${task.id}.${currentIndex}.${labeledThing.id}`);
 
-      currentFrame += 1;
+      currentIndex += 1;
     }
 
     // 3. Find and invalidate all ghosts left of the labeledThingInFrame belonging to the same labeledThing
     //    Abort the search once the next associated non-ghost labeledThingInFrame is found.
     //    This is needed, as the update could be the first Ltif, which would imply ghost propagation back to the start
     //    frame.
-    currentFrame = frameNumber - 1;
-    while (currentFrame >= task.frameRange.startFrameNumber) {
+    currentIndex = frameIndex - 1;
+    while (currentIndex >= frameIndexLimits.lowerLimit) {
       // Lookup if there is a real ltif here
-      const frameLtifMap = this._ltifCache.get(`${task.id}.${currentFrame}`);
+      const frameLtifMap = this._ltifCache.get(`${task.id}.${currentIndex}`);
       if (frameLtifMap !== undefined) {
         const ltifData = this._extractLtifByLt(frameLtifMap, labeledThing.id);
         if (ltifData !== undefined) {
@@ -347,9 +361,9 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
         }
       }
 
-      this._ltifGhostCache.invalidate(`${task.id}.${currentFrame}.${labeledThing.id}`);
+      this._ltifGhostCache.invalidate(`${task.id}.${currentIndex}.${labeledThing.id}`);
 
-      currentFrame -= 1;
+      currentIndex -= 1;
     }
   }
 
@@ -450,10 +464,10 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     const ltCacheKey = `${task.id}.${labeledThing.id}`;
 
     if (ghost === true) {
-      const ltifCacheKey = `${task.id}.${labeledThingInFrame.frameNumber}.${labeledThing.id}`;
+      const ltifCacheKey = `${task.id}.${labeledThingInFrame.frameIndex}.${labeledThing.id}`;
       this._ltifGhostCache.store(ltifCacheKey, labeledThingInFrame.toJSON());
     } else {
-      const ltifCacheKey = `${task.id}.${labeledThingInFrame.frameNumber}.${labeledThingInFrame.id}`;
+      const ltifCacheKey = `${task.id}.${labeledThingInFrame.frameIndex}.${labeledThingInFrame.id}`;
       this._ltifCache.store(ltifCacheKey, labeledThingInFrame.toJSON());
     }
 
@@ -605,6 +619,7 @@ CachingLabeledThingInFrameGateway.$inject = [
   'abortablePromiseFactory',
   'cacheService',
   'loggerService',
+  'frameIndexService',
 ];
 
 export default CachingLabeledThingInFrameGateway;

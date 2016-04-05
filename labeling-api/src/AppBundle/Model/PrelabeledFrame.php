@@ -22,7 +22,7 @@ class PrelabeledFrame
     /**
      * @CouchDB\Field(type="integer")
      */
-    private $frameNumber;
+    private $frameIndex;
 
     /**
      * @CouchDB\Field(type="mixed")
@@ -51,11 +51,11 @@ class PrelabeledFrame
     }
 
     /**
-     * @param int $frameNumber
+     * @param int $frameIndex
      */
-    public function setFrameNumber($frameNumber)
+    public function setFrameIndex($frameIndex)
     {
-        $this->frameNumber = $frameNumber;
+        $this->frameIndex = $frameIndex;
     }
 
     /**

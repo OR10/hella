@@ -13,12 +13,12 @@ class Kitti extends Exception
 
     /**
      * @param string    $message
-     * @param int       $frameNumber
+     * @param int       $frameIndex
      * @param Exception $previousException
      */
-    public function __construct($message = null, $frameNumber = null, \Exception $previousException = null)
+    public function __construct($message = null, $frameIndex = null, \Exception $previousException = null)
     {
-        $this->frameNumber = (int) $frameNumber;
+        $this->frameNumber = (int) $frameIndex;
 
         if ($this->frameNumber !== null) {
             $message .= sprintf(', frameNumber: %d', $this->frameNumber);

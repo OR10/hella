@@ -8,15 +8,25 @@ import paper from 'paper';
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 /**
- * @class ViewerController
- *
- * @property {Task} task
- * @property {FramePosition} framePosition
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
- * @property {PaperShape} selectedPaperShape
+ * @property {PaperShape|null} selectedPaperShape
  * @property {string} activeTool
+ * @property {string} selectedDrawingTool
+ * @property {Task} task
+ * @property {Video} video
+ * @property {FramePosition} framePosition
  * @property {Filters} filters
+ * @property {boolean} playing
+ * @property {number} playbackSpeedFactor
+ * @property {string} playbackDirection
+ * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {string} newShapeDrawingTool
+ * @property {integer} bookmarkedFrameIndex
+ * @property {integer} fps
+ * @property {integer} frameSkip
+ * @property {ThingLayer} thingLayer
+ * @property {boolean} readOnly
  */
 class ViewerController {
   /**
@@ -43,6 +53,7 @@ class ViewerController {
    * @param {LockService} lockService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {DebouncerService} debouncerService
+   * @param {FrameIndexService} frameIndexService
    */
   constructor($scope,
               $element,
@@ -50,7 +61,7 @@ class ViewerController {
               drawingContextService,
               frameLocationGateway,
               frameGateway,
-              cachingLabeledThingInFrameGateway,
+              labeledThingInFrameGateway,
               cacheHeater,
               entityIdService,
               paperShapeFactory,
@@ -66,7 +77,8 @@ class ViewerController {
               applicationState,
               lockService,
               keyboardShortcutService,
-              debouncerService) {
+              debouncerService,
+              frameIndexService) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -141,7 +153,7 @@ class ViewerController {
      * @type {LabeledThingInFrameGateway}
      * @private
      */
-    this._cachingLabeledThingInFrameGateway = cachingLabeledThingInFrameGateway;
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
      * @type {CacheHeaterService}
@@ -220,6 +232,12 @@ class ViewerController {
      * @private
      */
     this._debouncerService = debouncerService;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     /**
      * @type {LayerManager}
@@ -412,8 +430,8 @@ class ViewerController {
 
     $scope.$watchGroup(
       [
-        'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber',
-        'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameNumber',
+        'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex',
+        'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex',
       ],
       ([newStart, newEnd], [oldStart, oldEnd]) => {
         if (this._currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd)) {
@@ -550,16 +568,16 @@ class ViewerController {
     this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
 
     this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
-      (shape, frameNumber) => this._onUpdatedShape(shape, frameNumber),
-      (shape, frameNumber) => shape.labeledThingInFrame.ghost
-        ? `${frameNumber}.${shape.id}`
-        : `${shape.labeledThingInFrame.frameNumber}.${shape.id}`,
+      (shape, frameIndex) => this._onUpdatedShape(shape, frameIndex),
+      (shape, frameIndex) => shape.labeledThingInFrame.ghost
+        ? `${frameIndex}.${shape.id}`
+        : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
       500
     );
 
     this.thingLayer.on('shape:update', shape => {
-      const frameNumber = this.framePosition.position;
-      this._debouncedOnShapeUpdate.debounce(shape, frameNumber);
+      const frameIndex = this.framePosition.position;
+      this._debouncedOnShapeUpdate.debounce(shape, frameIndex);
     });
 
     this._layerManager.addLayer('annotations', this.thingLayer);
@@ -634,10 +652,10 @@ class ViewerController {
    * The frame change includes things like loading all frame relevant data from the backend,
    * as well as propagating this information to all subcomponents
    *
-   * @param {int} frameNumber
+   * @param {int} frameIndex
    * @private
    */
-  _handleFrameChange(frameNumber) {
+  _handleFrameChange(frameIndex) {
     if (this._frameChangeInProgress) {
       this._logger.warn('ViewerController', 'frame change already in progress');
     }
@@ -647,7 +665,7 @@ class ViewerController {
 
     let abortRelease = false;
 
-    const backendBufferPromise = this._backgroundBuffer.add(this._loadFrameImage(frameNumber))
+    const backendBufferPromise = this._backgroundBuffer.add(this._loadFrameImage(frameIndex))
       .aborted(() => {
         if (abortRelease) {
           return;
@@ -656,7 +674,7 @@ class ViewerController {
         this.framePosition.lock.release();
       });
 
-    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameNumber))
+    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameIndex))
       .aborted(() => {
         if (abortRelease) {
           return;
@@ -670,7 +688,7 @@ class ViewerController {
       [
         backendBufferPromise,
         labeledThingInFrameBufferPromise,
-        this._fetchGhostedLabeledThingInFrame(frameNumber),
+        this._fetchGhostedLabeledThingInFrame(frameIndex),
       ]
     ).then(
       ([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
@@ -721,11 +739,11 @@ class ViewerController {
   }
 
   /**
-   * @param {int} frameNumber
+   * @param {int} frameIndex
    * @returns {Promise.<LabeledThingInFrame|null>}
    * @private
    */
-  _fetchGhostedLabeledThingInFrame(frameNumber) {
+  _fetchGhostedLabeledThingInFrame(frameIndex) {
     if (this.selectedPaperShape === null) {
       return Promise.resolve(null);
     }
@@ -733,9 +751,9 @@ class ViewerController {
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
-      this._cachingLabeledThingInFrameGateway.getLabeledThingInFrame(
+      this._labeledThingInFrameGateway.getLabeledThingInFrame(
         this.task,
-        frameNumber,
+        frameIndex,
         selectedLabeledThing
       )
     ).then(
@@ -754,14 +772,14 @@ class ViewerController {
   /**
    * Load all {@link LabeledThingInFrame} for a corresponding frame
    *
-   * The frameNumber is 1-Indexed
+   * The frameIndex is 0-Indexed
    *
-   * @param {int} frameNumber
+   * @param {int} frameIndex
    * @returns {AbortablePromise<LabeledThingInFrame[]>}
    * @private
    */
-  _loadLabeledThingsInFrame(frameNumber) {
-    return this._cachingLabeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameNumber);
+  _loadLabeledThingsInFrame(frameIndex) {
+    return this._labeledThingInFrameGateway.listLabeledThingInFrame(this.task, frameIndex);
   }
 
   /**
@@ -779,52 +797,51 @@ class ViewerController {
     if (!imageTypes.length) {
       throw new Error('No supported image type found');
     }
-    const totalFrameCount = this.framePosition.endFrameNumber - this.framePosition.startFrameNumber + 1;
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const totalFrameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
     return this._frameLocationGateway.getFrameLocations(this.task.id, imageTypes[0], 0, totalFrameCount);
   }
 
   /**
    * Fetch the frame image corresponding to the given frame number
    *
-   * The frame number is 1-indexed
+   * The frameIndex is 0-indexed
    *
-   * @param frameNumber
+   * @param frameIndex
    * @returns {AbortablePromise<HTMLImageElement>}
    * @private
    */
-  _loadFrameImage(frameNumber) {
-    const relativeFrameNumber = frameNumber - this.task.frameRange.startFrameNumber;
-
+  _loadFrameImage(frameIndex) {
     return this._frameLocations.then(
-      frameLocations => this._frameGateway.getImage(frameLocations[relativeFrameNumber])
+      frameLocations => this._frameGateway.getImage(frameLocations[frameIndex])
     );
   }
 
   /**
    * @param {PaperShape} shape
-   * @param {Integer} frameNumber
+   * @param {Integer} frameIndex
    * @private
    */
-  _onUpdatedShape(shape, frameNumber) {
+  _onUpdatedShape(shape, frameIndex) {
     const labeledThingInFrame = shape.labeledThingInFrame;
     const labeledThing = labeledThingInFrame.labeledThing;
 
     if (labeledThingInFrame.ghost) {
       labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
-        frameNumber
+        frameIndex
       );
     }
 
     let frameRangeUpdated = false;
 
-    if (frameNumber > labeledThing.frameRange.endFrameNumber) {
-      labeledThing.frameRange.endFrameNumber = frameNumber;
+    if (frameIndex > labeledThing.frameRange.endFrameIndex) {
+      labeledThing.frameRange.endFrameIndex = frameIndex;
       frameRangeUpdated = true;
     }
 
-    if (frameNumber < labeledThing.frameRange.startFrameNumber) {
-      labeledThing.frameRange.startFrameNumber = frameNumber;
+    if (frameIndex < labeledThing.frameRange.startFrameIndex) {
+      labeledThing.frameRange.startFrameIndex = frameIndex;
       frameRangeUpdated = true;
     }
 
@@ -836,7 +853,7 @@ class ViewerController {
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._cachingLabeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   /**
@@ -852,30 +869,30 @@ class ViewerController {
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
-      .then(() => this._cachingLabeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .then(() => shape.publish());
 
     this.activeTool = null;
 
-    this.bookmarkedFrameNumber = this.framePosition.position;
+    this.bookmarkedFrameIndex = this.framePosition.position;
   }
 
   _calculatePlaybackStartPosition() {
     if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
-      return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameNumber;
+      return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
     }
 
-    return this.framePosition.startFrameNumber;
+    return this._frameIndexService.getFrameIndexLimits().lowerLimit;
   }
 
   _calculatePlaybackEndPosition() {
-    const limitingProperty = this.playbackDirection === 'forwards' ? 'endFrameNumber' : 'startFrameNumber';
-
     if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+      const limitingProperty = this.playbackDirection === 'forwards' ? 'endFrameIndex' : 'startFrameIndex';
       return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange[limitingProperty];
     }
 
-    return this.framePosition[limitingProperty];
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    return this.playbackDirection === 'forwards' ? frameIndexLimits.upperLimit : frameIndexLimits.lowerLimit;
   }
 
   _playNext() {
@@ -1071,7 +1088,7 @@ ViewerController.$inject = [
   'drawingContextService',
   'frameLocationGateway',
   'frameGateway',
-  'cachingLabeledThingInFrameGateway',
+  'labeledThingInFrameGateway',
   'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
@@ -1088,6 +1105,7 @@ ViewerController.$inject = [
   'lockService',
   'keyboardShortcutService',
   'debouncerService',
+  'frameIndexService',
 ];
 
 export default ViewerController;

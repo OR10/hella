@@ -72,11 +72,11 @@ class LabeledThingInFrame
     public function getLabeledThingInFramesOutsideRange(Model\LabeledThing $labeledThing)
     {
         $frameRange = $labeledThing->getFrameRange();
-        $start      = $frameRange->getStartFrameNumber();
-        $end        = $frameRange->getEndFrameNumber();
+        $start      = $frameRange->getStartFrameIndex();
+        $end        = $frameRange->getEndFrameIndex();
 
         $beforeRange = $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex')
             ->setStartKey([$labeledThing->getId(), 0])
             ->setEndKey([$labeledThing->getId(), $start - 1])
             ->onlyDocs(true)
@@ -84,7 +84,7 @@ class LabeledThingInFrame
             ->toArray();
 
         $afterRange = $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex')
             ->setStartKey([$labeledThing->getId(), $end + 1])
             ->onlyDocs(true)
             ->execute()
@@ -149,9 +149,9 @@ class LabeledThingInFrame
     public function getPreviousLabeledThingInFrameWithClasses(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         $result = $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber_count_by_classes')
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex_count_by_classes')
             ->setEndKey([$labeledThingInFrame->getLabeledThingId(), 0, 1])
-            ->setStartKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameNumber(), '*'])
+            ->setStartKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameIndex(), '*'])
             ->onlyDocs(true)
             ->setLimit(1)
             ->setDescending(true)

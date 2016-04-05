@@ -80,12 +80,12 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThingInFrame $labeledThingInFrame = null
     ) {
         $labeledThingId = $request->request->get('labeledThingId');
-        $frameNumber    = $request->request->get('frameNumber');
+        $frameIndex     = $request->request->get('frameIndex');
         $classes        = $request->request->get('classes', []);
         $shapes         = $request->request->get('shapes', []);
 
-        if ($labeledThingId === null || $frameNumber === null || !is_array($classes) || !is_array($shapes)) {
-            throw new Exception\BadRequestHttpException('Missing labeledThingId, frameNumber, classes or shapes');
+        if ($labeledThingId === null || $frameIndex === null || !is_array($classes) || !is_array($shapes)) {
+            throw new Exception\BadRequestHttpException('Missing labeledThingId, frameIndex, classes or shapes');
         }
 
         $labeledThing = $this->labeledThingFacade->find($labeledThingId);
@@ -93,11 +93,11 @@ class LabeledThingInFrame extends Controller\Base
             if ($labeledThing === null) {
                 throw new Exception\NotFoundHttpException('LabeledThing ' . $labeledThingId . ' not found');
             }
-            if (count($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameNumber)) > 0) {
+            if (count($this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $frameIndex)) > 0) {
                 throw new Exception\BadRequestHttpException('Duplicate LabeledThingInFrame for this LabeledThing');
             }
             try {
-                $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+                $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
                 $labeledThingInFrame->setId($request->attributes->get('_unresolvedLabeledThingInFrameId'));
             } catch (\Exception $e) {
                 throw new Exception\BadRequestHttpException('Failed to create a new LabeledThingInFrame.');
@@ -111,8 +111,8 @@ class LabeledThingInFrame extends Controller\Base
                 throw new Exception\BadRequestHttpException('LabeledThingId did not match with the labeledThingInFrame thingId');
             }
 
-            if ((int) $frameNumber !== $labeledThingInFrame->getFrameNumber()) {
-                throw new Exception\BadRequestHttpException('FrameNumber did not match with the labeledThingInFrame frameNumber');
+            if ((int) $frameIndex !== $labeledThingInFrame->getFrameIndex()) {
+                throw new Exception\BadRequestHttpException('FrameIndex did not match with the labeledThingInFrame FrameIndex');
             }
         }
 

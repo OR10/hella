@@ -92,14 +92,14 @@ class InterpolationService {
       interpolationFrameRange = labeledThing.frameRange;
     }
 
-    this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameNumber, interpolationFrameRange.endFrameNumber);
+    this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
 
     return interpolation
       .execute(task, labeledThing, interpolationFrameRange)
       .then((result) => {
-        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameNumber, interpolation.endFrameNumber);
+        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
         return result;
-      })
+      });
   }
 
   /**
@@ -112,15 +112,15 @@ class InterpolationService {
    */
   _invalidateCaches(labeledThing, start, end) {
     const {task} = labeledThing;
-    for(let frameNumber = start; frameNumber <= end; frameNumber++) {
+    for(let frameIndex = start; frameIndex <= end; frameIndex++) {
       // Invalidate ghosts
-      this._ltifGhostCache.invalidate(`${task.id}.${frameNumber}.${labeledThing.id}`);
+      this._ltifGhostCache.invalidate(`${task.id}.${frameIndex}.${labeledThing.id}`);
 
       // Invalidate non-ghosts
-      const ltifFrameMap = this._ltifCache.get(`${task.id}.${frameNumber}`);
+      const ltifFrameMap = this._ltifCache.get(`${task.id}.${frameIndex}`);
 
       // Invalidate all complete pages within the interpolation range
-      this._ltifCache.invalidate(`${task.id}.${frameNumber}.complete`);
+      this._ltifCache.invalidate(`${task.id}.${frameIndex}.complete`);
 
       if (ltifFrameMap !== undefined) {
         ltifFrameMap.forEach(ltifData => {
@@ -128,7 +128,7 @@ class InterpolationService {
             return;
           }
 
-          this._ltifCache.invalidate(`${task.id}.${frameNumber}.${ltifData.id}`);
+          this._ltifCache.invalidate(`${task.id}.${frameIndex}.${ltifData.id}`);
         });
       }
     }
