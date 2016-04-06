@@ -20,6 +20,7 @@ class TaskController {
    * @param {angular.$timeout} $timeout
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {FrameIndexService} frameIndexService
+   * @param {LockService} lockService
    */
   constructor($scope,
               $q,
@@ -33,7 +34,8 @@ class TaskController {
               applicationState,
               $timeout,
               keyboardShortcutService,
-              frameIndexService) {
+              frameIndexService,
+              lockService) {
 
     // Ensure the FrameIndexService knows the currently active Task
     frameIndexService.setTask(initialData.task);
@@ -108,7 +110,7 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition($q, frameIndexService.getFrameIndexLimits(), this._getFrameIndexFromUrl());
+    this.framePosition = new FramePosition(lockService, frameIndexService.getFrameIndexLimits(), this._getFrameIndexFromUrl());
 
     /**
      * Number of the currently bookmarked frame
@@ -391,6 +393,7 @@ TaskController.$inject = [
   '$timeout',
   'keyboardShortcutService',
   'frameIndexService',
+  'lockService',
 ];
 
 export default TaskController;
