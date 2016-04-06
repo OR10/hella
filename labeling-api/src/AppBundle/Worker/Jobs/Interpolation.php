@@ -34,13 +34,13 @@ class Interpolation extends WorkerPool\Job
     /**
      * @param string                          $labeledThingId
      * @param string                          $algorithm
-     * @param Model\FrameRange                $frameRange
+     * @param Model\FrameIndexRange                $frameRange
      * @param Model\Interpolation\Status|null $status
      */
     public function __construct(
         $labeledThingId,
         $algorithm,
-        Model\FrameRange $frameRange,
+        Model\FrameIndexRange $frameRange,
         Model\Interpolation\Status $status = null
     ) {
         $this->labeledThingId   = (string) $labeledThingId;
@@ -70,11 +70,11 @@ class Interpolation extends WorkerPool\Job
     }
 
     /**
-     * @return Model\FrameRange
+     * @return Model\FrameIndexRange
      */
     public function getFrameRange()
     {
-        return new Model\FrameRange($this->startFrameIndex, $this->endFrameIndex);
+        return new Model\FrameIndexRange($this->startFrameIndex, $this->endFrameIndex);
     }
 
     /**

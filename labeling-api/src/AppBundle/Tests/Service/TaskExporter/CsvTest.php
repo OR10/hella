@@ -196,7 +196,7 @@ class CsvTest extends Tests\KernelTestCase
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
                 ->setFrameRange(
-                    new Model\FrameRange(
+                    new Model\FrameIndexRange(
                         $frameIndex,
                         $frameIndex
                     )

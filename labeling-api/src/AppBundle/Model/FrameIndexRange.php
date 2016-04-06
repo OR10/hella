@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class FrameRange
+class FrameIndexRange
 {
     /**
      * @CouchDB\Id
@@ -76,7 +76,7 @@ class FrameRange
                           ? $offset + $limit
                           : $startFrameIndex;
 
-        return new FrameRange($startFrameIndex, $endFrameIndex);
+        return new FrameIndexRange($startFrameIndex, $endFrameIndex);
     }
 
     /**
@@ -88,7 +88,7 @@ class FrameRange
             throw new Exception\FrameRange();
         }
 
-        return new FrameRange($array['startFrameIndex'], $array['endFrameIndex']);
+        return new FrameIndexRange($array['startFrameIndex'], $array['endFrameIndex']);
     }
 
     /**
@@ -161,17 +161,17 @@ class FrameRange
             );
         }
 
-        return new FrameRange($startFrameIndex, $endFrameIndex);
+        return new FrameIndexRange($startFrameIndex, $endFrameIndex);
     }
 
     /**
      * Check wether or not the given frame range is a subrange of this range.
      *
-     * @param FrameRange $otherFrameRange
+     * @param FrameIndexRange $otherFrameRange
      *
      * @return boolean
      */
-    public function coversFrameRange(FrameRange $otherFrameRange)
+    public function coversFrameRange(FrameIndexRange $otherFrameRange)
     {
         return $this->coversFrameIndex($otherFrameRange->getStartFrameIndex())
             && $this->coversFrameIndex($otherFrameRange->getEndFrameIndex());
@@ -183,7 +183,7 @@ class FrameRange
      *
      * @throws \RangeException
      */
-    public function throwIfFrameRangeIsNotCovered(FrameRange $otherFrameRange)
+    public function throwIfFrameRangeIsNotCovered(FrameIndexRange $otherFrameRange)
     {
         if (!$this->coversFrameRange($otherFrameRange)) {
             throw new \RangeException(

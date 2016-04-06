@@ -243,7 +243,7 @@ class KittiTest extends Tests\KernelTestCase
         array $shapes = [],
         $incomplete = false
     ) {
-        $frameRange = new Model\FrameRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping()));
+        $frameRange = new Model\FrameIndexRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping()));
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
                 ->setFrameRange($frameRange)

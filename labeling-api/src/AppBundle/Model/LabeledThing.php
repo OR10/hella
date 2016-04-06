@@ -20,7 +20,7 @@ class LabeledThing
     private $rev;
 
     /**
-     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
+     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameIndexRange")
      */
     private $frameRange;
 
@@ -62,7 +62,7 @@ class LabeledThing
     public function __construct(LabelingTask $task, $lineColor = 'red')
     {
         $this->taskId     = $task->getId();
-        $this->frameRange = new FrameRange(
+        $this->frameRange = new FrameIndexRange(
                 min($task->getFrameNumberMapping()),
                 max($task->getFrameNumberMapping())
             );
@@ -78,7 +78,7 @@ class LabeledThing
     }
 
     /**
-     * @return FrameRange
+     * @return FrameIndexRange
      */
     public function getFrameRange()
     {
@@ -86,11 +86,11 @@ class LabeledThing
     }
 
     /**
-     * @param FrameRange $frameRange
+     * @param FrameIndexRange $frameRange
      *
      * @return LabeledThing
      */
-    public function setFrameRange(FrameRange $frameRange)
+    public function setFrameRange(FrameIndexRange $frameRange)
     {
         $this->frameRange = $frameRange;
 

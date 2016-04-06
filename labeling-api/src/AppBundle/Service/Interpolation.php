@@ -116,13 +116,13 @@ class Interpolation
      *
      * @param string                          $algorithmName
      * @param Model\LabeledThing              $labeledThing
-     * @param Model\FrameRange                $frameRange
+     * @param Model\FrameIndexRange                $frameRange
      * @param Model\Interpolation\Status|null $status
      */
     public function interpolateForRange(
         $algorithmName,
         Model\LabeledThing $labeledThing,
-        Model\FrameRange $frameRange,
+        Model\FrameIndexRange $frameRange,
         Model\Interpolation\Status $status = null
     ) {
         $this->updateStatus($status, Model\Interpolation\Status::RUNNING);

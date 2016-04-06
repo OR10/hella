@@ -30,7 +30,7 @@ class Linear implements Interpolation\Algorithm
 
     public function interpolate(
         Model\LabeledThing $labeledThing,
-        Model\FrameRange $frameRange,
+        Model\FrameIndexRange $frameRange,
         callable $emit
     ) {
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(

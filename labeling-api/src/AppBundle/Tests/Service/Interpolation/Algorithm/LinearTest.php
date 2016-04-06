@@ -65,7 +65,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(1, 1),
+            new Model\FrameIndexRange(1, 1),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -90,7 +90,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(1, 2),
+            new Model\FrameIndexRange(1, 2),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -112,7 +112,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(1, 3),
+            new Model\FrameIndexRange(1, 3),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -141,7 +141,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(3, 10),
+            new Model\FrameIndexRange(3, 10),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -173,7 +173,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(3, 7),
+            new Model\FrameIndexRange(3, 7),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -211,7 +211,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(3, 7),
+            new Model\FrameIndexRange(3, 7),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -267,7 +267,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameRange(1, 10),
+            new Model\FrameIndexRange(1, 10),
             function(Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }

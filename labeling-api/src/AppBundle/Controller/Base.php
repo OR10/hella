@@ -9,11 +9,11 @@ abstract class Base
 {
     /**
      * @param mixed                 $input
-     * @param Model\FrameRange|null $defaultIfNull
+     * @param Model\FrameIndexRange|null $defaultIfNull
      *
-     * @return Model\FrameRange|null
+     * @return Model\FrameIndexRange|null
      */
-    protected function createFrameRange($input, Model\FrameRange $defaultIfNull = null)
+    protected function createFrameRange($input, Model\FrameIndexRange $defaultIfNull = null)
     {
         if ($input === null) {
             return $defaultIfNull;
@@ -24,7 +24,7 @@ abstract class Base
         }
 
         try {
-            return Model\FrameRange::createFromArray($input);
+            return Model\FrameIndexRange::createFromArray($input);
         } catch (\Exception $e) {
             return null;
         }

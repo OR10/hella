@@ -192,7 +192,7 @@ class LabeledThing extends Controller\Base
         $classes    = $request->request->get('classes', []);
         $frameRange = $this->createFrameRange(
             $request->request->get('frameRange'),
-            new Model\FrameRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
+            new Model\FrameIndexRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
             )
         );
         if ($frameRange === null) {
@@ -254,7 +254,7 @@ class LabeledThing extends Controller\Base
      * Adjust preceeding labeledThingsInFrame and return all
      * labeledthingsInFrame that have to be deleted.
      */
-    private function adjustFrameRangeStart(Model\LabeledThing $labeledThing, Model\FrameRange $newFrameRange)
+    private function adjustFrameRangeStart(Model\LabeledThing $labeledThing, Model\FrameIndexRange $newFrameRange)
     {
         $previousFrameRange = $labeledThing->getFrameRange();
 
@@ -283,7 +283,7 @@ class LabeledThing extends Controller\Base
      * Adjust succeeding labeledThingsInFrame and return all
      * labeledthingsInFrame that have to be deleted.
      */
-    private function adjustFrameRangeEnd(Model\LabeledThing $labeledThing, Model\FrameRange $newFrameRange)
+    private function adjustFrameRangeEnd(Model\LabeledThing $labeledThing, Model\FrameIndexRange $newFrameRange)
     {
         $previousFrameRange = $labeledThing->getFrameRange();
 

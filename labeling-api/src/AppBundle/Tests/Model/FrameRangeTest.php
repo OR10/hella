@@ -2,13 +2,13 @@
 
 namespace AppBundle\Tests\Model;
 
-use AppBundle\Model\FrameRange;
+use AppBundle\Model\FrameIndexRange;
 
 class FrameRangeTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructorSetsEndFrameToStartFrameIfEndFrameIsOmitted()
     {
-        $frameRange = new FrameRange(3);
+        $frameRange = new FrameIndexRange(3);
 
         $this->assertEquals(3, $frameRange->getStartFrameIndex());
         $this->assertEquals(3, $frameRange->getEndFrameIndex());
@@ -21,7 +21,7 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsInvalidstartFrameIndexForInvalidStartFrames($startFrameIndex)
     {
-        new FrameRange($startFrameIndex, 1000);
+        new FrameIndexRange($startFrameIndex, 1000);
     }
 
     public function getDataForConstructorThrowsInvalidStartFrameIndexForInvalidStartFrames()
@@ -37,7 +37,7 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsInvalidRangeForInvalidRanges($startFrameIndex, $endFrameIndex)
     {
-        new FrameRange($startFrameIndex, $endFrameIndex);
+        new FrameIndexRange($startFrameIndex, $endFrameIndex);
     }
 
     public function getDataForConstructorThrowsInvalidRangeForInvalidRanges()
@@ -62,10 +62,10 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
      * @dataProvider getDataForCreateSubRangeForOffsetAndLimit
      */
     public function testCreateSubRangeForOffsetAndLimit(
-        FrameRange $givenRange,
+        FrameIndexRange $givenRange,
         $offset,
         $limit,
-        FrameRange $expectedFrameRange
+        FrameIndexRange $expectedFrameRange
     ) {
         $frameRange = $givenRange->createSubRangeForOffsetAndLimit($offset, $limit);
 
@@ -77,46 +77,46 @@ class FrameRangeTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'offset and limit null' => [
-                'givenRange' => new FrameRange(1, 10),
+                'givenRange' => new FrameIndexRange(1, 10),
                 'offset' => null,
                 'limit' => null,
-                'expectedFrameRange' => new FrameRange(1, 10),
+                'expectedFrameRange' => new FrameIndexRange(1, 10),
             ],
             'offset and limit specify the whole range' => [
-                'givenRange' => new FrameRange(1, 10),
+                'givenRange' => new FrameIndexRange(1, 10),
                 'offset' => 0,
                 'limit' => 10,
-                'expectedFrameRange' => new FrameRange(1, 10),
+                'expectedFrameRange' => new FrameIndexRange(1, 10),
             ],
             'offset given, limit omitted' => [
-                'givenRange' => new FrameRange(1, 10),
+                'givenRange' => new FrameIndexRange(1, 10),
                 'offset' => 3,
                 'limit' => null,
-                'expectedFrameRange' => new FrameRange(4, 10),
+                'expectedFrameRange' => new FrameIndexRange(4, 10),
             ],
             'negative offset is set to startFrameIndex - 1 and limit is adjusted' => [
-                'givenRange' => new FrameRange(1, 10),
+                'givenRange' => new FrameIndexRange(1, 10),
                 'offset' => -3,
                 'limit' => 30,
-                'expectedFrameRange' => new FrameRange(1, 10),
+                'expectedFrameRange' => new FrameIndexRange(1, 10),
             ],
             'sub-range in the middle' => [
-                'givenRange' => new FrameRange(1, 10),
+                'givenRange' => new FrameIndexRange(1, 10),
                 'offset' => 2,
                 'limit' => 6,
-                'expectedFrameRange' => new FrameRange(3, 8),
+                'expectedFrameRange' => new FrameIndexRange(3, 8),
             ],
             'offset beyond endFrameIndex' => [
-                'givenRange' => new FrameRange(10, 20),
+                'givenRange' => new FrameIndexRange(10, 20),
                 'offset' => 30,
                 'limit' => 10,
-                'expectedFrameRange' => new FrameRange(20, 20),
+                'expectedFrameRange' => new FrameIndexRange(20, 20),
             ],
             'sub-range bug with offset and limit greater than number of frames' => [
-                'givenRange' => new FrameRange(1, 10),
+                'givenRange' => new FrameIndexRange(1, 10),
                 'offset' => 11,
                 'limit' => 11,
-                'expectedFrameRange' => new FrameRange(10, 10),
+                'expectedFrameRange' => new FrameIndexRange(10, 10),
             ],
         ];
     }

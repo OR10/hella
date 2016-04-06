@@ -50,7 +50,7 @@ class FilesystemFrameCdn extends FrameCdn
     /**
      * @param Model\LabelingTask $labelingTask
      * @param ImageType\Base $imageType
-     * @param Model\FrameRange|array $frameNumbers
+     * @param Model\FrameIndexRange|array $frameNumbers
      * 
      * @return array
      */

@@ -120,9 +120,9 @@ class VideoImporter
                 (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1),
                 $frameStepSize
             );
-            $frameRange = new Model\FrameRange(
-                0,
-                $video->getMetaData()->numberOfFrames - 1
+            $frameRange = new Model\FrameNumberRange(
+                1,
+                $video->getMetaData()->numberOfFrames
             );
             $metadata = array(
                 'frameRange' => $frameRange,
