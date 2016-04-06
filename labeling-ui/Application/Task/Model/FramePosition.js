@@ -11,15 +11,16 @@ class FramePosition {
    *
    * If no `position` is specified `lowerLimit` from the `frameIndexLimits` will be used.
    *
-   * @param {angular.$q} $q
+   * @param {LockService} lockService
    * @param {{lowerLimit: integer, upperLimit: integer}} frameIndexLimits
    * @param {integer} position
    */
-  constructor($q, frameIndexLimits, position = frameIndexLimits.lowerLimit) {
+  constructor(lockService, frameIndexLimits, position = frameIndexLimits.lowerLimit) {
     /**
-     * @type {ReferenceCountingLock}
+     * @type {LockService}
+     * @private
      */
-    this.lock = new ReferenceCountingLock($q, () => this._onFrameChangeComplete());
+    this._lockService = lockService;
 
     /**
      * @type {integer}
@@ -72,8 +73,7 @@ class FramePosition {
      */
     this.completeCallbacks = {};
 
-    this.lock = new ReferenceCountingLock(
-      $q,
+    this.lock = this._lockService.createRefCountLock(
       () => this._onFrameChangeBefore(),
       () => this._onFrameChangeAfter()
     );

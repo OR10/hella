@@ -165,8 +165,8 @@ class BufferedHttpProvider {
       if (!_buffers.has(name)) {
         const buffer = {
           queue: [],
-          readLock: lockService.createRefCountLock(() => _handleNext(buffer)),
-          writeLock: lockService.createRefCountLock(() => _handleNext(buffer)),
+          readLock: lockService.createRefCountLock(undefined, () => _handleNext(buffer)),
+          writeLock: lockService.createRefCountLock(undefined, () => _handleNext(buffer)),
         };
 
         _buffers.set(name, buffer);
