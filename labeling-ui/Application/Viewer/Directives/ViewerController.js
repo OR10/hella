@@ -249,7 +249,13 @@ class ViewerController {
      * @type {Debouncer}
      * @private
      */
-    this._debouncedOnShapeUpdate = null;
+    this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
+      (shape, frameIndex) => this._onUpdatedShape(shape, frameIndex),
+      (shape, frameIndex) => shape.labeledThingInFrame.ghost
+        ? `${frameIndex}.${shape.id}`
+        : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
+      500
+    );
 
     // Store a reference to the LayerManager for E2E tests.
     // NEVER USE THIS INSIDE PRODUCTION CODE!
@@ -566,14 +572,6 @@ class ViewerController {
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
     this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
-
-    this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
-      (shape, frameIndex) => this._onUpdatedShape(shape, frameIndex),
-      (shape, frameIndex) => shape.labeledThingInFrame.ghost
-        ? `${frameIndex}.${shape.id}`
-        : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
-      500
-    );
 
     this.thingLayer.on('shape:update', shape => {
       const frameIndex = this.framePosition.position;
