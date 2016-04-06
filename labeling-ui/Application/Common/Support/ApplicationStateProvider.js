@@ -34,11 +34,9 @@ class ApplicationStateProvider {
 
       state.viewer.disable();
       state.viewer.startFrameChange();
-      state.viewer.work();
     };
 
     state.endFrameChange = () => {
-      state.viewer.finish();
       state.viewer.endFrameChange();
       state.viewer.enable();
 
