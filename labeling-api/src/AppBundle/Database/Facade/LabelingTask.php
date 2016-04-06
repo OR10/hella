@@ -81,28 +81,28 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param null               $startFrameNumber
-     * @param null               $endFrameNumber
+     * @param null               $startFrameIndex
+     * @param null               $endFrameIndex
      *
      * @return Model\LabeledFrame[]
      */
     public function getLabeledFrames(
         Model\LabelingTask $labelingTask,
-        $startFrameNumber = null,
-        $endFrameNumber = null
+        $startFrameIndex = null,
+        $endFrameIndex = null
     ) {
-        if ($startFrameNumber === null) {
-            $startFrameNumber = $labelingTask->getFrameRange()->getStartFrameNumber();
+        if ($startFrameIndex === null) {
+            $startFrameIndex = min($labelingTask->getFrameNumberMapping());
         }
 
-        if ($endFrameNumber === null) {
-            $endFrameNumber = $labelingTask->getFrameRange()->getEndFrameNumber();
+        if ($endFrameIndex === null) {
+            $endFrameIndex = max($labelingTask->getFrameNumberMapping());
         }
 
         return $this->documentManager
-            ->createQuery('annostation_labeled_frame', 'by_taskId_frameNumber')
-            ->setStartKey([$labelingTask->getId(), (int) $startFrameNumber])
-            ->setEndKey([$labelingTask->getId(), (int) $endFrameNumber])
+            ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
+            ->setStartKey([$labelingTask->getId(), (int) $startFrameIndex])
+            ->setEndKey([$labelingTask->getId(), (int) $endFrameIndex])
             ->onlyDocs(true)
             ->execute()
             ->toArray();
@@ -110,13 +110,13 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param int                $frameNumber
+     * @param int                $frameIndex
      *
      * @return Model\LabeledFrame|null
      */
-    public function getLabeledFrame(Model\LabelingTask $labelingTask, $frameNumber)
+    public function getLabeledFrame(Model\LabelingTask $labelingTask, $frameIndex)
     {
-        $result = $this->getLabeledFrames($labelingTask, $frameNumber, $frameNumber);
+        $result = $this->getLabeledFrames($labelingTask, $frameIndex, $frameIndex);
 
         if (empty($result)) {
             return null;
@@ -127,27 +127,25 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $task
-     * @param int                $frameNumber
+     * @param int                $frameIndex
      *
      * @return Model\LabeledFrame|null
      */
-    public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameNumber)
+    public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameIndex)
     {
-        $task->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
+        $startFrameIndex = min(array_keys($task->getFrameNumberMapping()));
+        $endFrameIndex   = $frameIndex;
 
-        $startFrameNumber = $task->getFrameRange()->getStartFrameNumber();
-        $endFrameNumber   = $frameNumber;
-
-        if ($startFrameNumber > $endFrameNumber) {
-            $tmp = $startFrameNumber;
-            $startFrameNumber = $endFrameNumber;
-            $endFrameNumber = $tmp;
+        if ($startFrameIndex > $endFrameIndex) {
+            $tmp = $startFrameIndex;
+            $startFrameIndex = $endFrameIndex;
+            $endFrameIndex = $tmp;
         }
 
         $result = $this->documentManager
-            ->createQuery('annostation_labeled_frame', 'by_taskId_frameNumber')
-            ->setStartKey([$task->getId(), $endFrameNumber])
-            ->setEndKey([$task->getId(), $startFrameNumber])
+            ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
+            ->setStartKey([$task->getId(), $endFrameIndex])
+            ->setEndKey([$task->getId(), $startFrameIndex])
             ->setDescending(true)
             ->setLimit(1)
             ->onlyDocs(true)
@@ -179,7 +177,7 @@ class LabelingTask
     public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $skip = null, $limit = null)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameIndex')
             ->setStartKey([$labelingTask->getId()])
             ->setEndKey([$labelingTask->getId(), []]);
 
@@ -194,13 +192,11 @@ class LabelingTask
         return $query->onlyDocs(true)->execute()->toArray();
     }
 
-    public function getLabeledThingsInFrameForFrameNumber(Model\LabelingTask $labelingTask, $frameNumber)
+    public function getLabeledThingsInFrameForFrameIndex(Model\LabelingTask $labelingTask, $frameIndex)
     {
-        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($frameNumber);
-
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
-            ->setKey([$labelingTask->getId(), (int) $frameNumber])
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameIndex')
+            ->setKey([$labelingTask->getId(), (int) $frameIndex])
             ->onlyDocs(true)
             ->execute()
             ->toArray();
@@ -208,24 +204,21 @@ class LabelingTask
 
     public function getLabeledThingsInFrameForFrameRange(
         Model\LabelingTask $labelingTask,
-        $startFrameNumber = null,
-        $endFrameNumber = null
+        $startFrameIndex = null,
+        $endFrameIndex = null
     ) {
-        if ($startFrameNumber === null) {
-            $startFrameNumber = $labelingTask->getFrameRange()->getStartFrameNumber();
+        if ($startFrameIndex === null) {
+            $startFrameIndex = min($labelingTask->getFrameNumberMapping());
         }
 
-        if ($endFrameNumber === null) {
-            $endFrameNumber = $labelingTask->getFrameRange()->getEndFrameNumber();
+        if ($endFrameIndex === null) {
+            $endFrameIndex = max($labelingTask->getFrameNumberMapping());
         }
-
-        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($startFrameNumber);
-        $labelingTask->getFrameRange()->throwIfFrameNumberIsNotCovered($endFrameNumber);
 
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameNumber')
-            ->setStartKey([$labelingTask->getId(), (int) $startFrameNumber])
-            ->setEndKey([$labelingTask->getId(), (int) $endFrameNumber])
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId_frameIndex')
+            ->setStartKey([$labelingTask->getId(), (int) $startFrameIndex])
+            ->setEndKey([$labelingTask->getId(), (int) $endFrameIndex])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

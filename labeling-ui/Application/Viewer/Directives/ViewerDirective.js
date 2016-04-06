@@ -23,7 +23,7 @@ export default class ViewerDirective {
       viewport: '=',
       hideLabeledThingsInFrame: '=',
       newShapeDrawingTool: '=',
-      bookmarkedFrameNumber: '=',
+      bookmarkedFrameIndex: '=',
       fps: '=',
       frameSkip: '=',
       thingLayer: '=',

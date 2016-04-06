@@ -19,6 +19,7 @@ class TaskController {
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {FrameIndexService} frameIndexService
    */
   constructor($scope,
               $q,
@@ -31,7 +32,18 @@ class TaskController {
               $location,
               applicationState,
               $timeout,
-              keyboardShortcutService) {
+              keyboardShortcutService,
+              frameIndexService) {
+
+    // Ensure the FrameIndexService knows the currently active Task
+    frameIndexService.setTask(initialData.task);
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
+
     /**
      * @type {angular.Scope}
      */
@@ -96,14 +108,14 @@ class TaskController {
      *
      * @type {FramePosition}
      */
-    this.framePosition = new FramePosition($q, this.task.frameRange, this._getFrameNumberFromUrl());
+    this.framePosition = new FramePosition($q, frameIndexService.getFrameIndexLimits(), this._getFrameIndexFromUrl());
 
     /**
      * Number of the currently bookmarked frame
      *
      * @type {Number|null}
      */
-    this.bookmarkedFrameNumber = null;
+    this.bookmarkedFrameIndex = null;
 
     /**
      * Drawing Tool used for initializing new empty shapes
@@ -239,7 +251,8 @@ class TaskController {
           .then(labeledFrame => {
             this.labeledFrame = labeledFrame;
             this.framePosition.lock.release();
-          });
+          })
+          .aborted(() => this.framePosition.lock.release());
       });
     }
 
@@ -271,12 +284,16 @@ class TaskController {
       }
     );
 
-    $scope.$watch('vm.framePosition.position', newPosition => {
-      $location.hash('F' + newPosition);
+    $scope.$watch('vm.framePosition.position', (newPosition, oldPosition) => {
+      if (newPosition !== oldPosition || $location.hash() === '') {
+        $location.hash(newPosition);
+      }
     });
 
-    $scope.$watch(() => $location.hash(), () => {
-      this.framePosition.goto(this._getFrameNumberFromUrl());
+    $scope.$watch(() => $location.hash(), (newHash, oldHash) => {
+      if (newHash !== oldHash) {
+        this.framePosition.goto(this._getFrameIndexFromUrl());
+      }
     });
 
     // @TODO: Only needed as long as the left sidebar is not used and only shown for the panel
@@ -286,6 +303,7 @@ class TaskController {
     applicationState.$watch('sidebarLeft.isWorking', working => this.leftSidebarWorking = working);
     applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
     applicationState.$watch('sidebarRight.isWorking', working => this.rightSidebarWorking = working);
+    applicationState.$watch('sidebarRight.isInFrameChange', inFrameChange => this.rightSidebarShowBackdrop = !inFrameChange);
 
     if (!this.task.assignedUser) {
       this._taskGateway.assignUserToTask(this.task, this.user);
@@ -308,12 +326,12 @@ class TaskController {
 
   /**
    * Load the {@link LabeledFrame} structure for the given frame
-   * @param frameNumber
+   * @param frameIndex
    * @returns {AbortablePromise<LabeledFrame>}
    * @private
    */
-  _loadLabeledFrame(frameNumber) {
-    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameNumber);
+  _loadLabeledFrame(frameIndex) {
+    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameIndex);
   }
 
   onSplitViewInitialized() {
@@ -335,25 +353,27 @@ class TaskController {
     this.$scope.$broadcast('sidebar.resized');
   }
 
-  _getFrameNumberFromUrl() {
+  _getFrameIndexFromUrl() {
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+
     const hash = this._$location.hash();
-    const matches = hash.match(/F(\d+)/);
+    const matches = hash.match(/(\d+)/);
 
     if (!matches || matches.length < 2 || !matches[1]) {
-      return this.task.frameRange.startFrameNumber;
+      return frameIndexLimits.lowerLimit;
     }
 
-    const initialFrameNumber = parseInt(matches[1], 10);
+    const frameIndex = parseInt(matches[1], 10);
 
     if (
-      !Number.isInteger(initialFrameNumber)
-      || initialFrameNumber < this.task.frameRange.startFrameNumber
-      || initialFrameNumber > this.task.frameRange.endFrameNumber
+      !Number.isInteger(frameIndex)
+      || frameIndex < frameIndexLimits.lowerLimit
+      || frameIndex > frameIndexLimits.upperLimit
     ) {
-      return 1;
+      return frameIndexLimits.lowerLimit;
     }
 
-    return initialFrameNumber;
+    return frameIndex;
   }
 }
 
@@ -370,6 +390,7 @@ TaskController.$inject = [
   'applicationState',
   '$timeout',
   'keyboardShortcutService',
+  'frameIndexService',
 ];
 
 export default TaskController;

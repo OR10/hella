@@ -57,8 +57,8 @@ class InterpolationTest extends Tests\KernelTestCase
         $labeledThing = $this->createLabeledThing();
         $labeledThingsInFrame = [];
 
-        foreach (range(3, 4) as $frameNumber) {
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameNumber);
+        foreach (range(3, 4) as $frameIndex) {
+            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
             $labeledThingsInFrame[] = $labeledThingInFrame;
         }
 
@@ -90,7 +90,7 @@ class InterpolationTest extends Tests\KernelTestCase
         $task = $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('Testvideo')),
-                new Model\FrameRange(1, 10),
+                range(1, 10),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );

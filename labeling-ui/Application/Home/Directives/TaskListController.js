@@ -76,12 +76,22 @@ class TaskListController {
       });
   }
 
+  /**
+   * Reopen a closed {@link Task}
+   * 
+   * @param {Task} task
+   */
   reOpenTask(task) {
     this.loadingInProgress = true;
     this._taskGateway.markTaskAsWaiting(task)
       .then(() => this._loadTaskList());
   }
 
+  /**
+   * Remove a certain `User` association from a {@link Task}
+   * @param {Task} task
+   * @param {string} user
+   */
   removeAssignment(task, user) {
     this._taskGateway.dissociateUserFromTask(task, user).then(() => {
       task.assignedUser = null;
@@ -89,6 +99,8 @@ class TaskListController {
   }
 }
 
-TaskListController.$inject = ['taskGateway'];
+TaskListController.$inject = [
+  'taskGateway',
+];
 
 export default TaskListController;

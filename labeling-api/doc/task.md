@@ -35,7 +35,7 @@
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the task-entity.
     + type: `source` (string, required) - The image type.
-    + offset: `3` (number, optional) - The offset relative to the startFrameNumber of the frameRange of the task.
+    + offset: `3` (number, optional) - The offset relative to the startFrameIndex of the frameRange of the task.
     + limit: `10` (number, optional) - The maximum number of frameLocations that should be returned.
 
 ### Get frame locations [GET]

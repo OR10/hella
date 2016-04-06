@@ -44,12 +44,12 @@ interface Algorithm
      * modified `LabeledThingInFrame`.
      *
      * @param Model\LabeledThing $labeledThing
-     * @param Model\FrameRange   $frameRange
+     * @param Model\FrameIndexRange   $frameRange
      * @param callable           $emit
      */
     public function interpolate(
         Model\LabeledThing $labeledThing,
-        Model\FrameRange $frameRange,
+        Model\FrameIndexRange $frameRange,
         callable $emit
     );
 }

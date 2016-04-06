@@ -22,7 +22,7 @@ class LabeledFrame
     /**
      * @CouchDB\Field(type="integer")
      */
-    private $frameNumber;
+    private $frameIndex;
 
     /**
      * @CouchDB\Field(type="mixed")
@@ -46,28 +46,27 @@ class LabeledFrame
 
     /**
      * @param LabelingTask $task
-     * @param int          $frameNumber
+     * @param int          $frameIndex
      *
      * @return LabeledFrame
      */
-    public static function create(LabelingTask $task, $frameNumber)
+    public static function create(LabelingTask $task, $frameIndex)
     {
-        return new static($task, $frameNumber);
+        return new static($task, $frameIndex);
     }
 
     /**
-    /**
+    * /**
      * @param LabelingTask $task
-     * @param int          $frameNumber
+     * @param int $frameIndex
      */
-    public function __construct(LabelingTask $task, $frameNumber)
+    public function __construct(LabelingTask $task, $frameIndex)
     {
-        if (!$task->getFrameRange()->coversFrameNumber($frameNumber)) {
-            throw new \RangeException("Invalid frameNumber '{$frameNumber}'");
+        if (!in_array($frameIndex, array_keys($task->getFrameNumberMapping()))) {
+            throw new \RangeException("Invalid frameNumber '{$frameIndex}'");
         }
-
-        $this->taskId      = $task->getId();
-        $this->frameNumber = (int) $frameNumber;
+        $this->taskId     = $task->getId();
+        $this->frameIndex = $frameIndex;
     }
 
     /**
@@ -109,9 +108,9 @@ class LabeledFrame
     /**
      * @return mixed
      */
-    public function getFrameNumber()
+    public function getFrameIndex()
     {
-        return $this->frameNumber;
+        return $this->frameIndex;
     }
 
     /**
@@ -160,15 +159,15 @@ class LabeledFrame
     }
 
     /**
-     * @param int $frameNumber
+     * @param int $frameIndex
      *
      * @return LabeledFrame
      */
-    public function copyToFrameNumber($frameNumber)
+    public function copyToFrameIndex($frameIndex)
     {
         $reflectionClass    = new \ReflectionClass(self::class);
         $copy               = $reflectionClass->newInstanceWithoutConstructor();
-        $copy->frameNumber  = $frameNumber;
+        $copy->frameIndex   = $frameIndex;
         $copy->classes      = [];
         if (!empty($this->classes)) {
             $copy->ghostClasses = $this->classes;

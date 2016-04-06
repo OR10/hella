@@ -9,7 +9,7 @@ class TaskTitleDirective {
     this.scope = {
       name: '=',
       taskType: '=',
-      frameRange: '=',
+      frameNumberLimits: '=',
       labelInstruction: '=',
     };
 

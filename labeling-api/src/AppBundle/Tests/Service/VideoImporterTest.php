@@ -92,29 +92,27 @@ class VideoImporterTest extends Tests\KernelTestCase
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunk()
     {
         $tasks = $this->importVideo($chunkSizeInSeconds = 3, null, array('foo' => 'bar'));
-
         $this->assertCount(4, $tasks);
-        $this->assertEquals(new Model\FrameRange( 1,  75), $tasks[0]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 1,  75), $tasks[1]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(76, 132), $tasks[2]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(76, 132), $tasks[3]->getFrameRange());
+        $this->assertEquals(array_combine(range(0,  74), range( 1,  75)), $tasks[0]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0,  74), range( 1,  75)), $tasks[1]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0,  56), range( 76,  132)), $tasks[2]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0,  56), range( 76,  132)), $tasks[3]->getFrameNumberMapping());
     }
 
-    public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameNumberPerChunk()
+    public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameIndexPerChunk()
     {
         $tasks = $this->importVideo($chunkSizeInSeconds = 1.23, null, array('foo' => 'bar'));
-
         $this->assertCount(10, $tasks);
-        $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[0]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(  1,  31), $tasks[1]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 32,  62), $tasks[2]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 32,  62), $tasks[3]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 63,  93), $tasks[4]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 63,  93), $tasks[5]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 94, 124), $tasks[6]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange( 94, 124), $tasks[7]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(125, 132), $tasks[8]->getFrameRange());
-        $this->assertEquals(new Model\FrameRange(125, 132), $tasks[9]->getFrameRange());
+        $this->assertEquals(array_combine(range(0,  30),range(1,  31)), $tasks[0]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0,  30),range(1,  31)), $tasks[1]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0,  30),range(32,  62)), $tasks[2]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0,  30),range(32,  62)), $tasks[3]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range( 0,  30),range( 63,  93)), $tasks[4]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range( 0,  30),range( 63,  93)), $tasks[5]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range( 0,  30),range( 94, 124)), $tasks[6]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range( 0,  30),range( 94, 124)), $tasks[7]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range( 0,  7),range(125, 132)), $tasks[8]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range( 0,  7),range(125, 132)), $tasks[9]->getFrameNumberMapping());
     }
 
     public function testVideoImporterProperlySetsMinimalVisibleShapeOverflow() {

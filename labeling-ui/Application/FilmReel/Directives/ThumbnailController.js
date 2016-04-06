@@ -5,7 +5,6 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
  *
  * @property {FrameLocation} location
  * @property {Filters} filters
- * @property {int} endFrameNumber
  * @property {bool} isCurrent
  * @property {FramePosition} framePosition
  * @property {LabeledThingInFrame|null} labeledThingInFrame
@@ -21,8 +20,16 @@ class ThumbnailController {
    * @param {FrameGateway} frameGateway
    * @param {AnimationFrameService} animationFrameService
    * @param {LoggerService} logger
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor($scope, $element, paperShapeFactory, drawingContextService, frameGateway, animationFrameService, logger) {
+  constructor($scope,
+              $element,
+              paperShapeFactory,
+              drawingContextService,
+              frameGateway,
+              animationFrameService,
+              logger,
+              frameIndexService) {
     /**
      * Flag to indicate whether the frame number is shown or not
      *
@@ -35,7 +42,7 @@ class ThumbnailController {
     /**
      * @type {int}
      */
-    this.currentFrameNumber = this.framePosition.position;
+    this.currentFrameIndex = this.framePosition.position;
 
     /**
      * @type {DrawingContext}
@@ -58,6 +65,12 @@ class ThumbnailController {
      * @private
      */
     this._frameGateway = frameGateway;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
 
     this._context.withScope(scope => {
       /**
@@ -116,16 +129,10 @@ class ThumbnailController {
     this._drawBackgroundLayerDebounced = animationFrameService.debounce((redraw) => this._drawBackgroundLayer(redraw));
     this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
 
-    $scope.$watch('vm.currentFrameNumber', newFrameNumber => {
-      const frameInt = Number.parseInt(newFrameNumber, 10);
-      if (frameInt < this.framePosition.startFrameNumber) {
-        this.framePosition.goto(this.framePosition.startFrameNumber);
-      } else if (frameInt > this.framePosition.endFrameNumber) {
-        this.framePosition.goto(this.framePosition.endFrameNumber);
-      } else {
-        this.framePosition.goto(frameInt);
-      }
-      this.currentFrameNumber = this.framePosition.position;
+    $scope.$watch('vm.currentFrameIndex', newFrameIndex => {
+      const numericalFrameIndex = Number.parseInt(newFrameIndex, 10);
+      this.framePosition.goto(numericalFrameIndex);
+      this.currentFrameIndex = this.framePosition.position;
     });
 
     $scope.$watch('vm.dimensions', newDimensions => {
@@ -173,7 +180,7 @@ class ThumbnailController {
         return;
       }
 
-      this.currentFrameNumber = this.framePosition.position;
+      this.currentFrameIndex = this.framePosition.position;
 
       this._imagePromise = this._frameLocationsBuffer.add(
         this._frameGateway.getImage(newLocation)
@@ -290,10 +297,22 @@ class ThumbnailController {
     });
   }
 
+  /**
+   * Handle the click to a thumbnail
+   */
   handleThumbnailClick() {
-    if (this.location && this.location.frameNumber) {
-      this.framePosition.goto(this.location.frameNumber);
+    if (this.location && this.location.frameIndex !== undefined) {
+      this.framePosition.goto(this.location.frameIndex);
     }
+  }
+
+  /**
+   * Provide the template with a proper way to access the frameIndex limits
+   *
+   * @returns {{lowerLimit: number, upperLimit: number}}
+   */
+  get frameIndexLimits() {
+    return this._frameIndexService.getFrameIndexLimits();
   }
 }
 
@@ -305,6 +324,7 @@ ThumbnailController.$inject = [
   'frameGateway',
   'animationFrameService',
   'loggerService',
+  'frameIndexService',
 ];
 
 export default ThumbnailController;

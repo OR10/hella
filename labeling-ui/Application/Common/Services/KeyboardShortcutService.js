@@ -29,6 +29,20 @@ class KeyboardShortcutService {
   }
 
   /**
+   * Disable all current hotkeys
+   */
+  disable() {
+    this._deactivateAllHotkeys();
+  }
+
+  /**
+   * Enable the last active context
+   */
+  enable() {
+    this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1])
+  }
+
+  /**
    * Add a new hotkey to the provided context
    *
    * @param {string} context

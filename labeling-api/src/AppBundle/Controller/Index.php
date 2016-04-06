@@ -84,6 +84,7 @@ class Index extends Base
                 'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22')
             )
         );
+        $frameStepSize = $request->request->get('frameStepSize', 1);
 
         //Label instructions
         $labelInstructions = array();
@@ -117,7 +118,8 @@ class Index extends Base
                 $labelInstructions,
                 $overflow ? 16 : null,
                 $drawingTool,
-                $drawingToolOptions
+                $drawingToolOptions,
+                $frameStepSize
             );
 
             $viewData['taskIds'] = array_map(

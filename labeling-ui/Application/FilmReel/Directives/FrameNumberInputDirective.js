@@ -1,8 +1,17 @@
 class FrameNumberInputDirective {
-  constructor() {
+  /**
+   * @param {FrameIndexService} frameIndexService
+   */
+  constructor(frameIndexService) {
     this.restrict = 'E';
     this.require = 'ngModel';
     this.template = '<span contenteditable="true"></span>';
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
   }
 
   link(scope, element, attrs, ngModel) {
@@ -20,6 +29,20 @@ class FrameNumberInputDirective {
 
       return cleaned;
     }
+
+    const getFrameNumberSibling = (frameNumber, distance) => {
+      const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+      const frameIndex = this._frameIndexService.getNearestFrameIndex(frameNumber);
+
+      let siblingFrameIndex = frameIndex + distance;
+      if (siblingFrameIndex < frameIndexLimits.lowerLimit) {
+        siblingFrameIndex = frameIndexLimits.lowerLimit;
+      } else if (siblingFrameIndex > frameIndexLimits.upperLimit) {
+        siblingFrameIndex = frameIndexLimits.upperLimit;
+      }
+
+      return this._frameIndexService.getFrameNumber(siblingFrameIndex);
+    };
 
     /**
      * Only allow numbers and navigational keys
@@ -45,15 +68,22 @@ class FrameNumberInputDirective {
           break;
         // arrow up
         case (event.keyCode === 38):
-          const value = Number.parseInt(getEditableValue(), 10);
-          if (value > 1) {
-            editable.html(value - 1);
-          }
+          editable.html(
+            getFrameNumberSibling(
+              Number.parseInt(getEditableValue(), 10),
+              1
+            )
+          );
           event.preventDefault();
           break;
         // arrow down
         case (event.keyCode === 40):
-          editable.html(Number.parseInt(getEditableValue(), 10) + 1);
+          editable.html(
+            getFrameNumberSibling(
+              Number.parseInt(getEditableValue(), 10),
+              -1
+            )
+          );
           event.preventDefault();
           break;
 
@@ -62,13 +92,24 @@ class FrameNumberInputDirective {
       }
     }
 
-    function onBlur() {
-      ngModel.$setViewValue(getEditableValue());
-    }
+    const onBlur = () => {
+      const frameNumber = Number.parseInt(getEditableValue(), 10);
+      const frameIndex = this._frameIndexService.getNearestFrameIndex(frameNumber);
+      ngModel.$setViewValue(frameIndex);
+      ngModel.$render();
+    };
 
     // Specify how UI should be updated
     ngModel.$render = () => {
-      editable.html(ngModel.$viewValue || '');
+      if (ngModel.$viewValue === null || ngModel.$viewValue === undefined) {
+        editable.html('');
+        return;
+      }
+
+      const frameIndex = ngModel.$viewValue;
+      const frameNumber = this._frameIndexService.getFrameNumber(frameIndex);
+
+      editable.html(frameNumber);
     };
 
     // Listen for change events to enable binding
@@ -81,5 +122,9 @@ class FrameNumberInputDirective {
     ngModel.$render();
   }
 }
+
+FrameNumberInputDirective.$inject = [
+  'frameIndexService',
+];
 
 export default FrameNumberInputDirective;

@@ -12,7 +12,7 @@
                 <span ng-switch-default>Unknown:</span>
             </span>
             {{vm.name}}
-            [ {{vm.frameRange.startFrameNumber}} - {{vm.frameRange.endFrameNumber}} ]
+            [ {{vm.frameNumberLimits.lowerLimit}} - {{vm.frameNumberLimits.upperLimit}} ]
         </span>
         <span ng-show="vm.releaseInformation !== null">
             Revision: {{vm.releaseInformation.revision}}

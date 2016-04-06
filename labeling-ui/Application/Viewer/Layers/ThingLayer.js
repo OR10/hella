@@ -43,7 +43,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
               entityColorService,
               keyboardShortcutService,
               logger,
-              $timeout) {
+              $timeout,
+              framePosition) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -172,6 +173,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._shapeScaleTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
+    });
+
+    framePosition.beforeFrameChangeAlways('disableTools', () => {
+      this._multiTool.disable();
+    });
+    framePosition.afterFrameChangeAlways('disableTools', () => {
+      this._multiTool.enable();
     });
   }
 

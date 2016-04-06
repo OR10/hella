@@ -19,12 +19,12 @@ class Interpolation extends WorkerPool\Job
     /**
      * @var int
      */
-    private $startFrameNumber;
+    private $startFrameIndex;
 
     /**
      * @var int
      */
-    private $endFrameNumber;
+    private $endFrameIndex;
 
     /**
      * @var string
@@ -34,19 +34,19 @@ class Interpolation extends WorkerPool\Job
     /**
      * @param string                          $labeledThingId
      * @param string                          $algorithm
-     * @param Model\FrameRange                $frameRange
+     * @param Model\FrameIndexRange                $frameRange
      * @param Model\Interpolation\Status|null $status
      */
     public function __construct(
         $labeledThingId,
         $algorithm,
-        Model\FrameRange $frameRange,
+        Model\FrameIndexRange $frameRange,
         Model\Interpolation\Status $status = null
     ) {
         $this->labeledThingId   = (string) $labeledThingId;
         $this->algorithm        = (string) $algorithm;
-        $this->startFrameNumber = $frameRange->getStartFrameNumber();
-        $this->endFrameNumber   = $frameRange->getEndFrameNumber();
+        $this->startFrameIndex = $frameRange->getStartFrameIndex();
+        $this->endFrameIndex   = $frameRange->getEndFrameIndex();
 
         if ($status !== null) {
             $this->statusId = $status->getId();
@@ -70,11 +70,11 @@ class Interpolation extends WorkerPool\Job
     }
 
     /**
-     * @return Model\FrameRange
+     * @return Model\FrameIndexRange
      */
     public function getFrameRange()
     {
-        return new Model\FrameRange($this->startFrameNumber, $this->endFrameNumber);
+        return new Model\FrameIndexRange($this->startFrameIndex, $this->endFrameIndex);
     }
 
     /**

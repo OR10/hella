@@ -124,8 +124,8 @@ class LabeledThingTest extends Tests\WebTestCase
                 'classes' => array('class1' => 'test'),
                 'incomplete' => true,
                 'frameRange' => array(
-                    'startFrameNumber' => 10,
-                    'endFrameNumber' => 10,
+                    'startFrameIndex' => 10,
+                    'endFrameIndex' => 10,
                 ),
                 'lineColor' => 'blue',
             ])
@@ -141,11 +141,11 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals($labeledThingInFrameInRange, $labeledThingsInFrame[0]);
     }
 
-    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameNumberIfLabeledThingDoesNotYetExistForStartFrameNumber()
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameIndexIfLabeledThingDoesNotYetExistForStartFrameIndex()
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
-        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 9);
+        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 10);
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -154,8 +154,8 @@ class LabeledThingTest extends Tests\WebTestCase
                 'classes' => array('class1' => 'test'),
                 'incomplete' => true,
                 'frameRange' => array(
-                    'startFrameNumber' => 10,
-                    'endFrameNumber' => 10,
+                    'startFrameIndex' => 10,
+                    'endFrameIndex' => 10,
                 ),
                 'lineColor' => 'blue',
             ])
@@ -171,7 +171,7 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals($labeledThingInFrame, $labeledThingsInFrame[0]);
     }
 
-    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameNumberIfLabeledThingDoesNotYetExistForEndFrameNumber()
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameIndexIfLabeledThingDoesNotYetExistForEndFrameIndex()
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
@@ -184,8 +184,8 @@ class LabeledThingTest extends Tests\WebTestCase
                 'classes' => array('class1' => 'test'),
                 'incomplete' => true,
                 'frameRange' => array(
-                    'startFrameNumber' => 10,
-                    'endFrameNumber' => 10,
+                    'startFrameIndex' => 10,
+                    'endFrameIndex' => 10,
                 ),
                 'lineColor' => 'blue',
             ])
@@ -252,7 +252,7 @@ class LabeledThingTest extends Tests\WebTestCase
         $video = $this->videoFacade->save(Model\Video::create('foobar'));
         $task = Model\LabelingTask::create(
             $video,
-            new Model\FrameRange($startRange, $endRange),
+            range($startRange, $endRange),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);
@@ -278,8 +278,8 @@ class LabeledThingTest extends Tests\WebTestCase
         return $this->labeledThingFacade->save(Model\LabeledThing::create($task));
     }
 
-    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameNumber = 10)
+    private function createLabeledThingInFrame(Model\LabeledThing $labeledThing, $frameIndex = 10)
     {
-        return $this->labeledThingInFrameFacade->save(Model\LabeledThingInFrame::create($labeledThing, $frameNumber));
+        return $this->labeledThingInFrameFacade->save(Model\LabeledThingInFrame::create($labeledThing, $frameIndex));
     }
 }

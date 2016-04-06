@@ -1,41 +1,4 @@
-class PartialApplicationState {
-  constructor() {
-    this._disabled = 0;
-    this._working = 0;
-  }
-
-  get isDisabled() {
-    return this._disabled !== 0;
-  }
-
-  disable() {
-    this._disabled += 1;
-  }
-
-  enable() {
-    if (this._disabled === 0) {
-      throw new Error('Tried to enable component, which is already enabled. Possible disable/enable mismatch.');
-    }
-
-    this._disabled -= 1;
-  }
-
-  get isWorking() {
-    return this._working !== 0;
-  }
-
-  work() {
-    this._working += 1;
-  }
-
-  finish() {
-    if (this._working === 0) {
-      throw new Error('Tried to set component to finish, which is already finished. Possible work/finish mismatch.');
-    }
-
-    this._working -= 1;
-  }
-}
+import PartialApplicationState from './ApplicationStateProvider/PartialApplicationState';
 
 class ApplicationStateProvider {
   $get($rootScope) {
@@ -45,7 +8,7 @@ class ApplicationStateProvider {
      */
     const state = $rootScope.$new();
 
-    state.viewer = new PartialApplicationState();
+    state.viewer = new  PartialApplicationState();
     state.mediaControls = new PartialApplicationState();
     state.thumbnails = new PartialApplicationState();
     state.sidebarLeft = new PartialApplicationState();
@@ -63,6 +26,22 @@ class ApplicationStateProvider {
       ['viewer', 'mediaControls', 'thumbnails', 'sidebarLeft', 'sidebarRight', 'timeline', 'header'].forEach(component => {
         state[component].enable();
       });
+    };
+
+    state.startFrameChange = () => {
+      state.sidebarRight.disable();
+      state.sidebarRight.startFrameChange();
+
+      state.viewer.disable();
+      state.viewer.startFrameChange();
+    };
+
+    state.endFrameChange = () => {
+      state.viewer.endFrameChange();
+      state.viewer.enable();
+
+      state.sidebarRight.endFrameChange();
+      state.sidebarRight.enable();
     };
 
     return state;

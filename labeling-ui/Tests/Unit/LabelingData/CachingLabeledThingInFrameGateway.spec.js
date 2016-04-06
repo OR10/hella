@@ -2,6 +2,7 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
+import Task from 'Application/Task/Task';
 
 import LabeledThingInFrameGateway from 'Application/LabelingData/Gateways/LabeledThingInFrameGateway';
 import CachingLabeledThingInFrameGateway from 'Application/LabelingData/Gateways/CachingLabeledThingInFrameGateway';
@@ -11,7 +12,9 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 
 
 describe('CachingLabeledThingInFrameGateway', () => {
+  let task;
   let gateway;
+  let frameIndexService;
 
   let ltCache;
   let ltifCache;
@@ -25,6 +28,18 @@ describe('CachingLabeledThingInFrameGateway', () => {
   let createdLtifs;
   let createdLts;
 
+  function createTask(id, start, end, skip) {
+    const frameNumberMapping = [];
+    for (let frameNumber = start; frameNumber <= end; frameNumber += skip) {
+      frameNumberMapping.push(frameNumber);
+    }
+
+    return {
+      id,
+      frameNumberMapping,
+    };
+  }
+
   function lt(task, id, start = 0, end = 1000) {
     const ltKey = `${task.id}.${id}`;
     if (!createdLts.has(ltKey)) {
@@ -35,8 +50,8 @@ describe('CachingLabeledThingInFrameGateway', () => {
         rev: `1-${Math.round(Math.random() * Number.MAX_SAFE_INTEGER)}`,
         incomplete: true,
         frameRange: {
-          startFrameNumber: start,
-          endFrameNumber: end,
+          startFrameIndex: start,
+          endFrameIndex: end,
         },
         lineColor: 23,
       };
@@ -47,11 +62,11 @@ describe('CachingLabeledThingInFrameGateway', () => {
     return createdLts.get(ltKey);
   }
 
-  function ltif(task, id, frameNumber, ghost = false, labeledThingId = 'some-labeled-thing', classes = [], ghostClasses = null) {
-    const ltifKey = `${task.id}.${id}.${frameNumber}.${labeledThingId}`;
+  function ltif(task, id, frameIndex, ghost = false, labeledThingId = 'some-labeled-thing', classes = [], ghostClasses = null) {
+    const ltifKey = `${task.id}.${id}.${frameIndex}.${labeledThingId}`;
     if (!createdLtifs.has(ltifKey)) {
       const raw = {
-        frameNumber,
+        frameIndex,
         ghost,
         labeledThingId,
         classes,
@@ -73,24 +88,24 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
   function ltifKey(ltif) {
     if (ltif.ghost) {
-      return `${ltif.labeledThing.task.id}.${ltif.frameNumber}.${ltif.labeledThing.id}`;
+      return `${ltif.labeledThing.task.id}.${ltif.frameIndex}.${ltif.labeledThing.id}`;
     }
 
-    return `${ltif.labeledThing.task.id}.${ltif.frameNumber}.${ltif.id}`;
+    return `${ltif.labeledThing.task.id}.${ltif.frameIndex}.${ltif.id}`;
   }
 
   function storeInCache(completeFrames, ...labeledObjects) {
     labeledObjects.forEach(labeledObject => {
       switch (true) {
         case labeledObject instanceof LabeledThingInFrame && labeledObject.ghost === false:
-          ltifCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.frameNumber}.${labeledObject.id}`, labeledObject.toJSON());
+          ltifCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.frameIndex}.${labeledObject.id}`, labeledObject.toJSON());
           ltCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.labeledThing.id}`, labeledObject.labeledThing.toJSON());
           if (completeFrames) {
-            ltifCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.frameNumber}.complete`, true);
+            ltifCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.frameIndex}.complete`, true);
           }
           break;
         case labeledObject instanceof LabeledThingInFrame && labeledObject.ghost === true:
-          ltifGhostCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.frameNumber}.${labeledObject.labeledThing.id}`, labeledObject.toJSON());
+          ltifGhostCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.frameIndex}.${labeledObject.labeledThing.id}`, labeledObject.toJSON());
           ltCache.store(`${labeledObject.labeledThing.task.id}.${labeledObject.labeledThing.id}`, labeledObject.labeledThing.toJSON());
           break;
         case labeledObject instanceof LabeledThing:
@@ -118,6 +133,10 @@ describe('CachingLabeledThingInFrameGateway', () => {
     labelingDataModule.registerWithAngular(angular);
     module('AnnoStation.LabelingData');
 
+    const taskModule = new Task();
+    taskModule.registerWithAngular(angular);
+    module('AnnoStation.Task');
+
     module($provide => {
       $provide.value('applicationConfig', {
         Common: {},
@@ -128,7 +147,11 @@ describe('CachingLabeledThingInFrameGateway', () => {
       $rootScope = $injector.get('$rootScope');
       cache = $injector.get('cacheService');
       gateway = $injector.instantiate(CachingLabeledThingInFrameGateway);
+      frameIndexService = $injector.get('frameIndexService');
     });
+
+    task = createTask('some-task', 0, 3000, 1);
+    frameIndexService.setTask(task);
 
     ltifCache = cache.container('labeledThingsInFrame-by-frame');
     ltifGhostCache = cache.container('ghosted-labeledThingsInFrame-by-id');
@@ -137,6 +160,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
     ltCache.invalidate();
     ltifCache.invalidate();
     ltifGhostCache.invalidate();
+
   });
 
   it('should be able to instantiate without non injected arguments', () => {
@@ -144,11 +168,8 @@ describe('CachingLabeledThingInFrameGateway', () => {
   });
 
   describe('listLabeledThingInFrame', () => {
-    let task;
     let labeledThingsInFrame;
     beforeEach(() => {
-      task = {id: 'some-task'};
-
       labeledThingsInFrame = [
         ltif(task, 'xyz', 42),
         ltif(task, 'uvw', 43),
@@ -242,12 +263,10 @@ describe('CachingLabeledThingInFrameGateway', () => {
   });
 
   describe('getLabeledThingInFrame', () => {
-    let task;
     let labeledThing;
     let defaultResult;
 
     beforeEach(() => {
-      task = {id: 'some-task'};
       labeledThing = lt(task, 'lt-1');
 
       defaultResult = [
@@ -487,17 +506,11 @@ describe('CachingLabeledThingInFrameGateway', () => {
   });
 
   describe('saveLabeledThingInFrame', () => {
-    let task;
     let labeledThingInFrame;
 
     beforeEach(() => {
-      task = {
-        id: 'some-task',
-        frameRange: {
-          startFrameNumber: 1,
-          endFrameNumber: 2500
-        },
-      };
+      task = createTask('some-task', 0, 2500, 1);
+      frameIndexService.setTask(task);
 
       labeledThingInFrame = ltif(task, 'ltif-1-*3', 12, false, 'lt-1');
 
@@ -581,7 +594,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
       $rootScope.$digest();
     });
 
-    it('should set the ltif frameNumber to incomplete before saving', done => {
+    it('should set the ltif frameIndex to incomplete before saving', done => {
       gateway.saveLabeledThingInFrame(ltif(task, 'ltif-1-*2', 11, false, 'lt-1'))
         .then(() => {
           expect(ltifCache.get(`${task.id}.11.complete`)).toBeUndefined();
@@ -592,7 +605,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
       $rootScope.$digest();
     });
 
-    it('should restore the ltif frameNumber to complete after saving', done => {
+    it('should restore the ltif frameIndex to complete after saving', done => {
       ltifCache.store(`${task.id}.11.complete`, true);
       gateway.saveLabeledThingInFrame(ltif(task, 'ltif-1-*2', 11, false, 'lt-1'))
         .then(() => {
@@ -616,7 +629,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
     it('should invalidate all ltifs right of the updated one if classes changed', () => {
       const updatedLtif = new LabeledThingInFrame({
-        frameNumber: 11,
+        frameIndex: 11,
         ghost: false,
         classes: ['some', 'new', 'classes'],
         ghostClasses: null,
@@ -635,7 +648,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
     it('should invalidate all ltifs right of the updated one if ghostClasses existed and classes were added', () => {
       const updatedLtif = new LabeledThingInFrame({
-        frameNumber: 11,
+        frameIndex: 11,
         ghost: false,
         classes: [],
         ghostClasses: ['some', 'old', 'classes'],
@@ -659,7 +672,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
     it('should not invalidate all ltifs right of the updated one if classes did not change', () => {
       const updatedLtif = new LabeledThingInFrame({
-        frameNumber: 11,
+        frameIndex: 11,
         ghost: false,
         classes: ['some', 'new', 'classes'],
         ghostClasses: null,

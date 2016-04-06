@@ -55,7 +55,7 @@ describe('LabeledThingGateway', () => {
       task,
       id: '123',
       rev: '1-abcdef',
-      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
       classes: ['foo', 'bar'],
     });
 
@@ -81,7 +81,7 @@ describe('LabeledThingGateway', () => {
       task,
       id: labeledThingId,
       rev: '1-abcdef',
-      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
       classes: ['foo', 'bar'],
     });
 
@@ -111,7 +111,7 @@ describe('LabeledThingGateway', () => {
       task,
       id: labeledThingId,
       rev: '1-xyz',
-      frameRange: {startFrameNumber: 23, endFrameNumber: 42},
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
       classes: ['foo', 'bar'],
     });
 

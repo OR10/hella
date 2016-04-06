@@ -8,7 +8,7 @@ class InvalidStartFrameNumber extends FrameRange
 
     public function __construct($startFrameNumber)
     {
-        parent::__construct("Invalid start frame number: {$startFrameNumber}");
+        parent::__construct("Invalid start frame index: {$startFrameNumber}");
 
         $this->startFrameNumber = $startFrameNumber;
     }

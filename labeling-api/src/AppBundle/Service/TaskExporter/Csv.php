@@ -145,9 +145,10 @@ class Csv implements Service\TaskExporter
         $idCounter = 0;
 
         $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
+        $frameNumberMapping                    = $task->getFrameNumberMapping();
 
         return array_map(
-            function ($labeledThingInFrame) use (&$idCounter) {
+            function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping) {
                 $idCounter++;
 
                 $vehicleType = $this->getClassByRegex(
@@ -161,7 +162,7 @@ class Csv implements Service\TaskExporter
 
                 return array(
                     'id'           => $idCounter,
-                    'frame_number' => $labeledThingInFrame->getFrameNumber(),
+                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'vehicleType'  => $vehicleType,
                     'direction'    => $direction,
                     'occlusion'    => $occlusion,

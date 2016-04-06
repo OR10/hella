@@ -49,11 +49,11 @@ class CsvTest extends Tests\KernelTestCase
     {
         return array(
             array(
+                1,
                 5,
-                10,
                 array(
                     array(
-                        'frameNumber' => 5,
+                        'frameIndex'  => 0,
                         'type'        => 'vehicle',
                         'classes'     => array(
                             'vehicle-type',
@@ -75,7 +75,7 @@ class CsvTest extends Tests\KernelTestCase
                         ),
                     ),
                     array(
-                        'frameNumber' => 6,
+                        'frameIndex'  => 1,
                         'type'        => 'vehicle',
                         'classes'     => array(
                             'vehicle-type',
@@ -100,7 +100,7 @@ class CsvTest extends Tests\KernelTestCase
                 array(
                     array(
                         'id'           => 1,
-                        'frame_number' => 5,
+                        'frame_number' => 1,
                         'vehicleType'  => 'truck',
                         'direction'    => 'left',
                         'occlusion'    => '80',
@@ -112,7 +112,7 @@ class CsvTest extends Tests\KernelTestCase
                     ),
                     array(
                         'id'           => 2,
-                        'frame_number' => 6,
+                        'frame_number' => 2,
                         'vehicleType'  => 'car',
                         'direction'    => 'front',
                         'occlusion'    => '80',
@@ -137,11 +137,11 @@ class CsvTest extends Tests\KernelTestCase
      */
     public function testCsvExport($frameRangeStart, $frameRangeEnd, $labeledThingInFrames, $expected)
     {
-        $task = $this->createLabelingTask(new Model\FrameRange($frameRangeStart, $frameRangeEnd));
+        $task = $this->createLabelingTask(range($frameRangeStart, $frameRangeEnd));
         foreach ($labeledThingInFrames as $labeledThingInFrame) {
             $this->createLabeledThingInFrame(
                 $task,
-                $labeledThingInFrame['frameNumber'],
+                $labeledThingInFrame['frameIndex'],
                 $labeledThingInFrame['type'],
                 $labeledThingInFrame['classes'],
                 $labeledThingInFrame['shapes']
@@ -157,37 +157,37 @@ class CsvTest extends Tests\KernelTestCase
     /**
      * Create a labeling task in the database.
      *
-     * @param Model\FrameRange $frameRange
-     *
+     * @param array $frameNumberMapping
      * @return Model\LabelingTask
+     *
      */
-    private function createLabelingTask(Model\FrameRange $frameRange)
+    private function createLabelingTask(array $frameNumberMapping)
     {
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('test video')),
-                $frameRange,
+                $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );
     }
 
     /**
-     * Store a labeled thing for the given frame number and the given shapes in
+     * Store a labeled thing for the given frame index and the given shapes in
      * the database.
      *
      * @param Model\LabelingTask $task
-     * @param                    $frameNumber
-     * @param null               $type
-     * @param array              $classes
-     * @param array              $shapes
-     * @param bool               $incomplete
+     * @param $frameIndex
+     * @param null $type
+     * @param array $classes
+     * @param array $shapes
+     * @param bool $incomplete
      *
      * @return Model\LabeledThingInFrame
      */
     private function createLabeledThingInFrame(
         Model\LabelingTask $task,
-        $frameNumber,
+        $frameIndex,
         $type = null,
         $classes = [],
         array $shapes = [],
@@ -195,12 +195,17 @@ class CsvTest extends Tests\KernelTestCase
     ) {
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
-                ->setFrameRange($task->getFrameRange())
-                ->setClasses($type === null ? [] : [(string) $type])
+                ->setFrameRange(
+                    new Model\FrameIndexRange(
+                        $frameIndex,
+                        $frameIndex
+                    )
+                )
+                ->setClasses($type === null ? [] : [(string)$type])
         );
 
         return $this->labeledThingInFrameFacade->save(
-            Model\LabeledThingInFrame::create($labeledThing, $frameNumber)
+            Model\LabeledThingInFrame::create($labeledThing, $frameIndex)
                 ->setShapes($shapes)
                 ->setIncomplete($incomplete)
                 ->setClasses($classes)

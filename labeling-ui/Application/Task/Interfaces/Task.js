@@ -22,8 +22,22 @@
 /**
  * {@link FrameRange} to be taken from the Video for this specific task.
  *
- * @name Task#frameRange
+ * @name Task#metaData.frameRange
  * @type {FrameRange}
+ */
+
+/**
+ * Meta information to be used for categorizing/displaying this task.
+ *
+ * @name Task#metaData
+ * @type {Object}
+ */
+
+/**
+ * Mapping between used frameIndex values and the real video frameNumbers
+ *
+ * @name Task#frameNumberMapping
+ * @type {Array}
  */
 
 /**

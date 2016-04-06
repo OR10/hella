@@ -131,11 +131,11 @@ class Kitti implements Service\TaskExporter
      */
     public function getInternalExportData(Model\LabelingTask $task)
     {
-        $result = array_fill(
-            $task->getFrameRange()->getStartFrameNumber(),
-            $task->getFrameRange()->getNumberOfFrames(),
-            []
-        );
+        $frameNumberMapping = $task->getFrameNumberMapping();
+        $result = array();
+        foreach($frameNumberMapping as $frameNumber) {
+            $result[$frameNumber] = [];
+        }
 
         $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrame($task);
         $labeledThingIds = array_values(
@@ -163,14 +163,15 @@ class Kitti implements Service\TaskExporter
             }
 
             try {
-                $result[$labeledThingInFrame->getFrameNumber()][] = new TaskExporter\Kitti\Object(
+                $frameNumber = $frameNumberMapping[$labeledThingInFrame->getFrameIndex()];
+                $result[$frameNumber][] = new TaskExporter\Kitti\Object(
                     $this->getObjectType($labeledThings[$labeledThingInFrame->getLabeledThingId()]),
                     $labeledThingInFrame->getBoundingBox()
                 );
             } catch (\Exception $exception) {
                 throw new Exception\Kitti(
                     $exception->getMessage(),
-                    $labeledThingInFrame->getFrameNumber(),
+                    $labeledThingInFrame->getFrameIndex(),
                     $exception
                 );
             }

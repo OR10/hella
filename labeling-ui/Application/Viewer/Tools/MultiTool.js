@@ -62,6 +62,14 @@ export default class MultiTool extends Tool {
      */
     this._activeTool = null;
 
+    /**
+     * State if the multi tool ist currently enabled
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._enabled = true;
+
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
@@ -142,7 +150,21 @@ export default class MultiTool extends Tool {
     this._createTool = tool;
   }
 
+  enable() {
+    this._enabled = true;
+    this._keyboardShortcutService.enable()
+  }
+
+  disable() {
+    this._enabled = false;
+    this._keyboardShortcutService.disable()
+  }
+
   _moveSelectedShapeBy(deltaX, deltaY) {
+    if (!this._enabled) {
+      return;
+    }
+
     const paperShape = this._$scope.vm.selectedPaperShape;
     if (!paperShape) {
       return;
@@ -158,6 +180,10 @@ export default class MultiTool extends Tool {
   }
 
   _mouseMove(event) {
+    if (!this._enabled) {
+      return;
+    }
+
     this._context.withScope(scope => {
       const point = event.point;
       const hitResult = scope.project.hitTest(point, {
@@ -197,6 +223,10 @@ export default class MultiTool extends Tool {
   }
 
   _mouseDown(event) {
+    if (!this._enabled) {
+      return;
+    }
+
     const point = event.point;
 
     if (event.event.shiftKey) {
@@ -233,6 +263,10 @@ export default class MultiTool extends Tool {
   }
 
   _mouseUp(event) {
+    if (!this._enabled) {
+      return;
+    }
+
     if (this._activeTool) {
       if (this._activeTool === this._moveTool) {
         this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grab');
@@ -244,12 +278,20 @@ export default class MultiTool extends Tool {
   }
 
   _mouseDrag(event) {
+    if (!this._enabled) {
+      return;
+    }
+
     if (this._activeTool) {
       this._activeTool.onMouseDrag(event);
     }
   }
 
   onMouseLeave(event) {
+    if (!this._enabled) {
+      return;
+    }
+
     this._mouseUp(event);
   }
 }

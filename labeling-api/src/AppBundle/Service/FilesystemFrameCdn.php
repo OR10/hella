@@ -32,16 +32,16 @@ class FilesystemFrameCdn extends FrameCdn
     /**
      * @param Model\Video    $video
      * @param ImageType\Base $imageType
-     * @param int            $frameNumber
+     * @param int            $frameIndex
      * @param string         $imageData
      *
      * @return void
      * @throws \Exception
      */
-    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameNumber, $imageData)
+    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameIndex, $imageData)
     {
         $cdnPath  = sprintf('%s/%s', $video->getId(), $imageType->getName());
-        $filePath = sprintf('%s/%s.%s', $cdnPath, $frameNumber, $imageType->getExtension());
+        $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());
 
         $this->fileSystem->createDir($cdnPath);
         $this->fileSystem->write($filePath, $imageData);
@@ -49,20 +49,20 @@ class FilesystemFrameCdn extends FrameCdn
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param ImageType\Base     $imageType
-     * @param Model\FrameRange   $frameRange
-     *
+     * @param ImageType\Base $imageType
+     * @param Model\FrameIndexRange|array $frameNumbers
+     * 
      * @return array
      */
     public function getFrameLocations(
         Model\LabelingTask $labelingTask,
         ImageType\Base $imageType,
-        Model\FrameRange $frameRange
+        array $frameNumbers
     ) {
         $urls = [];
-        foreach ($frameRange->getRange() as $frameNumber) {
+        foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
-                "frameNumber" => $frameNumber,
+                "frameIndex" => $index,
                 'url' => sprintf(
                     '%s/%s/%s/%s.%s',
                     $this->frameCdnBaseUrl,

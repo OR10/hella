@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class FrameRange
+class FrameNumberRange
 {
     /**
      * @CouchDB\Id
@@ -38,8 +38,11 @@ class FrameRange
     public $endFrameNumber;
 
     /**
-     * @param integer      $startFrameNumber First frame number of this range.
-     * @param integer|null $endFrameNumber   Last frame number of this range.
+     * @param integer $startFrameNumber First frame index of this range.
+     * @param integer|null $endFrameNumber Last frame index of this range.
+     *
+     * @throws Exception\InvalidRange
+     * @throws Exception\InvalidStartFrameNumber
      */
     public function __construct($startFrameNumber, $endFrameNumber = null)
     {
@@ -51,7 +54,7 @@ class FrameRange
             $this->endFrameNumber = (int) $endFrameNumber;
         }
 
-        if ($this->startFrameNumber < 1) {
+        if ($this->startFrameNumber < 0) {
             throw new Exception\InvalidStartFrameNumber($this->startFrameNumber);
         }
 
@@ -70,10 +73,10 @@ class FrameRange
     {
         $startFrameNumber = 1 + $offset;
         $endFrameNumber   = $limit
-                          ? $offset + $limit
-                          : $startFrameNumber;
+            ? $offset + $limit
+            : $startFrameNumber;
 
-        return new FrameRange($startFrameNumber, $endFrameNumber);
+        return new FrameNumberRange($startFrameNumber, $endFrameNumber);
     }
 
     /**
@@ -85,11 +88,11 @@ class FrameRange
             throw new Exception\FrameRange();
         }
 
-        return new FrameRange($array['startFrameNumber'], $array['endFrameNumber']);
+        return new FrameNumberRange($array['startFrameNumber'], $array['endFrameNumber']);
     }
 
     /**
-     * Get the starting frame number.
+     * Get the starting frame index.
      *
      * @return integer
      */
@@ -99,7 +102,7 @@ class FrameRange
     }
 
     /**
-     * Get the last frame number.
+     * Get the last frame index.
      *
      * @return integer
      */
@@ -109,7 +112,7 @@ class FrameRange
     }
 
     /**
-     * Get the number of frames covered by this range.
+     * Get the index of frames covered by this range.
      */
     public function getNumberOfFrames()
     {
@@ -158,20 +161,20 @@ class FrameRange
             );
         }
 
-        return new FrameRange($startFrameNumber, $endFrameNumber);
+        return new FrameNumberRange($startFrameNumber, $endFrameNumber);
     }
 
     /**
      * Check wether or not the given frame range is a subrange of this range.
      *
-     * @param FrameRange $otherFrameRange
+     * @param FrameNumberRange $otherFrameRange
      *
      * @return boolean
      */
-    public function coversFrameRange(FrameRange $otherFrameRange)
+    public function coversFrameRange(FrameNumberRange $otherFrameRange)
     {
         return $this->coversFrameNumber($otherFrameRange->getStartFrameNumber())
-            && $this->coversFrameNumber($otherFrameRange->getEndFrameNumber());
+        && $this->coversFrameNumber($otherFrameRange->getEndFrameNumber());
     }
 
     /**
@@ -180,7 +183,7 @@ class FrameRange
      *
      * @throws \RangeException
      */
-    public function throwIfFrameRangeIsNotCovered(FrameRange $otherFrameRange)
+    public function throwIfFrameRangeIsNotCovered(FrameNumberRange $otherFrameRange)
     {
         if (!$this->coversFrameRange($otherFrameRange)) {
             throw new \RangeException(
@@ -196,7 +199,7 @@ class FrameRange
     }
 
     /**
-     * Check wether or not the given frame number is covered by this frame range.
+     * Check wether or not the given frame index is covered by this frame range.
      *
      * @param int $frameNumber
      *

@@ -82,7 +82,8 @@ class VideoImporter
         $labelInstructions,
         $minimalVisibleShapeOverflow = null,
         $drawingTool = null,
-        $drawingToolOptions = array()
+        $drawingToolOptions = array(),
+        $frameStepSize = 1
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -110,25 +111,35 @@ class VideoImporter
         $tasks = [];
 
         for (
-            $startFrameNumber = 1;
-            $startFrameNumber <= $video->getMetaData()->numberOfFrames;
-            $startFrameNumber += $framesPerChunk
+            $startFrameIndex = 1;
+            $startFrameIndex <= $video->getMetaData()->numberOfFrames;
+            $startFrameIndex += $framesPerChunk
         ) {
-            $frameRange = new Model\FrameRange(
-                $startFrameNumber,
-                min($video->getMetaData()->numberOfFrames, $startFrameNumber + $framesPerChunk - 1)
+            $frameNumberMapping = range(
+                (int) $startFrameIndex,
+                (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1),
+                $frameStepSize
+            );
+            $frameRange = new Model\FrameNumberRange(
+                1,
+                $video->getMetaData()->numberOfFrames
+            );
+            $metadata = array(
+                'frameRange' => $frameRange,
+                'frameSkip' => $frameStepSize,
             );
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(
                     $video,
-                    $frameRange,
+                    $frameNumberMapping,
                     Model\LabelingTask::TYPE_META_LABELING,
                     null,
                     [],
                     $imageTypes,
                     null,
                     null,
-                    $drawingToolOptions
+                    $drawingToolOptions,
+                    $metadata
                 );
             }
 
@@ -136,14 +147,15 @@ class VideoImporter
                 foreach ($labelInstructions as $labelInstruction) {
                     $tasks[] = $this->addTask(
                         $video,
-                        $frameRange,
+                        $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         $drawingTool,
                         ['pedestrian'],
                         $imageTypes,
                         $labelInstruction,
                         $minimalVisibleShapeOverflow,
-                        $drawingToolOptions
+                        $drawingToolOptions,
+                        $metadata
                     );
                 }
             }
@@ -156,7 +168,7 @@ class VideoImporter
      * Add a LabelingTask
      *
      * @param Model\Video $video
-     * @param Model\FrameRange $frameRange
+     * @param $frameNumberMapping
      * @param string $taskType
      * @param string|null $drawingTool
      * @param string[] $predefinedClasses
@@ -164,24 +176,26 @@ class VideoImporter
      * @param                  $instruction
      * @param int|null $minimalVisibleShapeOverflow
      * @param $drawingToolOptions
+     * @param $metadata
      *
      * @return Model\LabelingTask
+     *
      */
     private function addTask(
         Model\Video $video,
-        Model\FrameRange $frameRange,
+        $frameNumberMapping,
         $taskType,
         $drawingTool,
         $predefinedClasses,
         $imageTypes,
         $instruction,
         $minimalVisibleShapeOverflow,
-        $drawingToolOptions
+        $drawingToolOptions,
+        $metadata
     ) {
-        $metadata     = $video->getMetaData();
         $labelingTask = new Model\LabelingTask(
             $video,
-            clone $frameRange,
+            $frameNumberMapping,
             $taskType,
             $drawingTool,
             $predefinedClasses,
@@ -200,6 +214,7 @@ class VideoImporter
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
+        $labelingTask->setMetaData($metadata);
 
         $this->labelingTaskFacade->save($labelingTask);
 

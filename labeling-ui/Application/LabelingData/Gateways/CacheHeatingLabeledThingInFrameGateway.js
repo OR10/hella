@@ -11,10 +11,11 @@ class CacheHeatingLabeledThingInFrameGateway extends CachingLabeledThingInFrameG
    * @param {AbortablePromiseFactory} abortable
    * @param {CacheService} cache
    * @param {LoggerService} logger
+   * @param {FrameIndexService} frameIndexService
    * @param {CacheHeaterService} cacheHeater
    */
-  constructor(apiService, bufferedHttp, $q, abortable, cache, logger, cacheHeater) {
-    super(apiService, bufferedHttp, $q, abortable, cache, logger);
+  constructor(apiService, bufferedHttp, $q, abortable, cache, logger, frameIndexService, cacheHeater) {
+    super(apiService, bufferedHttp, $q, abortable, cache, logger, frameIndexService);
 
     /**
      * @type {CacheHeaterService}
@@ -46,6 +47,7 @@ CacheHeatingLabeledThingInFrameGateway.$inject = [
   'abortablePromiseFactory',
   'cacheService',
   'loggerService',
+  'frameIndexService',
   'cacheHeaterService',
 ];
 

@@ -11,8 +11,17 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor($timeout, $scope, $state, modalService, applicationState, taskGateway, labeledThingGateway, labeledThingInFrameGateway) {
+  constructor($timeout,
+              $scope,
+              $state,
+              modalService,
+              applicationState,
+              taskGateway,
+              labeledThingGateway,
+              labeledThingInFrameGateway,
+              frameIndexService) {
     this._$timeout = $timeout;
     /**
      * @param {angular.$scope} $scope
@@ -57,9 +66,20 @@ class ViewerTitleBarController {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
+
+    /**
      * @type {string}
      */
     this.shapeBounds = null;
+
+    /**
+     * @type {{lowerLimit, upperLimit}|{lowerLimit: number, upperLimit: number}}
+     */
+    this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
 
     this.refreshIncompleteCount();
     $scope.$watch('vm.selectedPaperShape', () => this.refreshIncompleteCount());
@@ -124,16 +144,16 @@ class ViewerTitleBarController {
 
   handleIncompleteState() {
     if (this.task.taskType === 'object-labeling') {
-      this._labeledThingInFrameGateway.getNextIncomplete(this.task).then((result) => {
-        const nextIncomplete = result[0];
+      this._labeledThingInFrameGateway.getNextIncomplete(this.task).then(labeledThingsInFrames => {
+        const nextIncomplete = labeledThingsInFrames[0];
 
-        if (this.framePosition.position === nextIncomplete.frameNumber) {
+        if (this.framePosition.position === nextIncomplete.frameIndex) {
           this._selectLabeledThingInFrame(nextIncomplete);
         } else {
-          this.framePosition.registerOnFrameChangeOnce('selectNextIncomplete', () => {
+          this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
             this._selectLabeledThingInFrame(nextIncomplete);
           });
-          this.framePosition.goto(nextIncomplete.frameNumber);
+          this.framePosition.goto(nextIncomplete.frameIndex);
         }
       });
     }
@@ -182,7 +202,6 @@ class ViewerTitleBarController {
       });
     });
   }
-
 }
 
 ViewerTitleBarController.$inject = [
@@ -194,6 +213,7 @@ ViewerTitleBarController.$inject = [
   'taskGateway',
   'labeledThingGateway',
   'labeledThingInFrameGateway',
+  'frameIndexService',
 ];
 
 export default ViewerTitleBarController;

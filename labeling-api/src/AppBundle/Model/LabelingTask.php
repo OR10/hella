@@ -62,13 +62,6 @@ class LabelingTask
     private $descriptionText;
 
     /**
-     * @var FrameRange
-     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameRange")
-     * @Serializer\Groups({"statistics"})
-     */
-    private $frameRange;
-
-    /**
      * Required image types for this task in order of preference.
      *
      * @var array
@@ -139,44 +132,55 @@ class LabelingTask
     private $minimalVisibleShapeOverflow = null;
 
     /**
-     * @param Video      $video
-     * @param FrameRange $frameRange
-     * @param string     $taskType
-     * @param string     $drawingTool
-     * @param array      $predefinedClasses
-     * @param array      $requiredImageTypes
-     *
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $frameNumberMapping = array();
+
+    /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $metaData = array();
+
+    /**
+     * @param Video $video
+     * @param array $frameNumberMapping
+     * @param string $taskType
+     * @param string $drawingTool
+     * @param array $predefinedClasses
+     * @param array $requiredImageTypes
      * @return LabelingTask
      */
     public static function create(
         Video $video,
-        FrameRange $frameRange,
+        array $frameNumberMapping,
         $taskType,
         $drawingTool = null,
         $predefinedClasses = array(),
         array $requiredImageTypes = array()
     ) {
-        return new static($video, $frameRange, $taskType, $drawingTool, $predefinedClasses, $requiredImageTypes);
+        return new static($video, $frameNumberMapping, $taskType, $drawingTool, $predefinedClasses, $requiredImageTypes);
     }
 
     /**
-     * @param Video      $video
-     * @param FrameRange $frameRange
-     * @param string     $taskType
-     * @param string     $drawingTool
-     * @param array      $predefinedClasses
-     * @param array      $requiredImageTypes
+     * @param Video $video
+     * @param array $frameNumberMapping
+     * @param string $taskType
+     * @param string $drawingTool
+     * @param array $predefinedClasses
+     * @param array $requiredImageTypes
      */
     public function __construct(
         Video $video,
-        FrameRange $frameRange,
+        array $frameNumberMapping,
         $taskType,
         $drawingTool = null,
         $predefinedClasses = array(),
         array $requiredImageTypes = array()
     ) {
         $this->videoId            = $video->getId();
-        $this->frameRange         = clone $frameRange;
+        $this->frameNumberMapping = $frameNumberMapping;
         $this->taskType           = $taskType;
         $this->drawingTool        = $drawingTool;
         $this->predefinedClasses  = $predefinedClasses;
@@ -208,14 +212,6 @@ class LabelingTask
     public function getVideoId()
     {
         return $this->videoId;
-    }
-
-    /**
-     * @return FrameRange
-     */
-    public function getFrameRange()
-    {
-        return $this->frameRange ? clone $this->frameRange : null;
     }
 
     /**
@@ -422,5 +418,37 @@ class LabelingTask
     public function setDrawingToolOptions($drawingToolOptions)
     {
         $this->drawingToolOptions = $drawingToolOptions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFrameNumberMapping()
+    {
+        return $this->frameNumberMapping;
+    }
+
+    /**
+     * @param array $frameNumberMapping
+     */
+    public function setFrameNumberMapping($frameNumberMapping)
+    {
+        $this->frameNumberMapping = $frameNumberMapping;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetaData()
+    {
+        return $this->metaData;
+    }
+
+    /**
+     * @param array $metaData
+     */
+    public function setMetaData($metaData)
+    {
+        $this->metaData = $metaData;
     }
 }

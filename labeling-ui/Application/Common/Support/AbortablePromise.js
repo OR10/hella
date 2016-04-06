@@ -8,6 +8,8 @@ class AbortablePromise {
     const innerPromise = innerDeferred.promise;
 
     let hasBeenAborted = false;
+    let hasBeenHandled = false;
+    const abortedCallbacks = [];
 
     /**
      * Abort this promise chain
@@ -16,9 +18,16 @@ class AbortablePromise {
      */
     this.abort = () => {
       hasBeenAborted = true;
+
       if (parentAbortablePromise !== null) {
         parentAbortablePromise.abort();
       }
+
+      if (hasBeenHandled) {
+        return
+      }
+
+      abortedCallbacks.forEach(fn => fn());
       abortDeferred.resolve();
     };
 
@@ -26,11 +35,13 @@ class AbortablePromise {
     // Attach to the inputPromise chain
     inputPromise.then(result => {
       if (!hasBeenAborted) {
+        hasBeenHandled = true;
         innerDeferred.resolve(result);
       }
     })
     .catch(error => {
       if (!hasBeenAborted) {
+        hasBeenHandled = true;
         innerDeferred.reject(error);
       }
     });
@@ -61,6 +72,15 @@ class AbortablePromise {
       const newPromise = innerPromise.finally(...args);
       return new AbortablePromise($q, newPromise, abortDeferred, this);
     };
+
+    /**
+     * @param AbortablePromise#aborted
+     * @returns {AbortablePromise}
+     */
+    this.aborted = fn => {
+      abortedCallbacks.push(fn);
+      return this;
+    }
   }
 }
 

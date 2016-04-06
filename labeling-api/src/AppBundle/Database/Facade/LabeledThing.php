@@ -18,7 +18,7 @@ class LabeledThing
 
     /**
      * @param Model\LabeledThing $labeledThing
-     * @param int|null           $frameNumber
+     * @param int|null           $frameIndex
      * @param int                $offset
      * @param int                $limit
      *
@@ -26,23 +26,23 @@ class LabeledThing
      */
     public function getLabeledThingInFrames(
         Model\LabeledThing $labeledThing,
-        $frameNumber = null,
+        $frameIndex = null,
         $offset = 0,
         $limit = 0
     ) {
         $frameRange = $labeledThing->getFrameRange();
 
-        if ($frameNumber !== null) {
+        if ($frameIndex !== null) {
             $frameRange = $frameRange->createSubRangeForOffsetAndLimit(
-                $frameNumber - $frameRange->getStartFrameNumber() + $offset,
+                $frameIndex - $frameRange->getStartFrameIndex() + $offset,
                 $limit
             );
         }
 
         return $this->documentManager
-            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameNumber')
-            ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameNumber()])
-            ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameNumber()])
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex')
+            ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameIndex()])
+            ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameIndex()])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

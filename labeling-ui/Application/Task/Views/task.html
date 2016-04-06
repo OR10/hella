@@ -72,14 +72,14 @@
             viewport="vm.viewerViewport"
             hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
             new-shape-drawing-tool="vm.newShapeDrawingTool"
-            bookmarked-frame-number="vm.bookmarkedFrameNumber"
+            bookmarked-frame-index="vm.bookmarkedFrameIndex"
             fps="vm.fps"
             frame-skip="vm.frameSkip"
             read-only="{{vm.task.readOnly}}"
             thing-layer="vm.thingLayer"
     ></viewer>
     <div class="grid-block small-6 sidebar-right ">
-        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarWorking" block-interaction="true"
+        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarShowBackdrop" block-interaction="true"
                       spinner="vm.rightSidebarWorking"></loading-mask>
         <label-selector class="grid-block"
                         labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
@@ -107,7 +107,7 @@
                 hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
                 new-shape-drawing-tool="vm.newShapeDrawingTool"
                 video="vm.video"
-                bookmarked-frame-number="vm.bookmarkedFrameNumber"
+                bookmarked-frame-index="vm.bookmarkedFrameIndex"
 ></media-controls>
 
 <div class="thumbnail-zone grid-block">
