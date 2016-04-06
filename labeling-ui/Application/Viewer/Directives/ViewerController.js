@@ -566,7 +566,7 @@ class ViewerController {
       this._keyboardShortcutService,
       this._logger,
       this._$timeout,
-      this.framePosition,
+      this.framePosition
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
