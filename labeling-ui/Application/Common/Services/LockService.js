@@ -43,8 +43,8 @@ class LockService {
     return lock;
   }
 
-  createRefCountLock(onReleased) {
-    return new ReferenceCountingLock(this._$q, onReleased);
+  createRefCountLock(onAcquired, onReleased) {
+    return new ReferenceCountingLock(this._$q, onAcquired, onReleased);
   }
 }
 
