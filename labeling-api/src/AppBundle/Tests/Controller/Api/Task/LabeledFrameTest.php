@@ -195,7 +195,7 @@ class LabeledFrameTest extends Tests\WebTestCase
 
     public function testGetMultipleLabeledFramesWithoutAnyExistingLabeledFrames()
     {
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 8])
             ->setParameters([
                 'offset' => 0,
                 'limit'  => 3,
@@ -206,9 +206,9 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->assertEquals(
             [
                 'result' => [
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 8)),
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 9)),
                     $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 10)),
-                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 11)),
-                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 12)),
                 ],
             ],
             $request->getJsonResponseBody()
@@ -217,9 +217,9 @@ class LabeledFrameTest extends Tests\WebTestCase
 
     public function testGetMultipleLabeledFramesWithSomeExistingLabeledFrames()
     {
-        $labeledFrame11 = $this->createLabeledFrame($this->task, 11);
-        $labeledFrame13 = $this->createLabeledFrame($this->task, 13);
-        $request        = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+        $labeledFrame1 = $this->createLabeledFrame($this->task, 1);
+        $labeledFrame3 = $this->createLabeledFrame($this->task, 3);
+        $request        = $this->createRequest(self::ROUTE, [$this->task->getId(), 0])
             ->setParameters([
                 'offset' => 0,
                 'limit'  => 4,
@@ -230,10 +230,10 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->assertEquals(
             [
                 'result' => [
-                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 10)),
-                    $this->serializeObjectAsArray($labeledFrame11),
-                    $this->serializeObjectAsArray($labeledFrame11->copyToFrameIndex(12)),
-                    $this->serializeObjectAsArray($labeledFrame13),
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 0)),
+                    $this->serializeObjectAsArray($labeledFrame1),
+                    $this->serializeObjectAsArray($labeledFrame1->copyToFrameIndex(2)),
+                    $this->serializeObjectAsArray($labeledFrame3),
                 ],
             ],
             $request->getJsonResponseBody()

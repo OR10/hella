@@ -133,7 +133,7 @@ class LabelingTask
      */
     public function getCurrentOrPreceedingLabeledFrame(Model\LabelingTask $task, $frameIndex)
     {
-        $startFrameIndex = min($task->getFrameNumberMapping());
+        $startFrameIndex = min(array_keys($task->getFrameNumberMapping()));
         $endFrameIndex   = $frameIndex;
 
         if ($startFrameIndex > $endFrameIndex) {
