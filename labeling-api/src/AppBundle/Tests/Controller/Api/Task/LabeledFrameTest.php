@@ -195,7 +195,7 @@ class LabeledFrameTest extends Tests\WebTestCase
 
     public function testGetMultipleLabeledFramesWithoutAnyExistingLabeledFrames()
     {
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 8])
             ->setParameters([
                 'offset' => 0,
                 'limit'  => 3,
@@ -206,9 +206,9 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->assertEquals(
             [
                 'result' => [
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 8)),
+                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 9)),
                     $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 10)),
-                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 11)),
-                    $this->serializeObjectAsArray(Model\LabeledFrame::create($this->task, 12)),
                 ],
             ],
             $request->getJsonResponseBody()
