@@ -133,7 +133,6 @@ class FramePosition {
     });
     this._subscribers.after.oneTime = {};
 
- HEAD
     // Trigger all reapeated subscribers
     Object.keys(this._subscribers.after.always).forEach((name) => {
       this._subscribers.after.always[name](this._position);
