@@ -22,14 +22,14 @@
 /**
  * {@link FrameRange} to be taken from the Video for this specific task.
  *
- * @name Task#meta.frameRange
+ * @name Task#metaData.frameRange
  * @type {FrameRange}
  */
 
 /**
  * Meta information to be used for categorizing/displaying this task.
  *
- * @name Task#meta
+ * @name Task#metaData
  * @type {Object}
  */
 

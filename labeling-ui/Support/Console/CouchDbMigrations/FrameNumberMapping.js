@@ -7,9 +7,11 @@ class FrameNumberMapping extends AbstractSimpleMigration {
 
   migrateTask(task) {
     const frameCount = task.frameRange.endFrameNumber - task.frameRange.startFrameNumber + 1;
+
     const frameNumberMapping = new Array(frameCount).map(
       (_, index) => task.frameRange.startFrameNumber + index
     );
+    task.frameNumberMapping = frameNumberMapping;
 
     task.metaData = {
       frameRange: task.frameRange,

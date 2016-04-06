@@ -30,7 +30,7 @@
                         {{task.video.name}}
                     </td>
                     <td>
-                        {{task.meta.frameRange.startFrameNumber}}-{{task.meta.frameRange.endFrameNumber}}
+                        {{task.metaData.frameRange.startFrameNumber}}-{{task.metaData.frameRange.endFrameNumber}}
                     </td>
                 </tr>
                 <tr ng-show="!vm.preprocessingTasks.length"
@@ -66,7 +66,7 @@
                         {{task.video.name}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">
-                        {{task.meta.frameRange.startFrameNumber}}-{{task.meta.frameRange.endFrameNumber}}
+                        {{task.metaData.frameRange.startFrameNumber}}-{{task.metaData.frameRange.endFrameNumber}}
                     </td>
                     <td>
                         <button ng-click="vm.removeAssignment(task, vm.user)"
@@ -107,7 +107,7 @@
                         {{task.video.name}}
                     </td>
                     <td>
-                        {{task.meta.frameRange.startFrameNumber}}-{{task.meta.frameRange.endFrameNumber}}
+                        {{task.metaData.frameRange.startFrameNumber}}-{{task.metaData.frameRange.endFrameNumber}}
                     </td>
                 </tr>
                 <tr ng-show="!unassignedTasks.length"
@@ -143,7 +143,7 @@
                         {{task.video.name}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">
-                        {{task.meta.frameRange.startFrameNumber}}-{{task.meta.frameRange.endFrameNumber}}
+                        {{task.metaData.frameRange.startFrameNumber}}-{{task.metaData.frameRange.endFrameNumber}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">{{task.user.username}}</td>
                     <td ng-show="vm.userPermissions.unassignPermission">
@@ -187,7 +187,7 @@
                         {{task.video.name}}
                     </td>
                     <td ui-sref="^.task({taskId: task.id})">
-                        {{task.meta.frameRange.startFrameNumber}}-{{task.meta.frameRange.endFrameNumber}}
+                        {{task.metaData.frameRange.startFrameNumber}}-{{task.metaData.frameRange.endFrameNumber}}
 
                     </td>
                     <td class="btn-column">
