@@ -147,6 +147,18 @@ Start a new export job for the K.I.T.T.I. Object Detection Benchmark format.
 + Response 201 (application/json)
     + Attributes (Export Started Message)
 
+## CSV Export [/api/task/{taskId}/export/csv]
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Start a CSV export job [POST]
+
+Start a new csv export job.
+
++ Response 201 (application/json)
+    + Attributes (Export Started Message)
+
 ## Task exports [/api/task/{taskId}/export]
 
 + Parameters

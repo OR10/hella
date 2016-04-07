@@ -45,7 +45,7 @@ class CsvTest extends Tests\KernelTestCase
         $this->exporter                  = $this->getAnnostationService('service.task_exporter.csv');
     }
 
-    public function taskAndLabeledThingInFrameProvider()
+    public function taskAndLabeledThingInFrameVehicleDataProvider()
     {
         return array(
             array(
@@ -127,15 +127,87 @@ class CsvTest extends Tests\KernelTestCase
         );
     }
 
+    public function taskAndLabeledThingInFramePedestrianDataProvider()
+    {
+        return array(
+            array(
+                1,
+                5,
+                array(
+                    array(
+                        'frameIndex'  => 0,
+                        'type'        => 'pedestrian',
+                        'classes'     => array(
+                            'occlusion-25',
+                            'truncation-25-50',
+                            'direction-left',
+                        ),
+                        'shapes'      => array(
+                            array(
+                                'id'          => 'shape 1',
+                                'type'        => 'pedestrian',
+                                'topCenter'     => array('x' => 531, 'y' => 301),
+                                'bottomCenter' => array('x' => 617, 'y' => 382),
+                            ),
+                        ),
+                    ),
+                    array(
+                        'frameIndex'  => 1,
+                        'type'        => 'pedestrian',
+                        'classes'     => array(
+                            'occlusion-0',
+                            'truncation-25',
+                            'direction-front-left',
+                        ),
+                        'shapes'      => array(
+                            array(
+                                'id'          => 'shape 2',
+                                'type'        => 'pedestrian',
+                                'topCenter'     => array('x' => 363, 'y' => 165),
+                                'bottomCenter' => array('x' => 363, 'y' => 578),
+                            ),
+                        ),
+                    ),
+                ),
+                array(
+                    array(
+                        'id'           => 1,
+                        'frame_number' => 1,
+                        'label_class'  => 'person',
+                        'direction'    => 'left',
+                        'occlusion'    => '25',
+                        'truncation'   => '25-50',
+                        'position_x'   => 514,
+                        'position_y'   => 301,
+                        'width'        => 33,
+                        'height'       => 81,
+                    ),
+                    array(
+                        'id'           => 2,
+                        'frame_number' => 2,
+                        'label_class'  => 'person',
+                        'direction'    => 'front-left',
+                        'occlusion'    => '0',
+                        'truncation'   => '25',
+                        'position_x'   => 278,
+                        'position_y'   => 165,
+                        'width'        => 169,
+                        'height'       => 413,
+                    ),
+                ),
+            ),
+        );
+    }
+
     /**
-     * @dataProvider taskAndLabeledThingInFrameProvider
+     * @dataProvider taskAndLabeledThingInFrameVehicleDataProvider
      *
      * @param $frameRangeStart
      * @param $frameRangeEnd
      * @param $labeledThingInFrames
      * @param $expected
      */
-    public function testCsvExport($frameRangeStart, $frameRangeEnd, $labeledThingInFrames, $expected)
+    public function testVehicleCsvExport($frameRangeStart, $frameRangeEnd, $labeledThingInFrames, $expected)
     {
         $task = $this->createLabelingTask(range($frameRangeStart, $frameRangeEnd));
         foreach ($labeledThingInFrames as $labeledThingInFrame) {
@@ -151,6 +223,34 @@ class CsvTest extends Tests\KernelTestCase
         $this->assertEquals(
             $expected,
             $this->exporter->getVehicleLabelingData($task)
+        );
+    }
+
+    /**
+     * @dataProvider taskAndLabeledThingInFramePedestrianDataProvider
+     *
+     * @param $frameRangeStart
+     * @param $frameRangeEnd
+     * @param $labeledThingInFrames
+     * @param $expected
+     */
+    public function testPedestrianCsvExport($frameRangeStart, $frameRangeEnd, $labeledThingInFrames, $expected)
+    {
+        $task = $this->createLabelingTask(range($frameRangeStart, $frameRangeEnd));
+        $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_PERSON);
+        foreach ($labeledThingInFrames as $labeledThingInFrame) {
+            $this->createLabeledThingInFrame(
+                $task,
+                $labeledThingInFrame['frameIndex'],
+                $labeledThingInFrame['type'],
+                $labeledThingInFrame['classes'],
+                $labeledThingInFrame['shapes']
+            );
+        }
+
+        $this->assertEquals(
+            $expected,
+            $this->exporter->getPedestrianLabelingData($task)
         );
     }
 
