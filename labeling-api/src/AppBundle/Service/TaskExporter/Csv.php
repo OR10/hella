@@ -85,7 +85,13 @@ class Csv implements Service\TaskExporter
                 throw new Exception\Csv(sprintf('Unable to open zip archive at "%s"', $zipFilename));
             }
 
-            $data = $this->getVehicleLabelingData($task);
+            switch ($task->getLabelInstruction()) {
+                case 'vehicle':
+                    $data = $this->getVehicleLabelingData($task);
+                    break;
+                case 'person':
+                    $data = $this->getPedestrianLabelingData($task);
+            }
 
             $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
 
@@ -110,7 +116,9 @@ class Csv implements Service\TaskExporter
                 throw new Exception\Csv(sprintf('Unable to read file at "%s"', $zipFilename));
             }
 
-            $taskExport = new Model\TaskExport($task, 'csv.zip', 'application/zip', $result);
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+
+            $taskExport = new Model\TaskExport($task, sprintf('csv_%s.zip', $date->format('Ymd_His')), 'application/zip', $result);
             $this->taskExportFacade->save($taskExport);
 
             if (!unlink($zipFilename)) {
@@ -128,11 +136,41 @@ class Csv implements Service\TaskExporter
     }
 
     /**
+     * Get the pedestrian labeling data
+     *
      * @param Model\LabelingTask $task
      */
     public function getPedestrianLabelingData(Model\LabelingTask $task)
     {
-        // TODO: Implement method.
+        $idCounter = 0;
+
+        $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
+        $frameNumberMapping                    = $task->getFrameNumberMapping();
+        $labelInstruction                      = $task->getLabelInstruction();
+
+        return array_map(
+            function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping, $labelInstruction) {
+                $idCounter++;
+
+                $direction   = $this->getClassByRegex('/^(direction-(\w+|(\w+-\w+)))$/', 2, $labeledThingInFrame);
+                $occlusion   = $this->getClassByRegex('/^(occlusion-(\d{2}|(\d{2}-\d{2})))$/', 2, $labeledThingInFrame);
+                $truncation  = $this->getClassByRegex('/^(truncation-(\d{2}|\d{2}-\d{2}))$/', 2, $labeledThingInFrame);
+
+                return array(
+                    'id'           => $idCounter,
+                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'label_class'  => $labelInstruction,
+                    'direction'    => $direction,
+                    'occlusion'    => $occlusion,
+                    'truncation'   => $truncation,
+                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                );
+            },
+            $labeledThingsInFramesWithGhostClasses
+        );
     }
 
     /**
@@ -218,6 +256,14 @@ class Csv implements Service\TaskExporter
                     'y' => (int)round($shape->getTop()),
                 );
                 break;
+            case 'pedestrian':
+                $heightHalf = ($shape->getBottomCenterY() - $shape->getTopCenterY()) / 2;
+                $widthHalf  = $heightHalf * 0.41;
+                return array(
+                    'x' => (int) ($shape->getTopCenterX() - $widthHalf),
+                    'y' => (int) $shape->getTopCenterY(),
+                );
+                break;
             default:
                 return array(
                     'x' => 'NAN',
@@ -248,6 +294,14 @@ class Csv implements Service\TaskExporter
                 return array(
                     'width'  => (int)round($shape->getWidth()),
                     'height' => (int)round($shape->getHeight()),
+                );
+                break;
+            case 'pedestrian':
+                $heightHalf = ($shape->getBottomCenterY() - $shape->getTopCenterY()) / 2;
+                $widthHalf  = $heightHalf * 0.41;
+                return array(
+                    'width'  => (int)round($widthHalf*2),
+                    'height' => (int)round(($shape->getBottomCenterY() - $shape->getTopCenterY())),
                 );
                 break;
             default:
