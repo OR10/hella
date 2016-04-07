@@ -153,8 +153,8 @@ class Csv implements Service\TaskExporter
                 $idCounter++;
 
                 $direction   = $this->getClassByRegex('/^(direction-(\w+|(\w+-\w+)))$/', 2, $labeledThingInFrame);
-                $occlusion   = $this->getClassByRegex('/^(occlusion-(\d{2}|(\d{2}-\d{2})))$/', 2, $labeledThingInFrame);
-                $truncation  = $this->getClassByRegex('/^(truncation-(\d{2}|\d{2}-\d{2}))$/', 2, $labeledThingInFrame);
+                $occlusion   = $this->getClassByRegex('/^(occlusion-(\d{1,2}|(\d{1,2}-\d{1,2})))$/', 2, $labeledThingInFrame);
+                $truncation  = $this->getClassByRegex('/^(truncation-(\d{1,2}|\d{1,2}-\d{1,2}))$/', 2, $labeledThingInFrame);
 
                 return array(
                     'id'           => $idCounter,

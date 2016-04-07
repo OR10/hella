@@ -155,7 +155,7 @@ class CsvTest extends Tests\KernelTestCase
                         'frameIndex'  => 1,
                         'type'        => 'pedestrian',
                         'classes'     => array(
-                            'occlusion-50',
+                            'occlusion-0',
                             'truncation-25',
                             'direction-front-left',
                         ),
@@ -187,7 +187,7 @@ class CsvTest extends Tests\KernelTestCase
                         'frame_number' => 2,
                         'label_class'  => 'person',
                         'direction'    => 'front-left',
-                        'occlusion'    => '50',
+                        'occlusion'    => '0',
                         'truncation'   => '25',
                         'position_x'   => 278,
                         'position_y'   => 165,
