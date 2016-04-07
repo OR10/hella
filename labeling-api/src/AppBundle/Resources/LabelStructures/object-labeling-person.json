@@ -5,6 +5,9 @@
       "name": "occlusion",
       "children": [
         {
+          "name": "occlusion-0"
+        },
+        {
           "name": "occlusion-25"
         },
         {
@@ -18,6 +21,9 @@
     {
       "name": "truncation",
       "children": [
+        {
+          "name": "truncation-0"
+        },
         {
           "name": "truncation-25"
         },

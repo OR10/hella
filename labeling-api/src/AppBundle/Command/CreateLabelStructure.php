@@ -88,6 +88,10 @@ class CreateLabelStructure extends Base
 
         $occlusions = array(
             array(
+                'name' => 'occlusion-0',
+                'response' => '0%'
+            ),
+            array(
                 'name' => 'occlusion-20',
                 'response' => '< 20%'
             ),
@@ -102,6 +106,10 @@ class CreateLabelStructure extends Base
         );
 
         $truncations = array(
+            array(
+                'name' => 'truncation-0',
+                'response' => '0%'
+            ),
             array(
                 'name' => 'truncation-20',
                 'response' => '< 20%'
@@ -189,6 +197,10 @@ class CreateLabelStructure extends Base
 
         $truncations = array(
             array(
+                'name' => 'truncation-0',
+                'response' => '0%',
+            ),
+            array(
                 'name' => 'truncation-25',
                 'response' => '< 25%',
             ),
@@ -203,6 +215,10 @@ class CreateLabelStructure extends Base
         );
 
         $occlusions = array(
+            array(
+                'name' => 'occlusion-0',
+                'response' => '0%',
+            ),
             array(
                 'name' => 'occlusion-25',
                 'response' => '< 25%',
@@ -236,11 +252,11 @@ class CreateLabelStructure extends Base
         );
 
         file_put_contents(
-            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-pedestrian.json'),
+            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-person.json'),
             json_encode($this->buildBackendLabelStructure($data))
         );
         file_put_contents(
-            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-pedestrian-ui.json'),
+            sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-person-ui.json'),
             json_encode($this->buildFrontendLabelStructure($data))
         );
     }
