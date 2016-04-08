@@ -11,6 +11,7 @@
             <argument>%user_password%</argument>
             <argument>%cache_dir%</argument>
             <argument>%frame_cdn_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <tag name="console.command"/>
         </service>
 
