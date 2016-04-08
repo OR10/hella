@@ -17,6 +17,11 @@ class KittiTest extends Tests\KernelTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -39,6 +44,7 @@ class KittiTest extends Tests\KernelTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
@@ -58,9 +64,14 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithOneLabeledThingInOneFrame()
     {
         $task = $this->createLabelingTask(range(0, 8));
-        $this->createLabeledThingInFrame($task, 0, 'pedestrian', [
-            new Shapes\Rectangle('test', 10, 10, 100, 100),
-        ]);
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'pedestrian',
+            [
+                new Shapes\Rectangle('test', 10, 10, 100, 100),
+            ]
+        );
 
         $this->assertEquals(
             [
@@ -81,10 +92,15 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithOneLabeledThingWithMultipleShapesInOneFrame()
     {
         $task = $this->createLabelingTask(range(0, 8));
-        $this->createLabeledThingInFrame($task, 0, 'cyclist', [
-            new Shapes\Rectangle('test', 10, 10, 100, 100),
-            new Shapes\Rectangle('test', 5, 5, 150, 150),
-        ]);
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'cyclist',
+            [
+                new Shapes\Rectangle('test', 10, 10, 100, 100),
+                new Shapes\Rectangle('test', 5, 5, 150, 150),
+            ]
+        );
 
         $this->assertEquals(
             [
@@ -105,14 +121,24 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithTwoLabeledThingsWithMultipleShapesInOneFrame()
     {
         $task = $this->createLabelingTask(range(0, 8));
-        $this->createLabeledThingInFrame($task, 0, 'car', [
-            new Shapes\Rectangle('test', 10, 10, 100, 100),
-            new Shapes\Rectangle('test', 5, 5, 150, 150),
-        ]);
-        $this->createLabeledThingInFrame($task, 0, 'pedestrian', [
-            new Shapes\Rectangle('test', 300, 10, 400, 100),
-            new Shapes\Rectangle('test', 290, 5, 350, 95),
-        ]);
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'car',
+            [
+                new Shapes\Rectangle('test', 10, 10, 100, 100),
+                new Shapes\Rectangle('test', 5, 5, 150, 150),
+            ]
+        );
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'pedestrian',
+            [
+                new Shapes\Rectangle('test', 300, 10, 400, 100),
+                new Shapes\Rectangle('test', 290, 5, 350, 95),
+            ]
+        );
 
         $this->assertEquals(
             [
@@ -138,9 +164,14 @@ class KittiTest extends Tests\KernelTestCase
         $task = $this->createLabelingTask(range(0, 8));
 
         foreach (range(4, 8) as $frameNumber) {
-            $this->createLabeledThingInFrame($task, $frameNumber, 'pedestrian', [
-                new Shapes\Rectangle('test', 10, 10, 100, 100),
-            ]);
+            $this->createLabeledThingInFrame(
+                $task,
+                $frameNumber,
+                'pedestrian',
+                [
+                    new Shapes\Rectangle('test', 10, 10, 100, 100),
+                ]
+            );
         }
 
         $this->assertEquals(
@@ -162,9 +193,14 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithEllipseShapeInOneFrame()
     {
         $task = $this->createLabelingTask(range(0, 0));
-        $this->createLabeledThingInFrame($task, 0, 'car', [
-            new Shapes\Ellipse('test', 10, 10, 100, 10),
-        ]);
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'car',
+            [
+                new Shapes\Ellipse('test', 10, 10, 100, 10),
+            ]
+        );
 
         $this->assertEquals(
             [
@@ -177,14 +213,21 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithPolygonShapeInOneFrame()
     {
         $task = $this->createLabelingTask(range(0, 0));
-        $this->createLabeledThingInFrame($task, 0, 'car', [
-            new Shapes\Polygon('test', [
-                ['x' =>   7, 'y' =>   8],
-                ['x' =>  17, 'y' =>  28],
-                ['x' =>  -7, 'y' =>  -8],
-                ['x' => 107, 'y' => 308],
-            ]),
-        ]);
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'car',
+            [
+                new Shapes\Polygon(
+                    'test', [
+                    ['x' => 7, 'y' => 8],
+                    ['x' => 17, 'y' => 28],
+                    ['x' => -7, 'y' => -8],
+                    ['x' => 107, 'y' => 308],
+                ]
+                ),
+            ]
+        );
 
         $this->assertEquals(
             [
@@ -197,14 +240,21 @@ class KittiTest extends Tests\KernelTestCase
     public function testExportingTaskWithIncompleteLabeledThingsInFrame()
     {
         $task = $this->createLabelingTask(range(0, 0));
-        $this->createLabeledThingInFrame($task, 0, 'car', [
-            new Shapes\Polygon('test', [
-                ['x' =>   7, 'y' =>   8],
-                ['x' =>  17, 'y' =>  28],
-                ['x' =>  -7, 'y' =>  -8],
-                ['x' => 107, 'y' => 308],
-            ]),
-        ]);
+        $this->createLabeledThingInFrame(
+            $task,
+            0,
+            'car',
+            [
+                new Shapes\Polygon(
+                    'test', [
+                    ['x' => 7, 'y' => 8],
+                    ['x' => 17, 'y' => 28],
+                    ['x' => -7, 'y' => -8],
+                    ['x' => 107, 'y' => 308],
+                ]
+                ),
+            ]
+        );
         $incompleteThing = $this->createLabeledThingInFrame($task, 0, null, [], true);
 
         $this->assertEquals(
@@ -219,6 +269,7 @@ class KittiTest extends Tests\KernelTestCase
      * Create a labeling task in the database.
      *
      * @param array $frameNumberMapping
+     *
      * @return Model\LabelingTask
      */
     private function createLabelingTask(array $frameNumberMapping)
@@ -226,6 +277,7 @@ class KittiTest extends Tests\KernelTestCase
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('test video')),
+                $this->projectFacade->save(Model\Project::create('test project')),
                 $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
@@ -243,7 +295,9 @@ class KittiTest extends Tests\KernelTestCase
         array $shapes = [],
         $incomplete = false
     ) {
-        $frameRange = new Model\FrameIndexRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping()));
+        $frameRange   = new Model\FrameIndexRange(
+            min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
+        );
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
                 ->setFrameRange($frameRange)
@@ -275,7 +329,7 @@ class KittiTest extends Tests\KernelTestCase
         foreach ($input as $frameNumber => $entries) {
             usort(
                 $entries,
-                function($a, $b) {
+                function ($a, $b) {
                     $aBoundingBox = $a->getBoundingBox();
                     $bBoundingBox = $b->getBoundingBox();
 

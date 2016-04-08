@@ -92,6 +92,15 @@ class User
     }
 
     /**
+     * @param $token
+     * @return FosUserModel\UserInterface
+     */
+    public function getUserByToken($token)
+    {
+        return $this->userManager->findUserBy(array('token' => $token));
+    }
+
+    /**
      * @return \Traversable
      */
     public function getUserList()

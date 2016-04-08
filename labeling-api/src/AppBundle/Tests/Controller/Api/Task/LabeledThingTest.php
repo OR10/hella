@@ -20,6 +20,11 @@ class LabeledThingTest extends Tests\WebTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -61,12 +66,14 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ROUTE, [$task->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->setJsonBody([
-                'id' => '11aa239108f1419967ed8d6a1f5a765t',
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'id'         => '11aa239108f1419967ed8d6a1f5a765t',
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -77,15 +84,16 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $response = $this->createRequest(self::ROUTE, ['casacsgaaasfcxbx'])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->setJsonBody([
-                'id' => '11aa239108f1419967ed8d6a1f5a765t',
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'id'         => '11aa239108f1419967ed8d6a1f5a765t',
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
-
 
         $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
@@ -97,12 +105,14 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->setJsonBody([
-                'rev' => $labeledThing->getRev(),
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'rev'        => $labeledThing->getRev(),
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -119,16 +129,18 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->setJsonBody([
-                'rev' => $labeledThing->getRev(),
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'frameRange' => array(
-                    'startFrameIndex' => 10,
-                    'endFrameIndex' => 10,
-                ),
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'rev'        => $labeledThing->getRev(),
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'frameRange' => array(
+                        'startFrameIndex' => 10,
+                        'endFrameIndex'   => 10,
+                    ),
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -141,7 +153,8 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals($labeledThingInFrameInRange, $labeledThingsInFrame[0]);
     }
 
-    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameIndexIfLabeledThingDoesNotYetExistForStartFrameIndex()
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameIndexIfLabeledThingDoesNotYetExistForStartFrameIndex(
+    )
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
@@ -149,16 +162,18 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->setJsonBody([
-                'rev' => $labeledThing->getRev(),
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'frameRange' => array(
-                    'startFrameIndex' => 10,
-                    'endFrameIndex' => 10,
-                ),
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'rev'        => $labeledThing->getRev(),
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'frameRange' => array(
+                        'startFrameIndex' => 10,
+                        'endFrameIndex'   => 10,
+                    ),
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -171,7 +186,8 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals($labeledThingInFrame, $labeledThingsInFrame[0]);
     }
 
-    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameIndexIfLabeledThingDoesNotYetExistForEndFrameIndex()
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameIndexIfLabeledThingDoesNotYetExistForEndFrameIndex(
+    )
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
@@ -179,16 +195,18 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->setJsonBody([
-                'rev' => $labeledThing->getRev(),
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'frameRange' => array(
-                    'startFrameIndex' => 10,
-                    'endFrameIndex' => 10,
-                ),
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'rev'        => $labeledThing->getRev(),
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'frameRange' => array(
+                        'startFrameIndex' => 10,
+                        'endFrameIndex'   => 10,
+                    ),
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -208,12 +226,14 @@ class LabeledThingTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->setJsonBody([
-                'rev' => '324jh2jk4hkh234h',
-                'classes' => array('class1' => 'test'),
-                'incomplete' => true,
-                'lineColor' => 'blue',
-            ])
+            ->setJsonBody(
+                [
+                    'rev'        => '324jh2jk4hkh234h',
+                    'classes'    => array('class1' => 'test'),
+                    'incomplete' => true,
+                    'lineColor'  => 'blue',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -238,6 +258,7 @@ class LabeledThingTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
@@ -250,8 +271,10 @@ class LabeledThingTest extends Tests\WebTestCase
     private function createLabelingTask($startRange = 10, $endRange = 20)
     {
         $video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $task = Model\LabelingTask::create(
+        $project = $this->projectFacade->save(Model\Project::create('test project'));
+        $task  = Model\LabelingTask::create(
             $video,
+            $project,
             range($startRange, $endRange),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
@@ -270,6 +293,7 @@ class LabeledThingTest extends Tests\WebTestCase
             )
         );
         $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_PERSON);
+
         return $this->labelingTaskFacade->save($task);
     }
 

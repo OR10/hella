@@ -15,6 +15,11 @@ class InterpolationTest extends Tests\KernelTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -37,6 +42,7 @@ class InterpolationTest extends Tests\KernelTestCase
     public function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
@@ -53,24 +59,26 @@ class InterpolationTest extends Tests\KernelTestCase
 
     public function testEmittedLabeledThingsInFrameArePersisted()
     {
-        $status = new Model\Interpolation\Status();
-        $labeledThing = $this->createLabeledThing();
+        $status               = new Model\Interpolation\Status();
+        $labeledThing         = $this->createLabeledThing();
         $labeledThingsInFrame = [];
 
         foreach (range(3, 4) as $frameIndex) {
-            $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
+            $labeledThingInFrame    = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
             $labeledThingsInFrame[] = $labeledThingInFrame;
         }
 
         $algorithm = $this->getMockBuilder(Service\Interpolation\Algorithm::class)->getMock();
         $algorithm->method('getName')->willReturn('test');
         $algorithm->method('interpolate')->will(
-            $this->returnCallback(function($labeledThing, $frameRange, $emit) use (&$labeledThingsInFrame, $status) {
-                $this->assertEquals(Model\Interpolation\Status::RUNNING, $status->getStatus());
-                foreach ($labeledThingsInFrame as $labeledThingInFrame) {
-                    $emit($labeledThingInFrame);
+            $this->returnCallback(
+                function ($labeledThing, $frameRange, $emit) use (&$labeledThingsInFrame, $status) {
+                    $this->assertEquals(Model\Interpolation\Status::RUNNING, $status->getStatus());
+                    foreach ($labeledThingsInFrame as $labeledThingInFrame) {
+                        $emit($labeledThingInFrame);
+                    }
                 }
-            })
+            )
         );
 
         $this->interpolationService->addAlgorithm($algorithm);
@@ -90,10 +98,12 @@ class InterpolationTest extends Tests\KernelTestCase
         $task = $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('Testvideo')),
+                $this->projectFacade->save(Model\Project::create('test project')),
                 range(1, 10),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );
+
         return $this->labeledThingFacade->save(Model\LabeledThing::create($task));
     }
 }

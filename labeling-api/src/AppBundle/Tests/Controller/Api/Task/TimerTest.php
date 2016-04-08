@@ -16,6 +16,11 @@ class TimerTest extends Tests\WebTestCase
      * @var Facade\Video
      */
     private $videoFacade;
+    
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
 
     /**
      * @var Facade\LabelingTask
@@ -36,6 +41,11 @@ class TimerTest extends Tests\WebTestCase
      * @var Model\Video
      */
     private $video;
+    
+    /**
+     * @var Model\Project
+     */
+    private $project;
 
     /**
      * @var Model\LabelingTask
@@ -133,6 +143,7 @@ class TimerTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade        = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade        = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
 
         $userManipulator = $this->getService('fos_user.util.user_manipulator');
@@ -145,8 +156,10 @@ class TimerTest extends Tests\WebTestCase
             ->create('someOtherUser', 'someOtherPassword', 'some@other.email', true, false);
 
         $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
         $task = Model\LabelingTask::create(
             $this->video,
+            $this->project,
             range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );

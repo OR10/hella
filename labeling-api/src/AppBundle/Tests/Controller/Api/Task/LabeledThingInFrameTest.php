@@ -22,6 +22,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -41,6 +46,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
      */
     private $video;
 
+    /**
+     * @var Model\Project
+     */
+    private $project;
+    
     /**
      * @var Model\LabelingTask
      */
@@ -63,19 +73,20 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testGetLabeledThingsInFrameForMultipleFramesWithoutAnyLabeledThingsInFrame()
     {
         $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
-            ->setParameters([
-                'labeledThings' => true,
-                'offset' => 0,
-                'limit' => 3
-            ])
+            ->setParameters(
+                [
+                    'labeledThings' => true,
+                    'offset'        => 0,
+                    'limit'         => 3,
+                ]
+            )
             ->execute();
-
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
         $this->assertEquals(
             [
                 'result' => [
-                    'labeledThings' => [],
+                    'labeledThings'        => [],
                     'labeledThingsInFrame' => [],
                 ],
             ],
@@ -91,20 +102,21 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $anotherLabeledThingInFrame = $this->createLabeledInFrameDocument($anotherLabeledThing, 12);
 
         $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
-            ->setParameters([
-                'labeledThings' => true,
-                'offset' => 0,
-                'limit' => 3
-            ])
+            ->setParameters(
+                [
+                    'labeledThings' => true,
+                    'offset'        => 0,
+                    'limit'         => 3,
+                ]
+            )
             ->execute();
-
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
         $this->assertEquals(
             [
                 'result' => [
-                    'labeledThings' => [
-                        $aLabeledThing->getId() => $this->objectToArray($aLabeledThing),
+                    'labeledThings'        => [
+                        $aLabeledThing->getId()       => $this->objectToArray($aLabeledThing),
                         $anotherLabeledThing->getId() => $this->objectToArray($anotherLabeledThing),
                     ],
                     'labeledThingsInFrame' => [
@@ -136,11 +148,13 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $labeledThingInFrame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->setJsonBody([
-                'labeledThingId' => $labeledThing->getId(),
-                'classes' => array('class1' => 'test'),
-                'shapes'  => array('shape1' => 'test'),
-            ])
+            ->setJsonBody(
+                [
+                    'labeledThingId' => $labeledThing->getId(),
+                    'classes'        => array('class1' => 'test'),
+                    'shapes'         => array('shape1' => 'test'),
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -154,11 +168,13 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $labeledThingInFrame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->setJsonBody([
-                'labeledThingId' => $labeledThing->getId(),
-                'classes' => 'invalid_class_string',
-                'shapes'  => 'invalid_shapes_string',
-            ])
+            ->setJsonBody(
+                [
+                    'labeledThingId' => $labeledThing->getId(),
+                    'classes'        => 'invalid_class_string',
+                    'shapes'         => 'invalid_shapes_string',
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -172,10 +188,12 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ROUTE, [111111, $labeledThingInFrame->getFrameIndex()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->setJsonBody([
-                'classes' => array('class1' => 'test'),
-                'shapes'  => array('shape1' => 'test'),
-            ])
+            ->setJsonBody(
+                [
+                    'classes' => array('class1' => 'test'),
+                    'shapes'  => array('shape1' => 'test'),
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -189,11 +207,13 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $response = $this->createRequest(self::ROUTE, [$this->task->getId(), 12345])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->setJsonBody([
-                'labeledThingId' => $labeledThing->getId(),
-                'classes' => array('class1' => 'test'),
-                'shapes'  => array('shape1' => 'test'),
-            ])
+            ->setJsonBody(
+                [
+                    'labeledThingId' => $labeledThing->getId(),
+                    'classes'        => array('class1' => 'test'),
+                    'shapes'         => array('shape1' => 'test'),
+                ]
+            )
             ->execute()
             ->getResponse();
 
@@ -202,15 +222,17 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testGetGhostedLabeledThingInFrames()
     {
-        $labeledThing                = $this->createLabeledThingDocument($this->task);
+        $labeledThing               = $this->createLabeledThingDocument($this->task);
         $labeledThingInFrameIndex10 = $this->createLabeledInFrameDocument($labeledThing, 10);
         $labeledThingInFrameIndex11 = $this->createLabeledInFrameDocument($labeledThing, 11);
 
         $request = $this->createRequest(self::GHOSTS_ROUTE, [$this->task->getId(), 11, $labeledThing->getId()])
-            ->setParameters([
-                'offset' => -2,
-                'limit' => 3,
-            ])
+            ->setParameters(
+                [
+                    'offset' => -2,
+                    'limit'  => 3,
+                ]
+            )
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $request->getResponse()->getStatusCode());
@@ -218,39 +240,39 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             array(
                 'result' => array(
                     array(
-                        'id' => null,
-                        'rev' => null,
-                        'frameIndex' => 9,
-                        'classes' => array(),
-                        'shapes' => array(),
+                        'id'             => null,
+                        'rev'            => null,
+                        'frameIndex'     => 9,
+                        'classes'        => array(),
+                        'shapes'         => array(),
                         'labeledThingId' => $labeledThingInFrameIndex10->getLabeledThingId(),
-                        'incomplete' => true,
-                        'ghost' => true,
-                        'ghostClasses' => null,
+                        'incomplete'     => true,
+                        'ghost'          => true,
+                        'ghostClasses'   => null,
                     ),
                     array(
-                        'id' => $labeledThingInFrameIndex10->getId(),
-                        'rev' => $labeledThingInFrameIndex10->getRev(),
-                        'frameIndex' => 10,
-                        'classes' => array(),
-                        'shapes' => array(),
+                        'id'             => $labeledThingInFrameIndex10->getId(),
+                        'rev'            => $labeledThingInFrameIndex10->getRev(),
+                        'frameIndex'     => 10,
+                        'classes'        => array(),
+                        'shapes'         => array(),
                         'labeledThingId' => $labeledThingInFrameIndex10->getLabeledThingId(),
-                        'incomplete' => true,
-                        'ghost' => false,
-                        'ghostClasses' => null,
+                        'incomplete'     => true,
+                        'ghost'          => false,
+                        'ghostClasses'   => null,
                     ),
                     array(
-                        'id' => $labeledThingInFrameIndex11->getId(),
-                        'rev' => $labeledThingInFrameIndex11->getRev(),
-                        'frameIndex' => 11,
-                        'classes' => array(),
-                        'shapes' => array(),
+                        'id'             => $labeledThingInFrameIndex11->getId(),
+                        'rev'            => $labeledThingInFrameIndex11->getRev(),
+                        'frameIndex'     => 11,
+                        'classes'        => array(),
+                        'shapes'         => array(),
                         'labeledThingId' => $labeledThingInFrameIndex11->getLabeledThingId(),
-                        'incomplete' => true,
-                        'ghost' => false,
-                        'ghostClasses' => null,
+                        'incomplete'     => true,
+                        'ghost'          => false,
+                        'ghostClasses'   => null,
                     ),
-                )
+                ),
             ),
             $request->getJsonResponseBody()
         );
@@ -259,6 +281,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade                = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade              = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade         = $this->getAnnostationService('database.facade.labeling_task');
         $this->labelingThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labelingThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
@@ -268,9 +291,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $user->addRole(Model\User::ROLE_ADMIN);
 
-        $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $task = Model\LabelingTask::create(
+        $this->video   = $this->videoFacade->save(Model\Video::create('foobar'));
+        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
+        $task          = Model\LabelingTask::create(
             $this->video,
+            $this->project,
             range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );

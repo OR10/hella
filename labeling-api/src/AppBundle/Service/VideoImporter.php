@@ -12,6 +12,11 @@ use crosscan\WorkerPool;
 class VideoImporter
 {
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\Video
      */
     private $videoFacade;
@@ -37,19 +42,24 @@ class VideoImporter
     private $facadeAMQP;
 
     /**
+     * @param Facade\Project               $projectFacade
      * @param Facade\Video                 $videoFacade
      * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
      * @param Video\VideoFrameSplitter     $frameCdnSplitter
      * @param WorkerPool\Facade            $facadeAMQP
+     *
+     * @internal param Facade\Project $project
      */
     public function __construct(
+        Facade\Project $projectFacade,
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
         WorkerPool\Facade $facadeAMQP
     ) {
+        $this->projectFacade      = $projectFacade;
         $this->videoFacade        = $videoFacade;
         $this->metaDataReader     = $metaDataReader;
         $this->frameCdnSplitter   = $frameCdnSplitter;
@@ -59,6 +69,7 @@ class VideoImporter
 
     /**
      * @param string      $name The name for the video (usually the basename).
+     * @param string      $projectName
      * @param string      $path The filesystem path to the video file.
      * @param bool        $lossless Wether or not the UI should use lossless compressed images.
      * @param int         $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
@@ -77,6 +88,7 @@ class VideoImporter
      */
     public function import(
         $name,
+        $projectName,
         $path,
         $lossless = false,
         $splitLength = 0,
@@ -93,6 +105,12 @@ class VideoImporter
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         $this->videoFacade->save($video, $path);
 
+        $project = $this->projectFacade->findByName($projectName);
+        if ($project === null) {
+            $project = new Model\Project($projectName);
+            $this->projectFacade->save($project);
+        }
+
         $imageTypes = $this->getImageTypes($lossless);
 
         foreach ($imageTypes as $imageTypeName) {
@@ -102,6 +120,7 @@ class VideoImporter
                 $video->getId(),
                 $video->getSourceVideoPath(),
                 ImageType\Base::create($imageTypeName)
+
             );
 
             $this->facadeAMQP->addJob($job);
@@ -135,9 +154,11 @@ class VideoImporter
                 'frameSkip'        => $frameSkip,
                 'startFrameNumber' => $startFrame,
             );
+
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(
                     $video,
+                    $project,
                     $frameNumberMapping,
                     Model\LabelingTask::TYPE_META_LABELING,
                     null,
@@ -154,6 +175,7 @@ class VideoImporter
                 foreach ($labelInstructions as $labelInstruction) {
                     $tasks[] = $this->addTask(
                         $video,
+                        $project,
                         $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         $drawingTool,
@@ -175,6 +197,7 @@ class VideoImporter
      * Add a LabelingTask
      *
      * @param Model\Video      $video
+     * @param Model\Project    $project
      * @param                  $frameNumberMapping
      * @param string           $taskType
      * @param string|null      $drawingTool
@@ -186,10 +209,10 @@ class VideoImporter
      * @param                  $metadata
      *
      * @return Model\LabelingTask
-     *
      */
     private function addTask(
         Model\Video $video,
+        Model\Project $project,
         $frameNumberMapping,
         $taskType,
         $drawingTool,
@@ -202,6 +225,7 @@ class VideoImporter
     ) {
         $labelingTask = new Model\LabelingTask(
             $video,
+            $project,
             $frameNumberMapping,
             $taskType,
             $drawingTool,

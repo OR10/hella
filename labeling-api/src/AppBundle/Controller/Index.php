@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
+use AppBundle\Database\Facade;
 use AppBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Bridge\Twig;
@@ -30,15 +31,23 @@ class Index extends Base
     private $videoImporterService;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @param Twig\TwigEngine       $twigEngine
      * @param Service\VideoImporter $videoImporterService
+     * @param Facade\Project        $projectFacade
      */
     public function __construct(
         Twig\TwigEngine $twigEngine,
-        Service\VideoImporter $videoImporterService
+        Service\VideoImporter $videoImporterService,
+        Facade\Project $projectFacade
     ) {
         $this->twigEngine           = $twigEngine;
         $this->videoImporterService = $videoImporterService;
+        $this->projectFacade        = $projectFacade;
     }
 
     /**
@@ -55,7 +64,20 @@ class Index extends Base
      */
     public function uploadGetAction(HttpFoundation\Request $request)
     {
-        return new Response($this->twigEngine->render('AppBundle:default:uploadForm.html.twig'));
+        $viewData                 = array();
+        $viewData['projectNames'] = array_map(
+            function (Model\Project $project) {
+                return $project->getName();
+            },
+            $this->projectFacade->findAll()
+        );
+
+        return new Response(
+            $this->twigEngine->render(
+                'AppBundle:default:uploadForm.html.twig',
+                $viewData
+            )
+        );
     }
 
     /**
@@ -63,6 +85,7 @@ class Index extends Base
      * @Configuration\Method({"POST"})
      *
      * @param HttpFoundation\Request $request
+     *
      * @return Response
      */
     public function uploadPostAction(HttpFoundation\Request $request)
@@ -72,18 +95,20 @@ class Index extends Base
         /**
          * @var UploadedFile $file
          */
-        $file = $request->files->get('file');
-        $splitLength = $request->request->getInt('splitLength', 0);
-        $lossless = $request->request->get('lossless', false);
-        $objectLabeling = $request->request->get('object-labeling', false);
-        $metaLabeling = $request->request->get('meta-labeling', false);
-        $overflow = (bool)$request->request->get('overflow', false);
-        $drawingTool = $request->request->get('drawingTool', 'rectangle');
+        $file               = $request->files->get('file');
+        $projectName        = $request->request->get('project');
+        $splitLength        = $request->request->getInt('splitLength', 0);
+        $lossless           = $request->request->get('lossless', false);
+        $objectLabeling     = $request->request->get('object-labeling', false);
+        $metaLabeling       = $request->request->get('meta-labeling', false);
+        $overflow           = (bool) $request->request->get('overflow', false);
+        $drawingTool        = $request->request->get('drawingTool', 'rectangle');
         $drawingToolOptions = array(
             'pedestrian' => array(
-                'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22')
-            )
+                'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22'),
+            ),
         );
+
         $frameStepSize = $request->request->get('frameStepSize', 1);
         $startFrame = $request->request->get('startFrame', 1);
 
@@ -106,11 +131,21 @@ class Index extends Base
             throw new Exception\BadRequestHttpException();
         }
 
+        $viewData['projectNames'] = array_map(
+            function (Model\Project $project) {
+                return $project->getName();
+            },
+            $this->projectFacade->findAll()
+        );
+
         if ($file === null) {
-            $viewData['error'] = 'No file given';
+            $viewData['error'] = 'No file given.';
+        } else if (empty($projectName)) {
+            $viewData['error'] = 'No Project specified.';
         } else {
             $tasks = $this->videoImporterService->import(
                 $file->getClientOriginalName(),
+                $projectName,
                 $file,
                 $lossless,
                 $splitLength,
@@ -125,7 +160,7 @@ class Index extends Base
             );
 
             $viewData['taskIds'] = array_map(
-                function ($task) {
+                function (Model\LabelingTask $task) {
                     return $task->getId();
                 },
                 $tasks

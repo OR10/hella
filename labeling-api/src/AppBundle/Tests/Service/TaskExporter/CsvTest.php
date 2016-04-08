@@ -17,6 +17,11 @@ class CsvTest extends Tests\KernelTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -39,6 +44,7 @@ class CsvTest extends Tests\KernelTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
@@ -53,9 +59,9 @@ class CsvTest extends Tests\KernelTestCase
                 5,
                 array(
                     array(
-                        'frameIndex'  => 0,
-                        'type'        => 'vehicle',
-                        'classes'     => array(
+                        'frameIndex' => 0,
+                        'type'       => 'vehicle',
+                        'classes'    => array(
                             'vehicle-type',
                             'truck',
                             'direction',
@@ -65,7 +71,7 @@ class CsvTest extends Tests\KernelTestCase
                             'truncation',
                             'truncation-20-80',
                         ),
-                        'shapes'      => array(
+                        'shapes'     => array(
                             array(
                                 'id'          => 'shape 1',
                                 'type'        => 'rectangle',
@@ -75,9 +81,9 @@ class CsvTest extends Tests\KernelTestCase
                         ),
                     ),
                     array(
-                        'frameIndex'  => 1,
-                        'type'        => 'vehicle',
-                        'classes'     => array(
+                        'frameIndex' => 1,
+                        'type'       => 'vehicle',
+                        'classes'    => array(
                             'vehicle-type',
                             'car',
                             'direction',
@@ -87,7 +93,7 @@ class CsvTest extends Tests\KernelTestCase
                             'truncation',
                             'truncation-20',
                         ),
-                        'shapes'      => array(
+                        'shapes'     => array(
                             array(
                                 'id'          => 'shape 2',
                                 'type'        => 'rectangle',
@@ -135,35 +141,35 @@ class CsvTest extends Tests\KernelTestCase
                 5,
                 array(
                     array(
-                        'frameIndex'  => 0,
-                        'type'        => 'pedestrian',
-                        'classes'     => array(
+                        'frameIndex' => 0,
+                        'type'       => 'pedestrian',
+                        'classes'    => array(
                             'occlusion-25',
                             'truncation-25-50',
                             'direction-left',
                         ),
-                        'shapes'      => array(
+                        'shapes'     => array(
                             array(
-                                'id'          => 'shape 1',
-                                'type'        => 'pedestrian',
-                                'topCenter'     => array('x' => 531, 'y' => 301),
+                                'id'           => 'shape 1',
+                                'type'         => 'pedestrian',
+                                'topCenter'    => array('x' => 531, 'y' => 301),
                                 'bottomCenter' => array('x' => 617, 'y' => 382),
                             ),
                         ),
                     ),
                     array(
-                        'frameIndex'  => 1,
-                        'type'        => 'pedestrian',
-                        'classes'     => array(
+                        'frameIndex' => 1,
+                        'type'       => 'pedestrian',
+                        'classes'    => array(
                             'occlusion-0',
                             'truncation-25',
                             'direction-front-left',
                         ),
-                        'shapes'      => array(
+                        'shapes'     => array(
                             array(
-                                'id'          => 'shape 2',
-                                'type'        => 'pedestrian',
-                                'topCenter'     => array('x' => 363, 'y' => 165),
+                                'id'           => 'shape 2',
+                                'type'         => 'pedestrian',
+                                'topCenter'    => array('x' => 363, 'y' => 165),
                                 'bottomCenter' => array('x' => 363, 'y' => 578),
                             ),
                         ),
@@ -258,6 +264,7 @@ class CsvTest extends Tests\KernelTestCase
      * Create a labeling task in the database.
      *
      * @param array $frameNumberMapping
+     *
      * @return Model\LabelingTask
      *
      */
@@ -266,6 +273,7 @@ class CsvTest extends Tests\KernelTestCase
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->videoFacade->save(Model\Video::create('test video')),
+                $this->projectFacade->save(Model\Project::create('test project')),
                 $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
@@ -277,11 +285,11 @@ class CsvTest extends Tests\KernelTestCase
      * the database.
      *
      * @param Model\LabelingTask $task
-     * @param $frameIndex
-     * @param null $type
-     * @param array $classes
-     * @param array $shapes
-     * @param bool $incomplete
+     * @param                    $frameIndex
+     * @param null               $type
+     * @param array              $classes
+     * @param array              $shapes
+     * @param bool               $incomplete
      *
      * @return Model\LabeledThingInFrame
      */
@@ -301,7 +309,7 @@ class CsvTest extends Tests\KernelTestCase
                         $frameIndex
                     )
                 )
-                ->setClasses($type === null ? [] : [(string)$type])
+                ->setClasses($type === null ? [] : [(string) $type])
         );
 
         return $this->labeledThingInFrameFacade->save(

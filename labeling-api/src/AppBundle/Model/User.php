@@ -22,6 +22,11 @@ class User extends BaseUser
      */
     protected $id;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $token;
+
     public function __construct()
     {
         parent::__construct();

@@ -19,6 +19,10 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.project" class="AppBundle\Database\Facade\Project">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
         <service id="annostation.labeling_api.database.facade.labeling_task" class="AppBundle\Database\Facade\LabelingTask">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>

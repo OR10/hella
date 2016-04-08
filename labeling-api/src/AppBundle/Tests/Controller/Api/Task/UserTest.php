@@ -18,6 +18,11 @@ class UserTest extends Tests\WebTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -55,8 +60,9 @@ class UserTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $this->videoFacade               = $this->getAnnostationService('database.facade.video');
-        $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
+        $this->videoFacade        = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade      = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
     }
 
     private function createUser(
@@ -75,12 +81,15 @@ class UserTest extends Tests\WebTestCase
     private function createLabelingTask($startRange = 10, $endRange = 20)
     {
         $video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $task = Model\LabelingTask::create(
+        $project = $this->projectFacade->save(Model\Project::create('test project'));
+        $task  = Model\LabelingTask::create(
             $video,
+            $project,
             range($startRange, $endRange),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+
         return $this->labelingTaskFacade->save($task);
     }
 }
