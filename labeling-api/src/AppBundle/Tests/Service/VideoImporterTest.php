@@ -53,10 +53,10 @@ class VideoImporterTest extends Tests\KernelTestCase
             ->getMock();
 
         $cacheFilesystemAdapter = new \League\Flysystem\Adapter\Local('/tmp/labeling-api-test/cache');
-        $cacheFilesystem = new \League\Flysystem\Filesystem($cacheFilesystemAdapter);
+        $cacheFilesystem        = new \League\Flysystem\Filesystem($cacheFilesystemAdapter);
 
         $frameCdnFilesystemAdapter = new \League\Flysystem\Adapter\Local('/tmp/labeling-api-test/frameCdn');
-        $frameCdnFilesystem = new \League\Flysystem\Filesystem($frameCdnFilesystemAdapter);
+        $frameCdnFilesystem        = new \League\Flysystem\Filesystem($frameCdnFilesystemAdapter);
 
         $this->getContainer()->set(
             sprintf(self::ANNOSTATION_SERVICE_PATTERN, 'vendor.worker_pool.amqp'),
@@ -93,10 +93,10 @@ class VideoImporterTest extends Tests\KernelTestCase
     {
         $tasks = $this->importVideo($chunkSizeInSeconds = 3, null, array('foo' => 'bar'));
         $this->assertCount(4, $tasks);
-        $this->assertEquals(array_combine(range(0,  74), range( 1,  75)), $tasks[0]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range(0,  74), range( 1,  75)), $tasks[1]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range(0,  56), range( 76,  132)), $tasks[2]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range(0,  56), range( 76,  132)), $tasks[3]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 74), range(1, 75)), $tasks[0]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 74), range(1, 75)), $tasks[1]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 56), range(76, 132)), $tasks[2]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 56), range(76, 132)), $tasks[3]->getFrameNumberMapping());
     }
 
     public function testVideoImporterCreatesMetaAndObjectLabelingTasksForEachChunkWithRoundedFrameIndexPerChunk()
@@ -115,7 +115,8 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->assertEquals(array_combine(range( 0,  7),range(125, 132)), $tasks[9]->getFrameNumberMapping());
     }
 
-    public function testVideoImporterProperlySetsMinimalVisibleShapeOverflow() {
+    public function testVideoImporterProperlySetsMinimalVisibleShapeOverflow()
+    {
         $tasks = $this->importVideo(0, 16, array('foo' => 'bar'));
 
         $this->assertEquals(2, count($tasks));
@@ -183,15 +184,19 @@ class VideoImporterTest extends Tests\KernelTestCase
         $startFrameNumber = 1
     ) {
         $jobs = [];
-        $this->workerPoolFacade->expects($this->any())->method('addJob')->with($this->callback(
-            function($job) use (&$jobs) {
-                if ($job instanceof Jobs\VideoFrameSplitter) {
-                    $jobs[] = $job;
-                    return true;
+        $this->workerPoolFacade->expects($this->any())->method('addJob')->with(
+            $this->callback(
+                function ($job) use (&$jobs) {
+                    if ($job instanceof Jobs\VideoFrameSplitter) {
+                        $jobs[] = $job;
+
+                        return true;
+                    }
+
+                    return false;
                 }
-                return false;
-            }
-        ));
+            )
+        );
 
         $tasks = $this->videoImporterService->import(
             'testVideo',
