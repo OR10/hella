@@ -85,6 +85,7 @@ class Index extends Base
             )
         );
         $frameStepSize = $request->request->get('frameStepSize', 1);
+        $startFrame = $request->request->get('startFrame', 1);
 
         //Label instructions
         $labelInstructions = array();
@@ -119,7 +120,8 @@ class Index extends Base
                 $overflow ? 16 : null,
                 $drawingTool,
                 $drawingToolOptions,
-                $frameStepSize
+                $frameStepSize,
+                $startFrame
             );
 
             $viewData['taskIds'] = array_map(

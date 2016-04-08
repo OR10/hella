@@ -83,7 +83,8 @@ class VideoImporter
         $minimalVisibleShapeOverflow = null,
         $drawingTool = null,
         $drawingToolOptions = array(),
-        $frameStepSize = 1
+        $frameSkip = 1,
+        $startFrame = 1
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -103,30 +104,33 @@ class VideoImporter
             $this->facadeAMQP->addJob($job);
         }
 
-        $framesPerChunk = $video->getMetaData()->numberOfFrames;
+        $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
         if ($splitLength > 0) {
-            $framesPerChunk = min($framesPerChunk, round($splitLength * $video->getMetaData()->fps));
+            $framesPerVideoChunk = min($framesPerVideoChunk, round($splitLength * $video->getMetaData()->fps));
         }
 
         $tasks = [];
 
-        for (
-            $startFrameIndex = 1;
-            $startFrameIndex <= $video->getMetaData()->numberOfFrames;
-            $startFrameIndex += $framesPerChunk
-        ) {
-            $frameNumberMapping = range(
-                (int) $startFrameIndex,
-                (int) min($video->getMetaData()->numberOfFrames, $startFrameIndex + $framesPerChunk - 1),
-                $frameStepSize
-            );
+        $videoFrameMapping = range(
+            (int) $startFrame,
+            (int) $video->getMetaData()->numberOfFrames,
+            $frameSkip
+        );
+
+        $frameMappingChunks = [];
+        while (count($videoFrameMapping) > 0) {
+            $frameMappingChunks[] = array_splice($videoFrameMapping, 0, round($framesPerVideoChunk / $frameSkip));
+        }
+
+        foreach ($frameMappingChunks as $frameNumberMapping) {
             $frameRange = new Model\FrameNumberRange(
                 1,
                 $video->getMetaData()->numberOfFrames
             );
-            $metadata = array(
-                'frameRange' => $frameRange,
-                'frameSkip' => $frameStepSize,
+            $metadata   = array(
+                'frameRange'       => $frameRange,
+                'frameSkip'        => $frameSkip,
+                'startFrameNumber' => $startFrame,
             );
             if ($isMetaLabeling) {
                 $tasks[] = $this->addTask(
