@@ -4,6 +4,7 @@ namespace AppBundle\Tests\Controller\Api\Task;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Service;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use Symfony\Component\HttpFoundation;
@@ -16,6 +17,11 @@ class InterpolateTest extends Tests\WebTestCase
      * @var Facade\Video
      */
     private $videoFacade;
+
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
 
     /**
      * @var Facade\LabelingTask
@@ -36,6 +42,11 @@ class InterpolateTest extends Tests\WebTestCase
      * @var Model\Video
      */
     private $video;
+
+    /**
+     * @var Model\Project
+     */
+    private $project;
 
     /**
      * @var Model\LabelingTask
@@ -72,6 +83,7 @@ class InterpolateTest extends Tests\WebTestCase
         $otherTask = $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $this->video,
+                $this->project,
                 range(1, 10),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
@@ -98,6 +110,7 @@ class InterpolateTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade          = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade        = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade   = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade   = $this->getAnnostationService('database.facade.labeled_thing');
         $this->interpolationService = $this->getAnnostationService('service.interpolation');
@@ -106,14 +119,16 @@ class InterpolateTest extends Tests\WebTestCase
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $user->addRole(Model\User::ROLE_ADMIN);
 
-        $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
-        $task = Model\LabelingTask::create(
+        $this->video   = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
+        $task          = Model\LabelingTask::create(
             $this->video,
+            $this->project,
             range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
         $task->setStatus(Model\LabelingTask::STATUS_WAITING);
-        $this->task = $this->labelingTaskFacade->save($task);
+        $this->task         = $this->labelingTaskFacade->save($task);
         $this->labeledThing = $this->labeledThingFacade->save(Model\LabeledThing::create($this->task));
     }
 }

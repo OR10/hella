@@ -18,6 +18,11 @@ class LabeledFrameTest extends Tests\WebTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -31,6 +36,11 @@ class LabeledFrameTest extends Tests\WebTestCase
      * @var Model\Video
      */
     private $video;
+
+    /**
+     * @var Model\Project
+     */
+    private $project;
 
     /**
      * @var Model\LabelingTask
@@ -243,6 +253,7 @@ class LabeledFrameTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade        = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade        = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledFrameFacade = $this->getAnnostationService('database.facade.labeled_frame');
 
@@ -251,8 +262,10 @@ class LabeledFrameTest extends Tests\WebTestCase
         $user->addRole(Model\User::ROLE_ADMIN);
 
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
+        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
         $task = Model\LabelingTask::create(
             $this->video,
+            $this->project,
             range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );

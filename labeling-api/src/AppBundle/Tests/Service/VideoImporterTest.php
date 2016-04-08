@@ -18,6 +18,11 @@ class VideoImporterTest extends Tests\KernelTestCase
     private $videoFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -67,6 +72,7 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->getContainer()->set('oneup_flysystem.frame_cdn_filesystem', $frameCdnFilesystem);
 
         $this->videoFacade                   = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade                 = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade            = $this->getAnnostationService('database.facade.labeling_task');
         $this->videoImporterService          = $this->getAnnostationService('service.video_importer');
         $this->videoFrameSplitterInstruction = $this->getAnnostationService('worker.job_instruction.video');
@@ -103,16 +109,16 @@ class VideoImporterTest extends Tests\KernelTestCase
     {
         $tasks = $this->importVideo($chunkSizeInSeconds = 1.23, null, array('foo' => 'bar'));
         $this->assertCount(10, $tasks);
-        $this->assertEquals(array_combine(range(0,  30),range(1,  31)), $tasks[0]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range(0,  30),range(1,  31)), $tasks[1]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range(0,  30),range(32,  62)), $tasks[2]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range(0,  30),range(32,  62)), $tasks[3]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range( 0,  30),range( 63,  93)), $tasks[4]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range( 0,  30),range( 63,  93)), $tasks[5]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range( 0,  30),range( 94, 124)), $tasks[6]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range( 0,  30),range( 94, 124)), $tasks[7]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range( 0,  7),range(125, 132)), $tasks[8]->getFrameNumberMapping());
-        $this->assertEquals(array_combine(range( 0,  7),range(125, 132)), $tasks[9]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(1, 31)), $tasks[0]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(1, 31)), $tasks[1]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(32, 62)), $tasks[2]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(32, 62)), $tasks[3]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(63, 93)), $tasks[4]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(63, 93)), $tasks[5]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(94, 124)), $tasks[6]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 30), range(94, 124)), $tasks[7]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 7), range(125, 132)), $tasks[8]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 7), range(125, 132)), $tasks[9]->getFrameNumberMapping());
     }
 
     public function testVideoImporterProperlySetsMinimalVisibleShapeOverflow()
@@ -200,6 +206,7 @@ class VideoImporterTest extends Tests\KernelTestCase
 
         $tasks = $this->videoImporterService->import(
             'testVideo',
+            'testProject',
             $this->getTestVideoPath(),
             false,
             $chunkSizeInSeconds,
