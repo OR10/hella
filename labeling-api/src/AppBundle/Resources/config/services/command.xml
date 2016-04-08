@@ -19,10 +19,6 @@
             <argument type="service" id="annostation.labeling_api.service.video_importer" />
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.import_videos_command" class="AppBundle\Command\ImportVideos">
-            <argument type="service" id="annostation.labeling_api.service.video_importer" />
-            <tag name="console.command"/>
-        </service>
 
         <service id="annostation.labeling_api.command.worker_starter" class="AppBundle\Command\WorkerStarter">
             <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
