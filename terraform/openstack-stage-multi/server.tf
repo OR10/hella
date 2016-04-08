@@ -32,6 +32,7 @@ resource "null_resource" "provisioning" {
     provisioner "remote-exec" {
         inline = [
             "echo '${module.app.ipv4_address} app' >> /etc/hosts",
+            "echo '${module.app.ipv4_address} app' >> /etc/cloud/templates/hosts.debian.tmpl",
         ]
         connection {
             host = "${module.mysql.ipv4_address}"
