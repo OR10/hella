@@ -127,8 +127,61 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->assertEquals(16, $tasks[1]->getMinimalVisibleShapeOverflow());
     }
 
-    private function importVideo($chunkSizeInSeconds = 0, $minimalVisibleShapeOverflow = null, $drawingToolOptions)
+    public function testVideoImporterUsesFrameStepSizeCorrectly()
     {
+        $tasks = $this->importVideo(
+            $chunkSizeInSeconds = 1.23,
+            null,
+            array('foo' => 'bar'),
+            $frameStepSize = 2
+        );
+        $this->assertCount(10, $tasks);
+        $this->assertEquals(array_combine(range(0, 15), range(1, 31, 2)), $tasks[0]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(1, 31, 2)), $tasks[1]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 15), range(33, 63, 2)), $tasks[2]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(33, 63, 2)), $tasks[3]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 15), range(65, 95, 2)), $tasks[4]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(65, 95, 2)), $tasks[5]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 15), range(97, 127, 2)), $tasks[6]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(97, 127, 2)), $tasks[7]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 1), range(129, 131, 2)), $tasks[8]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 1), range(129, 131, 2)), $tasks[9]->getFrameNumberMapping());
+    }
+
+    public function testVideoImporterUsesFrameStepSizeAndFrameSkipCorrectly()
+    {
+        $tasks = $this->importVideo(
+            $chunkSizeInSeconds = 1.23,
+            null,
+            array('foo' => 'bar'),
+            $frameStepSize = 2,
+            $startFrameNumber = 5
+        );
+        $this->assertCount(8, $tasks);
+        $this->assertEquals(array_combine(range(0, 15), range(5, 35, 2)), $tasks[0]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(5, 35, 2)), $tasks[1]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 15), range(37, 67, 2)), $tasks[2]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(37, 67, 2)), $tasks[3]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 15), range(69, 99, 2)), $tasks[4]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(69, 99, 2)), $tasks[5]->getFrameNumberMapping());
+
+        $this->assertEquals(array_combine(range(0, 15), range(101, 131, 2)), $tasks[6]->getFrameNumberMapping());
+        $this->assertEquals(array_combine(range(0, 15), range(101, 131, 2)), $tasks[7]->getFrameNumberMapping());
+    }
+
+    private function importVideo(
+        $chunkSizeInSeconds = 0,
+        $minimalVisibleShapeOverflow = null,
+        $drawingToolOptions = array(),
+        $frameStepSize = 1,
+        $startFrameNumber = 1
+    ) {
         $jobs = [];
         $this->workerPoolFacade->expects($this->any())->method('addJob')->with($this->callback(
             function($job) use (&$jobs) {
@@ -149,7 +202,10 @@ class VideoImporterTest extends Tests\KernelTestCase
             true,
             array(Model\LabelingTask::INSTRUCTION_PERSON),
             $minimalVisibleShapeOverflow,
-            $drawingToolOptions
+            null,
+            $drawingToolOptions,
+            $frameStepSize,
+            $startFrameNumber
         );
 
         // Currently, we expect on meta- and one object-labeling task per video.
