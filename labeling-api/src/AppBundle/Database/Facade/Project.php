@@ -50,7 +50,7 @@ class Project
         $result = $this->documentManager
             ->createQuery('annostation_project', 'by_name')
             ->onlyDocs(true)
-            ->setKey($name)
+            ->setKey([$name])
             ->execute()
             ->toArray();
 

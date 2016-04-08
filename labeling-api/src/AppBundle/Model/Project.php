@@ -37,7 +37,7 @@ class Project
     }
 
     /**
-     * @param string $name The name of the video.
+     * @param string $name
      */
     public function __construct($name)
     {

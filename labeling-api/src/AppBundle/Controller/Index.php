@@ -96,7 +96,7 @@ class Index extends Base
          * @var UploadedFile $file
          */
         $file               = $request->files->get('file');
-        $projectName        = $request->files->get('project');
+        $projectName        = $request->request->get('project');
         $splitLength        = $request->request->getInt('splitLength', 0);
         $lossless           = $request->request->get('lossless', false);
         $objectLabeling     = $request->request->get('object-labeling', false);
@@ -139,7 +139,9 @@ class Index extends Base
         );
 
         if ($file === null) {
-            $viewData['error'] = 'No file given';
+            $viewData['error'] = 'No file given.';
+        } else if (empty($projectName)) {
+            $viewData['error'] = 'No Project specified.';
         } else {
             $tasks = $this->videoImporterService->import(
                 $file->getClientOriginalName(),
