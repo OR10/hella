@@ -115,5 +115,12 @@
         <service id="annostation.labeling_api.service.ghost_classes_propagation" class="AppBundle\Service\GhostClassesPropagation">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
         </service>
+
+        <service id="annostation.labeling_api.security.api_key_user_provider" class="AppBundle\Security\ApiKeyUserProvider">
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+        </service>
+
+        <service id="annostation.labeling_api.security.apikey_authenticator" class="AppBundle\Security\ApiKeyAuthenticator" public="true">
+        </service>
     </services>
 </container>
