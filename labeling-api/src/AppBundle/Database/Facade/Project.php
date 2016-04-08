@@ -1,0 +1,78 @@
+<?php
+namespace AppBundle\Database\Facade;
+
+use AppBundle\Model;
+use Doctrine\ODM\CouchDB;
+use JMS\Serializer\Exception\RuntimeException;
+
+class Project
+{
+    /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    public function __construct(CouchDB\DocumentManager $documentManager)
+    {
+        $this->documentManager = $documentManager;
+    }
+
+    /**
+     * @param $id
+     * @return Model\LabelingTask
+     */
+    public function find($id)
+    {
+        return $this->documentManager->find(Model\Project::class, $id);
+    }
+
+    /**
+     * @return Model\Project[]
+     */
+    public function findAll()
+    {
+        $resultSet = $this->documentManager
+            ->createQuery('annostation_project', 'by_name')
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+        
+        return $resultSet;
+    }
+    
+    /**
+     * @param string $name
+     *
+     * @return Model\Project
+     */
+    public function findByName($name)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_project', 'by_name')
+            ->onlyDocs(true)
+            ->setKey($name)
+            ->execute()
+            ->toArray();
+
+        if (count($result) < 1) {
+            return null;
+        } else if (count($result) > 1) {
+            throw new \RuntimeException('Non unique project name ' . $name . ' found.');
+        }
+        
+        return $result[0];
+    }
+    
+    /**
+     * @param Model\Project $project
+     *
+     * @return Model\Project
+     */
+    public function save(Model\Project $project)
+    {
+        $this->documentManager->persist($project);
+        $this->documentManager->flush();
+
+        return $project;
+    }
+}
