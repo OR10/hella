@@ -317,6 +317,7 @@ class Init extends Base
             );
             $this->videoImporterService->import(
                 'example.avi',
+                'Example Project',
                 $path,
                 $lossless,
                 0,
