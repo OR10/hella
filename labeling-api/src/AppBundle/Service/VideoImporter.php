@@ -58,16 +58,19 @@ class VideoImporter
     }
 
     /**
-     * @param string $name The name for the video (usually the basename).
-     * @param string $path The filesystem path to the video file.
-     * @param bool $lossless Wether or not the UI should use lossless compressed images.
-     * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param             $isObjectLabeling
-     * @param             $isMetaLabeling
-     * @param $labelInstructions
-     * @param int|null $minimalVisibleShapeOverflow
+     * @param string      $name The name for the video (usually the basename).
+     * @param string      $path The filesystem path to the video file.
+     * @param bool        $lossless Wether or not the UI should use lossless compressed images.
+     * @param int         $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param bool        $isObjectLabeling
+     * @param bool        $isMetaLabeling
+     * @param array       $labelInstructions
+     * @param int|null    $minimalVisibleShapeOverflow
      * @param string|null $drawingTool
-     * @param array $drawingToolOptions
+     * @param array       $drawingToolOptions
+     * @param int         $frameSkip
+     * @param int         $startFrame
+     *
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
@@ -171,16 +174,16 @@ class VideoImporter
     /**
      * Add a LabelingTask
      *
-     * @param Model\Video $video
-     * @param $frameNumberMapping
-     * @param string $taskType
-     * @param string|null $drawingTool
-     * @param string[] $predefinedClasses
+     * @param Model\Video      $video
+     * @param                  $frameNumberMapping
+     * @param string           $taskType
+     * @param string|null      $drawingTool
+     * @param string[]         $predefinedClasses
      * @param                  $imageTypes
      * @param                  $instruction
-     * @param int|null $minimalVisibleShapeOverflow
-     * @param $drawingToolOptions
-     * @param $metadata
+     * @param int|null         $minimalVisibleShapeOverflow
+     * @param                  $drawingToolOptions
+     * @param                  $metadata
      *
      * @return Model\LabelingTask
      *
