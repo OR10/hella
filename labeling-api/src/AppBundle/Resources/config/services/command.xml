@@ -11,14 +11,11 @@
             <argument>%user_password%</argument>
             <argument>%cache_dir%</argument>
             <argument>%frame_cdn_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <tag name="console.command"/>
         </service>
 
         <service id="annostation.labeling_api.command.import_video_command" class="AppBundle\Command\ImportVideo">
-            <argument type="service" id="annostation.labeling_api.service.video_importer" />
-            <tag name="console.command"/>
-        </service>
-        <service id="annostation.labeling_api.command.import_videos_command" class="AppBundle\Command\ImportVideos">
             <argument type="service" id="annostation.labeling_api.service.video_importer" />
             <tag name="console.command"/>
         </service>

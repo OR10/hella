@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Service;
+use AppBundle\Database\Facade;
 use AppBundle\Model;
 use Doctrine\CouchDB;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +31,10 @@ class Init extends Base
      * @var string
      */
     private $userPassword;
+    /**
+     * @var Facade\User
+     */
+    private $userFacade;
 
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -37,7 +42,8 @@ class Init extends Base
         $couchDatabase,
         $userPassword,
         $cacheDir,
-        $frameCdnDir
+        $frameCdnDir,
+        Facade\User $userFacade
     ) {
         parent::__construct();
 
@@ -47,6 +53,7 @@ class Init extends Base
         $this->userPassword         = (string) $userPassword;
         $this->cacheDir             = (string) $cacheDir;
         $this->frameCdnDir          = (string) $frameCdnDir;
+        $this->userFacade           = $userFacade;
     }
 
     protected function configure()
@@ -176,18 +183,7 @@ class Init extends Base
         if ($this->userPassword !== null) {
 
             foreach ($users as $username) {
-                if (!$this->runCommand(
-                    $output,
-                    'fos:user:create',
-                    [
-                        'username' => $username,
-                        'email'    => $username . '@example.com',
-                        'password' => $this->userPassword,
-                    ]
-                )
-                ) {
-                    return false;
-                }
+                $user = $this->userFacade->createUser($username, $username . '@example.com', $this->userPassword);
 
                 switch($username){
                     case 'admin':
@@ -203,14 +199,9 @@ class Init extends Base
                         $roleName = 'ROLE_USER';
                 }
 
-                $this->runCommand(
-                    $output,
-                    'fos:user:promote',
-                    [
-                        'username' => $username,
-                        'role'     => $roleName,
-                    ]
-                );
+                $user->setRoles(array($roleName));
+
+                $this->userFacade->updateUser($user);
 
                 $this->writeInfo(
                     $output,

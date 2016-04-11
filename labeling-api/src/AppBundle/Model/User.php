@@ -25,7 +25,7 @@ class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      */
-    protected $token;
+    protected $token = '';
 
     public function __construct()
     {
@@ -45,5 +45,21 @@ class User extends BaseUser
         }
 
         return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
     }
 }
