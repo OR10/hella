@@ -75,4 +75,20 @@ class Project
 
         return $project;
     }
+
+    /**
+     * Return all task for this project
+     *
+     * @param Model\Project $project
+     * @return mixed
+     */
+    public function getTasksByProject(Model\Project $project)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeling_task', 'by_projectId')
+            ->setKey($project->getId())
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
 }
