@@ -126,6 +126,7 @@ class CurrentUser extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         $statsButton = false;
+        $projectButton = false;
         $userListButton = false;
         $videoUploadButton = false;
         $reopenButton = false;
@@ -133,6 +134,7 @@ class CurrentUser extends Controller\Base
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton = true;
+            $projectButton = true;
             $userListButton = true;
             $videoUploadButton = true;
             $reopenButton = true;
@@ -140,6 +142,7 @@ class CurrentUser extends Controller\Base
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton = true;
+            $projectButton = true;
             $videoUploadButton = true;
             $reopenButton = true;
             $unassignPermission = true;
@@ -153,6 +156,7 @@ class CurrentUser extends Controller\Base
                     'canViewVideoUploadButton' => $videoUploadButton,
                     'canViewReopenButton' => $reopenButton,
                     'unassignPermission' => $unassignPermission,
+                    'canViewProjectButton' => $projectButton,
                 ]
             ]
         );
