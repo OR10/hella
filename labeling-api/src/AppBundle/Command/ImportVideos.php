@@ -36,12 +36,15 @@ class ImportVideos extends Base
         $this->setName('annostation:import:videos')
             ->setDescription('Import a list of videos')
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
+            ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
             ->addArgument('host', Input\InputArgument::OPTIONAL, 'Host address', self::HTTP_HOST)
             ->addArgument('apiKey', Input\InputArgument::OPTIONAL, 'Users api token', self::API_KEY)
             ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
-            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 1)
+            ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
+            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
             ->addArgument('drawingTool', Input\InputArgument::OPTIONAL, 'Video drawing tool', 'rectangle')
-            ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22);
+            ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22)
+            ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 1);
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
@@ -63,12 +66,19 @@ class ImportVideos extends Base
                     'verify' => false,
                     'multipart' => [
                         [
+                            'name' => 'project',
+                            'contents' => (string) $input->getArgument('project')
+                        ],                        [
                             'name' => 'splitLength',
                             'contents' => (string) $input->getArgument('splitLength')
                         ],
                         [
                             'name' => 'frameStepSize',
                             'contents' => (string) $input->getArgument('frameStepSize')
+                        ],
+                        [
+                            'name' => 'startFrame',
+                            'contents' => (string) $input->getArgument('startFrame')
                         ],
                         [
                             'name' => 'object-labeling',
@@ -85,6 +95,10 @@ class ImportVideos extends Base
                         [
                             'name' => 'pedestrianMinimalHeight',
                             'contents' => (string) $input->getArgument('pedestrianMinimalHeight')
+                        ],
+                        [
+                            'name' => 'overflow',
+                            'contents' => (string) $input->getArgument('overflow')
                         ],
                         [
                             'name' => 'file',
