@@ -133,11 +133,12 @@ class Csv implements Service\ProjectExporter
                             break;
                     }
                 }
+                $consideredTasks = array_merge($tasks, $consideredTasks);
+
                 foreach($data as $videoId => $videoData) {
                     if (empty($videoData)) {
                         continue;
                     }
-                    $consideredTasks = array_merge($tasks, $consideredTasks);
 
                     uasort($videoData, function ($a, $b) {
                         if ($a['frame_number'] === $b['frame_number']) {
