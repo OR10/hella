@@ -27,5 +27,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.status" />
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.project_csv_exporter" class="AppBundle\Worker\JobInstruction\ProjectCsvExporter">
+            <argument type="service" id="annostation.labeling_api.service.project_exporter.csv" />
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+        </service>
     </services>
 </container>

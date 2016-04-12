@@ -33,5 +33,15 @@
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
             <tag name="request.param_converter" converter="annostation.user" priority="10" />
         </service>
+
+        <service id="annostation.labeling_api.request.param_converter.project" class="AppBundle\Request\ParamConverter\Project">
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <tag name="request.param_converter" converter="annostation.project" priority="10" />
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.project_export" class="AppBundle\Request\ParamConverter\ProjectExport">
+            <argument type="service" id="annostation.labeling_api.database.facade.project_export" />
+            <tag name="request.param_converter" converter="annostation.project_export" priority="10" />
+        </service>
     </services>
 </container>

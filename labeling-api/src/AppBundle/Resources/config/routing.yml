@@ -37,6 +37,11 @@ api_task_export:
     type: rest
     name_prefix: app_api_task_export_
 
+api_project_export:
+    resource: "annostation.labeling_api.controller.api.project.export"
+    type: rest
+    name_prefix: app_api_project_export_
+
 api_labeled_thing_in_frame:
     resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
     type: rest

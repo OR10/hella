@@ -44,6 +44,12 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
         <service
+                id="annostation.labeling_api.controller.api.project.export"
+                class="AppBundle\Controller\Api\Project\Export">
+            <argument type="service" id="annostation.labeling_api.database.facade.project_export"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+        </service>
+        <service
                 id="annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
                 class="AppBundle\Controller\Api\Task\LabeledThingInFrame">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
