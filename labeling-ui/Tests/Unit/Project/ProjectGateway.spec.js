@@ -5,7 +5,7 @@ import Common from 'Application/Common/Common';
 
 import ProjectGateway from 'Application/Project/Gateways/ProjectGateway';
 
-fdescribe('ProjectGateway', () => {
+describe('ProjectGateway', () => {
   let $httpBackend;
   let gateway;
 
