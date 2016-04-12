@@ -1,0 +1,38 @@
+<div class="grid-block text-center vertical">
+    <div class="grid-container menubar" ng-if="vm.projects.length === 0">
+        <div class="grid-content">
+            <div class="">No Projects available!</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-content task-list-table">
+            <table class="hover table" ng-if="vm.projects.length > 0">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Tasks count</th>
+                    <th>Tasks finished count</th>
+                    <th>Tasks finished percentage</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="project in vm.projects">
+                    <td>
+                        {{project.name}}
+                    </td>
+                    <td>
+                        {{project.taskCount}}
+                    </td>
+                    <td>
+                        {{project.taskFinishedCount}}
+                    </td>
+                    <td>
+                        {{project.taskFinishedCount / project.taskCount *  100 | number: 0 }} %
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
