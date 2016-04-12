@@ -2,7 +2,7 @@
 
 ## Get a list of all projects [/api/project]
 
-### Get [GET]
+### Get all projects [GET]
 
 + Response 200 (application/json)
     + Attributes
@@ -13,7 +13,7 @@
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the status.
 
-### Get [GET]
+### List all finished exports [GET]
 
 + Response 200 (application/json)
     + Attributes
@@ -25,7 +25,7 @@
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the status.
     + projectExportId: `583c0838ea5f72671b1b21605c3d6b47` (string, required) - The id of the status.
 
-### Get [GET]
+### Download Export [GET]
 
 + Response 200
 
@@ -34,7 +34,7 @@
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the status.
 
-### Get [GET]
+### Start a new export [POST]
 
 + Response 200 (application/json)
     + Attributes
