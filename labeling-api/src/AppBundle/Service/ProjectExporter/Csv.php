@@ -115,53 +115,58 @@ class Csv implements Service\ProjectExporter
 
                 $data = array();
                 foreach ($tasks as $task) {
+                    if (!isset($data[$task->getVideoId()])) {
+                        $data[$task->getVideoId()] = array();
+                    }
                     switch ($task->getLabelInstruction()) {
                         case Model\LabelingTask::INSTRUCTION_PERSON:
-                            $data = array_merge($data, $this->getPedestrianLabelingData($task));
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getPedestrianLabelingData($task));
                             break;
                         case Model\LabelingTask::INSTRUCTION_CYCLIST:
-                            $data = array_merge($data, $this->getCyclistLabelingData($task));
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getCyclistLabelingData($task));
                             break;
                         case Model\LabelingTask::INSTRUCTION_IGNORE:
-                            $data = array_merge($data, $this->getIgnoreLabelingData($task));
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getIgnoreLabelingData($task));
                             break;
                         case Model\LabelingTask::INSTRUCTION_VEHICLE:
-                            $data = array_merge($data, $this->getVehicleLabelingData($task));
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getVehicleLabelingData($task));
                             break;
                     }
                 }
-                if (empty($data)) {
-                    continue;
-                }
-                $consideredTasks = array_merge($tasks, $consideredTasks);
-
-                uasort($data, function ($a, $b) {
-                    if ($a['frame_number'] === $b['frame_number']) {
-                        return 0;
+                foreach($data as $videoId => $videoData) {
+                    if (empty($videoData)) {
+                        continue;
                     }
-                    return ($a['frame_number'] < $b['frame_number']) ? -1 : 1;
-                });
+                    $consideredTasks = array_merge($tasks, $consideredTasks);
 
-                $idCounter = 0;
-                $data = array_map(function ($label) use (&$idCounter) {
-                    $idCounter++;
-                    $id = array('id' => $idCounter);
-                    return $id + $label;
-                }, $data);
+                    uasort($videoData, function ($a, $b) {
+                        if ($a['frame_number'] === $b['frame_number']) {
+                            return 0;
+                        }
+                        return ($a['frame_number'] < $b['frame_number']) ? -1 : 1;
+                    });
 
-                $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
+                    $idCounter = 0;
+                    $videoData = array_map(function ($label) use (&$idCounter) {
+                        $idCounter++;
+                        $id = array('id' => $idCounter);
+                        return $id + $label;
+                    }, $videoData);
 
-                $fp = fopen($tempCsvFile, 'w');
-                if ($this->headline) {
-                    fputcsv($fp, array_keys($data[0]), $this->delimiter, $this->enclosure);
-                }
-                foreach ($data as $labeledThingInFrame) {
-                    fputcsv($fp, $labeledThingInFrame, $this->delimiter, $this->enclosure);
-                }
-                fclose($fp);
+                    $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
 
-                if (!$zip->addFile($tempCsvFile, sprintf('export_%s_%s.csv', $groupName, $project->getId()))) {
-                    throw new Exception\Csv('Unable to add file to zip archive');
+                    $fp = fopen($tempCsvFile, 'w');
+                    if ($this->headline) {
+                        fputcsv($fp, array_keys($videoData[0]), $this->delimiter, $this->enclosure);
+                    }
+                    foreach ($videoData as $labeledThingInFrame) {
+                        fputcsv($fp, $labeledThingInFrame, $this->delimiter, $this->enclosure);
+                    }
+                    fclose($fp);
+
+                    if (!$zip->addFile($tempCsvFile, sprintf('export_%s_%s_%s.csv', $groupName, $videoId, $project->getId()))) {
+                        throw new Exception\Csv('Unable to add file to zip archive');
+                    }
                 }
             }
 
