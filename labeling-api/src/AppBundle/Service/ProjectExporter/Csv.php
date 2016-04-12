@@ -105,6 +105,7 @@ class Csv implements Service\ProjectExporter
                 )
             );
 
+            $consideredTasks = array();
             foreach($taskGroups as $groupName => $groupInstructions) {
 
                 $tasks = $this->getLabeledTasksForProject(
@@ -132,6 +133,7 @@ class Csv implements Service\ProjectExporter
                 if (empty($data)) {
                     continue;
                 }
+                $consideredTasks = array_merge($tasks, $consideredTasks);
 
                 uasort($data, function ($a, $b) {
                     if ($a['frame_number'] === $b['frame_number']) {
@@ -173,7 +175,7 @@ class Csv implements Service\ProjectExporter
 
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
 
-            $projectExport = new Model\ProjectExport($project, $tasks, sprintf('csv_%s.zip', $date->format('Ymd_His')), 'application/zip', $result);
+            $projectExport = new Model\ProjectExport($project, $consideredTasks, sprintf('csv_%s.zip', $date->format('Ymd_His')), 'application/zip', $result);
             $this->projectExportFacade->save($projectExport);
 
             if (!unlink($zipFilename)) {
