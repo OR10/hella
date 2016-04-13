@@ -85,4 +85,18 @@ class Project extends Controller\Base
             ]
         );
     }
+
+    /**
+     * Return the project with the given id
+     *
+     * @Rest\Get("/{project}")
+     *
+     * @param $project
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getTaskAction(Model\Project $project)
+    {
+        return View\View::create()->setData(['result' => $project]);
+    }
 }
