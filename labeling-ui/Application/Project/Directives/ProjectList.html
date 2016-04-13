@@ -7,13 +7,14 @@
 
     <div class="grid-container">
         <div class="grid-content task-list-table">
-            <table class="hover table" ng-if="vm.projects.length > 0">
+            <table class="table" ng-if="vm.projects.length > 0">
                 <thead>
                 <tr>
                     <th>Name</th>
                     <th>Tasks count</th>
                     <th>Tasks finished count</th>
                     <th>Tasks finished percentage</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,6 +30,13 @@
                     </td>
                     <td>
                         {{project.taskFinishedCount / project.taskCount *  100 | number: 0 }} %
+                    </td>
+                    <td>
+                        <button ui-sref=".export({projectId: project.id})"
+                                tooltip="Export the project"
+                        >
+                            <i class="fa fa-external-link"></i>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
