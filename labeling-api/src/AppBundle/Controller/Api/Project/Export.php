@@ -13,6 +13,7 @@ use crosscan\WorkerPool\AMQP;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use AppBundle\Controller\Api\Project\Exception as ProjectException;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -33,16 +34,24 @@ class Export extends Controller\Base
     private $projectExport;
 
     /**
+     * @var Facade\VideoExport
+     */
+    private $videoExportFacade;
+
+    /**
      * @param Facade\ProjectExport $projectExport
+     * @param Facade\VideoExport $videoExportFacade
      * @param AMQP\FacadeAMQP $amqpFacade
      */
     public function __construct(
         Facade\ProjectExport $projectExport,
+        Facade\VideoExport $videoExportFacade,
         AMQP\FacadeAMQP $amqpFacade
     )
     {
         $this->amqpFacade = $amqpFacade;
         $this->projectExport = $projectExport;
+        $this->videoExportFacade = $videoExportFacade;
     }
 
     /**
@@ -67,6 +76,7 @@ class Export extends Controller\Base
      * @param Model\Project $project
      * @param Model\ProjectExport $projectExport
      * @return HttpFoundation\Response
+     * @throws ProjectException\Csv
      */
     public function getExportAction(Model\Project $project, Model\ProjectExport $projectExport)
     {
@@ -74,17 +84,39 @@ class Export extends Controller\Base
             throw new Exception\NotFoundHttpException('Requested export is not valid for this project');
         }
 
-        return new HttpFoundation\Response(
-            $projectExport->getRawData(),
+        $zipFilename = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFilename, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new ProjectException\Csv(sprintf('Unable to open zip archive at "%s"', $zipFilename));
+        }
+
+        foreach($projectExport->getVideoExportIds() as $videoExportId) {
+            $videoExport = $this->videoExportFacade->find($videoExportId);
+
+            if (!$zip->addFromString($videoExport->getFilename(), $videoExport->getRawData())) {
+                throw new ProjectException\Csv('Unable to add content to zip archive');
+            }
+        }
+        $zip->close();
+
+        $return = new HttpFoundation\Response(
+            file_get_contents($zipFilename),
             HttpFoundation\Response::HTTP_OK,
             [
-                'Content-Type' => $projectExport->getContentType(),
+                'Content-Type' => 'text/csv',
                 'Content-Disposition' => sprintf(
                     'attachment; filename="%s"',
                     $projectExport->getFilename()
                 ),
             ]
         );
+
+        if (!unlink($zipFilename)) {
+            throw new ProjectException\Csv(sprintf('Unable to remove temporary zip file at "%s"', $zipFilename));
+        }
+
+        return $return;
     }
 
     /**

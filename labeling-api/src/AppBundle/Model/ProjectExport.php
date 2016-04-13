@@ -27,57 +27,24 @@ class ProjectExport
     private $projectId;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $videoExportIds;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $filename;
 
     /**
-     * @CouchDB\Attachments
-     * @Serializer\Exclude
-     */
-    private $attachments;
-
-    /**
-     * @CouchDB\Field(type="mixed")
-     */
-    private $taskIds;
-
-    /**
      * @param Project $project
-     * @param array $tasks
-     * @param string $filename
-     * @param string $contentType
-     * @param string $binaryData
-     * @throws Exception\EmptyData
+     * @param array $exportVideoIds
      */
-    public function __construct(Project $project, array $tasks, $filename, $contentType, $binaryData)
+    public function __construct(Project $project, array $exportVideoIds, $filename)
     {
-        if (!is_string($filename) || empty($filename)) {
-            throw new \InvalidArgumentException('Invalid filename');
-        }
-
-        if (!is_string($contentType) || empty($contentType)) {
-            throw new \InvalidArgumentException('Invalid content type');
-        }
-
-        if (!is_string($binaryData)) {
-            throw new \InvalidArgumentException('Expecting binary data as string');
-        }
-
-        if (empty($binaryData)) {
-            throw new Exception\EmptyData();
-        }
-
-        $this->projectId = $project->getId();
-        $this->filename  = $filename;
-
-        $this->attachments[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
-            $binaryData,
-            $contentType
-        );
-        $this->taskIds = array_map(function(LabelingTask $task) {
-            return $task->getId();
-        }, $tasks);
+        $this->projectId      = $project->getId();
+        $this->videoExportIds = $exportVideoIds;
+        $this->filename       = $filename;
     }
 
     /**
@@ -91,48 +58,18 @@ class ProjectExport
     }
 
     /**
-     * Get the filename for the raw data attached to this document.
-     *
-     * @return string
+     * @return mixed
+     */
+    public function getVideoExportIds()
+    {
+        return $this->videoExportIds;
+    }
+
+    /**
+     * @return mixed
      */
     public function getFilename()
     {
-        if ($this->filename === null) {
-            throw new \RuntimeException('Broken ProjectExport document: missing filename');
-        }
-
         return $this->filename;
-    }
-
-    /**
-     * Get the content type of the exported data returned by `getRawData`.
-     *
-     * @return string
-     */
-    public function getContentType()
-    {
-        $filename = $this->getFilename();
-
-        if (isset($this->attachments[$filename])) {
-            return $this->attachments[$filename]->getContentType();
-        }
-
-        throw new \RuntimeException('Broken ProjectExport document: missing attachment');
-    }
-
-    /**
-     * Return a string containing the raw data of the export.
-     *
-     * @return string
-     */
-    public function getRawData()
-    {
-        $filename = $this->getFilename();
-
-        if (isset($this->attachments[$filename])) {
-            return $this->attachments[$filename]->getRawData();
-        }
-
-        throw new \RuntimeException('Broken ProjectExport document: missing attachment');
     }
 }

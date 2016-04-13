@@ -52,6 +52,11 @@ class Csv implements Service\ProjectExporter
     private $videoFacade;
 
     /**
+     * @var Facade\VideoExport
+     */
+    private $videoExportFacade;
+
+    /**
      * Csv constructor.
      *
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
@@ -59,6 +64,7 @@ class Csv implements Service\ProjectExporter
      * @param Facade\ProjectExport $projectExportFacade
      * @param Facade\Project $projectFacade
      * @param Facade\Video $videoFacade
+     * @param Facade\VideoExport $videoExportFacade
      * @param bool $headline
      * @param string $delimiter
      * @param string $enclosure
@@ -69,6 +75,7 @@ class Csv implements Service\ProjectExporter
         Facade\ProjectExport $projectExportFacade,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
+        Facade\VideoExport $videoExportFacade,
         $headline = true,
         $delimiter = ',',
         $enclosure = '"'
@@ -81,6 +88,7 @@ class Csv implements Service\ProjectExporter
         $this->enclosure                      = $enclosure;
         $this->projectFacade                  = $projectFacade;
         $this->videoFacade                    = $videoFacade;
+        $this->videoExportFacade              = $videoExportFacade;
     }
 
     /**
@@ -94,14 +102,7 @@ class Csv implements Service\ProjectExporter
      */
     public function exportProject(Model\Project $project)
     {
-        $zipFilename = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
-
         try {
-            $zip = new \ZipArchive();
-            if ($zip->open($zipFilename, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-                throw new Exception\Csv(sprintf('Unable to open zip archive at "%s"', $zipFilename));
-            }
-
             $taskGroups = array(
                 'pedestrian' => array(
                     Model\LabelingTask::INSTRUCTION_PERSON,
@@ -114,7 +115,8 @@ class Csv implements Service\ProjectExporter
             );
 
             $consideredTasks = array();
-            foreach($taskGroups as $groupName => $groupInstructions) {
+            $videoExportIds = array();
+            foreach ($taskGroups as $groupName => $groupInstructions) {
 
                 $tasks = $this->getLabeledTasksForProject(
                     $project,
@@ -143,7 +145,7 @@ class Csv implements Service\ProjectExporter
                 }
                 $consideredTasks = array_merge($tasks, $consideredTasks);
 
-                foreach($data as $videoId => $videoData) {
+                foreach ($data as $videoId => $videoData) {
                     if (empty($videoData)) {
                         continue;
                     }
@@ -180,35 +182,19 @@ class Csv implements Service\ProjectExporter
                         $groupName,
                         $video->getName()
                     );
-                    if (!$zip->addFile($tempCsvFile, $filename)) {
-                        throw new Exception\Csv('Unable to add file to zip archive');
+
+                    $videoExport = new Model\VideoExport($video, $consideredTasks, $filename, 'text/csv', file_get_contents($tempCsvFile));
+                    $this->videoExportFacade->save($videoExport);
+                    $videoExportIds[] = $videoExport->getId();
+                    if (!unlink($tempCsvFile)) {
+                        throw new Exception\Csv(sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile));
                     }
                 }
             }
-
-            $zip->close();
-
-            $result = file_get_contents($zipFilename);
-
-            if ($result === false) {
-                throw new Exception\Csv(sprintf('Unable to read file at "%s"', $zipFilename));
-            }
-
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
-
-            $projectExport = new Model\ProjectExport($project, $consideredTasks, sprintf('csv_%s.zip', $date->format('Ymd_His')), 'application/zip', $result);
+            $projectExport = new Model\ProjectExport($project, $videoExportIds, sprintf('csv_%s.zip', $date->format('Ymd_His')));
             $this->projectExportFacade->save($projectExport);
-
-            if (!unlink($zipFilename)) {
-                throw new Exception\Csv(sprintf('Unable to remove temporary zip file at "%s"', $zipFilename));
-            }
-            if (!unlink($tempCsvFile)) {
-                throw new Exception\Csv(sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile));
-            }
-
-            return $projectExport->getRawData();
         } catch (\Exception $e) {
-            @unlink($zipFilename);
             throw $e;
         }
     }
