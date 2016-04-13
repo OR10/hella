@@ -1,8 +1,11 @@
 import Module from 'Application/Module';
 import ProjectController from './Controller/ProjectController';
+import ProjectExportController from './Controller/ProjectExportController';
 import ProjectGateway from './Gateways/ProjectGateway';
 import ProjectListDirective from './Directives/ProjectListDirective';
+import ProjectExportListDirective from './Directives/ProjectExportListDirective';
 import projectTemplate from './Views/project.html!';
+import projectExportTemplate from './Views/projectExport.html!';
 
 /**
  * Project Module
@@ -17,11 +20,17 @@ class Project extends Module {
    * @param $stateProvider
    */
   config($stateProvider) {
-    function projectResolver(projectGateway) {
+    function projectsResolver(projectGateway) {
       return projectGateway.getProjects();
     }
 
-    projectResolver.$inject = ['projectGateway'];
+    projectsResolver.$inject = ['projectGateway'];
+
+    function projectResolver($stateParams, projectGateway) {
+      return projectGateway.getProject($stateParams.projectId);
+    }
+
+    projectResolver.$inject = ['$stateParams', 'projectGateway'];
 
     $stateProvider.state('labeling.projects', {
       url: 'projects',
@@ -29,7 +38,21 @@ class Project extends Module {
       controllerAs: 'vm',
       template: projectTemplate,
       resolve: {
-        projects: projectResolver,
+        projects: projectsResolver,
+      },
+    });
+
+    $stateProvider.state('labeling.projects.export', {
+      url: '/:projectId/export',
+      views: {
+        '@labeling': {
+          controller: ProjectExportController,
+          controllerAs: 'vm',
+          template: projectExportTemplate,
+          resolve: {
+            project: projectResolver,
+          },
+        },
       },
     });
   }
@@ -38,6 +61,7 @@ class Project extends Module {
     this.module = angular.module('AnnoStation.Projects', []);
     this.module.service('projectGateway', ProjectGateway);
     this.registerDirective('projectsList', ProjectListDirective);
+    this.registerDirective('projectsExportList', ProjectExportListDirective);
   }
 }
 
