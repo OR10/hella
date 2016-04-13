@@ -47,12 +47,18 @@ class Csv implements Service\ProjectExporter
     private $projectFacade;
 
     /**
+     * @var Facade\Video
+     */
+    private $videoFacade;
+
+    /**
      * Csv constructor.
      *
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\ProjectExport $projectExportFacade
      * @param Facade\Project $projectFacade
+     * @param Facade\Video $videoFacade
      * @param bool $headline
      * @param string $delimiter
      * @param string $enclosure
@@ -62,6 +68,7 @@ class Csv implements Service\ProjectExporter
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\ProjectExport $projectExportFacade,
         Facade\Project $projectFacade,
+        Facade\Video $videoFacade,
         $headline = true,
         $delimiter = ',',
         $enclosure = '"'
@@ -73,6 +80,7 @@ class Csv implements Service\ProjectExporter
         $this->delimiter                      = $delimiter;
         $this->enclosure                      = $enclosure;
         $this->projectFacade                  = $projectFacade;
+        $this->videoFacade                    = $videoFacade;
     }
 
     /**
@@ -165,7 +173,14 @@ class Csv implements Service\ProjectExporter
                     }
                     fclose($fp);
 
-                    if (!$zip->addFile($tempCsvFile, sprintf('export_%s_%s_%s.csv', $groupName, $videoId, $project->getId()))) {
+                    $video = $this->videoFacade->find($videoId);
+                    $filename = sprintf(
+                        'export_%s_%s_%s.csv',
+                        $project->getName(),
+                        $groupName,
+                        $video->getName()
+                    );
+                    if (!$zip->addFile($tempCsvFile, $filename)) {
                         throw new Exception\Csv('Unable to add file to zip archive');
                     }
                 }
