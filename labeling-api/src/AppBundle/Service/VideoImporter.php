@@ -96,7 +96,6 @@ class VideoImporter
         $isMetaLabeling,
         $labelInstructions,
         $minimalVisibleShapeOverflow = null,
-        $drawingTool = null,
         $drawingToolOptions = array(),
         $frameSkip = 1,
         $startFrame = 1
@@ -178,10 +177,10 @@ class VideoImporter
                         $project,
                         $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
-                        $drawingTool,
+                        $labelInstruction['drawingTool'],
                         ['pedestrian'],
                         $imageTypes,
-                        $labelInstruction,
+                        $labelInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
                         $metadata

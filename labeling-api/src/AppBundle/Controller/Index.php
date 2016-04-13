@@ -102,7 +102,10 @@ class Index extends Base
         $objectLabeling     = $request->request->get('object-labeling', false);
         $metaLabeling       = $request->request->get('meta-labeling', false);
         $overflow           = (bool) $request->request->get('overflow', false);
-        $drawingTool        = $request->request->get('drawingTool', 'rectangle');
+        $drawingToolVehicle = $request->request->get('drawingToolVehicle', 'rectangle');
+        $drawingToolPerson  = $request->request->get('drawingToolPerson', 'pedestrian');
+        $drawingToolCyclist = $request->request->get('drawingToolCyclist', 'rectangle');
+        $drawingToolIgnore  = $request->request->get('drawingToolIgnore', 'rectangle');
         $drawingToolOptions = array(
             'pedestrian' => array(
                 'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22'),
@@ -115,16 +118,28 @@ class Index extends Base
         //Label instructions
         $labelInstructions = array();
         if ($request->request->get('vehicle', false)) {
-            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_VEHICLE;
+            $labelInstructions[] = array(
+                'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
+                'drawingTool' => $drawingToolVehicle,
+            );
         }
         if ($request->request->get('person', false)) {
-            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_PERSON;
+            $labelInstructions[] = array(
+                'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
+                'drawingTool' => $drawingToolPerson,
+            );
         }
         if ($request->request->get('cyclist', false)) {
-            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_CYCLIST;
+            $labelInstructions[] = array(
+                'instruction' => Model\LabelingTask::INSTRUCTION_CYCLIST,
+                'drawingTool' => $drawingToolCyclist,
+            );
         }
         if ($request->request->get('ignore', false)) {
-            $labelInstructions[] = Model\LabelingTask::INSTRUCTION_IGNORE;
+            $labelInstructions[] = array(
+                'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
+                'drawingTool' => $drawingToolIgnore,
+            );
         }
 
         if ($splitLength < 0) {
@@ -153,7 +168,6 @@ class Index extends Base
                 $metaLabeling,
                 $labelInstructions,
                 $overflow ? 16 : null,
-                $drawingTool,
                 $drawingToolOptions,
                 $frameStepSize,
                 $startFrame

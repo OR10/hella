@@ -51,14 +51,14 @@
                     <div class="form-group">
                     <label for="frameStepSize" class="col-xs-3">Frame step size</label>
                         <div class="col-xs-9">
-                            <input type="number" name="frameStepSize" value="1" min="1" step="1" style="text-align:right" /> frame(s)
+                            <input type="number" name="frameStepSize" value="22" min="1" step="1" style="text-align:right" /> frame(s)
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="startFrame" class="col-xs-3">Start frame</label>
                         <div class="col-xs-9">
-                            <input type="number" name="startFrame" value="1" min="1" step="1" style="text-align:right" /> frame
+                            <input type="number" name="startFrame" value="22" min="1" step="1" style="text-align:right" /> frame
                         </div>
                     </div>
 
@@ -83,7 +83,7 @@
                         <div class="col-xs-9">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" name="overflow" value="1"/>
+                                    <input type="checkbox" name="overflow" value="1" checked/>
                                     Allow shapes to overflow
                                 </label>
                             </div>
@@ -98,29 +98,35 @@
                                     <input type="checkbox" name="vehicle" value="1"/>
                                     Vehicle
                                 </label>
+                                <select name="drawingToolVehicle" class="form-control">
+                                    <option value="rectangle" selected>Normal Rectangle</option>
+                                    <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
+                                </select>
                                 <label>
                                     <input type="checkbox" name="person" value="1" checked/>
                                     Person
                                 </label>
+                                <select name="drawingToolPerson" class="form-control">
+                                    <option value="rectangle">Normal Rectangle</option>
+                                    <option value="pedestrian" selected>Pedestrian (Fixed-Aspect, Center-Line)</option>
+                                </select>
                                 <label>
                                     <input type="checkbox" name="cyclist" value="1"/>
                                     Cyclist
                                 </label>
+                                <select name="drawingToolCyclist" class="form-control">
+                                    <option value="rectangle" selected>Normal Rectangle</option>
+                                    <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
+                                </select>
                                 <label>
                                     <input type="checkbox" name="ignore" value="1"/>
                                     Ignore
                                 </label>
+                                <select name="drawingToolIgnore" class="form-control">
+                                    <option value="rectangle" selected>Normal Rectangle</option>
+                                    <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
+                                </select>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="drawingTool" class="col-xs-3">Drawing Tool</label>
-                        <div class="col-xs-9">
-                            <select name="drawingTool" class="form-control">
-                                <option value="rectangle" selected>Normal Rectangle</option>
-                                <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
-                            </select>
                         </div>
                     </div>
 
