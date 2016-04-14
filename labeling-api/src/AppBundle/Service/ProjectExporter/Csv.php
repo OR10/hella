@@ -57,11 +57,17 @@ class Csv implements Service\ProjectExporter
     private $videoExportFacade;
 
     /**
+     * @var Facade\LabeledThing
+     */
+    private $labeledThing;
+
+    /**
      * Csv constructor.
      *
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\ProjectExport $projectExportFacade
+     * @param Facade\LabeledThing $labeledThing
      * @param Facade\Project $projectFacade
      * @param Facade\Video $videoFacade
      * @param Facade\VideoExport $videoExportFacade
@@ -72,6 +78,7 @@ class Csv implements Service\ProjectExporter
     public function __construct(
         Service\GhostClassesPropagation $ghostClassesPropagationService,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\LabeledThing $labeledThing,
         Facade\ProjectExport $projectExportFacade,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
@@ -89,6 +96,7 @@ class Csv implements Service\ProjectExporter
         $this->projectFacade                  = $projectFacade;
         $this->videoFacade                    = $videoFacade;
         $this->videoExportFacade              = $videoExportFacade;
+        $this->labeledThing                   = $labeledThing;
     }
 
     /**
@@ -157,11 +165,17 @@ class Csv implements Service\ProjectExporter
                         return ($a['frame_number'] < $b['frame_number']) ? -1 : 1;
                     });
 
-                    $idCounter = 0;
-                    $videoData = array_map(function ($label) use (&$idCounter) {
-                        $idCounter++;
-                        $id = array('id' => $idCounter);
-                        return $id + $label;
+                    $shortUuidNumbers = array_flip(
+                        array_unique(
+                            array_map(function ($label) {
+                                return $label['uuid'];
+                            }, $videoData)
+                        )
+                    );
+
+                    $videoData = array_map(function ($label) use ($shortUuidNumbers) {
+                        $label['id'] = $shortUuidNumbers[$label['uuid']];
+                        return $label;
                     }, $videoData);
 
                     $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
@@ -221,7 +235,8 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => 0,
                     'truncation'   => 0,
                     'direction'    => 'none',
-                    'uuid'         => $labeledThingInFrame->getId(),
+                    'id'           => NULL,
+                    'uuid'         => $this->labeledThing->find($labeledThingInFrame->getId())->getId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
@@ -260,7 +275,8 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => $occlusion,
                     'truncation'   => $truncation,
                     'direction'    => $direction,
-                    'uuid'         => $labeledThingInFrame->getId(),
+                    'id'           => NULL,
+                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
@@ -298,7 +314,8 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => $occlusion,
                     'truncation'   => $truncation,
                     'direction'    => $direction,
-                    'uuid'         => $labeledThingInFrame->getId(),
+                    'id'           => NULL,
+                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
