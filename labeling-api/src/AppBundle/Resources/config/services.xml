@@ -81,6 +81,7 @@
         <service id="annostation.labeling_api.service.project_exporter.csv" class="AppBundle\Service\ProjectExporter\Csv">
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.project_export" />
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="annostation.labeling_api.database.facade.video" />

@@ -150,6 +150,12 @@ class LabelingTask
     private $metaData = array();
 
     /**
+     * @var bool
+     * @CouchDB\Field(type="boolean")
+     */
+    private $reopen = false;
+
+    /**
      * @param Video   $video
      * @param Project $project
      * @param array   $frameNumberMapping
@@ -482,5 +488,21 @@ class LabelingTask
     public function setMetaData($metaData)
     {
         $this->metaData = $metaData;
+    }
+
+    /**
+     * @param boolean $reopen
+     */
+    public function setReopen($reopen)
+    {
+        $this->reopen = $reopen;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isReopen()
+    {
+        return $this->reopen;
     }
 }

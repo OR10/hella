@@ -23,6 +23,12 @@ class TaskListController {
      */
     this._taskGateway = taskGateway;
 
+    this.showOnlyReopenedTasks = false;
+    this.showOnlyReviewedTasks = false;
+
+    this.filterReopenTasks = this.filterReopenTasks.bind(this);
+    this.filterReviewTasks = this.filterReviewTasks.bind(this);
+
     this._loadTaskList();
   }
 
@@ -76,9 +82,25 @@ class TaskListController {
       });
   }
 
+  filterReopenTasks(task) {
+    if (!this.showOnlyReopenedTasks) {
+      return true;
+    }
+
+    return task.reopen;
+  }
+
+  filterReviewTasks(task) {
+    if (!this.showOnlyReviewedTasks) {
+      return true;
+    }
+
+    return task.reopen;
+  }
+
   /**
    * Reopen a closed {@link Task}
-   * 
+   *
    * @param {Task} task
    */
   reOpenTask(task) {
