@@ -1,0 +1,93 @@
+<?php
+
+namespace AppBundle\Tests\Controller\Api\Task;
+
+use AppBundle\Database\Facade;
+use AppBundle\Model;
+use AppBundle\Tests;
+use AppBundle\Tests\Controller;
+use Symfony\Component\HttpFoundation;
+
+class StatusTest extends Tests\WebTestCase
+{
+    const ROUTE = '/api/task/%s/status/%s';
+
+    /**
+     * @var Facade\Video
+     */
+    private $videoFacade;
+
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
+     * @var Model\Video
+     */
+    private $video;
+
+    /**
+     * @var Model\Project
+     */
+    private $project;
+
+    /**
+     * @var Model\LabelingTask
+     */
+    private $task;
+
+    public function testMarkWaitingTaskAsLabeled()
+    {
+        $this->task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_LABELED])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
+
+        $task = $this->labelingTaskFacade->find($this->task->getId());
+
+        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_LABELED);
+    }
+
+    public function testReopenLabeledTask()
+    {
+        $this->task->setStatus(Model\LabelingTask::STATUS_LABELED);
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_WAITING])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
+
+        $task = $this->labelingTaskFacade->find($this->task->getId());
+
+        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_WAITING);
+        $this->assertTrue($task->isReopen());
+    }
+
+    protected function setUpImplementation()
+    {
+        $this->videoFacade        = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade        = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+
+        $user = $this->getService('fos_user.util.user_manipulator')
+            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $user->addRole(Model\User::ROLE_ADMIN);
+
+        $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
+        $task = Model\LabelingTask::create(
+            $this->video,
+            $this->project,
+            range(1, 10),
+            Model\LabelingTask::TYPE_OBJECT_LABELING
+        );
+        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $this->task = $this->labelingTaskFacade->save($task);
+    }
+}

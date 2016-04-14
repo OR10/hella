@@ -93,6 +93,9 @@ class Status extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            if ($task->getStatus() === Model\LabelingTask::STATUS_LABELED) {
+                $task->setReopen(true);
+            }
             $task->setStatus(Model\LabelingTask::STATUS_WAITING);
             $this->labelingTaskFacade->save($task);
 
