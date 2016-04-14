@@ -214,13 +214,14 @@ class Csv implements Service\ProjectExporter
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
-                    'direction'    => 'none',
-                    'occlusion'    => 0,
-                    'truncation'   => 0,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
                     'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
                     'width'        => $this->getDimensions($labeledThingInFrame)['width'],
                     'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'    => 0,
+                    'truncation'   => 0,
+                    'direction'    => 'none',
+                    'uuid'         => $labeledThingInFrame->getId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
@@ -252,13 +253,14 @@ class Csv implements Service\ProjectExporter
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
-                    'direction'    => $direction,
-                    'occlusion'    => $occlusion,
-                    'truncation'   => $truncation,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
                     'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
                     'width'        => $this->getDimensions($labeledThingInFrame)['width'],
                     'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'    => $occlusion,
+                    'truncation'   => $truncation,
+                    'direction'    => $direction,
+                    'uuid'         => $labeledThingInFrame->getId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
@@ -289,13 +291,14 @@ class Csv implements Service\ProjectExporter
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'vehicleType'  => $vehicleType,
-                    'direction'    => $direction,
-                    'occlusion'    => $occlusion,
-                    'truncation'   => $truncation,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
                     'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
                     'width'        => $this->getDimensions($labeledThingInFrame)['width'],
                     'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'    => $occlusion,
+                    'truncation'   => $truncation,
+                    'direction'    => $direction,
+                    'uuid'         => $labeledThingInFrame->getId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
