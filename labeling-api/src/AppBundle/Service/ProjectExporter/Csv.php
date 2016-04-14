@@ -236,7 +236,7 @@ class Csv implements Service\ProjectExporter
                     'truncation'   => 0,
                     'direction'    => 'none',
                     'id'           => NULL,
-                    'uuid'         => $this->labeledThing->find($labeledThingInFrame->getId())->getId(),
+                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
             },
             $labeledThingsInFramesWithGhostClasses
