@@ -88,13 +88,13 @@ class Csv implements Service\LabelImporter
             $labeledThingInFrame->setIncomplete(
                 $this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame)
             );
-            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
+            $this->labeledThingInFrameFacade->save($labeledThingInFrame);
 
             $labeledThing->setIncomplete(
                 $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
             );
-
-            $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+            $this->labeledThingFacade->save($labeledThing);
+            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
         }
     }
 
