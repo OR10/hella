@@ -88,6 +88,13 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video_export" />
         </service>
 
+        <service id="annostation.labeling_api.service.label_importer.csv" class="AppBundle\Service\LabelImporter\Csv">
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.service.task_incomplete" />
+        </service>
+
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger" />
 
         <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">
