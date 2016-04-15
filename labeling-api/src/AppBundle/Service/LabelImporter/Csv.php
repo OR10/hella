@@ -65,7 +65,11 @@ class Csv implements Service\LabelImporter
         $tasks = $this->projectFacade->getTasksByProject($project);
 
         foreach($labelData as $label) {
-            $task         = $this->findTaskForInstructionAndFrame($tasks, $label['label_class'], $label['frame_number']);
+            $instruction = $label['label_class'];
+            if (preg_match('/^(ignore-(\w+))$/', $label['label_class'], $matches)){
+                $instruction = 'ignore';
+            }
+            $task         = $this->findTaskForInstructionAndFrame($tasks, $instruction, $label['frame_number']);
             $labeledThing = $this->getLabeledThing($task, $label['id'], $label['frame_number']);
             $shape        = $this->getShape(
                 $task,
@@ -81,7 +85,7 @@ class Csv implements Service\LabelImporter
                     $label['frame_number'],
                     $task->getFrameNumberMapping()
                 ),
-                $this->getClasses($task, $label['occlusion'], $label['truncation'], $label['direction'])
+                $this->getClasses($task, $label['occlusion'], $label['truncation'], $label['direction'], $label['label_class'])
             );
             $labeledThingInFrame->setShapesAsObjects(array($shape));
 
@@ -103,15 +107,17 @@ class Csv implements Service\LabelImporter
      * @param $occlusion
      * @param $truncation
      * @param $direction
+     * @param $labelClass
      * @return array
      */
     private function getClasses(
         Model\LabelingTask $task,
         $occlusion,
         $truncation,
-        $direction
+        $direction,
+        $labelClass
     ) {
-        switch ($task->getDrawingTool()) {
+        switch ($task->getLabelInstruction()) {
             case 'rectangle':
             case 'pedestrian':
                 return array(
@@ -121,12 +127,14 @@ class Csv implements Service\LabelImporter
                 );
             break;
             case 'ignore':
+                preg_match('/^(ignore-(\w+))$/', $labelClass, $matches);
                 return array(
-                    sprintf('occlusion-%s', $occlusion),
-                    sprintf('truncation-%s', $truncation),
+                    sprintf('%s', $matches[2]),
                 );
                 break;
         }
+
+        return array();
     }
 
     /**
