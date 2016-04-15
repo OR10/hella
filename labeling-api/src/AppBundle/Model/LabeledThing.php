@@ -50,7 +50,7 @@ class LabeledThing
      *
      * @return LabeledThing
      */
-    public static function create(LabelingTask $task, $lineColor = 'red')
+    public static function create(LabelingTask $task, $lineColor = 1)
     {
         return new static($task, $lineColor);
     }
@@ -59,7 +59,7 @@ class LabeledThing
      * @param LabelingTask $task
      * @param $lineColor
      */
-    public function __construct(LabelingTask $task, $lineColor = 'red')
+    public function __construct(LabelingTask $task, $lineColor = 1)
     {
         $this->taskId     = $task->getId();
         $this->frameRange = new FrameIndexRange(

@@ -40,5 +40,10 @@
         <service id="annostation.labeling_api.command.create_label_structure" class="AppBundle\Command\CreateLabelStructure">
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.import_labeling_csv_file" class="AppBundle\Command\ImportLabelingCsvFile">
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <argument type="service" id="annostation.labeling_api.service.label_importer.csv" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

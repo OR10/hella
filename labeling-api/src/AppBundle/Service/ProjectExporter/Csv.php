@@ -225,9 +225,10 @@ class Csv implements Service\ProjectExporter
 
         return array_map(
             function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping, $labelInstruction) {
+                $ignoreType = $this->getClassByRegex('/^(person|cyclist)$/', 1, $labeledThingInFrame);
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
-                    'label_class'  => $labelInstruction,
+                    'label_class'  => $labelInstruction . '-' . $ignoreType,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
                     'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
                     'width'        => $this->getDimensions($labeledThingInFrame)['width'],
