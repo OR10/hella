@@ -151,12 +151,12 @@ class Csv implements Service\LabelImporter
                 );
                 break;
             case 'pedestrian':
-                return new Model\Shapes\Rectangle(
+                return new Model\Shapes\Pedestrian(
                     $this->getUuid(),
-                    $x,
-                    $y,
-                    $x + $width,
-                    $y + $height
+                    round($x + ($width/2)),
+                    round($y),
+                    round($x + ($width/2)),
+                    round($y + $height)
                 );
                 break;
         }
