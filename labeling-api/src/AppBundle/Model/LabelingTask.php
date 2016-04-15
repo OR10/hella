@@ -156,6 +156,12 @@ class LabelingTask
     private $reopen = false;
 
     /**
+     * @var \DateTime
+     * @CouchDB\Field(type="datetime")
+     */
+    private $createdAt;
+
+    /**
      * @param Video   $video
      * @param Project $project
      * @param array   $frameNumberMapping
@@ -211,6 +217,7 @@ class LabelingTask
         $this->drawingTool        = $drawingTool;
         $this->predefinedClasses  = $predefinedClasses;
         $this->requiredImageTypes = $requiredImageTypes;
+        $this->createdAt          = new \DateTime();
     }
 
     /**
@@ -504,5 +511,13 @@ class LabelingTask
     public function isReopen()
     {
         return $this->reopen;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

@@ -71,7 +71,19 @@ class LabelingTask
             $query->setLimit($limit);
         }
 
-        return $query->onlyDocs(true)->execute()->toArray();
+        $result = $query->onlyDocs(true)->execute()->toArray();
+
+        uasort($result, function (Model\LabelingTask $a, Model\LabelingTask $b) {
+            if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime ) {
+                return 0;
+            }
+            if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
+                return 0;
+            }
+            return ($a->getCreatedAt()->getTimestamp() < $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
+        });
+
+        return array_values($result);
     }
 
     public function getVideo(Model\LabelingTask $labelingTask)
