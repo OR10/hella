@@ -162,14 +162,15 @@ class LabelingTask
     private $createdAt;
 
     /**
-     * @param Video   $video
+     * @param Video $video
      * @param Project $project
-     * @param array   $frameNumberMapping
-     * @param string  $taskType
-     * @param string  $drawingTool
-     * @param array   $predefinedClasses
-     * @param array   $requiredImageTypes
+     * @param array $frameNumberMapping
+     * @param string $taskType
+     * @param string $drawingTool
+     * @param array $predefinedClasses
+     * @param array $requiredImageTypes
      *
+     * @param \DateTime $createdAt
      * @return LabelingTask
      */
     public static function create(
@@ -179,7 +180,8 @@ class LabelingTask
         $taskType,
         $drawingTool = null,
         $predefinedClasses = array(),
-        array $requiredImageTypes = array()
+        array $requiredImageTypes = array(),
+        \DateTime $createdAt = null
     ) {
         return new static(
             $video,
@@ -188,18 +190,20 @@ class LabelingTask
             $taskType,
             $drawingTool,
             $predefinedClasses,
-            $requiredImageTypes
+            $requiredImageTypes,
+            $createdAt
         );
     }
 
     /**
-     * @param Video   $video
+     * @param Video $video
      * @param Project $project
-     * @param array   $frameNumberMapping
-     * @param string  $taskType
-     * @param string  $drawingTool
-     * @param array   $predefinedClasses
-     * @param array   $requiredImageTypes
+     * @param array $frameNumberMapping
+     * @param string $taskType
+     * @param string $drawingTool
+     * @param array $predefinedClasses
+     * @param array $requiredImageTypes
+     * @param \DateTime $createdAt
      */
     public function __construct(
         Video $video,
@@ -208,7 +212,8 @@ class LabelingTask
         $taskType,
         $drawingTool = null,
         $predefinedClasses = array(),
-        array $requiredImageTypes = array()
+        array $requiredImageTypes = array(),
+        \DateTime $createdAt = null
     ) {
         $this->videoId            = $video->getId();
         $this->projectId          = $project->getId();
@@ -217,7 +222,11 @@ class LabelingTask
         $this->drawingTool        = $drawingTool;
         $this->predefinedClasses  = $predefinedClasses;
         $this->requiredImageTypes = $requiredImageTypes;
-        $this->createdAt          = new \DateTime();
+        if ($createdAt === null) {
+            $this->createdAt = new \DateTime();
+        }else{
+            $this->createdAt = $createdAt;
+        }
     }
 
     /**
