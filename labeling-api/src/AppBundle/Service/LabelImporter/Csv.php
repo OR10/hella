@@ -118,15 +118,16 @@ class Csv implements Service\LabelImporter
         $labelClass
     ) {
         switch ($task->getLabelInstruction()) {
-            case 'rectangle':
-            case 'pedestrian':
+            case Model\LabelingTask::INSTRUCTION_CYCLIST:
+            case Model\LabelingTask::INSTRUCTION_PERSON:
+            case 'cyclist':
                 return array(
                     sprintf('occlusion-%s', $occlusion),
                     sprintf('truncation-%s', $truncation),
                     sprintf('direction-%s', $direction),
                 );
             break;
-            case 'ignore':
+            case Model\LabelingTask::INSTRUCTION_IGNORE:
                 preg_match('/^(ignore-(\w+))$/', $labelClass, $matches);
                 return array(
                     sprintf('%s', $matches[2]),
