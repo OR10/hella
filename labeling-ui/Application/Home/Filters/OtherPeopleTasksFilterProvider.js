@@ -2,11 +2,11 @@ function OtherPeopleTasksFilterProvider() {
   return function otherPeopleTasksFilter(tasks, userId) {
     if (!tasks) {
       return [];
-    } else {
-      return tasks.filter(task => {
-        return task.assignedUser !== userId && task.assignedUser !== null;
-      })
     }
+    
+    return tasks.filter(task => {
+      return task.assignedUser !== userId && task.assignedUser !== null;
+    });
   };
 }
 
