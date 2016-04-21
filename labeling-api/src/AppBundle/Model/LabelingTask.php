@@ -146,6 +146,7 @@ class LabelingTask
     /**
      * @var array
      * @CouchDB\Field(type="mixed")
+     * @Serializer\Groups({"statistics"})
      */
     private $metaData = array();
 
