@@ -1,5 +1,5 @@
 {
-  "width": 900,
+  "width": 1024,
   "operations": [
     {
       "method": "clearRect",
@@ -57,8 +57,8 @@
       "arguments": [
         0,
         0,
-        481,
-        291.625
+        1028.30322581,
+        623
       ]
     },
     {
@@ -108,8 +108,8 @@
       "arguments": [
         0,
         0,
-        481,
-        291.625
+        1028.30322581,
+        623
       ]
     },
     {
@@ -123,59 +123,8 @@
         0,
         0,
         1,
-        240,
-        145.3125
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "attr": "globalAlpha",
-      "val": 1
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        1,
-        0,
-        0,
-        1,
-        0,
-        0
-      ]
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "clearRect",
-      "arguments": [
-        0,
-        0,
-        481,
-        291.625
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        0.46875,
-        0,
-        0,
-        0.46875,
-        240,
-        145.3125
+        513.6516129,
+        311
       ]
     },
     {
@@ -210,8 +159,8 @@
       "arguments": [
         0,
         0,
-        481,
-        291.625
+        1028.30322581,
+        623
       ]
     },
     {
@@ -221,12 +170,12 @@
     {
       "method": "transform",
       "arguments": [
-        0.46875,
+        1.00322581,
         0,
         0,
-        0.46875,
-        0,
-        0
+        1.00322581,
+        513.6516129,
+        311
       ]
     },
     {
@@ -261,8 +210,8 @@
       "arguments": [
         0,
         0,
-        481,
-        291.625
+        1028.30322581,
+        623
       ]
     },
     {
@@ -272,10 +221,10 @@
     {
       "method": "transform",
       "arguments": [
-        0.46875,
+        1.00322581,
         0,
         0,
-        0.46875,
+        1.00322581,
         0,
         0
       ]
@@ -312,8 +261,8 @@
       "arguments": [
         0,
         0,
-        721,
-        436.9375
+        1028.30322581,
+        623
       ]
     },
     {
@@ -323,10 +272,10 @@
     {
       "method": "transform",
       "arguments": [
-        0.46875,
+        1.00322581,
         0,
         0,
-        0.46875,
+        1.00322581,
         0,
         0
       ]
@@ -363,8 +312,8 @@
       "arguments": [
         0,
         0,
-        721,
-        436.9375
+        1028.30322581,
+        623
       ]
     },
     {
@@ -374,63 +323,12 @@
     {
       "method": "transform",
       "arguments": [
-        0.46875,
+        1.00322581,
         0,
         0,
-        0.46875,
-        360,
-        217.96875
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "attr": "globalAlpha",
-      "val": 1
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        1,
-        0,
-        0,
-        1,
-        0,
-        0
-      ]
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "clearRect",
-      "arguments": [
-        0,
-        0,
-        721,
-        436.9375
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        0.703125,
-        0,
-        0,
-        0.703125,
-        360,
-        217.96875
+        1.00322581,
+        513.6516129,
+        311
       ]
     },
     {
@@ -465,8 +363,8 @@
       "arguments": [
         0,
         0,
-        721,
-        436.9375
+        1028.30322581,
+        623
       ]
     },
     {
@@ -476,12 +374,12 @@
     {
       "method": "transform",
       "arguments": [
-        0.703125,
+        1.00322581,
         0,
         0,
-        0.703125,
-        0,
-        0
+        1.00322581,
+        513.6516129,
+        311
       ]
     },
     {
@@ -516,8 +414,8 @@
       "arguments": [
         0,
         0,
-        721,
-        436.9375
+        1028.30322581,
+        623
       ]
     },
     {
@@ -527,10 +425,10 @@
     {
       "method": "transform",
       "arguments": [
-        0.703125,
+        1.00322581,
         0,
         0,
-        0.703125,
+        1.00322581,
         0,
         0
       ]
@@ -567,8 +465,8 @@
       "arguments": [
         0,
         0,
-        841,
-        509.59375
+        1028.30322581,
+        623
       ]
     },
     {
@@ -578,10 +476,10 @@
     {
       "method": "transform",
       "arguments": [
-        0.703125,
+        1.00322581,
         0,
         0,
-        0.703125,
+        1.00322581,
         0,
         0
       ]
@@ -618,8 +516,8 @@
       "arguments": [
         0,
         0,
-        841,
-        509.59375
+        1025,
+        621
       ]
     },
     {
@@ -629,112 +527,10 @@
     {
       "method": "transform",
       "arguments": [
-        0.703125,
+        1.00322581,
         0,
         0,
-        0.703125,
-        420,
-        254.296875
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "attr": "globalAlpha",
-      "val": 1
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        1,
-        0,
-        0,
-        1,
-        0,
-        0
-      ]
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "clearRect",
-      "arguments": [
-        0,
-        0,
-        841,
-        509.59375
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        0.8203125,
-        0,
-        0,
-        0.8203125,
-        420,
-        254.296875
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "attr": "globalAlpha",
-      "val": 1
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        1,
-        0,
-        0,
-        1,
-        0,
-        0
-      ]
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "clearRect",
-      "arguments": [
-        0,
-        0,
-        841,
-        509.59375
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        0.8203125,
-        0,
-        0,
-        0.8203125,
+        1.00322581,
         0,
         0
       ]
@@ -771,8 +567,8 @@
       "arguments": [
         0,
         0,
-        841,
-        509.59375
+        1025,
+        621
       ]
     },
     {
@@ -782,10 +578,112 @@
     {
       "method": "transform",
       "arguments": [
-        0.8203125,
+        1.00322581,
         0,
         0,
-        0.8203125,
+        1.00322581,
+        512,
+        310
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        512,
+        310
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
         0,
         0
       ]
@@ -822,8 +720,8 @@
       "arguments": [
         0,
         0,
-        901,
-        545.921875
+        1025,
+        621
       ]
     },
     {
@@ -833,10 +731,10 @@
     {
       "method": "transform",
       "arguments": [
-        0.8203125,
+        1,
         0,
         0,
-        0.8203125,
+        1,
         0,
         0
       ]
@@ -873,8 +771,8 @@
       "arguments": [
         0,
         0,
-        901,
-        545.921875
+        1025,
+        621
       ]
     },
     {
@@ -884,12 +782,12 @@
     {
       "method": "transform",
       "arguments": [
-        0.8203125,
+        1,
         0,
         0,
-        0.8203125,
-        450,
-        272.4609375
+        1,
+        512,
+        310
       ]
     },
     {
@@ -924,8 +822,8 @@
       "arguments": [
         0,
         0,
-        901,
-        545.921875
+        1025,
+        621
       ]
     },
     {
@@ -935,12 +833,12 @@
     {
       "method": "transform",
       "arguments": [
-        0.87890625,
+        1,
         0,
         0,
-        0.87890625,
-        450,
-        272.4609375
+        1,
+        512,
+        310
       ]
     },
     {
@@ -975,32 +873,13 @@
       "arguments": [
         0,
         0,
-        901,
-        545.921875
+        1025,
+        621
       ]
     },
     {
       "method": "save",
       "arguments": []
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        0.87890625,
-        0,
-        0,
-        0.87890625,
-        0,
-        0
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "attr": "globalAlpha",
-      "val": 1
     },
     {
       "method": "transform",
@@ -1009,38 +888,6 @@
         0,
         0,
         1,
-        0,
-        0
-      ]
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "restore",
-      "arguments": []
-    },
-    {
-      "method": "clearRect",
-      "arguments": [
-        0,
-        0,
-        901,
-        545.921875
-      ]
-    },
-    {
-      "method": "save",
-      "arguments": []
-    },
-    {
-      "method": "transform",
-      "arguments": [
-        0.87890625,
-        0,
-        0,
-        0.87890625,
         0,
         0
       ]
@@ -1077,8 +924,8 @@
       "arguments": [
         0,
         0,
-        901,
-        545.921875
+        1025,
+        621
       ]
     },
     {
@@ -1088,10 +935,265 @@
     {
       "method": "transform",
       "arguments": [
-        0.87890625,
+        1,
         0,
         0,
-        0.87890625,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        512,
+        310
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        512,
+        310
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "attr": "globalAlpha",
+      "val": 1
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "restore",
+      "arguments": []
+    },
+    {
+      "method": "clearRect",
+      "arguments": [
+        0,
+        0,
+        1025,
+        621
+      ]
+    },
+    {
+      "method": "save",
+      "arguments": []
+    },
+    {
+      "method": "transform",
+      "arguments": [
+        1,
+        0,
+        0,
+        1,
         0,
         0
       ]
@@ -1167,36 +1269,36 @@
     {
       "method": "moveTo",
       "arguments": [
-        87.890625,
-        175.78125
+        100,
+        200
       ]
     },
     {
       "method": "lineTo",
       "arguments": [
-        87.890625,
-        87.890625
+        100,
+        100
       ]
     },
     {
       "method": "lineTo",
       "arguments": [
-        175.78125,
-        87.890625
+        200,
+        100
       ]
     },
     {
       "method": "lineTo",
       "arguments": [
-        175.78125,
-        175.78125
+        200,
+        200
       ]
     },
     {
       "method": "lineTo",
       "arguments": [
-        87.890625,
-        175.78125
+        100,
+        200
       ]
     },
     {
@@ -1258,5 +1360,5 @@
       "arguments": []
     }
   ],
-  "height": 544
+  "height": 620
 }
