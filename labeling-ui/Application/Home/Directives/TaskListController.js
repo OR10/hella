@@ -5,7 +5,13 @@ class TaskListController {
   /**
    * @param {TaskGateway} taskGateway injected
    */
-  constructor(taskGateway) {
+  constructor($scope, $stateParams, $state, taskGateway, projectGateway) {
+    /**
+     * @type {$stateParams}
+     * @private
+     */
+    this._$stateParams = $stateParams;
+
     /**
      * List of tasks rendered by the directive
      * @type {null|Array.<Task>}
@@ -23,11 +29,33 @@ class TaskListController {
      */
     this._taskGateway = taskGateway;
 
+    /**
+     * @type {ProjectGateway}
+     * @private
+     */
+    this._projectGateway = projectGateway;
+
+    /**
+     * @type {Array<Object>}
+     */
+    this.projectList = [{
+      id: '',
+      name: 'All projects',
+    }];
+
     this.showOnlyReopenedTasks = false;
     this.showOnlyReviewedTasks = false;
 
     this.filterReopenTasks = this.filterReopenTasks.bind(this);
     this.filterReviewTasks = this.filterReviewTasks.bind(this);
+
+    this.selectedProject = this._$stateParams.project;
+
+    $scope.$watch('vm.selectedProject', (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        $state.go('labeling.tasks', {project: newValue});
+      }
+    });
 
     this._loadTaskList();
   }
@@ -44,10 +72,30 @@ class TaskListController {
     this.loadingInProgress = true;
     this._taskGateway.getTasksAndVideos()
       .then(({tasks, videos, users}) => {
-
         this.preprocessingTasks = null;
         this.waitingTasks = null;
         this.labeledTasks = null;
+
+        const taskList = tasks.labeled.concat(tasks.waiting);
+        const projectIds = [];
+        taskList.forEach(task => {
+          if (projectIds.indexOf(task.projectId) === -1) {
+            projectIds.push(task.projectId);
+          }
+        });
+
+        this._projectGateway.getProjects().then(projects => {
+          this.projectList = this.projectList.concat(projectIds.map(id => {
+            const project = projects.find(project => {
+              return project.id === id;
+            });
+
+            return {
+              id: id,
+              name: `${project.name} [${project.id}]`,
+            };
+          }));
+        });
 
         if (tasks.preprocessing) {
           this.preprocessingTasks = tasks.preprocessing.map(task => {
@@ -122,7 +170,11 @@ class TaskListController {
 }
 
 TaskListController.$inject = [
+  '$scope',
+  '$stateParams',
+  '$state',
   'taskGateway',
+  'projectGateway',
 ];
 
 export default TaskListController;
