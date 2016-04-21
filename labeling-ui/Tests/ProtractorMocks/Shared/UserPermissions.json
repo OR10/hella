@@ -6,11 +6,12 @@
   "response": {
     "data": {
       "result": {
-        "canViewStatsButton": false,
-        "canViewUserListButton": false,
-        "canViewVideoUploadButton": false,
-        "canViewReopenButton": false,
-        "unassignPermission": false
+        "canViewProjectButton": true,
+        "canViewReopenButton": true,
+        "canViewStatsButton": true,
+        "canViewUserListButton": true,
+        "canViewVideoUploadButton": true,
+        "unassignPermission": true
       }
     }
   }

@@ -13,7 +13,7 @@
         {
           "id": "LABELED-THING-IN-FRAME-ID-1",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameNumber": 1,
+          "frameIndex": 0,
           "classes": [],
           "ghostClasses": null,
           "shapes": [
@@ -38,7 +38,7 @@
         {
           "id": "LABELED-THING-IN-FRAME-ID-1",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameNumber": 2,
+          "frameIndex": 1,
           "classes": [],
           "ghostClasses": null,
           "shapes": [
@@ -63,7 +63,7 @@
         {
           "id": null,
           "rev": null,
-          "frameNumber": 3,
+          "frameIndex": 2,
           "classes": [],
           "ghostClasses": null,
           "shapes": [
@@ -88,7 +88,7 @@
         {
           "id": null,
           "rev": null,
-          "frameNumber": 4,
+          "frameIndex": 3,
           "classes": [],
           "ghostClasses": null,
           "shapes": [
@@ -113,7 +113,7 @@
         {
           "id": null,
           "rev": null,
-          "frameNumber": 5,
+          "frameIndex": 4,
           "classes": [],
           "ghostClasses": null,
           "shapes": [

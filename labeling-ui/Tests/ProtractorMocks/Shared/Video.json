@@ -7,8 +7,18 @@
     "data": {
       "result": {
         "id": "VIDEOID-VIDEOID",
-        "rev": "5-dcb77099065234c9462b39c3dede007d",
-        "name": "example.avi",
+        "imageTypes": {
+          "sourceJpg": {
+            "converted": true,
+            "width": 1024,
+            "height": 620
+          },
+          "thumbnail": {
+            "converted": true,
+            "width": 200,
+            "height": 121
+          }
+        },
         "metaData": {
           "format": "avi",
           "width": 1024,
@@ -57,18 +67,8 @@
             ]
           }
         },
-        "imageTypes": {
-          "sourceJpg": {
-            "converted": true,
-            "width": 1024,
-            "height": 620
-          },
-          "thumbnail": {
-            "converted": true,
-            "width": 200,
-            "height": 121
-          }
-        }
+        "name": "example.avi",
+        "rev": "5-dcb77099065234c9462b39c3dede007d"
       }
     }
   }

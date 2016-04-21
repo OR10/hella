@@ -11,23 +11,23 @@
     "data": {
       "result": [
         {
-          "frameNumber": 1,
+          "frameIndex": 0,
           "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/1.jpg"
         },
         {
-          "frameNumber": 2,
+          "frameIndex": 1,
           "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/2.jpg"
         },
         {
-          "frameNumber": 3,
+          "frameIndex": 2,
           "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/3.jpg"
         },
         {
-          "frameNumber": 4,
+          "frameIndex": 3,
           "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/4.jpg"
         },
         {
-          "frameNumber": 5,
+          "frameIndex": 4,
           "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/5.jpg"
         }
       ]

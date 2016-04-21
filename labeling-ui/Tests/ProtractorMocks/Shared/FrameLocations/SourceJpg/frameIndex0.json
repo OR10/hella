@@ -11,7 +11,7 @@
     "data": {
       "result": [
         {
-          "frameNumber": 1,
+          "frameIndex": 0,
           "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/sourceJpg\/1.jpg"
         }
       ]

@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/1",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
     "method": "GET",
     "queryString": {
       "limit": "1",
@@ -16,7 +16,7 @@
             "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
             "frameRange": {
               "startFrameNumber": 1,
-              "endFrameNumber": 1
+              "endFrameNumber": 2
             },
             "classes": [
               "pedestrian"
@@ -30,7 +30,7 @@
           {
             "id": "LABELED-THING-IN-FRAME-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "frameNumber": 1,
+            "FrameIndex": 0,
             "classes": [],
             "ghostClasses": null,
             "shapes": [
@@ -57,4 +57,3 @@
     }
   }
 }
-

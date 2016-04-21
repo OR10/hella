@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/1",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
     "method": "GET",
     "queryString": {
       "limit": "1",
@@ -30,7 +30,7 @@
           {
             "id": "LABELED-THING-IN-FRAME-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "frameNumber": 1,
+            "frameIndex": 0,
             "classes": [],
             "ghostClasses": null,
             "shapes": [
@@ -43,6 +43,31 @@
                 },
                 "bottomRight": {
                   "x": 200,
+                  "y": 200
+                },
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": false
+          },
+          {
+            "id": "LABELED-THING-IN-FRAME-ID-2",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
+            "frameIndex": 1,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "type": "rectangle",
+                "id": "SHAPE-ID-2",
+                "topLeft": {
+                  "x": 110,
+                  "y": 100
+                },
+                "bottomRight": {
+                  "x": 210,
                   "y": 200
                 },
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"

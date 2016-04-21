@@ -6,27 +6,20 @@
   "response": {
     "data": {
       "result": {
-        "id": "TASKID-TASKID",
-        "rev": "3-f5f607d02b030a04c2c01dbe80957ece",
-        "userId": null,
-        "videoId": "VIDEOID-VIDEOID",
-        "descriptionTitle": "Identify the person",
-        "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
-        "frameRange": {
-          "startFrameNumber": 1,
-          "endFrameNumber": 5
-        },
-        "requiredImageTypes": [
-          "sourceJpg",
-          "thumbnail"
-        ],
-        "status": "waiting",
-        "taskType": "object-labeling",
-        "predefinedClasses": [
-          "pedestrian"
-        ],
-        "drawingTool": "rectangle",
         "assignedUser": 1,
+        "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
+        "descriptionTitle": "Identify the person",
+        "drawingTool": "rectangle",
+        "drawingOptions": "rectangle",
+        "frameNumberMapping": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "id": "TASKID-TASKID",
+        "labelInstruction": "vehicle",
         "labelStructure": {
           "name": "root",
           "children": [
@@ -162,9 +155,30 @@
             "response": "> 80%"
           }
         },
-        "labelInstruction": "vehicle",
+        "metadata": {
+          "frameRange": {
+            "startFrameNumber": 1,
+            "endFrameNumber": 5
+          },
+          "frameSkip": 1,
+          "startFrameNumber": 1
+        },
+        "minimalVisibleShapeOverflow": null,
+        "predefinedClasses": [
+          "pedestrian"
+        ],
+        "projectId": "PROJECTID-PROJECTID",
         "readOnly": false,
-        "minimalVisibleShapeOverflow": null
+        "reopen": false,
+        "requiredImageTypes": [
+          "sourceJpg",
+          "thumbnail"
+        ],
+        "rev": "3-f5f607d02b030a04c2c01dbe80957ece",
+        "status": "waiting",
+        "taskType": "object-labeling",
+        "userId": null,
+        "videoId": "VIDEOID-VIDEOID"
       }
     }
   }
