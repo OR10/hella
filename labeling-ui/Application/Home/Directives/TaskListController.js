@@ -58,6 +58,17 @@ class TaskListController {
     });
 
     this._loadTaskList();
+    this._loadProjectList();
+  }
+
+  _loadProjectList() {
+    this._projectGateway.getProjects().then(projects => {
+      this.projectList = this.projectList.concat(
+        projects.map(project => {
+          return {id: project.id, name: `${project.name} [${project.id}]`,};
+        })
+      );
+    });
   }
 
   /**
@@ -75,27 +86,6 @@ class TaskListController {
         this.preprocessingTasks = null;
         this.waitingTasks = null;
         this.labeledTasks = null;
-
-        const taskList = tasks.labeled.concat(tasks.waiting);
-        const projectIds = [];
-        taskList.forEach(task => {
-          if (projectIds.indexOf(task.projectId) === -1) {
-            projectIds.push(task.projectId);
-          }
-        });
-
-        this._projectGateway.getProjects().then(projects => {
-          this.projectList = this.projectList.concat(projectIds.map(id => {
-            const project = projects.find(project => {
-              return project.id === id;
-            });
-
-            return {
-              id: id,
-              name: `${project.name} [${project.id}]`,
-            };
-          }));
-        });
 
         if (tasks.preprocessing) {
           this.preprocessingTasks = tasks.preprocessing.map(task => {
