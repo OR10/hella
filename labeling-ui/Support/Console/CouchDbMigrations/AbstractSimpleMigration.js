@@ -5,8 +5,7 @@ import {
   StaticSegment,
   StartTimeSegment,
   CounterSegment,
-  PerSecondSegment,
-  palette
+  palette,
 } from 'powerline-statusbar';
 
 const Solarized = palette.Solarized;
@@ -16,6 +15,11 @@ class AbstractSimpleMigration extends AbstractMigration {
     super(host, port, migration, database, logger);
 
     // Setup statusbar
+    this._projectStats = new CounterSegment(0, {
+      foreground: Solarized.base0, background: Solarized.base2, separator: 'thin',
+      prefix: 'Projects: ',
+    });
+
     this._taskStats = new CounterSegment(0, {
       foreground: Solarized.base0, background: Solarized.base2, separator: 'thin',
       prefix: 'Tasks: ',
@@ -30,10 +34,16 @@ class AbstractSimpleMigration extends AbstractMigration {
       prefix: 'LabeledThingsInFrame: ',
     });
 
+    this._timerStats = new CounterSegment(0, {
+      foreground: Solarized.base0, background: Solarized.base2, separator: 'thin',
+      prefix: 'Timers: ',
+    });
+
     this._powerline = new PowerlineStatus(
       new StaticSegment('CouchDB Migration', {foreground: Solarized.base3, background: Solarized.violet}),
       new StaticSegment(migration, {foreground: Solarized.base3, background: Solarized.yellow}),
       new StartTimeSegment('', {foreground: Solarized.base3, background: Solarized.orange}),
+      this._projectStats,
       this._taskStats,
       this._labeledThingStats,
       this._labeledThingInFrameStats
@@ -48,13 +58,13 @@ class AbstractSimpleMigration extends AbstractMigration {
         return this._createMigrationViews();
       })
       .then(() => {
-        this._logger.info('Retrieving Tasks');
-        return this._pouchdb.query('migration__/tasks', {
+        this._logger.info('Retrieving Projects');
+        return this._pouchdb.query('migration__/projects', {
           include_docs: false,
         });
       })
       .then(
-        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitTaskId(row.key))
+        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitProjectId(row.key))
       )
       .then(() => {
         this._logger.storage('Removing migration views');
@@ -62,29 +72,53 @@ class AbstractSimpleMigration extends AbstractMigration {
       });
   }
 
-  migrateTask(task) {
+  migrateProject(project) {
     // Should be overwritten by child
-    return task;
+    return false;
   }
 
-  migrateLabeledThing(labeledThing, task) {
+  migrateTask(task, project) {
     // Should be overwritten by child
-    return labeledThing;
+    return false;
   }
 
-  migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task) {
+  migrateLabeledThing(labeledThing, task, project) {
     // Should be overwritten by child
-    return labeledThingInFrame;
+    return false;
+  }
+
+  migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task, project) {
+    // Should be overwritten by child
+    return false;
+  }
+
+  migrateTimer(timer, task, project) {
+    // Should be overwritten by child
+    return false;
   }
 
   _createMigrationViews() {
     return this._pouchdb.put({
       _id: `_design/migration__`,
       views: {
-        tasks: {
+        projects: {
+          map: function (document) {
+            if (document.type === 'AppBundle.Model.Project') {
+              emit(document._id);
+            }
+          }.toString(),
+        },
+        tasksByProjectId: {
           map: function (document) {
             if (document.type === 'AppBundle.Model.LabelingTask') {
-              emit(document._id);
+              emit(document.projectId, document._id);
+            }
+          }.toString(),
+        },
+        timersByTaskId: {
+          map: function (document) {
+            if (document.type === 'AppBundle.Model.TaskTimer') {
+              emit(document.taskId, document._id);
             }
           }.toString(),
         },
@@ -109,7 +143,7 @@ class AbstractSimpleMigration extends AbstractMigration {
           new Error('Design document "_design/migrate__" does already exist. Delete it before migration.')
         );
       }
-      
+
       return Promise.reject(error);
     });
   }
@@ -118,27 +152,59 @@ class AbstractSimpleMigration extends AbstractMigration {
     return this._pouchdb.remove('_design/migration__');
   }
 
-  _visitTaskId(id) {
-    this._logger.info(`Loading Task: ${id}`);
+  _visitProjectId(id) {
+    this._logger.info(`Loading Project: ${id}`);
     return this._pouchdb.get(id)
-      .then(task => this._visitTask(task));
+      .then(project => this._visitProject(project));
   }
 
-  _visitTask(task) {
-    this._logger.info(`├── Retrieving LabeledThings for task ${task._id}`);
-    return this._pouchdb.query('migration__/labeledThingsByTaskId', {
-        key: task._id,
-        include_docs: false
+  _visitProject(project) {
+    this._logger.info(`├── Retrieving Tasks for Project "${project.name}" (${project._id})`);
+    return this._pouchdb.query('migration__/tasksByProjectId', {
+        key: project._id,
+        include_docs: false,
       })
       .then(
         resultSet => {
-          return this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingId(row.value, task));
+          return this._serialThenOnArray(resultSet.rows, row => this._visitTaskId(row.value, project));
         })
       .then(() => {
-        this._logger.storage(`Migrating Task ${task._id}`);
-        return this._pouchdb.put(
-          this.migrateTask(task)
-        );
+        this._logger.storage(`Migrating Project "${project.name}" (${project._id})`);
+        const migratedProject = this.migrateProject(project);
+        if (migratedProject !== false) {
+          return this._pouchdb.put(migratedProject);
+        }
+      })
+      .then(() => {
+        this._projectStats.step();
+        this._updateStatus();
+      });
+  }
+
+  _visitTaskId(id, project) {
+    this._logger.info(`├── Loading Task: ${id}`);
+    return this._pouchdb.get(id)
+      .then(task => this._visitTask(task, project));
+  }
+
+  _visitTask(task, project) {
+    this._logger.info(`│   ├── Retrieving LabeledThings for task ${task._id}`);
+    return this._pouchdb.query('migration__/labeledThingsByTaskId', {
+        key: task._id,
+        include_docs: false,
+      })
+      .then(resultSet => {
+        return this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingId(row.value, task, project));
+      })
+      .then(resultSet => {
+        return this._serialThenOnArray(resultSet.rows, row => this._visitTimerId(row.value, task, project));
+      })
+      .then(() => {
+        this._logger.storage(`├── Migrating Task ${task._id}`);
+        const migratedTask = this.migrateTask(task, project);
+        if (migratedTask !== false) {
+          return this._pouchdb.put(migratedTask);
+        }
       })
       .then(() => {
         this._taskStats.step();
@@ -146,26 +212,48 @@ class AbstractSimpleMigration extends AbstractMigration {
       });
   }
 
-  _visitLabeledThingId(id, task) {
-    this._logger.info(`├── Loading LabeledThing: ${id}`);
+  _visitTimerId(id, task, project) {
+    this._logger.info(`│   ├── Loading Timer: ${id}`);
     return this._pouchdb.get(id)
-      .then(labeledThing => this._visitLabeledThing(labeledThing, task));
+      .then(timer => this._visitTimer(timer, task, project));
   }
 
-  _visitLabeledThing(labeledThing, task) {
-    this._logger.info(`│   ├── Retrieving LabeledThingInFrames for labeldThing ${labeledThing._id}`);
+  _visitTimer(timer, task, project) {
+    return Promise.resolve()
+      .then(() => {
+        this._logger.storage(`│   │   ├── Migrating Timer ${timer._id}`);
+        const migratedTimer = this.migrateTimer(timer, task, project);
+        if (migratedTimer !== false) {
+          return this._pouchdb.put(migratedTimer);
+        }
+      })
+      .then(() => {
+        this._timerStats.step();
+        this._updateStatus();
+      });
+  }
+
+  _visitLabeledThingId(id, task, project) {
+    this._logger.info(`│   ├── Loading LabeledThing: ${id}`);
+    return this._pouchdb.get(id)
+      .then(labeledThing => this._visitLabeledThing(labeledThing, task, project));
+  }
+
+  _visitLabeledThing(labeledThing, task, project) {
+    this._logger.info(`│   │   ├── Retrieving LabeledThingInFrames for labeldThing ${labeledThing._id}`);
     return this._pouchdb.query('migration__/labeledThingsInFrameByLabeledThingId', {
         key: labeledThing._id,
-        include_docs: false
+        include_docs: false,
       })
       .then(
-        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingInFrameId(row.value, labeledThing, task))
+        resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingInFrameId(row.value, labeledThing, task, project))
       )
       .then(() => {
-        this._logger.storage(`├── Migrating LabeledThing ${labeledThing._id}`);
-        return this._pouchdb.put(
-          this.migrateLabeledThing(labeledThing, task)
-        );
+        this._logger.storage(`│   ├── Migrating LabeledThing ${labeledThing._id}`);
+        const migratedLabeledThing = this.migrateLabeledThing(labeledThing, task, project);
+        if (migratedLabeledThing !== false) {
+          return this._pouchdb.put(migratedLabeledThing);
+        }
       })
       .then(() => {
         this._labeledThingStats.step();
@@ -173,19 +261,20 @@ class AbstractSimpleMigration extends AbstractMigration {
       });
   }
 
-  _visitLabeledThingInFrameId(id, labeledThing, task) {
-    this._logger.info(`│   │   ├── Loading LabeledThingInFrame: ${id}`);
+  _visitLabeledThingInFrameId(id, labeledThing, task, project) {
+    this._logger.info(`│   │   │   ├── Loading LabeledThingInFrame: ${id}`);
     return this._pouchdb.get(id)
-      .then(labeledThingInFrame => this._visitLabeledThingInFrame(labeledThingInFrame, labeledThing, task));
+      .then(labeledThingInFrame => this._visitLabeledThingInFrame(labeledThingInFrame, labeledThing, task, project));
   }
 
-  _visitLabeledThingInFrame(labeledThingInFrame, labeledThing, task) {
+  _visitLabeledThingInFrame(labeledThingInFrame, labeledThing, task, project) {
     return Promise.resolve()
       .then(() => {
-        this._logger.storage(`│   │   ├── Migrating LabeledThingInFrame ${labeledThingInFrame._id}`);
-        return this._pouchdb.put(
-          this.migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task)
-        );
+        this._logger.storage(`│   │   │   ├── Migrating LabeledThingInFrame ${labeledThingInFrame._id}`);
+        const migratedLabeledThingInFrame = this.migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task, project);
+        if (migratedLabeledThingInFrame !== false) {
+          return this._pouchdb.put(migratedLabeledThingInFrame);
+        }
       })
       .then(() => {
         this._labeledThingInFrameStats.step();
