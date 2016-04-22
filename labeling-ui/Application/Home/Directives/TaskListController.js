@@ -61,11 +61,19 @@ class TaskListController {
     this._loadProjectList();
   }
 
+  /**
+   * Load a list of {@link Project}s for the project filters.
+   *
+   * @private
+   */
   _loadProjectList() {
     this._projectGateway.getProjects().then(projects => {
       this.projectList = this.projectList.concat(
         projects.map(project => {
-          return {id: project.id, name: `${project.name} [${project.id}]`,};
+          return {
+            id: project.id,
+            name: `${project.name} [${project.id}]`,
+          };
         })
       );
     });
@@ -120,6 +128,13 @@ class TaskListController {
       });
   }
 
+  /**
+   * Returns if the given {@link Task} has the reopened flag set
+   * and if the 'show only reopened' flag is set.
+   *
+   * @param task
+   * @returns {Boolean}
+   */
   filterReopenTasks(task) {
     if (!this.showOnlyReopenedTasks) {
       return true;
@@ -128,6 +143,13 @@ class TaskListController {
     return task.reopen;
   }
 
+  /**
+   * Returns if the given {@link Task} has the reopened flag set
+   * and if the 'show only reviewed' flag is set.
+   *
+   * @param task
+   * @returns {*}
+   */
   filterReviewTasks(task) {
     if (!this.showOnlyReviewedTasks) {
       return true;
