@@ -37,6 +37,11 @@ class VideoImporter
     private $labelingTaskFacade;
 
     /**
+     * @var Service\LabelStructure
+     */
+    private $labelStructureService;
+
+    /**
      * @var WorkerPool\Facade
      */
     private $facadeAMQP;
@@ -47,6 +52,7 @@ class VideoImporter
      * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
      * @param Video\VideoFrameSplitter     $frameCdnSplitter
+     * @param Service\LabelStructure       $labelStructureService
      * @param WorkerPool\Facade            $facadeAMQP
      *
      * @internal param Facade\Project $project
@@ -57,34 +63,36 @@ class VideoImporter
         Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
+        Service\LabelStructure $labelStructureService,
         WorkerPool\Facade $facadeAMQP
     ) {
-        $this->projectFacade      = $projectFacade;
-        $this->videoFacade        = $videoFacade;
-        $this->metaDataReader     = $metaDataReader;
-        $this->frameCdnSplitter   = $frameCdnSplitter;
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->facadeAMQP         = $facadeAMQP;
+        $this->projectFacade         = $projectFacade;
+        $this->videoFacade           = $videoFacade;
+        $this->metaDataReader        = $metaDataReader;
+        $this->frameCdnSplitter      = $frameCdnSplitter;
+        $this->labelingTaskFacade    = $labelingTaskFacade;
+        $this->labelStructureService = $labelStructureService;
+        $this->facadeAMQP            = $facadeAMQP;
     }
 
     /**
-     * @param string      $name The name for the video (usually the basename).
-     * @param string      $projectName
-     * @param string      $path The filesystem path to the video file.
-     * @param bool        $lossless Wether or not the UI should use lossless compressed images.
-     * @param int         $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param bool        $isObjectLabeling
-     * @param bool        $isMetaLabeling
-     * @param array       $labelInstructions
-     * @param int|null    $minimalVisibleShapeOverflow
-     * @param string|null $drawingTool
-     * @param array       $drawingToolOptions
-     * @param int         $frameSkip
-     * @param int         $startFrame
+     * @param string   $name The name for the video (usually the basename).
+     * @param string   $projectName
+     * @param string   $path The filesystem path to the video file.
+     * @param bool     $lossless Wether or not the UI should use lossless compressed images.
+     * @param int      $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param bool     $isObjectLabeling
+     * @param bool     $isMetaLabeling
+     * @param array    $labelInstructions
+     * @param int|null $minimalVisibleShapeOverflow
+     * @param array    $drawingToolOptions
+     * @param int      $frameSkip
+     * @param int      $startFrame
      *
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
+     * @internal param null|string $drawingTool
      */
     public function import(
         $name,
@@ -238,8 +246,12 @@ class VideoImporter
             'Which side does one see from the person and from which side is the person entering the screen?'
         );
 
-        $labelingTask->setLabelStructure($this->getLabelStructureForTypeAndInstruction($taskType, $instruction));
-        $labelingTask->setLabelStructureUi($this->getLabelStructureUiForTypeAndInstruction($taskType, $instruction));
+        $labelingTask->setLabelStructure(
+            $this->labelStructureService->getLabelStructureForTypeAndInstruction($taskType, $instruction)
+        );
+        $labelingTask->setLabelStructureUi(
+            $this->labelStructureService->getLabelStructureUiForTypeAndInstruction($taskType, $instruction)
+        );
         $labelingTask->setLabelInstruction($instruction);
 
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
@@ -270,53 +282,5 @@ class VideoImporter
         }
 
         return ['sourceJpg', 'thumbnail'];
-    }
-
-    private function getLabelStructureForTypeAndInstruction($type, $instruction)
-    {
-        if ($type === Model\LabelingTask::TYPE_META_LABELING) {
-            $structure = file_get_contents(
-                sprintf(
-                    '%s/../Resources/LabelStructures/%s.json',
-                    __DIR__,
-                    $type
-                )
-            );
-        } else {
-            $structure = file_get_contents(
-                sprintf(
-                    '%s/../Resources/LabelStructures/%s-%s.json',
-                    __DIR__,
-                    $type,
-                    $instruction
-                )
-            );
-        }
-
-        return json_decode($structure, true);
-    }
-
-    private function getLabelStructureUiForTypeAndInstruction($type, $instruction)
-    {
-        if ($type === Model\LabelingTask::TYPE_META_LABELING) {
-            $structure = file_get_contents(
-                sprintf(
-                    '%s/../Resources/LabelStructures/%s-ui.json',
-                    __DIR__,
-                    $type
-                )
-            );
-        } else {
-            $structure = file_get_contents(
-                sprintf(
-                    '%s/../Resources/LabelStructures/%s-%s-ui.json',
-                    __DIR__,
-                    $type,
-                    $instruction
-                )
-            );
-        }
-
-        return json_decode($structure, true);
     }
 }

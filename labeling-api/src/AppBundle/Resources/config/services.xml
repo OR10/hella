@@ -59,7 +59,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader" />
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
+            <argument type="service" id="annostation.labeling_api.service.label_structure" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+        </service>
+
+        <service id="annostation.labeling_api.service.label_structure" class="AppBundle\Service\LabelStructure">
         </service>
 
         <service id="annostation.labeling_api.authentication_handler" class="AppBundle\AuthenticationHandler">
