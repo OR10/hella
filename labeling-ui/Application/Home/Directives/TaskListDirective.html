@@ -4,6 +4,12 @@
             <div class="">No tasks available!</div>
         </div>
     </div>
+    <div>
+        <label>Project:</label>
+        <select ng-model="vm.selectedProject">
+            <option ng-repeat="project in vm.projectList" value="{{project.id}}">{{project.name}}</option>
+        </select>
+    </div>
 
     <div class="grid-block">
         <div class="grid-content task-list-table" ng-if="vm.preprocessingTasks != null">
@@ -17,21 +23,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in vm.preprocessingTasks track by task.id">
+                <tr ng-repeat="task in preprocessingTasks = (vm.preprocessingTasks | project:vm.selectedProject)"
+                    track-by="task.id">
                     <td>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{task.taskType}}
+                        <i ng-show="preprocessingTasks.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="preprocessingTasks.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="preprocessingTasks.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="preprocessingTasks.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="preprocessingTasks.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                        <i ng-show="preprocessingTasks.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                        &nbsp;{{preprocessingTasks.taskType}}
                     </td>
                     <td>
-                        {{task.video.name}}
+                        {{preprocessingTasks.video.name}}
                     </td>
                     <td>
-                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
+                        {{preprocessingTasks.frameNumberMapping[0]}}-{{preprocessingTasks.frameNumberMapping[preprocessingTasks.frameNumberMapping.length - 1]}}
                     </td>
                 </tr>
                 <tr ng-show="!vm.preprocessingTasks.length"
@@ -59,7 +66,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id | filter:vm.filterReopenTasks)"
+                <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id | project:vm.selectedProject | filter:vm.filterReopenTasks)"
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
@@ -103,7 +110,7 @@
                 </thead>
                 <tbody>
                 <tr ui-sref="^.task({taskId: task.id})"
-                    ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks | filter:vm.filterReopenTasks)"
+                    ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks | project:vm.selectedProject | filter:vm.filterReopenTasks)"
                     track-by="task.id">
                     <td>
                         <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
@@ -141,7 +148,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id | filter:vm.filterReopenTasks)"
+                <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id | project:vm.selectedProject | filter:vm.filterReopenTasks)"
                     track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
@@ -188,7 +195,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in finishedTasks = (vm.labeledTasks | filter:vm.filterReviewTasks)" track-by="task.id">
+                <tr ng-repeat="task in finishedTasks = (vm.labeledTasks | project:vm.selectedProject | filter:vm.filterReviewTasks)"
+                    track-by="task.id">
                     <td ui-sref="^.task({taskId: task.id})">
                         <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
                         <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>

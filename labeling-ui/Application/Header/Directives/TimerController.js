@@ -23,7 +23,7 @@ class TimerController {
      * Time after the last mouse click the user is seen as idle
      * @type {number}
      */
-    this.idleTimeout = 60;
+    this.idleTimeout = 15;
 
     /**
      * The time spent in this task in seconds
@@ -59,14 +59,22 @@ class TimerController {
     $element.on('$destroy', () => this.deinit());
 
     $document.on('mousedown', () => {
-      if (this.listenToEvents) {
-        this.isIdle = false;
-        this.$interval.cancel(this._idleTimeoutHandle);
-        this.startIdleTimer();
-      }
+      this.triggerAction();
+    });
+
+    $document.on('keypress', () => {
+      this.triggerAction();
     });
 
     this.timerGateway.getTime(this.task.id, this.user.id).then(this.init.bind(this));
+  }
+
+  triggerAction() {
+    if (this.listenToEvents) {
+      this.isIdle = false;
+      this.$interval.cancel(this._idleTimeoutHandle);
+      this.startIdleTimer();
+    }
   }
 
   init(timer) {

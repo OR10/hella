@@ -6,6 +6,7 @@ import homeTemplate from './Views/home.html!';
 import UnassignedTasksFilterProvider from './Filters/UnassignesTasksFilterProvider';
 import MyTasksFilterProvider from './Filters/MyTasksFilterProvider';
 import OtherPeopleTasksFilterProvider from './Filters/OtherPeopleTasksFilterProvider';
+import ProjectFilterProvider from './Filters/ProjectFilterProvider';
 
 /**
  * Home Module
@@ -21,7 +22,7 @@ class Home extends Module {
    */
   config($stateProvider) {
     $stateProvider.state('labeling.tasks', {
-      url: 'tasks',
+      url: 'tasks?project',
       controller: HomeController,
       controllerAs: 'vm',
       template: homeTemplate,
@@ -38,6 +39,7 @@ class Home extends Module {
     this.module.filter('unassignedTasks', UnassignedTasksFilterProvider);
     this.module.filter('myTasks', MyTasksFilterProvider);
     this.module.filter('otherPeopleTasks', OtherPeopleTasksFilterProvider);
+    this.module.filter('project', ProjectFilterProvider);
   }
 }
 

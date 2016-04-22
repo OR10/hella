@@ -19,7 +19,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="project in vm.projects">
-                    <td>
+                    <td ui-sref="labeling.tasks({project: project.id})">
                         {{project.name}}
                     </td>
                     <td>
@@ -29,7 +29,7 @@
                         {{project.taskFinishedCount}}
                     </td>
                     <td>
-                        {{project.taskFinishedCount / project.taskCount *  100 | number: 0 }} %
+                        {{project.taskFinishedCount / project.taskCount * 100 | number: 0 }} %
                     </td>
                     <td>
                         <button ui-sref=".export({projectId: project.id})"
