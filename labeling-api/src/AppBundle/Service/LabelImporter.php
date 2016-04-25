@@ -20,7 +20,7 @@ interface LabelImporter
      *
      * The progressbar isn't required. If it is not set it will simply not be used for information callbacks.
      *
-     * @param ProgressBar $progressbar
+     * @param ProgressBar $progressBar
      */
     public function setProgressBar(ProgressBar $progressBar);
 }

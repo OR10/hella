@@ -111,7 +111,9 @@ class ImportLabelingCsvFile extends Base
                     $project,
                     $frameNumberMapping,
                     Model\LabelingTask::TYPE_OBJECT_LABELING,
-                    $this->getDrawingToolByInstruction($instruction)
+                    $this->getDrawingToolByInstruction($instruction),
+                    array(),
+                    $this->getRequiredImageTypes($video)
                 );
                 $task->setLabelInstruction($instruction);
 
@@ -128,7 +130,7 @@ class ImportLabelingCsvFile extends Base
                         $instruction
                     )
                 );
-
+                
                 $this->taskFacade->save($task);
 
                 return $task;
@@ -273,5 +275,42 @@ class ImportLabelingCsvFile extends Base
         );
 
         return $uniqueInstructions;
+    }
+
+    /**
+     * @param Model\Video $video
+     *
+     * @return array
+     */
+    private function getRequiredImageTypes(Model\Video $video)
+    {
+        // Source image types in preferred order
+        $sourceImageTypes = array(
+            'source',
+            'sourceJpg'
+        );
+
+        // Thumbnail image types in preferred order
+        $thumbnailImageTypes = array(
+            'thumbnail'
+        );
+
+        $taskImageTypes = array();
+
+        foreach($sourceImageTypes as $sourceImageType) {
+            if ($video->hasImageType($sourceImageType)) {
+                $taskImageTypes[] = $sourceImageType;
+                break;
+            }
+        }
+
+        foreach($thumbnailImageTypes as $thumbnailImageType) {
+            if ($video->hasImageType($thumbnailImageType)) {
+                $taskImageTypes[] = $thumbnailImageType;
+                break;
+            }
+        }
+
+        return $taskImageTypes;
     }
 }
