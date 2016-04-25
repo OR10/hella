@@ -14,6 +14,7 @@
                     <th>Tasks count</th>
                     <th>Tasks finished count</th>
                     <th>Tasks finished percentage</th>
+                    <th>Time spent in Project</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -30,6 +31,9 @@
                     </td>
                     <td>
                         {{project.taskFinishedCount / project.taskCount * 100 | number: 0 }} %
+                    </td>
+                    <td>
+                        <span>{{project.timeSpent.hours}}h </span><span>{{project.timeSpent.minutes}}m</span>
                     </td>
                     <td>
                         <button ui-sref=".export({projectId: project.id})"

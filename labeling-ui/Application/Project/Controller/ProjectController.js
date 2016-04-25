@@ -9,6 +9,15 @@ class ProjectController {
     this.userPermissions = userPermissions;
 
     this.projects = projects;
+
+    this.projects = projects.map(stat => {
+      const hours = Math.floor(stat.totalLabelingTimeInSeconds / 3600);
+      const minutes = Math.floor(stat.totalLabelingTimeInSeconds % 3600 / 60);
+
+      stat.timeSpent = {hours, minutes};
+
+      return stat;
+    });
   }
 }
 

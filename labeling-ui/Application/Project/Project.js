@@ -21,7 +21,7 @@ class Project extends Module {
    */
   config($stateProvider) {
     function projectsResolver(projectGateway) {
-      return projectGateway.getProjects();
+      return projectGateway.getDetailedProjects();
     }
 
     projectsResolver.$inject = ['projectGateway'];
