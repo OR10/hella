@@ -5,6 +5,7 @@ namespace AppBundle\Command;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 
@@ -85,6 +86,9 @@ class ImportLabelingCsvFile extends Base
 
         $tasks = $this->createTasksForInstructions($project, $video, $uniqueInstructions);
 
+        $this->labelImporter->setProgressBar(
+            new ProgressBar($output, count($processedCsvData))
+        );
         $this->labelImporter->importLabels($tasks, $processedCsvData);
     }
 
@@ -99,7 +103,8 @@ class ImportLabelingCsvFile extends Base
     {
         $tasks = array_map(
             function ($instruction) use ($video, $project) {
-                $frameNumberMapping = \range(1, $video->getMetaData()->numberOfFrames);
+                $metaData           = $video->getMetaData();
+                $frameNumberMapping = \range(1, $metaData['numberOfFrames']);
 
                 $task = new Model\LabelingTask(
                     $video,
@@ -108,6 +113,7 @@ class ImportLabelingCsvFile extends Base
                     Model\LabelingTask::TYPE_OBJECT_LABELING,
                     $this->getDrawingToolByInstruction($instruction)
                 );
+                $task->setLabelInstruction($instruction);
 
                 $task->setLabelStructure(
                     $this->labelStructureService->getLabelStructureForTypeAndInstruction(

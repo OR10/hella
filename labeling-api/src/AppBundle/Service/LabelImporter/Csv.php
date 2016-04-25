@@ -6,6 +6,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service;
 use AppBundle\Service\ProjectExporter\Exception;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class Csv implements Service\LabelImporter
 {
@@ -30,6 +31,11 @@ class Csv implements Service\LabelImporter
     private $taskIncompleteService;
 
     /**
+     * @var ProgressBar|null
+     */
+    private $progressBar;
+
+    /**
      * Csv constructor.
      *
      * @param Facade\LabeledThing        $labeledThingFacade
@@ -44,6 +50,20 @@ class Csv implements Service\LabelImporter
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
+
+        $this->progressBar = null;
+    }
+
+    /**
+     * Optionally set a progressbar to inform about import status
+     *
+     * The progressbar isn't required. If it is not set it will simply not be used for information callbacks.
+     *
+     * @param ProgressBar $progressbar
+     */
+    public function setProgressBar(ProgressBar $progressbar)
+    {
+        $this->progressBar = $progressbar;
     }
 
     /**
@@ -56,6 +76,10 @@ class Csv implements Service\LabelImporter
      */
     public function importLabels(array $tasks, array $data)
     {
+        if ($this->progressBar !== null) {
+            $this->progressBar->start();
+        }
+        
         foreach ($data as $label) {
             $instruction  = $this->extractInstruction($label);
             $task         = $this->findTaskForInstructionAndFrame($tasks, $instruction, $label['frame_number']);
@@ -97,6 +121,15 @@ class Csv implements Service\LabelImporter
                 $labeledThing,
                 $labeledThingInFrame
             );
+            
+            if ($this->progressBar !== null) {
+                $this->progressBar->advance();
+            }
+        }
+        if ($this->progressBar !== null) {
+            $this->progressBar->finish();
+        }
+    }
         }
     }
 
