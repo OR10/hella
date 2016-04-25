@@ -16,6 +16,11 @@ class Csv implements Service\LabelImporter
     private $dataIdToDatabaseIdMapping;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $taskFacade;
+
+    /**
      * @var Facade\LabeledThing
      */
     private $labeledThingFacade;
@@ -38,15 +43,18 @@ class Csv implements Service\LabelImporter
     /**
      * Csv constructor.
      *
+     * @param Facade\LabelingTask        $taskFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Service\TaskIncomplete     $taskIncompleteService
      */
     public function __construct(
+        Facade\LabelingTask $taskFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Service\TaskIncomplete $taskIncompleteService
     ) {
+        $this->taskFacade                = $taskFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
@@ -126,10 +134,22 @@ class Csv implements Service\LabelImporter
                 $this->progressBar->advance();
             }
         }
+
+        $this->markTasksAsWaiting($tasks);
+
         if ($this->progressBar !== null) {
             $this->progressBar->finish();
         }
     }
+
+    /**
+     * @param Model\LabelingTask[] $tasks
+     */
+    protected function markTasksAsWaiting(array $tasks)
+    {
+        foreach ($tasks as $task) {
+            $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+            $this->taskFacade->save($task);
         }
     }
 
@@ -176,6 +196,7 @@ class Csv implements Service\LabelImporter
                 if (!in_array($direction, $emptyFieldValues, true)) {
                     $classes[] = sprintf('direction-%s', $direction);
                 }
+
                 return $classes;
             case Model\LabelingTask::INSTRUCTION_IGNORE:
                 preg_match('/^(ignore-(\w+))$/', $labelClass, $matches);
@@ -232,11 +253,12 @@ class Csv implements Service\LabelImporter
     {
         $frameIndexNumber = \array_search($frameNumber, $task->getFrameNumberMapping());
         if (!isset($this->dataIdToDatabaseIdMapping[$task->getId()][$dataId])) {
-            $labeledThing                                             = $this->createAndStoreNewLabeledThing(
+            $labeledThing = $this->createAndStoreNewLabeledThing(
                 $task,
                 $frameIndexNumber
             );
-            $this->dataIdToDatabaseIdMapping[$task->getId()][$dataId] = $labeledThing->getId();
+
+            $this->dataIdToDatabaseIdMapping[$task->getId()][$dataId] = $labeledThing;
         } else {
             /** @var Model\LabeledThing $labeledThing */
             $labeledThing = $this->dataIdToDatabaseIdMapping[$task->getId()][$dataId];

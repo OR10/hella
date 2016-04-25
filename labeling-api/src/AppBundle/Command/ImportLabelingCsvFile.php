@@ -130,11 +130,12 @@ class ImportLabelingCsvFile extends Base
                 );
 
                 $this->taskFacade->save($task);
+
                 return $task;
             },
             $instructions
         );
-        
+
         return $tasks;
     }
 
@@ -187,7 +188,7 @@ class ImportLabelingCsvFile extends Base
      */
     protected function provideProjectByName($projectName)
     {
-        $project = $this->projectFacade->findByName($input->getOption('projectName'));
+        $project = $this->projectFacade->findByName($projectName);
 
         if ($project === null) {
             $project = new Model\Project($projectName);
