@@ -196,6 +196,13 @@ class AbstractSimpleMigration extends AbstractMigration {
       .then(resultSet => {
         return this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingId(row.value, task, project));
       })
+      .then(() => {
+        this._logger.info(`│   ├── Retrieving Timers for task ${task._id}`);
+        return this._pouchdb.query('migration__/timersByTaskId', {
+          key: task._id,
+          include_docs: false,
+        });
+      })
       .then(resultSet => {
         return this._serialThenOnArray(resultSet.rows, row => this._visitTimerId(row.value, task, project));
       })
