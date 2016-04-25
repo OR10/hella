@@ -27,6 +27,11 @@ class TaskTimer
     private $taskId;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $projectId;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $userId;
@@ -38,12 +43,13 @@ class TaskTimer
 
     /**
      * @param LabelingTask $task
-     * @param Use r        $user
+     * @param User         $user
      * @param int          $timeInSeconds
      */
     public function __construct(LabelingTask $task, User $user, $timeInSeconds = 0)
     {
         $this->taskId        = $task->getId();
+        $this->projectId     = $task->getProjectId();
         $this->userId        = $user->getId();
         $this->timeInSeconds = (int) $timeInSeconds;
     }
@@ -82,5 +88,13 @@ class TaskTimer
     public function setTimeInSeconds($timeInSeconds)
     {
         $this->timeInSeconds = (int) $timeInSeconds;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
     }
 }

@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception;
 class Project extends Controller\Base
 {
     /**
-     * @var Facade\Video
+     * @var Facade\Project
      */
     private $projectFacade;
 
@@ -42,16 +42,21 @@ class Project extends Controller\Base
     /**
      * List all labeling tasks
      *
-     * @Rest\Get("")
+     * @Rest\Get("/details")
      *
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function listAction(HttpFoundation\Request $request)
+    public function listDetailedAction(HttpFoundation\Request $request)
     {
-        $projects = $this->projectFacade->findAll();
-        $result   = array();
+        $projects           = $this->projectFacade->findAll();
+        $projectTimeMapping = [];
+        $result             = array();
+
+        foreach ($this->projectFacade->getTimePerProject() as $mapping) {
+            $projectTimeMapping[$mapping['key']] = $mapping['value'];
+        }
 
         foreach ($projects as $project) {
             $tasks     = $this->projectFacade->getTasksByProject($project);
@@ -71,11 +76,42 @@ class Project extends Controller\Base
                 }
             }
 
+            $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
+
             $result[] = array(
-                'id'                => $project->getId(),
-                'name'              => $project->getName(),
-                'taskCount'         => $taskCount,
-                'taskFinishedCount' => $complete,
+                'id'                         => $project->getId(),
+                'name'                       => $project->getName(),
+                'taskCount'                  => $taskCount,
+                'taskFinishedCount'          => $complete,
+                'totalLabelingTimeInSeconds' => $timeInSeconds,
+            );
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' => $result,
+            ]
+        );
+    }
+
+    /**
+     * List all labeling tasks
+     *
+     * @Rest\Get("")
+     *
+     * @param HttpFoundation\Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function listAction(HttpFoundation\Request $request)
+    {
+        $projects = $this->projectFacade->findAll();
+        $result   = array();
+
+        foreach ($projects as $project) {
+            $result[] = array(
+                'id'   => $project->getId(),
+                'name' => $project->getName(),
             );
         }
 

@@ -39,6 +39,20 @@ class Project
         
         return $resultSet;
     }
+
+    /**
+     * @return array
+     */
+    public function getTimePerProject()
+    {
+        $resultSet = $this->documentManager
+            ->createQuery('annostation_task_timer', 'sum_by_projectId')
+            ->setGroup(true)
+            ->execute()
+            ->toArray();
+
+        return $resultSet;
+    }
     
     /**
      * @param string $name
