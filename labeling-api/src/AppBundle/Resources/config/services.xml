@@ -93,7 +93,6 @@
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.csv" class="AppBundle\Service\LabelImporter\Csv">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.service.task_incomplete" />

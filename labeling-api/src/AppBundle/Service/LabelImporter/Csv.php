@@ -10,11 +10,6 @@ use AppBundle\Service\ProjectExporter\Exception;
 class Csv implements Service\LabelImporter
 {
     /**
-     * @var Facade\Project
-     */
-    private $projectFacade;
-
-    /**
      * @var array
      */
     private $dataIdToDatabaseIdMapping;
@@ -36,39 +31,33 @@ class Csv implements Service\LabelImporter
 
     /**
      * Csv constructor.
-     * @param Facade\Project $projectFacade
-     * @param Facade\LabeledThing $labeledThingFacade
+     *
+     * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Service\TaskIncomplete $taskIncompleteService
+     * @param Service\TaskIncomplete     $taskIncompleteService
      */
     public function __construct(
-        Facade\Project $projectFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Service\TaskIncomplete $taskIncompleteService
     ) {
-        $this->projectFacade = $projectFacade;
-        $this->labeledThingFacade = $labeledThingFacade;
+        $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->taskIncompleteService = $taskIncompleteService;
+        $this->taskIncompleteService     = $taskIncompleteService;
     }
 
     /**
-     * Import Labels for a given Project
+     * Import Labels using CSV data for existing Tasks
      *
-     * @param Model\Project $project
-     * @param array $labelData
-     * @return mixed
+     * @param Model\LabelingTask[] $tasks
+     * @param array                $data
+     *
+     * @throws \Exception
      */
-    public function importLabels(Model\Project $project, array $labelData)
+    public function importLabels(array $tasks, array $data)
     {
-        $tasks = $this->projectFacade->getTasksByProject($project);
-
-        foreach($labelData as $label) {
-            $instruction = $label['label_class'];
-            if (preg_match('/^(ignore-(\w+))$/', $label['label_class'], $matches)){
-                $instruction = 'ignore';
-            }
+        foreach ($data as $label) {
+            $instruction  = $this->extractInstruction($label);
             $task         = $this->findTaskForInstructionAndFrame($tasks, $instruction, $label['frame_number']);
             $labeledThing = $this->getLabeledThing($task, $label['id'], $label['frame_number']);
             $shape        = $this->getShape(
@@ -85,7 +74,13 @@ class Csv implements Service\LabelImporter
                     $label['frame_number'],
                     $task->getFrameNumberMapping()
                 ),
-                $this->getClasses($task, $label['occlusion'], $label['truncation'], $label['direction'], $label['label_class'])
+                $this->getClasses(
+                    $task,
+                    $label['occlusion'],
+                    $label['truncation'],
+                    $label['direction'],
+                    $label['label_class']
+                )
             );
             $labeledThingInFrame->setShapesAsObjects(array($shape));
 
@@ -98,41 +93,63 @@ class Csv implements Service\LabelImporter
                 $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
             );
             $this->labeledThingFacade->save($labeledThing);
-            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
+            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus(
+                $labeledThing,
+                $labeledThingInFrame
+            );
         }
     }
 
     /**
+     * Generate proper class lists by looking at the different exported information columns
+     *
+     * A set of special values is allowed, which implies ignore this information, it is not present.
+     * This set currently contains the following:
+     *
+     * - `-1`
+     * - empty string
+     *
      * @param Model\LabelingTask $task
-     * @param $occlusion
-     * @param $truncation
-     * @param $direction
-     * @param $labelClass
+     * @param                    $occlusion
+     * @param                    $truncation
+     * @param                    $direction
+     * @param                    $labelClass
+     *
      * @return array
      */
-    private function getClasses(
+    protected function getClasses(
         Model\LabelingTask $task,
         $occlusion,
         $truncation,
         $direction,
         $labelClass
     ) {
+        $emptyFieldValues = array(
+            '-1',
+            '',
+        );
+
+        $classes = array();
+
         switch ($task->getLabelInstruction()) {
             case Model\LabelingTask::INSTRUCTION_CYCLIST:
             case Model\LabelingTask::INSTRUCTION_PERSON:
-            case 'cyclist':
-                return array(
-                    sprintf('occlusion-%s', $occlusion),
-                    sprintf('truncation-%s', $truncation),
-                    sprintf('direction-%s', $direction),
-                );
-            break;
+                if (!in_array($occlusion, $emptyFieldValues, true)) {
+                    $classes[] = sprintf('occlusion-%s', $occlusion);
+                }
+                if (!in_array($truncation, $emptyFieldValues, true)) {
+                    $classes[] = sprintf('truncation-%s', $truncation);
+                }
+                if (!in_array($direction, $emptyFieldValues, true)) {
+                    $classes[] = sprintf('direction-%s', $direction);
+                }
+                return $classes;
             case Model\LabelingTask::INSTRUCTION_IGNORE:
                 preg_match('/^(ignore-(\w+))$/', $labelClass, $matches);
+
                 return array(
                     sprintf('%s', $matches[2]),
                 );
-                break;
         }
 
         return array();
@@ -140,17 +157,26 @@ class Csv implements Service\LabelImporter
 
     /**
      * @param Model\LabelingTask $task
-     * @param $x
-     * @param $y
-     * @param $width
-     * @param $height
+     * @param int                $x
+     * @param int                $y
+     * @param int                $width
+     * @param int                $height
+     *
      * @return Model\Shapes\Rectangle
      */
-    private function getShape(Model\LabelingTask $task, $x, $y, $width, $height)
+    protected function getShape(Model\LabelingTask $task, $x, $y, $width, $height)
     {
         switch ($task->getDrawingTool()) {
-            case 'rectangle':
-            case 'ignore':
+            case 'pedestrian':
+                return new Model\Shapes\Pedestrian(
+                    $this->getUuid(),
+                    round($x + ($width / 2)),
+                    round($y),
+                    round($x + ($width / 2)),
+                    round($y + $height)
+                );
+                break;
+            default:
                 return new Model\Shapes\Rectangle(
                     $this->getUuid(),
                     $x,
@@ -159,44 +185,29 @@ class Csv implements Service\LabelImporter
                     $y + $height
                 );
                 break;
-            case 'pedestrian':
-                return new Model\Shapes\Pedestrian(
-                    $this->getUuid(),
-                    round($x + ($width/2)),
-                    round($y),
-                    round($x + ($width/2)),
-                    round($y + $height)
-                );
-                break;
         }
     }
 
     /**
      * @param Model\LabelingTask $task
-     * @param $dataId
-     * @param $frameNumber
+     * @param                    $dataId
+     * @param                    $frameNumber
+     *
      * @return mixed
      */
-    private function getLabeledThing(Model\LabelingTask $task, $dataId, $frameNumber)
+    protected function getLabeledThing(Model\LabelingTask $task, $dataId, $frameNumber)
     {
-        $frameIndexNumber = array_search($frameNumber, $task->getFrameNumberMapping());
+        $frameIndexNumber = \array_search($frameNumber, $task->getFrameNumberMapping());
         if (!isset($this->dataIdToDatabaseIdMapping[$task->getId()][$dataId])) {
-            $labeledThing = new Model\LabeledThing($task, rand(1, 50));
-            $frameIndexRange = new Model\FrameIndexRange($frameIndexNumber, $frameIndexNumber);
-            $labeledThing->setFrameRange($frameIndexRange);
-            $this->labeledThingFacade->save($labeledThing);
-            $this->dataIdToDatabaseIdMapping[$task->getId()][$dataId] = $this->labeledThingFacade->save($labeledThing);
-        }else{
+            $labeledThing                                             = $this->createAndStoreNewLabeledThing(
+                $task,
+                $frameIndexNumber
+            );
+            $this->dataIdToDatabaseIdMapping[$task->getId()][$dataId] = $labeledThing->getId();
+        } else {
             /** @var Model\LabeledThing $labeledThing */
             $labeledThing = $this->dataIdToDatabaseIdMapping[$task->getId()][$dataId];
-            $frameIndexRange = $labeledThing->getFrameRange();
-            if ($frameIndexNumber < $frameIndexRange->getStartFrameIndex()) {
-                $frameIndexRange->startFrameIndex = $frameIndexNumber;
-            }
-            if ($frameIndexNumber > $frameIndexRange->getEndFrameIndex()) {
-                $frameIndexRange->endFrameIndex = $frameIndexNumber;
-            }
-            $labeledThing->setFrameRange($frameIndexRange);
+            $this->updateFrameIndexRange($labeledThing, $frameIndexNumber);
             $this->labeledThingFacade->save($labeledThing);
         }
 
@@ -207,19 +218,24 @@ class Csv implements Service\LabelImporter
      * @param $tasks
      * @param $instruction
      * @param $frameNumber
+     *
      * @return Model\LabelingTask
      * @throws \Exception
      */
-    private function findTaskForInstructionAndFrame($tasks, $instruction, $frameNumber)
+    protected function findTaskForInstructionAndFrame($tasks, $instruction, $frameNumber)
     {
-        $possibleTasks = array_filter($tasks, function(Model\LabelingTask $task) use ($instruction, $frameNumber) {
-            if ($task->getLabelInstruction() === $instruction &&
-                in_array($frameNumber, $task->getFrameNumberMapping())) {
-                return true;
-            }
+        $possibleTasks = array_filter(
+            $tasks,
+            function (Model\LabelingTask $task) use ($instruction, $frameNumber) {
+                if ($task->getLabelInstruction() === $instruction &&
+                    in_array($frameNumber, $task->getFrameNumberMapping())
+                ) {
+                    return true;
+                }
 
-            return false;
-        });
+                return false;
+            }
+        );
 
         if (count($possibleTasks) === 0) {
             throw new \Exception(
@@ -247,11 +263,14 @@ class Csv implements Service\LabelImporter
     /**
      * @return mixed
      */
-    private function getUuid() {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+    protected function getUuid()
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
 
             // 32 bits for "time_low"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
 
             // 16 bits for "time_mid"
             mt_rand(0, 0xffff),
@@ -266,7 +285,58 @@ class Csv implements Service\LabelImporter
             mt_rand(0, 0x3fff) | 0x8000,
 
             // 48 bits for "node"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
+    }
+
+    /**
+     * @param $label
+     *
+     * @return string
+     */
+    protected function extractInstruction($label)
+    {
+        $instruction = $label['label_class'];
+        if (preg_match('/^(ignore-(\w+))$/', $label['label_class'], $matches)) {
+            $instruction = 'ignore';
+
+            return $instruction;
+        }
+
+        return $instruction;
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $frameIndexNumber
+     *
+     * @return Model\LabeledThing
+     */
+    protected function createAndStoreNewLabeledThing(Model\LabelingTask $task, $frameIndexNumber)
+    {
+        $labeledThing    = new Model\LabeledThing($task, rand(1, 50));
+        $frameIndexRange = new Model\FrameIndexRange($frameIndexNumber, $frameIndexNumber);
+        $labeledThing->setFrameRange($frameIndexRange);
+        $this->labeledThingFacade->save($labeledThing);
+
+        return $labeledThing;
+    }
+
+    /**
+     * @param Model\LabeledThing $labeledThing
+     * @param                    $frameIndexNumber
+     */
+    protected function updateFrameIndexRange(Model\LabeledThing $labeledThing, $frameIndexNumber)
+    {
+        $frameIndexRange = $labeledThing->getFrameRange();
+        if ($frameIndexNumber < $frameIndexRange->getStartFrameIndex()) {
+            $frameIndexRange->startFrameIndex = $frameIndexNumber;
+        }
+        if ($frameIndexNumber > $frameIndexRange->getEndFrameIndex()) {
+            $frameIndexRange->endFrameIndex = $frameIndexNumber;
+        }
+        $labeledThing->setFrameRange($frameIndexRange);
     }
 }

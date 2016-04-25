@@ -9,9 +9,8 @@ interface LabelImporter
     /**
      * Import Labels for a given Project
      *
-     * @param Model\Project $project
-     * @param $data
-     * @return mixed
+     * @param Model\LabelingTask[] $tasks
+     * @param array                $data
      */
-    public function importLabels(Model\Project $project, array $data);
+    public function importLabels(array $tasks, array $data);
 }
