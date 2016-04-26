@@ -56,12 +56,22 @@ class Video
      */
     public function findById(array $ids)
     {
-        return $this->documentManager
-            ->createQuery('annostation_video', 'by_id')
-            ->setKeys($ids)
-            ->onlyDocs(true)
-            ->execute()
-            ->toArray();
+        $idsInChunks = array_chunk($ids, 100);
+
+        $videos = array();
+        foreach ($idsInChunks as $idsInChunk) {
+            $videos = array_merge(
+                $videos,
+                $this->documentManager
+                    ->createQuery('annostation_video', 'by_id')
+                    ->setKeys($idsInChunk)
+                    ->onlyDocs(true)
+                    ->execute()
+                    ->toArray()
+            );
+        }
+
+        return $videos;
     }
 
     /**
