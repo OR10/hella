@@ -32,13 +32,13 @@
                         <i ng-show="preprocessingTasks.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
                         <i ng-show="preprocessingTasks.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                         <i ng-show="preprocessingTasks.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{preprocessingTasks.taskType}}
+                        &nbsp;{{task.taskType}}
                     </td>
                     <td>
-                        {{preprocessingTasks.video.name}}
+                        {{task.video.name}}
                     </td>
                     <td>
-                        {{preprocessingTasks.frameNumberMapping[0]}}-{{preprocessingTasks.frameNumberMapping[preprocessingTasks.frameNumberMapping.length - 1]}}
+                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
                     </td>
                 </tr>
                 <tr ng-show="!vm.preprocessingTasks.length"
