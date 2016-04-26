@@ -26,12 +26,12 @@
                 <tr ng-repeat="task in preprocessingTasks = (vm.preprocessingTasks | project:vm.selectedProject)"
                     track-by="task.id">
                     <td>
-                        <i ng-show="preprocessingTasks.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="preprocessingTasks.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="preprocessingTasks.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="preprocessingTasks.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="preprocessingTasks.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="preprocessingTasks.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
                         &nbsp;{{task.taskType}}
                     </td>
                     <td>
