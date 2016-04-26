@@ -44,7 +44,7 @@ describe('Rectangle drawing', () => {
     browser.get('/labeling/task/TASKID-TASKID');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
+      expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
       done();
     });
   });
@@ -57,7 +57,7 @@ describe('Rectangle drawing', () => {
     browser.get('/labeling/task/TASKID-TASKID');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.LoadAndDrawTwoRectangles);
+      expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawTwoRectangles);
       done();
     });
   });
@@ -79,7 +79,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.SelectOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.SelectOneRectangle);
         done();
       });
   });
@@ -104,7 +104,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.SelectAndDeselectRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.SelectAndDeselectRectangle);
         done();
       });
   });
@@ -129,7 +129,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.SelectAnOtherRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.SelectAnOtherRectangle);
         done();
       });
   });
@@ -155,7 +155,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.MoveOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MoveOneRectangle);
         browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
@@ -190,7 +190,7 @@ describe('Rectangle drawing', () => {
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
         // browser.pause();
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.ResizeOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ResizeOneRectangle);
         browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
@@ -227,7 +227,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.KeepSelectionOverFrameChange);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeepSelectionOverFrameChange);
         done();
       });
   });
@@ -242,7 +242,7 @@ describe('Rectangle drawing', () => {
     browser.get('/labeling/task/TASKID-TASKID');
 
     canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
+      expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
       done();
     });
   });
