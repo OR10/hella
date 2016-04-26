@@ -2,8 +2,8 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Helper\ProgressIndicator;
 use AppBundle\Model;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 interface LabelImporter
 {
@@ -16,11 +16,11 @@ interface LabelImporter
     public function importLabels(array $tasks, array $data);
 
     /**
-     * Optionally set a progressbar to inform about import status
+     * Optionally set a progress indicator to inform about import status
      *
-     * The progressbar isn't required. If it is not set it will simply not be used for information callbacks.
+     * The progress indicator isn't required. If it is not set it will simply not be used for information callbacks.
      *
-     * @param ProgressBar $progressBar
+     * @param ProgressIndicator $progressIndicator
      */
-    public function setProgressBar(ProgressBar $progressBar);
+    public function setProgressIndicator(ProgressIndicator $progressIndicator);
 }

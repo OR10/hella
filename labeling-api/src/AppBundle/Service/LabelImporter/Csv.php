@@ -3,6 +3,7 @@
 namespace AppBundle\Service\LabelImporter;
 
 use AppBundle\Database\Facade;
+use AppBundle\Helper\ProgressIndicator;
 use AppBundle\Model;
 use AppBundle\Service;
 use AppBundle\Service\ProjectExporter\Exception;
@@ -36,9 +37,9 @@ class Csv implements Service\LabelImporter
     private $taskIncompleteService;
 
     /**
-     * @var ProgressBar|null
+     * @var ProgressIndicator|null
      */
-    private $progressBar;
+    private $progressIndicator;
 
     /**
      * Csv constructor.
@@ -59,19 +60,19 @@ class Csv implements Service\LabelImporter
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
 
-        $this->progressBar = null;
+        $this->progressIndicator = null;
     }
 
     /**
-     * Optionally set a progressbar to inform about import status
+     * Optionally set a progress indicator to inform about import status
      *
-     * The progressbar isn't required. If it is not set it will simply not be used for information callbacks.
+     * The progress indicator isn't required. If it is not set it will simply not be used for information callbacks.
      *
-     * @param ProgressBar $progressbar
+     * @param ProgressIndicator $progressIndicator
      */
-    public function setProgressBar(ProgressBar $progressbar)
+    public function setProgressIndicator(ProgressIndicator $progressIndicator)
     {
-        $this->progressBar = $progressbar;
+        $this->progressIndicator = $progressIndicator;
     }
 
     /**
@@ -84,8 +85,8 @@ class Csv implements Service\LabelImporter
      */
     public function importLabels(array $tasks, array $data)
     {
-        if ($this->progressBar !== null) {
-            $this->progressBar->start();
+        if ($this->progressIndicator !== null) {
+            $this->progressIndicator->start(count($data));
         }
         
         foreach ($data as $label) {
@@ -130,15 +131,15 @@ class Csv implements Service\LabelImporter
                 $labeledThingInFrame
             );
             
-            if ($this->progressBar !== null) {
-                $this->progressBar->advance();
+            if ($this->progressIndicator !== null) {
+                $this->progressIndicator->advance();
             }
         }
 
         $this->markTasksAsWaiting($tasks);
 
-        if ($this->progressBar !== null) {
-            $this->progressBar->finish();
+        if ($this->progressIndicator !== null) {
+            $this->progressIndicator->finish();
         }
     }
 

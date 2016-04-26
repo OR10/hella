@@ -42,7 +42,9 @@ class ImportVideos extends Base
             ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
             ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
             ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
-            ->addArgument('drawingTool', Input\InputArgument::OPTIONAL, 'Video drawing tool', 'rectangle')
+            ->addArgument('drawingToolPerson', Input\InputArgument::OPTIONAL, 'Video person drawing tool', 'pedestrian')
+            ->addArgument('drawingToolCyclist', Input\InputArgument::OPTIONAL, 'Video cyclist drawing tool', 'rectangle')
+            ->addArgument('drawingToolIgnore', Input\InputArgument::OPTIONAL, 'Video ignore drawing tool', 'rectangle')
             ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22)
             ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 1);
     }
@@ -89,8 +91,24 @@ class ImportVideos extends Base
                             'contents' => '1'
                         ],
                         [
-                            'name' => 'drawingTool',
-                            'contents' => (string) $input->getArgument('drawingTool')
+                            'name' => 'drawingToolPerson',
+                            'contents' => (string) $input->getArgument('drawingToolPerson')
+                        ],
+                        [
+                            'name' => 'cyclist',
+                            'contents' => '1'
+                        ],
+                        [
+                            'name' => 'drawingToolCyclist',
+                            'contents' => (string) $input->getArgument('drawingToolCyclist')
+                        ],
+                        [
+                            'name' => 'ignore',
+                            'contents' => '1'
+                        ],
+                        [
+                            'name' => 'drawingToolIgnore',
+                            'contents' => (string) $input->getArgument('drawingToolIgnore')
                         ],
                         [
                             'name' => 'pedestrianMinimalHeight',

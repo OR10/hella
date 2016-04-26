@@ -81,7 +81,15 @@ class ImageDiffReporter {
     }
 
     const failedViewerDataExpectations = spec.failedExpectations.filter(
-      expectation => expectation.matcherName === 'toEqualDrawingStack'
+      expectation => {
+        switch (expectation.matcherName) {
+          case 'toEqualDrawingStack':
+          case 'toEqualRenderedDrawingStack':
+            return true;
+          default:
+            return false;
+        }
+      }
     );
 
     failedViewerDataExpectations.forEach((expectation, index) => {

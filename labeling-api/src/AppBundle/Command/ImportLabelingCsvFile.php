@@ -5,7 +5,7 @@ namespace AppBundle\Command;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
-use Symfony\Component\Console\Helper\ProgressBar;
+use AppBundle\Helper\ProgressIndicator;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 
@@ -65,7 +65,7 @@ class ImportLabelingCsvFile extends Base
         $this->setName('annostation:import:csv')
             ->setDescription('Import a csv labeling file for an already imported video')
             ->addArgument('csv', Input\InputArgument::REQUIRED, 'Path to the csv file.')
-            ->addOption('video', null, Input\InputOption::VALUE_REQUIRED, 'Name of the imported video file.')
+            ->addOption('video', null, Input\InputOption::VALUE_REQUIRED, 'Name of the imported video file. (not id)')
             ->addOption('project', null, Input\InputOption::VALUE_REQUIRED, 'Project Name')
             ->addOption('delimiter', null, Input\InputOption::VALUE_OPTIONAL, 'delimiter charset', ',')
             ->addOption('enclosure', null, Input\InputOption::VALUE_OPTIONAL, 'enclosure charset', '"');
@@ -86,8 +86,8 @@ class ImportLabelingCsvFile extends Base
 
         $tasks = $this->createTasksForInstructions($project, $video, $uniqueInstructions);
 
-        $this->labelImporter->setProgressBar(
-            new ProgressBar($output, count($processedCsvData))
+        $this->labelImporter->setProgressIndicator(
+            new ProgressIndicator\ProgressBar($output)
         );
         $this->labelImporter->importLabels($tasks, $processedCsvData);
     }
