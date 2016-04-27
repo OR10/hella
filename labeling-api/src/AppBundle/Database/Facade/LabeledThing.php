@@ -65,12 +65,22 @@ class LabeledThing
 
     public function getLabeledThingsById(array $labeledThingIds)
     {
-        return $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'by_id')
-            ->setKeys($labeledThingIds)
-            ->onlyDocs(true)
-            ->execute()
-            ->toArray();
+        $idsInChunks = array_chunk($labeledThingIds, 100);
+
+        $labeledThings = array();
+        foreach ($idsInChunks as $idsInChunk) {
+            $labeledThings = array_merge(
+                $labeledThings,
+                $this->documentManager
+                    ->createQuery('annostation_labeled_thing', 'by_id')
+                    ->setKeys($idsInChunk)
+                    ->onlyDocs(true)
+                    ->execute()
+                    ->toArray()
+            );
+        }
+
+        return $labeledThings;
     }
 
     public function save(Model\LabeledThing $labeledThing)
