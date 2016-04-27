@@ -263,8 +263,8 @@ class Csv implements Service\ProjectExporter
         return array_map(
             function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping, $labelInstruction) {
                 $direction   = $this->getClassByRegex('/^(direction-(\w+|(\w+-\w+)))$/', 2, $labeledThingInFrame);
-                $occlusion   = $this->getClassByRegex('/^(occlusion-(\d{1,2}|(\d{1,2}-\d{1,2})))$/', 2, $labeledThingInFrame);
-                $truncation  = $this->getClassByRegex('/^(truncation-(\d{1,2}|\d{1,2}-\d{1,2}))$/', 2, $labeledThingInFrame);
+                $occlusion   = $this->getOcclusion($labeledThingInFrame);
+                $truncation  = $this->getTruncation($labeledThingInFrame);
 
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
@@ -302,8 +302,8 @@ class Csv implements Service\ProjectExporter
                     $labeledThingInFrame
                 );
                 $direction   = $this->getClassByRegex('/^(direction-(\w+))$/', 2, $labeledThingInFrame);
-                $occlusion   = $this->getClassByRegex('/^(occlusion-(\d{2}|(\d{2}-\d{2})))$/', 2, $labeledThingInFrame);
-                $truncation  = $this->getClassByRegex('/^(truncation-(\d{2}|\d{2}-\d{2}))$/', 2, $labeledThingInFrame);
+                $occlusion   = $this->getOcclusion($labeledThingInFrame);
+                $truncation  = $this->getTruncation($labeledThingInFrame);
 
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
@@ -321,6 +321,54 @@ class Csv implements Service\ProjectExporter
             },
             $labeledThingsInFramesWithGhostClasses
         );
+    }
+
+    /**
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @return int|string
+     */
+    private function getOcclusion(Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        switch ($this->getClassByRegex('/^(occlusion-(\d{1,2}|(\d{1,2}-\d{1,2})))$/', 2, $labeledThingInFrame)) {
+            case '0':
+                return 0;
+            break;
+            case '25':
+                return 1;
+            break;
+            case '25-50':
+                return 2;
+            break;
+            case '50':
+                return 3;
+            break;
+            default:
+                return 'unknown';
+        }
+    }
+
+    /**
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @return int|string
+     */
+    private function getTruncation(Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        switch ($this->getClassByRegex('/^(truncation-(\d{1,2}|\d{1,2}-\d{1,2}))$/', 2, $labeledThingInFrame)) {
+            case '0':
+                return 0;
+            break;
+            case '25':
+                return 1;
+            break;
+            case '25-50':
+                return 2;
+            break;
+            case '50':
+                return 3;
+            break;
+            default:
+                return 'unknown';
+        }
     }
 
     /**
