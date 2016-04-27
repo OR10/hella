@@ -283,17 +283,28 @@ class LabelingTask
 
     public function getTotalTimesGroupedByTaskId(array $tasks = null)
     {
-        $query = $this->documentManager
-            ->createQuery('annostation_task_timer', 'sum_by_taskId')
-            ->setGroup(true);
-
         if ($tasks !== null) {
-            $query->setKeys($this->mapTasksToTaskIds($tasks));
+            $idsInChunks = array_chunk($this->mapTasksToTaskIds($tasks), 100);
+            $timesGroupedById = array();
+            foreach ($idsInChunks as $idsInChunk) {
+                $timesGroupedById = array_merge(
+                    $timesGroupedById,
+                    $this->documentManager
+                        ->createQuery('annostation_task_timer', 'sum_by_taskId')
+                        ->setGroup(true)
+                        ->setKeys($idsInChunk)
+                        ->execute()
+                        ->toArray()
+                );
+            }
+        }else{
+            $query = $this->documentManager
+                ->createQuery('annostation_task_timer', 'sum_by_taskId')
+                ->setGroup(true);
+            $timesGroupedById = $query->execute()->toArray();
         }
 
-        $result = $query->execute()->toArray();
-
-        return array_column($result, 'value', 'key');
+        return array_column($timesGroupedById, 'value', 'key');
     }
 
     public function getTotalNumberOfLabeledThingsGroupedByTaskId(array $tasks = null)
