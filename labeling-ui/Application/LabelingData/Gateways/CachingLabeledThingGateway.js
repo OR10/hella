@@ -54,7 +54,18 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
    */
   saveLabeledThing(labeledThing) {
     const {task} = labeledThing;
+    const oldLtData = this._ltCache.get(`${task.id}.${labeledThing.id}`);
+
+    // Invalidate old LabeledThing
     this._ltCache.invalidate(`${task.id}.${labeledThing.id}`);
+
+    // Invalidate LabeledThingsInFrame, which are now outside of the frameRange
+    if (
+      oldLtData.frameRange.startFrameIndex !== labeledThing.frameRange.startFrameIndex ||
+      oldLtData.frameRange.endFrameIndex !== labeledThing.frameRange.endFrameIndex
+    ) {
+      this._invalidateLtifCacheOutsideOfFrameRange(task, oldLtData, labeledThing);
+    }
 
     return super.saveLabeledThing(labeledThing)
       .then(storedLabeledThing => {
@@ -109,6 +120,36 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
     return super.deleteLabeledThing(labeledThing);
   }
 
+  /**
+   * @param {Task} task
+   * @param {Object} oldLtData
+   * @param {LabeledThing} labeledThing
+   *
+   * @private
+   */
+  _invalidateLtifCacheOutsideOfFrameRange(task, oldLtData, labeledThing) {
+    let cacheKeys = [];
+
+    const beforeStart = Math.min(oldLtData.frameRange.startFrameIndex, labeledThing.frameRange.startFrameIndex);
+    const beforeEnd = Math.max(oldLtData.frameRange.startFrameIndex, labeledThing.frameRange.startFrameIndex);
+    const afterStart = Math.min(oldLtData.frameRange.endFrameIndex, labeledThing.frameRange.endFrameIndex);
+    const afterEnd = Math.max(oldLtData.frameRange.endFrameIndex, labeledThing.frameRange.endFrameIndex);
+
+    if (beforeStart !== beforeEnd) {
+      cacheKeys = cacheKeys.concat(
+        this._generateLtifCacheKeysForRange(task.id, beforeStart + 1, beforeEnd)
+      );
+    }
+
+    if (afterStart !== afterEnd) {
+      cacheKeys = cacheKeys.concat(
+        this._generateLtifCacheKeysForRange(task.id, afterStart + 1, afterEnd)
+      );
+    }
+
+    cacheKeys.forEach(keyStruct => this._ltifCache.invalidate(keyStruct.key));
+  }
+
   _invalidateAllByLabeledThing(cacheMap, labeledThing) {
     if (cacheMap === undefined) {
       return;
@@ -123,6 +164,14 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
         cacheMap.delete(cacheId);
       }
     });
+  }
+
+  _generateLtifCacheKeysForRange(taskId, start, end) {
+    const count = end - start + 1;
+    const cacheKeys = new Array(count).fill(null).map(
+      (_, index) => ({key: `${taskId}.${start + index}`, frame: start + index})
+    );
+    return cacheKeys;
   }
 
   /**
