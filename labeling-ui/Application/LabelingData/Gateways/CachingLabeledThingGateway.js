@@ -61,8 +61,10 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
 
     // Invalidate LabeledThingsInFrame, which are now outside of the frameRange
     if (
-      oldLtData.frameRange.startFrameIndex !== labeledThing.frameRange.startFrameIndex ||
-      oldLtData.frameRange.endFrameIndex !== labeledThing.frameRange.endFrameIndex
+      oldLtData && (
+        oldLtData.frameRange.startFrameIndex !== labeledThing.frameRange.startFrameIndex ||
+        oldLtData.frameRange.endFrameIndex !== labeledThing.frameRange.endFrameIndex
+      )
     ) {
       this._invalidateLtifCacheOutsideOfFrameRange(task, oldLtData, labeledThing);
     }
@@ -137,17 +139,18 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
 
     if (beforeStart !== beforeEnd) {
       cacheKeys = cacheKeys.concat(
-        this._generateLtifCacheKeysForRange(task.id, beforeStart + 1, beforeEnd)
+        this._generateLtifCacheKeysForRange(task.id, labeledThing.id, beforeStart + 1, beforeEnd)
       );
     }
 
     if (afterStart !== afterEnd) {
       cacheKeys = cacheKeys.concat(
-        this._generateLtifCacheKeysForRange(task.id, afterStart + 1, afterEnd)
+        this._generateLtifCacheKeysForRange(task.id, labeledThing.id, afterStart + 1, afterEnd)
       );
     }
 
     cacheKeys.forEach(keyStruct => this._ltifCache.invalidate(keyStruct.key));
+    cacheKeys.forEach(keyStruct => this._ltifGhostCache.invalidate(keyStruct.key));
   }
 
   _invalidateAllByLabeledThing(cacheMap, labeledThing) {
@@ -166,10 +169,10 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
     });
   }
 
-  _generateLtifCacheKeysForRange(taskId, start, end) {
+  _generateLtifCacheKeysForRange(taskId, labeledThingId, start, end) {
     const count = end - start + 1;
     const cacheKeys = new Array(count).fill(null).map(
-      (_, index) => ({key: `${taskId}.${start + index}`, frame: start + index})
+      (_, index) => ({key: `${taskId}.${start + index}.${labeledThingId}`, frame: start + index})
     );
     return cacheKeys;
   }
