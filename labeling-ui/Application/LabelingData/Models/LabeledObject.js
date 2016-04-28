@@ -1,3 +1,5 @@
+import clone from 'lodash.clone';
+
 /**
  * Base model for any object, which has labels
  */
@@ -72,7 +74,10 @@ class LabeledObject {
   toJSON() {
     const {id, classes, rev, incomplete} = this;
     return {
-      id, classes, rev, incomplete,
+      id, 
+      rev,
+      incomplete,
+      classes: clone(classes),
     };
   }
 }
