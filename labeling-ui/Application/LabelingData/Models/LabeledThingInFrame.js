@@ -1,6 +1,5 @@
 import LabeledObject from './LabeledObject';
-import clone from 'lodash.clone';
-import cloneDeep from 'lodash.clonedeep';
+import _ from 'lodash';
 
 /**
  * Model for a LabeledThingInFrame
@@ -127,10 +126,7 @@ class LabeledThingInFrame extends LabeledObject {
   toJSON() {
     const {frameIndex, labeledThing, shapes, ghost, ghostClasses} = this;
     return Object.assign(super.toJSON(), {
-      frameIndex,
-      ghost,
-      shapes: cloneDeep(shapes),
-      ghostClasses: clone(ghostClasses),
+      frameIndex, shapes, ghost, ghostClasses,
       labeledThingId: labeledThing.id,
     });
   }

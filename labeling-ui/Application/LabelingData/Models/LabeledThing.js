@@ -1,4 +1,3 @@
-import clone from 'lodash.clone';
 import LabeledObject from './LabeledObject';
 
 /**
@@ -57,8 +56,8 @@ class LabeledThing extends LabeledObject {
   toJSON() {
     const {frameRange, lineColor, task} = this;
     return Object.assign(super.toJSON(), {
+      frameRange,
       lineColor,
-      frameRange: clone(frameRange),
       taskId: task.id,
     });
   }
