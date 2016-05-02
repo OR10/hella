@@ -193,21 +193,19 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
   }
 
   _generateLtifCacheKeysForRange(taskId, labeledThingId, start, end) {
-    const count = end - start + 1;
-    const frameCacheKeys = new Array(count).fill(null).map(
-      (_, index) => `${taskId}.${start + index}`
-    );
-    const frameData = this._ltifCache.getAll(frameCacheKeys);
-
     const invalidationCacheKeys = [];
+    for (let frameIndex = start; frameIndex < end; frameIndex++) {
+      const frameData = this._ltifCache.get(`${taskId}.${frameIndex}`);
 
-    frameData.forEach(frameMap => {
-      frameMap.forEach((ltifData, frameIndex) => {
+      if (frameData === undefined) {
+        continue;
+      }
+      frameData.forEach(ltifData => {
         if (ltifData.labeledThingId === labeledThingId) {
           invalidationCacheKeys.push(`${taskId}.${frameIndex}.${ltifData.id}`);
         }
       });
-    });
+    }
 
     return invalidationCacheKeys;
   }

@@ -38,7 +38,7 @@ class CacheHeatingLabeledThingGateway extends CachingLabeledThingGateway {
   }
 }
 
-CachingLabeledThingGateway.$inject = [
+CacheHeatingLabeledThingGateway.$inject = [
   'ApiService',
   'revisionManager',
   'bufferedHttp',
