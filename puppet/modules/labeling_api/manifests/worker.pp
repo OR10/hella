@@ -9,6 +9,11 @@ class labeling_api::worker(
   include ::supervisord
   include ::labeling_api::common
 
+  package { 'python-pip':
+    ensure => present,
+    before => Exec['install_setuptools'],
+  }
+
   supervisord::program { 'worker-pool-starter-low-normal':
     command => "${app_dir}/app/console annostation:workerpool:starter low normal",
     autostart => true,
