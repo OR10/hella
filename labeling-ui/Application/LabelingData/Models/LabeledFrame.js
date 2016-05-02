@@ -33,7 +33,7 @@ class LabeledFrame extends LabeledObject {
      *
      * @type {Array.<String>|null}
      */
-    this.ghostClasses = labeledFrame.ghostClasses;
+    this.ghostClasses = clone(labeledFrame.ghostClasses);
   }
 
   /**

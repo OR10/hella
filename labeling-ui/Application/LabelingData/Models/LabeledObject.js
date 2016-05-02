@@ -21,7 +21,7 @@ class LabeledObject {
      *
      * @type {Array.<String>}
      */
-    this.classes = labeledObject.classes;
+    this.classes = clone(labeledObject.classes);
 
     // Optional properties
     if (labeledObject.rev) {

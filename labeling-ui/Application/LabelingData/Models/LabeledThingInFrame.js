@@ -34,7 +34,7 @@ class LabeledThingInFrame extends LabeledObject {
      *
      * @type {Array.<Object>}
      */
-    this.shapes = labeledThingInFrame.shapes;
+    this.shapes = cloneDeep(labeledThingInFrame.shapes);
 
     /**
      * Information if this `LabeledThingInFrame` is real or interpolated
@@ -55,7 +55,7 @@ class LabeledThingInFrame extends LabeledObject {
      *
      * @type {Array.<String>|null}
      */
-    this.ghostClasses = labeledThingInFrame.ghostClasses;
+    this.ghostClasses = clone(labeledThingInFrame.ghostClasses);
   }
 
   /**
