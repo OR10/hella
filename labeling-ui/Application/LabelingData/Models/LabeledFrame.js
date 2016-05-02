@@ -1,4 +1,5 @@
 import LabeledObject from './LabeledObject';
+import clone from 'lodash.clone';
 
 /**
  * Model for a LabeledFrame
@@ -32,7 +33,7 @@ class LabeledFrame extends LabeledObject {
      *
      * @type {Array.<String>|null}
      */
-    this.ghostClasses = labeledFrame.ghostClasses;
+    this.ghostClasses = clone(labeledFrame.ghostClasses);
   }
 
   /**
@@ -74,7 +75,7 @@ class LabeledFrame extends LabeledObject {
     return Object.assign(super.toJSON(), {
       taskId,
       frameIndex,
-      ghostClasses,
+      ghostClasses: clone(ghostClasses),
     });
   }
 }

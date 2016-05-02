@@ -14,9 +14,10 @@ class CacheHeatingLabeledThingGateway extends CachingLabeledThingGateway {
    * @param {angular.$q} $q
    * @param {AbortablePromiseFactory} abortable
    * @param {CacheHeaterService} cacheHeater
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor(apiService, revisionManager, bufferedHttp, cache, $q, abortable, cacheHeater) {
-    super(apiService, revisionManager, bufferedHttp, cache, $q, abortable);
+  constructor(apiService, revisionManager, bufferedHttp, cache, $q, abortable, cacheHeater, frameIndexService) {
+    super(apiService, revisionManager, bufferedHttp, cache, $q, abortable, frameIndexService);
 
     /**
      * @type {CacheHeaterService}
@@ -45,6 +46,7 @@ CachingLabeledThingGateway.$inject = [
   '$q',
   'abortablePromiseFactory',
   'cacheHeaterService',
+  'frameIndexService',
 ];
 
 export default CacheHeatingLabeledThingGateway;

@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash.clonedeep';
 import LabeledObject from './LabeledObject';
 
 /**
@@ -17,7 +18,7 @@ class LabeledThing extends LabeledObject {
      *
      * @type {FrameRange}
      */
-    this.frameRange = labeledThing.frameRange;
+    this.frameRange = cloneDeep(labeledThing.frameRange);
 
     /**
      * @type {Task}
@@ -56,8 +57,8 @@ class LabeledThing extends LabeledObject {
   toJSON() {
     const {frameRange, lineColor, task} = this;
     return Object.assign(super.toJSON(), {
-      frameRange,
       lineColor,
+      frameRange: cloneDeep(frameRange),
       taskId: task.id,
     });
   }

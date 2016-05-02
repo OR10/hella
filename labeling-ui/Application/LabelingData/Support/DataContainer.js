@@ -4,12 +4,18 @@
  * Should there be a need to manage metadata related to a data set, this management should also be implemented here.
  */
 class DataContainer {
-  constructor() {
+  constructor(name) {
     /**
      * @type {Map}
      * @protected
      */
     this._data = new Map();
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this._name = name;
   }
 
   /**
@@ -56,7 +62,7 @@ class DataContainer {
    * @param {*} value
    */
   store(key, value) {
-    this._setKeyWithParents(key, value)
+    this._setKeyWithParents(key, value);
   }
 
   /**

@@ -13,8 +13,9 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
    * @param {CacheService} cache
    * @param {angular.$q} $q
    * @param {AbortablePromiseFactory} abortable
+   * @param {FrameIndexService} frameIndexService
    */
-  constructor(apiService, revisionManager, bufferedHttp, cache, $q, abortable) {
+  constructor(apiService, revisionManager, bufferedHttp, cache, $q, abortable, frameIndexService) {
     super(apiService, revisionManager, bufferedHttp);
 
     /**
@@ -46,6 +47,12 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
      * @private
      */
     this._abortable = abortable;
+
+    /**
+     * @type {FrameIndexService}
+     * @private
+     */
+    this._frameIndexService = frameIndexService;
   }
 
   /**
@@ -54,7 +61,20 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
    */
   saveLabeledThing(labeledThing) {
     const {task} = labeledThing;
+    const oldLtData = this._ltCache.get(`${task.id}.${labeledThing.id}`);
+
+    // Invalidate old LabeledThing
     this._ltCache.invalidate(`${task.id}.${labeledThing.id}`);
+
+    // Invalidate LabeledThingsInFrame, which are now outside of the frameRange
+    if (
+      oldLtData && (
+        oldLtData.frameRange.startFrameIndex !== labeledThing.frameRange.startFrameIndex ||
+        oldLtData.frameRange.endFrameIndex !== labeledThing.frameRange.endFrameIndex
+      )
+    ) {
+      this._invalidateLtifCacheOutsideOfFrameRange(task, oldLtData, labeledThing);
+    }
 
     return super.saveLabeledThing(labeledThing)
       .then(storedLabeledThing => {
@@ -109,6 +129,45 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
     return super.deleteLabeledThing(labeledThing);
   }
 
+  /**
+   * @param {Task} task
+   * @param {Object} oldLtData
+   * @param {LabeledThing} labeledThing
+   *
+   * @private
+   */
+  _invalidateLtifCacheOutsideOfFrameRange(task, oldLtData, labeledThing) {
+    let ltifCacheKeys = [];
+
+    const beforeStart = Math.min(oldLtData.frameRange.startFrameIndex, labeledThing.frameRange.startFrameIndex);
+    const beforeEnd = Math.max(oldLtData.frameRange.startFrameIndex, labeledThing.frameRange.startFrameIndex);
+    const afterStart = Math.min(oldLtData.frameRange.endFrameIndex, labeledThing.frameRange.endFrameIndex);
+    const afterEnd = Math.max(oldLtData.frameRange.endFrameIndex, labeledThing.frameRange.endFrameIndex);
+
+    if (beforeStart !== beforeEnd) {
+      ltifCacheKeys = ltifCacheKeys.concat(
+        this._generateLtifCacheKeysForRange(task.id, labeledThing.id, beforeStart + 1, beforeEnd)
+      );
+    }
+
+    if (afterStart !== afterEnd) {
+      ltifCacheKeys = ltifCacheKeys.concat(
+        this._generateLtifCacheKeysForRange(task.id, labeledThing.id, afterStart + 1, afterEnd)
+      );
+    }
+
+    const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
+    const ltifGhostCacheKeys = this._generateLtifGhostCacheKeysForRange(
+      task.id,
+      labeledThing.id,
+      frameIndexLimits.lowerLimit,
+      frameIndexLimits.upperLimit
+    );
+
+    ltifCacheKeys.forEach(keyStruct => this._ltifCache.invalidate(keyStruct.key));
+    ltifGhostCacheKeys.forEach(keyStruct => this._ltifGhostCache.invalidate(keyStruct.key));
+  }
+
   _invalidateAllByLabeledThing(cacheMap, labeledThing) {
     if (cacheMap === undefined) {
       return;
@@ -123,6 +182,34 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
         cacheMap.delete(cacheId);
       }
     });
+  }
+
+  _generateLtifGhostCacheKeysForRange(taskId, labeledThingId, start, end) {
+    const count = end - start + 1;
+    const cacheKeys = new Array(count).fill(null).map(
+      (_, index) => ({key: `${taskId}.${start + index}.${labeledThingId}`, frame: start + index})
+    );
+    return cacheKeys;
+  }
+
+  _generateLtifCacheKeysForRange(taskId, labeledThingId, start, end) {
+    const count = end - start + 1;
+    const frameCacheKeys = new Array(count).fill(null).map(
+      (_, index) => `${taskId}.${start + index}`
+    );
+    const frameData = this._ltifCache.getAll(frameCacheKeys);
+
+    const invalidationCacheKeys = [];
+
+    frameData.forEach(frameMap => {
+      frameMap.forEach((ltifData, frameIndex) => {
+        if (ltifData.labeledThingId === labeledThingId) {
+          invalidationCacheKeys.push(`${taskId}.${frameIndex}.${ltifData.id}`);
+        }
+      });
+    });
+
+    return invalidationCacheKeys;
   }
 
   /**
@@ -144,6 +231,7 @@ CachingLabeledThingGateway.$inject = [
   'cacheService',
   '$q',
   'abortablePromiseFactory',
+  'frameIndexService',
 ];
 
 export default CachingLabeledThingGateway;
