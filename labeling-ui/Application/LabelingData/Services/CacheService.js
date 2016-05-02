@@ -7,7 +7,7 @@ class CacheService {
 
   container(id) {
     if (!this._caches.has(id)) {
-      this._caches.set(id, new DataContainer());
+      this._caches.set(id, new DataContainer(id));
     }
 
     return this._caches.get(id);
