@@ -131,7 +131,13 @@ describe('CachingLabeledThingGateway', () => {
 
     it('should update cache with newly stored data', done => {
       const ltCacheKey = 'some-task.some-labeled-thing';
-      ltCache.store(ltCacheKey, {old: 'data'});
+      ltCache.store(ltCacheKey, {
+        id: 'some-labeled-thing',
+        taskId: 'some-task',
+        frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+        classes: ['foo', 'bar'],
+        lineColor: 42,
+      });
 
       gateway.saveLabeledThing(labeledThingMock).then(() => {
         expect(ltCache.get(ltCacheKey)).toEqual(labeledThingMock.toJSON());
@@ -147,7 +153,13 @@ describe('CachingLabeledThingGateway', () => {
       }));
 
       const ltCacheKey = 'some-task.some-labeled-thing';
-      ltCache.store(ltCacheKey, {old: 'data'});
+      ltCache.store(ltCacheKey, {
+        id: 'some-labeled-thing',
+        taskId: 'some-task',
+        frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+        classes: ['foo', 'bar'],
+        lineColor: 42,
+      });
 
       gateway.saveLabeledThing(labeledThingMock);
 
