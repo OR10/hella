@@ -198,21 +198,19 @@ describe('CachingLabeledThingInFrameGateway', () => {
       expect(proto.listLabeledThingInFrame).not.toHaveBeenCalled();
     });
 
-    it('should output data from cache', done => {
+    it('should output data from cache', () => {
       storeInCache(true, ...labeledThingsInFrame);
       gateway.listLabeledThingInFrame(task, 42, 0, 2).then(results => {
         expect(results).toEqual(labeledThingsInFrame);
-        done();
       });
 
       $rootScope.$digest();
     });
 
-    it('should output data from cache with offset', done => {
+    it('should output data from cache with offset', () => {
       storeInCache(true, ...labeledThingsInFrame);
       gateway.listLabeledThingInFrame(task, 39, 3, 2).then(results => {
         expect(results).toEqual(labeledThingsInFrame);
-        done();
       });
 
       $rootScope.$digest();
@@ -232,25 +230,23 @@ describe('CachingLabeledThingInFrameGateway', () => {
       expect(proto.listLabeledThingInFrame).toHaveBeenCalledWith(task, 42, 0, 3);
     });
 
-    it('should store retrieved information in cache', done => {
+    it('should store retrieved information in cache', () => {
       gateway.listLabeledThingInFrame(task, 42, 0, 2).then(result => {
         expect(ltifCache.get(`${task.id}.42.${labeledThingsInFrame[0].id}`)).toBeDefined();
         expect(ltifCache.get(`${task.id}.43.${labeledThingsInFrame[1].id}`)).toBeDefined();
-        done();
       });
       $rootScope.$digest();
     });
 
-    it('should mark retrieved frames as being completed', done => {
+    it('should mark retrieved frames as being completed', () => {
       gateway.listLabeledThingInFrame(task, 42, 0, 2).then(result => {
         expect(ltifCache.get(`${task.id}.42.complete`)).toBeTruthy();
         expect(ltifCache.get(`${task.id}.43.complete`)).toBeTruthy();
-        done();
       });
       $rootScope.$digest();
     });
 
-    it('should save multiple labeledThingInFrames on the same frame to cache', done => {
+    it('should save multiple labeledThingInFrames on the same frame to cache', () => {
       proto.listLabeledThingInFrame
         .and.callFake(() => $q.resolve([
         ltif(task, 'x', 42, false, '1'),
@@ -261,7 +257,6 @@ describe('CachingLabeledThingInFrameGateway', () => {
         expect(ltifCache.get(`${task.id}.42.x`)).toEqual(result[0].toJSON());
         expect(ltifCache.get(`${task.id}.42.y`)).toEqual(result[1].toJSON());
         expect(ltifCache.get(`${task.id}.42.z`)).toEqual(result[2].toJSON());
-        done();
       });
       $rootScope.$digest();
     });
@@ -296,32 +291,29 @@ describe('CachingLabeledThingInFrameGateway', () => {
       expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 42, labeledThing, 0, 1);
     });
 
-    it('should store labeledThing to cache after retrieval', done => {
+    it('should store labeledThing to cache after retrieval', () => {
       const lt1 = lt(task, 'lt-1');
       gateway.getLabeledThingInFrame(task, 10, lt1, 0, 4)
         .then(() => {
           expect(ltCache.get(`${task.id}.lt-1`)).toEqual(lt1.toJSON());
-          done();
         });
       $rootScope.$digest();
     });
 
-    it('should store non ghost LabeledThingInFrame to cache after retrieval', done => {
+    it('should store non ghost LabeledThingInFrame to cache after retrieval', () => {
       gateway.getLabeledThingInFrame(task, 10, labeledThing, 0, 4)
         .then(() => {
           [0, 2, 3].forEach(index => {
             expect(ltifCache.get(`${task.id}.${index + 10}.ltif-${index + 1}`)).toEqual(defaultResult[index].toJSON());
           });
-          done();
         });
       $rootScope.$digest();
     });
 
-    it('should store ghost LabeledThingInFrame to cache after retrieval', done => {
+    it('should store ghost LabeledThingInFrame to cache after retrieval', () => {
       gateway.getLabeledThingInFrame(task, 10, labeledThing, 0, 4)
         .then(() => {
           expect(ltifGhostCache.get(`${task.id}.11.lt-1`)).toEqual(defaultResult[1].toJSON());
-          done();
         });
       $rootScope.$digest();
     });
@@ -357,85 +349,78 @@ describe('CachingLabeledThingInFrameGateway', () => {
         );
       });
 
-      it('should retrieve single ltifs from cache', done => {
+      it('should retrieve single ltifs from cache', () => {
         gateway.getLabeledThingInFrame(task, 10, labeledThing).then(result => {
           expect(result[0]).toEqual(ltif(task, 'ltif-1-1', 10, false, 'lt-1'));
-          done();
         });
         $rootScope.$digest();
       });
 
-      it('should retrieve single ltifs from cache', done => {
+      it('should retrieve single ltifs from cache', () => {
         gateway.getLabeledThingInFrame(task, 10, labeledThing).then(result => {
           expect(result.length).toBe(1);
           expect(result[0]).toEqual(ltif(task, 'ltif-1-1', 10, false, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve single ltifs from cache with offset', done => {
+      it('should retrieve single ltifs from cache with offset', () => {
         gateway.getLabeledThingInFrame(task, 10, labeledThing, 1, 1).then(result => {
           expect(result.length).toBe(1);
           expect(result[0]).toEqual(ltif(task, 'ltif-1-2', 11, false, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve single ghost ltif from cache', done => {
+      it('should retrieve single ghost ltif from cache', () => {
         gateway.getLabeledThingInFrame(task, 12, labeledThing).then(result => {
           expect(result.length).toBe(1);
           expect(result[0]).toEqual(ltif(task, null, 12, true, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve single ghost ltif from cache with offset', done => {
+      it('should retrieve single ghost ltif from cache with offset', () => {
         gateway.getLabeledThingInFrame(task, 12, labeledThing, 1, 1).then(result => {
           expect(result.length).toBe(1);
           expect(result[0]).toEqual(ltif(task, null, 13, true, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve multiple ltifs from cache', done => {
+      it('should retrieve multiple ltifs from cache', () => {
         const lt2 = lt(task, 'lt-2');
         gateway.getLabeledThingInFrame(task, 10, lt2, 0, 2).then(result => {
           expect(result.length).toBe(2);
           expect(result[0]).toEqual(ltif(task, 'ltif-2-1', 10, false, 'lt-2'));
           expect(result[1]).toEqual(ltif(task, 'ltif-2-2', 11, false, 'lt-2'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve multiple ghost ltifs from cache', done => {
+      it('should retrieve multiple ghost ltifs from cache', () => {
         const lt2 = lt(task, 'lt-2');
         gateway.getLabeledThingInFrame(task, 12, lt2, 0, 2).then(result => {
           expect(result.length).toBe(2);
           expect(result[0]).toEqual(ltif(task, null, 12, true, 'lt-2'));
           expect(result[1]).toEqual(ltif(task, null, 13, true, 'lt-2'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve multiple ghost/non-ghost ltif combinations from cache', done => {
+      it('should retrieve multiple ghost/non-ghost ltif combinations from cache', () => {
         gateway.getLabeledThingInFrame(task, 10, labeledThing, 0, 5).then(result => {
           expect(result.length).toBe(5);
           expect(result[0]).toEqual(ltif(task, 'ltif-1-1', 10, false, 'lt-1'));
@@ -443,40 +428,37 @@ describe('CachingLabeledThingInFrameGateway', () => {
           expect(result[2]).toEqual(ltif(task, null, 12, true, 'lt-1'));
           expect(result[3]).toEqual(ltif(task, null, 13, true, 'lt-1'));
           expect(result[4]).toEqual(ltif(task, 'ltif-1-3', 14, true, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve multiple ghost/non-ghost ltif combinations from cache with ghosts at the end', done => {
+      it('should retrieve multiple ghost/non-ghost ltif combinations from cache with ghosts at the end', () => {
         gateway.getLabeledThingInFrame(task, 10, labeledThing, 0, 3).then(result => {
           expect(result.length).toBe(3);
           expect(result[0]).toEqual(ltif(task, 'ltif-1-1', 10, false, 'lt-1'));
           expect(result[1]).toEqual(ltif(task, 'ltif-1-2', 11, false, 'lt-1'));
           expect(result[2]).toEqual(ltif(task, null, 12, true, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve multiple ghost/non-ghost ltif combinations from cache with ghosts at the beginning', done => {
+      it('should retrieve multiple ghost/non-ghost ltif combinations from cache with ghosts at the beginning', () => {
         gateway.getLabeledThingInFrame(task, 8, labeledThing, 0, 3).then(result => {
           expect(result.length).toBe(3);
           expect(result[0]).toEqual(ltif(task, null, 8, true, 'lt-1'));
           expect(result[1]).toEqual(ltif(task, null, 9, true, 'lt-1'));
           expect(result[2]).toEqual(ltif(task, 'ltif-1-1', 10, false, 'lt-1'));
-          done();
         });
 
         $rootScope.$digest();
         expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
-      it('should retrieve multiple ghost/non-ghost ltif combinations from cache with ghosts at the beginning as well as the end', done => {
+      it('should retrieve multiple ghost/non-ghost ltif combinations from cache with ghosts at the beginning as well as the end', () => {
         gateway.getLabeledThingInFrame(task, 8, labeledThing, 0, 5).then(result => {
           expect(result.length).toBe(5);
           expect(result[0]).toEqual(ltif(task, null, 8, true, 'lt-1'));
@@ -487,30 +469,37 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
           expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
 
-          done();
         });
 
         $rootScope.$digest();
       });
 
       it('should request backend if a hole is present in middle', () => {
-        gateway.getLabeledThingInFrame(task, 14, labeledThing, 0, 5);
-        expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 14, labeledThing, 0, 5);
+        gateway.getLabeledThingInFrame(task, 14, labeledThing, 0, 5).then(() => {
+          expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 14, labeledThing, 0, 5);
+        });
+        $rootScope.$digest();
       });
 
       it('should request backend if a hole is present in the front', () => {
-        gateway.getLabeledThingInFrame(task, 16, labeledThing, 0, 5);
-        expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 16, labeledThing, 0, 5);
+        gateway.getLabeledThingInFrame(task, 16, labeledThing, 0, 5).then(() => {
+          expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 16, labeledThing, 0, 5);
+        });
+        $rootScope.$digest();
       });
 
       it('should request backend if a hole is present in the end', () => {
-        gateway.getLabeledThingInFrame(task, 11, labeledThing, 0, 5);
-        expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 11, labeledThing, 0, 5);
+        gateway.getLabeledThingInFrame(task, 11, labeledThing, 0, 5).then(() => {
+          expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 11, labeledThing, 0, 5);
+        });
+        $rootScope.$digest();
       });
 
       it('should request backend if a gap is requested', () => {
-        gateway.getLabeledThingInFrame(task, 15, labeledThing, 0, 2);
-        expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 15, labeledThing, 0, 2);
+        gateway.getLabeledThingInFrame(task, 15, labeledThing, 0, 2).then(() => {
+          expect(proto.getLabeledThingInFrame).toHaveBeenCalledWith(task, 15, labeledThing, 0, 2);
+        });
+        $rootScope.$digest();
       });
     });
   });
@@ -594,44 +583,40 @@ describe('CachingLabeledThingInFrameGateway', () => {
       expect(ltifGhostCache.get(ltifKey(ltif(task, null, 13, true, 'lt-2')))).toBeDefined();
     });
 
-    it('should invalidate the stored ltif if classes did not change before saving', done => {
+    it('should invalidate the stored ltif if classes did not change before saving', () => {
       gateway.saveLabeledThingInFrame(ltif(task, 'ltif-1-*2', 11, false, 'lt-1')).then(() => {
         expect(ltifCache.get(ltifKey(ltif(task, 'ltif-1-2', 11, false, 'lt-2')))).toBeUndefined();
         expect(ltifCache.get(ltifKey(ltif(task, 'ltif-1-*2', 11, false, 'lt-2')))).toBeDefined();
-        done();
       });
       expect(ltifCache.get(ltifKey(ltif(task, 'ltif-1-2', 11, true, 'lt-2')))).toBeUndefined();
       $rootScope.$digest();
     });
 
-    it('should set the ltif frameIndex to incomplete before saving', done => {
+    it('should set the ltif frameIndex to incomplete before saving', () => {
       gateway.saveLabeledThingInFrame(ltif(task, 'ltif-1-*2', 11, false, 'lt-1'))
         .then(() => {
           expect(ltifCache.get(`${task.id}.11.complete`)).toBeUndefined();
-          done();
         });
 
       expect(ltifCache.get(`${task.id}.11.complete`)).toBeUndefined();
       $rootScope.$digest();
     });
 
-    it('should restore the ltif frameIndex to complete after saving', done => {
+    it('should restore the ltif frameIndex to complete after saving', () => {
       ltifCache.store(`${task.id}.11.complete`, true);
       gateway.saveLabeledThingInFrame(ltif(task, 'ltif-1-*2', 11, false, 'lt-1'))
         .then(() => {
           expect(ltifCache.get(`${task.id}.11.complete`)).toBeTruthy();
-          done();
         });
 
       expect(ltifCache.get(`${task.id}.11.complete`)).toBeUndefined();
       $rootScope.$digest();
     });
 
-    it('should update the implicitly received LabeledThing', done => {
+    it('should update the implicitly received LabeledThing', () => {
       gateway.saveLabeledThingInFrame(ltif(task, 'ltif-1-*2', 11, false, 'lt-1'))
         .then(() => {
           expect(ltCache.get(`${task.id}.lt-1`)).toBeDefined();
-          done();
         });
       ltCache.invalidate(`${task.id}.lt-1`);
       $rootScope.$digest();

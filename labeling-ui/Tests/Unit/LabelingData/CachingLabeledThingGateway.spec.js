@@ -170,6 +170,42 @@ describe('CachingLabeledThingGateway', () => {
     });
   });
 
+  xit('should invalidate ltif cache when frameRange startFrameIndex was moved forward', () => {
+    proto.saveLabeledThing.and.callFake(
+      () => $q.resolve()
+    );
+
+    const ltCacheKey = 'some-task.some-labeled-thing';
+    const ltBefore = {
+      id: 'some-labeled-thing',
+      taskId: 'some-task',
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+      classes: ['foo', 'bar'],
+      lineColor: 42,
+    };
+
+    const ltAfter = {
+      id: 'some-labeled-thing',
+      taskId: 'some-task',
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+      classes: ['foo', 'bar'],
+      lineColor: 42,
+    };
+
+    ltCache.store(ltCacheKey, {
+      id: 'some-labeled-thing',
+      taskId: 'some-task',
+      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+      classes: ['foo', 'bar'],
+      lineColor: 42,
+    });
+
+    gateway.saveLabeledThing(labeledThingMock);
+
+    expect(ltCache.get(ltCacheKey)).toBeUndefined();
+  });
+
+
   describe('deleteLabeledThing', () => {
     beforeEach(() => {
       spyOn(proto, [
