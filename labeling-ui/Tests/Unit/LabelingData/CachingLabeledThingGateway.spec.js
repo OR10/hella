@@ -135,8 +135,8 @@ describe('CachingLabeledThingGateway', () => {
         id: 'some-labeled-thing',
         taskId: 'some-task',
         frameRange: {startFrameIndex: 23, endFrameIndex: 42},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
+        classes: ['other', 'classes', 'then', 'mock'],
+        lineColor: 23,
       });
 
       gateway.saveLabeledThing(labeledThingMock).then(() => {
@@ -148,9 +148,9 @@ describe('CachingLabeledThingGateway', () => {
     });
 
     it('should invalidate cache before storing data', () => {
-      proto.saveLabeledThing
-        .and.callFake(() => new Promise((resolve) => {
-      }));
+      proto.saveLabeledThing.and.callFake(
+        () => new Promise(() => {})
+      );
 
       const ltCacheKey = 'some-task.some-labeled-thing';
       ltCache.store(ltCacheKey, {
