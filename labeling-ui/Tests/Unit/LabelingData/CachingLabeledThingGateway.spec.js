@@ -172,249 +172,418 @@ describe('CachingLabeledThingGateway', () => {
       expect(ltCache.get(ltCacheKey)).toBeUndefined();
     });
 
-    it('should invalidate ltif cache when frameRange startFrameIndex was moved forward', () => {
-      const ltCacheKey = 'task-id.some-labeled-thing';
-      const ltBefore = {
-        id: 'some-labeled-thing',
-        taskId: 'task-id',
-        frameRange: {startFrameIndex: 23, endFrameIndex: 42},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
-      };
-      const ltAfter = new LabeledThing({
-        id: 'some-labeled-thing',
-        task: {id: 'task-id'},
-        frameRange: {startFrameIndex: 27, endFrameIndex: 42},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
+    describe('FrameRange Invalidation', () => {
+      beforeEach(() => {
+        const task = {
+          id: 'task-id',
+          frameNumberMapping: new Array(100).fill(null).map((ignore, index) => index + 1),
+        };
+        frameIndexService.setTask(task);
       });
-      const ltif24 = {
-        id: 'ltif24-id',
-        frameIndex: 24,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif24CacheKey = `${ltAfter.task.id}.${ltif24.frameIndex}.${ltif24.id}`;
-      const ltif26 = {
-        id: 'ltif26-id',
-        frameIndex: 26,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif26CacheKey = `${ltAfter.task.id}.${ltif26.frameIndex}.${ltif26.id}`;
 
-      ltCache.store(ltCacheKey, ltBefore);
-      ltifCache.store(ltif24CacheKey, ltif24);
-      ltifCache.store(ltif26CacheKey, ltif26);
-      gateway.saveLabeledThing(ltAfter);
+      it('should invalidate ltif cache when frameRange startFrameIndex was moved forward', () => {
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: {id: 'task-id'},
+          frameRange: {startFrameIndex: 27, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+        const ltif24 = {
+          id: 'ltif24-id',
+          frameIndex: 24,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif24CacheKey = `${ltAfter.task.id}.${ltif24.frameIndex}.${ltif24.id}`;
+        const ltif26 = {
+          id: 'ltif26-id',
+          frameIndex: 26,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif26CacheKey = `${ltAfter.task.id}.${ltif26.frameIndex}.${ltif26.id}`;
 
-      $rootScope.$digest();
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifCache.store(ltif24CacheKey, ltif24);
+        ltifCache.store(ltif26CacheKey, ltif26);
+        gateway.saveLabeledThing(ltAfter);
 
-      expect(ltifCache.get(ltif24CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif26CacheKey)).toBeUndefined();
-    });
+        $rootScope.$digest();
 
-    it('should invalidate ltif cache when frameRange endFrameIndex was moved backwards', () => {
-      const ltCacheKey = 'task-id.some-labeled-thing';
-      const ltBefore = {
-        id: 'some-labeled-thing',
-        taskId: 'task-id',
-        frameRange: {startFrameIndex: 23, endFrameIndex: 42},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
-      };
-      const ltAfter = new LabeledThing({
-        id: 'some-labeled-thing',
-        task: {id: 'task-id'},
-        frameRange: {startFrameIndex: 23, endFrameIndex: 37},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
+        expect(ltifCache.get(ltif24CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif26CacheKey)).toBeUndefined();
       });
-      const ltif39 = {
-        id: 'ltif39-id',
-        frameIndex: 39,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif39CacheKey = `${ltAfter.task.id}.${ltif39.frameIndex}.${ltif39.id}`;
-      const ltif41 = {
-        id: 'ltif41-id',
-        frameIndex: 41,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif41CacheKey = `${ltAfter.task.id}.${ltif41.frameIndex}.${ltif41.id}`;
 
-      ltCache.store(ltCacheKey, ltBefore);
-      ltifCache.store(ltif39CacheKey, ltif39);
-      ltifCache.store(ltif41CacheKey, ltif41);
-      gateway.saveLabeledThing(ltAfter);
+      it('should invalidate ltif cache when frameRange endFrameIndex was moved backwards', () => {
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: {id: 'task-id'},
+          frameRange: {startFrameIndex: 23, endFrameIndex: 37},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+        const ltif39 = {
+          id: 'ltif39-id',
+          frameIndex: 39,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif39CacheKey = `${ltAfter.task.id}.${ltif39.frameIndex}.${ltif39.id}`;
+        const ltif41 = {
+          id: 'ltif41-id',
+          frameIndex: 41,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif41CacheKey = `${ltAfter.task.id}.${ltif41.frameIndex}.${ltif41.id}`;
 
-      $rootScope.$digest();
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifCache.store(ltif39CacheKey, ltif39);
+        ltifCache.store(ltif41CacheKey, ltif41);
+        gateway.saveLabeledThing(ltAfter);
 
-      expect(ltifCache.get(ltif39CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif41CacheKey)).toBeUndefined();
-    });
+        $rootScope.$digest();
 
-    it('should invalidate ltif cache when frameRange start- and endFrameIndex was moved inwards', () => {
-      const ltCacheKey = 'task-id.some-labeled-thing';
-      const ltBefore = {
-        id: 'some-labeled-thing',
-        taskId: 'task-id',
-        frameRange: {startFrameIndex: 23, endFrameIndex: 42},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
-      };
-      const ltAfter = new LabeledThing({
-        id: 'some-labeled-thing',
-        task: {id: 'task-id'},
-        frameRange: {startFrameIndex: 27, endFrameIndex: 37},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
+        expect(ltifCache.get(ltif39CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif41CacheKey)).toBeUndefined();
       });
-      const ltif24 = {
-        id: 'ltif24-id',
-        frameIndex: 24,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif24CacheKey = `${ltAfter.task.id}.${ltif24.frameIndex}.${ltif24.id}`;
-      const ltif26 = {
-        id: 'ltif26-id',
-        frameIndex: 26,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif26CacheKey = `${ltAfter.task.id}.${ltif26.frameIndex}.${ltif26.id}`;
-      const ltif39 = {
-        id: 'ltif39-id',
-        frameIndex: 39,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif39CacheKey = `${ltAfter.task.id}.${ltif39.frameIndex}.${ltif39.id}`;
-      const ltif41 = {
-        id: 'ltif41-id',
-        frameIndex: 41,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif41CacheKey = `${ltAfter.task.id}.${ltif41.frameIndex}.${ltif41.id}`;
 
-      ltCache.store(ltCacheKey, ltBefore);
-      ltifCache.store(ltif24CacheKey, ltif24);
-      ltifCache.store(ltif26CacheKey, ltif26);
-      ltifCache.store(ltif39CacheKey, ltif39);
-      ltifCache.store(ltif41CacheKey, ltif41);
-      gateway.saveLabeledThing(ltAfter);
+      it('should invalidate ltif cache when frameRange start- and endFrameIndex was moved inwards', () => {
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: {id: 'task-id'},
+          frameRange: {startFrameIndex: 27, endFrameIndex: 37},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+        const ltif24 = {
+          id: 'ltif24-id',
+          frameIndex: 24,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif24CacheKey = `${ltAfter.task.id}.${ltif24.frameIndex}.${ltif24.id}`;
+        const ltif26 = {
+          id: 'ltif26-id',
+          frameIndex: 26,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif26CacheKey = `${ltAfter.task.id}.${ltif26.frameIndex}.${ltif26.id}`;
+        const ltif39 = {
+          id: 'ltif39-id',
+          frameIndex: 39,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif39CacheKey = `${ltAfter.task.id}.${ltif39.frameIndex}.${ltif39.id}`;
+        const ltif41 = {
+          id: 'ltif41-id',
+          frameIndex: 41,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif41CacheKey = `${ltAfter.task.id}.${ltif41.frameIndex}.${ltif41.id}`;
 
-      $rootScope.$digest();
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifCache.store(ltif24CacheKey, ltif24);
+        ltifCache.store(ltif26CacheKey, ltif26);
+        ltifCache.store(ltif39CacheKey, ltif39);
+        ltifCache.store(ltif41CacheKey, ltif41);
+        gateway.saveLabeledThing(ltAfter);
 
-      expect(ltifCache.get(ltif24CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif26CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif39CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif41CacheKey)).toBeUndefined();
-    });
+        $rootScope.$digest();
 
-    fit('should only invalidate ltif cache with matching labeled thing within framerange', () => {
-      const task = {id: 'task-id', frameNumberMapping: new Array(100).fill(null).map((ignore, index) => index + 1)};
-      frameIndexService.setTask(task);
-      const ltCacheKey = 'task-id.some-labeled-thing';
-      const ltBefore = {
-        id: 'some-labeled-thing',
-        taskId: 'task-id',
-        frameRange: {startFrameIndex: 23, endFrameIndex: 42},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
-      };
-      const ltAfter = new LabeledThing({
-        id: 'some-labeled-thing',
-        task: task,
-        frameRange: {startFrameIndex: 27, endFrameIndex: 37},
-        classes: ['foo', 'bar'],
-        lineColor: 42,
+        expect(ltifCache.get(ltif24CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif26CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif39CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif41CacheKey)).toBeUndefined();
       });
-      const ltif24 = {
-        id: 'ltif24-id',
-        frameIndex: 24,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-other-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif24CacheKey = `${ltAfter.task.id}.${ltif24.frameIndex}.${ltif24.id}`;
-      const ltif26 = {
-        id: 'ltif26-id',
-        frameIndex: 26,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif26CacheKey = `${ltAfter.task.id}.${ltif26.frameIndex}.${ltif26.id}`;
-      const ltif39 = {
-        id: 'ltif39-id',
-        frameIndex: 39,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif39CacheKey = `${ltAfter.task.id}.${ltif39.frameIndex}.${ltif39.id}`;
-      const ltif41 = {
-        id: 'ltif41-id',
-        frameIndex: 41,
-        ghost: false,
-        shapes: [],
-        ghostClasses: null,
-        labeledThingId: 'some-other-labeled-thing',
-        classes: ['aaa', 'bbb'],
-      };
-      const ltif41CacheKey = `${ltAfter.task.id}.${ltif41.frameIndex}.${ltif41.id}`;
 
-      ltCache.store(ltCacheKey, ltBefore);
-      ltifCache.store(ltif24CacheKey, ltif24);
-      ltifCache.store(ltif26CacheKey, ltif26);
-      ltifCache.store(ltif39CacheKey, ltif39);
-      ltifCache.store(ltif41CacheKey, ltif41);
-      gateway.saveLabeledThing(ltAfter);
+      it('should only invalidate ltif cache with matching labeled thing within framerange', () => {
+        const task = {id: 'task-id', frameNumberMapping: new Array(100).fill(null).map((ignore, index) => index + 1)};
+        frameIndexService.setTask(task);
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: task,
+          frameRange: {startFrameIndex: 27, endFrameIndex: 37},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+        const ltif24 = {
+          id: 'ltif24-id',
+          frameIndex: 24,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-other-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif24CacheKey = `${ltAfter.task.id}.${ltif24.frameIndex}.${ltif24.id}`;
 
-      $rootScope.$digest();
+        const ltif26 = {
+          id: 'ltif26-id',
+          frameIndex: 26,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif26CacheKey = `${ltAfter.task.id}.${ltif26.frameIndex}.${ltif26.id}`;
 
-      expect(ltifCache.get(ltif24CacheKey)).not.toBeUndefined();
-      expect(ltifCache.get(ltif26CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif39CacheKey)).toBeUndefined();
-      expect(ltifCache.get(ltif41CacheKey)).not.toBeUndefined();
+        const ltif39 = {
+          id: 'ltif39-id',
+          frameIndex: 39,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif39CacheKey = `${ltAfter.task.id}.${ltif39.frameIndex}.${ltif39.id}`;
+
+        const ltif41 = {
+          id: 'ltif41-id',
+          frameIndex: 41,
+          ghost: false,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-other-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltif41CacheKey = `${ltAfter.task.id}.${ltif41.frameIndex}.${ltif41.id}`;
+
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifCache.store(ltif24CacheKey, ltif24);
+        ltifCache.store(ltif26CacheKey, ltif26);
+        ltifCache.store(ltif39CacheKey, ltif39);
+        ltifCache.store(ltif41CacheKey, ltif41);
+        gateway.saveLabeledThing(ltAfter);
+
+        $rootScope.$digest();
+
+        expect(ltifCache.get(ltif24CacheKey)).not.toBeUndefined();
+        expect(ltifCache.get(ltif26CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif39CacheKey)).toBeUndefined();
+        expect(ltifCache.get(ltif41CacheKey)).not.toBeUndefined();
+      });
+
+      it('should invalidate ltif ghost cache for labeled thing within framerange', () => {
+        const task = {id: 'task-id', frameNumberMapping: new Array(100).fill(null).map((ignore, index) => index + 1)};
+        frameIndexService.setTask(task);
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: task,
+          frameRange: {startFrameIndex: 27, endFrameIndex: 37},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+
+        const ltifGhost24 = {
+          id: 'ltif24-id',
+          frameIndex: 24,
+          ghost: true,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-other-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltifGhost24CacheKey = `${ltAfter.task.id}.${ltifGhost24.frameIndex}.${ltAfter.id}`;
+
+        const ltifGhost39 = {
+          id: 'ltif39-id',
+          frameIndex: 39,
+          ghost: true,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltifGhost39CacheKey = `${ltAfter.task.id}.${ltifGhost39.frameIndex}.${ltAfter.id}`;
+
+
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifGhostCache.store(ltifGhost24CacheKey, ltifGhost24);
+        ltifGhostCache.store(ltifGhost39CacheKey, ltifGhost39);
+        gateway.saveLabeledThing(ltAfter);
+
+        $rootScope.$digest();
+
+        expect(ltifGhostCache.get(ltifGhost24CacheKey)).toBeUndefined();
+        expect(ltifGhostCache.get(ltifGhost39CacheKey)).toBeUndefined();
+      });
+
+      it('should invalidate ltif ghost cache for labeled thing outside of framerange', () => {
+        const task = {id: 'task-id', frameNumberMapping: new Array(100).fill(null).map((ignore, index) => index + 1)};
+        frameIndexService.setTask(task);
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: task,
+          frameRange: {startFrameIndex: 27, endFrameIndex: 37},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+        const ltifGhost12 = {
+          id: 'ltif12-id',
+          frameIndex: 12,
+          ghost: true,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltifGhost12CacheKey = `${ltAfter.task.id}.${ltifGhost12.frameIndex}.${ltAfter.id}`;
+
+        const ltifGhost86 = {
+          id: 'ltif86-id',
+          frameIndex: 86,
+          ghost: true,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltifGhost86CacheKey = `${ltAfter.task.id}.${ltifGhost86.frameIndex}.${ltAfter.id}`;
+
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifGhostCache.store(ltifGhost12CacheKey, ltifGhost12);
+        ltifGhostCache.store(ltifGhost86CacheKey, ltifGhost86);
+        gateway.saveLabeledThing(ltAfter);
+
+        $rootScope.$digest();
+
+        expect(ltifGhostCache.get(ltifGhost12CacheKey)).toBeUndefined();
+        expect(ltifGhostCache.get(ltifGhost86CacheKey)).toBeUndefined();
+      });
+
+      it('should not invalidate ltif ghost cache for other labeled things within framerange', () => {
+        const task = {id: 'task-id', frameNumberMapping: new Array(100).fill(null).map((ignore, index) => index + 1)};
+        frameIndexService.setTask(task);
+        const ltCacheKey = 'task-id.some-labeled-thing';
+        const ltBefore = {
+          id: 'some-labeled-thing',
+          taskId: 'task-id',
+          frameRange: {startFrameIndex: 23, endFrameIndex: 42},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        };
+        const ltAfter = new LabeledThing({
+          id: 'some-labeled-thing',
+          task: task,
+          frameRange: {startFrameIndex: 27, endFrameIndex: 37},
+          classes: ['foo', 'bar'],
+          lineColor: 42,
+        });
+
+        const ltifGhost24 = {
+          id: 'ltif24-id',
+          frameIndex: 24,
+          ghost: true,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-other-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltifGhost24CacheKey = `${ltAfter.task.id}.${ltifGhost24.frameIndex}.other-lt-id`;
+
+        const ltifGhost39 = {
+          id: 'ltif39-id',
+          frameIndex: 39,
+          ghost: true,
+          shapes: [],
+          ghostClasses: null,
+          labeledThingId: 'some-labeled-thing',
+          classes: ['aaa', 'bbb'],
+        };
+        const ltifGhost39CacheKey = `${ltAfter.task.id}.${ltifGhost39.frameIndex}.other-lt-id`;
+
+
+        ltCache.store(ltCacheKey, ltBefore);
+        ltifGhostCache.store(ltifGhost24CacheKey, ltifGhost24);
+        ltifGhostCache.store(ltifGhost39CacheKey, ltifGhost39);
+        gateway.saveLabeledThing(ltAfter);
+
+        $rootScope.$digest();
+
+        expect(ltifGhostCache.get(ltifGhost24CacheKey)).not.toBeUndefined();
+        expect(ltifGhostCache.get(ltifGhost39CacheKey)).not.toBeUndefined();
+      });
     });
   });
-
 
   describe('deleteLabeledThing', () => {
     beforeEach(() => {
