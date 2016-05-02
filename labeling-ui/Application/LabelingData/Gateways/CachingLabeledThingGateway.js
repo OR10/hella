@@ -164,7 +164,7 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
       frameIndexLimits.upperLimit
     );
 
-    ltifCacheKeys.forEach(keyStruct => this._ltifCache.invalidate(keyStruct.key));
+    ltifCacheKeys.forEach(key => this._ltifCache.invalidate(key));
     ltifGhostCacheKeys.forEach(keyStruct => this._ltifGhostCache.invalidate(keyStruct.key));
   }
 
