@@ -12,6 +12,7 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 
 
 describe('CachingLabeledThingInFrameGateway', () => {
+  let $q;
   let task;
   let gateway;
   let frameIndexService;
@@ -145,6 +146,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
     inject($injector => {
       $rootScope = $injector.get('$rootScope');
+      $q = $injector.get('$q');
       cache = $injector.get('cacheService');
       gateway = $injector.instantiate(CachingLabeledThingInFrameGateway);
       frameIndexService = $injector.get('frameIndexService');
@@ -177,7 +179,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
       spyOn(proto, [
         'listLabeledThingInFrame',
-      ]).and.callFake(() => Promise.resolve(labeledThingsInFrame));
+      ]).and.callFake(() => $q.resolve(labeledThingsInFrame));
     });
 
     it('should by default call through', () => {
@@ -236,6 +238,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
         expect(ltifCache.get(`${task.id}.43.${labeledThingsInFrame[1].id}`)).toBeDefined();
         done();
       });
+      $rootScope.$digest();
     });
 
     it('should mark retrieved frames as being completed', done => {
@@ -244,11 +247,12 @@ describe('CachingLabeledThingInFrameGateway', () => {
         expect(ltifCache.get(`${task.id}.43.complete`)).toBeTruthy();
         done();
       });
+      $rootScope.$digest();
     });
 
     it('should save multiple labeledThingInFrames on the same frame to cache', done => {
       proto.listLabeledThingInFrame
-        .and.callFake(() => Promise.resolve([
+        .and.callFake(() => $q.resolve([
         ltif(task, 'x', 42, false, '1'),
         ltif(task, 'y', 42, false, '2'),
         ltif(task, 'z', 42, false, '3'),
@@ -259,6 +263,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
         expect(ltifCache.get(`${task.id}.42.z`)).toEqual(result[2].toJSON());
         done();
       });
+      $rootScope.$digest();
     });
   });
 
@@ -278,7 +283,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
       spyOn(proto, [
         'getLabeledThingInFrame',
-      ]).and.callFake(() => Promise.resolve(defaultResult));
+      ]).and.callFake(() => $q.resolve(defaultResult));
     });
 
     it('should call through by default', () => {
@@ -298,6 +303,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
           expect(ltCache.get(`${task.id}.lt-1`)).toEqual(lt1.toJSON());
           done();
         });
+      $rootScope.$digest();
     });
 
     it('should store non ghost LabeledThingInFrame to cache after retrieval', done => {
@@ -308,6 +314,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
           });
           done();
         });
+      $rootScope.$digest();
     });
 
     it('should store ghost LabeledThingInFrame to cache after retrieval', done => {
@@ -316,6 +323,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
           expect(ltifGhostCache.get(`${task.id}.11.lt-1`)).toEqual(defaultResult[1].toJSON());
           done();
         });
+      $rootScope.$digest();
     });
 
     describe('cache result builder', () => {
@@ -476,11 +484,13 @@ describe('CachingLabeledThingInFrameGateway', () => {
           expect(result[2]).toEqual(ltif(task, 'ltif-1-1', 10, false, 'lt-1'));
           expect(result[3]).toEqual(ltif(task, 'ltif-1-2', 11, false, 'lt-1'));
           expect(result[4]).toEqual(ltif(task, null, 12, true, 'lt-1'));
+
+          expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
+
           done();
         });
 
         $rootScope.$digest();
-        expect(proto.getLabeledThingInFrame).not.toHaveBeenCalled();
       });
 
       it('should request backend if a hole is present in middle', () => {
@@ -544,7 +554,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
       spyOn(proto, [
         'saveLabeledThingInFrame',
-      ]).and.callFake((ltif) => Promise.resolve(ltif));
+      ]).and.callFake((ltif) => $q.resolve(ltif));
     });
 
     it('should call through', () => {

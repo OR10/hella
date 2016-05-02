@@ -10,6 +10,7 @@ import CachingLabeledThingGateway from 'Application/LabelingData/Gateways/Cachin
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 
 describe('CachingLabeledThingGateway', () => {
+  let $q;
   let gateway;
 
   let ltCache;
@@ -54,6 +55,7 @@ describe('CachingLabeledThingGateway', () => {
 
     inject($injector => {
       $rootScope = $injector.get('$rootScope');
+      $q = $injector.get('$q');
       cache = $injector.get('cacheService');
       gateway = $injector.instantiate(CachingLabeledThingGateway);
     });
@@ -78,7 +80,7 @@ describe('CachingLabeledThingGateway', () => {
     beforeEach(() => {
       spyOn(proto, [
         'getLabeledThing',
-      ]).and.callFake(() => Promise.resolve(labeledThingMock));
+      ]).and.callFake(() => $q.resolve(labeledThingMock));
 
       task = {id: 'some-task'};
     });
@@ -104,6 +106,7 @@ describe('CachingLabeledThingGateway', () => {
         expect(ltCache.get('some-task.some-labeled-thing')).toEqual(labeledThingMock.toJSON());
         done();
       });
+      $rootScope.$digest();
     });
   });
 
@@ -111,7 +114,7 @@ describe('CachingLabeledThingGateway', () => {
     beforeEach(() => {
       spyOn(proto, [
         'saveLabeledThing',
-      ]).and.callFake(() => Promise.resolve(labeledThingMock));
+      ]).and.callFake(() => $q.resolve(labeledThingMock));
     });
 
     it('should by default call through', () => {
@@ -149,7 +152,7 @@ describe('CachingLabeledThingGateway', () => {
 
     it('should invalidate cache before storing data', () => {
       proto.saveLabeledThing.and.callFake(
-        () => new Promise(() => {})
+        () => new $q(() => {})
       );
 
       const ltCacheKey = 'some-task.some-labeled-thing';
@@ -171,7 +174,7 @@ describe('CachingLabeledThingGateway', () => {
     beforeEach(() => {
       spyOn(proto, [
         'deleteLabeledThing',
-      ]).and.callFake(() => Promise.resolve());
+      ]).and.callFake(() => $q.resolve());
     });
 
     it('should by default call through', () => {
@@ -196,7 +199,7 @@ describe('CachingLabeledThingGateway', () => {
 
       beforeEach(() => {
         proto.deleteLabeledThing
-          .and.callFake(() => new Promise((resolve) => {
+          .and.callFake(() => new $q((resolve) => {
         }));
 
         ltCacheKeys = {
