@@ -113,11 +113,11 @@ class LabelingTask
         $endFrameIndex = null
     ) {
         if ($startFrameIndex === null) {
-            $startFrameIndex = min($labelingTask->getFrameNumberMapping());
+            $startFrameIndex = min($labelingTask->getFrameNumberMapping()) -1;
         }
 
         if ($endFrameIndex === null) {
-            $endFrameIndex = max($labelingTask->getFrameNumberMapping());
+            $endFrameIndex = max($labelingTask->getFrameNumberMapping()) -1;
         }
 
         return $this->documentManager
