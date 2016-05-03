@@ -25,6 +25,11 @@ class LabelingTaskTest extends Tests\WebTestCase
      */
     private $labelingTaskFacade;
 
+    /**
+     * @var Facade\LabeledFrame
+     */
+    private $labeledFrameFacade;
+
     public function dateProvider()
     {
         return array(
@@ -85,10 +90,34 @@ class LabelingTaskTest extends Tests\WebTestCase
         $this->assertEquals($expectedDateTimes, $tasksDates);
     }
 
+    public function testGetLabeledFrame()
+    {
+        $video = Model\Video::create('foobar');
+        $project = Model\Project::create('test project');
+        $task = Model\LabelingTask::create(
+            $video,
+            $project,
+            range(10, 20),
+            Model\LabelingTask::TYPE_OBJECT_LABELING,
+            null,
+            array(),
+            array(),
+            new \DateTime('2016-05-03 12:01:00')
+        );
+
+        $newLabeledFrame = new Model\LabeledFrame($task, 0);
+        $this->labeledFrameFacade->save($newLabeledFrame);
+
+        $labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, 0);
+
+        $this->assertEquals($newLabeledFrame, $labeledFrame);
+    }
+
     protected function setUpImplementation()
     {
         $this->videoFacade = $this->getAnnostationService('database.facade.video');
         $this->projectFacade = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledFrameFacade = $this->getAnnostationService('database.facade.labeled_frame');
     }
 }
