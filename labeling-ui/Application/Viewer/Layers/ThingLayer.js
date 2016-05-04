@@ -33,6 +33,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
+   * @param {FramePosition} framePosition
+   * @param {ModalService} modalService
+   * @param {$state} $state
    */
   constructor(width,
               height,
@@ -44,7 +47,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
               keyboardShortcutService,
               logger,
               $timeout,
-              framePosition) {
+              framePosition,
+              modalService,
+              $state) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -118,7 +123,19 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._multiTool.registerMoveTool(this._shapeMoveTool);
     this._multiTool.registerScaleTool(this._shapeScaleTool);
 
-    this._initializeShapeCreationTool();
+    try {
+      this._initializeShapeCreationTool();
+    } catch (error) {
+      const errorModal = modalService.getAlertWarningDialog({
+        title: 'Unknown Drawing Tool',
+        headline: `This task is using the "${this._$scope.vm.task.drawingTool}" drawing tool. This tool is unknown.`,
+        message: `The Task could not be opened. Please contact your label coordinator and/or admin about this problem.`,
+        confirmButtonText: 'Acknowledged',
+      }, () => {
+        $state.go('labeling.tasks');
+      });
+      errorModal.activate();
+    }
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);

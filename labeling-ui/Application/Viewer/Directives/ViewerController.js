@@ -55,6 +55,8 @@ class ViewerController {
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {DebouncerService} debouncerService
    * @param {FrameIndexService} frameIndexService
+   * @param {ModalService} modalService
+   * @param {$state} $state
    */
   constructor($scope,
               $rootScope,
@@ -80,7 +82,9 @@ class ViewerController {
               lockService,
               keyboardShortcutService,
               debouncerService,
-              frameIndexService) {
+              frameIndexService,
+              modalService,
+              $state) {
     /**
      * Mouse cursor used, while hovering the viewer
      *
@@ -246,6 +250,18 @@ class ViewerController {
      * @private
      */
     this._frameIndexService = frameIndexService;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
+     * @type {$state}
+     * @private
+     */
+    this._$state = $state;
 
     /**
      * @type {LayerManager}
@@ -574,7 +590,9 @@ class ViewerController {
       this._keyboardShortcutService,
       this._logger,
       this._$timeout,
-      this.framePosition
+      this.framePosition,
+      this._modalService,
+      this._$state
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1117,6 +1135,8 @@ ViewerController.$inject = [
   'keyboardShortcutService',
   'debouncerService',
   'frameIndexService',
+  'modalService',
+  '$state',
 ];
 
 export default ViewerController;
