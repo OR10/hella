@@ -153,44 +153,101 @@ function imageToVehicle(inVec) {
   const carVec2d = projected2dVec.clone();
   carVec2d.applyMatrix4(inverseViewMatrix);
   console.log('car 2d coordinates:', carVec2d);
-  
-  
+
+  return carVec2d;
 }
 
 
-console.log('input: 10, 0, 0');
-console.log(
-  'image coordinates:',
-  vehicleToImage(new Vector3(10, 0, 0))
-);
-
-console.log('input: 10, -3, 0');
-console.log(
-  'image coordinates:',
-  vehicleToImage(new Vector3(10, -3, 0))
-);
-
-console.log('input: 10, 3, 0');
-console.log(
-  'image coordinates:',
-  vehicleToImage(new Vector3(10, 3, 0))
-);
-
-console.log('input: 10, 0, 2');
-console.log(
-  'image coordinates:',
-  vehicleToImage(new Vector3(10, 0, 2))
-);
-
-console.log('input: 55.099998, 5.2, 0.8');
-console.log(
-  'image coordinates:',
-  vehicleToImage(new Vector3(55.099998, 5.2, 0.8))
-);
 
 
-console.log('input: 0, 619');
-console.log(
-  'vehicle coordinates:',
-  imageToVehicle(new Vector3(0, 619, 1))
-);
+
+const vehicleToImageTestData = [
+  {
+    input: new Vector3(10, 0, 0),
+    output: new Vector3(512.882324, 451.021545, 0),
+  },
+  {
+    input: new Vector3(10, -3, 0),
+    output: new Vector3(836.513550, 446.012543, 0),
+  },
+  {
+    input: new Vector3(10, 3, 0),
+    output: new Vector3(190.807846, 451.770325, 0),
+  },
+  {
+    input: new Vector3(10, 0, 2),
+    output: new Vector3(510.693329, 231.544022, 0),
+  },
+  {
+    input: new Vector3(55.099998, 5.2, 0.8),
+    output: new Vector3(406.905670, 324.243713, 0),
+  },
+];
+
+const imageToVehicleTestData = [
+  {
+    input: new Vector3(0, 619, 0),
+    output: new Vector3(3.719265, 2.115525, 0),
+  },
+  {
+    input: new Vector3(1023, 619, 0),
+    output: new Vector3(3.603534, -2.113205, 0),
+  },
+  {
+    input: new Vector3(512, 520, 0),
+    output: new Vector3(6.282702, -0.017279, 0),
+  },
+  {
+    input: new Vector3(154, 445, 0),
+    output: new Vector3(10.570081, 3.531222, 0),
+  },
+  {
+    input: new Vector3(546, 335, 0),
+    output: new Vector3(68.409607, -1.510366, 0),
+  },
+];
+
+let stats;
+
+console.log('*** VEHICLE => IMAGE');
+stats = {min: Infinity, max: -Infinity, avg: 0, count: 0};
+vehicleToImageTestData.forEach(data => {
+  console.log('<= ', data.input);
+  const result = vehicleToImage(data.input);
+  console.log('=> ', result);
+  console.log();
+  const deviation = {
+    x: Math.abs(result.x - data.output.x),
+    y: Math.abs(result.y - data.output.y),
+    z: Math.abs(result.z - data.output.z),
+  };
+  stats.avg = (stats.avg * stats.count + deviation.x + deviation.y + deviation.z) / (stats.count + 3);
+  stats.count += 3;
+  stats.max = Math.max(stats.max, deviation.x, deviation.y, deviation.z);
+  stats.min = Math.min(stats.min, deviation.x, deviation.y, deviation.z);
+});
+console.log('======================================');
+console.log(stats);
+console.log('======================================');
+
+console.log("\n\n" + '*** IMAGE => VEHICLE');
+stats = {min: Infinity, max: -Infinity, avg: 0, count: 0};
+imageToVehicleTestData.forEach(data => {
+  console.log('<= ', data.input);
+  const result = imageToVehicle(data.input);
+  console.log('=> ', result);
+  console.log();
+  const deviation = {
+    x: Math.abs(result.x - data.output.x),
+    y: Math.abs(result.y - data.output.y),
+    z: Math.abs(result.z - data.output.z),
+  };
+  stats.avg = (stats.avg * stats.count + deviation.x + deviation.y + deviation.z) / (stats.count + 3);
+  stats.count += 3;
+  stats.max = Math.max(stats.max, deviation.x, deviation.y, deviation.z);
+  stats.min = Math.min(stats.min, deviation.x, deviation.y, deviation.z);
+});
+console.log('======================================');
+console.log(stats);
+console.log('======================================');
+
