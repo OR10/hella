@@ -15,14 +15,6 @@ define annostation_base::nginx_vhost(
   $authBasicFile = undef,
   $useDefaultLocation = true,
 ) {
-  if $authBasic and $authBasicFile {
-    $_authBasic = $authBasic
-    $_authBasicFile = $authBasicFile
-  } else {
-    $_authBasic = undef
-    $_authBasicFile = undef
-  }
-
   if $httpv2 {
     nginx::resource::vhost { $name:
       ensure               => present,
@@ -40,8 +32,8 @@ define annostation_base::nginx_vhost(
       add_header           => $addHeader,
       vhost_cfg_prepend    => $vhostCfgAppend,
       client_max_body_size => $clientMaxBodySize,
-      auth_basic           => $_authBasic,
-      auth_basic_user_file => $_authBasicFile,
+      auth_basic           => $authBasic,
+      auth_basic_user_file => $authBasicFile,
       use_default_location => $useDefaultLocation,
     }
   } else {
@@ -56,8 +48,8 @@ define annostation_base::nginx_vhost(
       add_header           => $addHeader,
       vhost_cfg_prepend    => $vhostCfgAppend,
       client_max_body_size => $clientMaxBodySize,
-      auth_basic           => $_authBasic,
-      auth_basic_user_file => $_authBasicFile,
+      auth_basic           => $authBasic,
+      auth_basic_user_file => $authBasicFile,
       use_default_location => $useDefaultLocation,
     }
   }
