@@ -309,15 +309,27 @@ class LabelingTask
 
     public function getTotalNumberOfLabeledThingsGroupedByTaskId(array $tasks = null)
     {
-        $query = $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'count_by_taskId')
-            ->setGroup(true);
-
         if ($tasks !== null) {
-            $query->setKeys($this->mapTasksToTaskIds($tasks));
-        }
+            $idsInChunks = array_chunk($this->mapTasksToTaskIds($tasks), 100);
+            $result = array();
+            foreach ($idsInChunks as $idsInChunk) {
+                $result = array_merge(
+                    $result,
+                    $this->documentManager
+                        ->createQuery('annostation_labeled_thing', 'count_by_taskId')
+                        ->setGroup(true)
+                        ->setKeys($idsInChunk)
+                        ->execute()
+                        ->toArray()
+                );
+            }
+        }else{
+            $query = $this->documentManager
+                ->createQuery('annostation_labeled_thing', 'count_by_taskId')
+                ->setGroup(true);
 
-        $result = $query->execute()->toArray();
+            $result = $query->execute()->toArray();
+        }
 
         return array_column($result, 'value', 'key');
     }
