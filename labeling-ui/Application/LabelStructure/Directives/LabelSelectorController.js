@@ -15,6 +15,7 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 export default class LabelSelectorController {
   /**
    * @param {angular.$scope} $scope
+   * @param {angular.$rootScope} $rootScope
    * @param {angular.$location} $location
    * @param {LinearLabelStructureVisitor} linearLabelStructureVisitor
    * @param {AnnotationLabelStructureVisitor} annotationStructureVisitor
@@ -26,7 +27,7 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    */
-  constructor($scope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway) {
+  constructor($scope, $rootScope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -39,6 +40,12 @@ export default class LabelSelectorController {
      * @type {Object.<string, string>}
      */
     this.choices = {};
+
+    /**
+     * @type {angular.$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @type {angular.$location}
@@ -157,6 +164,8 @@ export default class LabelSelectorController {
       if (equals(labeledObject.classes, labels)) {
         return;
       }
+
+      this._$rootScope.$emit('shape:class-update:before', labels);
 
       labeledObject.setClasses(labels);
 
@@ -281,10 +290,12 @@ export default class LabelSelectorController {
   _storeUpdatedLabeledObject() {
     switch (true) {
       case this.labeledObject instanceof LabeledThingInFrame:
-        this._storeUpdatedLabeledThingInFrame(this.labeledObject);
+        this._storeUpdatedLabeledThingInFrame(this.labeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', this.labeledObject.classes));
         break;
       case this.labeledObject instanceof LabeledFrame:
-        this._storeUpdatedLabeledFrame(this.labeledObject);
+        this._storeUpdatedLabeledFrame(this.labeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', this.labeledObject.classes));
         break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
@@ -300,7 +311,7 @@ export default class LabelSelectorController {
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame) {
     labeledThingInFrame.incomplete = !this.isCompleted;
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   /**
@@ -316,7 +327,7 @@ export default class LabelSelectorController {
 
     labeledFrame.incomplete = !this.isCompleted;
 
-    this._labeledFrameGateway.saveLabeledFrame(
+    return this._labeledFrameGateway.saveLabeledFrame(
       this.task.id,
       this.framePosition.position,
       labeledFrame
@@ -373,6 +384,7 @@ export default class LabelSelectorController {
 
 LabelSelectorController.$inject = [
   '$scope',
+  '$rootScope',
   '$location',
   'linearLabelStructureVisitor',
   'annotationLabelStructureVisitor',

@@ -5,6 +5,7 @@ class ViewerTitleBarController {
   /**
    * @param {angular.$timeout} $timeout
    * @param {$rootScope.$scope} $scope
+   * @param {$rootScope.$rootScope} $rootScope
    * @param {angular.$state} $state
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
@@ -15,6 +16,7 @@ class ViewerTitleBarController {
    */
   constructor($timeout,
               $scope,
+              $rootScope,
               $state,
               modalService,
               applicationState,
@@ -28,6 +30,12 @@ class ViewerTitleBarController {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {$rootScope.$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @param {angular.$state} $state
@@ -82,7 +90,7 @@ class ViewerTitleBarController {
     this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
 
     this.refreshIncompleteCount();
-    $scope.$watch('vm.selectedPaperShape', () => this.refreshIncompleteCount());
+    this._registerOnEvents();
 
     $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], (newValues) => {
       const width = newValues[0];
@@ -93,8 +101,19 @@ class ViewerTitleBarController {
         this.shapeBounds = null;
       }
     });
-
   }
+
+  _registerOnEvents() {
+    this._$rootScope.$on('shape:class-update:after', () => {
+      this.refreshIncompleteCount();
+    });
+    this._$rootScope.$on('shape:delete:after', () => {
+      this.refreshIncompleteCount();
+    });
+    this._$rootScope.$on('shape:add:after', () => {
+      this.refreshIncompleteCount();
+    });
+  };
 
   finishLabelingTask() {
     this._applicationState.disableAll();
@@ -207,6 +226,7 @@ class ViewerTitleBarController {
 ViewerTitleBarController.$inject = [
   '$timeout',
   '$scope',
+  '$rootScope',
   '$state',
   'modalService',
   'applicationState',

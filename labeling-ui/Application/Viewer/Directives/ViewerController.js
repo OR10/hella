@@ -31,6 +31,7 @@ import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 class ViewerController {
   /**
    * @param {angular.Scope} $scope
+   * @param {angular.$rootScope} $rootScope
    * @param {angular.element} $element
    * @param {angular.window} $window
    * @param {DrawingContextService} drawingContextService
@@ -56,6 +57,7 @@ class ViewerController {
    * @param {FrameIndexService} frameIndexService
    */
   constructor($scope,
+              $rootScope,
               $element,
               $window,
               drawingContextService,
@@ -130,6 +132,12 @@ class ViewerController {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {angular.$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @type {angular.element}
@@ -862,13 +870,17 @@ class ViewerController {
    * @private
    */
   _onNewShape(shape) {
+    this._$rootScope.$emit('shape:add:before');
     const newLabeledThingInFrame = shape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
-      .then(() => shape.publish());
+      .then(() => {
+        shape.publish();
+        this._$rootScope.$emit('shape:add:after', shape);
+      });
 
     this.activeTool = null;
 
@@ -1081,6 +1093,7 @@ class ViewerController {
 
 ViewerController.$inject = [
   '$scope',
+  '$rootScope',
   '$element',
   '$window',
   'drawingContextService',

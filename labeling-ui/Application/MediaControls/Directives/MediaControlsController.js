@@ -16,6 +16,7 @@ import paper from 'paper';
 class MediaControlsController {
   /**
    * @param {angular.$scope} $scope
+   * @param {angular.$rootScope} $rootScope
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {InterpolationService} interpolationService
@@ -27,6 +28,7 @@ class MediaControlsController {
    * @param {KeyboardShortcutService} keyboardShortcutService
    */
   constructor($scope,
+              $rootScope,
               labeledThingInFrameGateway,
               labeledThingGateway,
               interpolationService,
@@ -36,6 +38,11 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService) {
+    /**
+     * @type {angular.$rootScope}
+     */
+    this._$rootScope = $rootScope;
+
     /**
      * @type {boolean}
      */
@@ -305,6 +312,7 @@ class MediaControlsController {
   }
 
   _deleteSelectedShape() {
+    this._$rootScope.$emit('shape:delete:before', this.selectedPaperShape);
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
     const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
 
@@ -331,6 +339,7 @@ class MediaControlsController {
               labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
             );
             this._applicationState.enableAll();
+            this._$rootScope.$emit('shape:delete:after');
           }
         )
         .catch(() => onDeletionError());
@@ -455,6 +464,7 @@ class MediaControlsController {
 
 MediaControlsController.$inject = [
   '$scope',
+  '$rootScope',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
   'interpolationService',
