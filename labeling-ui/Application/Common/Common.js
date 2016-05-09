@@ -68,8 +68,12 @@ class Common extends Module {
     this.registerDirective('tooltip', TooltipDirective);
 
     this.module.config(
-      ['$httpProvider', 'loggerServiceProvider',
-        ($httpProvider, loggerServiceProvider) => {
+      ['$compileProvider', '$httpProvider', 'loggerServiceProvider',
+        ($compileProvider, $httpProvider, loggerServiceProvider) => {
+          if (Environment.isProduction) {
+            $compileProvider.debugInfoEnabled(false);
+          }
+
           $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           $httpProvider.interceptors.push('errorInterceptor');
           $httpProvider.interceptors.push('readOnlyInterceptor');
