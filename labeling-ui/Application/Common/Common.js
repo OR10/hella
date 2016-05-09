@@ -1,4 +1,5 @@
 import Module from '../Module';
+import Environment from './Support/Environment';
 import ApiService from './Services/ApiService';
 import AuthInterceptor from './Services/AuthInterceptor';
 import ReadOnlyInterceptor from './Services/ReadOnlyInterceptor';
@@ -75,7 +76,10 @@ class Common extends Module {
           $httpProvider.interceptors.push('authInterceptor');
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
-          //loggerServiceProvider.addContexts('*');
+          
+          if (Environment.isDevelopment) {
+            loggerServiceProvider.addContexts('*');
+          }
         },
       ]);
 
