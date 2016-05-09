@@ -113,11 +113,15 @@ class LabelingTask
         $endFrameIndex = null
     ) {
         if ($startFrameIndex === null) {
-            $startFrameIndex = min($labelingTask->getFrameNumberMapping()) -1;
+            $startFrameIndex = min(
+                array_keys($labelingTask->getFrameNumberMapping())
+            );
         }
 
         if ($endFrameIndex === null) {
-            $endFrameIndex = max($labelingTask->getFrameNumberMapping()) -1;
+            $endFrameIndex = max(
+                array_keys($labelingTask->getFrameNumberMapping())
+            );
         }
 
         return $this->documentManager
@@ -229,11 +233,15 @@ class LabelingTask
         $endFrameIndex = null
     ) {
         if ($startFrameIndex === null) {
-            $startFrameIndex = min($labelingTask->getFrameNumberMapping());
+            $startFrameIndex = min(
+                array_keys($labelingTask->getFrameNumberMapping())
+            );
         }
 
         if ($endFrameIndex === null) {
-            $endFrameIndex = max($labelingTask->getFrameNumberMapping());
+            $endFrameIndex = max(
+                array_keys($labelingTask->getFrameNumberMapping())
+            );
         }
 
         return $this->documentManager
