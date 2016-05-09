@@ -52,6 +52,7 @@
     "karma-babel-preprocessor": "^5.2.2",
     "karma-chrome-launcher": "^0.2.1",
     "karma-coverage": "^0.5.2",
+    "karma-environment": "file:Tests/Support/karma-environment",
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-diff-reporter": "^0.3.1",
     "karma-json2js-preprocessor": "0.0.2",

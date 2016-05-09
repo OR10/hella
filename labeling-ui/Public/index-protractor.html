@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <script type="application/javascript">
+        window.__ANNOSTATION_ENVIRONMENT__ = 'test';
+    </script>
+    <script type="application/javascript">
         function extractHash() {
             var hash = {};
             var keyValuePairs = window.location.hash.split('&');
-            keyValuePairs.forEach(function(keyValuePair) {
+            keyValuePairs.forEach(function (keyValuePair) {
                 var pair = keyValuePair.split('=');
 
                 if (pair.length !== 2) {
@@ -42,7 +45,7 @@
     </script>
     <meta charset="UTF-8">
     <title>Yo!</title>
-    <base href="/labeling/" />
+    <base href="/labeling/"/>
     <link rel="stylesheet" type="text/css" href="Styles/main.min.css">
 </head>
 <body>

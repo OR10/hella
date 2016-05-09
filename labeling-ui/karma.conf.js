@@ -15,7 +15,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jspm', 'jasmine'],
+    frameworks: ['jspm', 'jasmine', 'environment'],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
