@@ -6,6 +6,7 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
+import Environment from '../../Common/Support/Environment';
 
 /**
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
@@ -634,8 +635,23 @@ class ViewerController {
   }
 
   _resize() {
-    const viewerHeight = this._$element.outerHeight(true);
-    const viewerWidth = this._$element.outerWidth(true);
+    let viewerHeight = this._$element.outerHeight(true);
+    let viewerWidth = this._$element.outerWidth(true);
+
+    /* *****************************************************************
+     * START: Only executable in e2e tests
+     * *****************************************************************/
+    // Allow enforcement of viewer dimensions during tests
+    if (Environment.isTesting && window.__TEST_OPTIONS !== undefined) {
+      if (window.__TEST_OPTIONS.viewerWidth !== undefined &&
+        window.__TEST_OPTIONS.viewerHeight !== undefined) {
+        viewerWidth = parseInt(window.__TEST_OPTIONS.viewerWidth, 10);
+        viewerHeight = parseInt(window.__TEST_OPTIONS.viewerHeight, 10);
+      }
+    }
+    /* *****************************************************************
+     * END: Only executable in e2e tests
+     * *****************************************************************/
 
     const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
     const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;

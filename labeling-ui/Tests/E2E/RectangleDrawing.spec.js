@@ -2,6 +2,7 @@ import mock from 'protractor-http-mock';
 import ViewerDataManager from '../Support/ViewerDataManager';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import CoordinatesTransformer from '../Support/CoordinatesTransformer';
+import UrlBuilder from '../Support/UrlBuilder';
 import {getMockRequestsMade} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -11,7 +12,7 @@ describe('Rectangle drawing', () => {
   let assets;
   let sharedMocks;
   let coords;
-
+  let builder;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -33,6 +34,11 @@ describe('Rectangle drawing', () => {
     coords = new CoordinatesTransformer({
       width: 1024,
       height: 620,
+    });
+
+    builder = new UrlBuilder({
+      viewerWidth: 2048,
+      viewerHeight: 1240,
     });
   });
 
