@@ -310,6 +310,7 @@ class Init extends Base
                 'example.avi',
                 'Example Project',
                 $path,
+                null,
                 $lossless,
                 0,
                 true,
