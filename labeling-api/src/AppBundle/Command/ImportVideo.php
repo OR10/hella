@@ -29,6 +29,7 @@ class ImportVideo extends Base
         $this->setName('annostation:import:video')
             ->setDescription('Import a video from a filename')
             ->addArgument('file', Input\InputArgument::REQUIRED, 'Path to the video file.')
+            ->addArgument('projectName', Input\InputArgument::REQUIRED, 'Project Name')
             ->addOption(
                 'chunk-size',
                 0,
@@ -51,21 +52,37 @@ class ImportVideo extends Base
 
         try {
             $stream    = fopen($filename, 'r+');
+            $info      = pathinfo($filename);
             $videoName = basename($filename);
-            $tasks     = $this->videoImporterService->import(
+
+            $calibrationFilePath = null;
+            if (is_file($info['dirname'] . '/' . basename($filename, '.' . $info['extension']) . '.csv')) {
+                $calibrationFilePath = $info['dirname'] . '/' . basename($filename, '.' . $info['extension']) . '.csv';
+            }
+
+            $labelInstructions = array(
+                array(
+                    'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
+                    'drawingTool' => 'pedestrian',
+                )
+            );
+
+            $tasks = $this->videoImporterService->import(
                 $videoName,
+                $input->getArgument('projectName'),
                 $filename,
+                $calibrationFilePath,
                 $input->getOption('lossless'),
                 $input->getOption('chunk-size'),
                 true,
-                true,
-                true,
-                false
+                false,
+                $labelInstructions
             );
 
             if (count($tasks) > 0) {
                 $this->writeInfo($output, "VideoId: <comment>{$tasks[0]->getVideoId()}</>");
             }
+
 
             foreach ($tasks as $task) {
                 $this->writeInfo($output, "Task type: <comment> {$task->getTaskType()}</>");

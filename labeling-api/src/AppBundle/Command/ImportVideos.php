@@ -10,17 +10,10 @@ use Symfony\Component\Console\Output;
 
 class ImportVideos extends Base
 {
-    const HTTP_HOST = 'https://192.168.222.20';
-    const API_KEY   = '37b51d194a7513e45b56f6524f2d51f2';
     /**
      * @var Service\VideoImporter
      */
     private $videoImporterService;
-
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    private $httpClient;
 
     /**
      * @param Service\VideoImporter $videoImporterService
@@ -37,94 +30,77 @@ class ImportVideos extends Base
             ->setDescription('Import a list of videos')
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
             ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
-            ->addArgument('host', Input\InputArgument::OPTIONAL, 'Host address', self::HTTP_HOST)
-            ->addArgument('apiKey', Input\InputArgument::OPTIONAL, 'Users api token', self::API_KEY)
             ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
-            ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
-            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
+            ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 1)
+            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 1)
             ->addArgument('drawingToolPerson', Input\InputArgument::OPTIONAL, 'Video person drawing tool', 'pedestrian')
             ->addArgument('drawingToolCyclist', Input\InputArgument::OPTIONAL, 'Video cyclist drawing tool', 'rectangle')
             ->addArgument('drawingToolIgnore', Input\InputArgument::OPTIONAL, 'Video ignore drawing tool', 'rectangle')
             ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22)
-            ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 1);
+            ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 16);
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
-        $this->httpClient = new \GuzzleHttp\Client([
-            'base_uri' => $input->getArgument('host'),
-        ]);
         $videoDirectory = $input->getArgument('directory');
 
-        foreach (glob($videoDirectory . '/*') as $videoFile) {
+        foreach (glob($videoDirectory . '/*.mp4') as $videoFile) {
             $this->writeInfo(
                 $output,
                 "Uploading video <comment>" . $videoFile . "</comment>"
             );
-            $response = $this->httpClient->request(
-                'POST',
-                sprintf('/upload?apikey=%s', $input->getArgument('apiKey')),
-                [
-                    'verify' => false,
-                    'multipart' => [
-                        [
-                            'name' => 'project',
-                            'contents' => (string) $input->getArgument('project')
-                        ],                        [
-                            'name' => 'splitLength',
-                            'contents' => (string) $input->getArgument('splitLength')
-                        ],
-                        [
-                            'name' => 'frameStepSize',
-                            'contents' => (string) $input->getArgument('frameStepSize')
-                        ],
-                        [
-                            'name' => 'startFrame',
-                            'contents' => (string) $input->getArgument('startFrame')
-                        ],
-                        [
-                            'name' => 'object-labeling',
-                            'contents' => '1'
-                        ],
-                        [
-                            'name' => 'person',
-                            'contents' => '1'
-                        ],
-                        [
-                            'name' => 'drawingToolPerson',
-                            'contents' => (string) $input->getArgument('drawingToolPerson')
-                        ],
-                        [
-                            'name' => 'cyclist',
-                            'contents' => '1'
-                        ],
-                        [
-                            'name' => 'drawingToolCyclist',
-                            'contents' => (string) $input->getArgument('drawingToolCyclist')
-                        ],
-                        [
-                            'name' => 'ignore',
-                            'contents' => '1'
-                        ],
-                        [
-                            'name' => 'drawingToolIgnore',
-                            'contents' => (string) $input->getArgument('drawingToolIgnore')
-                        ],
-                        [
-                            'name' => 'pedestrianMinimalHeight',
-                            'contents' => (string) $input->getArgument('pedestrianMinimalHeight')
-                        ],
-                        [
-                            'name' => 'overflow',
-                            'contents' => (string) $input->getArgument('overflow')
-                        ],
-                        [
-                            'name' => 'file',
-                            'contents' => fopen($videoFile, 'r')
-                        ],
-                    ]
-                ]
+
+            $info           = pathinfo($videoFile);
+            $calibrationFilePath = null;
+            if (is_file($info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '.csv')) {
+                $calibrationFilePath = $info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '.csv';
+            }
+
+            //Label instructions
+            $labelInstructions = array(
+                array(
+                    'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
+                    'drawingTool' => $input->getArgument('drawingToolPerson'),
+                ),
+                array(
+                    'instruction' => Model\LabelingTask::INSTRUCTION_CYCLIST,
+                    'drawingTool' => $input->getArgument('drawingToolCyclist'),
+                ),
+                array(
+                    'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
+                    'drawingTool' => $input->getArgument('drawingToolIgnore'),
+                ),
             );
+
+            $drawingToolOptions = array(
+                'pedestrian' => array(
+                    'minimalHeight' => $input->getArgument('pedestrianMinimalHeight'),
+                ),
+            );
+
+            $tasks = $this->videoImporterService->import(
+                basename($videoFile),
+                $input->getArgument('project'),
+                $videoFile,
+                $calibrationFilePath,
+                false,
+                $input->getArgument('splitLength'),
+                true,
+                false,
+                $labelInstructions,
+                $input->getArgument('overflow'),
+                $drawingToolOptions,
+                $input->getArgument('frameStepSize'),
+                $input->getArgument('startFrame')
+            );
+
+            foreach($tasks as $task) {
+                $this->writeInfo(
+                    $output,
+                    "Added New Task: <comment>" . $task->getId() . "</comment> assigned Video:" .  $task->getVideoId()
+                );
+            }
+            $this->writeInfo($output, "---------------------------");
         }
     }
 }
