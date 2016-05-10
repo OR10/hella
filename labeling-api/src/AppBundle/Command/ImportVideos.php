@@ -52,8 +52,8 @@ class ImportVideos extends Base
 
             $info           = pathinfo($videoFile);
             $calibrationFilePath = null;
-            if (is_file($info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '.csv')) {
-                $calibrationFilePath = $info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '.csv';
+            if (is_file($info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '_calib.csv')) {
+                $calibrationFilePath = $info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '_calib.csv';
             }
 
             //Label instructions
