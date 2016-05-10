@@ -61,6 +61,7 @@
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
             <argument type="service" id="annostation.labeling_api.service.label_structure" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+        <service id="annostation.labeling_api.service.calibration_file_converter" class="AppBundle\Service\CalibrationFileConverter">
         </service>
 
         <service id="annostation.labeling_api.service.label_structure" class="AppBundle\Service\LabelStructure">
