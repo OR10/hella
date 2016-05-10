@@ -23,6 +23,7 @@ class annostation_base(
     }
 
     $packages = [
+        'ack-grep',
         'ant',
         'git',
         'htop',
