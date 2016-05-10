@@ -54,7 +54,9 @@ class Interpolation extends WorkerPool\JobInstruction
 
         $labeledThing = $this->labeledThingFacade->find($job->getLabeledThingId());
 
-        // TODO: throw exception if labeledThing could not be found
+        if ($labeledThing === null) {
+            throw new \RuntimeException("LabeledThing not found");
+        }
 
         // TODO: throw exception if status could not be found? or at least log sth about it?
         $status = $job->getStatusId() !== null
