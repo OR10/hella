@@ -96,6 +96,7 @@ class Index extends Base
          * @var UploadedFile $file
          */
         $file               = $request->files->get('file');
+        $calibrationFile    = $request->files->get('calibrationFile');
         $projectName        = $request->request->get('project');
         $splitLength        = $request->request->getInt('splitLength', 0);
         $lossless           = $request->request->get('lossless', false);
@@ -162,6 +163,7 @@ class Index extends Base
                 $file->getClientOriginalName(),
                 $projectName,
                 $file,
+                $calibrationFile,
                 $lossless,
                 $splitLength,
                 $objectLabeling,

@@ -45,17 +45,22 @@ class VideoImporter
      * @var WorkerPool\Facade
      */
     private $facadeAMQP;
+    
+    /**
+     * @var CalibrationFileConverter
+     */
+    private $calibrationFileConverter;
 
     /**
-     * @param Facade\Project               $projectFacade
-     * @param Facade\Video                 $videoFacade
-     * @param Facade\LabelingTask          $labelingTaskFacade
+     * @param Facade\Project $projectFacade
+     * @param Facade\Video $videoFacade
+     * @param Facade\LabelingTask $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
-     * @param Video\VideoFrameSplitter     $frameCdnSplitter
-     * @param Service\LabelStructure       $labelStructureService
-     * @param WorkerPool\Facade            $facadeAMQP
+     * @param Video\VideoFrameSplitter $frameCdnSplitter
+     * @param Service\LabelStructure $labelStructureService
+     * @param WorkerPool\Facade $facadeAMQP
      *
-     * @internal param Facade\Project $project
+     * @param CalibrationFileConverter $calibrationFileConverter
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -64,7 +69,8 @@ class VideoImporter
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
         Service\LabelStructure $labelStructureService,
-        WorkerPool\Facade $facadeAMQP
+        WorkerPool\Facade $facadeAMQP,
+        Service\CalibrationFileConverter $calibrationFileConverter
     ) {
         $this->projectFacade         = $projectFacade;
         $this->videoFacade           = $videoFacade;
@@ -73,31 +79,33 @@ class VideoImporter
         $this->labelingTaskFacade    = $labelingTaskFacade;
         $this->labelStructureService = $labelStructureService;
         $this->facadeAMQP            = $facadeAMQP;
+        $this->calibrationFileConverter = $calibrationFileConverter;
     }
 
     /**
-     * @param string   $name The name for the video (usually the basename).
-     * @param string   $projectName
-     * @param string   $path The filesystem path to the video file.
-     * @param bool     $lossless Wether or not the UI should use lossless compressed images.
-     * @param int      $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param bool     $isObjectLabeling
-     * @param bool     $isMetaLabeling
-     * @param array    $labelInstructions
+     * @param string $name The name for the video (usually the basename).
+     * @param string $projectName
+     * @param string $path The filesystem path to the video file.
+     * @param $calibrationFile
+     * @param bool $lossless Wether or not the UI should use lossless compressed images.
+     * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param bool $isObjectLabeling
+     * @param bool $isMetaLabeling
+     * @param array $labelInstructions
      * @param int|null $minimalVisibleShapeOverflow
-     * @param array    $drawingToolOptions
-     * @param int      $frameSkip
-     * @param int      $startFrame
+     * @param array $drawingToolOptions
+     * @param int $frameSkip
+     * @param int $startFrame
      *
      * @return Model\LabelingTask[]
      * @throws Video\Exception\MetaDataReader
      * @throws \Exception
-     * @internal param null|string $drawingTool
      */
     public function import(
         $name,
         $projectName,
         $path,
+        $calibrationFile,
         $lossless = false,
         $splitLength = 0,
         $isObjectLabeling,
@@ -110,6 +118,14 @@ class VideoImporter
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
+        if ($calibrationFile !== null) {
+            $this->calibrationFileConverter->setCalibrationData($calibrationFile);
+            $video->setRawCalibration($this->calibrationFileConverter->getRawData());
+            $video->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+            $video->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+            $video->setTranslation($this->calibrationFileConverter->getTranslation());
+            $video->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+        }
         $this->videoFacade->save($video, $path);
 
         $project = $this->projectFacade->findByName($projectName);
