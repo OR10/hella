@@ -208,6 +208,7 @@ class VideoImporterTest extends Tests\KernelTestCase
             'testVideo',
             'testProject',
             $this->getTestVideoPath(),
+            null,
             false,
             $chunkSizeInSeconds,
             true,
