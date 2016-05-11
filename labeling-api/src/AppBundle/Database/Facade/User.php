@@ -77,7 +77,8 @@ class User
      */
     public function deleteUser(Model\User $user)
     {
-        $this->userManager->deleteUser($user);
+        $user->setLocked(true);
+        $this->userManager->updateUser($user);
 
         return true;
     }
@@ -105,7 +106,16 @@ class User
      */
     public function getUserList()
     {
-        return $this->userManager->findUsers();
+        return array_filter(
+            $this->userManager->findUsers(),
+            function(Model\User $user) {
+                if ($user->isLocked()) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
     }
 
     /**
