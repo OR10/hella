@@ -40,7 +40,7 @@ exports.config = {
 
   specs: ['Tests/E2E/**/*.spec.js'],
   mocks: {
-    dir: 'Tests/ProtractorMocks'
+    dir: 'Tests/ProtractorMocks',
   },
 };
 
@@ -49,14 +49,11 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   exports.config.multiCapabilities = [
     {
       'browserName': 'chrome',
-      'chromeOptions': {
-      }
+      'platform': 'WINDOWS',
     },
   ];
 } else {
   exports.config.capabilities = {
     'browserName': 'chrome',
-    'chromeOptions': {
-    },
   };
 }

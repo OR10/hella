@@ -635,8 +635,14 @@ class ViewerController {
   }
 
   _resize() {
-    let viewerHeight = this._$element.outerHeight(true);
-    let viewerWidth = this._$element.outerWidth(true);
+    const viewerHeight = this._$element.outerHeight(true);
+    const viewerWidth = this._$element.outerWidth(true);
+
+    const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
+    const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;
+
+    let layerContainerWidth = fittedWidth <= viewerWidth ? fittedWidth : viewerWidth;
+    let layerContainerHeight = fittedWidth <= viewerWidth ? viewerHeight : fittedHeight;
 
     /* *****************************************************************
      * START: Only executable in e2e tests
@@ -645,20 +651,13 @@ class ViewerController {
     if (Environment.isTesting && window.__TEST_OPTIONS !== undefined) {
       if (window.__TEST_OPTIONS.viewerWidth !== undefined &&
         window.__TEST_OPTIONS.viewerHeight !== undefined) {
-        viewerWidth = parseInt(window.__TEST_OPTIONS.viewerWidth, 10);
-        viewerHeight = parseInt(window.__TEST_OPTIONS.viewerHeight, 10);
+        layerContainerWidth = parseInt(window.__TEST_OPTIONS.viewerWidth, 10);
+        layerContainerHeight = parseInt(window.__TEST_OPTIONS.viewerHeight, 10);
       }
     }
     /* *****************************************************************
      * END: Only executable in e2e tests
      * *****************************************************************/
-
-    const fittedWidth = this._contentWidth / this._contentHeight * viewerHeight;
-    const fittedHeight = this._contentHeight / this._contentWidth * viewerWidth;
-
-    const layerContainerWidth = fittedWidth <= viewerWidth ? fittedWidth : viewerWidth;
-    const layerContainerHeight = fittedWidth <= viewerWidth ? viewerHeight : fittedHeight;
-
 
     this._layerContainer.width(layerContainerWidth);
     this._layerContainer.height(layerContainerHeight);

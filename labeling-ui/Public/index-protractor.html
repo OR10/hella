@@ -7,7 +7,7 @@
     <script type="application/javascript">
         function extractHash() {
             var hash = {};
-            var keyValuePairs = window.location.hash.split('&');
+            var keyValuePairs = window.location.hash.replace(/^#/, '').split('&');
             keyValuePairs.forEach(function (keyValuePair) {
                 var pair = keyValuePair.split('=');
 
@@ -40,6 +40,7 @@
         }
 
         var hash = window.__TEST_OPTIONS = extractHash();
+        window.location.hash = '';
 
         // Simulate devicePixelRatio
         var dpr = 1;
