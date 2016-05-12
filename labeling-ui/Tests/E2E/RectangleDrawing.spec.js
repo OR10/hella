@@ -32,8 +32,8 @@ describe('Rectangle drawing', () => {
 
   it('should load and draw one rectangle', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -41,15 +41,15 @@ describe('Rectangle drawing', () => {
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
         done();
       });
   });
 
   it('should load and draw two rectangles', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -57,15 +57,15 @@ describe('Rectangle drawing', () => {
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawTwoRectangles);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawTwoRectangles);
         done();
       });
   });
 
   it('should select a rectangle', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -77,15 +77,15 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.SelectOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectOneRectangle);
         done();
       });
   });
 
   it('should select and deselect a rectangle', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -101,15 +101,15 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.SelectAndDeselectRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectAndDeselectRectangle);
         done();
       });
   });
 
   it('should deselect one and select an other rectangle', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -125,16 +125,16 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.SelectAnOtherRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectAnOtherRectangle);
         done();
       });
   });
 
   it('should correctly move a rectangle on canvas and save the changed coordinates', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -150,12 +150,12 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MoveOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.MoveOneRectangle);
         browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContain(assets.mocks.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        expect(requests).toContain(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
         done();
       });
   });
@@ -164,10 +164,10 @@ describe('Rectangle drawing', () => {
   // Might be a sizing bug…
   xit('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.ResizeOneRectangle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
+      assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -182,12 +182,12 @@ describe('Rectangle drawing', () => {
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
         // browser.pause();
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ResizeOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeOneRectangle);
         browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContain(assets.mocks.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        expect(requests).toContain(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
         done();
       });
   });
@@ -196,10 +196,10 @@ describe('Rectangle drawing', () => {
   // // Therefore the selection rendering is off and can't be properly checked.
   it('should keep the labeled thing selected over a frame change', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1,
-      assets.mocks.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingsInFrame0to4,
+      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1,
+      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -217,7 +217,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeepSelectionOverFrameChange);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.KeepSelectionOverFrameChange);
         done();
       });
   });
@@ -225,8 +225,8 @@ describe('Rectangle drawing', () => {
   // // Needs to be fixed
   xit('should correctly handle extra information in limited labeledThingInFrame request', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.IgnoreLimit.LabeledThingInFrame.frameIndex0,
-      assets.mocks.IgnoreLimit.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -234,7 +234,7 @@ describe('Rectangle drawing', () => {
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
         done();
       });
   });
