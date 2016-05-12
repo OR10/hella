@@ -535,6 +535,18 @@ class ViewerController {
     this.framePosition.afterFrameChangeAlways('disableViewer', () => {
       this._applicationState.endFrameChange();
     });
+
+    /* *****************************************************************
+     * START: Only executable in e2e tests
+     * *****************************************************************/
+    if (Environment.isTesting) {
+      this.framePosition.afterFrameChangeOnce('testSetupApplicationReady', () => {
+        window.__TEST_READY_PROMISE_RESOLVE();
+      });
+    }
+    /* *****************************************************************
+     * END: Only executable in e2e tests
+     * *****************************************************************/
   }
 
   setupLayers() {

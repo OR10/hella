@@ -1,27 +1,14 @@
 import mock from 'protractor-http-mock';
-import ViewerDataManager from '../Support/ViewerDataManager';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import CoordinatesTransformer from '../Support/CoordinatesTransformer';
-import UrlBuilder from '../Support/UrlBuilder';
-import {getMockRequestsMade} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-function waitForFrameChangeComplete() {
-  return browser.executeAsyncScript((next) => {
-    const injector = angular.element(document.body).injector();
-    const $rootScope = injector.get('$rootScope');
-
-    $rootScope.on('framechange:after', () => next());
-  });
-}
-
 describe('Rectangle drawing', () => {
   let assets;
   let sharedMocks;
-  let coords;
-  let builder;
+  let viewer;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -40,15 +27,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
     ];
 
-    coords = new CoordinatesTransformer({
-      width: 1024,
-      height: 620,
-    });
-
-    builder = new UrlBuilder({
-      viewerWidth: 1024,
-      viewerHeight: 620,
-    });
+    viewer = element(by.css('.layer-container'));
   });
 
   it('should load and draw one rectangle', (done) => {
@@ -56,12 +35,15 @@ describe('Rectangle drawing', () => {
       assets.mocks.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
     ]));
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
 
-    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
-      done();
-    });
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        () => canvasInstructionLogManager.getCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
+        done();
+      });
   });
 
   it('should load and draw two rectangles', (done) => {
@@ -69,9 +51,11 @@ describe('Rectangle drawing', () => {
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
 
-    canvasInstructionLogManager.getCanvasLogs()
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        () => canvasInstructionLogManager.getCanvasLogs()
+      )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawTwoRectangles);
         done();
@@ -84,12 +68,10 @@ describe('Rectangle drawing', () => {
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
-
-    coords.autoSetViewerDimensions()
-      .then(({viewer, viewerDimensions}) => {
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
       })
@@ -105,16 +87,15 @@ describe('Rectangle drawing', () => {
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
 
-    coords.autoSetViewerDimensions()
-      .then(({viewer, viewerDimensions}) => {
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(1, 1))
+          .mouseMove(viewer, {x: 1, y: 1})
           .click()
           .perform();
       })
@@ -130,16 +111,15 @@ describe('Rectangle drawing', () => {
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
 
-    coords.autoSetViewerDimensions()
-      .then(({viewer, viewerDimensions}) => {
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(300, 150)) // initial position
+          .mouseMove(viewer, {x: 300, y: 150}) // initial position
           .click()
           .perform();
       })
@@ -156,16 +136,15 @@ describe('Rectangle drawing', () => {
       assets.mocks.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
 
-    coords.autoSetViewerDimensions()
-      .then(({viewer, viewerDimensions}) => {
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .mouseDown()
-          .mouseMove(viewer, coords.toViewer(110, 130)) // drag
+          .mouseMove(viewer, {x: 110, y: 130}) // drag
           .mouseUp()
-          .mouseMove(viewer, coords.toViewer(1, 1)) // click somewhere outside to deselect element
+          .mouseMove(viewer, {x: 1, y: 1}) // click somewhere outside to deselect element
           .click()
           .perform();
       })
@@ -190,14 +169,13 @@ describe('Rectangle drawing', () => {
       assets.mocks.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
       assets.mocks.ResizeOneRectangle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
 
-    coords.autoSetViewerDimensions()
-      .then(({viewer, viewerDimensions}) => {
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(200, 200)) // bottom right drag handle
+          .mouseMove(viewer, {x: 200, y: 200}) // bottom right drag handle
           .mouseDown()
-          .mouseMove(viewer, coords.toViewer(300, 300)) // drag
+          .mouseMove(viewer, {x: 300, y: 300}) // drag
           .mouseUp()
           .perform();
       })
@@ -224,14 +202,12 @@ describe('Rectangle drawing', () => {
       assets.mocks.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        const nextFrameButton = element(by.css('.next-frame-button'));
 
-    const nextFrameButton = element(by.css('.next-frame-button'));
-
-    coords.autoSetViewerDimensions()
-      .then(({viewer, viewerDimensions}) => {
         browser.actions()
-          .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
 
@@ -253,12 +229,14 @@ describe('Rectangle drawing', () => {
       assets.mocks.IgnoreLimit.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    browser.get(builder.url('/labeling/task/TASKID-TASKID'));
-
-    canvasInstructionLogManager.getCanvasLogs().then((drawingStack) => {
-      expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
-      done();
-    });
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        () => canvasInstructionLogManager.getCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.LoadAndDrawOneRectangle);
+        done();
+      });
   });
 
 

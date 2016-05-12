@@ -42,6 +42,11 @@
         var hash = window.__TEST_OPTIONS = extractHash();
         window.location.hash = '';
 
+        // Prepare ready promise
+        window.__TEST_READY_PROMISE = new Promise(function (resolve) {
+            window.__TEST_READY_PROMISE_RESOLVE = resolve;
+        });
+
         // Simulate devicePixelRatio
         var dpr = 1;
         if (hash['devivePixelRatio'] !== undefined) {
