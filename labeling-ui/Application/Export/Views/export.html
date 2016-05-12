@@ -7,7 +7,7 @@
                show-logout-button="true"
     >
         <a class="header-button" ng-click="vm.startExport('kitti')">Start new Kitti Export</a>
-        <a class="header-button" ng-show="(vm.task.labelInstruction === 'vehicle') || (vm.task.labelInstruction === 'person')" ng-click="vm.startExport('csv')">Start new Csv Export</a>
+        <!-- <a class="header-button" ng-show="(vm.task.labelInstruction === 'vehicle') || (vm.task.labelInstruction === 'person')" ng-click="vm.startExport('csv')">Start new Csv Export</a> -->
     </title-bar>
 
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
