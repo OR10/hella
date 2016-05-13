@@ -1,4 +1,5 @@
 import Module from '../Module';
+import Projection2d from './Services/Projection2d';
 
 /**
  * ThirdDimension Module
@@ -13,6 +14,8 @@ class ThirdDimension extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.ThirdDimension', []);
+    
+    this.module.service('Projection2dService', Projection2d);
   }
 }
 
