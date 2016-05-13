@@ -118,6 +118,7 @@
       "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
       "raf": "npm:raf@^3.1.0",
       "splitjs": "github:nathancahill/Split.js@^1.0.6",
+      "three-math": "npm:three-math@^0.69.0",
       "uuid": "npm:uuid@^2.0.1",
       "v-accordion": "npm:v-accordion@^1.4.1"
     },
