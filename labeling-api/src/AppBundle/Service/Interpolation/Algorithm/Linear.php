@@ -154,6 +154,8 @@ class Linear implements Interpolation\Algorithm
             return $this->interpolateEllipse($current, $end, $steps);
         case Shapes\Pedestrian::class:
             return $this->interpolatePedestrian($current, $end, $steps);
+        case Shapes\Cuboid3d::class:
+            return $this->interpolateCuboid3d($current, $end, $steps);
         }
 
         throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
@@ -211,5 +213,42 @@ class Linear implements Interpolation\Algorithm
             $current->getBottomCenterX() + ($end->getBottomCenterX() - $current->getBottomCenterX()) / $steps,
             $current->getBottomCenterY() + ($end->getBottomCenterY() - $current->getBottomCenterY()) / $steps
         );
+    }
+
+    /**
+     * @param Shapes\Cuboid3d|Shapes\Pedestrian $current
+     * @param Shapes\Cuboid3d|Shapes\Pedestrian $end
+     * @param $steps
+     *
+     * @return Shapes\Pedestrian
+     */
+    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps)
+    {
+        return new Shapes\Cuboid3d(
+            $current->getId(),
+            $this->cuboid3dCalculator($current->getFrontTopLeft(), $end->getFrontTopLeft() , $steps),
+            $this->cuboid3dCalculator($current->getFrontTopRight(), $end->getFrontTopRight() , $steps),
+            $this->cuboid3dCalculator($current->getFrontBottomRight(), $end->getFrontBottomRight() , $steps),
+            $this->cuboid3dCalculator($current->getFrontBottomLeft(), $end->getFrontBottomLeft() , $steps),
+            $this->cuboid3dCalculator($current->getBackTopLeft(), $end->getBackTopLeft() , $steps),
+            $this->cuboid3dCalculator($current->getBackTopRight(), $end->getBackTopRight() , $steps),
+            $this->cuboid3dCalculator($current->getBackBottomRight(), $end->getBackBottomRight() , $steps),
+            $this->cuboid3dCalculator($current->getBackTopLeft(), $end->getBackTopLeft() , $steps)
+        );
+    }
+
+    /**
+     * @param $currentPoint
+     * @param $endPoint
+     * @param $steps
+     * @return array
+     */
+    private function cuboid3dCalculator($currentPoint, $endPoint, $steps)
+    {
+        return [
+            $currentPoint[0] + ($endPoint[0] - $currentPoint[0]) / $steps,
+            $currentPoint[1] + ($endPoint[1] - $currentPoint[1]) / $steps,
+            $currentPoint[2] + ($endPoint[2] - $currentPoint[2]) / $steps,
+        ];
     }
 }

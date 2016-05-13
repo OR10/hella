@@ -428,6 +428,112 @@ class LinearTest extends Tests\KernelTestCase
         $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
     }
 
+    public function testCuboid3dInterpolation()
+    {
+        $thing         = $this->createLabeledThing();
+        $thingsInFrame = [
+            $this->createLabeledThingInFrame(
+                $thing,
+                1,
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [5, 5, 5],
+                        [10, 20, 30],
+                        [1, 20, 20],
+                        [30, 30, 30],
+                        [40, 40, 40],
+                        [50, 50, 50],
+                        [60, 60, 60],
+                        [70, 70, 70]
+                    ),
+                ]
+            ),
+            $this->createLabeledThingInFrame(
+                $thing,
+                3,
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [50, 50, 50],
+                        [100, 100, 100],
+                        [200, 200, 200],
+                        [300, 300, 300],
+                        [400, 400, 400],
+                        [500, 500, 500],
+                        [600, 600, 600],
+                        [700, 700, 700]
+                    ),
+                ]
+            )
+        ];
+
+        $emitted = [];
+
+        $this->algorithm->interpolate(
+            $thing,
+            new Model\FrameIndexRange(1, 3),
+            function (Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
+                $emitted[] = $emittedLabeledThingInFrame;
+            }
+        );
+
+        $expected = [
+            new Model\LabeledThingInFrame(
+                $thing, 1, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [5, 5, 5],
+                        [10, 20, 30],
+                        [1, 20, 20],
+                        [30, 30, 30],
+                        [40, 40, 40],
+                        [50, 50, 50],
+                        [60, 60, 60],
+                        [70, 70, 70]
+                    )
+                ]
+            )
+            ),
+            new Model\LabeledThingInFrame(
+                $thing, 2, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [27.5, 27.5, 27.5],
+                        [55, 60, 65],
+                        [100.5, 110, 110],
+                        [165, 165, 165],
+                        [220, 220, 220],
+                        [275, 275, 275],
+                        [330, 330, 330],
+                        [220, 220, 220]
+                    )
+                ]
+            )
+            ),
+            new Model\LabeledThingInFrame(
+                $thing, 3, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [50, 50, 50],
+                        [100, 100, 100],
+                        [200, 200, 200],
+                        [300, 300, 300],
+                        [400, 400, 400],
+                        [500, 500, 500],
+                        [600, 600, 600],
+                        [700, 700, 700]
+                    )
+                ]
+            )
+            ),
+        ];
+        $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
+    }
+
     private function assertLabeledThingsInFrameAreEqual(array $expected, array $actual)
     {
         $this->assertEquals($this->createComparableArray($expected), $this->createComparableArray($actual));

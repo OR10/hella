@@ -16,6 +16,7 @@ abstract class Shape
         'ellipse' => Shapes\Ellipse::class,
         'polygon' => Shapes\Polygon::class,
         'pedestrian' => Shapes\Pedestrian::class,
+        'cuboid3d' => Shapes\Cuboid3d::class,
     ];
 
     public static function createFromArray(array $shapeAsArray)
