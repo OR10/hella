@@ -31,3 +31,10 @@
  * @name Video#imageTypeConvertedStatus
  * @type {Object}
  */
+
+/**
+ * Camera calibration information, if available
+ * 
+ * @name Video#calibration
+ * @type {CameraCalibration|undefined}
+ */
