@@ -1,5 +1,5 @@
 import {Vector4, Matrix4} from 'three-math';
-import {clone} from 'lodash.clone';
+import clone from 'lodash.clone';
 
 /**
  * Camera calibration information associated with a certain {@link Video}
@@ -9,12 +9,14 @@ class CameraCalibration {
     /**
      * @type {Matrix4}
      */
-    this.cameraMatrix = new Matrix4(...calibrationObject.cameraMatrix);
+    this.cameraMatrix = new Matrix4();
+    this.cameraMatrix.set(...calibrationObject.cameraMatrix);
 
     /**
      * @type {Matrix4}
      */
-    this.rotationMatrix = new Matrix4(...calibrationObject.rotationMatrix);
+    this.rotationMatrix = new Matrix4();
+    this.rotationMatrix.set(...calibrationObject.rotationMatrix);
 
     /**
      * @type {Vector4}
