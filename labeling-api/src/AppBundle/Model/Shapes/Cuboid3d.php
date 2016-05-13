@@ -58,10 +58,10 @@ class Cuboid3d extends Model\Shape
         array $frontTopRight,
         array $frontBottomRight,
         array $frontBottomLeft,
-        array $backTopLeft,
-        array $backTopRight,
-        array $backBottomRight,
-        array $backBottomLeft
+        $backTopLeft,
+        $backTopRight,
+        $backBottomRight,
+        $backBottomLeft
     )
     {
         $this->id = $id;

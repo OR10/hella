@@ -245,6 +245,9 @@ class Linear implements Interpolation\Algorithm
      */
     private function cuboid3dCalculator($currentPoint, $endPoint, $steps)
     {
+        if ($currentPoint === null && $endPoint === null) {
+            return null;
+        }
         return [
             $currentPoint[0] + ($endPoint[0] - $currentPoint[0]) / $steps,
             $currentPoint[1] + ($endPoint[1] - $currentPoint[1]) / $steps,
