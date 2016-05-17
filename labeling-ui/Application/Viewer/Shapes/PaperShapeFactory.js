@@ -54,7 +54,7 @@ class PaperShapeFactory {
    */
   _createCuboid(labeledThingInFrame, shape, color, video) {
     const projection = new Projection(video.calibration);
-    const depthBuffer = new DepthBuffer(video, projection);
+    const depthBuffer = new DepthBuffer(projection);
 
     return new PaperCuboid(labeledThingInFrame, shape.id, depthBuffer, shape.vehicleCoordinates, color);
   }

@@ -2,16 +2,9 @@ import {Vector4} from 'three-math';
 
 class DepthBuffer {
   /**
-   * @param {Video} video
    * @param {Projection2d} projection2d
    */
-  constructor(video, projection2d) {
-    /**
-     * @type {Video}
-     * @private
-     */
-    this._video = video;
-
+  constructor(projection2d) {
     /**
      * @type {Projection2d}
      * @private
