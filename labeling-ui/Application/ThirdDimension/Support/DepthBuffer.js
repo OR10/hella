@@ -1,4 +1,4 @@
-import Vector4 from 'three-math';
+import {Vector4} from 'three-math';
 
 class DepthBuffer {
   /**
@@ -51,7 +51,7 @@ class DepthBuffer {
     const maxDepthOfThisFace = Math.max(...depthOfThisFace);
     const maxDepthOfThatFace = Math.max(...depthOfThatFace);
 
-    if (maxDepthOfThisFace > maxDepthOfThatFace) {
+    if (maxDepthOfThisFace < maxDepthOfThatFace) {
       return -1;
     } else if (maxDepthOfThisFace === maxDepthOfThatFace) {
       return 0;
@@ -106,3 +106,5 @@ class DepthBuffer {
     return pixel[0] !== 0 && pixel[1] !== 0 && pixel[2] !== 0;
   }
 }
+
+export default DepthBuffer;
