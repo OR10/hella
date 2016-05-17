@@ -448,7 +448,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
   _addShape(labeledThingInFrame, shape, selected = false, update = true) {
     return this._context.withScope(() => {
       const paperShape = this._paperShapeFactory.createPaperShape(labeledThingInFrame, shape, this._$scope.vm.video);
-      console.log(paperShape);
 
       if (selected) {
         this._$scope.vm.selectedPaperShape = paperShape;
