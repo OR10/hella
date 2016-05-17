@@ -6,12 +6,12 @@ class PaperCuboid extends PaperShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
-   * @param {Projection2d} projection
+   * @param {DepthBuffer} depthBuffer
    * @param {Array} cuboid3dPoints
    * @param {String} color
    * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, projection, cuboid3dPoints, color, draft) {
+  constructor(labeledThingInFrame, shapeId, depthBuffer, cuboid3dPoints, color, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     /**
@@ -27,10 +27,10 @@ class PaperCuboid extends PaperShape {
     this._isSelected = false;
 
     /**
-     * @type {Projection2d}
+     * @type {DepthBuffer}
      * @private
      */
-    this._projection = projection;
+    this._depthBuffer = depthBuffer;
 
     /**
      * @type {Array.<paper.Path>}
@@ -78,17 +78,22 @@ class PaperCuboid extends PaperShape {
       {from: 3, to: 6}, // Front bottom left -> back bottom right
     ];
 
+    const projectedVertices = this._depthBuffer.projectCuboidWithDepth(cuboid3dPoints);
+
     return edgeIndices.map((edgePointIndex) => {
-      const from = this._vectorToPaperPoint(this._projection.project3dTo2d(cuboid3dPoints[edgePointIndex.from]));
-      const to = this._vectorToPaperPoint(this._projection.project3dTo2d(cuboid3dPoints[edgePointIndex.to]));
+      const from = projectedVertices[edgePointIndex.from];
+      const to = projectedVertices[edgePointIndex.to];
+
+      const hidden = (from.hidden || to.hidden);
 
       return new paper.Path.Line({
-        from: from,
-        to: to,
+        from: this._vectorToPaperPoint(from.vertex),
+        to: this._vectorToPaperPoint(to.vertex),
         strokeColor: this._color,
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
+        dashArray: hidden ? [2, 2] : [],
       });
     });
   }
