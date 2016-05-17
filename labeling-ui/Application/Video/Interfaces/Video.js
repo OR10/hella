@@ -21,7 +21,7 @@
 /**
  * The metadata of the Video
  *
- * @name Video#metadata
+ * @name Video#metaData
  * @type {Object}
  */
 
