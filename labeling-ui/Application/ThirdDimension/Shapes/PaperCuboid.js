@@ -89,7 +89,6 @@ class PaperCuboid extends PaperShape {
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
-        dashArray: PaperCuboid.DASH,
       });
     });
   }
@@ -98,33 +97,8 @@ class PaperCuboid extends PaperShape {
    * @param {THREE.Vector3} vector
    * @private
    */
-  static _vectorToPaperPoint(vector) {
+  _vectorToPaperPoint(vector) {
     return new paper.Point(vector.x, vector.y);
-  }
-
-  /**
-   * Overwrite the `hasFill` for this group to ensure a hitTest matches :>
-   *
-   * @returns {boolean}
-   */
-  hasFill() {
-    // TODO: Implement
-  }
-
-  /**
-   * Select the shape
-   *
-   * @param {Boolean} handles
-   */
-  select(handles = true) {
-    // TODO: Implement
-  }
-
-  /**
-   * Select the shape
-   */
-  deselect() {
-    // TODO: Implement
   }
 
   /**
