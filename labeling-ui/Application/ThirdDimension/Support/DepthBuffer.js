@@ -68,23 +68,34 @@ class DepthBuffer {
       )
     );
 
-    const minMaxFaces2d = faces2d.map(vertices => [
-      [
-        Math.min(...vertices.map(v => v.x)),
-        Math.max(...vertices.map(v => v.x)),
-      ],
-      [
-        Math.min(...vertices.map(v => v.y)),
-        Math.max(...vertices.map(v => v.y)),
-      ],
-    ]);
+    const minMaxFaces2d = {
+      x: {
+        min: Infinity,
+        max: -Infinity,
+      },
+      y: {
+        min: Infinity,
+        max: -Infinity,
+      },
+    };
 
-    const offsetX = minMaxFaces2d[0][0] * -1;
-    const offsetY = minMaxFaces2d[1][0] * -1;
+    faces2d.forEach(
+      vertices => vertices.forEach(
+        vertex => {
+          minMaxFaces2d.x.min = Math.min(minMaxFaces2d.x.min, vertex.x);
+          minMaxFaces2d.x.max = Math.max(minMaxFaces2d.x.max, vertex.x);
+          minMaxFaces2d.y.min = Math.min(minMaxFaces2d.y.min, vertex.y);
+          minMaxFaces2d.y.max = Math.max(minMaxFaces2d.y.max, vertex.y);
+        }
+      )
+    );
+
+    const offsetX = minMaxFaces2d.x.min * -1;
+    const offsetY = minMaxFaces2d.y.min * -1;
 
     const depthBufferCanvas = document.createElement('canvas');
-    const canvasWidth = minMaxFaces2d[0][1] - minMaxFaces2d[0][0];
-    const canvasHeight = minMaxFaces2d[1][1] - minMaxFaces2d[1][0];
+    const canvasWidth = minMaxFaces2d.x.max - minMaxFaces2d.x.min;
+    const canvasHeight = minMaxFaces2d.y.max - minMaxFaces2d.y.min;
 
     if (canvasWidth > 8192 || canvasHeight > 8192) {
       throw new Error('Depth buffer needs to be bigger than 8192x8192 pixels. Most likely the cuboid definition or camera calibration is broken!');
