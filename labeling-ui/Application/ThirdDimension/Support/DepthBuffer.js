@@ -61,37 +61,65 @@ class DepthBuffer {
   }
 
   _projectFacesWithDepth(faces) {
+    // Project all coordinates into 2d plane
+    const faces2d = faces.map(face =>
+      face.vertices3d.map(v =>
+        this._projection2d.project3dTo2d(v)
+      )
+    );
+
+    const minMaxFaces2d = faces2d.map(vertices => [
+      [
+        Math.min(...vertices.map(v => v.x)),
+        Math.max(...vertices.map(v => v.x)),
+      ],
+      [
+        Math.min(...vertices.map(v => v.y)),
+        Math.max(...vertices.map(v => v.y)),
+      ],
+    ]);
+
+    const offsetX = minMaxFaces2d[0][0] * -1;
+    const offsetY = minMaxFaces2d[1][0] * -1;
+
     const depthBufferCanvas = document.createElement('canvas');
-    depthBufferCanvas.setAttribute('width', this._video.metaData.width);
-    depthBufferCanvas.setAttribute('height', this._video.metaData.height);
+    const canvasWidth = minMaxFaces2d[0][1] - minMaxFaces2d[0][0];
+    const canvasHeight = minMaxFaces2d[1][1] - minMaxFaces2d[1][0];
+
+    if (canvasWidth > 8192 || canvasHeight > 8192) {
+      throw new Error('Depth buffer needs to be bigger than 8192x8192 pixels. Most likely the cuboid definition or camera calibration is broken!');
+    }
+
+    depthBufferCanvas.setAttribute('width', canvasWidth);
+    depthBufferCanvas.setAttribute('height', canvasHeight);
+
     const ctx = depthBufferCanvas.getContext('2d');
 
     ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, this._video.metaData.width, this._video.metaData.height);
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     const vertices = [];
 
-    faces.forEach(face => {
-      const vertices2d = face.vertices3d.map(v => this._projection2d.project3dTo2d(v));
+    faces2d.forEach((vertices2d, faceIndex) => {
       const hiddenVertices = vertices2d.map(
-        vertex => this._isPixelDrawn(ctx, vertex)
+        vertex => this._isPixelDrawn(ctx, vertex, offsetX, offsetY)
       );
 
-      face.order.forEach((vIndex, index) => {
-        if (vertices[vIndex] !== undefined) {
+      faces[faceIndex].order.forEach((vertexIndex, index) => {
+        if (vertices[vertexIndex] !== undefined) {
           return;
         }
 
-        vertices[vIndex] = {hidden: hiddenVertices[index], vertex: vertices2d[index]};
+        vertices[vertexIndex] = {hidden: hiddenVertices[index], vertex: vertices2d[index]};
       });
 
       // Draw the face to the depthBuffer
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.moveTo(vertices2d[0].x, vertices2d[0].y);
-      ctx.lineTo(vertices2d[1].x, vertices2d[1].y);
-      ctx.lineTo(vertices2d[2].x, vertices2d[2].y);
-      ctx.lineTo(vertices2d[3].x, vertices2d[3].y);
+      ctx.moveTo(vertices2d[0].x + offsetX, vertices2d[0].y + offsetY);
+      ctx.lineTo(vertices2d[1].x + offsetX, vertices2d[1].y + offsetY);
+      ctx.lineTo(vertices2d[2].x + offsetX, vertices2d[2].y + offsetY);
+      ctx.lineTo(vertices2d[3].x + offsetX, vertices2d[3].y + offsetY);
       ctx.closePath();
       ctx.fill();
     });
@@ -99,8 +127,8 @@ class DepthBuffer {
     return vertices;
   }
 
-  _isPixelDrawn(ctx, vertex) {
-    const imageData = ctx.getImageData(vertex.x, vertex.y, 1, 1);
+  _isPixelDrawn(ctx, vertex, offsetX = 0, offsetY = 0) {
+    const imageData = ctx.getImageData(vertex.x + offsetX, vertex.y + offsetY, 1, 1);
     const pixel = imageData.data;
 
     return pixel[0] !== 0 && pixel[1] !== 0 && pixel[2] !== 0;
