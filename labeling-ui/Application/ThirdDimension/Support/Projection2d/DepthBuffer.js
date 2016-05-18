@@ -1,44 +1,80 @@
 import {Vector4} from 'three-math';
-import Cuboid2d from '../Models/Cuboid2d';
+import Cuboid2d from '../../Models/Cuboid2d';
 
-class DepthBuffer {
+/**
+ * @implements Projection2d
+ */
+class DepthBufferProjection2d {
   /**
    * @param {Projection2d} projection2d
    */
   constructor(projection2d) {
-    /**
-     * @type {Projection2d}
-     * @private
-     */
     this._projection2d = projection2d;
   }
 
   /**
-   * @param {Cuboid3d} cuboid
+   * Project a cuboid into 2d space with depth (visibility) information
+   *
+   * @param {Cuboid3d} cuboid3d
    * @returns {Cuboid2d}
    */
-  projectCuboidWithDepth(cuboid) {
-    const faces = this._getFacesForCuboid(cuboid);
+  projectCuboidTo2d(cuboid3d) {
+    const cuboid2dWithoutDepth = this._projection2d.projectCuboidTo2d(cuboid3d);
+    const faces = this._getFacesForCuboid(cuboid2dWithoutDepth, cuboid3d);
     faces.sort(this._compareByZOrder);
+
     const [vertices, vertexVisibility] = this._projectFacesWithDepth(faces);
     return new Cuboid2d(vertices, vertexVisibility);
   }
 
   /**
-   * @param {Cuboid3d} cuboid
-   * @returns {Array}
+   * @param {Cuboid2d} cuboid2d
+   * @param {Cuboid3d} cuboid3d
+   *
    * @private
+   * @returns {Array}
    */
-  _getFacesForCuboid(cuboid) {
-    const c = cuboid.vertices;
+  _getFacesForCuboid(cuboid2d, cuboid3d) {
+    const c2 = cuboid2d.vertices;
+    const c3 = cuboid3d.vertices;
 
     const faces = [];
-    faces.push({name: 'front', vertices3d: [c[0], c[1], c[2], c[3]], order: [0, 1, 2, 3]});
-    faces.push({name: 'back', vertices3d: [c[4], c[5], c[6], c[7]], order: [4, 5, 6, 7]});
-    faces.push({name: 'left', vertices3d: [c[4], c[0], c[3], c[7]], order: [4, 0, 3, 7]});
-    faces.push({name: 'right', vertices3d: [c[5], c[1], c[2], c[6]], order: [5, 1, 2, 6]});
-    faces.push({name: 'top', vertices3d: [c[4], c[0], c[1], c[5]], order: [4, 0, 1, 5]});
-    faces.push({name: 'bottom', vertices3d: [c[7], c[6], c[2], c[0]], order: [7, 6, 2, 0]});
+    faces.push({
+      name: 'front',
+      vertices2d: [c2[0], c2[1], c2[2], c2[3]],
+      vertices3d: [c3[0], c3[1], c3[2], c3[3]],
+      order: [0, 1, 2, 3],
+    });
+    faces.push({
+      name: 'back',
+      vertices2d: [c2[4], c2[5], c2[6], c2[7]],
+      vertices3d: [c3[4], c3[5], c3[6], c3[7]],
+      order: [4, 5, 6, 7],
+    });
+    faces.push({
+      name: 'left',
+      vertices2d: [c2[4], c2[0], c2[3], c2[7]],
+      vertices3d: [c3[4], c3[0], c3[3], c3[7]],
+      order: [4, 0, 3, 7],
+    });
+    faces.push({
+      name: 'right',
+      vertices2d: [c2[5], c2[1], c2[2], c2[6]],
+      vertices3d: [c3[5], c3[1], c3[2], c3[6]],
+      order: [5, 1, 2, 6],
+    });
+    faces.push({
+      name: 'top',
+      vertices2d: [c2[4], c2[0], c2[1], c2[5]],
+      vertices3d: [c3[4], c3[0], c3[1], c3[5]],
+      order: [4, 0, 1, 5],
+    });
+    faces.push({
+      name: 'bottom',
+      vertices2d: [c2[7], c2[6], c2[2], c2[0]],
+      vertices3d: [c3[7], c3[6], c3[2], c3[0]],
+      order: [7, 6, 2, 0],
+    });
 
     return faces;
   }
@@ -60,13 +96,6 @@ class DepthBuffer {
   }
 
   _projectFacesWithDepth(faces) {
-    // Project all coordinates into 2d plane
-    const faces2d = faces.map(face =>
-      face.vertices3d.map(v =>
-        this._projection2d.project3dTo2d(v)
-      )
-    );
-
     const minMaxFaces2d = {
       x: {
         min: Infinity,
@@ -78,8 +107,8 @@ class DepthBuffer {
       },
     };
 
-    faces2d.forEach(
-      vertices => vertices.forEach(
+    faces.forEach(
+      face => face.vertices2d.forEach(
         vertex => {
           minMaxFaces2d.x.min = Math.min(minMaxFaces2d.x.min, vertex.x);
           minMaxFaces2d.x.max = Math.max(minMaxFaces2d.x.max, vertex.x);
@@ -111,27 +140,27 @@ class DepthBuffer {
     const vertices = [];
     const vertexVisibility = [];
 
-    faces2d.forEach((vertices2d, faceIndex) => {
-      const hiddenVertices = vertices2d.map(
+    faces.forEach(face => {
+      const hiddenVertices = face.vertices2d.map(
         vertex => this._isPixelDrawn(ctx, vertex, offsetX, offsetY)
       );
 
-      faces[faceIndex].order.forEach((vertexIndex, index) => {
+      face.order.forEach((vertexIndex, index) => {
         if (vertices[vertexIndex] !== undefined) {
           return;
         }
 
-        vertices[vertexIndex] = [vertices2d[index].x, vertices2d[index].y];
+        vertices[vertexIndex] = [face.vertices2d[index].x, face.vertices2d[index].y];
         vertexVisibility[vertexIndex] = !hiddenVertices[index];
       });
 
       // Draw the face to the depthBuffer
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.moveTo(vertices2d[0].x + offsetX, vertices2d[0].y + offsetY);
-      ctx.lineTo(vertices2d[1].x + offsetX, vertices2d[1].y + offsetY);
-      ctx.lineTo(vertices2d[2].x + offsetX, vertices2d[2].y + offsetY);
-      ctx.lineTo(vertices2d[3].x + offsetX, vertices2d[3].y + offsetY);
+      ctx.moveTo(face.vertices2d[0].x + offsetX, face.vertices2d[0].y + offsetY);
+      ctx.lineTo(face.vertices2d[1].x + offsetX, face.vertices2d[1].y + offsetY);
+      ctx.lineTo(face.vertices2d[2].x + offsetX, face.vertices2d[2].y + offsetY);
+      ctx.lineTo(face.vertices2d[3].x + offsetX, face.vertices2d[3].y + offsetY);
       ctx.closePath();
       ctx.fill();
     });
@@ -147,4 +176,4 @@ class DepthBuffer {
   }
 }
 
-export default DepthBuffer;
+export default DepthBufferProjection2d;

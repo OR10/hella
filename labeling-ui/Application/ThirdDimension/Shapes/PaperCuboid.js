@@ -7,12 +7,12 @@ class PaperCuboid extends PaperShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
-   * @param {DepthBuffer} depthBuffer
+   * @param {Projection2d} projection2d
    * @param {Array} cuboid3dPoints
    * @param {String} color
-   * @param {boolean} draft
+   * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, depthBuffer, cuboid3dPoints, color, draft) {
+  constructor(labeledThingInFrame, shapeId, projection2d, cuboid3dPoints, color, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     /**
@@ -28,10 +28,10 @@ class PaperCuboid extends PaperShape {
     this._isSelected = false;
 
     /**
-     * @type {DepthBuffer}
+     * @type {Projection2d}
      * @private
      */
-    this._depthBuffer = depthBuffer;
+    this._projection2d = projection2d;
 
     /**
      * @type {Array.<paper.Path>}
@@ -79,7 +79,7 @@ class PaperCuboid extends PaperShape {
       {from: 3, to: 7}, // Front bottom left -> back bottom right
     ];
 
-    const projectedCuboid = this._depthBuffer.projectCuboidWithDepth(cuboid3d);
+    const projectedCuboid = this._projection2d.projectCuboidTo2d(cuboid3d);
 
     return edgeIndices.map((edgePointIndex) => {
       const from = projectedCuboid.vertices[edgePointIndex.from];

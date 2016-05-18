@@ -1,6 +1,6 @@
 import {Vector3, Vector4, Matrix4} from 'three-math';
 
-import CameraCalibration from '../Models/CameraCalibration';
+import CameraCalibration from '../../Models/CameraCalibration';
 
 /**
  * Service to project 2d coordinates into the 3d space of the video using its calibration data as well as a flat world assumption
