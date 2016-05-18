@@ -318,6 +318,10 @@ gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line n
   run('clean', 'build', 'copy-canteen', 'optimize', 'test-e2e-run');
 });
 
+gulp.task('test-e2e-js-only', ['webdriver-update'], next => {
+  run('build-javascript', 'test-e2e-run', next);
+});
+
 gulp.task('build-sass', () => {
   return gulp.src(paths.files.sass.entrypoints)
     .pipe($$.sourcemaps.init())
