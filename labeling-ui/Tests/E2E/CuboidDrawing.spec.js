@@ -126,6 +126,38 @@ describe('Cuboid drawing', () => {
       });
   });
 
+  it('should load and draw one rectangle in the front center rotated right by 45°', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0,
+      assets.mocks.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        () => canvasInstructionLogManager.getCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight45);
+        done();
+      });
+  });
+
+  it('should load and draw one rectangle in the front center rotated right by 225°', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0,
+      assets.mocks.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        () => canvasInstructionLogManager.getCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight225);
+        done();
+      });
+  });
+
   afterEach(() => {
     mock.teardown();
   });
