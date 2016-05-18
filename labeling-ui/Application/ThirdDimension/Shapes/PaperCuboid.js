@@ -72,10 +72,10 @@ class PaperCuboid extends PaperShape {
       {from: 6, to: 7}, // Bottom
       {from: 7, to: 4},  // Left
       // Sides
-      {from: 0, to: 5}, // Front top left -> back top right
-      {from: 1, to: 4}, // Front top right -> back top left
-      {from: 2, to: 7}, // Front bottom right -> back bottom left
-      {from: 3, to: 6}, // Front bottom left -> back bottom right
+      {from: 0, to: 4}, // Front top left -> back top right
+      {from: 1, to: 5}, // Front top right -> back top left
+      {from: 2, to: 6}, // Front bottom right -> back bottom left
+      {from: 3, to: 7}, // Front bottom left -> back bottom right
     ];
 
     const projectedVertices = this._depthBuffer.projectCuboidWithDepth(cuboid3dPoints);
@@ -103,7 +103,7 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _vectorToPaperPoint(vector) {
-    return new paper.Point(vector.x, vector.y);
+    return new paper.Point(Math.round(vector.x), Math.round(vector.y));
   }
 
   /**
