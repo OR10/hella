@@ -78,6 +78,22 @@ describe('Cuboid drawing', () => {
       });
   });
 
+  it('should load and draw one rectangle in the front center', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0,
+      assets.mocks.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        () => canvasInstructionLogManager.getCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenter);
+        done();
+      });
+  });
+
   it('should load and draw one rectangle in the front left', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0,
