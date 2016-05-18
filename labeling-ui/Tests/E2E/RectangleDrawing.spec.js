@@ -162,7 +162,7 @@ describe('Rectangle drawing', () => {
 
   // We are currently missing one horizontal pixel here
   // Might be a sizing bug…
-  xit('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
+  it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -222,7 +222,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  // // Needs to be fixed
+  // Needs to be fixed in code
   xit('should correctly handle extra information in limited labeledThingInFrame request', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0,
