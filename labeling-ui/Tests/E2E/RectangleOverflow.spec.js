@@ -91,7 +91,7 @@ describe('Rectangle Overflow', () => {
       });
   });
 
-  it('should permit overflowing in the top left corner', (done) => {
+  it('should not allow overflowing in the top left corner', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -122,7 +122,7 @@ describe('Rectangle Overflow', () => {
       });
   });
 
-  it('should restrict overflowing in the bottom right corner', (done) => {
+  it('should not allow overflowing in the bottom right corner', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
