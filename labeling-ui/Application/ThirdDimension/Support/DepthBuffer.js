@@ -1,4 +1,5 @@
 import {Vector4} from 'three-math';
+import Cuboid2d from '../Models/Cuboid2d';
 
 class DepthBuffer {
   /**
@@ -13,18 +14,23 @@ class DepthBuffer {
   }
 
   /**
-   * @param {Array.<Array.<number>>} cuboid
-   * @returns {*}
+   * @param {Cuboid3d} cuboid
+   * @returns {Cuboid2d}
    */
   projectCuboidWithDepth(cuboid) {
     const faces = this._getFacesForCuboid(cuboid);
     faces.sort(this._compareByZOrder);
-    const vertices = this._projectFacesWithDepth(faces);
-    return vertices;
+    const [vertices, vertexVisibility] = this._projectFacesWithDepth(faces);
+    return new Cuboid2d(vertices, vertexVisibility);
   }
 
+  /**
+   * @param {Cuboid3d} cuboid
+   * @returns {Array}
+   * @private
+   */
   _getFacesForCuboid(cuboid) {
-    const c = cuboid.map(vertex => new Vector4(...vertex, 1));
+    const c = cuboid.vertices;
 
     const faces = [];
     faces.push({name: 'front', vertices3d: [c[0], c[1], c[2], c[3]], order: [0, 1, 2, 3]});
@@ -103,6 +109,7 @@ class DepthBuffer {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     const vertices = [];
+    const vertexVisibility = [];
 
     faces2d.forEach((vertices2d, faceIndex) => {
       const hiddenVertices = vertices2d.map(
@@ -114,7 +121,8 @@ class DepthBuffer {
           return;
         }
 
-        vertices[vertexIndex] = {hidden: hiddenVertices[index], vertex: vertices2d[index]};
+        vertices[vertexIndex] = [vertices2d[index].x, vertices2d[index].y];
+        vertexVisibility[vertexIndex] = !hiddenVertices[index];
       });
 
       // Draw the face to the depthBuffer
@@ -128,7 +136,7 @@ class DepthBuffer {
       ctx.fill();
     });
 
-    return vertices;
+    return [vertices, vertexVisibility];
   }
 
   _isPixelDrawn(ctx, vertex, offsetX = 0, offsetY = 0) {

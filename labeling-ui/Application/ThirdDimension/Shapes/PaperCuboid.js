@@ -1,5 +1,6 @@
 import paper from 'paper';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import Cuboid3d from '../Models/Cuboid3d';
 
 class PaperCuboid extends PaperShape {
 
@@ -36,7 +37,7 @@ class PaperCuboid extends PaperShape {
      * @type {Array.<paper.Path>}
      * @private
      */
-    this._edges = this._createEdges(cuboid3dPoints);
+    this._edges = this._createEdges(new Cuboid3d(cuboid3dPoints));
 
     this._addChildren(this._edges);
   }
@@ -56,10 +57,10 @@ class PaperCuboid extends PaperShape {
   /**
    * Create all edges of the cuboid
    *
-   * @param cuboid3dPoints
+   * @param {Cuboid3d} cuboid3d
    * @private
    */
-  _createEdges(cuboid3dPoints) {
+  _createEdges(cuboid3d) {
     const edgeIndices = [
       // Front
       {from: 0, to: 1}, // Top
@@ -78,17 +79,16 @@ class PaperCuboid extends PaperShape {
       {from: 3, to: 7}, // Front bottom left -> back bottom right
     ];
 
-    const projectedVertices = this._depthBuffer.projectCuboidWithDepth(cuboid3dPoints);
+    const projectedCuboid = this._depthBuffer.projectCuboidWithDepth(cuboid3d);
 
     return edgeIndices.map((edgePointIndex) => {
-      const from = projectedVertices[edgePointIndex.from];
-      const to = projectedVertices[edgePointIndex.to];
-
-      const hidden = (from.hidden || to.hidden);
+      const from = projectedCuboid.vertices[edgePointIndex.from];
+      const to = projectedCuboid.vertices[edgePointIndex.to];
+      const hidden = (!projectedCuboid.vertexVisibility[edgePointIndex.from] || !projectedCuboid.vertexVisibility[edgePointIndex.to]);
 
       return new paper.Path.Line({
-        from: this._vectorToPaperPoint(from.vertex),
-        to: this._vectorToPaperPoint(to.vertex),
+        from: this._vectorToPaperPoint(from),
+        to: this._vectorToPaperPoint(to),
         strokeColor: this._color,
         selected: false,
         strokeWidth: 2,
