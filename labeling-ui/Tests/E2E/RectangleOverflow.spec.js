@@ -5,29 +5,6 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-//
-// // Shared Mocks
-// const userProfileMock = require('../ProtractorMocks/Common/UserProfile.json');
-// const userPermissionMock = require('../ProtractorMocks/Common/UserPermissions.json');
-// const videoMock = require('../ProtractorMocks/Common/Video.json');
-// const labelStructureMock = require('../ProtractorMocks/Common/LabelStructure.json');
-// const getTimerMock = require('../ProtractorMocks/Common/GetTimer.json');
-// const putTimerMock = require('../ProtractorMocks/Common/PutTimer.json');
-// const sourceJpg1_5Mock = require('../ProtractorMocks/Common/FrameLocations/SourceJpg1-5.json');
-// const thumbnail1_5Mock = require('../ProtractorMocks/Common/FrameLocations/Thumbnail1-5.json');
-// const sourceJpg1Mock = require('../ProtractorMocks/Common/FrameLocations/SourceJpg1.json');
-// const labeledThingIncompleteCountMock = require('../ProtractorMocks/Common/LabeledThingIncompleteCount.json');
-//
-// const overflowDisabledTask = require('../ProtractorMocks/RectangleMovement/ShapeOverflow/OverflowDisabledTask.json');
-// const overflowBottomRight = require('../ProtractorMocks/RectangleMovement/ShapeOverflow/OverflowBottomRightRectangle.json');
-// const nonOverflowTopLeft = require('../ProtractorMocks/RectangleMovement/ShapeOverflow/NonOverflowTopLeftRectangle.json');
-// const nonOverflowBottomRight = require('../ProtractorMocks/RectangleMovement/ShapeOverflow/NonOverflowBottomRightRectangle.json');
-//
-// const overflowTopLeftInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/OverflowTopLeftRectangle.json');
-// const overflowBottomRightInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/OverflowBottomRightRectangle.json');
-// const nonOverflowTopLeftInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/NonOverflowTopLeftRectangle.json');
-// const nonOverflowBottomRightInstructions = require('../Fixtures/CanvasInstructionLogs/RectangleMovement/ShapeOverflow/NonOverflowBottomRightRectangle.json');
-
 describe('Rectangle Overflow', () => {
   let assets;
   let sharedMocks;
@@ -57,6 +34,8 @@ describe('Rectangle Overflow', () => {
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
       assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow,
     ]));
 
@@ -80,127 +59,99 @@ describe('Rectangle Overflow', () => {
         });
       });
   });
-//
-//     it('should restrict overflowing in the bottom right corner', (done) => {
-//       mock([
-//         userProfileMock,
-//         userPermissionMock,
-//         videoMock,
-//         labelStructureMock,
-//         getTimerMock,
-//         putTimerMock,
-//         sourceJpg1_5Mock,
-//         thumbnail1_5Mock,
-//         sourceJpg1Mock,
-//         labeledThingIncompleteCountMock,
-//
-//         overflowEnabledTask,
-//         overflowStartingRectangle,
-//         overflowBottomRight,
-//       ]);
-//       browser.get('/labeling/task/TASKID-TASKID');
-//
-//       coords.autoSetViewerDimensions()
-//         .then(({viewer, viewerSize}) => {
-//           browser.actions()
-//             .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
-//             .mouseDown()
-//             .mouseMove(viewer, coords.toViewer(1023, 619)) // drag
-//             .mouseUp()
-//             .perform();
-//
-//           browser.sleep(1000);
-//         })
-//         .then(() => canvasInstructionLogManager.getCanvasLogs())
-//         .then(drawingStack => {
-//           expect(drawingStack).toEqualDrawingStack(overflowBottomRightInstructions);
-//           getMockRequestsMade(mock).then(requests => {
-//             expect(requests).toContain(overflowBottomRight.request);
-//             done();
-//           });
-//         });
-//     });
-//
-//     it('should restrict non-overflowing in the bottom right corner', (done) => {
-//       mock([
-//         userProfileMock,
-//         userPermissionMock,
-//         videoMock,
-//         labelStructureMock,
-//         getTimerMock,
-//         putTimerMock,
-//         sourceJpg1_5Mock,
-//         thumbnail1_5Mock,
-//         sourceJpg1Mock,
-//         labeledThingIncompleteCountMock,
-//
-//         overflowDisabledTask,
-//         overflowStartingRectangle,
-//         nonOverflowBottomRight,
-//       ]);
-//       browser.get('/labeling/task/TASKID-TASKID');
-//
-//       coords.autoSetViewerDimensions()
-//         .then(({viewer, viewerSize}) => {
-//           browser.actions()
-//             .mouseMove(viewer, coords.toViewer(110, 110)) // initial position
-//             .mouseDown()
-//             .mouseMove(viewer, coords.toViewer(1023, 619)) // drag
-//             .mouseUp()
-//             .perform();
-//
-//           browser.sleep(1000);
-//         })
-//         .then(() => canvasInstructionLogManager.getCanvasLogs())
-//         .then(drawingStack => {
-//           expect(drawingStack).toEqualDrawingStack(nonOverflowBottomRightInstructions);
-//           getMockRequestsMade(mock).then(requests => {
-//             expect(requests).toContain(nonOverflowBottomRight.request);
-//             done();
-//           });
-//         });
-//     });
-//
-//     it('should restrict non-overflowing in the top left corner', (done) => {
-//       mock([
-//         userProfileMock,
-//         userPermissionMock,
-//         videoMock,
-//         labelStructureMock,
-//         getTimerMock,
-//         putTimerMock,
-//         sourceJpg1_5Mock,
-//         thumbnail1_5Mock,
-//         sourceJpg1Mock,
-//         labeledThingIncompleteCountMock,
-//
-//         overflowDisabledTask,
-//         overflowStartingRectangle,
-//         nonOverflowTopLeft,
-//       ]);
-//       browser.get('/labeling/task/TASKID-TASKID');
-//
-//       coords.autoSetViewerDimensions()
-//         .then(({viewer, viewerSize}) => {
-//           browser.actions()
-//             .mouseMove(viewer, coords.toViewer(190, 190)) // initial position
-//             .mouseDown()
-//             .mouseMove(viewer, coords.toViewer(1, 1)) // drag
-//             .mouseUp()
-//             .perform();
-//
-//           browser.sleep(1000);
-//         })
-//         .then(() => canvasInstructionLogManager.getCanvasLogs())
-//         .then(drawingStack => {
-//           expect(drawingStack).toEqualDrawingStack(nonOverflowTopLeftInstructions);
-//           getMockRequestsMade(mock).then(requests => {
-//             expect(requests).toContain(nonOverflowTopLeft.request);
-//             done();
-//           });
-//         });
-//     });
-//
+
+  it('should restrict overflowing in the bottom right corner', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleOverflow.Shared.TaskOverflow,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
+      assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 1023, y: 619}) // drag
+          .mouseUp()
+          .perform();
+
+        browser.sleep(1000);
+      })
+      .then(() => canvasInstructionLogManager.getCanvasLogs())
+      .then(drawingStack => {
+        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
+        getMockRequestsMade(mock).then(requests => {
+          expect(requests).toContain(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow.request);
+          done();
+        });
+      });
+  });
+
+  it('should permit overflowing in the top left corner', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
+      assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 190, y: 190}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 1, y: 1}) // drag
+          .mouseUp()
+          .perform();
+
+        browser.sleep(1000);
+      })
+      .then(() => canvasInstructionLogManager.getCanvasLogs())
+      .then(drawingStack => {
+        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
+        getMockRequestsMade(mock).then(requests => {
+          expect(requests).toContain(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow.request);
+          done();
+        });
+      });
+  });
+
+  it('should restrict overflowing in the bottom right corner', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
+      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
+      assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 1023, y: 619}) // drag
+          .mouseUp()
+          .perform();
+
+        browser.sleep(1000);
+      })
+      .then(() => canvasInstructionLogManager.getCanvasLogs())
+      .then(drawingStack => {
+        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
+        getMockRequestsMade(mock).then(requests => {
+          expect(requests).toContain(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow.request);
+          done();
+        });
+      });
+  });
 
   afterEach(() => {
     mock.teardown();
