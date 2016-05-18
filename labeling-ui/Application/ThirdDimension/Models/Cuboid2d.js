@@ -1,12 +1,22 @@
 import {Vector3} from 'three-math';
+import clone from 'lodash.clone';
 
 class Cuboid2d {
-  constructor(vertices) {
+  /**
+   * @param {Array.<Array.<number>>} vertices
+   * @param {Array.<boolean>} vertexVisibility
+   */
+  constructor(vertices, vertexVisibility = [true, true, true, true, true, true, true, true]) {
     this._vertices = vertices;
+    this._vertexVisibility = vertexVisibility;
   }
 
   get vertices() {
     return this._vertices.map(vertex => new Vector3(...vertex, 1));
+  }
+
+  get vertexVisibility() {
+    return clone(this._vertexVisibility);
   }
 
   get frontTopLeft() {
@@ -39,6 +49,38 @@ class Cuboid2d {
 
   get backBottomLeft() {
     return new Vector3(...this._vertices[7], 1);
+  }
+
+  get isFrontTopLeftVisible() {
+    return this._vertexVisibility[0];
+  }
+
+  get isFrontTopRightVisible() {
+    return this._vertexVisibility[1];
+  }
+
+  get isFrontBottomRightVisible() {
+    return this._vertexVisibility[2];
+  }
+
+  get isFrontBottomLeftVisible() {
+    return this._vertexVisibility[3];
+  }
+
+  get isBackTopLeftVisible() {
+    return this._vertexVisibility[4];
+  }
+
+  get isBackTopRightVisible() {
+    return this._vertexVisibility[5];
+  }
+
+  get isBackBottomRightVisible() {
+    return this._vertexVisibility[6];
+  }
+
+  get isBackBottomLeftVisible() {
+    return this._vertexVisibility[7];
   }
 }
 
