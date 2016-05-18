@@ -52,7 +52,7 @@ describe('Rectangle Overflow', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
         getMockRequestsMade(mock).then(requests => {
           expect(requests).toContain(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow.request);
           done();
@@ -83,7 +83,7 @@ describe('Rectangle Overflow', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
         getMockRequestsMade(mock).then(requests => {
           expect(requests).toContain(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow.request);
           done();
@@ -114,7 +114,7 @@ describe('Rectangle Overflow', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
         getMockRequestsMade(mock).then(requests => {
           expect(requests).toContain(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow.request);
           done();
@@ -145,7 +145,7 @@ describe('Rectangle Overflow', () => {
       })
       .then(() => canvasInstructionLogManager.getCanvasLogs())
       .then(drawingStack => {
-        expect(drawingStack).toEqualDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
         getMockRequestsMade(mock).then(requests => {
           expect(requests).toContain(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow.request);
           done();
