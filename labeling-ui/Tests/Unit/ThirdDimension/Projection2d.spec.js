@@ -1,7 +1,7 @@
 import {Vector4, Vector3} from 'three-math';
 import Projection2d from 'Application/ThirdDimension/Support/Projection2d';
 
-fdescribe('Projection2d', () => {
+describe('Projection2d', () => {
   let calibrationObject;
   let projection;
 
