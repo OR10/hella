@@ -28,6 +28,7 @@ class annostation_base(
         'git',
         'htop',
         'libav-tools',
+        'logrotate',
         'openjdk-7-jdk',
         'tree',
         'unzip',
