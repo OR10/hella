@@ -40,7 +40,8 @@ define annostation_base::symfony(
       authBasicFile     => $authBasicFile,
     }
 
-    nginx::resource::location { '~ \.php(/|$)':
+    nginx::resource::location { "${name}_php":
+      location            => '~ \.php(/|$)',
       ssl                 => $httpv2,
       ssl_only            => $httpv2,
       ensure              => present,
