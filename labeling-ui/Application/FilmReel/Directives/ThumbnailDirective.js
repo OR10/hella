@@ -14,6 +14,7 @@ class ThumbnailDirective {
       labeledThingInFrame: '=',
       labeledThingViewport: '=',
       dimensions: '=',
+      video: '=',
     };
 
     this.template = ThumbnailTemplate;

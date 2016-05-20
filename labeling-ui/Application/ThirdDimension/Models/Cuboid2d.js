@@ -9,6 +9,7 @@ class Cuboid2d {
   constructor(vertices, vertexVisibility = [true, true, true, true, true, true, true, true]) {
     this._vertices = vertices;
     this._vertexVisibility = vertexVisibility;
+    this._primaryEdges = [false, true, true, true, false, false, true, false];
   }
 
   get vertices() {
@@ -17,6 +18,10 @@ class Cuboid2d {
 
   get vertexVisibility() {
     return clone(this._vertexVisibility);
+  }
+
+  get primaryEdges() {
+    return clone(this._primaryEdges);
   }
 
   get frontTopLeft() {

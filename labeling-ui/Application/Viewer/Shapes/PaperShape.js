@@ -113,6 +113,10 @@ class PaperShape extends paper.Group {
     this.position = point;
   }
 
+  shouldBeSelected(hitResult) {
+    return true;
+  }
+
   select(handles = true) {
     this._shape.dashArray = [6, 2];
     this._shape.selected = handles;

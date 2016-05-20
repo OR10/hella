@@ -34,12 +34,12 @@ class PaperCuboid extends PaperShape {
     this._projection2d = projection2d;
 
     /**
-     * @type {Array.<paper.Path>}
+     * @type {Cuboid3d}
      * @private
      */
-    this._edges = this._createEdges(new Cuboid3d(cuboid3dPoints));
+    this._cuboid3d = new Cuboid3d(cuboid3dPoints);
 
-    this._addChildren(this._edges);
+    this._drawCuboid();
   }
 
   /**
@@ -55,12 +55,11 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * Create all edges of the cuboid
+   * Generate the 2d projection of the {@link Cuboid3d} and add the corresponding shaped to this group
    *
-   * @param {Cuboid3d} cuboid3d
    * @private
    */
-  _createEdges(cuboid3d) {
+  _drawCuboid() {
     const edgeIndices = [
       // Front
       {from: 0, to: 1}, // Top
@@ -79,24 +78,28 @@ class PaperCuboid extends PaperShape {
       {from: 3, to: 7}, // Front bottom left -> back bottom right
     ];
 
-    const projectedCuboid = this._projection2d.projectCuboidTo2d(cuboid3d);
+    const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
-    return edgeIndices.map((edgePointIndex) => {
+    const lines = edgeIndices.map((edgePointIndex) => {
       const from = projectedCuboid.vertices[edgePointIndex.from];
       const to = projectedCuboid.vertices[edgePointIndex.to];
       const hidden = (!projectedCuboid.vertexVisibility[edgePointIndex.from] || !projectedCuboid.vertexVisibility[edgePointIndex.to]);
-
+      const primary = (projectedCuboid.primaryEdges[edgePointIndex.from] && projectedCuboid.primaryEdges[edgePointIndex.to] && this._isSelected);
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
         strokeColor: this._color,
         selected: false,
-        strokeWidth: 2,
+        strokeWidth: primary ? 5 : 2,
         strokeScaling: false,
-        dashArray: hidden ? [2, 2] : [],
+        dashArray: hidden ? PaperCuboid.DASH : PaperCuboid.LINE,
       });
     });
+
+    this.removeChildren();
+    this._addChildren(lines);
   }
+
 
   /**
    * @param {THREE.Vector3} vector
@@ -107,6 +110,32 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
+   * @param hitResult
+   * @returns {boolean}
+   */
+  shouldBeSelected(hitResult) {
+    return true;
+  }
+
+  /**
+   * Select the shape
+   *
+   * @param {Boolean} handles
+   */
+  select(handles = true) {
+    this._isSelected = true;
+    this._drawCuboid();
+  }
+
+  /**
+   * Deselect the shape
+   */
+  deselect() {
+    this._isSelected = false;
+    this._drawCuboid();
+  }
+
+  /**
    * Convert to JSON for Storage
    */
   toJSON() {
@@ -114,5 +143,6 @@ class PaperCuboid extends PaperShape {
   }
 }
 PaperCuboid.DASH = [2, 2];
+PaperCuboid.LINE = [];
 
 export default PaperCuboid;
