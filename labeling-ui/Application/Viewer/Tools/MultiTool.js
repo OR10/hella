@@ -152,12 +152,12 @@ export default class MultiTool extends Tool {
 
   enable() {
     this._enabled = true;
-    this._keyboardShortcutService.enable()
+    this._keyboardShortcutService.enable();
   }
 
   disable() {
     this._enabled = false;
-    this._keyboardShortcutService.disable()
+    this._keyboardShortcutService.disable();
   }
 
   _moveSelectedShapeBy(deltaX, deltaY) {
