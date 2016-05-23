@@ -40,6 +40,11 @@ class LinearTest extends Tests\KernelTestCase
      */
     private $algorithm;
 
+    /**
+     * @var Service\CalibrationFileConverter
+     */
+    private $calibrationFileConverter;
+
     public function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -48,6 +53,7 @@ class LinearTest extends Tests\KernelTestCase
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->algorithm                 = $this->getAnnostationService('service.interpolation.algorithm.linear');
+        $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
     }
 
     /**
@@ -697,7 +703,15 @@ class LinearTest extends Tests\KernelTestCase
      */
     private function createTask($endFrameIndex = 10)
     {
-        $video = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $video = Model\Video::create('Testvideo');
+        $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
+        $video->setRawCalibration($this->calibrationFileConverter->getRawData());
+        $video->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+        $video->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+        $video->setTranslation($this->calibrationFileConverter->getTranslation());
+        $video->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+
+        $video = $this->videoFacade->save($video);
 
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
