@@ -192,9 +192,9 @@ class Csv implements Service\ProjectExporter
                     $video = $this->videoFacade->find($videoId);
                     $filename = sprintf(
                         'export_%s_%s_%s.csv',
-                        $project->getName(),
+                        str_replace(' ', '_', $project->getName()),
                         $groupName,
-                        $video->getName()
+                        str_replace(' ', '_', $video->getName())
                     );
 
                     $videoExport = new Model\VideoExport($video, $consideredTasks, $filename, 'text/csv', file_get_contents($tempCsvFile));
