@@ -74,4 +74,16 @@ class Vector3
     {
         return $this->z;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            $this->getX(),
+            $this->getY(),
+            $this->getZ(),
+        ];
+    }
 }
