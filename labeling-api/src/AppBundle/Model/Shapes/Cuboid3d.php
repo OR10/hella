@@ -4,6 +4,7 @@ namespace AppBundle\Model\Shapes;
 
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
+use AppBundle\Helper\Matrix;
 
 class Cuboid3d extends Model\Shape
 {
@@ -54,14 +55,14 @@ class Cuboid3d extends Model\Shape
 
     public function __construct(
         $id,
-        array $frontTopLeft,
-        array $frontTopRight,
-        array $frontBottomRight,
-        array $frontBottomLeft,
-        $backTopLeft,
-        $backTopRight,
-        $backBottomRight,
-        $backBottomLeft
+        array $frontTopLeft = null,
+        array $frontTopRight = null,
+        array $frontBottomRight = null,
+        array $frontBottomLeft = null,
+        array $backTopLeft = null,
+        array $backTopRight = null,
+        array $backBottomRight = null,
+        array $backBottomLeft = null
     )
     {
         $this->id = $id;
@@ -123,6 +124,23 @@ class Cuboid3d extends Model\Shape
                 $this->backBottomRight,
                 $this->backBottomLeft
             ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getVertices()
+    {
+        return [
+            new Matrix\Vector4($this->frontTopLeft[0], $this->frontTopLeft[1], $this->frontTopLeft[2], 1),
+            new Matrix\Vector4($this->frontTopRight[0], $this->frontTopRight[1], $this->frontTopRight[2], 1),
+            new Matrix\Vector4($this->frontBottomRight[0], $this->frontBottomRight[1], $this->frontBottomRight[2], 1),
+            new Matrix\Vector4($this->frontBottomLeft[0], $this->frontBottomLeft[1], $this->frontBottomLeft[2], 1),
+            new Matrix\Vector4($this->backTopLeft[0], $this->backTopLeft[1], $this->backTopLeft[2], 1),
+            new Matrix\Vector4($this->backTopRight[0], $this->backTopRight[1], $this->backTopRight[2], 1),
+            new Matrix\Vector4($this->backBottomRight[0], $this->backBottomRight[1], $this->backBottomRight[2], 1),
+            new Matrix\Vector4($this->backBottomLeft[0], $this->backBottomLeft[1], $this->backBottomLeft[2], 1),
         ];
     }
 
