@@ -14,6 +14,7 @@ php::extensions:
   mbstring: {}
   mysql: {}
   zip: {}
+  gd: {}
 
 rabbitmq::version: present
 
