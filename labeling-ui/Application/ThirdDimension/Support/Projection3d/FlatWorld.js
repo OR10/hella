@@ -45,7 +45,6 @@ class Projection3dFlatWorld {
     ];
   }
 
-
   /**
    * Project a 2d cuboid into 3d vehicle coordinates using the flat world assumption
    *
@@ -59,16 +58,19 @@ class Projection3dFlatWorld {
    * @return {Cuboid3d}
    */
   projectCuboidTo3d(cuboid2d) {
-    let transformedCuboid2d = cuboid2d;
-    // Undo camera matrix
-    transformedCuboid2d = this._reverseCameraMatrix(transformedCuboid2d);
-    transformedCuboid2d = this._removeDistortion(transformedCuboid2d);
-    return this._cam2car(transformedCuboid2d);
+    return this._transformCamToCarCoordinates(
+      this._removeRotation(
+        this._removeDistortion(
+          this._reverseCameraMatrix(
+            cuboid2d
+          )
+        )
+      )
+    );
   }
 
 
   /**
-   *
    * @param {Cuboid2d} cuboid2d
    * @returns {Cuboid2d}
    * @private
@@ -79,7 +81,6 @@ class Projection3dFlatWorld {
   }
 
   /**
-   *
    * @param {Cuboid2d} cuboid2d
    * @returns {Cuboid2d}
    * @private
@@ -103,64 +104,51 @@ class Projection3dFlatWorld {
     return Cuboid2d.createFromCuboid2dAndVectors(cuboid2d, transformedVertices);
   }
 
-
   /**
    * @param {Cuboid2d} cuboid2d
    * @returns {Cuboid3d}
    * @private
    */
-  _cam2car(cuboid2d) {
-    const bottomIndices = [2, 3, 6, 7];
-    const topIndices = [0, 1, 4, 5];
-    const topBottomMapping = {
-      0: 3,
-      1: 2,
-      5: 6,
-      4: 7,
-    };
+  _removeRotation(cuboid2d) {
+    const transformedVertices = cuboid2d.vertices.map(vertex => vertex.applyMatrix4(this._inverseRotationMatrix));
+    return Cuboid3d.createFromVectors(transformedVertices);
+  }
 
-    const transformedVertices = new Cuboid3d(cuboid2d.vertices.map(vertex => vertex.applyMatrix4(this._inverseRotationMatrix)).map(v => [v.x, v.y, v.z]));
+  /**
+   * @param {Cuboid3d} cuboid3d
+   * @returns {Cuboid3d}
+   * @private
+   */
+  _transformCamToCarCoordinates(cuboid3d) {
+    const topBottomMapping = [
+      {top: 0, bottom: 3},
+      {top: 1, bottom: 2},
+      {top: 5, bottom: 6},
+      {top: 4, bottom: 7},
+    ];
 
-    const bottom3dPoints = bottomIndices.map(index => {
-      const zLevel = 0;
-      const cz = (zLevel - this._calibration.translation.z) / transformedVertices.vertices[index].z;
-
-      return {
-        index: index,
-        point: new Vector4(
-          transformedVertices.vertices[index].x * cz + this._calibration.translation.x,
-          transformedVertices.vertices[index].y * cz + this._calibration.translation.y,
-          zLevel,
-          1
-        ),
-      };
-    });
-
-    const top3dPoints = topIndices.map(index => {
-      const bottomPoint = bottom3dPoints.find(point => point.index === topBottomMapping[index]).point;
+    const points = [];
+    topBottomMapping.map((mapping) => {
+      const cz = (0 - this._calibration.translation.z) / cuboid3d.vertices[mapping.bottom].z;
+      points[mapping.bottom] = new Vector4(
+        cuboid3d.vertices[mapping.bottom].x * cz + this._calibration.translation.x,
+        cuboid3d.vertices[mapping.bottom].y * cz + this._calibration.translation.y,
+        0,
+        1
+      );
 
       const zLevel = (
-          (bottomPoint.x - this._calibration.translation.x) / transformedVertices.vertices[index].x
-        ) * transformedVertices.vertices[index].z + this._calibration.translation.z;
-
-      return {
-        index: index,
-        point: new Vector4(
-          bottomPoint.x,
-          bottomPoint.y,
-          zLevel,
-          1
-        ),
-      };
+          (points[mapping.bottom].x - this._calibration.translation.x) / cuboid3d.vertices[mapping.top].x
+        ) * cuboid3d.vertices[mapping.top].z + this._calibration.translation.z;
+      points[mapping.top] = new Vector4(
+        points[mapping.bottom].x,
+        points[mapping.bottom].y,
+        zLevel,
+        1
+      );
     });
 
-    const merged3dPoints = top3dPoints.concat(bottom3dPoints);
-
-    const cube3dPoints = [0, 1, 2, 3, 4, 5, 6, 7].map(index => {
-      return merged3dPoints.find(point => point.index === index).point;
-    });
-
-    return new Cuboid3d(cube3dPoints);
+    return Cuboid3d.createFromVectors(points);
   }
 }
 
