@@ -6,6 +6,8 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AppBundle\Service\Interpolation;
+use AppBundle\Service;
+use AppBundle\Helper\Matrix;
 
 class Linear implements Interpolation\Algorithm
 {
@@ -15,12 +17,44 @@ class Linear implements Interpolation\Algorithm
     private $labeledThingFacade;
 
     /**
-     * @param Facade\LabeledThing
+     * @var Facade\Video
+     */
+    private $videoFacade;
+
+    /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
+     * @var Service\MatrixProjection
+     */
+
+    private $matrixProjection;
+    /**
+     * @var Service\DepthBuffer
+     */
+    private $depthBuffer;
+
+    /**
+     * @param Facade\LabeledThing $labeledThingFacade
+     * @param Facade\Video $videoFacade
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Service\MatrixProjection $matrixProjection
+     * @param Service\DepthBuffer $depthBuffer
      */
     public function __construct(
-        Facade\LabeledThing $labeledThingFacade
+        Facade\LabeledThing $labeledThingFacade,
+        Facade\Video $videoFacade,
+        Facade\LabelingTask $labelingTaskFacade,
+        Service\MatrixProjection $matrixProjection,
+        Service\DepthBuffer $depthBuffer
     ) {
         $this->labeledThingFacade = $labeledThingFacade;
+        $this->videoFacade = $videoFacade;
+        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->matrixProjection = $matrixProjection;
+        $this->depthBuffer = $depthBuffer;
     }
 
     public function getName()
@@ -33,6 +67,8 @@ class Linear implements Interpolation\Algorithm
         Model\FrameIndexRange $frameRange,
         callable $emit
     ) {
+        $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
+        $video = $this->videoFacade->find($task->getVideoId());
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
             $frameRange->getStartFrameIndex(),
@@ -53,7 +89,7 @@ class Linear implements Interpolation\Algorithm
         while (count($labeledThingsInFrame) > 1) {
             $current = array_shift($labeledThingsInFrame);
             $emit($current);
-            $this->doInterpolate($current, $labeledThingsInFrame[0], $emit);
+            $this->doInterpolate($current, $labeledThingsInFrame[0], $emit, $video->getCalibration());
         }
 
         $emit($labeledThingsInFrame[0]);
@@ -96,7 +132,8 @@ class Linear implements Interpolation\Algorithm
     private function doInterpolate(
         Model\LabeledThingInFrame $start,
         Model\LabeledThingInFrame $end,
-        callable $emit
+        callable $emit,
+        $calibrationData
     ) {
         if ($end->getFrameIndex() - $start->getFrameIndex() < 2) {
             // nothing to do when there is no frame in between
@@ -110,8 +147,8 @@ class Linear implements Interpolation\Algorithm
 
         foreach (range($start->getFrameIndex() + 1, $end->getFrameIndex() - 1) as $frameIndex) {
             $currentShapes = array_map(
-                function($shape) use ($endShapes, $remainingSteps) {
-                    return $this->interpolateShape($shape, $endShapes[$shape->getId()], $remainingSteps);
+                function ($shape) use ($endShapes, $remainingSteps, $calibrationData) {
+                    return $this->interpolateShape($shape, $endShapes[$shape->getId()], $remainingSteps, $calibrationData);
                 },
                 $currentShapes
             );
@@ -141,21 +178,21 @@ class Linear implements Interpolation\Algorithm
     /**
      * @param Model\Shape $current
      * @param Model\Shape $end
-     * @param int         $steps
-     *
+     * @param int $steps
+     * @param $calibrationData
      * @return Model\Shape
      */
-    private function interpolateShape(Model\Shape $current, Model\Shape $end, $steps)
+    private function interpolateShape(Model\Shape $current, Model\Shape $end, $steps, $calibrationData)
     {
         switch (get_class($current)) {
-        case Shapes\Rectangle::class:
-            return $this->interpolateRectangle($current, $end, $steps);
-        case Shapes\Ellipse::class:
-            return $this->interpolateEllipse($current, $end, $steps);
-        case Shapes\Pedestrian::class:
-            return $this->interpolatePedestrian($current, $end, $steps);
-        case Shapes\Cuboid3d::class:
-            return $this->interpolateCuboid3d($current, $end, $steps);
+            case Shapes\Rectangle::class:
+                return $this->interpolateRectangle($current, $end, $steps);
+            case Shapes\Ellipse::class:
+                return $this->interpolateEllipse($current, $end, $steps);
+            case Shapes\Pedestrian::class:
+                return $this->interpolatePedestrian($current, $end, $steps);
+            case Shapes\Cuboid3d::class:
+                return $this->interpolateCuboid3d($current, $end, $steps, $calibrationData);
         }
 
         throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
@@ -219,39 +256,86 @@ class Linear implements Interpolation\Algorithm
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $current
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $end
      * @param $steps
-     *
+     * @param $calibrationData
      * @return Shapes\Pedestrian
      */
-    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps)
+    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps, $calibrationData)
     {
-        return new Shapes\Cuboid3d(
-            $current->getId(),
-            $this->cuboid3dCalculator($current->getFrontTopLeft(), $end->getFrontTopLeft() , $steps),
-            $this->cuboid3dCalculator($current->getFrontTopRight(), $end->getFrontTopRight() , $steps),
-            $this->cuboid3dCalculator($current->getFrontBottomRight(), $end->getFrontBottomRight() , $steps),
-            $this->cuboid3dCalculator($current->getFrontBottomLeft(), $end->getFrontBottomLeft() , $steps),
-            $this->cuboid3dCalculator($current->getBackTopLeft(), $end->getBackTopLeft() , $steps),
-            $this->cuboid3dCalculator($current->getBackTopRight(), $end->getBackTopRight() , $steps),
-            $this->cuboid3dCalculator($current->getBackBottomRight(), $end->getBackBottomRight() , $steps),
-            $this->cuboid3dCalculator($current->getBackTopLeft(), $end->getBackTopLeft() , $steps)
+        $currentCuboidNumberOfVertex = count(
+            array_filter($current->toArray()['vehicleCoordinates'], function ($vertex) {
+                return !($vertex === null);
+            })
+        );
+
+        $endCuboidNumberOfVertex = count(
+            array_filter($end->toArray()['vehicleCoordinates'], function ($vertex) {
+                return !($vertex === null);
+            })
+        );
+
+        $newCuboid3d = [];
+        if ($currentCuboidNumberOfVertex === 8 && $endCuboidNumberOfVertex === 8) {
+            $vertices = $this->depthBuffer->getVertices($current, $calibrationData);
+            $vertexVisibilityCount = count(
+                array_filter($vertices[1], function ($vertex) {
+                    return !$vertex;
+                })
+            );
+
+            if ($vertexVisibilityCount >= 4) {
+                foreach ($vertices[1] as $index => $visibility) {
+                    if ($visibility) {
+                        $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
+                            $current->toArray()['vehicleCoordinates'][$index],
+                            $end->toArray()['vehicleCoordinates'][$index],
+                            $steps
+                        );
+                    } else {
+                        $newCuboid3d[$index] = null;
+                    }
+                }
+            }else{
+                for ($index=0;$index <= 7;$index++) {
+                    $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
+                        $current->toArray()['vehicleCoordinates'][$index],
+                        $end->toArray()['vehicleCoordinates'][$index],
+                        $steps
+                    );
+                }
+            }
+        }else{
+            for ($index=0;$index <= 7;$index++) {
+                $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
+                    $current->toArray()['vehicleCoordinates'][$index],
+                    $end->toArray()['vehicleCoordinates'][$index],
+                    $steps
+                );
+            }
+        }
+
+        return Shapes\Cuboid3d::createFromArray(
+            array(
+                'id' => $current->getId(),
+                'vehicleCoordinates' => $newCuboid3d,
+            )
         );
     }
 
     /**
-     * @param $currentPoint
-     * @param $endPoint
+     * @param $currentVertex
+     * @param $endVertex
      * @param $steps
      * @return array
      */
-    private function cuboid3dCalculator($currentPoint, $endPoint, $steps)
+    private function cuboid3dCalculateNewVertex($currentVertex, $endVertex, $steps)
     {
-        if ($currentPoint === null && $endPoint === null) {
+        if ($currentVertex === null && $endVertex === null) {
             return null;
         }
         return [
-            $currentPoint[0] + ($endPoint[0] - $currentPoint[0]) / $steps,
-            $currentPoint[1] + ($endPoint[1] - $currentPoint[1]) / $steps,
-            $currentPoint[2] + ($endPoint[2] - $currentPoint[2]) / $steps,
+            $currentVertex[0] + ($endVertex[0] - $currentVertex[0]) / $steps,
+            $currentVertex[1] + ($endVertex[1] - $currentVertex[1]) / $steps,
+            $currentVertex[2] + ($endVertex[2] - $currentVertex[2]) / $steps,
         ];
     }
 }
