@@ -2,7 +2,7 @@ import FlatWorld from 'Application/ThirdDimension/Support/Projection3d/FlatWorld
 import Cuboid2d from 'Application/ThirdDimension/Models/Cuboid2d';
 import Cuboid3d from 'Application/ThirdDimension/Models/Cuboid3d';
 
-fdescribe('Projection3d', () => {
+describe('Projection3d', () => {
   describe('FlatWorld', () => {
     let calibrationObject;
     let projection;
