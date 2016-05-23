@@ -42,4 +42,12 @@ class Cuboid3d {
   }
 }
 
+/**
+ * @param {Array.<THREE.Vector4>} vertices
+ * @returns {Cuboid3d}
+ */
+Cuboid3d.createFromVectors = (vertices) => {
+  return new Cuboid3d(vertices.map(v => [v.x, v.y, v.z]));
+};
+
 export default Cuboid3d;
