@@ -11,10 +11,10 @@ php::fpm::settings:
 
 php::extensions:
   bcmath: {}
+  gd: {}
   mbstring: {}
   mysql: {}
   zip: {}
-  gd: {}
 
 rabbitmq::version: present
 
