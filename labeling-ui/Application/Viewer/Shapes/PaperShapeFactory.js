@@ -138,10 +138,10 @@ class PaperShapeFactory {
 
     switch (shape.type) {
       case 'rectangle':
-        result = this._createRectangle(labeledThingInFrame, shape, color);
+        result = this._createRectangle(labeledThingInFrame, shape, color.primary);
         break;
       case 'pedestrian':
-        result = this._createPedestrian(labeledThingInFrame, shape, color);
+        result = this._createPedestrian(labeledThingInFrame, shape, color.primary);
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);

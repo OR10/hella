@@ -38,7 +38,7 @@ class RectangleDrawingTool extends DrawingTool {
           this._entityIdService.getUniqueId(),
           from,
           endPoint,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
           true
         );
       });

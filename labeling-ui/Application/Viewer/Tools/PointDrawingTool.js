@@ -21,7 +21,7 @@ class PointDrawingTool extends CircleDrawingTool {
         this._entityIdService.getUniqueId(),
         this._startPosition,
         radius,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
     });

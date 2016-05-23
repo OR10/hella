@@ -66,7 +66,7 @@ class PedestrianDrawingTool extends DrawingTool {
         this._entityIdService.getUniqueId(),
         topCenter,
         bottomCenter,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
     });

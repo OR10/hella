@@ -37,20 +37,15 @@ class EntityColorService {
    * Retrieves the matching color for the given id from the given color palette.
    *
    * @param {string} colorId
-   * @param {string} colorPalette
    * @returns {string}
    */
-  getColorById(colorId, colorPalette = 'primary') {
-    const colors = this._colorPalettes[colorPalette];
+  getColorById(colorId) {
+    const palettes = this._colorPalettes;
 
-    if (!colors) {
-      throw new Error(`Unknown color palette ${colorPalette}`);
-    }
-
-    const color = colors[colorId];
+    const color = {primary: palettes.primary[colorId], secondary: palettes.secondary[colorId]};
 
     if (!color) {
-      throw new Error(`Unknown color with id ${colorId} in palette ${colorPalette}`);
+      throw new Error(`Unknown color with id ${colorId}`);
     }
 
     return color;

@@ -34,9 +34,9 @@ describe('ApiService', () => {
   it('should pick colors from the right palette', () => {
     const service = getEntityColorService({'primary': {'1': 'abc', '2': 'ghi'}, 'secondary': {'1': 'def'}});
 
-    expect(service.getColorById('1', 'primary')).toEqual('abc');
-    expect(service.getColorById('1', 'secondary')).toEqual('def');
-    expect(service.getColorById('2', 'primary')).toEqual('ghi');
+    expect(service.getColorById('1').primary).toEqual('abc');
+    expect(service.getColorById('1').secondary).toEqual('def');
+    expect(service.getColorById('2').primary).toEqual('ghi');
   });
 
   it('should pick colors in order on successive calls', () => {
