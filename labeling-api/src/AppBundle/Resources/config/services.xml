@@ -70,6 +70,10 @@
         <service id="annostation.labeling_api.service.matrix_projection" class="AppBundle\Service\MatrixProjection">
         </service>
 
+        <service id="annostation.labeling_api.service.depth_buffer" class="AppBundle\Service\DepthBuffer">
+            <argument type="service" id="annostation.labeling_api.service.matrix_projection" />
+        </service>
+
         <service id="annostation.labeling_api.service.label_structure" class="AppBundle\Service\LabelStructure">
         </service>
 
