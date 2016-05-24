@@ -24,7 +24,40 @@ class DepthBufferProjection2d {
     faces.sort(this._compareByZOrder);
 
     const [vertices, vertexVisibility] = this._projectFacesWithDepth(faces);
-    return new Cuboid2d(vertices, vertexVisibility);
+    const primaryVertices = this._getPrimaryVertices(cuboid3d);
+    return new Cuboid2d(vertices, primaryVertices, vertexVisibility);
+  }
+
+  /**
+   * @param {Cuboid3d} cuboid3d
+   *
+   * @private
+   * @returns {Array.<boolean>}
+   */
+  _getPrimaryVertices(cuboid3d) {
+    const mapping = {
+      2: [false, true, true, true, false, false, true, false],
+      3: [true, false, true, true, false, false, false, true],
+      6: [false, false, true, false, false, true, true, true],
+      7: [false, false, false, true, true, false, true, true],
+    };
+    const primaryCorner = this._getPrimaryCorner(cuboid3d);
+
+    return mapping[primaryCorner];
+  }
+
+  /**
+   * @param {Cuboid3d} cuboid3d
+   *
+   * @private
+   * @returns {number}
+   */
+  _getPrimaryCorner(cuboid3d) {
+    const bottomPoints = [2, 3, 6, 7];
+
+    return bottomPoints.reduce((prev, current) => {
+      return cuboid3d.vertices[current].length() < cuboid3d.vertices[prev].length() ? current : prev;
+    });
   }
 
   /**

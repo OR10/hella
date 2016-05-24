@@ -9,6 +9,8 @@ import PaperPolygon from './PaperPolygon';
 import PaperLine from './PaperLine';
 
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
+import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
+import CameraCalibration from '../../ThirdDimension/Models/CameraCalibration';
 import DepthBufferProjection2d from '../../ThirdDimension/Support/Projection2d/DepthBuffer';
 import {Vector4} from 'three-math';
 
@@ -54,11 +56,11 @@ class PaperShapeFactory {
    * @private
    */
   _createCuboid(labeledThingInFrame, shape, color, video) {
-    const projection = new DepthBufferProjection2d(
+    const projection2d = new DepthBufferProjection2d(
       new PlainProjection2d(video.calibration)
     );
 
-    return new PaperCuboid(labeledThingInFrame, shape.id, projection, shape.vehicleCoordinates, color);
+    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, shape.vehicleCoordinates, color);
   }
 
   /**

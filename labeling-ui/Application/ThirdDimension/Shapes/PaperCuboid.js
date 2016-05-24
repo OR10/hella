@@ -60,7 +60,23 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _drawCuboid() {
-    const edgeIndices = [
+    const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+    const lines = this._generateEdges(projectedCuboid);
+    const planes = this._generatePlanes(projectedCuboid);
+
+    this.removeChildren();
+    this._addChildren(lines);
+    this._addChildren(planes);
+  }
+
+  /**
+   *
+   * @param {Cuboid2d} cuboid2d
+   * @returns {Array}
+   * @private
+   */
+  _generateEdges(cuboid2d) {
+    const edges = [
       // Front
       {from: 0, to: 1}, // Top
       {from: 1, to: 2}, // Right
@@ -78,28 +94,52 @@ class PaperCuboid extends PaperShape {
       {from: 3, to: 7}, // Front bottom left -> back bottom right
     ];
 
-    const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+    return edges.map((edgePointIndex) => {
+      const from = cuboid2d.vertices[edgePointIndex.from];
+      const to = cuboid2d.vertices[edgePointIndex.to];
+      const hidden = (!cuboid2d.vertexVisibility[edgePointIndex.from] || !cuboid2d.vertexVisibility[edgePointIndex.to]);
+      const primary = (cuboid2d.primaryVertices[edgePointIndex.from] && cuboid2d.primaryVertices[edgePointIndex.to] && this._isSelected);
 
-    const lines = edgeIndices.map((edgePointIndex) => {
-      const from = projectedCuboid.vertices[edgePointIndex.from];
-      const to = projectedCuboid.vertices[edgePointIndex.to];
-      const hidden = (!projectedCuboid.vertexVisibility[edgePointIndex.from] || !projectedCuboid.vertexVisibility[edgePointIndex.to]);
-      const primary = (projectedCuboid.primaryEdges[edgePointIndex.from] && projectedCuboid.primaryEdges[edgePointIndex.to] && this._isSelected);
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
-        strokeColor: this._color,
+        strokeColor: primary ? this._color.primary : this._color.secondary,
         selected: false,
-        strokeWidth: primary ? 5 : 2,
+        strokeWidth: 2,
         strokeScaling: false,
         dashArray: hidden ? PaperCuboid.DASH : PaperCuboid.LINE,
       });
     });
-
-    this.removeChildren();
-    this._addChildren(lines);
   }
 
+  /**
+   * @param {Cuboid2d} cuboid2d
+   * @private
+   */
+  _generatePlanes(cuboid2d) {
+    const planes = [
+      [0, 1, 2, 3],
+      [1, 5, 6, 2],
+      [4, 0, 3, 7],
+      [4, 5, 6, 7],
+      [4, 5, 1, 0],
+      [7, 6, 2, 3],
+    ];
+
+    const visiblePlanes = planes.filter(plane => plane.filter(vertex => cuboid2d.vertexVisibility[vertex]).length === 4);
+
+    return visiblePlanes.map(plane => {
+      const points = plane.map(index => new paper.Point(cuboid2d.vertices[index].x, cuboid2d.vertices[index].y));
+
+      return new paper.Path({
+        selected: false,
+        strokeWidth: 0,
+        fillColor: new paper.Color(0, 0, 0, 0),
+        segments: points,
+        closed: true,
+      });
+    });
+  }
 
   /**
    * @param {THREE.Vector3} vector
@@ -133,6 +173,15 @@ class PaperCuboid extends PaperShape {
   deselect() {
     this._isSelected = false;
     this._drawCuboid();
+  }
+
+  /**
+   * Overwrite the `hasFill` for this group to ensure a hitTest matches :>
+   *
+   * @returns {boolean}
+   */
+  hasFill() {
+    return true;
   }
 
   /**
