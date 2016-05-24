@@ -156,7 +156,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
       if (oldShape !== null) {
-        oldShape.deselect();
+        this._context.withScope(() => {
+          oldShape.deselect();
+        });
 
         // Remove a Ghost upon deselection
         const oldLabeledThingInFrame = oldShape.labeledThingInFrame;
