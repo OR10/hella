@@ -312,7 +312,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         tolerance: 8,
       });
 
-      if (hitResult) {
+      if (hitResult && hitResult.item.shouldBeSelected(hitResult)) {
         this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitResult.item);
         this._$scope.vm.selectedPaperShape = hitResult.item;
       } else {
