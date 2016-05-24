@@ -274,15 +274,31 @@ class Linear implements Interpolation\Algorithm
         );
 
         $newCuboid3d = [];
+        for ($index=0;$index <= 7;$index++) {
+            $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
+                $current->toArray()['vehicleCoordinates'][$index],
+                $end->toArray()['vehicleCoordinates'][$index],
+                $steps
+            );
+        }
+        $cuboid = Shapes\Cuboid3d::createFromArray(
+            array(
+                'id' => $current->getId(),
+                'vehicleCoordinates' => $newCuboid3d,
+            )
+        );
         if ($currentCuboidNumberOfVertex === 8 && $endCuboidNumberOfVertex === 8) {
-            $vertices = $this->depthBuffer->getVertices($current, $calibrationData);
+            $vertices = $this->depthBuffer->getVertices(
+                $cuboid,
+                $calibrationData
+            );
             $vertexVisibilityCount = count(
                 array_filter($vertices[1], function ($vertex) {
-                    return !$vertex;
+                    return $vertex;
                 })
             );
 
-            if ($vertexVisibilityCount >= 4) {
+            if ($vertexVisibilityCount <= 4) {
                 foreach ($vertices[1] as $index => $visibility) {
                     if ($visibility) {
                         $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
@@ -294,31 +310,16 @@ class Linear implements Interpolation\Algorithm
                         $newCuboid3d[$index] = null;
                     }
                 }
-            }else{
-                for ($index=0;$index <= 7;$index++) {
-                    $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
-                        $current->toArray()['vehicleCoordinates'][$index],
-                        $end->toArray()['vehicleCoordinates'][$index],
-                        $steps
-                    );
-                }
-            }
-        }else{
-            for ($index=0;$index <= 7;$index++) {
-                $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
-                    $current->toArray()['vehicleCoordinates'][$index],
-                    $end->toArray()['vehicleCoordinates'][$index],
-                    $steps
+                $cuboid = Shapes\Cuboid3d::createFromArray(
+                    array(
+                        'id' => $current->getId(),
+                        'vehicleCoordinates' => $newCuboid3d,
+                    )
                 );
             }
         }
 
-        return Shapes\Cuboid3d::createFromArray(
-            array(
-                'id' => $current->getId(),
-                'vehicleCoordinates' => $newCuboid3d,
-            )
-        );
+        return $cuboid;
     }
 
     /**
