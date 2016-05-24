@@ -104,9 +104,9 @@ class DepthBufferProjection2d {
     });
     faces.push({
       name: 'bottom',
-      vertices2d: [c2[7], c2[6], c2[2], c2[0]],
-      vertices3d: [c3[7], c3[6], c3[2], c3[0]],
-      order: [7, 6, 2, 0],
+      vertices2d: [c2[7], c2[6], c2[2], c2[3]],
+      vertices3d: [c3[7], c3[6], c3[2], c3[3]],
+      order: [7, 6, 2, 3],
     });
 
     return faces;
