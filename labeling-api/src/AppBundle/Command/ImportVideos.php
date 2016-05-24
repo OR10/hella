@@ -31,8 +31,8 @@ class ImportVideos extends Base
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
             ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
             ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
-            ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 1)
-            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 1)
+            ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
+            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
             ->addArgument('drawingToolPerson', Input\InputArgument::OPTIONAL, 'Video person drawing tool', 'pedestrian')
             ->addArgument('drawingToolCyclist', Input\InputArgument::OPTIONAL, 'Video cyclist drawing tool', 'rectangle')
             ->addArgument('drawingToolIgnore', Input\InputArgument::OPTIONAL, 'Video ignore drawing tool', 'rectangle')
@@ -44,7 +44,7 @@ class ImportVideos extends Base
     {
         $videoDirectory = $input->getArgument('directory');
 
-        foreach (glob($videoDirectory . '/*.mp4') as $videoFile) {
+        foreach (glob($videoDirectory . '/*.avi') as $videoFile) {
             $this->writeInfo(
                 $output,
                 "Uploading video <comment>" . $videoFile . "</comment>"
