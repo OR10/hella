@@ -123,9 +123,9 @@ class DepthBuffer
         ];
         $faces[] = [
             'name' => 'bottom',
-            'vertices2d' => [$c2[7], $c2[6], $c2[2], $c2[0]],
-            'vertices3d' => [$c3[7], $c3[6], $c3[2], $c3[0]],
-            'order' => [7, 6, 2, 0],
+            'vertices2d' => [$c2[7], $c2[6], $c2[2], $c2[3]],
+            'vertices3d' => [$c3[7], $c3[6], $c3[2], $c3[3]],
+            'order' => [7, 6, 2, 3],
         ];
 
         return $faces;
@@ -159,16 +159,15 @@ class DepthBuffer
         $imageWidth = $minMaxFaces2d['x']['max'] - $minMaxFaces2d['x']['min'];
         $imageHeight = $minMaxFaces2d['y']['max'] - $minMaxFaces2d['y']['min'];
 
-
-        $image = \imagecreatetruecolor(round($imageWidth), round($imageHeight));
+        $image = \imagecreatetruecolor(ceil($imageWidth), ceil($imageHeight));
         $black = imagecolorallocate($image, 0, 0, 0);
         $white = imagecolorallocate($image, 255, 255, 255);
 
         imagefill($image, 0, 0, $black);
 
-
         $vertices = array();
         $vertexVisibility = array();
+
         foreach ($faces as $face) {
             $hiddenVertices = array_filter($face['vertices2d'],
                 function ($vertex) use ($image, $offsetX, $offsetY) {
@@ -198,8 +197,8 @@ class DepthBuffer
 
     private function isPixelDrawn($image, $vertex, $offsetX, $offsetY)
     {
-        $x = round($vertex->getX() + $offsetX);
-        $y = round($vertex->getY() + $offsetY);
+        $x = floor($vertex->getX() + $offsetX);
+        $y = floor($vertex->getY() + $offsetY);
 
         if ($x >= imagesx($image) || $y >= imagesy($image)) {
             return false;
