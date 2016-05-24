@@ -98,12 +98,12 @@ class PaperCuboid extends PaperShape {
       const from = cuboid2d.vertices[edgePointIndex.from];
       const to = cuboid2d.vertices[edgePointIndex.to];
       const hidden = (!cuboid2d.vertexVisibility[edgePointIndex.from] || !cuboid2d.vertexVisibility[edgePointIndex.to]);
-      const primary = (cuboid2d.primaryVertices[edgePointIndex.from] && cuboid2d.primaryVertices[edgePointIndex.to] && this._isSelected);
+      const showPrimaryEdge = (cuboid2d.primaryVertices[edgePointIndex.from] && cuboid2d.primaryVertices[edgePointIndex.to] && this._isSelected);
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
-        strokeColor: primary ? this._color.primary : this._color.secondary,
+        strokeColor: showPrimaryEdge ? this._color.primary : this._color.secondary,
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
