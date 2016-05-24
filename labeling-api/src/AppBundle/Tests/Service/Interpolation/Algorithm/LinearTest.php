@@ -648,18 +648,6 @@ class LinearTest extends Tests\KernelTestCase
 
     public function testCuboid3dInterpolationWith2d()
     {
-        new Shapes\Cuboid3d(
-            'test-1',
-            [20, 1, 1],
-            [20, -1, 1],
-            [20, -1, 0],
-            [20, 1, 0],
-            [23, 1, 1],
-            [23, -1, 1],
-            [23, -1, 0],
-            [23, 1, 0]
-        );
-
         $thing = $this->createLabeledThing();
         $thingsInFrame = [
             $this->createLabeledThingInFrame(
