@@ -61,12 +61,19 @@ class PaperCuboid extends PaperShape {
    */
   _drawCuboid() {
     const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
-    const lines = this._generateEdges(projectedCuboid);
-    const planes = this._generatePlanes(projectedCuboid);
 
     this.removeChildren();
+
+    const lines = this._generateEdges(projectedCuboid);
     this._addChildren(lines);
+
+    const planes = this._generatePlanes(projectedCuboid);
     this._addChildren(planes);
+
+    if (this._isSelected) {
+      const handles = this._generateHandles(projectedCuboid);
+      this._addChildren(handles);
+    }
   }
 
   /**
@@ -139,6 +146,45 @@ class PaperCuboid extends PaperShape {
         closed: true,
       });
     });
+  }
+
+  /**
+   * @param {Cuboid2d} cuboid2d
+   * @private
+   */
+  _generateHandles(cuboid2d) {
+    const handles = [];
+    const handleWidth = 8;
+
+    cuboid2d.primaryVertices.forEach((isPrimaryVertex, index) => {
+      if (!isPrimaryVertex) {
+        return;
+      }
+
+      const vertex = cuboid2d.vertices[index];
+      const rectangle = {
+        topLeft: new paper.Point(
+          vertex.x - handleWidth / 2,
+          vertex.y - handleWidth / 2,
+        ),
+        bottomRight: new paper.Point(
+          vertex.x + handleWidth / 2,
+          vertex.y + handleWidth / 2,
+        ),
+      };
+
+      handles.push(
+        new paper.Path.Rectangle({
+          rectangle,
+          selected: false,
+          strokeWidth: 0,
+          strokeScaling: false,
+          fillColor: '#ffffff',
+        })
+      );
+    });
+
+    return handles;
   }
 
   /**
