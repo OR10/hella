@@ -669,14 +669,14 @@ class LinearTest extends Tests\KernelTestCase
             ),
             $this->createLabeledThingInFrame(
                 $thing,
-                3,
+                4,
                 [
                     new Shapes\Cuboid3d(
                         'test-1',
-                        [28, 1, 1],
-                        [28, -1, 1],
-                        [28, -1, 0],
-                        [28, 1, 0],
+                        [36, 1, 1],
+                        [36, -1, 1],
+                        [36, -1, 0],
+                        [36, 1, 0],
                         [24, 1, 1],
                         [24, -1, 1],
                         [24, -1, 0],
@@ -690,7 +690,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameIndexRange(1, 3),
+            new Model\FrameIndexRange(1, 4),
             function (Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -708,21 +708,64 @@ class LinearTest extends Tests\KernelTestCase
                         [20, 1, 0],
                         [24, 1, 1],
                         [24, -1, 1],
-                        [24, -1, 0],
+                        [24, -1, 0
+                        ],
                         [24, 1, 0]
                     )
-                ]
-            )
+                ])
             ),
             new Model\LabeledThingInFrame(
                 $thing, 2, [], $this->convertShapesToArray(
                 [
                     new Shapes\Cuboid3d(
                         'test-1',
+                        null,
+                        null,
+                        null,
+                        null,
                         [24, 1, 1],
                         [24, -1, 1],
                         [24, -1, 0],
-                        [24, 1, 0],
+                        [24, 1, 0]
+                    )
+                ])
+            ),
+            new Model\LabeledThingInFrame(
+                $thing, 3, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [30.666666666667, 1, 1],
+                        [30.666666666667, -1, 1],
+                        [30.666666666667, -1, 0],
+                        [30.666666666667, 1, 0],
+                        [24, 1, 1],
+                        [24, -1, 1],
+                        [24, -1, 0],
+                        [24, 1, 0]
+                    )
+                ])
+            ),
+            new Model\LabeledThingInFrame(
+                $thing, 4, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [36, 1, 1],
+                        [36, -1, 1],
+                        [36, -1, 0],
+                        [36, 1, 0],
+                        [24, 1, 1],
+                        [24, -1, 1],
+                        [24, -1, 0],
+                        [24, 1, 0]
+                    )
+                ])
+            ),
+        ];
+        $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
+    }
+
                         null,
                         null,
                         null,

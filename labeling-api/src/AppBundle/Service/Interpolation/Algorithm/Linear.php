@@ -154,7 +154,17 @@ class Linear implements Interpolation\Algorithm
             );
 
             $current = $previous->copy($frameIndex);
-            $current->setShapesAsObjects($currentShapes);
+            $current->setShapesAsObjects(
+                array_map(
+                    function ($shape) use ($calibrationData) {
+                        if (get_class($shape) === Shapes\Cuboid3d::class) {
+                            return $this->applyDepthBuffer($shape, $calibrationData);
+                        }
+                        return $shape;
+                    },
+                    $currentShapes
+                )
+            );
             $emit($current);
             $previous = $current;
             --$remainingSteps;
@@ -256,25 +266,12 @@ class Linear implements Interpolation\Algorithm
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $current
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $end
      * @param $steps
-     * @param $calibrationData
      * @return Shapes\Pedestrian
      */
-    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps, $calibrationData)
+    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps)
     {
-        $currentCuboidNumberOfVertex = count(
-            array_filter($current->toArray()['vehicleCoordinates'], function ($vertex) {
-                return !($vertex === null);
-            })
-        );
-
-        $endCuboidNumberOfVertex = count(
-            array_filter($end->toArray()['vehicleCoordinates'], function ($vertex) {
-                return !($vertex === null);
-            })
-        );
-
         $newCuboid3d = [];
-        for ($index=0;$index <= 7;$index++) {
+        foreach (range(0, 7) as $index) {
             $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
                 $current->toArray()['vehicleCoordinates'][$index],
                 $end->toArray()['vehicleCoordinates'][$index],
@@ -287,39 +284,12 @@ class Linear implements Interpolation\Algorithm
                 'vehicleCoordinates' => $newCuboid3d,
             )
         );
-        if ($currentCuboidNumberOfVertex === 8 && $endCuboidNumberOfVertex === 8) {
-            $vertices = $this->depthBuffer->getVertices(
-                $cuboid,
-                $calibrationData
-            );
-            $vertexVisibilityCount = count(
-                array_filter($vertices[1], function ($vertex) {
-                    return $vertex;
-                })
-            );
 
-            if ($vertexVisibilityCount <= 4) {
-                foreach ($vertices[1] as $index => $visibility) {
-                    if ($visibility) {
-                        $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
-                            $current->toArray()['vehicleCoordinates'][$index],
-                            $end->toArray()['vehicleCoordinates'][$index],
-                            $steps
-                        );
-                    } else {
-                        $newCuboid3d[$index] = null;
-                    }
-                }
-                $cuboid = Shapes\Cuboid3d::createFromArray(
-                    array(
-                        'id' => $current->getId(),
-                        'vehicleCoordinates' => $newCuboid3d,
-                    )
-                );
+        return $cuboid;
+    }
             }
         }
 
-        return $cuboid;
     }
 
     /**
@@ -338,5 +308,43 @@ class Linear implements Interpolation\Algorithm
             $currentVertex[1] + ($endVertex[1] - $currentVertex[1]) / $steps,
             $currentVertex[2] + ($endVertex[2] - $currentVertex[2]) / $steps,
         ];
+    }
+
+    /**
+     * @param Shapes\Cuboid3d $cuboid
+     * @param $calibrationData
+     * @return Shapes\Cuboid3d|Shapes\Rectangle
+     */
+    private function applyDepthBuffer(Shapes\Cuboid3d $cuboid, $calibrationData)
+    {
+        $vertices = $this->depthBuffer->getVertices(
+            $cuboid,
+            $calibrationData
+        );
+
+        $vertexVisibilityCount = count(
+            array_filter($vertices[1], function ($vertex) {
+                return $vertex;
+            })
+        );
+
+        if ($vertexVisibilityCount <= 4) {
+            $newCuboid3d = [];
+            foreach ($vertices[1] as $index => $visibility) {
+                if ($visibility) {
+                    $newCuboid3d[$index] = $cuboid->toArray()['vehicleCoordinates'][$index];
+                } else {
+                    $newCuboid3d[$index] = null;
+                }
+            }
+            $cuboid = Shapes\Cuboid3d::createFromArray(
+                array(
+                    'id' => $cuboid->getId(),
+                    'vehicleCoordinates' => $newCuboid3d,
+                )
+            );
+        }
+
+        return $cuboid;
     }
 }
