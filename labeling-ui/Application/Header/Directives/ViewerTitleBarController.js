@@ -185,7 +185,6 @@ class ViewerTitleBarController {
       });
       const shape = labeledThingInFrame.paperShapes[0];
       this.selectedPaperShape = shape;
-      this.selectedPaperShape.select();
       this.hideLabeledThingsInFrame = true;
       this.thingLayer.update();
     });

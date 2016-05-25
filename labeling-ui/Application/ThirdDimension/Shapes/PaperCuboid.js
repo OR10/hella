@@ -59,18 +59,18 @@ class PaperCuboid extends PaperShape {
    *
    * @private
    */
-  _drawCuboid() {
+  _drawCuboid(handles = true) {
     const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
 
-    const lines = this._generateEdges(projectedCuboid);
-    this._addChildren(lines);
-
     const planes = this._generatePlanes(projectedCuboid);
     this._addChildren(planes);
 
-    if (this._isSelected) {
+    const lines = this._generateEdges(projectedCuboid);
+    this._addChildren(lines);
+
+    if (this._isSelected && handles) {
       const handles = this._generateHandles(projectedCuboid);
       this._addChildren(handles);
     }
@@ -210,7 +210,7 @@ class PaperCuboid extends PaperShape {
    */
   select(handles = true) {
     this._isSelected = true;
-    this._drawCuboid();
+    this._drawCuboid(handles);
   }
 
   /**
