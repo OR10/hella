@@ -110,7 +110,7 @@ class PaperCuboid extends PaperShape {
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
-        strokeColor: showPrimaryEdge ? this._color.primary : this._color.secondary,
+        strokeColor: showPrimaryEdge ? this._color.secondary : this._color.primary,
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
