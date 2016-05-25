@@ -287,10 +287,6 @@ class Linear implements Interpolation\Algorithm
 
         return $cuboid;
     }
-            }
-        }
-
-    }
 
     /**
      * @param $currentVertex

@@ -766,35 +766,6 @@ class LinearTest extends Tests\KernelTestCase
         $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
     }
 
-                        null,
-                        null,
-                        null,
-                        null
-                    )
-                ]
-            )
-            ),
-            new Model\LabeledThingInFrame(
-                $thing, 3, [], $this->convertShapesToArray(
-                [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [28, 1, 1],
-                        [28, -1, 1],
-                        [28, -1, 0],
-                        [28, 1, 0],
-                        [24, 1, 1],
-                        [24, -1, 1],
-                        [24, -1, 0],
-                        [24, 1, 0]
-                    )
-                ]
-            )
-            ),
-        ];
-        $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
-    }
-
     private function assertLabeledThingsInFrameAreEqual(array $expected, array $actual)
     {
         $this->assertEquals($this->createComparableArray($expected), $this->createComparableArray($actual));
