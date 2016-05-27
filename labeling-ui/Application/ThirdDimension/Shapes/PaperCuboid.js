@@ -43,18 +43,6 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * Add all edged to the shape group
-   *
-   * @param {Array.<paper.Path>} edges
-   * @private
-   */
-  _addChildren(edges) {
-    edges.forEach((edge) => {
-      this.addChild(edge);
-    });
-  }
-
-  /**
    * Generate the 2d projection of the {@link Cuboid3d} and add the corresponding shaped to this group
    *
    * @private
@@ -71,8 +59,8 @@ class PaperCuboid extends PaperShape {
     this._addChildren(lines);
 
     if (this._isSelected && handles) {
-      const handles = this._generateHandles(projectedCuboid);
-      this._addChildren(handles);
+      const rectangles = this._generateHandles(projectedCuboid);
+      this._addChildren(rectangles);
     }
   }
 
@@ -105,7 +93,7 @@ class PaperCuboid extends PaperShape {
       const from = cuboid2d.vertices[edgePointIndex.from];
       const to = cuboid2d.vertices[edgePointIndex.to];
       const hidden = (!cuboid2d.vertexVisibility[edgePointIndex.from] || !cuboid2d.vertexVisibility[edgePointIndex.to]);
-      const showPrimaryEdge = (cuboid2d.primaryVertices[edgePointIndex.from] && cuboid2d.primaryVertices[edgePointIndex.to] && this._isSelected);
+      const showPrimaryEdge = (cuboid2d.primaryVertices.vertices[edgePointIndex.from] && cuboid2d.primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
@@ -114,7 +102,7 @@ class PaperCuboid extends PaperShape {
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
-        dashArray: hidden ? PaperCuboid.DASH : PaperCuboid.LINE,
+        dashArray: hidden ? PaperShape.DASH : PaperShape.LINE,
       });
     });
   }
@@ -154,9 +142,8 @@ class PaperCuboid extends PaperShape {
    */
   _generateHandles(cuboid2d) {
     const handles = [];
-    const handleWidth = 8;
 
-    cuboid2d.primaryVertices.forEach((isPrimaryVertex, index) => {
+    cuboid2d.primaryVertices.vertices.forEach((isPrimaryVertex, index) => {
       if (!isPrimaryVertex) {
         return;
       }
@@ -164,17 +151,18 @@ class PaperCuboid extends PaperShape {
       const vertex = cuboid2d.vertices[index];
       const rectangle = {
         topLeft: new paper.Point(
-          vertex.x - handleWidth / 2,
-          vertex.y - handleWidth / 2,
+          vertex.x - this._handleSize / 2,
+          vertex.y - this._handleSize / 2,
         ),
         bottomRight: new paper.Point(
-          vertex.x + handleWidth / 2,
-          vertex.y + handleWidth / 2,
+          vertex.x + this._handleSize / 2,
+          vertex.y + this._handleSize / 2,
         ),
       };
 
       handles.push(
         new paper.Path.Rectangle({
+          name: 'cube-' + cuboid2d.primaryVertices.names[index],
           rectangle,
           selected: false,
           strokeWidth: 0,
@@ -185,6 +173,21 @@ class PaperCuboid extends PaperShape {
     });
 
     return handles;
+  }
+
+  getCursor(hitResult) {
+    switch (hitResult.item.name) {
+      case 'cube-height':
+        return 'ns-resize';
+      case 'cube-width':
+        return 'all-scroll';
+      case 'cube-length':
+        return 'all-scroll';
+      case 'cube-move':
+        return 'grab';
+      default:
+        return 'pointer';
+    }
   }
 
   /**
@@ -237,7 +240,5 @@ class PaperCuboid extends PaperShape {
     // TODO: Implement
   }
 }
-PaperCuboid.DASH = [2, 2];
-PaperCuboid.LINE = [];
 
 export default PaperCuboid;

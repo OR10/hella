@@ -187,37 +187,17 @@ export default class MultiTool extends Tool {
     this._context.withScope(scope => {
       const point = event.point;
       const hitResult = scope.project.hitTest(point, {
-        class: PaperShape,
         fill: true,
-        bounds: true,
+        bounds: false,
         tolerance: this._options.hitTestTolerance,
       });
 
+      //TODO: toolservice -> getTool(hitTestItem.class, hitTestItem.getToolActionIdentifier);
+
       if (!hitResult) {
         this._$scope.vm.actionMouseCursor = null;
-        return;
-      }
-
-      if (hitResult.type === 'fill') {
-        this._$scope.vm.actionMouseCursor = 'grab';
-        return;
-      }
-
-      switch (hitResult.name) {
-        case 'top-left':
-          this._$scope.vm.actionMouseCursor = 'nwse-resize';
-          break;
-        case 'bottom-right':
-          this._$scope.vm.actionMouseCursor = 'nwse-resize';
-          break;
-        case 'top-right':
-          this._$scope.vm.actionMouseCursor = 'nesw-resize';
-          break;
-        case 'bottom-left':
-          this._$scope.vm.actionMouseCursor = 'nesw-resize';
-          break;
-        default:
-          this._$scope.vm.actionMouseCursor = null;
+      } else {
+        this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult);
       }
     });
   }

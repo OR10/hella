@@ -36,10 +36,22 @@ class DepthBufferProjection2d {
    */
   _getPrimaryVertices(cuboid3d) {
     const mapping = {
-      2: [false, true, true, true, false, false, true, false],
-      3: [true, false, true, true, false, false, false, true],
-      6: [false, false, true, false, false, true, true, true],
-      7: [false, false, false, true, true, false, true, true],
+      2: {
+        vertices: [false, true, true, true, false, false, true, false],
+        names: {2: 'move', 3: 'width', 6: 'length', 1: 'height'},
+      },
+      3: {
+        vertices: [true, false, true, true, false, false, false, true],
+        names: {3: 'move', 2: 'width', 7: 'length', 0: 'height'},
+      },
+      6: {
+        vertices: [false, false, true, false, false, true, true, true],
+        names: {6: 'move', 7: 'width', 2: 'length', 5: 'height'},
+      },
+      7: {
+        vertices: [false, false, false, true, true, false, true, true],
+        names: {7: 'move', 6: 'width', 3: 'length', 4: 'height'},
+      },
     };
     const primaryCorner = this._getPrimaryCorner(cuboid3d);
 

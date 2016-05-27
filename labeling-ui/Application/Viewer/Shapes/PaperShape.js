@@ -54,6 +54,23 @@ class PaperShape extends paper.Group {
      * @private
      */
     this._draft = draft;
+
+    /**
+     * Size of the drag and resize handles of the shape.
+     * The number represents die diameter in px.
+     *
+     * @type {number}
+     * @private
+     */
+    this._handleSize = 6;
+
+    /**
+     * Flag to present the selected status of the shape.
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._isSelected = false;
   }
 
   get id() {
@@ -67,6 +84,15 @@ class PaperShape extends paper.Group {
    */
   get isDraft() {
     return this._draft;
+  }
+
+  /**
+   * Whether the Shape is selected or not
+   *
+   * @returns {boolean}
+   */
+  get selected() {
+    return this._isSelected;
   }
 
   /**
@@ -117,14 +143,19 @@ class PaperShape extends paper.Group {
     return true;
   }
 
-  select(handles = true) {
-    this._shape.dashArray = [6, 2];
-    this._shape.selected = handles;
-  }
-
-  deselect() {
-    this._shape.dashArray = [];
-    this._shape.selected = false;
+  getCursor(hitResult) {
+    switch (hitResult.item.name) {
+      case 'top-left':
+        return 'nwse-resize';
+      case 'bottom-right':
+        return 'nwse-resize';
+      case 'top-right':
+        return 'nesw-resize';
+      case 'bottom-left':
+        return 'nesw-resize';
+      default:
+        return 'grab';
+    }
   }
 
   /**
@@ -142,9 +173,43 @@ class PaperShape extends paper.Group {
   }
 
   /**
+   * Add all edged to the shape group
+   *
+   * @param {Array.<paper.Path>} edges
+   * @private
+   */
+  _addChildren(edges) {
+    edges.forEach((edge) => {
+      this.addChild(edge);
+    });
+  }
+
+  /**
    * @abstract
    * @method PaperShape#toJSON
    */
+
+  /**
+   * @abstract
+   * @method PaperShape#select
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#deselect
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#_drawShape
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#_generateHandles
+   */
 }
+PaperShape.DASH = [10, 4];
+PaperShape.LINE = [];
 
 export default PaperShape;
