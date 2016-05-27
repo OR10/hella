@@ -708,8 +708,7 @@ class LinearTest extends Tests\KernelTestCase
                         [20, 1, 0],
                         [24, 1, 1],
                         [24, -1, 1],
-                        [24, -1, 0
-                        ],
+                        [24, -1, 0],
                         [24, 1, 0]
                     )
                 ])
@@ -759,6 +758,110 @@ class LinearTest extends Tests\KernelTestCase
                         [24, -1, 1],
                         [24, -1, 0],
                         [24, 1, 0]
+                    )
+                ])
+            ),
+        ];
+        $this->assertLabeledThingsInFrameAreEqual($expected, $emitted);
+    }
+
+
+    public function testCuboid3dInterpolationWith2dStarting()
+    {
+        $thing = $this->createLabeledThing();
+        $thingsInFrame = [
+            $this->createLabeledThingInFrame(
+                $thing,
+                1,
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        null,
+                        null,
+                        null,
+                        null,
+                        [20, 6.5, 1.7],
+                        [20, 4.8, 1.7],
+                        [20, 4.8, 0],
+                        [20, 6.5, 0]
+                    ),
+                ]
+            ),
+            $this->createLabeledThingInFrame(
+                $thing,
+                3,
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [12, 8.5, 3.7],
+                        [12, 6.8, 3.7],
+                        [12, 6.8, 2],
+                        [12, 7.5, 2],
+                        [20, 7.5, 3.7],
+                        [20, 6.8, 3.7],
+                        [20, 6.8, 2],
+                        [20, 8.5, 2]
+                    ),
+                ]
+            )
+        ];
+
+        $emitted = [];
+
+        $this->algorithm->interpolate(
+            $thing,
+            new Model\FrameIndexRange(1, 3),
+            function (Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
+                $emitted[] = $emittedLabeledThingInFrame;
+            }
+        );
+
+        $expected = [
+            new Model\LabeledThingInFrame(
+                $thing, 1, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        null,
+                        null,
+                        null,
+                        null,
+                        [20, 6.5, 1.7],
+                        [20, 4.8, 1.7],
+                        [20, 4.8, 0],
+                        [20, 6.5, 0]
+                    )
+                ])
+            ),
+            new Model\LabeledThingInFrame(
+                $thing, 2, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [6, 4.25, 1.8500000000000001],
+                        [6, 3.3999999999999999, 1.8500000000000001],
+                        [6, 3.3999999999999999, 1],
+                        [6, 3.75, 1],
+                        [20, 7, 2.7000000000000002],
+                        [20, 5.7999999999999998, 2.7000000000000002],
+                        [20, 5.7999999999999998, 1],
+                        [20, 7.5, 1]
+                    )
+                ])
+            ),
+            new Model\LabeledThingInFrame(
+                $thing, 3, [], $this->convertShapesToArray(
+                [
+                    new Shapes\Cuboid3d(
+                        'test-1',
+                        [12, 8.5, 3.7],
+                        [12, 6.8, 3.7],
+                        [12, 6.8, 2],
+                        [12, 7.5, 2],
+                        [20, 7.5, 3.7],
+                        [20, 6.8, 3.7],
+                        [20, 6.8, 2],
+                        [20, 8.5, 2]
                     )
                 ])
             ),
