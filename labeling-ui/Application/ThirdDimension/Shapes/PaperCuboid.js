@@ -98,7 +98,7 @@ class PaperCuboid extends PaperShape {
       {from: 0, to: 4}, // Front top left -> back top right
       {from: 1, to: 5}, // Front top right -> back top left
       {from: 2, to: 6}, // Front bottom right -> back bottom left
-      {from: 3, to: 7}, // Front bottom left -> back bottom right
+      {from: 3, to: 7} // Front bottom left -> back bottom right
     ];
 
     return edges.map((edgePointIndex) => {
@@ -114,7 +114,7 @@ class PaperCuboid extends PaperShape {
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
-        dashArray: hidden ? PaperCuboid.DASH : PaperCuboid.LINE,
+        dashArray: hidden ? PaperCuboid.DASH : PaperCuboid.LINE
       });
     });
   }
@@ -130,7 +130,7 @@ class PaperCuboid extends PaperShape {
       [4, 0, 3, 7],
       [4, 5, 6, 7],
       [4, 5, 1, 0],
-      [7, 6, 2, 3],
+      [7, 6, 2, 3]
     ];
 
     const visiblePlanes = planes.filter(plane => plane.filter(vertex => cuboid2d.vertexVisibility[vertex]).length === 4);
@@ -143,7 +143,7 @@ class PaperCuboid extends PaperShape {
         strokeWidth: 0,
         fillColor: new paper.Color(0, 0, 0, 0),
         segments: points,
-        closed: true,
+        closed: true
       });
     });
   }
@@ -165,12 +165,12 @@ class PaperCuboid extends PaperShape {
       const rectangle = {
         topLeft: new paper.Point(
           vertex.x - handleWidth / 2,
-          vertex.y - handleWidth / 2,
+          vertex.y - handleWidth / 2
         ),
         bottomRight: new paper.Point(
           vertex.x + handleWidth / 2,
-          vertex.y + handleWidth / 2,
-        ),
+          vertex.y + handleWidth / 2
+        )
       };
 
       handles.push(
@@ -179,7 +179,7 @@ class PaperCuboid extends PaperShape {
           selected: false,
           strokeWidth: 0,
           strokeScaling: false,
-          fillColor: '#ffffff',
+          fillColor: '#ffffff'
         })
       );
     });
