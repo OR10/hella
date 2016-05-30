@@ -1,5 +1,5 @@
 import ShapeScaleTool from '../Tools/ShapeScaleTool';
-import ShapeMoveTool from '../Tools/ShapeMoveTool';
+import RectangleMoveTool from '../Tools/RectangleMoveTool';
 
 class ToolService {
   constructor() {
@@ -14,7 +14,7 @@ class ToolService {
      * @private
      */
     this._classes = {
-      'rectangle-move': ShapeMoveTool,
+      'rectangle-move': RectangleMoveTool,
       'rectangle-scale': ShapeScaleTool,
     };
   }

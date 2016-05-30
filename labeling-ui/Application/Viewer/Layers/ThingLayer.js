@@ -9,8 +9,6 @@ import PathDrawingTool from '../Tools/PathDrawingTool';
 import PolygonDrawingTool from '../Tools/PolygonDrawingTool';
 import LineDrawingTool from '../Tools/LineDrawingTool';
 import PointDrawingTool from '../Tools/PointDrawingTool';
-import ShapeMoveTool from '../Tools/ShapeMoveTool';
-import ShapeScaleTool from '../Tools/ShapeScaleTool';
 import ZoomTool from '../Tools/ZoomTool';
 import MultiTool from '../Tools/MultiTool';
 
@@ -87,26 +85,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     /**
      * Tool for moving shapes
      *
-     * @type {ShapeMoveTool}
+     * @type {MultiTool}
      * @private
      */
     this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context);
-
-    /**
-     * Tool for moving shapes
-     *
-     * @type {ShapeMoveTool}
-     * @private
-     */
-    this._shapeMoveTool = new ShapeMoveTool($scope.$new(), this._context);
-
-    /**
-     * Tool for scaling shapes
-     *
-     * @type {ShapeScaleTool}
-     * @private
-     */
-    this._shapeScaleTool = new ShapeScaleTool($scope.$new(), this._context);
 
     /**
      * @type {null}

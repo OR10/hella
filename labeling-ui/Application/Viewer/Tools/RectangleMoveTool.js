@@ -7,7 +7,7 @@ import Tool from './Tool';
  * @extends Tool
  * @implements ToolEvents
  */
-export default class ShapeMoveTool extends Tool {
+class RectangleMoveTool extends Tool {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {DrawingContext} drawingContext
@@ -149,3 +149,5 @@ export default class ShapeMoveTool extends Tool {
     return Math.max(minClamp, Math.min(maxClamp, value));
   }
 }
+
+export default RectangleMoveTool;
