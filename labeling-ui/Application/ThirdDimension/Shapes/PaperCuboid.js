@@ -151,13 +151,13 @@ class PaperCuboid extends PaperShape {
       const vertex = cuboid2d.vertices[index];
       const rectangle = {
         topLeft: new paper.Point(
-          vertex.x - this._handleSize / 2,
-          vertex.y - this._handleSize / 2,
+          vertex.x - handleWidth / 2,
+          vertex.y - handleWidth / 2
         ),
         bottomRight: new paper.Point(
-          vertex.x + this._handleSize / 2,
-          vertex.y + this._handleSize / 2,
-        ),
+          vertex.x + handleWidth / 2,
+          vertex.y + handleWidth / 2
+        )
       };
 
       handles.push(

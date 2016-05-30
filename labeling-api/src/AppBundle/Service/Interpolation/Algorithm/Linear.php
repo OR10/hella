@@ -154,7 +154,17 @@ class Linear implements Interpolation\Algorithm
             );
 
             $current = $previous->copy($frameIndex);
-            $current->setShapesAsObjects($currentShapes);
+            $current->setShapesAsObjects(
+                array_map(
+                    function ($shape) use ($calibrationData) {
+                        if (get_class($shape) === Shapes\Cuboid3d::class) {
+                            return $this->applyDepthBuffer($shape, $calibrationData);
+                        }
+                        return $shape;
+                    },
+                    $currentShapes
+                )
+            );
             $emit($current);
             $previous = $current;
             --$remainingSteps;
@@ -256,25 +266,13 @@ class Linear implements Interpolation\Algorithm
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $current
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $end
      * @param $steps
-     * @param $calibrationData
      * @return Shapes\Pedestrian
      */
-    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps, $calibrationData)
+    private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps)
     {
-        $currentCuboidNumberOfVertex = count(
-            array_filter($current->toArray()['vehicleCoordinates'], function ($vertex) {
-                return !($vertex === null);
-            })
-        );
-
-        $endCuboidNumberOfVertex = count(
-            array_filter($end->toArray()['vehicleCoordinates'], function ($vertex) {
-                return !($vertex === null);
-            })
-        );
-
         $newCuboid3d = [];
-        for ($index=0;$index <= 7;$index++) {
+        $current = $this->getCuboidFromRect($current, $end);
+        foreach (range(0, 7) as $index) {
             $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
                 $current->toArray()['vehicleCoordinates'][$index],
                 $end->toArray()['vehicleCoordinates'][$index],
@@ -287,39 +285,160 @@ class Linear implements Interpolation\Algorithm
                 'vehicleCoordinates' => $newCuboid3d,
             )
         );
-        if ($currentCuboidNumberOfVertex === 8 && $endCuboidNumberOfVertex === 8) {
-            $vertices = $this->depthBuffer->getVertices(
-                $cuboid,
-                $calibrationData
-            );
-            $vertexVisibilityCount = count(
-                array_filter($vertices[1], function ($vertex) {
-                    return $vertex;
-                })
-            );
 
-            if ($vertexVisibilityCount <= 4) {
-                foreach ($vertices[1] as $index => $visibility) {
-                    if ($visibility) {
-                        $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
-                            $current->toArray()['vehicleCoordinates'][$index],
-                            $end->toArray()['vehicleCoordinates'][$index],
-                            $steps
-                        );
-                    } else {
-                        $newCuboid3d[$index] = null;
-                    }
-                }
-                $cuboid = Shapes\Cuboid3d::createFromArray(
-                    array(
-                        'id' => $current->getId(),
-                        'vehicleCoordinates' => $newCuboid3d,
+        return $cuboid;
+    }
+
+    private function getCuboidFromRect(Shapes\Cuboid3d $currentCuboid3d, Shapes\Cuboid3d $endCuboid3d)
+    {
+        $numberOfCurrentInvisibleVertices = array_filter($currentCuboid3d->toArray()['vehicleCoordinates'], function ($vertex) {
+            if ($vertex === null) {
+                return true;
+            }
+            return false;
+        });
+
+        $numberOfEndInvisibleVertices = array_filter($endCuboid3d->toArray()['vehicleCoordinates'], function ($vertex) {
+            if ($vertex === null) {
+                return true;
+            }
+            return false;
+        });
+
+        if (count($numberOfCurrentInvisibleVertices) === 0 || ($numberOfCurrentInvisibleVertices >= 4 && $numberOfEndInvisibleVertices >= 4)) {
+            return $currentCuboid3d;
+        }
+
+        switch (array_keys($numberOfCurrentInvisibleVertices)) {
+            case array(0, 1, 2, 3):
+                $oppositeVertex = array(
+                    0 => 4,
+                    1 => 5,
+                    2 => 6,
+                    3 => 7,
+                    'normal' => array(
+                        array(
+                            3, 0
+                        ),
+                        array(
+                            3, 2
+                        )
                     )
                 );
+                break;
+            case array(1, 2, 5, 6):
+                $oppositeVertex = array(
+                    1 => 0,
+                    2 => 3,
+                    5 => 4,
+                    6 => 7,
+                    'normal' => array(
+                        array(
+                            2, 1,
+                        ),
+                        array(
+                            2, 6
+                        )
+                    )
+                );
+                break;
+            case array(4, 5, 6, 7):
+                $oppositeVertex = array(
+                    4 => 0,
+                    5 => 1,
+                    6 => 2,
+                    7 => 3,
+                    'normal' => array(
+                        array(
+                            6, 5,
+                        ),
+                        array(
+                            6, 7
+                        )
+                    )
+                );
+                break;
+            case array(0, 3, 4, 7):
+                $oppositeVertex = array(
+                    0 => 1,
+                    3 => 2,
+                    4 => 5,
+                    7 => 6,
+                    'normal' => array(
+                        array(
+                            7, 4,
+                        ),
+                        array(
+                            7, 3
+                        )
+                    )
+                );
+                break;
+            case array(0, 1, 4, 5):
+                $oppositeVertex = array(
+                    0 => 3,
+                    1 => 2,
+                    4 => 7,
+                    5 => 6,
+                    'normal' => array(
+                        array(
+                            0, 4,
+                        ),
+                        array(
+                            0, 1
+                        )
+                    )
+                );
+                break;
+            case array(2, 3, 6, 7):
+                $oppositeVertex = array(
+                    2 => 1,
+                    3 => 0,
+                    6 => 5,
+                    7 => 4,
+                    'normal' => array(
+                        array(
+                            3, 7,
+                        ),
+                        array(
+                            3, 2
+                        )
+                    )
+                );
+                break;
+            default:
+                // TODO Exception
+                $oppositeVertex = array();
+        }
+
+        $plainVector1 = $endCuboid3d->getVertices()[$oppositeVertex['normal'][0][0]]->subtract($endCuboid3d->getVertices()[$oppositeVertex['normal'][0][1]]);
+        $plainVector2 = $endCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($endCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
+
+        $normalVector = $plainVector1->crossProduct($plainVector2);
+        $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[$oppositeVertex[0]]);
+        $distanceVector = $normalVector->multiply($distance)->divide($normalVector->getLength());
+
+        $newVertices = array(
+            'id' => $currentCuboid3d->getId(),
+            'type' => $currentCuboid3d->getType(),
+            'vehicleCoordinates' => array(),
+        );
+        foreach ($oppositeVertex as $currentVertexIndex => $endVertexIndex) {
+            if ($currentVertexIndex === 'normal') {
+                continue;
+            }
+            $currentVertex = $endCuboid3d->getVertices()[$endVertexIndex];
+
+            $newVertices['vehicleCoordinates'][$currentVertexIndex] = $currentVertex->add($distanceVector)->toArray();
+        }
+
+        foreach (range(0, 7) as $index) {
+            if (!isset($newVertices['vehicleCoordinates'][$index])) {
+                $newVertices['vehicleCoordinates'][$index] = $currentCuboid3d->getVertices()[$index]->toArray();
             }
         }
 
-        return $cuboid;
+        return Shapes\Cuboid3d::createFromArray($newVertices);
     }
 
     /**
@@ -338,5 +457,43 @@ class Linear implements Interpolation\Algorithm
             $currentVertex[1] + ($endVertex[1] - $currentVertex[1]) / $steps,
             $currentVertex[2] + ($endVertex[2] - $currentVertex[2]) / $steps,
         ];
+    }
+
+    /**
+     * @param Shapes\Cuboid3d $cuboid
+     * @param $calibrationData
+     * @return Shapes\Cuboid3d|Shapes\Rectangle
+     */
+    private function applyDepthBuffer(Shapes\Cuboid3d $cuboid, $calibrationData)
+    {
+        $vertices = $this->depthBuffer->getVertices(
+            $cuboid,
+            $calibrationData
+        );
+
+        $vertexVisibilityCount = count(
+            array_filter($vertices[1], function ($vertex) {
+                return $vertex;
+            })
+        );
+
+        if ($vertexVisibilityCount <= 4) {
+            $newCuboid3d = [];
+            foreach ($vertices[1] as $index => $visibility) {
+                if ($visibility) {
+                    $newCuboid3d[$index] = $cuboid->toArray()['vehicleCoordinates'][$index];
+                } else {
+                    $newCuboid3d[$index] = null;
+                }
+            }
+            $cuboid = Shapes\Cuboid3d::createFromArray(
+                array(
+                    'id' => $cuboid->getId(),
+                    'vehicleCoordinates' => $newCuboid3d,
+                )
+            );
+        }
+
+        return $cuboid;
     }
 }

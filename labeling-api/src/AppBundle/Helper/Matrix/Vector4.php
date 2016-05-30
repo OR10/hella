@@ -61,6 +61,101 @@ class Vector4
     }
 
     /**
+     * @param Vector4 $vector4
+     * @return Vector4
+     */
+    public function add(Vector4 $vector4)
+    {
+        return new Vector4(
+            $this->getX() + $vector4->getX(),
+            $this->getY() + $vector4->getY(),
+            $this->getZ() + $vector4->getZ(),
+            1
+        );
+    }
+
+    /**
+     * @return float
+     */
+    public function getLength()
+    {
+        return \sqrt(
+            \pow($this->getX(), 2) +
+            \pow($this->getY(), 2) +
+            \pow($this->getZ(), 2)
+        );
+    }
+
+    /**
+     * @param $scalar
+     * @return Vector4
+     */
+    public function multiply($scalar)
+    {
+        return new Vector4(
+            $this->getX() * $scalar,
+            $this->getY() * $scalar,
+            $this->getZ() * $scalar,
+            1
+        );
+    }
+
+    /**
+     * @param $scalar
+     * @return Vector4
+     */
+    public function divide($scalar)
+    {
+        return new Vector4(
+            $this->getX() / $scalar,
+            $this->getY() / $scalar,
+            $this->getZ() / $scalar,
+            1
+        );
+    }
+
+    /**
+     * @param Vector4 $vector4
+     * @return Vector4
+     */
+    public function crossProduct(Vector4 $vector4)
+    {
+        return new Vector4(
+            $this->getY() * $vector4->getZ() - $this->getZ() * $vector4->getY(),
+            $this->getZ() * $vector4->getX() - $this->getX() * $vector4->getZ(),
+            $this->getX() * $vector4->getY() - $this->getY() * $vector4->getX(),
+            1
+        );
+    }
+
+    /**
+     * @param Vector4 $vector4
+     * @return Vector4
+     */
+    public function subtract(Vector4 $vector4)
+    {
+        return new Vector4(
+            $this->getX() - $vector4->getX(),
+            $this->getY() - $vector4->getY(),
+            $this->getZ() - $vector4->getZ(),
+            1
+        );
+    }
+
+    /**
+     * @param Vector4 $vector4
+     * @return float
+     */
+    public function getDistanceTo(Vector4 $vector4)
+    {
+        return \sqrt(
+            \pow($this->getX() - $vector4->getX(), 2) +
+            \pow($this->getY() - $vector4->getY(), 2) +
+            \pow($this->getZ() - $vector4->getZ(), 2)
+        );
+    }
+
+    /**
      * @return mixed
      */
     public function getX()
@@ -90,5 +185,15 @@ class Vector4
     public function getW()
     {
         return $this->w;
+    }
+
+    public function toArray()
+    {
+        return array(
+            $this->x,
+            $this->y,
+            $this->z,
+            $this->w,
+        );
     }
 }
