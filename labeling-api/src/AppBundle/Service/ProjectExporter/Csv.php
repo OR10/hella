@@ -224,7 +224,7 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping, $labelInstruction) {
+            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 $ignoreType = $this->getClassByRegex('/^(person|cyclist)$/', 1, $labeledThingInFrame);
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
@@ -266,7 +266,7 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping, $labelInstruction) {
+            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 $direction   = $this->getClassByRegex('/^(direction-(\w+|(\w+-\w+)))$/', 2, $labeledThingInFrame);
                 $occlusion   = $this->getOcclusion($labeledThingInFrame);
                 $truncation  = $this->getTruncation($labeledThingInFrame);
@@ -300,7 +300,7 @@ class Csv implements Service\ProjectExporter
         $frameNumberMapping                    = $task->getFrameNumberMapping();
 
         return array_map(
-            function ($labeledThingInFrame) use (&$idCounter, $frameNumberMapping) {
+            function ($labeledThingInFrame) use ($frameNumberMapping) {
                 $vehicleType = $this->getClassByRegex(
                     '/^(car|truck|2-wheeler-vehicle|bus|misc-vehicle|ignore-vehicle)$/',
                     0,
