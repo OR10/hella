@@ -47,10 +47,14 @@ export default class ShapeMoveTool extends Tool {
     this._modified = false;
   }
 
-  onMouseDown(event, hitResult) {
+  /**
+   * @param {Object} event
+   * @param {PaperShape} hitShape
+   */
+  onMouseDown(event, hitShape) {
     const point = event.point;
 
-    this._paperShape = hitResult.item;
+    this._paperShape = hitShape;
     this._offset = new paper.Point(
       this._paperShape.position.x - point.x,
       this._paperShape.position.y - point.y
@@ -69,6 +73,9 @@ export default class ShapeMoveTool extends Tool {
     this._offset = null;
   }
 
+  /**
+   * @param event
+   */
   onMouseDrag(event) {
     if (!this._paperShape) {
       return;
@@ -76,10 +83,15 @@ export default class ShapeMoveTool extends Tool {
     const point = event.point;
 
     this._modified = true;
-    this.moveTo(this._paperShape, point.add(this._offset));
+    this._moveTo(this._paperShape, point.add(this._offset));
   }
 
-  moveTo(shape, point) {
+  /**
+   * @param {PaperShape}shape
+   * @param {paper.Point} point
+   * @private
+   */
+  _moveTo(shape, point) {
     this._context.withScope(scope => {
       shape.moveTo(this._restrictToViewport(shape, point));
       scope.view.update();

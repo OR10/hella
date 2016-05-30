@@ -12,10 +12,11 @@ export default class MultiTool extends Tool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ToolService} toolService
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
-  constructor($scope, keyboardShortcutService, drawingContext, options) {
+  constructor($scope, keyboardShortcutService, toolService, drawingContext, options) {
     super(drawingContext, options);
 
     /**
@@ -31,20 +32,10 @@ export default class MultiTool extends Tool {
     this._keyboardShortcutService = keyboardShortcutService;
 
     /**
-     * Tool handling the creation of things
-     *
-     * @type {Tool}
+     * @type {ToolService}
      * @private
      */
-    this._scaleTool = null;
-
-    /**
-     * Tool handling the movement of things
-     *
-     * @type {Tool}
-     * @private
-     */
-    this._moveTool = null;
+    this._toolService = toolService;
 
     /**
      * Tool handling the creation of things
@@ -124,24 +115,6 @@ export default class MultiTool extends Tool {
   }
 
   /**
-   * Register a tool for handling the moving of things
-   *
-   * @param {ToolEvents} tool
-   */
-  registerMoveTool(tool) {
-    this._moveTool = tool;
-  }
-
-  /**
-   * Register a tool for handling the scaling of things
-   *
-   * @param {ToolEvents} tool
-   */
-  registerScaleTool(tool) {
-    this._scaleTool = tool;
-  }
-
-  /**
    * Register a tool for handling the creation of things
    *
    * @param {ToolEvents} tool
@@ -215,26 +188,22 @@ export default class MultiTool extends Tool {
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
-        class: PaperShape,
         fill: true,
-        bounds: true,
+        bounds: false,
         tolerance: this._options.hitTestTolerance,
       });
 
       if (hitResult) {
-        this._hitResult = hitResult;
-        switch (this._hitResult.type) {
-          case 'bounds':
-            this._activeTool = this._scaleTool;
-            this._activeTool.onMouseDown(event, hitResult);
-            break;
-          case 'fill':
-            this._activeTool = this._moveTool;
-            this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grabbing');
-            this._activeTool.onMouseDown(event, hitResult);
-            break;
-          default:
-        }
+        const hitShape = hitResult.item.parent;
+        const actionIdentifier = hitResult.item.parent.getToolActionIdentifier(hitResult);
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
+
+        this._activeTool.on('shape:update', shape => {
+          this.emit('shape:update', shape);
+        });
+
+        this._activeTool.onMouseDown(event, hitShape);
+        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grabbing');
       } else {
         this._activeTool = this._createTool;
         this._activeTool.onMouseDown(event);
@@ -248,10 +217,7 @@ export default class MultiTool extends Tool {
     }
 
     if (this._activeTool) {
-      if (this._activeTool === this._moveTool) {
-        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grab');
-      }
-
+      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = null);
       this._activeTool.onMouseUp(event);
       this._activeTool = null;
     }

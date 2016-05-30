@@ -31,6 +31,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {EntityColorService} entityColorService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ToolService} toolService
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
@@ -45,6 +46,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               paperShapeFactory,
               entityColorService,
               keyboardShortcutService,
+              toolService,
               logger,
               $timeout,
               framePosition,
@@ -88,7 +90,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {ShapeMoveTool}
      * @private
      */
-    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, this._context);
+    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context);
 
     /**
      * Tool for moving shapes
@@ -117,11 +119,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
-    /**
-     * Register tool to the MultiTool
-     */
-    this._multiTool.registerMoveTool(this._shapeMoveTool);
-    this._multiTool.registerScaleTool(this._shapeScaleTool);
 
     try {
       this._initializeShapeCreationTool();
@@ -185,14 +182,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     this._multiTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
-    });
-
-    this._shapeMoveTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
-    });
-
-    this._shapeScaleTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
 
@@ -306,15 +295,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
       const projectPoint = scope.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
 
       const hitResult = scope.project.hitTest(projectPoint, {
-        class: PaperShape,
         fill: true,
-        bounds: true,
+        bounds: false,
         tolerance: 8,
       });
 
-      if (hitResult && hitResult.item.shouldBeSelected(hitResult)) {
+      if (hitResult && hitResult.item.parent.shouldBeSelected(hitResult)) {
         this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitResult.item);
-        this._$scope.vm.selectedPaperShape = hitResult.item;
+        this._$scope.vm.selectedPaperShape = hitResult.item.parent;
       } else {
         this._logger.log('thinglayer:selection', 'HitTest negative. Deselecting');
         this._$scope.vm.selectedPaperShape = null;

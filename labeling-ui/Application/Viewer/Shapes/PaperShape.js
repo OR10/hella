@@ -208,6 +208,11 @@ class PaperShape extends paper.Group {
    * @abstract
    * @method PaperShape#_generateHandles
    */
+
+  /**
+   * @abstract
+   * @method PaperShape#getClass
+   */
 }
 PaperShape.DASH = [10, 4];
 PaperShape.LINE = [];

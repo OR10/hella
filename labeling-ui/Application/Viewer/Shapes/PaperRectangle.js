@@ -20,7 +20,7 @@ class PaperRectangle extends PaperShape {
      * @private
      */
     this._topLeft = topLeft;
-    
+
     /**
      * @type {Point}
      * @private
@@ -36,6 +36,20 @@ class PaperRectangle extends PaperShape {
     this._drawShape();
   }
 
+  /**
+   * @returns {{width: number, height: number}}
+   */
+  get bounds() {
+    return {
+      width: this._bottomRight.x - this._topLeft.x,
+      height: this._bottomRight.y - this._topLeft.y,
+    };
+  }
+
+  /**
+   * @param {Boolean} handles
+   * @private
+   */
   _drawShape(handles = false) {
     this.removeChildren();
 
@@ -48,6 +62,10 @@ class PaperRectangle extends PaperShape {
     }
   }
 
+  /**
+   * @returns {paper.Rectangle}
+   * @private
+   */
   _generateShape() {
     return new paper.Path.Rectangle({
       strokeColor: this._color,
@@ -61,6 +79,10 @@ class PaperRectangle extends PaperShape {
     });
   }
 
+  /**
+   * @returns {Array<paper.Rectangle>}
+   * @private
+   */
   _generateHandles() {
     const handlePoints = [
       {name: 'top-left', point: this._topLeft},
@@ -108,6 +130,40 @@ class PaperRectangle extends PaperShape {
   deselect() {
     this._isSelected = false;
     this._drawShape();
+  }
+
+  /**
+   * @returns {string}
+   */
+  getClass() {
+    return 'rectangle';
+  }
+
+  /**
+   * @param {HitResult} hitResult
+   * @returns {String}
+   */
+  getToolActionIdentifier(hitResult) {
+    switch (hitResult.item.name) {
+      case 'top-left':
+      case 'top-right':
+      case 'bottom-right':
+      case 'bottom-left':
+        return 'scale';
+      default:
+        return 'move';
+    }
+  }
+
+  /**
+   * @param {paper.Point} point
+   */
+  moveTo(point) {
+    this.position = point;
+    const width = this._bottomRight.x - this._topLeft.x;
+    const height = this._bottomRight.y - this._topLeft.y;
+    this._topLeft = new paper.Point(point.x - (width / 2), point.y - (height / 2));
+    this._bottomRight = new paper.Point(point.x + (width / 2), point.y + (height / 2));
   }
 
   toJSON() {

@@ -54,6 +54,7 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {LockService} lockService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ToolService} toolService
    * @param {DebouncerService} debouncerService
    * @param {FrameIndexService} frameIndexService
    * @param {ModalService} modalService
@@ -82,6 +83,7 @@ class ViewerController {
               applicationState,
               lockService,
               keyboardShortcutService,
+              toolService,
               debouncerService,
               frameIndexService,
               modalService,
@@ -239,6 +241,12 @@ class ViewerController {
      * @private
      */
     this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
+     * @type {ToolService}
+     * @private
+     */
+    this._toolService = toolService;
 
     /**
      * @type {DebouncerService}
@@ -601,6 +609,7 @@ class ViewerController {
       this._paperShapeFactory,
       this._entityColorService,
       this._keyboardShortcutService,
+      this._toolService,
       this._logger,
       this._$timeout,
       this.framePosition,
@@ -1160,6 +1169,7 @@ ViewerController.$inject = [
   'applicationState',
   'lockService',
   'keyboardShortcutService',
+  'toolService',
   'debouncerService',
   'frameIndexService',
   'modalService',
