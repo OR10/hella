@@ -217,7 +217,7 @@ class Csv implements Service\ProjectExporter
      * @param Model\LabelingTask $task
      * @return mixed
      */
-    private function getIgnoreLabelingData(Model\LabelingTask $task)
+    public function getIgnoreLabelingData(Model\LabelingTask $task)
     {
         $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
         $frameNumberMapping                    = $task->getFrameNumberMapping();
@@ -244,7 +244,11 @@ class Csv implements Service\ProjectExporter
         );
     }
 
-    private function getCyclistLabelingData(Model\LabelingTask $task)
+    /**
+     * @param Model\LabelingTask $task
+     * @return array
+     */
+    public function getCyclistLabelingData(Model\LabelingTask $task)
     {
         return $this->getPedestrianLabelingData($task);
     }
@@ -253,8 +257,9 @@ class Csv implements Service\ProjectExporter
      * Get the pedestrian labeling data
      *
      * @param Model\LabelingTask $task
+     * @return array
      */
-    private function getPedestrianLabelingData(Model\LabelingTask $task)
+    public function getPedestrianLabelingData(Model\LabelingTask $task)
     {
         $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
         $frameNumberMapping                    = $task->getFrameNumberMapping();
@@ -289,7 +294,7 @@ class Csv implements Service\ProjectExporter
      *
      * @return array
      */
-    private function getVehicleLabelingData(Model\LabelingTask $task)
+    public function getVehicleLabelingData(Model\LabelingTask $task)
     {
         $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
         $frameNumberMapping                    = $task->getFrameNumberMapping();
