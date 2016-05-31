@@ -13,7 +13,7 @@ class CanvasInstructionLogManager {
    * @param {Boolean} createFixture
    * @returns {Promise<String>}
    */
-  getCanvasLogs(createFixture = false) {
+  getCanvasLogs(testName = null, fixtureName = null) {
     this._browser.waitForAngular();
 
     return this._browser.executeScript(() => {
@@ -32,20 +32,21 @@ class CanvasInstructionLogManager {
     }).then((obj) => {
       obj.operations = JSON.parse(obj.operations);
 
-      if (createFixture) {
-        this._createFixture(obj);
+      if (testName !== null && fixtureName !== null) {
+        this._createFixture(testName, fixtureName, obj);
       }
       return obj;
     });
   }
 
   /**
+   * @param {string} testName
+   * @param {string} fixtureName
    * @param {Object} obj
    * @private
    */
-  _createFixture(obj) {
-    const filename = `fixture_${Date.now() / 1000}.json`;
-    const path = `./Tests/Fixtures/Canvas/${filename}`;
+  _createFixture(testName, fixtureName, obj) {
+    const path = `./Tests/Fixtures/Canvas/${testName}/${fixtureName}.json`;
 
     this._storeFixture(path, JSON.stringify(obj));
   }
