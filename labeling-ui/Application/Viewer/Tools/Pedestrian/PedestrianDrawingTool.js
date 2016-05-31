@@ -31,27 +31,27 @@ class PedestrianDrawingTool extends DrawingTool {
     this._pedestrian = null;
 
     /**
-     * @type {paper.Point|null}
+     * @type {Point|null}
      * @private
      */
-    this._startPoint = null;
+    this._startPosition = null;
   }
 
   /**
    * Start the initial drawing of a pedestrian
    *
-   * @param {paper.Point} from
-   * @param {paper.Point} to
+   * @param {Point} from
+   * @param {Point} to
    */
   startShape(from, to) {
-    if (Math.abs(from.y - to.y) < 5) {
+    if (from.getDistance(to) < 5) {
       // Do nothing if no "real" dragging operation took place.
       return;
     }
-
     const labeledThingInFrame = this._createLabeledThingHierarchy();
+    let topCenter;
+    let bottomCenter;
 
-    let topCenter, bottomCenter;
     if (from.y < to.y) {
       topCenter = new paper.Point(from.x, from.y);
       bottomCenter = new paper.Point(from.x, to.y);
@@ -71,33 +71,52 @@ class PedestrianDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('pedestrian:new', this._rect);
+    this.emit('pedestrian:new', this._pedestrian);
   }
 
   /**
-   * Update an already created shape during intial drawing
+   * Handle mousedown events
    *
-   * @param {paper.Point} point
+   * @param event
    */
-  updateShape(point) {
-    const {topCenter, bottomCenter} = this._pedestrian.getCenterPoints();
-
-    const scaleFactor = Math.abs(this._startPoint.y - point.y) / Math.abs(bottomCenter.y - topCenter.y);
-    if (scaleFactor !== 0) {
-      this._pedestrian.scale(1, scaleFactor, this._startPoint);
-    }
-
-    if ((this._startPoint.isClose(topCenter, 0.0001) && point.y < topCenter.y) ||
-      (this._startPoint.isClose(bottomCenter, 0.0001) && point.y > bottomCenter.y)) {
-      this._pedestrian.flipHorizontally(this._startPoint);
-    }
-
-    this.emit('rectangle:update', this._pedestrian);
+  onMouseDown(event) {
+    this._startPosition = event.point;
   }
 
   /**
-   * Finish the drawing operation by emitting the new shape
+   * Handle mousedrag events
+   *
+   * @param event
    */
+  onMouseDrag(event) {
+    const point = event.point;
+    if (this._pedestrian) {
+      this._$scope.$apply(
+        () => {
+          this._pedestrian.resize(this._getScaleAnchor(point), point);
+          this.emit('pedestrian:update', this._pedestrian);
+        }
+      );
+    } else {
+      this._$scope.$apply(
+        () => this.startShape(this._startPosition, point)
+      );
+    }
+  }
+
+  /**
+   * Handle mouse up events
+   *
+   * @param event
+   */
+  onMouseUp(event) {
+    if (this._pedestrian) {
+      this._$scope.$apply(
+        () => this.completeShape()
+      );
+    }
+  }
+
   completeShape() {
     // Ensure the parent/child structure is intact
     const labeledThingInFrame = this._pedestrian.labeledThingInFrame;
@@ -107,47 +126,11 @@ class PedestrianDrawingTool extends DrawingTool {
     this._pedestrian = null;
   }
 
-
-  /**
-   * Handle mousedown events
-   *
-   * @param event
-   */
-  onMouseDown(event) {
-    this._startPoint = event.point;
-  }
-
-  /**
-   * Handle mousedrag events
-   *
-   * @param event
-   */
-  onMouseDrag(event) {
-    if (this._pedestrian) {
-      this._$scope.$apply(
-        () => this.updateShape(event.point)
-      );
-    } else {
-      this._$scope.$apply(
-        () => this.startShape(this._startPoint, event.point)
-      );
+  _getScaleAnchor(point) {
+    if (point.y > this._startPosition.y) {
+      return 'bottom-center';
     }
-  }
-
-  /**
-   * Handle mouseup events
-   *
-   * @param event
-   */
-  onMouseUp(event) {
-    if (this._pedestrian) {
-      try {
-        this._pedestrian.enforceMinimalLength(this._startPoint, this._options.minimalHeight);
-      } catch(e) {}
-      this._$scope.$apply(() => {
-        this.completeShape();
-      });
-    }
+    return 'top-center';
   }
 }
 

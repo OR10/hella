@@ -28,19 +28,33 @@ class PaperPedestrian extends PaperShape {
     this._isSelected = false;
 
     /**
-     * @type {paper.Path}
+     * @type {Point}
      * @private
      */
-    this._centerLine = this._createCenterLine(topCenter, bottomCenter);
+    this._topCenter = topCenter;
 
     /**
-     * @type {paper.Path}
+     * @type {Point}
      * @private
      */
-    this._aspectRectangle = this._createAspectRectangle(topCenter, bottomCenter);
+    this._bottomCenter = bottomCenter;
 
-    this.addChild(this._centerLine);
-    this.addChild(this._aspectRectangle);
+    this._drawShape();
+  }
+
+  _drawShape(handles = true) {
+    this.removeChildren();
+
+    const centerLine = this._createCenterLine();
+    this.addChild(centerLine);
+
+    const aspectRectangle = this._createAspectRectangle();
+    this.addChild(aspectRectangle);
+
+    if (this._isSelected && handles) {
+      const rectangles = this._createHandles();
+      this._addChildren(rectangles);
+    }
   }
 
   /**
@@ -51,10 +65,10 @@ class PaperPedestrian extends PaperShape {
    * @returns {paper.Path}
    * @private
    */
-  _createCenterLine(topCenter, bottomCenter) {
+  _createCenterLine() {
     return new paper.Path.Line({
-      from: topCenter,
-      to: bottomCenter,
+      from: this._topCenter,
+      to: this._bottomCenter,
       strokeColor: this._color,
       selected: false,
       strokeWidth: 2,
@@ -71,28 +85,57 @@ class PaperPedestrian extends PaperShape {
    * @returns {paper.Path}
    * @private
    */
-  _createAspectRectangle(topCenter, bottomCenter) {
-    const heightHalf = (bottomCenter.y - topCenter.y) / 2;
+  _createAspectRectangle() {
+    const heightHalf = (this._bottomCenter.y - this._topCenter.y) / 2;
     const widthHalf = heightHalf * PaperPedestrian.ASPECT_RATIO;
 
-    const rectangle = {
-      topLeft: new paper.Point(
-        topCenter.x - widthHalf,
-        topCenter.y
-      ),
-      bottomRight: new paper.Point(
-        bottomCenter.x + widthHalf,
-        bottomCenter.y
-      ),
-    };
-
     return new paper.Path.Rectangle({
-      rectangle,
       strokeColor: this._color,
       selected: false,
       strokeWidth: 2,
+      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
+      from: new paper.Point(
+        this._topCenter.x - widthHalf,
+        this._topCenter.y),
+      to: new paper.Point(
+        this._bottomCenter.x + widthHalf,
+        this._bottomCenter.y
+      ),
+    });
+  }
+
+  /**
+   * @returns {Array<Rectangle>}
+   * @private
+   */
+  _createHandles() {
+    const handlePoints = [
+      {name: 'top-center', point: this._topCenter},
+      {name: 'bottom-center', point: this._bottomCenter},
+    ];
+
+    return handlePoints.map(handle => {
+      const rectangle = {
+        topLeft: new paper.Point(
+          handle.point.x - this._handleSize / 2,
+          handle.point.y - this._handleSize / 2,
+        ),
+        bottomRight: new paper.Point(
+          handle.point.x + this._handleSize / 2,
+          handle.point.y + this._handleSize / 2,
+        ),
+      };
+
+      return new paper.Path.Rectangle({
+        name: handle.name,
+        rectangle,
+        selected: false,
+        strokeWidth: 0,
+        strokeScaling: false,
+        fillColor: '#ffffff',
+      });
     });
   }
 
@@ -102,14 +145,7 @@ class PaperPedestrian extends PaperShape {
    * @returns {{topCenter: *, bottomCenter: *}}
    */
   getCenterPoints() {
-    const firstSegment = this._centerLine.firstSegment.point;
-    const lastSegment = this._centerLine.lastSegment.point;
-
-    if (firstSegment.y < lastSegment.y) {
-      return {topCenter: firstSegment, bottomCenter: lastSegment};
-    } else {
-      return {topCenter: lastSegment, bottomCenter: firstSegment};
-    }
+    return {topCenter: this._topCenter, bottomCenter: this._bottomCenter};
   }
 
   /**
@@ -128,158 +164,110 @@ class PaperPedestrian extends PaperShape {
    */
   select(handles = true) {
     this._isSelected = true;
-
-    this._selectCenterLine(handles);
-    this._selectAspectRectangle();
-  }
-
-  /**
-   * Select the centerLine
-   *
-   * @param {Boolean} handles
-   * @private
-   */
-  _selectCenterLine(handles) {
-    this._centerLine.selected = handles;
-  }
-
-  /**
-   * Select the aspect rectangle
-   *
-   * @private
-   */
-  _selectAspectRectangle() {
-    this._aspectRectangle.dashArray = [6, 2];
+    this._drawShape(handles);
   }
 
   /**
    * Deselect the shape
    */
   deselect() {
-    this._deselectCenterLine();
-    this._deselectAspectRectangle();
-
     this._isSelected = false;
+    this._drawShape();
   }
 
   /**
-   * Deselect the center line
-   *
+   * @returns {{width: number, height: number}}
+   */
+  get bounds() {
+    const height = this._bottomCenter.y - this._topCenter.y;
+    const width = height * PaperPedestrian.ASPECT_RATIO;
+    return {width, height};
+  }
+
+  /**
+   * @returns {string}
+   */
+  getClass() {
+    return 'pedestrian';
+  }
+
+  /**
+   * @param {HitResult} hitResult
+   * @returns {string}
+   */
+  getToolActionIdentifier(hitResult) {
+    switch (hitResult.item.name) {
+      case 'top-center':
+      case 'bottom-center':
+        return 'scale';
+      default:
+        return 'move';
+    }
+  }
+
+  /**
+   * @param {Point} point
+   */
+  moveTo(point) {
+    const height = this._bottomCenter.y - this._topCenter.y;
+    this._topCenter = new paper.Point(point.x, point.y + (height / 2));
+    this._bottomCenter = new paper.Point(point.x, point.y - (height / 2));
+    this._drawShape();
+  }
+
+  /**
+   * @param {HitResult} hitResult
+   * @param {Boolean} mouseDown
+   * @returns {string}
+   */
+  getCursor(hitResult, mouseDown = false) {
+    switch (hitResult.item.name) {
+      case 'top-center':
+      case 'bottom-center':
+        return 'ns-resize';
+      default:
+        return mouseDown ? 'grabbing' : 'grab';
+    }
+  }
+
+  /**
+   * @param {string} handle
+   * @param {Point} point
+   * @param {number} minHeight
+   */
+  resize(handle, point, minHeight = 1) {
+    switch (handle) {
+      case 'top-center':
+        this._topCenter.y = this._enforceMinHeight(point.y, this._bottomCenter.y, minHeight);
+        break;
+      case 'bottom-center':
+      default:
+        this._bottomCenter.y = this._enforceMinHeight(point.y, this._topCenter.y, minHeight);
+    }
+    this._drawShape();
+  }
+
+  /**
+   * @param {number} point
+   * @param {number} fixPoint
+   * @param {number} minHeight
+   * @returns {number}
    * @private
    */
-  _deselectCenterLine() {
-    this._centerLine.selected = false;
+  _enforceMinHeight(point, fixPoint, minHeight) {
+    return Math.abs(point - fixPoint) > minHeight ? point : fixPoint + (((point - fixPoint) / Math.abs(point - fixPoint)) * minHeight);
   }
 
   /**
-   * Deselect the aspect rectangle
-   *
-   * @private
+   * Fix the points of the shape to represent the right coordinates
    */
-  _deselectAspectRectangle() {
-    this._aspectRectangle.dashArray = [];
-  }
-
-  /**
-   *
-   * @param {Number} horizontalScale
-   * @param {Number} verticalScale
-   * @param {paper.Point} centerPoint
-   */
-  scale(horizontalScale, verticalScale, centerPoint) {
-    this._centerLine.scale(verticalScale, centerPoint);
-
-    const {topCenter, bottomCenter} = this.getCenterPoints();
-    const oldAspectRectangle = this._aspectRectangle;
-    this._aspectRectangle = this._createAspectRectangle(topCenter, bottomCenter);
-    if (this._isSelected) {
-      this._selectAspectRectangle();
+  fixOrientation() {
+    if (this._topCenter.y < this._bottomCenter.y) {
+      const tmpPoint = this._bottomCenter;
+      this._bottomCenter = this._topCenter;
+      this._topCenter = tmpPoint;
+      this._drawShape();
     }
-    this.addChild(this._aspectRectangle);
-    oldAspectRectangle.remove();
-  }
-
-  flipHorizontally(anchorPoint) {
-    const {topCenter, bottomCenter} = this.getCenterPoints();
-
-    if (!anchorPoint.isClose(topCenter, 0.0001)  && !anchorPoint.isClose(bottomCenter, 0.0001)) {
-      throw new Error('Horizontal flipping is only allowed around the top or bottom center points');
-    }
-
-    let newTopCenter;
-    let newBottomCenter;
-    if (anchorPoint.isClose(topCenter, 0.0001)) {
-      newBottomCenter = topCenter;
-      newTopCenter = new paper.Point(
-        bottomCenter.x,
-        newBottomCenter.y - (bottomCenter.y - topCenter.y)
-      );
-    } else {
-      newTopCenter = bottomCenter;
-      newBottomCenter = new paper.Point(
-        topCenter.x,
-        newTopCenter.y + (bottomCenter.y - topCenter.y)
-      );
-    }
-
-    const oldAspectRectangle = this._aspectRectangle;
-    const oldCenterLine = this._centerLine;
-
-    this._centerLine = this._createCenterLine(newTopCenter, newBottomCenter);
-    this._aspectRectangle = this._createAspectRectangle(newTopCenter, newBottomCenter);
-
-    if (this._isSelected) {
-      this._selectCenterLine(oldCenterLine.selected);
-      this._selectAspectRectangle();
-    }
-
-    this.addChild(this._centerLine);
-    this.addChild(this._aspectRectangle);
-
-    oldCenterLine.remove();
-    oldAspectRectangle.remove();
-  }
-
-  /**
-   * Make sure the size restriction of the element is matched
-   */
-  enforceMinimalLength(anchorPoint, length) {
-    const {topCenter, bottomCenter} = this.getCenterPoints();
-
-    if (!anchorPoint.isClose(topCenter, 0.0001)  && !anchorPoint.isClose(bottomCenter, 0.0001)) {
-      throw new Error('Only topCenter and bottomCenter are allowed as achorPoints');
-    }
-
-    const currentLength = bottomCenter.y - topCenter.y;
-
-    if (currentLength >= length) {
-      // Everything alright
-      return;
-    }
-
-    const scaleFactor = length / currentLength;
-    this.scale(1, scaleFactor, anchorPoint);
-  }
-
-
-  /**
-   * Create a new Aspect rectangle based on the current centerLine
-   *
-   * @private
-   */
-  _redrawAspectRectangle() {
-    const {topCenter, bottomCenter} = this.getCenterPoints();
-
-    const oldAspectRectangle = this._aspectRectangle;
-    const oldCenterLine = this._centerLine;
-
-    this._centerLine = this._createCenterLine(bottomCenter, topCenter);
-    this._aspectRectangle = this._createAspectRectangle(bottomCenter, topCenter);
-    this.addChild(this._centerLine);
-    this.addChild(this._aspectRectangle);
-
-    oldCenterLine.remove();
-    oldAspectRectangle.remove();
   }
 
   /**

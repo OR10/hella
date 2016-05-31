@@ -1,5 +1,7 @@
 import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
 import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
+import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
+import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
 
 class ToolService {
   constructor() {
@@ -16,6 +18,8 @@ class ToolService {
     this._classes = {
       'rectangle-move': RectangleMoveTool,
       'rectangle-scale': RectangleScaleTool,
+      'pedestrian-move': PedestrianMoveTool,
+      'pedestrian-scale': PedestrianScaleTool,
     };
   }
 
