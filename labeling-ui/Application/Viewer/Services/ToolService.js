@@ -2,6 +2,7 @@ import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
 import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
+import CuboidMoveTool from '../../ThirdDimension/Tools/CuboidMoveTool';
 
 class ToolService {
   constructor() {
@@ -20,6 +21,7 @@ class ToolService {
       'rectangle-scale': RectangleScaleTool,
       'pedestrian-move': PedestrianMoveTool,
       'pedestrian-scale': PedestrianScaleTool,
+      'cuboid-move': CuboidMoveTool,
     };
   }
 
@@ -31,6 +33,10 @@ class ToolService {
    * @returns {Tool}
    */
   getTool($scope, context, shapeClass, actionIdentifier) {
+    if (!shapeClass || !actionIdentifier) {
+      // Only try to create tool if all parameters are set
+      return;
+    }
     const toolIdentifier = `${shapeClass}-${actionIdentifier}`;
     const toolMap = this._getToolMap(this._getContextMap($scope), context);
 
