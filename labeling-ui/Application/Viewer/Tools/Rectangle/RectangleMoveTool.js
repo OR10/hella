@@ -28,7 +28,7 @@ class RectangleMoveTool extends Tool {
      * @type {paper.Shape|null}
      * @private
      */
-    this._paperShape = null;
+    this._paperRectangle = null;
 
     /**
      * Mouse to center offset for moving a shape
@@ -54,19 +54,19 @@ class RectangleMoveTool extends Tool {
   onMouseDown(event, hitShape) {
     const point = event.point;
 
-    this._paperShape = hitShape.parent;
+    this._paperRectangle = hitShape.parent;
     this._offset = new paper.Point(
-      this._paperShape.position.x - point.x,
-      this._paperShape.position.y - point.y
+      this._paperRectangle.position.x - point.x,
+      this._paperRectangle.position.y - point.y
     );
   }
 
   onMouseUp() {
-    if (this._paperShape) {
+    if (this._paperRectangle) {
       if (this._modified) {
         this._modified = false;
 
-        this.emit('shape:update', this._paperShape);
+        this.emit('shape:update', this._paperRectangle);
       }
     }
 
@@ -77,17 +77,17 @@ class RectangleMoveTool extends Tool {
    * @param event
    */
   onMouseDrag(event) {
-    if (!this._paperShape) {
+    if (!this._paperRectangle) {
       return;
     }
     const point = event.point;
 
     this._modified = true;
-    this._moveTo(this._paperShape, point.add(this._offset));
+    this._moveTo(this._paperRectangle, point.add(this._offset));
   }
 
   /**
-   * @param {PaperShape}shape
+   * @param {PaperShape} shape
    * @param {paper.Point} point
    * @private
    */
