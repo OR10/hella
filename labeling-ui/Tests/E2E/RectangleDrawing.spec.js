@@ -173,6 +173,8 @@ describe('Rectangle drawing', () => {
     initApplication('/labeling/task/TASKID-TASKID')
       .then(() => {
         browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .click()
           .mouseMove(viewer, {x: 200, y: 200}) // bottom right drag handle
           .mouseDown()
           .mouseMove(viewer, {x: 300, y: 300}) // drag
