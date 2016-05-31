@@ -8,11 +8,12 @@ class PaperCuboid extends PaperShape {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Projection2d} projection2d
+   * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
    * @param {String} color
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, projection2d, cuboid3dPoints, color, draft) {
+  constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     /**
@@ -34,6 +35,18 @@ class PaperCuboid extends PaperShape {
     this._projection2d = projection2d;
 
     /**
+     * @type {Projection3d}
+     * @private
+     */
+    this._projection3d = projection3d;
+
+    /**
+     * @type {null}
+     * @private
+     */
+    this._projectedCuboid = null;
+
+    /**
      * @type {Cuboid3d}
      * @private
      */
@@ -48,29 +61,27 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _drawCuboid(handles = true) {
-    const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+    this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
 
-    const planes = this._generatePlanes(projectedCuboid);
+    const planes = this._createPlanes();
     this._addChildren(planes);
 
-    const lines = this._generateEdges(projectedCuboid);
+    const lines = this._createEdges();
     this._addChildren(lines);
 
     if (this._isSelected && handles) {
-      const rectangles = this._generateHandles(projectedCuboid);
+      const rectangles = this._createHandles();
       this._addChildren(rectangles);
     }
   }
 
   /**
-   *
-   * @param {Cuboid2d} cuboid2d
    * @returns {Array}
    * @private
    */
-  _generateEdges(cuboid2d) {
+  _createEdges() {
     const edges = [
       // Front
       {from: 0, to: 1}, // Top
@@ -90,10 +101,10 @@ class PaperCuboid extends PaperShape {
     ];
 
     return edges.map((edgePointIndex) => {
-      const from = cuboid2d.vertices[edgePointIndex.from];
-      const to = cuboid2d.vertices[edgePointIndex.to];
-      const hidden = (!cuboid2d.vertexVisibility[edgePointIndex.from] || !cuboid2d.vertexVisibility[edgePointIndex.to]);
-      const showPrimaryEdge = (cuboid2d.primaryVertices.vertices[edgePointIndex.from] && cuboid2d.primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
+      const from = this._projectedCuboid.vertices[edgePointIndex.from];
+      const to = this._projectedCuboid.vertices[edgePointIndex.to];
+      const hidden = (!this._projectedCuboid.vertexVisibility[edgePointIndex.from] || !this._projectedCuboid.vertexVisibility[edgePointIndex.to]);
+      const showPrimaryEdge = (this._projectedCuboid.primaryVertices.vertices[edgePointIndex.from] && this._projectedCuboid.primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
@@ -111,7 +122,7 @@ class PaperCuboid extends PaperShape {
    * @param {Cuboid2d} cuboid2d
    * @private
    */
-  _generatePlanes(cuboid2d) {
+  _createPlanes() {
     const planes = [
       [0, 1, 2, 3],
       [1, 5, 6, 2],
@@ -121,10 +132,10 @@ class PaperCuboid extends PaperShape {
       [7, 6, 2, 3],
     ];
 
-    const visiblePlanes = planes.filter(plane => plane.filter(vertex => cuboid2d.vertexVisibility[vertex]).length === 4);
+    const visiblePlanes = planes.filter(plane => plane.filter(vertex => this._projectedCuboid.vertexVisibility[vertex]).length === 4);
 
     return visiblePlanes.map(plane => {
-      const points = plane.map(index => new paper.Point(cuboid2d.vertices[index].x, cuboid2d.vertices[index].y));
+      const points = plane.map(index => new paper.Point(this._projectedCuboid.vertices[index].x, this._projectedCuboid.vertices[index].y));
 
       return new paper.Path({
         selected: false,
@@ -140,29 +151,29 @@ class PaperCuboid extends PaperShape {
    * @param {Cuboid2d} cuboid2d
    * @private
    */
-  _generateHandles(cuboid2d) {
+  _createHandles() {
     const handles = [];
 
-    cuboid2d.primaryVertices.vertices.forEach((isPrimaryVertex, index) => {
+    this._projectedCuboid.primaryVertices.vertices.forEach((isPrimaryVertex, index) => {
       if (!isPrimaryVertex) {
         return;
       }
 
-      const vertex = cuboid2d.vertices[index];
+      const vertex = this._projectedCuboid.vertices[index];
       const rectangle = {
         topLeft: new paper.Point(
-          vertex.x - handleWidth / 2,
-          vertex.y - handleWidth / 2
+          vertex.x - this._handleSize / 2,
+          vertex.y - this._handleSize / 2
         ),
         bottomRight: new paper.Point(
-          vertex.x + handleWidth / 2,
-          vertex.y + handleWidth / 2
-        )
+          vertex.x + this._handleSize / 2,
+          vertex.y + this._handleSize / 2
+        ),
       };
 
       handles.push(
         new paper.Path.Rectangle({
-          name: 'cube-' + cuboid2d.primaryVertices.names[index],
+          name: 'cube-' + this._projectedCuboid.primaryVertices.names[index],
           rectangle,
           selected: false,
           strokeWidth: 0,
@@ -175,21 +186,6 @@ class PaperCuboid extends PaperShape {
     return handles;
   }
 
-  getCursor(hitResult) {
-    switch (hitResult.item.name) {
-      case 'cube-height':
-        return 'ns-resize';
-      case 'cube-width':
-        return 'all-scroll';
-      case 'cube-length':
-        return 'all-scroll';
-      case 'cube-move':
-        return 'grab';
-      default:
-        return 'pointer';
-    }
-  }
-
   /**
    * @param {THREE.Vector3} vector
    * @private
@@ -198,12 +194,24 @@ class PaperCuboid extends PaperShape {
     return new paper.Point(Math.round(vector.x), Math.round(vector.y));
   }
 
-  /**
-   * @param hitResult
-   * @returns {boolean}
-   */
-  shouldBeSelected(hitResult) {
-    return true;
+  get bounds() {
+    const minX = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.x < current.x ? prev.x : current.x;
+    });
+    const minY = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.y < current.y ? prev.y : current.y;
+    });
+    const maxX = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.x > current.x ? prev.x : current.x;
+    });
+    const maxY = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.y > current.y ? prev.y : current.y;
+    });
+
+    return {
+      width: maxX - minX,
+      height: maxY - minY,
+    };
   }
 
   /**
@@ -231,6 +239,66 @@ class PaperCuboid extends PaperShape {
    */
   hasFill() {
     return true;
+  }
+
+  /**
+   * @returns {string}
+   */
+  getClass() {
+    return 'cuboid';
+  }
+
+  /**
+   * Return the identifier for the tool action that need to be performed
+   *
+   * @param {paper.HitResult} hitResult
+   * @returns {string|null}
+   */
+  getToolActionIdentifier(hitResult) {
+    switch (hitResult.item.name) {
+      case 'cube-height':
+      case 'cube-width':
+      case 'cube-length':
+        return 'scale';
+      case 'cube-move':
+        return 'move';
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * @param {HitResult} hitResult
+   * @returns {string}
+   */
+  getCursor(hitResult) {
+    switch (hitResult.item.name) {
+      case 'cube-height':
+        return 'ns-resize';
+      case 'cube-width':
+        return 'all-scroll';
+      case 'cube-length':
+        return 'all-scroll';
+      case 'cube-move':
+        return 'grab';
+      default:
+        return 'pointer';
+    }
+  }
+
+  /**
+   * @param {Point} point
+   */
+  moveTo(point) {
+  }
+
+  /**
+   * @param {string} handle
+   * @param {Point} point
+   * @param {{height: 1, width: 1, length: 1}} minDistance
+   */
+  resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
+
   }
 
   /**
