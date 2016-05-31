@@ -53,11 +53,11 @@ class PaperRectangle extends PaperShape {
   _drawShape(handles = true) {
     this.removeChildren();
 
-    const shape = this._generateShape();
+    const shape = this._createShape();
     this.addChild(shape);
 
     if (this._isSelected && handles) {
-      const rectangles = this._generateHandles();
+      const rectangles = this._createHandles();
       this._addChildren(rectangles);
     }
   }
@@ -66,7 +66,7 @@ class PaperRectangle extends PaperShape {
    * @returns {Rectangle}
    * @private
    */
-  _generateShape() {
+  _createShape() {
     return new paper.Path.Rectangle({
       strokeColor: this._color,
       selected: false,
@@ -83,7 +83,7 @@ class PaperRectangle extends PaperShape {
    * @returns {Array<Rectangle>}
    * @private
    */
-  _generateHandles() {
+  _createHandles() {
     const handlePoints = [
       {name: 'top-left', point: this._topLeft},
       {name: 'top-right', point: new paper.Point(this._bottomRight.x, this._topLeft.y)},
@@ -195,18 +195,18 @@ class PaperRectangle extends PaperShape {
     let minDistancePoint = null;
     switch (handle) {
       case 'top-left':
-        this._topLeft = this._pointMinDistance(point, this._bottomRight, minSize);
+        this._topLeft = this._enforceMinSize(point, this._bottomRight, minSize);
         break;
       case 'top-right':
-        minDistancePoint = this._pointMinDistance(point, new paper.Point(this._topLeft.x, this._bottomRight.y), minSize);
+        minDistancePoint = this._enforceMinSize(point, new paper.Point(this._topLeft.x, this._bottomRight.y), minSize);
         this._topLeft.y = minDistancePoint.y;
         this._bottomRight.x = minDistancePoint.x;
         break;
       case 'bottom-right':
-        this._bottomRight = this._pointMinDistance(point, this._topLeft, minSize);
+        this._bottomRight = this._enforceMinSize(point, this._topLeft, minSize);
         break;
       case 'bottom-left':
-        minDistancePoint = this._pointMinDistance(point, new paper.Point(this._bottomRight.x, this._topLeft.y), minSize);
+        minDistancePoint = this._enforceMinSize(point, new paper.Point(this._bottomRight.x, this._topLeft.y), minSize);
         this._topLeft.x = minDistancePoint.x;
         this._bottomRight.y = minDistancePoint.y;
         break;
@@ -221,7 +221,7 @@ class PaperRectangle extends PaperShape {
    * @returns {Point}
    * @private
    */
-  _pointMinDistance(point, fixPoint, minSize) {
+  _enforceMinSize(point, fixPoint, minSize) {
     return new paper.Point(
       Math.abs(point.x - fixPoint.x) > minSize.width ? point.x : fixPoint.x + (((point.x - fixPoint.x) / Math.abs(point.x - fixPoint.x)) * minSize.width),
       Math.abs(point.y - fixPoint.y) > minSize.height ? point.y : fixPoint.y + (((point.y - fixPoint.y) / Math.abs(point.y - fixPoint.y)) * minSize.height)
