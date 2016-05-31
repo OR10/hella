@@ -54,7 +54,7 @@ class RectangleMoveTool extends Tool {
   onMouseDown(event, hitShape) {
     const point = event.point;
 
-    this._paperShape = hitShape;
+    this._paperShape = hitShape.parent;
     this._offset = new paper.Point(
       this._paperShape.position.x - point.x,
       this._paperShape.position.y - point.y
@@ -92,9 +92,8 @@ class RectangleMoveTool extends Tool {
    * @private
    */
   _moveTo(shape, point) {
-    this._context.withScope(scope => {
+    this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point));
-      scope.view.update();
     });
     this.emit('shape:update', shape);
   }

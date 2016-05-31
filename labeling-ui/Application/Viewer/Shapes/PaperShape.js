@@ -143,21 +143,6 @@ class PaperShape extends paper.Group {
     return true;
   }
 
-  getCursor(hitResult) {
-    switch (hitResult.item.name) {
-      case 'top-left':
-        return 'nwse-resize';
-      case 'bottom-right':
-        return 'nwse-resize';
-      case 'top-right':
-        return 'nesw-resize';
-      case 'bottom-left':
-        return 'nesw-resize';
-      default:
-        return 'grab';
-    }
-  }
-
   /**
    * Scale the paperShape (and therefore all its child shapes)
    *
@@ -212,6 +197,11 @@ class PaperShape extends paper.Group {
   /**
    * @abstract
    * @method PaperShape#getClass
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#getCursor
    */
 }
 PaperShape.DASH = [10, 4];

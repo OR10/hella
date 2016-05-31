@@ -7,10 +7,10 @@ import PaperShape from './PaperShape';
 class PaperRectangle extends PaperShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {String} shapeId
+   * @param {string} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
-   * @param {String} color
+   * @param {string} color
    * @param {boolean} draft
    */
   constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, draft = false) {
@@ -28,7 +28,7 @@ class PaperRectangle extends PaperShape {
     this._bottomRight = bottomRight;
 
     /**
-     * @type {String}
+     * @type {string}
      * @private
      */
     this._color = color;
@@ -50,7 +50,7 @@ class PaperRectangle extends PaperShape {
    * @param {Boolean} handles
    * @private
    */
-  _drawShape(handles = false) {
+  _drawShape(handles = true) {
     this.removeChildren();
 
     const shape = this._generateShape();
@@ -63,7 +63,7 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @returns {paper.Rectangle}
+   * @returns {Rectangle}
    * @private
    */
   _generateShape() {
@@ -80,7 +80,7 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @returns {Array<paper.Rectangle>}
+   * @returns {Array<Rectangle>}
    * @private
    */
   _generateHandles() {
@@ -141,7 +141,7 @@ class PaperRectangle extends PaperShape {
 
   /**
    * @param {HitResult} hitResult
-   * @returns {String}
+   * @returns {string}
    */
   getToolActionIdentifier(hitResult) {
     switch (hitResult.item.name) {
@@ -156,14 +156,76 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @param {paper.Point} point
+   * @param {Point} point
    */
   moveTo(point) {
-    this.position = point;
     const width = this._bottomRight.x - this._topLeft.x;
     const height = this._bottomRight.y - this._topLeft.y;
     this._topLeft = new paper.Point(point.x - (width / 2), point.y - (height / 2));
     this._bottomRight = new paper.Point(point.x + (width / 2), point.y + (height / 2));
+    this._drawShape();
+  }
+
+  /**
+   * @param {HitResult} hitResult
+   * @param {Boolean} mouseDown
+   * @returns {string}
+   */
+  getCursor(hitResult, mouseDown = false) {
+    switch (hitResult.item.name) {
+      case 'top-left':
+        return 'nwse-resize';
+      case 'bottom-right':
+        return 'nwse-resize';
+      case 'top-right':
+        return 'nesw-resize';
+      case 'bottom-left':
+        return 'nesw-resize';
+      default:
+        return mouseDown ? 'grabbing' : 'grab';
+    }
+  }
+
+  /**
+   * @param {string} handle
+   * @param {Point} point
+   * @param {{width, height}} minSize
+   */
+  scale(handle, point, minSize = {width: 1, height: 1}) {
+    let minDistancePoint = null;
+    switch (handle) {
+      case 'top-left':
+        this._topLeft = this._pointMinDistance(point, this._bottomRight, minSize);
+        break;
+      case 'top-right':
+        minDistancePoint = this._pointMinDistance(point, new paper.Point(this._topLeft.x, this._bottomRight.y), minSize);
+        this._topLeft.y = minDistancePoint.y;
+        this._bottomRight.x = minDistancePoint.x;
+        break;
+      case 'bottom-right':
+        this._bottomRight = this._pointMinDistance(point, this._topLeft, minSize);
+        break;
+      case 'bottom-left':
+        minDistancePoint = this._pointMinDistance(point, new paper.Point(this._bottomRight.x, this._topLeft.y), minSize);
+        this._topLeft.x = minDistancePoint.x;
+        this._bottomRight.y = minDistancePoint.y;
+        break;
+    }
+    this._drawShape();
+  }
+
+  /**
+   * @param {Point} point
+   * @param {Point} fixPoint
+   * @param {{width, height}} minSize
+   * @returns {Point}
+   * @private
+   */
+  _pointMinDistance(point, fixPoint, minSize) {
+    return new paper.Point(
+      Math.abs(point.x - fixPoint.x) > minSize ? point.x : fixPoint.x + (((point.x - fixPoint.x) / Math.abs(point.x - fixPoint.x)) * minSize),
+      Math.abs(point.y - fixPoint.y) > minSize ? point.y : fixPoint.y + (((point.y - fixPoint.y) / Math.abs(point.y - fixPoint.y)) * minSize)
+    );
   }
 
   toJSON() {

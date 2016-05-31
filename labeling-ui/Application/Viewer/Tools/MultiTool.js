@@ -176,15 +176,11 @@ export default class MultiTool extends Tool {
   }
 
   _mouseDown(event) {
-    if (!this._enabled) {
+    if (!this._enabled || event.event.shiftKey) {
       return;
     }
 
     const point = event.point;
-
-    if (event.event.shiftKey) {
-      return;
-    }
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
@@ -194,16 +190,15 @@ export default class MultiTool extends Tool {
       });
 
       if (hitResult) {
-        const hitShape = hitResult.item.parent;
-        const actionIdentifier = hitResult.item.parent.getToolActionIdentifier(hitResult);
-        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
+        const hitItem = hitResult.item;
+        const actionIdentifier = hitItem.parent.getToolActionIdentifier(hitResult);
 
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitItem.parent.getClass(), actionIdentifier);
+        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitItem.parent.getCursor(hitResult, true));
+        this._activeTool.onMouseDown(event, hitItem);
         this._activeTool.on('shape:update', shape => {
           this.emit('shape:update', shape);
         });
-
-        this._activeTool.onMouseDown(event, hitShape);
-        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grabbing');
       } else {
         this._activeTool = this._createTool;
         this._activeTool.onMouseDown(event);
