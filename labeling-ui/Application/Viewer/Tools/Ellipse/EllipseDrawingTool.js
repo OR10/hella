@@ -1,6 +1,6 @@
 import paper from 'paper';
-import DrawingTool from './DrawingTool';
-import PaperEllipse from '../Shapes/PaperEllipse';
+import DrawingTool from '../DrawingTool';
+import PaperEllipse from '../../Shapes/PaperEllipse';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor

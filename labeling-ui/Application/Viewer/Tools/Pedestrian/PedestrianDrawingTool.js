@@ -1,6 +1,6 @@
 import paper from 'paper';
-import DrawingTool from './DrawingTool';
-import PaperPedestrian from '../Shapes/PaperPedestrian';
+import DrawingTool from '../DrawingTool';
+import PaperPedestrian from '../../Shapes/PaperPedestrian';
 
 /**
  * A tool for drawing pedestrian shapes with the mouse cursor

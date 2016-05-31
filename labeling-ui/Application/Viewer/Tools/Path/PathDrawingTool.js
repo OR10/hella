@@ -1,6 +1,6 @@
 import paper from 'paper';
-import DrawingTool from './DrawingTool';
-import PaperPath from '../Shapes/PaperPath';
+import DrawingTool from '../DrawingTool';
+import PaperPath from '../../Shapes/PaperPath';
 
 /**
  * A tool for drawing a path with the mouse cursor

@@ -1,7 +1,5 @@
-import Tool from './Tool';
+import Tool from '../Tool';
 import paper from 'paper';
-import PaperCircle from '../Shapes/PaperCircle';
-import PaperPedestrian from '../Shapes/PaperPedestrian';
 
 /**
  * A Tool for scaling annotation shapes
@@ -81,11 +79,11 @@ class RectangleScaleTool extends Tool {
     const drawingToolOptions = this._$scope.vm.task.drawingToolOptions;
     const minimalHeight = (drawingToolOptions && drawingToolOptions.rectangle && drawingToolOptions.rectangle.minimalHeight)
       ? drawingToolOptions.rectangle.minimalHeight
-      : 1;
+      : {width: 1, height: 1};
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperShape.scale(this._boundName, point, minimalHeight);
+        this._paperShape.resize(this._boundName, point, minimalHeight);
       });
     });
   }

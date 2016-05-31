@@ -1,6 +1,6 @@
 import paper from 'paper';
-import DrawingTool from './DrawingTool';
-import PaperRectangle from '../Shapes/PaperRectangle';
+import DrawingTool from '../DrawingTool';
+import PaperRectangle from '../../Shapes/PaperRectangle';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor

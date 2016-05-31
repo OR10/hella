@@ -1,5 +1,5 @@
-import PathDrawingTool from './PathDrawingTool';
-import PaperPolygon from '../Shapes/PaperPolygon';
+import PathDrawingTool from '../Path/PathDrawingTool';
+import PaperPolygon from '../../Shapes/PaperPolygon';
 
 /**
  * A tool for drawing a path with the mouse cursor

@@ -1,5 +1,5 @@
-import PathDrawingTool from './PathDrawingTool';
-import PaperLine from '../Shapes/PaperLine';
+import PathDrawingTool from '../Path/PathDrawingTool';
+import PaperLine from '../../Shapes/PaperLine';
 
 /**
  * A tool for drawing a path with the mouse cursor

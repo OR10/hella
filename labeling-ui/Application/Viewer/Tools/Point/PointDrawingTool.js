@@ -1,5 +1,5 @@
-import CircleDrawingTool from './CircleDrawingTool';
-import PaperCircle from '../Shapes/PaperCircle';
+import CircleDrawingTool from '../Circle/CircleDrawingTool';
+import PaperCircle from '../../Shapes/PaperCircle';
 
 /**
  * A tool for drawing ellipse shapes with the mouse cursor

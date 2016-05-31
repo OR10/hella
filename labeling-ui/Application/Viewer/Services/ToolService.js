@@ -1,5 +1,5 @@
-import RectangleScaleTool from '../Tools/RectangleScaleTool';
-import RectangleMoveTool from '../Tools/RectangleMoveTool';
+import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
+import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
 
 class ToolService {
   constructor() {

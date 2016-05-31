@@ -1,5 +1,5 @@
 import paper from 'paper';
-import Tool from './Tool';
+import Tool from '../Tool';
 
 /**
  * A Tool for moving annotation shapes
