@@ -19,7 +19,16 @@ class RectangleDrawingTool extends DrawingTool {
   constructor($scope, drawingContext, entityIdService, entityColorService, options) {
     super($scope, drawingContext, entityIdService, entityColorService, options);
 
+    /**
+     * @type {PaperRectangle}
+     * @private
+     */
     this._rect = null;
+
+    /**
+     * @type {Point|null}
+     * @private
+     */
     this._startPosition = null;
   }
 
@@ -78,14 +87,12 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   completeShape() {
-    if (this._rect) {
-      // Ensure the parent/child structure is intact
-      const labeledThingInFrame = this._rect.labeledThingInFrame;
-      labeledThingInFrame.shapes.push(this._rect.toJSON());
+    // Ensure the parent/child structure is intact
+    const labeledThingInFrame = this._rect.labeledThingInFrame;
+    labeledThingInFrame.shapes.push(this._rect.toJSON());
 
-      this.emit('shape:new', this._rect);
-      this._rect = null;
-    }
+    this.emit('shape:new', this._rect);
+    this._rect = null;
   }
 
   _getScaleAnchor(point) {
