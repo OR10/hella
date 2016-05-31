@@ -62,9 +62,9 @@ class RectangleScaleTool extends Tool {
   }
 
   onMouseUp() {
-    if (this._hitResult && this._modified) {
+    if (this._paperShape && this._modified) {
       this._modified = false;
-      this.emit('shape:update', this._hitResult.item);
+      this.emit('shape:update', this._paperShape);
     }
 
     this._boundName = null;
