@@ -20,14 +20,6 @@ class RectangleScaleTool extends Tool {
     this._$scope = $scope;
 
     /**
-     * Hit test result
-     *
-     * @type {HitResult}
-     * @private
-     */
-    this._hitResult = null;
-
-    /**
      * Variable that holds the modified state of the current rectangle
      *
      * @type {boolean}
