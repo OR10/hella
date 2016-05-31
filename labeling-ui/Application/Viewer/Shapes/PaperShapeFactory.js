@@ -59,8 +59,9 @@ class PaperShapeFactory {
     const projection2d = new DepthBufferProjection2d(
       new PlainProjection2d(video.calibration)
     );
+    const projection3d = new FlatWorld(video.calibration);
 
-    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, shape.vehicleCoordinates, color);
+    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, projection3d, shape.vehicleCoordinates, color);
   }
 
   /**
