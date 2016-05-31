@@ -1,0 +1,33 @@
+---
+- name: run puppet on jenkins slaves and staging
+  gather_facts: no
+  hosts: all
+  become: yes
+  vars_prompt:
+      - name: "continue"
+        prompt: "Are you sure? (type uppercase 'YES' to continue)"
+        private: no
+  tasks:
+      - name: "Abort if unconfirmed"
+        fail:
+        when: continue != "YES"
+
+      - name: copy puppet files
+        synchronize:
+            src: ../../puppet/
+            dest: /tmp/puppet/
+            archive: yes
+            compress: yes
+
+      - name: run puppet
+        shell: >
+            FACTER_annostation_project={{ annostation_project }}
+            /opt/puppetlabs/bin/puppet apply
+            --modulepath puppet/modules:puppet/vendor:/etc/puppet/modules
+            --hiera_config=puppet/hiera/hiera.yaml
+            --environmentpath puppet/environments/
+            --environment staging
+            --noop
+            puppet/environments/staging/manifests/site.pp
+        args:
+            chdir: /tmp
