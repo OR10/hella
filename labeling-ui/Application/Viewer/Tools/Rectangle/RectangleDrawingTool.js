@@ -24,27 +24,29 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   startShape(from, to) {
-    if (from.getDistance(to) > 5) {
-      const labeledThingInFrame = this._createLabeledThingHierarchy();
-
-      const endPoint = new paper.Point(
-        Math.abs(from.x - to.x) === 0 ? to.x + 1 : to.x,
-        Math.abs(from.y - to.y) === 0 ? to.y + 1 : to.y
-      );
-
-      this._context.withScope(() => {
-        this._rect = new PaperRectangle(
-          labeledThingInFrame,
-          this._entityIdService.getUniqueId(),
-          from,
-          endPoint,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
-          true
-        );
-      });
-
-      this.emit('rectangle:new', this._rect);
+    if (from.getDistance(to) < 5) {
+      // Do nothing if no "real" dragging operation took place.
+      return;
     }
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
+
+    const endPoint = new paper.Point(
+      Math.abs(from.x - to.x) === 0 ? to.x + 1 : to.x,
+      Math.abs(from.y - to.y) === 0 ? to.y + 1 : to.y
+    );
+
+    this._context.withScope(() => {
+      this._rect = new PaperRectangle(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        from,
+        endPoint,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        true
+      );
+    });
+
+    this.emit('rectangle:new', this._rect);
   }
 
   onMouseDown(event) {
@@ -76,12 +78,14 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   completeShape() {
-    // Ensure the parent/child structure is intact
-    const labeledThingInFrame = this._rect.labeledThingInFrame;
-    labeledThingInFrame.shapes.push(this._rect.toJSON());
+    if (this._rect) {
+      // Ensure the parent/child structure is intact
+      const labeledThingInFrame = this._rect.labeledThingInFrame;
+      labeledThingInFrame.shapes.push(this._rect.toJSON());
 
-    this.emit('shape:new', this._rect);
-    this._rect = null;
+      this.emit('shape:new', this._rect);
+      this._rect = null;
+    }
   }
 
   _getScaleAnchor(point) {
