@@ -228,6 +228,21 @@ class PaperRectangle extends PaperShape {
     );
   }
 
+  /**
+   * Fix the points of the shape to represent the right coordinates
+   */
+  fixOrientation() {
+    this._topLeft = new paper.Point(
+      Math.min(this._topLeft.x, this._bottomRight.x),
+      Math.min(this._topLeft.y, this._bottomRight.y)
+    );
+    this._bottomRight = new paper.Point(
+      Math.max(this._topLeft.x, this._bottomRight.x),
+      Math.max(this._topLeft.y, this._bottomRight.y)
+    );
+    this._drawShape();
+  }
+
   toJSON() {
     return {
       type: 'rectangle',

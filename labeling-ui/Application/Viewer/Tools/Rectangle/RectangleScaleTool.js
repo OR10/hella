@@ -54,23 +54,24 @@ class RectangleScaleTool extends Tool {
 
   onMouseDown(event, hitResult) {
     if (hitResult) {
-      this._paperShape = hitResult.parent;
+      this._paperRectangle = hitResult.parent;
       this._boundName = hitResult.name;
     }
   }
 
   onMouseUp() {
-    if (this._paperShape && this._modified) {
+    if (this._paperRectangle && this._modified) {
       this._modified = false;
-      this.emit('shape:update', this._paperShape);
+      this._paperRectangle.fixOrientation();
+      this.emit('shape:update', this._paperRectangle);
     }
 
     this._boundName = null;
-    this._paperShape = null;
+    this._paperRectangle = null;
   }
 
   onMouseDrag(event) {
-    if (!this._paperShape || this._scaleAnchor === null) {
+    if (!this._paperRectangle || this._scaleAnchor === null) {
       return;
     }
     const point = event.point;
@@ -83,7 +84,7 @@ class RectangleScaleTool extends Tool {
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperShape.resize(this._boundName, point, minimalHeight);
+        this._paperRectangle.resize(this._boundName, point, minimalHeight);
       });
     });
   }
