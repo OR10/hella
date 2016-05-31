@@ -5,6 +5,16 @@ class Cuboid3d {
     this._vertices = vertices;
   }
 
+  moveBy(vector) {
+    this._vertices = this._vertices.map(vertex => {
+      return [
+        vertex[0] + vector.x,
+        vertex[1] + vector.y,
+        vertex[2] + vector.z,
+      ];
+    });
+  }
+
   get vertices() {
     return this._vertices.map(vertex => new Vector4(...vertex, 1));
   }

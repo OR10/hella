@@ -290,6 +290,12 @@ class PaperCuboid extends PaperShape {
    * @param {Point} point
    */
   moveTo(point) {
+    const newPrimaryCornerPosition = this._projection3d.projectGroundCoordinateTo3d(point);
+    const movementVector = newPrimaryCornerPosition.sub(this._projectedCuboid.primaryVertices.edge);
+
+    this._cuboid3d.moveBy(movementVector);
+
+    this._drawCuboid();
   }
 
   /**

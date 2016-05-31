@@ -39,18 +39,22 @@ class DepthBufferProjection2d {
       2: {
         vertices: [false, true, true, true, false, false, true, false],
         names: {2: 'move', 3: 'width', 6: 'length', 1: 'height'},
+        edge: cuboid3d.vertices[2],
       },
       3: {
         vertices: [true, false, true, true, false, false, false, true],
         names: {3: 'move', 2: 'width', 7: 'length', 0: 'height'},
+        edge: cuboid3d.vertices[3],
       },
       6: {
         vertices: [false, false, true, false, false, true, true, true],
         names: {6: 'move', 7: 'width', 2: 'length', 5: 'height'},
+        edge: cuboid3d.vertices[6],
       },
       7: {
         vertices: [false, false, false, true, true, false, true, true],
         names: {7: 'move', 6: 'width', 3: 'length', 4: 'height'},
+        edge: cuboid3d.vertices[7],
       },
     };
     const primaryCorner = this._getPrimaryCorner(cuboid3d);
