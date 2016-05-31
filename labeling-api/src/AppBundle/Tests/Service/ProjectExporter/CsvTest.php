@@ -5,6 +5,7 @@ namespace AppBundle\Tests\Service\ProjectExporter;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
+use AppBundle\Service;
 use AppBundle\Service\ProjectExporter;
 use AppBundle\Tests;
 
@@ -40,6 +41,11 @@ class CsvProjectTest extends Tests\KernelTestCase
      */
     private $exporter;
 
+    /**
+     * @var Service\CalibrationFileConverter
+     */
+    private $calibrationFileConverter;
+
     protected function setUpImplementation()
     {
         $this->videoFacade = $this->getAnnostationService('database.facade.video');
@@ -48,6 +54,7 @@ class CsvProjectTest extends Tests\KernelTestCase
         $this->labeledThingFacade = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->exporter = $this->getAnnostationService('service.project_exporter.csv');
+        $this->calibrationFileConverter = $this->getAnnostationService('service.calibration_file_converter');
     }
 
     public function pedestrianProvider()
@@ -152,6 +159,86 @@ class CsvProjectTest extends Tests\KernelTestCase
         );
     }
 
+    public function vehicleProvider()
+    {
+        return array(
+            array(
+                Model\LabelingTask::DRAWING_TOOL_CUBOID3D,
+                Model\LabelingTask::INSTRUCTION_VEHICLE,
+                array(
+                    array(
+                        'id' => 'pedestrian-1',
+                        'type' => 'cuboid3d',
+                        'vehicleCoordinates' => array(
+                            [16, 6.5, 1.7],
+                            [16, 4.8, 1.7],
+                            [16, 4.8, 0],
+                            [16, 6.5, 0],
+                            [20, 6.5, 1.7],
+                            [20, 4.8, 1.7],
+                            [20, 4.8, 0],
+                            [20, 6.5, 0]
+                        ),
+                    )
+                ),
+                array('occlusion-25', 'truncation-25-50', 'direction-front-right'),
+                array(
+                    array(
+                        'frame_number' => 1,
+                        'position_x' => 'null',
+                        'position_y' => 'null',
+                        'width' => 'null',
+                        'height' => 'null',
+                        'occlusion' => 1,
+                        'truncation' => 2,
+                        'direction' => null,
+                        'vehicleType' => null,
+                        'vertex_2d_0_x' => 112.80616622260311,
+                        'vertex_2d_0_y' => 285.93087148874531,
+                        'vertex_2d_1_x' => 227.09711066435307,
+                        'vertex_2d_1_y' => 285.68203382846434,
+                        'vertex_2d_2_x' => 227.49100381923915,
+                        'vertex_2d_2_y' => 405.21592278691639,
+                        'vertex_2d_3_x' => 113.31951292964175,
+                        'vertex_2d_3_y' => 404.05956991837525,
+                        'vertex_2d_4_x' => 194.21885932544245,
+                        'vertex_2d_4_y' => 289.73635785405827,
+                        'vertex_2d_5_x' => 288.73125614555596,
+                        'vertex_2d_5_y' => 289.60064757348266,
+                        'vertex_2d_6_x' => 288.94462245218045,
+                        'vertex_2d_6_y' => 386.98262275740518,
+                        'vertex_2d_7_x' => 194.50123752813494,
+                        'vertex_2d_7_y' => 386.35101750958017,
+                        'vertex_3d_0_x' => 16,
+                        'vertex_3d_0_y' => 6.5,
+                        'vertex_3d_0_z' => 1.7,
+                        'vertex_3d_1_x' => 16,
+                        'vertex_3d_1_y' => 4.7999999999999998,
+                        'vertex_3d_1_z' => 1.7,
+                        'vertex_3d_2_x' => 16,
+                        'vertex_3d_2_y' => 4.7999999999999998,
+                        'vertex_3d_2_z' => 0,
+                        'vertex_3d_3_x' => 16,
+                        'vertex_3d_3_y' => 6.5,
+                        'vertex_3d_3_z' => 0,
+                        'vertex_3d_4_x' => 20,
+                        'vertex_3d_4_y' => 6.5,
+                        'vertex_3d_4_z' => 1.7,
+                        'vertex_3d_5_x' => 20,
+                        'vertex_3d_5_y' => 4.7999999999999998,
+                        'vertex_3d_5_z' => 1.7,
+                        'vertex_3d_6_x' => 20,
+                        'vertex_3d_6_y' => 4.7999999999999998,
+                        'vertex_3d_6_z' => 0,
+                        'vertex_3d_7_x' => 20,
+                        'vertex_3d_7_y' => 6.5,
+                        'vertex_3d_7_z' => 0,
+                    )
+                )
+            ),
+        );
+    }
+
     /**
      * @dataProvider pedestrianProvider
      *
@@ -161,7 +248,7 @@ class CsvProjectTest extends Tests\KernelTestCase
      * @param $classes
      * @param $expected
      */
-    public function testPedestrianExport($drawingTool, $labelInstruction,$shapes, $classes, $expected)
+    public function testPedestrianExport($drawingTool, $labelInstruction, $shapes, $classes, $expected)
     {
         $labelingTask = $this->createLabelingTask(
             range(0, 10),
@@ -190,6 +277,43 @@ class CsvProjectTest extends Tests\KernelTestCase
     }
 
     /**
+     * @dataProvider vehicleProvider
+     *
+     * @param $drawingTool
+     * @param $labelInstruction
+     * @param $shapes
+     * @param $classes
+     * @param $expected
+     */
+    public function testVehicleExport($drawingTool, $labelInstruction, $shapes, $classes, $expected)
+    {
+        $labelingTask = $this->createLabelingTask(
+            range(0, 10),
+            $drawingTool,
+            $labelInstruction
+        );
+
+        $this->createLabeledThingInFrame(
+            $labelingTask,
+            1,
+            'pedestrian',
+            $classes,
+            $shapes
+        );
+
+        $export = $this->exporter->getVehicleLabelingData($labelingTask);
+
+        $export = array_map(function ($data) {
+            unset($data['id']);
+            unset($data['uuid']);
+
+            return $data;
+        }, $export);
+
+        $this->assertEquals($expected, $export);
+    }
+
+    /**
      * Create a labeling task in the database.
      *
      * @param array $frameNumberMapping
@@ -200,9 +324,18 @@ class CsvProjectTest extends Tests\KernelTestCase
      */
     private function createLabelingTask(array $frameNumberMapping, $drawingTool, $labelInstruction)
     {
+
+        $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
+        $video = $this->videoFacade->save(Model\Video::create('test_video'));
+        $video->setRawCalibration($this->calibrationFileConverter->getRawData());
+        $video->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+        $video->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+        $video->setTranslation($this->calibrationFileConverter->getTranslation());
+        $video->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+
         $task = $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
-                $this->videoFacade->save(Model\Video::create('test_video')),
+                $video,
                 $this->projectFacade->save(Model\Project::create('test_project')),
                 $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING,

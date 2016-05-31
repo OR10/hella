@@ -62,15 +62,21 @@ class Csv implements Service\ProjectExporter
     private $labeledThing;
 
     /**
+     * @var Service\DepthBuffer
+     */
+    private $depthBufferService;
+
+    /**
      * Csv constructor.
      *
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\ProjectExport $projectExportFacade
      * @param Facade\LabeledThing $labeledThing
+     * @param Facade\ProjectExport $projectExportFacade
      * @param Facade\Project $projectFacade
      * @param Facade\Video $videoFacade
      * @param Facade\VideoExport $videoExportFacade
+     * @param Service\DepthBuffer $depthBufferService
      * @param bool $headline
      * @param string $delimiter
      * @param string $enclosure
@@ -83,6 +89,7 @@ class Csv implements Service\ProjectExporter
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
         Facade\VideoExport $videoExportFacade,
+        Service\DepthBuffer $depthBufferService,
         $headline = true,
         $delimiter = ',',
         $enclosure = '"'
@@ -97,6 +104,7 @@ class Csv implements Service\ProjectExporter
         $this->videoFacade                    = $videoFacade;
         $this->videoExportFacade              = $videoExportFacade;
         $this->labeledThing                   = $labeledThing;
+        $this->depthBufferService             = $depthBufferService;
     }
 
     /**
@@ -300,7 +308,7 @@ class Csv implements Service\ProjectExporter
         $frameNumberMapping                    = $task->getFrameNumberMapping();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping) {
+            function ($labeledThingInFrame) use ($frameNumberMapping, $task) {
                 $vehicleType = $this->getClassByRegex(
                     '/^(car|truck|2-wheeler-vehicle|bus|misc-vehicle|ignore-vehicle)$/',
                     0,
@@ -310,7 +318,7 @@ class Csv implements Service\ProjectExporter
                 $occlusion   = $this->getOcclusion($labeledThingInFrame);
                 $truncation  = $this->getTruncation($labeledThingInFrame);
 
-                return array(
+                $result = array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'vehicleType'  => $vehicleType,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
@@ -323,6 +331,25 @@ class Csv implements Service\ProjectExporter
                     'id'           => NULL,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
+
+                if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID3D) {
+                    $video = $this->videoFacade->find($task->getVideoId());
+                    $vertices2d = $this->getCuboidVertices($labeledThingInFrame, $video)[0];
+                    foreach (range(0, 7) as $vertexPoint) {
+                        $result['vertex_2d_' . $vertexPoint . '_x'] = $vertices2d[$vertexPoint][0];
+                        $result['vertex_2d_' . $vertexPoint . '_y'] = $vertices2d[$vertexPoint][1];
+                    }
+
+                    $vertices3d = $labeledThingInFrame->getShapes()[0]['vehicleCoordinates'];
+                    foreach (range(0, 7) as $vertexPoint) {
+                        $result['vertex_3d_' . $vertexPoint . '_x'] = $vertices3d[$vertexPoint][0];
+                        $result['vertex_3d_' . $vertexPoint . '_y'] = $vertices3d[$vertexPoint][1];
+                        $result['vertex_3d_' . $vertexPoint . '_z'] = $vertices3d[$vertexPoint][2];
+                    }
+
+                }
+
+                return $result;
             },
             $labeledThingsInFramesWithGhostClasses
         );
@@ -393,6 +420,18 @@ class Csv implements Service\ProjectExporter
         return $regexExtractor->extract($labeledThingInFrame);
     }
 
+    private function getCuboidVertices(Model\LabeledThingInFrame $labeledThingInFrame, Model\Video $video)
+    {
+        $shapes = $labeledThingInFrame->getShapes();
+        $shape = Shape::createFromArray($shapes[0]);
+        
+        if ($shape->getType() !== 'cuboid3d') {
+            throw new \Exception('Unsupported type ' . $shape->getType());
+        }
+
+        return $this->depthBufferService->getVertices($shape, $video->getCalibration());
+    }
+
     /**
      * @param Model\LabeledThing $labeledThingInFrame
      *
@@ -403,8 +442,8 @@ class Csv implements Service\ProjectExporter
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
             return array(
-                'x' => 'NAN',
-                'y' => 'NAN',
+                'x' => 'null',
+                'y' => 'null',
             );
         }
 
@@ -427,8 +466,8 @@ class Csv implements Service\ProjectExporter
                 break;
             default:
                 return array(
-                    'x' => 'NAN',
-                    'y' => 'NAN',
+                    'x' => 'null',
+                    'y' => 'null',
                 );
         }
     }
@@ -443,8 +482,8 @@ class Csv implements Service\ProjectExporter
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
             return array(
-                'width'  => 'NAN',
-                'height' => 'NAN',
+                'width'  => 'null',
+                'height' => 'null',
             );
         }
 
@@ -467,8 +506,8 @@ class Csv implements Service\ProjectExporter
                 break;
             default:
                 return array(
-                    'width'  => 'NAN',
-                    'height' => 'NAN',
+                    'width'  => 'null',
+                    'height' => 'null',
                 );
         }
     }
