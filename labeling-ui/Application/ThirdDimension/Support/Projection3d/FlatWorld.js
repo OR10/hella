@@ -69,6 +69,23 @@ class Projection3dFlatWorld {
     );
   }
 
+  /**
+   *
+   * @param {Point} groundPoint
+   * @returns {Vector4}
+   */
+  projectGroundCoordinateTo3d(groundPoint) {
+    return this._transformCamToCarForGroundCoordinate(
+      this._removeRotationForVertex(
+        this._removeDistortionForVertex(
+          this._reverseCameraMatrixForVertex(
+            new Vector3(groundPoint.x, groundPoint.y, 1)
+          )
+        )
+      )
+    );
+  }
+
 
   /**
    * @param {Cuboid2d} cuboid2d
@@ -76,8 +93,17 @@ class Projection3dFlatWorld {
    * @private
    */
   _reverseCameraMatrix(cuboid2d) {
-    const transformedVertices = cuboid2d.vertices.map(vertex => vertex.applyMatrix4(this._inverseCameraMatrix));
+    const transformedVertices = cuboid2d.vertices.map(vertex => this._reverseCameraMatrixForVertex(vertex));
     return Cuboid2d.createFromCuboid2dAndVectors(cuboid2d, transformedVertices);
+  }
+
+  /**
+   * @param {Vector3} vertex
+   * @returns {Vector3}
+   * @private
+   */
+  _reverseCameraMatrixForVertex(vertex) {
+    return vertex.applyMatrix4(this._inverseCameraMatrix);
   }
 
   /**
@@ -86,22 +112,29 @@ class Projection3dFlatWorld {
    * @private
    */
   _removeDistortion(cuboid2d) {
-    const transformedVertices = cuboid2d.vertices.map(vertex => {
-      const {x, y} = vertex;
-      const r2 = Math.pow(x, 2) + Math.pow(y, 2);
-      const r4 = Math.pow(r2, 2);
-      const r6 = Math.pow(r2, 3);
-
-      const [ik0, ik1, ik2] = this._inverseDistortionCoefficients;
-
-      return new Vector3(
-        x + x * (ik0 * r2 + ik1 * r4 + ik2 * r6),
-        y + y * (ik0 * r2 + ik1 * r4 + ik2 * r6),
-        1
-      );
-    });
+    const transformedVertices = cuboid2d.vertices.map(vertex => this._removeDistortionForVertex(vertex));
 
     return Cuboid2d.createFromCuboid2dAndVectors(cuboid2d, transformedVertices);
+  }
+
+  /**
+   * @param {Vector3} vertex
+   * @returns {Vector3}
+   * @private
+   */
+  _removeDistortionForVertex(vertex) {
+    const {x, y} = vertex;
+    const r2 = Math.pow(x, 2) + Math.pow(y, 2);
+    const r4 = Math.pow(r2, 2);
+    const r6 = Math.pow(r2, 3);
+
+    const [ik0, ik1, ik2] = this._inverseDistortionCoefficients;
+
+    return new Vector3(
+      x + x * (ik0 * r2 + ik1 * r4 + ik2 * r6),
+      y + y * (ik0 * r2 + ik1 * r4 + ik2 * r6),
+      1
+    );
   }
 
   /**
@@ -110,8 +143,17 @@ class Projection3dFlatWorld {
    * @private
    */
   _removeRotation(cuboid2d) {
-    const transformedVertices = cuboid2d.vertices.map(vertex => vertex.applyMatrix4(this._inverseRotationMatrix));
+    const transformedVertices = cuboid2d.vertices.map(vertex => this._removeRotationForVertex(vertex));
     return Cuboid3d.createFromVectors(transformedVertices);
+  }
+
+  /**
+   * @param {Vector3} vertex
+   * @returns {Vector4}
+   * @private
+   */
+  _removeRotationForVertex(vertex) {
+    return vertex.applyMatrix4(this._inverseRotationMatrix);
   }
 
   /**
@@ -149,6 +191,21 @@ class Projection3dFlatWorld {
     });
 
     return Cuboid3d.createFromVectors(points);
+  }
+
+  /**
+   * @param {Vector4} vertex
+   * @returns {Vector4}
+   * @private
+   */
+  _transformCamToCarForGroundCoordinate(vertex) {
+    const cz = (0 - this._calibration.translation.z) / vertex.z;
+    return new Vector4(
+      vertex.x * cz + this._calibration.translation.x,
+      vertex.y * cz + this._calibration.translation.y,
+      0,
+      1
+    );
   }
 }
 
