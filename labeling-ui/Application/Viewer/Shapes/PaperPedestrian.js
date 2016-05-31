@@ -179,7 +179,7 @@ class PaperPedestrian extends PaperShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const height = this._bottomCenter.y - this._topCenter.y;
+    const height = Math.abs(this._bottomCenter.y - this._topCenter.y);
     const width = height * PaperPedestrian.ASPECT_RATIO;
     return {width, height};
   }
@@ -209,9 +209,9 @@ class PaperPedestrian extends PaperShape {
    * @param {Point} point
    */
   moveTo(point) {
-    const height = this._bottomCenter.y - this._topCenter.y;
-    this._topCenter = new paper.Point(point.x, point.y + (height / 2));
-    this._bottomCenter = new paper.Point(point.x, point.y - (height / 2));
+    const height = Math.abs(this._bottomCenter.y - this._topCenter.y);
+    this._topCenter = new paper.Point(point.x, point.y - (height / 2));
+    this._bottomCenter = new paper.Point(point.x, point.y + (height / 2));
     this._drawShape();
   }
 
@@ -262,10 +262,11 @@ class PaperPedestrian extends PaperShape {
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {
-    if (this._topCenter.y < this._bottomCenter.y) {
-      const tmpPoint = this._bottomCenter;
-      this._bottomCenter = this._topCenter;
-      this._topCenter = tmpPoint;
+    if (this._topCenter.y > this._bottomCenter.y) {
+      const newBottom = new paper.Point(this._topCenter.x, this._topCenter.y);
+      const newTop = new paper.Point(this._bottomCenterCenter.x, this._bottomCenterCenter.y);
+      this._bottomCenter = newBottom;
+      this._topCenter = newTop;
       this._drawShape();
     }
   }
