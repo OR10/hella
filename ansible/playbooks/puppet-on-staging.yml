@@ -27,7 +27,6 @@
             --hiera_config=puppet/hiera/hiera.yaml
             --environmentpath puppet/environments/
             --environment staging
-            --noop
             puppet/environments/staging/manifests/site.pp
         args:
             chdir: /tmp
