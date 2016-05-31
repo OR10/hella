@@ -157,6 +157,10 @@ export default class MultiTool extends Tool {
       return;
     }
 
+    // if (this._activeTool) {
+    //   this._activeTool.onMouseMove(event);
+    // }
+
     this._context.withScope(scope => {
       const point = event.point;
       const hitResult = scope.project.hitTest(point, {
@@ -195,10 +199,13 @@ export default class MultiTool extends Tool {
 
         this._activeTool = this._toolService.getTool(this._$scope, this._context, hitItem.parent.getClass(), actionIdentifier);
         this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitItem.parent.getCursor(hitResult, true));
-        this._activeTool.onMouseDown(event, hitItem);
-        this._activeTool.on('shape:update', shape => {
-          this.emit('shape:update', shape);
-        });
+
+        if (this._activeTool) {
+          this._activeTool.onMouseDown(event, hitItem);
+          this._activeTool.on('shape:update', shape => {
+            this.emit('shape:update', shape);
+          });
+        }
       } else {
         this._activeTool = this._createTool;
         this._activeTool.onMouseDown(event);
@@ -212,7 +219,17 @@ export default class MultiTool extends Tool {
     }
 
     if (this._activeTool) {
-      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = null);
+      this._context.withScope(scope => {
+        const hitResult = scope.project.hitTest(event.point, {
+          fill: true,
+          bounds: false,
+          tolerance: this._options.hitTestTolerance,
+        });
+        if (hitResult) {
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult, true));
+        }
+      });
+
       this._activeTool.onMouseUp(event);
       this._activeTool = null;
     }
