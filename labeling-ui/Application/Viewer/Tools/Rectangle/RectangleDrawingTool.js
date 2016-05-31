@@ -52,27 +52,19 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseDrag(event) {
+    const point = event.point;
     if (this._rect) {
       this._$scope.$apply(
-        () => this.updateShape(event.point)
+        () => {
+          this._rect.resize(this._getScaleAnchor(point), point);
+          this.emit('rectangle:update', this._rect);
+        }
       );
     } else {
       this._$scope.$apply(
-        () => this.startShape(this._startPosition, event.point)
+        () => this.startShape(this._startPosition, point)
       );
     }
-  }
-
-  updateShape(point) {
-    const width = Math.abs(point.x - this._startPosition.x) || 1;
-    const height = Math.abs(point.y - this._startPosition.y) || 1;
-
-    const scaleX = width / this._rect.bounds.width || 1;
-    const scaleY = height / this._rect.bounds.height || 1;
-
-    this._rect.scale(scaleX, scaleY, this._getScaleAnchor(point));
-
-    this.emit('rectangle:update', this._rect);
   }
 
   onMouseUp() {
@@ -94,18 +86,18 @@ class RectangleDrawingTool extends DrawingTool {
 
   _getScaleAnchor(point) {
     if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
-      return this._rect.bounds.topLeft;
+      return 'bottom-right';
     }
 
     if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
-      return this._rect.bounds.topRight;
+      return 'bottom-left';
     }
 
     if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
-      return this._rect.bounds.bottomRight;
+      return 'top-left';
     }
 
-    return this._rect.bounds.bottomLeft;
+    return 'top-right';
   }
 }
 

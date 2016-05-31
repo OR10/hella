@@ -191,7 +191,7 @@ class PaperRectangle extends PaperShape {
    * @param {Point} point
    * @param {{width, height}} minSize
    */
-  scale(handle, point, minSize = {width: 1, height: 1}) {
+  resize(handle, point, minSize = {width: 1, height: 1}) {
     let minDistancePoint = null;
     switch (handle) {
       case 'top-left':
@@ -223,8 +223,8 @@ class PaperRectangle extends PaperShape {
    */
   _pointMinDistance(point, fixPoint, minSize) {
     return new paper.Point(
-      Math.abs(point.x - fixPoint.x) > minSize ? point.x : fixPoint.x + (((point.x - fixPoint.x) / Math.abs(point.x - fixPoint.x)) * minSize),
-      Math.abs(point.y - fixPoint.y) > minSize ? point.y : fixPoint.y + (((point.y - fixPoint.y) / Math.abs(point.y - fixPoint.y)) * minSize)
+      Math.abs(point.x - fixPoint.x) > minSize.width ? point.x : fixPoint.x + (((point.x - fixPoint.x) / Math.abs(point.x - fixPoint.x)) * minSize.width),
+      Math.abs(point.y - fixPoint.y) > minSize.height ? point.y : fixPoint.y + (((point.y - fixPoint.y) / Math.abs(point.y - fixPoint.y)) * minSize.height)
     );
   }
 
