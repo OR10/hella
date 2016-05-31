@@ -134,31 +134,6 @@
           "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
           "incomplete": true,
           "ghost": true
-        },
-        {
-          "id": null,
-          "rev": null,
-          "frameIndex": 5,
-          "classes": [],
-          "ghostClasses": null,
-          "shapes": [
-            {
-              "type": "rectangle",
-              "id": "SHAPE-1",
-              "topLeft": {
-                "x": 100,
-                "y": 100
-              },
-              "bottomRight": {
-                "x": 300,
-                "y": 300
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-1"
-            }
-          ],
-          "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
-          "incomplete": true,
-          "ghost": true
         }
       ]
     }
