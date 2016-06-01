@@ -1,7 +1,6 @@
 import Tool from './Tool';
 import paper from 'paper';
-
-import PaperShape from '../Shapes/PaperShape';
+import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 
 /**
  * A multi tool for handling multiple functionalities
@@ -112,6 +111,16 @@ export default class MultiTool extends Tool {
       description: 'Move selected shape right (fast)',
       callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
     });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'o',
+      description: 'Rotate cuboid counter clockwise by 5°',
+      callback: () => this._rotateCuboid(5),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'p',
+      description: 'Rotate cuboid clockwise by 5°',
+      callback: () => this._rotateCuboid(-5),
+    });
   }
 
   /**
@@ -131,6 +140,21 @@ export default class MultiTool extends Tool {
   disable() {
     this._enabled = false;
     this._keyboardShortcutService.disable();
+  }
+
+  /**
+   * @param {number} degree
+   * @private
+   */
+  _rotateCuboid(degree) {
+    const shape = this._$scope.vm.selectedPaperShape;
+    if (shape instanceof PaperCuboid) {
+      this._context.withScope((scope) => {
+        shape.rotateBy(degree);
+        scope.view.update();
+        this.emit('shape:update', shape);
+      });
+    }
   }
 
   _moveSelectedShapeBy(deltaX, deltaY) {

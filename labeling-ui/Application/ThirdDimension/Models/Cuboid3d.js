@@ -19,7 +19,6 @@ class Cuboid3d {
   }
 
   /**
-   *
    * @param vector
    */
   addVectorToTop(vector) {
@@ -30,6 +29,14 @@ class Cuboid3d {
         this._vertices[pointIndex][2] + vector.z,
       ];
     });
+  }
+
+  get bottomCenter() {
+    return new Vector4(
+      (this._vertices[2][0] + this._vertices[7][0]) / 2,
+      (this._vertices[2][1] + this._vertices[7][1]) / 2,
+      (this._vertices[2][2] + this._vertices[7][2]) / 2,
+    );
   }
 
   get vertices() {

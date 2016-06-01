@@ -1,4 +1,5 @@
 import paper from 'paper';
+import {Matrix4} from 'three-math';
 import _ from 'lodash';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import Cuboid3d from '../Models/Cuboid3d';
@@ -313,6 +314,36 @@ class PaperCuboid extends PaperShape {
       case 'cube-length':
         break;
     }
+  }
+
+  /**
+   * @param {number} degree
+   */
+  rotateBy(degree) {
+    const rad = ((2 * Math.PI) / 360) * degree;
+
+    // Create translation and rotation matrices
+    const trans = new Matrix4();
+    const invTrans = new Matrix4();
+    const rot = new Matrix4();
+
+    // Create translation vectors
+    const transVector = this._cuboid3d.bottomCenter.negate();
+    const invTransVector = this._cuboid3d.bottomCenter;
+
+    // Calculate translation and rotation
+    trans.makeTranslation(transVector.x, transVector.y, transVector.z);
+    invTrans.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
+    rot.makeRotationZ(rad);
+
+    this._cuboid3d = Cuboid3d.createFromVectors(
+      this._cuboid3d.vertices.map(
+        // Apply translation and rotation
+        vertex => vertex.applyMatrix4(trans).applyMatrix4(rot).applyMatrix4(invTrans)
+      )
+    );
+
+    this._drawCuboid();
   }
 
   /**
