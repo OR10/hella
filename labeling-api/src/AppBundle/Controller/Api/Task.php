@@ -74,31 +74,57 @@ class Task extends Controller\Base
         $fetchVideos = $request->query->getBoolean('includeVideos', false);
         $offset      = $request->query->has('offset') ? $request->query->getInt('offset') : null;
         $limit       = $request->query->has('limit') ? $request->query->getInt('limit') : null;
+        $taskStatus  = $request->query->has('taskStatus') ? $request->query->get('taskStatus') : null;
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
             throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
-        $tasks = array(
-            Model\LabelingTask::STATUS_WAITING => $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_WAITING, $offset, $limit )
-        );
-
-        if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-            $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_PREPROCESSING, $offset, $limit );
-            $tasks[Model\LabelingTask::STATUS_LABELED]       = $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_LABELED, $offset, $limit );
-        }else{
-            $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = null;
-            $tasks[Model\LabelingTask::STATUS_LABELED]       = null;
-        }
-
-        if ($fetchVideos){
-            $videos = $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_WAITING]);
-            if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_PREPROCESSING]), $videos);
-                $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_LABELED]), $videos);
-            }
-        }else{
-            $videos = [];
+        $tasks  = array();
+        $videos = array();
+        switch ($taskStatus) {
+            case Model\LabelingTask::STATUS_PREPROCESSING:
+                if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
+                    $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = $this->labelingTaskFacade->findAllByStatus(
+                        null, Model\LabelingTask::STATUS_PREPROCESSING, $offset, $limit
+                    );
+                }
+                $videos = array_merge(
+                    $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_PREPROCESSING]),
+                    $videos
+                );
+                break;
+            case Model\LabelingTask::STATUS_WAITING:
+                $tasks[Model\LabelingTask::STATUS_WAITING] = $this->labelingTaskFacade->findAllByStatus(
+                    null, Model\LabelingTask::STATUS_WAITING, $offset, $limit
+                );
+                $videos = array_merge(
+                    $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_WAITING]),
+                    $videos
+                );
+                break;
+            case Model\LabelingTask::STATUS_LABELED:
+                if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
+                    $tasks[Model\LabelingTask::STATUS_LABELED] = $this->labelingTaskFacade->findAllByStatus(
+                        null, Model\LabelingTask::STATUS_LABELED, $offset, $limit
+                    );
+                }
+                $videos = array_merge(
+                    $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_LABELED]),
+                    $videos
+                );
+                break;
+            default:
+                $tasks[Model\LabelingTask::STATUS_WAITING] = $this->labelingTaskFacade->findAllByStatus(
+                    null, Model\LabelingTask::STATUS_WAITING, $offset, $limit
+                );
+                $videos = $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_WAITING]);
+                if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
+                    $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_PREPROCESSING, $offset, $limit);
+                    $tasks[Model\LabelingTask::STATUS_LABELED] = $this->labelingTaskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_LABELED, $offset, $limit);
+                    $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_PREPROCESSING]), $videos);
+                    $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_LABELED]), $videos);
+                }
         }
 
         $userIds = array();
