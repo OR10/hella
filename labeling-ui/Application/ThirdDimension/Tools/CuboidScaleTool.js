@@ -45,8 +45,7 @@ class CuboidScaleTool extends Tool {
   onMouseUp() {
     if (this._paperCuboid && this._modified) {
       this._modified = false;
-      // this._paperCuboid.fixOrientation();
-      // this.emit('shape:update', this._paperCuboid);
+      this.emit('shape:update', this._paperCuboid);
     }
 
     this._boundName = null;

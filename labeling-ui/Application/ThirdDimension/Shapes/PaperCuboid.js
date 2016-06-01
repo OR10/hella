@@ -337,7 +337,12 @@ class PaperCuboid extends PaperShape {
    * Convert to JSON for Storage
    */
   toJSON() {
-    // TODO: Implement
+    return {
+      type: 'cuboid3d',
+      id: this._shapeId,
+      vehicleCoordinates: this._cuboid3d.vertices.map(vertex => [vertex.x, vertex.y, vertex.z]),
+      labeledThingInFrameId: this.labeledThingInFrame.id,
+    };
   }
 }
 

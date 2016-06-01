@@ -44,7 +44,6 @@ class CuboidMoveTool extends Tool {
    * @param {PaperShape} hitShape
    */
   onMouseDown(event, hitShape) {
-    const point = event.point;
     this._paperCuboid = hitShape.parent;
   }
 
@@ -52,7 +51,7 @@ class CuboidMoveTool extends Tool {
     if (this._paperCuboid && this._modified) {
       this._modified = false;
 
-      // this.emit('shape:update', this._paperCuboid);
+      this.emit('shape:update', this._paperCuboid);
     }
   }
 
@@ -78,7 +77,7 @@ class CuboidMoveTool extends Tool {
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
-    // this.emit('shape:update', shape);
+    this.emit('shape:update', shape);
   }
 }
 
