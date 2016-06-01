@@ -1,4 +1,5 @@
 import paper from 'paper';
+import _ from 'lodash';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import Cuboid3d from '../Models/Cuboid3d';
 
@@ -276,7 +277,6 @@ class PaperCuboid extends PaperShape {
       case 'cube-height':
         return 'ns-resize';
       case 'cube-width':
-        return 'all-scroll';
       case 'cube-length':
         return 'all-scroll';
       case 'cube-move':
@@ -290,7 +290,7 @@ class PaperCuboid extends PaperShape {
    * @param {Point} point
    */
   moveTo(point) {
-    const newPrimaryCornerPosition = this._projection3d.projectGroundCoordinateTo3d(point);
+    const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(point);
     const movementVector = newPrimaryCornerPosition.sub(this._projectedCuboid.primaryVertices.edge);
 
     this._cuboid3d.moveBy(movementVector);
@@ -304,7 +304,33 @@ class PaperCuboid extends PaperShape {
    * @param {{height: 1, width: 1, length: 1}} minDistance
    */
   resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
+    switch (handle) {
+      case 'cube-height':
+        this._changeHeight(point, minDistance);
+        break;
+      case 'cube-width':
+        break;
+      case 'cube-length':
+        break;
+    }
+  }
 
+  /**
+   * @param {Point} point
+   * @param {{height: 1, width: 1, length: 1}} minDistance
+   * @private
+   */
+  _changeHeight(point, minDistance) {
+    const newTop = this._projection3d.projectTopCoordianteTo3d(point, this._projectedCuboid.primaryVertices.edge);
+    let oldTop;
+    _.each(this._projectedCuboid.primaryVertices.names, (value, key) => {
+      if (value === 'height') {
+        oldTop = this._cuboid3d.vertices[key];
+      }
+    });
+    const heightVector = newTop.sub(oldTop);
+    this._cuboid3d.addVectorToTop(heightVector);
+    this._drawCuboid();
   }
 
   /**

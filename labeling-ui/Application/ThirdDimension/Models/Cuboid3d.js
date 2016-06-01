@@ -5,12 +5,29 @@ class Cuboid3d {
     this._vertices = vertices;
   }
 
+  /**
+   * @param {Vector4} vector
+   */
   moveBy(vector) {
     this._vertices = this._vertices.map(vertex => {
       return [
         vertex[0] + vector.x,
         vertex[1] + vector.y,
         vertex[2] + vector.z,
+      ];
+    });
+  }
+
+  /**
+   *
+   * @param vector
+   */
+  addVectorToTop(vector) {
+    [0, 1, 4, 5].map(pointIndex => {
+      this._vertices[pointIndex] = [
+        this._vertices[pointIndex][0] + vector.x,
+        this._vertices[pointIndex][1] + vector.y,
+        this._vertices[pointIndex][2] + vector.z,
       ];
     });
   }

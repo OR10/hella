@@ -3,6 +3,7 @@ import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
 import CuboidMoveTool from '../../ThirdDimension/Tools/CuboidMoveTool';
+import CuboidScaleTool from '../../ThirdDimension/Tools/CuboidScaleTool';
 
 class ToolService {
   constructor() {
@@ -22,6 +23,7 @@ class ToolService {
       'pedestrian-move': PedestrianMoveTool,
       'pedestrian-scale': PedestrianScaleTool,
       'cuboid-move': CuboidMoveTool,
+      'cuboid-scale': CuboidScaleTool,
     };
   }
 

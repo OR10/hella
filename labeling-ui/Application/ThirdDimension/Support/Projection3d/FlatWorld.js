@@ -70,19 +70,36 @@ class Projection3dFlatWorld {
   }
 
   /**
-   *
-   * @param {Point} groundPoint
+   * @param {Point} bottomPoint
    * @returns {Vector4}
    */
-  projectGroundCoordinateTo3d(groundPoint) {
-    return this._transformCamToCarForGroundCoordinate(
+  projectBottomCoordinateTo3d(bottomPoint) {
+    return this._transformCamToCarForBottomCoordinate(
       this._removeRotationForVertex(
         this._removeDistortionForVertex(
           this._reverseCameraMatrixForVertex(
-            new Vector3(groundPoint.x, groundPoint.y, 1)
+            new Vector3(bottomPoint.x, bottomPoint.y, 1)
           )
         )
       )
+    );
+  }
+
+  /**
+   * @param {Point} topPoint
+   * @param {Point} bottomPoint
+   * @returns {Vector4}
+   */
+  projectTopCoordianteTo3d(topPoint, bottomPoint) {
+    return this._transformCamToCarForCeilingCoordinate(
+      this._removeRotationForVertex(
+        this._removeDistortionForVertex(
+          this._reverseCameraMatrixForVertex(
+            new Vector3(topPoint.x, topPoint.y, 1)
+          )
+        )
+      ),
+      new Vector3(bottomPoint.x, bottomPoint.y, 1)
     );
   }
 
@@ -198,12 +215,30 @@ class Projection3dFlatWorld {
    * @returns {Vector4}
    * @private
    */
-  _transformCamToCarForGroundCoordinate(vertex) {
+  _transformCamToCarForBottomCoordinate(vertex) {
     const cz = (0 - this._calibration.translation.z) / vertex.z;
     return new Vector4(
       vertex.x * cz + this._calibration.translation.x,
       vertex.y * cz + this._calibration.translation.y,
       0,
+      1
+    );
+  }
+
+  /**
+   * @param {Vector3} topPoint
+   * @param {Vector3} bottomPoint
+   * @private
+   */
+  _transformCamToCarForCeilingCoordinate(topPoint, bottomPoint) {
+    const zLevel = (
+        (bottomPoint.x - this._calibration.translation.x) / topPoint.x
+      ) * topPoint.z + this._calibration.translation.z;
+
+    return new Vector4(
+      bottomPoint.x,
+      bottomPoint.y,
+      zLevel,
       1
     );
   }
