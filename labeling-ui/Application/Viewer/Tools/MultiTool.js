@@ -150,7 +150,7 @@ export default class MultiTool extends Tool {
     const shape = this._$scope.vm.selectedPaperShape;
     if (shape instanceof PaperCuboid) {
       this._context.withScope((scope) => {
-        shape.rotateBy(degree);
+        shape.rotateArroundCenterBy(degree);
         scope.view.update();
         this.emit('shape:update', shape);
       });
