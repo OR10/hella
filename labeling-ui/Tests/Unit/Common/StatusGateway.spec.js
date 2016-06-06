@@ -9,7 +9,6 @@ describe('StatusGateway', () => {
   let $httpBackend;
   let $timeout;
   let gateway;
-  let bufferedHttp;
   let job;
 
   beforeEach(() => {
@@ -32,7 +31,6 @@ describe('StatusGateway', () => {
       $httpBackend = $injector.get('$httpBackend');
       $timeout = $injector.get('$timeout');
       gateway = $injector.instantiate(StatusGateway);
-      bufferedHttp = $injector.get('bufferedHttp');
     });
 
     job = {
