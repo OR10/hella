@@ -11,7 +11,6 @@ import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 describe('LabeledThingGateway', () => {
   let $httpBackend;
   let gateway;
-  let bufferedHttp;
   let revisionManager;
 
   beforeEach(() => {
@@ -37,7 +36,6 @@ describe('LabeledThingGateway', () => {
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledThingGateway);
-      bufferedHttp = $injector.get('bufferedHttp');
       revisionManager = $injector.get('revisionManager');
     });
   });
@@ -144,5 +142,4 @@ describe('LabeledThingGateway', () => {
 
     $httpBackend.flush();
   });
-
 });
