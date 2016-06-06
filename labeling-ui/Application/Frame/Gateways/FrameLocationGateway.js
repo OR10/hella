@@ -1,5 +1,3 @@
-import DataContainer from 'Application/LabelingData/Support/DataContainer';
-
 /**
  * Gateway to interact with {@link Task} related {@link Frame}s
  */
@@ -37,12 +35,12 @@ class FrameLocationGateway {
    */
   getFrameLocations(taskId, type, offset = 0, limit = 1) {
     return this._bufferedHttp({
-        method: 'GET',
-        url: this._apiService.getApiUrl(
-          `/task/${taskId}/frameLocations/${type}`,
-          {offset, limit}
-        ),
-      }, 'frameLocations')
+      method: 'GET',
+      url: this._apiService.getApiUrl(
+        `/task/${taskId}/frameLocations/${type}`,
+        {offset, limit}
+      ),
+    }, 'frameLocations')
       .then(response => response.data.result);
   }
 }
