@@ -109,7 +109,7 @@ class PedestrianDrawingTool extends DrawingTool {
    *
    * @param event
    */
-  onMouseUp(event) {
+  onMouseUp(event) { // eslint-disable-line no-unused-vars
     if (this._pedestrian) {
       this._$scope.$apply(
         () => this.completeShape()
