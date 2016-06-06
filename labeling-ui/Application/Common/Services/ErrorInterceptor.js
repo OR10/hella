@@ -5,7 +5,7 @@ class ErrorInterceptor {
   /**
    * @param {angular.Scope} $rootScope injected
    */
-  constructor($rootScope, modalService) {
+  constructor($rootScope) {
     this.$rootScope = $rootScope;
 
     this.responseError = this.responseError.bind(this);
