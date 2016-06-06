@@ -32,12 +32,13 @@ class ToolService {
    * @param {DrawingContext} context
    * @param {String} shapeClass
    * @param {String} actionIdentifier
-   * @returns {Tool}
+   * @returns {Tool|null}
    */
   getTool($scope, context, shapeClass, actionIdentifier) {
     if (!shapeClass || !actionIdentifier) {
       // Only try to create tool if all parameters are set
-      return;
+      // @TODO: Document in doc-block under which circumstances the returned tool is null
+      return null;
     }
     const toolIdentifier = `${shapeClass}-${actionIdentifier}`;
     const toolMap = this._getToolMap(this._getContextMap($scope), context);
