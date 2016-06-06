@@ -90,7 +90,7 @@ describe('DataContainer', () => {
 
   describe('nested key handling', () => {
     function iteratorsAreEqual(il, ir) {
-      while(true) { // eslint-disable-line no-constant-condition
+      while (true) { // eslint-disable-line no-constant-condition
         const currentLeft = il.next();
         const currentRight = ir.next();
 
