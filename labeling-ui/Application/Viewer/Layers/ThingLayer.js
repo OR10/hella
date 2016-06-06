@@ -176,7 +176,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   dispatchDOMEvent(event) {
-    this._context.withScope(scope => {
+    this._context.withScope(() => {
       if (event.type === 'mouseleave') {
         this._multiTool.onMouseLeave(event);
       } else {
@@ -387,15 +387,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     const paperShapes = labeledThingInFrame.shapes.map(shape => {
       // Transport selection between frame changes
+      let selectedByUserOrAcrossFrameChange = selected;
       if (selected === undefined) {
-        selected = (
+        selectedByUserOrAcrossFrameChange = (
           selectedLabeledThingInFrame
           && selectedLabeledThingInFrame !== labeledThingInFrame
           && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
         );
       }
 
-      return this._addShape(labeledThingInFrame, shape, selected, false);
+      return this._addShape(labeledThingInFrame, shape, selectedByUserOrAcrossFrameChange, false);
     });
 
     if (update) {
