@@ -1,4 +1,3 @@
-import {Vector4} from 'three-math';
 import Cuboid2d from '../../Models/Cuboid2d';
 
 /**
@@ -130,8 +129,8 @@ class DepthBufferProjection2d {
 
   _compareByZOrder(thisFace, thatFace) {
     // Vertices are in vehicle coordinates. Therefore x is the depth
-    const depthOfThisFace = thisFace.vertices3d.map(v => v.x);
-    const depthOfThatFace = thatFace.vertices3d.map(v => v.x);
+    const depthOfThisFace = thisFace.vertices3d.map(vertex => vertex.x);
+    const depthOfThatFace = thatFace.vertices3d.map(vertex => vertex.x);
     const maxDepthOfThisFace = Math.max(...depthOfThisFace);
     const maxDepthOfThatFace = Math.max(...depthOfThatFace);
 
@@ -139,7 +138,7 @@ class DepthBufferProjection2d {
       return -1;
     } else if (maxDepthOfThisFace === maxDepthOfThatFace) {
       return 0;
-    } else {
+    } else { // eslint-disable-line no-else-return
       return 1;
     }
   }
