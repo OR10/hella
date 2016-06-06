@@ -8,7 +8,6 @@ import User from 'Application/Users/Models/User';
 
 describe('UserGateway', () => {
   let $httpBackend;
-  let bufferedHttp;
   let gateway;
 
   beforeEach(() => {
@@ -29,7 +28,6 @@ describe('UserGateway', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      bufferedHttp = $injector.get('bufferedHttp');
       gateway = $injector.instantiate(UserGateway);
     });
   });
@@ -60,7 +58,7 @@ describe('UserGateway', () => {
           {id: 'me', email: 'foo@bar.baz'},
           {id: 'you', email: 'blub@blib.blab'},
         ],
-      }
+      },
     };
 
     $httpBackend.expectGET('/backend/api/users').respond(usersResponse);
