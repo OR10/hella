@@ -112,7 +112,7 @@ class InterpolationService {
    */
   _invalidateCaches(labeledThing, start, end) {
     const {task} = labeledThing;
-    for(let frameIndex = start; frameIndex <= end; frameIndex++) {
+    for (let frameIndex = start; frameIndex <= end; frameIndex++) {
       // Invalidate ghosts
       this._ltifGhostCache.invalidate(`${task.id}.${frameIndex}.${labeledThing.id}`);
 
@@ -123,7 +123,7 @@ class InterpolationService {
       this._ltifCache.invalidate(`${task.id}.${frameIndex}.complete`);
 
       if (ltifFrameMap !== undefined) {
-        ltifFrameMap.forEach(ltifData => {
+        ltifFrameMap.forEach(ltifData => { // eslint-disable-line no-loop-func
           if (ltifData.labeledThingId !== labeledThing.id) {
             return;
           }
