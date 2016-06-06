@@ -80,7 +80,7 @@ class Common extends Module {
           $httpProvider.interceptors.push('authInterceptor');
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
-          
+
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
           }
