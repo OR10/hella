@@ -39,7 +39,7 @@ class KeyboardShortcutService {
    * Enable the last active context
    */
   enable() {
-    this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1])
+    this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
   }
 
   /**
