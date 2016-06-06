@@ -36,7 +36,6 @@ class TaskController {
               keyboardShortcutService,
               frameIndexService,
               lockService) {
-
     // Ensure the FrameIndexService knows the currently active Task
     frameIndexService.setTask(initialData.task);
 
@@ -342,12 +341,12 @@ class TaskController {
 
   _initializeLayout() {
     const sidebarSizeCss = `${6 / 24 * 100}%`;
-    //const viewerSizeCss = `${14 / 24 * 100}%`;
+    // const viewerSizeCss = `${14 / 24 * 100}%`;
     const viewerSizeCss = `${18 / 24 * 100}%`;
 
-    //this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
+    // this.splitViewSizes = [sidebarSizeCss, viewerSizeCss, sidebarSizeCss];
     this.splitViewSizes = [null, viewerSizeCss, sidebarSizeCss];
-    //this.minSizes = [260, 500, 260];
+    // this.minSizes = [260, 500, 260];
     this.minSizes = [500, 260];
   }
 
