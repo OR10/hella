@@ -181,10 +181,6 @@ export default class MultiTool extends Tool {
       return;
     }
 
-    // if (this._activeTool) {
-    //   this._activeTool.onMouseMove(event);
-    // }
-
     this._context.withScope(scope => {
       const point = event.point;
       const hitResult = scope.project.hitTest(point, {
@@ -193,7 +189,9 @@ export default class MultiTool extends Tool {
         tolerance: this._options.hitTestTolerance,
       });
 
-      //TODO: toolservice -> getTool(hitTestItem.class, hitTestItem.getToolActionIdentifier);
+      // Is this something that still needs to be done?
+      // I don't see, why this should be done here.
+      // @TODO: toolservice -> getTool(hitTestItem.class, hitTestItem.getToolActionIdentifier);
 
       if (!hitResult) {
         this._$scope.vm.actionMouseCursor = null;
@@ -224,7 +222,7 @@ export default class MultiTool extends Tool {
         this._activeTool = this._toolService.getTool(this._$scope, this._context, hitItem.parent.getClass(), actionIdentifier);
         this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitItem.parent.getCursor(hitResult, true));
 
-        if (this._activeTool) {
+        if (this._activeTool !== null) {
           this._activeTool.onMouseDown(event, hitItem);
           this._activeTool.on('shape:update', shape => {
             this.emit('shape:update', shape);
