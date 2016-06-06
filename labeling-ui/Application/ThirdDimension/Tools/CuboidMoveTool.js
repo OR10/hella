@@ -1,4 +1,3 @@
-import paper from 'paper';
 import Tool from '../../Viewer/Tools/Tool';
 
 /**
