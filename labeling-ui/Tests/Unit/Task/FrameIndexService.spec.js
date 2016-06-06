@@ -1,4 +1,4 @@
-import {module, inject} from 'angular-mocks';
+import {inject} from 'angular-mocks';
 
 import FrameIndexService from 'Application/Task/Services/FrameIndexService';
 
