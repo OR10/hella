@@ -72,27 +72,27 @@ class AbstractSimpleMigration extends AbstractMigration {
       });
   }
 
-  migrateProject(project) {
+  migrateProject(project) { // eslint-disable-line no-unused-vars
     // Should be overwritten by child
     return false;
   }
 
-  migrateTask(task, project) {
+  migrateTask(task, project) { // eslint-disable-line no-unused-vars
     // Should be overwritten by child
     return false;
   }
 
-  migrateLabeledThing(labeledThing, task, project) {
+  migrateLabeledThing(labeledThing, task, project) { // eslint-disable-line no-unused-vars
     // Should be overwritten by child
     return false;
   }
 
-  migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task, project) {
+  migrateLabeledThingInFrame(labeledThingInFrame, labeledThing, task, project) { // eslint-disable-line no-unused-vars
     // Should be overwritten by child
     return false;
   }
 
-  migrateTimer(timer, task, project) {
+  migrateTimer(timer, task, project) { // eslint-disable-line no-unused-vars
     // Should be overwritten by child
     return false;
   }
@@ -102,37 +102,37 @@ class AbstractSimpleMigration extends AbstractMigration {
       _id: `_design/migration__`,
       views: {
         projects: {
-          map: function (document) {
+          map: function(document) { // eslint-disable-line func-names
             if (document.type === 'AppBundle.Model.Project') {
-              emit(document._id);
+              emit(document._id); // eslint-disable-line no-undef
             }
           }.toString(),
         },
         tasksByProjectId: {
-          map: function (document) {
+          map: function(document) { // eslint-disable-line func-names
             if (document.type === 'AppBundle.Model.LabelingTask') {
-              emit(document.projectId, document._id);
+              emit(document.projectId, document._id); // eslint-disable-line no-undef
             }
           }.toString(),
         },
         timersByTaskId: {
-          map: function (document) {
+          map: function(document) { // eslint-disable-line func-names
             if (document.type === 'AppBundle.Model.TaskTimer') {
-              emit(document.taskId, document._id);
+              emit(document.taskId, document._id); // eslint-disable-line no-undef
             }
           }.toString(),
         },
         labeledThingsByTaskId: {
-          map: function (document) {
+          map: function(document) { // eslint-disable-line func-names
             if (document.type === 'AppBundle.Model.LabeledThing') {
-              emit(document.taskId, document._id);
+              emit(document.taskId, document._id); // eslint-disable-line no-undef
             }
           }.toString(),
         },
         labeledThingsInFrameByLabeledThingId: {
-          map: function (document) {
+          map: function(document) { // eslint-disable-line func-names
             if (document.type === 'AppBundle.Model.LabeledThingInFrame') {
-              emit(document.labeledThingId, document._id);
+              emit(document.labeledThingId, document._id); // eslint-disable-line no-undef
             }
           }.toString(),
         },
@@ -140,7 +140,9 @@ class AbstractSimpleMigration extends AbstractMigration {
     }).catch(error => {
       if (error.status === 409) {
         return Promise.reject(
-          new Error('Design document "_design/migrate__" does already exist. Delete it before migration.')
+          new Error(
+            'Design document "_design/migrate__" does already exist. Delete it before migration.'
+          )
         );
       }
 
@@ -161,9 +163,9 @@ class AbstractSimpleMigration extends AbstractMigration {
   _visitProject(project) {
     this._logger.info(`├── Retrieving Tasks for Project "${project.name}" (${project._id})`);
     return this._pouchdb.query('migration__/tasksByProjectId', {
-        key: project._id,
-        include_docs: false,
-      })
+      key: project._id,
+      include_docs: false,
+    })
       .then(
         resultSet => {
           return this._serialThenOnArray(resultSet.rows, row => this._visitTaskId(row.value, project));
@@ -190,9 +192,9 @@ class AbstractSimpleMigration extends AbstractMigration {
   _visitTask(task, project) {
     this._logger.info(`│   ├── Retrieving LabeledThings for task ${task._id}`);
     return this._pouchdb.query('migration__/labeledThingsByTaskId', {
-        key: task._id,
-        include_docs: false,
-      })
+      key: task._id,
+      include_docs: false,
+    })
       .then(resultSet => {
         return this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingId(row.value, task, project));
       })
@@ -249,9 +251,9 @@ class AbstractSimpleMigration extends AbstractMigration {
   _visitLabeledThing(labeledThing, task, project) {
     this._logger.info(`│   │   ├── Retrieving LabeledThingInFrames for labeldThing ${labeledThing._id}`);
     return this._pouchdb.query('migration__/labeledThingsInFrameByLabeledThingId', {
-        key: labeledThing._id,
-        include_docs: false,
-      })
+      key: labeledThing._id,
+      include_docs: false,
+    })
       .then(
         resultSet => this._serialThenOnArray(resultSet.rows, row => this._visitLabeledThingInFrameId(row.value, labeledThing, task, project))
       )
