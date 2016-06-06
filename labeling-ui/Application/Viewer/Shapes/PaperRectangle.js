@@ -193,6 +193,7 @@ class PaperRectangle extends PaperShape {
    */
   resize(handle, point, minSize = {width: 1, height: 1}) {
     let minDistancePoint = null;
+
     switch (handle) {
       case 'top-left':
         this._topLeft = this._enforceMinSize(point, this._bottomRight, minSize);
@@ -210,7 +211,10 @@ class PaperRectangle extends PaperShape {
         this._topLeft.x = minDistancePoint.x;
         this._bottomRight.y = minDistancePoint.y;
         break;
+      default:
+        throw new Error(`Unknown handle identifier: ${handle}.`);
     }
+
     this._drawShape();
   }
 
