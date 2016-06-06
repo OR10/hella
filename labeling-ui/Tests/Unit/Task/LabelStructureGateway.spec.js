@@ -7,7 +7,6 @@ import LabelStructureGateway from 'Application/Task/Gateways/LabelStructureGatew
 
 describe('LabelStructureGateway', () => {
   let $httpBackend;
-  let bufferedHttp;
   let gateway;
 
   beforeEach(() => {
@@ -28,7 +27,6 @@ describe('LabelStructureGateway', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      bufferedHttp = $injector.get('bufferedHttp');
       gateway = $injector.instantiate(LabelStructureGateway);
     });
   });
@@ -42,26 +40,26 @@ describe('LabelStructureGateway', () => {
     const tasksResponse = {
       result: {
         structure: {
-          a: {
+          'a': {
             foo: 'bar',
-            bar: 'baz'
+            bar: 'baz',
           },
-          b: {
+          'b': {
             foo: 'bar',
-            bar: 'baz'
+            bar: 'baz',
           },
         },
         annotation: {
-          c: {
+          'c': {
             foo: 'bar',
-            bar: 'baz'
+            bar: 'baz',
           },
-          d: {
+          'd': {
             foo: 'bar',
-            bar: 'baz'
+            bar: 'baz',
           },
-        }
-      }
+        },
+      },
     };
 
     $httpBackend.expectGET(`/backend/api/task/${taskId}/labelStructure`).respond(tasksResponse);
@@ -73,6 +71,4 @@ describe('LabelStructureGateway', () => {
 
     $httpBackend.flush();
   });
-
-
 });
