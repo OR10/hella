@@ -60,7 +60,7 @@ class DebouncerService {
 
 DebouncerService.$inject = [
   '$window',
-  '$q'
+  '$q',
 ];
 
 export default DebouncerService;
