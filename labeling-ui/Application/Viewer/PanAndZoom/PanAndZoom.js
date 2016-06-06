@@ -36,8 +36,7 @@ class PanAndZoom {
    * @param {Point} [focalPoint]
    */
   zoom(newZoom, focalPoint = null) {
-    this._context.withScope((scope) => {
-
+    this._context.withScope(scope => {
       const view = scope.view;
 
       let newCenter = view.center;
@@ -54,7 +53,6 @@ class PanAndZoom {
 
       view.zoom = newZoom;
       view.center = this._restrictViewportToViewBounds(view, newCenter);
-
     });
   }
 
