@@ -1,5 +1,4 @@
 import Module from '../Module';
-import Projection2d from './Services/Projection2d';
 
 /**
  * ThirdDimension Module
@@ -18,4 +17,3 @@ class ThirdDimension extends Module {
 }
 
 export default ThirdDimension;
-
