@@ -81,7 +81,7 @@ class Cuboid3d {
  * @returns {Cuboid3d}
  */
 Cuboid3d.createFromVectors = (vertices) => {
-  return new Cuboid3d(vertices.map(v => [v.x, v.y, v.z]));
+  return new Cuboid3d(vertices.map(vertex => [vertex.x, vertex.y, vertex.z]));
 };
 
 export default Cuboid3d;
