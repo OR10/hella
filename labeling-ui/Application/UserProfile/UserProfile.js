@@ -20,14 +20,12 @@ class UserProfile extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.UserProfile', []);
     this.module.service('userGateway', UserGateway);
-    //this.module.provider('bufferedHttp', BufferedHttpProvider);
   }
 
   /**
    * @inheritDoc
    */
   config($stateProvider) {
-
     function userResolver(userGateway) {
       return userGateway.getCurrentUser();
     }
@@ -48,10 +46,6 @@ class UserProfile extends Module {
       controllerAs: 'vm',
       template: userPasswordTemplate,
     });
-
-
-
-
   }
 }
 
