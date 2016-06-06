@@ -60,7 +60,7 @@ class PaperShape extends paper.Group {
      * The number represents die diameter in px.
      *
      * @type {number}
-     * @private
+     * @protected
      */
     this._handleSize = 6;
 
@@ -139,7 +139,7 @@ class PaperShape extends paper.Group {
     this.position = point;
   }
 
-  shouldBeSelected(hitResult) {
+  shouldBeSelected(hitResult) { // eslint-disable-line no-unused-vars
     return true;
   }
 
