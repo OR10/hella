@@ -7,7 +7,6 @@ import TaskGateway from 'Application/Task/Gateways/TaskGateway';
 
 describe('TaskGateway', () => {
   let $httpBackend;
-  let bufferedHttp;
   let gateway;
 
   beforeEach(() => {
@@ -28,7 +27,6 @@ describe('TaskGateway', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      bufferedHttp = $injector.get('bufferedHttp');
       gateway = $injector.instantiate(TaskGateway);
     });
   });
@@ -55,7 +53,7 @@ describe('TaskGateway', () => {
           ],
         },
         videos: {},
-      }
+      },
     };
 
     $httpBackend.expectGET('/backend/api/task').respond(tasksResponse);
@@ -88,7 +86,7 @@ describe('TaskGateway', () => {
         videos: {
           '123': {id: 'blub'},
         },
-      }
+      },
     };
 
     $httpBackend.expectGET('/backend/api/task?includeVideos=true').respond(tasksResponse);
