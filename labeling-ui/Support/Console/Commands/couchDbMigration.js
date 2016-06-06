@@ -37,9 +37,8 @@ class CouchDbMigrationCommand {
       .then(() => {
         if (argv.migration === null) {
           return this.askForMigration();
-        } else {
-          return argv.migration;
         }
+        return argv.migration;
       })
       .then(selectedMigration => migration = selectedMigration)
       .then(() => this.askForDatabase(argv.host, argv.port))
@@ -91,17 +90,17 @@ class CouchDbMigrationCommand {
   askForConfirmation(host, port, migration, database) {
     return Promise.resolve()
       .then(() => inquirer.prompt({
-          type: 'confirm',
-          name: 'confirmation',
-          default: false,
-          message: `You are about to ${chalk.red('MIGRATE')} the database ${chalk.blue(database)} on ${chalk.blue(`${host}:${port}`)} using ${chalk.blue(migration)}. Continue?`
-        }))
-        .then(answer => answer.confirmation);
+        type: 'confirm',
+        name: 'confirmation',
+        default: false,
+        message: `You are about to ${chalk.red('MIGRATE')} the database ${chalk.blue(database)} on ${chalk.blue(`${host}:${port}`)} using ${chalk.blue(migration)}. Continue?`,
+      }))
+      .then(answer => answer.confirmation);
   }
 
   runMigration(host, port, migration, database) {
-    const migrationClass = require(`${__dirname}/../CouchDbMigrations/${migration}.js`);
-    const migrationInstance = new migrationClass(host, port, migration, database, Logger);
+    const MigrationClass = require(`${__dirname}/../CouchDbMigrations/${migration}.js`);
+    const migrationInstance = new MigrationClass(host, port, migration, database, Logger);
     return migrationInstance.run();
   }
 }
