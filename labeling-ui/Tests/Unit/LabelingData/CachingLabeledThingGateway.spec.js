@@ -614,8 +614,10 @@ describe('CachingLabeledThingGateway', () => {
 
       beforeEach(() => {
         proto.deleteLabeledThing
-          .and.callFake(() => new $q((resolve) => {
-        }));
+          .and.callFake(() => new $q(
+          () => {
+          }
+        ));
 
         ltCacheKeys = {
           invalid: 'some-task.some-labeled-thing',
