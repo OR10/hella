@@ -77,7 +77,7 @@ class PaperLayer extends EventEmitter {
    */
   dispatchDOMEvent(event) {
     this._context.withScope(
-      scope => this._element.dispatchEvent(event)
+      () => this._element.dispatchEvent(event)
     );
   }
 
@@ -85,7 +85,7 @@ class PaperLayer extends EventEmitter {
    * Clears the layer removing all items
    */
   clear() {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       scope.project.clear();
       scope.view.update();
     });
