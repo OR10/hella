@@ -24,7 +24,7 @@ class AbortablePromise {
       }
 
       if (hasBeenHandled) {
-        return
+        return;
       }
 
       abortedCallbacks.forEach(fn => fn());
@@ -74,13 +74,13 @@ class AbortablePromise {
     };
 
     /**
-     * @param AbortablePromise#aborted
      * @returns {AbortablePromise}
+     * @param {Function} fn
      */
     this.aborted = fn => {
       abortedCallbacks.push(fn);
       return this;
-    }
+    };
   }
 }
 
