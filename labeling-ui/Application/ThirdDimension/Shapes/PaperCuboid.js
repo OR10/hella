@@ -121,7 +121,6 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {Cuboid2d} cuboid2d
    * @private
    */
   _createPlanes() {
@@ -150,7 +149,6 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {Cuboid2d} cuboid2d
    * @private
    */
   _createHandles() {
@@ -313,6 +311,8 @@ class PaperCuboid extends PaperShape {
         break;
       case 'cube-length':
         break;
+      default:
+        throw new Error(`Unknown handle type: ${handle}.`);
     }
   }
 
@@ -351,7 +351,7 @@ class PaperCuboid extends PaperShape {
    * @param {{height: 1, width: 1, length: 1}} minDistance
    * @private
    */
-  _changeHeight(point, minDistance) {
+  _changeHeight(point, minDistance) { // eslint-disable-line no-unused-vars
     const newTop = this._projection3d.projectTopCoordianteTo3d(point, this._projectedCuboid.primaryVertices.edge);
     let oldTop;
     _.each(this._projectedCuboid.primaryVertices.names, (value, key) => {
