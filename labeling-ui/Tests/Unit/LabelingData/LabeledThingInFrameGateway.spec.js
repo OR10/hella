@@ -337,7 +337,7 @@ describe('LabeledThingInFrameGateway', () => {
       frameIndex: 1,
       classes: [],
       incomplete: true,
-      ghost: false
+      ghost: false,
     }];
 
     $httpBackend
