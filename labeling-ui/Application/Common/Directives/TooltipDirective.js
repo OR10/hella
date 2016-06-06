@@ -1,3 +1,5 @@
+import angular from 'angular';
+
 /**
  * Directive allowing to place arbitrary tooltips using the `tooltip` attribute
  */
@@ -41,7 +43,7 @@ class TooltipDirective {
   link(scope, element, attrs) {
     let hoverTimeout = null;
 
-    element.on('mouseover', (event) => {
+    element.on('mouseover', () => {
       this._tooltipElement.removeClass('active');
       if (hoverTimeout !== null) {
         return;
@@ -91,7 +93,8 @@ class TooltipDirective {
     const bodyWidth = this._body.innerWidth();
     const bodyHeight = this._body.innerHeight();
 
-    let tooltipOffset = {};
+    const tooltipOffset = {};
+
     if (attrs.tooltipPosition && attrs.tooltipPosition === 'right') {
       let arrowMovement = 0;
       const realPosition = targetOffset.top - (tooltipHeight / 2) + (targetHeight / 2);
