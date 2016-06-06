@@ -1,5 +1,3 @@
-import ReferenceCountingLock from '../../Common/Support/ReferenceCountingLock';
-
 /**
  * A specific frame position inside a range of frames
  *
@@ -50,12 +48,12 @@ class FramePosition {
      */
     this._subscribers = {
       before: {
-        always: {}
+        always: {},
       },
       after: {
         oneTime: {},
-        always: {}
-      }
+        always: {},
+      },
     };
 
     /**
@@ -98,7 +96,7 @@ class FramePosition {
   afterFrameChangeOnce(name, callback) {
     this._subscribers.after.oneTime[name] = callback;
   }
-  
+
   /**
    * Subscribe to every after frame change event
    *
