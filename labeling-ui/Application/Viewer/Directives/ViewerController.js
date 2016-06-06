@@ -5,7 +5,6 @@ import BackgroundLayer from '../Layers/BackgroundLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
-import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 import Environment from '../../Common/Support/Environment';
 
 /**
@@ -530,12 +529,6 @@ class ViewerController {
     if (this.task.taskType === 'object-labeling') {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
     }
-
-    //Fix Firefox issue where resize event is not fired
-    const resizeSensor = new ResizeSensor(this._$element.get(0), () => {
-      this._resize();
-    });
-
 
     this.framePosition.beforeFrameChangeAlways('disableViewer', () => {
       this._applicationState.startFrameChange();
