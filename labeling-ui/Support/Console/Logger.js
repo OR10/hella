@@ -49,7 +49,7 @@ const Logger = {
 
     ui.updateBottomBar(status);
     lastStatus = status;
-  }
+  },
 };
 
 Logger.json = function logJson(structure) {
