@@ -15,7 +15,7 @@ class TitleBarController {
 }
 
 TitleBarController.$inject = [
-  '$state'
+  '$state',
 ];
 
 export default TitleBarController;
