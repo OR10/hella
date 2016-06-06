@@ -350,7 +350,7 @@ class BufferedHttpProvider {
        * @returns {AbortablePromise}
        */
       bufferedHttp[method] = (url, config = {}, bufferName = 'default') => {
-        if(typeof config === 'string') {
+        if (typeof config === 'string') {
           throw new Error('Config is not allowed to be a string. Did you give me a bufferName as options?');
         }
         const processedConfig = Object.assign({}, config, {url, method: method.toUpperCase()});
@@ -385,7 +385,7 @@ class BufferedHttpProvider {
        * @returns {AbortablePromise}
        */
       bufferedHttp[method] = (url, data, config = {}, bufferName = 'default') => {
-        if(typeof config === 'string') {
+        if (typeof config === 'string') {
           throw new Error('Config is not allowed to be a string. Did you give me a bufferName as options?');
         }
         const processedConfig = Object.assign({}, config, {url, data, method: method.toUpperCase()});
