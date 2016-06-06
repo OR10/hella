@@ -15,7 +15,7 @@ class FrameRangeRenaming extends AbstractSimpleMigration {
     return task;
   }
 
-  migrateLabeledThing(labeledThing, task) {
+  migrateLabeledThing(labeledThing, task) { // eslint-disable-line no-unused-vars
     const type = 'AppBundle.Model.FrameIndexRange';
 
     if (labeledThing.frameRange) {
