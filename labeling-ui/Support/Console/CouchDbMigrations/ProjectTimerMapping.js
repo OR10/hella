@@ -5,7 +5,7 @@ class ProjectTimerMapping extends AbstractSimpleMigration {
     super(host, port, database, status, logger);
   }
 
-  migrateTimer(timer, task, project) {
+  migrateTimer(timer, task, project) { // eslint-disable-line no-unused-vars
     if (task.projectId) {
       timer.projectId = task.projectId;
     }
