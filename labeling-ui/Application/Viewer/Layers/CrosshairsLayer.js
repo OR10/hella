@@ -7,10 +7,11 @@ class CrosshairsLayer {
   /**
    * @param {Number} width
    * @param {Number} height
+   * @param {$rootScope.$scope} $scope
    * @param {string} color
    * @param {Number} strokeWidth
    */
-  constructor(width, height, color, strokeWidth) {
+  constructor(width, height, $scope, color, strokeWidth) {
     /**
      * @type {Number}
      * @private
@@ -22,6 +23,12 @@ class CrosshairsLayer {
      * @private
      */
     this._height = height;
+
+    /**
+     * @type {$rootScope.$scope}
+     * @private
+     */
+    this._$scope = $scope;
 
     /**
      * @type {string}
@@ -47,7 +54,17 @@ class CrosshairsLayer {
      */
     this._canvas = null;
 
+    /**
+     * @type {[number, number]|null}
+     * @private
+     */
     this._lastKnownMouseCoords = null;
+    
+    this._$scope.$watch('vm.showCrosshairs', visible => {
+      if (!visible) {
+        this._clearCanvas();
+      }
+    });
   }
 
   /**
@@ -55,25 +72,23 @@ class CrosshairsLayer {
    * representation of the layer to its current state.
    */
   render() {
-    if (this._ctx === null) {
+    if (this._ctx === null || this._$scope.vm.showCrosshairs === false) {
       return;
     }
 
-    const ctx = this._ctx;
-    const {width, height} = this._canvas;
-
-    // Clear old crosshairs
-    ctx.clearRect(0, 0, width, height);
-
-    ctx.strokeStyle = this._color;
-    ctx.fillStyle = this._color;
-    ctx.strokeWidth = this._strokeWidth;
+    this._clearCanvas();
 
     if (this._lastKnownMouseCoords === null) {
       return;
     }
 
+    const ctx = this._ctx;
+    const {width, height} = this._canvas;
     const [x, y] = this._lastKnownMouseCoords;
+
+    ctx.strokeStyle = this._color;
+    ctx.fillStyle = this._color;
+    ctx.strokeWidth = this._strokeWidth;
 
     // Horizontal line
     ctx.beginPath();
@@ -86,6 +101,14 @@ class CrosshairsLayer {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, height);
     ctx.stroke();
+  }
+
+  _clearCanvas() {
+    const ctx = this._ctx;
+    const {width, height} = this._canvas;
+
+    // Clear old crosshairs
+    ctx.clearRect(0, 0, width, height);
   }
 
   /**
@@ -151,7 +174,7 @@ class CrosshairsLayer {
     this.render();
   }
 
-  _onMouseLeave(event) {
+  _onMouseLeave() {
     this._lastKnownMouseCoords = null;
     this.render();
   }

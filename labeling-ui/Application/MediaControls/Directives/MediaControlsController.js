@@ -12,6 +12,7 @@ import paper from 'paper';
  * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
  * @property {Tool} newShapeDrawingTool
+ * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
   /**
@@ -210,6 +211,13 @@ class MediaControlsController {
    */
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
+  }
+  
+  /**
+   * Handle the toggle of showing the crosshairs
+   */
+  handleShowCrosshairsToggle() {
+    this.showCrosshairs = !this.showCrosshairs;
   }
 
 

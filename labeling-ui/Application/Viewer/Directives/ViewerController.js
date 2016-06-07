@@ -28,6 +28,7 @@ import Environment from '../../Common/Support/Environment';
  * @property {integer} frameSkip
  * @property {ThingLayer} thingLayer
  * @property {boolean} readOnly
+ * @property {boolean} showCrosshairs 
  */
 class ViewerController {
   /**
@@ -499,7 +500,7 @@ class ViewerController {
         }
       }
     );
-
+    
     $scope.$on(
       '$destroy', () => {
         if (this._renderLoopPromise) {
@@ -525,7 +526,7 @@ class ViewerController {
         this._resizeDebounced();
       }
     );
-
+    
     // Initial prefetching of all frames
     if (this.task.taskType === 'object-labeling') {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
@@ -614,6 +615,7 @@ class ViewerController {
     this._crosshairsLayer = new CrosshairsLayer(
       this._contentHeight,
       this._contentHeight,
+      this._$scope.$new(),
       '#bedb31', // $icon-hover (green)
       2
     );
