@@ -102,6 +102,7 @@ class CrosshairsLayer {
     element.setAttribute('height', this._height);
 
     element.addEventListener('mousemove', event => this._onMouseMove(event));
+    element.addEventListener('mouseleave', event => this._onMouseLeave(event));
   }
 
   /**
@@ -147,6 +148,11 @@ class CrosshairsLayer {
    */
   _onMouseMove(event) {
     this._lastKnownMouseCoords = [event.offsetX, event.offsetY];
+    this.render();
+  }
+
+  _onMouseLeave(event) {
+    this._lastKnownMouseCoords = null;
     this.render();
   }
 }
