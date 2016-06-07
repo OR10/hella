@@ -249,7 +249,8 @@ gulp.task('eslint-checkstyle', () => {
     paths.files.tests.unit,
   ])
     .pipe($$.eslint())
-    .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
+    .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')))
+    .pipe($$.eslint.failAfterError());
 });
 
 gulp.task('test-unit', (next) => {
