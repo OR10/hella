@@ -28,7 +28,7 @@ import Environment from '../../Common/Support/Environment';
  * @property {integer} frameSkip
  * @property {ThingLayer} thingLayer
  * @property {boolean} readOnly
- * @property {boolean} showCrosshairs 
+ * @property {boolean} showCrosshairs
  */
 class ViewerController {
   /**
@@ -500,7 +500,7 @@ class ViewerController {
         }
       }
     );
-    
+
     $scope.$on(
       '$destroy', () => {
         if (this._renderLoopPromise) {
@@ -526,7 +526,7 @@ class ViewerController {
         this._resizeDebounced();
       }
     );
-    
+
     // Initial prefetching of all frames
     if (this.task.taskType === 'object-labeling') {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);

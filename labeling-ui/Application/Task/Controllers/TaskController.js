@@ -104,7 +104,7 @@ class TaskController {
 
     /**
      * Flag indicating whether or not to display the crosshairs inside the viewer
-     * 
+     *
      * @type {boolean}
      */
     this.showCrosshairs = false;

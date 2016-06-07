@@ -212,7 +212,7 @@ class MediaControlsController {
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
   }
-  
+
   /**
    * Handle the toggle of showing the crosshairs
    */
