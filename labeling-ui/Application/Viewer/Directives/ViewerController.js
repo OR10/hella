@@ -2,6 +2,7 @@ import LayerManager from '../Layers/LayerManager';
 import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
 import BackgroundLayer from '../Layers/BackgroundLayer';
+import CrosshairsLayer from '../Layers/CrosshairsLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
@@ -551,15 +552,17 @@ class ViewerController {
   }
 
   setupLayers() {
-    this._backgroundLayer = new BackgroundLayer(
-      this._contentWidth,
-      this._contentHeight,
-      this._$scope.$new(),
-      this._drawingContextService
-    );
+    this._setupEventDelegationLayer();
 
-    this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
+    this._setupBackgroundLayer();
 
+    if (this.task.taskType === 'object-labeling') {
+      this._setupThingLayer();
+      this._setupCrosshairsLayer();
+    }
+  }
+
+  _setupEventDelegationLayer() {
     const eventDelegationLayer = new EventDelegationLayer();
     const eventDelegationLayerElement = this._$element.find('.event-delegation-layer');
     eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
@@ -571,8 +574,21 @@ class ViewerController {
     eventDelegationLayerElement.on('mouseleave', this._handleMouseLeave.bind(this));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
-    this._layerManager.addLayer('background', this._backgroundLayer);
+  }
 
+  _setupBackgroundLayer() {
+    /**
+     * @type {BackgroundLayer}
+     * @private
+     */
+    this._backgroundLayer = new BackgroundLayer(
+      this._contentWidth,
+      this._contentHeight,
+      this._$scope.$new(),
+      this._drawingContextService
+    );
+
+    this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
 
     // Reapply filters if they changed
     this._$scope.$watchCollection(
@@ -587,12 +603,26 @@ class ViewerController {
       }
     );
 
-    if (this.task.taskType === 'object-labeling') {
-      this._addThingLayer();
-    }
+    this._layerManager.addLayer('background', this._backgroundLayer);
   }
 
-  _addThingLayer() {
+  _setupCrosshairsLayer() {
+    /**
+     * @type {CrosshairsLayer}
+     * @private
+     */
+    this._crosshairsLayer = new CrosshairsLayer(
+      this._contentHeight,
+      this._contentHeight,
+      '#bedb31', // $icon-hover (green)
+      2
+    );
+
+    this._crosshairsLayer.attachToDom(this._$element.find('.crosshairs-layer')[0]);
+    this._layerManager.addLayer('crosshairs', this._crosshairsLayer);
+  }
+
+  _setupThingLayer() {
     this.thingLayer = new ThingLayer(
       this._contentWidth,
       this._contentHeight,
