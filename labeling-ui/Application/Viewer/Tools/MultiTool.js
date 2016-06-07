@@ -194,7 +194,11 @@ export default class MultiTool extends Tool {
       // @TODO: toolservice -> getTool(hitTestItem.class, hitTestItem.getToolActionIdentifier);
 
       if (!hitResult) {
-        this._$scope.vm.actionMouseCursor = null;
+        if (this._$scope.vm.showCrosshairs === true) {
+          this._$scope.vm.actionMouseCursor = 'none';
+        } else {
+          this._$scope.vm.actionMouseCursor = null;
+        }
       } else {
         this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult);
       }
@@ -204,6 +208,10 @@ export default class MultiTool extends Tool {
   _mouseDown(event) {
     if (!this._enabled || event.event.shiftKey) {
       return;
+    }
+
+    if (this._$scope.vm.showCrosshairs === true) {
+      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'none');
     }
 
     const point = event.point;
@@ -220,7 +228,9 @@ export default class MultiTool extends Tool {
         const actionIdentifier = hitItem.parent.getToolActionIdentifier(hitResult);
 
         this._activeTool = this._toolService.getTool(this._$scope, this._context, hitItem.parent.getClass(), actionIdentifier);
-        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitItem.parent.getCursor(hitResult, true));
+        if (this._$scope.vm.showCrosshairs === false) {
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitItem.parent.getCursor(hitResult, true));
+        }
 
         if (this._activeTool !== null) {
           this._activeTool.onMouseDown(event, hitItem);
@@ -248,7 +258,7 @@ export default class MultiTool extends Tool {
           tolerance: this._options.hitTestTolerance,
         });
         if (hitResult) {
-          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult, true));
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult, false));
         }
       });
 
