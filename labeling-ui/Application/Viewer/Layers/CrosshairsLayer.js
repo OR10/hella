@@ -61,7 +61,9 @@ class CrosshairsLayer {
     this._lastKnownMouseCoords = null;
 
     this._$scope.$watch('vm.showCrosshairs', visible => {
-      if (!visible) {
+      if (visible) {
+        this.render();
+      } else {
         this._clearCanvas();
       }
     });

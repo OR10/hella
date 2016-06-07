@@ -467,6 +467,12 @@ class MediaControlsController {
       description: 'Interpolate the current selection',
       callback: this.handleInterpolation.bind(this),
     });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'c',
+      description: 'Toggle crosshairs',
+      callback: () => this.handleShowCrosshairsToggle(),
+    });
   }
 }
 
