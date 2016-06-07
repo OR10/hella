@@ -236,20 +236,7 @@ gulp.task('eslint', () => {
   ])
     .pipe($$.eslint())
     .pipe($$.eslint.format())
-    .pipe($$.eslint.failOnError());
-});
-
-gulp.task('eslint-no-fail', () => {
-  return gulp.src([
-    `!${paths.files.vendor}`,
-    `!${paths.files.system.config}`,
-    paths.files.gulp.config,
-    paths.files.support,
-    paths.files.js,
-    paths.files.tests.unit,
-  ])
-    .pipe($$.eslint())
-    .pipe($$.eslint.format());
+    .pipe($$.eslint.failAfterError());
 });
 
 gulp.task('eslint-checkstyle', () => {
