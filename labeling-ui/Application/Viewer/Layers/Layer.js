@@ -8,29 +8,36 @@
  * Execute all drawing and/or rendering operation to update the visual
  * representation of the layer to its current state.
  *
- * @method render
+ * @name Layer#render
  */
 
 /**
  * Attach the Layer to the given DOM Node.
  * The DOM node is supposed to be the rendering target of the layer.
  *
- * @method attachToDom
+ * @name Layer#attachToDom
  * @param {Element} element
  */
 
 /**
  * Dispatch an Event to the underlying DOM Elements
  *
- * @method dispatchDOMEvent
+ * @name Layer#dispatchDOMEvent
  * @param {Event} event
  */
 
 /**
- * Exports the currently drawn image data for this layer encoded as base64 data urls.
+ * Resize the layer to the given size
  *
- * @method exportData
+ * @name Layer#resize
+ * @param {Number} width
+ * @param {Number} height
+ */
+
+/**
+ * Exports the currently drawn image data for this layer as pixel data array.
  *
- * @returns {String}
+ * @name Layer#exportData
+ * @returns {ImageData|null}
  */
 
