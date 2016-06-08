@@ -2,6 +2,7 @@ class annostation_base(
   $nodejs = false,
   $authorized_keys = false,
   $github_tokens = false,
+  $jenkins_slave = false,
 ) {
     if $nodejs {
       include ::annostation_base::nodejs
@@ -13,6 +14,10 @@ class annostation_base(
 
     if $github_tokens {
       include ::annostation_base::github_tokens
+    }
+
+    if $jenkins_slave {
+      include ::annostation_base::jenkins_slave
     }
 
     file { "/etc/apt/apt.conf.d/99auth":
