@@ -158,18 +158,6 @@ class PaperShape extends paper.Group {
   }
 
   /**
-   * Add all edged to the shape group
-   *
-   * @param {Array.<paper.Path>} edges
-   * @private
-   */
-  _addChildren(edges) {
-    edges.forEach((edge) => {
-      this.addChild(edge);
-    });
-  }
-
-  /**
    * @abstract
    * @method PaperShape#toJSON
    */

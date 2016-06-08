@@ -58,7 +58,7 @@ class PaperRectangle extends PaperShape {
 
     if (this._isSelected && handles) {
       const rectangles = this._createHandles();
-      this._addChildren(rectangles);
+      this.addChildren(rectangles);
     }
   }
 
