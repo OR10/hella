@@ -663,7 +663,9 @@ class ViewerController {
   zoomIn(focalPoint, zoomFactor) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.zoomIn(focalPoint, zoomFactor);
+        if (layer.zoomIn !== undefined) {
+          layer.zoomIn(focalPoint, zoomFactor);
+        }
       }
     );
 
@@ -673,7 +675,9 @@ class ViewerController {
   zoomOut(focalPoint, zoomFactor) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.zoomOut(focalPoint, zoomFactor);
+        if (layer.zoomIn !== undefined) {
+          layer.zoomOut(focalPoint, zoomFactor);
+        }
       }
     );
 
@@ -1142,7 +1146,9 @@ class ViewerController {
   _zoom(newZoom) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.setZoom(newZoom);
+        if (layer.setZoom !== undefined) {
+          layer.setZoom(newZoom);
+        }
       }
     );
 
@@ -1152,7 +1158,9 @@ class ViewerController {
   _panTo(newCenter) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.panTo(newCenter);
+        if (layer.panTo !== undefined) {
+          layer.panTo(newCenter);
+        }
       }
     );
 
@@ -1162,7 +1170,9 @@ class ViewerController {
   _panBy(deltaX, deltaY) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.panBy(deltaX, deltaY);
+        if (layer.panBy !== undefined) {
+          layer.panBy(deltaX, deltaY);
+        }
       }
     );
 
