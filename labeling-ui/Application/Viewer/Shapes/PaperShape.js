@@ -139,6 +139,10 @@ class PaperShape extends paper.Group {
     this.position = point;
   }
 
+  /**
+   * @param {paper.HitResult} hitResult
+   * @returns {boolean}
+   */
   shouldBeSelected(hitResult) { // eslint-disable-line no-unused-vars
     return true;
   }

@@ -13,6 +13,7 @@ import ZoomTool from '../Tools/ZoomTool';
 import MultiTool from '../Tools/MultiTool';
 
 import PaperShape from '../Shapes/PaperShape';
+import hitResolver from '../Support/HitResolver';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -282,11 +283,17 @@ class ThingLayer extends PanAndZoomPaperLayer {
         tolerance: 8,
       });
 
-      if (hitResult && hitResult.item.parent.shouldBeSelected(hitResult)) {
-        this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitResult.item);
-        this._$scope.vm.selectedPaperShape = hitResult.item.parent;
+      if (hitResult) {
+        const [hitShape] = hitResolver.resolve(hitResult.item);
+        if (hitShape.shouldBeSelected(hitResult)) {
+          this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitShape);
+          this._$scope.vm.selectedPaperShape = hitShape;
+        } else {
+          this._logger.log('thinglayer:selection', 'Shape decided not to be selected. Deselecting');
+          this._$scope.vm.selectedPaperShape = null;
+        }
       } else {
-        this._logger.log('thinglayer:selection', 'HitTest negative. Deselecting');
+        this._logger.log('thinglayer:selection', 'Nothing hit. Deselecting');
         this._$scope.vm.selectedPaperShape = null;
       }
     });

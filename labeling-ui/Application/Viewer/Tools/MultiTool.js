@@ -1,6 +1,7 @@
 import Tool from './Tool';
 import paper from 'paper';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+import hitResolver from '../Support/HitResolver';
 
 /**
  * A multi tool for handling multiple functionalities
@@ -189,10 +190,6 @@ export default class MultiTool extends Tool {
         tolerance: this._options.hitTestTolerance,
       });
 
-      // Is this something that still needs to be done?
-      // I don't see, why this should be done here.
-      // @TODO: toolservice -> getTool(hitTestItem.class, hitTestItem.getToolActionIdentifier);
-
       if (!hitResult) {
         if (this._$scope.vm.showCrosshairs === true) {
           this._$scope.vm.actionMouseCursor = 'none';
@@ -200,7 +197,8 @@ export default class MultiTool extends Tool {
           this._$scope.vm.actionMouseCursor = null;
         }
       } else {
-        this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult);
+        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+        this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle);
       }
     });
   }
@@ -224,16 +222,16 @@ export default class MultiTool extends Tool {
       });
 
       if (hitResult) {
-        const hitItem = hitResult.item;
-        const actionIdentifier = hitItem.parent.getToolActionIdentifier(hitResult);
+        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+        const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
 
-        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitItem.parent.getClass(), actionIdentifier);
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
         if (this._$scope.vm.showCrosshairs === false) {
-          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitItem.parent.getCursor(hitResult, true));
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, true));
         }
 
         if (this._activeTool !== null) {
-          this._activeTool.onMouseDown(event, hitItem);
+          this._activeTool.onMouseDown(event, hitShape, hitHandle);
           this._activeTool.on('shape:update', shape => {
             this.emit('shape:update', shape);
           });
@@ -258,7 +256,8 @@ export default class MultiTool extends Tool {
           tolerance: this._options.hitTestTolerance,
         });
         if (hitResult) {
-          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitResult.item.parent.getCursor(hitResult, false));
+          const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, false));
         }
       });
 

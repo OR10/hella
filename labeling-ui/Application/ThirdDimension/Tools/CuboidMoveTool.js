@@ -43,7 +43,7 @@ class CuboidMoveTool extends Tool {
    * @param {PaperShape} hitShape
    */
   onMouseDown(event, hitShape) {
-    this._paperCuboid = hitShape.parent;
+    this._paperCuboid = hitShape;
   }
 
   onMouseUp() {

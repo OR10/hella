@@ -2,6 +2,8 @@ import paper from 'paper';
 import {Matrix4} from 'three-math';
 import _ from 'lodash';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
+
 import Cuboid3d from '../Models/Cuboid3d';
 
 class PaperCuboid extends PaperShape {
@@ -60,22 +62,23 @@ class PaperCuboid extends PaperShape {
   /**
    * Generate the 2d projection of the {@link Cuboid3d} and add the corresponding shaped to this group
    *
+   * @param {boolean} drawHandles
    * @private
    */
-  _drawCuboid(handles = true) {
+  _drawCuboid(drawHandles = true) {
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
 
     const planes = this._createPlanes();
-    this._addChildren(planes);
+    this.addChildren(planes);
 
     const lines = this._createEdges();
-    this._addChildren(lines);
+    this.addChildren(lines);
 
-    if (this._isSelected && handles) {
-      const rectangles = this._createHandles();
-      this._addChildren(rectangles);
+    if (this._isSelected && drawHandles) {
+      const handles = this._createHandles();
+      this.addChildren(handles);
     }
   }
 
@@ -154,34 +157,24 @@ class PaperCuboid extends PaperShape {
   _createHandles() {
     const handles = [];
 
-    this._projectedCuboid.primaryVertices.vertices.forEach((isPrimaryVertex, index) => {
-      if (!isPrimaryVertex) {
-        return;
+    this._projectedCuboid.primaryVertices.vertices.forEach(
+      (isPrimaryVertex, index) => {
+        if (!isPrimaryVertex) {
+          return;
+        }
+
+        const vertex = this._projectedCuboid.vertices[index];
+
+        handles.push(
+          new RectangleHandle(
+            'cube-' + this._projectedCuboid.primaryVertices.names[index],
+            '#ffffff',
+            this._handleSize,
+            this._vectorToPaperPoint(vertex)
+          )
+        );
       }
-
-      const vertex = this._projectedCuboid.vertices[index];
-      const rectangle = {
-        topLeft: new paper.Point(
-          vertex.x - this._handleSize / 2,
-          vertex.y - this._handleSize / 2
-        ),
-        bottomRight: new paper.Point(
-          vertex.x + this._handleSize / 2,
-          vertex.y + this._handleSize / 2
-        ),
-      };
-
-      handles.push(
-        new paper.Path.Rectangle({
-          name: 'cube-' + this._projectedCuboid.primaryVertices.names[index],
-          rectangle,
-          selected: false,
-          strokeWidth: 0,
-          strokeScaling: false,
-          fillColor: '#ffffff',
-        })
-      );
-    });
+    );
 
     return handles;
   }
@@ -191,7 +184,7 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _vectorToPaperPoint(vector) {
-    return new paper.Point(Math.round(vector.x), Math.round(vector.y));
+    return new paper.Point(vector.x, vector.y);
   }
 
   get bounds() {
@@ -251,11 +244,15 @@ class PaperCuboid extends PaperShape {
   /**
    * Return the identifier for the tool action that need to be performed
    *
-   * @param {paper.HitResult} hitResult
+   * @param {Handle|null} handle
    * @returns {string|null}
    */
-  getToolActionIdentifier(hitResult) {
-    switch (hitResult.item.name) {
+  getToolActionIdentifier(handle) {
+    if (handle === null) {
+      return null;
+    }
+
+    switch (handle.name) {
       case 'cube-height':
       case 'cube-width':
       case 'cube-length':
@@ -268,11 +265,15 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {HitResult} hitResult
+   * @param {Handle|null} handle
    * @returns {string}
    */
-  getCursor(hitResult) {
-    switch (hitResult.item.name) {
+  getCursor(handle) {
+    if (handle === null) {
+      return 'pointer';
+    }
+
+    switch (handle.name) {
       case 'cube-height':
         return 'ns-resize';
       case 'cube-width':
@@ -298,12 +299,12 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {string} handle
+   * @param {Handle} handle
    * @param {Point} point
    * @param {{height: 1, width: 1, length: 1}} minDistance
    */
   resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
-    switch (handle) {
+    switch (handle.name) {
       case 'cube-height':
         this._changeHeight(point, minDistance);
         break;
@@ -320,26 +321,26 @@ class PaperCuboid extends PaperShape {
    * @param {number} degree
    */
   rotateArroundCenterBy(degree) {
-    const rad = ((2 * Math.PI) / 360) * degree;
+    const radians = ((2 * Math.PI) / 360) * degree;
 
     // Create translation and rotation matrices
-    const trans = new Matrix4();
-    const invTrans = new Matrix4();
-    const rot = new Matrix4();
+    const translation = new Matrix4();
+    const inverseTranslation = new Matrix4();
+    const rotation = new Matrix4();
 
     // Create translation vectors
     const transVector = this._cuboid3d.bottomCenter.negate();
     const invTransVector = this._cuboid3d.bottomCenter;
 
     // Calculate translation and rotation
-    trans.makeTranslation(transVector.x, transVector.y, transVector.z);
-    invTrans.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
-    rot.makeRotationZ(rad);
+    translation.makeTranslation(transVector.x, transVector.y, transVector.z);
+    inverseTranslation.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
+    rotation.makeRotationZ(radians);
 
     this._cuboid3d = Cuboid3d.createFromVectors(
       this._cuboid3d.vertices.map(
         // Apply translation and rotation
-        vertex => vertex.applyMatrix4(trans).applyMatrix4(rot).applyMatrix4(invTrans)
+        vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
       )
     );
 

@@ -32,14 +32,18 @@ class CuboidScaleTool extends Tool {
      * @type {string}
      * @private
      */
-    this._boundName = null;
+    this._activeHandle = null;
+
+    /**
+     * @type {PaperCuboid|null}
+     * @private
+     */
+    this._paperCuboid = null;
   }
 
-  onMouseDown(event, hitResult) {
-    if (hitResult) {
-      this._paperCuboid = hitResult.parent;
-      this._boundName = hitResult.name;
-    }
+  onMouseDown(event, hitShape, hitHandle) {
+    this._paperCuboid = hitShape;
+    this._activeHandle = hitHandle;
   }
 
   onMouseUp() {
@@ -48,12 +52,12 @@ class CuboidScaleTool extends Tool {
       this.emit('shape:update', this._paperCuboid);
     }
 
-    this._boundName = null;
+    this._activeHandle = null;
     this._paperCuboid = null;
   }
 
   onMouseDrag(event) {
-    if (!this._paperCuboid) {
+    if (!this._paperCuboid || !this._activeHandle) {
       return;
     }
     const point = event.point;
@@ -66,7 +70,7 @@ class CuboidScaleTool extends Tool {
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperCuboid.resize(this._boundName, point, minimalSize);
+        this._paperCuboid.resize(this._activeHandle, point, minimalSize);
       });
     });
   }

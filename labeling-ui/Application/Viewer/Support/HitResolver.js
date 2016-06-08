@@ -2,12 +2,12 @@ import PaperShape from '../Shapes/PaperShape';
 import Handle from '../Shapes/Handles/Handle';
 
 /**
- * Service, which resolves hit tests to specific PaperShapes or Handles
+ * Support utillity, which resolves hit tests to specific PaperShapes or Handles
  *
  * This service takes hits on certain shapes, which might be part of a drawn shape and resolves them back to their
  * origin (PaperShape or Handle)
  */
-class HitResolverService {
+class HitResolver {
   constructor() {
     /**
      * @type {Array.<Function>}
@@ -66,4 +66,4 @@ class HitResolverService {
   }
 }
 
-export default new HitResolverService();
+export default new HitResolver();

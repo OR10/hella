@@ -93,16 +93,23 @@ class PaperLayer extends EventEmitter {
 
   resize(width, height) {
     this._context.withScope(scope => {
-      scope.view.viewSize = new paper.Size(width, height);
+      const {view} = scope;
+
+      view.viewSize = new paper.Size(width, height);
 
       // Scale the view
-      scope.view.center = new paper.Point(0, 0);
-      scope.view.zoom = width / this._width;
-      scope.view.center = new paper.Point(Math.round(scope.view.size.width / 2), Math.round(scope.view.size.height / 2));
+      const oldZoom = view.zoom;
+      view.center = new paper.Point(0, 0);
+      view.zoom = width / this._width;
+      view.center = new paper.Point(Math.round(view.size.width / 2), Math.round(view.size.height / 2));
 
-      this._scaleToFitZoom = scope.view.zoom;
+      this._scaleToFitZoom = view.zoom;
 
-      scope.view.update(true);
+      if (oldZoom !== view.zoom) {
+        view.emit('zoom', {zoom: view.zoom, center: view.center});
+      }
+
+      view.update(true);
     });
   }
 
