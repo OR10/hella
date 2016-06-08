@@ -117,7 +117,7 @@ module.exports = function(config) {
       port: 4444
     };
 
-    newConfig.hostname = ip.address();
+    newConfig.hostname = process.env.KARMA_IP_ADDRESS || ip.address();
     newConfig.browsers = ['Chrome'];
     newConfig.customLaunchers = {
       'Safari': {
@@ -150,7 +150,7 @@ module.exports = function(config) {
       }
     };
 
-    console.log('Expecting tests to be accessible under ' + ip.address()); // my ip address
+    console.log('Expecting tests to be accessible under ' + newConfig.hostname); // my ip address
   } else {
     // NORMAL MODE
     newConfig.browsers = ['Chrome'];
