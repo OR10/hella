@@ -62,7 +62,7 @@ class PaperShape extends paper.Group {
      * @type {number}
      * @protected
      */
-    this._handleSize = 6;
+    this._handleSize = 7;
 
     /**
      * Flag to present the selected status of the shape.
