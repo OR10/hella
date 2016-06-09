@@ -1,5 +1,7 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import RectangleHandle from './Handles/Rectangle';
+
 
 /**
  * @extends PaperShape
@@ -47,18 +49,18 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @param {Boolean} handles
+   * @param {Boolean} drawHandles
    * @private
    */
-  _drawShape(handles = true) {
+  _drawShape(drawHandles = true) {
     this.removeChildren();
 
     const shape = this._createShape();
     this.addChild(shape);
 
-    if (this._isSelected && handles) {
-      const rectangles = this._createHandles();
-      this.addChildren(rectangles);
+    if (this._isSelected && drawHandles) {
+      const handles = this._createHandles();
+      this.addChildren(handles);
     }
   }
 
@@ -80,7 +82,7 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @returns {Array<Rectangle>}
+   * @returns {Array.<RectangleHandle>}
    * @private
    */
   _createHandles() {
@@ -91,37 +93,24 @@ class PaperRectangle extends PaperShape {
       {name: 'bottom-left', point: new paper.Point(this._topLeft.x, this._bottomRight.y)},
     ];
 
-    return handlePoints.map(handle => {
-      const rectangle = {
-        topLeft: new paper.Point(
-          handle.point.x - this._handleSize / 2,
-          handle.point.y - this._handleSize / 2,
-        ),
-        bottomRight: new paper.Point(
-          handle.point.x + this._handleSize / 2,
-          handle.point.y + this._handleSize / 2,
-        ),
-      };
-
-      return new paper.Path.Rectangle({
-        name: handle.name,
-        rectangle,
-        selected: false,
-        strokeWidth: 0,
-        strokeScaling: false,
-        fillColor: '#ffffff',
-      });
-    });
+    return handlePoints.map(
+      info => new RectangleHandle(
+        info.name,
+        '#ffffff',
+        this._handleSize,
+        info.point
+      )
+    );
   }
 
   /**
    * Select the shape
    *
-   * @param {Boolean} handles
+   * @param {Boolean} drawHandles
    */
-  select(handles = true) {
+  select(drawHandles = true) {
     this._isSelected = true;
-    this._drawShape(handles);
+    this._drawShape(drawHandles);
   }
 
   /**
@@ -140,11 +129,15 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @param {HitResult} hitResult
+   * @param {Handle|null} handle
    * @returns {string}
    */
-  getToolActionIdentifier(hitResult) {
-    switch (hitResult.item.name) {
+  getToolActionIdentifier(handle) {
+    if (handle === null) {
+      return 'move';
+    }
+
+    switch (handle.name) {
       case 'top-left':
       case 'top-right':
       case 'bottom-right':
@@ -167,12 +160,16 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @param {HitResult} hitResult
-   * @param {Boolean} mouseDown
+   * @param {Handle|null} handle
+   * @param {boolean} mouseDown
    * @returns {string}
    */
-  getCursor(hitResult, mouseDown = false) {
-    switch (hitResult.item.name) {
+  getCursor(handle, mouseDown = false) {
+    if (handle === null) {
+      return mouseDown ? 'grabbing' : 'grab';
+    }
+
+    switch (handle.name) {
       case 'top-left':
         return 'nwse-resize';
       case 'bottom-right':
@@ -187,14 +184,14 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @param {string} handle
+   * @param {Handle} handle
    * @param {Point} point
    * @param {{width, height}} minSize
    */
   resize(handle, point, minSize = {width: 1, height: 1}) {
     let minDistancePoint = null;
 
-    switch (handle) {
+    switch (handle.name) {
       case 'top-left':
         this._topLeft = this._enforceMinSize(point, this._bottomRight, minSize);
         break;
@@ -212,7 +209,7 @@ class PaperRectangle extends PaperShape {
         this._bottomRight.y = minDistancePoint.y;
         break;
       default:
-        throw new Error(`Unknown handle identifier: ${handle}.`);
+        throw new Error(`Unknown handle type: ${handle}.`);
     }
 
     this._drawShape();

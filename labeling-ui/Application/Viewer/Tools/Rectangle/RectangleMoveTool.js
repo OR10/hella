@@ -54,7 +54,7 @@ class RectangleMoveTool extends Tool {
   onMouseDown(event, hitShape) {
     const point = event.point;
 
-    this._paperRectangle = hitShape.parent;
+    this._paperRectangle = hitShape;
     this._offset = new paper.Point(
       this._paperRectangle.position.x - point.x,
       this._paperRectangle.position.y - point.y

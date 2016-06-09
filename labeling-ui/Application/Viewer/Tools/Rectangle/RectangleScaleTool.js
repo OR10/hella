@@ -32,7 +32,7 @@ class RectangleScaleTool extends Tool {
      * @type {string}
      * @private
      */
-    this._boundName = null;
+    this._activeHandle = null;
 
     /**
      * Position of the initial mouse down of one certain scaling operation
@@ -43,11 +43,9 @@ class RectangleScaleTool extends Tool {
     this._startPoint = null;
   }
 
-  onMouseDown(event, hitResult) {
-    if (hitResult) {
-      this._paperRectangle = hitResult.parent;
-      this._boundName = hitResult.name;
-    }
+  onMouseDown(event, hitShape, hitHandle) {
+    this._paperRectangle = hitShape;
+    this._activeHandle = hitHandle;
   }
 
   onMouseUp() {
@@ -57,12 +55,12 @@ class RectangleScaleTool extends Tool {
       this.emit('shape:update', this._paperRectangle);
     }
 
-    this._boundName = null;
+    this._activeHandle = null;
     this._paperRectangle = null;
   }
 
   onMouseDrag(event) {
-    if (!this._paperRectangle || this._scaleAnchor === null) {
+    if (!this._paperRectangle || this._activeHandle === null) {
       return;
     }
     const point = event.point;
@@ -75,7 +73,7 @@ class RectangleScaleTool extends Tool {
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperRectangle.resize(this._boundName, point, minimalHeight);
+        this._paperRectangle.resize(this._activeHandle, point, minimalHeight);
       });
     });
   }
