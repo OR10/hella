@@ -210,11 +210,11 @@ class PaperCuboid extends PaperShape {
   /**
    * Select the shape
    *
-   * @param {Boolean} handles
+   * @param {Boolean} drawHandles
    */
-  select(handles = true) {
+  select(drawHandles = true) {
     this._isSelected = true;
-    this._drawCuboid(handles);
+    this._drawCuboid(drawHandles);
   }
 
   /**
