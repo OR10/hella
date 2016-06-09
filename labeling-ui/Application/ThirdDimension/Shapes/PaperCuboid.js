@@ -315,6 +315,8 @@ class PaperCuboid extends PaperShape {
       default:
         throw new Error(`Unknown handle type: ${handle}.`);
     }
+
+    this._drawCuboid();
   }
 
   /**
@@ -362,7 +364,6 @@ class PaperCuboid extends PaperShape {
     });
     const heightVector = newTop.sub(oldTop);
     this._cuboid3d.addVectorToTop(heightVector);
-    this._drawCuboid();
   }
 
   /**
