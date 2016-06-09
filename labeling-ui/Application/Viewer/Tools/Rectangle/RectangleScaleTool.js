@@ -27,9 +27,9 @@ class RectangleScaleTool extends Tool {
     this._modified = false;
 
     /**
-     * Variable that holds the string representation of the drag handle position
+     * Variable that holds the drag handle
      *
-     * @type {string}
+     * @type {Handle|null}
      * @private
      */
     this._activeHandle = null;
