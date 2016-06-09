@@ -51,8 +51,8 @@ describe('Rectangle Overflow', () => {
         browser.sleep(1000);
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleOverflow', 'TopLeftOverflow')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftOverflow')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
@@ -85,8 +85,8 @@ describe('Rectangle Overflow', () => {
         browser.sleep(1000);
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleOverflow', 'BottomRightOverflow')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightOverflow')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
@@ -119,8 +119,8 @@ describe('Rectangle Overflow', () => {
         browser.sleep(1000);
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleOverflow', 'TopLeftNoOverflow')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftNoOverflow')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
@@ -153,8 +153,8 @@ describe('Rectangle Overflow', () => {
         browser.sleep(1000);
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleOverflow', 'BottomRightNoOverflow')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightNoOverflow')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);

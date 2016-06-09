@@ -38,8 +38,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'BackCenter')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackCenter')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackCenter);
@@ -55,8 +55,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'BackLeft')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackLeft);
@@ -72,8 +72,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'BackRight')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackRight);
@@ -89,8 +89,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontCenter')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenter')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenter);
@@ -106,8 +106,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontLeft')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontLeft);
@@ -123,8 +123,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontRight')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontRight);
@@ -140,8 +140,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight45);
@@ -157,8 +157,8 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight225);

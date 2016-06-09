@@ -38,8 +38,8 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
@@ -55,8 +55,8 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'LoadAndDrawTwoRectangles')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawTwoRectangles')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawTwoRectangles);
@@ -78,8 +78,8 @@ describe('Rectangle drawing', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'SelectOneRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'SelectOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectOneRectangle);
@@ -105,8 +105,8 @@ describe('Rectangle drawing', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'SelectAndDeselectRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'SelectAndDeselectRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectAndDeselectRectangle);
@@ -132,8 +132,8 @@ describe('Rectangle drawing', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'SelectAnotherRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'SelectAnotherRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectAnotherRectangle);
@@ -160,8 +160,8 @@ describe('Rectangle drawing', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'MoveOneRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'MoveOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.MoveOneRectangle);
@@ -196,8 +196,8 @@ describe('Rectangle drawing', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'ResizeOneRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'ResizeOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         // browser.pause();
@@ -235,8 +235,8 @@ describe('Rectangle drawing', () => {
         browser.sleep(1000);
       })
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'KeepSelectionOverFrameChange')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'KeepSelectionOverFrameChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.KeepSelectionOverFrameChange);
@@ -253,8 +253,8 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        // () => canvasInstructionLogManager.getCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
