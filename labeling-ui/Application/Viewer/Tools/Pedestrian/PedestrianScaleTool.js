@@ -27,12 +27,12 @@ class PedestrianScaleTool extends Tool {
     this._modified = false;
 
     /**
-     * Variable that holds the string representation of the drag handle position
+     * Variable that holds the drag handle
      *
-     * @type {string}
+     * @type {Handle|null}
      * @private
      */
-    this._boundName = null;
+    this._activeHandle = null;
 
     /**
      * Position of the initial mouse down of one certain scaling operation
@@ -43,11 +43,9 @@ class PedestrianScaleTool extends Tool {
     this._startPoint = null;
   }
 
-  onMouseDown(event, hitResult) {
-    if (hitResult) {
-      this._paperPedestrian = hitResult.parent;
-      this._boundName = hitResult.name;
-    }
+  onMouseDown(event, hitShape, hitHandle) {
+    this._paperPedestrian = hitShape;
+    this._activeHandle = hitHandle;
   }
 
   onMouseUp() {
@@ -57,12 +55,12 @@ class PedestrianScaleTool extends Tool {
       this.emit('shape:update', this._paperPedestrian);
     }
 
-    this._boundName = null;
+    this._activeHandle = null;
     this._paperPedestrian = null;
   }
 
   onMouseDrag(event) {
-    if (!this._paperPedestrian || this._scaleAnchor === null) {
+    if (!this._paperPedestrian || this._activeHandle === null) {
       return;
     }
     const point = event.point;
@@ -75,7 +73,7 @@ class PedestrianScaleTool extends Tool {
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperPedestrian.resize(this._boundName, point, minimalHeight);
+        this._paperPedestrian.resize(this._activeHandle, point, minimalHeight);
       });
     });
   }

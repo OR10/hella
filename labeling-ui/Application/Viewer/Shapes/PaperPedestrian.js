@@ -1,5 +1,6 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import RectangleHandle from './Handles/Rectangle';
 
 /**
  * @extends PaperShape
@@ -42,7 +43,7 @@ class PaperPedestrian extends PaperShape {
     this._drawShape();
   }
 
-  _drawShape(handles = true) {
+  _drawShape(drawHandles = true) {
     this.removeChildren();
 
     const centerLine = this._createCenterLine();
@@ -51,9 +52,9 @@ class PaperPedestrian extends PaperShape {
     const aspectRectangle = this._createAspectRectangle();
     this.addChild(aspectRectangle);
 
-    if (this._isSelected && handles) {
-      const rectangles = this._createHandles();
-      this.addChildren(rectangles);
+    if (this._isSelected && drawHandles) {
+      const handles = this._createHandles();
+      this.addChildren(handles);
     }
   }
 
@@ -111,32 +112,19 @@ class PaperPedestrian extends PaperShape {
    * @private
    */
   _createHandles() {
-    const handlePoints = [
+    const handleInfo = [
       {name: 'top-center', point: this._topCenter},
       {name: 'bottom-center', point: this._bottomCenter},
     ];
 
-    return handlePoints.map(handle => {
-      const rectangle = {
-        topLeft: new paper.Point(
-          handle.point.x - this._handleSize / 2,
-          handle.point.y - this._handleSize / 2,
-        ),
-        bottomRight: new paper.Point(
-          handle.point.x + this._handleSize / 2,
-          handle.point.y + this._handleSize / 2,
-        ),
-      };
-
-      return new paper.Path.Rectangle({
-        name: handle.name,
-        rectangle,
-        selected: false,
-        strokeWidth: 0,
-        strokeScaling: false,
-        fillColor: '#ffffff',
-      });
-    });
+    return handleInfo.map(
+      info => new RectangleHandle(
+        info.name,
+        '#ffffff',
+        this._handleSize,
+        info.point
+      )
+    );
   }
 
   /**
@@ -160,11 +148,11 @@ class PaperPedestrian extends PaperShape {
   /**
    * Select the shape
    *
-   * @param {Boolean} handles
+   * @param {Boolean} drawHandles
    */
-  select(handles = true) {
+  select(drawHandles = true) {
     this._isSelected = true;
-    this._drawShape(handles);
+    this._drawShape(drawHandles);
   }
 
   /**
@@ -192,11 +180,15 @@ class PaperPedestrian extends PaperShape {
   }
 
   /**
-   * @param {HitResult} hitResult
+   * @param {Handle|null} handle
    * @returns {string}
    */
-  getToolActionIdentifier(hitResult) {
-    switch (hitResult.item.name) {
+  getToolActionIdentifier(handle) {
+    if (handle === null) {
+      return 'move';
+    }
+
+    switch (handle.name) {
       case 'top-center':
       case 'bottom-center':
         return 'scale';
@@ -216,12 +208,16 @@ class PaperPedestrian extends PaperShape {
   }
 
   /**
-   * @param {HitResult} hitResult
+   * @param {Handle|null} handle
    * @param {Boolean} mouseDown
    * @returns {string}
    */
-  getCursor(hitResult, mouseDown = false) {
-    switch (hitResult.item.name) {
+  getCursor(handle, mouseDown = false) {
+    if (handle === null) {
+      return mouseDown ? 'grabbing' : 'grab';
+    }
+
+    switch (handle.name) {
       case 'top-center':
       case 'bottom-center':
         return 'ns-resize';
@@ -231,12 +227,12 @@ class PaperPedestrian extends PaperShape {
   }
 
   /**
-   * @param {string} handle
+   * @param {Handle} handle
    * @param {Point} point
    * @param {number} minHeight
    */
   resize(handle, point, minHeight = 1) {
-    switch (handle) {
+    switch (handle.name) {
       case 'top-center':
         this._topCenter.y = this._enforceMinHeight(point.y, this._bottomCenter.y, minHeight);
         break;
@@ -244,6 +240,7 @@ class PaperPedestrian extends PaperShape {
       default:
         this._bottomCenter.y = this._enforceMinHeight(point.y, this._topCenter.y, minHeight);
     }
+
     this._drawShape();
   }
 
@@ -267,6 +264,7 @@ class PaperPedestrian extends PaperShape {
       const newTop = new paper.Point(this._bottomCenterCenter.x, this._bottomCenterCenter.y);
       this._bottomCenter = newBottom;
       this._topCenter = newTop;
+
       this._drawShape();
     }
   }

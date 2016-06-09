@@ -54,7 +54,7 @@ class PedestrianMoveTool extends Tool {
   onMouseDown(event, hitShape) {
     const point = event.point;
 
-    this._paperPedestrian = hitShape.parent;
+    this._paperPedestrian = hitShape;
     this._offset = new paper.Point(
       this._paperPedestrian.position.x - point.x,
       this._paperPedestrian.position.y - point.y
