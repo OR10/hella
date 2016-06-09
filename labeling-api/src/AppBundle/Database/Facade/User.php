@@ -106,8 +106,14 @@ class User
      */
     public function getUserList()
     {
+        $users = $userProfileImages =  $this->documentManager
+            ->createQuery('annostation_user', 'by_id')
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+
         return array_filter(
-            $this->userManager->findUsers(),
+            $users,
             function(Model\User $user) {
                 if ($user->isLocked()) {
                     return false;
