@@ -86,14 +86,14 @@ class PaperRectangle extends PaperShape {
    * @private
    */
   _createHandles() {
-    const handlePoints = [
+    const handleInfo = [
       {name: 'top-left', point: this._topLeft},
       {name: 'top-right', point: new paper.Point(this._bottomRight.x, this._topLeft.y)},
       {name: 'bottom-right', point: this._bottomRight},
       {name: 'bottom-left', point: new paper.Point(this._topLeft.x, this._bottomRight.y)},
     ];
 
-    return handlePoints.map(
+    return handleInfo.map(
       info => new RectangleHandle(
         info.name,
         '#ffffff',
