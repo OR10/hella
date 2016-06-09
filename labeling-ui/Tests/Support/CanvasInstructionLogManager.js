@@ -90,6 +90,9 @@ class CanvasInstructionLogManager {
    */
   _storeFixture(targetPath, data) {
     fs.writeFileSync(targetPath, data);
+
+    // Throw an error here, to fail every test, which generates a fixture.
+    throw new Error(`Fixture regenerated and stored: ${targetPath}`);
   }
 }
 
