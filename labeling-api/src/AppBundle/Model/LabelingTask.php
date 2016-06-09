@@ -40,7 +40,7 @@ class LabelingTask
 
     /**
      * @var int
-     * @CouchDB\Field(type="integer")
+     * @CouchDB\Field(type="string")
      */
     private $userId;
 

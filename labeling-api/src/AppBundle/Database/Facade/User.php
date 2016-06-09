@@ -89,7 +89,7 @@ class User
      */
     public function getUserById($id)
     {
-        return $this->userManager->findUserBy(array('id' => $id));
+        return $this->documentManager->find(Model\User::class, $id);
     }
 
     /**

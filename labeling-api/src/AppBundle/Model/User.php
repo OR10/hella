@@ -3,11 +3,11 @@
 namespace AppBundle\Model;
 
 use FOS\UserBundle\Model\User as BaseUser;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="users")
+ * @CouchDB\Document
  */
 class User extends BaseUser
 {
@@ -16,14 +16,12 @@ class User extends BaseUser
     const ROLE_LABELER = 'ROLE_LABELER';
 
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @CouchDB\Id
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @CouchDB\Field(type="string")
      */
     protected $token = '';
 
