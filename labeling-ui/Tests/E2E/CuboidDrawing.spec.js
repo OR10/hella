@@ -38,6 +38,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'BackCenter')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -54,6 +55,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'BackLeft')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -70,6 +72,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'BackRight')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -86,6 +89,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontCenter')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -102,6 +106,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontLeft')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -118,6 +123,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontRight')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -134,6 +140,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
@@ -150,6 +157,7 @@ describe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
+        // () => canvasInstructionLogManager.getCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
         () => canvasInstructionLogManager.getCanvasLogs()
       )
       .then((drawingStack) => {
