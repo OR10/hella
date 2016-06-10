@@ -29,7 +29,7 @@ class CanvasInstructionLogManager {
         return null;
       }
       const canvas = canvasList[0];
-     
+
       const ctx = canvas.getContext('2d');
 
       const width = canvas.width;
@@ -47,13 +47,68 @@ class CanvasInstructionLogManager {
         if (obj === null) {
           throw new Error(`Unable to retrieve canvas logs of ${canvasClass}`);
         }
-        
+
         obj.operations = JSON.parse(obj.operations);
 
         if (testName !== null && fixtureName !== null) {
           this._createFixture(testName, fixtureName, obj);
         }
         return obj;
+      });
+  }
+
+  /**
+   * Retrieve the drawn pixels an arbitrary canvas identified by a class
+   *
+   * The first match of the class will be taken as result.
+   *
+   * USE WITH CAUTION: The bitmap representation may differ on different machines/browser. Only use this if you are sure
+   * the rendered information is rendered identically on all systems.
+   *
+   * @param {string} canvasClass
+   * @param {string|null} testName
+   * @param {string|null} fixtureName
+   * @returns {Promise<{width: number, height: number, operations: Array}>}
+   * @private
+   */
+  _getCanvasImage(canvasClass, testName, fixtureName) {
+    this._browser.waitForAngular();
+
+    return this._browser.executeScript((canvasClass) => { // eslint-disable-line no-shadow
+      const canvasList = document.getElementsByClassName(canvasClass);
+      if (canvasList.length === 0) {
+        return null;
+      }
+      const canvas = canvasList[0];
+
+      const ctx = canvas.getContext('2d');
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      let encodedData = '';
+      for(let i = 0; i < imageData.data.byteLength; i++) {
+        encodedData += String.fromCharCode(imageData.data[i]);
+      }
+      
+      return {
+        width,
+        height,
+        data: btoa(encodedData),
+      };
+    }, canvasClass)
+      .then((canvasImage) => {
+        if (canvasImage === null) {
+          throw new Error(`Unable to retrieve canvas image of ${canvasClass}`);
+        }
+
+        if (testName !== null && fixtureName !== null) {
+          this._createFixture(testName, fixtureName, canvasImage);
+        }
+
+        return canvasImage;
       });
   }
 
@@ -80,8 +135,8 @@ class CanvasInstructionLogManager {
    * @param {string|null} fixtureName
    * @returns {Promise<{width: number, height: number, operations: Array}>}
    */
-  getBackgroundCanvasLogs(testName = null, fixtureName = null) {
-    return this._getCanvasLogs('background-layer', testName, fixtureName);
+  getBackgroundCanvasImage(testName = null, fixtureName = null) {
+    return this._getCanvasImage('background-layer', testName, fixtureName);
   }
 
   /**
