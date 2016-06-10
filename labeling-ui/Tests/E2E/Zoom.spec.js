@@ -100,6 +100,72 @@ describe('Zoom', () => {
     });
   });
 
+  describe('Annotation', () => {
+    using([
+      [1024 / 2, 620 / 2, 'AnnotationCenterMouseWheel'],
+      [50, 50, 'AnnotationTopLeftMouseWheel'],
+      [50, 620 - 50, 'AnnotationBottomLeftMouseWheel'],
+      [1024 - 50, 50, 'AnnotationTopRightMouseWheel'],
+      [1024 - 50, 620 - 50, 'AnnotationBottomRightMouseWheel'],
+    ], (xTarget, yTarget, fixtureName) => {
+      it('should zoom in annotations mousewheel', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0,
+          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(
+            () => {
+              interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20);
+            }
+          )
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('Zoom', fixtureName)
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.Zoom[fixtureName]);
+            done();
+          });
+      });
+    });
+
+    using([
+      [1024 / 2, 620 / 2, 'SelectedAnnotationCenterMouseWheel', 100, 100],
+      [50, 50, 'SelectedAnnotationTopLeftMouseWheel', 100, 100],
+      [50, 620 - 50, 'SelectedAnnotationBottomLeftMouseWheel', 100, 410],
+      [1024 - 50, 50, 'SelectedAnnotationTopRightMouseWheel', 612, 100],
+      [1024 - 50, 620 - 50, 'SelectedAnnotationBottomRightMouseWheel', 612, 410],
+    ], (xTarget, yTarget, fixtureName, selectX, selectY) => {
+      it('should zoom in selected annotations mousewheel', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0,
+          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(
+            () => {
+              browser.actions()
+                .mouseMove(viewer, {x: selectX + 50, y: selectY + 50})
+                .click()
+                .perform();
+              interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20);
+            }
+          )
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('Zoom', fixtureName)
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.Zoom[fixtureName]);
+            done();
+          });
+      });
+    });
+  });
+
   afterEach(() => {
     mock.teardown();
   });

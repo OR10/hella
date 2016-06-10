@@ -15,7 +15,7 @@ function removeOverride() {
 }
 
 module.exports = (dataset, testDefinitionFn) => {
-  dataset.forEach(args => {
+  dataset.forEach((args, index) => {
     const suffix = ` (dataset ${index})`;
 
     function overrideIt(description, fn) {
