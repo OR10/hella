@@ -1,9 +1,11 @@
+import using from '../Support/Protractor/DataProvider';
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import ImageComparisionService from '../Support/ImageComparisonService';
 import InteractionService from '../Support/InteractionService';
 import {initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
+
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 const imageComparision = new ImageComparisionService();
@@ -34,158 +36,68 @@ describe('Zoom', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should zoom in on center point using keyboard shortcut', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+  describe('Background', () => {
+    it('should zoom in on center point using keyboard shortcut', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
+        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
-      .then(() => {
-        browser.actions()
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .perform();
-      })
-      .then(
-        // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyCenterKeyboard')
-        () => canvasInstructionLogManager.getBackgroundCanvasImage()
-      )
-      .then(
-        encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyCenterKeyboard, true, true)
-      )
-      .then(diff => {
-        expect(diff).toMatchBelowThreshold(0.01);
-        done();
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyCenterKeyboard')
+          () => canvasInstructionLogManager.getBackgroundCanvasImage()
+        )
+        .then(
+          encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyCenterKeyboard, true, true)
+        )
+        .then(diff => {
+          expect(diff).toMatchBelowThreshold(0.01);
+          done();
+        });
+    });
+
+    using([
+      [1024 / 2, 620 / 2, 'EmptyCenterMouseWheel'],
+      [50, 50, 'EmptyTopLeftMouseWheel'],
+      [50, 620 - 50, 'EmptyBottomLeftMouseWheel'],
+      [1024 - 50, 50, 'EmptyTopRightMouseWheel'],
+      [1024 - 50, 620 - 50, 'EmptyBottomRightMouseWheel'],
+    ], (xTarget, yTarget, fixtureName) => {
+      it('should zoom in background mousewheel', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
+          assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(
+            () => {
+              interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 10);
+            }
+          )
+          .then(
+            // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', fixtureName)
+            () => canvasInstructionLogManager.getBackgroundCanvasImage()
+          )
+          .then(
+            encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom[fixtureName], true, true)
+          )
+          .then(diff => {
+            expect(diff).toMatchBelowThreshold(0.01);
+            done();
+          });
       });
-  });
-
-  it('should zoom in on center point using mousewheel', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/task/TASKID-TASKID')
-      .then(
-        () => {
-          interaction.mouseWheelAtRepeat('.event-delegation-layer', 1024 / 2, 620 / 2, 0, -120, 10);
-        }
-      )
-      .then(
-        // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyCenterMouseWheel')
-        () => canvasInstructionLogManager.getBackgroundCanvasImage()
-      )
-      .then(
-        encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyCenterMouseWheel, true, true)
-      )
-      .then(diff => {
-        expect(diff).toMatchBelowThreshold(0.01);
-        done();
-      });
-  });
-
-  it('should zoom in on top left region using mousewheel', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/task/TASKID-TASKID')
-      .then(
-        () => {
-          interaction.mouseWheelAtRepeat('.event-delegation-layer', 50, 50, 0, -120, 10);
-        }
-      )
-      .then(
-        // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyTopLeftMouseWheel')
-        () => canvasInstructionLogManager.getBackgroundCanvasImage()
-      )
-      .then(
-        encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyTopLeftMouseWheel, true, true)
-      )
-      .then(diff => {
-        expect(diff).toMatchBelowThreshold(0.01);
-        done();
-      });
-  });
-
-  it('should zoom in on bottom left region using mousewheel', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/task/TASKID-TASKID')
-      .then(
-        () => {
-          interaction.mouseWheelAtRepeat('.event-delegation-layer', 1024 - 50, 50, 0, -120, 10);
-        }
-      )
-      .then(
-        // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyBottomLeftMouseWheel')
-        () => canvasInstructionLogManager.getBackgroundCanvasImage()
-      )
-      .then(
-        encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyBottomLeftMouseWheel, true, true)
-      )
-      .then(diff => {
-        expect(diff).toMatchBelowThreshold(0.01);
-        done();
-      });
-  });
-
-  it('should zoom in on top right region using mousewheel', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/task/TASKID-TASKID')
-      .then(
-        () => {
-          interaction.mouseWheelAtRepeat('.event-delegation-layer', 50, 620 - 50, 0, -120, 10);
-        }
-      )
-      .then(
-        // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyTopRightMouseWheel')
-        () => canvasInstructionLogManager.getBackgroundCanvasImage()
-      )
-      .then(
-        encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyTopRightMouseWheel, true, true)
-      )
-      .then(diff => {
-        expect(diff).toMatchBelowThreshold(0.01);
-        done();
-      });
-  });
-
-  it('should zoom in on bottom right region using mousewheel', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/task/TASKID-TASKID')
-      .then(
-        () => {
-          interaction.mouseWheelAtRepeat('.event-delegation-layer', 1024 - 50, 620 - 50, 0, -120, 10);
-        }
-      )
-      .then(
-        // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyBottomRightMouseWheel')
-        () => canvasInstructionLogManager.getBackgroundCanvasImage()
-      )
-      .then(
-        encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.EmptyBottomRightMouseWheel, true, true)
-      )
-      .then(diff => {
-        expect(diff).toMatchBelowThreshold(0.01);
-        done();
-      });
+    });
   });
 
   afterEach(() => {
