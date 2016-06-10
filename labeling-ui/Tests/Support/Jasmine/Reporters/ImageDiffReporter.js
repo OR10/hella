@@ -39,11 +39,8 @@ class ImageDiffReporter {
     this._currentSuite = suite;
   }
 
-  _diffCanvas(lhsCanvas, rhsCanvas) {
-    const lhs = lhsCanvas.getContext('2d').getImageData(0, 0, lhsCanvas.width, lhsCanvas.height);
-    const rhs = rhsCanvas.getContext('2d').getImageData(0, 0, rhsCanvas.width, rhsCanvas.height);
-
-    const diffImageData = new ImageData(lhsCanvas.width, lhsCanvas.height);
+  _diffImageData(lhs, rhs) {
+    const diffImageData = new ImageData(lhs.width, lhs.height);
 
     for (let i = 0; i < lhs.data.length; i += 4) {
       diffImageData.data[i] = Math.abs(lhs.data[i] - rhs.data[i]);
@@ -52,7 +49,7 @@ class ImageDiffReporter {
       diffImageData.data[i + 3] = Math.abs(255 - Math.abs(lhs.data[i + 3] - rhs.data[i + 3]));
     }
 
-    const canvas = new Canvas(lhsCanvas.width, lhsCanvas.height);
+    const canvas = new Canvas(lhs.width, lhs.height);
     canvas.getContext('2d').putImageData(diffImageData, 0, 0);
     return canvas;
   }
@@ -80,7 +77,7 @@ class ImageDiffReporter {
       this._storeScreenShot(imageBasePath);
     }
 
-    const failedViewerDataExpectations = spec.failedExpectations.filter(
+    const failedDrawingStackExpectations = spec.failedExpectations.filter(
       expectation => {
         switch (expectation.matcherName) {
           case 'toEqualDrawingStack':
@@ -92,10 +89,10 @@ class ImageDiffReporter {
       }
     );
 
-    failedViewerDataExpectations.forEach((expectation, index) => {
+    failedDrawingStackExpectations.forEach((expectation, index) => {
       let expectationPathSegment = '';
 
-      if (failedViewerDataExpectations.length > 1) {
+      if (failedDrawingStackExpectations.length > 1) {
         expectationPathSegment = `/${index}`;
       }
 
@@ -105,12 +102,14 @@ class ImageDiffReporter {
       const expectedDrawingStack = expectation.expected;
       const actualDrawingStack = expectation.actual;
 
-
-      const renderer = new CanteenStackRenderer();
+      const renderer = new CanteenStackRenderer('black');
       const expectedCanvas = renderer.render(expectedDrawingStack);
       const actualCanvas = renderer.render(actualDrawingStack);
 
-      const diffCanvas = this._diffCanvas(expectedCanvas, actualCanvas);
+      const expectedImageData = expectedCanvas.getContext('2d').getImageData(0, 0, expectedCanvas.width, expectedCanvas.height);
+      const actualImageData = actualCanvas.getContext('2d').getImageData(0, 0, actualCanvas.width, actualCanvas.height);
+
+      const diffCanvas = this._diffImageData(expectedImageData, actualImageData);
 
       this._storeCanvas(expectationImagePath + '/actual.png', actualCanvas);
       this._storeCanvas(expectationImagePath + '/expected.png', expectedCanvas);

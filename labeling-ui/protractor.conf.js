@@ -1,7 +1,8 @@
 require('babel-core/register');
 
 // We don't have SystemJS available here so we can't use 'import'
-const ImageDiffReporter = require('./Tests/Support/Jasmine/ImageDiffReporter/ImageDiffReporter');
+const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
+const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 
 exports.config = {
@@ -32,6 +33,10 @@ exports.config = {
         }));
 
         jasmine.getEnv().addReporter(new ImageDiffReporter({
+          outputDir: './Logs/E2E/Images',
+          browserIdentifier: browserIdentifier,
+        }));
+        jasmine.getEnv().addReporter(new ResembleDiffReporter({
           outputDir: './Logs/E2E/Images',
           browserIdentifier: browserIdentifier,
         }));
