@@ -112,15 +112,17 @@ class User
             ->execute()
             ->toArray();
 
-        return array_filter(
-            $users,
-            function(Model\User $user) {
-                if ($user->isLocked()) {
-                    return false;
-                }
+        return array_values(
+            array_filter(
+                $users,
+                function (Model\User $user) {
+                    if ($user->isLocked()) {
+                        return false;
+                    }
 
-                return true;
-            }
+                    return true;
+                }
+            )
         );
     }
 
