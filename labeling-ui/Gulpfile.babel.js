@@ -289,7 +289,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
   };
 
   if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    protractorConfig.args.push('--baseUrl', 'http://' + ip.address() + ':52343');
+    protractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
     protractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
   } else {
     protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
