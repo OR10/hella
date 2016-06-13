@@ -47,6 +47,22 @@ fdescribe('Pedestrian drawing', () => {
       });
   });
 
+  it('should load and draw two pedestrian rectangles', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'LoadAndDrawTwoPedestrians')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.LoadAndDrawTwoPedestrians);
+        done();
+      });
+  });
 
   afterEach(() => {
     mock.teardown();
