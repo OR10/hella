@@ -1,6 +1,7 @@
 import paper from 'paper';
 import DrawingTool from '../DrawingTool';
 import PaperPedestrian from '../../Shapes/PaperPedestrian';
+import Handle from '../../Shapes/Handles/Handle';
 
 /**
  * A tool for drawing pedestrian shapes with the mouse cursor
@@ -128,9 +129,9 @@ class PedestrianDrawingTool extends DrawingTool {
 
   _getScaleAnchor(point) {
     if (point.y > this._startPosition.y) {
-      return 'bottom-center';
+      return new Handle('bottom-center', new paper.Point(this._startPosition.x, point.y));
     }
-    return 'top-center';
+    return new Handle('top-center', new paper.Point(this._startPosition.x, point.y));
   }
 }
 

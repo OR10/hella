@@ -1,6 +1,7 @@
 import paper from 'paper';
 import DrawingTool from '../DrawingTool';
 import PaperRectangle from '../../Shapes/PaperRectangle';
+import Handle from '../../Shapes/Handles/Handle';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
@@ -97,18 +98,18 @@ class RectangleDrawingTool extends DrawingTool {
 
   _getScaleAnchor(point) {
     if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
-      return 'bottom-right';
+      return new Handle('bottom-right', point);
     }
 
     if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
-      return 'bottom-left';
+      return new Handle('bottom-left', point);
     }
 
     if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
-      return 'top-left';
+      return new Handle('top-left', point);
     }
 
-    return 'top-right';
+    return new Handle('top-right', point);
   }
 }
 
