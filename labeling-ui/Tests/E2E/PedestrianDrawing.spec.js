@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Pedestrian drawing', () => {
+describe('Pedestrian drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
