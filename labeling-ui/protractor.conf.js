@@ -4,6 +4,7 @@ require('babel-core/register');
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
 const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
+const path = require('path');
 
 exports.config = {
   framework: 'jasmine2',
@@ -12,6 +13,11 @@ exports.config = {
   onPrepare: () => {
     require('./Tests/Support/Jasmine/CustomMatchers');
     require('jasmine-collection-matchers');
+
+    require('protractor-http-mock').config = {
+      rootDirectory: __dirname,
+      protractorConfig: path.basename(__filename),
+    };
 
     const resizeHelper = new ViewportHelper(browser);
     return resizeHelper.setViewportSize(1500, 900) // Try to be always bigger then the needed space to fit the viewer
