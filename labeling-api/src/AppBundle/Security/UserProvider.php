@@ -11,16 +11,9 @@ use FOS\UserBundle\Model\UserManagerInterface;
 
 class UserProvider extends FOSProvider
 {
-    /**
-     *
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    public function __construct(UserManagerInterface $userManager, ContainerInterface $container)
+    public function __construct(UserManagerInterface $userManager)
     {
         parent::__construct($userManager);
-        $this->container = $container;
     }
 
     /**
