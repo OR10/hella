@@ -174,8 +174,6 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  // We are currently missing one horizontal pixel here
-  // Might be a sizing bug…
   it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
@@ -207,6 +205,40 @@ describe('Rectangle drawing', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContain(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        done();
+      });
+  });
+
+  it('should correctly resize a while flipping bottomRight and topLeft', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0,
+      assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0to4,
+      assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 600, y: 500}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 700, y: 600}) // bottom right drag handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 100}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'ResizeFlip')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        // browser.pause();
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeFlip);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContain(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame.request);
         done();
       });
   });
