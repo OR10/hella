@@ -211,8 +211,6 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  // // Something is wrong here with the mocked request data. The second frame seems to have 2 different shapes at the same position
-  // // Therefore the selection rendering is off and can't be properly checked.
   it('should keep the labeled thing selected over a frame change', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
