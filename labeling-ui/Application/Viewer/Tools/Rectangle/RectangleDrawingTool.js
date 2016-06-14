@@ -81,6 +81,9 @@ class RectangleDrawingTool extends DrawingTool {
 
   onMouseUp() {
     if (this._rect) {
+      // Fix bottom-right and top-left orientation
+      this._rect.fixOrientation();
+
       this._$scope.$apply(
         () => this.completeShape()
       );

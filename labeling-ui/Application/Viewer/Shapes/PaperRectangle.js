@@ -233,13 +233,16 @@ class PaperRectangle extends PaperShape {
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {
+    const oldTopLeft = this._topLeft;
+    const oldBottomRight = this._bottomRight;
+
     this._topLeft = new paper.Point(
-      Math.min(this._topLeft.x, this._bottomRight.x),
-      Math.min(this._topLeft.y, this._bottomRight.y)
+      Math.min(oldTopLeft.x, oldBottomRight.x),
+      Math.min(oldTopLeft.y, oldBottomRight.y)
     );
     this._bottomRight = new paper.Point(
-      Math.max(this._topLeft.x, this._bottomRight.x),
-      Math.max(this._topLeft.y, this._bottomRight.y)
+      Math.max(oldTopLeft.x, oldBottomRight.x),
+      Math.max(oldTopLeft.y, oldBottomRight.y)
     );
     this._drawShape();
   }
