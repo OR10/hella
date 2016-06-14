@@ -240,6 +240,41 @@ describe('Pedestrian drawing', () => {
       });
   });
 
+  it('should correctly resize a pedestrian over the fixed handle one way', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1,
+      assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 150}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 100, y: 200}) // bottom drag handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 50}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ScaleOverFixedHandle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        // browser.pause();
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ScaleOverFixedHandle);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContain(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        done();
+      });
+  });
+
   afterEach(() => {
     mock.teardown();
   });
