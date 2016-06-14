@@ -261,7 +261,7 @@ class PaperPedestrian extends PaperShape {
   fixOrientation() {
     if (this._topCenter.y > this._bottomCenter.y) {
       const newBottom = new paper.Point(this._topCenter.x, this._topCenter.y);
-      const newTop = new paper.Point(this._bottomCenterCenter.x, this._bottomCenterCenter.y);
+      const newTop = new paper.Point(this._bottomCenter.x, this._bottomCenter.y);
       this._bottomCenter = newBottom;
       this._topCenter = newTop;
 
