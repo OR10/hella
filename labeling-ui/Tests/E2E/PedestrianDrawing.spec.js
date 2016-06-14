@@ -174,7 +174,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  fit('should correctly resize a pedestrian rectangle on canvas and save the changed coordinates', (done) => {
+  it('should correctly resize a pedestrian rectangle on canvas and save the changed coordinates', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -205,6 +205,37 @@ describe('Pedestrian drawing', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContain(assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        done();
+      });
+  });
+
+  it('should keep the labeled thing selected over a frame change', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.getLabeledThingsInFrame0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        const nextFrameButton = element(by.css('.next-frame-button'));
+
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 150}) // initial position
+          .click()
+          .perform();
+
+        nextFrameButton.click();
+
+        browser.sleep(1000);
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'KeepSelectionOverFrameChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.KeepSelectionOverFrameChange);
         done();
       });
   });
