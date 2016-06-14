@@ -1,76 +1,37 @@
 {
   "request": {
-    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
-    "namedParams": true,
     "method": "PUT",
+    "namedParams": true,
+    "path": "/api/task/TASKID-TASKID/labeledThing/:labeledThingId",
     "data": {
-      "id": "{{:labeledThingInFrameDataId}}",
-      "rev": "{{:labeledThingInFrameRevision}}",
-      "frameIndex": 0,
-      "classes": [],
-      "ghostClasses": null,
-      "shapes": [
-        {
-          "type": "rectangle",
-          "id": "{{:shapeId}}",
-          "topLeft": {
-            "x": 300,
-            "y": 300
-          },
-          "bottomRight": {
-            "x": 700,
-            "y": 500
-          },
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
-        }
-      ],
-      "labeledThingId": "{{:labeledThingId}}",
+      "frameRange": {
+        "startFrameIndex": 0,
+        "endFrameIndex": 0
+      },
       "incomplete": true,
-      "ghost": false
+      "lineColor": "{{:lineColor}}",
+      "id": "{{:labeledThingDataId}}",
+      "taskId": "TASKID-TASKID",
+      "classes": [
+        "pedestrian"
+      ]
     }
   },
   "response": {
     "data": {
       "result": {
-        "labeledThing": {
-          "id": "{{labeledThingId}}",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [
-            "pedestrian"
-          ],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "6"
+        "id": "{{labeledThingId}}",
+        "rev": "1-2f9137804f4da62e1e2f08a8b7f66b5d",
+        "frameRange": {
+          "startFrameIndex": 0,
+          "endFrameIndex": 0
         },
-        "labeledThingInFrame": {
-          "id": "{{labeledThingInFrameId}}",
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 0,
-          "classes": [],
-          "ghostClasses": null,
-          "shapes": [
-            {
-              "type": "rectangle",
-              "id": "{{shapeId}}",
-              "topLeft": {
-                "x": 300,
-                "y": 300
-              },
-              "bottomRight": {
-                "x": 700,
-                "y": 500
-              },
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
-            }
-          ],
-          "labeledThingId": "{{labeledThingId}}",
-          "incomplete": true,
-          "ghost": false
-        }
+        "classes": [
+          "pedestrian"
+        ],
+        "taskId": "TASKID-TASKID",
+        "incomplete": true,
+        "lineColor": "{{lineColor}}"
       }
     }
   }

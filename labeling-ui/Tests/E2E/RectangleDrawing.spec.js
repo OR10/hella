@@ -242,6 +242,82 @@ describe('Rectangle drawing', () => {
       });
   });
 
+  it('should draw a new rectangle', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1,
+      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 700, y: 500}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangle);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1.request);
+        done();
+      });
+  });
+
+  it('should draw multiple new rectangles', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2,
+      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3,
+      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4,
+      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 300}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 500}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 600, y: 400}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 50, y: 100}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 800, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 200}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewMultipleRectangles')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewMultipleRectangles);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4.request);
+        done();
+      });
+  });
+
   // Needs to be fixed in code
   xit('should correctly handle extra information in limited labeledThingInFrame request', (done) => {
     mock(sharedMocks.concat([
