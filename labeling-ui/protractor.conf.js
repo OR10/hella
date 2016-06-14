@@ -50,9 +50,6 @@ exports.config = {
   },
 
   specs: ['Tests/E2E/**/*.spec.js'],
-  mocks: {
-    dir: 'Tests/ProtractorMocks',
-  },
 };
 
 if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
