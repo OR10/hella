@@ -15,7 +15,7 @@ describe('Pedestrian drawing', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
-      assets.mocks.Shared.Task,
+      assets.mocks.PedestrianDrawing.Shared.Task,
       assets.mocks.Shared.Video,
       assets.mocks.Shared.LabelStructure,
       assets.mocks.Shared.GetTimer,
@@ -271,6 +271,85 @@ describe('Pedestrian drawing', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContain(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        done();
+      });
+  });
+
+  it('should draw a new pedestrian rectangle', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 300, y: 500}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrian')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrian);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1.request);
+        done();
+      });
+  });
+
+
+  it('should draw multiple new pedestrian rectangle', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 50}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 600}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 900, y: 400}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 450}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 900, y: 200}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 50}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrian')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrian);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4.request);
         done();
       });
   });
