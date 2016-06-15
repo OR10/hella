@@ -628,7 +628,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
         id: 'ltif-1-2',
         rev: `1-${Math.round(Math.random() * Number.MAX_SAFE_INTEGER)}`,
         shapes: [{type: 'rectangle'}],
-        labeledThing: new LabeledThing({id: 'lt-1', defaultTask}),
+        labeledThing: new LabeledThing({id: 'lt-1', task: defaultTask}),
       });
 
       gateway.saveLabeledThingInFrame(updatedLtif);
@@ -647,7 +647,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
         id: 'ltif-1-2',
         rev: `1-${Math.round(Math.random() * Number.MAX_SAFE_INTEGER)}`,
         shapes: [{type: 'rectangle'}],
-        labeledThing: new LabeledThing({id: 'lt-1', defaultTask}),
+        labeledThing: new LabeledThing({id: 'lt-1', task: defaultTask}),
       });
 
       ltifCache.store(`${defaultTask.id}.11.ltif-1-2`, updatedLtif.toJSON());
@@ -671,7 +671,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
         id: 'ltif-1-2',
         rev: `1-${Math.round(Math.random() * Number.MAX_SAFE_INTEGER)}`,
         shapes: [{type: 'rectangle'}],
-        labeledThing: new LabeledThing({id: 'lt-1', defaultTask}),
+        labeledThing: new LabeledThing({id: 'lt-1', task: defaultTask}),
       });
 
       ltifCache.store(`${defaultTask.id}.11.ltif-1-2`, updatedLtif.toJSON());
