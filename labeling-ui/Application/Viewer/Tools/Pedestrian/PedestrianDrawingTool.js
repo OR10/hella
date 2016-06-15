@@ -112,7 +112,6 @@ class PedestrianDrawingTool extends DrawingTool {
    */
   onMouseUp(event) { // eslint-disable-line no-unused-vars
     if (this._pedestrian) {
-
       // Fix point orientation of top and bottom center
       this._pedestrian.fixOrientation();
 
