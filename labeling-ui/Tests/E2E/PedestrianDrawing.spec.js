@@ -335,11 +335,11 @@ describe('Pedestrian drawing', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrian')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewMultiplePedestrian')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrian);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewMultiplePedestrian);
         browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
