@@ -106,15 +106,17 @@ class User
      */
     public function getUserList()
     {
-        return array_filter(
-            $this->userManager->findUsers(),
-            function(Model\User $user) {
-                if ($user->isLocked()) {
-                    return false;
-                }
+        return array_values(
+            array_filter(
+                $this->userManager->findUsers(),
+                function (Model\User $user) {
+                    if ($user->isLocked()) {
+                        return false;
+                    }
 
-                return true;
-            }
+                    return true;
+                }
+            )
         );
     }
 
