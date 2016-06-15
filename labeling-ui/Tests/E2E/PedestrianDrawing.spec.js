@@ -279,9 +279,7 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4,
+      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1,
       assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
     initApplication('/labeling/task/TASKID-TASKID')
