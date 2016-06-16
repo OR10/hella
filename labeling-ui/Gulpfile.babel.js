@@ -67,7 +67,7 @@ paths.dir = {
   'fonts': 'Distribution/Fonts',
   'tests': {
     'unit': 'Tests/Unit',
-    'e2e': 'Test/E2E',
+    'e2e': 'Tests/E2E',
   },
   'distribution': 'Distribution',
   'logs': 'Logs',
@@ -233,6 +233,7 @@ gulp.task('eslint', () => {
     paths.files.support,
     paths.files.js,
     paths.files.tests.unit,
+    paths.files.tests.e2e,
   ])
     .pipe($$.eslint())
     .pipe($$.eslint.format())
@@ -247,6 +248,7 @@ gulp.task('eslint-checkstyle', () => {
     paths.files.support,
     paths.files.js,
     paths.files.tests.unit,
+    paths.files.tests.e2e,
   ])
     .pipe($$.eslint())
     .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')))

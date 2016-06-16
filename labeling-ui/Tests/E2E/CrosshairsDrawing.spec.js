@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -40,9 +40,9 @@ describe('Crosshairs drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(() => {
-          browser.actions()
-            .mouseMove(viewer, {x: 200, y: 200})
-            .perform();
+        browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .perform();
       })
       .then(
         () => canvasInstructionLogManager.getCrosshairsCanvasLogs()
