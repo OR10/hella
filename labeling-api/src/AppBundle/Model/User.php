@@ -16,7 +16,9 @@ class User extends BaseUser
     const ROLE_LABELER = 'ROLE_LABELER';
 
     /**
-     * @CouchDB\Id
+     * STRATEGY ASSIGNED IS ONLY USED TO CONVERT THE EXISTING MYSQL USER!!!
+     *
+     * @CouchDB\Id(strategy="ASSIGNED")
      */
     protected $id;
 
@@ -28,6 +30,14 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
