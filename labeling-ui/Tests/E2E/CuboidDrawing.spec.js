@@ -1,11 +1,11 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication} from '../Support/Protractor/Helpers';
+import {dumpAllRequestsMade, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-xdescribe('Cuboid drawing', () => {
+describe('Cuboid drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -162,6 +162,88 @@ xdescribe('Cuboid drawing', () => {
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight225);
+        done();
+      });
+  });
+
+  it('should change height of loaded cuboid (without request checking)', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 621, y: 330}) // height handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 621, y: 50}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChange);
+        done();
+      });
+  });
+
+  it('should change move loaded cuboid without primary edge change (without request checking)', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 622, y: 390}) // move handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 235, y: 560}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementLeft);
+        done();
+      });
+  });
+
+  // Currently broken
+  xit('should change move loaded cuboid with primary edge change (without request checking)', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 622, y: 390}) // move handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 850, y: 616}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementRight);
         done();
       });
   });
