@@ -304,7 +304,6 @@ class PaperCuboid extends PaperShape {
     const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(new Vector3(point.x, point.y, 1));
     const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._primaryVertices.cornerIndex]);
 
-    // console.log(newPrimaryCornerPosition, this._cuboid3d.vertices[this._primaryVertices.cornerIndex], movementVector);
     this._cuboid3d.moveBy(movementVector);
 
     this._drawCuboid();
