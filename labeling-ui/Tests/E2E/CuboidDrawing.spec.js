@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -166,10 +166,11 @@ describe('Cuboid drawing', () => {
       });
   });
 
-  it('should change height of loaded cuboid (without request checking)', (done) => {
+  it('should change height of loaded cuboid', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
       assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -189,14 +190,21 @@ describe('Cuboid drawing', () => {
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChange);
+        browser.sleep(1000);
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame);
         done();
       });
   });
 
-  it('should change move loaded cuboid without primary edge change (without request checking)', (done) => {
+  it('should change move loaded cuboid without primary edge change', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
       assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -216,15 +224,20 @@ describe('Cuboid drawing', () => {
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementLeft);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame);
         done();
       });
   });
 
-  // Currently broken
-  xit('should change move loaded cuboid with primary edge change (without request checking)', (done) => {
+  it('should change move loaded cuboid with primary edge change', (done) => {
     mock(sharedMocks.concat([
       assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
       assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')
@@ -234,7 +247,7 @@ describe('Cuboid drawing', () => {
           .click()
           .mouseMove(viewer, {x: 622, y: 390}) // move handle
           .mouseDown()
-          .mouseMove(viewer, {x: 850, y: 616}) // drag
+          .mouseMove(viewer, {x: 1000, y: 560}) // drag
           .mouseUp()
           .perform();
       })
@@ -244,6 +257,11 @@ describe('Cuboid drawing', () => {
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementRight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame);
         done();
       });
   });
