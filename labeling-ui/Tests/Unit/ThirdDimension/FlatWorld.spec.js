@@ -1,6 +1,8 @@
 import FlatWorld from 'Application/ThirdDimension/Support/Projection3d/FlatWorld';
 import Cuboid2d from 'Application/ThirdDimension/Models/Cuboid2d';
 import Cuboid3d from 'Application/ThirdDimension/Models/Cuboid3d';
+import paper from 'paper';
+import {Vector4} from 'three-math';
 
 describe('Projection3d', () => {
   describe('FlatWorld', () => {
@@ -83,5 +85,40 @@ describe('Projection3d', () => {
         expect(cuboid3dProjection.vertices).toEqual(cuboid3d.vertices);
       });
     });
+
+    using([
+      [new paper.Point(181.2570017553283, 404.7324740559921), new Vector4(16.000011467972257, 4.800000928902601, 0)],
+      [new paper.Point(405.5560139814466, 482.35452133337935), new Vector4(8.000000774936234, 0.8000001453864106, 0)],
+      [new paper.Point(1225.876357192165, 582.4006872466528), new Vector4(4.001688063688382, -3.299991114078033, 0)],
+    ], (bottomPoint, expectedVertex) => {
+      it('should correctly project a single bottom 3d coordinate into a 3d coordinate using the flat world assumption', () => {
+        const projectedVertex = projection.projectBottomCoordinateTo3d(bottomPoint);
+        expect(projectedVertex).toEqual(expectedVertex);
+      });
+    });
+
+    using([
+      [
+        new paper.Point(179.8069318729644, 285.76368943993805),
+        new Vector4(16.000011467972257, 4.800000928902601, 0),
+        new Vector4(16.000011467972257, 4.800000928902601, 1.7000002550822635)
+      ],
+      [
+        new paper.Point(402.9673710469654, 255.62304409565922),
+        new Vector4(8.000000774936234, 0.8000001453864106, 0),
+        new Vector4(8.000000774936234, 0.8000001453864106, 1.7000001095552815)
+      ],
+      [
+        new paper.Point(1229.1801689745093, 208.39720861073693),
+        new Vector4(4.001688063688382, -3.299991114078033, 0),
+        new Vector4(4.001688063688382, -3.299991114078033, 1.7000501078456152)
+      ],
+    ], (topPoint, bottomVertex3d, expectedVertex) => {
+      it('should correctly project a single top 3d coordinate into a 3d coordinate using the flat world assumption and a bottom point', () => {
+        const projectedVertex = projection.projectTopCoordianteTo3d(topPoint, bottomVertex3d);
+        expect(projectedVertex).toEqual(expectedVertex);
+      });
+    });
+
   });
 });
