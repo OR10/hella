@@ -3,5 +3,6 @@ beforeEach(function() {
     toEqualRenderedDrawingStack: require('./Matchers/EqualRenderedDrawingStack'),
     toMatchBelowThreshold: require('./Matchers/MatchBelowThreshold'),
     toContainNamedParamsRequest: require('./Matchers/ContainNamedParamsRequest'),
+    toContainRequest: require('./Matchers/ContainRequest'),
   });
 });

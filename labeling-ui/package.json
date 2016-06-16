@@ -65,6 +65,7 @@
     "karma-webdriver-launcher": "^1.0.4",
     "livereload-js": "^2.2.2",
     "lodash": "^3.10.1",
+    "lodash.isequal": "^4.2.0",
     "minami": "^1.1.1",
     "mkdirp": "^0.5.1",
     "morgan": "^1.6.1",
