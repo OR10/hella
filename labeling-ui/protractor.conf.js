@@ -63,5 +63,10 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
 } else {
   exports.config.capabilities = {
     'browserName': 'chrome',
+    'loggingPrefs': {
+      'driver': 'INFO',
+      'server': 'OFF',
+      'browser': 'ALL',
+    },
   };
 }
