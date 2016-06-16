@@ -70,15 +70,15 @@ class Projection3dFlatWorld {
   }
 
   /**
-   * @param {Point} bottomPoint
+   * @param {Vector3} bottomVertex
    * @returns {Vector4}
    */
-  projectBottomCoordinateTo3d(bottomPoint) {
+  projectBottomCoordinateTo3d(bottomVertex) {
     return this._transformCamToCarForBottomCoordinate(
       this._removeRotationForVertex(
         this._removeDistortionForVertex(
           this._reverseCameraMatrixForVertex(
-            new Vector3(bottomPoint.x, bottomPoint.y, 1)
+            new Vector3(bottomVertex.x, bottomVertex.y, 1)
           )
         )
       )
@@ -86,11 +86,11 @@ class Projection3dFlatWorld {
   }
 
   /**
-   * @param {Point} topPoint
-   * @param {Point} bottomPoint
+   * @param {Vector3} topPoint
+   * @param {Vector4} bottomVertex3d
    * @returns {Vector4}
    */
-  projectTopCoordianteTo3d(topPoint, bottomPoint) {
+  projectTopCoordianteTo3d(topPoint, bottomVertex3d) {
     return this._transformCamToCarForCeilingCoordinate(
       this._removeRotationForVertex(
         this._removeDistortionForVertex(
@@ -99,7 +99,7 @@ class Projection3dFlatWorld {
           )
         )
       ),
-      new Vector3(bottomPoint.x, bottomPoint.y, 1)
+      new Vector3(bottomVertex3d.x, bottomVertex3d.y, 1)
     );
   }
 

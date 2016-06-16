@@ -1,5 +1,5 @@
 import paper from 'paper';
-import {Matrix4} from 'three-math';
+import {Vector3, Matrix4} from 'three-math';
 import _ from 'lodash';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
@@ -301,10 +301,10 @@ class PaperCuboid extends PaperShape {
    * @param {Point} point
    */
   moveTo(point) {
-    const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(point);
-    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._primaryVertices.edge]);
+    const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(new Vector3(point.x, point.y, 1));
+    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._primaryVertices.cornerIndex]);
 
-    // console.log(newPrimaryCornerPosition, this._cuboid3d.vertices[this._primaryVertices.edge], movementVector);
+    // console.log(newPrimaryCornerPosition, this._cuboid3d.vertices[this._primaryVertices.cornerIndex], movementVector);
     this._cuboid3d.moveBy(movementVector);
 
     this._drawCuboid();
@@ -367,7 +367,11 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _changeHeight(point, minDistance) { // eslint-disable-line no-unused-vars
-    const newTop = this._projection3d.projectTopCoordianteTo3d(point, this._projectedCuboid.vertices[this._primaryVertices.edge]);
+    const newTop = this._projection3d.projectTopCoordianteTo3d(
+      new Vector3(point.x, point.y, 1),
+      this._cuboid3d.vertices[this._primaryVertices.cornerIndex]
+    );
+
     let oldTop;
     _.each(this._primaryVertices.names, (value, key) => {
       if (value === 'height') {

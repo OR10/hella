@@ -6,7 +6,7 @@ class Cuboid3d {
   }
 
   /**
-   * @returns {{vertices, names, edge}}
+   * @returns {{vertices, names, cornerIndex}}
    */
   getPrimaryVertices() {
     return this._getPrimaryVertices(this);
@@ -16,29 +16,29 @@ class Cuboid3d {
    * @param {Cuboid3d} cuboid3d
    *
    * @private
-   * @returns {{vertices, names, edge}}
+   * @returns {{vertices, names, cornerIndex}}
    */
   _getPrimaryVertices(cuboid3d) {
     const mapping = {
       2: {
         vertices: [false, true, true, true, false, false, true, false],
         names: {2: 'move', 3: 'width', 6: 'length', 1: 'height'},
-        edge: 2,
+        cornerIndex: 2,
       },
       3: {
         vertices: [true, false, true, true, false, false, false, true],
         names: {3: 'move', 2: 'width', 7: 'length', 0: 'height'},
-        edge: 3,
+        cornerIndex: 3,
       },
       6: {
         vertices: [false, false, true, false, false, true, true, true],
         names: {6: 'move', 7: 'width', 2: 'length', 5: 'height'},
-        edge: 6,
+        cornerIndex: 6,
       },
       7: {
         vertices: [false, false, false, true, true, false, true, true],
         names: {7: 'move', 6: 'width', 3: 'length', 4: 'height'},
-        edge: 7,
+        cornerIndex: 7,
       },
     };
     const primaryCorner = this._getPrimaryCorner(cuboid3d);
@@ -74,7 +74,7 @@ class Cuboid3d {
   }
 
   /**
-   * @param vector
+   * @param {Vector3} vector
    */
   addVectorToTop(vector) {
     [0, 1, 4, 5].map(pointIndex => {
