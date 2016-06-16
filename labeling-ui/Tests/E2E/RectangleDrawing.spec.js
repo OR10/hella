@@ -169,7 +169,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContain(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1);
         done();
       });
   });
@@ -204,7 +204,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContain(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1.request);
+        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1);
         done();
       });
   });
@@ -238,7 +238,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContain(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame.request);
+        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame);
         done();
       });
   });
@@ -248,7 +248,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingsInFrame0to4,
+      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
     initApplication('/labeling/task/TASKID-TASKID')

@@ -57,7 +57,7 @@ describe('Rectangle Overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
         getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContain(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow.request);
+          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow);
           done();
         });
       });
@@ -91,7 +91,7 @@ describe('Rectangle Overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
         getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContain(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow.request);
+          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow);
           done();
         });
       });
@@ -125,7 +125,7 @@ describe('Rectangle Overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
         getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContain(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow.request);
+          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow);
           done();
         });
       });
@@ -159,7 +159,7 @@ describe('Rectangle Overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
         getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContain(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow.request);
+          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow);
           done();
         });
       });
