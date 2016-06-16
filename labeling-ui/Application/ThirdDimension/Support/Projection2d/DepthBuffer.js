@@ -23,56 +23,7 @@ class DepthBufferProjection2d {
     faces.sort(this._compareByZOrder);
 
     const [vertices, vertexVisibility] = this._projectFacesWithDepth(faces);
-    const primaryVertices = this._getPrimaryVertices(cuboid3d);
-    return new Cuboid2d(vertices, primaryVertices, vertexVisibility);
-  }
-
-  /**
-   * @param {Cuboid3d} cuboid3d
-   *
-   * @private
-   * @returns {Array.<boolean>}
-   */
-  _getPrimaryVertices(cuboid3d) {
-    const mapping = {
-      2: {
-        vertices: [false, true, true, true, false, false, true, false],
-        names: {2: 'move', 3: 'width', 6: 'length', 1: 'height'},
-        edge: cuboid3d.vertices[2],
-      },
-      3: {
-        vertices: [true, false, true, true, false, false, false, true],
-        names: {3: 'move', 2: 'width', 7: 'length', 0: 'height'},
-        edge: cuboid3d.vertices[3],
-      },
-      6: {
-        vertices: [false, false, true, false, false, true, true, true],
-        names: {6: 'move', 7: 'width', 2: 'length', 5: 'height'},
-        edge: cuboid3d.vertices[6],
-      },
-      7: {
-        vertices: [false, false, false, true, true, false, true, true],
-        names: {7: 'move', 6: 'width', 3: 'length', 4: 'height'},
-        edge: cuboid3d.vertices[7],
-      },
-    };
-    const primaryCorner = this._getPrimaryCorner(cuboid3d);
-
-    return mapping[primaryCorner];
-  }
-
-  /**
-   * @param {Cuboid3d} cuboid3d
-   *
-   * @private
-   * @returns {number}
-   */
-  _getPrimaryCorner(cuboid3d) {
-    const bottomPoints = [2, 3, 6, 7];
-
-    return bottomPoints.reduce((prev, current) => {
-      return cuboid3d.vertices[current].length() < cuboid3d.vertices[prev].length() ? current : prev;
-    });
+    return new Cuboid2d(vertices, vertexVisibility);
   }
 
   /**

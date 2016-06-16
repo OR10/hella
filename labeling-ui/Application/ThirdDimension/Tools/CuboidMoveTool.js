@@ -44,11 +44,13 @@ class CuboidMoveTool extends Tool {
    */
   onMouseDown(event, hitShape) {
     this._paperCuboid = hitShape;
+    this._paperCuboid.updatePrimaryCorner();
   }
 
   onMouseUp() {
     if (this._paperCuboid && this._modified) {
       this._modified = false;
+      this._paperCuboid.updatePrimaryCorner();
 
       this.emit('shape:update', this._paperCuboid);
     }

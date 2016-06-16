@@ -56,6 +56,12 @@ class PaperCuboid extends PaperShape {
      */
     this._cuboid3d = new Cuboid3d(cuboid3dPoints);
 
+    /**
+     * @type {{vertices, names, edge}}
+     * @private
+     */
+    this._primaryVertices = this._cuboid3d.getPrimaryVertices();
+
     this._drawCuboid();
   }
 
@@ -109,7 +115,7 @@ class PaperCuboid extends PaperShape {
       const from = this._projectedCuboid.vertices[edgePointIndex.from];
       const to = this._projectedCuboid.vertices[edgePointIndex.to];
       const hidden = (!this._projectedCuboid.vertexVisibility[edgePointIndex.from] || !this._projectedCuboid.vertexVisibility[edgePointIndex.to]);
-      const showPrimaryEdge = (this._projectedCuboid.primaryVertices.vertices[edgePointIndex.from] && this._projectedCuboid.primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
+      const showPrimaryEdge = (this._primaryVertices.vertices[edgePointIndex.from] && this._primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
@@ -157,7 +163,7 @@ class PaperCuboid extends PaperShape {
   _createHandles() {
     const handles = [];
 
-    this._projectedCuboid.primaryVertices.vertices.forEach(
+    this._primaryVertices.vertices.forEach(
       (isPrimaryVertex, index) => {
         if (!isPrimaryVertex) {
           return;
@@ -167,7 +173,7 @@ class PaperCuboid extends PaperShape {
 
         handles.push(
           new RectangleHandle(
-            'cube-' + this._projectedCuboid.primaryVertices.names[index],
+            'cube-' + this._primaryVertices.names[index],
             '#ffffff',
             this._handleSize,
             this._vectorToPaperPoint(vertex)
@@ -205,6 +211,11 @@ class PaperCuboid extends PaperShape {
       width: maxX - minX,
       height: maxY - minY,
     };
+  }
+
+  updatePrimaryCorner() {
+    this._primaryVertices = this._cuboid3d.getPrimaryVertices();
+    this._drawCuboid();
   }
 
   /**
@@ -291,8 +302,9 @@ class PaperCuboid extends PaperShape {
    */
   moveTo(point) {
     const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(point);
-    const movementVector = newPrimaryCornerPosition.sub(this._projectedCuboid.primaryVertices.edge);
+    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._primaryVertices.edge]);
 
+    // console.log(newPrimaryCornerPosition, this._cuboid3d.vertices[this._primaryVertices.edge], movementVector);
     this._cuboid3d.moveBy(movementVector);
 
     this._drawCuboid();
@@ -355,9 +367,9 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _changeHeight(point, minDistance) { // eslint-disable-line no-unused-vars
-    const newTop = this._projection3d.projectTopCoordianteTo3d(point, this._projectedCuboid.primaryVertices.edge);
+    const newTop = this._projection3d.projectTopCoordianteTo3d(point, this._projectedCuboid.vertices[this._primaryVertices.edge]);
     let oldTop;
-    _.each(this._projectedCuboid.primaryVertices.names, (value, key) => {
+    _.each(this._primaryVertices.names, (value, key) => {
       if (value === 'height') {
         oldTop = this._cuboid3d.vertices[key];
       }

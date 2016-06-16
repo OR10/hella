@@ -44,11 +44,13 @@ class CuboidScaleTool extends Tool {
   onMouseDown(event, hitShape, hitHandle) {
     this._paperCuboid = hitShape;
     this._activeHandle = hitHandle;
+    this._paperCuboid.updatePrimaryCorner();
   }
 
   onMouseUp() {
     if (this._paperCuboid && this._modified) {
       this._modified = false;
+      this._paperCuboid.updatePrimaryCorner();
       this.emit('shape:update', this._paperCuboid);
     }
 

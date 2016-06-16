@@ -4,12 +4,10 @@ import clone from 'lodash.clone';
 class Cuboid2d {
   /**
    * @param {Array.<Array.<number>>} vertices
-   * @param {Array.<boolean>} primaryVertices
    * @param {Array.<boolean>} vertexVisibility
    */
-  constructor(vertices, primaryVertices, vertexVisibility = [true, true, true, true, true, true, true, true]) {
+  constructor(vertices, vertexVisibility = [true, true, true, true, true, true, true, true]) {
     this._vertices = vertices;
-    this._primaryVertices = primaryVertices;
     this._vertexVisibility = vertexVisibility;
   }
 

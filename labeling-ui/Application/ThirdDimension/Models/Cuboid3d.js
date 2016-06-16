@@ -6,6 +6,61 @@ class Cuboid3d {
   }
 
   /**
+   * @returns {{vertices, names, edge}}
+   */
+  getPrimaryVertices() {
+    return this._getPrimaryVertices(this);
+  }
+
+  /**
+   * @param {Cuboid3d} cuboid3d
+   *
+   * @private
+   * @returns {{vertices, names, edge}}
+   */
+  _getPrimaryVertices(cuboid3d) {
+    const mapping = {
+      2: {
+        vertices: [false, true, true, true, false, false, true, false],
+        names: {2: 'move', 3: 'width', 6: 'length', 1: 'height'},
+        edge: 2,
+      },
+      3: {
+        vertices: [true, false, true, true, false, false, false, true],
+        names: {3: 'move', 2: 'width', 7: 'length', 0: 'height'},
+        edge: 3,
+      },
+      6: {
+        vertices: [false, false, true, false, false, true, true, true],
+        names: {6: 'move', 7: 'width', 2: 'length', 5: 'height'},
+        edge: 6,
+      },
+      7: {
+        vertices: [false, false, false, true, true, false, true, true],
+        names: {7: 'move', 6: 'width', 3: 'length', 4: 'height'},
+        edge: 7,
+      },
+    };
+    const primaryCorner = this._getPrimaryCorner(cuboid3d);
+
+    return mapping[primaryCorner];
+  }
+
+  /**
+   * @param {Cuboid3d} cuboid3d
+   *
+   * @private
+   * @returns {number}
+   */
+  _getPrimaryCorner(cuboid3d) {
+    const bottomPoints = [2, 3, 6, 7];
+
+    return bottomPoints.reduce((prev, current) => {
+      return cuboid3d.vertices[current].length() < cuboid3d.vertices[prev].length() ? current : prev;
+    });
+  }
+
+  /**
    * @param {Vector4} vector
    */
   moveBy(vector) {
