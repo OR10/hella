@@ -6,6 +6,10 @@
 
 + Parameters
     + includeVideos: `false` (boolean, optional) - Wether or not the referenced video entities should be included in the response.
+    + offset: `10` (number, optional) - Set an offset
+    + limit: `5` (number, optional) - Limit the number is tasks
+    + taskStatus: `labeled` (string, optional) - Fetch only tasks with a given status
+    + projectId: `02b531ffe2c35ee965e4b339a61c7ad2` (string, optional) - Limit the task list to a projectId
 
 + Response 200 (application/json)
     + Attributes

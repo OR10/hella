@@ -85,13 +85,70 @@ class LabelingTask
 
         return array_values($result);
     }
-    
+
+    /**
+     * @param Model\Project $project
+     * @param Model\Video $video
+     * @return array
+     */
     public function findAllByProjectAndVideo(Model\Project $project, Model\Video $video) {
         $query = $this->documentManager
             ->createQuery('annostation_labeling_task', 'by_project_and_video')
             ->setKey([$project->getId(), $video->getId()]);
 
         $result = $query->onlyDocs(true)->execute()->toArray();
+        return array_values($result);
+    }
+
+    /**
+     * @param $status
+     * @param Model\Project|null $project
+     * @param null $skip
+     * @param null $limit
+     * @return array
+     */
+    public function findAllByStatusAndProject(
+        $status,
+        Model\Project $project = null,
+        $skip = null,
+        $limit = null
+    ) {
+        $startKey = [$status];
+        $endKey = [$status];
+
+        if ($project !== null) {
+            $startKey[] = $project->getId();
+            $endKey[] = $project->getId();
+        } else {
+            $startKey[] = null;
+            $endKey[] = [];
+        }
+
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task', 'by_status_and_project')
+            ->setStartKey($startKey)
+            ->setEndKey($endKey);
+
+        if ($skip !== null) {
+            $query->setSkip($skip);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        $result = $query->onlyDocs(true)->execute()->toArray();
+
+        uasort($result, function (Model\LabelingTask $a, Model\LabelingTask $b) {
+            if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime ) {
+                return 0;
+            }
+            if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
+                return 0;
+            }
+            return ($a->getCreatedAt()->getTimestamp() < $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
+        });
+
         return array_values($result);
     }
 
