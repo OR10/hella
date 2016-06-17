@@ -12,13 +12,13 @@ class TaskListController {
      * @type {null|Array.<Task>}
      */
     this.preprocessingTasks = null;
-    
+
     /**
      * List of tasks rendered by the directive
      * @type {null|Array.<Task>}
      */
     this.waitingTasks = null;
-    
+
     /**
      * List of tasks rendered by the directive
      * @type {null|Array.<Task>}
@@ -67,7 +67,7 @@ class TaskListController {
         this.preprocessingTasks = null;
         this.waitingTasks = null;
         this.labeledTasks = null;
-        
+
         if (tasks.preprocessing) {
           this.preprocessingTasks = tasks.preprocessing.map(task => {
             task.video = videos[task.videoId];
