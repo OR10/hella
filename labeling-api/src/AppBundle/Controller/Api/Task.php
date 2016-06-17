@@ -85,8 +85,8 @@ class Task extends Controller\Base
         $taskStatus  = $request->query->has('taskStatus') ? $request->query->get('taskStatus') : null;
 
         $project = null;
-        if ($request->query->has('projectId')) {
-            $project = $this->projectFacade->find($request->query->get('projectId'));
+        if ($request->query->has('project')) {
+            $project = $this->projectFacade->find($request->query->get('project'));
         }
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
