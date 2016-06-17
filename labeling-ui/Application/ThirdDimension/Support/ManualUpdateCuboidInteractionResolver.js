@@ -1,5 +1,4 @@
 import CuboidInteractionResolver from './CuboidInteractionResolver';
-import _ from 'lodash';
 
 /**
  * Resolver service capable of determining which interaction with a Cuboid causes which operation

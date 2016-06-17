@@ -134,6 +134,7 @@ class CuboidInteractionResolver {
             throw new Error(`Cannot resolve action for the combination: primaryCorner = ${primaryCornerIndex} and pointIndex = ${index}`);
         }
         return interaction;
+      default:
     }
   }
 
