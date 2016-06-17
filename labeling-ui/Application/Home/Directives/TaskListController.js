@@ -3,20 +3,27 @@
  */
 class TaskListController {
   /**
+   * @param {$rootScope.$scope} $scope
    * @param {TaskGateway} taskGateway injected
    */
-  constructor($scope, $stateParams, $state, taskGateway, projectGateway) {
-    /**
-     * @type {$stateParams}
-     * @private
-     */
-    this._$stateParams = $stateParams;
-
+  constructor($scope, taskGateway) {
     /**
      * List of tasks rendered by the directive
      * @type {null|Array.<Task>}
      */
-    this.tasks = null;
+    this.preprocessingTasks = null;
+    
+    /**
+     * List of tasks rendered by the directive
+     * @type {null|Array.<Task>}
+     */
+    this.waitingTasks = null;
+    
+    /**
+     * List of tasks rendered by the directive
+     * @type {null|Array.<Task>}
+     */
+    this.labeledTasks = null;
 
     /**
      * @type {boolean}
@@ -29,54 +36,13 @@ class TaskListController {
      */
     this._taskGateway = taskGateway;
 
-    /**
-     * @type {ProjectGateway}
-     * @private
-     */
-    this._projectGateway = projectGateway;
-
-    /**
-     * @type {Array<Object>}
-     */
-    this.projectList = [{
-      id: '',
-      name: 'All projects',
-    }];
-
     this.showOnlyReopenedTasks = false;
     this.showOnlyReviewedTasks = false;
 
     this.filterReopenTasks = this.filterReopenTasks.bind(this);
     this.filterReviewTasks = this.filterReviewTasks.bind(this);
 
-    this.selectedProject = this._$stateParams.project;
-
-    $scope.$watch('vm.selectedProject', (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        $state.go('labeling.tasks', {project: newValue});
-      }
-    });
-
-    this._loadTaskList();
-    this._loadProjectList();
-  }
-
-  /**
-   * Load a list of {@link Project}s for the project filters.
-   *
-   * @private
-   */
-  _loadProjectList() {
-    this._projectGateway.getProjects().then(projects => {
-      this.projectList = this.projectList.concat(
-        projects.map(project => {
-          return {
-            id: project.id,
-            name: `${project.name} [${project.id}]`,
-          };
-        })
-      );
-    });
+    $scope.$watch('vm.project', () => this._loadTaskList());
   }
 
   /**
@@ -88,13 +54,20 @@ class TaskListController {
    * @private
    */
   _loadTaskList() {
+    if ((typeof this.project !== 'string') || this.project === '') {
+      this.preprocessingTasks = null;
+      this.waitingTasks = null;
+      this.labeledTasks = null;
+      return;
+    }
+
     this.loadingInProgress = true;
-    this._taskGateway.getTasksAndVideos()
+    this._taskGateway.getTasksAndVideosForProject(this.project)
       .then(({tasks, videos, users}) => {
         this.preprocessingTasks = null;
         this.waitingTasks = null;
         this.labeledTasks = null;
-
+        
         if (tasks.preprocessing) {
           this.preprocessingTasks = tasks.preprocessing.map(task => {
             task.video = videos[task.videoId];
@@ -183,10 +156,7 @@ class TaskListController {
 
 TaskListController.$inject = [
   '$scope',
-  '$stateParams',
-  '$state',
   'taskGateway',
-  'projectGateway',
 ];
 
 export default TaskListController;

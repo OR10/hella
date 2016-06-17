@@ -1,5 +1,6 @@
 import Module from 'Application/Module';
 import TaskListDirective from './Directives/TaskListDirective';
+import ProjectSelectorDirective from './Directives/ProjectSelectorDirective';
 import TitleBarDirective from '../Header/Directives/TitleBarDirective';
 import HomeController from './Controllers/HomeController';
 import homeTemplate from './Views/home.html!';
@@ -34,7 +35,8 @@ class Home extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Home', []);
-    this.registerDirective('tasklist', TaskListDirective);
+    this.registerDirective('taskList', TaskListDirective);
+    this.registerDirective('projectSelector', ProjectSelectorDirective);
     this.registerDirective('titleBar', TitleBarDirective);
     this.module.filter('unassignedTasks', UnassignedTasksFilterProvider);
     this.module.filter('myTasks', MyTasksFilterProvider);
