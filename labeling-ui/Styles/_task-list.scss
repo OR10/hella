@@ -1,9 +1,5 @@
-tasklist {
-  margin: 0;
-
-  .tasklist-container {
-    margin: 2rem;
-  }
+.tasks-container {
+  margin: 2rem;
 
   table.table {
     margin: 0;
@@ -22,7 +18,6 @@ tasklist {
     cursor: auto;
   }
 
-
   .btn-container {
     display: inline-block;
   }
@@ -35,6 +30,10 @@ tasklist {
 
   button {
     float: left;
+  }
+
+  project-selector {
+    margin: 1.5em;
   }
 }
 
