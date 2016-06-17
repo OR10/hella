@@ -127,5 +127,7 @@
             <argument type="service" id="twig"/>
             <argument>%kernel.debug%</argument>
         </service>
+        <service id="annostation.labeling_api.controller.dimension_prediction" class="AppBundle\Controller\Api\DimensionPrediction">
+        </service>
     </services>
 </container>

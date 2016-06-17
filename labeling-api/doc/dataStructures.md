@@ -143,3 +143,10 @@
 + projectId: `16b00780792d045c496513f01f006f09` (string) - project id
 + filename: `csv.zip` (string) - export filename
 + taskIds: `583c0838ea5f72671b1b21605c3d6b47` (array[string]) - included task ids for this export
+
+# DimensionPrediction
++ type: `cuboid` (string) - type of the prediction
++ prediction:
+    + width: `1` (number) - width of the object
+    + height: `1` (number) - width of the object
+    + depth: `1` (number) - width of the object
