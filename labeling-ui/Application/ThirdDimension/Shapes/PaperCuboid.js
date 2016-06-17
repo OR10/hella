@@ -4,6 +4,7 @@ import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
 import Cuboid3d from '../Models/Cuboid3d';
+import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
 import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
 class PaperCuboid extends PaperShape {
@@ -174,7 +175,7 @@ class PaperCuboid extends PaperShape {
 
         handles.push(
           new RectangleHandle(
-            'cube-' + name,
+            name,
             '#ffffff',
             this._handleSize,
             this._vectorToPaperPoint(vertex)
@@ -265,11 +266,11 @@ class PaperCuboid extends PaperShape {
     }
 
     switch (handle.name) {
-      case 'cube-height':
-      case 'cube-width':
-      case 'cube-length':
+      case 'height':
+      case 'width':
+      case 'depth':
         return 'scale';
-      case 'cube-move':
+      case 'move':
         return 'move';
       default:
         return null;
@@ -286,12 +287,12 @@ class PaperCuboid extends PaperShape {
     }
 
     switch (handle.name) {
-      case 'cube-height':
+      case 'height':
         return 'ns-resize';
-      case 'cube-width':
-      case 'cube-length':
+      case 'width':
+      case 'depth':
         return 'all-scroll';
-      case 'cube-move':
+      case 'move':
         return 'grab';
       default:
         return 'pointer';
@@ -316,17 +317,39 @@ class PaperCuboid extends PaperShape {
    * @param {{height: 1, width: 1, length: 1}} minDistance
    */
   resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
-    switch (handle.name) {
-      case 'cube-height':
-        this._changeHeight(point, minDistance);
-        break;
-      case 'cube-width':
-        break;
-      case 'cube-length':
-        break;
-      default:
-        throw new Error(`Unknown handle type: ${handle}.`);
+    const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handle.name);
+    const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+
+    const oldReferencePoint = this._cuboid3d.vertices[handleVertexIndex];
+    let newReferencePoint;
+    let affectedVertices;
+
+    if (interaction[CuboidInteractionResolver.DEPTH]) {
+      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.DEPTH);
+      newReferencePoint = this._projection3d.projectBottomCoordinateTo3d(point);
     }
+    if (interaction[CuboidInteractionResolver.HEIGHT]) {
+      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.HEIGHT);
+      newReferencePoint = this._projection3d.projectTopCoordianteTo3d(
+        new Vector3(point.x, point.y, 1),
+        this._cuboid3d.vertices[primaryCornerIndex]
+      );
+    }
+    if (interaction[CuboidInteractionResolver.WIDTH]) {
+      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.WIDTH);
+      newReferencePoint = this._projection3d.projectBottomCoordinateTo3d(point);
+    }
+    if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
+      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.ROTATE_PRIMARY_AXIS);
+      newReferencePoint = this._projection3d.projectBottomCoordinateTo3d(point);
+    }
+
+    const distanceVector = newReferencePoint.sub(oldReferencePoint);
+    this._cuboid3d.addVectorToVertices(
+      distanceVector,
+      affectedVertices
+    );
 
     this._drawCuboid();
   }
@@ -357,23 +380,6 @@ class PaperCuboid extends PaperShape {
     ));
 
     this._drawCuboid();
-  }
-
-  /**
-   * @param {Point} point
-   * @param {{height: 1, width: 1, length: 1}} minDistance
-   * @private
-   */
-  _changeHeight(point, minDistance) { // eslint-disable-line no-unused-vars
-    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
-    const oldTop = this._cuboid3d.vertices[this._cuboid3d.getTopCoordinateIndex(primaryCornerIndex)];
-    const newTop = this._projection3d.projectTopCoordianteTo3d(
-      new Vector3(point.x, point.y, 1),
-      this._cuboid3d.vertices[primaryCornerIndex]
-    );
-
-    const heightVector = newTop.sub(oldTop);
-    this._cuboid3d.addVectorToTop(heightVector);
   }
 
   /**

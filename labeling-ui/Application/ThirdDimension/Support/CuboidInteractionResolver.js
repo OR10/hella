@@ -206,6 +206,60 @@ class CuboidInteractionResolver {
 
     return result;
   }
+
+  /**
+   * @param {string} name
+   * @returns {Number}
+   */
+  getVertexIndexFromHandleName(name) {
+    const primaryCornerIndex = this.getPrimaryCornerIndex();
+    switch (name) {
+      case CuboidInteractionResolver.DEPTH:
+        switch (primaryCornerIndex) {
+          case 2:
+            return 6;
+          case 3:
+            return 7;
+          case 6:
+            return 2;
+          case 7:
+            return 3;
+          default:
+        }
+        break;
+      case CuboidInteractionResolver.WIDTH:
+        switch (primaryCornerIndex) {
+          case 2:
+            return 3;
+          case 3:
+            return 2;
+          case 6:
+            return 7;
+          case 7:
+            return 6;
+          default:
+        }
+        break;
+      case CuboidInteractionResolver.HEIGHT:
+        switch (primaryCornerIndex) {
+          case 2:
+            return 1;
+          case 3:
+            return 0;
+          case 6:
+            return 5;
+          case 7:
+            return 4;
+          default:
+        }
+        break;
+      case CuboidInteractionResolver.MOVE:
+        return this.getPrimaryCornerIndex();
+        break;
+      default:
+        throw new Error(`There is no handle with the name "${name}" to get the vertex for.`)
+    }
+  }
 }
 
 CuboidInteractionResolver.ROTATE_MIDDLE_AXIS = 'rotateMiddleAxis';

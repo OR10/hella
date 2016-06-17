@@ -34,9 +34,10 @@ class Cuboid3d {
 
   /**
    * @param {Vector3} vector
+   * @param {Array.<Number>} vertexIndices
    */
-  addVectorToTop(vector) {
-    [0, 1, 4, 5].map(pointIndex => {
+  addVectorToVertices(vector, vertexIndices) {
+    vertexIndices.map(pointIndex => {
       this._vertices[pointIndex] = [
         this._vertices[pointIndex][0] + vector.x,
         this._vertices[pointIndex][1] + vector.y,
@@ -51,24 +52,6 @@ class Cuboid3d {
       (this._vertices[2][1] + this._vertices[7][1]) / 2,
       (this._vertices[2][2] + this._vertices[7][2]) / 2,
     );
-  }
-
-  /**
-   * @param {Number} bottomIndex
-   * @returns {Number}
-   */
-  getTopCoordinateIndex(bottomIndex) {
-    switch (bottomIndex) {
-      case 2:
-        return 1;
-      case 3:
-        return 0;
-      case 6:
-        return 5;
-      case 7:
-        return 4;
-      default:
-    }
   }
 
   get vertices() {
