@@ -1,18 +1,18 @@
-resource "openstack_compute_floatingip_v2" "pakistan" {
+resource "openstack_compute_floatingip_v2" "labeltool" {
     pool = "Public_Internet"
 }
 
-resource "openstack_compute_instance_v2" "pakistan" {
+resource "openstack_compute_instance_v2" "labeltool" {
     count = "1"
 
-    name = "pakistan.annostation"
+    name = "labeltool.annostation"
     network {
         name = "Private_HAGL"
     }
     image_name = "trusty-annostation-2"
     flavor_name = "anno.storage"
-    floating_ip = "${openstack_compute_floatingip_v2.pakistan.address}"
-    security_groups = ["default", "http", "anno_frame_cdn"]
+    floating_ip = "${openstack_compute_floatingip_v2.labeltool.address}"
+    security_groups = ["default", "http", "${openstack_compute_secgroup_v2.frame-cdn.name}"]
     key_pair = "chh"
 
     user_data = "${template_file.user_data.rendered}"
@@ -27,16 +27,16 @@ resource "openstack_compute_instance_v2" "pakistan" {
     }
 
     provisioner "local-exec" {
-        command = "cd ../../labeling-api/ && CAP_DEPLOY_IP=${openstack_compute_floatingip_v2.pakistan.address} cap multi-staging-machine deploy"
+        command = "cd ../../labeling-api/ && CAP_DEPLOY_IP=${openstack_compute_floatingip_v2.labeltool.address} cap multi-staging-machine deploy"
         connection {
-            host = "${openstack_compute_floatingip_v2.pakistan.address}"
+            host = "${openstack_compute_floatingip_v2.labeltool.address}"
         }
     }
 
     provisioner "local-exec" {
-        command = "cd ../../labeling-ui/ # && ./deploy.sh ${openstack_compute_floatingip_v2.pakistan.address}"
+        command = "cd ../../labeling-ui/ # && ./deploy.sh ${openstack_compute_floatingip_v2.labeltool.address}"
         connection {
-            host = "${openstack_compute_floatingip_v2.pakistan.address}"
+            host = "${openstack_compute_floatingip_v2.labeltool.address}"
         }
     }
 
@@ -46,7 +46,7 @@ resource "openstack_compute_instance_v2" "pakistan" {
             "sudo -u www-data ./app/console annostation:init --env=prod",
         ]
         connection {
-            host = "${openstack_compute_floatingip_v2.pakistan.address}"
+            host = "${openstack_compute_floatingip_v2.labeltool.address}"
         }
     }
 }

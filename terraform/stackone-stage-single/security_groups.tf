@@ -1,5 +1,5 @@
-resource "openstack_compute_secgroup_v2" "frame_cdn" {
-    name = "anno_frame_cdn"
+resource "openstack_compute_secgroup_v2" "frame-cdn" {
+    name = "anno.frame_cdn"
     description = "Annostation Frame CDN"
 
     rule {
