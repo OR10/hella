@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /**
  * Resolver service capable of determining which interaction with a Cuboid causes which operation
  *
@@ -27,12 +29,11 @@ class CuboidInteractionResolver {
       7: [false, false, false, true, true, false, true, true],
     };
 
-    return primaryVertices[this.getPrimaryCornerIndex()].indexOf(index) !== -1;
+    return primaryVertices[this.getPrimaryCornerIndex()][index];
   }
 
   /**
    * @returns {Number}
-   * @private
    */
   getPrimaryCornerIndex() {
     const bottomPoints = [2, 3, 6, 7];
@@ -189,6 +190,21 @@ class CuboidInteractionResolver {
         throw new Error(`The interaction "${interaction}" cannot be resolved.`);
     }
   }
+
+  /**
+   * @param {Object} interaction
+   * @returns {string}
+   */
+  getHandleNameFromInteraction(interaction) {
+    let result;
+    _.forEach(interaction, (value, key) => {
+      if (value) {
+        result = key;
+      }
+    });
+
+    return result;
+  }
 }
 
 CuboidInteractionResolver.ROTATE_MIDDLE_AXIS = 'rotateMiddleAxis';
@@ -197,3 +213,5 @@ CuboidInteractionResolver.DEPTH = 'depth';
 CuboidInteractionResolver.WIDTH = 'width';
 CuboidInteractionResolver.HEIGHT = 'height';
 CuboidInteractionResolver.MOVE = 'move';
+
+export default CuboidInteractionResolver;

@@ -1,10 +1,10 @@
 import paper from 'paper';
 import {Vector3, Matrix4} from 'three-math';
-import _ from 'lodash';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
 import Cuboid3d from '../Models/Cuboid3d';
+import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
 class PaperCuboid extends PaperShape {
 
@@ -57,10 +57,10 @@ class PaperCuboid extends PaperShape {
     this._cuboid3d = new Cuboid3d(cuboid3dPoints);
 
     /**
-     * @type {{vertices, names, edge}}
+     * @type {ManualUpdateCuboidInteractionResolver}
      * @private
      */
-    this._primaryVertices = this._cuboid3d.getPrimaryVertices();
+    this._cuboidInteractionResolver = new ManualUpdateCuboidInteractionResolver(this._cuboid3d);
 
     this._drawCuboid();
   }
@@ -115,7 +115,7 @@ class PaperCuboid extends PaperShape {
       const from = this._projectedCuboid.vertices[edgePointIndex.from];
       const to = this._projectedCuboid.vertices[edgePointIndex.to];
       const hidden = (!this._projectedCuboid.vertexVisibility[edgePointIndex.from] || !this._projectedCuboid.vertexVisibility[edgePointIndex.to]);
-      const showPrimaryEdge = (this._primaryVertices.vertices[edgePointIndex.from] && this._primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
+      const showPrimaryEdge = (this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.from) && this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.to) && this._isSelected);
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
@@ -163,17 +163,17 @@ class PaperCuboid extends PaperShape {
   _createHandles() {
     const handles = [];
 
-    this._primaryVertices.vertices.forEach(
-      (isPrimaryVertex, index) => {
-        if (!isPrimaryVertex) {
+    [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(index => {
+        if (!this._cuboidInteractionResolver.isPrimaryVertex(index)) {
           return;
         }
 
         const vertex = this._projectedCuboid.vertices[index];
+        const name = this._cuboidInteractionResolver.getHandleNameFromInteraction(this._cuboidInteractionResolver.resolveInteractionForVertex(index));
 
         handles.push(
           new RectangleHandle(
-            'cube-' + this._primaryVertices.names[index],
+            'cube-' + name,
             '#ffffff',
             this._handleSize,
             this._vectorToPaperPoint(vertex)
@@ -214,7 +214,7 @@ class PaperCuboid extends PaperShape {
   }
 
   updatePrimaryCorner() {
-    this._primaryVertices = this._cuboid3d.getPrimaryVertices();
+    this._cuboidInteractionResolver.updateData();
     this._drawCuboid();
   }
 
@@ -302,7 +302,7 @@ class PaperCuboid extends PaperShape {
    */
   moveTo(point) {
     const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(new Vector3(point.x, point.y, 1));
-    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._primaryVertices.cornerIndex]);
+    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()]);
 
     this._cuboid3d.moveBy(movementVector);
 
@@ -350,12 +350,10 @@ class PaperCuboid extends PaperShape {
     inverseTranslation.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
     rotation.makeRotationZ(radians);
 
-    this._cuboid3d = Cuboid3d.createFromVectors(
-      this._cuboid3d.vertices.map(
-        // Apply translation and rotation
-        vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
-      )
-    );
+    this._cuboid3d.setVertices(this._cuboid3d.vertices.map(
+      // Apply translation and rotation
+      vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
+    ));
 
     this._drawCuboid();
   }
@@ -366,17 +364,13 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _changeHeight(point, minDistance) { // eslint-disable-line no-unused-vars
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const oldTop = this._cuboid3d.vertices[this._cuboid3d.getTopCoordinateIndex(primaryCornerIndex)];
     const newTop = this._projection3d.projectTopCoordianteTo3d(
       new Vector3(point.x, point.y, 1),
-      this._cuboid3d.vertices[this._primaryVertices.cornerIndex]
+      this._cuboid3d.vertices[primaryCornerIndex]
     );
 
-    let oldTop;
-    _.each(this._primaryVertices.names, (value, key) => {
-      if (value === 'height') {
-        oldTop = this._cuboid3d.vertices[key];
-      }
-    });
     const heightVector = newTop.sub(oldTop);
     this._cuboid3d.addVectorToTop(heightVector);
   }

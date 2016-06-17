@@ -6,58 +6,17 @@ class Cuboid3d {
   }
 
   /**
+   * @param {Array.<Vector4>} vectors
+   */
+  setVertices(vectors) {
+    this._vertices = vectors.map(vector => [vector.x, vector.y, vector.z]);
+  }
+
+  /**
    * @returns {{vertices, names, cornerIndex}}
    */
   getPrimaryVertices() {
     return this._getPrimaryVertices(this);
-  }
-
-  /**
-   * @param {Cuboid3d} cuboid3d
-   *
-   * @private
-   * @returns {{vertices, names, cornerIndex}}
-   */
-  _getPrimaryVertices(cuboid3d) {
-    const mapping = {
-      2: {
-        vertices: [false, true, true, true, false, false, true, false],
-        names: {2: 'move', 3: 'width', 6: 'length', 1: 'height'},
-        cornerIndex: 2,
-      },
-      3: {
-        vertices: [true, false, true, true, false, false, false, true],
-        names: {3: 'move', 2: 'width', 7: 'length', 0: 'height'},
-        cornerIndex: 3,
-      },
-      6: {
-        vertices: [false, false, true, false, false, true, true, true],
-        names: {6: 'move', 7: 'width', 2: 'length', 5: 'height'},
-        cornerIndex: 6,
-      },
-      7: {
-        vertices: [false, false, false, true, true, false, true, true],
-        names: {7: 'move', 6: 'width', 3: 'length', 4: 'height'},
-        cornerIndex: 7,
-      },
-    };
-    const primaryCorner = this._getPrimaryCorner(cuboid3d);
-
-    return mapping[primaryCorner];
-  }
-
-  /**
-   * @param {Cuboid3d} cuboid3d
-   *
-   * @private
-   * @returns {number}
-   */
-  _getPrimaryCorner(cuboid3d) {
-    const bottomPoints = [2, 3, 6, 7];
-
-    return bottomPoints.reduce((prev, current) => {
-      return cuboid3d.vertices[current].length() < cuboid3d.vertices[prev].length() ? current : prev;
-    });
   }
 
   /**
@@ -92,6 +51,24 @@ class Cuboid3d {
       (this._vertices[2][1] + this._vertices[7][1]) / 2,
       (this._vertices[2][2] + this._vertices[7][2]) / 2,
     );
+  }
+
+  /**
+   * @param {Number} bottomIndex
+   * @returns {Number}
+   */
+  getTopCoordinateIndex(bottomIndex) {
+    switch (bottomIndex) {
+      case 2:
+        return 1;
+      case 3:
+        return 0;
+      case 6:
+        return 5;
+      case 7:
+        return 4;
+      default:
+    }
   }
 
   get vertices() {
