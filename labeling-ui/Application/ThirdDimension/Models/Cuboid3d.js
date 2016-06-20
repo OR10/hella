@@ -21,6 +21,15 @@ class Cuboid3d {
   }
 
   /**
+   * Clone this {@link Cuboid3d}
+   * 
+   * @returns {Cuboid3d}
+   */
+  clone() {
+    return new Cuboid3d(this._vertices);
+  }
+
+  /**
    * @param {Array.<Vector4>} vectors
    */
   setVertices(vectors) {
@@ -95,7 +104,7 @@ class Cuboid3d {
       // Nothing to be done here
       return;
     }
-    
+
     const dimensionPrediction = this.mostRecentDimensionPrediction;
     const {multiplier, prediction, sourceFace, targetFace} = this._extrusionParameters;
 
