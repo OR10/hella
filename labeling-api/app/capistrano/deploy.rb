@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.4.0'
+#lock '3.4.0'
 
 set :application, 'labeling-api'
 set :repo_url, 'ssh://git@github.crosscan.com:AnnoStation/AnnoStation.git'
