@@ -12,7 +12,7 @@ class Cuboid2d {
   }
 
   get vertices() {
-    return this._vertices.map(vertex => new Vector3(...vertex, 1));
+    return this._vertices.map(vertex => vertex === null ? null : new Vector3(...vertex, 1));
   }
 
   get vertexVisibility() {
@@ -24,35 +24,35 @@ class Cuboid2d {
   }
 
   get frontTopLeft() {
-    return new Vector3(...this._vertices[0], 1);
+    return this._vertices[0] === null ? null : new Vector3(...this._vertices[0], 1);
   }
 
   get frontTopRight() {
-    return new Vector3(...this._vertices[1], 1);
+    return this._vertices[1] === null ? null : new Vector3(...this._vertices[1], 1);
   }
 
   get frontBottomRight() {
-    return new Vector3(...this._vertices[2], 1);
+    return this._vertices[2] === null ? null : new Vector3(...this._vertices[2], 1);
   }
 
   get frontBottomLeft() {
-    return new Vector3(...this._vertices[3], 1);
+    return this._vertices[3] === null ? null : new Vector3(...this._vertices[3], 1);
   }
 
   get backTopLeft() {
-    return new Vector3(...this._vertices[4], 1);
+    return this._vertices[4] === null ? null : new Vector3(...this._vertices[4], 1);
   }
 
   get backTopRight() {
-    return new Vector3(...this._vertices[5], 1);
+    return this._vertices[5] === null ? null : new Vector3(...this._vertices[5], 1);
   }
 
   get backBottomRight() {
-    return new Vector3(...this._vertices[6], 1);
+    return this._vertices[6] === null ? null : new Vector3(...this._vertices[6], 1);
   }
 
   get backBottomLeft() {
-    return new Vector3(...this._vertices[7], 1);
+    return this._vertices[7] === null ? null : new Vector3(...this._vertices[7], 1);
   }
 
   get isFrontTopLeftVisible() {
