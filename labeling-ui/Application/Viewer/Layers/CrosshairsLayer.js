@@ -55,7 +55,7 @@ class CrosshairsLayer {
     this._canvas = null;
 
     /**
-     * @type {[number, number]|null}
+     * @type {Array.<Number>|null}
      * @private
      */
     this._lastKnownMouseCoords = null;
