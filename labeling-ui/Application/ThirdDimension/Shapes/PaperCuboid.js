@@ -377,24 +377,11 @@ class PaperCuboid extends PaperShape {
   rotateAroundCenterBy(degree) {
     const radians = ((2 * Math.PI) / 360) * degree;
 
-    // Create translation and rotation matrices
-    const translation = new Matrix4();
-    const inverseTranslation = new Matrix4();
-    const rotation = new Matrix4();
+    if (this._cuboid3d.isPseudo3d) {
+      // Make 3d here again
+    }
 
-    // Create translation vectors
-    const transVector = this._cuboid3d.bottomCenter.negate();
-    const invTransVector = this._cuboid3d.bottomCenter;
-
-    // Calculate translation and rotation
-    translation.makeTranslation(transVector.x, transVector.y, transVector.z);
-    inverseTranslation.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
-    rotation.makeRotationZ(radians);
-
-    this._cuboid3d.setVertices(this._cuboid3d.vertices.map(
-      // Apply translation and rotation
-      vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
-    ));
+    this._cuboid3d.rotateZAroundCenterBy(radians);
 
     this._drawCuboid();
   }
