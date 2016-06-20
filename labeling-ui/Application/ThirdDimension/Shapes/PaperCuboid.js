@@ -374,7 +374,7 @@ class PaperCuboid extends PaperShape {
   /**
    * @param {number} degree
    */
-  rotateArroundCenterBy(degree) {
+  rotateAroundCenterBy(degree) {
     const radians = ((2 * Math.PI) / 360) * degree;
 
     // Create translation and rotation matrices
