@@ -12,7 +12,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
     image_name = "trusty-annostation-2"
     flavor_name = "anno.storage"
     floating_ip = "${openstack_compute_floatingip_v2.labeltool.address}"
-    security_groups = ["default", "http", "${openstack_compute_secgroup_v2.frame-cdn.name}", "${openstack_compute_secgroup_v2.couchdb.name}"]
+    security_groups = ["default", "http", "${openstack_compute_secgroup_v2.frame-cdn.name}", "${openstack_compute_secgroup_v2.couchdb.name}", "${openstack_compute_secgroup_v2.rabbitmq.name}"]
     key_pair = "chh"
 
     user_data = "${template_file.user_data.rendered}"

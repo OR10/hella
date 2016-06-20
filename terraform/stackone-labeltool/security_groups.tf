@@ -21,3 +21,15 @@ resource "openstack_compute_secgroup_v2" "couchdb" {
         cidr = "0.0.0.0/0"
     }
 }
+
+resource "openstack_compute_secgroup_v2" "rabbitmq" {
+    name = "anno.rabbitmq"
+    description = "Annostation RabbitMQ"
+
+    rule {
+        from_port = 15672
+        to_port = 15672
+        ip_protocol = "tcp"
+        cidr = "0.0.0.0/0"
+    }
+}
