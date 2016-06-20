@@ -27,6 +27,31 @@ class DepthBufferProjection2d {
   }
 
   /**
+   * Determine whether the cuboid should only be considered a one face pseudo 2d element
+   *
+   * It is checked whether the projection leaves only one face of the cuboid visible. In which case it will be
+   * considered pseudo 3d.
+   *
+   * @name Projection2d#isPseudo3d
+   * @param {Cuboid3d} cuboid
+   * @returns {boolean}
+   */
+  isPseudo3d(cuboid) {
+    const cuboid2d = this.projectCuboidTo2d(cuboid);
+    const visibility = cuboid2d.vertexVisibility;
+    const visibleVerticesCount = visibility.reduce(
+      (current, visible) => visible ? current + 1 : current,
+      0
+    );
+
+    if (visibleVerticesCount < 4) {
+      throw new Error('Less than 4 vertices are visible. This should be impossible!');
+    }
+
+    return visibleVerticesCount === 4;
+  }
+
+  /**
    * @param {Cuboid2d} cuboid2d
    * @param {Cuboid3d} cuboid3d
    *

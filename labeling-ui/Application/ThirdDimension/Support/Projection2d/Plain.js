@@ -44,10 +44,24 @@ class PlainProjection2d {
    * @returns {Cuboid2d}
    */
   projectCuboidTo2d(cuboid) {
-    const projection = cuboid.vertices.map(vertex => this._project3dTo2d(vertex));
+    const projection = cuboid.vertices.map(vertex => vertex === null ? null : this._project3dTo2d(vertex));
     return new Cuboid2d(
-      projection.map(vertex => [vertex.x, vertex.y])
+      projection.map(vertex => vertex === null ? null : [vertex.x, vertex.y])
     );
+  }
+
+  /**
+   * Determine whether the cuboid should only be considered a one face pseudo 2d element
+   *
+   * As the plain projection has no means to determine the visibility of different faces of the cuboid
+   * it will always assume it is a fully shown 3d object and never pseudo 3d
+   *
+   * @name Projection2d#isPseudo3d
+   * @param {Cuboid3d} cuboid
+   * @returns {boolean}
+   */
+  isPseudo3d(cuboid) { // eslint-disable-line no-unused-vars
+    return false;
   }
 
   /**
