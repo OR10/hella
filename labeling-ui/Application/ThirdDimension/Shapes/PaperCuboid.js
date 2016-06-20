@@ -319,39 +319,56 @@ class PaperCuboid extends PaperShape {
   resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
     const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handle.name);
     const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
-    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
 
-    const oldReferencePoint = this._cuboid3d.vertices[handleVertexIndex];
-    let newReferencePoint;
-    let affectedVertices;
+    const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
 
-    if (interaction[CuboidInteractionResolver.DEPTH]) {
-      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.DEPTH);
-      newReferencePoint = this._projection3d.projectBottomCoordinateTo3d(point);
-    }
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
-      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.HEIGHT);
-      newReferencePoint = this._projection3d.projectTopCoordianteTo3d(
-        new Vector3(point.x, point.y, 1),
-        this._cuboid3d.vertices[primaryCornerIndex]
-      );
+      this._changeHeight(point, handleVertex);
+    }
+    if (interaction[CuboidInteractionResolver.DEPTH]) {
+      this._changeHorizontal(point, handleVertex, CuboidInteractionResolver.DEPTH);
     }
     if (interaction[CuboidInteractionResolver.WIDTH]) {
-      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.WIDTH);
-      newReferencePoint = this._projection3d.projectBottomCoordinateTo3d(point);
+      this._changeHorizontal(point, handleVertex, CuboidInteractionResolver.WIDTH);
     }
     if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
-      affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.ROTATE_PRIMARY_AXIS);
-      newReferencePoint = this._projection3d.projectBottomCoordinateTo3d(point);
+      this._changeRotation();
     }
 
-    const distanceVector = newReferencePoint.sub(oldReferencePoint);
+    this._drawCuboid();
+  }
+
+  _changeHeight(point, handleVertex) {
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.HEIGHT);
+    const newReferencePoint = this._projection3d.projectTopCoordianteTo3d(
+      new Vector3(point.x, point.y, 1),
+      this._cuboid3d.vertices[primaryCornerIndex]
+    );
+    const distanceVector = newReferencePoint.sub(handleVertex);
     this._cuboid3d.addVectorToVertices(
       distanceVector,
       affectedVertices
     );
+  }
 
-    this._drawCuboid();
+  _changeHorizontal(point, handleVertex, direction) {
+    const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(direction);
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const primaryCorner = this._cuboid3d.vertices[primaryCornerIndex];
+    const mousePoint = this._projection3d.projectBottomCoordinateTo3d(point);
+
+    const distancePrimaryToMouse = primaryCorner.clone().sub(mousePoint).length();
+    const distancePrimaryToHandle = primaryCorner.clone().sub(handleVertex).length();
+    const scaleAmount = distancePrimaryToMouse - distancePrimaryToHandle;
+    const scaleDirection = handleVertex.sub(primaryCorner).normalize();
+    const changeVector = scaleDirection.multiplyScalar(scaleAmount);
+
+    this._cuboid3d.addVectorToVertices(
+      changeVector,
+      affectedVertices
+    );
+  }
   }
 
   /**
