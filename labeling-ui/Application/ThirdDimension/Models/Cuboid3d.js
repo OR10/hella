@@ -1,15 +1,30 @@
 import {Vector4, Matrix4} from 'three-math';
+import CuboidDimensionPrediction from './DimensionPrediction/Cuboid';
 
 class Cuboid3d {
   constructor(vertices) {
+    /**
+     * Vertex data of the cuboid as array structure
+     *
+     * @type {Array.<{x: Number, y: Number, z: Number}>}
+     * @private
+     */
     this._vertices = vertices;
+
+    /**
+     * Latest {@link CuboidDimensionPrediction}
+     *
+     * @type {CuboidDimensionPrediction}
+     * @private
+     */
+    this._dimensionPrediction = null;
   }
 
   /**
    * @param {Array.<Vector4>} vectors
    */
   setVertices(vectors) {
-    this._vertices = vectors.map(vector => [vector.x, vector.y, vector.z]);
+    this._vertices = vectors.map(vector => vector === null ? null : [vector.x, vector.y, vector.z]);
   }
 
   /**
@@ -73,6 +88,80 @@ class Cuboid3d {
   }
 
   /**
+   * Make a pseudo 3d cuboid real 3d again using the most recent {@link CuboidDimensionPrediction}
+   */
+  makeReal3d() {
+    if (!this.isPseudo3d) {
+      // Nothing to be done here
+      return;
+    }
+    
+    const dimensionPrediction = this.mostRecentDimensionPrediction;
+    const {multiplier, prediction, sourceFace, targetFace} = this._extrusionParameters;
+
+    const extrusionVector = new Vector4();
+    extrusionVector.crossVectors(
+      this.vertices[sourceFace[0]].clone().sub(this.vertices[sourceFace[1]]),
+      this.vertices[sourceFace[2]].clone().sub(this.vertices[sourceFace[1]])
+    ).normalize();
+
+    targetFace.forEach((targetIndex, faceIndex) => {
+      const sourceIndex = sourceFace[faceIndex];
+      const targetVector = this.vertices[sourceIndex].clone();
+      targetVector.add(extrusionVector.clone().multiplyScalar(multiplier).multiplyScalar(dimensionPrediction[prediction]));
+      this._vertices[targetIndex] = [targetVector.x, targetVector.y, targetVector.z];
+    });
+  }
+
+  get _extrusionParameters() {
+    const pseudo3dIndices = this._vertices.map(
+      (vertex, index) => vertex === null ? null : index
+    ).filter(
+      indexOrNull => indexOrNull !== null
+    );
+
+    const extrusion = {
+      multiplier: 1,
+      prediction: null,
+      sourceFace: null,
+      targetFace: null,
+    };
+
+    switch (true) {
+      // Front face
+      case pseudo3dIndices == [0, 1, 2, 3]: // eslint-disable-line eqeqeq
+        extrusion.prediction = 'depth';
+        extrusion.sourceFace = [0, 1, 2, 3];
+        extrusion.targetFace = [4, 5, 6, 7];
+        break;
+      // Back face
+      case pseudo3dIndices == [4, 5, 6, 7]: // eslint-disable-line eqeqeq
+        extrusion.multiplier = -1;
+        extrusion.prediction = 'depth';
+        extrusion.sourceFace = [4, 5, 6, 7];
+        extrusion.targetFace = [0, 1, 2, 3];
+        break;
+      // Right face
+      case pseudo3dIndices == [1, 2, 5, 6]: // eslint-disable-line eqeqeq
+        extrusion.prediction = 'width';
+        extrusion.sourceFace = [1, 5, 6, 2];
+        extrusion.targetFace = [0, 4, 7, 3];
+        break;
+      // Left face
+      case pseudo3dIndices == [0, 3, 4, 7]: // eslint-disable-line eqeqeq
+        extrusion.multiplier = -1;
+        extrusion.prediction = 'width';
+        extrusion.sourceFace = [0, 4, 7, 3];
+        extrusion.targetFace = [1, 5, 6, 2];
+        break;
+      default:
+        throw new Error('Invalid pseudo 3d cuboid found. Can\'t make 3d again');
+    }
+
+    return extrusion;
+  }
+
+  /**
    * @param {Number} bottomIndex
    * @returns {Number}
    */
@@ -91,46 +180,65 @@ class Cuboid3d {
   }
 
   get vertices() {
-    return this._vertices.map(vertex => new Vector4(...vertex, 1));
+    return this._vertices.map(vertex => vertex === null ? null : new Vector4(...vertex, 1));
   }
 
   get frontTopLeft() {
-    return new Vector4(...this._vertices[0], 1);
+    return this._vertices[0] === null ? null : new Vector4(...this._vertices[0], 1);
   }
 
   get frontTopRight() {
-    return new Vector4(...this._vertices[1], 1);
+    return this._vertices[1] === null ? null : new Vector4(...this._vertices[1], 1);
   }
 
   get frontBottomRight() {
-    return new Vector4(...this._vertices[2], 1);
+    return this._vertices[2] === null ? null : new Vector4(...this._vertices[2], 1);
   }
 
   get frontBottomLeft() {
-    return new Vector4(...this._vertices[3], 1);
+    return this._vertices[3] === null ? null : new Vector4(...this._vertices[3], 1);
   }
 
   get backTopLeft() {
-    return new Vector4(...this._vertices[4], 1);
+    return this._vertices[4] === null ? null : new Vector4(...this._vertices[4], 1);
   }
 
   get backTopRight() {
-    return new Vector4(...this._vertices[5], 1);
+    return this._vertices[5] === null ? null : new Vector4(...this._vertices[5], 1);
   }
 
   get backBottomRight() {
-    return new Vector4(...this._vertices[6], 1);
+    return this._vertices[6] === null ? null : new Vector4(...this._vertices[6], 1);
   }
 
   get backBottomLeft() {
-    return new Vector4(...this._vertices[7], 1);
+    return this._vertices[7] === null ? null : new Vector4(...this._vertices[7], 1);
   }
 
   get bottomCenter() {
+    let bottomFrontRight = this._vertices[2];
+    let bottomBackLeft = this._vertices[7];
+
+    // Proper calculation for pseudo3d
+    const prediction = this.mostRecentDimensionPrediction;
+    if (bottomBackLeft === null) {
+      bottomBackLeft = [
+        bottomFrontRight[0] + (prediction.depth / 2),
+        bottomFrontRight[1] - (prediction.width / 2),
+        bottomFrontRight[2],
+      ];
+    } else if (bottomFrontRight === null) {
+      bottomFrontRight = [
+        bottomBackLeft[0] - (prediction.depth / 2),
+        bottomBackLeft[1] + (prediction.width / 2),
+        bottomBackLeft[2],
+      ];
+    }
+
     return new Vector4(
-      (this._vertices[2][0] + this._vertices[7][0]) / 2,
-      (this._vertices[2][1] + this._vertices[7][1]) / 2,
-      (this._vertices[2][2] + this._vertices[7][2]) / 2,
+      (bottomFrontRight[0] + bottomBackLeft[0]) / 2,
+      (bottomFrontRight[1] + bottomBackLeft[1]) / 2,
+      (bottomFrontRight[2] + bottomBackLeft[2]) / 2,
       1
     );
   }
@@ -142,6 +250,22 @@ class Cuboid3d {
     );
 
     return availableVertices === 4;
+  }
+
+  get mostRecentDimensionPrediction() {
+    if (this._dimensionPrediction === null) {
+      return new CuboidDimensionPrediction({
+        width: 1,
+        height: 1,
+        depth: 1,
+      });
+    }
+
+    return this._dimensionPrediction;
+  }
+
+  updateDimensionPrediction(dimensionPrediction) {
+    this._dimensionPrediction = dimensionPrediction;
   }
 }
 
