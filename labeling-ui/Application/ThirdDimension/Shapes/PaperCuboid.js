@@ -322,8 +322,9 @@ class PaperCuboid extends PaperShape {
 
     const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
 
-    console.log(interaction);
-
+    if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
+      this._changeRotation(point, handleVertex);
+    }
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
       this._changeHeight(point, handleVertex);
     }
@@ -333,13 +334,15 @@ class PaperCuboid extends PaperShape {
     if (interaction[CuboidInteractionResolver.WIDTH]) {
       this._changeHorizontal(point, handleVertex, CuboidInteractionResolver.WIDTH);
     }
-    if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
-      this._changeRotation(point, handleVertex);
-    }
 
     this._drawCuboid();
   }
 
+  /**
+   * @param {Point} point
+   * @param {Vector4} handleVertex
+   * @private
+   */
   _changeHeight(point, handleVertex) {
     const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
     const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.HEIGHT);
@@ -354,6 +357,12 @@ class PaperCuboid extends PaperShape {
     );
   }
 
+  /**
+   * @param {Point} point
+   * @param {Vector4} handleVertex
+   * @param {string} direction
+   * @private
+   */
   _changeHorizontal(point, handleVertex, direction) {
     const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(direction);
     const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
@@ -373,19 +382,57 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {number} degree
+   * @param {Point} point
+   * @param {Vector4} handleVertex
+   * @private
    */
-  rotateAroundCenterBy(degree) {
-    const radians = ((2 * Math.PI) / 360) * degree;
+  _changeRotation(point, handleVertex) {
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const primaryCorner = this._cuboid3d.vertices[primaryCornerIndex];
+    const mousePoint = this._projection3d.projectBottomCoordinateTo3d(point);
 
+    const vectorPrimaryToHandle = primaryCorner.clone().sub(handleVertex).normalize();
+    const vectorPrimaryToMouse = primaryCorner.clone().sub(mousePoint).normalize();
+
+    let radians = Math.acos(vectorPrimaryToHandle.clone().dot(vectorPrimaryToMouse));
+    const crossProduct = new Vector3(
+      vectorPrimaryToHandle.x,
+      vectorPrimaryToHandle.y,
+      vectorPrimaryToHandle.z
+    ).cross(new Vector3(
+      vectorPrimaryToMouse.x,
+      vectorPrimaryToMouse.y,
+      vectorPrimaryToMouse.z)
+    );
+
+    if (new Vector3(0, 0, 1).dot(crossProduct) < 0) {
+      radians = -radians;
+    }
+
+    this._rotateAround(primaryCorner, radians);
+  }
+
+  /**
+   * @param {Number} radians
+   */
+  rotateAroundCenter(radians) {
+    this._rotateAround(this._cuboid3d.bottomCenter, radians);
+  }
+
+  /**
+   * @param {Vector4} baseVertex
+   * @param {Number} radians
+   * @private
+   */
+  _rotateAround(baseVertex, radians) {
     // Create translation and rotation matrices
     const translation = new Matrix4();
     const inverseTranslation = new Matrix4();
     const rotation = new Matrix4();
 
     // Create translation vectors
-    const transVector = this._cuboid3d.bottomCenter.negate();
-    const invTransVector = this._cuboid3d.bottomCenter;
+    const transVector = baseVertex.clone().negate();
+    const invTransVector = baseVertex;
 
     // Calculate translation and rotation
     translation.makeTranslation(transVector.x, transVector.y, transVector.z);
