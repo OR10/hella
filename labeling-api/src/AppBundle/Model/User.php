@@ -18,7 +18,7 @@ class User extends BaseUser
     /**
      * STRATEGY ASSIGNED IS ONLY USED TO CONVERT THE EXISTING MYSQL USER!!!
      *
-     * @CouchDB\Id(strategy="ASSIGNED")
+     * @CouchDB\Id
      */
     protected $id;
 
