@@ -316,11 +316,13 @@ class PaperCuboid extends PaperShape {
    * @param {Point} point
    * @param {{height: 1, width: 1, length: 1}} minDistance
    */
-  resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
+  resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) { // eslint-disable-line no-unused-vars
     const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handle.name);
     const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
 
     const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
+
+    console.log(interaction);
 
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
       this._changeHeight(point, handleVertex);
@@ -332,7 +334,7 @@ class PaperCuboid extends PaperShape {
       this._changeHorizontal(point, handleVertex, CuboidInteractionResolver.WIDTH);
     }
     if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
-      this._changeRotation();
+      this._changeRotation(point, handleVertex);
     }
 
     this._drawCuboid();
