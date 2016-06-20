@@ -371,7 +371,6 @@ class PaperCuboid extends PaperShape {
       affectedVertices
     );
   }
-  }
 
   /**
    * @param {number} degree

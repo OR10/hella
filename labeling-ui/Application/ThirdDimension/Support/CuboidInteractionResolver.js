@@ -263,9 +263,8 @@ class CuboidInteractionResolver {
         break;
       case CuboidInteractionResolver.MOVE:
         return this.getPrimaryCornerIndex();
-        break;
       default:
-        throw new Error(`There is no handle with the name "${name}" to get the vertex for.`)
+        throw new Error(`There is no handle with the name "${name}" to get the vertex for.`);
     }
   }
 }
