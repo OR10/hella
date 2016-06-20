@@ -1,4 +1,4 @@
-class Cuboid {
+class CuboidDimensionPrediction {
   /**
    * @param {{width: Number, height: Number, depth: Number}} prediction
    */
@@ -22,6 +22,6 @@ class Cuboid {
   }
 }
 
-Cuboid.supportsType = type => ['cuboid'].includes(type);
+CuboidDimensionPrediction.supportsType = type => ['cuboid'].includes(type);
 
-export default Cuboid;
+export default CuboidDimensionPrediction;
