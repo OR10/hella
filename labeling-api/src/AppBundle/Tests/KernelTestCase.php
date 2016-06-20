@@ -54,9 +54,6 @@ class KernelTestCase extends Test\KernelTestCase
 
         $this->couchDbName = $this->getContainer()->getParameter('database_name');
 
-        $this->dropSchema();
-        $this->generateSchema();
-
         $this->couchdbClient->deleteDatabase($this->couchDbName);
         $this->couchdbClient->createDatabase($this->couchDbName);
 
@@ -76,7 +73,6 @@ class KernelTestCase extends Test\KernelTestCase
         $this->tearDownImplementation();
 
         $this->couchdbClient->deleteDatabase($this->couchDbName);
-        $this->dropSchema();
 
         static::$kernel->shutdown();
 
@@ -89,37 +85,6 @@ class KernelTestCase extends Test\KernelTestCase
 
     protected function tearDownImplementation()
     {
-    }
-
-    /**
-    * Create the database schema.
-    */
-    protected function generateSchema()
-    {
-        // Get the metadata of the application to create the schema.
-        $metadata = $this->getMetadata();
-
-        if (!empty($metadata)) {
-            $tool = new Tools\SchemaTool($this->entityManager);
-            $tool->createSchema($metadata);
-        } else {
-            throw new Schema\SchemaException('No Metadata Classes to process.');
-        }
-    }
-
-    /**
-    * Drop the database schema in order to cleanup for other tests.
-    */
-    protected function dropSchema()
-    {
-        $metadata = $this->getMetadata();
-
-        if (!empty($metadata)) {
-            $tool = new Tools\SchemaTool($this->entityManager);
-            $tool->dropSchema($metadata);
-        } else {
-            throw new Schema\SchemaException('No Metadata Classes to process.');
-        }
     }
 
     /**

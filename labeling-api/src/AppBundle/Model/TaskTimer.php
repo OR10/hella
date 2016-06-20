@@ -32,7 +32,7 @@ class TaskTimer
     private $projectId;
 
     /**
-     * @CouchDB\Field(type="integer")
+     * @CouchDB\Field(type="string")
      */
     private $userId;
 

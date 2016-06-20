@@ -89,7 +89,7 @@ class User
      */
     public function getUserById($id)
     {
-        return $this->userManager->findUserBy(array('id' => $id));
+        return $this->documentManager->find(Model\User::class, $id);
     }
 
     /**
@@ -106,9 +106,15 @@ class User
      */
     public function getUserList()
     {
+        $users = $userProfileImages =  $this->documentManager
+            ->createQuery('annostation_user', 'by_id')
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+
         return array_values(
             array_filter(
-                $this->userManager->findUsers(),
+                $users,
                 function (Model\User $user) {
                     if ($user->isLocked()) {
                         return false;
