@@ -69,9 +69,11 @@ class CuboidInteractionResolver {
             break;
           case 3:
             interaction[CuboidInteractionResolver.WIDTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           case 6:
             interaction[CuboidInteractionResolver.DEPTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           default:
             throw new Error(`Cannot resolve action for the combination: primaryCorner = ${primaryCornerIndex} and pointIndex = ${index}`);
@@ -85,12 +87,14 @@ class CuboidInteractionResolver {
             break;
           case 2:
             interaction[CuboidInteractionResolver.WIDTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           case 3:
             interaction[CuboidInteractionResolver.MOVE] = true;
             break;
           case 7:
             interaction[CuboidInteractionResolver.DEPTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           default:
             throw new Error(`Cannot resolve action for the combination: primaryCorner = ${primaryCornerIndex} and pointIndex = ${index}`);
@@ -101,6 +105,7 @@ class CuboidInteractionResolver {
         switch (index) {
           case 2:
             interaction[CuboidInteractionResolver.DEPTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           case 5:
             interaction[CuboidInteractionResolver.HEIGHT] = true;
@@ -110,6 +115,7 @@ class CuboidInteractionResolver {
             break;
           case 7:
             interaction[CuboidInteractionResolver.WIDTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           default:
             throw new Error(`Cannot resolve action for the combination: primaryCorner = ${primaryCornerIndex} and pointIndex = ${index}`);
@@ -120,12 +126,14 @@ class CuboidInteractionResolver {
         switch (index) {
           case 3:
             interaction[CuboidInteractionResolver.DEPTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           case 4:
             interaction[CuboidInteractionResolver.HEIGHT] = true;
             break;
           case 6:
             interaction[CuboidInteractionResolver.WIDTH] = true;
+            interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS] = true;
             break;
           case 7:
             interaction[CuboidInteractionResolver.MOVE] = true;
@@ -255,9 +263,8 @@ class CuboidInteractionResolver {
         break;
       case CuboidInteractionResolver.MOVE:
         return this.getPrimaryCornerIndex();
-        break;
       default:
-        throw new Error(`There is no handle with the name "${name}" to get the vertex for.`)
+        throw new Error(`There is no handle with the name "${name}" to get the vertex for.`);
     }
   }
 }

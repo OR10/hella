@@ -115,12 +115,12 @@ export default class MultiTool extends Tool {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'o',
       description: 'Rotate cuboid counter clockwise by 5°',
-      callback: () => this._rotateCuboid(5),
+      callback: () => this._rotateCuboid(0.087266),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'p',
       description: 'Rotate cuboid clockwise by 5°',
-      callback: () => this._rotateCuboid(-5),
+      callback: () => this._rotateCuboid(-0.087266),
     });
   }
 
@@ -152,7 +152,7 @@ export default class MultiTool extends Tool {
     const shape = this._$scope.vm.selectedPaperShape;
     if (shape instanceof PaperCuboid) {
       this._context.withScope((scope) => {
-        shape.rotateAroundCenterBy(degree);
+        shape.rotateAroundCenter(degree);
         shape.updatePrimaryCorner();
         scope.view.update();
         this.emit('shape:update', shape);
