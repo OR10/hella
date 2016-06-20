@@ -10,9 +10,7 @@ import PaperLine from './PaperLine';
 
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
 import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
-import CameraCalibration from '../../ThirdDimension/Models/CameraCalibration';
 import DepthBufferProjection2d from '../../ThirdDimension/Support/Projection2d/DepthBuffer';
-import {Vector4} from 'three-math';
 
 /**
  * Factory to produce PaperShape objects from JSON representations stored in our backend
@@ -59,8 +57,9 @@ class PaperShapeFactory {
     const projection2d = new DepthBufferProjection2d(
       new PlainProjection2d(video.calibration)
     );
+    const projection3d = new FlatWorld(video.calibration);
 
-    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, shape.vehicleCoordinates, color);
+    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, projection3d, shape.vehicleCoordinates, color);
   }
 
   /**
@@ -148,18 +147,6 @@ class PaperShapeFactory {
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);
         break;
-      //case 'ellipse':
-      //  return this._createEllipse(labeledThingInFrame, shape, color);
-      //case 'circle':
-      //  return this._createCircle(labeledThingInFrame, shape, color);
-      //case 'point':
-      //  return this._createPoint(labeledThingInFrame, shape, color);
-      //case 'path':
-      //  return this._createPath(labeledThingInFrame, shape, color);
-      //case 'polygon':
-      //  return this._createPolygon(labeledThingInFrame, shape, color);
-      //case 'line':
-      //  return this._createLine(labeledThingInFrame, shape, color);
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }

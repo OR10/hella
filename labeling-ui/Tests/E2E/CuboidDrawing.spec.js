@@ -1,11 +1,11 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-xdescribe('Cuboid drawing', () => {
+describe('Cuboid drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -38,7 +38,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackCenter')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackCenter);
@@ -54,7 +55,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackLeft);
@@ -70,7 +72,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackRight);
@@ -86,7 +89,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenter')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenter);
@@ -102,7 +106,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontLeft);
@@ -118,7 +123,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontRight);
@@ -134,7 +140,8 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight45);
@@ -150,10 +157,171 @@ xdescribe('Cuboid drawing', () => {
 
     initApplication('/labeling/task/TASKID-TASKID')
       .then(
-        () => canvasInstructionLogManager.getCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then((drawingStack) => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight225);
+        done();
+      });
+  });
+
+  it('should change height of loaded cuboid', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 621, y: 330}) // height handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 621, y: 50}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChange);
+        browser.sleep(1000);
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
+  it('should change move loaded cuboid without primary edge change', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 622, y: 390}) // move handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 235, y: 560}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementLeft);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
+  it('should change move loaded cuboid with primary edge change', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 622, y: 390}) // move handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 1000, y: 560}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementRight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
+  it('should rotate cuboid left around middle axis using keyboard', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .sendKeys('o')
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardLeft')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardLeft);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
+  it('should rotate cuboid right around middle axis using keyboard', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .sendKeys('p')
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardRight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardRight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame);
         done();
       });
   });

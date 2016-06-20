@@ -1,3 +1,10 @@
+/* eslint-disable */
+/**
+ * eslint is disabled due to the experimental non production usage of this script
+ * 
+ * The script was only created for researching the 3d transformation operations needed for the cuboid shape 
+ */
+
 const {Matrix3, Matrix4, Vector3, Vector4} = require('three-math');
 
 /////////////////////////////////////////////

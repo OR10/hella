@@ -1,6 +1,10 @@
 import paper from 'paper';
+import {Vector3, Matrix4} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
+
 import Cuboid3d from '../Models/Cuboid3d';
+import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
 class PaperCuboid extends PaperShape {
 
@@ -8,11 +12,12 @@ class PaperCuboid extends PaperShape {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Projection2d} projection2d
+   * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
    * @param {String} color
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, projection2d, cuboid3dPoints, color, draft) {
+  constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, draft) {
     super(labeledThingInFrame, shapeId, draft);
 
     /**
@@ -34,10 +39,28 @@ class PaperCuboid extends PaperShape {
     this._projection2d = projection2d;
 
     /**
+     * @type {Projection3d}
+     * @private
+     */
+    this._projection3d = projection3d;
+
+    /**
+     * @type {null}
+     * @private
+     */
+    this._projectedCuboid = null;
+
+    /**
      * @type {Cuboid3d}
      * @private
      */
     this._cuboid3d = new Cuboid3d(cuboid3dPoints);
+
+    /**
+     * @type {ManualUpdateCuboidInteractionResolver}
+     * @private
+     */
+    this._cuboidInteractionResolver = new ManualUpdateCuboidInteractionResolver(this._cuboid3d);
 
     this._drawCuboid();
   }
@@ -45,32 +68,31 @@ class PaperCuboid extends PaperShape {
   /**
    * Generate the 2d projection of the {@link Cuboid3d} and add the corresponding shaped to this group
    *
+   * @param {boolean} drawHandles
    * @private
    */
-  _drawCuboid(handles = true) {
-    const projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+  _drawCuboid(drawHandles = true) {
+    this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
 
-    const planes = this._generatePlanes(projectedCuboid);
-    this._addChildren(planes);
+    const planes = this._createPlanes();
+    this.addChildren(planes);
 
-    const lines = this._generateEdges(projectedCuboid);
-    this._addChildren(lines);
+    const lines = this._createEdges();
+    this.addChildren(lines);
 
-    if (this._isSelected && handles) {
-      const rectangles = this._generateHandles(projectedCuboid);
-      this._addChildren(rectangles);
+    if (this._isSelected && drawHandles) {
+      const handles = this._createHandles();
+      this.addChildren(handles);
     }
   }
 
   /**
-   *
-   * @param {Cuboid2d} cuboid2d
    * @returns {Array}
    * @private
    */
-  _generateEdges(cuboid2d) {
+  _createEdges() {
     const edges = [
       // Front
       {from: 0, to: 1}, // Top
@@ -90,10 +112,10 @@ class PaperCuboid extends PaperShape {
     ];
 
     return edges.map((edgePointIndex) => {
-      const from = cuboid2d.vertices[edgePointIndex.from];
-      const to = cuboid2d.vertices[edgePointIndex.to];
-      const hidden = (!cuboid2d.vertexVisibility[edgePointIndex.from] || !cuboid2d.vertexVisibility[edgePointIndex.to]);
-      const showPrimaryEdge = (cuboid2d.primaryVertices.vertices[edgePointIndex.from] && cuboid2d.primaryVertices.vertices[edgePointIndex.to] && this._isSelected);
+      const from = this._projectedCuboid.vertices[edgePointIndex.from];
+      const to = this._projectedCuboid.vertices[edgePointIndex.to];
+      const hidden = (!this._projectedCuboid.vertexVisibility[edgePointIndex.from] || !this._projectedCuboid.vertexVisibility[edgePointIndex.to]);
+      const showPrimaryEdge = (this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.from) && this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.to) && this._isSelected);
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
@@ -108,10 +130,9 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {Cuboid2d} cuboid2d
    * @private
    */
-  _generatePlanes(cuboid2d) {
+  _createPlanes() {
     const planes = [
       [0, 1, 2, 3],
       [1, 5, 6, 2],
@@ -121,10 +142,10 @@ class PaperCuboid extends PaperShape {
       [7, 6, 2, 3],
     ];
 
-    const visiblePlanes = planes.filter(plane => plane.filter(vertex => cuboid2d.vertexVisibility[vertex]).length === 4);
+    const visiblePlanes = planes.filter(plane => plane.filter(vertex => this._projectedCuboid.vertexVisibility[vertex]).length === 4);
 
     return visiblePlanes.map(plane => {
-      const points = plane.map(index => new paper.Point(cuboid2d.vertices[index].x, cuboid2d.vertices[index].y));
+      const points = plane.map(index => new paper.Point(this._projectedCuboid.vertices[index].x, this._projectedCuboid.vertices[index].y));
 
       return new paper.Path({
         selected: false,
@@ -137,57 +158,32 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
-   * @param {Cuboid2d} cuboid2d
    * @private
    */
-  _generateHandles(cuboid2d) {
+  _createHandles() {
     const handles = [];
 
-    cuboid2d.primaryVertices.vertices.forEach((isPrimaryVertex, index) => {
-      if (!isPrimaryVertex) {
-        return;
+    [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(
+      index => {
+        if (!this._cuboidInteractionResolver.isPrimaryVertex(index)) {
+          return;
+        }
+
+        const vertex = this._projectedCuboid.vertices[index];
+        const name = this._cuboidInteractionResolver.getHandleNameFromInteraction(this._cuboidInteractionResolver.resolveInteractionForVertex(index));
+
+        handles.push(
+          new RectangleHandle(
+            'cube-' + name,
+            '#ffffff',
+            this._handleSize,
+            this._vectorToPaperPoint(vertex)
+          )
+        );
       }
-
-      const vertex = cuboid2d.vertices[index];
-      const rectangle = {
-        topLeft: new paper.Point(
-          vertex.x - handleWidth / 2,
-          vertex.y - handleWidth / 2
-        ),
-        bottomRight: new paper.Point(
-          vertex.x + handleWidth / 2,
-          vertex.y + handleWidth / 2
-        )
-      };
-
-      handles.push(
-        new paper.Path.Rectangle({
-          name: 'cube-' + cuboid2d.primaryVertices.names[index],
-          rectangle,
-          selected: false,
-          strokeWidth: 0,
-          strokeScaling: false,
-          fillColor: '#ffffff',
-        })
-      );
-    });
+    );
 
     return handles;
-  }
-
-  getCursor(hitResult) {
-    switch (hitResult.item.name) {
-      case 'cube-height':
-        return 'ns-resize';
-      case 'cube-width':
-        return 'all-scroll';
-      case 'cube-length':
-        return 'all-scroll';
-      case 'cube-move':
-        return 'grab';
-      default:
-        return 'pointer';
-    }
   }
 
   /**
@@ -195,25 +191,42 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _vectorToPaperPoint(vector) {
-    return new paper.Point(Math.round(vector.x), Math.round(vector.y));
+    return new paper.Point(vector.x, vector.y);
   }
 
-  /**
-   * @param hitResult
-   * @returns {boolean}
-   */
-  shouldBeSelected(hitResult) {
-    return true;
+  get bounds() {
+    const minX = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.x < current.x ? prev.x : current.x;
+    });
+    const minY = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.y < current.y ? prev.y : current.y;
+    });
+    const maxX = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.x > current.x ? prev.x : current.x;
+    });
+    const maxY = this._projectedCuboid.vertices.reduce((prev, current) => {
+      return prev.y > current.y ? prev.y : current.y;
+    });
+
+    return {
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+  }
+
+  updatePrimaryCorner() {
+    this._cuboidInteractionResolver.updateData();
+    this._drawCuboid();
   }
 
   /**
    * Select the shape
    *
-   * @param {Boolean} handles
+   * @param {Boolean} drawHandles
    */
-  select(handles = true) {
+  select(drawHandles = true) {
     this._isSelected = true;
-    this._drawCuboid(handles);
+    this._drawCuboid(drawHandles);
   }
 
   /**
@@ -234,10 +247,145 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
+   * @returns {string}
+   */
+  getClass() {
+    return 'cuboid';
+  }
+
+  /**
+   * Return the identifier for the tool action that need to be performed
+   *
+   * @param {Handle|null} handle
+   * @returns {string|null}
+   */
+  getToolActionIdentifier(handle) {
+    if (handle === null) {
+      return null;
+    }
+
+    switch (handle.name) {
+      case 'cube-height':
+      case 'cube-width':
+      case 'cube-length':
+        return 'scale';
+      case 'cube-move':
+        return 'move';
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * @param {Handle|null} handle
+   * @returns {string}
+   */
+  getCursor(handle) {
+    if (handle === null) {
+      return 'pointer';
+    }
+
+    switch (handle.name) {
+      case 'cube-height':
+        return 'ns-resize';
+      case 'cube-width':
+      case 'cube-length':
+        return 'all-scroll';
+      case 'cube-move':
+        return 'grab';
+      default:
+        return 'pointer';
+    }
+  }
+
+  /**
+   * @param {Point} point
+   */
+  moveTo(point) {
+    const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(new Vector3(point.x, point.y, 1));
+    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()]);
+
+    this._cuboid3d.moveBy(movementVector);
+
+    this._drawCuboid();
+  }
+
+  /**
+   * @param {Handle} handle
+   * @param {Point} point
+   * @param {{height: 1, width: 1, length: 1}} minDistance
+   */
+  resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) {
+    switch (handle.name) {
+      case 'cube-height':
+        this._changeHeight(point, minDistance);
+        break;
+      case 'cube-width':
+        break;
+      case 'cube-length':
+        break;
+      default:
+        throw new Error(`Unknown handle type: ${handle}.`);
+    }
+
+    this._drawCuboid();
+  }
+
+  /**
+   * @param {number} degree
+   */
+  rotateArroundCenterBy(degree) {
+    const radians = ((2 * Math.PI) / 360) * degree;
+
+    // Create translation and rotation matrices
+    const translation = new Matrix4();
+    const inverseTranslation = new Matrix4();
+    const rotation = new Matrix4();
+
+    // Create translation vectors
+    const transVector = this._cuboid3d.bottomCenter.negate();
+    const invTransVector = this._cuboid3d.bottomCenter;
+
+    // Calculate translation and rotation
+    translation.makeTranslation(transVector.x, transVector.y, transVector.z);
+    inverseTranslation.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
+    rotation.makeRotationZ(radians);
+
+    this._cuboid3d.setVertices(this._cuboid3d.vertices.map(
+      // Apply translation and rotation
+      vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
+    ));
+
+    this._drawCuboid();
+  }
+
+  /**
+   * @param {Point} point
+   * @param {{height: 1, width: 1, length: 1}} minDistance
+   * @private
+   */
+  _changeHeight(point, minDistance) { // eslint-disable-line no-unused-vars
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const oldTop = this._cuboid3d.vertices[this._cuboid3d.getTopCoordinateIndex(primaryCornerIndex)];
+    const newTop = this._projection3d.projectTopCoordianteTo3d(
+      new Vector3(point.x, point.y, 1),
+      this._cuboid3d.vertices[primaryCornerIndex]
+    );
+
+    const heightVector = newTop.sub(oldTop);
+    this._cuboid3d.addVectorToTop(heightVector);
+  }
+
+  /**
    * Convert to JSON for Storage
    */
   toJSON() {
-    // TODO: Implement
+    return {
+      type: 'cuboid3d',
+      id: this._shapeId,
+      vehicleCoordinates: this._cuboid3d.vertices.map(vertex => [vertex.x, vertex.y, vertex.z]),
+      labeledThingInFrameId: this.labeledThingInFrame.id,
+    };
   }
 }
 

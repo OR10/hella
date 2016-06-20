@@ -1,20 +1,19 @@
 import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
-import RectangleDrawingTool from '../Tools/RectangleDrawingTool';
-import PedestrianDrawingTool from '../Tools/PedestrianDrawingTool';
-import EllipseDrawingTool from '../Tools/EllipseDrawingTool';
-import CircleDrawingTool from '../Tools/CircleDrawingTool';
-import PathDrawingTool from '../Tools/PathDrawingTool';
-import PolygonDrawingTool from '../Tools/PolygonDrawingTool';
-import LineDrawingTool from '../Tools/LineDrawingTool';
-import PointDrawingTool from '../Tools/PointDrawingTool';
-import ShapeMoveTool from '../Tools/ShapeMoveTool';
-import ShapeScaleTool from '../Tools/ShapeScaleTool';
+import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
+import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
+import EllipseDrawingTool from '../Tools/Ellipse/EllipseDrawingTool';
+import CircleDrawingTool from '../Tools/Circle/CircleDrawingTool';
+import PathDrawingTool from '../Tools/Path/PathDrawingTool';
+import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
+import LineDrawingTool from '../Tools/Line/LineDrawingTool';
+import PointDrawingTool from '../Tools/Point/PointDrawingTool';
 import ZoomTool from '../Tools/ZoomTool';
 import MultiTool from '../Tools/MultiTool';
 
 import PaperShape from '../Shapes/PaperShape';
+import hitResolver from '../Support/HitResolver';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -31,6 +30,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {EntityColorService} entityColorService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ToolService} toolService
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
@@ -45,6 +45,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               paperShapeFactory,
               entityColorService,
               keyboardShortcutService,
+              toolService,
               logger,
               $timeout,
               framePosition,
@@ -85,26 +86,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     /**
      * Tool for moving shapes
      *
-     * @type {ShapeMoveTool}
+     * @type {MultiTool}
      * @private
      */
-    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, this._context);
-
-    /**
-     * Tool for moving shapes
-     *
-     * @type {ShapeMoveTool}
-     * @private
-     */
-    this._shapeMoveTool = new ShapeMoveTool($scope.$new(), this._context);
-
-    /**
-     * Tool for scaling shapes
-     *
-     * @type {ShapeScaleTool}
-     * @private
-     */
-    this._shapeScaleTool = new ShapeScaleTool($scope.$new(), this._context);
+    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context);
 
     /**
      * @type {null}
@@ -117,11 +102,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
-    /**
-     * Register tool to the MultiTool
-     */
-    this._multiTool.registerMoveTool(this._shapeMoveTool);
-    this._multiTool.registerScaleTool(this._shapeScaleTool);
 
     try {
       this._initializeShapeCreationTool();
@@ -188,14 +168,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.emit('shape:update', shape);
     });
 
-    this._shapeMoveTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
-    });
-
-    this._shapeScaleTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
-    });
-
     framePosition.beforeFrameChangeAlways('disableTools', () => {
       this._multiTool.disable();
     });
@@ -205,7 +177,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   dispatchDOMEvent(event) {
-    this._context.withScope(scope => {
+    this._context.withScope(() => {
       if (event.type === 'mouseleave') {
         this._multiTool.onMouseLeave(event);
       } else {
@@ -306,17 +278,22 @@ class ThingLayer extends PanAndZoomPaperLayer {
       const projectPoint = scope.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
 
       const hitResult = scope.project.hitTest(projectPoint, {
-        class: PaperShape,
         fill: true,
-        bounds: true,
+        bounds: false,
         tolerance: 8,
       });
 
-      if (hitResult && hitResult.item.shouldBeSelected(hitResult)) {
-        this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitResult.item);
-        this._$scope.vm.selectedPaperShape = hitResult.item;
+      if (hitResult) {
+        const [hitShape] = hitResolver.resolve(hitResult.item);
+        if (hitShape.shouldBeSelected(hitResult)) {
+          this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitShape);
+          this._$scope.vm.selectedPaperShape = hitShape;
+        } else {
+          this._logger.log('thinglayer:selection', 'Shape decided not to be selected. Deselecting');
+          this._$scope.vm.selectedPaperShape = null;
+        }
       } else {
-        this._logger.log('thinglayer:selection', 'HitTest negative. Deselecting');
+        this._logger.log('thinglayer:selection', 'Nothing hit. Deselecting');
         this._$scope.vm.selectedPaperShape = null;
       }
     });
@@ -417,15 +394,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     const paperShapes = labeledThingInFrame.shapes.map(shape => {
       // Transport selection between frame changes
+      let selectedByUserOrAcrossFrameChange = selected;
       if (selected === undefined) {
-        selected = (
+        selectedByUserOrAcrossFrameChange = (
           selectedLabeledThingInFrame
           && selectedLabeledThingInFrame !== labeledThingInFrame
           && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
         );
       }
 
-      return this._addShape(labeledThingInFrame, shape, selected, false);
+      return this._addShape(labeledThingInFrame, shape, selectedByUserOrAcrossFrameChange, false);
     });
 
     if (update) {

@@ -7,7 +7,7 @@ class UsersController {
 
 UsersController.$inject = [
   'user',
-  'userPermissions'
+  'userPermissions',
 ];
 
 export default UsersController;

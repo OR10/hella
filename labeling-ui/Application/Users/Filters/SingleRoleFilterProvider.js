@@ -1,6 +1,6 @@
 function SingleRoleFilterProvider() {
   return function singleRoleFilter(roles) {
-    switch(true) {
+    switch (true) {
       case roles.indexOf('ROLE_ADMIN') !== -1:
         return 'ROLE_ADMIN';
       case roles.indexOf('ROLE_LABEL_COORDINATOR') !== -1:

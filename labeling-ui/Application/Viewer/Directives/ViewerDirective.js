@@ -28,6 +28,7 @@ export default class ViewerDirective {
       frameSkip: '=',
       thingLayer: '=',
       readOnly: '@',
+      showCrosshairs: '=',
     };
 
     this.controller = ViewerController;

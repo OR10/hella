@@ -34,7 +34,7 @@
 
 /**
  * Camera calibration information, if available
- * 
+ *
  * @name Video#calibration
  * @type {CameraCalibration|undefined}
  */

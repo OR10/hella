@@ -5,7 +5,6 @@ class LabelingController {
    * @param {ModalService} modalService
    */
   constructor($scope, $location, modalService) {
-
     /**
      * @type {angular.Scope}
      * @private
@@ -33,7 +32,8 @@ class LabelingController {
     });
 
     this._$scope.$on('serverError', () => {
-      const alert = this._modalService.getWarningDialog({
+      const alert = this._modalService.getWarningDialog(
+        {
           title: 'Error',
           headline: 'There was an error with the application!',
           message: 'Please reaload the page or go back to the main page.',

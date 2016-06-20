@@ -3,7 +3,7 @@ function toFrameNumberFilterProvider(frameIndexService) {
     const numericalFrameIndex = parseInt(frameIndex, 10);
     return frameIndexService.getFrameNumber(numericalFrameIndex);
   }
-  
+
   return toFrameNumber;
 }
 

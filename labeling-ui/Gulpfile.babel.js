@@ -67,7 +67,7 @@ paths.dir = {
   'fonts': 'Distribution/Fonts',
   'tests': {
     'unit': 'Tests/Unit',
-    'e2e': 'Test/E2E',
+    'e2e': 'Tests/E2E',
   },
   'distribution': 'Distribution',
   'logs': 'Logs',
@@ -233,9 +233,11 @@ gulp.task('eslint', () => {
     paths.files.support,
     paths.files.js,
     paths.files.tests.unit,
+    paths.files.tests.e2e,
   ])
     .pipe($$.eslint())
-    .pipe($$.eslint.format());
+    .pipe($$.eslint.format())
+    .pipe($$.eslint.failAfterError());
 });
 
 gulp.task('eslint-checkstyle', () => {
@@ -246,9 +248,11 @@ gulp.task('eslint-checkstyle', () => {
     paths.files.support,
     paths.files.js,
     paths.files.tests.unit,
+    paths.files.tests.e2e,
   ])
     .pipe($$.eslint())
-    .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')));
+    .pipe($$.eslint.format('checkstyle', fs.createWriteStream('Logs/eslint.xml')))
+    .pipe($$.eslint.failAfterError());
 });
 
 gulp.task('test-unit', (next) => {
@@ -289,7 +293,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
   };
 
   if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    protractorConfig.args.push('--baseUrl', 'http://' + ip.address() + ':52343');
+    protractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
     protractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
   } else {
     protractorConfig.args.push('--baseUrl', 'http://localhost:52343');

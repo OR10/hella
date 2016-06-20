@@ -1,240 +1,227 @@
-<div class="grid-block text-center vertical tasklist-container">
-    <div class="grid-container menubar" ng-if="vm.tasksWithVideo.length === 0">
-        <div class="grid-content">
-            <div class="">No tasks available!</div>
-        </div>
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<div class="grid-block" ng-if="vm.preprocessingTasks !== null || vm.waitingTasks !== null || vm.labeledTasks !== null">
+    <div class="grid-content task-list-table" ng-if="vm.preprocessingTasks != null">
+        <h3>Importing</h3>
+        <table class="hover table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Range</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="task in preprocessingTasks = (vm.preprocessingTasks)"
+                track-by="task.id">
+                <td>
+                    <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                    <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                    <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                    <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                    <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                    <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                    &nbsp;{{task.taskType}}
+                </td>
+                <td>
+                    {{task.video.name}}
+                </td>
+                <td>
+                    {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
+                </td>
+            </tr>
+            <tr ng-show="!vm.preprocessingTasks.length"
+                class="no-hover"
+            >
+                <td colspan="3" class="no-tasks">No are being processed right now.</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <div>
-        <label>Project:</label>
-        <select ng-model="vm.selectedProject">
-            <option ng-repeat="project in vm.projectList" value="{{project.id}}">{{project.name}}</option>
-        </select>
+    <div class="grid-content task-list-table">
+        <h3>
+            My Tasks
+            <label>
+                <input type="checkbox" ng-model="vm.showOnlyReopenedTasks"> Only reopened tasks
+            </label>
+        </h3>
+        <table class="hover table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Range</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id | filter:vm.filterReopenTasks)"
+                track-by="task.id">
+                <td ui-sref="^.task({taskId: task.id})">
+                    <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                    <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                    <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                    <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                    <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                    <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                    &nbsp;{{task.taskType}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">
+                    {{task.video.name}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">
+                    {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
+                </td>
+                <td>
+                    <button ng-click="vm.removeAssignment(task, vm.user)"
+                            tooltip="Remove my assignment from this task"
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr ng-show="!myTasks.length"
+                class="no-hover"
+            >
+                <td colspan="4" class="no-tasks">No tasks assigned to you.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Unassigned Tasks</h3>
+        <table class="hover table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Range</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ui-sref="^.task({taskId: task.id})"
+                ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks | filter:vm.filterReopenTasks)"
+                track-by="task.id">
+                <td>
+                    <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                    <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                    <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                    <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                    <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                    <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                    &nbsp;{{task.taskType}}
+                </td>
+                <td>
+                    {{task.video.name}}
+                </td>
+                <td>
+                    {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
+                </td>
+            </tr>
+            <tr ng-show="!unassignedTasks.length"
+                class="no-hover"
+            >
+                <td colspan="3" class="no-tasks">No unassigned Tasks.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Assigned to someone else</h3>
+        <table class="hover table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Range</th>
+                <th>Assignee</th>
+                <th ng-show="vm.userPermissions.unassignPermission"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id | filter:vm.filterReopenTasks)"
+                track-by="task.id">
+                <td ui-sref="^.task({taskId: task.id})">
+                    <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                    <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                    <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                    <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                    <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                    <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                    &nbsp;{{task.taskType}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">
+                    {{task.video.name}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">
+                    {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">{{task.user.username}}</td>
+                <td ng-show="vm.userPermissions.unassignPermission">
+                    <button ng-click="vm.removeAssignment(task, task.user)"
+                            tooltip="Remove user assignment from this task"
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr ng-show="!otherPeoplesTasks.length"
+                class="no-hover"
+            >
+                <td colspan="5" class="no-tasks">No tasks assigned to others.</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
+    <div class="grid-content task-list-table" ng-if="vm.labeledTasks != null">
+        <h3>Finished <label><input type="checkbox" ng-model="vm.showOnlyReviewedTasks"> Only reviewed tasks</label>
+        </h3>
+        <table class="hover table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Range</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="task in finishedTasks = (vm.labeledTasks | filter:vm.filterReviewTasks)"
+                track-by="task.id">
+                <td ui-sref="^.task({taskId: task.id})">
+                    <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                    <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                    <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                    <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                    <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                    <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                    &nbsp;{{task.taskType}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">
+                    {{task.video.name}}
+                </td>
+                <td ui-sref="^.task({taskId: task.id})">
+                    {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
 
-    <div class="grid-block">
-        <div class="grid-content task-list-table" ng-if="vm.preprocessingTasks != null">
-            <h3>Importing</h3>
-            <table class="hover table">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Range</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="task in preprocessingTasks = (vm.preprocessingTasks | project:vm.selectedProject)"
-                    track-by="task.id">
-                    <td>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{task.taskType}}
-                    </td>
-                    <td>
-                        {{task.video.name}}
-                    </td>
-                    <td>
-                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
-                    </td>
-                </tr>
-                <tr ng-show="!vm.preprocessingTasks.length"
-                    class="no-hover"
-                >
-                    <td colspan="3" class="no-tasks">No are being processed right now.</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="grid-content task-list-table">
-            <h3>
-                My Tasks
-                <label>
-                    <input type="checkbox" ng-model="vm.showOnlyReopenedTasks"> Only reopened tasks
-                </label>
-            </h3>
-            <table class="hover table">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Range</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id | project:vm.selectedProject | filter:vm.filterReopenTasks)"
-                    track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{task.taskType}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">
-                        {{task.video.name}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">
-                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
-                    </td>
-                    <td>
-                        <button ng-click="vm.removeAssignment(task, vm.user)"
-                                tooltip="Remove my assignment from this task"
+                </td>
+                <td class="btn-column">
+                    <div class="btn-container">
+                        <button ui-sref="labeling.export({taskId: task.id})"
+                                tooltip="Export the finished task"
                         >
-                            <i class="fa fa-times"></i>
+                            <i class="fa fa-external-link"></i>
                         </button>
-                    </td>
-                </tr>
-                <tr ng-show="!myTasks.length"
-                    class="no-hover"
-                >
-                    <td colspan="4" class="no-tasks">No tasks assigned to you.</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <h3>Unassigned Tasks</h3>
-            <table class="hover table">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Range</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ui-sref="^.task({taskId: task.id})"
-                    ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks | project:vm.selectedProject | filter:vm.filterReopenTasks)"
-                    track-by="task.id">
-                    <td>
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{task.taskType}}
-                    </td>
-                    <td>
-                        {{task.video.name}}
-                    </td>
-                    <td>
-                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
-                    </td>
-                </tr>
-                <tr ng-show="!unassignedTasks.length"
-                    class="no-hover"
-                >
-                    <td colspan="3" class="no-tasks">No unassigned Tasks.</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <h3>Assigned to someone else</h3>
-            <table class="hover table">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Range</th>
-                    <th>Assignee</th>
-                    <th ng-show="vm.userPermissions.unassignPermission"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id | project:vm.selectedProject | filter:vm.filterReopenTasks)"
-                    track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{task.taskType}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">
-                        {{task.video.name}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">
-                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">{{task.user.username}}</td>
-                    <td ng-show="vm.userPermissions.unassignPermission">
-                        <button ng-click="vm.removeAssignment(task, task.user)"
-                                tooltip="Remove user assignment from this task"
+                        <button ng-click="vm.reOpenTask(task)"
+                                tooltip="Reopen this Task for Labelers"
                         >
-                            <i class="fa fa-times"></i>
+                            <i class="fa fa-pencil-square-o"></i>
                         </button>
-                    </td>
-                </tr>
-                <tr ng-show="!otherPeoplesTasks.length"
-                    class="no-hover"
-                >
-                    <td colspan="5" class="no-tasks">No tasks assigned to others.</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="grid-content task-list-table" ng-if="vm.labeledTasks != null">
-            <h3>Finished <label><input type="checkbox" ng-model="vm.showOnlyReviewedTasks"> Only reviewed tasks</label>
-            </h3>
-            <table class="hover table">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Range</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="task in finishedTasks = (vm.labeledTasks | project:vm.selectedProject | filter:vm.filterReviewTasks)"
-                    track-by="task.id">
-                    <td ui-sref="^.task({taskId: task.id})">
-                        <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                        <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                        <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                        <i ng-show="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                        <i ng-show="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                        <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
-                        &nbsp;{{task.taskType}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">
-                        {{task.video.name}}
-                    </td>
-                    <td ui-sref="^.task({taskId: task.id})">
-                        {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
-
-                    </td>
-                    <td class="btn-column">
-                        <div class="btn-container">
-                            <button ui-sref="labeling.export({taskId: task.id})"
-                                    tooltip="Export the finished task"
-                            >
-                                <i class="fa fa-external-link"></i>
-                            </button>
-                            <button ng-click="vm.reOpenTask(task)"
-                                    tooltip="Reopen this Task for Labelers"
-                            >
-                                <i class="fa fa-pencil-square-o"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr ng-show="!vm.labeledTasks.length"
-                    class="no-hover"
-                >
-                    <td colspan="4" class="no-tasks">No finished tasks.</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="!vm.labeledTasks.length"
+                class="no-hover"
+            >
+                <td colspan="4" class="no-tasks">No finished tasks.</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>

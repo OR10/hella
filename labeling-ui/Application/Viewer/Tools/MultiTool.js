@@ -1,7 +1,7 @@
 import Tool from './Tool';
 import paper from 'paper';
-
-import PaperShape from '../Shapes/PaperShape';
+import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+import hitResolver from '../Support/HitResolver';
 
 /**
  * A multi tool for handling multiple functionalities
@@ -12,10 +12,11 @@ export default class MultiTool extends Tool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ToolService} toolService
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
-  constructor($scope, keyboardShortcutService, drawingContext, options) {
+  constructor($scope, keyboardShortcutService, toolService, drawingContext, options) {
     super(drawingContext, options);
 
     /**
@@ -31,20 +32,10 @@ export default class MultiTool extends Tool {
     this._keyboardShortcutService = keyboardShortcutService;
 
     /**
-     * Tool handling the creation of things
-     *
-     * @type {Tool}
+     * @type {ToolService}
      * @private
      */
-    this._scaleTool = null;
-
-    /**
-     * Tool handling the movement of things
-     *
-     * @type {Tool}
-     * @private
-     */
-    this._moveTool = null;
+    this._toolService = toolService;
 
     /**
      * Tool handling the creation of things
@@ -121,24 +112,16 @@ export default class MultiTool extends Tool {
       description: 'Move selected shape right (fast)',
       callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
     });
-  }
-
-  /**
-   * Register a tool for handling the moving of things
-   *
-   * @param {ToolEvents} tool
-   */
-  registerMoveTool(tool) {
-    this._moveTool = tool;
-  }
-
-  /**
-   * Register a tool for handling the scaling of things
-   *
-   * @param {ToolEvents} tool
-   */
-  registerScaleTool(tool) {
-    this._scaleTool = tool;
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'o',
+      description: 'Rotate cuboid counter clockwise by 5°',
+      callback: () => this._rotateCuboid(5),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'p',
+      description: 'Rotate cuboid clockwise by 5°',
+      callback: () => this._rotateCuboid(-5),
+    });
   }
 
   /**
@@ -158,6 +141,23 @@ export default class MultiTool extends Tool {
   disable() {
     this._enabled = false;
     this._keyboardShortcutService.disable();
+  }
+
+  /**
+   * @param {number} degree
+   * @private
+   */
+  _rotateCuboid(degree) {
+    // TODO: refactor this into a separate cuboid-rotate tool !!!
+    const shape = this._$scope.vm.selectedPaperShape;
+    if (shape instanceof PaperCuboid) {
+      this._context.withScope((scope) => {
+        shape.rotateArroundCenterBy(degree);
+        shape.updatePrimaryCorner();
+        scope.view.update();
+        this.emit('shape:update', shape);
+      });
+    }
   }
 
   _moveSelectedShapeBy(deltaX, deltaY) {
@@ -187,73 +187,56 @@ export default class MultiTool extends Tool {
     this._context.withScope(scope => {
       const point = event.point;
       const hitResult = scope.project.hitTest(point, {
-        class: PaperShape,
         fill: true,
-        bounds: true,
+        bounds: false,
         tolerance: this._options.hitTestTolerance,
       });
 
       if (!hitResult) {
-        this._$scope.vm.actionMouseCursor = null;
-        return;
-      }
-
-      if (hitResult.type === 'fill') {
-        this._$scope.vm.actionMouseCursor = 'grab';
-        return;
-      }
-
-      switch (hitResult.name) {
-        case 'top-left':
-          this._$scope.vm.actionMouseCursor = 'nwse-resize';
-          break;
-        case 'bottom-right':
-          this._$scope.vm.actionMouseCursor = 'nwse-resize';
-          break;
-        case 'top-right':
-          this._$scope.vm.actionMouseCursor = 'nesw-resize';
-          break;
-        case 'bottom-left':
-          this._$scope.vm.actionMouseCursor = 'nesw-resize';
-          break;
-        default:
+        if (this._$scope.vm.showCrosshairs === true) {
+          this._$scope.vm.actionMouseCursor = 'none';
+        } else {
           this._$scope.vm.actionMouseCursor = null;
+        }
+      } else {
+        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+        this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle);
       }
     });
   }
 
   _mouseDown(event) {
-    if (!this._enabled) {
+    if (!this._enabled || event.event.shiftKey) {
       return;
+    }
+
+    if (this._$scope.vm.showCrosshairs === true) {
+      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'none');
     }
 
     const point = event.point;
 
-    if (event.event.shiftKey) {
-      return;
-    }
-
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
-        class: PaperShape,
         fill: true,
-        bounds: true,
+        bounds: false,
         tolerance: this._options.hitTestTolerance,
       });
 
       if (hitResult) {
-        this._hitResult = hitResult;
-        switch (this._hitResult.type) {
-          case 'bounds':
-            this._activeTool = this._scaleTool;
-            this._activeTool.onMouseDown(event, hitResult);
-            break;
-          case 'fill':
-            this._activeTool = this._moveTool;
-            this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grabbing');
-            this._activeTool.onMouseDown(event, hitResult);
-            break;
-          default:
+        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+        const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
+
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
+        if (this._$scope.vm.showCrosshairs === false) {
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, true));
+        }
+
+        if (this._activeTool !== null) {
+          this._activeTool.onMouseDown(event, hitShape, hitHandle);
+          this._activeTool.on('shape:update', shape => {
+            this.emit('shape:update', shape);
+          });
         }
       } else {
         this._activeTool = this._createTool;
@@ -268,9 +251,17 @@ export default class MultiTool extends Tool {
     }
 
     if (this._activeTool) {
-      if (this._activeTool === this._moveTool) {
-        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'grab');
-      }
+      this._context.withScope(scope => {
+        const hitResult = scope.project.hitTest(event.point, {
+          fill: true,
+          bounds: false,
+          tolerance: this._options.hitTestTolerance,
+        });
+        if (hitResult) {
+          const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, false));
+        }
+      });
 
       this._activeTool.onMouseUp(event);
       this._activeTool = null;

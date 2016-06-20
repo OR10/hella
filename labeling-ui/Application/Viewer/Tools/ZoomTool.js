@@ -23,15 +23,15 @@ class ZoomTool extends Tool {
   }
 
   _mouseUp(event) {
-    const e = event.event;
-    if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) {
+    const nativeEvent = event.event;
+    if (nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.ctrlKey || nativeEvent.metaKey) {
       return;
     }
 
     this._$scope.vm[this._zoomFn](
       new paper.Point(
-        event.event.offsetX,
-        event.event.offsetY
+        nativeEvent.offsetX,
+        nativeEvent.offsetY
       ),
       1.5
     );

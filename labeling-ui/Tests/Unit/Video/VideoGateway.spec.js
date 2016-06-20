@@ -8,7 +8,6 @@ import VideoGateway from 'Application/Video/Gateways/VideoGateway';
 describe('VideoGateway', () => {
   let $httpBackend;
   let gateway;
-  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -29,7 +28,6 @@ describe('VideoGateway', () => {
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(VideoGateway);
-      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 

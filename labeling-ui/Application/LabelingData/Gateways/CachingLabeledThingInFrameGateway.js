@@ -382,7 +382,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
   _fillUpLtifHoles(ltifDataByFrameMap, taskId, ltId, startFrame) {
     let lastFrame = startFrame;
     let lastLtifData = null;
-    for (let [frame, ltifData] of ltifDataByFrameMap.entries()) {
+    for (const [frame, ltifData] of ltifDataByFrameMap.entries()) {
       if (frame < startFrame) {
         continue;
       }
@@ -406,7 +406,11 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
       ltifDataByFrameMap.set(frame, ghostLtifData);
     }
 
-    return {frame: lastFrame, ltifData: lastLtifData, ghost: lastLtifData.ghost}
+    return {
+      frame: lastFrame,
+      ltifData: lastLtifData,
+      ghost: lastLtifData.ghost,
+    };
   }
 
   /**
@@ -527,7 +531,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
   _retrieveLtForLtifFromCache(task, ltifDataMap) {
     const ltDataMap = new Map();
     let allFound = true;
-    ltifDataMap.forEach((ltifData, subkey) => {
+    ltifDataMap.forEach(ltifData => {
       const ltKey = `${task.id}.${ltifData.labeledThingId}`;
 
       if (allFound === false || !this._ltCache.has(ltKey)) {

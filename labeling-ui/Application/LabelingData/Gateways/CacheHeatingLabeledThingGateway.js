@@ -1,5 +1,3 @@
-import LabeledThing from '../Models/LabeledThing';
-
 import CachingLabeledThingGateway from './CachingLabeledThingGateway';
 
 /**

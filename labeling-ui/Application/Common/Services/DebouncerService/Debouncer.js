@@ -45,11 +45,11 @@ class Debouncer {
     this._debounceTimeouts.set(multiplexerId, timeoutId);
     this._debounceFunctions.set(multiplexerId, () => {
       if (typeof this._fn.then === 'function') {
-        return this._fn(...args)
-      } else {
-        this._fn(...args);
-        return this._$q.resolve();
+        return this._fn(...args);
       }
+
+      this._fn(...args);
+      return this._$q.resolve();
     });
   }
 

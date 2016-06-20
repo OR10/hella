@@ -1,5 +1,5 @@
 import 'jquery';
-import 'angular';
+import angular from 'angular';
 import Common from 'Application/Common/Common';
 import {module, inject} from 'angular-mocks';
 
@@ -19,7 +19,7 @@ describe('KeyboardShortcutService', () => {
         add: jasmine.createSpy('add').and.callFake(() => {
         }),
         del: jasmine.createSpy('add').and.callFake(() => {
-        })
+        }),
       });
     });
 

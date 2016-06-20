@@ -54,6 +54,23 @@ class PaperShape extends paper.Group {
      * @private
      */
     this._draft = draft;
+
+    /**
+     * Size of the drag and resize handles of the shape.
+     * The number represents die diameter in px.
+     *
+     * @type {number}
+     * @protected
+     */
+    this._handleSize = 7;
+
+    /**
+     * Flag to present the selected status of the shape.
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._isSelected = false;
   }
 
   get id() {
@@ -67,6 +84,15 @@ class PaperShape extends paper.Group {
    */
   get isDraft() {
     return this._draft;
+  }
+
+  /**
+   * Whether the Shape is selected or not
+   *
+   * @returns {boolean}
+   */
+  get selected() {
+    return this._isSelected;
   }
 
   /**
@@ -113,18 +139,12 @@ class PaperShape extends paper.Group {
     this.position = point;
   }
 
-  shouldBeSelected(hitResult) {
+  /**
+   * @param {paper.HitResult} hitResult
+   * @returns {boolean}
+   */
+  shouldBeSelected(hitResult) { // eslint-disable-line no-unused-vars
     return true;
-  }
-
-  select(handles = true) {
-    this._shape.dashArray = [6, 2];
-    this._shape.selected = handles;
-  }
-
-  deselect() {
-    this._shape.dashArray = [];
-    this._shape.selected = false;
   }
 
   /**
@@ -145,6 +165,38 @@ class PaperShape extends paper.Group {
    * @abstract
    * @method PaperShape#toJSON
    */
+
+  /**
+   * @abstract
+   * @method PaperShape#select
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#deselect
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#_drawShape
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#_generateHandles
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#getClass
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#getCursor
+   */
 }
+PaperShape.DASH = [10, 4];
+PaperShape.LINE = [];
 
 export default PaperShape;

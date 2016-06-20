@@ -4,7 +4,7 @@ viewer {
     padding: 0;
     overflow: hidden;
 
-    canvas.annotation-layer, canvas.background-layer, .event-delegation-layer {
+    canvas.annotation-layer, canvas.background-layer, canvas.crosshairs-layer, .event-delegation-layer {
       position: absolute;
       top: 0;
       left: 0;

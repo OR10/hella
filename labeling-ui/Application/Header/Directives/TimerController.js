@@ -82,7 +82,7 @@ class TimerController {
     this.calculateTime();
     if (!this.readOnly) {
       this._intervalHandle = this.$interval(this.saveTime.bind(this), this.saveFrequency * 1000);
-      this.startIdleTimer()
+      this.startIdleTimer();
     }
   }
 

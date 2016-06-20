@@ -1,4 +1,3 @@
-import {Vector4} from 'three-math';
 import Cuboid2d from '../../Models/Cuboid2d';
 
 /**
@@ -24,40 +23,7 @@ class DepthBufferProjection2d {
     faces.sort(this._compareByZOrder);
 
     const [vertices, vertexVisibility] = this._projectFacesWithDepth(faces);
-    const primaryVertices = this._getPrimaryVertices(cuboid3d);
-    return new Cuboid2d(vertices, primaryVertices, vertexVisibility);
-  }
-
-  /**
-   * @param {Cuboid3d} cuboid3d
-   *
-   * @private
-   * @returns {Array.<boolean>}
-   */
-  _getPrimaryVertices(cuboid3d) {
-    const mapping = {
-      2: [false, true, true, true, false, false, true, false],
-      3: [true, false, true, true, false, false, false, true],
-      6: [false, false, true, false, false, true, true, true],
-      7: [false, false, false, true, true, false, true, true],
-    };
-    const primaryCorner = this._getPrimaryCorner(cuboid3d);
-
-    return mapping[primaryCorner];
-  }
-
-  /**
-   * @param {Cuboid3d} cuboid3d
-   *
-   * @private
-   * @returns {number}
-   */
-  _getPrimaryCorner(cuboid3d) {
-    const bottomPoints = [2, 3, 6, 7];
-
-    return bottomPoints.reduce((prev, current) => {
-      return cuboid3d.vertices[current].length() < cuboid3d.vertices[prev].length() ? current : prev;
-    });
+    return new Cuboid2d(vertices, vertexVisibility);
   }
 
   /**
@@ -114,8 +80,8 @@ class DepthBufferProjection2d {
 
   _compareByZOrder(thisFace, thatFace) {
     // Vertices are in vehicle coordinates. Therefore x is the depth
-    const depthOfThisFace = thisFace.vertices3d.map(v => v.x);
-    const depthOfThatFace = thatFace.vertices3d.map(v => v.x);
+    const depthOfThisFace = thisFace.vertices3d.map(vertex => vertex.x);
+    const depthOfThatFace = thatFace.vertices3d.map(vertex => vertex.x);
     const maxDepthOfThisFace = Math.max(...depthOfThisFace);
     const maxDepthOfThatFace = Math.max(...depthOfThatFace);
 
@@ -123,7 +89,7 @@ class DepthBufferProjection2d {
       return -1;
     } else if (maxDepthOfThisFace === maxDepthOfThatFace) {
       return 0;
-    } else {
+    } else { // eslint-disable-line no-else-return
       return 1;
     }
   }

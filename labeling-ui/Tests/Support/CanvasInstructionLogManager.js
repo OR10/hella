@@ -10,42 +10,143 @@ class CanvasInstructionLogManager {
   }
 
   /**
-   * @param {Boolean} createFixture
-   * @returns {Promise<String>}
+   * Retrieve the canteen canvas logs of an arbitrary canvas identified by a class
+   *
+   * The first match of the class will be taken as result.
+   *
+   * @param {string} canvasClass
+   * @param {string|null} testName
+   * @param {string|null} fixtureName
+   * @returns {Promise<{width: number, height: number, operations: Array}>}
+   * @private
    */
-  getCanvasLogs(createFixture = false) {
+  _getCanvasLogs(canvasClass, testName, fixtureName) {
     this._browser.waitForAngular();
 
-    return this._browser.executeScript(() => {
-      const canvas = document.getElementsByClassName('annotation-layer')[0];
-      const context = canvas.getContext('2d');
+    return this._browser.executeScript((canvasClass) => { // eslint-disable-line no-shadow
+      const canvasList = document.getElementsByClassName(canvasClass);
+      if (canvasList.length === 0) {
+        return null;
+      }
+      const canvas = canvasList[0];
+
+      const ctx = canvas.getContext('2d');
+
       const width = canvas.width;
       const height = canvas.height;
 
       return {
         width,
         height,
-        operations: context.json({
+        operations: ctx.json({
           decimalPoints: 8,
         }),
       };
-    }).then((obj) => {
-      obj.operations = JSON.parse(obj.operations);
+    }, canvasClass)
+      .then((obj) => {
+        if (obj === null) {
+          throw new Error(`Unable to retrieve canvas logs of ${canvasClass}`);
+        }
 
-      if (createFixture) {
-        this._createFixture(obj);
-      }
-      return obj;
-    });
+        obj.operations = JSON.parse(obj.operations);
+
+        if (testName !== null && fixtureName !== null) {
+          this._createFixture(testName, fixtureName, obj);
+        }
+        return obj;
+      });
   }
 
   /**
+   * Retrieve the drawn pixels an arbitrary canvas identified by a class
+   *
+   * The first match of the class will be taken as result.
+   *
+   * USE WITH CAUTION: The bitmap representation may differ on different machines/browser. Only use this if you are sure
+   * the rendered information is rendered identically on all systems.
+   *
+   * @param {string} canvasClass
+   * @param {string|null} testName
+   * @param {string|null} fixtureName
+   * @returns {Promise<{width: number, height: number, operations: Array}>}
+   * @private
+   */
+  _getCanvasImage(canvasClass, testName, fixtureName) {
+    this._browser.waitForAngular();
+
+    return this._browser.executeScript((canvasClass) => { // eslint-disable-line no-shadow
+      const canvasList = document.getElementsByClassName(canvasClass);
+      if (canvasList.length === 0) {
+        return null;
+      }
+      const canvas = canvasList[0];
+
+      const ctx = canvas.getContext('2d');
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      let encodedData = '';
+      for(let i = 0; i < imageData.data.byteLength; i++) {
+        encodedData += String.fromCharCode(imageData.data[i]);
+      }
+      
+      return {
+        width,
+        height,
+        data: btoa(encodedData),
+      };
+    }, canvasClass)
+      .then((canvasImage) => {
+        if (canvasImage === null) {
+          throw new Error(`Unable to retrieve canvas image of ${canvasClass}`);
+        }
+
+        if (testName !== null && fixtureName !== null) {
+          this._createFixture(testName, fixtureName, canvasImage);
+        }
+
+        return canvasImage;
+      });
+  }
+
+  /**
+   * @param {string|null} testName
+   * @param {string|null} fixtureName
+   * @returns {Promise<{width: number, height: number, operations: Array}>}
+   */
+  getAnnotationCanvasLogs(testName = null, fixtureName = null) {
+    return this._getCanvasLogs('annotation-layer', testName, fixtureName);
+  }
+
+  /**
+   * @param {string|null} testName
+   * @param {string|null} fixtureName
+   * @returns {Promise<{width: number, height: number, operations: Array}>}
+   */
+  getCrosshairsCanvasLogs(testName = null, fixtureName = null) {
+    return this._getCanvasLogs('crosshairs-layer', testName, fixtureName);
+  }
+
+  /**
+   * @param {string|null} testName
+   * @param {string|null} fixtureName
+   * @returns {Promise<{width: number, height: number, operations: Array}>}
+   */
+  getBackgroundCanvasImage(testName = null, fixtureName = null) {
+    return this._getCanvasImage('background-layer', testName, fixtureName);
+  }
+
+  /**
+   * @param {string} testName
+   * @param {string} fixtureName
    * @param {Object} obj
    * @private
    */
-  _createFixture(obj) {
-    const filename = `fixture_${Date.now() / 1000}.json`;
-    const path = `./Tests/Fixtures/Canvas/${filename}`;
+  _createFixture(testName, fixtureName, obj) {
+    const path = `./Tests/Fixtures/Canvas/${testName}/${fixtureName}.json`;
 
     this._storeFixture(path, JSON.stringify(obj));
   }
@@ -57,6 +158,9 @@ class CanvasInstructionLogManager {
    */
   _storeFixture(targetPath, data) {
     fs.writeFileSync(targetPath, data);
+
+    // Throw an error here, to fail every test, which generates a fixture.
+    throw new Error(`Fixture regenerated and stored: ${targetPath}`);
   }
 }
 

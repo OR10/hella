@@ -142,7 +142,7 @@ class UserGateway {
     const url = this._apiService.getApiUrl(`/user/password`);
     const data = {
       oldPassword: oldPassword,
-      newPassword: newPassword
+      newPassword: newPassword,
     };
     return this._bufferedHttp.put(url, data, undefined, 'user')
       .then(response => {

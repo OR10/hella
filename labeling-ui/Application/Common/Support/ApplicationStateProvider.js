@@ -8,7 +8,7 @@ class ApplicationStateProvider {
      */
     const state = $rootScope.$new();
 
-    state.viewer = new  PartialApplicationState();
+    state.viewer = new PartialApplicationState();
     state.mediaControls = new PartialApplicationState();
     state.thumbnails = new PartialApplicationState();
     state.sidebarLeft = new PartialApplicationState();

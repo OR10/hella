@@ -15,7 +15,7 @@ class PartialApplicationState {
 
   endFrameChange() {
     if (this._frameChange === 0) {
-      throw new Error('Tried to end frame change, after is already ended. Possible frameChangeStart/frameChangeEnd mismatch,')
+      throw new Error('Tried to end frame change, after is already ended. Possible frameChangeStart/frameChangeEnd mismatch,');
     }
 
     this._frameChange -= 1;

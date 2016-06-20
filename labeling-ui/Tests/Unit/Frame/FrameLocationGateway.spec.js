@@ -8,7 +8,6 @@ describe('FrameLocationGateway', () => {
   let $httpBackend;
   let $httpParamSerializer;
   let gateway;
-  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -30,7 +29,6 @@ describe('FrameLocationGateway', () => {
       $httpBackend = $injector.get('$httpBackend');
       $httpParamSerializer = $injector.get('$httpParamSerializer');
       gateway = $injector.instantiate(FrameLocationGateway);
-      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 

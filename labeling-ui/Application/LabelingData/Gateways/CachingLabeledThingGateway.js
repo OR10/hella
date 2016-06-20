@@ -200,7 +200,7 @@ class CachingLabeledThingGateway extends LabeledThingGateway {
       if (frameData === undefined) {
         continue;
       }
-      frameData.forEach(ltifData => {
+      frameData.forEach(ltifData => { // eslint-disable-line no-loop-func
         if (ltifData.labeledThingId === labeledThingId) {
           invalidationCacheKeys.push(`${taskId}.${frameIndex}.${ltifData.id}`);
         }

@@ -3,7 +3,7 @@ function OtherPeopleTasksFilterProvider() {
     if (!tasks) {
       return [];
     }
-    
+
     return tasks.filter(task => {
       return task.assignedUser !== userId && task.assignedUser !== null;
     });

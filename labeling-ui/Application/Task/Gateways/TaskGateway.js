@@ -53,6 +53,27 @@ class TaskGateway {
   }
 
   /**
+   * Retrieves a list of available {@link Task}s and their associated videos for a certain project
+   *
+   * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
+   */
+  getTasksAndVideosForProject(projectId) {
+    const url = this._apiService.getApiUrl('/task', {
+      includeVideos: true,
+      project: projectId,
+    });
+
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos) {
+          throw new Error('Failed loading task list');
+        }
+
+        return response.data.result;
+      });
+  }
+
+  /**
    * Retrieves the {@link Task} identified by the given `id`
    *
    * @param {string} id

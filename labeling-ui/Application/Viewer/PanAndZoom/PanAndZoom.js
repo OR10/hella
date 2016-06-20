@@ -5,11 +5,12 @@ import paper from 'paper';
  */
 class PanAndZoom {
   /**
-   * @param {paper.View} view
+   * @param {DrawingContext} context
    */
   constructor(context) {
     /**
-     * @type {paper.View}
+     * @type {DrawingContext}
+     * @protected
      */
     this._context = context;
 
@@ -36,9 +37,8 @@ class PanAndZoom {
    * @param {Point} [focalPoint]
    */
   zoom(newZoom, focalPoint = null) {
-    this._context.withScope((scope) => {
-
-      const view = scope.view;
+    this._context.withScope(scope => {
+      const {view} = scope;
 
       let newCenter = view.center;
 
@@ -52,9 +52,13 @@ class PanAndZoom {
         newCenter = view.center.add(centerTranslation);
       }
 
+      const oldZoom = view.zoom;
       view.zoom = newZoom;
       view.center = this._restrictViewportToViewBounds(view, newCenter);
 
+      if (oldZoom !== view.zoom) {
+        view.emit('zoom', {zoom: view.zoom, center: view.center});
+      }
     });
   }
 

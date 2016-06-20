@@ -9,7 +9,6 @@ import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 describe('LabeledFrameGateway', () => {
   let $httpBackend;
   let gateway;
-  let bufferedHttp;
 
   beforeEach(() => {
     const commonModule = new Common();
@@ -30,7 +29,6 @@ describe('LabeledFrameGateway', () => {
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
       gateway = $injector.instantiate(LabeledFrameGateway);
-      bufferedHttp = $injector.get('bufferedHttp');
     });
   });
 

@@ -1,0 +1,9 @@
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<div ng-if="!vm.loadingInProgress">
+    <label>Project:</label>
+    <select ng-model="vm.selectedProject">
+        <option value="" disabled>Please select a project.</option>
+        <option ng-repeat="project in vm.projects" value="{{project.id}}">{{project.name}}</option>
+    </select>
+</div>
+

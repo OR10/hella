@@ -9,6 +9,7 @@ import TaskListController from './TaskListController';
 class TaskListDirective {
   constructor() {
     this.scope = {
+      project: '=',
       user: '=',
       userPermissions: '=',
     };
@@ -20,5 +21,6 @@ class TaskListDirective {
     this.bindToController = true;
   }
 }
+
 
 export default TaskListDirective;

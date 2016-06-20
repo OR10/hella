@@ -1,5 +1,5 @@
 import Module from '../Module';
-import Projection2d from './Services/Projection2d';
+import DimensionPredictionGateway from 'Gateways/DimensionPredictionGateway';
 
 /**
  * ThirdDimension Module
@@ -14,8 +14,9 @@ class ThirdDimension extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.ThirdDimension', []);
+
+    this.module.service('dimensionPredictionGateway', DimensionPredictionGateway);
   }
 }
 
 export default ThirdDimension;
-

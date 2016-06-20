@@ -74,7 +74,7 @@ class LabeledObject {
   toJSON() {
     const {id, classes, rev, incomplete} = this;
     return {
-      id, 
+      id,
       rev,
       incomplete,
       classes: clone(classes),

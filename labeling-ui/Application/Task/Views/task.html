@@ -77,6 +77,7 @@
             frame-skip="vm.frameSkip"
             read-only="{{vm.task.readOnly}}"
             thing-layer="vm.thingLayer"
+            show-crosshairs="vm.showCrosshairs"
     ></viewer>
     <div class="grid-block small-6 sidebar-right ">
         <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarShowBackdrop" block-interaction="true"
@@ -108,6 +109,7 @@
                 new-shape-drawing-tool="vm.newShapeDrawingTool"
                 video="vm.video"
                 bookmarked-frame-index="vm.bookmarkedFrameIndex"
+                show-crosshairs="vm.showCrosshairs"
 ></media-controls>
 
 <div class="thumbnail-zone grid-block">

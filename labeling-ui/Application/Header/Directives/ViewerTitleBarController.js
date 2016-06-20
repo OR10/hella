@@ -113,7 +113,7 @@ class ViewerTitleBarController {
     this._$rootScope.$on('shape:add:after', () => {
       this.refreshIncompleteCount();
     });
-  };
+  }
 
   finishLabelingTask() {
     this._applicationState.disableAll();
@@ -143,17 +143,18 @@ class ViewerTitleBarController {
         this._taskGateway.markTaskAsLabeled(this.task)
           .then(() => {
             this._$state.go('labeling.tasks');
-          }).catch((response) => {
-          if (response.status === 412) {
-            const alert = this._modalService.getAlertWarningDialog({
-              title: 'Finish Task',
-              headline: 'Incomplete labeling data',
-              message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
-              confirmButtonText: 'Ok',
-            }, this.handleIncompleteState());
-            alert.activate();
-          }
-        });
+          })
+          .catch(response => {
+            if (response.status === 412) {
+              const alert = this._modalService.getAlertWarningDialog({
+                title: 'Finish Task',
+                headline: 'Incomplete labeling data',
+                message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
+                confirmButtonText: 'Ok',
+              }, this.handleIncompleteState());
+              alert.activate();
+            }
+          });
       },
       () => {
       }

@@ -7,7 +7,6 @@ import TaskGateway from 'Application/Task/Gateways/TaskGateway';
 
 describe('TaskGateway', () => {
   let $httpBackend;
-  let bufferedHttp;
   let gateway;
 
   beforeEach(() => {
@@ -28,7 +27,6 @@ describe('TaskGateway', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      bufferedHttp = $injector.get('bufferedHttp');
       gateway = $injector.instantiate(TaskGateway);
     });
   });
@@ -55,7 +53,7 @@ describe('TaskGateway', () => {
           ],
         },
         videos: {},
-      }
+      },
     };
 
     $httpBackend.expectGET('/backend/api/task').respond(tasksResponse);
@@ -88,12 +86,45 @@ describe('TaskGateway', () => {
         videos: {
           '123': {id: 'blub'},
         },
-      }
+      },
     };
 
     $httpBackend.expectGET('/backend/api/task?includeVideos=true').respond(tasksResponse);
 
     gateway.getTasksAndVideos().then(result => {
+      expect(result).toEqual(tasksResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should load a list of tasks with videos for a specific task', (done) => {
+    const tasksResponse = {
+      result: {
+        tasks: {
+          preprocessing: [
+            {foo: 'bar'},
+            {bar: 'baz'},
+          ],
+          waiting: [
+            {foo: 'bar'},
+            {bar: 'baz'},
+          ],
+          labeled: [
+            {foo: 'bar'},
+            {bar: 'baz'},
+          ],
+        },
+        videos: {
+          '123': {id: 'blub'},
+        },
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/task?includeVideos=true&project=awesome-project-id').respond(tasksResponse);
+
+    gateway.getTasksAndVideosForProject('awesome-project-id').then(result => {
       expect(result).toEqual(tasksResponse.result);
       done();
     });

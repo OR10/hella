@@ -1,4 +1,4 @@
-import {Vector3, Vector4, Matrix4} from 'three-math';
+import {Vector3, Matrix4} from 'three-math';
 import CameraCalibration from '../../Models/CameraCalibration';
 import Cuboid2d from '../../Models/Cuboid2d';
 

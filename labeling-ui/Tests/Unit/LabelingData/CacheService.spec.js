@@ -1,5 +1,6 @@
 import CacheService from 'Application/LabelingData/Services/CacheService';
 import DataContainer from 'Application/LabelingData/Support/DataContainer';
+import {inject} from 'angular-mocks';
 
 describe('CachingService', () => {
   let cache;

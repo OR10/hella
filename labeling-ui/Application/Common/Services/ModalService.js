@@ -89,7 +89,7 @@ class ModalService {
         this._keyboardShortcutService.addHotkey('modal', {
           combo: 'esc',
           description: 'Close the modal',
-          callback: cancelCallbackWrapper
+          callback: cancelCallbackWrapper,
         });
 
         this._keyboardShortcutService.addHotkey('modal', {
@@ -99,7 +99,7 @@ class ModalService {
             // Select the other button in the modal that is not in focus
             angular.element(document.body).find('button:focus').parent().find('button:not(:focus)').focus();
             event.preventDefault();
-          }
+          },
         });
 
         this._modalOpen = true;
@@ -109,8 +109,8 @@ class ModalService {
         // @Hack: Autofocus seems not to work and direkt selection of the element is also not possible
         // in the same Frame. Therefore the almighty setTimeout comes to save the day...
         setTimeout(() => angular.element(document.body).find('.modal.is-active button.modal-button-confirm').focus(), 50);
-      }
-    }
+      },
+    };
   }
 
   getInfoDialog(scope, confirmCallback, cancelCallback) {

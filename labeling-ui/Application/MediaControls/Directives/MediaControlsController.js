@@ -12,6 +12,7 @@ import paper from 'paper';
  * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
  * @property {Tool} newShapeDrawingTool
+ * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
   /**
@@ -210,6 +211,13 @@ class MediaControlsController {
    */
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
+  }
+
+  /**
+   * Handle the toggle of showing the crosshairs
+   */
+  handleShowCrosshairsToggle() {
+    this.showCrosshairs = !this.showCrosshairs;
   }
 
 
@@ -418,46 +426,52 @@ class MediaControlsController {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['j'],
       description: 'Go one frame back',
-      callback: this.handlePreviousFrameClicked.bind(this)
+      callback: this.handlePreviousFrameClicked.bind(this),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['l'],
       description: 'Go one frame forward',
-      callback: this.handleNextFrameClicked.bind(this)
+      callback: this.handleNextFrameClicked.bind(this),
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['shift+j'],
       description: 'Go 10 frames back',
-      callback: this.handleJumpBackwardsClicked.bind(this)
+      callback: this.handleJumpBackwardsClicked.bind(this),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['shift+l'],
       description: 'Go 10 frames forward',
-      callback: this.handleJumpForwardsClicked.bind(this)
+      callback: this.handleJumpForwardsClicked.bind(this),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['del'],
       description: 'Delete selected object',
-      callback: this.handleDeleteSelectionClicked.bind(this)
+      callback: this.handleDeleteSelectionClicked.bind(this),
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'k',
-      description: 'Toggle play funktion',
+      description: 'Toggle play',
       callback: () => {
         if (this.playing) {
           this.handlePause();
         } else {
           this.handlePlay();
         }
-      }
+      },
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'i',
       description: 'Interpolate the current selection',
-      callback: this.handleInterpolation.bind(this)
+      callback: this.handleInterpolation.bind(this),
+    });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'c',
+      description: 'Toggle crosshairs',
+      callback: () => this.handleShowCrosshairsToggle(),
     });
   }
 }

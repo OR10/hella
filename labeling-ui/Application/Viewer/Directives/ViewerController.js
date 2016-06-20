@@ -2,10 +2,10 @@ import LayerManager from '../Layers/LayerManager';
 import EventDelegationLayer from '../Layers/EventDelegationLayer';
 import ThingLayer from '../Layers/ThingLayer';
 import BackgroundLayer from '../Layers/BackgroundLayer';
+import CrosshairsLayer from '../Layers/CrosshairsLayer';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
-import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 import Environment from '../../Common/Support/Environment';
 
 /**
@@ -28,6 +28,7 @@ import Environment from '../../Common/Support/Environment';
  * @property {integer} frameSkip
  * @property {ThingLayer} thingLayer
  * @property {boolean} readOnly
+ * @property {boolean} showCrosshairs
  */
 class ViewerController {
   /**
@@ -54,6 +55,7 @@ class ViewerController {
    * @param {Object} applicationState
    * @param {LockService} lockService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ToolService} toolService
    * @param {DebouncerService} debouncerService
    * @param {FrameIndexService} frameIndexService
    * @param {ModalService} modalService
@@ -82,6 +84,7 @@ class ViewerController {
               applicationState,
               lockService,
               keyboardShortcutService,
+              toolService,
               debouncerService,
               frameIndexService,
               modalService,
@@ -239,6 +242,12 @@ class ViewerController {
      * @private
      */
     this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
+     * @type {ToolService}
+     * @private
+     */
+    this._toolService = toolService;
 
     /**
      * @type {DebouncerService}
@@ -523,12 +532,6 @@ class ViewerController {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
     }
 
-    //Fix Firefox issue where resize event is not fired
-    const resizeSensor = new ResizeSensor(this._$element.get(0), () => {
-      this._resize();
-    });
-
-
     this.framePosition.beforeFrameChangeAlways('disableViewer', () => {
       this._applicationState.startFrameChange();
     });
@@ -550,15 +553,17 @@ class ViewerController {
   }
 
   setupLayers() {
-    this._backgroundLayer = new BackgroundLayer(
-      this._contentWidth,
-      this._contentHeight,
-      this._$scope.$new(),
-      this._drawingContextService
-    );
+    this._setupEventDelegationLayer();
 
-    this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
+    this._setupBackgroundLayer();
 
+    if (this.task.taskType === 'object-labeling') {
+      this._setupThingLayer();
+      this._setupCrosshairsLayer();
+    }
+  }
+
+  _setupEventDelegationLayer() {
     const eventDelegationLayer = new EventDelegationLayer();
     const eventDelegationLayerElement = this._$element.find('.event-delegation-layer');
     eventDelegationLayer.attachToDom(eventDelegationLayerElement[0]);
@@ -570,8 +575,21 @@ class ViewerController {
     eventDelegationLayerElement.on('mouseleave', this._handleMouseLeave.bind(this));
 
     this._layerManager.setEventDelegationLayer(eventDelegationLayer);
-    this._layerManager.addLayer('background', this._backgroundLayer);
+  }
 
+  _setupBackgroundLayer() {
+    /**
+     * @type {BackgroundLayer}
+     * @private
+     */
+    this._backgroundLayer = new BackgroundLayer(
+      this._contentWidth,
+      this._contentHeight,
+      this._$scope.$new(),
+      this._drawingContextService
+    );
+
+    this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
 
     // Reapply filters if they changed
     this._$scope.$watchCollection(
@@ -586,12 +604,27 @@ class ViewerController {
       }
     );
 
-    if (this.task.taskType === 'object-labeling') {
-      this._addThingLayer();
-    }
+    this._layerManager.addLayer('background', this._backgroundLayer);
   }
 
-  _addThingLayer() {
+  _setupCrosshairsLayer() {
+    /**
+     * @type {CrosshairsLayer}
+     * @private
+     */
+    this._crosshairsLayer = new CrosshairsLayer(
+      this._contentHeight,
+      this._contentHeight,
+      this._$scope.$new(),
+      '#bedb31', // $icon-hover (green)
+      2
+    );
+
+    this._crosshairsLayer.attachToDom(this._$element.find('.crosshairs-layer')[0]);
+    this._layerManager.addLayer('crosshairs', this._crosshairsLayer);
+  }
+
+  _setupThingLayer() {
     this.thingLayer = new ThingLayer(
       this._contentWidth,
       this._contentHeight,
@@ -601,6 +634,7 @@ class ViewerController {
       this._paperShapeFactory,
       this._entityColorService,
       this._keyboardShortcutService,
+      this._toolService,
       this._logger,
       this._$timeout,
       this.framePosition,
@@ -629,7 +663,9 @@ class ViewerController {
   zoomIn(focalPoint, zoomFactor) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.zoomIn(focalPoint, zoomFactor);
+        if (layer.zoomIn !== undefined) {
+          layer.zoomIn(focalPoint, zoomFactor);
+        }
       }
     );
 
@@ -639,7 +675,9 @@ class ViewerController {
   zoomOut(focalPoint, zoomFactor) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.zoomOut(focalPoint, zoomFactor);
+        if (layer.zoomIn !== undefined) {
+          layer.zoomOut(focalPoint, zoomFactor);
+        }
       }
     );
 
@@ -1108,7 +1146,9 @@ class ViewerController {
   _zoom(newZoom) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.setZoom(newZoom);
+        if (layer.setZoom !== undefined) {
+          layer.setZoom(newZoom);
+        }
       }
     );
 
@@ -1118,7 +1158,9 @@ class ViewerController {
   _panTo(newCenter) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.panTo(newCenter);
+        if (layer.panTo !== undefined) {
+          layer.panTo(newCenter);
+        }
       }
     );
 
@@ -1128,7 +1170,9 @@ class ViewerController {
   _panBy(deltaX, deltaY) {
     this._layerManager.forEachLayer(
       (layer) => {
-        layer.panBy(deltaX, deltaY);
+        if (layer.panBy !== undefined) {
+          layer.panBy(deltaX, deltaY);
+        }
       }
     );
 
@@ -1160,6 +1204,7 @@ ViewerController.$inject = [
   'applicationState',
   'lockService',
   'keyboardShortcutService',
+  'toolService',
   'debouncerService',
   'frameIndexService',
   'modalService',

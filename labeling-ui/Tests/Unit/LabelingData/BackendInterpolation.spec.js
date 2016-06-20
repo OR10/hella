@@ -9,7 +9,6 @@ import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 describe('BackendInterpolation', () => {
   let $httpBackend;
   let interpolation;
-  let bufferedHttp;
   let statusGateway;
   let labeledThingGateway;
   let $q;
@@ -54,7 +53,6 @@ describe('BackendInterpolation', () => {
 
     inject($injector => {
       $httpBackend = $injector.get('$httpBackend');
-      bufferedHttp = $injector.get('bufferedHttp');
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
 

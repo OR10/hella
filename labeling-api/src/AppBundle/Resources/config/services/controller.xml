@@ -29,6 +29,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.filesystem"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.project"
@@ -126,6 +127,8 @@
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">
             <argument type="service" id="twig"/>
             <argument>%kernel.debug%</argument>
+        </service>
+        <service id="annostation.labeling_api.controller.dimension_prediction" class="AppBundle\Controller\Api\DimensionPrediction">
         </service>
     </services>
 </container>
