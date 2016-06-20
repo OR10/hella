@@ -409,41 +409,15 @@ class PaperCuboid extends PaperShape {
       radians = -radians;
     }
 
-    this._rotateAround(primaryCorner, radians);
+    this._cuboid3d.rotateAroundZAtPointBy(primaryCorner, radians);
+    this._drawCuboid();
   }
 
   /**
    * @param {Number} radians
    */
   rotateAroundCenter(radians) {
-    this._rotateAround(this._cuboid3d.bottomCenter, radians);
-  }
-
-  /**
-   * @param {Vector4} baseVertex
-   * @param {Number} radians
-   * @private
-   */
-  _rotateAround(baseVertex, radians) {
-    // Create translation and rotation matrices
-    const translation = new Matrix4();
-    const inverseTranslation = new Matrix4();
-    const rotation = new Matrix4();
-
-    // Create translation vectors
-    const transVector = baseVertex.clone().negate();
-    const invTransVector = baseVertex;
-
-    // Calculate translation and rotation
-    translation.makeTranslation(transVector.x, transVector.y, transVector.z);
-    inverseTranslation.makeTranslation(invTransVector.x, invTransVector.y, invTransVector.z);
-    rotation.makeRotationZ(radians);
-
-    this._cuboid3d.setVertices(this._cuboid3d.vertices.map(
-      // Apply translation and rotation
-      vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
-    ));
-
+    this._cuboid3d.rotateAroundZAtPointBy(this._cuboid3d.bottomCenter, radians);
     this._drawCuboid();
   }
 

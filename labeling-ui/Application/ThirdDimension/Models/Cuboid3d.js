@@ -33,17 +33,18 @@ class Cuboid3d {
   }
 
   /**
-   * @param {number} radians
+   * @param {Vector4} baseVertex
+   * @param {Number} radians
    */
-  rotateZAroundCenterBy(radians) {
+  rotateAroundZAtPointBy(baseVertex, radians) {
     // Create translation and rotation matrices
     const translation = new Matrix4();
     const inverseTranslation = new Matrix4();
     const rotation = new Matrix4();
 
     // Create translation vectors
-    const translationVector = this.bottomCenter.negate();
-    const inverseTranslationVector = this.bottomCenter;
+    const translationVector = baseVertex.clone().negate();
+    const inverseTranslationVector = baseVertex;
 
     // Calculate translation and rotation
     translation.makeTranslation(translationVector.x, translationVector.y, translationVector.z);
