@@ -117,7 +117,7 @@ module.exports = function(config) {
       port: 4444
     };
 
-    newConfig.hostname = process.env.KARMA_IP_ADDRESS || ip.address();
+    newConfig.hostname = process.env.EXTERNAL_IP_ADDRESS || ip.address();
     newConfig.browsers = ['Chrome'];
     newConfig.customLaunchers = {
       'Safari': {
