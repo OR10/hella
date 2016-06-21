@@ -81,7 +81,7 @@ describe('Projection2d', () => {
       it('should correctly project 3d coordinates into 2d coordinates', () => {
         // Not a real cuboid. But only a placeholder for the API
         // Plain camera projection is independent of the position inside the cube
-        const cuboid3d = new Cuboid3d([
+        const cuboid3d = Cuboid3d.createFromRawVertices([
           [inVector.x, inVector.y, inVector.z],
           [0, 0, 0],
           [0, 0, 0],

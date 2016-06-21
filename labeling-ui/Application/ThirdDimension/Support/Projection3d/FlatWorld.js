@@ -161,7 +161,7 @@ class Projection3dFlatWorld {
    */
   _removeRotation(cuboid2d) {
     const transformedVertices = cuboid2d.vertices.map(vertex => this._removeRotationForVertex(vertex));
-    return Cuboid3d.createFromVectors(transformedVertices);
+    return new Cuboid3d(transformedVertices);
   }
 
   /**
@@ -207,7 +207,7 @@ class Projection3dFlatWorld {
       );
     });
 
-    return Cuboid3d.createFromVectors(points);
+    return new Cuboid3d(points);
   }
 
   /**

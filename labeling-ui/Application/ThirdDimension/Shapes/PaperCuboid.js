@@ -57,7 +57,7 @@ class PaperCuboid extends PaperShape {
      * @type {Cuboid3d}
      * @private
      */
-    this._cuboid3d = new Cuboid3d(cuboid3dPoints);
+    this._cuboid3d = Cuboid3d.createFromRawVertices(cuboid3dPoints);
 
     /**
      * @type {ManualUpdateCuboidInteractionResolver}
@@ -381,14 +381,14 @@ class PaperCuboid extends PaperShape {
     );
   }
 
-  _reduceCuboidToPseudo3d() {
-    const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
-    this._cuboid3d.setVertices(
-      this._cuboid3d.vertices.map(
-        (vertex, index) => cuboid2d.vertexVisibility[index] ? vertex : null
-      )
-    );
-  }
+  // _reduceCuboidToPseudo3d() {
+  //   const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+  //   this._cuboid3d.setVertices(
+  //     this._cuboid3d.vertices.map(
+  //       (vertex, index) => cuboid2d.vertexVisibility[index] ? vertex : null
+  //     )
+  //   );
+  // }
 
   /**
    * @param {Point} point
@@ -437,7 +437,9 @@ class PaperCuboid extends PaperShape {
     return {
       type: 'cuboid3d',
       id: this._shapeId,
-      vehicleCoordinates: this._cuboid3d.vertices.map(vertex => [vertex.x, vertex.y, vertex.z]),
+      vehicleCoordinates: this._cuboid3d.nonPredictedVertices.map(
+        vertex => vertex === null ? null : [vertex.x, vertex.y, vertex.z]
+      ),
       labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }

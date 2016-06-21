@@ -2,11 +2,28 @@ import {Vector4, Matrix4} from 'three-math';
 import CuboidDimensionPrediction from './DimensionPrediction/Cuboid';
 
 class Cuboid3d {
+  /**
+   * @param {Array.<Vector4>} vertices
+   */
   constructor(vertices) {
-    this._vertices = vertices;
+    /**
+     * @type {Array.<Vector4>}
+     * @private
+     */
+    this._vertices = undefined;
+
+    /**
+     * List of vertices, which are predictions and not real values
+     *
+     * @type {Array.<boolean>}
+     * @private
+     */
+    this._predictedVertices = [false, false, false, false, false, false, false, false];
+
+    this.setVertices(vertices);
   }
 
- /**
+  /**
    * Clone this {@link Cuboid3d}
    *
    * @returns {Cuboid3d}
@@ -16,23 +33,31 @@ class Cuboid3d {
   }
 
   /**
-   * @param {Array.<Vector4>} vectors
+   * Update the vertices in this cuboid representation
+   *
+   * The input array may contain `null` values to represent pseudo3d information.
+   *
+   * @param {Array.<Vector4|null>} vertices
    */
-  setVertices(vectors) {
-    this._vertices = vectors.map(vector => [vector.x, vector.y, vector.z]);
+  setVertices(vertices) {
+    // Update predicted value list
+    this._predictedVertices = vertices.map(vertex => vertex === null);
+
+    // Weave in prediction values
+    if (this._getPredictedVerticesCount(this._predictedVertices) > 0) {
+      this._vertices = this._predictMissingVertices(vertices);
+    } else {
+      this._vertices = vertices;
+    }
   }
 
   /**
    * @param {Vector4} vector
    */
   moveBy(vector) {
-    this._vertices = this._vertices.map(vertex => {
-      return [
-        vertex[0] + vector.x,
-        vertex[1] + vector.y,
-        vertex[2] + vector.z,
-      ];
-    });
+    this._vertices.forEach(
+      vertex => vertex.add(vector)
+    );
   }
 
   /**
@@ -54,11 +79,9 @@ class Cuboid3d {
     inverseTranslation.makeTranslation(inverseTranslationVector.x, inverseTranslationVector.y, inverseTranslationVector.z);
     rotation.makeRotationZ(radians);
 
-    this.setVertices(this.vertices.map(
-      // Apply translation and rotation
-      vertex => vertex === null ? null
-        : vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
-    ));
+    this._vertices.forEach(
+      vertex => vertex.applyMatrix4(translation).applyMatrix4(rotation).applyMatrix4(inverseTranslation)
+    );
   }
 
   /**
@@ -66,43 +89,56 @@ class Cuboid3d {
    * @param {Array.<Number>} vertexIndices
    */
   addVectorToVertices(vector, vertexIndices) {
-    vertexIndices.map(pointIndex => {
-      this._vertices[pointIndex] = [
-        this._vertices[pointIndex][0] + vector.x,
-        this._vertices[pointIndex][1] + vector.y,
-        this._vertices[pointIndex][2] + vector.z,
-      ];
-    });
+    vertexIndices.forEach(
+      pointIndex => this._vertices[pointIndex].add(vector)
+    );
   }
 
   /**
    * Make a pseudo 3d cuboid real 3d again using the most recent {@link CuboidDimensionPrediction}
+   *
+   * The input array may contain `null` values!
+   *
+   * @param {Array.<Vector4|null>} vertices
+   * @private
    */
-  makeReal3d() {
-    if (!this.isPseudo3d) {
-      // Nothing to be done here
-      return;
-    }
-
+  _predictMissingVertices(vertices) {
     const dimensionPrediction = this.mostRecentDimensionPrediction;
-    const {multiplier, prediction, sourceFace, targetFace} = this._extrusionParameters;
+    const {multiplier, prediction, sourceFace, targetFace} = this._getExtrusionParameters(vertices);
 
     const extrusionVector = new Vector4();
     extrusionVector.crossVectors(
-      this.vertices[sourceFace[0]].clone().sub(this.vertices[sourceFace[1]]),
-      this.vertices[sourceFace[2]].clone().sub(this.vertices[sourceFace[1]])
+      vertices[sourceFace[0]].clone().sub(vertices[sourceFace[1]]),
+      vertices[sourceFace[2]].clone().sub(vertices[sourceFace[1]])
     ).normalize();
+
+    let predictionInterleaveVertices = vertices.map(vertex => vertex === null ? null : vertex.clone()); // eslint-disable-line prefer-const
 
     targetFace.forEach((targetIndex, faceIndex) => {
       const sourceIndex = sourceFace[faceIndex];
-      const targetVector = this.vertices[sourceIndex].clone();
+      const targetVector = vertices[sourceIndex].clone();
       targetVector.add(extrusionVector.clone().multiplyScalar(multiplier).multiplyScalar(dimensionPrediction[prediction]));
-      this._vertices[targetIndex] = [targetVector.x, targetVector.y, targetVector.z];
+
+      if (predictionInterleaveVertices[targetIndex] !== null) {
+        throw new Error(`Trying to predict non missing vertex: ${targetIndex}: ${predictionInterleaveVertices[targetIndex]}.`);
+      }
+
+      predictionInterleaveVertices[targetIndex] = [targetVector.x, targetVector.y, targetVector.z];
     });
+
+    return predictionInterleaveVertices;
   }
 
-  get _extrusionParameters() {
-    const pseudo3dIndices = this._vertices.map(
+  /**
+   * Provide the necessary extrusion parameters for extending a cube using predicted values
+   *
+   * The input array may contain `null` values!
+   *
+   * @param {Array.<Vector4|null>} vertices
+   * @private
+   */
+  _getExtrusionParameters(vertices) {
+    const pseudo3dIndices = vertices.map(
       (vertex, index) => vertex === null ? null : index
     ).filter(
       indexOrNull => indexOrNull !== null
@@ -143,7 +179,7 @@ class Cuboid3d {
         extrusion.targetFace = [1, 5, 6, 2];
         break;
       default:
-        throw new Error('Invalid pseudo 3d cuboid found. Can\'t make 3d again');
+        throw new Error(`Invalid pseudo 3d cuboid found (${pseudo3dIndices}). Can't make 3d again`);
     }
 
     return extrusion;
@@ -168,57 +204,70 @@ class Cuboid3d {
   }
 
   get vertices() {
-    return this._vertices.map(vertex => new Vector4(...vertex, 1));
+    return this._vertices.map(vertex => vertex.clone());
+  }
+
+  /**
+   * Retrieve only non predicted vertices, null otherwise
+   *
+   * @returns {Array.<Vector4|null>}
+   */
+  get nonPredictedVertices() {
+    return this._vertices.map(
+      (vertex, index) => this._predictedVertices[index] ? null : vertex.clone()
+    );
   }
 
   get frontTopLeft() {
-    return new Vector4(...this._vertices[0], 1);
+    return this._vertices[0].clone();
   }
 
   get frontTopRight() {
-    return new Vector4(...this._vertices[1], 1);
+    return this._vertices[1].clone();
   }
 
   get frontBottomRight() {
-    return new Vector4(...this._vertices[2], 1);
+    return this._vertices[2].clone();
   }
 
   get frontBottomLeft() {
-    return new Vector4(...this._vertices[3], 1);
+    return this._vertices[3].clone();
   }
 
   get backTopLeft() {
-    return new Vector4(...this._vertices[4], 1);
+    return this._vertices[4].clone();
   }
 
   get backTopRight() {
-    return new Vector4(...this._vertices[5], 1);
+    return this._vertices[5].clone();
   }
 
   get backBottomRight() {
-    return new Vector4(...this._vertices[6], 1);
+    return this._vertices[6].clone();
   }
 
   get backBottomLeft() {
-    return new Vector4(...this._vertices[7], 1);
+    return this._vertices[7].clone();
   }
 
   get bottomCenter() {
-    return new Vector4(
-      (this._vertices[2][0] + this._vertices[7][0]) / 2,
-      (this._vertices[2][1] + this._vertices[7][1]) / 2,
-      (this._vertices[2][2] + this._vertices[7][2]) / 2,
-      1
-    );
+    return this._vertices[2]
+      .clone()
+      .add(this._vertices[7])
+      .divideScalar(2);
   }
 
-  get isPseudo3d() {
-    const availableVertices = this._vertices.reduce(
-      (current, vertex) => vertex !== null ? current + 1 : current,
+  _getPredictedVerticesCount(predictedVertices) {
+    const predictedVerticesCount = predictedVertices.reduce(
+      (current, predicted) => predicted ? current + 1 : current,
       0
     );
 
-    return availableVertices === 4;
+    return predictedVerticesCount;
+  }
+
+  get isPseudo3d() {
+    return this._getPredictedVerticesCount(this._predictedVertices) === 4;
   }
 
   get mostRecentDimensionPrediction() {
@@ -239,11 +288,13 @@ class Cuboid3d {
 }
 
 /**
- * @param {Array.<THREE.Vector4>} vertices
+ * @param {Array.<Array.<Number>>} vertices
  * @returns {Cuboid3d}
  */
-Cuboid3d.createFromVectors = (vertices) => {
-  return new Cuboid3d(vertices.map(vertex => [vertex.x, vertex.y, vertex.z]));
+Cuboid3d.createFromRawVertices = vertices => {
+  return new Cuboid3d(vertices.map(
+    vertex => new Vector4(vertex[0], vertex[1], vertex[2], 1)
+  ));
 };
 
 export default Cuboid3d;
