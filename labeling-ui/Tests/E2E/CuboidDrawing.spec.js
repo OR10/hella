@@ -338,7 +338,7 @@ describe('Cuboid drawing', () => {
         browser.actions()
           .mouseMove(viewer, {x: 563, y: 353}) // initial position
           .click()
-          .mouseMove(viewer, {x: 507, y: 390}) // height handle
+          .mouseMove(viewer, {x: 507, y: 390}) // width handle
           .mouseDown()
           .mouseMove(viewer, {x: 400, y: 500}) // drag
           .mouseUp()
@@ -372,7 +372,7 @@ describe('Cuboid drawing', () => {
         browser.actions()
           .mouseMove(viewer, {x: 563, y: 353}) // initial position
           .click()
-          .mouseMove(viewer, {x: 614, y: 379}) // height handle
+          .mouseMove(viewer, {x: 614, y: 379}) // depth handle
           .mouseDown()
           .mouseMove(viewer, {x: 800, y: 440}) // drag
           .mouseUp()
