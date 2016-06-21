@@ -3,8 +3,6 @@ import {Vector3} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
-// import CuboidDimensionPrediction from '../Models/DimensionPrediction/Cuboid';
-
 import Cuboid3d from '../Models/Cuboid3d';
 import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
 import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
@@ -114,11 +112,17 @@ class PaperCuboid extends PaperShape {
       {from: 3, to: 7}, // Front bottom left -> back bottom right
     ];
 
-    return edges.map((edgePointIndex) => {
+    return edges.map(edgePointIndex => {
       const from = this._projectedCuboid.vertices[edgePointIndex.from];
       const to = this._projectedCuboid.vertices[edgePointIndex.to];
       const hidden = (!this._projectedCuboid.vertexVisibility[edgePointIndex.from] || !this._projectedCuboid.vertexVisibility[edgePointIndex.to]);
       const showPrimaryEdge = (this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.from) && this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.to) && this._isSelected);
+      const predicted = (this._cuboid3d.nonPredictedVertices[edgePointIndex.from] === null || this._cuboid3d.nonPredictedVertices[edgePointIndex.to] === null);
+
+      if (predicted) {
+        // Do not render edges with predicted endpoints. Those are only used for calculations.
+        return null;
+      }
 
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
@@ -129,7 +133,8 @@ class PaperCuboid extends PaperShape {
         strokeScaling: false,
         dashArray: hidden ? PaperShape.DASH : PaperShape.LINE,
       });
-    });
+    })
+      .filter(edge => edge !== null);
   }
 
   /**
@@ -145,9 +150,18 @@ class PaperCuboid extends PaperShape {
       [7, 6, 2, 3],
     ];
 
-    const visiblePlanes = planes.filter(plane => plane.filter(vertex => this._projectedCuboid.vertexVisibility[vertex]).length === 4);
+    const visiblePlanes = planes.filter(
+      plane => plane.filter(
+        vertexIndex => this._projectedCuboid.vertexVisibility[vertexIndex]
+      ).length === 4
+    );
+    const visibleAndNonPredictedPlanes = visiblePlanes.filter(
+      plane => plane.filter(
+        vertexIndex => this._cuboid3d.nonPredictedVertices[vertexIndex] !== null
+      ).length === 4
+    );
 
-    return visiblePlanes.map(plane => {
+    return visibleAndNonPredictedPlanes.map(plane => {
       const points = plane.map(index => new paper.Point(this._projectedCuboid.vertices[index].x, this._projectedCuboid.vertices[index].y));
 
       return new paper.Path({
@@ -169,6 +183,11 @@ class PaperCuboid extends PaperShape {
     [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(
       index => {
         if (!this._cuboidInteractionResolver.isPrimaryVertex(index)) {
+          return;
+        }
+
+        if (this._cuboid3d.nonPredictedVertices[index] === null) {
+          // The vertex is predicted and therefore not really there
           return;
         }
 
@@ -381,14 +400,25 @@ class PaperCuboid extends PaperShape {
     );
   }
 
-  // _reduceCuboidToPseudo3d() {
-  //   const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
-  //   this._cuboid3d.setVertices(
-  //     this._cuboid3d.vertices.map(
-  //       (vertex, index) => cuboid2d.vertexVisibility[index] ? vertex : null
-  //     )
-  //   );
-  // }
+  _reduceToPseudo3dIfPossible() {
+    const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+    const vertexVisibilityCount = cuboid2d.vertexVisibility.reduce(
+      (current, visible) => visible ? current + 1 : current
+    );
+
+    if (vertexVisibilityCount !== 4) {
+      return;
+    }
+
+    // @TODO: Inject logger and replace this call with a proper one
+    console.log('Reducing PaperCuboid to Pseudo3d Cuboid: ', cuboid2d.vertexVisibility);
+
+    this._cuboid3d.setVertices(
+      this._cuboid3d.vertices.map(
+        (vertex, index) => cuboid2d.vertexVisibility[index] ? vertex : null
+      )
+    );
+  }
 
   /**
    * @param {Point} point
@@ -426,7 +456,9 @@ class PaperCuboid extends PaperShape {
    * @param {Number} radians
    */
   rotateAroundCenter(radians) {
+    this._cuboid3d.manifestPredictionVertices();
     this._cuboid3d.rotateAroundZAtPointBy(this._cuboid3d.bottomCenter, radians);
+    this._reduceToPseudo3dIfPossible();
     this._drawCuboid();
   }
 

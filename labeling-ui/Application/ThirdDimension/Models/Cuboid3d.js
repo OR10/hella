@@ -1,5 +1,6 @@
-import {Vector4, Matrix4} from 'three-math';
+import {Vector3, Vector4, Matrix4} from 'three-math';
 import CuboidDimensionPrediction from './DimensionPrediction/Cuboid';
+import isEqual from 'lodash.isequal';
 
 class Cuboid3d {
   /**
@@ -19,6 +20,14 @@ class Cuboid3d {
      * @private
      */
     this._predictedVertices = [false, false, false, false, false, false, false, false];
+
+    /**
+     * Latest prediction of dimensions for this cuboid
+     *
+     * @type {CuboidDimensionPrediction|null}
+     * @private
+     */
+    this._dimensionPrediction = null;
 
     this.setVertices(vertices);
   }
@@ -52,6 +61,14 @@ class Cuboid3d {
 
     return this;
   }
+
+  /**
+   * Manifest the currently predicted vertices into the data structure
+   */
+  manifestPredictionVertices() {
+    this._predictedVertices = [false, false, false, false, false, false, false, false];
+  }
+
 
   /**
    * @param {Vector4} vector
@@ -108,7 +125,7 @@ class Cuboid3d {
     const dimensionPrediction = this.mostRecentDimensionPrediction;
     const {multiplier, prediction, sourceFace, targetFace} = this._getExtrusionParameters(vertices);
 
-    const extrusionVector = new Vector4();
+    const extrusionVector = new Vector3();
     extrusionVector.crossVectors(
       vertices[sourceFace[0]].clone().sub(vertices[sourceFace[1]]),
       vertices[sourceFace[2]].clone().sub(vertices[sourceFace[1]])
@@ -125,7 +142,7 @@ class Cuboid3d {
         throw new Error(`Trying to predict non missing vertex: ${targetIndex}: ${predictionInterleaveVertices[targetIndex]}.`);
       }
 
-      predictionInterleaveVertices[targetIndex] = [targetVector.x, targetVector.y, targetVector.z];
+      predictionInterleaveVertices[targetIndex] = new Vector4(targetVector.x, targetVector.y, targetVector.z, 1);
     });
 
     return predictionInterleaveVertices;
@@ -155,26 +172,26 @@ class Cuboid3d {
 
     switch (true) {
       // Front face
-      case pseudo3dIndices == [0, 1, 2, 3]: // eslint-disable-line eqeqeq
+      case isEqual(pseudo3dIndices, [0, 1, 2, 3]):
         extrusion.prediction = 'depth';
         extrusion.sourceFace = [0, 1, 2, 3];
         extrusion.targetFace = [4, 5, 6, 7];
         break;
       // Back face
-      case pseudo3dIndices == [4, 5, 6, 7]: // eslint-disable-line eqeqeq
+      case isEqual(pseudo3dIndices, [4, 5, 6, 7]):
         extrusion.multiplier = -1;
         extrusion.prediction = 'depth';
         extrusion.sourceFace = [4, 5, 6, 7];
         extrusion.targetFace = [0, 1, 2, 3];
         break;
       // Right face
-      case pseudo3dIndices == [1, 2, 5, 6]: // eslint-disable-line eqeqeq
+      case isEqual(pseudo3dIndices, [1, 2, 5, 6]):
         extrusion.prediction = 'width';
         extrusion.sourceFace = [1, 5, 6, 2];
         extrusion.targetFace = [0, 4, 7, 3];
         break;
       // Left face
-      case pseudo3dIndices == [0, 3, 4, 7]: // eslint-disable-line eqeqeq
+      case isEqual(pseudo3dIndices, [0, 3, 4, 7]):
         extrusion.multiplier = -1;
         extrusion.prediction = 'width';
         extrusion.sourceFace = [0, 4, 7, 3];
