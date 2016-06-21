@@ -34,7 +34,11 @@ class LabeledThingInFrame extends LabeledObject {
      *
      * @type {Array.<Object>}
      */
-    this.shapes = cloneDeep(labeledThingInFrame.shapes);
+    // @HACK: This should be properly handeled by the backend, but currently nobody seems to know, why the backend is
+    //        transforming this information here.
+    this.shapes = cloneDeep(labeledThingInFrame.shapes).map(
+      shape => this._fixPseudoCuboid3dShape(shape)
+    );
 
     /**
      * Information if this `LabeledThingInFrame` is real or interpolated
@@ -56,6 +60,37 @@ class LabeledThingInFrame extends LabeledObject {
      * @type {Array.<String>|null}
      */
     this.ghostClasses = clone(labeledThingInFrame.ghostClasses);
+  }
+
+  /**
+   * Fix the PseudoCuboid3dShape from being an object to be an array again
+   *
+   * @HACK: This should be properly handeled by the backend, but currently nobody seems to know, why the backend is
+   *        transforming this information here.
+   *
+   * @param {Object} shape
+   * @private
+   */
+  _fixPseudoCuboid3dShape(shape) {
+    if (shape.type !== 'cuboid3d') {
+      return shape;
+    }
+
+    if (Array.isArray(shape.vehicleCoordinates) && shape.vehicleCoordinates.length === 8) {
+      return shape;
+    }
+
+    const fixedVehicleCoordinates = [];
+    for (let index = 0; index < 8; index++) {
+      if (shape.vehicleCoordinates[index] !== undefined) {
+        fixedVehicleCoordinates[index] = shape.vehicleCoordinates[index];
+      } else {
+        fixedVehicleCoordinates[index] = null;
+      }
+    }
+
+    shape.vehicleCoordinates = fixedVehicleCoordinates;
+    return shape;
   }
 
   /**

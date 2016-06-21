@@ -278,9 +278,9 @@ describe('LabeledThingInFrameGateway', () => {
     const task = {id: taskId};
     const labeledThing = new LabeledThing({task, id: labeledThingId});
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameIndex}/${labeledThingId}?limit=${expectedLimit}&offset=${expectedOffset}`;
-    const response = [{labeledThingId, id: 'testResult'}];
+    const response = [{labeledThingId, id: 'testResult', shapes: []}];
     const expectedResult = response.map(
-      () => new LabeledThingInFrame({labeledThing, id: 'testResult'})
+      () => new LabeledThingInFrame({labeledThing, id: 'testResult', shapes: []})
     );
 
     it('should request labeledThings by task, frameIndex and labeledThingId', done => {
@@ -309,9 +309,9 @@ describe('LabeledThingInFrameGateway', () => {
     const labeledThingResponseData = {task, id: labeledThingId};
     const labeledThing = new LabeledThing(labeledThingResponseData);
     const labeledThings = {1: labeledThingResponseData};
-    const response = {labeledThingsInFrame: [{labeledThingId, id: 'testResult'}], labeledThings};
+    const response = {labeledThingsInFrame: [{labeledThingId, id: 'testResult', shapes: []}], labeledThings};
     const expectedResult = response.labeledThingsInFrame.map(
-      () => new LabeledThingInFrame({labeledThing, id: 'testResult'})
+      () => new LabeledThingInFrame({labeledThing, id: 'testResult', shapes: []})
     );
 
     it('should request labeledThingsInFrame for multiple frames at once', done => {
