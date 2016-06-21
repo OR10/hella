@@ -120,10 +120,6 @@ class PaperCuboid extends PaperShape {
       const hidden = (!this._projectedCuboid.vertexVisibility[edgePointIndex.from] || !this._projectedCuboid.vertexVisibility[edgePointIndex.to]);
       const showPrimaryEdge = (this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.from) && this._cuboidInteractionResolver.isPrimaryVertex(edgePointIndex.to) && this._isSelected);
 
-      if (from === null || to === null) {
-        return null;
-      }
-
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
@@ -133,8 +129,7 @@ class PaperCuboid extends PaperShape {
         strokeScaling: false,
         dashArray: hidden ? PaperShape.DASH : PaperShape.LINE,
       });
-    })
-      .filter(edge => edge !== null);
+    });
   }
 
   /**

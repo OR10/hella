@@ -3,24 +3,10 @@ import CuboidDimensionPrediction from './DimensionPrediction/Cuboid';
 
 class Cuboid3d {
   constructor(vertices) {
-    /**
-     * Vertex data of the cuboid as array structure
-     *
-     * @type {Array.<{x: Number, y: Number, z: Number}>}
-     * @private
-     */
     this._vertices = vertices;
-
-    /**
-     * Latest {@link CuboidDimensionPrediction}
-     *
-     * @type {CuboidDimensionPrediction}
-     * @private
-     */
-    this._dimensionPrediction = null;
   }
 
-  /**
+ /**
    * Clone this {@link Cuboid3d}
    *
    * @returns {Cuboid3d}
@@ -33,7 +19,7 @@ class Cuboid3d {
    * @param {Array.<Vector4>} vectors
    */
   setVertices(vectors) {
-    this._vertices = vectors.map(vector => vector === null ? null : [vector.x, vector.y, vector.z]);
+    this._vertices = vectors.map(vector => [vector.x, vector.y, vector.z]);
   }
 
   /**
@@ -189,65 +175,46 @@ class Cuboid3d {
   }
 
   get vertices() {
-    return this._vertices.map(vertex => vertex === null ? null : new Vector4(...vertex, 1));
+    return this._vertices.map(vertex => new Vector4(...vertex, 1));
   }
 
   get frontTopLeft() {
-    return this._vertices[0] === null ? null : new Vector4(...this._vertices[0], 1);
+    return new Vector4(...this._vertices[0], 1);
   }
 
   get frontTopRight() {
-    return this._vertices[1] === null ? null : new Vector4(...this._vertices[1], 1);
+    return new Vector4(...this._vertices[1], 1);
   }
 
   get frontBottomRight() {
-    return this._vertices[2] === null ? null : new Vector4(...this._vertices[2], 1);
+    return new Vector4(...this._vertices[2], 1);
   }
 
   get frontBottomLeft() {
-    return this._vertices[3] === null ? null : new Vector4(...this._vertices[3], 1);
+    return new Vector4(...this._vertices[3], 1);
   }
 
   get backTopLeft() {
-    return this._vertices[4] === null ? null : new Vector4(...this._vertices[4], 1);
+    return new Vector4(...this._vertices[4], 1);
   }
 
   get backTopRight() {
-    return this._vertices[5] === null ? null : new Vector4(...this._vertices[5], 1);
+    return new Vector4(...this._vertices[5], 1);
   }
 
   get backBottomRight() {
-    return this._vertices[6] === null ? null : new Vector4(...this._vertices[6], 1);
+    return new Vector4(...this._vertices[6], 1);
   }
 
   get backBottomLeft() {
-    return this._vertices[7] === null ? null : new Vector4(...this._vertices[7], 1);
+    return new Vector4(...this._vertices[7], 1);
   }
 
   get bottomCenter() {
-    let bottomFrontRight = this._vertices[2];
-    let bottomBackLeft = this._vertices[7];
-
-    // Proper calculation for pseudo3d
-    const prediction = this.mostRecentDimensionPrediction;
-    if (bottomBackLeft === null) {
-      bottomBackLeft = [
-        bottomFrontRight[0] + (prediction.depth / 2),
-        bottomFrontRight[1] - (prediction.width / 2),
-        bottomFrontRight[2],
-      ];
-    } else if (bottomFrontRight === null) {
-      bottomFrontRight = [
-        bottomBackLeft[0] - (prediction.depth / 2),
-        bottomBackLeft[1] + (prediction.width / 2),
-        bottomBackLeft[2],
-      ];
-    }
-
     return new Vector4(
-      (bottomFrontRight[0] + bottomBackLeft[0]) / 2,
-      (bottomFrontRight[1] + bottomBackLeft[1]) / 2,
-      (bottomFrontRight[2] + bottomBackLeft[2]) / 2,
+      (this._vertices[2][0] + this._vertices[7][0]) / 2,
+      (this._vertices[2][1] + this._vertices[7][1]) / 2,
+      (this._vertices[2][2] + this._vertices[7][2]) / 2,
       1
     );
   }
