@@ -8,6 +8,12 @@ php::fpm::settings:
   PHP/upload_max_filesize: 512M
   PHP/post_max_size: 512M
   PHP/default_socket_timeout: 900
+  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.framework: symfony2
+
+php::cli::settings:
+  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.framework: symfony2
 
 php::extensions:
   bcmath: {}
@@ -15,6 +21,8 @@ php::extensions:
   mbstring: {}
   mysql: {}
   zip: {}
+
+tideways::php7: true
 
 rabbitmq::version: present
 
@@ -61,3 +69,4 @@ labeling_api::worker_queue: true
 labeling_api::redis: true
 labeling_api::app: true
 labeling_api::run_composer_install: false
+labeling_api::tideways: true
