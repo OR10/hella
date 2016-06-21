@@ -327,19 +327,17 @@ class PaperCuboid extends PaperShape {
     const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handle.name);
     const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
 
-    const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
-
     if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
-      this._changeRotation(point, handleVertex);
+      this._changeRotation(point, this._cuboid3d.vertices[handleVertexIndex]);
     }
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
-      this._changeHeight(point, handleVertex);
+      this._changeHeight(point, this._cuboid3d.vertices[handleVertexIndex]);
     }
     if (interaction[CuboidInteractionResolver.DEPTH]) {
-      this._changeHorizontal(point, handleVertex, CuboidInteractionResolver.DEPTH);
+      this._changeHorizontal(point, this._cuboid3d.vertices[handleVertexIndex], CuboidInteractionResolver.DEPTH);
     }
     if (interaction[CuboidInteractionResolver.WIDTH]) {
-      this._changeHorizontal(point, handleVertex, CuboidInteractionResolver.WIDTH);
+      this._changeHorizontal(point, this._cuboid3d.vertices[handleVertexIndex], CuboidInteractionResolver.WIDTH);
     }
 
     this._drawCuboid();
