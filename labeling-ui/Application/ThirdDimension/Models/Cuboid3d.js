@@ -280,7 +280,7 @@ class Cuboid3d {
  */
 Cuboid3d.createFromRawVertices = vertices => {
   return new Cuboid3d(vertices.map(
-    vertex => new Vector4(vertex[0], vertex[1], vertex[2], 1)
+    vertex => vertex === null ? null : new Vector4(vertex[0], vertex[1], vertex[2], 1)
   ));
 };
 
