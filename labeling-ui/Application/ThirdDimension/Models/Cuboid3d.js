@@ -23,13 +23,6 @@ class Cuboid3d {
   }
 
   /**
-   * @returns {{vertices, names, cornerIndex}}
-   */
-  getPrimaryVertices() {
-    return this._getPrimaryVertices(this);
-  }
-
-  /**
    * @param {Vector4} vector
    */
   moveBy(vector) {
