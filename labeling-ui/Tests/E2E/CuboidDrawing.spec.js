@@ -326,6 +326,40 @@ describe('Cuboid drawing', () => {
       });
   });
 
+  it('should change width of loaded cuboid', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 507, y: 390}) // height handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChange);
+        browser.sleep(1000);
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
   afterEach(() => {
     mock.teardown();
   });
