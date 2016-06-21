@@ -51,6 +51,7 @@ class CuboidScaleTool extends Tool {
     if (this._paperCuboid && this._modified) {
       this._modified = false;
       this._paperCuboid.updatePrimaryCorner();
+      this._paperCuboid.reduceToPseudo3dIfPossible();
       this.emit('shape:update', this._paperCuboid);
     }
 

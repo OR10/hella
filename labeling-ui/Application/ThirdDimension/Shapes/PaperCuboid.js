@@ -342,6 +342,7 @@ class PaperCuboid extends PaperShape {
     const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
 
     if (interaction[CuboidInteractionResolver.ROTATE_PRIMARY_AXIS]) {
+      this._cuboid3d.manifestPredictionVertices();
       this._changeRotation(point, this._cuboid3d.vertices[handleVertexIndex]);
     }
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
@@ -400,7 +401,12 @@ class PaperCuboid extends PaperShape {
     );
   }
 
-  _reduceToPseudo3dIfPossible() {
+  /**
+   * Reduce the underlying Shapes to a Pseudo3d representation if this is possible/applicable
+   *
+   * Reduction is always possible if all, but one face of the cuboid are blocked by its projection
+   */
+  reduceToPseudo3dIfPossible() {
     const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
     const vertexVisibilityCount = cuboid2d.vertexVisibility.reduce(
       (current, visible) => visible ? current + 1 : current
@@ -418,6 +424,8 @@ class PaperCuboid extends PaperShape {
         (vertex, index) => cuboid2d.vertexVisibility[index] ? vertex : null
       )
     );
+
+    this._drawCuboid();
   }
 
   /**
@@ -458,7 +466,7 @@ class PaperCuboid extends PaperShape {
   rotateAroundCenter(radians) {
     this._cuboid3d.manifestPredictionVertices();
     this._cuboid3d.rotateAroundZAtPointBy(this._cuboid3d.bottomCenter, radians);
-    this._reduceToPseudo3dIfPossible();
+    this.reduceToPseudo3dIfPossible();
     this._drawCuboid();
   }
 
