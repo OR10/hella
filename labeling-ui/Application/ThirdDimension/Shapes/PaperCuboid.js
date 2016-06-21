@@ -1,9 +1,9 @@
 import paper from 'paper';
-import {Vector3, Matrix4} from 'three-math';
+import {Vector3} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
-import CuboidDimensionPrediction from '../Models/DimensionPrediction/Cuboid';
+// import CuboidDimensionPrediction from '../Models/DimensionPrediction/Cuboid';
 
 import Cuboid3d from '../Models/Cuboid3d';
 import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';

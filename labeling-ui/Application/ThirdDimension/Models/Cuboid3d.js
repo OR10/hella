@@ -22,7 +22,7 @@ class Cuboid3d {
 
   /**
    * Clone this {@link Cuboid3d}
-   * 
+   *
    * @returns {Cuboid3d}
    */
   clone() {
