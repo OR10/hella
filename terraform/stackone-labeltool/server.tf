@@ -10,7 +10,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
         name = "Private_HAGL"
     }
     image_name = "trusty-annostation-2"
-    flavor_name = "anno.storage"
+    flavor_name = "anno.staging"
     floating_ip = "${openstack_compute_floatingip_v2.labeltool.address}"
     security_groups = ["default", "http", "${openstack_compute_secgroup_v2.frame-cdn.name}", "${openstack_compute_secgroup_v2.couchdb.name}", "${openstack_compute_secgroup_v2.rabbitmq.name}"]
     key_pair = "chh"
