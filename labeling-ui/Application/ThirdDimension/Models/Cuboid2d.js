@@ -40,11 +40,6 @@ class Cuboid2d {
   get vertexVisibility() {
     return clone(this._vertexVisibility);
   }
-
-  get primaryVertices() {
-    return clone(this._primaryVertices);
-  }
-
 }
 
 /**
