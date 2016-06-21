@@ -360,6 +360,40 @@ describe('Cuboid drawing', () => {
       });
   });
 
+  it('should change depth of loaded cuboid', (done) => {
+    mock(sharedMocks.concat([
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 563, y: 353}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 614, y: 379}) // height handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 800, y: 440}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then((drawingStack) => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChange);
+        browser.sleep(1000);
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
   afterEach(() => {
     mock.teardown();
   });
