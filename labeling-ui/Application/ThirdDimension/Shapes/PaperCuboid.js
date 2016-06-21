@@ -431,6 +431,13 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
+   * @returns {Point}
+   */
+  get position() {
+    return this._projection2d.projectCuboidTo2d(this._cuboid3d).vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()]
+  }
+
+  /**
    * Convert to JSON for Storage
    */
   toJSON() {

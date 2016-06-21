@@ -170,13 +170,17 @@ export default class MultiTool extends Tool {
       return;
     }
 
-    this._moveTool.moveTo(
-      paperShape,
-      new paper.Point(
-        paperShape.position.x + deltaX,
-        paperShape.position.y + deltaY
-      )
-    );
+
+    this._context.withScope((scope) => {
+      paperShape.moveTo(
+        new paper.Point(
+          paperShape.position.x + deltaX,
+          paperShape.position.y + deltaY
+        )
+      );
+      scope.view.update();
+      this.emit('shape:update', paperShape);
+    });
   }
 
   _mouseMove(event) {

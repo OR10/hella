@@ -247,6 +247,16 @@ class PaperRectangle extends PaperShape {
     this._drawShape();
   }
 
+  /**
+   * @returns {Point}
+   */
+  get position() {
+    return new paper.Point(
+      (this._topLeft.x + this._bottomRight.x) / 2,
+      (this._topLeft.y + this._bottomRight.y) / 2
+    );
+  }
+
   toJSON() {
     return {
       type: 'rectangle',

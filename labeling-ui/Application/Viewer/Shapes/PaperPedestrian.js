@@ -270,6 +270,16 @@ class PaperPedestrian extends PaperShape {
   }
 
   /**
+   * @returns {Point}
+   */
+  get position() {
+    return new paper.Point(
+      this._topCenter.x,
+      (this._topCenter.y + this._bottomCenter.y) / 2
+    );
+  }
+
+  /**
    * Convert to JSON for storage
    *
    * @returns {{type: string, id: String, topCenter: {x: number, y: number}, bottomCenter: {x: number, y: number}, labeledThingInFrameId: *}}
