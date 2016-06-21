@@ -3,7 +3,9 @@ import clone from 'lodash.clone';
 
 class Cuboid2d {
   /**
-   * @param {Array.<Array.<number>>} vertices
+   * Construct a new Cuboid2d
+   *
+   * @param {Array.<Vector3|null>} vertices
    * @param {Array.<boolean>} vertexVisibility
    */
   constructor(vertices,
@@ -33,8 +35,13 @@ class Cuboid2d {
     );
   }
 
+  setVertices(vertices) {
+    this._vertices = vertices;
+    return this;
+  }
+
   get vertices() {
-    return this._vertices.map(vertex => new Vector3(...vertex, 1));
+    return this._vertices.map(vertex => vertex === null ? null : vertex.clone());
   }
 
   get vertexVisibility() {
@@ -43,14 +50,14 @@ class Cuboid2d {
 }
 
 /**
- * @param {Cuboid2d} cuboid2d
- * @param {Array.<THREE.Vector3>} vertices
+ * @param {Array.<Array<Number>|null>} vertices
+ * @param {Array.<boolean>} vertexVisibility
  * @returns {Cuboid2d}
  */
-Cuboid2d.createFromCuboid2dAndVectors = (cuboid2d, vertices) => {
+Cuboid2d.createFromRawVertices = (vertices, vertexVisibility) => {
   return new Cuboid2d(
-    vertices.map(vertex => [vertex.x, vertex.y]),
-    cuboid2d.vertexVisibility
+    vertices.map(vertex => vertex === null ? null : new Vector3(vertex[0], vertex[1], 1)),
+    vertexVisibility
   );
 };
 

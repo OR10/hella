@@ -346,7 +346,7 @@ class PaperCuboid extends PaperShape {
   _changeHeight(point, handleVertex) {
     const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
     const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.HEIGHT);
-    const newReferencePoint = this._projection3d.projectTopCoordianteTo3d(
+    const newReferencePoint = this._projection3d.projectTopCoordinateTo3d(
       new Vector3(point.x, point.y, 1),
       this._cuboid3d.vertices[primaryCornerIndex]
     );

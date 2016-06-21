@@ -90,7 +90,7 @@ class Projection3dFlatWorld {
    * @param {Vector4} bottomVertex3d
    * @returns {Vector4}
    */
-  projectTopCoordianteTo3d(topPoint, bottomVertex3d) {
+  projectTopCoordinateTo3d(topPoint, bottomVertex3d) {
     return this._transformCamToCarForCeilingCoordinate(
       this._removeRotationForVertex(
         this._removeDistortionForVertex(
@@ -110,8 +110,8 @@ class Projection3dFlatWorld {
    * @private
    */
   _reverseCameraMatrix(cuboid2d) {
-    const transformedVertices = cuboid2d.vertices.map(vertex => this._reverseCameraMatrixForVertex(vertex));
-    return Cuboid2d.createFromCuboid2dAndVectors(cuboid2d, transformedVertices);
+    const transformedVertices = cuboid2d.vertices.map(vertex => vertex === null ? null : this._reverseCameraMatrixForVertex(vertex));
+    return cuboid2d.clone().setVertices(transformedVertices);
   }
 
   /**
@@ -129,9 +129,8 @@ class Projection3dFlatWorld {
    * @private
    */
   _removeDistortion(cuboid2d) {
-    const transformedVertices = cuboid2d.vertices.map(vertex => this._removeDistortionForVertex(vertex));
-
-    return Cuboid2d.createFromCuboid2dAndVectors(cuboid2d, transformedVertices);
+    const transformedVertices = cuboid2d.vertices.map(vertex => vertex === null ? null : this._removeDistortionForVertex(vertex));
+    return cuboid2d.clone().setVertices(transformedVertices);
   }
 
   /**
@@ -160,7 +159,7 @@ class Projection3dFlatWorld {
    * @private
    */
   _removeRotation(cuboid2d) {
-    const transformedVertices = cuboid2d.vertices.map(vertex => this._removeRotationForVertex(vertex));
+    const transformedVertices = cuboid2d.vertices.map(vertex => vertex === null ? null : this._removeRotationForVertex(vertex));
     return new Cuboid3d(transformedVertices);
   }
 

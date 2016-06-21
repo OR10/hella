@@ -49,6 +49,8 @@ class Cuboid3d {
     } else {
       this._vertices = vertices;
     }
+
+    return this;
   }
 
   /**

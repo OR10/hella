@@ -23,7 +23,7 @@ class DepthBufferProjection2d {
     faces.sort(this._compareByZOrder);
 
     const [vertices, vertexVisibility] = this._projectFacesWithDepth(faces);
-    return new Cuboid2d(vertices, vertexVisibility);
+    return Cuboid2d.createFromRawVertices(vertices, vertexVisibility);
   }
 
   /**

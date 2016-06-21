@@ -45,9 +45,7 @@ class PlainProjection2d {
    */
   projectCuboidTo2d(cuboid) {
     const projection = cuboid.vertices.map(vertex => this._project3dTo2d(vertex));
-    return new Cuboid2d(
-      projection.map(vertex => [vertex.x, vertex.y])
-    );
+    return new Cuboid2d(projection);
   }
 
   /**
