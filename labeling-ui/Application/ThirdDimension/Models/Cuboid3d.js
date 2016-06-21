@@ -218,38 +218,6 @@ class Cuboid3d {
     );
   }
 
-  get frontTopLeft() {
-    return this._vertices[0].clone();
-  }
-
-  get frontTopRight() {
-    return this._vertices[1].clone();
-  }
-
-  get frontBottomRight() {
-    return this._vertices[2].clone();
-  }
-
-  get frontBottomLeft() {
-    return this._vertices[3].clone();
-  }
-
-  get backTopLeft() {
-    return this._vertices[4].clone();
-  }
-
-  get backTopRight() {
-    return this._vertices[5].clone();
-  }
-
-  get backBottomRight() {
-    return this._vertices[6].clone();
-  }
-
-  get backBottomLeft() {
-    return this._vertices[7].clone();
-  }
-
   get bottomCenter() {
     return this._vertices[2]
       .clone()
