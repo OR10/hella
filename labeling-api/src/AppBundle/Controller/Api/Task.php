@@ -170,7 +170,7 @@ class Task extends Controller\Base
         }
         $userIds = array_unique(
             array_filter($userIds, function ($userId) {
-                return is_int($userId);
+                return is_string($userId);
             })
         );
 
