@@ -1,11 +1,11 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {dumpAllRequestsMade, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Cuboid drawing', () => {
+fdescribe('Cuboid drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -168,8 +168,8 @@ describe('Cuboid drawing', () => {
 
   it('should change height of loaded cuboid', (done) => {
     mock(sharedMocks.concat([
-      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
+      assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
       assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame,
     ]));
 
@@ -178,9 +178,9 @@ describe('Cuboid drawing', () => {
         browser.actions()
           .mouseMove(viewer, {x: 563, y: 353}) // initial position
           .click()
-          .mouseMove(viewer, {x: 621, y: 330}) // height handle
+          .mouseMove(viewer, {x: 564, y: 222}) // height handle
           .mouseDown()
-          .mouseMove(viewer, {x: 621, y: 50}) // drag
+          .mouseMove(viewer, {x: 564, y: 402}) // drag
           .mouseUp()
           .perform();
       })
