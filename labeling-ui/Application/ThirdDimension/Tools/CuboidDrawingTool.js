@@ -143,7 +143,7 @@ class CuboidDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('rectangle:new', this._cuboid);
+    this.emit('cuboid:new', this._cuboid);
   }
 }
 
