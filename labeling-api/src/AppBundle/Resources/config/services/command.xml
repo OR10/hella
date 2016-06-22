@@ -41,6 +41,10 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.convert_user_int_to_string" class="AppBundle\Command\ConvertUserIntToString">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <tag name="console.command"/>
+        </service>
         <service id="annostation.labeling_api.command.create_label_structure"
                  class="AppBundle\Command\CreateLabelStructure">
             <tag name="console.command"/>
