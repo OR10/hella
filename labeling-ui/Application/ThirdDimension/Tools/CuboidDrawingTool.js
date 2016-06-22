@@ -81,7 +81,6 @@ class CuboidDrawingTool extends DrawingTool {
 
 
   startShape(primary, height, width, depth) { // eslint-disable-line no-unused-vars
-    console.log(this._task);
     const projection2d = new DepthBufferProjection2d(
       new PlainProjection2d(this._video.calibration)
     );
