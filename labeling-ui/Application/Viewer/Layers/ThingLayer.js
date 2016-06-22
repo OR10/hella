@@ -3,6 +3,7 @@ import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
 import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
+import CuboidDrawingTool from '../../ThirdDimension/Tools/CuboidDrawingTool';
 import EllipseDrawingTool from '../Tools/Ellipse/EllipseDrawingTool';
 import CircleDrawingTool from '../Tools/Circle/CircleDrawingTool';
 import PathDrawingTool from '../Tools/Path/PathDrawingTool';
@@ -197,6 +198,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         break;
       case 'pedestrian':
         tool = new PedestrianDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, drawingToolOptions.pedestrian);
+        break;
+      case 'cuboid':
+        tool = new CuboidDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, this._$scope.vm.video, drawingToolOptions.cuboid);
         break;
       case 'ellipse':
         tool = new EllipseDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
