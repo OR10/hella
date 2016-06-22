@@ -1,0 +1,144 @@
+{
+  "request": {
+    "method": "PUT",
+    "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
+    "data": {
+      "frameIndex": 0,
+      "incomplete": true,
+      "rev": "2-b65227715b51dadd97f8521646e88a22",
+      "ghost": false,
+      "labeledThingId": "LABELED-THING-ID-1",
+      "shapes": [
+        {
+          "id": "SHAPE-ID-1",
+          "type": "cuboid3d",
+          "vehicleCoordinates": [
+            [
+              10.214386535764,
+              0.91665065093043,
+              2.2312736181519
+            ],
+            [
+              9.2181912536216,
+              1.0037995109016,
+              2.2312736181519
+            ],
+            [
+              9.2181912536216,
+              1.0037995109016,
+              0
+            ],
+            [
+              10.214386535764,
+              0.91665065093043,
+              0
+            ],
+            [
+              10.127237707204,
+              -0.079544272158955,
+              2.2312736181519
+            ],
+            [
+              9.131042425061,
+              0.0076045878122358,
+              2.2312736181519
+            ],
+            [
+              9.131042425061,
+              0.0076045878122358,
+              0
+            ],
+            [
+              10.127237707204,
+              -0.079544272158955,
+              0
+            ]
+          ],
+          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+        }
+      ],
+      "classes": [],
+      "id": "LABELED-THING-IN-FRAME-ID-1",
+      "ghostClasses": null
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThing": {
+          "id": "LABELED-THING-ID-1",
+          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+          "frameRange": {
+            "startFrameNumber": 1,
+            "endFrameNumber": 1
+          },
+          "classes": [
+            "pedestrian"
+          ],
+          "taskId": "TASKID-TASKID",
+          "incomplete": true,
+          "lineColor": "6"
+        },
+        "labeledThingInFrame": {
+          "frameIndex": 0,
+          "incomplete": true,
+          "rev": "2-b65227715b51dadd97f8521646e88a22",
+          "ghost": false,
+          "labeledThingId": "LABELED-THING-ID-1",
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "type": "cuboid3d",
+              "vehicleCoordinates": [
+                [
+                  10.214386535764,
+                  0.91665065093043,
+                  2.2312736181519
+                ],
+                [
+                  9.2181912536216,
+                  1.0037995109016,
+                  2.2312736181519
+                ],
+                [
+                  9.2181912536216,
+                  1.0037995109016,
+                  0
+                ],
+                [
+                  10.214386535764,
+                  0.91665065093043,
+                  0
+                ],
+                [
+                  10.127237707204,
+                  -0.079544272158955,
+                  2.2312736181519
+                ],
+                [
+                  9.131042425061,
+                  0.0076045878122358,
+                  2.2312736181519
+                ],
+                [
+                  9.131042425061,
+                  0.0076045878122358,
+                  0
+                ],
+                [
+                  10.127237707204,
+                  -0.079544272158955,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "classes": [],
+          "id": "LABELED-THING-IN-FRAME-ID-1",
+          "ghostClasses": null
+        }
+      }
+    }
+  }
+}

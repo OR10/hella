@@ -173,26 +173,26 @@ class Cuboid3d {
     switch (true) {
       // Front face
       case isEqual(pseudo3dIndices, [0, 1, 2, 3]):
+        extrusion.multiplier = -1;
         extrusion.prediction = 'depth';
         extrusion.sourceFace = [0, 1, 2, 3];
         extrusion.targetFace = [4, 5, 6, 7];
         break;
       // Back face
       case isEqual(pseudo3dIndices, [4, 5, 6, 7]):
-        extrusion.multiplier = -1;
         extrusion.prediction = 'depth';
         extrusion.sourceFace = [4, 5, 6, 7];
         extrusion.targetFace = [0, 1, 2, 3];
         break;
       // Right face
       case isEqual(pseudo3dIndices, [1, 2, 5, 6]):
+        extrusion.multiplier = -1;
         extrusion.prediction = 'width';
         extrusion.sourceFace = [1, 5, 6, 2];
         extrusion.targetFace = [0, 4, 7, 3];
         break;
       // Left face
       case isEqual(pseudo3dIndices, [0, 3, 4, 7]):
-        extrusion.multiplier = -1;
         extrusion.prediction = 'width';
         extrusion.sourceFace = [0, 4, 7, 3];
         extrusion.targetFace = [1, 5, 6, 2];
