@@ -39,7 +39,7 @@ class LabelingTask
     private $rev;
 
     /**
-     * @var int
+     * @var string|null
      * @CouchDB\Field(type="string")
      */
     private $userId;
@@ -109,7 +109,7 @@ class LabelingTask
     private $drawingToolOptions = array();
 
     /**
-     * @var int|null
+     * @var string|null
      * @CouchDB\Field(type="mixed")
      */
     private $assignedUser = null;
