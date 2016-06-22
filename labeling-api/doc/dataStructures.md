@@ -139,10 +139,16 @@
 + taskFinishedCount: `1` (number) - Number of total finished tasks inside all projects
 
 # ProjectExport
-+ id: `36047d429d50548893be41c6880632fd` (string) - Export Id
++ id: ``
 + projectId: `16b00780792d045c496513f01f006f09` (string) - project id
 + filename: `csv.zip` (string) - export filename
 + taskIds: `583c0838ea5f72671b1b21605c3d6b47` (array[string]) - included task ids for this export
+
+# ProjectDetails
++ id: `36047d429d50548893be41c6880632fd` (string) - Project ID
++ name: `Pedestrian Labeling` (string) - Project Name
++ taskCount: `5` (number) - Number of total tasks inside all projects
++ totalLabelingTimeInSeconds: `3124` (number) - Seconds spend by users in this project
 
 # DimensionPrediction
 + type: `cuboid` (string) - type of the prediction

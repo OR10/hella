@@ -9,6 +9,15 @@
         + result
             + user (array[User])
 
+## Add a new user [/api/users]
+
+### Add a new user [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + user (User)
+
 ## Get a specific user [/api/users/{id}]
 
 + Parameters

@@ -32,3 +32,19 @@ Change own Password
     + Attributes
         + result
             + success: `true` (boolean)
+
+## Get User Permissions [/api/user/permissions]
+
+### Get user permissions [GET]
+
+Get user permissions
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + canViewStatsButton: `true` (boolean)
+            + canViewUserListButton: `true` (boolean)
+            + canViewVideoUploadButton: `true` (boolean)
+            + canViewReopenButton: `true` (boolean)
+            + unassignPermission: `true` (boolean)
+            + canViewProjectButton: `true` (boolean)

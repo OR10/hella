@@ -64,6 +64,26 @@
     + Attributes
         + result (array[LabeledThingInFrame])
 
+## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame]
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+    + incompleteOnly: `true` (boolean, optional) - Only return incomplete labeledThingInFrames.
+    + limit: `10` (number, optional) - The maximum number of labeled things in frame that should be returned.
+
+### Get labeled things in frame for task [GET]
+
+Return all labeled thing in frame for a task
+
++ Parameters
+    + incompleteOnly: `true` (boolean, optional) - Only return incomplete labeledThingInFrames.
+    + limit: `10` (number, optional) - The maximum number of labeled things in frame that should be returned.
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + labeledThingsInFrame (array[LabeledThingInFrame])
+
 ## LabeledThingInFrame [/api/task/{taskId}/labeledThingInFrame/{frameNumber}{?offset,limit}]
 
 + Parameters
@@ -251,5 +271,23 @@ Start a new csv export job.
 + Response 200 (application/json)
 
 ### Delete a LabelingTask assignment [DELETE]
+
++ Response 200 (application/json)
+
+## Set Status to Labeled [/api/task/{taskId}/status/labeled]
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to Labeled [POST]
+
++ Response 200 (application/json)
+
+## Set Status to waiting [/api/task/{taskId}/status/waiting]
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to waiting [POST]
 
 + Response 200 (application/json)

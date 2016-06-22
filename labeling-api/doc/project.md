@@ -50,3 +50,11 @@
 + Response 200 (application/json)
     + Attributes
         + message: `Export started`
+
+## Get a detailed project overview [/api/project/details]
+
+### Project Overview [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result array(ProjectDetails)
