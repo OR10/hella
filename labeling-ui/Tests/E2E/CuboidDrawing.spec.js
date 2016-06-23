@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {dumpAllRequestsMade, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -659,7 +659,7 @@ describe('Cuboid', () => {
         });
     });
 
-    fit('should switch to 2d mode if height is changed above visual threshold', (done) => {
+    it('should switch to 2d mode if height is changed above visual threshold', (done) => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0to4,
