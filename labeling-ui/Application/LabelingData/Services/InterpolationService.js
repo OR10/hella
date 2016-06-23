@@ -96,7 +96,7 @@ class InterpolationService {
 
     return interpolation
       .execute(task, labeledThing, interpolationFrameRange)
-      .then((result) => {
+      .then(result => {
         this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
         return result;
       });
