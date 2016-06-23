@@ -78,7 +78,7 @@ class TaskListController {
           this.waitingTasks = tasks.waiting.map(task => {
             task.video = videos[task.videoId];
             if (task.assignedUser !== null) {
-              task.user = users.find((user) => {
+              task.user = users.find(user => {
                 return user.id === task.assignedUser;
               });
             }
@@ -89,7 +89,7 @@ class TaskListController {
           this.labeledTasks = tasks.labeled.map(task => {
             task.video = videos[task.videoId];
             if (task.assignedUser !== null) {
-              task.user = users.find((user) => {
+              task.user = users.find(user => {
                 return user.id === task.assignedUser;
               });
             }
