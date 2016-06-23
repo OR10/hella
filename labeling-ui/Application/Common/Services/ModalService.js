@@ -95,7 +95,7 @@ class ModalService {
         this._keyboardShortcutService.addHotkey('modal', {
           combo: ['tab', 'shift+tab'],
           description: 'Select the other button in the dialog',
-          callback: (event) => {
+          callback: event => {
             // Select the other button in the modal that is not in focus
             angular.element(document.body).find('button:focus').parent().find('button:not(:focus)').focus();
             event.preventDefault();
