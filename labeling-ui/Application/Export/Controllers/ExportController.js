@@ -72,7 +72,7 @@ class ExportController {
   _loadExportList() {
     this.loadingInProgress = true;
     this._exportGateway.getTaskExports(this.task.id)
-      .then((exports) => {
+      .then(exports => {
         this.exports = exports;
         this.loadingInProgress = false;
       });
