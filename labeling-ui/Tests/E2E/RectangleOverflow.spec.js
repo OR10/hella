@@ -29,7 +29,7 @@ describe('Rectangle Overflow', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should restrict overflowing in the top left corner', (done) => {
+  it('should restrict overflowing in the top left corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -63,7 +63,7 @@ describe('Rectangle Overflow', () => {
       });
   });
 
-  it('should restrict overflowing in the bottom right corner', (done) => {
+  it('should restrict overflowing in the bottom right corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -97,7 +97,7 @@ describe('Rectangle Overflow', () => {
       });
   });
 
-  it('should not allow overflowing in the top left corner', (done) => {
+  it('should not allow overflowing in the top left corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -131,7 +131,7 @@ describe('Rectangle Overflow', () => {
       });
   });
 
-  it('should not allow overflowing in the bottom right corner', (done) => {
+  it('should not allow overflowing in the bottom right corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
