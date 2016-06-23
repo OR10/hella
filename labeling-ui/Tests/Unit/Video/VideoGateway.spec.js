@@ -35,7 +35,7 @@ describe('VideoGateway', () => {
     expect(gateway instanceof VideoGateway).toEqual(true);
   });
 
-  it('should load all videos', (done) => {
+  it('should load all videos', done => {
     const videoResponse = {
       'result': [{
         'id': '16b00780792d045c496513f01f006f09',
@@ -52,7 +52,7 @@ describe('VideoGateway', () => {
 
     $httpBackend.expectGET('/backend/api/video').respond(videoResponse);
 
-    gateway.getVideos().then((videos) => {
+    gateway.getVideos().then(videos => {
       expect(videos).toEqual(videoResponse.result);
       done();
     });
@@ -60,7 +60,7 @@ describe('VideoGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load information for a single video', (done) => {
+  it('should load information for a single video', done => {
     const videoResponse = {
       'result': {
         'id': '16b00780792d045c496513f01f006f09',
@@ -72,7 +72,7 @@ describe('VideoGateway', () => {
 
     $httpBackend.expectGET('/backend/api/video/16b00780792d045c496513f01f006f09').respond(videoResponse);
 
-    gateway.getVideo('16b00780792d045c496513f01f006f09').then((response) => {
+    gateway.getVideo('16b00780792d045c496513f01f006f09').then(response => {
       expect(response).toEqual(videoResponse.result);
       done();
     });
