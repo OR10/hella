@@ -291,7 +291,7 @@ class BufferedHttpProvider {
         logger.log('bufferedHttp:queue', 'Queuing operation: %s %s', options.method, options.url);
         buffer.queue.push({
           method: options.method,
-          execute: (resolveInternal) => {
+          execute: resolveInternal => {
             if (!!options.data) {
               options.data = _transformToJSON(options.data);
             }
