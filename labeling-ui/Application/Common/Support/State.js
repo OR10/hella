@@ -94,7 +94,7 @@ class State {
     const sourceTextualState = this._name;
 
     return {
-      to: (targetTextualState) => {
+      to: targetTextualState => {
         const sourceState = this._machine.getState(sourceTextualState);
         const targetState = this._machine.getState(targetTextualState);
 
