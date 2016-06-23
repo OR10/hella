@@ -36,14 +36,14 @@ describe('UserGateway', () => {
     expect(gateway instanceof UserGateway).toBe(true);
   });
 
-  it('should load information for the currently logged in user', (done) => {
+  it('should load information for the currently logged in user', done => {
     const userResponse = {
       result: {id: 'me', email: 'foo@bar.baz'},
     };
 
     $httpBackend.expectGET('/backend/api/user/profile').respond(userResponse);
 
-    gateway.getCurrentUser().then((user) => {
+    gateway.getCurrentUser().then(user => {
       expect(user).toEqual(new User(userResponse.result));
       done();
     });
@@ -51,7 +51,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load a list of users', (done) => {
+  it('should load a list of users', done => {
     const usersResponse = {
       result: {
         users: [
@@ -63,7 +63,7 @@ describe('UserGateway', () => {
 
     $httpBackend.expectGET('/backend/api/users').respond(usersResponse);
 
-    gateway.getUsers().then((users) => {
+    gateway.getUsers().then(users => {
       expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
       done();
     });
@@ -71,7 +71,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load information for a single user', (done) => {
+  it('should load information for a single user', done => {
     const userResponse = {
       result: {
         user: {id: 'me', email: 'foo@bar.baz'},
@@ -80,7 +80,7 @@ describe('UserGateway', () => {
 
     $httpBackend.expectGET('/backend/api/users/me').respond(userResponse);
 
-    gateway.getUser('me').then((user) => {
+    gateway.getUser('me').then(user => {
       expect(user).toEqual(new User(userResponse.result.user));
       done();
     });
@@ -88,7 +88,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should create a new user', (done) => {
+  it('should create a new user', done => {
     const user = {username: 'me', email: 'foo@bar.baz', password: 'foobar'};
     const userResponse = {
       result: {
@@ -106,7 +106,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should update a user', (done) => {
+  it('should update a user', done => {
     const user = {id: 'me', email: 'foo@bar.baz'};
     const userResponse = {
       result: {
@@ -124,7 +124,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should update a users password', (done) => {
+  it('should update a users password', done => {
     const user = {id: 'me', email: 'foo@bar.baz', password: 'foobar'};
     const userResponse = {
       result: {
@@ -142,7 +142,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should delete a user', (done) => {
+  it('should delete a user', done => {
     const userId = 'me';
     const userResponse = {
       result: {
@@ -160,7 +160,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should update currentUsers password', (done) => {
+  it('should update currentUsers password', done => {
     const oldPassword = 'password';
     const newPassword = '123456';
     const userResponse = {
@@ -179,7 +179,7 @@ describe('UserGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should return the users permissions', (done) => {
+  it('should return the users permissions', done => {
     const userResponse = {
       result: {
         'canViewStatsButton': true,
