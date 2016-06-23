@@ -16,7 +16,7 @@ describe('LabeledObject', () => {
      classes: ['baz', 'bar'],
      incomplete: false,
    }],
-  ], (labeledObjectData) => {
+  ], labeledObjectData => {
     it('should take a labeledObject POJO for initialization', () => {
       const labeledObject = new LabeledObject(labeledObjectData);
 
