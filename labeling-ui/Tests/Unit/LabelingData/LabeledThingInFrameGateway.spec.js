@@ -221,7 +221,7 @@ describe('LabeledThingInFrameGateway', () => {
     [{id: 'task2'}],
     [{id: 'task3'}],
     [{id: 'task4'}],
-  ], (task) => {
+  ], task => {
     const frameIndex = 1;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameIndex}?limit=1&offset=0`;
 
@@ -247,7 +247,7 @@ describe('LabeledThingInFrameGateway', () => {
     [2],
     [3],
     [4],
-  ], (frameIndex) => {
+  ], frameIndex => {
     const task = {id: 'abc'};
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameIndex}?limit=1&offset=0`;
 
