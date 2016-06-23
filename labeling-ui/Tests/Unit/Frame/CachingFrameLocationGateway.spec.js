@@ -61,7 +61,7 @@ describe('CachingFrameLocationGateway', () => {
     expect(proto.getFrameLocations).toHaveBeenCalledWith('some-task', 'some-type', 0, 1);
   });
 
-  it('should use cache if present', (done) => {
+  it('should use cache if present', done => {
     const location = {frameIndex: 0, url: 'http://example.com'};
     locationCache.store('some-task.some-type.0', location);
     gateway.getFrameLocations('some-task', 'some-type', 0, 1).then(locations => {
@@ -73,7 +73,7 @@ describe('CachingFrameLocationGateway', () => {
     $rootScope.$digest();
   });
 
-  it('should store results in cache', (done) => {
+  it('should store results in cache', done => {
     gateway.getFrameLocations('some-task', 'some-type', 0, 2).then(locations => {
       expect(locationCache.get('some-task.some-type.0')).toEqual(locations[0]);
       expect(locationCache.get('some-task.some-type.1')).toEqual(locations[1]);
@@ -83,7 +83,7 @@ describe('CachingFrameLocationGateway', () => {
     $rootScope.$digest();
   });
 
-  it('should call through if cache has gaps', (done) => {
+  it('should call through if cache has gaps', done => {
     const expectedLocations = [
       {frameIndex: 0, url: 'http://example.com/1'},
       {frameIndex: 1, url: 'http://example.com/2'},
