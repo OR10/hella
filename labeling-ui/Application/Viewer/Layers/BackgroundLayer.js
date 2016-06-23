@@ -39,7 +39,7 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
   }
 
   render() {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       scope.view.update(true);
     });
   }
