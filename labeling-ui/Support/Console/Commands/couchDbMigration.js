@@ -65,7 +65,7 @@ class CouchDbMigrationCommand {
       .then(files => files.filter(
         file => file.indexOf('Abstract') !== 0
       ))
-      .then((migrations) => inquirer.prompt([{
+      .then(migrations => inquirer.prompt([{
         type: 'list',
         name: 'migration',
         message: 'Which migration should be executed?',
