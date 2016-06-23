@@ -35,7 +35,7 @@ describe('LabelStructureGateway', () => {
     expect(gateway instanceof LabelStructureGateway).toBe(true);
   });
 
-  it('should load a the label structure data', (done) => {
+  it('should load a the label structure data', done => {
     const taskId = '1234';
     const tasksResponse = {
       result: {
@@ -64,7 +64,7 @@ describe('LabelStructureGateway', () => {
 
     $httpBackend.expectGET(`/backend/api/task/${taskId}/labelStructure`).respond(tasksResponse);
 
-    gateway.getLabelStructureData(taskId).then((structureData) => {
+    gateway.getLabelStructureData(taskId).then(structureData => {
       expect(structureData).toEqual(tasksResponse.result);
       done();
     });
