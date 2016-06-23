@@ -55,7 +55,7 @@ class PaperLayer extends EventEmitter {
   }
 
   render() {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       this.renderInPaperScope(scope);
     });
   }
