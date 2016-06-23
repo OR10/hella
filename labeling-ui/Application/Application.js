@@ -93,7 +93,7 @@ export default class Application {
 
     return Promise.resolve()
       .then(() => {
-        this.modules.forEach((module) => module.registerWithAngular(angular));
+        this.modules.forEach(module => module.registerWithAngular(angular));
 
         this.app = angular.module(this.moduleName, [
           'ui.router',
@@ -107,7 +107,7 @@ export default class Application {
         this.setupRouting();
 
         return this.buildApplicationConfig();
-      }).then((config) => {
+      }).then(config => {
         this.app.constant('applicationConfig', config);
       });
   }
