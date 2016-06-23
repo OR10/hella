@@ -16,7 +16,7 @@ describe('Keyboard Shape Movement', () => {
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.Task,
-      assets.mocks.Shared.Video,
+      assets.mocks.KeyboardShapeMovement.Shared.Video,
       assets.mocks.Shared.LabelStructure,
       assets.mocks.Shared.GetTimer,
       assets.mocks.Shared.PutTimer,
@@ -128,7 +128,7 @@ describe('Keyboard Shape Movement', () => {
         });
     });
 
-    it('should move greater distance by arrow keys', done => {
+    it('should move greater distance by shift + arrow keys', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight,
@@ -317,7 +317,7 @@ describe('Keyboard Shape Movement', () => {
         });
     });
 
-    it('should move greater distance by arrow keys', done => {
+    it('should move greater distance by shift + arrow keys', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight,
@@ -408,6 +408,194 @@ describe('Keyboard Shape Movement', () => {
     });
   });
 
+  describe('Cuboid', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0,
+        assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0to4,
+      ]);
+    });
+
+    it('should move small distance by arrow keys', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp,
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight,
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown,
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 521, y: 336}) // select shape
+            .click()
+            .perform();
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_UP)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidUp')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidUp);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_RIGHT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidRight')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidRight);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_DOWN)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidDown')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidDown);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_LEFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidLeft')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidLeft);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft);
+          done();
+        });
+    });
+
+    it('should move greater distance by shift + arrow keys', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp,
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight,
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown,
+        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 521, y: 336}) // select shape
+            .click()
+            .perform();
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftUp')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftUp);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftRight')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftRight);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftDown')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftDown);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftLeft')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftLeft);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft);
+          done();
+        });
+    });
+  });
 
   afterEach(() => {
     mock.teardown();

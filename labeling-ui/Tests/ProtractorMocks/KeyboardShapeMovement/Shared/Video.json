@@ -1,0 +1,142 @@
+{
+  "request": {
+    "path": "/api/video/VIDEOID-VIDEOID",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "id": "VIDEOID-VIDEOID",
+        "imageTypes": {
+          "sourceJpg": {
+            "converted": true,
+            "width": 1024,
+            "height": 620
+          },
+          "thumbnail": {
+            "converted": true,
+            "width": 200,
+            "height": 121
+          }
+        },
+        "metaData": {
+          "format": "avi",
+          "width": 1024,
+          "height": 620,
+          "fps": 22,
+          "duration": "5.000000",
+          "sizeInBytes": "1259850.000000",
+          "numberOfFrames": 5,
+          "raw": {
+            "format": {
+              "filename": "\/var\/cache\/labeling_api\/anno_sample_videos5W6hqr",
+              "nb_streams": 1,
+              "format_name": "avi",
+              "format_long_name": "AVI (Audio Video Interleaved)",
+              "start_time": "0.000000",
+              "duration": "5.000000",
+              "size": "1259850.000000",
+              "bit_rate": "2015760.000000",
+              "tags": {
+                "encoder": "Lavf54.20.4"
+              }
+            },
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "codec_time_base": "1\/22",
+                "codec_tag_string": "XVID",
+                "codec_tag": "0x44495658",
+                "profile": "Advanced Simple Profile",
+                "width": 1024,
+                "height": 620,
+                "has_b_frames": 1,
+                "sample_aspect_ratio": "1:1",
+                "display_aspect_ratio": "256:155",
+                "pix_fmt": "yuv420p",
+                "level": 5,
+                "avg_frame_rate": "0\/0",
+                "time_base": "1\/22",
+                "start_time": "0.000000",
+                "duration": "5.000000",
+                "nb_frames": 5
+              }
+            ]
+          }
+        },
+        "name": "example.avi",
+        "rev": "5-dcb77099065234c9462b39c3dede007d",
+        "rawCalibration": {
+          "camera": "SMPC16_C0_0103",
+          "intern_px": "1104",
+          "intern_py": "620",
+          "intern_half": " true",
+          "intern_2_fx": "1220.70739746",
+          "intern_2_fy": "1221.07788086",
+          "intern_2_ga": "0.0",
+          "intern_2_xc": "559.203125",
+          "intern_2_yc": "306.796875",
+          "intern_2_kappa": "[-0.192208706592, 0.0590421349576]",
+          "extern_h": "0.0",
+          "extern_2_X": "-1.09999997616",
+          "extern_2_Y": "0.0799999982119",
+          "extern_2_Z": "1.39999997616",
+          "extern_2_ea": "[\"Z90X90Z\", 0.0, -0.0, 0.0]"
+        },
+        "calibration": {
+          "cameraMatrix": [
+            1220.70739746,
+            0,
+            559.203125,
+            0,
+            0,
+            1221.07788086,
+            306.796875,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "rotationMatrix": [
+            0,
+            -1,
+            0,
+            0,
+            0,
+            0,
+            -1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "translation": [
+            -1.09999997616,
+            0.0799999982119,
+            1.39999997616
+          ],
+          "distortionCoefficients": [
+            -0.192208706592,
+            0.0590421349576,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}
