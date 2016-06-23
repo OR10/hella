@@ -62,7 +62,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleUp')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleUp);
           browser.sleep(1000);
         })
@@ -80,7 +80,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleRight);
           browser.sleep(1000);
         })
@@ -98,7 +98,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleDown);
           browser.sleep(1000);
         })
@@ -116,7 +116,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleLeft);
           browser.sleep(1000);
         })
@@ -152,7 +152,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftUp')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftUp);
           browser.sleep(1000);
         })
@@ -170,7 +170,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftRight);
           browser.sleep(1000);
         })
@@ -188,7 +188,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftDown);
           browser.sleep(1000);
         })
@@ -206,7 +206,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftLeft);
           browser.sleep(1000);
         })
@@ -251,7 +251,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianUp')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianUp);
           browser.sleep(1000);
         })
@@ -269,7 +269,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianRight);
           browser.sleep(1000);
         })
@@ -287,7 +287,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianDown);
           browser.sleep(1000);
         })
@@ -305,7 +305,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianLeft);
           browser.sleep(1000);
         })
@@ -341,7 +341,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftUp')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftUp);
           browser.sleep(1000);
         })
@@ -359,7 +359,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftRight);
           browser.sleep(1000);
         })
@@ -377,7 +377,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftDown);
           browser.sleep(1000);
         })
@@ -395,7 +395,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftLeft);
           browser.sleep(1000);
         })
@@ -440,7 +440,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidUp')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidUp);
           browser.sleep(1000);
         })
@@ -458,7 +458,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidRight);
           browser.sleep(1000);
         })
@@ -476,7 +476,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidDown);
           browser.sleep(1000);
         })
@@ -494,7 +494,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidLeft);
           browser.sleep(1000);
         })
@@ -530,7 +530,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftUp')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftUp);
           browser.sleep(1000);
         })
@@ -548,7 +548,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftRight);
           browser.sleep(1000);
         })
@@ -566,7 +566,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftDown);
           browser.sleep(1000);
         })
@@ -584,7 +584,7 @@ describe('Keyboard Shape Movement', () => {
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then((drawingStack) => {
+        .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftLeft);
           browser.sleep(1000);
         })
