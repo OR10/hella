@@ -322,7 +322,7 @@ class TaskController {
     switch (this.task.taskType) {
       case 'object-labeling':
       case 'meta-labeling':
-        this._labelStructureGateway.getLabelStructureData(this.task.id).then((labelStructureData) => {
+        this._labelStructureGateway.getLabelStructureData(this.task.id).then(labelStructureData => {
           this.labelingStructure = labelStructureData.structure;
           this.labelingAnnotation = labelStructureData.annotation;
         });
