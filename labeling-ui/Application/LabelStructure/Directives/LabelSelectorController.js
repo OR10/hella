@@ -144,7 +144,7 @@ export default class LabelSelectorController {
     });
 
     // Update our Wizard View if the classes list changes
-    $scope.$watchCollection('vm.labeledObject.classes', (newClasses) => {
+    $scope.$watchCollection('vm.labeledObject.classes', newClasses => {
       if (newClasses) {
         this._updatePagesAndChoices();
       }
@@ -202,7 +202,7 @@ export default class LabelSelectorController {
       this._storeUpdatedLabeledObject();
     }, true);
 
-    $scope.$watch('vm.activePageIndex', (newPageIndex) => {
+    $scope.$watch('vm.activePageIndex', newPageIndex => {
       if (newPageIndex !== undefined && newPageIndex !== null) {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
       }
@@ -372,7 +372,7 @@ export default class LabelSelectorController {
   }
 
   handleLabelSelectionClick(id) {
-    const index = this.pages.findIndex((element) => {
+    const index = this.pages.findIndex(element => {
       return element.id === id;
     });
     if (this.pages[index + 1]) {
