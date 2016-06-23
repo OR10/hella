@@ -551,7 +551,7 @@ describe('Cuboid', () => {
         });
     });
 
-    xit('should switch to 2d mode and back if right side is not visible', (done) => {
+    it('should switch to 2d mode and back if right side is not visible', (done) => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.frameIndex0to4,
@@ -568,33 +568,33 @@ describe('Cuboid', () => {
             .perform();
         })
         .then(
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth180')
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth180')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then((drawingStack) => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth180);
           browser.sleep(1000);
         })
-        .then(() => dumpAllRequestsMade(mock))
-        // .then(() => getMockRequestsMade(mock))
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d);
         })
         .then(() => {
           browser.actions()
-            .sendKeys('p')
+            .sendKeys('o')
             .perform();
         })
         .then(
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth180')
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth180')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then((drawingStack) => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dWidth180);
           browser.sleep(1000);
         })
-        .then(() => dumpAllRequestsMade(mock))
-        // .then(() => getMockRequestsMade(mock))
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d);
           done();
