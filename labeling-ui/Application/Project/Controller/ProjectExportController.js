@@ -43,7 +43,7 @@ class ProjectExportController {
   _loadExportList() {
     this.loadingInProgress = true;
     this._projectGateway.getExports(this.project.id)
-      .then((exports) => {
+      .then(exports => {
         this.exports = exports;
         this.loadingInProgress = false;
       });
