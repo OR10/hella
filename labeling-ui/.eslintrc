@@ -9,6 +9,10 @@
       }
     ],
     "no-console": [2],
+    "arrow-parens": [
+      2,
+      "as-needed"
+    ],
     "id-length": [
       2,
       {
