@@ -32,7 +32,7 @@ class FrameGateway {
     return this._abortable(this._$q((resolve, reject) => {
       const image = new Image();
       image.addEventListener('load', () => resolve(image));
-      image.addEventListener('error', (error) => reject(error));
+      image.addEventListener('error', error => reject(error));
       image.crossOrigin = 'Anonymous';
       image.src = location.url;
     }));
