@@ -43,7 +43,7 @@ export default class IncrementalBuilder {
       }
 
       return this.builder.bundle(this.entryPointExpression, this.buildOptions);
-    }).then((output) => {
+    }).then(output => {
       this.buildCache = this.builder.getCache();
 
       const endTime = Date.now();
