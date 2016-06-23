@@ -1,0 +1,8 @@
+{
+  "type": {
+    "challenge": "Type"
+  },
+  "ignore-vehicle": {
+    "response": "ignore-vehicle"
+  }
+}

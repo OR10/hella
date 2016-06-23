@@ -107,6 +107,7 @@ class Index extends Base
         $drawingToolPerson  = $request->request->get('drawingToolPerson', 'pedestrian');
         $drawingToolCyclist = $request->request->get('drawingToolCyclist', 'rectangle');
         $drawingToolIgnore  = $request->request->get('drawingToolIgnore', 'rectangle');
+        $drawingToolIgnoreVehicle  = $request->request->get('drawingToolIgnoreVehicle', 'rectangle');
         $drawingToolOptions = array(
             'pedestrian' => array(
                 'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22'),
@@ -140,6 +141,12 @@ class Index extends Base
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
                 'drawingTool' => $drawingToolIgnore,
+            );
+        }
+        if ($request->request->get('ignore-vehicle', false)) {
+            $labelInstructions[] = array(
+                'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
+                'drawingTool' => $drawingToolIgnoreVehicle,
             );
         }
 

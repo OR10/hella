@@ -20,6 +20,7 @@ class LabelingTask
     const INSTRUCTION_PERSON = 'person';
     const INSTRUCTION_CYCLIST = 'cyclist';
     const INSTRUCTION_IGNORE = 'ignore';
+    const INSTRUCTION_IGNORE_VEHICLE = 'ignore-vehicle';
 
     const STATUS_PREPROCESSING = 'preprocessing';
     const STATUS_WAITING = 'waiting';
