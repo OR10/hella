@@ -62,7 +62,7 @@ describe('FrameGateway', () => {
   it('should request the url from the given location and return the image once loaded', done => {
     const mock = createImageMock(false);
     gateway.getImage(frameLocation)
-      .then((image) => {
+      .then(image => {
         expect(image.__srcSpy).toHaveBeenCalled();
         expect(image.__srcSpy).toHaveBeenCalledWith(frameLocation.url);
         done();
@@ -76,7 +76,7 @@ describe('FrameGateway', () => {
   it('should reject in case an image loading error occurs', done => {
     const mock = createImageMock(true);
     gateway.getImage(frameLocation)
-      .catch((error) => {
+      .catch(error => {
         expect(error).toEqual('error!!1elf!!');
         done();
       });
