@@ -92,7 +92,7 @@ class ViewerTitleBarController {
     this.refreshIncompleteCount();
     this._registerOnEvents();
 
-    $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], (newValues) => {
+    $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], newValues => {
       const width = newValues[0];
       const height = newValues[1];
       if (width && height) {
@@ -119,7 +119,7 @@ class ViewerTitleBarController {
     this._applicationState.disableAll();
     this._applicationState.viewer.work();
 
-    this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then((result) => {
+    this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then(result => {
       if (result.count !== 0) {
         this.handleIncompleteState();
       } else {
@@ -181,7 +181,7 @@ class ViewerTitleBarController {
 
   _selectLabeledThingInFrame(nextIncomplete) {
     this._$timeout(() => {
-      const labeledThingInFrame = this.labeledThingsInFrame.find((element) => {
+      const labeledThingInFrame = this.labeledThingsInFrame.find(element => {
         return nextIncomplete.id === element.id;
       });
       const shape = labeledThingInFrame.paperShapes[0];
