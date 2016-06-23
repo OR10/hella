@@ -69,7 +69,7 @@ class PanAndZoom {
    * @param {Number} deltaY
    */
   panBy(deltaX, deltaY) {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       const view = scope.view;
       let offset = new paper.Point(deltaX, deltaY);
 
@@ -86,7 +86,7 @@ class PanAndZoom {
    * @param {Point} newCenter
    */
   panTo(newCenter) {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       scope.view.center = this._restrictViewportToViewBounds(scope.view, newCenter);
     });
   }
