@@ -151,7 +151,7 @@ export default class MultiTool extends Tool {
     // TODO: refactor this into a separate cuboid-rotate tool !!!
     const shape = this._$scope.vm.selectedPaperShape;
     if (shape instanceof PaperCuboid) {
-      this._context.withScope((scope) => {
+      this._context.withScope(scope => {
         shape.rotateAroundCenter(degree);
         shape.updatePrimaryCorner();
         scope.view.update();
@@ -171,7 +171,7 @@ export default class MultiTool extends Tool {
     }
 
 
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       paperShape.moveTo(
         new paper.Point(
           paperShape.position.x + deltaX,
