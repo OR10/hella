@@ -35,7 +35,7 @@ describe('TaskGateway', () => {
     expect(gateway instanceof TaskGateway).toBe(true);
   });
 
-  it('should load a list of tasks', (done) => {
+  it('should load a list of tasks', done => {
     const tasksResponse = {
       result: {
         tasks: {
@@ -58,7 +58,7 @@ describe('TaskGateway', () => {
 
     $httpBackend.expectGET('/backend/api/task').respond(tasksResponse);
 
-    gateway.getTasks().then((tasks) => {
+    gateway.getTasks().then(tasks => {
       expect(tasks).toEqual(tasksResponse.result.tasks);
       done();
     });
@@ -66,7 +66,7 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load a list of tasks with videos', (done) => {
+  it('should load a list of tasks with videos', done => {
     const tasksResponse = {
       result: {
         tasks: {
@@ -99,7 +99,7 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load a list of tasks with videos for a specific task', (done) => {
+  it('should load a list of tasks with videos for a specific task', done => {
     const tasksResponse = {
       result: {
         tasks: {
@@ -132,14 +132,14 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load information for a single task', (done) => {
+  it('should load information for a single task', done => {
     const taskResponse = {
       result: {foo: 'bar'},
     };
 
     $httpBackend.expectGET('/backend/api/task/123asdf').respond(taskResponse);
 
-    gateway.getTask('123asdf').then((task) => {
+    gateway.getTask('123asdf').then(task => {
       expect(task).toEqual(taskResponse.result);
       done();
     });
@@ -147,7 +147,7 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should mark tasks as labeled', (done) => {
+  it('should mark tasks as labeled', done => {
     const markResponse = {
       result: {success: true},
     };
@@ -162,7 +162,7 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should mark tasks as waiting', (done) => {
+  it('should mark tasks as waiting', done => {
     const markResponse = {
       result: {success: true},
     };
