@@ -417,7 +417,7 @@ class PaperCuboid extends PaperShape {
     }
 
     // @TODO: Inject logger and replace this call with a proper one
-    console.log('Reducing PaperCuboid to Pseudo3d Cuboid: ', cuboid2d.vertexVisibility);
+    // console.log('Reducing PaperCuboid to Pseudo3d Cuboid: ', cuboid2d.vertexVisibility);
 
     this._cuboid3d.setVertices(
       this._cuboid3d.vertices.map(
