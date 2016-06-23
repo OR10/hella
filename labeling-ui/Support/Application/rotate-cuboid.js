@@ -47,7 +47,7 @@ const vehicleCoordinates = [
   ],
 ];
 
-const vectorPoints = vehicleCoordinates.map((vertices) => new Vector3(...vertices));
+const vectorPoints = vehicleCoordinates.map(vertices => new Vector3(...vertices));
 
 const rot = new Matrix4();
 const t1 = new Matrix4();
