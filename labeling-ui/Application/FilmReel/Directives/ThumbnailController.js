@@ -126,8 +126,8 @@ class ThumbnailController {
      */
     this._imagePromise = null;
 
-    this._drawBackgroundLayerDebounced = animationFrameService.debounce((redraw) => this._drawBackgroundLayer(redraw));
-    this._drawThingLayerDebounced = animationFrameService.debounce((redraw) => this._drawThingLayer(redraw));
+    this._drawBackgroundLayerDebounced = animationFrameService.debounce(redraw => this._drawBackgroundLayer(redraw));
+    this._drawThingLayerDebounced = animationFrameService.debounce(redraw => this._drawThingLayer(redraw));
 
     $scope.$watch('vm.currentFrameIndex', newFrameIndex => {
       const numericalFrameIndex = Number.parseInt(newFrameIndex, 10);
@@ -209,7 +209,7 @@ class ThumbnailController {
    * @private
    */
   _applyFilters(rasterImage, filters) {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       const originalImageData = rasterImage.getImageData(
         new scope.Rectangle(0, 0, rasterImage.width, rasterImage.height)
       );
