@@ -13,7 +13,7 @@ import chokidar from 'chokidar';
 import {exec} from 'child_process';
 import chalk from 'chalk';
 import beepbeep from 'beepbeep';
-import mkdirp from 'mkdirp';
+import mkdirp from 'mkdirp-promise';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -98,15 +98,24 @@ paths.files = {
   'public': `${paths.dir.public}/**/*`,
 };
 
-gulp.task('clean', () => {
+gulp.task('create-directories', () => {
+  return Promise.all([
+    mkdirp(paths.dir.distribution),
+    mkdirp(paths.dir.documentation.javascript),
+    mkdirp(paths.dir.logs),
+    mkdirp(paths.dir.css),
+    mkdirp(paths.dir.fonts),
+  ]);
+});
+
+gulp.task('clean', ['clean-logs'], () => {
   return del([
     `${paths.dir.distribution}/**/*`,
-    `${paths.dir.logs}/**/*`,
     `${paths.dir.documentation.javascript}/**/*`,
   ]);
 });
 
-gulp.task('clean-logs', () => {
+gulp.task('clean-logs', ['create-directories'], () => {
   return del([
     `${paths.dir.logs}/**/*`,
   ]);
@@ -190,16 +199,19 @@ gulp.task('build-release-config', next => {
 
   if (process.env.VERSION_STRING) {
     releaseConfig.revision = process.env.VERSION_STRING;
-    mkdirp(releaseConfigPath, () => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
+    mkdirp(releaseConfigPath)
+      .then(() => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
   } else {
     execReturn('git rev-parse --short HEAD', ({stdout}) => {
       releaseConfig.revision = stdout.trim();
-      mkdirp(releaseConfigPath, () => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
+      mkdirp(releaseConfigPath)
+        .then(() => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
     });
   }
 });
 
 gulp.task('build', next => run(
+  'clean',
   'build-public',
   'build-templates',
   'build-release-config',
