@@ -33,7 +33,7 @@ describe('StatisticsGateway', () => {
     expect(gateway instanceof StatisticsGateway).toBe(true);
   });
 
-  it('should load a list of task statistics', (done) => {
+  it('should load a list of task statistics', done => {
     const response = {
       result: [
         {
