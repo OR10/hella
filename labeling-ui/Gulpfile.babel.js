@@ -252,7 +252,7 @@ gulp.task('eslint', () => {
     .pipe($$.eslint.failAfterError());
 });
 
-gulp.task('eslint-checkstyle', () => {
+gulp.task('eslint-checkstyle', ['create-directories'], () => {
   return gulp.src([
     `!${paths.files.vendor}`,
     `!${paths.files.system.config}`,
