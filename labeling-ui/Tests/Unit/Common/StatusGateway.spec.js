@@ -178,7 +178,7 @@ describe('StatusGateway', () => {
     const resultFinished = {result: statusFinished};
 
     gateway.waitForJob(job, 1000)
-      .then((result) => {
+      .then(result => {
         expect(result).toEqual(statusFinished);
         done();
       });
