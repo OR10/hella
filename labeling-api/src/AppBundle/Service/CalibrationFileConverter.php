@@ -93,7 +93,7 @@ class CalibrationFileConverter
 
         return array(
             cos($roll) * $yaw + cos($yaw) * $roll * $pitch,
-            $yaw * $roll + $pitch - cos($roll) * cos($yaw),
+            $yaw * $roll * $pitch - cos($roll) * cos($yaw),
             -$roll * cos($pitch),
             0,
             cos($yaw) * cos($roll) * $pitch - $roll * $yaw,

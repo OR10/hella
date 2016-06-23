@@ -67,7 +67,7 @@ class CalibrationFileConverterTest extends Tests\KernelTestCase
                     ),
                     "rotationMatrix" => array(
                         0.013604451039289,
-                        -0.99652667625716,
+                        -0.99985682510335,
                         -0.010062948670512,
                         0,
                         0.0030569589937716,
