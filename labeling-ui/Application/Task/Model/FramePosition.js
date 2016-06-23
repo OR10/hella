@@ -114,7 +114,7 @@ class FramePosition {
    */
   _onFrameChangeBefore() {
     // Trigger all reapeated subscribers
-    Object.keys(this._subscribers.before.always).forEach((name) => {
+    Object.keys(this._subscribers.before.always).forEach(name => {
       this._subscribers.before.always[name](this._position);
     });
   }
@@ -126,13 +126,13 @@ class FramePosition {
    */
   _onFrameChangeAfter() {
     // Trigger all one time subscribers and clear the list afterwards
-    Object.keys(this._subscribers.after.oneTime).forEach((name) => {
+    Object.keys(this._subscribers.after.oneTime).forEach(name => {
       this._subscribers.after.oneTime[name](this._position);
     });
     this._subscribers.after.oneTime = {};
 
     // Trigger all reapeated subscribers
-    Object.keys(this._subscribers.after.always).forEach((name) => {
+    Object.keys(this._subscribers.after.always).forEach(name => {
       this._subscribers.after.always[name](this._position);
     });
   }
