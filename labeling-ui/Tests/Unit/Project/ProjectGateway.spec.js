@@ -33,7 +33,7 @@ describe('ProjectGateway', () => {
     expect(gateway instanceof ProjectGateway).toBe(true);
   });
 
-  it('should load a single project', (done) => {
+  it('should load a single project', done => {
     const projectId = '7999cf8d8d5275330fa67fc69501d977';
     const response = {
       result: {
@@ -54,7 +54,7 @@ describe('ProjectGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load a list of projects', (done) => {
+  it('should load a list of projects', done => {
     const response = {
       result: [
         {
@@ -78,7 +78,7 @@ describe('ProjectGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load a detailed list of projects', (done) => {
+  it('should load a detailed list of projects', done => {
     const response = {
       result: [
         {
@@ -108,7 +108,7 @@ describe('ProjectGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load list of export for the project', (done) => {
+  it('should load list of export for the project', done => {
     const projectId = '7999cf8d8d5275330fa67fc69501d977';
     const response = {
       result: [{
