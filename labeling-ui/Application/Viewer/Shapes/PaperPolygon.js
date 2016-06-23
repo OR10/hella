@@ -29,7 +29,7 @@ class PaperPolygon extends PaperShape {
   }
 
   toJSON() {
-    const points = this._shape.segments.map((segment) => {
+    const points = this._shape.segments.map(segment => {
       return {
         x: Math.round(segment.point.x),
         y: Math.round(segment.point.y),
