@@ -37,7 +37,7 @@ describe('DimensionPredictionGateway', () => {
     expect(gateway instanceof DimensionPredictionGateway).toBe(true);
   });
 
-  it('should load a prediction', (done) => { // eslint-disable-line jasmine/missing-expect
+  it('should load a prediction', done => { // eslint-disable-line jasmine/missing-expect
     const predictionResponse = {
       result: {
         type: 'cuboid',
@@ -60,7 +60,7 @@ describe('DimensionPredictionGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should return proper DimensionPrediction model', (done) => {
+  it('should return proper DimensionPrediction model', done => {
     const predictionResponse = {
       result: {
         type: 'cuboid',
@@ -78,7 +78,7 @@ describe('DimensionPredictionGateway', () => {
 
     $httpBackend.expectGET('/backend/api/dimensionPrediction/SOME-LABELED-THING-ID/42').respond(predictionResponse);
 
-    gateway.predictDimensionsFor(labeledThing, 42).then((prediction) => {
+    gateway.predictDimensionsFor(labeledThing, 42).then(prediction => {
       const {width, height, depth} = prediction;
 
       expect(width).toEqual(123);
@@ -93,7 +93,7 @@ describe('DimensionPredictionGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should error on unknown prediction', (done) => {
+  it('should error on unknown prediction', done => {
     const predictionResponse = {
       result: {
         type: 'unknown-prediction-type',
@@ -111,7 +111,7 @@ describe('DimensionPredictionGateway', () => {
 
     gateway.predictDimensionsFor(labeledThing, 23)
       .then(() => fail('Promise should not be fulfilled'))
-      .catch((error) => {
+      .catch(error => {
         expect(error.message).toBe('Unknown dimensionPrediction#type: unknown-prediction-type');
         done();
       });
