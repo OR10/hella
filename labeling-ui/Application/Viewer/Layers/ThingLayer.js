@@ -369,12 +369,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {boolean?} update
    */
   addLabeledThingsInFrame(labeledThingsInFrame, update = true) {
-    labeledThingsInFrame.forEach((labeledThingInFrame) => {
+    labeledThingsInFrame.forEach(labeledThingInFrame => {
       this.addLabeledThingInFrame(labeledThingInFrame, false);
     });
 
     if (update) {
-      this._context.withScope((scope) => {
+      this._context.withScope(scope => {
         scope.view.update();
       });
     }
@@ -411,7 +411,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     if (update) {
-      this._context.withScope((scope) => {
+      this._context.withScope(scope => {
         scope.view.update();
       });
     }
@@ -440,7 +440,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
 
       if (update) {
-        this._context.withScope((scope) => {
+        this._context.withScope(scope => {
           scope.view.update();
         });
       }
@@ -450,7 +450,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   update() {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       scope.view.update();
     });
   }
