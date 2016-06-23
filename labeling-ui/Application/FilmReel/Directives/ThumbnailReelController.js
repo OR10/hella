@@ -338,7 +338,7 @@ class ThumbnailReelController {
    * @private
    */
   _loadFrameLocations(framePosition) {
-    const imageTypes = this.task.requiredImageTypes.filter((imageType) => {
+    const imageTypes = this.task.requiredImageTypes.filter(imageType => {
       return (this._supportedImageTypes.indexOf(imageType) !== -1);
     });
     if (!imageTypes.length) {
