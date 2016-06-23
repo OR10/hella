@@ -153,7 +153,7 @@ class CacheHeaterService {
             this._nextHeaters.delete(group);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error); // eslint-disable-line no-console
           this._nextHeaters.delete(group);
         });
