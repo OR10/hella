@@ -185,7 +185,7 @@ class Projection3dFlatWorld {
     ];
 
     const points = [];
-    topBottomMapping.map((mapping) => {
+    topBottomMapping.map(mapping => {
       const cz = (0 - this._calibration.translation.z) / cuboid3d.vertices[mapping.bottom].z;
       points[mapping.bottom] = new Vector4(
         cuboid3d.vertices[mapping.bottom].x * cz + this._calibration.translation.x,
