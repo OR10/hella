@@ -128,7 +128,7 @@ describe('Keyboard Shape Movement', () => {
         });
     });
 
-    fit('should move small distance by arrow keys', done => {
+    it('should move greater distance by arrow keys', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight,
@@ -214,6 +214,195 @@ describe('Keyboard Shape Movement', () => {
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft);
+          done();
+        });
+    });
+  });
+
+  describe('Pedestrian', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0to4,
+      ]);
+    });
+
+    it('should move small distance by arrow keys', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 190, y: 250}) // select shape
+            .click()
+            .perform();
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_UP)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianUp')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianUp);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_RIGHT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianRight')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianRight);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_DOWN)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianDown')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianDown);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.ARROW_LEFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianLeft')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianLeft);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft);
+          done();
+        });
+    });
+
+    it('should move greater distance by arrow keys', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown,
+        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 190, y: 250}) // select shape
+            .click()
+            .perform();
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftUp')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftUp);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftRight')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftRight);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftDown')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftDown);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftLeft')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftLeft);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft);
           done();
         });
     });
