@@ -28,11 +28,11 @@ function chokidarWatch(glob, fn) {
 function execLive(command, next) {
   const child = exec(command, {maxBuffer: Number.MAX_SAFE_INTEGER}, next);
 
-  child.stdout.on('data', (data) => {
+  child.stdout.on('data', data => {
     process.stdout.write(data);
   });
 
-  child.stderr.on('data', (data) => {
+  child.stderr.on('data', data => {
     process.stderr.write(data);
   });
 }
@@ -121,7 +121,7 @@ gulp.task('clean-logs', ['create-directories'], () => {
   ]);
 });
 
-gulp.task('serve', (next) => { // eslint-disable-line no-unused-vars
+gulp.task('serve', next => { // eslint-disable-line no-unused-vars
   /**
    * next is intentionally never called, as 'serve' is an endless task
    * Do not remove the next from the function signature!
@@ -267,7 +267,7 @@ gulp.task('eslint-checkstyle', () => {
     .pipe($$.eslint.failAfterError());
 });
 
-gulp.task('test-unit', (next) => {
+gulp.task('test-unit', next => {
   const karmaServer = new KarmaServer({
     'configFile': path.join(__dirname, '/karma.conf.js'),
   }, next);
@@ -286,7 +286,7 @@ gulp.task('test-unit-continuous', () => {
 });
 
 gulp.task('copy-canteen', () => {
-  return jspm.normalize('canteen').then((normalizedFile) => {
+  return jspm.normalize('canteen').then(normalizedFile => {
     const normalizedPath = normalizedFile
       .replace(/file:\/\//, '')
       .replace(/\.js$/, '');
@@ -298,7 +298,7 @@ gulp.task('copy-canteen', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
+gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], next => {
   const protractorConfig = {
     configFile: 'protractor.conf.js',
     args: [],
@@ -320,7 +320,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
 
   gulp.src(paths.files.tests.e2e)
     .pipe(protractor(protractorConfig))
-    .on('error', (error) => {
+    .on('error', error => {
       protractorServer.close();
       throw error;
     })
@@ -330,7 +330,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], (next) => {
     });
 });
 
-gulp.task('test-e2e', ['webdriver-update'], (next) => { // eslint-disable-line no-unused-vars
+gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
   run('clean', 'build', 'copy-canteen', 'optimize', 'test-e2e-run');
 });
 
@@ -359,8 +359,8 @@ gulp.task('build-sass', () => {
     .pipe(gulp.dest(`${paths.dir.css}`));
 });
 
-gulp.task('build-fonts', (next) => {
-  jspm.normalize('font-awesome').then((normalizedFile) => {
+gulp.task('build-fonts', next => {
+  jspm.normalize('font-awesome').then(normalizedFile => {
     const normalizedPath = normalizedFile
       .replace(/file:\/\//, '')
       .replace(/\.js$/, '');
@@ -398,7 +398,7 @@ gulp.task('optimize-css', () => {
     .pipe(gulp.dest(paths.dir.css));
 });
 
-gulp.task('build-templates', (next) => {
+gulp.task('build-templates', next => {
   run(
     ['build-foundation-templates'],
     next
@@ -417,11 +417,11 @@ gulp.task('build-foundation-templates', () => {
     .pipe(gulp.dest(paths.dir.distribution + '/Templates'));
 });
 
-gulp.task('documentation-javascript', (next) => {
+gulp.task('documentation-javascript', next => {
   execLive('node_modules/.bin/jsdoc --configure jsdoc.conf.json', next);
 });
 
-gulp.task('documentation', (next) => {
+gulp.task('documentation', next => {
   run(
     'clean',
     ['documentation-javascript'],
