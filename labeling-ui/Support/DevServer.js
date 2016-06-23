@@ -93,7 +93,7 @@ export default class DevServer {
 
   initializeLiveReload(port = 35729, options = {}) {
     const livereload = new TinyLrServer(options);
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       livereload.listen(port, () => {
         resolve();
       });
@@ -198,7 +198,7 @@ export default class DevServer {
     return new Promise((resolve, reject) => {
       const server = http.createServer(app);
 
-      server.once('error', (error) => {
+      server.once('error', error => {
         reject(error);
       });
 
