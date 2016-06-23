@@ -29,7 +29,7 @@ describe('BufferedHttp', () => {
       return defer.promise;
     });
 
-    module(($provide) => {
+    module($provide => {
       $provide.value('revisionManager', revisionManager);
       $provide.value('$http', $http);
     });
