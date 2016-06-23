@@ -32,7 +32,7 @@ describe('Crosshairs drawing', () => {
     crosshairsToggleButton = element(by.css('.task-bar-right button .fa-crosshairs')).element(by.xpath('..'));
   });
 
-  it('should not draw crosshair if disabled', (done) => {
+  it('should not draw crosshair if disabled', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -47,13 +47,13 @@ describe('Crosshairs drawing', () => {
       .then(
         () => canvasInstructionLogManager.getCrosshairsCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CrosshairsDrawing.NoCrosshairs);
         done();
       });
   });
 
-  it('should draw crosshair if enabled top left', (done) => {
+  it('should draw crosshair if enabled top left', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -70,13 +70,13 @@ describe('Crosshairs drawing', () => {
         // () => canvasInstructionLogManager.getCrosshairsCanvasLogs('CrosshairsDrawing', 'TopLeft')
         () => canvasInstructionLogManager.getCrosshairsCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CrosshairsDrawing.TopLeft);
         done();
       });
   });
 
-  it('should draw crosshair if enabled center', (done) => {
+  it('should draw crosshair if enabled center', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -93,13 +93,13 @@ describe('Crosshairs drawing', () => {
         // () => canvasInstructionLogManager.getCrosshairsCanvasLogs('CrosshairsDrawing', 'Center')
         () => canvasInstructionLogManager.getCrosshairsCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CrosshairsDrawing.Center);
         done();
       });
   });
 
-  it('should draw crosshair if enabled bottom right', (done) => {
+  it('should draw crosshair if enabled bottom right', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -116,13 +116,13 @@ describe('Crosshairs drawing', () => {
         // () => canvasInstructionLogManager.getCrosshairsCanvasLogs('CrosshairsDrawing', 'BottomRight')
         () => canvasInstructionLogManager.getCrosshairsCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CrosshairsDrawing.BottomRight);
         done();
       });
   });
 
-  it('should not draw crosshair if enabled and mousecursor outside of viewer', (done) => {
+  it('should not draw crosshair if enabled and mousecursor outside of viewer', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -141,7 +141,7 @@ describe('Crosshairs drawing', () => {
       .then(
         () => canvasInstructionLogManager.getCrosshairsCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CrosshairsDrawing.NoCrosshairs);
         done();
       });
