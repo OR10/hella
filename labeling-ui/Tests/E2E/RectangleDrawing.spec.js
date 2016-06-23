@@ -30,7 +30,7 @@ describe('Rectangle drawing', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should load and draw one rectangle', (done) => {
+  it('should load and draw one rectangle', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
@@ -41,13 +41,13 @@ describe('Rectangle drawing', () => {
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
         done();
       });
   });
 
-  it('should load and draw two rectangles', (done) => {
+  it('should load and draw two rectangles', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -58,13 +58,13 @@ describe('Rectangle drawing', () => {
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawTwoRectangles')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawTwoRectangles);
         done();
       });
   });
 
-  it('should select a rectangle', (done) => {
+  it('should select a rectangle', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -87,7 +87,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should select and deselect a rectangle', (done) => {
+  it('should select and deselect a rectangle', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -114,7 +114,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should deselect one and select an other rectangle', (done) => {
+  it('should deselect one and select an other rectangle', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -141,7 +141,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly move a rectangle on canvas and save the changed coordinates', (done) => {
+  it('should correctly move a rectangle on canvas and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -174,7 +174,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly resize a rectangle on canvas and save the changed coordinates', (done) => {
+  it('should correctly resize a rectangle on canvas and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -209,7 +209,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly resize a while flipping bottomRight and topLeft', (done) => {
+  it('should correctly resize a while flipping bottomRight and topLeft', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0,
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0to4,
@@ -243,7 +243,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should keep the labeled thing selected over a frame change', (done) => {
+  it('should keep the labeled thing selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1,
@@ -274,7 +274,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should draw a new rectangle', (done) => {
+  it('should draw a new rectangle', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -306,7 +306,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should draw multiple new rectangles', (done) => {
+  it('should draw multiple new rectangles', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -351,7 +351,7 @@ describe('Rectangle drawing', () => {
   });
 
   // Needs to be fixed in code
-  xit('should correctly handle extra information in limited labeledThingInFrame request', (done) => {
+  xit('should correctly handle extra information in limited labeledThingInFrame request', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0to4,
@@ -362,7 +362,7 @@ describe('Rectangle drawing', () => {
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
-      .then((drawingStack) => {
+      .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
         done();
       });
