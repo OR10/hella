@@ -462,7 +462,7 @@ class ViewerController {
       }
     );
 
-    $scope.$watch('vm.selectedPaperShape', (newShape) => {
+    $scope.$watch('vm.selectedPaperShape', newShape => {
       if (newShape && !newShape.isDraft) {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
@@ -486,7 +486,7 @@ class ViewerController {
       }
     );
 
-    const panViewportDebounced = animationFrameService.debounce((newCenter) => this._panTo(newCenter));
+    const panViewportDebounced = animationFrameService.debounce(newCenter => this._panTo(newCenter));
 
     $scope.$watchGroup(
       ['vm.viewport.zoom', 'vm.viewport.center'], ([newZoom, newCenter]) => {
@@ -662,7 +662,7 @@ class ViewerController {
 
   zoomIn(focalPoint, zoomFactor) {
     this._layerManager.forEachLayer(
-      (layer) => {
+      layer => {
         if (layer.zoomIn !== undefined) {
           layer.zoomIn(focalPoint, zoomFactor);
         }
@@ -674,7 +674,7 @@ class ViewerController {
 
   zoomOut(focalPoint, zoomFactor) {
     this._layerManager.forEachLayer(
-      (layer) => {
+      layer => {
         if (layer.zoomIn !== undefined) {
           layer.zoomOut(focalPoint, zoomFactor);
         }
@@ -723,7 +723,7 @@ class ViewerController {
 
   _resizeLayers(width, height) {
     this._layerManager.forEachLayer(
-      (layer) => {
+      layer => {
         layer.resize(width, height);
       }
     );
@@ -879,7 +879,7 @@ class ViewerController {
    */
   _loadFrameLocations() {
     const imageTypes = this.task.requiredImageTypes.filter(
-      (imageType) => {
+      imageType => {
         return (this._supportedImageTypes.indexOf(imageType) !== -1);
       }
     );
@@ -1145,7 +1145,7 @@ class ViewerController {
 
   _zoom(newZoom) {
     this._layerManager.forEachLayer(
-      (layer) => {
+      layer => {
         if (layer.setZoom !== undefined) {
           layer.setZoom(newZoom);
         }
@@ -1157,7 +1157,7 @@ class ViewerController {
 
   _panTo(newCenter) {
     this._layerManager.forEachLayer(
-      (layer) => {
+      layer => {
         if (layer.panTo !== undefined) {
           layer.panTo(newCenter);
         }
@@ -1169,7 +1169,7 @@ class ViewerController {
 
   _panBy(deltaX, deltaY) {
     this._layerManager.forEachLayer(
-      (layer) => {
+      layer => {
         if (layer.panBy !== undefined) {
           layer.panBy(deltaX, deltaY);
         }
