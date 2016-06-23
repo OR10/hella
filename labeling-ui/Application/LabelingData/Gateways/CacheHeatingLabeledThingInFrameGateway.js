@@ -33,7 +33,7 @@ class CacheHeatingLabeledThingInFrameGateway extends CachingLabeledThingInFrameG
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
     return super.saveLabeledThingInFrame(labeledThingInFrame)
-      .then((newLabeledThingInFrame) => {
+      .then(newLabeledThingInFrame => {
         this._cacheHeater.heatLabeledThingInFrame(newLabeledThingInFrame);
         return newLabeledThingInFrame;
       });
