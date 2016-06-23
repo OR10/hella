@@ -8,7 +8,7 @@ describe('ApiService', () => {
   let getEntityColorService;
 
   beforeEach(() => {
-    getEntityColorService = (colorPalettes) => {
+    getEntityColorService = colorPalettes => {
       let service;
 
       module($provide => {
