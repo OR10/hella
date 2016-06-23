@@ -540,7 +540,7 @@ describe('CachingLabeledThingInFrameGateway', () => {
 
       spyOn(proto, [
         'saveLabeledThingInFrame',
-      ]).and.callFake((ltif) => $q.resolve(ltif));
+      ]).and.callFake(ltif => $q.resolve(ltif));
     });
 
     it('should call through', () => {
