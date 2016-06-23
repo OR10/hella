@@ -601,7 +601,7 @@ describe('Cuboid', () => {
         });
     });
 
-    fit('should switch to 2d mode and back if rotated around primary axis by handle', (done) => {
+    it('should switch to 2d mode and back if rotated around primary axis by handle', (done) => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.frameIndex0to4,
@@ -655,6 +655,40 @@ describe('Cuboid', () => {
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.StoreLabeledThingInFrameReal3d);
+          done();
+        });
+    });
+
+    fit('should switch to 2d mode if height is changed above visual threshold', (done) => {
+      mock(sharedMocks.concat([
+        assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
+        assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0to4,
+        assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .mouseMove(viewer, {x: 622, y: 328}) // height handle
+            .mouseDown()
+            .mouseMove(viewer, {x: 622, y: 158}) // drag
+            .mouseUp()
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dHeightHandle')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then((drawingStack) => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dHeightHandle);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d);
           done();
         });
     });
