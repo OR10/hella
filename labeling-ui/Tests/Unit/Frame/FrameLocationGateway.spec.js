@@ -36,7 +36,7 @@ describe('FrameLocationGateway', () => {
     expect(gateway instanceof FrameLocationGateway).toEqual(true);
   });
 
-  it('should by default request offset 0 with 1 frame', (done) => {
+  it('should by default request offset 0 with 1 frame', done => {
     const taskId = 'someTaskId423';
     const type = 'source';
     const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
@@ -110,7 +110,7 @@ describe('FrameLocationGateway', () => {
     ['thumbnail'],
     ['foo'],
     ['bar'],
-  ], (type) => {
+  ], type => {
     let taskId;
     let expectedUrl;
 
@@ -136,7 +136,7 @@ describe('FrameLocationGateway', () => {
     ['abc'],
     ['1234'],
     ['taskIdUndSo'],
-  ], (taskId) => {
+  ], taskId => {
     let type;
     let expectedUrl;
 
