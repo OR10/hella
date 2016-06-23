@@ -87,7 +87,7 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$location', ($rootScope) => {
+    this.module.run(['$rootScope', '$location', $rootScope => {
       $rootScope.$on('unauthorized', () => {
         const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);
         window.location.assign(`/login?targetUrl=${targetUrl}`);
