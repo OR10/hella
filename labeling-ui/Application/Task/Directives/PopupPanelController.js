@@ -74,7 +74,7 @@ class PopupPanelController {
     this._zoomViewerMoveTool = new ZoomViewerMoveTool(this._context);
     this._zoomViewerMoveTool.on('shape:update', shape => {
       $scope.$apply(() => {
-        const scaleFactor = this._context.withScope((scope) => {
+        const scaleFactor = this._context.withScope(scope => {
           return scope.view.viewSize.width / this.video.metaData.width;
         });
         this.viewerViewport.panTo(shape.position.divide(scaleFactor));
@@ -148,7 +148,7 @@ class PopupPanelController {
 
   _loadBackgroundImage() {
     const imageTypes = this.task.requiredImageTypes.filter(
-      (imageType) => {
+      imageType => {
         return (this._supportedImageTypes.indexOf(imageType) !== -1);
       }
     );
@@ -253,7 +253,7 @@ class PopupPanelController {
    * @private
    */
   _applyFilters(rasterImage, filters) {
-    this._context.withScope((scope) => {
+    this._context.withScope(scope => {
       const originalImageData = rasterImage.getImageData(
         new scope.Rectangle(0, 0, rasterImage.width, rasterImage.height)
       );
