@@ -1,5 +1,7 @@
 import Tool from './Tool';
 import paper from 'paper';
+import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
+import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import hitResolver from '../Support/HitResolver';
 
@@ -61,12 +63,69 @@ export default class MultiTool extends Tool {
      */
     this._enabled = true;
 
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._toolWorking = false;
+
+    /**
+     * @type {Map}
+     * @private
+     */
+    this._toolEventHandles = new Map();
+
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
     this._tool.onMouseMove = event => $scope.$evalAsync(() => this._mouseMove(event));
 
-    // Register keyboard shortcuts
+    this._setDrawingTool();
+    this._registerEventHandler();
+
+    // Register Keyboard shortcuts
+    this._registerShortcuts();
+  }
+
+  _setDrawingTool() {
+    switch (this._$scope.vm.task.drawingTool) {
+      case 'rectangle':
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperRectangle.getClass());
+        break;
+      case 'pedestrian':
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperPedestrian.getClass());
+        break;
+      case 'cuboid':
+        this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperCuboid.getClass());
+        break;
+      default:
+        throw new Error(`Cannot instantiate tool of unknown type ${this._$scope.vm.task.drawingTool}.`);
+    }
+  }
+
+  _registerEventHandler() {
+    this._activeTool.on('shape:start', shape => {
+      this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
+      // The new shape has been rerendered now lets find it
+      const newShape = this._context.withScope(scope =>
+        scope.project.getItem({
+          id: shape.id,
+        })
+      );
+      this._$scope.vm.selectedPaperShape = newShape;
+      this.emit('shape:new', newShape);
+    });
+
+    this._activeTool.on('shape:update', shape => {
+      this.emit('shape:update', shape);
+    });
+
+    this._activeTool.on('shape:finished', shape => {
+      this._toolWorking = false;
+    });
+  }
+
+  _registerShortcuts() {
     const keyboardMoveDistance = 1;
     const keyboardFastMoveDistance = 10;
     this._keyboardShortcutService.addHotkey('labeling-task', {
@@ -124,15 +183,6 @@ export default class MultiTool extends Tool {
     });
   }
 
-  /**
-   * Register a tool for handling the creation of things
-   *
-   * @param {ToolEvents} tool
-   */
-  registerCreateTool(tool) {
-    this._createTool = tool;
-  }
-
   enable() {
     this._enabled = true;
     this._keyboardShortcutService.enable();
@@ -160,6 +210,11 @@ export default class MultiTool extends Tool {
     }
   }
 
+  /**
+   * @param {Number} deltaX
+   * @param {Number} deltaY
+   * @private
+   */
   _moveSelectedShapeBy(deltaX, deltaY) {
     if (!this._enabled) {
       return;
@@ -169,7 +224,6 @@ export default class MultiTool extends Tool {
     if (!paperShape) {
       return;
     }
-
 
     this._context.withScope(scope => {
       paperShape.moveTo(
@@ -183,13 +237,25 @@ export default class MultiTool extends Tool {
     });
   }
 
+  /**
+   * @param {paper.Event} event
+   * @private
+   */
   _mouseMove(event) {
     if (!this._enabled) {
       return;
     }
 
+    this._handleMouseMoveCursor(event.point);
+    this._activeTool.onMouseMove(event);
+  }
+
+  /**
+   * @param {Point} point
+   * @private
+   */
+  _handleMouseMoveCursor(point) {
     this._context.withScope(scope => {
-      const point = event.point;
       const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: false,
@@ -209,16 +275,22 @@ export default class MultiTool extends Tool {
     });
   }
 
+  /**
+   * @param {paper.Event} event
+   * @private
+   */
   _mouseDown(event) {
     if (!this._enabled || event.event.shiftKey) {
       return;
     }
-
-    if (this._$scope.vm.showCrosshairs === true) {
-      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'none');
-    }
-
     const point = event.point;
+
+    this._handleMouseDownCursor(point);
+
+    if (this._toolWorking) {
+      this._activeTool.onMouseDown(event);
+      return;
+    }
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
@@ -227,61 +299,94 @@ export default class MultiTool extends Tool {
         tolerance: this._options.hitTestTolerance,
       });
 
+
       if (hitResult) {
         const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
         const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
 
         this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
-        if (this._$scope.vm.showCrosshairs === false) {
-          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, true));
+        this._activeTool.onMouseDown(event, hitShape, hitHandle);
+
+        if (!this._toolEventHandles.has(`${hitShape.getClass}-${actionIdentifier}`)) {
+          this._registerEventHandler();
         }
 
-        if (this._activeTool !== null) {
-          this._activeTool.onMouseDown(event, hitShape, hitHandle);
-          this._activeTool.on('shape:update', shape => {
-            this.emit('shape:update', shape);
-          });
-        }
       } else {
-        this._activeTool = this._createTool;
+        this._setDrawingTool();
         this._activeTool.onMouseDown(event);
+        this._toolWorking = true;
       }
     });
   }
 
-  _mouseUp(event) {
-    if (!this._enabled) {
-      return;
-    }
-
-    if (this._activeTool) {
+  /**
+   * @param {Point} point
+   * @private
+   */
+  _handleMouseDownCursor(point) {
+    if (this._$scope.vm.showCrosshairs === true) {
+      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'none');
+    } else {
       this._context.withScope(scope => {
-        const hitResult = scope.project.hitTest(event.point, {
+        const hitResult = scope.project.hitTest(point, {
           fill: true,
           bounds: false,
           tolerance: this._options.hitTestTolerance,
         });
+
         if (hitResult) {
           const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, false));
+          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, true));
         }
       });
-
-      this._activeTool.onMouseUp(event);
-      this._activeTool = null;
     }
   }
 
+  /**
+   * @param {paper.Event} event
+   * @private
+   */
+  _mouseUp(event) {
+    if (!this._enabled) {
+      return;
+    }
+    this._handleMouseUpCursor(event.point);
+    this._activeTool.onMouseUp(event);
+  }
+
+  /**
+   * @param {Point} point
+   * @private
+   */
+  _handleMouseUpCursor(point) {
+    this._context.withScope(scope => {
+      const hitResult = scope.project.hitTest(point, {
+        fill: true,
+        bounds: false,
+        tolerance: this._options.hitTestTolerance,
+      });
+      if (hitResult) {
+        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, false));
+      }
+    });
+  }
+
+  /**
+   * @param {paper.Event} event
+   * @private
+   */
   _mouseDrag(event) {
     if (!this._enabled) {
       return;
     }
 
-    if (this._activeTool) {
-      this._activeTool.onMouseDrag(event);
-    }
+    this._activeTool.onMouseDrag(event);
   }
 
+  /**
+   * @param {paper.Event} event
+   */
   onMouseLeave(event) {
     if (!this._enabled) {
       return;

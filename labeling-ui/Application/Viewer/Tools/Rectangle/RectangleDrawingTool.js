@@ -15,10 +15,11 @@ class RectangleDrawingTool extends DrawingTool {
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {Object?} options
+   * @param {Video} video
+   * @param {Task} task
    */
-  constructor($scope, drawingContext, entityIdService, entityColorService, options) {
-    super($scope, drawingContext, entityIdService, entityColorService, options);
+  constructor($scope, drawingContext, entityIdService, entityColorService, video, task) {
+    super($scope, drawingContext, entityIdService, entityColorService, video, task);
 
     /**
      * @type {PaperRectangle}
@@ -56,7 +57,7 @@ class RectangleDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('rectangle:new', this._rect);
+    this.emit('shape:start', this._rect);
   }
 
   onMouseDown(event) {
@@ -69,7 +70,8 @@ class RectangleDrawingTool extends DrawingTool {
       this._$scope.$apply(
         () => {
           this._rect.resize(this._getScaleAnchor(point), point);
-          this.emit('rectangle:update', this._rect);
+          this.emit('shape:update', this._rect);
+          this.emit('shape:finished');
         }
       );
     } else {
@@ -80,6 +82,7 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseUp() {
+    this.emit('shape:finished');
     if (this._rect) {
       // Fix bottom-right and top-left orientation
       this._rect.fixOrientation();
@@ -95,7 +98,7 @@ class RectangleDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());
 
-    this.emit('shape:new', this._rect);
+    this.emit('shape:update', this._rect);
     this._rect = null;
   }
 
