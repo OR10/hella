@@ -50,6 +50,10 @@ class CreateLabelStructure extends Base
                 'response' => 'Truck'
             ),
             array(
+                'name' => 'van',
+                'response' => 'Van'
+            ),
+            array(
                 'name' => '2-wheeler-vehicle',
                 'response' => '2 wheeler vehicle'
             ),
@@ -60,29 +64,6 @@ class CreateLabelStructure extends Base
             array(
                 'name' => 'misc-vehicle',
                 'response' => 'Misc vehicle'
-            ),
-            array(
-                'name' => 'ignore-vehicle',
-                'response' => 'Ignore vehicle'
-            ),
-        );
-
-        $directions = array(
-            array(
-                'name' => 'direction-right',
-                'response' => 'Right'
-            ),
-            array(
-                'name' => 'direction-left',
-                'response' => 'Left'
-            ),
-            array(
-                'name' => 'direction-front',
-                'response' => 'Front'
-            ),
-            array(
-                'name' => 'direction-back',
-                'response' => 'Back'
             ),
         );
 
@@ -130,11 +111,6 @@ class CreateLabelStructure extends Base
                 'name' => 'vehicle-type',
                 'challenge' => 'Vehicle Type',
                 'children' => $vehicles,
-            ),
-            array(
-                'name' => 'direction',
-                'challenge' => 'Direction',
-                'children' => $directions,
             ),
             array(
                 'name' => 'occlusion',

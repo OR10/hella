@@ -8,6 +8,9 @@
   "truck": {
     "response": "Truck"
   },
+  "van": {
+    "response": "Van"
+  },
   "2-wheeler-vehicle": {
     "response": "2 wheeler vehicle"
   },
@@ -16,24 +19,6 @@
   },
   "misc-vehicle": {
     "response": "Misc vehicle"
-  },
-  "ignore-vehicle": {
-    "response": "Ignore vehicle"
-  },
-  "direction": {
-    "challenge": "Direction"
-  },
-  "direction-right": {
-    "response": "Right"
-  },
-  "direction-left": {
-    "response": "Left"
-  },
-  "direction-front": {
-    "response": "Front"
-  },
-  "direction-back": {
-    "response": "Back"
   },
   "occlusion": {
     "challenge": "Occlusion"

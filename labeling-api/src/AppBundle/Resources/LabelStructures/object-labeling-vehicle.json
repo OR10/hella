@@ -11,6 +11,9 @@
           "name": "truck"
         },
         {
+          "name": "van"
+        },
+        {
           "name": "2-wheeler-vehicle"
         },
         {
@@ -18,26 +21,6 @@
         },
         {
           "name": "misc-vehicle"
-        },
-        {
-          "name": "ignore-vehicle"
-        }
-      ]
-    },
-    {
-      "name": "direction",
-      "children": [
-        {
-          "name": "direction-right"
-        },
-        {
-          "name": "direction-left"
-        },
-        {
-          "name": "direction-front"
-        },
-        {
-          "name": "direction-back"
         }
       ]
     },
