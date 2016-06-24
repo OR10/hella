@@ -278,11 +278,11 @@ class PaperCuboid extends PaperShape {
    * Return the identifier for the tool action that need to be performed
    *
    * @param {Handle|null} handle
-   * @returns {string|null}
+   * @returns {string}
    */
   getToolActionIdentifier(handle) {
     if (handle === null) {
-      return null;
+      return 'move';
     }
 
     switch (handle.name) {
