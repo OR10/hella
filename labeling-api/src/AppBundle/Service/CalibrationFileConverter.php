@@ -87,9 +87,9 @@ class CalibrationFileConverter
     {
         preg_match_all('/-?(\d*\.)\d+/', $this->data['extern_2_ea'], $rotations);
 
-        $yaw   = (float)$rotations[0][0];
-        $pitch = (float)$rotations[0][1];
-        $roll  = (float)$rotations[0][2];
+        $yaw   = (float)$rotations[0][0] * (pi() / 180);
+        $pitch = (float)$rotations[0][1] * (pi() / 180);
+        $roll  = (float)$rotations[0][2] * (pi() / 180);
 
         return array(
             cos($roll) * $yaw + cos($yaw) * $roll * $pitch,
