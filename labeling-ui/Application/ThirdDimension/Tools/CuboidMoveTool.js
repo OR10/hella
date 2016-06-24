@@ -1,4 +1,5 @@
 import Tool from '../../Viewer/Tools/Tool';
+import paper from 'paper';
 
 /**
  * A Tool for moving annotation shapes
@@ -36,6 +37,14 @@ class CuboidMoveTool extends Tool {
      * @private
      */
     this._modified = false;
+
+    /**
+     * Mouse to center offset for moving a shape
+     *
+     * @type {Point}
+     * @private
+     */
+    this._offset = null;
   }
 
   /**
@@ -45,6 +54,11 @@ class CuboidMoveTool extends Tool {
   onMouseDown(event, hitShape) {
     this._paperCuboid = hitShape;
     this._paperCuboid.updatePrimaryCorner();
+
+    this._offset = new paper.Point(
+      this._paperCuboid.position.x - event.point.x,
+      this._paperCuboid.position.y - event.point.y
+    );
   }
 
   onMouseUp() {
@@ -54,6 +68,8 @@ class CuboidMoveTool extends Tool {
 
       this.emit('shape:update', this._paperCuboid);
     }
+
+    this._offset = null;
   }
 
   /**
