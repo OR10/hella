@@ -8,7 +8,6 @@ import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
 import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
 class PaperCuboid extends PaperShape {
-
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
