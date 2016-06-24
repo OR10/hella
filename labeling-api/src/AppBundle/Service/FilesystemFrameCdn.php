@@ -44,7 +44,7 @@ class FilesystemFrameCdn extends FrameCdn
         $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());
 
         $this->fileSystem->createDir($cdnPath);
-        $this->fileSystem->write($filePath, $imageData);
+        $this->fileSystem->put($filePath, $imageData);
     }
 
     /**
