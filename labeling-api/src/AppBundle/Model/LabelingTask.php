@@ -532,4 +532,12 @@ class LabelingTask
     {
         return $this->createdAt;
     }
+
+    /**
+     * @param string $projectId
+     */
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
 }
