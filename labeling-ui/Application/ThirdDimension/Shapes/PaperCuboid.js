@@ -370,6 +370,13 @@ class PaperCuboid extends PaperShape {
       new Vector3(point.x, point.y, 1),
       this._cuboid3d.vertices[primaryCornerIndex]
     );
+
+    // Height may never be negative
+    // Minimal height of a Cuboid is set to 5cm
+    if (newReferencePoint.z < 0.05) {
+      newReferencePoint.z = 0.05;
+    }
+
     const distanceVector = newReferencePoint.sub(handleVertex);
     this._cuboid3d.addVectorToVertices(
       distanceVector,
