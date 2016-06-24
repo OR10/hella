@@ -1,12 +1,39 @@
 import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
 import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
+import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
+import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
 import CuboidMoveTool from '../../ThirdDimension/Tools/CuboidMoveTool';
 import CuboidScaleTool from '../../ThirdDimension/Tools/CuboidScaleTool';
+import CuboidDrawingTool from '../../ThirdDimension/Tools/CuboidDrawingTool';
 
 class ToolService {
-  constructor() {
+  /**
+   *
+   * @param {EntityIdService} entityIdService
+   * @param {EntityColorService} colorService
+   * @param {LoggerService} loggerService
+   */
+  constructor(entityIdService, colorService, loggerService) {
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._colorService = colorService;
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._loggerService = loggerService;
+
     /**
      * @type {Map}
      * @private
@@ -20,10 +47,13 @@ class ToolService {
     this._classes = {
       'rectangle-move': RectangleMoveTool,
       'rectangle-scale': RectangleScaleTool,
+      'rectangle-drawing': RectangleDrawingTool,
       'pedestrian-move': PedestrianMoveTool,
       'pedestrian-scale': PedestrianScaleTool,
+      'pedestrian-drawing': PedestrianDrawingTool,
       'cuboid-move': CuboidMoveTool,
       'cuboid-scale': CuboidScaleTool,
+      'cuboid-drawing': CuboidDrawingTool,
     };
   }
 
@@ -34,18 +64,28 @@ class ToolService {
    * @param {String} actionIdentifier
    * @returns {Tool|null}
    */
-  getTool($scope, context, shapeClass, actionIdentifier) {
+  getTool($scope, context, shapeClass, actionIdentifier = 'drawing') {
     if (!shapeClass || !actionIdentifier) {
       // Only try to create tool if all parameters are set
       // @TODO: Document in doc-block under which circumstances the returned tool is null
       return null;
     }
+    this._loggerService.groupStart('toolService:getTool', 'Trying to get the tool for the given tool identifier');
     const toolIdentifier = `${shapeClass}-${actionIdentifier}`;
     const toolMap = this._getToolMap(this._getContextMap($scope), context);
 
     if (!toolMap.has(toolIdentifier)) {
-      toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context));
+      this._loggerService.log('toolService:getTool', `Tool "${toolIdentifier}" was not created prior. Creating now.`);
+      switch (actionIdentifier) {
+        case 'drawing':
+          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._entityIdService, this._colorService, $scope.vm.video, $scope.vm.task));
+          break;
+        default:
+          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context));
+      }
     }
+    this._loggerService.log('toolService:getTool', `Returning tool "${toolIdentifier}"`);
+    this._loggerService.groupEnd('toolService:getTool');
     return toolMap.get(toolIdentifier);
   }
 
@@ -74,5 +114,11 @@ class ToolService {
     return contextMap.get(context);
   }
 }
+
+ToolService.$inject = [
+  'entityIdService',
+  'entityColorService',
+  'loggerService',
+];
 
 export default ToolService;
