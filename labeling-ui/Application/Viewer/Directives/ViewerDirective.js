@@ -22,7 +22,7 @@ export default class ViewerDirective {
       playbackDirection: '=',
       viewport: '=',
       hideLabeledThingsInFrame: '=',
-      newShapeDrawingTool: '=',
+      multiTool: '=',
       bookmarkedFrameIndex: '=',
       fps: '=',
       frameSkip: '=',

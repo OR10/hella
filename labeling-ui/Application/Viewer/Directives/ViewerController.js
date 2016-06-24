@@ -22,7 +22,7 @@ import Environment from '../../Common/Support/Environment';
  * @property {string} playbackDirection
  * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
- * @property {string} newShapeDrawingTool
+ * @property {string} multiTool
  * @property {integer} bookmarkedFrameIndex
  * @property {integer} fps
  * @property {integer} frameSkip

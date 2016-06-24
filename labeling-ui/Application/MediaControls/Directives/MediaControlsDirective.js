@@ -24,7 +24,7 @@ class MediaControlsDirective {
       popupPanelState: '=',
       popupPanelOpen: '=',
       hideLabeledThingsInFrame: '=',
-      newShapeDrawingTool: '=',
+      multiTool: '=',
       video: '=',
       bookmarkedFrameIndex: '=',
       readOnly: '@',
