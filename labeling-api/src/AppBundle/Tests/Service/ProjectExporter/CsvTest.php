@@ -163,7 +163,7 @@ class CsvProjectTest extends Tests\KernelTestCase
     {
         return array(
             array(
-                Model\LabelingTask::DRAWING_TOOL_CUBOID3D,
+                Model\LabelingTask::DRAWING_TOOL_CUBOID,
                 Model\LabelingTask::INSTRUCTION_VEHICLE,
                 array(
                     array(
