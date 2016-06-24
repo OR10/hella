@@ -14,7 +14,7 @@ class LabelingTask
     const TYPE_OBJECT_LABELING = 'object-labeling';
     const DRAWING_TOOL_RECTANGLE = 'rectangle';
     const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
-    const DRAWING_TOOL_CUBOID3D = 'cuboid3d';
+    const DRAWING_TOOL_CUBOID = 'cuboid';
 
     const INSTRUCTION_VEHICLE = 'vehicle';
     const INSTRUCTION_PERSON = 'person';

@@ -127,6 +127,7 @@ class Csv implements Service\ProjectExporter
                 ),
                 'vehicle' => array(
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
+                    Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
                 )
             );
 
@@ -156,6 +157,9 @@ class Csv implements Service\ProjectExporter
                             break;
                         case Model\LabelingTask::INSTRUCTION_VEHICLE:
                             $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getVehicleLabelingData($task));
+                            break;
+                        case Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE:
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getVehicleIgnoreLabelingData($task));
                             break;
                     }
                 }
@@ -310,11 +314,11 @@ class Csv implements Service\ProjectExporter
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $task) {
                 $vehicleType = $this->getClassByRegex(
-                    '/^(car|truck|2-wheeler-vehicle|bus|misc-vehicle|ignore-vehicle)$/',
+                    '/^(car|truck|van|2-wheeler-vehicle|bus|misc-vehicle)$/',
                     0,
                     $labeledThingInFrame
                 );
-                $direction   = $this->getClassByRegex('/^(direction-(\w+))$/', 2, $labeledThingInFrame);
+                $direction   = null;
                 $occlusion   = $this->getOcclusion($labeledThingInFrame);
                 $truncation  = $this->getTruncation($labeledThingInFrame);
 
@@ -332,7 +336,7 @@ class Csv implements Service\ProjectExporter
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
 
-                if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID3D) {
+                if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID) {
                     $video = $this->videoFacade->find($task->getVideoId());
                     $vertices2d = $this->getCuboidVertices($labeledThingInFrame, $video)[0];
                     foreach (range(0, 7) as $vertexPoint) {
@@ -347,6 +351,48 @@ class Csv implements Service\ProjectExporter
                         $result['vertex_3d_' . $vertexPoint . '_z'] = $vertices3d[$vertexPoint][2];
                     }
 
+                }
+
+                return $result;
+            },
+            $labeledThingsInFramesWithGhostClasses
+        );
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @return mixed
+     */
+    public function getVehicleIgnoreLabelingData(Model\LabelingTask $task)
+    {
+        $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
+        $frameNumberMapping                    = $task->getFrameNumberMapping();
+        $labelInstruction                      = $task->getLabelInstruction();
+
+        return array_map(
+            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
+                $ignoreType = $this->getClassByRegex('/^(ignore-vehicle)$/', 1, $labeledThingInFrame);
+                $result = array(
+                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'label_class'  => $labelInstruction . '-' . $ignoreType,
+                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'    => 0,
+                    'truncation'   => 0,
+                    'direction'    => 'none',
+                    'id'           => NULL,
+                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
+                );
+                foreach (range(0, 7) as $vertexPoint) {
+                    $result['vertex_2d_' . $vertexPoint . '_x'] = 'null';
+                    $result['vertex_2d_' . $vertexPoint . '_y'] = 'null';
+                }
+                foreach (range(0, 7) as $vertexPoint) {
+                    $result['vertex_3d_' . $vertexPoint . '_x'] = 'null';
+                    $result['vertex_3d_' . $vertexPoint . '_y'] = 'null';
+                    $result['vertex_3d_' . $vertexPoint . '_z'] = 'null';
                 }
 
                 return $result;
