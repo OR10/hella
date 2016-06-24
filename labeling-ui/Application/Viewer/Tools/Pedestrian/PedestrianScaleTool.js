@@ -49,6 +49,7 @@ class PedestrianScaleTool extends Tool {
   }
 
   onMouseUp() {
+    this.emit('shape:finished');
     if (this._paperPedestrian && this._modified) {
       this._modified = false;
       this._paperPedestrian.fixOrientation();

@@ -62,6 +62,7 @@ class PedestrianMoveTool extends Tool {
   }
 
   onMouseUp() {
+    this.emit('shape:finished');
     if (this._paperPedestrian) {
       if (this._modified) {
         this._modified = false;
