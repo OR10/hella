@@ -290,10 +290,8 @@ class PaperCuboid extends PaperShape {
       case 'width':
       case 'depth':
         return 'scale';
-      case 'move':
-        return 'move';
       default:
-        return null;
+        return 'move';
     }
   }
 
