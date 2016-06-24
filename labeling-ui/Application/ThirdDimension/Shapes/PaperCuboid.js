@@ -271,7 +271,7 @@ class PaperCuboid extends PaperShape {
    * @returns {string}
    */
   getClass() {
-    return 'cuboid';
+    return PaperCuboid.getClass();
   }
 
   /**
@@ -505,5 +505,12 @@ class PaperCuboid extends PaperShape {
     };
   }
 }
+
+/**
+ * @returns {string}
+ */
+PaperCuboid.getClass = () => {
+  return 'cuboid';
+};
 
 export default PaperCuboid;
