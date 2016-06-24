@@ -323,8 +323,16 @@ class PaperCuboid extends PaperShape {
    * @param {Point} point
    */
   moveTo(point) {
-    const newPrimaryCornerPosition = this._projection3d.projectBottomCoordinateTo3d(new Vector3(point.x, point.y, 1));
-    const movementVector = newPrimaryCornerPosition.sub(this._cuboid3d.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()]);
+    const newPrimaryCornerVertex = this._projection3d.projectBottomCoordinateTo3d(new Vector3(point.x, point.y, 1));
+    const oldPrimaryCornerVertex = this._cuboid3d.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
+    let movementVector;
+
+    if (point.y > 0 && newPrimaryCornerVertex.x < 0) {
+      // Shape moved above horizon
+      // @TOOD: Move to maximal position here somehow :)
+    }
+
+    movementVector = newPrimaryCornerVertex.sub(oldPrimaryCornerVertex);
 
     this._cuboid3d.moveBy(movementVector);
 
