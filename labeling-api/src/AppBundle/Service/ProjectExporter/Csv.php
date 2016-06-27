@@ -599,8 +599,9 @@ class Csv implements Service\ProjectExporter
             return $task->getLabelInstruction();
         }, $labeledTasks);
 
+        // If the required types are missing, return no tasks
         if (count(array_unique(array_intersect($labeledTaskInstructions, $requiredTasksInstructions))) !== count($requiredTasksInstructions)) {
-            throw new \Exception('Required types not labeled yet');
+            return array();
         }
 
         foreach ($labeledTasks as $labeledTask) {
