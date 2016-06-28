@@ -30,12 +30,10 @@ class ImportVideos extends Base
             ->setDescription('Import a list of videos')
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
             ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
+            ->addArgument('type', Input\InputArgument::REQUIRED, 'Pedestrian or vehicle')
             ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
             ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
             ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
-            ->addArgument('drawingToolPerson', Input\InputArgument::OPTIONAL, 'Video person drawing tool', 'pedestrian')
-            ->addArgument('drawingToolCyclist', Input\InputArgument::OPTIONAL, 'Video cyclist drawing tool', 'rectangle')
-            ->addArgument('drawingToolIgnore', Input\InputArgument::OPTIONAL, 'Video ignore drawing tool', 'rectangle')
             ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22)
             ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 16);
     }
@@ -52,25 +50,9 @@ class ImportVideos extends Base
 
             $info           = pathinfo($videoFile);
             $calibrationFilePath = null;
-            if (is_file($info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '_calib.csv')) {
-                $calibrationFilePath = $info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '_calib.csv';
+            if (is_file($info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '.csv')) {
+                $calibrationFilePath = $info['dirname'] . '/' . basename($videoFile, '.' . $info['extension']) . '.csv';
             }
-
-            //Label instructions
-            $labelInstructions = array(
-                array(
-                    'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
-                    'drawingTool' => $input->getArgument('drawingToolPerson'),
-                ),
-                array(
-                    'instruction' => Model\LabelingTask::INSTRUCTION_CYCLIST,
-                    'drawingTool' => $input->getArgument('drawingToolCyclist'),
-                ),
-                array(
-                    'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
-                    'drawingTool' => $input->getArgument('drawingToolIgnore'),
-                ),
-            );
 
             $drawingToolOptions = array(
                 'pedestrian' => array(
@@ -87,7 +69,7 @@ class ImportVideos extends Base
                 $input->getArgument('splitLength'),
                 true,
                 false,
-                $labelInstructions,
+                $this->getLabelInstructions($input->getArgument('type')),
                 $input->getArgument('overflow'),
                 $drawingToolOptions,
                 $input->getArgument('frameStepSize'),
@@ -102,5 +84,39 @@ class ImportVideos extends Base
             }
             $this->writeInfo($output, "---------------------------");
         }
+    }
+
+    private function getLabelInstructions($type)
+    {
+        switch ($type) {
+            case 'pedestrian':
+                return array(
+                    array(
+                        'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
+                        'drawingTool' => 'pedestrian',
+                    ),
+                    array(
+                        'instruction' => Model\LabelingTask::INSTRUCTION_CYCLIST,
+                        'drawingTool' => 'rectangle',
+                    ),
+                    array(
+                        'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
+                        'drawingTool' => 'rectangle',
+                    ),
+                );
+            case 'vehicle':
+                return array(
+                    array(
+                        'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
+                        'drawingTool' => 'cuboid',
+                    ),
+                    array(
+                        'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
+                        'drawingTool' => 'rectangle',
+                    ),
+                );
+        }
+
+        throw new \Exception('Type' . $type . ' not supported');
     }
 }
