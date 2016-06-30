@@ -146,7 +146,8 @@ class VideoImporter
 
             );
 
-            $this->facadeAMQP->addJob($job);
+            $amqpFacade = $this->facadeAMQP;
+            $amqpFacade->addJob($job, $amqpFacade::LOW_PRIO);
         }
 
         $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
