@@ -202,7 +202,7 @@ class Linear implements Interpolation\Algorithm
             case Shapes\Pedestrian::class:
                 return $this->interpolatePedestrian($current, $end, $steps);
             case Shapes\Cuboid3d::class:
-                return $this->interpolateCuboid3d($current, $end, $steps, $calibrationData);
+                return $this->interpolateCuboid3d($current, $end, $steps);
         }
 
         throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
@@ -305,7 +305,7 @@ class Linear implements Interpolation\Algorithm
             return false;
         });
 
-        if (count($numberOfCurrentInvisibleVertices) === 0 || ($numberOfCurrentInvisibleVertices >= 4 && $numberOfEndInvisibleVertices >= 4)) {
+        if (count($numberOfCurrentInvisibleVertices) === 0 || ((count($numberOfCurrentInvisibleVertices) === 4) && count($numberOfEndInvisibleVertices) === 4)) {
             return $currentCuboid3d;
         }
 
@@ -415,7 +415,7 @@ class Linear implements Interpolation\Algorithm
         $plainVector2 = $endCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($endCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
 
         $normalVector = $plainVector1->crossProduct($plainVector2);
-        $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[$oppositeVertex[0]]);
+        $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
         $distanceVector = $normalVector->multiply($distance)->divide($normalVector->getLength());
 
         $newVertices = array(
