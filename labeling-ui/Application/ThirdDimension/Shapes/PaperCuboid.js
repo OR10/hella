@@ -223,6 +223,7 @@ class PaperCuboid extends PaperShape {
         return this._createDot(0, 1, 2, 3);
       case '4567':
         return this._createCross(4, 5, 6, 7);
+      default:
     }
   }
 
@@ -271,7 +272,7 @@ class PaperCuboid extends PaperShape {
    * @returns {Array.<Point>}
    * @private
    */
-  _createDot(topLeftIndex, topRightIndex, bottomRightIndex, bottomLeftIndex){
+  _createDot(topLeftIndex, topRightIndex, bottomRightIndex, bottomLeftIndex) {
     const topLeft = this._projectedCuboid.vertices[topLeftIndex];
     const topRight = this._projectedCuboid.vertices[topRightIndex];
     const bottomRight = this._projectedCuboid.vertices[bottomRightIndex];
@@ -283,7 +284,7 @@ class PaperCuboid extends PaperShape {
     const leftCenter = bottomLeft.clone().add(topLeft).divideScalar(2);
 
     const horizontalDirection = leftCenter.clone().sub(rightCenter).normalize();
-    const verticalDirection = topCenter.clone().sub(bottomCenter).normalize()
+    const verticalDirection = topCenter.clone().sub(bottomCenter).normalize();
 
     const cubeLength = leftCenter.distanceTo(rightCenter);
     const cubeHeight = topCenter.distanceTo(bottomCenter);
