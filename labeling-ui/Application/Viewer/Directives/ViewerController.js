@@ -942,7 +942,17 @@ class ViewerController {
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame).catch(() => {
+      const errorModal = this._modalService.getAlertWarningDialog({
+        title: 'Error',
+        headline: `There was an error updating the shape`,
+        message: `The shape could not be saved. To continue with the labeling process please reload the page!`,
+        confirmButtonText: 'Reload',
+      }, () => {
+        window.location.reload();
+      });
+      errorModal.activate();
+    });
   }
 
   /**
@@ -960,6 +970,17 @@ class ViewerController {
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .catch(() => {
+        const errorModal = this._modalService.getAlertWarningDialog({
+          title: 'Error',
+          headline: `There was an error creating the shape`,
+          message: `The shape could not be created. To continue with the labeling process please reload the page!`,
+          confirmButtonText: 'Reload',
+        }, () => {
+          window.location.reload();
+        });
+        errorModal.activate();
+      })
       .then(() => {
         shape.publish();
         this._$rootScope.$emit('shape:add:after', shape);
