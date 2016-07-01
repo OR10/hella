@@ -129,10 +129,11 @@ class LabeledThingInFrame extends Controller\Base
             $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
         }
 
+        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
         $labeledThing->setIncomplete(
             $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
         );
-        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+        $this->labeledThingFacade->save($labeledThing);
 
         if (empty($labeledThingInFrame->getClasses())) {
             $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
