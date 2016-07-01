@@ -39,15 +39,13 @@ class DrawingTool extends Tool {
 
     /**
      * @type {Video}
-     * @private
      */
-    this._video = video;
+    this.video = video;
 
     /**
      * @type {Task}
-     * @private
      */
-    this._task = task;
+    this.task = task;
   }
 
   /**
