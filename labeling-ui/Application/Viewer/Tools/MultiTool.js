@@ -398,4 +398,9 @@ export default class MultiTool extends Tool {
 
     this._mouseUp(event);
   }
+
+  createNewDefaultShape() {
+    this._setDrawingTool();
+    this._activeTool.createNewDefaultShape();
+  }
 }

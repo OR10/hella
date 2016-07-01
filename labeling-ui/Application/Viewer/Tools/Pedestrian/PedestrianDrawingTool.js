@@ -138,6 +138,32 @@ class PedestrianDrawingTool extends DrawingTool {
     }
     return new Handle('top-center', new paper.Point(this._startPosition.x, point.y));
   }
+
+  createNewDefaultShape() {
+    const height = 100;
+    const from = new paper.Point(
+      this.video.metaData.width / 2,
+      (this.video.metaData.height / 2) - (height / 2),
+    );
+    const to = new paper.Point(
+      this.video.metaData.width / 2,
+      (this.video.metaData.height / 2) + (height / 2),
+    );
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
+
+    this._context.withScope(() => {
+      this._rect = new PaperPedestrian(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        from,
+        to,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        true
+      );
+    });
+
+    this.emit('shape:start', this._rect);
+  }
 }
 
 export default PedestrianDrawingTool;
