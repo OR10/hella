@@ -124,7 +124,7 @@ class LabeledThingInFrame extends Controller\Base
                 Model\Shape::createFromArray($shape);
             }
         }catch(\Exception $e) {
-            throw new Exception\BadRequestHttpException('Invalid Shape submitted.');
+            throw new Exception\BadRequestHttpException($e->getMessage());
         }
         $labeledThingInFrame->setShapes($shapes);
 

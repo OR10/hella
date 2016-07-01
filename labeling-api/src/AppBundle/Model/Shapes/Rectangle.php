@@ -46,7 +46,16 @@ class Rectangle extends Model\Shape
             || !isset($shape['bottomRight']['x'])
             || !isset($shape['bottomRight']['y'])
         ) {
-            throw new \RuntimeException('Invalid rectangle shape');
+            throw new \RuntimeException(
+                sprintf(
+                    'Invalid rectangle shape id:%s topLeft:[x:%s y:%s] bottomRight:[x:%s y:%s]',
+                    isset($shape['id']) ? $shape['id'] : '',
+                    isset($shape['topLeft']['x']) ? $shape['topLeft']['x'] : '',
+                    isset($shape['topLeft']['y']) ? $shape['topLeft']['y'] : '',
+                    isset($shape['bottomRight']['x']) ? $shape['bottomRight']['x'] : '',
+                    isset($shape['bottomRight']['y']) ? $shape['bottomRight']['y'] : ''
+                    )
+            );
         }
 
         return new Rectangle(
