@@ -1,5 +1,9 @@
+import paper from 'paper';
 import DrawingTool from '../../Viewer/Tools/DrawingTool';
+import PaperShape from '../../Viewer/Shapes/PaperShape';
 import PaperCuboid from '../Shapes/PaperCuboid';
+import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
+import {Vector3} from 'three-math';
 import DepthBufferProjection2d from '../Support/Projection2d/DepthBuffer';
 import PlainProjection2d from '../Support/Projection2d/Plain';
 import FlatWorld from '../Support/Projection3d/FlatWorld';
@@ -16,11 +20,11 @@ class CuboidDrawingTool extends DrawingTool {
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {Video} task
-   * @param {Object?} options
+   * @param {Video} video
+   * @param {Task} task
    */
-  constructor($scope, drawingContext, entityIdService, entityColorService, video, options) {
-    super($scope, drawingContext, entityIdService, entityColorService, options);
+  constructor($scope, drawingContext, entityIdService, entityColorService, video, task) {
+    super($scope, drawingContext, entityIdService, entityColorService, video, task);
 
     /**
      * @type {PaperRectangle}
@@ -29,45 +33,188 @@ class CuboidDrawingTool extends DrawingTool {
     this._cuboid = null;
 
     /**
-     * @type {Point|null}
+     * @type {String}
      * @private
      */
-    this._height = null;
+    this._color = this._entityColorService.getColorById(this._entityColorService.getColorId());
 
     /**
-     * @type {Point|null}
+     * @type {DepthBufferProjection2d}
      * @private
      */
-    this._primaryCorner = null;
+    this._projection2d = new DepthBufferProjection2d(
+      new PlainProjection2d(this.video.calibration)
+    );
 
     /**
-     * @type {Point|null}
+     * @type {Projection3dFlatWorld}
      * @private
      */
-    this._width = null;
+    this._projection3d = new FlatWorld(this.video.calibration);
 
-    /**
-     * @type {Point|null}
-     * @private
-     */
-    this._depth = null;
-
-    /**
-     *
-     */
-    this._video = video;
+    this._topPoint = null;
+    this._bottomPoint = null;
+    this._sidePoint = null;
+    this._heightLine = null;
+    this._startCreation = false;
   }
 
-  onMouseDown(event) { // eslint-disable-line no-unused-vars
+  /**
+   * @param {Event} event
+   */
+  onMouseDown(event) {
+    if (!this._startCreation) {
+      return;
+    }
+
+    const point = event.point;
+    if (this._topPoint && this._bottomPoint && !this._sidePoint) {
+      this._sidePoint = point;
+      this._heightLine.remove();
+      this._widthLine.remove();
+
+      const labeledThingInFrame = this._createLabeledThingHierarchy();
+
+      const bottom = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._bottomPoint.x, this._bottomPoint.y, 1));
+      const top = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._topPoint.x, this._topPoint.y, 1), bottom);
+      const side = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._sidePoint.x, this._sidePoint.y, 1));
+      const sideTop = side.clone().add(top.clone().sub(bottom));
+
+      let normal;
+      let front;
+      if (this._bottomPoint.x > this._sidePoint.x) {
+        const vector1 = new Vector3(sideTop.x, sideTop.y, sideTop.z).sub(new Vector3(side.x, side.y, side.z));
+        const vector2 = new Vector3(bottom.x, bottom.y, bottom.z).sub(new Vector3(side.x, side.y, side.z));
+        normal = vector1.cross(vector2).normalize();
+        front = [
+          sideTop,
+          top,
+          bottom,
+          side,
+        ];
+      } else {
+        const vector1 = new Vector3(top.x, top.y, top.z).sub(new Vector3(bottom.x, bottom.y, bottom.z));
+        const vector2 = new Vector3(side.x, side.y, side.z).sub(new Vector3(bottom.x, bottom.y, bottom.z));
+        normal = vector1.cross(vector2).normalize();
+        front = [
+          top,
+          sideTop,
+          side,
+          bottom,
+        ];
+      }
+      const back = front.map(vertex => {
+        return vertex.clone().add(normal);
+      });
+
+      const points = front.concat(back).map(vertex => {
+        return [vertex.x, vertex.y, vertex.z];
+      });
+
+      this._context.withScope(() => {
+        this._cuboid = new PaperCuboid(
+          labeledThingInFrame,
+          this._entityIdService.getUniqueId(),
+          this._projection2d,
+          this._projection3d,
+          points,
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+          true
+        );
+      });
+      this.emit('shape:start', this._cuboid);
+
+      return;
+    }
+
+    if (this._topPoint && this._bottomPoint && this._sidePoint) {
+      this.completeShape();
+      this._cleanUp();
+    }
   }
 
-  onMouseMove(event) { // eslint-disable-line no-unused-vars
-  }
+  onMouseDrag(event) {
+    const point = event.point;
+    this._startCreation = true;
 
-  onMouseDrag(event) { // eslint-disable-line no-unused-vars
+    if (!this._topPoint) {
+      this._topPoint = point;
+      return;
+    }
+
+    if (this._topPoint) {
+      this._bottomPoint = this._topPoint.clone();
+      this._bottomPoint.y = point.y;
+
+      // Draw height line
+      this._context.withScope(() => {
+        if (this._heightLine) {
+          this._heightLine.remove();
+        }
+        this._heightLine = new paper.Path.Line({
+          from: this._topPoint,
+          to: this._bottomPoint,
+          strokeColor: this._color.secondary,
+          strokeWidth: 2,
+          strokeScaling: false,
+          dashArray: PaperShape.LINE,
+        });
+      });
+    }
   }
 
   onMouseUp() {
+    if (!this._startCreation) {
+      this._cleanUp();
+      return;
+    }
+
+    if (this._topPoint && this._bottomPoint) {
+      if (this._topPoint.y > this._bottomPoint) {
+        const tmpPoint = this._bottomPoint.clone();
+        this._bottomPoint = this._topPoint.clone();
+        this._topPoint.y = tmpPoint;
+      }
+    }
+  }
+
+  onMouseMove(event) {
+    if (!this._startCreation) {
+      return;
+    }
+    const point = event.point;
+
+    if (this._topPoint && this._bottomPoint && !this._sidePoint) {
+      this._context.withScope(() => {
+        if (this._widthLine) {
+          this._widthLine.remove();
+        }
+        this._widthLine = new paper.Path.Line({
+          from: this._bottomPoint,
+          to: point,
+          strokeColor: this._color.secondary,
+          strokeWidth: 2,
+          strokeScaling: false,
+          dashArray: PaperShape.LINE,
+        });
+      });
+    }
+
+    if (this._topPoint && this._bottomPoint && this._sidePoint && this._cuboid) {
+      this._context.withScope(() => {
+        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this.task.drawingToolOptions.cuboid);
+        this.emit('shape:update', this._cuboid);
+      });
+    }
+  }
+
+  _cleanUp() {
+    this._topPoint = null;
+    this._bottomPoint = null;
+    this._sidePoint = null;
+    this._heightLine = null;
+    this._widthLine = null;
+    this._startCreation = false;
   }
 
   completeShape() {
@@ -75,17 +222,14 @@ class CuboidDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._cuboid.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._cuboid.toJSON());
 
-    this.emit('shape:new', this._cuboid);
+    this.emit('shape:update', this._cuboid);
+    this.emit('shape:finished');
+
     this._cuboid = null;
   }
 
 
-  startShape(primary, height, width, depth) { // eslint-disable-line no-unused-vars
-    const projection2d = new DepthBufferProjection2d(
-      new PlainProjection2d(this._video.calibration)
-    );
-    const projection3d = new FlatWorld(this._video.calibration);
-
+  createNewDefaultShape() {
     const labeledThingInFrame = this._createLabeledThingHierarchy();
 
     const points = [
@@ -135,15 +279,15 @@ class CuboidDrawingTool extends DrawingTool {
       this._cuboid = new PaperCuboid(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        projection2d,
-        projection3d,
+        this._projection2d,
+        this._projection3d,
         points,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });
 
-    this.emit('cuboid:new', this._cuboid);
+    this.emit('shape:start', this._cuboid);
   }
 }
 
