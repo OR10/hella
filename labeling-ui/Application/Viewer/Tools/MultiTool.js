@@ -120,7 +120,7 @@ export default class MultiTool extends Tool {
       this.emit('shape:update', shape);
     });
 
-    this._activeTool.on('shape:finished', shape => {
+    this._activeTool.on('shape:finished', () => {
       this._toolWorking = false;
     });
   }
@@ -246,7 +246,9 @@ export default class MultiTool extends Tool {
       return;
     }
 
-    this._handleMouseMoveCursor(event.point);
+    if (!this._toolWorking) {
+      this._handleMouseMoveCursor(event.point);
+    }
     this._activeTool.onMouseMove(event);
   }
 
@@ -285,12 +287,11 @@ export default class MultiTool extends Tool {
     }
     const point = event.point;
 
-    this._handleMouseDownCursor(point);
-
     if (this._toolWorking) {
       this._activeTool.onMouseDown(event);
       return;
     }
+    this._handleMouseDownCursor(point);
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
@@ -304,17 +305,17 @@ export default class MultiTool extends Tool {
         const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
         const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
 
+        this._toolWorking = true;
         this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
         this._activeTool.onMouseDown(event, hitShape, hitHandle);
 
         if (!this._toolEventHandles.has(`${hitShape.getClass}-${actionIdentifier}`)) {
           this._registerEventHandler();
         }
-
       } else {
+        this._toolWorking = true;
         this._setDrawingTool();
         this._activeTool.onMouseDown(event);
-        this._toolWorking = true;
       }
     });
   }
@@ -350,7 +351,9 @@ export default class MultiTool extends Tool {
     if (!this._enabled) {
       return;
     }
-    this._handleMouseUpCursor(event.point);
+    if (!this._toolWorking) {
+      this._handleMouseUpCursor(event.point);
+    }
     this._activeTool.onMouseUp(event);
   }
 
@@ -381,6 +384,7 @@ export default class MultiTool extends Tool {
       return;
     }
 
+    this._toolWorking = true;
     this._activeTool.onMouseDrag(event);
   }
 
