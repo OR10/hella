@@ -71,7 +71,6 @@ class RectangleDrawingTool extends DrawingTool {
         () => {
           this._rect.resize(this._getScaleAnchor(point), point);
           this.emit('shape:update', this._rect);
-          this.emit('shape:finished');
         }
       );
     } else {
