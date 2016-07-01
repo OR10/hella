@@ -117,6 +117,15 @@ class LabeledThingInFrame extends Controller\Base
         }
 
         $labeledThingInFrame->setClasses($classes);
+
+        // Check if the shapes are valid
+        try {
+            foreach ($shapes as $shape) {
+                Model\Shape::createFromArray($shape);
+            }
+        }catch(\Exception $e) {
+            throw new Exception\BadRequestHttpException('Invalid Shape submitted.');
+        }
         $labeledThingInFrame->setShapes($shapes);
 
         $incompleteBefore = $labeledThingInFrame->getIncomplete();

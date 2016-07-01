@@ -83,7 +83,20 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                 [
                     'rev'            => $labeledThingInFrame->getRev(),
                     'labeledThingId' => $labeledThingInFrame->getLabeledThingId(),
-                    'shapes'         => array('shape' => 1),
+                    'shapes'         => array(
+                        array(
+                            'id' => '81f32d05-455d-491e-a636-c509aa0aa0e5',
+                            'type' => 'rectangle',
+                            'topLeft' => array(
+                                'x' => 10,
+                                'y' => 181,
+                            ),
+                            'bottomRight' => array(
+                                'x' => 110,
+                                'y' => 326,
+                            ),
+                        )
+                    ),
                     'classes'        => array('class' => 1),
                     'frameIndex'     => 15,
                 ]
