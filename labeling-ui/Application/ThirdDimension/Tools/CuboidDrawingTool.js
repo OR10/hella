@@ -252,7 +252,6 @@ class CuboidDrawingTool extends DrawingTool {
     if (this._topPoint && this._bottomPoint && this._sidePoint && this._cuboid) {
       this._context.withScope(() => {
         this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this.task.drawingToolOptions.cuboid);
-        this.emit('shape:update', this._cuboid);
       });
     }
   }
