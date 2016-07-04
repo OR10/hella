@@ -1,5 +1,5 @@
 import paper from 'paper';
-import {Vector3} from 'three-math';
+import {Vector3, Vector4} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
@@ -31,6 +31,12 @@ class PaperCuboid extends PaperShape {
      * @private
      */
     this._isSelected = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._drawHandles = true;
 
     /**
      * @type {Projection2d}
@@ -68,10 +74,9 @@ class PaperCuboid extends PaperShape {
   /**
    * Generate the 2d projection of the {@link Cuboid3d} and add the corresponding shaped to this group
    *
-   * @param {boolean} drawHandles
    * @private
    */
-  _drawCuboid(drawHandles = true) {
+  _drawCuboid() {
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
@@ -85,7 +90,7 @@ class PaperCuboid extends PaperShape {
     const directionSymbols = this._createDirectionSymbols();
     this.addChildren(directionSymbols);
 
-    if (this._isSelected && drawHandles) {
+    if (this._isSelected && this._drawHandles) {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
@@ -420,7 +425,8 @@ class PaperCuboid extends PaperShape {
    */
   select(drawHandles = true) {
     this._isSelected = true;
-    this._drawCuboid(drawHandles);
+    this._drawHandles = drawHandles;
+    this._drawCuboid();
   }
 
   /**
