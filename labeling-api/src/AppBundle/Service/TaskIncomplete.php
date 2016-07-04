@@ -69,7 +69,7 @@ class TaskIncomplete
     {
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
         if (empty($labeledThingInFrames)) {
-            return true;
+            return false;
         }
         foreach($labeledThingInFrames as $labeledThingInFrame) {
             if ($this->isLabeledThingInFrameIncomplete($labeledThingInFrame)) {
