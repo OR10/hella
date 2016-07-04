@@ -59,6 +59,55 @@ class CuboidDrawingTool extends DrawingTool {
     this._startCreation = false;
   }
 
+  onKeyPress(keyCode) {
+    if (
+      keyCode === 50
+      && this._startCreation
+      && this._topPoint
+      && this._bottomPoint
+      && this._sidePoint
+      && this._cuboid
+    ) {
+      const bottom = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._bottomPoint.x, this._bottomPoint.y, 1));
+      const top = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._topPoint.x, this._topPoint.y, 1), bottom);
+      const side = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._sidePoint.x, this._bottomPoint.y, 1));
+      const sideTop = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._sidePoint.x, this._topPoint.y, 1), side);
+
+      let points;
+      if (this._bottomPoint.x > this._sidePoint.x) {
+        points = [
+          [sideTop.x, sideTop.y, sideTop.z],
+          [top.x, top.y, top.z],
+          [bottom.x, bottom.y, bottom.z],
+          [side.x, side.y, side.z],
+          null,
+          null,
+          null,
+          null,
+        ];
+      } else {
+        points = [
+          [top.x, top.y, top.z],
+          [sideTop.x, sideTop.y, sideTop.z],
+          [side.x, side.y, side.z],
+          [bottom.x, bottom.y, bottom.z],
+          null,
+          null,
+          null,
+          null,
+        ];
+      }
+
+      this._context.withScope(scope => {
+        this._cuboid.setVertices(points);
+        scope.view.update();
+      });
+
+      this.completeShape();
+      this._cleanUp();
+    }
+  }
+
   /**
    * @param {Event} event
    */

@@ -80,6 +80,13 @@ export default class MultiTool extends Tool {
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
     this._tool.onMouseMove = event => $scope.$evalAsync(() => this._mouseMove(event));
 
+    /**
+     * @param event
+     */
+    document.onkeypress = event => {
+      this._activeTool.onKeyPress(event.keyCode);
+    };
+
     this._setDrawingTool();
     this._registerEventHandler();
 

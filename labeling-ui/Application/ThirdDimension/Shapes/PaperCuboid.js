@@ -373,6 +373,14 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
+   * @param {Array.<Array.<Number>>} vertices
+   */
+  setVertices(vertices) {
+    this._cuboid3d = Cuboid3d.createFromRawVertices(vertices);
+    this._drawCuboid();
+  }
+
+  /**
    * @param {THREE.Vector3} vector
    * @private
    */

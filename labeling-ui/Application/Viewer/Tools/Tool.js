@@ -103,7 +103,7 @@ export default class Tool extends EventEmitter {
   _clampTo(minClamp, maxClamp, value) {
     return Math.max(minClamp, Math.min(maxClamp, value));
   }
-  
+
   onMouseUp() {
   }
 
@@ -114,6 +114,9 @@ export default class Tool extends EventEmitter {
   }
 
   onMouseMove() {
+  }
+
+  onKeyPress() {
   }
 
 }
