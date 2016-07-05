@@ -637,9 +637,7 @@ class ViewerController {
       this._toolService,
       this._logger,
       this._$timeout,
-      this.framePosition,
-      this._modalService,
-      this._$state
+      this.framePosition
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);

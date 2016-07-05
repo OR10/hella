@@ -1,5 +1,5 @@
 import paper from 'paper';
-import {Vector3, Vector4} from 'three-math';
+import {Vector3} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 

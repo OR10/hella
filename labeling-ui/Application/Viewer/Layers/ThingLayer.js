@@ -26,8 +26,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
-   * @param {ModalService} modalService
-   * @param {$state} $state
    */
   constructor(width,
               height,
@@ -40,9 +38,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               toolService,
               logger,
               $timeout,
-              framePosition,
-              modalService,
-              $state) {
+              framePosition) {
     super(width, height, $scope, drawingContextService);
 
     /**

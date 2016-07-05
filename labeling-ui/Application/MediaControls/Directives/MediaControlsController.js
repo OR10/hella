@@ -1,5 +1,3 @@
-import paper from 'paper';
-
 /**
  * Controller handling the control elements below the viewer frame
  *
