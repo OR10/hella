@@ -505,8 +505,10 @@ class PaperCuboid extends PaperShape {
     let movementVector;
 
     if (point.y > 0 && newPrimaryCornerVertex.x < 0) {
-      // Shape moved above horizon
-      // @TOOD: Move to maximal position here somehow :)
+      // Movement above the horizon
+      // For now just stop this movement from happening.
+      // @TODO: "Snap" into a sensible size restriction here once we figured out how to calculate that
+      return;
     }
 
     movementVector = newPrimaryCornerVertex.sub(oldPrimaryCornerVertex);
