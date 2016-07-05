@@ -35,15 +35,25 @@ class Cuboid2d {
     );
   }
 
+  /**
+   * @param {Array.<Array.<Number>>}vertices
+   * @returns {Cuboid2d}
+   */
   setVertices(vertices) {
     this._vertices = vertices;
     return this;
   }
 
+  /**
+   * @returns {Array.<Vector3|null>}
+   */
   get vertices() {
     return this._vertices.map(vertex => vertex === null ? null : vertex.clone());
   }
 
+  /**
+   * @returns {Array.<boolean>}
+   */
   get vertexVisibility() {
     return clone(this._vertexVisibility);
   }

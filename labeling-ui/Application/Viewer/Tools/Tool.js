@@ -104,4 +104,19 @@ export default class Tool extends EventEmitter {
     return Math.max(minClamp, Math.min(maxClamp, value));
   }
 
+  onMouseUp() {
+  }
+
+  onMouseDown() {
+  }
+
+  onMouseDrag() {
+  }
+
+  onMouseMove() {
+  }
+
+  onKeyPress() {
+  }
+
 }

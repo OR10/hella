@@ -176,7 +176,7 @@ class PaperPedestrian extends PaperShape {
    * @returns {string}
    */
   getClass() {
-    return 'pedestrian';
+    return PaperPedestrian.getClass();
   }
 
   /**
@@ -303,6 +303,13 @@ class PaperPedestrian extends PaperShape {
   }
 
 }
+
+/**
+ * @returns {string}
+ */
+PaperPedestrian.getClass = () => {
+  return 'pedestrian';
+};
 
 PaperPedestrian.ASPECT_RATIO = 0.41;
 PaperPedestrian.CENTER_DASH = [2, 2];

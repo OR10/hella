@@ -11,7 +11,7 @@ import paper from 'paper';
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
- * @property {Tool} newShapeDrawingTool
+ * @property {Tool} multiTool
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -225,60 +225,7 @@ class MediaControlsController {
    * Handle the creation of new rectangle
    */
   handleNewLabeledThingClicked() {
-    const expanse = 50;
-    const center = new paper.Point(this.video.metaData.width / 2, this.video.metaData.height / 2);
-    const topLeft = new paper.Point(center.x - expanse, center.y - expanse);
-    const bottomRight = new paper.Point(center.x + expanse, center.y + expanse);
-
-    this._logger.log(
-      'mediacontrols:newlabeledthing',
-      `Creating new Shape: topLeft: ${topLeft}, bottomRight: ${bottomRight} (center: ${center})`
-    );
-
-    this.newShapeDrawingTool.startShape(topLeft, bottomRight);
-    this.newShapeDrawingTool.completeShape();
-  }
-
-  /**
-   * Handle the creation of new ellipse
-   */
-  handleNewEllipseClicked() {
-    this.activeTool = 'ellipse';
-  }
-
-  /**
-   * Handle the creation of new circle
-   */
-  handleNewCircleClicked() {
-    this.activeTool = 'circle';
-  }
-
-  /**
-   * Handle the creation of new path
-   */
-  handleNewPathClicked() {
-    this.activeTool = 'path';
-  }
-
-  /**
-   * Handle the creation of new line
-   */
-  handleNewLineClicked() {
-    this.activeTool = 'line';
-  }
-
-  /**
-   * Handle the creation of new polygon
-   */
-  handleNewPolygonClicked() {
-    this.activeTool = 'polygon';
-  }
-
-  /**
-   * Handle the creation of new point
-   */
-  handleNewPointClicked() {
-    this.activeTool = 'point';
+    this.multiTool.createNewDefaultShape();
   }
 
   /**

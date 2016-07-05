@@ -125,7 +125,7 @@ class PaperRectangle extends PaperShape {
    * @returns {string}
    */
   getClass() {
-    return 'rectangle';
+    return PaperRectangle.getClass();
   }
 
   /**
@@ -273,5 +273,12 @@ class PaperRectangle extends PaperShape {
     };
   }
 }
+
+/**
+ * @returns {string}
+ */
+PaperRectangle.getClass = () => {
+  return 'rectangle';
+};
 
 export default PaperRectangle;

@@ -130,7 +130,7 @@ class TaskController {
      *
      * @type {Tool}
      */
-    this.newShapeDrawingTool = null;
+    this.multiTool = null;
 
     /**
      * @type {boolean}

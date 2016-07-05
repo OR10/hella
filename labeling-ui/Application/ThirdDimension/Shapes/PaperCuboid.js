@@ -1,5 +1,5 @@
 import paper from 'paper';
-import {Vector3} from 'three-math';
+import {Vector3, Vector4} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
@@ -14,7 +14,7 @@ class PaperCuboid extends PaperShape {
    * @param {Projection2d} projection2d
    * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
-   * @param {String} color
+   * @param {{primary, secondary}} color
    * @param {boolean?} draft
    */
   constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, draft) {
@@ -31,6 +31,12 @@ class PaperCuboid extends PaperShape {
      * @private
      */
     this._isSelected = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._drawHandles = true;
 
     /**
      * @type {Projection2d}
@@ -68,10 +74,9 @@ class PaperCuboid extends PaperShape {
   /**
    * Generate the 2d projection of the {@link Cuboid3d} and add the corresponding shaped to this group
    *
-   * @param {boolean} drawHandles
    * @private
    */
-  _drawCuboid(drawHandles = true) {
+  _drawCuboid() {
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
@@ -82,7 +87,10 @@ class PaperCuboid extends PaperShape {
     const lines = this._createEdges();
     this.addChildren(lines);
 
-    if (this._isSelected && drawHandles) {
+    const directionSymbols = this._createDirectionSymbols();
+    this.addChildren(directionSymbols);
+
+    if (this._isSelected && this._drawHandles) {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
@@ -174,6 +182,168 @@ class PaperCuboid extends PaperShape {
   }
 
   /**
+   * @returns {Array.<Line>}
+   * @private
+   */
+  _createDirectionSymbols() {
+    const planes = [
+      [0, 1, 2, 3],
+      [1, 5, 6, 2],
+      [4, 0, 3, 7],
+      [4, 5, 6, 7],
+    ];
+
+    const visiblePlanes = planes.filter(
+      plane => plane.filter(
+        vertexIndex => this._projectedCuboid.vertexVisibility[vertexIndex]
+      ).length === 4
+    );
+
+    const shapes = [];
+    visiblePlanes.forEach(plane => {
+      shapes.push(new paper.Path.Line({
+        segments: this._calculateShapePointsForPlane(plane),
+        fillColor: this._color.primary,
+        selected: false,
+        strokeScaling: false,
+        closed: true,
+      }));
+    });
+
+    return shapes;
+  }
+
+  /**
+   * @param {Array.<Number>} plane
+   * @returns {Array.<Point>}
+   * @private
+   */
+  _calculateShapePointsForPlane(plane) {
+    switch (plane.join('')) {
+      case '1562':
+        return this._createArrow(1, 5, 6, 2);
+      case '4037':
+        return this._createArrow(0, 4, 7, 3);
+      case '0123':
+        return this._createDot(0, 1, 2, 3);
+      case '4567':
+        return this._createCross(4, 5, 6, 7);
+      default:
+    }
+  }
+
+  /**
+   * @param {Number} topLeftIndex
+   * @param {Number} topRightIndex
+   * @param {Number} bottomRightIndex
+   * @param {Number} bottomLeftIndex
+   * @returns {Array.<Point>}
+   * @private
+   */
+  _createArrow(topLeftIndex, topRightIndex, bottomRightIndex, bottomLeftIndex) {
+    const topLeft = this._projectedCuboid.vertices[topLeftIndex];
+    const topRight = this._projectedCuboid.vertices[topRightIndex];
+    const bottomRight = this._projectedCuboid.vertices[bottomRightIndex];
+    const bottomLeft = this._projectedCuboid.vertices[bottomLeftIndex];
+
+    const cubeLength = topLeft.distanceTo(topRight);
+    const cubeHeight = topLeft.distanceTo(bottomLeft);
+
+    const rightCenter = topRight.clone().add(bottomRight).divideScalar(2);
+    const leftCenter = topLeft.clone().add(bottomLeft).divideScalar(2);
+
+    const horizontalDirection = leftCenter.clone().sub(rightCenter).normalize();
+    const verticalDirection = topLeft.clone().sub(bottomLeft).normalize();
+    const negativeVerticalDirection = bottomLeft.clone().sub(topLeft).normalize();
+
+
+    const point1 = rightCenter.clone().add(horizontalDirection.clone().multiplyScalar(0.1 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.05 * cubeHeight));
+    const point2 = point1.clone().add(horizontalDirection.clone().multiplyScalar(0.6 * cubeLength));
+    const point3 = point2.clone().add(verticalDirection.clone().multiplyScalar(0.1 * cubeHeight));
+    const point4 = rightCenter.clone().add(horizontalDirection.clone().multiplyScalar(0.9 * cubeLength));
+    const point7 = rightCenter.clone().add(horizontalDirection.clone().multiplyScalar(0.1 * cubeLength)).add(negativeVerticalDirection.clone().multiplyScalar(0.05 * cubeHeight));
+    const point6 = point7.clone().add(horizontalDirection.clone().multiplyScalar(0.6 * cubeLength));
+    const point5 = point6.clone().add(negativeVerticalDirection.clone().multiplyScalar(0.1 * cubeHeight));
+
+    return [point1, point2, point3, point4, point5, point6, point7];
+  }
+
+  /**
+   *
+   * @param {Number} topLeftIndex
+   * @param {Number} topRightIndex
+   * @param {Number} bottomRightIndex
+   * @param {Number} bottomLeftIndex
+   * @returns {Array.<Point>}
+   * @private
+   */
+  _createDot(topLeftIndex, topRightIndex, bottomRightIndex, bottomLeftIndex) {
+    const topLeft = this._projectedCuboid.vertices[topLeftIndex];
+    const topRight = this._projectedCuboid.vertices[topRightIndex];
+    const bottomRight = this._projectedCuboid.vertices[bottomRightIndex];
+    const bottomLeft = this._projectedCuboid.vertices[bottomLeftIndex];
+
+    const topCenter = topLeft.clone().add(topRight).divideScalar(2);
+    const rightCenter = topRight.clone().add(bottomRight).divideScalar(2);
+    const bottomCenter = bottomLeft.clone().add(bottomRight).divideScalar(2);
+    const leftCenter = bottomLeft.clone().add(topLeft).divideScalar(2);
+
+    const horizontalDirection = leftCenter.clone().sub(rightCenter).normalize();
+    const verticalDirection = topCenter.clone().sub(bottomCenter).normalize();
+
+    const cubeLength = leftCenter.distanceTo(rightCenter);
+    const cubeHeight = topCenter.distanceTo(bottomCenter);
+
+    return [
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.45 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.45 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.55 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.45 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.55 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.55 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.45 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.55 * cubeHeight)),
+    ];
+  }
+
+  /**
+   * @param {Number} topLeftIndex
+   * @param {Number} topRightIndex
+   * @param {Number} bottomRightIndex
+   * @param {Number} bottomLeftIndex
+   * @returns {Array.<Point>}
+   * @private
+   */
+  _createCross(topLeftIndex, topRightIndex, bottomRightIndex, bottomLeftIndex) {
+    const topLeft = this._projectedCuboid.vertices[topLeftIndex];
+    const topRight = this._projectedCuboid.vertices[topRightIndex];
+    const bottomRight = this._projectedCuboid.vertices[bottomRightIndex];
+    const bottomLeft = this._projectedCuboid.vertices[bottomLeftIndex];
+
+    const topCenter = topLeft.clone().add(topRight).divideScalar(2);
+    const rightCenter = topRight.clone().add(bottomRight).divideScalar(2);
+    const bottomCenter = bottomLeft.clone().add(bottomRight).divideScalar(2);
+    const leftCenter = bottomLeft.clone().add(topLeft).divideScalar(2);
+
+    const horizontalDirection = leftCenter.clone().sub(rightCenter).normalize();
+    const verticalDirection = topCenter.clone().sub(bottomCenter).normalize();
+
+    const cubeLength = leftCenter.distanceTo(rightCenter);
+    const cubeHeight = topCenter.distanceTo(bottomCenter);
+
+    return [
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.5 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.4 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.3 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.2 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.2 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.3 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.4 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.5 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.2 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.7 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.3 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.8 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.5 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.6 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.7 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.8 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.8 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.7 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.6 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.5 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.8 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.3 * cubeHeight)),
+      bottomRight.clone().add(horizontalDirection.clone().multiplyScalar(0.7 * cubeLength)).add(verticalDirection.clone().multiplyScalar(0.2 * cubeHeight)),
+    ];
+  }
+
+  /**
    * @private
    */
   _createHandles() {
@@ -205,6 +375,14 @@ class PaperCuboid extends PaperShape {
     );
 
     return handles;
+  }
+
+  /**
+   * @param {Array.<Array.<Number>>} vertices
+   */
+  setVertices(vertices) {
+    this._cuboid3d = Cuboid3d.createFromRawVertices(vertices);
+    this._drawCuboid();
   }
 
   /**
@@ -247,7 +425,8 @@ class PaperCuboid extends PaperShape {
    */
   select(drawHandles = true) {
     this._isSelected = true;
-    this._drawCuboid(drawHandles);
+    this._drawHandles = drawHandles;
+    this._drawCuboid();
   }
 
   /**
@@ -271,18 +450,18 @@ class PaperCuboid extends PaperShape {
    * @returns {string}
    */
   getClass() {
-    return 'cuboid';
+    return PaperCuboid.getClass();
   }
 
   /**
    * Return the identifier for the tool action that need to be performed
    *
    * @param {Handle|null} handle
-   * @returns {string|null}
+   * @returns {string}
    */
   getToolActionIdentifier(handle) {
     if (handle === null) {
-      return null;
+      return 'move';
     }
 
     switch (handle.name) {
@@ -290,10 +469,8 @@ class PaperCuboid extends PaperShape {
       case 'width':
       case 'depth':
         return 'scale';
-      case 'move':
-        return 'move';
       default:
-        return null;
+        return 'move';
     }
   }
 
@@ -505,5 +682,12 @@ class PaperCuboid extends PaperShape {
     };
   }
 }
+
+/**
+ * @returns {string}
+ */
+PaperCuboid.getClass = () => {
+  return 'cuboid';
+};
 
 export default PaperCuboid;

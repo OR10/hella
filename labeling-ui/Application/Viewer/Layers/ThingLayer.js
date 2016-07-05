@@ -1,15 +1,6 @@
 import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
-import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
-import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
-import CuboidDrawingTool from '../../ThirdDimension/Tools/CuboidDrawingTool';
-import EllipseDrawingTool from '../Tools/Ellipse/EllipseDrawingTool';
-import CircleDrawingTool from '../Tools/Circle/CircleDrawingTool';
-import PathDrawingTool from '../Tools/Path/PathDrawingTool';
-import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
-import LineDrawingTool from '../Tools/Line/LineDrawingTool';
-import PointDrawingTool from '../Tools/Point/PointDrawingTool';
 import ZoomTool from '../Tools/ZoomTool';
 import MultiTool from '../Tools/MultiTool';
 
@@ -91,6 +82,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context);
+    this._$scope.vm.multiTool = this._multiTool;
 
     /**
      * @type {null}
@@ -103,20 +95,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
-
-    try {
-      this._initializeShapeCreationTool();
-    } catch (error) {
-      const errorModal = modalService.getAlertWarningDialog({
-        title: 'Unknown Drawing Tool',
-        headline: `This task is using the "${this._$scope.vm.task.drawingTool}" drawing tool. This tool is unknown.`,
-        message: `The Task could not be opened. Please contact your label coordinator and/or admin about this problem.`,
-        confirmButtonText: 'Acknowledged',
-      }, () => {
-        $state.go('labeling.tasks');
-      });
-      errorModal.activate();
-    }
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);
@@ -165,6 +143,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
+    this._multiTool.on('shape:new', shape => {
+      this.emit('shape:new', shape);
+    });
     this._multiTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
@@ -185,49 +166,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._element.dispatchEvent(event);
       }
     });
-  }
-
-  _initializeShapeCreationTool() {
-    const task = this._$scope.vm.task;
-    const drawingToolOptions = task.drawingToolOptions || {};
-    let tool = null;
-
-    switch (task.drawingTool) {
-      case 'rectangle':
-        tool = new RectangleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, drawingToolOptions.rectangle);
-        break;
-      case 'pedestrian':
-        tool = new PedestrianDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, drawingToolOptions.pedestrian);
-        break;
-      case 'cuboid':
-        tool = new CuboidDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService, this._$scope.vm.video, drawingToolOptions.cuboid);
-        break;
-      case 'ellipse':
-        tool = new EllipseDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
-        break;
-      case 'circle':
-        tool = new CircleDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
-        break;
-      case 'path':
-        tool = new PathDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
-        break;
-      case 'polygon':
-        tool = new PolygonDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
-        break;
-      case 'line':
-        tool = new LineDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
-        break;
-      case 'point':
-        tool = new PointDrawingTool(this._$scope.$new(), this._context, this._entityIdService, this._entityColorService);
-        break;
-      default:
-        throw new Error(`Cannot instantiate tool of unknown type ${this._$scope.vm.task.drawingTool}.`);
-    }
-
-    tool.on('shape:new', this._onNewShape.bind(this));
-
-    this._$scope.vm.newShapeDrawingTool = tool;
-    this._multiTool.registerCreateTool(tool);
   }
 
   /**
@@ -301,33 +239,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._$scope.vm.selectedPaperShape = null;
       }
     });
-  }
-
-  _onNewShape(shape) {
-    // The newly created shape was only temporary as it is rerendered by insertion into
-    // the labeledThingsInFrame
-    shape.remove();
-
-    this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
-
-    // Process the next steps after the rerendering took place in the next digest cycle
-    this._$timeout(() => {
-      // The new shape has been rerendered now lets find it
-      const newShape = this._context.withScope(scope =>
-        scope.project.getItem({
-          id: shape.id,
-        })
-      );
-      // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
-      //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
-      //        suffice, as backend requests should only be made upon selection
-      newShape.draft();
-
-      // Reselect the new Shape
-      this._$scope.vm.selectedPaperShape = newShape;
-
-      this.emit('shape:new', newShape);
-    }, 0);
   }
 
   /**

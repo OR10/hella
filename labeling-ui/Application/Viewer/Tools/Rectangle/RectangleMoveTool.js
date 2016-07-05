@@ -62,6 +62,7 @@ class RectangleMoveTool extends Tool {
   }
 
   onMouseUp() {
+    this.emit('shape:finished');
     if (this._paperRectangle) {
       if (this._modified) {
         this._modified = false;

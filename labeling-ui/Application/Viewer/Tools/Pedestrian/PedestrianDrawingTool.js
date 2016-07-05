@@ -15,15 +15,15 @@ class PedestrianDrawingTool extends DrawingTool {
    * @param {DrawingContext} drawingContext
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {Object?} options
+   * @param {Video} video
+   * @param {Task} task
    */
-  constructor($scope, drawingContext, entityIdService, entityColorService, options) {
+  constructor($scope, drawingContext, entityIdService, entityColorService, video, task) {
     const defaultOptions = {
       minimalHeight: 1,
     };
-
-    const mergedOptions = Object.assign({}, defaultOptions, options);
-    super($scope, drawingContext, entityIdService, entityColorService, mergedOptions);
+    task.drawingToolOptions = Object.assign({}, defaultOptions, task.drawingToolOptions);
+    super($scope, drawingContext, entityIdService, entityColorService, video, task);
 
     /**
      * @type {PaperPedestrian|null}
@@ -72,7 +72,7 @@ class PedestrianDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('pedestrian:new', this._pedestrian);
+    this.emit('shape:start', this._pedestrian);
   }
 
   /**
@@ -95,7 +95,8 @@ class PedestrianDrawingTool extends DrawingTool {
       this._$scope.$apply(
         () => {
           this._pedestrian.resize(this._getScaleAnchor(point), point);
-          this.emit('pedestrian:update', this._pedestrian);
+          this.emit('shape:update', this._pedestrian);
+          this.emit('shape:finished');
         }
       );
     } else {
@@ -111,6 +112,7 @@ class PedestrianDrawingTool extends DrawingTool {
    * @param event
    */
   onMouseUp(event) { // eslint-disable-line no-unused-vars
+    this.emit('shape:finished');
     if (this._pedestrian) {
       // Fix point orientation of top and bottom center
       this._pedestrian.fixOrientation();
@@ -126,7 +128,7 @@ class PedestrianDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._pedestrian.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._pedestrian.toJSON());
 
-    this.emit('shape:new', this._pedestrian);
+    this.emit('shape:update', this._pedestrian);
     this._pedestrian = null;
   }
 
@@ -135,6 +137,32 @@ class PedestrianDrawingTool extends DrawingTool {
       return new Handle('bottom-center', new paper.Point(this._startPosition.x, point.y));
     }
     return new Handle('top-center', new paper.Point(this._startPosition.x, point.y));
+  }
+
+  createNewDefaultShape() {
+    const height = 100;
+    const from = new paper.Point(
+      this.video.metaData.width / 2,
+      (this.video.metaData.height / 2) - (height / 2),
+    );
+    const to = new paper.Point(
+      this.video.metaData.width / 2,
+      (this.video.metaData.height / 2) + (height / 2),
+    );
+    const labeledThingInFrame = this._createLabeledThingHierarchy();
+
+    this._context.withScope(() => {
+      this._rect = new PaperPedestrian(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        from,
+        to,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        true
+      );
+    });
+
+    this.emit('shape:start', this._rect);
   }
 }
 
