@@ -52,10 +52,34 @@ class CuboidDrawingTool extends DrawingTool {
      */
     this._projection3d = new FlatWorld(this.video.calibration);
 
+    /**
+     * @type {Point|null}
+     * @private
+     */
     this._topPoint = null;
+
+    /**
+     * @type {Point|null}
+     * @private
+     */
     this._bottomPoint = null;
+
+    /**
+     * @type {Point|null}
+     * @private
+     */
     this._sidePoint = null;
+
+    /**
+     * @type {Point|null}
+     * @private
+     */
     this._heightLine = null;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this._startCreation = false;
   }
 
