@@ -544,6 +544,48 @@ class PaperCuboid extends PaperShape {
     this._drawCuboid();
   }
 
+  rotateFaces(clockwise = true) {
+    const faceMapping = this._getFaceRotationMapping(clockwise);
+    const vertices = this._cuboid3d.vertices;
+    this._cuboid3d.setVertices([
+      vertices[faceMapping[0]],
+      vertices[faceMapping[1]],
+      vertices[faceMapping[2]],
+      vertices[faceMapping[3]],
+      vertices[faceMapping[4]],
+      vertices[faceMapping[5]],
+      vertices[faceMapping[6]],
+      vertices[faceMapping[7]],
+    ]);
+
+    this._drawCuboid(true);
+  }
+
+  _getFaceRotationMapping(clockwise) {
+    let faceMapping = {
+      4: 0,
+      0: 1,
+      3: 2,
+      7: 3,
+      1: 5,
+      2: 6,
+      5: 4,
+      6: 7,
+    };
+
+    if (clockwise === true) {
+      const newFaceMapping = {};
+      for (const source in faceMapping) {
+        if (faceMapping.hasOwnProperty(source)) {
+          newFaceMapping[faceMapping[source]] = source;
+        }
+      }
+      faceMapping = newFaceMapping;
+    }
+
+    return faceMapping;
+  }
+
   /**
    * @param {Point} point
    * @param {Vector4} handleVertex

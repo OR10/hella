@@ -40,14 +40,6 @@ export default class MultiTool extends Tool {
     this._toolService = toolService;
 
     /**
-     * Tool handling the creation of things
-     *
-     * @type {Tool}
-     * @private
-     */
-    this._createTool = null;
-
-    /**
      * The currently active tool
      *
      * @type {Tool}
@@ -178,6 +170,12 @@ export default class MultiTool extends Tool {
       description: 'Move selected shape right (fast)',
       callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
     });
+
+    // @TODO: Only register if we are really working with a cuboid;
+    this._registerCuboidShortcuts();
+  }
+
+  _registerCuboidShortcuts() {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'o',
       description: 'Rotate cuboid counter clockwise by 5°',
@@ -187,6 +185,16 @@ export default class MultiTool extends Tool {
       combo: 'p',
       description: 'Rotate cuboid clockwise by 5°',
       callback: () => this._rotateCuboid(-0.087266),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'ß',
+      description: 'Change cuboid faces counter clockwise',
+      callback: () => this._rotateCuboidFaces(false),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '0',
+      description: 'Change cuboid faces clockwise',
+      callback: () => this._rotateCuboidFaces(true),
     });
   }
 
@@ -210,6 +218,23 @@ export default class MultiTool extends Tool {
     if (shape instanceof PaperCuboid) {
       this._context.withScope(scope => {
         shape.rotateAroundCenter(degree);
+        shape.updatePrimaryCorner();
+        scope.view.update();
+        this.emit('shape:update', shape);
+      });
+    }
+  }
+
+  /**
+   * @param {boolean} clockwise
+   * @private
+   */
+  _rotateCuboidFaces(clockwise) {
+    // TODO: refactor this into a separate cuboid-rotate tool !!!
+    const shape = this._$scope.vm.selectedPaperShape;
+    if (shape instanceof PaperCuboid) {
+      this._context.withScope(scope => {
+        shape.rotateFaces(clockwise);
         shape.updatePrimaryCorner();
         scope.view.update();
         this.emit('shape:update', shape);
