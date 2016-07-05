@@ -575,8 +575,8 @@ class PaperCuboid extends PaperShape {
    * @private
    */
   _changeHorizontal(point, handleVertexIndex, direction) {
-    const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
     const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(direction);
+    const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
     const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
     const primaryVertex = this._cuboid3d.vertices[primaryCornerIndex];
 
@@ -595,7 +595,12 @@ class PaperCuboid extends PaperShape {
     const targetPoint = this._projection3d.projectBottomCoordinateTo3d(linePoint);
     const changeVector = targetPoint.clone().sub(handleVertex);
 
+    // Prevent bottom coordinates to go past the horizon
+    if (targetPoint.x < 0) {
+      return;
+    }
 
+    // Prevent handle to be dragged over the primary corner (mirroring of the cuboid)
     if (direction === CuboidInteractionResolver.WIDTH) {
       const before = primary2d.x - handle2d.x;
       const after = primary2d.x - linePoint.x;
