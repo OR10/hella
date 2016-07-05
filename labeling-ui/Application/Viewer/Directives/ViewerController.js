@@ -946,7 +946,7 @@ class ViewerController {
       const errorModal = this._modalService.getAlertWarningDialog({
         title: 'Error',
         headline: `There was an error updating the shape`,
-        message: `The shape could not be saved. To continue with the labeling process please reload the page!`,
+        message: `The shape could not be saved. Please contact the label coordinator and reload the page to continue with the labeling process!`,
         confirmButtonText: 'Reload',
       }, () => {
         window.location.reload();
@@ -974,7 +974,7 @@ class ViewerController {
         const errorModal = this._modalService.getAlertWarningDialog({
           title: 'Error',
           headline: `There was an error creating the shape`,
-          message: `The shape could not be created. To continue with the labeling process please reload the page!`,
+          message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
           confirmButtonText: 'Reload',
         }, () => {
           window.location.reload();
