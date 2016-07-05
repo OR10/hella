@@ -39,6 +39,7 @@ class ProjectToProjectTaskMover extends Base
     protected function configure()
     {
         $this->setName('annostation:ProjectToProjectTaskMover')
+            ->setDescription('Move all tasks from source project to destination project')
             ->addArgument('sourceUuid', Input\InputArgument::REQUIRED, 'Project source UUID')
             ->addArgument('destinationUuid', Input\InputArgument::REQUIRED, 'Project destination UUID');
 
