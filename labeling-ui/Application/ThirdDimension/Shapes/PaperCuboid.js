@@ -533,10 +533,10 @@ class PaperCuboid extends PaperShape {
       this._changeHeight(point, this._cuboid3d.vertices[handleVertexIndex]);
     }
     if (interaction[CuboidInteractionResolver.DEPTH]) {
-      this._changeHorizontal(point, this._cuboid3d.vertices[handleVertexIndex], CuboidInteractionResolver.DEPTH);
+      this._changeHorizontal(point, handleVertexIndex, CuboidInteractionResolver.DEPTH);
     }
     if (interaction[CuboidInteractionResolver.WIDTH]) {
-      this._changeHorizontal(point, this._cuboid3d.vertices[handleVertexIndex], CuboidInteractionResolver.WIDTH);
+      this._changeHorizontal(point, handleVertexIndex, CuboidInteractionResolver.WIDTH);
     }
 
     this._drawCuboid();
@@ -570,21 +570,49 @@ class PaperCuboid extends PaperShape {
 
   /**
    * @param {Point} point
-   * @param {Vector4} handleVertex
+   * @param {Number} handleVertexIndex
    * @param {string} direction
    * @private
    */
-  _changeHorizontal(point, handleVertex, direction) {
+  _changeHorizontal(point, handleVertexIndex, direction) {
+    const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
     const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(direction);
     const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
-    const primaryCorner = this._cuboid3d.vertices[primaryCornerIndex];
-    const mousePoint = this._projection3d.projectBottomCoordinateTo3d(point);
+    const primaryVertex = this._cuboid3d.vertices[primaryCornerIndex];
 
-    const distancePrimaryToMouse = primaryCorner.clone().sub(mousePoint).length();
-    const distancePrimaryToHandle = primaryCorner.clone().sub(handleVertex).length();
-    const scaleAmount = distancePrimaryToMouse - distancePrimaryToHandle;
-    const scaleDirection = handleVertex.sub(primaryCorner).normalize();
-    const changeVector = scaleDirection.multiplyScalar(scaleAmount);
+    const handle2d = this._projectedCuboid.vertices[handleVertexIndex];
+    const primary2d = this._projectedCuboid.vertices[primaryCornerIndex];
+    const slope = (handle2d.y - primary2d.y) / (handle2d.x - primary2d.x);
+
+    const relativeMousePoint = new Vector3(point.x - primary2d.x, primary2d.y - point.y, 1);
+    let relativeLinePoint;
+    if (Math.abs(slope) > 1) {
+      relativeLinePoint = new Vector3(relativeMousePoint.y / (-1 * slope), relativeMousePoint.y, 1);
+    } else {
+      relativeLinePoint = new Vector3(relativeMousePoint.x, relativeMousePoint.x * (-1) * slope, 1);
+    }
+    const linePoint = new Vector3(relativeLinePoint.x + primary2d.x, primary2d.y - relativeLinePoint.y);
+    const targetPoint = this._projection3d.projectBottomCoordinateTo3d(linePoint);
+    const changeVector = targetPoint.clone().sub(handleVertex);
+
+
+    if (direction === CuboidInteractionResolver.WIDTH) {
+      const before = primary2d.x - handle2d.x;
+      const after = primary2d.x - linePoint.x;
+      if (((before > 0 && after < 0) || (after > 0 && before < 0)) || primaryVertex.sub(targetPoint).length() < 0.05) {
+        // TODO: clamp to maximal limit value
+        // changeVector.normalize().multiplyScalar(primaryVertex.clone().sub(handleVertex).length() - 0.3);
+        return;
+      }
+    } else {
+      const before = primary2d.y - handle2d.y;
+      const after = primary2d.y - linePoint.y;
+      if (((before > 0 && after < 0) || (after > 0 && before < 0)) || primaryVertex.sub(targetPoint).length() < 0.05) {
+        // TODO: clamp to maximal limit value
+        // changeVector.normalize().multiplyScalar(primaryVertex.clone().sub(handleVertex).length() - 0.3);
+        return;
+      }
+    }
 
     this._cuboid3d.addVectorToVertices(
       changeVector,
