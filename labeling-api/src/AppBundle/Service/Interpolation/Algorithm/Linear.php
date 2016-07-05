@@ -318,10 +318,10 @@ class Linear implements Interpolation\Algorithm
                     3 => 7,
                     'normal' => array(
                         array(
-                            3, 0
+                            6, 5
                         ),
                         array(
-                            3, 2
+                            6, 7
                         )
                     )
                 );
@@ -334,10 +334,10 @@ class Linear implements Interpolation\Algorithm
                     6 => 7,
                     'normal' => array(
                         array(
-                            2, 1,
+                            7, 4,
                         ),
                         array(
-                            2, 6
+                            7, 3
                         )
                     )
                 );
@@ -350,10 +350,10 @@ class Linear implements Interpolation\Algorithm
                     7 => 3,
                     'normal' => array(
                         array(
-                            6, 5,
+                            3, 0,
                         ),
                         array(
-                            6, 7
+                            3, 2
                         )
                     )
                 );
@@ -366,10 +366,10 @@ class Linear implements Interpolation\Algorithm
                     7 => 6,
                     'normal' => array(
                         array(
-                            7, 4,
+                            2, 1,
                         ),
                         array(
-                            7, 3
+                            2, 6
                         )
                     )
                 );
@@ -382,10 +382,10 @@ class Linear implements Interpolation\Algorithm
                     5 => 6,
                     'normal' => array(
                         array(
-                            0, 4,
+                            3, 7,
                         ),
                         array(
-                            0, 1
+                            3, 2
                         )
                     )
                 );
@@ -398,10 +398,10 @@ class Linear implements Interpolation\Algorithm
                     7 => 4,
                     'normal' => array(
                         array(
-                            3, 7,
+                            1, 0,
                         ),
                         array(
-                            3, 2
+                            1, 5
                         )
                     )
                 );
@@ -411,25 +411,25 @@ class Linear implements Interpolation\Algorithm
                 $oppositeVertex = array();
         }
 
-        $plainVector1 = $endCuboid3d->getVertices()[$oppositeVertex['normal'][0][0]]->subtract($endCuboid3d->getVertices()[$oppositeVertex['normal'][0][1]]);
-        $plainVector2 = $endCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($endCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
+        $plainVector1 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][1]]);
+        $plainVector2 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
 
         $normalVector = $plainVector1->crossProduct($plainVector2);
         $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
-        $distanceVector = $normalVector->multiply($distance)->divide($normalVector->getLength());
+        $distanceVector = $normalVector->divide($normalVector->getLength())->multiply($distance);
 
         $newVertices = array(
             'id' => $currentCuboid3d->getId(),
             'type' => $currentCuboid3d->getType(),
             'vehicleCoordinates' => array(),
         );
-        foreach ($oppositeVertex as $currentVertexIndex => $endVertexIndex) {
-            if ($currentVertexIndex === 'normal') {
+        foreach ($oppositeVertex as $targetVertexIndex => $sourceVertexIndex) {
+            if ($targetVertexIndex === 'normal') {
                 continue;
             }
-            $currentVertex = $endCuboid3d->getVertices()[$endVertexIndex];
+            $sourceVertex = $currentCuboid3d->getVertices()[$sourceVertexIndex];
 
-            $newVertices['vehicleCoordinates'][$currentVertexIndex] = $currentVertex->add($distanceVector)->toArray();
+            $newVertices['vehicleCoordinates'][$targetVertexIndex] = $sourceVertex->add($distanceVector)->toArray();
         }
 
         foreach (range(0, 7) as $index) {
