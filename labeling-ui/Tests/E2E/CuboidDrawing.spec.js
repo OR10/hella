@@ -313,41 +313,38 @@ describe('Cuboid', () => {
 
       it('should limit movement at the horizon', done => {
         mock(sharedMocks.concat([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame1,
-          assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame2,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/task/TASKID-TASKID')
           .then(() => {
             browser.actions()
-              .mouseMove(viewer, {x: 563, y: 353}) // initial position
-              .click()
-              .mouseMove(viewer, {x: 622, y: 390}) // move handle
+              .mouseMove(viewer, {x: 565, y: 469}) // initial position
               .mouseDown()
-              .mouseMove(viewer, {x: 235, y: 560}) // drag
+              .mouseMove(viewer, {x: 691, y: 348}) // drag
               .mouseUp()
               .perform();
           })
           .then(
-            () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementHorizonLimit')
-            // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementHorizonLimit')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
             browser.sleep(1000);
           })
-          .then(() => dumpAllRequestsMade(mock))
+          // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame);
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame);
           })
           .then(() => {
             browser.actions()
-              .mouseMove(viewer, {x: 622, y: 390}) // move handle
+              .mouseMove(viewer, {x: 691, y: 348}) // drag
               .mouseDown()
-              .mouseMove(viewer, {x: 235, y: 560}) // drag
+              .mouseMove(viewer, {x: 691, y: 100}) // drag
               .mouseUp()
               .perform();
           })
@@ -356,7 +353,8 @@ describe('Cuboid', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
-          })
+            done();
+          });
       });
     });
 
