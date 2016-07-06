@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Cuboid', () => {
+fdescribe('Cuboid', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -270,6 +270,7 @@ describe('Cuboid', () => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementLeft);
             browser.sleep(1000);
           })
+          // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame);
@@ -303,6 +304,7 @@ describe('Cuboid', () => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementRight);
             browser.sleep(1000);
           })
+          // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame);
@@ -470,9 +472,9 @@ describe('Cuboid', () => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
-              .mouseMove(viewer, {x: 614, y: 379}) // depth handle
+              .mouseMove(viewer, {x: 613, y: 376}) // depth handle
               .mouseDown()
-              .mouseMove(viewer, {x: 800, y: 440}) // drag
+              .mouseMove(viewer, {x: 568, y: 331}) // drag
               .mouseUp()
               .perform();
           })
@@ -873,7 +875,8 @@ describe('Cuboid', () => {
         });
     });
 
-    it('should switch to 2d mode and back if rotated around primary axis by handle', done => {
+    // Rotation around primary axis has been removed
+    xit('should switch to 2d mode and back if rotated around primary axis by handle', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.frameIndex0to4,
