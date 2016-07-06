@@ -1,6 +1,7 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
+  dumpAllRequestsMade,
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,
@@ -309,6 +310,54 @@ describe('Cuboid', () => {
             done();
           });
       });
+
+      it('should limit movement at the horizon', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame1,
+          assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame2,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 622, y: 390}) // move handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 235, y: 560}) // drag
+              .mouseUp()
+              .perform();
+          })
+          .then(
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementHorizonLimit')
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
+            browser.sleep(1000);
+          })
+          .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame);
+          })
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 622, y: 390}) // move handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 235, y: 560}) // drag
+              .mouseUp()
+              .perform();
+          })
+          .then(
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
+          })
+      });
     });
 
     describe('Rotation', () => {
@@ -447,11 +496,11 @@ describe('Cuboid', () => {
       });
     });
 
-    fdescribe('Orientation', () => {
+    describe('Orientation', () => {
       it('should flip faces clockwise using keyboard', done => {
         mock(sharedMocks.concat([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
           assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1,
           assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2,
           assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3,
@@ -478,7 +527,6 @@ describe('Cuboid', () => {
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1);
-            done();
           })
           .then(() => {
             browser.actions()
@@ -537,10 +585,10 @@ describe('Cuboid', () => {
           });
       });
 
-      it('should flip faces clockwise using keyboard', done => {
+      it('should flip faces counter clockwise using keyboard', done => {
         mock(sharedMocks.concat([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
           assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1,
           assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2,
           assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3,
@@ -567,7 +615,6 @@ describe('Cuboid', () => {
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1);
-            done();
           })
           .then(() => {
             browser.actions()
@@ -917,6 +964,182 @@ describe('Cuboid', () => {
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d);
+          done();
+        });
+    });
+
+    it('should flip faces clockwise using keyboard', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0to4,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('ß')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise1);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys('ß')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise2);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys('ß')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise3')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise3);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys('ß')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise4')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise4);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4);
+          done();
+        });
+    });
+
+    it('should flip faces counter clockwise using keyboard', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0to4,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3,
+        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('0')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise1);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys('0')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise2);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys('0')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise3')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise3);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3);
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys('0')
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise4')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise4);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4);
           done();
         });
     });

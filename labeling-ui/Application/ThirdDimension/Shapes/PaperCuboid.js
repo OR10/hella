@@ -558,6 +558,8 @@ class PaperCuboid extends PaperShape {
       vertices[faceMapping[7]],
     ]);
 
+    this.updatePrimaryCorner();
+    this.reduceToPseudo3dIfPossible();
     this._drawCuboid(true);
   }
 
