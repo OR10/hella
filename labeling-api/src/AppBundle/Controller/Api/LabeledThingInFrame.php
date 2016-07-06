@@ -88,6 +88,11 @@ class LabeledThingInFrame extends Controller\Base
             throw new Exception\BadRequestHttpException('Missing labeledThingId, frameIndex, classes or shapes');
         }
 
+        //@TODO This is a temp check only, this should be fixed
+        if (count($shapes) !== 1) {
+            throw new Exception\BadRequestHttpException('Invalid number of shapes');
+        }
+
         $labeledThing = $this->labeledThingFacade->find($labeledThingId);
         if ($labeledThingInFrame === null) {
             if ($labeledThing === null) {
