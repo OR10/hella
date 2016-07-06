@@ -152,7 +152,7 @@ class PedestrianDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._createLabeledThingHierarchy();
 
     this._context.withScope(() => {
-      this._rect = new PaperPedestrian(
+      this._pedestrian = new PaperPedestrian(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         from,
@@ -162,7 +162,8 @@ class PedestrianDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('shape:start', this._rect);
+    this.emit('shape:start', this._pedestrian);
+    this.completeShape();
   }
 }
 

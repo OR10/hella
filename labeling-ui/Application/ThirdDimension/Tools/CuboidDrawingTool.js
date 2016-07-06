@@ -361,7 +361,7 @@ class CuboidDrawingTool extends DrawingTool {
     });
 
     this.emit('shape:start', this._cuboid);
-    this.emit('shape:finished');
+    this.completeShape();
   }
 }
 

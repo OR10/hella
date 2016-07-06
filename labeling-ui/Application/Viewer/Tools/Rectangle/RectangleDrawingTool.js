@@ -142,6 +142,7 @@ class RectangleDrawingTool extends DrawingTool {
     });
 
     this.emit('shape:start', this._rect);
+    this.completeShape();
   }
 }
 
