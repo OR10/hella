@@ -330,12 +330,45 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], next => {
     });
 });
 
-gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
-  run('clean', 'build', 'copy-canteen', 'optimize', 'test-e2e-run');
+gulp.task('test-e2e-run-non-minified', ['webdriver-update', 'clean-logs'], next => {
+  const protractorConfig = {
+    configFile: 'protractor.conf.js',
+    args: [],
+  };
+
+  if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
+    protractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
+    protractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+  } else {
+    protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
+  }
+
+  const protractorServer = new ProtractorServer({
+    assetPath: 'Distribution',
+    port: 52343,
+    indexFile: 'index-protractor.html',
+  });
+
+  protractorServer.serve();
+
+  gulp.src(paths.files.tests.e2e)
+    .pipe(protractor(protractorConfig))
+    .on('error', error => {
+      protractorServer.close();
+      throw error;
+    })
+    .on('end', () => {
+      protractorServer.close();
+      next();
+    });
 });
 
-gulp.task('test-e2e-js-only', ['webdriver-update'], next => {
-  run('build-javascript', 'test-e2e-run', next);
+gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
+  run('clean', 'build', 'copy-canteen', 'optimize', 'test-e2e-run', next);
+});
+
+gulp.task('test-e2e-non-minified', ['webdriver-update'], next => {
+  run('clean', 'build', 'copy-canteen', 'test-e2e-run-non-minified', next);
 });
 
 gulp.task('build-sass', () => {
@@ -380,7 +413,7 @@ gulp.task('deploy', () => {
   return gulp.src('Distribution/**')
     .pipe($$.rsync({
       recurse: true,
-      exclude: ['index-protractor.html', 'index-dev.html'],
+      exclude: ['index-protractor-min', 'index-protractor.html', 'index-dev.html'],
       root: 'Distribution/',
       hostname: deploymentIp,
       destination: '/var/www/labeling-ui',

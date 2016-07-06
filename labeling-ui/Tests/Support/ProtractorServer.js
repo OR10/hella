@@ -16,6 +16,7 @@ export default class ProtractorServer {
     const defaultConfig = {
       assetPath: 'Distribution',
       port: 52343,
+      indexFile: 'index-protractor-min.html',
     };
 
     return Object.assign({}, defaultConfig, config);
@@ -99,7 +100,7 @@ export default class ProtractorServer {
       .then((fixturesMiddleware) => {
         const app = connect();
         app.use('/fixtures/images', fixturesMiddleware);
-        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/index-protractor.html`));
+        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/${this.config.indexFile}`));
         return app;
       })
       .then(app => {
