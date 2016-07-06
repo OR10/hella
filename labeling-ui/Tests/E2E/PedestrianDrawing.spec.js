@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -353,6 +353,7 @@ describe('Pedestrian drawing', () => {
   });
 
   afterEach(() => {
+    expectAllModalsToBeClosed();
     mock.teardown();
   });
 });

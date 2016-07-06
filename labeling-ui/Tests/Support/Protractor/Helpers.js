@@ -57,3 +57,8 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   browser.get(builder.url(url));
   return waitForApplicationReady();
 }
+
+export function expectAllModalsToBeClosed() {
+  const modalElements = element(by.css('.modal-overlay.is-active'));
+  expect(modalElements.isPresent()).toBe(false, 'No open modal Dialog expected.');
+}

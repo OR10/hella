@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -148,6 +148,7 @@ describe('Crosshairs drawing', () => {
   });
 
   afterEach(() => {
+    expectAllModalsToBeClosed();
     mock.teardown();
   });
 });

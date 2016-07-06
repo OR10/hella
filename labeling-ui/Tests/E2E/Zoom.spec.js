@@ -3,7 +3,7 @@ import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import ImageComparisionService from '../Support/ImageComparisonService';
 import InteractionService from '../Support/InteractionService';
-import {initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 
@@ -167,6 +167,7 @@ describe('Zoom', () => {
   });
 
   afterEach(() => {
+    expectAllModalsToBeClosed();
     mock.teardown();
   });
 });
