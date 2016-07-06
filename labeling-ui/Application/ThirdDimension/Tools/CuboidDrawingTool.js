@@ -137,7 +137,7 @@ class CuboidDrawingTool extends DrawingTool {
    */
   onMouseDown(event) {
     if (!this._startCreation) {
-      this.emit('shape:finished');
+      this.emit('tool:finished');
       return;
     }
 
@@ -196,7 +196,6 @@ class CuboidDrawingTool extends DrawingTool {
           true
         );
       });
-      this.emit('shape:start', this._cuboid);
 
       return;
     }
@@ -295,8 +294,8 @@ class CuboidDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._cuboid.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._cuboid.toJSON());
 
-    this.emit('shape:update', this._cuboid);
-    this.emit('shape:finished');
+    this.emit('shape:create', this._cuboid);
+    this.emit('tool:finished');
 
     this._cuboid = null;
   }
@@ -360,7 +359,6 @@ class CuboidDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('shape:start', this._cuboid);
     this.completeShape();
   }
 }

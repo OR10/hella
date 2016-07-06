@@ -642,7 +642,7 @@ class ViewerController {
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
-    this.thingLayer.on('shape:new', shape => this._onNewShape(shape));
+    this.thingLayer.on('shape:create', shape => this._onShapeCreate(shape));
 
     this.thingLayer.on('shape:update', shape => {
       const frameIndex = this.framePosition.position;
@@ -960,7 +960,7 @@ class ViewerController {
    * @returns {AbortablePromise.<LabeledThingInFrame>}
    * @private
    */
-  _onNewShape(shape) {
+  _onShapeCreate(shape) {
     this._$rootScope.$emit('shape:add:before');
     const newLabeledThingInFrame = shape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;

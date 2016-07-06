@@ -48,7 +48,7 @@ class CuboidScaleTool extends Tool {
   }
 
   onMouseUp() {
-    this.emit('shape:finished');
+    this.emit('tool:finished');
     if (this._paperCuboid && this._modified) {
       this._modified = false;
       this._paperCuboid.updatePrimaryCorner();

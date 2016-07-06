@@ -49,7 +49,7 @@ class RectangleScaleTool extends Tool {
   }
 
   onMouseUp() {
-    this.emit('shape:finished');
+    this.emit('tool:finished');
     if (this._paperRectangle && this._modified) {
       this._modified = false;
       this._paperRectangle.fixOrientation();

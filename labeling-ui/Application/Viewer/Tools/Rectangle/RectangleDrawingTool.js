@@ -56,8 +56,6 @@ class RectangleDrawingTool extends DrawingTool {
         true
       );
     });
-
-    this.emit('shape:start', this._rect);
   }
 
   onMouseDown(event) {
@@ -70,7 +68,6 @@ class RectangleDrawingTool extends DrawingTool {
       this._$scope.$apply(
         () => {
           this._rect.resize(this._getScaleAnchor(point), point);
-          this.emit('shape:update', this._rect);
         }
       );
     } else {
@@ -81,7 +78,7 @@ class RectangleDrawingTool extends DrawingTool {
   }
 
   onMouseUp() {
-    this.emit('shape:finished');
+    this.emit('tool:finished');
     if (this._rect) {
       // Fix bottom-right and top-left orientation
       this._rect.fixOrientation();
@@ -97,7 +94,7 @@ class RectangleDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());
 
-    this.emit('shape:update', this._rect);
+    this.emit('shape:create', this._rect);
     this._rect = null;
   }
 
@@ -141,7 +138,6 @@ class RectangleDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('shape:start', this._rect);
     this.completeShape();
   }
 }

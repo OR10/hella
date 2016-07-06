@@ -71,8 +71,6 @@ class PedestrianDrawingTool extends DrawingTool {
         true
       );
     });
-
-    this.emit('shape:start', this._pedestrian);
   }
 
   /**
@@ -95,8 +93,6 @@ class PedestrianDrawingTool extends DrawingTool {
       this._$scope.$apply(
         () => {
           this._pedestrian.resize(this._getScaleAnchor(point), point);
-          this.emit('shape:update', this._pedestrian);
-          this.emit('shape:finished');
         }
       );
     } else {
@@ -112,7 +108,7 @@ class PedestrianDrawingTool extends DrawingTool {
    * @param event
    */
   onMouseUp(event) { // eslint-disable-line no-unused-vars
-    this.emit('shape:finished');
+    this.emit('tool:finished');
     if (this._pedestrian) {
       // Fix point orientation of top and bottom center
       this._pedestrian.fixOrientation();
@@ -128,7 +124,7 @@ class PedestrianDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._pedestrian.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._pedestrian.toJSON());
 
-    this.emit('shape:update', this._pedestrian);
+    this.emit('shape:create', this._pedestrian);
     this._pedestrian = null;
   }
 
@@ -162,7 +158,6 @@ class PedestrianDrawingTool extends DrawingTool {
       );
     });
 
-    this.emit('shape:start', this._pedestrian);
     this.completeShape();
   }
 }

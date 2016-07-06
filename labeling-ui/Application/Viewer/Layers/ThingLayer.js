@@ -139,9 +139,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
-    this._multiTool.on('shape:new', shape => {
-      this.emit('shape:new', shape);
-    });
+    this._multiTool.on('shape:create', this._onCreateShape.bind(this));
     this._multiTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
@@ -324,6 +322,37 @@ class ThingLayer extends PanAndZoomPaperLayer {
     }
 
     return paperShapes;
+  }
+
+  /**
+   * @param {PaperShape} shape
+   * @private
+   */
+  _onCreateShape(shape) {
+    // The newly created shape was only temporary as it is rerendered by insertion into
+    // the labeledThingsInFrame
+    shape.remove();
+
+    this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
+
+    // Process the next steps after the rerendering took place in the next digest cycle
+    this._$timeout(() => {
+      // The new shape has been rerendered now lets find it
+      const newShape = this._context.withScope(scope =>
+        scope.project.getItem({
+          id: shape.id,
+        })
+      );
+      // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
+      //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
+      //        suffice, as backend requests should only be made upon selection
+      newShape.draft();
+
+      // Reselect the new Shape
+      this._$scope.vm.selectedPaperShape = newShape;
+
+      this.emit('shape:create', newShape);
+    }, 0);
   }
 
   /**

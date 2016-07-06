@@ -103,23 +103,15 @@ export default class MultiTool extends Tool {
   }
 
   _registerEventHandler() {
-    this._activeTool.on('shape:start', shape => {
-      this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
-      // The new shape has been rerendered now lets find it
-      const newShape = this._context.withScope(scope =>
-        scope.project.getItem({
-          id: shape.id,
-        })
-      );
-      this._$scope.vm.selectedPaperShape = newShape;
-      this.emit('shape:new', newShape);
+    this._activeTool.on('shape:create', shape => {
+      this.emit('shape:create', shape);
     });
 
     this._activeTool.on('shape:update', shape => {
       this.emit('shape:update', shape);
     });
 
-    this._activeTool.on('shape:finished', () => {
+    this._activeTool.on('tool:finished', () => {
       this._toolWorking = false;
     });
   }
