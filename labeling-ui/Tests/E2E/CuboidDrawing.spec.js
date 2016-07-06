@@ -875,65 +875,6 @@ fdescribe('Cuboid', () => {
         });
     });
 
-    // Rotation around primary axis has been removed
-    xit('should switch to 2d mode and back if rotated around primary axis by handle', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.frameIndex0,
-        assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.frameIndex0to4,
-        assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.StoreLabeledThingInFramePseudo3d,
-        assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.StoreLabeledThingInFrameReal3d,
-      ]));
-
-      initApplication('/labeling/task/TASKID-TASKID')
-        .then(() => {
-          browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 624, y: 431})
-            .mouseDown()
-            .mouseMove(viewer, {x: 589, y: 429})
-            .mouseUp()
-            .perform();
-        })
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepthHandle')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepthHandle);
-          browser.sleep(1000);
-        })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.StoreLabeledThingInFramePseudo3d);
-        })
-        .then(() => {
-          browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 385, y: 465})
-            .mouseDown()
-            .mouseMove(viewer, {x: 357, y: 380})
-            .mouseUp()
-            .perform();
-        })
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepthHandle')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dDepthHandle);
-          browser.sleep(1000);
-        })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepthHandle.StoreLabeledThingInFrameReal3d);
-          done();
-        });
-    });
-
     it('should switch to 2d mode if height is changed above visual threshold', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
