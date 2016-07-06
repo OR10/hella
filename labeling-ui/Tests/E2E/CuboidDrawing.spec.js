@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Cuboid', () => {
+describe('Cuboid', () => {
   let assets;
   let sharedMocks;
   let viewer;
