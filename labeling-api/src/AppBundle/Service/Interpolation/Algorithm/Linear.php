@@ -424,7 +424,7 @@ class Linear implements Interpolation\Algorithm
         $plainVector2 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
 
         $normalVector = $plainVector1->crossProduct($plainVector2);
-        $distance = $currentCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($currentCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
+        $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
         $distanceVector = $normalVector->divide($normalVector->getLength())->multiply($distance);
 
         $newVertices = array(
