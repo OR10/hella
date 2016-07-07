@@ -35,7 +35,7 @@ describe('Cuboid', () => {
   });
 
   describe('Creation', () => {
-    it('should create a new 3d cuboid', done => {
+    it('should create a new 3d cuboid starting top to bottom', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
@@ -98,6 +98,57 @@ describe('Cuboid', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboid4);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1.request);
+          done();
+        });
+    });
+
+    it('should create a new 3d cuboid starting bottom to top', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
+        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
+        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThing,
+        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 405, y: 525}) // initial
+            .mouseDown()
+            .mouseMove(viewer, {x: 405, y: 372}) // drag
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboidBottomToTop1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboidBottomToTop1);
+        })
+        .then(() => {
+          browser.actions()
+            .mouseUp()
+            .mouseMove(viewer, {x: 673, y: 525}) // width
+            .click()
+            .mouseMove(viewer, {x: 673, y: 486}) // depth
+            .click()
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboidBottomToTop2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboidBottomToTop2);
           browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
