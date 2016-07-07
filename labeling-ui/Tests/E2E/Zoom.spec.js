@@ -66,6 +66,44 @@ describe('Zoom', () => {
         });
     });
 
+    it('should pan scene using shift + mousedrag', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
+        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .perform();
+
+          browser.actions()
+            .mouseMove(viewer, {x: 500, y: 500})
+            .sendKeys(protractor.Key.SHIFT)
+            .mouseDown()
+            .mouseMove(viewer, {x: 100, y: 100})
+            .mouseUp()
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'PannedEmptyKeyboard')
+          () => canvasInstructionLogManager.getBackgroundCanvasImage()
+        )
+        .then(
+          encodedImageData => imageComparision.compare(encodedImageData, assets.fixtures.Canvas.Zoom.PannedEmptyKeyboard, true, true)
+        )
+        .then(diff => {
+          expect(diff).toMatchBelowThreshold(0.01);
+          done();
+        });
+    });
+
     using([
       [1024 / 2, 620 / 2, 'EmptyCenterMouseWheel'],
       [50, 50, 'EmptyTopLeftMouseWheel'],
