@@ -137,6 +137,7 @@ class CuboidDrawingTool extends DrawingTool {
    */
   onMouseDown(event) {
     if (!this._startCreation) {
+      this._topPoint = event.point;
       this.emit('tool:finished');
       return;
     }
@@ -210,30 +211,23 @@ class CuboidDrawingTool extends DrawingTool {
     const point = event.point;
     this._startCreation = true;
 
-    if (!this._topPoint) {
-      this._topPoint = point;
-      return;
-    }
+    this._bottomPoint = this._topPoint.clone();
+    this._bottomPoint.y = point.y;
 
-    if (this._topPoint) {
-      this._bottomPoint = this._topPoint.clone();
-      this._bottomPoint.y = point.y;
-
-      // Draw height line
-      this._context.withScope(() => {
-        if (this._heightLine) {
-          this._heightLine.remove();
-        }
-        this._heightLine = new paper.Path.Line({
-          from: this._topPoint,
-          to: this._bottomPoint,
-          strokeColor: this._color.secondary,
-          strokeWidth: 2,
-          strokeScaling: false,
-          dashArray: PaperShape.LINE,
-        });
+    // Draw height line
+    this._context.withScope(() => {
+      if (this._heightLine) {
+        this._heightLine.remove();
+      }
+      this._heightLine = new paper.Path.Line({
+        from: this._topPoint,
+        to: this._bottomPoint,
+        strokeColor: this._color.secondary,
+        strokeWidth: 2,
+        strokeScaling: false,
+        dashArray: PaperShape.LINE,
       });
-    }
+    });
   }
 
   onMouseUp() {
