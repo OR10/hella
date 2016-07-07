@@ -237,7 +237,7 @@ class CuboidDrawingTool extends DrawingTool {
     }
 
     if (this._topPoint && this._bottomPoint) {
-      if (this._topPoint.y > this._bottomPoint) {
+      if (this._topPoint.y > this._bottomPoint.y) {
         const tmpPoint = this._bottomPoint.clone();
         this._bottomPoint = this._topPoint.clone();
         this._topPoint.y = tmpPoint;
