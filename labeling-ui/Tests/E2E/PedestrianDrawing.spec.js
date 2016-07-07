@@ -307,6 +307,63 @@ describe('Pedestrian drawing', () => {
       });
   });
 
+  it('should draw a new pedestrian rectangle with intermediary mouse movements', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame,
+      assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .perform();
+        browser.sleep(500);
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianIntermediary1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianIntermediary1);
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 400}) // intermediary position
+          .perform();
+        browser.sleep(500);
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianIntermediary2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianIntermediary2);
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 500}) // final position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianIntermediary3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianIntermediary3);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame.request);
+        done();
+      });
+  });
+
 
   it('should draw multiple new pedestrian rectangle', done => {
     mock(sharedMocks.concat([
