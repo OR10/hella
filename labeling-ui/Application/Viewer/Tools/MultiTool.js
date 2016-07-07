@@ -266,6 +266,10 @@ export default class MultiTool extends Tool {
    * @private
    */
   _mouseMove(event) {
+    if (event.event.shiftKey) {
+      return;
+    }
+
     if (!this._enabled) {
       return;
     }
@@ -306,7 +310,11 @@ export default class MultiTool extends Tool {
    * @private
    */
   _mouseDown(event) {
-    if (!this._enabled || event.event.shiftKey) {
+    if (event.event.shiftKey) {
+      return;
+    }
+
+    if (!this._enabled) {
       return;
     }
     const point = event.point;
@@ -368,10 +376,14 @@ export default class MultiTool extends Tool {
   }
 
   /**
-   * @param {paper.Event} event
+   * @param {MouseEvent} event
    * @private
    */
   _mouseUp(event) {
+    if (event.shiftkey) {
+      return;
+    }
+
     if (!this._enabled) {
       return;
     }
@@ -404,6 +416,10 @@ export default class MultiTool extends Tool {
    * @private
    */
   _mouseDrag(event) {
+    if (event.event.shiftKey) {
+      return;
+    }
+
     if (!this._enabled) {
       return;
     }
