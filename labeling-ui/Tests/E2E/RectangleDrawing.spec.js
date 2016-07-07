@@ -306,6 +306,63 @@ describe('Rectangle drawing', () => {
       });
   });
 
+  it('should draw a new rectangle with intermediary mouse movements', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame,
+      assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/task/TASKID-TASKID')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .perform();
+        browser.sleep(500);
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary1);
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
+          .perform();
+        browser.sleep(500);
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary2);
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 700, y: 500}) // final position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary3);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame.request);
+        done();
+      });
+  });
+
   it('should draw multiple new rectangles', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
