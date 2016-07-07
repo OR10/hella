@@ -1,0 +1,20 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/frameLocations/thumbnail",
+    "queryString": {
+      "limit": "1",
+      "offset": "0"
+    },
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "frameIndex": 0,
+          "url": "\/fixtures\/images\/CUBOID-VIDEOID\/thumbnail\/1.png"
+        }
+      ]
+    }
+  }
+}
