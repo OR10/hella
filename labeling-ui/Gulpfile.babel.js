@@ -330,7 +330,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], next => {
     });
 });
 
-gulp.task('test-e2e-run-non-minified', ['webdriver-update', 'clean-logs'], next => {
+gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-logs'], next => {
   const protractorConfig = {
     configFile: 'protractor.conf.js',
     args: [],
@@ -368,7 +368,7 @@ gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-
 });
 
 gulp.task('test-e2e-non-minified', ['webdriver-update'], next => {
-  run('clean', 'build', 'copy-canteen', 'test-e2e-run-non-minified', next);
+  run('clean', 'build', 'copy-canteen', 'test-e2e-non-minified-run', next);
 });
 
 gulp.task('build-sass', () => {
