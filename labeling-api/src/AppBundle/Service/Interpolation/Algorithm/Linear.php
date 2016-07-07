@@ -272,6 +272,7 @@ class Linear implements Interpolation\Algorithm
     {
         $newCuboid3d = [];
         $current = $this->getCuboidFromRect($current, $end);
+        $end     = $this->getCuboidFromRect($end, $current);
         foreach (range(0, 7) as $index) {
             $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
                 $current->toArray()['vehicleCoordinates'][$index],
@@ -305,19 +306,15 @@ class Linear implements Interpolation\Algorithm
             return false;
         });
 
-        if ((count($numberOfCurrentInvisibleVertices) === 0 && count($numberOfEndInvisibleVertices) === 0) ||
-            count($numberOfCurrentInvisibleVertices) === 4 && count($numberOfEndInvisibleVertices) === 4
+        if ((count($numberOfCurrentInvisibleVertices) === 0) ||
+            (count($numberOfCurrentInvisibleVertices) === 4 && count($numberOfEndInvisibleVertices) === 4)
         ) {
             return $currentCuboid3d;
         }
 
-        if (count($numberOfCurrentInvisibleVertices) === 4) {
-            $referenceCuboid        = $currentCuboid3d;
+        if (count($numberOfCurrentInvisibleVertices) == 4) {
             $invisibleVerticesIndex = $numberOfCurrentInvisibleVertices;
-        }
-
-        if (count($numberOfEndInvisibleVertices) === 4) {
-            $referenceCuboid        = $endCuboid3d;
+        }else{
             $invisibleVerticesIndex = $numberOfEndInvisibleVertices;
         }
 
@@ -423,11 +420,11 @@ class Linear implements Interpolation\Algorithm
                 $oppositeVertex = array();
         }
 
-        $plainVector1 = $referenceCuboid->getVertices()[$oppositeVertex['normal'][0][0]]->subtract($referenceCuboid->getVertices()[$oppositeVertex['normal'][0][1]]);
-        $plainVector2 = $referenceCuboid->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($referenceCuboid->getVertices()[$oppositeVertex['normal'][1][1]]);
+        $plainVector1 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][1]]);
+        $plainVector2 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
 
         $normalVector = $plainVector1->crossProduct($plainVector2);
-        $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
+        $distance = $currentCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($currentCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
         $distanceVector = $normalVector->divide($normalVector->getLength())->multiply($distance);
 
         $newVertices = array(
@@ -439,7 +436,7 @@ class Linear implements Interpolation\Algorithm
             if ($targetVertexIndex === 'normal') {
                 continue;
             }
-            $sourceVertex = $referenceCuboid->getVertices()[$sourceVertexIndex];
+            $sourceVertex = $currentCuboid3d->getVertices()[$sourceVertexIndex];
 
             $newVertices['vehicleCoordinates'][$targetVertexIndex] = $sourceVertex->add($distanceVector)->toArray();
         }
