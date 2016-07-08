@@ -38,7 +38,7 @@ class Cuboid3d {
    * @returns {Cuboid3d}
    */
   clone() {
-    return new Cuboid3d(this._vertices);
+    return new Cuboid3d(this.vertices);
   }
 
   /**
