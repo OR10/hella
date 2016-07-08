@@ -39,7 +39,7 @@ describe('Cuboid', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThing,
+        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
         assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
@@ -112,7 +112,7 @@ describe('Cuboid', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThing,
+        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
         assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
