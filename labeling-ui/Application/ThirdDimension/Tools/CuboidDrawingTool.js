@@ -218,6 +218,17 @@ class CuboidDrawingTool extends DrawingTool {
     this._bottomPoint = this._topPoint.clone();
     this._bottomPoint.y = point.y;
 
+    // Adhere to minimalHeight
+    if (Math.abs(this._bottomPoint.y - this._topPoint.y) < this._options.minimalHeight) {
+      if (this._bottomPoint.y > this._topPoint.y) {
+        // Top to bottom
+        this._bottomPoint.y = this._topPoint.y + this._options.minimalHeight;
+      } else {
+        // Bottom to top
+        this._bottomPoint.y = this._topPoint.y - this._options.minimalHeight;
+      }
+    }
+
     // Draw height line
     this._context.withScope(() => {
       if (this._heightLine) {
