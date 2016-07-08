@@ -208,6 +208,40 @@ describe('Cuboid', () => {
           });
       });
 
+      it('should adhere to minimalHeight of loaded cuboid', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 564, y: 222}) // height handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 564, y: 448}) // drag
+              .mouseUp()
+              .perform();
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeMinimal')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeMinimal);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame);
+            done();
+          });
+      });
+
       it('should not allow the height to become negative', done => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
