@@ -24,6 +24,10 @@ class CuboidDrawingTool extends DrawingTool {
    * @param {Task} task
    */
   constructor($scope, drawingContext, entityIdService, entityColorService, video, task) {
+    const defaultOptions = {
+      minimalHeight: 50,
+    };
+    task.drawingToolOptions = Object.assign({}, defaultOptions, task.drawingToolOptions);
     super($scope, drawingContext, entityIdService, entityColorService, video, task);
 
     /**
@@ -269,7 +273,7 @@ class CuboidDrawingTool extends DrawingTool {
 
     if (this._topPoint && this._bottomPoint && this._sidePoint && this._cuboid) {
       this._context.withScope(() => {
-        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this.task.drawingToolOptions.cuboid);
+        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this._options.mininimalHeight);
       });
     }
   }

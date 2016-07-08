@@ -11,7 +11,10 @@ class CuboidScaleTool extends Tool {
    * @param {Object} [options]
    */
   constructor($scope, drawingContext, options) {
-    super(drawingContext, options);
+    const defaultOptions = {
+      minimalHeight: 50,
+    };
+    super(drawingContext, Object.assign({}, defaultOptions, options));
     /**
      * @type {angular.$scope}
      * @private
@@ -67,14 +70,9 @@ class CuboidScaleTool extends Tool {
     const point = event.point;
     this._modified = true;
 
-    const drawingToolOptions = this._$scope.vm.task.drawingToolOptions;
-    const minimalSize = (drawingToolOptions && drawingToolOptions.cuboid && drawingToolOptions.cuboid.minimalSize)
-      ? drawingToolOptions.cuboid.minimalSize
-      : {width: 1, height: 1, length: 1};
-
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperCuboid.resize(this._activeHandle, point, minimalSize);
+        this._paperCuboid.resize(this._activeHandle, point, this._options.minimalHeight);
       });
     });
   }

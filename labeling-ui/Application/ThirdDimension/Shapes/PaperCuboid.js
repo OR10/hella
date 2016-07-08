@@ -521,9 +521,9 @@ class PaperCuboid extends PaperShape {
   /**
    * @param {Handle} handle
    * @param {Point} point
-   * @param {{height: number, width: number, length: number}} minDistance
+   * @param {number} mininmalHeight
    */
-  resize(handle, point, minDistance = {height: 1, width: 1, length: 1}) { // eslint-disable-line no-unused-vars
+  resize(handle, point, mininmalHeight) {
     const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handle.name);
     const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
 
