@@ -103,7 +103,7 @@ describe('Cuboid', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1.request);
+          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1);
           done();
         });
     });
@@ -154,7 +154,7 @@ describe('Cuboid', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1.request);
+          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1);
           done();
         });
     });

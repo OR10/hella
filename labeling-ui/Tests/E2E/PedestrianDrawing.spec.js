@@ -301,8 +301,8 @@ describe('Pedestrian drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1);
         done();
       });
   });
@@ -358,8 +358,8 @@ describe('Pedestrian drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame);
         done();
       });
   });
@@ -401,10 +401,10 @@ describe('Pedestrian drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4);
         done();
       });
   });

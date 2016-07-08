@@ -76,17 +76,14 @@ module.exports = function toContainNamedParamsRequest() {
     }
 
     if (expectedParamsRegExp !== null && availableRequest.params === undefined) {
-      console.log('1');
       return false;
     }
     if (expectedDataRegExp !== null && availableRequest.data === undefined) {
-      console.log('2');
       return false;
     }
 
     if (expectedParamsRegExp !== null) {
       if (!expectedParamsRegExp.test(deterministicJsonStringify(availableRequest.params))) {
-        console.log('3');
         return false;
       }
     }
@@ -115,7 +112,8 @@ module.exports = function toContainNamedParamsRequest() {
   }
 
   return {
-    compare: function compare(mockedRequests, namedParamsRequest) {
+    compare: function compare(mockedRequests, namedParamsMock) {
+      var namedParamsRequest = namedParamsMock.request;
       return {
         pass: containsNamedParamsRequest(mockedRequests, namedParamsRequest),
         message: `NamedParamsRequest is no part of mocked requests:\n ${JSON.stringify(namedParamsRequest, undefined, 2)}\nnot found in\n${JSON.stringify(mockedRequests, undefined, 2)}`,

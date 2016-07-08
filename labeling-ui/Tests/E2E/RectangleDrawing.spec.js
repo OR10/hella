@@ -300,8 +300,8 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1);
         done();
       });
   });
@@ -357,8 +357,8 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame);
         done();
       });
   });
@@ -399,10 +399,10 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3.request);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4.request);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4);
         done();
       });
   });
