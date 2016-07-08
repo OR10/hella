@@ -532,7 +532,7 @@ class PaperCuboid extends PaperShape {
       this._changeRotation(point, this._cuboid3d.vertices[handleVertexIndex]);
     }
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
-      this._changeHeight(point, this._cuboid3d.vertices[handleVertexIndex]);
+      this._changeHeight(point, handleVertexIndex, mininmalHeight);
     }
     if (interaction[CuboidInteractionResolver.DEPTH]) {
       this._changeHorizontal(point, handleVertexIndex, CuboidInteractionResolver.DEPTH);
@@ -590,28 +590,76 @@ class PaperCuboid extends PaperShape {
 
   /**
    * @param {Point} point
-   * @param {Vector4} handleVertex
+   * @param {number} handleVertexIndex
+   * @param {number} minimalHeight
    * @private
    */
-  _changeHeight(point, handleVertex) {
+  _changeHeight(point, handleVertexIndex, minimalHeight) {
     const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const primaryCornerVertex = this._cuboid3d.vertices[primaryCornerIndex];
+
+    const handleVertex = this._cuboid3d.vertices[handleVertexIndex];
     const affectedVertices = this._cuboidInteractionResolver.resolveAffectedVerticesForInteraction(CuboidInteractionResolver.HEIGHT);
     const newReferencePoint = this._projection3d.projectTopCoordinateTo3d(
       new Vector3(point.x, point.y, 1),
-      this._cuboid3d.vertices[primaryCornerIndex]
+      primaryCornerVertex
     );
 
-    // Height may never be negative
-    // Minimal height of a Cuboid is set to 5cm
-    if (newReferencePoint.z < 0.05) {
-      newReferencePoint.z = 0.05;
+    let distanceVector = newReferencePoint.clone().sub(handleVertex);
+
+    const heightCheckCuboid3d = this._cuboid3d.clone();
+    heightCheckCuboid3d.addVectorToVertices(
+      distanceVector,
+      affectedVertices
+    );
+
+    // Minimal height not reached snap to minimal height cuboid
+    if (!this._hasMinimalHeight(heightCheckCuboid3d, minimalHeight)) {
+      const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+      const primaryCornerVertex2d = cuboid2d.vertices[primaryCornerIndex];
+      const heightHandleVertex2d = cuboid2d.vertices[handleVertexIndex];
+
+      const directionVector = heightHandleVertex2d.sub(primaryCornerVertex2d);
+      directionVector.normalize().multiplyScalar(minimalHeight);
+      const minimalHeight2dVertex = primaryCornerVertex2d.clone().add(directionVector);
+      const minimalHeightReferencePoint = this._projection3d.projectTopCoordinateTo3d(
+        new Vector3(minimalHeight2dVertex.x, minimalHeight2dVertex.y, 1),
+        primaryCornerVertex
+      );
+
+      distanceVector = minimalHeightReferencePoint.clone().sub(handleVertex);
     }
 
-    const distanceVector = newReferencePoint.sub(handleVertex);
     this._cuboid3d.addVectorToVertices(
       distanceVector,
       affectedVertices
     );
+  }
+
+  /**
+   * Check whether the given cuboid has the specified minimal height in 2d space
+   *
+   * @param {Cuboid3d} cuboid3d
+   * @param {number} minimalHeight
+   * @returns {boolean}
+   * @private
+   */
+  _hasMinimalHeight(cuboid3d, minimalHeight) {
+    const cuboid2d = this._projection2d.projectCuboidTo2d(cuboid3d.clone());
+    const primaryCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(CuboidInteractionResolver.HEIGHT);
+
+    const primaryCornerVertex2d = cuboid2d.vertices[primaryCornerIndex];
+    const handleVertex2d = cuboid2d.vertices[handleVertexIndex];
+
+    let distance = primaryCornerVertex2d.distanceTo(handleVertex2d);
+
+    // Do not allow negative height
+    if (handleVertex2d.y > primaryCornerVertex2d.y) {
+      distance = distance * -1;
+    }
+
+    return (distance > minimalHeight);
   }
 
   /**
