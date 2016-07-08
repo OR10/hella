@@ -30,8 +30,8 @@ class Cuboid2d {
    */
   clone() {
     return new Cuboid2d(
-      this._vertices,
-      this._vertexVisibility
+      this.vertices,
+      this._vertexVisibility.slice()
     );
   }
 
