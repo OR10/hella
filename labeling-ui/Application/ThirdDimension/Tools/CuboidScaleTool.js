@@ -12,7 +12,7 @@ class CuboidScaleTool extends Tool {
    */
   constructor($scope, drawingContext, options) {
     const defaultOptions = {
-      minimalHeight: 50,
+      minimalHeight: 15,
     };
     super(drawingContext, Object.assign({}, defaultOptions, options));
     /**
