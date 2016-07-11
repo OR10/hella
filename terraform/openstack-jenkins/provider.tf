@@ -1,1 +1,0 @@
-../openstack-stage/provider.tf
