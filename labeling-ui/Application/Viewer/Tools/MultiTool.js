@@ -170,13 +170,23 @@ export default class MultiTool extends Tool {
   _registerCuboidShortcuts() {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'o',
-      description: 'Rotate cuboid counter clockwise by 5°',
-      callback: () => this._rotateCuboid(0.087266),
+      description: 'Rotate cuboid counter clockwise by 2°',
+      callback: () => this._rotateCuboid(this._deg2rad(2)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'p',
-      description: 'Rotate cuboid clockwise by 5°',
-      callback: () => this._rotateCuboid(-0.087266),
+      description: 'Rotate cuboid clockwise by 2°',
+      callback: () => this._rotateCuboid(this._deg2rad(-2)),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+o',
+      description: 'Rotate cuboid counter clockwise by 10°',
+      callback: () => this._rotateCuboid(this._deg2rad(10)),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+p',
+      description: 'Rotate cuboid clockwise by 10°',
+      callback: () => this._rotateCuboid(this._deg2rad(-10)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'ß',
@@ -188,6 +198,17 @@ export default class MultiTool extends Tool {
       description: 'Change cuboid faces clockwise',
       callback: () => this._rotateCuboidFaces(true),
     });
+  }
+
+  /**
+   * Converts degree to radiant
+   *
+   * @param degree
+   * @returns {number}
+   * @private
+   */
+  _deg2rad(degree) {
+    return 2 * Math.PI / 360 * degree;
   }
 
   enable() {
