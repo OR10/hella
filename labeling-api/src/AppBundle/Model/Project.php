@@ -29,7 +29,7 @@ class Project
     private $name;
 
     /**
-     * @CouchDB\Field(type="integer")
+     * @CouchDB\Field(type="datetime")
      */
     private $creationDate;
 
@@ -55,9 +55,8 @@ class Project
      */
     public function __construct($name)
     {
-        $date = new \DateTime('now', new \DateTimeZone('UTC'));
         $this->name = (string) $name;
-        $this->creationDate = $date->getTimestamp();
+        $this->creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
     /**
@@ -93,7 +92,11 @@ class Project
      */
     public function getCreationDate()
     {
-        return $this->creationDate;
+        if ($this->creationDate instanceof \DateTime) {
+            return $this->creationDate->getTimestamp();
+        }
+
+        return null;
     }
 
     /**
