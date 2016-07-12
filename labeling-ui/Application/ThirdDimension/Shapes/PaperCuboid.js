@@ -560,9 +560,9 @@ class PaperCuboid extends PaperShape {
   /**
    * @param {Handle} handle
    * @param {Point} point
-   * @param {number} mininmalHeight
+   * @param {number} minimalHeight
    */
-  resize(handle, point, mininmalHeight) {
+  resize(handle, point, minimalHeight) {
     const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handle.name);
     const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
 
@@ -571,7 +571,7 @@ class PaperCuboid extends PaperShape {
       this._changeRotation(point, this._cuboid3d.vertices[handleVertexIndex]);
     }
     if (interaction[CuboidInteractionResolver.HEIGHT]) {
-      this._changeHeight(point, handleVertexIndex, mininmalHeight);
+      this._changeHeight(point, handleVertexIndex, minimalHeight);
     }
     if (interaction[CuboidInteractionResolver.DEPTH]) {
       this._changeHorizontal(point, handleVertexIndex, CuboidInteractionResolver.DEPTH);

@@ -11,7 +11,7 @@
         "descriptionTitle": "Identify the person",
         "drawingTool": "cuboid",
         "drawingToolOptions": {
-          "minimalHeight": 25
+          "minimalHeight": 50
         },
         "frameNumberMapping": [
           1,

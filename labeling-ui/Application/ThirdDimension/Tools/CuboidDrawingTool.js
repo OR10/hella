@@ -284,7 +284,7 @@ class CuboidDrawingTool extends DrawingTool {
 
     if (this._topPoint && this._bottomPoint && this._sidePoint && this._cuboid) {
       this._context.withScope(() => {
-        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this._options.mininimalHeight);
+        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this._options.minimalHeight);
       });
     }
   }

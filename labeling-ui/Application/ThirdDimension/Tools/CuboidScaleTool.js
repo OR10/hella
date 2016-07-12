@@ -7,14 +7,18 @@ import Tool from '../../Viewer/Tools/Tool';
  */
 class CuboidScaleTool extends Tool {
   /**
+   * @param $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} [options]
+   * @param {Video} video
+   * @param {Task} task
    */
-  constructor($scope, drawingContext, options) {
+  constructor($scope, drawingContext) {
     const defaultOptions = {
       minimalHeight: 15,
     };
-    super(drawingContext, Object.assign({}, defaultOptions, options));
+    const options = Object.assign({}, defaultOptions, $scope.vm.task.drawingToolOptions);
+    super(drawingContext, options);
+
     /**
      * @type {angular.$scope}
      * @private
