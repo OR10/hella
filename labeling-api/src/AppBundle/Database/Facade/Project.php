@@ -38,8 +38,8 @@ class Project
             ->onlyDocs(true);
 
         if ($limit !== null && $offset !== null) {
-            $query->setLimit($limit)
-            ->setSkip($offset);
+            $query->setLimit((int) $limit)
+            ->setSkip((int) $offset);
         }
 
         return $query->execute()
