@@ -109,10 +109,15 @@ class Project extends Controller\Base
         $offset = $request->query->get('offset', null);
 
         $projects = $this->projectFacade->findAll($limit, $offset);
-        $result   = array();
+        $result   = array(
+            Model\Project::STATUS_IN_PROGRESS => array(),
+            Model\Project::STATUS_TODO => array(),
+            Model\Project::STATUS_DONE => array(),
+            null => array() //@TODO remove this later
+        );
 
         foreach ($projects as $project) {
-            $result[] = array(
+            $result[$project->getStatus()][] = array(
                 'id'   => $project->getId(),
                 'name' => $project->getName(),
                 'creation_timestamp' => $project->getCreationDate(),
@@ -120,9 +125,26 @@ class Project extends Controller\Base
             );
         }
 
+        foreach(array_keys($result) as $status) {
+            usort($result[$status], function ($a, $b) {
+                if ($a['creation_timestamp'] === null || $b['creation_timestamp'] === null) {
+                    return -1;
+                }
+                if ($a['creation_timestamp'] === $b['creation_timestamp']) {
+                    return 0;
+                }
+                return ($a['creation_timestamp'] > $b['creation_timestamp']) ? -1 : 1;
+            });
+        }
+
         return View\View::create()->setData(
             [
-                'result' => $result,
+                'result' => array_merge(
+                    $result[Model\Project::STATUS_IN_PROGRESS],
+                    $result[Model\Project::STATUS_TODO],
+                    $result[Model\Project::STATUS_DONE],
+                    $result[null] //@TODO remove this later
+                    ),
             ]
         );
     }
