@@ -1,6 +1,6 @@
-labeling_api::mysql: false
+labeling_api::mysql: true
 labeling_api::couch: false
-labeling_api::worker_queue: false
+labeling_api::worker_queue: true
 labeling_api::redis: true
 labeling_api::app: true
 labeling_api::tideways: true
