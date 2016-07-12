@@ -43,20 +43,25 @@ class Project
      *
      * @param string $name
      *
+     * @param null   $creationDate
      * @return static
      */
-    public static function create($name)
+    public static function create($name, $creationDate = null)
     {
-        return new static($name);
+        return new static($name, $creationDate);
     }
 
     /**
      * @param string $name
+     * @param null   $creationDate
      */
-    public function __construct($name)
+    public function __construct($name, $creationDate = null)
     {
+        if ($creationDate === null) {
+            $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
         $this->name = (string) $name;
-        $this->creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->creationDate = $creationDate;
     }
 
     /**
