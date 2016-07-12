@@ -116,6 +116,7 @@ class Project extends Controller\Base
                 'id'   => $project->getId(),
                 'name' => $project->getName(),
                 'creation_timestamp' => $project->getCreationDate(),
+                'status' => $project->getStatus(),
             );
         }
 
