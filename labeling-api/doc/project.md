@@ -11,7 +11,12 @@
     + Attributes
         + result Project
 
-## Get a list of all projects [/api/project]
+## Get a list of all projects [/api/project?limit={limit}&offset={offset}]
+
++ Parameters
+    + limit: `10` (integer, optional) - Limit the result.
+    + offset: `0` (integer, optional) - Set an offset.
+
 
 ### Get all projects [GET]
 

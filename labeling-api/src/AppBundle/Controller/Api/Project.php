@@ -105,7 +105,10 @@ class Project extends Controller\Base
      */
     public function listAction(HttpFoundation\Request $request)
     {
-        $projects = $this->projectFacade->findAll();
+        $limit  = $request->query->getInt('limit', null);
+        $offset = $request->query->getInt('offset', null);
+
+        $projects = $this->projectFacade->findAll($limit, $offset);
         $result   = array();
 
         foreach ($projects as $project) {

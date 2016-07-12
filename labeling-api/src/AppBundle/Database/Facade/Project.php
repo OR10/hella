@@ -27,17 +27,23 @@ class Project
     }
 
     /**
+     * @param null $limit
+     * @param null $offset
      * @return Model\Project[]
      */
-    public function findAll()
+    public function findAll($limit = null, $offset = null)
     {
-        $resultSet = $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_project', 'by_name')
-            ->onlyDocs(true)
-            ->execute()
+            ->onlyDocs(true);
+
+        if ($limit !== null && $offset !== null) {
+            $query->setLimit($limit)
+            ->setSkip($offset);
+        }
+
+        return $query->execute()
             ->toArray();
-        
-        return $resultSet;
     }
 
     /**
