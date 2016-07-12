@@ -152,6 +152,18 @@ class Task extends Controller\Base
                 }
         }
 
+        foreach(array_keys($tasks) as $status) {
+            usort($tasks[$status], function ($a, $b) {
+                if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
+                    return -1;
+                }
+                if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
+                    return 0;
+                }
+                return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
+            });
+        }
+
         $userIds = array();
         foreach ($tasks as $tasksByStatus) {
             if ($tasksByStatus === null) {
