@@ -456,38 +456,6 @@ describe('Cuboid', () => {
           });
       });
 
-      it('should fast rotate cuboid right around middle axis using keyboard', done => {
-        mock(sharedMocks.concat([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame,
-        ]));
-
-        initApplication('/labeling/task/TASKID-TASKID')
-          .then(() => {
-            browser.actions()
-              .mouseMove(viewer, {x: 563, y: 353}) // initial position
-              .click()
-              .keyDown(protractor.Key.SHIFT)
-              .sendKeys('p')
-              .perform();
-          })
-          .then(
-            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftRight')
-            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-          )
-          .then(drawingStack => {
-            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardShiftRight);
-            browser.sleep(1000);
-          })
-          // .then(() => dumpAllRequestsMade(mock))
-          .then(() => getMockRequestsMade(mock))
-          .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame);
-            done();
-          });
-      });
-
       it('should fast rotate cuboid left around middle axis using keyboard', done => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -500,8 +468,9 @@ describe('Cuboid', () => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
-              .keyDown(protractor.Key.SHIFT)
+              .sendKeys(protractor.Key.SHIFT)
               .sendKeys('o')
+              .sendKeys(protractor.Key.SHIFT)
               .perform();
           })
           .then(
@@ -516,6 +485,39 @@ describe('Cuboid', () => {
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame);
+            done();
+          });
+      });
+
+      it('should fast rotate cuboid right around middle axis using keyboard', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .sendKeys(protractor.Key.SHIFT)
+              .sendKeys('p')
+              .sendKeys(protractor.Key.SHIFT)
+              .perform();
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftRight')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardShiftRight);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame);
             done();
           });
       });
@@ -787,6 +789,7 @@ describe('Cuboid', () => {
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .sendKeys('o')
+            .sendKeys('o')
             .perform();
         })
         .then(
@@ -804,6 +807,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
+            .sendKeys('p')
             .sendKeys('p')
             .perform();
         })
@@ -837,6 +841,8 @@ describe('Cuboid', () => {
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .sendKeys('p')
+            .sendKeys('p')
+            .sendKeys('p')
             .perform();
         })
         .then(
@@ -854,6 +860,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
+            .sendKeys('o')
             .sendKeys('o')
             .perform();
         })
@@ -887,6 +894,7 @@ describe('Cuboid', () => {
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .sendKeys('p')
+            .sendKeys('p')
             .perform();
         })
         .then(
@@ -904,7 +912,8 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('p')
+            .sendKeys('o')
+            .sendKeys('o')
             .perform();
         })
         .then(
@@ -937,6 +946,8 @@ describe('Cuboid', () => {
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .sendKeys('p')
+            .sendKeys('p')
+            .sendKeys('p')
             .perform();
         })
         .then(
@@ -954,6 +965,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
+            .sendKeys('o')
             .sendKeys('o')
             .perform();
         })
