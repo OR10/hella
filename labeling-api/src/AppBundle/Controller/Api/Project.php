@@ -115,6 +115,7 @@ class Project extends Controller\Base
             $result[] = array(
                 'id'   => $project->getId(),
                 'name' => $project->getName(),
+                'creation_timestamp' => $project->getCreationDate(),
             );
         }
 
