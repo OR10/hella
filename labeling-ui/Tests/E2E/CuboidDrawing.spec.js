@@ -3,6 +3,7 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
+dumpAllRequestsMade,
   initApplication,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
@@ -388,6 +389,52 @@ describe('Cuboid', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
+            done();
+          });
+      });
+
+      fit('should limit movement if the height is below the minimal height', done => {
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/task/TASKID-TASKID')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 565, y: 469}) // initial position
+              .mouseDown()
+              .mouseMove(viewer, {x: 690, y: 350}) // drag
+              .mouseUp()
+              .perform();
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementMinimalHeightLimit')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementMinimalHeightLimit);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame);
+          })
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 690, y: 350}) // drag
+              .mouseDown()
+              .mouseMove(viewer, {x: 690, y: 319}) // drag
+              .mouseUp()
+              .perform();
+          })
+          .then(
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementMinimalHeightLimit);
             done();
           });
       });
