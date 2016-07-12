@@ -25,6 +25,11 @@ class Project
     private $name;
 
     /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $creationDate;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -41,7 +46,9 @@ class Project
      */
     public function __construct($name)
     {
+        $date = new \DateTime('now', new \DateTimeZone('UTC'));
         $this->name = (string) $name;
+        $this->creationDate = $date->getTimestamp();
     }
 
     /**
@@ -70,5 +77,13 @@ class Project
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
     }
 }
