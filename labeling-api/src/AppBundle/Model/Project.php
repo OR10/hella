@@ -9,6 +9,10 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
  */
 class Project
 {
+    const STATUS_TODO = 'todo';
+    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_DONE = 'done';
+
     /**
      * @CouchDB\Id
      */
@@ -28,6 +32,11 @@ class Project
      * @CouchDB\Field(type="integer")
      */
     private $creationDate;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $status = self::STATUS_TODO;
 
     /**
      * Static factory method for easy use of the fluent interface.
@@ -85,5 +94,21 @@ class Project
     public function getCreationDate()
     {
         return $this->creationDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }
