@@ -72,11 +72,14 @@ class Cuboid3d {
 
   /**
    * @param {Vector4} vector
+   * @return {Cuboid3d}
    */
   moveBy(vector) {
     this._vertices.forEach(
       vertex => vertex.add(vector)
     );
+
+    return this;
   }
 
   /**

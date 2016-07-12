@@ -275,7 +275,8 @@ export default class MultiTool extends Tool {
         new paper.Point(
           paperShape.position.x + deltaX,
           paperShape.position.y + deltaY
-        )
+        ),
+        this._options
       );
       scope.view.update();
       this.emit('shape:update', paperShape);

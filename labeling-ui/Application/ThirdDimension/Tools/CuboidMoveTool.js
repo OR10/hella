@@ -96,7 +96,7 @@ class CuboidMoveTool extends Tool {
    */
   _moveTo(shape, point) {
     this._context.withScope(() => {
-      shape.moveTo(this._restrictToViewport(shape, point));
+      shape.moveTo(this._restrictToViewport(shape, point), this._options);
     });
     this.emit('shape:update', shape);
   }
