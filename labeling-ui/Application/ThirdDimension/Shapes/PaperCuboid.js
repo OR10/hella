@@ -507,11 +507,10 @@ class PaperCuboid extends PaperShape {
     }
 
     const targetPrimaryVertex2d = new Vector3(point.x, point.y, 1);
-    const sourcePrimaryVertex2d = this._projectedCuboid.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
+    // const sourcePrimaryVertex2d = this._projectedCuboid.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
 
     const newPrimaryCornerVertex = this._projection3d.projectBottomCoordinateTo3d(targetPrimaryVertex2d);
     const oldPrimaryCornerVertex = this._cuboid3d.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
-    let movementVector;
 
     if (point.y > 0 && newPrimaryCornerVertex.x < 0) {
       // Movement above the horizon
@@ -520,22 +519,24 @@ class PaperCuboid extends PaperShape {
       return;
     }
 
-    movementVector = newPrimaryCornerVertex.sub(oldPrimaryCornerVertex);
+    const movementVector = newPrimaryCornerVertex.sub(oldPrimaryCornerVertex);
 
     const mouseTargetCuboid3d = this._cuboid3d.clone().moveBy(movementVector);
     const mouseTargetCuboid2d = this._projection2d.projectCuboidTo2d(mouseTargetCuboid3d);
 
     // Limit to minimalHeight
     const heightHandleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(CuboidInteractionResolver.HEIGHT);
-    const sourceHeightHandleVertex2d = this._projectedCuboid.vertices[heightHandleVertexIndex];
+    // const sourceHeightHandleVertex2d = this._projectedCuboid.vertices[heightHandleVertexIndex];
     const targetHeightHandleVertex2d = mouseTargetCuboid2d.vertices[heightHandleVertexIndex];
 
-    if (targetPrimaryVertex2d.distanceTo(targetHeightHandleVertex2d) >= minimalHeight) {
-      this._cuboid3d.moveBy(movementVector);
-      this._drawCuboid();
+    if (targetPrimaryVertex2d.distanceTo(targetHeightHandleVertex2d) < minimalHeight) {
       return;
     }
+      this._cuboid3d.moveBy(movementVector);
+      this._drawCuboid();
 
+    /*
+    // Snap point calculation (does not fully work)
 
     // Smaller then minimal height
     const primarySlope = (targetPrimaryVertex2d.y - sourcePrimaryVertex2d.y) / (targetPrimaryVertex2d.x - sourcePrimaryVertex2d.x);
@@ -547,13 +548,13 @@ class PaperCuboid extends PaperShape {
     const snapX = (minimalHeight - primaryIntercept + heightIntercept) / (primarySlope - heightSlope);
     const snapY = primarySlope * snapX + primaryIntercept;
 
-    const snappedPrimaryCornerVertex = new Vector3(snapX, snapY, 1);
+    const snappedPrimaryCornerVertex2d = new Vector3(snapX, snapY, 1);
+    const snappedPrimaryCornerVertex3d = this._projection3d.projectBottomCoordinateTo3d(snappedPrimaryCornerVertex2d);
 
-    const limitedMovementVector = snappedPrimaryCornerVertex.sub(oldPrimaryCornerVertex);
+    const limitedMovementVector = snappedPrimaryCornerVertex3d.clone().sub(oldPrimaryCornerVertex);
 
     this._cuboid3d.moveBy(limitedMovementVector);
-
-    this._drawCuboid();
+    this._drawCuboid(); */
   }
 
   /**
