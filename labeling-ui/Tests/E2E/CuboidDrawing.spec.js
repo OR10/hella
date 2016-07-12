@@ -3,7 +3,6 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
-dumpAllRequestsMade,
   initApplication,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
@@ -393,7 +392,7 @@ describe('Cuboid', () => {
           });
       });
 
-      fit('should limit movement if the height is below the minimal height', done => {
+      it('should limit movement if the height is below the minimal height', done => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,

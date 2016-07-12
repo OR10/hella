@@ -532,29 +532,29 @@ class PaperCuboid extends PaperShape {
     if (targetPrimaryVertex2d.distanceTo(targetHeightHandleVertex2d) < minimalHeight) {
       return;
     }
-      this._cuboid3d.moveBy(movementVector);
-      this._drawCuboid();
+    this._cuboid3d.moveBy(movementVector);
+    this._drawCuboid();
 
     /*
-    // Snap point calculation (does not fully work)
+     // Snap point calculation (does not fully work)
 
-    // Smaller then minimal height
-    const primarySlope = (targetPrimaryVertex2d.y - sourcePrimaryVertex2d.y) / (targetPrimaryVertex2d.x - sourcePrimaryVertex2d.x);
-    const heightSlope = (targetHeightHandleVertex2d.y - sourceHeightHandleVertex2d.y) / (targetHeightHandleVertex2d.x - sourceHeightHandleVertex2d.x);
+     // Smaller then minimal height
+     const primarySlope = (targetPrimaryVertex2d.y - sourcePrimaryVertex2d.y) / (targetPrimaryVertex2d.x - sourcePrimaryVertex2d.x);
+     const heightSlope = (targetHeightHandleVertex2d.y - sourceHeightHandleVertex2d.y) / (targetHeightHandleVertex2d.x - sourceHeightHandleVertex2d.x);
 
-    const primaryIntercept = sourcePrimaryVertex2d.y - primarySlope * sourcePrimaryVertex2d.x;
-    const heightIntercept = sourceHeightHandleVertex2d.y - heightSlope * sourceHeightHandleVertex2d.x;
+     const primaryIntercept = sourcePrimaryVertex2d.y - primarySlope * sourcePrimaryVertex2d.x;
+     const heightIntercept = sourceHeightHandleVertex2d.y - heightSlope * sourceHeightHandleVertex2d.x;
 
-    const snapX = (minimalHeight - primaryIntercept + heightIntercept) / (primarySlope - heightSlope);
-    const snapY = primarySlope * snapX + primaryIntercept;
+     const snapX = (minimalHeight - primaryIntercept + heightIntercept) / (primarySlope - heightSlope);
+     const snapY = primarySlope * snapX + primaryIntercept;
 
-    const snappedPrimaryCornerVertex2d = new Vector3(snapX, snapY, 1);
-    const snappedPrimaryCornerVertex3d = this._projection3d.projectBottomCoordinateTo3d(snappedPrimaryCornerVertex2d);
+     const snappedPrimaryCornerVertex2d = new Vector3(snapX, snapY, 1);
+     const snappedPrimaryCornerVertex3d = this._projection3d.projectBottomCoordinateTo3d(snappedPrimaryCornerVertex2d);
 
-    const limitedMovementVector = snappedPrimaryCornerVertex3d.clone().sub(oldPrimaryCornerVertex);
+     const limitedMovementVector = snappedPrimaryCornerVertex3d.clone().sub(oldPrimaryCornerVertex);
 
-    this._cuboid3d.moveBy(limitedMovementVector);
-    this._drawCuboid(); */
+     this._cuboid3d.moveBy(limitedMovementVector);
+     this._drawCuboid(); */
   }
 
   /**
