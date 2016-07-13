@@ -1,7 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
-  dumpAllRequestsMade,
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,

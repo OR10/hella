@@ -125,10 +125,10 @@ class DepthBufferProjection2d {
       ) {
         // Send top face to front
         return -1;
-      } else {
-        // Send top face to back
-        return 1;
       }
+      // Send top face to back
+      return 1;
+
     }
 
     if (thatFace.name === 'top') {
@@ -138,10 +138,9 @@ class DepthBufferProjection2d {
       ) {
         // Send other face to back
         return 1;
-      } else {
-        // Send other face to front
-        return -1;
       }
+      // Send other face to front
+      return -1;
     }
 
     if (averageDepthOfThisFace < averageDepthOfThatFace) {
