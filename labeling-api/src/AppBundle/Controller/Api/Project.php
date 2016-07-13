@@ -113,11 +113,22 @@ class Project extends Controller\Base
         );
 
         foreach ($projects->toArray() as $project) {
+            $tasks     = $this->projectFacade->getTasksByProject($project);
+
+            $tasksComplete = array_filter(
+                $tasks,
+                function (Model\LabelingTask $task) {
+                    return $task->getStatus() === Model\LabelingTask::STATUS_LABELED;
+                }
+            );
+
             $result[$project->getStatus()][] = array(
                 'id'   => $project->getId(),
                 'name' => $project->getName(),
                 'creation_timestamp' => $project->getCreationDate(),
                 'status' => $project->getStatus(),
+                'taskCount' => count($tasks),
+                'taskFinishedCount' => count($tasksComplete),
             );
         }
 

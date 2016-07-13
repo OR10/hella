@@ -53,27 +53,37 @@ class ProjectTest extends Tests\WebTestCase
                     array(
                         'name' => 'Test Project in progress',
                         'creation_timestamp' => 1468319400,
-                        'status' => Model\Project::STATUS_IN_PROGRESS
+                        'status' => Model\Project::STATUS_IN_PROGRESS,
+                        'taskCount' => 0,
+                        'taskFinishedCount' => 0,
                     ),
                     array(
                         'name' => 'Test Project 3',
                         'creation_timestamp' => 1468324800,
-                        'status' => Model\Project::STATUS_TODO
+                        'status' => Model\Project::STATUS_TODO,
+                        'taskCount' => 0,
+                        'taskFinishedCount' => 0,
                     ),
                     array(
                         'name' => 'Test Project 1',
                         'creation_timestamp' => 1468321200,
-                        'status' => Model\Project::STATUS_TODO
+                        'status' => Model\Project::STATUS_TODO,
+                        'taskCount' => 0,
+                        'taskFinishedCount' => 0,
                     ),
                     array(
                         'name' => 'Test Project 2',
                         'creation_timestamp' => 1468317600,
-                        'status' => Model\Project::STATUS_TODO
+                        'status' => Model\Project::STATUS_TODO,
+                        'taskCount' => 0,
+                        'taskFinishedCount' => 0,
                     ),
                     array(
                         'name' => 'Test Project done',
                         'creation_timestamp' => 1468323000,
-                        'status' => Model\Project::STATUS_DONE
+                        'status' => Model\Project::STATUS_DONE,
+                        'taskCount' => 0,
+                        'taskFinishedCount' => 0,
                     ),
                 )
             )
