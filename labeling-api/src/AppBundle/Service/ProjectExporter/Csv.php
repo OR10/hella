@@ -373,7 +373,7 @@ class Csv implements Service\ProjectExporter
                 $ignoreType = $this->getClassByRegex('/^(ignore-vehicle)$/', 1, $labeledThingInFrame);
                 $result = array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
-                    'label_class'  => $labelInstruction . '-' . $ignoreType,
+                    'label_class'  => $ignoreType,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
                     'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
                     'width'        => $this->getDimensions($labeledThingInFrame)['width'],
