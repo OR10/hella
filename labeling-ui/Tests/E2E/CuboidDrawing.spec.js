@@ -170,6 +170,23 @@ describe('Cuboid', () => {
           done();
         });
     });
+
+    it('should load and draw one rectangle in the front center rotated where the top side is overlapping the deepest vertex', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
+        assets.mocks.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0to4,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
+          done();
+        });
+    });
   });
 
   describe('Transformation', () => {

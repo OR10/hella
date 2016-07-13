@@ -63,6 +63,13 @@ class DepthBufferProjection2d {
     const c3 = cuboid3d.vertices;
 
     const faces = [];
+    // The initial order is important, as faces have same max depth and sorting is stable.
+    faces.push({
+      name: 'top',
+      vertices2d: [c2[4], c2[0], c2[1], c2[5]],
+      vertices3d: [c3[4], c3[0], c3[1], c3[5]],
+      order: [4, 0, 1, 5],
+    });
     faces.push({
       name: 'front',
       vertices2d: [c2[0], c2[1], c2[2], c2[3]],
@@ -86,12 +93,6 @@ class DepthBufferProjection2d {
       vertices2d: [c2[5], c2[1], c2[2], c2[6]],
       vertices3d: [c3[5], c3[1], c3[2], c3[6]],
       order: [5, 1, 2, 6],
-    });
-    faces.push({
-      name: 'top',
-      vertices2d: [c2[4], c2[0], c2[1], c2[5]],
-      vertices3d: [c3[4], c3[0], c3[1], c3[5]],
-      order: [4, 0, 1, 5],
     });
     faces.push({
       name: 'bottom',
