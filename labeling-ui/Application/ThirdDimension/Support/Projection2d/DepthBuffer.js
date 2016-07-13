@@ -128,7 +128,6 @@ class DepthBufferProjection2d {
       }
       // Send top face to back
       return 1;
-
     }
 
     if (thatFace.name === 'top') {
