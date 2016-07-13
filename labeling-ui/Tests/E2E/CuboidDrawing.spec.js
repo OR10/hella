@@ -1,6 +1,7 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
+  dumpAllRequestsMade,
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,
@@ -184,6 +185,150 @@ describe('Cuboid', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
+          done();
+        });
+    });
+  });
+
+  describe('DepthBuffer', () => {
+    it('should properly render a cuboid with low height from all sides', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5,
+        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6,
+      ]));
+
+      initApplication('/labeling/task/TASKID-TASKID')
+        .then(() => {
+          browser.actions()
+            .mouseMove(viewer, {x: 596, y: 496})
+            .click()
+            .perform();
+        })
+        .then(() => {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys('pppppp')
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow1);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1);
+        })
+        .then(()=> {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys('pppppp')
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow2);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2);
+        })
+        .then(()=> {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys('pppppp')
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow3')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow3);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3);
+        })
+        .then(()=> {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys('pppppp')
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow4')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow4);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4);
+        })
+        .then(()=> {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys('pppppp')
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow5')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow5);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5);
+        })
+        .then(()=> {
+          browser.actions()
+            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys('pppppp')
+            .sendKeys(protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow6')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow6);
+          browser.sleep(1000);
+        })
+        // .then(() => dumpAllRequestsMade(mock))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => {
+          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6);
           done();
         });
     });
