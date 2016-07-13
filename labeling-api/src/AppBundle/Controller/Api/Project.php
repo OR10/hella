@@ -63,29 +63,21 @@ class Project extends Controller\Base
 
         foreach ($projects->toArray() as $project) {
             $tasks     = $this->projectFacade->getTasksByProject($project);
-            $taskCount = count($tasks);
 
-            $tasks = array_filter(
+            $tasksComplete = array_filter(
                 $tasks,
                 function (Model\LabelingTask $task) {
                     return $task->getStatus() === Model\LabelingTask::STATUS_LABELED;
                 }
             );
 
-            $complete = 0;
-            foreach ($tasks as $task) {
-                if (count($this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame($task)) === 0) {
-                    $complete++;
-                }
-            }
-
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $result[] = array(
                 'id'                         => $project->getId(),
                 'name'                       => $project->getName(),
-                'taskCount'                  => $taskCount,
-                'taskFinishedCount'          => $complete,
+                'taskCount'                  => count($tasks),
+                'taskFinishedCount'          => count($tasksComplete),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
             );
         }
