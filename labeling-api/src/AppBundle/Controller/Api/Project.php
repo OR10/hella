@@ -50,7 +50,10 @@ class Project extends Controller\Base
      */
     public function listDetailedAction(HttpFoundation\Request $request)
     {
-        $projects           = $this->projectFacade->findAll();
+        $offset             = $request->query->get('offset');
+        $limit              = $request->query->get('limit');
+
+        $projects           = $this->projectFacade->findAll($limit, $offset);
         $projectTimeMapping = [];
         $result             = array();
 
