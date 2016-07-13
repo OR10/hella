@@ -112,6 +112,9 @@ class Index extends Base
             'pedestrian' => array(
                 'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22'),
             ),
+            'cuboid' => array(
+                'minimalHeight' => $request->request->get('cuboidMinimalHeight', '15'),
+            ),
         );
 
         $frameStepSize = $request->request->get('frameStepSize', 1);

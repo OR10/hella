@@ -35,6 +35,7 @@ class ImportVideos extends Base
             ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
             ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
             ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22)
+            ->addArgument('cuboidMinimalHeight', Input\InputArgument::OPTIONAL, 'Video cuboid minimal height', 15)
             ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 16);
     }
 
@@ -57,6 +58,9 @@ class ImportVideos extends Base
             $drawingToolOptions = array(
                 'pedestrian' => array(
                     'minimalHeight' => $input->getArgument('pedestrianMinimalHeight'),
+                ),
+                'cuboid' => array(
+                    'minimalHeight' => $input->getArgument('cuboidMinimalHeight'),
                 ),
             );
 
