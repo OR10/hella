@@ -110,10 +110,43 @@ class DepthBufferProjection2d {
     const depthOfThatFace = thatFace.vertices3d.map(vertex => vertex.x);
     const maxDepthOfThisFace = Math.max(...depthOfThisFace);
     const maxDepthOfThatFace = Math.max(...depthOfThatFace);
+    const minDepthOfThisFace = Math.min(...depthOfThisFace);
+    const minDepthOfThatFace = Math.min(...depthOfThatFace);
 
-    if (maxDepthOfThisFace < maxDepthOfThatFace) {
+    const averageDepthOfThisFace = (maxDepthOfThisFace + minDepthOfThisFace) / 2;
+    const averageDepthOfThatFace = (maxDepthOfThatFace + minDepthOfThatFace) / 2;
+
+    // As long as the top face is visible it should be in front
+    // If it is not directly visible it should be in the back
+    if (thisFace.name === 'top') {
+      if (
+        (thisFace.vertices3d[0].x < thisFace.vertices3d[1].x && thisFace.vertices2d[0].y > thisFace.vertices2d[1].y) ||
+        (thisFace.vertices3d[0].x > thisFace.vertices3d[1].x && thisFace.vertices2d[0].y < thisFace.vertices2d[1].y)
+      ) {
+        // Send top face to front
+        return -1;
+      } else {
+        // Send top face to back
+        return 1;
+      }
+    }
+
+    if (thatFace.name === 'top') {
+      if (
+        (thatFace.vertices3d[0].x < thatFace.vertices3d[1].x && thatFace.vertices2d[0].y > thatFace.vertices2d[1].y) ||
+        (thatFace.vertices3d[0].x > thatFace.vertices3d[1].x && thatFace.vertices2d[0].y < thatFace.vertices2d[1].y)
+      ) {
+        // Send other face to back
+        return 1;
+      } else {
+        // Send other face to front
+        return -1;
+      }
+    }
+
+    if (averageDepthOfThisFace < averageDepthOfThatFace) {
       return -1;
-    } else if (maxDepthOfThisFace === maxDepthOfThatFace) {
+    } else if (averageDepthOfThisFace === averageDepthOfThatFace) {
       return 0;
     } else { // eslint-disable-line no-else-return
       return 1;
