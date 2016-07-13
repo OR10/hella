@@ -69,7 +69,7 @@ class Index extends Base
             function (Model\Project $project) {
                 return $project->getName();
             },
-            $this->projectFacade->findAll()
+            $this->projectFacade->findAll()->toArray()
         );
 
         return new Response(
@@ -161,7 +161,7 @@ class Index extends Base
             function (Model\Project $project) {
                 return $project->getName();
             },
-            $this->projectFacade->findAll()
+            $this->projectFacade->findAll()->toArray()
         );
 
         if ($file === null) {

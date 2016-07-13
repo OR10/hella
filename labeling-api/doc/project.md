@@ -17,11 +17,11 @@
     + limit: `10` (integer, optional) - Limit the result.
     + offset: `0` (integer, optional) - Set an offset.
 
-
 ### Get all projects [GET]
 
 + Response 200 (application/json)
     + Attributes
+        + totalRows: `5` (number) - Total Number of documents in the database
         + result array(Project)
 
 ## Get a list of all finished exports for this project [/api/project/{projectId}/export]
@@ -66,4 +66,5 @@
 
 + Response 200 (application/json)
     + Attributes
+        + totalRows: `5` (number) - Total Number of documents in the database
         + result array(ProjectDetails)

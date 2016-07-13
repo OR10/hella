@@ -4,6 +4,7 @@ namespace AppBundle\Database\Facade;
 use AppBundle\Model;
 use Doctrine\ODM\CouchDB;
 use JMS\Serializer\Exception\RuntimeException;
+use Doctrine\CouchDB\View;
 
 class Project
 {
@@ -29,7 +30,7 @@ class Project
     /**
      * @param null $limit
      * @param null $offset
-     * @return Model\Project[]
+     * @return View\Result
      */
     public function findAll($limit = null, $offset = null)
     {
@@ -42,8 +43,7 @@ class Project
             ->setSkip((int) $offset);
         }
 
-        return $query->execute()
-            ->toArray();
+        return $query->execute();
     }
 
     /**

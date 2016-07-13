@@ -61,7 +61,7 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key']] = $mapping['value'];
         }
 
-        foreach ($projects as $project) {
+        foreach ($projects->toArray() as $project) {
             $tasks     = $this->projectFacade->getTasksByProject($project);
             $taskCount = count($tasks);
 
@@ -92,6 +92,7 @@ class Project extends Controller\Base
 
         return View\View::create()->setData(
             [
+                'totalRows' => $projects->getTotalRows(),
                 'result' => $result,
             ]
         );
@@ -119,7 +120,7 @@ class Project extends Controller\Base
             null => array() //@TODO remove this later
         );
 
-        foreach ($projects as $project) {
+        foreach ($projects->toArray() as $project) {
             $result[$project->getStatus()][] = array(
                 'id'   => $project->getId(),
                 'name' => $project->getName(),
@@ -142,6 +143,7 @@ class Project extends Controller\Base
 
         return View\View::create()->setData(
             [
+                'totalRows' => $projects->getTotalRows(),
                 'result' => array_merge(
                     $result[Model\Project::STATUS_IN_PROGRESS],
                     $result[Model\Project::STATUS_TODO],
