@@ -89,8 +89,8 @@ class Project extends Controller\Base
                 'id'                         => $project->getId(),
                 'name'                       => $project->getName(),
                 'status'                     => $project->getStatus(),
-                'taskCount'                  => $this->getSumOfTasksForProjects($project),
-                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProjects($project),
+                'taskCount'                  => $this->getSumOfTasksForProject($project),
+                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
             );
         }
@@ -131,8 +131,8 @@ class Project extends Controller\Base
                 'name' => $project->getName(),
                 'creation_timestamp' => $project->getCreationDate(),
                 'status' => $project->getStatus(),
-                'taskCount' => $this->getSumOfTasksForProjects($project),
-                'taskFinishedCount' => $this->getSumOfCompletedTasksForProjects($project),
+                'taskCount' => $this->getSumOfTasksForProject($project),
+                'taskFinishedCount' => $this->getSumOfCompletedTasksForProject($project),
             );
         }
 
@@ -165,7 +165,7 @@ class Project extends Controller\Base
      * @param Model\Project $project
      * @return int|mixed
      */
-    private function getSumOfTasksForProjects(Model\Project $project)
+    private function getSumOfTasksForProject(Model\Project $project)
     {
         if ($this->sumOfTasksByProjectsCache === null) {
             $this->sumOfTasksByProjectsCache = [];
