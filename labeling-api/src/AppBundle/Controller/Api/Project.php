@@ -181,7 +181,7 @@ class Project extends Controller\Base
      * @param Model\Project $project
      * @return int|mixed
      */
-    private function getSumOfCompletedTasksForProjects(Model\Project $project)
+    private function getSumOfCompletedTasksForProject(Model\Project $project)
     {
         if ($this->sumOfCompletedTasksByProjectsCache === null) {
             $this->sumOfCompletedTasksByProjectsCache = [];
