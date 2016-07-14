@@ -426,4 +426,28 @@ class LabelingTask
     {
         return $task->getLabelStructureUi();
     }
+
+    /**
+     * @return \Doctrine\CouchDB\View\Result
+     */
+    public function getSumOfTasksByProjects()
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->execute();
+    }
+
+    /**
+     * @return \Doctrine\CouchDB\View\Result
+     */
+    public function getSumOfCompletedTasksByProjects()
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeling_task', 'sum_of_completed_tasks_by_project')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->execute();
+    }
 }

@@ -30,13 +30,23 @@ class Project extends Controller\Base
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\LabelingTask        $labelingTaskFacade
      */
-    public function __construct(Facade\Project $projectFacade, Facade\LabeledThingInFrame $labeledThingInFrameFacade)
-    {
+    public function __construct(
+        Facade\Project $projectFacade,
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\LabelingTask $labelingTaskFacade
+    ) {
         $this->projectFacade             = $projectFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
     }
 
     /**
@@ -53,31 +63,34 @@ class Project extends Controller\Base
         $offset             = $request->query->get('offset');
         $limit              = $request->query->get('limit');
 
-        $projects           = $this->projectFacade->findAll($limit, $offset);
-        $projectTimeMapping = [];
-        $result             = array();
+        $projects                      = $this->projectFacade->findAll($limit, $offset);
+        $projectTimeMapping            = [];
+        $sumOfTasksByProjects          = [];
+        $sumOfCompletedTasksByProjects = [];
+        $result                        = array();
 
         foreach ($this->projectFacade->getTimePerProject() as $mapping) {
             $projectTimeMapping[$mapping['key']] = $mapping['value'];
         }
 
+        foreach ($this->labelingTaskFacade->getSumOfTasksByProjects() as $mapping) {
+            $sumOfTasksByProjects[$mapping['key']] = $mapping['value'];
+        }
+
+        foreach ($this->labelingTaskFacade->getSumOfCompletedTasksByProjects() as $mapping) {
+            $sumOfCompletedTasksByProjects[$mapping['key']] = $mapping['value'];
+        }
+
         foreach ($projects->toArray() as $project) {
-            $tasks     = $this->projectFacade->getTasksByProject($project);
-
-            $tasksComplete = array_filter(
-                $tasks,
-                function (Model\LabelingTask $task) {
-                    return $task->getStatus() === Model\LabelingTask::STATUS_LABELED;
-                }
-            );
-
-            $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
+            $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
+            $taskCount         = isset($sumOfTasksByProjects[$project->getId()]) ? $sumOfTasksByProjects[$project->getId()] : 0;
+            $taskFinishedCount = isset($sumOfCompletedTasksByProjects[$project->getId()]) ? $sumOfCompletedTasksByProjects[$project->getId()] : 0;
 
             $result[] = array(
                 'id'                         => $project->getId(),
                 'name'                       => $project->getName(),
-                'taskCount'                  => count($tasks),
-                'taskFinishedCount'          => count($tasksComplete),
+                'taskCount'                  => $taskCount,
+                'taskFinishedCount'          => $taskFinishedCount,
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
             );
         }

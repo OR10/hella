@@ -36,6 +36,7 @@
                 class="AppBundle\Controller\Api\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task.export"
