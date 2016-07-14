@@ -73,11 +73,11 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key']] = $mapping['value'];
         }
 
-        foreach ($this->labelingTaskFacade->getSumOfTasksByProjects() as $mapping) {
+        foreach ($this->labelingTaskFacade->getSumOfTasksByProjects()->toArray() as $mapping) {
             $sumOfTasksByProjects[$mapping['key']] = $mapping['value'];
         }
 
-        foreach ($this->labelingTaskFacade->getSumOfCompletedTasksByProjects() as $mapping) {
+        foreach ($this->labelingTaskFacade->getSumOfCompletedTasksByProjects()->toArray() as $mapping) {
             $sumOfCompletedTasksByProjects[$mapping['key']] = $mapping['value'];
         }
 

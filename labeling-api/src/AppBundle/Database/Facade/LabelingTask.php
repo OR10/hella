@@ -434,7 +434,7 @@ class LabelingTask
     {
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project')
-            ->onlyDocs(false)
+            ->setGroup(true)
             ->setReduce(true)
             ->execute();
     }
@@ -446,7 +446,7 @@ class LabelingTask
     {
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'sum_of_completed_tasks_by_project')
-            ->onlyDocs(false)
+            ->setGroup(true)
             ->setReduce(true)
             ->execute();
     }
