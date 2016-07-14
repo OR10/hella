@@ -4,7 +4,14 @@ import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
  * Controller for the initial entrypoint route into the application
  */
 class ProjectsController {
-  constructor($scope, $state, projectGateway) {
+  /**
+   * @param {$scope} $scope
+   * @param {$state} $state
+   * @param {projectGateway} projectGateway
+   * @param {User} user
+   * @param {UserPermissions} userPermissions
+   */
+  constructor($scope, $state, projectGateway, user, userPermissions) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -22,6 +29,16 @@ class ProjectsController {
      * @private
      */
     this._projectGateway = projectGateway;
+
+    /**
+     * @type {User}
+     */
+    this.user = user;
+
+    /**
+     * @type {UserPermissions}
+     */
+    this.userPermissions = userPermissions;
 
     /**
      * @type {Array}
@@ -83,6 +100,8 @@ ProjectsController.$inject = [
   '$scope',
   '$state',
   'projectGateway',
+  'user',
+  'userPermissions',
 ];
 
 export default ProjectsController;
