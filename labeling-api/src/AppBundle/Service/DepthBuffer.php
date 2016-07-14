@@ -42,6 +42,9 @@ class DepthBuffer
     public function getVertices(Shapes\Cuboid3d $cuboid3d, $calibrationData)
     {
         $projection = array_map(function ($vertex) use ($calibrationData) {
+            if ($vertex->getX() === null || $vertex->getY() === null ||$vertex->getZ() === null) {
+                return $vertex;
+            }
             return $this->matrixProjection->project3dTo2d($vertex, $calibrationData);
         }, $cuboid3d->getVertices()
         );
@@ -146,10 +149,14 @@ class DepthBuffer
 
         foreach ($faces as $face) {
             foreach ($face['vertices2d'] as $vertices2d) {
-                $minMaxFaces2d['x']['min'] = min($minMaxFaces2d['x']['min'], $vertices2d->getX());
-                $minMaxFaces2d['x']['max'] = max($minMaxFaces2d['x']['max'], $vertices2d->getX());
-                $minMaxFaces2d['y']['min'] = min($minMaxFaces2d['y']['min'], $vertices2d->getY());
-                $minMaxFaces2d['y']['max'] = max($minMaxFaces2d['y']['max'], $vertices2d->getY());
+                if ($vertices2d->getX() !== null) {
+                    $minMaxFaces2d['x']['min'] = min($minMaxFaces2d['x']['min'], $vertices2d->getX());
+                    $minMaxFaces2d['x']['max'] = max($minMaxFaces2d['x']['max'], $vertices2d->getX());
+                }
+                if ($vertices2d->getY() !== null) {
+                    $minMaxFaces2d['y']['min'] = min($minMaxFaces2d['y']['min'], $vertices2d->getY());
+                    $minMaxFaces2d['y']['max'] = max($minMaxFaces2d['y']['max'], $vertices2d->getY());
+                }
             }
         }
 
@@ -197,6 +204,9 @@ class DepthBuffer
 
     private function isPixelDrawn($image, $vertex, $offsetX, $offsetY)
     {
+        if ($vertex->getX() === null || $vertex->getY() === null) {
+            return false;
+        }
         $x = floor($vertex->getX() + $offsetX);
         $y = floor($vertex->getY() + $offsetY);
 

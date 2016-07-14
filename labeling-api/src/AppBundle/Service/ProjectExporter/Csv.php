@@ -339,15 +339,15 @@ class Csv implements Service\ProjectExporter
                     $video = $this->videoFacade->find($task->getVideoId());
                     $vertices2d = $this->getCuboidVertices($labeledThingInFrame, $video)[0];
                     foreach (range(0, 7) as $vertexPoint) {
-                        $result['vertex_2d_' . $vertexPoint . '_x'] = round($vertices2d[$vertexPoint][0], 4);
-                        $result['vertex_2d_' . $vertexPoint . '_y'] = round($vertices2d[$vertexPoint][1], 4);
+                        $result['vertex_2d_' . $vertexPoint . '_x'] = ($vertices2d[$vertexPoint][0] === null) ? 'null' : round($vertices2d[$vertexPoint][0], 4);
+                        $result['vertex_2d_' . $vertexPoint . '_y'] = ($vertices2d[$vertexPoint][1] === null) ? 'null' : round($vertices2d[$vertexPoint][1], 4);
                     }
 
                     $vertices3d = $labeledThingInFrame->getShapes()[0]['vehicleCoordinates'];
                     foreach (range(0, 7) as $vertexPoint) {
-                        $result['vertex_3d_' . $vertexPoint . '_x'] = round($vertices3d[$vertexPoint][0], 4);
-                        $result['vertex_3d_' . $vertexPoint . '_y'] = round($vertices3d[$vertexPoint][1], 4);
-                        $result['vertex_3d_' . $vertexPoint . '_z'] = round($vertices3d[$vertexPoint][2], 4);
+                        $result['vertex_3d_' . $vertexPoint . '_x'] = ($vertices3d[$vertexPoint][0] === null) ? 'null' : round($vertices3d[$vertexPoint][0], 4);
+                        $result['vertex_3d_' . $vertexPoint . '_y'] = ($vertices3d[$vertexPoint][1] === null) ? 'null' : round($vertices3d[$vertexPoint][1], 4);
+                        $result['vertex_3d_' . $vertexPoint . '_z'] = ($vertices3d[$vertexPoint][2] === null) ? 'null' : round($vertices3d[$vertexPoint][2], 4);
                     }
 
                 }
