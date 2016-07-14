@@ -60,8 +60,8 @@ export default class Application {
   registerModules() {
     this.modules.push(new CommonModule());
     this.modules.push(new HeaderModule());
-    this.modules.push(new TaskModule());
     this.modules.push(new ManagementBoardModule());
+    this.modules.push(new TaskModule());
     this.modules.push(new UserProfileModule());
     this.modules.push(new ExportModule());
     this.modules.push(new FrameModule());
