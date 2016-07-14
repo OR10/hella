@@ -14,7 +14,6 @@ import ApplicationController from './ApplicationController';
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
 import TaskModule from './Task/Task';
-import HomeModule from './Home/Home';
 import ManagementBoardModule from './ManagementBoard/ManagementBoard';
 import UserProfileModule from './UserProfile/UserProfile';
 import ExportModule from './Export/Export';
@@ -63,7 +62,6 @@ export default class Application {
     this.modules.push(new CommonModule());
     this.modules.push(new HeaderModule());
     this.modules.push(new TaskModule());
-    this.modules.push(new HomeModule());
     this.modules.push(new ManagementBoardModule());
     this.modules.push(new UserProfileModule());
     this.modules.push(new ExportModule());

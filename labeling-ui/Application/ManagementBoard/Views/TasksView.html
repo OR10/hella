@@ -9,13 +9,10 @@
     >
     </title-bar>
     <div class="grid-block text-center vertical tasks-container">
-        <project-selector ng-model="vm.selectedProject"
-        ></project-selector>
-
         <task-list class="grid-block"
-                  project="vm.selectedProject"
-                  user="vm.user"
-                  user-permissions="vm.userPermissions"
+                   project-id="vm.projectId"
+                   user="vm.user"
+                   user-permissions="vm.userPermissions"
         ></task-list>
     </div>
 </div>

@@ -42,7 +42,7 @@ class TaskListController {
     this.filterReopenTasks = this.filterReopenTasks.bind(this);
     this.filterReviewTasks = this.filterReviewTasks.bind(this);
 
-    $scope.$watch('vm.project', () => this._loadTaskList());
+    this._loadTaskList();
   }
 
   /**
@@ -54,15 +54,10 @@ class TaskListController {
    * @private
    */
   _loadTaskList() {
-    if ((typeof this.project !== 'string') || this.project === '') {
-      this.preprocessingTasks = null;
-      this.waitingTasks = null;
-      this.labeledTasks = null;
-      return;
-    }
+    console.log('load task list', this.projectId);
 
     this.loadingInProgress = true;
-    this._taskGateway.getTasksAndVideosForProject(this.project)
+    this._taskGateway.getTasksAndVideosForProject(this.projectId)
       .then(({tasks, videos, users}) => {
         this.preprocessingTasks = null;
         this.waitingTasks = null;

@@ -9,7 +9,7 @@ import TaskListController from './TaskListController';
 class TaskListDirective {
   constructor() {
     this.scope = {
-      project: '=',
+      projectId: '=',
       user: '=',
       userPermissions: '=',
     };

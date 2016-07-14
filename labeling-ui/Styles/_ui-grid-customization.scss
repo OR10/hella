@@ -1,0 +1,25 @@
+.ui-grid-row {
+  cursor: pointer;
+}
+
+.ui-grid-row:hover {
+  .ui-grid-cell {
+    color: $gradient-start;
+    background-color: $border-color;
+    border-color: $gradient-start;
+  }
+}
+
+.ui-grid-cell {
+  padding: 0.2rem;
+}
+
+.ui-grid-header-cell {
+  padding: 0.5rem;
+  font-size: 1.2rem;
+
+  // Remove sort buttons that are rendered invisible
+  .ui-grid-invisible {
+    display: none;
+  }
+}

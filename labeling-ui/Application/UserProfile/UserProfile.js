@@ -4,7 +4,6 @@ import UserProfileController from './Controllers/UserProfileController';
 import UserPasswordController from './Controllers/UserPasswordController';
 import userProfileTemplate from './Views/UserProfile.html!';
 import userPasswordTemplate from './Views/UserPassword.html!';
-import UserGateway from '../Users/Gateways/UserGateway';
 
 /**
  * User Module
@@ -19,7 +18,6 @@ class UserProfile extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.UserProfile', []);
-    this.module.service('userGateway', UserGateway);
   }
 
   /**

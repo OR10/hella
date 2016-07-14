@@ -30,6 +30,8 @@ import 'foundation-apps/js/angular/services/foundation.core.animation';
 import 'foundation-apps/js/angular/components/common/common';
 import 'foundation-apps/js/angular/components/modal/modal';
 
+import 'angular-ui-grid';
+
 /**
  * Common Module
  *
@@ -42,7 +44,12 @@ class Common extends Module {
    * @param {angular} angular
    */
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.Common', ['foundation.common', 'foundation.modal']);
+    this.module = angular.module('AnnoStation.Common', [
+      'foundation.common',
+      'foundation.modal',
+      'ui.grid',
+      'ui.grid.pinning',
+    ]);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
     this.module.service('readOnlyInterceptor', ReadOnlyInterceptor);
@@ -94,7 +101,6 @@ class Common extends Module {
       });
 
       $rootScope.$on('$stateChangeStart', (event, to, params) => {
-        console.log(event, to, params);
         if (to.redirectTo) {
           event.preventDefault();
           $state.go(to.redirectTo, params, {location: 'replace'});

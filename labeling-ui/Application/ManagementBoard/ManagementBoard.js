@@ -1,8 +1,14 @@
 import Module from 'Application/Module';
-// import ProjectsController from './Controllers/ProjectsController';
-// import ProjectsView from './Views/ProjectsView.html!';
-// import TasksController from './Controllers/TasksController';
-// import TasksView from './Views/TasksView.html!';
+import ProjectsController from './Controllers/ProjectsController';
+import ProjectsView from './Views/ProjectsView.html!';
+
+import TasksController from './Controllers/TasksController';
+import TasksView from './Views/TasksView.html!';
+import TaskListDirective from './Directives/TaskListDirective';
+import UnassignedTasksFilterProvider from './Filters/UnassignesTasksFilterProvider';
+import MyTasksFilterProvider from './Filters/MyTasksFilterProvider';
+import OtherPeopleTasksFilterProvider from './Filters/OtherPeopleTasksFilterProvider';
+import ProjectFilterProvider from './Filters/ProjectFilterProvider';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -28,21 +34,31 @@ class ManagementBoard extends Module {
    * @param {angular.$stateProvider} $stateProvider
    */
   config($stateProvider) {
-    /*
-     $stateProvider.state('labeling.projects', {
-     url: 'projects',
-     controller: ProjectsController,
-     controllerAs: 'vm',
-     template: ProjectsView,
-     });
+    $stateProvider.state('labeling.projects', {
+      url: 'projects',
+      template: '<ui-view class="grid-block"/>',
+      redirectTo: 'labeling.projects.list',
+    });
 
-     $stateProvider.state('labeling.projects.tasks', {
-     url: 'projects/:projectId/tasks',
-     controller: TasksController,
-     controllerAs: 'vm',
-     template: TasksView,
-     });
-     */
+    $stateProvider.state('labeling.projects.list', {
+      url: '/',
+      controller: ProjectsController,
+      controllerAs: 'vm',
+      template: ProjectsView,
+    });
+
+    $stateProvider.state('labeling.tasks', {
+      url: 'projects/:projectId/tasks',
+      template: '<ui-view class="grid-block"/>',
+      redirectTo: 'labeling.tasks.list',
+    });
+
+    $stateProvider.state('labeling.tasks.list', {
+      url: '/',
+      controller: TasksController,
+      controllerAs: 'vm',
+      template: TasksView,
+    });
 
     $stateProvider.state('labeling.users', {
       url: 'users',
@@ -70,12 +86,20 @@ class ManagementBoard extends Module {
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.ManagementBoard', []);
+
     this.module.service('userGateway', UserGateway);
+
+    this.registerDirective('taskList', TaskListDirective);
+    this.registerDirective('usersList', UsersListDirective);
+    this.registerDirective('userProfile', UserProfileDirective);
+
+    this.module.filter('unassignedTasks', UnassignedTasksFilterProvider);
+    this.module.filter('myTasks', MyTasksFilterProvider);
+    this.module.filter('otherPeopleTasks', OtherPeopleTasksFilterProvider);
+    this.module.filter('project', ProjectFilterProvider);
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
 
-    this.registerDirective('usersList', UsersListDirective);
-    this.registerDirective('userProfile', UserProfileDirective);
   }
 }
 
