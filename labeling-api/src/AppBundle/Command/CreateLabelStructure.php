@@ -67,44 +67,43 @@ class CreateLabelStructure extends Base
             ),
         );
 
-        $occlusions = array(
-            array(
-                'name' => 'occlusion-0',
-                'response' => '0%'
-            ),
-            array(
-                'name' => 'occlusion-20',
-                'response' => '< 20%'
-            ),
-            array(
-                'name' => 'occlusion-20-80',
-                'response' => '20% - 80%'
-            ),
-            array(
-                'name' => 'occlusion-80',
-                'response' => '> 80%'
-            ),
-        );
-
         $truncations = array(
             array(
                 'name' => 'truncation-0',
-                'response' => '0%'
+                'response' => '0%',
             ),
             array(
-                'name' => 'truncation-20',
-                'response' => '< 20%'
+                'name' => 'truncation-25',
+                'response' => '< 25%',
             ),
             array(
-                'name' => 'truncation-20-80',
-                'response' => '20% - 80%'
+                'name' => 'truncation-25-50',
+                'response' => '25% - 50%',
             ),
             array(
-                'name' => 'truncation-80',
-                'response' => '> 80%'
+                'name' => 'truncation-50',
+                'response' => '> 50%',
             ),
         );
 
+        $occlusions = array(
+            array(
+                'name' => 'occlusion-0',
+                'response' => '0%',
+            ),
+            array(
+                'name' => 'occlusion-25',
+                'response' => '< 25%',
+            ),
+            array(
+                'name' => 'occlusion-25-50',
+                'response' => '25% - 50%',
+            ),
+            array(
+                'name' => 'occlusion-50',
+                'response' => '> 50%',
+            ),
+        );
 
         $data = array(
             array(
