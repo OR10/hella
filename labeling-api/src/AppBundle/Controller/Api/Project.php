@@ -81,12 +81,14 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key']] = $mapping['value'];
         }
 
+        /** @var Model\Project $project */
         foreach ($projects->toArray() as $project) {
             $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $result[] = array(
                 'id'                         => $project->getId(),
                 'name'                       => $project->getName(),
+                'status'                     => $project->getStatus(),
                 'taskCount'                  => $this->getSumOfTasksForProjects($project),
                 'taskFinishedCount'          => $this->getSumOfCompletedTasksForProjects($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
