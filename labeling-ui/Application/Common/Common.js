@@ -87,10 +87,18 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$location', $rootScope => {
+    this.module.run(['$rootScope', '$state', ($rootScope, $state) => {
       $rootScope.$on('unauthorized', () => {
         const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);
         window.location.assign(`/login?targetUrl=${targetUrl}`);
+      });
+
+      $rootScope.$on('$stateChangeStart', (event, to, params) => {
+        console.log(event, to, params);
+        if (to.redirectTo) {
+          event.preventDefault();
+          $state.go(to.redirectTo, params, {location: 'replace'});
+        }
       });
     }]);
   }
