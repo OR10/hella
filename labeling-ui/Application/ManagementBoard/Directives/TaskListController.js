@@ -54,8 +54,6 @@ class TaskListController {
    * @private
    */
   _loadTaskList() {
-    console.log('load task list', this.projectId);
-
     this.loadingInProgress = true;
     this._taskGateway.getTasksAndVideosForProject(this.projectId)
       .then(({tasks, videos, users}) => {
