@@ -45,6 +45,11 @@ class Project extends Controller\Base
     private $sumOfCompletedTasksByProjectsCache = null;
 
     /**
+     * @var array|null
+     */
+    private $sumOfInProgressTasksByProjectsCache = null;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
@@ -91,6 +96,7 @@ class Project extends Controller\Base
                 'status'                     => $project->getStatus(),
                 'taskCount'                  => $this->getSumOfTasksForProject($project),
                 'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
+                'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
             );
         }
@@ -194,6 +200,21 @@ class Project extends Controller\Base
     }
 
     /**
+     * @param Model\Project $project
+     * @return int|mixed
+     */
+    private function getSumOfInProgressTasksForProject(Model\Project $project)
+    {
+        if ($this->sumOfInProgressTasksByProjectsCache === null) {
+            $this->sumOfInProgressTasksByProjectsCache = [];
+            foreach ($this->labelingTaskFacade->getSumOfInProgressTasksByProjects()->toArray() as $mapping) {
+                $this->sumOfInProgressTasksByProjectsCache[$mapping['key']] = $mapping['value'];
+            }
+        }
+
+        return isset($this->sumOfInProgressTasksByProjectsCache[$project->getId()]) ? $this->sumOfInProgressTasksByProjectsCache[$project->getId()] : 0;
+    }
+
      * Return the project with the given id
      *
      * @Rest\Get("/{project}")

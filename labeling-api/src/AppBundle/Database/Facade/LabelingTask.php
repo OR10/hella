@@ -450,4 +450,16 @@ class LabelingTask
             ->setReduce(true)
             ->execute();
     }
+    /**
+     * @return \Doctrine\CouchDB\View\Result
+     */
+    public function getSumOfInProgressTasksByProjects()
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeling_task', 'sum_of_in_progress_tasks_by_project')
+            ->setGroup(true)
+            ->setReduce(true)
+            ->execute();
+    }
+
 }
