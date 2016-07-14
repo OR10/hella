@@ -215,6 +215,7 @@ class Project extends Controller\Base
         return isset($this->sumOfInProgressTasksByProjectsCache[$project->getId()]) ? $this->sumOfInProgressTasksByProjectsCache[$project->getId()] : 0;
     }
 
+    /**
      * Return the project with the given id
      *
      * @Rest\Get("/{project}")
