@@ -330,7 +330,7 @@ class Csv implements Service\ProjectExporter
                     'height'       => $this->getDimensions($labeledThingInFrame)['height'],
                     'occlusion'    => $occlusion,
                     'truncation'   => $truncation,
-                    'direction'    => null,
+                    'direction'    => '3d data',
                     'id'           => NULL,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
@@ -380,7 +380,7 @@ class Csv implements Service\ProjectExporter
                     'height'       => $this->getDimensions($labeledThingInFrame)['height'],
                     'occlusion'    => 0,
                     'truncation'   => 0,
-                    'direction'    => null,
+                    'direction'    => 'none',
                     'id'           => NULL,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
