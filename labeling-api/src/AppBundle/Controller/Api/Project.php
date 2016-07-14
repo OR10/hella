@@ -35,6 +35,16 @@ class Project extends Controller\Base
     private $labelingTaskFacade;
 
     /**
+     * @var array|null
+     */
+    private $sumOfTasksByProjectsCache = null;
+
+    /**
+     * @var array|null
+     */
+    private $sumOfCompletedTasksByProjectsCache = null;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
@@ -65,7 +75,6 @@ class Project extends Controller\Base
 
         $projects                      = $this->projectFacade->findAll($limit, $offset);
         $projectTimeMapping            = [];
-        $sumOfTasksByProjects          = [];
         $sumOfCompletedTasksByProjects = [];
         $result                        = array();
 
@@ -73,24 +82,14 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key']] = $mapping['value'];
         }
 
-        foreach ($this->labelingTaskFacade->getSumOfTasksByProjects()->toArray() as $mapping) {
-            $sumOfTasksByProjects[$mapping['key']] = $mapping['value'];
-        }
-
-        foreach ($this->labelingTaskFacade->getSumOfCompletedTasksByProjects()->toArray() as $mapping) {
-            $sumOfCompletedTasksByProjects[$mapping['key']] = $mapping['value'];
-        }
-
         foreach ($projects->toArray() as $project) {
             $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
-            $taskCount         = isset($sumOfTasksByProjects[$project->getId()]) ? $sumOfTasksByProjects[$project->getId()] : 0;
-            $taskFinishedCount = isset($sumOfCompletedTasksByProjects[$project->getId()]) ? $sumOfCompletedTasksByProjects[$project->getId()] : 0;
 
             $result[] = array(
                 'id'                         => $project->getId(),
                 'name'                       => $project->getName(),
-                'taskCount'                  => $taskCount,
-                'taskFinishedCount'          => $taskFinishedCount,
+                'taskCount'                  => $this->getSumOfTasksForProjects($project),
+                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProjects($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
             );
         }
@@ -126,22 +125,13 @@ class Project extends Controller\Base
         );
 
         foreach ($projects->toArray() as $project) {
-            $tasks     = $this->projectFacade->getTasksByProject($project);
-
-            $tasksComplete = array_filter(
-                $tasks,
-                function (Model\LabelingTask $task) {
-                    return $task->getStatus() === Model\LabelingTask::STATUS_LABELED;
-                }
-            );
-
             $result[$project->getStatus()][] = array(
                 'id'   => $project->getId(),
                 'name' => $project->getName(),
                 'creation_timestamp' => $project->getCreationDate(),
                 'status' => $project->getStatus(),
-                'taskCount' => count($tasks),
-                'taskFinishedCount' => count($tasksComplete),
+                'taskCount' => $this->getSumOfTasksForProjects($project),
+                'taskFinishedCount' => $this->getSumOfCompletedTasksForProjects($project),
             );
         }
 
@@ -168,6 +158,38 @@ class Project extends Controller\Base
                     ),
             ]
         );
+    }
+
+    /**
+     * @param Model\Project $project
+     * @return int|mixed
+     */
+    private function getSumOfTasksForProjects(Model\Project $project)
+    {
+        if ($this->sumOfTasksByProjectsCache === null) {
+            $this->sumOfTasksByProjectsCache = [];
+            foreach ($this->labelingTaskFacade->getSumOfTasksByProjects()->toArray() as $mapping) {
+                $this->sumOfTasksByProjectsCache[$mapping['key']] = $mapping['value'];
+            }
+        }
+
+        return isset($this->sumOfTasksByProjectsCache[$project->getId()]) ? $this->sumOfTasksByProjectsCache[$project->getId()] : 0;
+    }
+
+    /**
+     * @param Model\Project $project
+     * @return int|mixed
+     */
+    private function getSumOfCompletedTasksForProjects(Model\Project $project)
+    {
+        if ($this->sumOfCompletedTasksByProjectsCache === null) {
+            $this->sumOfCompletedTasksByProjectsCache = [];
+            foreach ($this->labelingTaskFacade->getSumOfCompletedTasksByProjects()->toArray() as $mapping) {
+                $this->sumOfCompletedTasksByProjectsCache[$mapping['key']] = $mapping['value'];
+            }
+        }
+
+        return isset($this->sumOfCompletedTasksByProjectsCache[$project->getId()]) ? $this->sumOfCompletedTasksByProjectsCache[$project->getId()] : 0;
     }
 
     /**
