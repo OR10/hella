@@ -191,7 +191,7 @@ class CsvProjectTest extends Tests\KernelTestCase
                         'height' => 'null',
                         'occlusion' => 1,
                         'truncation' => 2,
-                        'direction' => null,
+                        'direction' => '3d data',
                         'vehicleType' => null,
                         'vertex_2d_0_x' => 112.8062,
                         'vertex_2d_0_y' => 285.9309,
