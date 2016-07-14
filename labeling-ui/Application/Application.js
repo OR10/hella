@@ -143,9 +143,13 @@ export default class Application {
       $stateProvider
         .state('labeling', {
           abstract: true,
-          controller: ApplicationController,
           url: '/',
-          template: '<ui-view class="vertical grid-frame"/>',
+          views: {
+            '@': {
+              controller: ApplicationController,
+              controllerAs: 'vm',
+            },
+          },
           resolve: {
             user: userResolver,
             userPermissions: permissionsResolver,

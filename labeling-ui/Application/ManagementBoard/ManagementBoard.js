@@ -4,6 +4,7 @@ import TitleBarDirective from './Directives/TitleBarDirective';
 
 import ProjectsController from './Controllers/ProjectsController';
 import ProjectsView from './Views/ProjectsView.html!';
+import ProjectGateway from './Gateways/ProjectGateway';
 
 import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
@@ -39,48 +40,61 @@ class ManagementBoard extends Module {
   config($stateProvider) {
     $stateProvider.state('labeling.projects', {
       url: 'projects',
-      template: '<ui-view class="grid-block"/>',
       redirectTo: 'labeling.projects.list',
     });
 
     $stateProvider.state('labeling.projects.list', {
       url: '/',
-      controller: ProjectsController,
-      controllerAs: 'vm',
-      template: ProjectsView,
+      views: {
+        '@': {
+          controller: ProjectsController,
+          controllerAs: 'vm',
+          template: ProjectsView,
+        },
+      },
     });
 
     $stateProvider.state('labeling.tasks', {
-      url: 'projects/:projectId/tasks',
-      template: '<ui-view class="grid-block"/>',
+      url: 'projects/{projectId:[a-f0-9]{32}}/tasks',
       redirectTo: 'labeling.tasks.list',
     });
 
     $stateProvider.state('labeling.tasks.list', {
       url: '/',
-      controller: TasksController,
-      controllerAs: 'vm',
-      template: TasksView,
+      views: {
+        '@': {
+          controller: TasksController,
+          controllerAs: 'vm',
+          template: TasksView,
+        },
+      },
     });
 
     $stateProvider.state('labeling.users', {
       url: 'users',
-      template: '<ui-view class="grid-block"/>',
       redirectTo: 'labeling.users.list',
     });
 
     $stateProvider.state('labeling.users.list', {
       url: '/',
-      controller: UsersController,
-      controllerAs: 'vm',
-      template: UsersView,
+      views: {
+        '@': {
+          controller: UsersController,
+          controllerAs: 'vm',
+          template: UsersView,
+        },
+      },
     });
 
     $stateProvider.state('labeling.users.detail', {
-      url: '/:userId',
-      controller: UsersDetailController,
-      controllerAs: 'vm',
-      template: UsersDetailView,
+      url: '/{userId:[0-9a-f]{1,32}}',
+      views: {
+        '@': {
+          controller: UsersDetailController,
+          controllerAs: 'vm',
+          template: UsersDetailView,
+        },
+      },
     });
   }
 
@@ -91,6 +105,7 @@ class ManagementBoard extends Module {
     this.module = angular.module('AnnoStation.ManagementBoard', []);
 
     this.module.service('userGateway', UserGateway);
+    this.module.service('projectGateway', ProjectGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);
     this.registerDirective('taskList', TaskListDirective);

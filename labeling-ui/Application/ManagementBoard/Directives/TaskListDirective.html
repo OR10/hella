@@ -58,7 +58,7 @@
             <tbody>
             <tr ng-repeat="task in myTasks = (vm.waitingTasks | myTasks:vm.user.id | filter:vm.filterReopenTasks)"
                 track-by="task.id">
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
                     <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
                     <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
@@ -68,10 +68,10 @@
                     <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
                     &nbsp;{{task.taskType}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     {{task.video.name}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
                 </td>
                 <td>
@@ -100,7 +100,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ui-sref="^.task({taskId: task.id})"
+            <tr ui-sref="^.detail({taskId: task.id})"
                 ng-repeat="task in unassignedTasks = (vm.waitingTasks | unassignedTasks | filter:vm.filterReopenTasks)"
                 track-by="task.id">
                 <td>
@@ -142,7 +142,7 @@
             <tbody>
             <tr ng-repeat="task in otherPeoplesTasks = (vm.waitingTasks | otherPeopleTasks:vm.user.id | filter:vm.filterReopenTasks)"
                 track-by="task.id">
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
                     <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
                     <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
@@ -152,13 +152,13 @@
                     <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
                     &nbsp;{{task.taskType}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     {{task.video.name}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">{{task.user.username}}</td>
+                <td ui-sref="^.detail({taskId: task.id})">{{task.user.username}}</td>
                 <td ng-show="vm.userPermissions.unassignPermission">
                     <button ng-click="vm.removeAssignment(task, task.user)"
                             tooltip="Remove user assignment from this task"
@@ -190,7 +190,7 @@
             <tbody>
             <tr ng-repeat="task in finishedTasks = (vm.labeledTasks | filter:vm.filterReviewTasks)"
                 track-by="task.id">
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     <i ng-show="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
                     <i ng-show="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
                     <i ng-show="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
@@ -200,10 +200,10 @@
                     <i ng-show="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
                     &nbsp;{{task.taskType}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     {{task.video.name}}
                 </td>
-                <td ui-sref="^.task({taskId: task.id})">
+                <td ui-sref="^.detail({taskId: task.id})">
                     {{task.frameNumberMapping[0]}}-{{task.frameNumberMapping[task.frameNumberMapping.length - 1]}}
 
                 </td>
