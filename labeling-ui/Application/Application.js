@@ -123,7 +123,7 @@ export default class Application {
       $locationProvider.html5Mode(true);
 
       // For any unmatched url, redirect to /state1
-      $urlRouterProvider.otherwise('/tasks');
+      $urlRouterProvider.otherwise('/projects/');
 
       function userResolver(userGateway) {
         return userGateway.getCurrentUser()
