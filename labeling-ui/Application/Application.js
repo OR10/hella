@@ -25,7 +25,6 @@ import LabelStructureModule from './LabelStructure/LabelStructure';
 import FilmReelModule from './FilmReel/FilmReel';
 import MediaControlsModule from './MediaControls/MediaControls';
 import StatisticsModule from './Statistics/Statistics';
-import ProjectModule from './Project/Project';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -73,7 +72,6 @@ export default class Application {
     this.modules.push(new FilmReelModule());
     this.modules.push(new MediaControlsModule());
     this.modules.push(new StatisticsModule());
-    this.modules.push(new ProjectModule());
   }
 
   buildApplicationConfig() {
