@@ -75,7 +75,6 @@ class Project extends Controller\Base
 
         $projects                      = $this->projectFacade->findAll($limit, $offset);
         $projectTimeMapping            = [];
-        $sumOfCompletedTasksByProjects = [];
         $result                        = array();
 
         foreach ($this->projectFacade->getTimePerProject() as $mapping) {
