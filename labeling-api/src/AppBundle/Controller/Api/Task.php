@@ -117,17 +117,17 @@ class Task extends Controller\Base
                 }
                 break;
             default:
-                $tasks[] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                     Model\LabelingTask::STATUS_WAITING, $project, $offset, $limit
                 );
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                    $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    $tasks = array_merge($tasks, $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_PREPROCESSING,
                         $project,
                         $offset,
                         $limit
-                    );
-                    $tasks = $tasks = array_merge($tasks, $this->labelingTaskFacade->findAllByStatusAndProject(
+                    ));
+                    $tasks = array_merge($tasks, $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_LABELED,
                         $project,
                         $offset,
