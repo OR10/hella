@@ -10,6 +10,8 @@ class TaskListDirective {
   constructor() {
     this.scope = {
       projectId: '=',
+      taskStatus: '@',
+      title: '@',
       user: '=',
       userPermissions: '=',
     };

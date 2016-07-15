@@ -49,6 +49,7 @@ class Common extends Module {
       'foundation.modal',
       'ui.grid',
       'ui.grid.pinning',
+      'ui.grid.pagination',
     ]);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
