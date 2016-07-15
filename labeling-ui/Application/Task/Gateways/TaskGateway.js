@@ -57,15 +57,29 @@ class TaskGateway {
    *
    * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
    */
-  getTasksAndVideosForProject(projectId) {
-    const url = this._apiService.getApiUrl('/task', {
+  getTasksAndVideosForProject(projectId, status = null, limit = null, offset = null) {
+    const params = {
       includeVideos: true,
       project: projectId,
-    });
+    };
+
+    if (status) {
+      params.status = status;
+    }
+
+    if (limit) {
+      params.limit = limit;
+    }
+
+    if (offset) {
+      params.offset = offset;
+    }
+
+    const url = this._apiService.getApiUrl('/task', params);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos) {
+        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos || !response.data.result.users) {
           throw new Error('Failed loading task list');
         }
 
