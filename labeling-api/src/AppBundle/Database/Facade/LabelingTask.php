@@ -433,33 +433,9 @@ class LabelingTask
     public function getSumOfTasksByProjects()
     {
         return $this->documentManager
-            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project')
+            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
             ->setGroup(true)
             ->setReduce(true)
             ->execute();
     }
-
-    /**
-     * @return \Doctrine\CouchDB\View\Result
-     */
-    public function getSumOfCompletedTasksByProjects()
-    {
-        return $this->documentManager
-            ->createQuery('annostation_labeling_task', 'sum_of_completed_tasks_by_project')
-            ->setGroup(true)
-            ->setReduce(true)
-            ->execute();
-    }
-    /**
-     * @return \Doctrine\CouchDB\View\Result
-     */
-    public function getSumOfInProgressTasksByProjects()
-    {
-        return $this->documentManager
-            ->createQuery('annostation_labeling_task', 'sum_of_in_progress_tasks_by_project')
-            ->setGroup(true)
-            ->setReduce(true)
-            ->execute();
-    }
-
 }
