@@ -9,10 +9,6 @@ import ProjectGateway from './Gateways/ProjectGateway';
 import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
 import TaskListDirective from './Directives/TaskListDirective';
-import UnassignedTasksFilterProvider from './Filters/UnassignesTasksFilterProvider';
-import MyTasksFilterProvider from './Filters/MyTasksFilterProvider';
-import OtherPeopleTasksFilterProvider from './Filters/OtherPeopleTasksFilterProvider';
-import ProjectFilterProvider from './Filters/ProjectFilterProvider';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -112,10 +108,6 @@ class ManagementBoard extends Module {
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
 
-    this.module.filter('unassignedTasks', UnassignedTasksFilterProvider);
-    this.module.filter('myTasks', MyTasksFilterProvider);
-    this.module.filter('otherPeopleTasks', OtherPeopleTasksFilterProvider);
-    this.module.filter('project', ProjectFilterProvider);
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
 
