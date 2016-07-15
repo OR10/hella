@@ -1,12 +1,14 @@
-.ui-grid-row {
-  cursor: pointer;
-}
+.ui-grid.clickable {
+  .ui-grid-row {
+    cursor: pointer;
+  }
 
-.ui-grid-row:hover {
-  .ui-grid-cell {
-    color: $gradient-start;
-    background-color: $border-color;
-    border-color: $gradient-start;
+  .ui-grid-row:hover {
+    .ui-grid-cell {
+      color: $gradient-start;
+      background-color: $border-color;
+      border-color: $gradient-start;
+    }
   }
 }
 
