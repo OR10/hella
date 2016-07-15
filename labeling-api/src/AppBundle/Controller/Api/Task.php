@@ -13,6 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use AppBundle\Response;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -48,11 +49,11 @@ class Task extends Controller\Base
     private $projectFacade;
 
     /**
-     * @param Facade\Video $videoFacade
+     * @param Facade\Video        $videoFacade
      * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Service\FrameCdn $frameCdn
-     * @param Facade\User $userFacade
-     * @param Facade\Project $projectFacade
+     * @param Service\FrameCdn    $frameCdn
+     * @param Facade\User         $userFacade
+     * @param Facade\Project      $projectFacade
      */
     public function __construct(
         Facade\Video $videoFacade,
@@ -60,7 +61,8 @@ class Task extends Controller\Base
         Service\FrameCdn $frameCdn,
         Facade\User $userFacade,
         Facade\Project $projectFacade
-    ) {
+    )
+    {
         $this->videoFacade        = $videoFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->frameCdn           = $frameCdn;
@@ -93,67 +95,48 @@ class Task extends Controller\Base
             throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
-        $tasks  = array();
-        $videos = array();
+        $tasks = array();
         switch ($taskStatus) {
             case Model\LabelingTask::STATUS_PREPROCESSING:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                    $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_PREPROCESSING, $project, $offset, $limit
-                    );
-
-                    $videos = array_merge(
-                        $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_PREPROCESSING]),
-                        $videos
                     );
                 }
                 break;
             case Model\LabelingTask::STATUS_WAITING:
-                $tasks[Model\LabelingTask::STATUS_WAITING] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                     Model\LabelingTask::STATUS_WAITING, $project, $offset, $limit
-                );
-                $videos = array_merge(
-                    $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_WAITING]),
-                    $videos
                 );
                 break;
             case Model\LabelingTask::STATUS_LABELED:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                    $tasks[Model\LabelingTask::STATUS_LABELED] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_LABELED, $project, $offset, $limit
-                    );
-
-                    $videos = array_merge(
-                        $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_LABELED]),
-                        $videos
                     );
                 }
                 break;
             default:
-                $tasks[Model\LabelingTask::STATUS_WAITING] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                $tasks[] = $this->labelingTaskFacade->findAllByStatusAndProject(
                     Model\LabelingTask::STATUS_WAITING, $project, $offset, $limit
                 );
-                $videos = $this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_WAITING]);
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                    $tasks[Model\LabelingTask::STATUS_PREPROCESSING] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_PREPROCESSING,
                         $project,
                         $offset,
                         $limit
                     );
-                    $tasks[Model\LabelingTask::STATUS_LABELED] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    $tasks = $tasks = array_merge($tasks, $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_LABELED,
                         $project,
                         $offset,
                         $limit
-                    );
-                    $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_PREPROCESSING]), $videos);
-                    $videos = array_merge($this->videoFacade->findAllForTasksIndexedById($tasks[Model\LabelingTask::STATUS_LABELED]), $videos);
+                    ));
                 }
         }
 
-        foreach(array_keys($tasks) as $status) {
-            usort($tasks[$status], function ($a, $b) {
+            usort($tasks, function ($a, $b) {
                 if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
                     return -1;
                 }
@@ -162,46 +145,8 @@ class Task extends Controller\Base
                 }
                 return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
             });
-        }
 
-        $userIds = array();
-        foreach ($tasks as $tasksByStatus) {
-            if ($tasksByStatus === null) {
-                continue;
-            }
-            $userIds =
-                array_merge(
-                    array_map(
-                        function ($task) {
-                            return $task->getAssignedUserId();
-                        },
-                        $tasksByStatus
-                    ),
-                    $userIds
-                );
-        }
-        $userIds = array_unique(
-            array_filter($userIds, function ($userId) {
-                return is_string($userId);
-            })
-        );
-
-        return View\View::create()->setData([
-            'result' => [
-                'tasks' => $tasks,
-                'videos' => $videos,
-                'users' =>
-                    array_values(
-                        array_map(function ($userId) {
-                            $user = $this->userFacade->getUserById($userId);
-                            return array(
-                                'id' => $user->getId(),
-                                'username' => $user->getUsername(),
-                            );
-                        }, $userIds)
-                    )
-            ]
-        ]);
+        return new View\View(new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade), HttpFoundation\Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -231,7 +176,7 @@ class Task extends Controller\Base
         return View\View::create()->setData(
             [
                 'result' => [
-                    'structure'  => $this->labelingTaskFacade->getLabelStructure($task),
+                    'structure' => $this->labelingTaskFacade->getLabelStructure($task),
                     'annotation' => $this->labelingTaskFacade->getLabelAnnotation($task),
                 ]
             ]
@@ -255,8 +200,8 @@ class Task extends Controller\Base
      */
     public function showFrameLocationsAction(Model\LabelingTask $task, $type, HttpFoundation\Request $request)
     {
-        $offset   = $request->query->getDigits('offset');
-        $limit    = $request->query->getDigits('limit');
+        $offset            = $request->query->getDigits('offset');
+        $limit             = $request->query->getDigits('limit');
         $frameIndexMapping = $task->getFrameNumberMapping();
 
         if ($offset !== '') {
@@ -267,7 +212,7 @@ class Task extends Controller\Base
             $frameIndexMapping = array_slice($frameIndexMapping, 0, $limit, true);
         }
 
-        $data     = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $frameIndexMapping);
+        $data = $this->frameCdn->getFrameLocations($task, ImageType\Base::create($type), $frameIndexMapping);
 
         return View\View::create()->setData(['result' => $data]);
     }

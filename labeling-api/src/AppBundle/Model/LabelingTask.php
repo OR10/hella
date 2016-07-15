@@ -540,4 +540,20 @@ class LabelingTask
     {
         $this->projectId = $projectId;
     }
+
+    /**
+     * @return string
+     */
+    public function getRev()
+    {
+        return $this->rev;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
 }
