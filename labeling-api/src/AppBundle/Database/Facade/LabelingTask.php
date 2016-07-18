@@ -428,13 +428,17 @@ class LabelingTask
     }
 
     /**
+     * @param Model\Project $project
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function getSumOfTasksByProjects()
+    public function getSumOfTasksByProject(Model\Project $project)
     {
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
+            ->setStartKey([$project->getId()])
+            ->setEndKey([$project->getId(), []])
             ->setGroup(true)
+            ->setGroupLevel(2)
             ->setReduce(true)
             ->execute();
     }

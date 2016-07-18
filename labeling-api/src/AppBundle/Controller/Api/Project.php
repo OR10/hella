@@ -126,11 +126,9 @@ class Project extends Controller\Base
      */
     private function getSumOfTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache();
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-
-        return isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()]) ?
-            array_sum($this->sumOfTasksByProjectsAndStatusCache[$project->getId()]) : 0;
+        return array_sum($this->sumOfTasksByProjectsAndStatusCache[$project->getId()]);
     }
 
     /**
@@ -139,10 +137,9 @@ class Project extends Controller\Base
      */
     private function getSumOfCompletedTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache();
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_LABELED]) ?
-            $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_LABELED] : 0;
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_LABELED];
     }
 
     /**
@@ -151,17 +148,20 @@ class Project extends Controller\Base
      */
     private function getSumOfInProgressTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache();
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_WAITING]) ?
-            $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_WAITING] : 0;
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_WAITING];
     }
 
-    private function loadDataOfTasksByProjectsAndStatusToCache()
+    private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
     {
-        if ($this->sumOfTasksByProjectsAndStatusCache === null) {
-            $this->sumOfTasksByProjectsAndStatusCache = [];
-            foreach ($this->labelingTaskFacade->getSumOfTasksByProjects()->toArray() as $mapping) {
+        if (!isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()])) {
+            $this->sumOfTasksByProjectsAndStatusCache[$project->getId()] = [
+                Model\LabelingTask::STATUS_PREPROCESSING => 0,
+                Model\LabelingTask::STATUS_WAITING => 0,
+                Model\LabelingTask::STATUS_LABELED => 0,
+            ];
+            foreach ($this->labelingTaskFacade->getSumOfTasksByProject($project)->toArray() as $mapping) {
                 $this->sumOfTasksByProjectsAndStatusCache[$mapping['key'][0]][$mapping['key'][1]] = $mapping['value'];
             }
         }
