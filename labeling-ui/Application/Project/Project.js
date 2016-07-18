@@ -1,7 +1,6 @@
 import Module from 'Application/Module';
 import ProjectController from './Controller/ProjectController';
 import ProjectExportController from './Controller/ProjectExportController';
-import ProjectGateway from './Gateways/ProjectGateway';
 import ProjectListDirective from './Directives/ProjectListDirective';
 import ProjectExportListDirective from './Directives/ProjectExportListDirective';
 import projectTemplate from './Views/project.html!';
@@ -59,7 +58,6 @@ class Project extends Module {
 
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Projects', []);
-    this.module.service('projectGateway', ProjectGateway);
     this.registerDirective('projectsList', ProjectListDirective);
     this.registerDirective('projectsExportList', ProjectExportListDirective);
   }
