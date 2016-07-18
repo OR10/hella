@@ -57,52 +57,6 @@ class Project extends Controller\Base
     /**
      * List all labeling tasks
      *
-     * @Rest\Get("/details")
-     *
-     * @param HttpFoundation\Request $request
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function listDetailedAction(HttpFoundation\Request $request)
-    {
-        $offset             = $request->query->get('offset');
-        $limit              = $request->query->get('limit');
-
-        $projects                      = $this->projectFacade->findAll($limit, $offset);
-        $projectTimeMapping            = [];
-        $result                        = array();
-
-        foreach ($this->projectFacade->getTimePerProject() as $mapping) {
-            $projectTimeMapping[$mapping['key']] = $mapping['value'];
-        }
-
-        /** @var Model\Project $project */
-        foreach ($projects->toArray() as $project) {
-            $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
-
-            $result[] = array(
-                'id'                         => $project->getId(),
-                'name'                       => $project->getName(),
-                'status'                     => $project->getStatus(),
-                'taskCount'                  => $this->getSumOfTasksForProject($project),
-                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
-                'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
-                'totalLabelingTimeInSeconds' => $timeInSeconds,
-                'creationTimestamp'          => $project->getCreationDate(),
-            );
-        }
-
-        return View\View::create()->setData(
-            [
-                'totalRows' => $projects->getTotalRows(),
-                'result' => $result,
-            ]
-        );
-    }
-
-    /**
-     * List all labeling tasks
-     *
      * @Rest\Get("")
      *
      * @param HttpFoundation\Request $request
@@ -122,26 +76,34 @@ class Project extends Controller\Base
             null => array() //@TODO remove this later
         );
 
+        foreach ($this->projectFacade->getTimePerProject() as $mapping) {
+            $projectTimeMapping[$mapping['key']] = $mapping['value'];
+        }
+
         foreach ($projects->toArray() as $project) {
+            $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
+
             $result[$project->getStatus()][] = array(
-                'id'   => $project->getId(),
-                'name' => $project->getName(),
-                'creation_timestamp' => $project->getCreationDate(),
-                'status' => $project->getStatus(),
-                'taskCount' => $this->getSumOfTasksForProject($project),
-                'taskFinishedCount' => $this->getSumOfCompletedTasksForProject($project),
+                'id'                         => $project->getId(),
+                'name'                       => $project->getName(),
+                'status'                     => $project->getStatus(),
+                'taskCount'                  => $this->getSumOfTasksForProject($project),
+                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
+                'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
+                'totalLabelingTimeInSeconds' => $timeInSeconds,
+                'creationTimestamp'          => $project->getCreationDate(),
             );
         }
 
         foreach(array_keys($result) as $status) {
             usort($result[$status], function ($a, $b) {
-                if ($a['creation_timestamp'] === null || $b['creation_timestamp'] === null) {
+                if ($a['creationTimestamp'] === null || $b['creationTimestamp'] === null) {
                     return -1;
                 }
-                if ($a['creation_timestamp'] === $b['creation_timestamp']) {
+                if ($a['creationTimestamp'] === $b['creationTimestamp']) {
                     return 0;
                 }
-                return ($a['creation_timestamp'] > $b['creation_timestamp']) ? -1 : 1;
+                return ($a['creationTimestamp'] > $b['creationTimestamp']) ? -1 : 1;
             });
         }
 

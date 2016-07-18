@@ -55,16 +55,3 @@
 + Response 200 (application/json)
     + Attributes
         + message: `Export started`
-
-## Get a detailed project overview [/api/project/details?limit={limit}&offset={offset}]
-
-+ Parameters
-    + limit: `10` (integer, optional) - Limit the result.
-    + offset: `0` (integer, optional) - Set an offset.
-
-### Project Overview [POST]
-
-+ Response 200 (application/json)
-    + Attributes
-        + totalRows: `5` (number) - Total Number of documents in the database
-        + result array(ProjectDetails)
