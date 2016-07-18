@@ -1,4 +1,5 @@
 import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
+import Environment from '../../Common/Support/Environment';
 
 /**
  * Controller for the initial entrypoint route into the application
@@ -92,6 +93,16 @@ class ProjectsController {
         return project;
       });
       this.loadingInProgress = false;
+    }).then(() => {
+      /* *****************************************************************
+       * START: Only executable in e2e tests
+       * *****************************************************************/
+      if (Environment.isTesting) {
+        window.__TEST_READY_PROMISE_RESOLVE();
+      }
+      /* *****************************************************************
+       * END: Only executable in e2e tests
+       * *****************************************************************/
     });
   }
 }
