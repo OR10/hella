@@ -3,7 +3,7 @@ import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import GridObjectTest from '../Support/angular-ui-grid';
 
-fdescribe('Project Board', () => {
+describe('Project Board', () => {
   let assets;
   let sharedMocks;
 
