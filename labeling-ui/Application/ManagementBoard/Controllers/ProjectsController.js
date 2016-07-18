@@ -84,7 +84,7 @@ class ProjectsController {
       this.projects = projects;
 
       this._$scope.projectGridOptions.data = projects.map(project => {
-        project.percentage = Math.round(project.taskFinishedCount / project.taskCount);
+        project.percentage = Math.round((project.taskFinishedCount / project.taskCount) * 100) + '%';
         // delete project.id;
         delete project.taskFinishedCount;
         delete project.taskCount;
