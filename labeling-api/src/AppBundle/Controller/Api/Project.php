@@ -37,7 +37,7 @@ class Project extends Controller\Base
     /**
      * @var array|null
      */
-    private $sumOfTasksByProjectsAndStatusCache = null;
+    private $sumOfTasksByProjectsAndStatusCache = [];
 
     /**
      * @param Facade\Project             $projectFacade
@@ -156,14 +156,7 @@ class Project extends Controller\Base
     private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
     {
         if (!isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()])) {
-            $this->sumOfTasksByProjectsAndStatusCache[$project->getId()] = [
-                Model\LabelingTask::STATUS_PREPROCESSING => 0,
-                Model\LabelingTask::STATUS_WAITING => 0,
-                Model\LabelingTask::STATUS_LABELED => 0,
-            ];
-            foreach ($this->labelingTaskFacade->getSumOfTasksByProject($project)->toArray() as $mapping) {
-                $this->sumOfTasksByProjectsAndStatusCache[$mapping['key'][0]][$mapping['key'][1]] = $mapping['value'];
-            }
+            $this->sumOfTasksByProjectsAndStatusCache = array_merge($this->sumOfTasksByProjectsAndStatusCache, $this->labelingTaskFacade->getSumOfTasksByProject($project));
         }
     }
 

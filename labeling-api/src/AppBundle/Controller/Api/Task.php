@@ -77,11 +77,10 @@ class Task extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function listAction(HttpFoundation\Request $request)
     {
-        $fetchVideos = $request->query->getBoolean('includeVideos', false);
         $offset      = $request->query->has('offset') ? $request->query->getInt('offset') : null;
         $limit       = $request->query->has('limit') ? $request->query->getInt('limit') : null;
         $taskStatus  = $request->query->has('taskStatus') ? $request->query->get('taskStatus') : null;
@@ -95,58 +94,52 @@ class Task extends Controller\Base
             throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
-        $tasks = array();
+        $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByProject($project);
+
+        $tasks = [];
+        $numberOfTotalDocuments = 0;
         switch ($taskStatus) {
             case Model\LabelingTask::STATUS_PREPROCESSING:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_PREPROCESSING, $project, $offset, $limit
-                    );
+                    )->toArray();
+                    $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_PREPROCESSING];
                 }
                 break;
             case Model\LabelingTask::STATUS_WAITING:
                 $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                     Model\LabelingTask::STATUS_WAITING, $project, $offset, $limit
-                );
+                )->toArray();
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_WAITING];
                 break;
             case Model\LabelingTask::STATUS_LABELED:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_LABELED, $project, $offset, $limit
-                    );
+                    )->toArray();
                 }
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_LABELED];
                 break;
-            default:
-                $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_WAITING, $project, $offset, $limit
-                );
-                if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                    $tasks = array_merge($tasks, $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_PREPROCESSING,
-                        $project,
-                        $offset,
-                        $limit
-                    ));
-                    $tasks = array_merge($tasks, $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_LABELED,
-                        $project,
-                        $offset,
-                        $limit
-                    ));
-                }
         }
 
-            usort($tasks, function ($a, $b) {
-                if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
-                    return -1;
-                }
-                if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
-                    return 0;
-                }
-                return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
-            });
+        usort($tasks, function ($a, $b) {
+            if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
+                return -1;
+            }
+            if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
+                return 0;
+            }
+            return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
+        });
 
-        return new View\View(new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade), HttpFoundation\Response::HTTP_ACCEPTED);
+        return new View\View(
+            [
+                'totalRows' => $numberOfTotalDocuments,
+                'result' => new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade)
+            ],
+            HttpFoundation\Response::HTTP_ACCEPTED
+        );
     }
 
     /**
