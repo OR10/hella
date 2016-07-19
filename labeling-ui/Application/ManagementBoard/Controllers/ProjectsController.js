@@ -43,16 +43,26 @@ class ProjectsController {
 
     /**
      * @type {Array}
-     * @private
      */
-    this._projects = [];
+    this.projects = [];
+
+    /**
+     * @type {{pageNumber: number, pageSize: number}}
+     */
+    const paginationOptions = {
+      pageNumber: 1,
+      pageSize: 5,
+    };
 
     /**
      * @type {boolean}
      */
-    this.loadingInProgress = true;
+    this.loadingInProgress = false;
 
-    this._$scope.projectGridOptions = {
+    this.projectGridOptions = {
+      paginationPageSize: 5,
+      paginationPageSizes: [5, 10, 50],
+      useExternalPagination: true,
       enableColumnMenus: false,
       enableSorting: false,
       gridMenuShowHideColumns: false,
@@ -70,21 +80,32 @@ class ProjectsController {
         //   cellTemplate: ActionCellTemplate,
         // },
       ],
-      data: this._projects,
+      onRegisterApi: gridApi => {
+        gridApi.pagination.on.paginationChanged($scope, (newPage, pageSize) => {
+          paginationOptions.pageNumber = newPage;
+          paginationOptions.pageSize = pageSize;
+          this._loadProjects(newPage, pageSize);
+        });
+      },
+      data: this.projects,
     };
 
-    this._loadProjectList();
+    this._loadProjects();
   }
 
   goToProject(id) {
     this._$state.go('labeling.tasks.list', {projectId: id});
   }
 
-  _loadProjectList() {
-    this._projectGateway.getProjects().then(projects => {
-      this.projects = projects;
+  _loadProjects(newPage = 1, pageSize = 5) {
+    this.loadingInProgress = true;
+    const limit = pageSize;
+    const offset = (newPage - 1) * pageSize;
 
-      this._$scope.projectGridOptions.data = projects.map(project => {
+    this._projectGateway.getProjects(limit, offset).then(response => {
+      this.projects = response.result;
+
+      this.projectGridOptions.data = response.result.map(project => {
         project.percentage = Math.round((project.taskFinishedCount / project.taskCount) * 100) + '%';
         // delete project.id;
         delete project.taskFinishedCount;
@@ -92,6 +113,10 @@ class ProjectsController {
         delete project.creation_timestamp;
         return project;
       });
+
+      this.projectGridOptions.data = this.projects;
+      // TODO fix
+      this.projectGridOptions.totalItems = response.totalRows;
       this.loadingInProgress = false;
     }).then(() => {
       /* *****************************************************************
