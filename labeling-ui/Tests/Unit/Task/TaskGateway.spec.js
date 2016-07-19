@@ -66,39 +66,6 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should load a list of tasks with videos', done => {
-    const tasksResponse = {
-      result: {
-        tasks: {
-          preprocessing: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-          waiting: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-          labeled: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-        },
-        videos: {
-          '123': {id: 'blub'},
-        },
-      },
-    };
-
-    $httpBackend.expectGET('/backend/api/task?includeVideos=true').respond(tasksResponse);
-
-    gateway.getTasksAndVideos().then(result => {
-      expect(result).toEqual(tasksResponse.result);
-      done();
-    });
-
-    $httpBackend.flush();
-  });
-
   it('should load a list of tasks with videos for a specific task', done => {
     const tasksResponse = {
       result: {
