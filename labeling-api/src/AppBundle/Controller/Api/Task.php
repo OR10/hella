@@ -134,10 +134,8 @@ class Task extends Controller\Base
         });
 
         return new View\View(
-            [
-                'totalRows' => $numberOfTotalDocuments,
-                'result' => new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade)
-            ],
+            new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade, $numberOfTotalDocuments)
+            ,
             HttpFoundation\Response::HTTP_ACCEPTED
         );
     }

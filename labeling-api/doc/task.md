@@ -14,14 +14,7 @@
 + Response 200 (application/json)
     + Attributes
         + result
-            + tasks
-                + preprocessing (array[Task])
-                + waiting (array[Task])
-                + labeled (array[Task])
-            + videos (array[Video])
-            + users (array)
-                + id: 1
-                + username: 'foobar'
+            + array[Task]
 
 ## Get a specific task [/api/task/{id}]
 

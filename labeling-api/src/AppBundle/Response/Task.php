@@ -10,25 +10,33 @@ class Task
     /**
      * @var Model\LabelingTask[]
      */
-    private $labelingTasks = [];
+    private $result = [];
+
+    /**
+     * @var int
+     */
+    private $totalRows;
 
     /**
      * @param Model\LabelingTask[] $labelingTasks
      * @param Facade\Video         $videoFacade
      * @param Facade\User          $userFacade
      * @param Facade\Project       $projectFacade
+     * @param                      $numberOfTotalDocuments
      */
     public function __construct(
         $labelingTasks,
         Facade\Video $videoFacade,
         Facade\User $userFacade,
-        Facade\Project $projectFacade
+        Facade\Project $projectFacade,
+        $numberOfTotalDocuments
     )
     {
+        $this->totalRows = $numberOfTotalDocuments;
         foreach ($labelingTasks as $labelingTask) {
             $user = $labelingTask->getUserId() === null ? null : $userFacade->getUserById($labelingTask->getUserId());
             $assignedUser = $labelingTask->getAssignedUserId() === null ? null : $userFacade->getUserById($labelingTask->getAssignedUserId());
-            $this->labelingTasks[] = [
+            $this->result[] = [
                 'id' => $labelingTask->getId(),
                 'rev' => $labelingTask->getRev(),
                 'descriptionTitle' => $labelingTask->getDescriptionTitle(),
