@@ -133,6 +133,10 @@ class Project
      */
     public function getDueDate()
     {
-        return $this->dueDate;
+        if ($this->dueDate instanceof \DateTime) {
+            return $this->dueDate->getTimestamp();
+        }
+
+        return null;
     }
 }
