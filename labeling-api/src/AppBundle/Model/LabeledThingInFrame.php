@@ -48,6 +48,12 @@ class LabeledThingInFrame
 
     /**
      * @CouchDB\Field(type="string")
+     * @Serializer\Exclude
+     */
+    private $projectId;
+
+    /**
+     * @CouchDB\Field(type="string")
      */
     private $labeledThingId;
 
@@ -96,6 +102,7 @@ class LabeledThingInFrame
         $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
 
         $this->taskId         = $labeledThing->getTaskId();
+        $this->projectId      = $labeledThing->getProjectId();
         $this->labeledThingId = $labeledThing->getId();
         $this->frameIndex    = (int) $frameIndex;
         $this->classes        = $classes;
@@ -113,6 +120,7 @@ class LabeledThingInFrame
         $reflectionClass      = new \ReflectionClass(self::class);
         $copy                 = $reflectionClass->newInstanceWithoutConstructor();
         $copy->taskId         = $this->taskId;
+        $copy->projectId      = $this->projectId;
         $copy->labeledThingId = $this->labeledThingId;
         $copy->classes        = $this->classes;
         $copy->shapes         = $this->shapes;
