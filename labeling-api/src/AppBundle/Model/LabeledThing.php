@@ -35,6 +35,11 @@ class LabeledThing
     private $taskId;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $projectId;
+
+    /**
      * @CouchDB\Field(type="boolean")
      */
     private $incomplete = true;
@@ -62,6 +67,7 @@ class LabeledThing
     public function __construct(LabelingTask $task, $lineColor = 1)
     {
         $this->taskId     = $task->getId();
+        $this->projectId  = $task->getProjectId();
         $this->frameRange = new FrameIndexRange(
                 min($task->getFrameNumberMapping()),
                 max($task->getFrameNumberMapping())
@@ -187,5 +193,13 @@ class LabeledThing
     public function getLineColor()
     {
         return $this->lineColor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
     }
 }
