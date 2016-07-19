@@ -34,6 +34,11 @@ class Project
     private $creationDate;
 
     /**
+     * @CouchDB\Field(type="datetime")
+     */
+    private $dueDate;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $status = self::STATUS_TODO;
@@ -44,24 +49,27 @@ class Project
      * @param string $name
      *
      * @param null   $creationDate
+     * @param null   $dueDate
      * @return static
      */
-    public static function create($name, $creationDate = null)
+    public static function create($name, $creationDate = null, $dueDate = null)
     {
-        return new static($name, $creationDate);
+        return new static($name, $creationDate, $dueDate);
     }
 
     /**
      * @param string $name
      * @param null   $creationDate
+     * @param null   $dueDate
      */
-    public function __construct($name, $creationDate = null)
+    public function __construct($name, $creationDate = null, $dueDate = null)
     {
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
         }
-        $this->name = (string) $name;
+        $this->name         = (string)$name;
         $this->creationDate = $creationDate;
+        $this->dueDate      = $dueDate;
     }
 
     /**
@@ -118,5 +126,17 @@ class Project
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDueDate()
+    {
+        if ($this->dueDate instanceof \DateTime) {
+            return $this->dueDate->getTimestamp();
+        }
+
+        return null;
     }
 }
