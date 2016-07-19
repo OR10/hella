@@ -163,4 +163,24 @@ class LabeledThingInFrame
         }
         return $result[0];
     }
+
+    /**
+     * @param Model\Project $project
+     * @return int
+     */
+    public function getSumOfLabeledThingInFramesByProject(Model\Project $project)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'sum_by_project')
+            ->setReduce(true)
+            ->setKey($project->getId())
+            ->execute()
+            ->toArray();
+
+        if (isset($query[0]['value'])) {
+            return $query[0]['value'];
+        }
+
+        return 0;
+    }
 }
