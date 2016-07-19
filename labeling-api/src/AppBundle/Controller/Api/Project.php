@@ -92,6 +92,7 @@ class Project extends Controller\Base
                 'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
                 'creationTimestamp'          => $project->getCreationDate(),
+                'dueTimestamp'               => $project->getDueDate(),
             );
         }
 
