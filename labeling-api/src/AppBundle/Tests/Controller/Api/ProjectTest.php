@@ -57,7 +57,9 @@ class ProjectTest extends Tests\WebTestCase
                         'taskFinishedCount' => 0,
                         'taskInProgressCount' => 0,
                         'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
                         'creationTimestamp' => 1468319400,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project 3',
@@ -66,7 +68,9 @@ class ProjectTest extends Tests\WebTestCase
                         'taskFinishedCount' => 0,
                         'taskInProgressCount' => 0,
                         'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
                         'creationTimestamp' => 1468324800,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project 1',
@@ -75,7 +79,9 @@ class ProjectTest extends Tests\WebTestCase
                         'taskFinishedCount' => 0,
                         'taskInProgressCount' => 0,
                         'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
                         'creationTimestamp' => 1468321200,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project 2',
@@ -84,7 +90,9 @@ class ProjectTest extends Tests\WebTestCase
                         'taskFinishedCount' => 0,
                         'taskInProgressCount' => 0,
                         'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
                         'creationTimestamp' => 1468317600,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project done',
@@ -93,7 +101,9 @@ class ProjectTest extends Tests\WebTestCase
                         'taskFinishedCount' => 0,
                         'taskInProgressCount' => 0,
                         'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
                         'creationTimestamp' => 1468323000,
+                        'dueTimestamp' => null,
                     ),
                 )
             )

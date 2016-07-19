@@ -91,6 +91,7 @@ class Project extends Controller\Base
                 'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
                 'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
+                'labeledThingInFramesCount'  => $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project),
                 'creationTimestamp'          => $project->getCreationDate(),
                 'dueTimestamp'               => $project->getDueDate(),
             );
