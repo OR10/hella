@@ -24,11 +24,21 @@ class ProjectGateway {
   /**
    * @returns {Promise<Array<Project>>}
    */
-  getProjects() {
-    const url = this._apiService.getApiUrl('/project');
+  getProjects(limit = null, offset = null) {
+    const params = {};
+
+    if (limit) {
+      params.limit = limit;
+    }
+
+    if (offset) {
+      params.offset = offset;
+    }
+
+    const url = this._apiService.getApiUrl('/project', params);
 
     return this._bufferedHttp.get(url, undefined, 'export')
-      .then(response => response.data.result);
+      .then(response => response.data);
   }
 
   /**

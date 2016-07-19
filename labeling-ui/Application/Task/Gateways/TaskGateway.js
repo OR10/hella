@@ -57,15 +57,11 @@ class TaskGateway {
    *
    * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
    */
-  getTasksAndVideosForProject(projectId, status = null, limit = null, offset = null) {
+  getTasksAndVideosForProject(projectId, status, limit = null, offset = null) {
     const params = {
-      includeVideos: true,
       project: projectId,
+      status,
     };
-
-    if (status) {
-      params.status = status;
-    }
 
     if (limit) {
       params.limit = limit;
