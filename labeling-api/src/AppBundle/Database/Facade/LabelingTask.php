@@ -87,17 +87,22 @@ class LabelingTask
     }
 
     /**
-     * @param Model\Project $project
-     * @param Model\Video $video
+     * @param $projects
      * @return array
      */
-    public function findAllByProjectAndVideo(Model\Project $project, Model\Video $video) {
-        $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'by_project_and_video')
-            ->setKey([$project->getId(), $video->getId()]);
+    public function findAllByProjects($projects)
+    {
+        $projectIds = array_map(function(Model\Project $project) {
+            return $project->getId();
+        }, $projects);
 
-        $result = $query->onlyDocs(true)->execute()->toArray();
-        return array_values($result);
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
+            ->setKeys($projectIds)
+            ->execute()
+            ->toArray();
+
+        return $query;
     }
 
     /**

@@ -80,6 +80,20 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key']] = $mapping['value'];
         }
 
+        $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects->toArray());
+        $numberOfVideos = array();
+        foreach($videosByProjects as $videosByProject) {
+            $projectId = $videosByProject['key'];
+            $videoId = $videosByProject['value'];
+            $numberOfVideos[$projectId][] = $videoId;
+        }
+        $numberOfVideos = array_map(
+            function($videoByProject) {
+                return count(array_unique($videoByProject));
+            },
+            $numberOfVideos
+        );
+
         foreach ($projects->toArray() as $project) {
             $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
@@ -92,6 +106,7 @@ class Project extends Controller\Base
                 'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
                 'totalLabelingTimeInSeconds' => $timeInSeconds,
                 'labeledThingInFramesCount'  => $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project),
+                'videosCount'                => isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0,
                 'creationTimestamp'          => $project->getCreationDate(),
                 'dueTimestamp'               => $project->getDueDate(),
             );
