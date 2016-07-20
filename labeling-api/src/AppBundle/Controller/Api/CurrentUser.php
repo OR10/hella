@@ -135,6 +135,8 @@ class CurrentUser extends Controller\Base
         $createNewProject   = true;
         $acceptProject      = true;
         $reopenProject      = true;
+        $exportProject      = true;
+        $reportProject      = true;
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
@@ -166,6 +168,8 @@ class CurrentUser extends Controller\Base
                         'canCreateNewProject' => $createNewProject,
                         'canAcceptProject' => $acceptProject,
                         'canReopenProject' => $reopenProject,
+                        'canExportProject' => $exportProject,
+                        'canReportProject' => $reportProject,
                     ]
             ]
         );
