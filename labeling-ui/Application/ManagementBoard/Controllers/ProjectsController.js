@@ -1,5 +1,6 @@
 import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
 import ActionCellTemplate from '../Views/Grid/ActionButtonCell.html!';
+import DateCellTemplate from '../Views/Grid/DateCell.html!';
 import Environment from '../../Common/Support/Environment';
 
 /**
@@ -158,11 +159,23 @@ class ProjectsController {
     }
 
     if (project.hasOwnProperty('creationTimestamp')) {
-      defs.push({displayName: 'Start date', field: 'creationTimestamp', width: '*', enableSorting: false});
+      defs.push({
+        displayName: 'Start date',
+        field: 'creationTimestamp',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: DateCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('dueTimestamp')) {
-      defs.push({displayName: 'Due date', field: 'dueTimestamp', width: '*', enableSorting: false});
+      defs.push({
+        displayName: 'Due date',
+        field: 'dueTimestamp',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: DateCellTemplate,
+      });
     }
 
     if (this._showActionColumn()) {
@@ -186,6 +199,8 @@ class ProjectsController {
   _filterData(projects) {
     this.projects = projects.map(project => {
       project.percentage = Math.round((project.taskFinishedCount / project.taskCount) * 100) + '%';
+      project.creationTimestamp = project.creationTimestamp * 1000;
+      project.dueTimestamp = project.dueTimestamp ? project.dueTimestamp * 1000 : '';
       return project;
     });
 
