@@ -22,6 +22,11 @@ class TabViewController {
    */
   registerTab(tab) {
     this.tabs.push(tab);
+
+    // Automatically activate first tab
+    if (this.tabs.length === 1) {
+      tab.activate();
+    }
   }
 
   /**
