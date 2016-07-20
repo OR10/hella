@@ -86,27 +86,19 @@ class TaskListController {
     const limit = pageSize;
     const offset = (newPage - 1) * pageSize;
 
-    this._taskGateway.getTasksAndVideosForProject(this.projectId, this.taskStatus, limit, offset).then(({tasks, videos, users}) => {
-      this.tasks = tasks[this.taskStatus].map(task => {
-        let assignedUser = null;
-        if (task.assignedUser !== null) {
-          assignedUser = users.find(user => {
-            return user.id === task.assignedUser;
-          });
-        }
-
+    this._taskGateway.getTasksForProject(this.projectId, this.taskStatus, limit, offset).then(response => {
+      this.tasks = response.result.map(task => {
         return {
           id: task.id,
           type: task.taskType,
-          title: videos[task.videoId].name,
+          title: task.video.name,
           range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
-          assignee: assignedUser,
+          assignee: task.assignedUser,
         };
       });
       this.gridOptions.data = this.tasks;
-      // TODO fix
-      this.taskCount = this.tasks.length;
-      this.gridOptions.totalItems = 6;
+      this.taskCount = response.totalRows;
+      this.gridOptions.totalItems = response.totalRows;
 
       this.loadingInProgress = false;
     });
