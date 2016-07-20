@@ -18,7 +18,7 @@
                 </h2>
                 <project-list user="vm.user"
                               user-permissions="vm.userPermissions"
-                              projectStatus="todo"></project-list>
+                              project-status="todo"></project-list>
             </tab>
             <tab title="InProgress {{vm.projectInProgressCount !== null ? '(' + vm.projectInProgressCount + ')' : ''}}"
                  destroy-when-inactive="true">
@@ -26,7 +26,7 @@
                     InProgress <span ng-hide='vm.projectInProgressCount == null'>({{vm.projectInProgressCount}})</span>
                 </h2>
                 <project-list user="vm.user" user-permissions="vm.userPermissions"
-                              projectStatus="in_progress"></project-list>
+                              project-status="in_progress"></project-list>
             </tab>
             <tab title="Done {{vm.projectDoneCount !== null ? '(' + vm.projectDoneCount + ')' : ''}}"
                  destroy-when-inactive="true">
@@ -35,7 +35,7 @@
                 </h2>
                 <project-list user="vm.user"
                               user-permissions="vm.userPermissions"
-                              projectStatus="done"></project-list>
+                              project-status="done"></project-list>
             </tab>
         </tab-view>
     </div>
