@@ -8,6 +8,7 @@ class TabDirective {
   constructor() {
     this.scope = {
       title: '@',
+      destroyWhenInactive: '@?',
     };
     this.template = tabTemplate;
     this.controller = TabController;
@@ -21,6 +22,16 @@ class TabDirective {
   }
 
   link($scope, element, attributes, controllers) {
+    // Ensure destroyWhenInactive is properly evaluated
+    attributes.$observe('destroyWhenInactive', () => {
+      if (attributes.destroyWhenInactive === undefined) {
+        $scope.destroyWhenInactive = false;
+      } else {
+        $scope.destroyWhenInactive = $scope.$eval(attributes.destroyWhenInactive);
+      }
+    });
+
+    // Register with TabView
     const [tabController, tabViewController] = controllers;
     tabController._setTabViewController(tabViewController);
   }

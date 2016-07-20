@@ -1,4 +1,6 @@
-<div class="tab-content" ng-class="{'is-active': vm.active}">
+<div ng-if="!vm.destroyWhenInactive || vm.active"
+     class="tab-content"
+     ng-class="{'is-active': vm.active}">
     <ng-transclude></ng-transclude>
 </div>
 
