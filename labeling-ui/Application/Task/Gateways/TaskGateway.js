@@ -40,10 +40,10 @@ class TaskGateway {
    *
    * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
    */
-  getTasksAndVideosForProject(projectId, status, limit = null, offset = null) {
+  getTasksForProject(projectId, status, limit = null, offset = null) {
     const params = {
       project: projectId,
-      status,
+      taskStatus: status,
     };
 
     if (limit) {
@@ -58,11 +58,11 @@ class TaskGateway {
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos || !response.data.result.users) {
+        if (!response.data) {
           throw new Error('Failed loading task list');
         }
 
-        return response.data.result;
+        return response.data;
       });
   }
 
