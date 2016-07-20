@@ -27,11 +27,11 @@ class ProjectGateway {
   getProjects(limit = null, offset = null) {
     const params = {};
 
-    if (limit) {
+    if (limit !== null) {
       params.limit = limit;
     }
 
-    if (offset) {
+    if (offset !== null) {
       params.offset = offset;
     }
 
