@@ -9,7 +9,11 @@ class LabelingTaskStatusRenaming extends AbstractSimpleMigration {
         if (task.type === 'AppBundle.Model.LabelingTask') {
             switch (task.status) {
                 case 'waiting':
-                    task.status = 'todo';
+                    if (task.assignedUser === null) {
+                        task.status = 'todo';
+                    }else{
+                        task.status = 'in_progress';
+                    }
                     break;
                 case 'labeled':
                     task.status = 'done';
