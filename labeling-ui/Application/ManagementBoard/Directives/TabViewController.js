@@ -27,11 +27,11 @@ class TabViewController {
   /**
    * Activate a specifically selected tab
    *
-   * @param {TabController} tab
+   * @param {TabController} tabToActivate
    */
-  activateTab(tab) {
+  activateTab(tabToActivate) {
     this.tabs.forEach(tab => tab.deactivate());
-    tab.activate();
+    tabToActivate.activate();
   }
 }
 
