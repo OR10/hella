@@ -1,5 +1,8 @@
 import Module from 'Application/Module';
 
+import TabViewDirective from './Directives/TabViewDirective';
+import TabDirective from './Directives/TabDirective';
+
 import TitleBarDirective from './Directives/TitleBarDirective';
 
 import ProjectsController from './Controllers/ProjectsController';
@@ -104,6 +107,8 @@ class ManagementBoard extends Module {
     this.module.service('projectGateway', ProjectGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);
+    this.registerDirective('tabView', TabViewDirective);
+    this.registerDirective('tab', TabDirective);
     this.registerDirective('taskList', TaskListDirective);
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
