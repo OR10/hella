@@ -11,6 +11,14 @@
     <div class="grid-block text-center vertical tasks-container">
         <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
         <h1>Choose a Project</h1>
+        <tab-view>
+            <tab title="Foobar"
+                 destroy-when-inactive="true">
         <div id="projectGrid" class="grid-block clickable" ui-grid="vm.projectGridOptions" ui-grid-pagination></div>
+            </tab>
+            <tab title="Baz">
+                <h2>blub</h2>
+            </tab>
+        </tab-view>
     </div>
 </div>
