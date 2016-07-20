@@ -438,8 +438,8 @@ class LabelingTask
 
         $result[$project->getId()] = [
             Model\LabelingTask::STATUS_PREPROCESSING => 0,
-            Model\LabelingTask::STATUS_WAITING => 0,
-            Model\LabelingTask::STATUS_LABELED => 0,
+            Model\LabelingTask::STATUS_TODO => 0,
+            Model\LabelingTask::STATUS_DONE => 0,
         ];
         foreach ($query as $mapping) {
             $result[$mapping['key'][0]][$mapping['key'][1]] = $mapping['value'];

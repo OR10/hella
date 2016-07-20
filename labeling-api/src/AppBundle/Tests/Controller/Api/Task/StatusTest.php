@@ -44,28 +44,28 @@ class StatusTest extends Tests\WebTestCase
 
     public function testMarkWaitingTaskAsLabeled()
     {
-        $this->task->setStatus(Model\LabelingTask::STATUS_WAITING);
-        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_LABELED])
+        $this->task->setStatus(Model\LabelingTask::STATUS_TODO);
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_DONE])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
             ->getResponse();
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_LABELED);
+        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_DONE);
     }
 
     public function testReopenLabeledTask()
     {
-        $this->task->setStatus(Model\LabelingTask::STATUS_LABELED);
-        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_WAITING])
+        $this->task->setStatus(Model\LabelingTask::STATUS_DONE);
+        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_TODO])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
             ->getResponse();
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_WAITING);
+        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_TODO);
         $this->assertTrue($task->isReopen());
     }
 
@@ -87,7 +87,7 @@ class StatusTest extends Tests\WebTestCase
             range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $task->setStatus(Model\LabelingTask::STATUS_TODO);
         $this->task = $this->labelingTaskFacade->save($task);
     }
 }

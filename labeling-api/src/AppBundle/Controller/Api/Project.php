@@ -156,7 +156,7 @@ class Project extends Controller\Base
     {
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_LABELED];
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_DONE];
     }
 
     /**
@@ -167,7 +167,7 @@ class Project extends Controller\Base
     {
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_WAITING];
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_TODO];
     }
 
     private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)

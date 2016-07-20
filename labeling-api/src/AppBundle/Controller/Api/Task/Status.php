@@ -42,7 +42,7 @@ class Status extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{task}/status/labeled")
+     * @Rest\Post("/{task}/status/done")
      * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
@@ -75,14 +75,14 @@ class Status extends Controller\Base
         }
 
 
-        $task->setStatus(Model\LabelingTask::STATUS_LABELED);
+        $task->setStatus(Model\LabelingTask::STATUS_DONE);
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**
-     * @Rest\Post("/{task}/status/waiting")
+     * @Rest\Post("/{task}/status/todo")
      *
      * @param Model\LabelingTask $task
      *
@@ -93,10 +93,10 @@ class Status extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            if ($task->getStatus() === Model\LabelingTask::STATUS_LABELED) {
+            if ($task->getStatus() === Model\LabelingTask::STATUS_DONE) {
                 $task->setReopen(true);
             }
-            $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+            $task->setStatus(Model\LabelingTask::STATUS_TODO);
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);

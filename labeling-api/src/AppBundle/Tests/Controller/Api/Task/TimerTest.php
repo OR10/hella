@@ -163,7 +163,7 @@ class TimerTest extends Tests\WebTestCase
             range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $task->setStatus(Model\LabelingTask::STATUS_TODO);
         $this->task = $this->labelingTaskFacade->save($task);
     }
 }

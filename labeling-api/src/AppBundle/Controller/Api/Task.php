@@ -107,19 +107,19 @@ class Task extends Controller\Base
                     $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_PREPROCESSING];
                 }
                 break;
-            case Model\LabelingTask::STATUS_WAITING:
+            case Model\LabelingTask::STATUS_TODO:
                 $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_WAITING, $project, $offset, $limit
+                    Model\LabelingTask::STATUS_TODO, $project, $offset, $limit
                 )->toArray();
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_WAITING];
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_TODO];
                 break;
-            case Model\LabelingTask::STATUS_LABELED:
+            case Model\LabelingTask::STATUS_DONE:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_LABELED, $project, $offset, $limit
+                        Model\LabelingTask::STATUS_DONE, $project, $offset, $limit
                     )->toArray();
                 }
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_LABELED];
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_DONE];
                 break;
         }
 
