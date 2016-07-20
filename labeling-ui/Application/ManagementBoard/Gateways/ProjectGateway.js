@@ -42,16 +42,6 @@ class ProjectGateway {
   }
 
   /**
-   * @returns {Promise<Array<Project>>}
-   */
-  getDetailedProjects() {
-    const url = this._apiService.getApiUrl('/project/details');
-
-    return this._bufferedHttp.get(url, undefined, 'export')
-      .then(response => response.data.result);
-  }
-
-  /**
    * @returns {Promise<Export>}
    */
   getExports(projectId) {
