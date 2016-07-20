@@ -136,6 +136,21 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($actualProject->getCoordinator(), $this->user->getId());
     }
 
+    public function testSetProjectDone()
+    {
+        $project = Model\Project::create('foobar');
+        $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
+        $this->projectFacade->save($project);
+
+        $this->createRequest('/api/project/%s/done', [$project->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute();
+
+        $actualProject = $this->projectFacade->find($project->getId());
+
+        $this->assertSame($actualProject->getStatus(), Model\Project::STATUS_DONE);
+    }
+
     protected function setUpImplementation()
     {
         /** @var Facade\Project projectFacade */

@@ -79,3 +79,14 @@
 + Response 200 (application/json)
     + Attributes
         + result true
+
+## Set Projects State to done [/api/project/{projectId}/done]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Set State done [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result true
