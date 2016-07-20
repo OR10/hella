@@ -34,11 +34,23 @@ class TabController {
   }
 
   activate() {
+    const oldActive = this.active;
+
     this.active = true;
+
+    if (oldActive === false && this.onActivate !== undefined) {
+      this.onActivate({tab: this});
+    }
   }
 
   deactivate() {
+    const oldActive = this.active;
+
     this.active = false;
+
+    if (oldActive === true && this.onDeactivate !== undefined) {
+      this.onDeactivate({tab: this});
+    }
   }
 }
 

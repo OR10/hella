@@ -9,6 +9,8 @@ class TabDirective {
     this.scope = {
       title: '@',
       destroyWhenInactive: '@?',
+      onActivate: '&?',
+      onDeactivate: '&?',
     };
     this.template = tabTemplate;
     this.controller = TabController;
