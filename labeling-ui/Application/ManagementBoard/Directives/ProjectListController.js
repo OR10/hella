@@ -26,7 +26,7 @@ class ProjectListController {
     this._$state = $state;
 
     /**
-     * @type {ProjectGateway}
+     * @type {ProjectListLazyStoreService}
      * @private
      */
     this._projectListLazyStore = projectListLazyStore;
@@ -80,24 +80,26 @@ class ProjectListController {
     const limit = pageSize;
     const offset = (newPage - 1) * pageSize;
 
-    this._projectListLazyStore.getProjects(this.projectStatus, limit, offset).then(response => {
-      this._buildColumnDefs(response.result[0]);
-      this._filterData(response.result);
+    this._projectListLazyStore.getProjects(this.projectStatus, limit, offset)
+      .then(response => {
+        this._buildColumnDefs(response.result[0]);
+        this._filterData(response.result);
 
-      this.projectGridOptions.data = this.projects;
-      this.projectGridOptions.totalItems = response.totalRows;
-      this.loadingInProgress = false;
-    }).then(() => {
-      /* *****************************************************************
-       * START: Only executable in e2e tests
-       * *****************************************************************/
-      if (Environment.isTesting) {
-        window.__TEST_READY_PROMISE_RESOLVE();
-      }
-      /* *****************************************************************
-       * END: Only executable in e2e tests
-       * *****************************************************************/
-    });
+        this.projectGridOptions.data = this.projects;
+        this.projectGridOptions.totalItems = response.totalRows;
+        this.loadingInProgress = false;
+      })
+      .then(() => {
+        /* *****************************************************************
+         * START: Only executable in e2e tests
+         * *****************************************************************/
+        if (Environment.isTesting) {
+          window.__TEST_READY_PROMISE_RESOLVE();
+        }
+        /* *****************************************************************
+         * END: Only executable in e2e tests
+         * *****************************************************************/
+      });
   }
 
   _buildColumnDefs(project) {
