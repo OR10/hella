@@ -68,3 +68,14 @@
     + Attributes
         + totalRows: `5` (number) - Total Number of documents in the database
         + result array(ProjectDetails)
+
+## Set Projects State to in progress [/api/project/{projectId}/inProgress]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Set State inProgress [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result true
