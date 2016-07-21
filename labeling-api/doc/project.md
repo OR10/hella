@@ -56,3 +56,14 @@
 + Response 200 (application/json)
     + Attributes
         + message: `Export started`
+
+## Get sum of projects by status [/api/projectCount]
+
+### Sum of Projects [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + done: `20` (number) - Number of done jobs
+            + `in_progress`: `30` (number) - Number of in_progress jobs
+            + todo: `40` (number) - Number of todo jobs
