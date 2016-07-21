@@ -1,10 +1,12 @@
 class PaginationControlsController {
   constructor() {
     this._paginationTableController = null;
+    this.currentPage = 1;
   }
 
   jumpToPage(page) {
     this._paginationTableController._triggerPageUpdate(page);
+    this.currentPage = page;
   }
 
   _setPaginationTableController(paginationTableController) {
