@@ -1,3 +1,24 @@
+tab-view {
+  margin: 1em 2em;
+  @include grid-block(
+  $size: expand, // Can be expand, shrink, or a number of columns
+  $orientation: vertical, // Set to vertical for a vertical grid
+  $wrap: false, // Set to true to make columns wrap if they get too wide
+  $align: left, // Can be left, right, center, justify, or spaced
+  $order: 0 // Can be any positive number
+  );
+}
+
+tab {
+  @include grid-block(
+  $size: expand, // Can be expand, shrink, or a number of columns
+  $orientation: vertical, // Set to vertical for a vertical grid
+  $wrap: false, // Set to true to make columns wrap if they get too wide
+  $align: left, // Can be left, right, center, justify, or spaced
+  $order: 0 // Can be any positive number
+  );
+}
+
 .tabs {
   border-bottom: 1px solid $icon-hover;
 
