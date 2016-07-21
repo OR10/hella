@@ -11,27 +11,27 @@
     <div class="grid-block text-center vertical">
         <h1>Choose a Project</h1>
         <tab-view>
-            <tab header="Todo {{vm.projectTodoCount !== null ? '(' + vm.projectTodoCount + ')' : ''}}"
+            <tab header="Todo {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    Todo <span ng-hide='vm.projectTodoCount == null'>({{vm.projectTodoCount}})</span>
+                    Todo <span ng-hide='vm.projectCount == null'>({{vm.projectCount.todo}})</span>
                 </h2>
                 <project-list user="vm.user"
                               user-permissions="vm.userPermissions"
                               project-status="todo"></project-list>
             </tab>
-            <tab header="InProgress {{vm.projectInProgressCount !== null ? '(' + vm.projectInProgressCount + ')' : ''}}"
+            <tab header="InProgress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    InProgress <span ng-hide='vm.projectInProgressCount == null'>({{vm.projectInProgressCount}})</span>
+                    InProgress <span ng-hide='vm.projectCount == null'>({{vm.projectCount.in_progress}})</span>
                 </h2>
                 <project-list user="vm.user" user-permissions="vm.userPermissions"
                               project-status="in_progress"></project-list>
             </tab>
-            <tab header="Done {{vm.projectDoneCount !== null ? '(' + vm.projectDoneCount + ')' : ''}}"
+            <tab header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    Done <span ng-hide='vm.projectDoneCount == null'>({{vm.projectDoneCount}})</span>
+                    Done <span ng-hide='vm.projectCount == null'>({{vm.projectCount.done}})</span>
                 </h2>
                 <project-list user="vm.user"
                               user-permissions="vm.userPermissions"
