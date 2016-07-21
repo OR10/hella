@@ -1,10 +1,8 @@
 <div class="grid-block vertical">
-    <div class="grid-block">
-        <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-        <div id="projectGrid-{{vm.projectStatus}}"
-             class="grid-block clickable"
-             ui-grid="vm.projectGridOptions"
-             ui-grid-pagination>
-        </div>
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <div id="projectGrid-{{vm.projectStatus}}"
+         class="grid-block clickable"
+         ui-grid="vm.projectGridOptions"
+         ui-grid-pagination>
     </div>
 </div>
