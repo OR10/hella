@@ -12,7 +12,7 @@
         <h1>Choose a Project</h1>
         <tab-view>
             <tab title="Todo {{vm.projectTodoCount !== null ? '(' + vm.projectTodoCount + ')' : ''}}"
-                 destroy-when-inactive="true">
+                 create-on-first-view="true">
                 <h2>
                     Todo <span ng-hide='vm.projectTodoCount == null'>({{vm.projectTodoCount}})</span>
                 </h2>
@@ -21,7 +21,7 @@
                               project-status="todo"></project-list>
             </tab>
             <tab title="InProgress {{vm.projectInProgressCount !== null ? '(' + vm.projectInProgressCount + ')' : ''}}"
-                 destroy-when-inactive="true">
+                 create-on-first-view="true">
                 <h2>
                     InProgress <span ng-hide='vm.projectInProgressCount == null'>({{vm.projectInProgressCount}})</span>
                 </h2>
@@ -29,7 +29,7 @@
                               project-status="in_progress"></project-list>
             </tab>
             <tab title="Done {{vm.projectDoneCount !== null ? '(' + vm.projectDoneCount + ')' : ''}}"
-                 destroy-when-inactive="true">
+                 create-on-first-view="true">
                 <h2>
                     Done <span ng-hide='vm.projectDoneCount == null'>({{vm.projectDoneCount}})</span>
                 </h2>
