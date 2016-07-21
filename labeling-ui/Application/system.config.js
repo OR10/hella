@@ -62,6 +62,7 @@ System.config({
     "lodash.clonedeep": "npm:lodash.clonedeep@4.3.2",
     "lodash.debounce": "npm:lodash.debounce@3.1.1",
     "lodash.isequal": "npm:lodash.isequal@4.2.0",
+    "lodash.merge": "npm:lodash.merge@4.4.0",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
@@ -580,6 +581,10 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:lodash._baseclone@4.5.7": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:lodash.clone@4.3.2": {
       "lodash._baseclone": "npm:lodash._baseclone@4.5.6"
     },
@@ -592,6 +597,17 @@ System.config({
     "npm:lodash.isequal@4.2.0": {
       "lodash._root": "npm:lodash._root@3.0.1",
       "lodash.keys": "npm:lodash.keys@4.0.7",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:lodash.merge@4.4.0": {
+      "lodash._baseclone": "npm:lodash._baseclone@4.5.7",
+      "lodash._root": "npm:lodash._root@3.0.1",
+      "lodash.isplainobject": "npm:lodash.isplainobject@4.0.4",
+      "lodash.keysin": "npm:lodash.keysin@4.1.4",
+      "lodash.rest": "npm:lodash.rest@4.0.3",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:lodash.rest@4.0.3": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:lodash@4.3.0": {
