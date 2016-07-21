@@ -1,5 +1,5 @@
-import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
 import TaskActionCellTemplate from '../Views/Grid/TaskActionButtonCell.html!';
+import ClickableCellTemplate from '../Views/Grid/ClickableCell.html!';
 
 /**
  * Controller of the {@link TaskListDirective}
@@ -46,8 +46,9 @@ class TaskListController {
 
     /**
      * @type {{pageNumber: number, pageSize: number}}
+     * @private
      */
-    const paginationOptions = {
+    this._paginationOptions = {
       pageNumber: 1,
       pageSize: 5,
     };
@@ -62,12 +63,35 @@ class TaskListController {
       enableColumnMenus: false,
       enableSorting: false,
       gridMenuShowHideColumns: false,
-      rowTemplate: ClickableRowTemplate,
       columnDefs: [
-        {displayName: 'Type', field: 'type', width: '150', enableSorting: false},
-        {displayName: 'Title', field: 'title', width: '*', enableSorting: false},
-        {displayName: 'Range', field: 'range', width: '100', enableSorting: false},
-        {displayName: 'Assignee', field: 'assignee.username', width: '200', enableSorting: false},
+        {
+          displayName: 'Type',
+          field: 'type',
+          width: '150',
+          enableSorting: false,
+          cellTemplate: ClickableCellTemplate,
+        },
+        {
+          displayName: 'Title',
+          field: 'title',
+          width: '*',
+          enableSorting: false,
+          cellTemplate: ClickableCellTemplate,
+        },
+        {
+          displayName: 'Range',
+          field: 'range',
+          width: '100',
+          enableSorting: false,
+          cellTemplate: ClickableCellTemplate,
+        },
+        {
+          displayName: 'Assignee',
+          field: 'assignee',
+          width: '200',
+          enableSorting: false,
+          cellTemplate: ClickableCellTemplate,
+        },
         {
           name: 'actions',
           width: 200,
@@ -78,9 +102,9 @@ class TaskListController {
       ],
       onRegisterApi: gridApi => {
         gridApi.pagination.on.paginationChanged($scope, (newPage, pageSize) => {
-          paginationOptions.pageNumber = newPage;
-          paginationOptions.pageSize = pageSize;
-          this._loadTasks(newPage, pageSize);
+          this._paginationOptions.pageNumber = newPage;
+          this._paginationOptions.pageSize = pageSize;
+          this._loadTasks();
         });
       },
       data: this.tasks,
@@ -90,13 +114,20 @@ class TaskListController {
   }
 
   rowClick(rowEntity) {
+    //TODO: assign user
     this._$state.go('labeling.tasks.detail', {taskId: rowEntity.id});
   }
 
-  _loadTasks(newPage = 1, pageSize = 5) {
+  unassignTask(rowEntity) {
+    this._taskGateway.dissociateUserFromTask(rowEntity.id, rowEntity.assigneeId).then(() => {
+      this._loadTasks();
+    });
+  }
+
+  _loadTasks() {
     this.loadingInProgress = true;
-    const limit = pageSize;
-    const offset = (newPage - 1) * pageSize;
+    const limit = this._paginationOptions.pageSize;
+    const offset = (this._paginationOptions.pageNumber - 1) * limit;
 
     this._taskGateway.getTasksForProject(this.projectId, this.taskStatus, limit, offset).then(response => {
       this.tasks = response.result.map(task => {
@@ -106,6 +137,7 @@ class TaskListController {
           title: task.video.name,
           range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
           assignee: task.assignedUser,
+          assigneeId: task.assignedUserId,
         };
       });
       this.gridOptions.data = this.tasks;

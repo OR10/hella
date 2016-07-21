@@ -11,9 +11,14 @@ use Symfony\Component\HttpFoundation;
 class ProjectTest extends Tests\WebTestCase
 {
     /**
-     * @varFacade\Project
+     * @var Facade\Project
      */
     private $projectFacade;
+
+    /**
+     * @var Model\User
+     */
+    private $user;
 
     /**
      * @return array
@@ -138,11 +143,45 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($expectedProjects, $data);
     }
 
+    public function testSetProjectInProgress()
+    {
+        $project = Model\Project::create('foobar');
+        $this->projectFacade->save($project);
+
+        $this->assertSame($project->getStatus(), Model\Project::STATUS_TODO);
+        $this->assertSame($project->getCoordinator(), null);
+
+        $this->createRequest('/api/project/%s/inProgress', [$project->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute();
+
+        $actualProject = $this->projectFacade->find($project->getId());
+
+        $this->assertSame($actualProject->getStatus(), Model\Project::STATUS_IN_PROGRESS);
+        $this->assertSame($actualProject->getCoordinator(), $this->user->getId());
+    }
+
+    public function testSetProjectDone()
+    {
+        $project = Model\Project::create('foobar');
+        $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
+        $this->projectFacade->save($project);
+
+        $this->createRequest('/api/project/%s/done', [$project->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute();
+
+        $actualProject = $this->projectFacade->find($project->getId());
+
+        $this->assertSame($actualProject->getStatus(), Model\Project::STATUS_DONE);
+    }
+
     protected function setUpImplementation()
     {
+        /** @var Facade\Project projectFacade */
         $this->projectFacade = $this->getAnnostationService('database.facade.project');
 
-        $this->getService('fos_user.util.user_manipulator')
+        $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
     }
 }

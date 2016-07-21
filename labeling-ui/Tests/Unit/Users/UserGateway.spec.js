@@ -3,8 +3,8 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import UserGateway from 'Application/Users/Gateways/UserGateway';
-import User from 'Application/Users/Models/User';
+import UserGateway from 'Application/ManagementBoard/Gateways/UserGateway';
+import User from 'Application/ManagementBoard/Models/User';
 
 describe('UserGateway', () => {
   let $httpBackend;

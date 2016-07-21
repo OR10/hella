@@ -44,6 +44,11 @@ class Project
     private $status = self::STATUS_TODO;
 
     /**
+     * @var CouchDB\Field(type="string")
+     */
+    private $coordinator = null;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -138,5 +143,21 @@ class Project
         }
 
         return null;
+    }
+
+    /**
+     * @return CouchDB\Field
+     */
+    public function getCoordinator()
+    {
+        return $this->coordinator;
+    }
+
+    /**
+     * @param CouchDB\Field $coordinator
+     */
+    public function setCoordinator($coordinator)
+    {
+        $this->coordinator = $coordinator;
     }
 }

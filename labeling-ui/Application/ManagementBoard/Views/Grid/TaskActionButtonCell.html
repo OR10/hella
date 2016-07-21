@@ -2,9 +2,9 @@
     <div class="ui-grid-cell-contents">
         <div class="grid-action-buttons text-center">
 
-            <!--ng-show="grid.appScope.vm.userPermissions.canViewReopenButton"-->
             <a class="grid-action-button"
-               ng-click="grid.appScope.closeProject(row.entity)"
+               ng-show="grid.appScope.vm.userPermissions.canViewUnassignButton"
+               ng-click="grid.appScope.vm.unassignTask(row.entity)"
             >
                 <i class="fa fa-close"></i>
             </a>
