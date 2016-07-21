@@ -20,7 +20,7 @@ class Project
 
     /**
      * @param $id
-     * @return Model\LabelingTask
+     * @return Model\Project
      */
     public function find($id)
     {

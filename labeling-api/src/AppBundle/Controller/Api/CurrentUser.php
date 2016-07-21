@@ -125,39 +125,52 @@ class CurrentUser extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $statsButton = false;
-        $projectButton = false;
-        $userListButton = false;
-        $videoUploadButton = false;
-        $reopenButton = false;
+        $statsButton        = false;
+        $projectButton      = false;
+        $userListButton     = false;
+        $videoUploadButton  = false;
+        $reopenButton       = false;
         $unassignPermission = false;
+        $deleteProject      = true;
+        $createNewProject   = true;
+        $acceptProject      = true;
+        $reopenProject      = true;
+        $exportProject      = true;
+        $reportProject      = true;
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
-            $statsButton = true;
-            $projectButton = true;
-            $userListButton = true;
-            $videoUploadButton = true;
-            $reopenButton = true;
+            $statsButton        = true;
+            $projectButton      = true;
+            $userListButton     = true;
+            $videoUploadButton  = true;
+            $reopenButton       = true;
             $unassignPermission = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            $statsButton = true;
-            $projectButton = true;
-            $videoUploadButton = true;
-            $reopenButton = true;
+            $statsButton        = true;
+            $projectButton      = true;
+            $videoUploadButton  = true;
+            $reopenButton       = true;
             $unassignPermission = true;
         }
 
         return View\View::create()->setData(
-            ['result' =>
-                [
-                    'canViewStatsButton' => $statsButton,
-                    'canViewUserListButton' => $userListButton,
-                    'canViewVideoUploadButton' => $videoUploadButton,
-                    'canViewReopenButton' => $reopenButton,
-                    'unassignPermission' => $unassignPermission,
-                    'canViewProjectButton' => $projectButton,
-                ]
+            [
+                'result' =>
+                    [
+                        'canViewStatsButton' => $statsButton,
+                        'canViewUserListButton' => $userListButton,
+                        'canViewVideoUploadButton' => $videoUploadButton,
+                        'canViewReopenButton' => $reopenButton,
+                        'unassignPermission' => $unassignPermission,
+                        'canViewProjectButton' => $projectButton,
+                        'canDeleteProject' => $deleteProject,
+                        'canCreateNewProject' => $createNewProject,
+                        'canAcceptProject' => $acceptProject,
+                        'canReopenProject' => $reopenProject,
+                        'canExportProject' => $exportProject,
+                        'canReportProject' => $reportProject,
+                    ]
             ]
         );
     }

@@ -37,6 +37,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="security.token_storage" />
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task.export"
@@ -129,6 +130,9 @@
         </service>
         <service id="annostation.labeling_api.controller.api.task_count" class="AppBundle\Controller\Api\TaskCount">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+        </service>
+        <service id="annostation.labeling_api.controller.api.labeling_group" class="AppBundle\Controller\Api\LabelingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group" />
         </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">

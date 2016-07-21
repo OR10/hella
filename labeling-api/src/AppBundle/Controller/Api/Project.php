@@ -10,6 +10,7 @@ use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -40,18 +41,26 @@ class Project extends Controller\Base
     private $sumOfTasksByProjectsAndStatusCache = [];
 
     /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param Storage\TokenStorage       $tokenStorage
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\LabelingTask $labelingTaskFacade
+        Facade\LabelingTask $labelingTaskFacade,
+        Storage\TokenStorage $tokenStorage
     ) {
         $this->projectFacade             = $projectFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->tokenStorage              = $tokenStorage;
     }
 
     /**
@@ -199,5 +208,42 @@ class Project extends Controller\Base
     public function getTaskAction(Model\Project $project)
     {
         return View\View::create()->setData(['result' => $project]);
+    }
+
+    /**
+     * Set the Project to status inProgress and assign the current user to this project
+     *
+     * @Rest\POST("/{project}/inProgress")
+     *
+     * @param $project
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function setProjectStatusToInProgressAction(Model\Project $project)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
+        $project->setCoordinator($user->getId());
+        $this->projectFacade->save($project);
+
+        return View\View::create()->setData(['result' => true]);
+    }
+
+    /**
+     * Set the Project to status done
+     *
+     * @Rest\POST("/{project}/done")
+     *
+     * @param $project
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function setProjectStatusToDoneAction(Model\Project $project)
+    {
+        $project->setStatus(Model\Project::STATUS_DONE);
+        $this->projectFacade->save($project);
+
+        return View\View::create()->setData(['result' => true]);
     }
 }
