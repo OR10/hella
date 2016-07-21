@@ -22,10 +22,15 @@ class ProjectGateway {
   }
 
   /**
+   * @param {'todo'|'in_progress'|'done'} status
+   * @param {number} limit
+   * @param {number} offset
    * @returns {Promise<Array<Project>>}
    */
-  getProjects(limit = null, offset = null) {
-    const params = {};
+  getProjects(status, limit = null, offset = null) {
+    const params = {
+      projectStatus: status
+    };
 
     if (limit !== null) {
       params.limit = limit;

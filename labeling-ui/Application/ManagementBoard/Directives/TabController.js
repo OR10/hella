@@ -19,6 +19,13 @@ class TabController {
      * @type {boolean}
      */
     this.active = false;
+
+    /**
+     * Flag indicating if the next activation is the first view of the tab
+     *
+     * @type {boolean}
+     */
+    this.firstView = true;
   }
 
   /**
@@ -48,8 +55,13 @@ class TabController {
 
     this.active = false;
 
-    if (oldActive === true && this.onDeactivate !== undefined) {
-      this.onDeactivate({tab: this});
+    if (oldActive === true) {
+      // Deactivate firstView on first deactivation.
+      this.firstView = false;
+
+      if (this.onDeactivate !== undefined) {
+        this.onDeactivate({tab: this});
+      }
     }
   }
 }

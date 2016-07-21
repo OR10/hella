@@ -9,6 +9,7 @@ class TabDirective {
     this.scope = {
       title: '@',
       destroyWhenInactive: '@?',
+      createOnFirstView: '@?',
       onActivate: '&?',
       onDeactivate: '&?',
     };
@@ -24,14 +25,16 @@ class TabDirective {
   }
 
   link($scope, element, attributes, controllers) {
-    // Ensure destroyWhenInactive is properly evaluated
-    attributes.$observe('destroyWhenInactive', () => {
-      if (attributes.destroyWhenInactive === undefined) {
-        $scope.destroyWhenInactive = false;
-      } else {
-        $scope.destroyWhenInactive = $scope.$eval(attributes.destroyWhenInactive);
-      }
-    });
+    // Ensure booleans are properly evaluated
+    ['destroyWhenInactive', 'createOnFirstView'].forEach(
+      attributeName => attributes.$observe(attributeName, () => {
+        if (attributes[attributeName] === undefined) {
+          $scope[attributeName] = false;
+        } else {
+          $scope[attributeName] = $scope.$eval(attributes[attributeName]);
+        }
+      })
+    );
 
     // Register with TabView
     const [tabController, tabViewController] = controllers;

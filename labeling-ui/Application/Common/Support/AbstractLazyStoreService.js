@@ -20,6 +20,7 @@ class AbstractLazyStoreService {
       data,
     });
 
+
     return data;
   }
 
@@ -34,7 +35,8 @@ class AbstractLazyStoreService {
     }
 
     const fetched = this._fetchedData.get(id);
-    if (fetched.lastUpdated + (fetch.maxLifetime * 1000) > Date.now()) {
+
+    if (fetched.lastUpdated + fetched.maxLifetime < Date.now()) {
       return false;
     }
 
