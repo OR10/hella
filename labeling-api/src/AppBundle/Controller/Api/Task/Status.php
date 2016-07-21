@@ -104,4 +104,29 @@ class Status extends Controller\Base
 
         throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
     }
+
+    /**
+     * @Rest\Post("/{task}/status/begin")
+     *
+     * @param Model\LabelingTask $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function beginTaskAction(Model\LabelingTask $task)
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            if ($task->getStatus() === Model\LabelingTask::STATUS_TODO) {
+                $task->setStatus(Model\LabelingTask::STATUS_IN_PROGRESS);
+            }
+            $task->setAssignedUser($user->getId());
+            $this->labelingTaskFacade->save($task);
+
+            return View\View::create()->setData(['result' => ['success' => true]]);
+        }
+
+        throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
+    }
 }

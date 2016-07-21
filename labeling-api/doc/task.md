@@ -267,21 +267,32 @@ Start a new csv export job.
 
 + Response 200 (application/json)
 
-## Set Status to Labeled [/api/task/{taskId}/status/labeled]
+## Set Status to done [/api/task/{taskId}/status/done]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
 
-### Set Status to Labeled [POST]
+### Set Status to done [POST]
 
 + Response 200 (application/json)
 
-## Set Status to waiting [/api/task/{taskId}/status/waiting]
+## Set Status to todo [/api/task/{taskId}/status/todo]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
 
-### Set Status to waiting [POST]
+### Set Status to todo [POST]
+
++ Response 200 (application/json)
+
+## Set Status to begin [/api/task/{taskId}/status/begin]
+
+Set the task status to in_progress and assign the current user to this task
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to begin [POST]
 
 + Response 200 (application/json)
 
