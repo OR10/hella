@@ -3,6 +3,9 @@ import Module from 'Application/Module';
 import TabViewDirective from './Directives/TabViewDirective';
 import TabDirective from './Directives/TabDirective';
 
+import PaginationTableDirective from './Directives/PaginationTableDirective';
+import PaginationControlsDirective from './Directives/PaginationControlsDirective';
+
 import TitleBarDirective from './Directives/TitleBarDirective';
 
 import ProjectsController from './Controllers/ProjectsController';
@@ -112,6 +115,8 @@ class ManagementBoard extends Module {
     this.registerDirective('titleBar', TitleBarDirective);
     this.registerDirective('tabView', TabViewDirective);
     this.registerDirective('tab', TabDirective);
+    this.registerDirective('paginationTable', PaginationTableDirective);
+    this.registerDirective('paginationControls', PaginationControlsDirective);
     this.registerDirective('projectList', ProjectListDirective);
     this.registerDirective('taskList', TaskListDirective);
     this.registerDirective('usersList', UsersListDirective);
@@ -119,7 +124,6 @@ class ManagementBoard extends Module {
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
-
   }
 }
 
