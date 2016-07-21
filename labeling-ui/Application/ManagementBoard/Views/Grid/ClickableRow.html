@@ -3,7 +3,7 @@
      class="ui-grid-cell"
      ng-class="{ 'ui-grid-row-header-cell': col.isRowHeader }"
      role="{{col.isRowHeader ? 'rowheader' : 'gridcell'}}"
-     ng-click="grid.appScope.vm.goToProject(row.entity.id)"
+     ng-click="grid.appScope.vm.rowClick(row.entity)"
      ui-grid-cell>
 
 </div>"

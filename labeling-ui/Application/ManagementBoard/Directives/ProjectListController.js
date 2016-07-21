@@ -71,8 +71,8 @@ class ProjectListController {
     this._loadProjects();
   }
 
-  goToProject(id) {
-    this._$state.go('labeling.tasks.list', {projectId: id});
+  rowClick(rowEntity) {
+    this._$state.go('labeling.tasks.list', {projectId: rowEntity.id});
   }
 
   _loadProjects(newPage = 1, pageSize = 5) {
