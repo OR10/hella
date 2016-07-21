@@ -131,4 +131,18 @@ class Project
 
         return $query->execute();
     }
+
+    /**
+     * @return View\Result
+     */
+    public function getSumOfProjectsByStatus()
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_project', 'sum_by_status_and_projectId')
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->onlyDocs(false);
+
+        return $query->execute();
+    }
 }
