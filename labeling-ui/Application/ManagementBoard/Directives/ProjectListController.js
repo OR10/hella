@@ -1,5 +1,5 @@
 import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
-import ActionCellTemplate from '../Views/Grid/ActionButtonCell.html!';
+import ProjectActionCellTemplate from '../Views/Grid/ProjectActionButtonCell.html!';
 import DateCellTemplate from '../Views/Grid/DateCell.html!';
 import Environment from '../../Common/Support/Environment';
 
@@ -178,7 +178,7 @@ class ProjectListController {
         width: 200,
         enablePinning: true,
         pinnedRight: true,
-        cellTemplate: ActionCellTemplate,
+        cellTemplate: ProjectActionCellTemplate,
       });
     }
 

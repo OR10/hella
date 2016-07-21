@@ -1,5 +1,5 @@
 import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
-import ActionCellTemplate from '../Views/Grid/ActionButtonCell.html!';
+import TaskActionCellTemplate from '../Views/Grid/TaskActionButtonCell.html!';
 
 /**
  * Controller of the {@link TaskListDirective}
@@ -73,7 +73,7 @@ class TaskListController {
           width: 200,
           enablePinning: true,
           pinnedRight: true,
-          cellTemplate: ActionCellTemplate,
+          cellTemplate: TaskActionCellTemplate,
         },
       ],
       onRegisterApi: gridApi => {
