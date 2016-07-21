@@ -17,7 +17,7 @@ class ProjectGateway {
   getProject(projectId) {
     const url = this._apiService.getApiUrl(`/project/${projectId}`);
 
-    return this._bufferedHttp.get(url, undefined, 'export')
+    return this._bufferedHttp.get(url, undefined, 'project')
       .then(response => response.data.result);
   }
 
@@ -42,8 +42,17 @@ class ProjectGateway {
 
     const url = this._apiService.getApiUrl('/project', params);
 
-    return this._bufferedHttp.get(url, undefined, 'export')
+    return this._bufferedHttp.get(url, undefined, 'project')
       .then(response => response.data);
+  }
+
+  /**
+   * @returns {Promise<Object>}
+   */
+  getProjectCount() {
+    const url = this._apiService.getApiUrl('/projectCount');
+    return this._bufferedHttp.get(url, undefined, 'projectcount')
+      .then(response => response.data.result);
   }
 
   /**
