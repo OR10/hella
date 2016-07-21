@@ -107,6 +107,10 @@ class ProjectListController {
       {field: 'id', visible: false},
     ];
 
+    if (!project) {
+      return;
+    }
+
     if (project.hasOwnProperty('status')) {
       defs.push({displayName: 'Status', field: 'status', width: '*', enableSorting: false});
     }
