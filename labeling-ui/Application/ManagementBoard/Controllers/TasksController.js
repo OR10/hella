@@ -1,3 +1,5 @@
+import merge from 'lodash.merge';
+
 /**
  * Controller for the initial entrypoint route into the application
  */
@@ -43,7 +45,35 @@ class TasksController {
    * @private
    */
   _loadTaskCount(projectId) {
-    // @TODO: load task count here!
+    this._taskGateway.getTaskCount(projectId).then(taskCount => {
+      const defaultedTaskCount = merge({}, {
+        labeling: {
+          todo: 0,
+          in_progress: 0,
+          done: 0,
+          processing: 0,
+        },
+        review: {
+          todo: 0,
+          in_progress: 0,
+          done: 0,
+        },
+        revision: {
+          todo: 0,
+          in_progress: 0,
+          done: 0,
+        },
+      }, taskCount);
+
+      Object.keys(defaultedTaskCount).forEach(
+        type => defaultedTaskCount[type].overall = Object.keys(defaultedTaskCount[type]).reduce(
+          (sum, status) => sum + defaultedTaskCount[type][status],
+          0
+        )
+      );
+
+      this.taskCount = defaultedTaskCount;
+    });
   }
 }
 

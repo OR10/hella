@@ -86,6 +86,35 @@ class TaskGateway {
   }
 
   /**
+   * Retrieves the number of tasks of a project for each category
+   *
+   * - labeling
+   *   - todo
+   *   - in_progress
+   *   - done
+   *   - ...
+   * - review
+   *   - ...
+   * - revision
+   *   - ...
+   *
+   * @param {string} projectId
+   *
+   * @return {AbortablePromise.<Object|Error>}
+   */
+  getTaskCount(projectId) {
+    const url = this._apiService.getApiUrl(`/taskCount/${projectId}`);
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed loading taskCount for project ${projectId}`);
+      });
+  }
+
+  /**
    * @param {Task} task
    * @returns {AbortablePromise}
    */
