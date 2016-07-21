@@ -46,8 +46,9 @@ class TaskListController {
 
     /**
      * @type {{pageNumber: number, pageSize: number}}
+     * @private
      */
-    const paginationOptions = {
+    this._paginationOptions = {
       pageNumber: 1,
       pageSize: 5,
     };
@@ -101,9 +102,9 @@ class TaskListController {
       ],
       onRegisterApi: gridApi => {
         gridApi.pagination.on.paginationChanged($scope, (newPage, pageSize) => {
-          paginationOptions.pageNumber = newPage;
-          paginationOptions.pageSize = pageSize;
-          this._loadTasks(newPage, pageSize);
+          this._paginationOptions.pageNumber = newPage;
+          this._paginationOptions.pageSize = pageSize;
+          this._loadTasks();
         });
       },
       data: this.tasks,
@@ -116,10 +117,10 @@ class TaskListController {
     this._$state.go('labeling.tasks.detail', {taskId: rowEntity.id});
   }
 
-  _loadTasks(newPage = 1, pageSize = 5) {
+  _loadTasks() {
     this.loadingInProgress = true;
-    const limit = pageSize;
-    const offset = (newPage - 1) * pageSize;
+    const limit = this._paginationOptions.pageSize;
+    const offset = (this._paginationOptions.pageNumber - 1) * limit;
 
     this._taskGateway.getTasksForProject(this.projectId, this.taskStatus, limit, offset).then(response => {
       this.tasks = response.result.map(task => {

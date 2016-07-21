@@ -39,7 +39,7 @@ class ProjectListController {
     /**
      * @type {{pageNumber: number, pageSize: number}}
      */
-    const paginationOptions = {
+    this._paginationOptions = {
       pageNumber: 1,
       pageSize: 5,
     };
@@ -59,9 +59,9 @@ class ProjectListController {
       columnDefs: [],
       onRegisterApi: gridApi => {
         gridApi.pagination.on.paginationChanged($scope, (newPage, pageSize) => {
-          paginationOptions.pageNumber = newPage;
-          paginationOptions.pageSize = pageSize;
-          this._loadProjects(newPage, pageSize);
+          this._paginationOptions.pageNumber = newPage;
+          this._paginationOptions.pageSize = pageSize;
+          this._loadProjects();
         });
       },
       data: this.projects,
@@ -74,10 +74,10 @@ class ProjectListController {
     this._$state.go('labeling.tasks.list', {projectId: rowEntity.id});
   }
 
-  _loadProjects(newPage = 1, pageSize = 5) {
+  _loadProjects() {
     this.loadingInProgress = true;
-    const limit = pageSize;
-    const offset = (newPage - 1) * pageSize;
+    const limit = this._paginationOptions.pageSize;
+    const offset = (this._paginationOptions.pageNumber - 1) * limit;
 
     this._projectGateway.getProjects(this.projectStatus, limit, offset)
       .then(response => {
