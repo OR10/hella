@@ -97,6 +97,11 @@ api_project_count:
     type: rest
     name_prefix: app_api_project_count_
 
+api_task_count:
+    resource: "annostation.labeling_api.controller.api.task_count"
+    type: rest
+    name_prefix: app_api_task_count_
+
 dimension_prediction:
     resource: "annostation.labeling_api.controller.dimension_prediction"
     type: rest

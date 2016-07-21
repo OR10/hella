@@ -127,6 +127,9 @@
         <service id="annostation.labeling_api.controller.api.project_count" class="AppBundle\Controller\Api\ProjectCount">
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
         </service>
+        <service id="annostation.labeling_api.controller.api.task_count" class="AppBundle\Controller\Api\TaskCount">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+        </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">
             <argument type="service" id="twig"/>

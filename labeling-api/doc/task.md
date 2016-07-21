@@ -284,3 +284,14 @@ Start a new csv export job.
 ### Set Status to waiting [POST]
 
 + Response 200 (application/json)
+
+## Get sum of Tasks by status [/api/projectCount]
+
+### Sum of Tasks [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + done: `20` (number) - Number of done jobs
+            + preprocessing: `30` (number) - Number of preprocessing jobs
+            + todo: `40` (number) - Number of todo jobs
