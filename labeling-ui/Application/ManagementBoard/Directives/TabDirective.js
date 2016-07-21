@@ -7,7 +7,7 @@ import TabController from './TabController';
 class TabDirective {
   constructor() {
     this.scope = {
-      title: '@',
+      header: '@',
       destroyWhenInactive: '@?',
       createOnFirstView: '@?',
       onActivate: '&?',

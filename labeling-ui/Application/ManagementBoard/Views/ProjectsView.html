@@ -11,7 +11,7 @@
     <div class="grid-block text-center vertical tasks-container">
         <h1>Choose a Project</h1>
         <tab-view>
-            <tab title="Todo {{vm.projectTodoCount !== null ? '(' + vm.projectTodoCount + ')' : ''}}"
+            <tab header="Todo {{vm.projectTodoCount !== null ? '(' + vm.projectTodoCount + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     Todo <span ng-hide='vm.projectTodoCount == null'>({{vm.projectTodoCount}})</span>
@@ -20,7 +20,7 @@
                               user-permissions="vm.userPermissions"
                               project-status="todo"></project-list>
             </tab>
-            <tab title="InProgress {{vm.projectInProgressCount !== null ? '(' + vm.projectInProgressCount + ')' : ''}}"
+            <tab header="InProgress {{vm.projectInProgressCount !== null ? '(' + vm.projectInProgressCount + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     InProgress <span ng-hide='vm.projectInProgressCount == null'>({{vm.projectInProgressCount}})</span>
@@ -28,7 +28,7 @@
                 <project-list user="vm.user" user-permissions="vm.userPermissions"
                               project-status="in_progress"></project-list>
             </tab>
-            <tab title="Done {{vm.projectDoneCount !== null ? '(' + vm.projectDoneCount + ')' : ''}}"
+            <tab header="Done {{vm.projectDoneCount !== null ? '(' + vm.projectDoneCount + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     Done <span ng-hide='vm.projectDoneCount == null'>({{vm.projectDoneCount}})</span>
