@@ -5,9 +5,9 @@ class ProjectsController {
   /**
    * @param {User} user
    * @param {Object} userPermissions
-   * @param {ProjectListLazyStoreService} projectListLazyStore
+   * @param {ProjectGateway} projectGateway
    */
-  constructor(user, userPermissions, projectListLazyStore) {
+  constructor(user, userPermissions, projectGateway) {
     /**
      * @type {User}
      */
@@ -20,37 +20,26 @@ class ProjectsController {
 
     /**
      *
-     * @type {ProjectListLazyStoreService}
+     * @type {ProjectGateway}
      * @private
      */
-    this._projectStoreLazyStore = projectListLazyStore;
+    this._projectGateway = projectGateway;
 
     /**
-     * @type {number|null}
+     * @type {Object|null}
      */
-    this.projectTodoCount = null;
-
-    /**
-     * @type {number|null}
-     */
-    this.projectInProgressCount = null;
-
-    /**
-     * @type {number|null}
-     */
-    this.projectDoneCount = null;
+    this.projectCount = null;
 
     // Load count of projects in different states to display
-    this._projectStoreLazyStore.getProjectCount('todo').then(count => this.projectTodoCount = count);
-    this._projectStoreLazyStore.getProjectCount('in_progress').then(count => this.projectInProgressCount = count);
-    this._projectStoreLazyStore.getProjectCount('done').then(count => this.projectDoneCount = count);
+    this._projectGateway.getProjectCount()
+      .then(projectCount => this.projectCount = projectCount);
   }
 }
 
 ProjectsController.$inject = [
   'user',
   'userPermissions',
-  'projectListLazyStoreService',
+  'projectGateway',
 ];
 
 export default ProjectsController;

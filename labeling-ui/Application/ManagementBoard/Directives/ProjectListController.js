@@ -10,9 +10,9 @@ class ProjectListController {
   /**
    * @param {$scope} $scope
    * @param {$state} $state
-   * @param {ProjectListLazyStoreService} projectListLazyStore
+   * @param {ProjectGateway} projectGateway
    */
-  constructor($scope, $state, projectListLazyStore) {
+  constructor($scope, $state, projectGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -26,10 +26,10 @@ class ProjectListController {
     this._$state = $state;
 
     /**
-     * @type {ProjectListLazyStoreService}
+     * @type {ProjectGateway}
      * @private
      */
-    this._projectListLazyStore = projectListLazyStore;
+    this._projectGateway = projectGateway;
 
     /**
      * @type {Array}
@@ -80,7 +80,7 @@ class ProjectListController {
     const limit = pageSize;
     const offset = (newPage - 1) * pageSize;
 
-    this._projectListLazyStore.getProjects(this.projectStatus, limit, offset)
+    this._projectGateway.getProjects(this.projectStatus, limit, offset)
       .then(response => {
         this._buildColumnDefs(response.result[0]);
         this._filterData(response.result);
@@ -88,17 +88,6 @@ class ProjectListController {
         this.projectGridOptions.data = this.projects;
         this.projectGridOptions.totalItems = response.totalRows;
         this.loadingInProgress = false;
-      })
-      .then(() => {
-        /* *****************************************************************
-         * START: Only executable in e2e tests
-         * *****************************************************************/
-        if (Environment.isTesting) {
-          window.__TEST_READY_PROMISE_RESOLVE();
-        }
-        /* *****************************************************************
-         * END: Only executable in e2e tests
-         * *****************************************************************/
       });
   }
 
@@ -205,7 +194,7 @@ class ProjectListController {
 ProjectListController.$inject = [
   '$scope',
   '$state',
-  'projectListLazyStoreService',
+  'projectGateway',
 ];
 
 export default ProjectListController;
