@@ -137,6 +137,7 @@ class CurrentUser extends Controller\Base
         $reopenProject      = true;
         $exportProject      = true;
         $reportProject      = true;
+        $moveProjectToDone  = true;
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
@@ -170,6 +171,7 @@ class CurrentUser extends Controller\Base
                         'canReopenProject' => $reopenProject,
                         'canExportProject' => $exportProject,
                         'canReportProject' => $reportProject,
+                        'canMoveProjectToDone' => $moveProjectToDone,
                     ]
             ]
         );
