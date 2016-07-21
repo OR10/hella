@@ -1,8 +1,64 @@
 <div class="grid-block vertical">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <div id="projectGrid-{{vm.projectStatus}}"
-         class="grid-block clickable"
-         ui-grid="vm.projectGridOptions"
-         ui-grid-pagination>
-    </div>
+    <table class="table hover"
+           pagination-table
+           total-rows="vm.totalRows"
+           items-per-page="5"
+           on-page-update="vm.updatePage(page, itemsPerPage)">
+        <thead>
+        <tr>
+            <th ng-repeat="column in vm.columns track by $index">{{column.name}}</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="project in vm.projects track by project.id" ng-click="vm.openProject(project.id)">
+            <td ng-repeat="column in vm.columns track by $index">{{project[column.property]}}</td>
+            <td class="action-cell" ng-click="$event.stopPropagation()">
+                <button tooltip="Export Project"
+                        ng-if="vm.userPermissions.canViewExportButton"
+                        ng-click="vm.exportProject(project.id)"
+                >
+                    <i class="fa fa-external-link"></i>
+                </button>
+
+                <button tooltip="Delete Project: {{project.name}}"
+                        ng-if="vm.userPermissions.canCloseDeleteButton"
+                        ng-click="vm.deleteProject(project.id)"
+                >
+                    <i class="fa fa-close"></i>
+                </button>
+
+                <button tooltip="Close Project"
+                        ng-if="vm.userPermissions.canViewMoveToDoneButton"
+                        ng-click="vm.closeProject(project.id)"
+                >
+                    <i class="fa fa-check-square"></i>
+                </button>
+
+                <button tooltip="Reopen Project"
+                        ng-if="vm.userPermissions.canViewReopenButton"
+                        ng-click="vm.reopenProject(project.id)"
+                >
+                    <i class="fa fa-refresh"></i>
+                </button>
+
+                <button tooltip="View Report of Project"
+                        ng-if="vm.userPermissions.canViewReportButton"
+                        ng-click="vm.openReport(project.id)"
+                >
+                    <i class="fa fa-file-o"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="{{vm.columns.length + 1}}">
+                <pagination-controls></pagination-controls>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 </div>
+
