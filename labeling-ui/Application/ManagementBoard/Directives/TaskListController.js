@@ -1,22 +1,12 @@
-import TaskActionCellTemplate from '../Views/Grid/TaskActionButtonCell.html!';
-import ClickableCellTemplate from '../Views/Grid/ClickableCell.html!';
-
 /**
  * Controller of the {@link TaskListDirective}
  */
 class TaskListController {
   /**
-   * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {TaskGateway} taskGateway injected
    */
-  constructor($scope, $state, taskGateway) {
-    /**
-     * @type {$rootScope.$scope}
-     * @private
-     */
-    this._$scope = $scope;
-
+  constructor($state, taskGateway) {
     /**
      * @type {$state}
      * @private
@@ -37,7 +27,7 @@ class TaskListController {
     /**
      * @type {number}
      */
-    this.taskCount = 0;
+    this.totalRows = 0;
 
     /**
      * @type {Array}
@@ -45,91 +35,39 @@ class TaskListController {
     this.tasks = [];
 
     /**
-     * @type {{pageNumber: number, pageSize: number}}
+     * @type {number}
      * @private
      */
-    this._paginationOptions = {
-      pageNumber: 1,
-      pageSize: 5,
-    };
+    this._currentPage = 1;
 
     /**
-     * @type {Object}
+     * @type {number}
+     * @private
      */
-    this.gridOptions = {
-      paginationPageSize: 5,
-      paginationPageSizes: [5, 10, 50],
-      useExternalPagination: true,
-      enableColumnMenus: false,
-      enableSorting: false,
-      gridMenuShowHideColumns: false,
-      columnDefs: [
-        {
-          displayName: 'Type',
-          field: 'type',
-          width: '150',
-          enableSorting: false,
-          cellTemplate: ClickableCellTemplate,
-        },
-        {
-          displayName: 'Title',
-          field: 'title',
-          width: '*',
-          enableSorting: false,
-          cellTemplate: ClickableCellTemplate,
-        },
-        {
-          displayName: 'Range',
-          field: 'range',
-          width: '100',
-          enableSorting: false,
-          cellTemplate: ClickableCellTemplate,
-        },
-        {
-          displayName: 'Assignee',
-          field: 'assignee',
-          width: '200',
-          enableSorting: false,
-          cellTemplate: ClickableCellTemplate,
-        },
-        {
-          name: 'actions',
-          width: 200,
-          enablePinning: true,
-          pinnedRight: true,
-          cellTemplate: TaskActionCellTemplate,
-        },
-      ],
-      onRegisterApi: gridApi => {
-        gridApi.pagination.on.paginationChanged($scope, (newPage, pageSize) => {
-          this._paginationOptions.pageNumber = newPage;
-          this._paginationOptions.pageSize = pageSize;
-          this._loadTasks();
-        });
-      },
-      data: this.tasks,
-    };
-
-    this._loadTasks();
+    this._currentItemsPerPage = 0;
   }
 
-  rowClick(rowEntity) {
-    //TODO: assign user
-    this._$state.go('labeling.tasks.detail', {taskId: rowEntity.id});
+  openTask(taskId) {
+    this._$state.go('labeling.tasks.detail', {taskId});
   }
 
-  unassignTask(rowEntity) {
-    this._taskGateway.dissociateUserFromTask(rowEntity.id, rowEntity.assigneeId).then(() => {
-      this._loadTasks();
-    });
+  unassignTask(taskId, assigneeId) {
+    this._taskGateway.dissociateUserFromTask(taskId, assigneeId)
+      .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
   }
 
-  _loadTasks() {
+  updatePage(page, itemsPerPage) {
     this.loadingInProgress = true;
-    const limit = this._paginationOptions.pageSize;
-    const offset = (this._paginationOptions.pageNumber - 1) * limit;
+
+    this._currentPage = page;
+    this._currentItemsPerPage = itemsPerPage;
+
+    const limit = itemsPerPage;
+    const offset = (page - 1) * itemsPerPage;
 
     this._taskGateway.getTasksForProject(this.projectId, this.taskStatus, limit, offset).then(response => {
+      this.totalRows = response.totalRows;
+
       this.tasks = response.result.map(task => {
         return {
           id: task.id,
@@ -140,9 +78,6 @@ class TaskListController {
           assigneeId: task.assignedUserId,
         };
       });
-      this.gridOptions.data = this.tasks;
-      this.taskCount = response.totalRows;
-      this.gridOptions.totalItems = response.totalRows;
 
       this.loadingInProgress = false;
     });
@@ -150,7 +85,6 @@ class TaskListController {
 }
 
 TaskListController.$inject = [
-  '$scope',
   '$state',
   'taskGateway',
 ];

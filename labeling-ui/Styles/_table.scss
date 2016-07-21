@@ -87,6 +87,14 @@ table.table {
     th, td {
       padding: 0.6rem 0.725rem 0.725rem;
     }
+
+    td.action-cell {
+      padding: 0;
+
+      button {
+        padding: 0 !important;
+      }
+    }
   }
 
   thead {
