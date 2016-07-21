@@ -1,3 +1,4 @@
+import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
 import ActionCellTemplate from '../Views/Grid/ActionButtonCell.html!';
 
 /**
@@ -6,14 +7,21 @@ import ActionCellTemplate from '../Views/Grid/ActionButtonCell.html!';
 class TaskListController {
   /**
    * @param {$rootScope.$scope} $scope
+   * @param {$state} $state
    * @param {TaskGateway} taskGateway injected
    */
-  constructor($scope, taskGateway) {
+  constructor($scope, $state, taskGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {$state}
+     * @private
+     */
+    this._$state = $state;
 
     /**
      * @type {TaskGateway}
@@ -54,7 +62,7 @@ class TaskListController {
       enableColumnMenus: false,
       enableSorting: false,
       gridMenuShowHideColumns: false,
-      // rowTemplate: ClickableRowTemplate,
+      rowTemplate: ClickableRowTemplate,
       columnDefs: [
         {displayName: 'Type', field: 'type', width: '150', enableSorting: false},
         {displayName: 'Title', field: 'title', width: '*', enableSorting: false},
@@ -79,6 +87,10 @@ class TaskListController {
     };
 
     this._loadTasks();
+  }
+
+  rowClick(rowEntity) {
+    this._$state.go('labeling.tasks.detail', {taskId: rowEntity.id});
   }
 
   _loadTasks(newPage = 1, pageSize = 5) {
@@ -107,6 +119,7 @@ class TaskListController {
 
 TaskListController.$inject = [
   '$scope',
+  '$state',
   'taskGateway',
 ];
 
