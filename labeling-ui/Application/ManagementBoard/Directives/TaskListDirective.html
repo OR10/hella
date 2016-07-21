@@ -24,7 +24,7 @@
                 <button tooltip="Unassign user: {{task.assignee}}"
                         ng-if="vm.userPermissions.canViewUnassignButton && task.assignee != undefined"
                         ng-click="vm.unassignTask(task.id, task.assigneeId)">
-                    <i class="icon icon-selection-delete"></i>
+                    <i class="fa fa-close"></i>
                 </button>
             </td>
         </tr>
