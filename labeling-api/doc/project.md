@@ -16,6 +16,7 @@
 + Parameters
     + limit: `10` (integer, optional) - Limit the result.
     + offset: `0` (integer, optional) - Set an offset.
+    + projectStatus: `done` (string, optional) - Filter list by status.
 
 ### Get all projects [GET]
 

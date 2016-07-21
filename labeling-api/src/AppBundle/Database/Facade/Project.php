@@ -111,4 +111,24 @@ class Project
             ->execute()
             ->toArray();
     }
+
+    /**
+     * @param          $status
+     * @param null     $limit
+     * @param int|null $offset
+     * @return View\Result
+     */
+    public function findAllByStatus($status, $limit = null, $offset = 0)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_project', 'by_status_' . $status)
+            ->onlyDocs(true);
+
+        if ($limit !== null) {
+            $query->setLimit((int) $limit)
+                ->setSkip((int) $offset);
+        }
+
+        return $query->execute();
+    }
 }

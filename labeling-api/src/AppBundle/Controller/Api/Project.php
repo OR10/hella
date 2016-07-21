@@ -67,8 +67,18 @@ class Project extends Controller\Base
     {
         $limit  = $request->query->get('limit', null);
         $offset = $request->query->get('offset', null);
+        $status = $request->query->get('projectStatus', null);
 
-        $projects = $this->projectFacade->findAll($limit, $offset);
+        switch ($status) {
+            case Model\Project::STATUS_TODO:
+            case Model\Project::STATUS_IN_PROGRESS:
+            case Model\Project::STATUS_DONE:
+                $projects = $this->projectFacade->findAllByStatus($status, $limit, $offset);
+                break;
+            default:
+                $projects = $this->projectFacade->findAll($limit, $offset);
+        }
+
         $result   = array(
             Model\Project::STATUS_IN_PROGRESS => array(),
             Model\Project::STATUS_TODO => array(),
