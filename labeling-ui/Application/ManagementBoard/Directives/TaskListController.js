@@ -114,7 +114,14 @@ class TaskListController {
   }
 
   rowClick(rowEntity) {
+    //TODO: assign user
     this._$state.go('labeling.tasks.detail', {taskId: rowEntity.id});
+  }
+
+  unassignTask(rowEntity) {
+    this._taskGateway.dissociateUserFromTask(rowEntity.id, rowEntity.assigneeId).then(() => {
+      this._loadTasks();
+    });
   }
 
   _loadTasks() {
@@ -130,6 +137,7 @@ class TaskListController {
           title: task.video.name,
           range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
           assignee: task.assignedUser,
+          assigneeId: task.assignedUserId,
         };
       });
       this.gridOptions.data = this.tasks;
