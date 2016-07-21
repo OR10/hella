@@ -1,6 +1,6 @@
-import ClickableRowTemplate from '../Views/Grid/ClickableRow.html!';
 import ProjectActionCellTemplate from '../Views/Grid/ProjectActionButtonCell.html!';
 import DateCellTemplate from '../Views/Grid/DateCell.html!';
+import ClickableCellTemplate from '../Views/Grid/ClickableCell.html!';
 import Environment from '../../Common/Support/Environment';
 
 /**
@@ -56,7 +56,6 @@ class ProjectListController {
       enableColumnMenus: false,
       enableSorting: false,
       gridMenuShowHideColumns: false,
-      rowTemplate: ClickableRowTemplate,
       columnDefs: [],
       onRegisterApi: gridApi => {
         gridApi.pagination.on.paginationChanged($scope, (newPage, pageSize) => {
@@ -101,19 +100,39 @@ class ProjectListController {
     }
 
     if (project.hasOwnProperty('status')) {
-      defs.push({displayName: 'Status', field: 'status', width: '*', enableSorting: false});
+      defs.push({displayName: 'Status',
+        field: 'status',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('name')) {
-      defs.push({displayName: 'Name', field: 'name', width: '*', enableSorting: false});
+      defs.push({displayName: 'Name',
+        field: 'name',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('videoCount')) {
-      defs.push({displayName: 'Video Count', field: 'videoCount', width: '*', enableSorting: false});
+      defs.push({displayName: 'Video Count',
+        field: 'videoCount',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('taskCount')) {
-      defs.push({displayName: 'Task count', field: 'taskCount', width: '*', enableSorting: false});
+      defs.push({displayName: 'Task count',
+        field: 'taskCount',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('taskInProgressCount')) {
@@ -122,23 +141,44 @@ class ProjectListController {
         field: 'taskInProgressCount',
         width: '*',
         enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
       });
     }
 
     if (project.hasOwnProperty('taskFinishedCount')) {
-      defs.push({displayName: 'Task done count', field: 'taskFinishedCount', width: '*', enableSorting: false});
+      defs.push({displayName: 'Task done count',
+        field: 'taskFinishedCount',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('taskFinishedCount') && project.hasOwnProperty('taskCount')) {
-      defs.push({displayName: '% finished', field: 'percentage', width: '*', enableSorting: false});
+      defs.push({displayName: '% finished',
+        field: 'percentage',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('objectFrameCount')) {
-      defs.push({displayName: 'Object frames', field: 'objectFrameCount', width: '*', enableSorting: false});
+      defs.push({displayName: 'Object frames',
+        field: 'objectFrameCount',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('timeInProject')) {
-      defs.push({displayName: 'Time spent in project', field: 'timeInProject', width: '*', enableSorting: false});
+      defs.push({displayName: 'Time spent in project',
+        field: 'timeInProject',
+        width: '*',
+        enableSorting: false,
+        cellTemplate: ClickableCellTemplate,
+      });
     }
 
     if (project.hasOwnProperty('creationTimestamp')) {
