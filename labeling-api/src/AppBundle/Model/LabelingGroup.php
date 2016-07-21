@@ -81,4 +81,20 @@ class LabelingGroup
     {
         $this->coordinators = $coordinators;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRev()
+    {
+        return $this->rev;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }

@@ -156,3 +156,9 @@
     + width: `1` (number) - width of the object
     + height: `1` (number) - width of the object
     + depth: `1` (number) - width of the object
+    
+# LabelingGroup
++ id: `36047d429d50548893be41c6880632fd` (string) - Labeling Group ID
++ rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the Labeling Group
++ coordinators: `[]` (array) - Array of the coordinator IDs
++ labelers: `[]` (array) - Array of the labelers IDs
