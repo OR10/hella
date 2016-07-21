@@ -122,6 +122,7 @@
       "lodash.debounce": "npm:lodash.debounce@^3.1.1",
       "lodash.isequal": "npm:lodash.isequal@^4.2.0",
       "lodash.merge": "npm:lodash.merge@^4.4.0",
+      "moment": "npm:moment@^2.14.1",
       "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
       "raf": "npm:raf@^3.1.0",
       "splitjs": "github:nathancahill/Split.js@^1.0.6",
