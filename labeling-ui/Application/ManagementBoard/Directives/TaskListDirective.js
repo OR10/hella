@@ -11,7 +11,6 @@ class TaskListDirective {
     this.scope = {
       projectId: '=',
       taskStatus: '@',
-      title: '@',
       user: '=',
       userPermissions: '=',
     };

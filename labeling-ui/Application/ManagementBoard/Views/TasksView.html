@@ -9,8 +9,40 @@
     >
     </title-bar>
     <div class="grid-block text-center vertical">
-        <task-list title="To do" task-status="todo" project-id="vm.projectId" user="vm.user" user-permission="vm.userPermission"></task-list>
-        <task-list title="In Progress" task-status="in_progress" project-id="vm.projectId" user="vm.user" user-permission="vm.userPermission"></task-list>
-        <task-list title="Done" task-status="done" project-id="vm.projectId" user="vm.user" user-permission="vm.userPermission"></task-list>
+        <tab-view>
+            <tab header="Labeling {{vm.taskCount !== null ? '(' + vm.taskCount.labeling.overall + ')' : ''}}"
+                 create-on-first-view="true">
+                <h2>
+                    Todo <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.todo}})</span>
+                </h2>
+                <task-list task-status="todo"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permission="vm.userPermission">
+                </task-list>
+                <h2>
+                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.in_progress}})</span>
+                </h2>
+                <task-list task-status="in_progress"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permission="vm.userPermission">
+                </task-list>
+                <h2>
+                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.done}})</span>
+                </h2>
+                <task-list task-status="done"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permission="vm.userPermission">
+                </task-list>
+            </tab>
+            <tab header="Review {{vm.taskCount !== null ? '(' + vm.taskCount.review.overall + ')' : ''}}"
+                 create-on-first-view="true">
+                <h2>
+                    The concept of Review tasks is not implemented yet
+                </h2>
+            </tab>
+        </tab-view>
     </div>
 </div>
