@@ -55,6 +55,7 @@ class ProjectListController {
         if (response.result.length === 0) {
           this.columns = [];
           this.projects = [];
+          this.loadingInProgress = false;
           return;
         }
 
