@@ -38,7 +38,7 @@ class UserProfile extends Module {
           template: userProfileTemplate,
           resolve: {
             user: ['userGateway',
-              userGateway => userGateway.getCurrentUser()
+              userGateway => userGateway.getCurrentUser(),
             ],
           },
         },
