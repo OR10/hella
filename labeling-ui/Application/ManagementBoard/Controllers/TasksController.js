@@ -89,6 +89,7 @@ class TasksController {
 }
 
 TasksController.$inject = [
+  '$scope',
   '$stateParams',
   'user',
   'userPermissions',

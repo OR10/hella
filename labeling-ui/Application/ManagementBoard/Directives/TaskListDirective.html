@@ -26,6 +26,11 @@
                         ng-click="vm.unassignTask(task.id, task.assigneeId)">
                     <i class="fa fa-close"></i>
                 </button>
+                <button tooltip="Reopen task"
+                        ng-if="vm.userPermissions.canReopenTask && task.status === 'done'"
+                        ng-click="vm.reopenTask(task.id)">
+                    <i class="fa fa-refresh"></i>
+                </button>
             </td>
         </tr>
         </tbody>

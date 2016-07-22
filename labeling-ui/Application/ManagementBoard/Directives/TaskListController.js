@@ -92,6 +92,7 @@ class TaskListController {
           range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
           assignee: task.assignedUser,
           assigneeId: task.assignedUserId,
+          status: this.taskStatus,
         };
       });
 
