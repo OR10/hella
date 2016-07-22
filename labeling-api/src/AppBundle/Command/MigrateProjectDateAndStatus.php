@@ -11,7 +11,7 @@ use Doctrine\ORM;
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class MigrateProjectDate extends Base
+class MigrateProjectDateAndStatus extends Base
 {
     /**
      * @var Facade\Project
@@ -29,12 +29,12 @@ class MigrateProjectDate extends Base
 
     protected function configure()
     {
-        $this->setName('annostation:MigrateProjectDate');
+        $this->setName('annostation:MigrateProjectDateAndStatus');
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
-        $projects    = $this->projectFacade->findAll();
+        $projects = $this->projectFacade->findAll();
         $progress = new ProgressBar($output, count($projects));
 
         /** @var Model\Project $project */
@@ -43,8 +43,14 @@ class MigrateProjectDate extends Base
                 $project->setCreationDate(
                     new \DateTime('now', new \DateTimeZone('UTC'))
                 );
-                $this->projectFacade->save($project);
             }
+
+            if ($project->getStatus() === null) {
+                $project->setStatus(
+                    Model\Project::STATUS_IN_PROGRESS
+                );
+            }
+            $this->projectFacade->save($project);
             $progress->advance();
         }
         $progress->finish();
