@@ -16,7 +16,16 @@
         </thead>
         <tbody>
         <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id)">
-            <td>{{task.type}}</td>
+            <td>
+                <i ng-if="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                <i ng-if="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                <i ng-if="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                <i ng-if="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                <i ng-if="task.labelInstruction === 'ignore-vehicle'" class="fa fa-eye-slash" tooltip="Ignore Vehicle"></i>
+                <i ng-if="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                <i ng-if="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                &nbsp;{{task.type}}
+            </td>
             <td>{{task.title}}</td>
             <td>{{task.range}}</td>
             <td>{{task.assignee}}</td>

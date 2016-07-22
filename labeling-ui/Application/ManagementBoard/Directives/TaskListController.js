@@ -93,6 +93,8 @@ class TaskListController {
           assignee: task.assignedUser,
           assigneeId: task.assignedUserId,
           status: this.taskStatus,
+          labelInstruction: task.labelInstruction,
+          reopen: task.reopen,
         };
       });
 
