@@ -16,7 +16,6 @@ import HeaderModule from './Header/Header';
 import TaskModule from './Task/Task';
 import ManagementBoardModule from './ManagementBoard/ManagementBoard';
 import UserProfileModule from './UserProfile/UserProfile';
-import ExportModule from './Export/Export';
 import FrameModule from './Frame/Frame';
 import ViewerModule from './Viewer/Viewer';
 import VideoModule from './Video/Video';
@@ -24,7 +23,6 @@ import LabelingDataModule from './LabelingData/LabelingData';
 import LabelStructureModule from './LabelStructure/LabelStructure';
 import FilmReelModule from './FilmReel/FilmReel';
 import MediaControlsModule from './MediaControls/MediaControls';
-import StatisticsModule from './Statistics/Statistics';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -63,7 +61,6 @@ export default class Application {
     this.modules.push(new ManagementBoardModule());
     this.modules.push(new TaskModule());
     this.modules.push(new UserProfileModule());
-    this.modules.push(new ExportModule());
     this.modules.push(new FrameModule());
     this.modules.push(new ViewerModule());
     this.modules.push(new VideoModule());
@@ -71,7 +68,6 @@ export default class Application {
     this.modules.push(new LabelStructureModule());
     this.modules.push(new FilmReelModule());
     this.modules.push(new MediaControlsModule());
-    this.modules.push(new StatisticsModule());
   }
 
   buildApplicationConfig() {
