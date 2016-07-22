@@ -135,7 +135,7 @@ class CurrentUser extends Controller\Base
         $createNewProject   = true;
         $acceptProject      = true;
         $reopenProject      = true;
-        $exportProject      = true;
+        $exportProject      = false;
         $reportProject      = true;
         $moveProjectToDone  = true;
 
@@ -146,6 +146,7 @@ class CurrentUser extends Controller\Base
             $videoUploadButton  = true;
             $reopenButton       = true;
             $unassignPermission = true;
+            $exportProject      = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton        = true;
@@ -153,6 +154,7 @@ class CurrentUser extends Controller\Base
             $videoUploadButton  = true;
             $reopenButton       = true;
             $unassignPermission = true;
+            $exportProject      = true;
         }
 
         return View\View::create()->setData(
