@@ -147,6 +147,22 @@ class TaskGateway {
   }
 
   /**
+   * @param {taskId} taskId
+   * @returns {AbortablePromise}
+   */
+  assignAndMarkAsInProgress(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/begin`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed assigning and marking task (${taskId}) as in_progress.`);
+      });
+  }
+
+  /**
    * @param {Task} task
    * @param {User} user
    * @returns {AbortablePromise}
@@ -169,7 +185,7 @@ class TaskGateway {
    * @param {User} userId
    * @returns {AbortablePromise}
    */
-  dissociateUserFromTask(taskId, userId) {
+  unassignUserFromTask(taskId, userId) {
     const url = this._apiService.getApiUrl(`/task/${taskId}/user/${userId}/assign`);
 
     return this._bufferedHttp.delete(url, undefined, 'task')
