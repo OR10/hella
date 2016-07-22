@@ -3,10 +3,17 @@
  */
 class TaskListController {
   /**
+   * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {TaskGateway} taskGateway injected
    */
-  constructor($state, taskGateway) {
+  constructor($scope, $state, taskGateway) {
+    /**
+     * @type {$rootScope.$scope}
+     * @private
+     */
+    this._$scope = $scope;
+
     /**
      * @type {$state}
      * @private
@@ -45,6 +52,11 @@ class TaskListController {
      * @private
      */
     this._currentItemsPerPage = 0;
+
+    // Reload upon request
+    this._$scope.$on('task-list:reload-requested', () => {
+      this.updatePage(this._currentPage, this._currentItemsPerPage);
+    });
   }
 
   openTask(taskId) {
@@ -54,6 +66,10 @@ class TaskListController {
   unassignTask(taskId, assigneeId) {
     this._taskGateway.unassignUserFromTask(taskId, assigneeId)
       .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
+  }
+
+  reopenTask(taskId) {
+    this._taskGateway.markTaskAsInProgress(taskId).then(() => this._triggerReloadAll());
   }
 
   updatePage(page, itemsPerPage) {
@@ -82,9 +98,14 @@ class TaskListController {
       this.loadingInProgress = false;
     });
   }
+
+  _triggerReloadAll() {
+    this._$scope.$emit('task-list:dependant-tasks-changed');
+  }
 }
 
 TaskListController.$inject = [
+  '$scope',
   '$state',
   'taskGateway',
 ];

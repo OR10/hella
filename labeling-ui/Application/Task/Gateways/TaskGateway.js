@@ -147,6 +147,22 @@ class TaskGateway {
   }
 
   /**
+   * @param {string} taskId
+   * @returns {AbortablePromise}
+   */
+  markTaskAsInProgress(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/in_progress`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed marking task (${taskId}) as in_progress.`);
+      });
+  }
+
+  /**
    * @param {taskId} taskId
    * @returns {AbortablePromise}
    */

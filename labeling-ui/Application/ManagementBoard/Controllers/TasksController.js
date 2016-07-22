@@ -5,12 +5,19 @@ import merge from 'lodash.merge';
  */
 class TasksController {
   /**
+   * @param {$rootScope.$scope} $scope
    * @param {$stateParams} $stateParams
    * @param {User} user
    * @param {Object} userPermissions
    * @param {TaskGateway} taskGateway
    */
-  constructor($stateParams, user, userPermissions, taskGateway) {
+  constructor($scope, $stateParams, user, userPermissions, taskGateway) {
+    /**
+     * @type {$rootScope.$scope}
+     * @private
+     */
+    this._$scope = $scope;
+
     /**
      * @type {User}
      */
@@ -38,6 +45,10 @@ class TasksController {
     this.taskCount = null;
 
     this._loadTaskCount(this.projectId);
+
+    this._$scope.$on('task-list:dependant-tasks-changed', () => {
+      this._$scope.$broadcast('task-list:reload-requested');
+    });
   }
 
   /**
