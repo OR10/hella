@@ -107,6 +107,12 @@ class Task extends Controller\Base
                     $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_PREPROCESSING];
                 }
                 break;
+            case Model\LabelingTask::STATUS_IN_PROGRESS:
+                $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    Model\LabelingTask::STATUS_IN_PROGRESS, $project, $offset, $limit
+                )->toArray();
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$project->getId()][Model\LabelingTask::STATUS_IN_PROGRESS];
+                break;
             case Model\LabelingTask::STATUS_TODO:
                 $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                     Model\LabelingTask::STATUS_TODO, $project, $offset, $limit
