@@ -160,4 +160,12 @@ class Project
     {
         $this->coordinator = $coordinator;
     }
+
+    /**
+     * @param mixed $creationDate
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+    }
 }

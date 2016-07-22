@@ -16,35 +16,35 @@
             <td ng-repeat="column in vm.columns track by $index">{{project[column.property]}}</td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
                 <button tooltip="Export Project"
-                        ng-if="vm.userPermissions.canViewExportButton"
+                        ng-if="vm.userPermissions.canExportProject"
                         ng-click="vm.exportProject(project.id)"
                 >
                     <i class="fa fa-external-link"></i>
                 </button>
 
                 <button tooltip="Delete Project: {{project.name}}"
-                        ng-if="vm.userPermissions.canCloseDeleteButton"
+                        ng-if="vm.userPermissions.canDeleteProject"
                         ng-click="vm.deleteProject(project.id)"
                 >
                     <i class="fa fa-close"></i>
                 </button>
 
                 <button tooltip="Close Project"
-                        ng-if="vm.userPermissions.canViewMoveToDoneButton"
+                        ng-if="vm.userPermissions.canMoveProjectToDone"
                         ng-click="vm.closeProject(project.id)"
                 >
                     <i class="fa fa-check-square"></i>
                 </button>
 
                 <button tooltip="Reopen Project"
-                        ng-if="vm.userPermissions.canViewReopenButton"
+                        ng-if="vm.userPermissions.canReopenProject"
                         ng-click="vm.reopenProject(project.id)"
                 >
                     <i class="fa fa-refresh"></i>
                 </button>
 
                 <button tooltip="View Report of Project"
-                        ng-if="vm.userPermissions.canViewReportButton"
+                        ng-if="vm.userPermissions.canReportProject"
                         ng-click="vm.openReport(project.id)"
                 >
                     <i class="fa fa-file-o"></i>

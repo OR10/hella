@@ -77,6 +77,8 @@ class Project extends Controller\Base
         $limit  = $request->query->get('limit', null);
         $offset = $request->query->get('offset', null);
         $status = $request->query->get('projectStatus', null);
+        /** @var Model\User $user */
+        $user   = $this->tokenStorage->getToken()->getUser();
 
         switch ($status) {
             case Model\Project::STATUS_TODO:
@@ -116,20 +118,26 @@ class Project extends Controller\Base
         foreach ($projects->toArray() as $project) {
             $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
-            $result[$project->getStatus()][] = array(
-                'id'                         => $project->getId(),
-                'name'                       => $project->getName(),
-                'status'                     => $project->getStatus(),
-                'taskCount'                  => $this->getSumOfTasksForProject($project),
-                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
-                'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
-                'totalLabelingTimeInSeconds' => $timeInSeconds,
-                'labeledThingInFramesCount'  => $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project),
-                'videosCount'                => isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0,
-                'creationTimestamp'          => $project->getCreationDate(),
-                'dueTimestamp'               => $project->getDueDate(),
-                'finishedPercentage'         => round(100/$this->getSumOfTasksForProject($project)*$this->getSumOfCompletedTasksForProject($project)),
+            $responseProject = array(
+                'id' => $project->getId(),
+                'name' => $project->getName(),
+                'status' => $project->getStatus(),
+                'finishedPercentage' => round(
+                    $this->getSumOfTasksForProject($project) === 0 ? 100 : 100 / $this->getSumOfTasksForProject($project) * $this->getSumOfCompletedTasksForProject($project)),
+                'creationTimestamp' => $project->getCreationDate(),
             );
+
+            if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+                $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
+                $responseProject['taskFinishedCount']          = $this->getSumOfCompletedTasksForProject($project);
+                $responseProject['taskInProgressCount']        = $this->getSumOfInProgressTasksForProject($project);
+                $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
+                $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
+                $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
+                $responseProject['dueTimestamp']               = $project->getDueDate();
+            }
+
+            $result[$project->getStatus()][] = $responseProject;
         }
 
         foreach(array_keys($result) as $status) {
@@ -142,6 +150,15 @@ class Project extends Controller\Base
                 }
                 return ($a['creationTimestamp'] > $b['creationTimestamp']) ? -1 : 1;
             });
+        }
+
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            foreach (array_keys($result) as $status) {
+                $result[$status] = array_map(function ($data) {
+                    unset($data['creationTimestamp']);
+                    return $data;
+                }, $result[$status]);
+            }
         }
 
         return View\View::create()->setData(
