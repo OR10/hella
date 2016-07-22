@@ -50,6 +50,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.migrate_task_status" class="AppBundle\Command\MigrateTaskStatus">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <tag name="console.command"/>
+        </service>
         <service id="annostation.labeling_api.command.create_label_structure"
                  class="AppBundle\Command\CreateLabelStructure">
             <tag name="console.command"/>

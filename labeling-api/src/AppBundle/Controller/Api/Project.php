@@ -128,6 +128,7 @@ class Project extends Controller\Base
                 'videosCount'                => isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0,
                 'creationTimestamp'          => $project->getCreationDate(),
                 'dueTimestamp'               => $project->getDueDate(),
+                'finishedPercentage'         => round(100/$this->getSumOfTasksForProject($project)*$this->getSumOfCompletedTasksForProject($project)),
             );
         }
 
