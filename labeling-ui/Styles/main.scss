@@ -38,8 +38,6 @@ $accordion-header-background: #343b43;
 @import "tooltips";
 @import "usermangement";
 @import "badge";
-@import "ui-grid";
-@import "ui-grid-customization";
 @import "tabview";
 
 html, body {
@@ -345,4 +343,8 @@ popup-panel.ng-hide-remove {
 
 title-bar {
   min-height: 45px;
+}
+
+.more-space {
+  margin: 1rem 2rem;
 }
