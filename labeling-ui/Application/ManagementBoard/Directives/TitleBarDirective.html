@@ -1,0 +1,19 @@
+<div class="grid-block noscroll">
+    <div ng-show="vm.showBackButton" class="grid-content shrink align-self-center noscroll">
+        <a ng-click="vm.handleBackButton()"
+           tooltip="{{vm.backLinkText}}"
+        >
+            <i class="icon icon-previous"></i>
+        </a>
+    </div>
+
+    <div class="grid-block button-list">
+        <a class="header-button" ng-show="vm.userPermissions.canViewVideoUploadButton" href="/upload">Upload video</a>
+        <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users">Manage users</a>
+        <ng-transclude></ng-transclude>
+    </div>
+
+    <user-name ng-hide="!vm.showUsername" class="grid-block shrink align-self-center" user="vm.user"></user-name>
+
+    <logout-button ng-show="vm.showLogoutButton" class="grid-block shrink"></logout-button>
+</div>

@@ -36,40 +36,33 @@ class TaskGateway {
   }
 
   /**
-   * Retrieves a list of available {@link Task}s and their associated videos
-   *
-   * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
-   */
-  getTasksAndVideos() {
-    const url = this._apiService.getApiUrl('/task', {includeVideos: true});
-    return this._bufferedHttp.get(url, undefined, 'task')
-      .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos) {
-          throw new Error('Failed loading task list');
-        }
-
-        return response.data.result;
-      });
-  }
-
-  /**
    * Retrieves a list of available {@link Task}s and their associated videos for a certain project
    *
    * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
    */
-  getTasksAndVideosForProject(projectId) {
-    const url = this._apiService.getApiUrl('/task', {
-      includeVideos: true,
+  getTasksForProject(projectId, status, limit = null, offset = null) {
+    const params = {
       project: projectId,
-    });
+      taskStatus: status,
+    };
+
+    if (limit) {
+      params.limit = limit;
+    }
+
+    if (offset) {
+      params.offset = offset;
+    }
+
+    const url = this._apiService.getApiUrl('/task', params);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.tasks || !response.data.result.videos) {
+        if (!response.data) {
           throw new Error('Failed loading task list');
         }
 
-        return response.data.result;
+        return response.data;
       });
   }
 
@@ -93,11 +86,40 @@ class TaskGateway {
   }
 
   /**
+   * Retrieves the number of tasks of a project for each category
+   *
+   * - labeling
+   *   - todo
+   *   - in_progress
+   *   - done
+   *   - ...
+   * - review
+   *   - ...
+   * - revision
+   *   - ...
+   *
+   * @param {string} projectId
+   *
+   * @return {AbortablePromise.<Object|Error>}
+   */
+  getTaskCount(projectId) {
+    const url = this._apiService.getApiUrl(`/taskCount/${projectId}`);
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed loading taskCount for project ${projectId}`);
+      });
+  }
+
+  /**
    * @param {Task} task
    * @returns {AbortablePromise}
    */
   markTaskAsLabeled(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/status/labeled`);
+    const url = this._apiService.getApiUrl(`/task/${task.id}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -113,7 +135,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsWaiting(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/status/waiting`);
+    const url = this._apiService.getApiUrl(`/task/${task.id}/status/todo`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -121,6 +143,38 @@ class TaskGateway {
         }
 
         throw new Error(`Failed marking task (${task.id}) as waiting.`);
+      });
+  }
+
+  /**
+   * @param {string} taskId
+   * @returns {AbortablePromise}
+   */
+  markTaskAsInProgress(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/in_progress`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed marking task (${taskId}) as in_progress.`);
+      });
+  }
+
+  /**
+   * @param {taskId} taskId
+   * @returns {AbortablePromise}
+   */
+  assignAndMarkAsInProgress(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/begin`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed assigning and marking task (${taskId}) as in_progress.`);
       });
   }
 
@@ -143,12 +197,12 @@ class TaskGateway {
   }
 
   /**
-   * @param {Task} task
-   * @param {User} user
+   * @param {Task} taskId
+   * @param {User} userId
    * @returns {AbortablePromise}
    */
-  dissociateUserFromTask(task, user) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/user/${user.id}/assign`);
+  unassignUserFromTask(taskId, userId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/user/${userId}/assign`);
 
     return this._bufferedHttp.delete(url, undefined, 'task')
       .then(response => {

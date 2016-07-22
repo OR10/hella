@@ -1,11 +1,5 @@
-.users-list {
-  .action-cell {
-    padding: 0;
-
-    button {
-      padding: 0 !important;
-    }
-  }
+table.users-list {
+  margin: 2rem 1rem;
 }
 
 .user-profile, .user-password {

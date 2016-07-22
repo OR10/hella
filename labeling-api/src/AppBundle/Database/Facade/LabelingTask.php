@@ -87,17 +87,22 @@ class LabelingTask
     }
 
     /**
-     * @param Model\Project $project
-     * @param Model\Video $video
+     * @param $projects
      * @return array
      */
-    public function findAllByProjectAndVideo(Model\Project $project, Model\Video $video) {
-        $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'by_project_and_video')
-            ->setKey([$project->getId(), $video->getId()]);
+    public function findAllByProjects($projects)
+    {
+        $projectIds = array_map(function(Model\Project $project) {
+            return $project->getId();
+        }, $projects);
 
-        $result = $query->onlyDocs(true)->execute()->toArray();
-        return array_values($result);
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
+            ->setKeys($projectIds)
+            ->execute()
+            ->toArray();
+
+        return $query;
     }
 
     /**
@@ -137,19 +142,7 @@ class LabelingTask
             $query->setLimit($limit);
         }
 
-        $result = $query->onlyDocs(true)->execute()->toArray();
-
-        uasort($result, function (Model\LabelingTask $a, Model\LabelingTask $b) {
-            if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime ) {
-                return 0;
-            }
-            if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
-                return 0;
-            }
-            return ($a->getCreatedAt()->getTimestamp() < $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
-        });
-
-        return array_values($result);
+        return $query->onlyDocs(true)->execute();
     }
 
     public function getVideo(Model\LabelingTask $labelingTask)
@@ -428,14 +421,43 @@ class LabelingTask
     }
 
     /**
+     * @param Model\Project $project
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function getSumOfTasksByProjects()
+    public function getSumOfTasksByProject(Model\Project $project)
     {
-        return $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
+            ->setStartKey([$project->getId()])
+            ->setEndKey([$project->getId(), []])
             ->setGroup(true)
+            ->setGroupLevel(2)
             ->setReduce(true)
-            ->execute();
+            ->execute()
+            ->toArray();
+
+        $result[$project->getId()] = [
+            Model\LabelingTask::STATUS_PREPROCESSING => 0,
+            Model\LabelingTask::STATUS_TODO => 0,
+            Model\LabelingTask::STATUS_DONE => 0,
+        ];
+        foreach ($query as $mapping) {
+            $result[$mapping['key'][0]][$mapping['key'][1]] = $mapping['value'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return \Doctrine\CouchDB\View\Result
+     */
+    public function getSumOfTasksByStatus()
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
+            ->setReduce(true)
+            ->onlyDocs(false);
+
+        return $query->execute();
     }
 }

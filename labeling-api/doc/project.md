@@ -16,6 +16,7 @@
 + Parameters
     + limit: `10` (integer, optional) - Limit the result.
     + offset: `0` (integer, optional) - Set an offset.
+    + projectStatus: `done` (string, optional) - Filter list by status.
 
 ### Get all projects [GET]
 
@@ -56,18 +57,16 @@
     + Attributes
         + message: `Export started`
 
-## Get a detailed project overview [/api/project/details?limit={limit}&offset={offset}]
+## Get sum of projects by status [/api/projectCount]
 
-+ Parameters
-    + limit: `10` (integer, optional) - Limit the result.
-    + offset: `0` (integer, optional) - Set an offset.
-
-### Project Overview [POST]
+### Sum of Projects [GET]
 
 + Response 200 (application/json)
     + Attributes
-        + totalRows: `5` (number) - Total Number of documents in the database
-        + result array(ProjectDetails)
+        + result
+            + done: `20` (number) - Number of done jobs
+            + `in_progress`: `30` (number) - Number of in_progress jobs
+            + todo: `40` (number) - Number of todo jobs
 
 ## Set Projects State to in progress [/api/project/{projectId}/inProgress]
 

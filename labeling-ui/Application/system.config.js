@@ -38,6 +38,7 @@ System.config({
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",
     "angular-smart-table": "npm:angular-smart-table@2.1.6",
+    "angular-ui-grid": "npm:angular-ui-grid@3.2.5",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
@@ -61,10 +62,13 @@ System.config({
     "lodash.clonedeep": "npm:lodash.clonedeep@4.3.2",
     "lodash.debounce": "npm:lodash.debounce@3.1.1",
     "lodash.isequal": "npm:lodash.isequal@4.2.0",
+    "lodash.merge": "npm:lodash.merge@4.4.0",
+    "moment": "npm:moment@2.14.1",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
     "three-math": "npm:three-math@0.69.0",
+    "ui-grid": "github:angular-ui/ui-grid@3.2.1",
     "uuid": "npm:uuid@2.0.1",
     "v-accordion": "npm:v-accordion@1.4.1",
     "github:angular-ui/ui-router@0.2.15": {
@@ -183,6 +187,13 @@ System.config({
     },
     "npm:angular-smart-table@2.1.6": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
+    },
+    "npm:angular-ui-grid@3.2.5": {
+      "angular": "npm:angular@1.4.12",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:angular@1.4.12": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:asn1.js@4.0.0": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -571,6 +582,10 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:lodash._baseclone@4.5.7": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:lodash.clone@4.3.2": {
       "lodash._baseclone": "npm:lodash._baseclone@4.5.6"
     },
@@ -583,6 +598,17 @@ System.config({
     "npm:lodash.isequal@4.2.0": {
       "lodash._root": "npm:lodash._root@3.0.1",
       "lodash.keys": "npm:lodash.keys@4.0.7",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:lodash.merge@4.4.0": {
+      "lodash._baseclone": "npm:lodash._baseclone@4.5.7",
+      "lodash._root": "npm:lodash._root@3.0.1",
+      "lodash.isplainobject": "npm:lodash.isplainobject@4.0.4",
+      "lodash.keysin": "npm:lodash.keysin@4.1.4",
+      "lodash.rest": "npm:lodash.rest@4.0.3",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:lodash.rest@4.0.3": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:lodash@4.3.0": {

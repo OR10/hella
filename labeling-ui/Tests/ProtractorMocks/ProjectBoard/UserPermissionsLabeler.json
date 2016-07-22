@@ -1,0 +1,18 @@
+{
+  "request": {
+    "path": "/api/user/permissions",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "canViewProjectButton": true,
+        "canViewReopenButton": false,
+        "canViewStatsButton": false,
+        "canViewUserListButton": false,
+        "canViewVideoUploadButton": false,
+        "unassignPermission": false
+      }
+    }
+  }
+}

@@ -30,6 +30,7 @@ loading-mask {
       margin-left: -$spinner-size / 2;
       margin-top: -$spinner-size / 2;
       width: $spinner-size;
+      height: $spinner-size;
       &:before {
         content: '';
         display: block;

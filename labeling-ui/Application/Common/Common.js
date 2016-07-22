@@ -30,6 +30,9 @@ import 'foundation-apps/js/angular/services/foundation.core.animation';
 import 'foundation-apps/js/angular/components/common/common';
 import 'foundation-apps/js/angular/components/modal/modal';
 
+import 'angular-ui-router';
+import 'angular-ui-grid';
+
 /**
  * Common Module
  *
@@ -42,7 +45,14 @@ class Common extends Module {
    * @param {angular} angular
    */
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.Common', ['foundation.common', 'foundation.modal']);
+    this.module = angular.module('AnnoStation.Common', [
+      'foundation.common',
+      'foundation.modal',
+      'ui.router',
+      'ui.grid',
+      'ui.grid.pinning',
+      'ui.grid.pagination',
+    ]);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
     this.module.service('readOnlyInterceptor', ReadOnlyInterceptor);
@@ -87,10 +97,17 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$location', $rootScope => {
+    this.module.run(['$rootScope', '$state', ($rootScope, $state) => {
       $rootScope.$on('unauthorized', () => {
         const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);
         window.location.assign(`/login?targetUrl=${targetUrl}`);
+      });
+
+      $rootScope.$on('$stateChangeStart', (event, to, params) => {
+        if (to.redirectTo) {
+          event.preventDefault();
+          $state.go(to.redirectTo, params, {location: 'replace'});
+        }
       });
     }]);
   }

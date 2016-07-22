@@ -135,8 +135,10 @@ class CurrentUser extends Controller\Base
         $createNewProject   = true;
         $acceptProject      = true;
         $reopenProject      = true;
-        $exportProject      = true;
+        $exportProject      = false;
         $reportProject      = true;
+        $moveProjectToDone  = true;
+        $reopenTask         = false;
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
@@ -145,6 +147,8 @@ class CurrentUser extends Controller\Base
             $videoUploadButton  = true;
             $reopenButton       = true;
             $unassignPermission = true;
+            $exportProject      = true;
+            $reopenTask         = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton        = true;
@@ -152,6 +156,8 @@ class CurrentUser extends Controller\Base
             $videoUploadButton  = true;
             $reopenButton       = true;
             $unassignPermission = true;
+            $exportProject      = true;
+            $reopenTask         = true;
         }
 
         return View\View::create()->setData(
@@ -170,6 +176,8 @@ class CurrentUser extends Controller\Base
                         'canReopenProject' => $reopenProject,
                         'canExportProject' => $exportProject,
                         'canReportProject' => $reportProject,
+                        'canMoveProjectToDone' => $moveProjectToDone,
+                        'canReopenTask' => $reopenTask,
                     ]
             ]
         );

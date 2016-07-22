@@ -1,0 +1,6 @@
+<button ng-repeat="page in vm.pages"
+        ng-click="vm.jumpToPage(page)"
+        ng-class="{'is-active': vm.currentPage == page}"
+>
+    {{page}}
+</button>

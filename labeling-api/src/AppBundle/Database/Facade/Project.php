@@ -28,17 +28,17 @@ class Project
     }
 
     /**
-     * @param null $limit
-     * @param null $offset
+     * @param null     $limit
+     * @param int|null $offset
      * @return View\Result
      */
-    public function findAll($limit = null, $offset = null)
+    public function findAll($limit = null, $offset = 0)
     {
         $query = $this->documentManager
             ->createQuery('annostation_project', 'by_name')
             ->onlyDocs(true);
 
-        if ($limit !== null && $offset !== null) {
+        if ($limit !== null) {
             $query->setLimit((int) $limit)
             ->setSkip((int) $offset);
         }
@@ -110,5 +110,39 @@ class Project
             ->onlyDocs(true)
             ->execute()
             ->toArray();
+    }
+
+    /**
+     * @param          $status
+     * @param null     $limit
+     * @param int|null $offset
+     * @return View\Result
+     */
+    public function findAllByStatus($status, $limit = null, $offset = 0)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_project', 'by_status_' . $status)
+            ->onlyDocs(true);
+
+        if ($limit !== null) {
+            $query->setLimit((int) $limit)
+                ->setSkip((int) $offset);
+        }
+
+        return $query->execute();
+    }
+
+    /**
+     * @return View\Result
+     */
+    public function getSumOfProjectsByStatus()
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_project', 'sum_by_status_and_projectId')
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->onlyDocs(false);
+
+        return $query->execute();
     }
 }

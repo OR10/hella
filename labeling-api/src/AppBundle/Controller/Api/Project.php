@@ -38,7 +38,7 @@ class Project extends Controller\Base
     /**
      * @var array|null
      */
-    private $sumOfTasksByProjectsAndStatusCache = null;
+    private $sumOfTasksByProjectsAndStatusCache = [];
 
     /**
      * @var Storage\TokenStorage
@@ -66,52 +66,6 @@ class Project extends Controller\Base
     /**
      * List all labeling tasks
      *
-     * @Rest\Get("/details")
-     *
-     * @param HttpFoundation\Request $request
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function listDetailedAction(HttpFoundation\Request $request)
-    {
-        $offset             = $request->query->get('offset');
-        $limit              = $request->query->get('limit');
-
-        $projects                      = $this->projectFacade->findAll($limit, $offset);
-        $projectTimeMapping            = [];
-        $result                        = array();
-
-        foreach ($this->projectFacade->getTimePerProject() as $mapping) {
-            $projectTimeMapping[$mapping['key']] = $mapping['value'];
-        }
-
-        /** @var Model\Project $project */
-        foreach ($projects->toArray() as $project) {
-            $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
-
-            $result[] = array(
-                'id'                         => $project->getId(),
-                'name'                       => $project->getName(),
-                'status'                     => $project->getStatus(),
-                'taskCount'                  => $this->getSumOfTasksForProject($project),
-                'taskFinishedCount'          => $this->getSumOfCompletedTasksForProject($project),
-                'taskInProgressCount'        => $this->getSumOfInProgressTasksForProject($project),
-                'totalLabelingTimeInSeconds' => $timeInSeconds,
-                'creationTimestamp'          => $project->getCreationDate(),
-            );
-        }
-
-        return View\View::create()->setData(
-            [
-                'totalRows' => $projects->getTotalRows(),
-                'result' => $result,
-            ]
-        );
-    }
-
-    /**
-     * List all labeling tasks
-     *
      * @Rest\Get("")
      *
      * @param HttpFoundation\Request $request
@@ -122,8 +76,20 @@ class Project extends Controller\Base
     {
         $limit  = $request->query->get('limit', null);
         $offset = $request->query->get('offset', null);
+        $status = $request->query->get('projectStatus', null);
+        /** @var Model\User $user */
+        $user   = $this->tokenStorage->getToken()->getUser();
 
-        $projects = $this->projectFacade->findAll($limit, $offset);
+        switch ($status) {
+            case Model\Project::STATUS_TODO:
+            case Model\Project::STATUS_IN_PROGRESS:
+            case Model\Project::STATUS_DONE:
+                $projects = $this->projectFacade->findAllByStatus($status, $limit, $offset);
+                break;
+            default:
+                $projects = $this->projectFacade->findAll($limit, $offset);
+        }
+
         $result   = array(
             Model\Project::STATUS_IN_PROGRESS => array(),
             Model\Project::STATUS_TODO => array(),
@@ -131,27 +97,68 @@ class Project extends Controller\Base
             null => array() //@TODO remove this later
         );
 
+        foreach ($this->projectFacade->getTimePerProject() as $mapping) {
+            $projectTimeMapping[$mapping['key']] = $mapping['value'];
+        }
+
+        $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects->toArray());
+        $numberOfVideos = array();
+        foreach($videosByProjects as $videosByProject) {
+            $projectId = $videosByProject['key'];
+            $videoId = $videosByProject['value'];
+            $numberOfVideos[$projectId][] = $videoId;
+        }
+        $numberOfVideos = array_map(
+            function($videoByProject) {
+                return count(array_unique($videoByProject));
+            },
+            $numberOfVideos
+        );
+
         foreach ($projects->toArray() as $project) {
-            $result[$project->getStatus()][] = array(
-                'id'   => $project->getId(),
+            $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
+
+            $responseProject = array(
+                'id' => $project->getId(),
                 'name' => $project->getName(),
-                'creation_timestamp' => $project->getCreationDate(),
                 'status' => $project->getStatus(),
-                'taskCount' => $this->getSumOfTasksForProject($project),
-                'taskFinishedCount' => $this->getSumOfCompletedTasksForProject($project),
+                'finishedPercentage' => round(
+                    $this->getSumOfTasksForProject($project) === 0 ? 100 : 100 / $this->getSumOfTasksForProject($project) * $this->getSumOfCompletedTasksForProject($project)),
+                'creationTimestamp' => $project->getCreationDate(),
             );
+
+            if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+                $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
+                $responseProject['taskFinishedCount']          = $this->getSumOfCompletedTasksForProject($project);
+                $responseProject['taskInProgressCount']        = $this->getSumOfInProgressTasksForProject($project);
+                $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
+                $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
+                $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
+                $responseProject['dueTimestamp']               = $project->getDueDate();
+            }
+
+            $result[$project->getStatus()][] = $responseProject;
         }
 
         foreach(array_keys($result) as $status) {
             usort($result[$status], function ($a, $b) {
-                if ($a['creation_timestamp'] === null || $b['creation_timestamp'] === null) {
+                if ($a['creationTimestamp'] === null || $b['creationTimestamp'] === null) {
                     return -1;
                 }
-                if ($a['creation_timestamp'] === $b['creation_timestamp']) {
+                if ($a['creationTimestamp'] === $b['creationTimestamp']) {
                     return 0;
                 }
-                return ($a['creation_timestamp'] > $b['creation_timestamp']) ? -1 : 1;
+                return ($a['creationTimestamp'] > $b['creationTimestamp']) ? -1 : 1;
             });
+        }
+
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            foreach (array_keys($result) as $status) {
+                $result[$status] = array_map(function ($data) {
+                    unset($data['creationTimestamp']);
+                    return $data;
+                }, $result[$status]);
+            }
         }
 
         return View\View::create()->setData(
@@ -173,11 +180,9 @@ class Project extends Controller\Base
      */
     private function getSumOfTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache();
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-
-        return isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()]) ?
-            array_sum($this->sumOfTasksByProjectsAndStatusCache[$project->getId()]) : 0;
+        return array_sum($this->sumOfTasksByProjectsAndStatusCache[$project->getId()]);
     }
 
     /**
@@ -186,10 +191,9 @@ class Project extends Controller\Base
      */
     private function getSumOfCompletedTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache();
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_LABELED]) ?
-            $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_LABELED] : 0;
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_DONE];
     }
 
     /**
@@ -198,19 +202,15 @@ class Project extends Controller\Base
      */
     private function getSumOfInProgressTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache();
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_WAITING]) ?
-            $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_WAITING] : 0;
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_TODO];
     }
 
-    private function loadDataOfTasksByProjectsAndStatusToCache()
+    private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
     {
-        if ($this->sumOfTasksByProjectsAndStatusCache === null) {
-            $this->sumOfTasksByProjectsAndStatusCache = [];
-            foreach ($this->labelingTaskFacade->getSumOfTasksByProjects()->toArray() as $mapping) {
-                $this->sumOfTasksByProjectsAndStatusCache[$mapping['key'][0]][$mapping['key'][1]] = $mapping['value'];
-            }
+        if (!isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()])) {
+            $this->sumOfTasksByProjectsAndStatusCache = array_merge($this->sumOfTasksByProjectsAndStatusCache, $this->labelingTaskFacade->getSumOfTasksByProject($project));
         }
     }
 

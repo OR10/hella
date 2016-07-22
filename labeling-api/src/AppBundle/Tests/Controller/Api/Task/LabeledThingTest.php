@@ -278,7 +278,7 @@ class LabeledThingTest extends Tests\WebTestCase
             range($startRange, $endRange),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $task->setStatus(Model\LabelingTask::STATUS_TODO);
         $task->setLabelStructure(
             json_decode(
                 file_get_contents(

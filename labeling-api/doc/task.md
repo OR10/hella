@@ -14,14 +14,7 @@
 + Response 200 (application/json)
     + Attributes
         + result
-            + tasks
-                + preprocessing (array[Task])
-                + waiting (array[Task])
-                + labeled (array[Task])
-            + videos (array[Video])
-            + users (array)
-                + id: 1
-                + username: 'foobar'
+            + array[Task]
 
 ## Get a specific task [/api/task/{id}]
 
@@ -274,20 +267,42 @@ Start a new csv export job.
 
 + Response 200 (application/json)
 
-## Set Status to Labeled [/api/task/{taskId}/status/labeled]
+## Set Status to done [/api/task/{taskId}/status/done]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
 
-### Set Status to Labeled [POST]
+### Set Status to done [POST]
 
 + Response 200 (application/json)
 
-## Set Status to waiting [/api/task/{taskId}/status/waiting]
+## Set Status to todo [/api/task/{taskId}/status/todo]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
 
-### Set Status to waiting [POST]
+### Set Status to todo [POST]
 
 + Response 200 (application/json)
+
+## Set Status to begin [/api/task/{taskId}/status/begin]
+
+Set the task status to in_progress and assign the current user to this task
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to begin [POST]
+
++ Response 200 (application/json)
+
+## Get sum of Tasks by status [/api/projectCount]
+
+### Sum of Tasks [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + done: `20` (number) - Number of done jobs
+            + preprocessing: `30` (number) - Number of preprocessing jobs
+            + todo: `40` (number) - Number of todo jobs

@@ -149,7 +149,7 @@ class Csv implements Service\LabelImporter
     protected function markTasksAsWaiting(array $tasks)
     {
         foreach ($tasks as $task) {
-            $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+            $task->setStatus(Model\LabelingTask::STATUS_TODO);
             $this->taskFacade->save($task);
         }
     }

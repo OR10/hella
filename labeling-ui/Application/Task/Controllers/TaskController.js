@@ -314,7 +314,8 @@ class TaskController {
     applicationState.$watch('sidebarRight.isInFrameChange', inFrameChange => this.rightSidebarShowBackdrop = !inFrameChange);
 
     if (!this.task.assignedUser) {
-      this._taskGateway.assignUserToTask(this.task, this.user);
+      this._taskGateway.assignAndMarkAsInProgress(this.task.id);
+      // @TODO: Handle error here!
     }
   }
 

@@ -53,12 +53,15 @@ class Task extends Module {
       'videoGateway',
     ];
 
-    $stateProvider.state('labeling.task', {
-      url: 'task/:taskId',
-      controller: TaskController,
-      controllerAs: 'vm',
-      template: taskTemplate,
-      reloadOnSearch: false,
+    $stateProvider.state('labeling.tasks.detail', {
+      url: '/{taskId:[a-f0-9]{32}}',
+      views: {
+        '@': {
+          controller: TaskController,
+          controllerAs: 'vm',
+          template: taskTemplate,
+        },
+      },
       resolve: {
         initialData: initialDataResolver,
       },

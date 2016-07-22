@@ -1,0 +1,45 @@
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <table class="table hover"
+           pagination-table
+           total-rows="vm.totalRows"
+           items-per-page="10"
+           on-page-update="vm.updatePage(page, itemsPerPage)">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Range</th>
+            <th>Assignee</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id)">
+            <td>{{task.type}}</td>
+            <td>{{task.title}}</td>
+            <td>{{task.range}}</td>
+            <td>{{task.assignee}}</td>
+            <td class="action-cell" ng-click="$event.stopPropagation()">
+                <button tooltip="Unassign user: {{task.assignee}}"
+                        ng-if="vm.userPermissions.unassignPermission && task.assignee != undefined && task.status !== 'done'"
+                        ng-click="vm.unassignTask(task.id, task.assigneeId)">
+                    <i class="fa fa-close"></i>
+                </button>
+                <button tooltip="Reopen task"
+                        ng-if="vm.userPermissions.canReopenTask && task.status === 'done'"
+                        ng-click="vm.reopenTask(task.id)">
+                    <i class="fa fa-refresh"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <pagination-controls></pagination-controls>
+            </td>
+        </tr>
+        </tfoot>
+        </table>
+</div>

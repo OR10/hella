@@ -299,7 +299,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::STATUS_WAITING);
+        $task->setStatus(Model\LabelingTask::STATUS_TODO);
         $this->task = $this->labelingTaskFacade->save($task);
     }
 

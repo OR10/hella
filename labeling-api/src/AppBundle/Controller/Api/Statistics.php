@@ -57,8 +57,8 @@ class Statistics extends Controller\Base
             throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
-        $tasksAssigned         = $this->taskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_WAITING, $offset, $limit);
-        $tasksLabeled          = $this->taskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_LABELED, $offset, $limit);
+        $tasksAssigned         = $this->taskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_TODO, $offset, $limit);
+        $tasksLabeled          = $this->taskFacade->findAllByStatus(null, Model\LabelingTask::STATUS_DONE, $offset, $limit);
         $tasks                 = array_merge($tasksAssigned, $tasksLabeled);
         $videos                = $this->videoFacade->findAllForTasksIndexedById($tasks);
         $numberOfLabeledThings = $this->taskFacade->getTotalNumberOfLabeledThingsGroupedByTaskId($tasks);

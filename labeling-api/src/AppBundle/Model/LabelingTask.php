@@ -23,8 +23,9 @@ class LabelingTask
     const INSTRUCTION_IGNORE_VEHICLE = 'ignore-vehicle';
 
     const STATUS_PREPROCESSING = 'preprocessing';
-    const STATUS_WAITING = 'waiting';
-    const STATUS_LABELED = 'labeled';
+    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_TODO = 'todo';
+    const STATUS_DONE = 'done';
 
     /**
      * @var string
@@ -372,7 +373,7 @@ class LabelingTask
                 return;
             }
         }
-        $this->setStatus(self::STATUS_WAITING);
+        $this->setStatus(self::STATUS_TODO);
 
         return $this;
     }
@@ -539,5 +540,21 @@ class LabelingTask
     public function setProjectId($projectId)
     {
         $this->projectId = $projectId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRev()
+    {
+        return $this->rev;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
     }
 }

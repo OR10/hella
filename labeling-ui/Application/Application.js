@@ -14,8 +14,7 @@ import ApplicationController from './ApplicationController';
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
 import TaskModule from './Task/Task';
-import HomeModule from './Home/Home';
-import UsersModule from './Users/Users';
+import ManagementBoardModule from './ManagementBoard/ManagementBoard';
 import UserProfileModule from './UserProfile/UserProfile';
 import ExportModule from './Export/Export';
 import FrameModule from './Frame/Frame';
@@ -26,7 +25,6 @@ import LabelStructureModule from './LabelStructure/LabelStructure';
 import FilmReelModule from './FilmReel/FilmReel';
 import MediaControlsModule from './MediaControls/MediaControls';
 import StatisticsModule from './Statistics/Statistics';
-import ProjectModule from './Project/Project';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -62,9 +60,8 @@ export default class Application {
   registerModules() {
     this.modules.push(new CommonModule());
     this.modules.push(new HeaderModule());
+    this.modules.push(new ManagementBoardModule());
     this.modules.push(new TaskModule());
-    this.modules.push(new HomeModule());
-    this.modules.push(new UsersModule());
     this.modules.push(new UserProfileModule());
     this.modules.push(new ExportModule());
     this.modules.push(new FrameModule());
@@ -75,7 +72,6 @@ export default class Application {
     this.modules.push(new FilmReelModule());
     this.modules.push(new MediaControlsModule());
     this.modules.push(new StatisticsModule());
-    this.modules.push(new ProjectModule());
   }
 
   buildApplicationConfig() {
@@ -127,7 +123,7 @@ export default class Application {
       $locationProvider.html5Mode(true);
 
       // For any unmatched url, redirect to /state1
-      $urlRouterProvider.otherwise('/tasks');
+      $urlRouterProvider.otherwise('/projects/');
 
       function userResolver(userGateway) {
         return userGateway.getCurrentUser()
@@ -147,9 +143,13 @@ export default class Application {
       $stateProvider
         .state('labeling', {
           abstract: true,
-          controller: ApplicationController,
           url: '/',
-          template: '<ui-view class="vertical grid-frame"/>',
+          views: {
+            '@': {
+              controller: ApplicationController,
+              controllerAs: 'vm',
+            },
+          },
           resolve: {
             user: userResolver,
             userPermissions: permissionsResolver,

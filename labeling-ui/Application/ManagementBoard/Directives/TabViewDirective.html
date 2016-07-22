@@ -1,0 +1,10 @@
+<div class="tabs">
+    <div ng-repeat="tab in vm.tabs"
+         class="tab-item"
+         ng-class="{'is-active': tab.active}"
+         ng-click="vm.activateTab(tab)">
+        {{tab.header}}
+    </div>
+</div>
+<div class="tab-contents" ng-transclude>
+</div>

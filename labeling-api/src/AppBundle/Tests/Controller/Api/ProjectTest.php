@@ -57,38 +57,68 @@ class ProjectTest extends Tests\WebTestCase
                 array(
                     array(
                         'name' => 'Test Project in progress',
-                        'creation_timestamp' => 1468319400,
                         'status' => Model\Project::STATUS_IN_PROGRESS,
+                        'finishedPercentage' => 100,
+                        'creationTimestamp' => 1468319400,
                         'taskCount' => 0,
                         'taskFinishedCount' => 0,
+                        'taskInProgressCount' => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
+                        'videosCount' => 0,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project 3',
-                        'creation_timestamp' => 1468324800,
                         'status' => Model\Project::STATUS_TODO,
+                        'finishedPercentage' => 100,
+                        'creationTimestamp' => 1468324800,
                         'taskCount' => 0,
                         'taskFinishedCount' => 0,
+                        'taskInProgressCount' => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
+                        'videosCount' => 0,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project 1',
-                        'creation_timestamp' => 1468321200,
                         'status' => Model\Project::STATUS_TODO,
+                        'finishedPercentage' => 100,
+                        'creationTimestamp' => 1468321200,
                         'taskCount' => 0,
                         'taskFinishedCount' => 0,
+                        'taskInProgressCount' => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
+                        'videosCount' => 0,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project 2',
-                        'creation_timestamp' => 1468317600,
                         'status' => Model\Project::STATUS_TODO,
+                        'finishedPercentage' => 100,
+                        'creationTimestamp' => 1468317600,
                         'taskCount' => 0,
                         'taskFinishedCount' => 0,
+                        'taskInProgressCount' => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
+                        'videosCount' => 0,
+                        'dueTimestamp' => null,
                     ),
                     array(
                         'name' => 'Test Project done',
-                        'creation_timestamp' => 1468323000,
                         'status' => Model\Project::STATUS_DONE,
+                        'finishedPercentage' => 100,
+                        'creationTimestamp' => 1468323000,
                         'taskCount' => 0,
                         'taskFinishedCount' => 0,
+                        'taskInProgressCount' => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount' => 0,
+                        'videosCount' => 0,
+                        'dueTimestamp' => null,
                     ),
                 )
             )
@@ -158,5 +188,6 @@ class ProjectTest extends Tests\WebTestCase
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->user->setRoles([Model\User::ROLE_ADMIN]);
     }
 }
