@@ -117,11 +117,11 @@ class ProjectListController {
       'taskCount': 'Task Count',
       'taskInProgressCount': 'In Progress #',
       'taskFinishCount': 'Finished #',
-      'percentage': '% finished',
+      'finishedPercentageFormatted': '% finished',
       'objectFrameCount': 'Object frames',
       'timeInProject': 'Time spent',
       'creationTimestampFormatted': 'Started',
-      'dueTimestampFormatted': 'Due date',
+      // 'dueTimestampFormatted': 'Due date',
     };
 
     Object.keys(propertyToColumnMap).forEach(
@@ -147,9 +147,9 @@ class ProjectListController {
             return 'Done';
         }
       },
-      'percentage': project => Math.round((project.taskFinishedCount / project.taskCount) * 100) + '%',
       'creationTimestampFormatted': project => moment.unix(project.creationTimestamp).format('DD.MM.YYYY'),
       'dueTimestampFormatted': project => moment.unix(project.dueTimestamp).format('DD.MM.YYYY'),
+      'finishedPercentageFormatted': project => `${project.finishedPercentage} %`,
     };
 
     return projects.map(project => {
