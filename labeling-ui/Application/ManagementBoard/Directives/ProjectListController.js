@@ -76,7 +76,7 @@ class ProjectListController {
    * @param {number} projectId
    */
   exportProject(projectId) {
-    // @TODO: Implement
+    this._$state.go('labeling.projects.export', {projectId});
   }
 
   /**

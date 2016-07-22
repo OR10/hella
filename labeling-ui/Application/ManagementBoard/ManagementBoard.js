@@ -14,6 +14,10 @@ import ProjectGateway from './Gateways/ProjectGateway';
 import ProjectListLazyStoreService from './Services/ProjectListLazyStoreService';
 import ProjectListDirective from './Directives/ProjectListDirective';
 
+import ProjectExportController from './Controllers/ProjectExportController';
+import ProjectExportListDirective from './Directives/ProjectExportListDirective';
+import projectExportTemplate from './Views/ProjectExportView.html!';
+
 import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
 import TaskListDirective from './Directives/TaskListDirective';
@@ -28,6 +32,7 @@ import UserProfileDirective from './Directives/UserProfileDirective';
 
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
+
 
 /**
  * ManagementBoard Module
@@ -54,6 +59,22 @@ class ManagementBoard extends Module {
           controller: ProjectsController,
           controllerAs: 'vm',
           template: ProjectsView,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.projects.export', {
+      url: '/:projectId/export',
+      views: {
+        '@': {
+          controller: ProjectExportController,
+          controllerAs: 'vm',
+          template: projectExportTemplate,
+          resolve: {
+            project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
+              return projectGateway.getProject($stateParams.projectId);
+            }],
+          },
         },
       },
     });
@@ -118,6 +139,7 @@ class ManagementBoard extends Module {
     this.registerDirective('paginationTable', PaginationTableDirective);
     this.registerDirective('paginationControls', PaginationControlsDirective);
     this.registerDirective('projectList', ProjectListDirective);
+    this.registerDirective('projectExportList', ProjectExportListDirective);
     this.registerDirective('taskList', TaskListDirective);
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
