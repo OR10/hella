@@ -10,8 +10,6 @@
     <div class="grid-block button-list">
         <a class="header-button" ng-show="vm.userPermissions.canViewVideoUploadButton" href="/upload">Upload video</a>
         <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users">Manage users</a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewStatsButton" ui-sref="labeling.statistics">Show statistics</a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewProjectButton" ui-sref="labeling.projects">Show projects</a>
         <ng-transclude></ng-transclude>
     </div>
 
