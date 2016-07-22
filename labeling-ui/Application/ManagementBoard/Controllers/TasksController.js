@@ -48,6 +48,7 @@ class TasksController {
 
     this._$scope.$on('task-list:dependant-tasks-changed', () => {
       this._$scope.$broadcast('task-list:reload-requested');
+      this._loadTaskCount(this.projectId);
     });
   }
 
