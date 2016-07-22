@@ -24,25 +24,36 @@ class UserProfile extends Module {
    * @inheritDoc
    */
   config($stateProvider) {
-    function userResolver(userGateway) {
-      return userGateway.getCurrentUser();
-    }
-    userResolver.$inject = ['userGateway'];
+    $stateProvider.state('labeling.user', {
+      url: 'user',
+      redirectTo: 'labeling.user.profile',
+    });
 
-    $stateProvider.state('labeling.userprofile', {
-      url: 'user/profile',
-      controller: UserProfileController,
-      controllerAs: 'vm',
-      template: userProfileTemplate,
-      resolve: {
-        user: userResolver,
+    $stateProvider.state('labeling.user.profile', {
+      url: '/profile',
+      views: {
+        '@': {
+          controller: UserProfileController,
+          controllerAs: 'vm',
+          template: userProfileTemplate,
+          resolve: {
+            user: ['userGateway',
+              userGateway => userGateway.getCurrentUser()
+            ],
+          },
+        },
       },
     });
-    $stateProvider.state('labeling.userpassword', {
-      url: 'user/password',
-      controller: UserPasswordController,
-      controllerAs: 'vm',
-      template: userPasswordTemplate,
+
+    $stateProvider.state('labeling.user.password', {
+      url: '/password',
+      views: {
+        '@': {
+          controller: UserPasswordController,
+          controllerAs: 'vm',
+          template: userPasswordTemplate,
+        },
+      },
     });
   }
 }
