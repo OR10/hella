@@ -29,7 +29,7 @@ class ProjectGateway {
    */
   getProjects(status, limit = null, offset = null) {
     const params = {
-      projectStatus: status
+      projectStatus: status,
     };
 
     if (limit !== null) {

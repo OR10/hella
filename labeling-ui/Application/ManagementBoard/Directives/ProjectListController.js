@@ -83,28 +83,28 @@ class ProjectListController {
   /**
    * @param {number} projectId
    */
-  deleteProject(projectId) {
+  deleteProject(projectId) { // eslint-disable-line no-unused-vars
     // @TODO: Implement
   }
 
   /**
    * @param {number} projectId
    */
-  closeProject(projectId) {
+  closeProject(projectId) { // eslint-disable-line no-unused-vars
     // @TODO: Implement
   }
 
   /**
    * @param {number} projectId
    */
-  reopenProject(projectId) {
+  reopenProject(projectId) { // eslint-disable-line no-unused-vars
     // @TODO: Implement
   }
 
   /**
    * @param {number} projectId
    */
-  openReport(projectId) {
+  openReport(projectId) { // eslint-disable-line no-unused-vars
     // @TODO: Implement
   }
 
@@ -146,6 +146,8 @@ class ProjectListController {
             return 'In Progress';
           case 'done':
             return 'Done';
+          default:
+            return project.status;
         }
       },
       'creationTimestampFormatted': project => project.creationTimestamp !== undefined ? moment.unix(project.creationTimestamp).format('DD.MM.YYYY') : null,
