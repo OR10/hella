@@ -147,15 +147,20 @@ class ProjectListController {
             return 'Done';
         }
       },
-      'creationTimestampFormatted': project => moment.unix(project.creationTimestamp).format('DD.MM.YYYY'),
-      'dueTimestampFormatted': project => moment.unix(project.dueTimestamp).format('DD.MM.YYYY'),
-      'finishedPercentageFormatted': project => `${project.finishedPercentage} %`,
+      'creationTimestampFormatted': project => project.creationTimestamp !== undefined ? moment.unix(project.creationTimestamp).format('DD.MM.YYYY') : null,
+      'dueTimestampFormatted': project => project.dueTimestamp !== undefined ? moment.unix(project.dueTimestamp).format('DD.MM.YYYY') : null,
+      'finishedPercentageFormatted': project => project.finishedPercentage !== undefined ? `${project.finishedPercentage} %` : null,
     };
 
     return projects.map(project => {
       const augmentedObject = Object.assign({}, project);
       Object.keys(augmentedMapping).forEach(
-        property => augmentedObject[property] = augmentedMapping[property](project)
+        property => {
+          const augmentedProperty = augmentedMapping[property](project);
+          if (augmentedProperty !== null) {
+            augmentedObject[property] = augmentedProperty;
+          }
+        }
       );
       return augmentedObject;
     });
