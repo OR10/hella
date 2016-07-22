@@ -119,7 +119,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsLabeled(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/status/labeled`);
+    const url = this._apiService.getApiUrl(`/task/${task.id}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -135,7 +135,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsWaiting(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/status/waiting`);
+    const url = this._apiService.getApiUrl(`/task/${task.id}/status/todo`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
