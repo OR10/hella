@@ -103,7 +103,6 @@
       "angular-hotkeys": "github:chieffancypants/angular-hotkeys@^1.6.0",
       "angular-mocks": "github:angular/bower-angular-mocks@^1.4.7",
       "angular-smart-table": "npm:angular-smart-table@^2.1.6",
-      "angular-ui-grid": "npm:angular-ui-grid@^3.2.5",
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "base64-js": "github:beatgammit/base64-js@^1.0.0",
       "canteen": "github:effem/Canteen@master",
