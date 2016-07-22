@@ -52,7 +52,7 @@ class TaskListController {
   }
 
   unassignTask(taskId, assigneeId) {
-    this._taskGateway.dissociateUserFromTask(taskId, assigneeId)
+    this._taskGateway.unassignUserFromTask(taskId, assigneeId)
       .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
   }
 

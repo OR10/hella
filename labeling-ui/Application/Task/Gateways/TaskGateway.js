@@ -185,7 +185,7 @@ class TaskGateway {
    * @param {User} userId
    * @returns {AbortablePromise}
    */
-  dissociateUserFromTask(taskId, userId) {
+  unassignUserFromTask(taskId, userId) {
     const url = this._apiService.getApiUrl(`/task/${taskId}/user/${userId}/assign`);
 
     return this._bufferedHttp.delete(url, undefined, 'task')
