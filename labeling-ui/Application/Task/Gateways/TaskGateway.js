@@ -210,7 +210,7 @@ class TaskGateway {
           return response.data.result;
         }
 
-        throw new Error(`Failed dissociating user (${user.id}) from task (${task.id}).`);
+        throw new Error(`Failed dissociating user (${userId}) from task (${taskId}).`);
       });
   }
 }

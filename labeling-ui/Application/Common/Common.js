@@ -30,7 +30,7 @@ import 'foundation-apps/js/angular/services/foundation.core.animation';
 import 'foundation-apps/js/angular/components/common/common';
 import 'foundation-apps/js/angular/components/modal/modal';
 
-import 'angular-ui-router';
+// import 'angular-ui-router';
 import 'angular-ui-grid';
 
 /**
@@ -48,7 +48,7 @@ class Common extends Module {
     this.module = angular.module('AnnoStation.Common', [
       'foundation.common',
       'foundation.modal',
-      'ui.router',
+      // 'ui.router',
       'ui.grid',
       'ui.grid.pinning',
       'ui.grid.pagination',
