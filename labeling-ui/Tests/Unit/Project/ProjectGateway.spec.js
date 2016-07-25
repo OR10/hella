@@ -142,4 +142,20 @@ describe('ProjectGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should close a project', done => {
+    const response = {
+      result: true,
+    };
+
+    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/done').respond(response);
+
+    gateway.closeProject('PROJECT_ID').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
 });

@@ -102,6 +102,21 @@ class ProjectGateway {
       });
   }
 
+  /**
+   * @param {string} projectId
+   * @returns {AbortablePromise}
+   */
+  closeProject(projectId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/done`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed closing project (setting to state done): ${projectId}.`);
+      });
+  }
 }
 
 ProjectGateway.$inject = ['ApiService', 'bufferedHttp'];
