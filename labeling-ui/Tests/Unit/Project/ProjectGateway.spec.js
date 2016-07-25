@@ -91,10 +91,10 @@ describe('ProjectGateway', () => {
       ],
     };
 
-    $httpBackend.expectGET('/backend/api/project').respond(response);
+    $httpBackend.expectGET('/backend/api/projectCount').respond(response);
 
-    gateway.getProjects().then(projects => {
-      expect(projects).toEqual(response);
+    gateway.getProjectCount().then(projects => {
+      expect(projects).toEqual(response.result);
       done();
     });
 
