@@ -41,7 +41,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackCenter')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -58,7 +58,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -75,7 +75,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -92,7 +92,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenter')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -109,7 +109,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -126,7 +126,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -143,7 +143,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -160,7 +160,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -177,7 +177,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -202,7 +202,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 596, y: 496})
@@ -342,7 +342,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -376,7 +376,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -410,7 +410,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -446,7 +446,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -480,7 +480,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -514,7 +514,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 565, y: 469}) // initial position
@@ -560,7 +560,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 565, y: 469}) // initial position
@@ -608,7 +608,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -639,7 +639,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -670,7 +670,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -703,7 +703,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -738,7 +738,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -774,7 +774,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -813,7 +813,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -901,7 +901,7 @@ describe('Cuboid', () => {
           assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4,
         ]));
 
-        initApplication('/labeling/task/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
           .then(() => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -990,7 +990,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1042,7 +1042,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1095,7 +1095,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1147,7 +1147,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1199,7 +1199,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1236,7 +1236,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1324,7 +1324,7 @@ describe('Cuboid', () => {
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4,
       ]));
 
-      initApplication('/labeling/task/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position

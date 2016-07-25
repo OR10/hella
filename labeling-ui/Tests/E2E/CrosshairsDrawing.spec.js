@@ -38,7 +38,7 @@ describe('Crosshairs drawing', () => {
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
@@ -59,7 +59,7 @@ describe('Crosshairs drawing', () => {
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .click(crosshairsToggleButton)
@@ -82,7 +82,7 @@ describe('Crosshairs drawing', () => {
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .click(crosshairsToggleButton)
@@ -105,7 +105,7 @@ describe('Crosshairs drawing', () => {
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .click(crosshairsToggleButton)
@@ -128,7 +128,7 @@ describe('Crosshairs drawing', () => {
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .click(crosshairsToggleButton)

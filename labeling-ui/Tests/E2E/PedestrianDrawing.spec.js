@@ -36,7 +36,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.DrawOnePedestrian.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'LoadAndDrawOnePedestrian')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -53,7 +53,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'LoadAndDrawTwoPedestrians')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -70,7 +70,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
@@ -93,7 +93,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
@@ -120,7 +120,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
@@ -148,7 +148,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
@@ -182,7 +182,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
@@ -217,7 +217,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
 
@@ -248,7 +248,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
@@ -282,7 +282,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1,
       assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
@@ -314,7 +314,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame,
       assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing,
     ]));
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
@@ -374,7 +374,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4,
       assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
-    initApplication('/labeling/task/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 50}) // initial position
