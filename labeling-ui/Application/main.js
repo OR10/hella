@@ -1,6 +1,5 @@
 import 'jquery';
 import 'angular';
-const stopProductionBuild;
 
 import Application from './Application';
 
