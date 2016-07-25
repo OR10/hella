@@ -6,7 +6,6 @@ import 'angular-animate';
 
 import 'Distribution/Templates/foundation-ui';
 
-import 'angular-smart-table';
 import 'v-accordion';
 import 'v-accordion/dist/v-accordion.css!';
 
@@ -91,7 +90,6 @@ export default class Application {
           'ui.router',
           'ngAnimate',
           'AnnoStation.FoundationVendorTemplates',
-          'smart-table',
           'vAccordion',
           ...this.modules.map(mod => mod.module.name),
         ]);
