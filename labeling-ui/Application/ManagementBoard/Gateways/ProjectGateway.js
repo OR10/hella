@@ -85,6 +85,23 @@ class ProjectGateway {
         throw new Error('Failed starting export');
       });
   }
+
+  /**
+   * @param {string} projectId
+   * @returns {AbortablePromise}
+   */
+  acceptProject(projectId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/inProgress`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed accepting project (${projectId}).`);
+      });
+  }
+
 }
 
 ProjectGateway.$inject = ['ApiService', 'bufferedHttp'];
