@@ -128,8 +128,19 @@ class ProjectListController {
   /**
    * @param {number} projectId
    */
-  closeProject(projectId) { // eslint-disable-line no-unused-vars
-    // @TODO: Implement
+  closeProject(projectId, projectName) { // eslint-disable-line no-unused-vars
+    const modal = this._modalService.getWarningDialog({
+      title: 'Close project',
+      headline: `You are about to close the "${projectName}" project. Proceed?`,
+      message: 'Closing the project moves it into the "done" state, indicating all currently assigned work has been successfully completed.',
+      confirmButtonText: 'Continue',
+      cancelButtonText: 'Cancel',
+    }, () => {
+      this.loadingInProgress = true;
+      this._projectGateway.closeProject(projectId)
+        .then(() => this._triggerReloadAll());
+    });
+    modal.activate();
   }
 
   /**
