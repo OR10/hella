@@ -93,6 +93,13 @@ class ManagementBoard extends Module {
           template: TasksView,
         },
       },
+      resolve: {
+        project: [
+          '$stateParams',
+          'projectGateway',
+          ($stateParams, projectGateway) => projectGateway.getProject($stateParams.projectId),
+        ],
+      },
     });
 
     $stateProvider.state('labeling.users', {

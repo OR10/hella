@@ -9,9 +9,10 @@ class TasksController {
    * @param {$stateParams} $stateParams
    * @param {User} user
    * @param {Object} userPermissions
+   * @param {Object} project
    * @param {TaskGateway} taskGateway
    */
-  constructor($scope, $stateParams, user, userPermissions, taskGateway) {
+  constructor($scope, $stateParams, user, userPermissions, project, taskGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -22,6 +23,11 @@ class TasksController {
      * @type {User}
      */
     this.user = user;
+
+    /**
+     * @type {Object}
+     */
+    this.project = project;
 
     /**
      * @type {UserPermissions}
@@ -94,6 +100,7 @@ TasksController.$inject = [
   '$stateParams',
   'user',
   'userPermissions',
+  'project',
   'taskGateway',
 ];
 
