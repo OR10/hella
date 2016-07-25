@@ -54,7 +54,7 @@ class Task extends Module {
     ];
 
     $stateProvider.state('labeling.tasks.detail', {
-      url: '/{taskId:[a-f0-9]{32}}',
+      url: '/:taskId',
       views: {
         '@': {
           controller: TaskController,

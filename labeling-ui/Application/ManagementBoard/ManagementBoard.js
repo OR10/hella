@@ -80,7 +80,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.tasks', {
-      url: 'projects/{projectId:[a-f0-9]{32}}/tasks',
+      url: 'projects/:projectId/tasks',
       redirectTo: 'labeling.tasks.list',
     });
 
