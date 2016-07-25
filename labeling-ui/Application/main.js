@@ -1,4 +1,5 @@
 import 'jquery';
+import 'angular';
 
 import Application from './Application';
 
