@@ -5,10 +5,18 @@ import moment from 'moment';
  */
 class ProjectListController {
   /**
+   * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {ProjectGateway} projectGateway
+   * @param {ModalService} modalService
    */
-  constructor($state, projectGateway) {
+  constructor($scope, $state, projectGateway, modalService) {
+    /**
+     * @type {$rootScope.$scope}
+     * @private
+     */
+    this._$scope = $scope;
+
     /**
      * @type {$state}
      * @private
@@ -20,6 +28,12 @@ class ProjectListController {
      * @private
      */
     this._projectGateway = projectGateway;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
 
     /**
      * @type {Array}
@@ -40,10 +54,30 @@ class ProjectListController {
      * @type {boolean}
      */
     this.loadingInProgress = false;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this._currentPage = 1;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this._currentItemsPerPage = 0;
+
+    // Reload upon request
+    this._$scope.$on('project-list:reload-requested', () => {
+      this.updatePage(this._currentPage, this._currentItemsPerPage);
+    });
   }
 
   updatePage(page, itemsPerPage) {
     this.loadingInProgress = true;
+
+    this._currentPage = page;
+    this._currentItemsPerPage = itemsPerPage;
 
     const limit = itemsPerPage;
     const offset = (page - 1) * itemsPerPage;
@@ -101,11 +135,30 @@ class ProjectListController {
     // @TODO: Implement
   }
 
+  acceptProject(projectId, projectName) {
+    const modal = this._modalService.getWarningDialog({
+      title: 'Accept project',
+      headline: `You are about to accept the "${projectName}" project. Proceed?`,
+      message: 'Accepting the project makes your team responsible for labeling and processing all associated tasks.',
+      confirmButtonText: 'Accept',
+      cancelButtonText: 'Cancel',
+    }, () => {
+      this.loadingInProgress = true;
+      this._projectGateway.acceptProject(projectId)
+        .then(() => this._triggerReloadAll());
+    });
+    modal.activate();
+  }
+
   /**
    * @param {number} projectId
    */
   openReport(projectId) { // eslint-disable-line no-unused-vars
     // @TODO: Implement
+  }
+
+  _triggerReloadAll() {
+    this._$scope.$emit('project-list:dependant-projects-changed');
   }
 
   _buildColumns(row) {
