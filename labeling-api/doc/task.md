@@ -296,6 +296,17 @@ Set the task status to in_progress and assign the current user to this task
 
 + Response 200 (application/json)
 
+## Set Status to reopen [/api/task/{taskId}/status/reopen]
+
+Remove any assignment and set status to todo
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to reopen [POST]
+
++ Response 200 (application/json)
+
 ## Get sum of Tasks by status [/api/projectCount]
 
 ### Sum of Tasks [GET]

@@ -149,4 +149,26 @@ class Status extends Controller\Base
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
+
+    /**
+     * @Rest\Post("/{task}/status/reopen")
+     *
+     * @param Model\LabelingTask $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function reopenTaskAction(Model\LabelingTask $task)
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            $task->setStatus(Model\LabelingTask::STATUS_TODO);
+            $task->setAssignedUser(null);
+            $this->labelingTaskFacade->save($task);
+
+            return View\View::create()->setData(['result' => ['success' => true]]);
+        }
+
+        throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
+    }
 }

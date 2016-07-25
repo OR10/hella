@@ -163,6 +163,22 @@ class TaskGateway {
   }
 
   /**
+   * @param {string} taskId
+   * @returns {AbortablePromise}
+   */
+  reopenTask(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/reopen`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed marking task (${taskId}) as reopen.`);
+      });
+  }
+
+  /**
    * @param {taskId} taskId
    * @returns {AbortablePromise}
    */

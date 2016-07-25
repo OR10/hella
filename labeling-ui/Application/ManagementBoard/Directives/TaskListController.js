@@ -69,7 +69,7 @@ class TaskListController {
   }
 
   reopenTask(taskId) {
-    this._taskGateway.markTaskAsInProgress(taskId).then(() => this._triggerReloadAll());
+    this._taskGateway.reopenTask(taskId).then(() => this._triggerReloadAll());
   }
 
   updatePage(page, itemsPerPage) {
