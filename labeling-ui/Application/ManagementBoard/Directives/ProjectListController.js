@@ -104,6 +104,10 @@ class ProjectListController {
    * @param {number} projectId
    */
   openProject(projectId) {
+    if (this.userPermissions.canViewTaskList !== true) {
+      return;
+    }
+
     this._$state.go('labeling.tasks.list', {projectId});
   }
 
@@ -224,8 +228,10 @@ class ProjectListController {
 }
 
 ProjectListController.$inject = [
+  '$scope',
   '$state',
   'projectGateway',
+  'modalService',
 ];
 
 export default ProjectListController;
