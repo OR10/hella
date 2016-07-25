@@ -67,9 +67,7 @@ System.config({
     "angular-dragdrop": "github:codef0rmer/angular-dragdrop@1.0.12",
     "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
-    "angular-rangeslider-directive": "github:supertorio/angular-rangeslider-directive@0.0.2",
     "angular-smart-table": "npm:angular-smart-table@2.1.6",
-    "angular-ui-grid": "npm:angular-ui-grid@3.2.5",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
@@ -99,7 +97,6 @@ System.config({
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
     "three-math": "npm:three-math@0.69.0",
-    "ui-grid": "github:angular-ui/ui-grid@3.2.1",
     "uuid": "npm:uuid@2.0.1",
     "v-accordion": "npm:v-accordion@1.4.1",
     "github:angular-ui/ui-router@0.2.15": {
@@ -218,13 +215,6 @@ System.config({
     },
     "npm:angular-smart-table@2.1.6": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
-    },
-    "npm:angular-ui-grid@3.2.5": {
-      "angular": "npm:angular@1.4.12",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:angular@1.4.12": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:asn1.js@4.0.0": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
