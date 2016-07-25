@@ -3,7 +3,7 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import ProjectGateway from 'Application/Project/Gateways/ProjectGateway';
+import ProjectGateway from 'Application/ManagementBoard/Gateways/ProjectGateway';
 
 describe('ProjectGateway', () => {
   let $httpBackend;
