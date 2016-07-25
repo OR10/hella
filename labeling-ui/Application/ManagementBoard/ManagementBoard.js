@@ -112,7 +112,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.users.detail', {
-      url: '/{userId:[0-9a-f]{1,32}}',
+      url: '/{userId:([0-9a-f]{1,32})|new}',
       views: {
         '@': {
           controller: UsersDetailController,
