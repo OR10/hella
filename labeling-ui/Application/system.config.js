@@ -24,6 +24,36 @@ System.config({
         "angular"
       ]
     },
+    "github:angular/bower-angular-animate@*/*.js": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "github:codef0rmer/angular-dragdrop@*/src/*.js": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "github:chieffancypants/angular-hotkeys@*/build/*.js": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "github:angular/bower-angular-mocks@*/*.js": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "github:angular-ui/ui-router@*/*.js": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "npm:v-accordion@*/dist/*.js": {
+      "deps": [
+        "angular"
+      ]
+    },
     "npm:foundation-apps@*/js/**/*": {
       "deps": [
         "angular"
