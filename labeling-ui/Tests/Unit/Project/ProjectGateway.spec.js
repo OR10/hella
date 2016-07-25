@@ -127,4 +127,19 @@ describe('ProjectGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should accept a project', done => {
+    const response = {
+      result: true,
+    };
+
+    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/inProgress').respond(response);
+
+    gateway.acceptProject('PROJECT_ID').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });
