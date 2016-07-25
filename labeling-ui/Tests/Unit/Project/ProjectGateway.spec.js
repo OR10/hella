@@ -157,5 +157,4 @@ describe('ProjectGateway', () => {
 
     $httpBackend.flush();
   });
-
 });
