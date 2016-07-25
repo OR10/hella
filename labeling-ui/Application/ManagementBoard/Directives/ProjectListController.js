@@ -182,15 +182,15 @@ class ProjectListController {
     const propertyToColumnMap = {
       'statusFormatted': 'Status',
       'name': 'Name',
-      'videoCount': 'Video Count',
-      'taskCount': 'Task Count',
+      'videoCount': 'Video #',
+      'taskCount': 'Task #',
       'taskInProgressCount': 'In Progress #',
       'taskFinishCount': 'Finished #',
       'finishedPercentageFormatted': '% finished',
-      'objectFrameCount': 'Object frames',
-      'timeInProject': 'Time spent',
+      'labeledThingInFramesCount': 'Object frames',
+      'totalLabelingTimeInSecondsFormatted': 'Time spent',
       'creationTimestampFormatted': 'Started',
-      // 'dueTimestampFormatted': 'Due date',
+      'dueTimestampFormatted': 'Due date',
     };
 
     Object.keys(propertyToColumnMap).forEach(
@@ -219,8 +219,28 @@ class ProjectListController {
         }
       },
       'creationTimestampFormatted': project => project.creationTimestamp !== undefined ? moment.unix(project.creationTimestamp).format('DD.MM.YYYY') : null,
-      'dueTimestampFormatted': project => project.dueTimestamp !== undefined ? moment.unix(project.dueTimestamp).format('DD.MM.YYYY') : null,
+      'dueTimestampFormatted': project => project.dueTimestamp !== undefined && project.dueTimestamp !== null ? moment.unix(project.dueTimestamp).format('DD.MM.YYYY') : null,
       'finishedPercentageFormatted': project => project.finishedPercentage !== undefined ? `${project.finishedPercentage} %` : null,
+      'totalLabelingTimeInSecondsFormatted': project => {
+        if (project.totalLabelingTimeInSeconds === undefined) {
+          return null;
+        }
+
+        const duration = moment.duration(project.totalLabelingTimeInSeconds, 'seconds');
+
+        const formattedDuration = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'].reduce(
+          (formatted, range) => formatted === '' && duration[range]() === 0
+            ? ''
+            : formatted + ' ' + duration[range]() + range.substr(0, 1),
+          ''
+        ).trim();
+
+        if (formattedDuration === '') {
+          return 'not started';
+        }
+
+        return formattedDuration;
+      },
     };
 
     return projects.map(project => {
