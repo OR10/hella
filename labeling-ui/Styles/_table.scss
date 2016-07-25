@@ -121,6 +121,10 @@ table.table {
   }
 }
 
+table.auto-size {
+  width: auto !important;
+}
+
 pagination-controls {
   button {
     margin: 0 .2rem;

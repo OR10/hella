@@ -8,22 +8,24 @@
     >
     </title-bar>
 
-    <div class="grid-container">
-        <div class="grid-content">
-            <table class="table more-space">
-                <tr>
-                    <td>Username:</td>
-                    <td>{{vm.user.username}}</td>
-                </tr>
-                <tr>
-                    <td>E-Mail:</td>
-                    <td>{{vm.user.email}}</td>
-                </tr>
-                <tr>
-                    <td>Password:</td>
-                    <td><a href="" ui-sref="labeling.user.password">Change password</a></td>
-                </tr>
-            </table>
+    <div class="grid-block align-center">
+        <div class="grid-block shrink">
+            <div class="grid-content">
+                <table class="table more-space auto-size">
+                    <tr>
+                        <td>Username:</td>
+                        <td>{{vm.user.username}}</td>
+                    </tr>
+                    <tr>
+                        <td>E-Mail:</td>
+                        <td>{{vm.user.email}}</td>
+                    </tr>
+                    <tr>
+                        <td>Password:</td>
+                        <td><a href="" ui-sref="labeling.user.password">Change password</a></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
