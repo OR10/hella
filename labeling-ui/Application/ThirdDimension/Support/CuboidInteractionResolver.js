@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import forEach from 'lodash.foreach';
 
 /**
  * Resolver service capable of determining which interaction with a Cuboid causes which operation
@@ -206,7 +206,7 @@ class CuboidInteractionResolver {
    */
   getHandleNameFromInteraction(interaction) {
     let result;
-    _.forEach(interaction, (value, key) => {
+    forEach(interaction, (value, key) => {
       if (value) {
         result = key;
       }
