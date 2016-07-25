@@ -139,6 +139,7 @@ class CurrentUser extends Controller\Base
         $reportProject      = true;
         $moveProjectToDone  = true;
         $reopenTask         = false;
+        $viewTaskList       = true;
 
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
@@ -178,6 +179,7 @@ class CurrentUser extends Controller\Base
                         'canReportProject' => $reportProject,
                         'canMoveProjectToDone' => $moveProjectToDone,
                         'canReopenTask' => $reopenTask,
+                        'canViewTaskList' => $viewTaskList,
                     ]
             ]
         );
