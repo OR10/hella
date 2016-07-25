@@ -35,64 +35,55 @@ describe('TaskGateway', () => {
     expect(gateway instanceof TaskGateway).toBe(true);
   });
 
-  it('should load a list of tasks', done => {
+  it('should load a list of tasks for a given project and status', done => {
+    const projectId = '123123123';
+    const status = 'todo';
     const tasksResponse = {
-      result: {
-        tasks: {
-          preprocessing: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-          waiting: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-          labeled: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-        },
-        videos: {},
-      },
+      result: [
+        {foo: 'bar'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+      ],
+      totalRows: 10,
     };
 
-    $httpBackend.expectGET('/backend/api/task').respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/task?project=${projectId}&taskStatus=${status}`).respond(tasksResponse);
 
-    gateway.getTasks().then(tasks => {
-      expect(tasks).toEqual(tasksResponse.result.tasks);
+    gateway.getTasksForProject(projectId, status).then(tasks => {
+      expect(tasks).toEqual(tasksResponse);
       done();
     });
 
     $httpBackend.flush();
   });
 
-  it('should load a list of tasks with videos for a specific task', done => {
+  it('should load a list of tasks for a given project and status with limit and offset', done => {
+    const projectId = '123123123';
+    const status = 'todo';
+    const limit = 5;
+    const offset = 10;
     const tasksResponse = {
-      result: {
-        tasks: {
-          preprocessing: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-          waiting: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-          labeled: [
-            {foo: 'bar'},
-            {bar: 'baz'},
-          ],
-        },
-        videos: {
-          '123': {id: 'blub'},
-        },
-      },
+      result: [
+        {foo: 'bar'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+        {bar: 'baz'},
+      ],
+      totalRows: 5,
     };
 
-    $httpBackend.expectGET('/backend/api/task?includeVideos=true&project=awesome-project-id').respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/task?limit=${limit}&offset=${offset}&project=${projectId}&taskStatus=${status}`).respond(tasksResponse);
 
-    gateway.getTasksAndVideosForProject('awesome-project-id').then(result => {
-      expect(result).toEqual(tasksResponse.result);
+    gateway.getTasksForProject(projectId, status, limit, offset).then(tasks => {
+      expect(tasks).toEqual(tasksResponse);
       done();
     });
 
@@ -114,14 +105,14 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should mark tasks as labeled', done => {
+  it('should mark tasks as done', done => {
     const markResponse = {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/labeled').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/done').respond(markResponse);
 
-    gateway.markTaskAsLabeled({id: '123asdf'}).then(result => {
+    gateway.markTaskAsDone('123asdf').then(result => {
       expect(result).toEqual(markResponse.result);
       done();
     });
@@ -129,14 +120,110 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should mark tasks as waiting', done => {
+  it('should mark tasks as todo', done => {
     const markResponse = {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/waiting').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/todo').respond(markResponse);
 
-    gateway.markTaskAsWaiting({id: '123asdf'}).then(result => {
+    gateway.markTaskAsTodo('123asdf').then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should mark tasks as in progress', done => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/in_progress').respond(markResponse);
+
+    gateway.markTaskAsInProgress('123asdf').then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should assign a user and mark tasks as in progress', done => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/begin').respond(markResponse);
+
+    gateway.assignAndMarkAsInProgress('123asdf').then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should assign a user to a task', done => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectPUT('/backend/api/task/taskId123/user/userId123/assign').respond(markResponse);
+
+    gateway.assignUserToTask({id: 'taskId123'}, {id: 'userId123'}).then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should get the task count', done => {
+    const response = {
+      result: {
+        labeling: {
+          preprocessing: 0,
+          todo: 6,
+          done: 0,
+        },
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/taskCount/projectId123').respond(response);
+
+    gateway.getTaskCount('projectId123').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should reopen a task', done => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/123asdf/status/reopen').respond(markResponse);
+
+    gateway.reopenTask('123asdf').then(result => {
+      expect(result).toEqual(markResponse.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should unassign a user from a task', done => {
+    const markResponse = {
+      result: {success: true},
+    };
+
+    $httpBackend.expectDELETE('/backend/api/task/123asdf/user/09876543/assign').respond(markResponse);
+
+    gateway.unassignUserFromTask('123asdf', '09876543').then(result => {
       expect(result).toEqual(markResponse.result);
       done();
     });

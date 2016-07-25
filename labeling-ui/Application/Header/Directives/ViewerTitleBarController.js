@@ -140,7 +140,7 @@ class ViewerTitleBarController {
         cancelButtonText: 'Cancel',
       },
       () => {
-        this._taskGateway.markTaskAsLabeled(this.task)
+        this._taskGateway.markTaskAsDone(this.task.id)
           .then(() => {
             this._$state.go('labeling.tasks');
           })
@@ -203,7 +203,7 @@ class ViewerTitleBarController {
       () => {
         this._applicationState.disableAll();
         this._applicationState.viewer.work();
-        this._taskGateway.markTaskAsWaiting(this.task)
+        this._taskGateway.markTaskAsTodo(this.task.id)
           .then(() => {
             this._$state.go('labeling.tasks');
             this._applicationState.viewer.finish();

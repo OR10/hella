@@ -3,7 +3,7 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import ProjectGateway from 'Application/Project/Gateways/ProjectGateway';
+import ProjectGateway from 'Application/ManagementBoard/Gateways/ProjectGateway';
 
 describe('ProjectGateway', () => {
   let $httpBackend;
@@ -66,47 +66,41 @@ describe('ProjectGateway', () => {
           name: 'example project 2',
         },
       ],
+      totalRows: 2,
     };
 
     $httpBackend.expectGET('/backend/api/project').respond(response);
 
     gateway.getProjects().then(projects => {
-      expect(projects).toEqual(response.result);
+      expect(projects).toEqual(response);
       done();
     });
 
     $httpBackend.flush();
   });
 
-  it('should load a detailed list of projects', done => {
+  it('should load a list of projects counts', done => {
     const response = {
       result: [
         {
-          id: '7999cf8d8d5275330fa67fc69501d977',
-          name: 'example project',
-          taskCount: 1,
-          taskFinishedCount: 1,
-          totalLabelingTimeInSeconds: 120,
+          foo: 1,
         },
         {
-          taskId: '7999cf8d8d5275330fa67fc69502b446',
-          name: 'example project 2',
-          taskCount: 2,
-          taskFinishedCount: 2,
-          totalLabelingTimeInSeconds: 240,
+          bar: 2,
         },
       ],
     };
 
-    $httpBackend.expectGET('/backend/api/project/details').respond(response);
+    $httpBackend.expectGET('/backend/api/project').respond(response);
 
-    gateway.getDetailedProjects().then(projects => {
-      expect(projects).toEqual(response.result);
+    gateway.getProjects().then(projects => {
+      expect(projects).toEqual(response);
       done();
     });
 
     $httpBackend.flush();
   });
+
 
   it('should load list of export for the project', done => {
     const projectId = '7999cf8d8d5275330fa67fc69501d977';

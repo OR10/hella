@@ -19,23 +19,6 @@ class TaskGateway {
   }
 
   /**
-   * Retrieves a list of available {@link Task}s
-   *
-   * @return {AbortablePromise<Task[]|Error>}
-   */
-  getTasks() {
-    const url = this._apiService.getApiUrl('/task');
-    return this._bufferedHttp.get(url, undefined, 'task')
-      .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.tasks) {
-          throw new Error('Failed loading task list');
-        }
-
-        return response.data.result.tasks;
-      });
-  }
-
-  /**
    * Retrieves a list of available {@link Task}s and their associated videos for a certain project
    *
    * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
@@ -115,11 +98,11 @@ class TaskGateway {
   }
 
   /**
-   * @param {Task} task
+   * @param {string} taskId
    * @returns {AbortablePromise}
    */
-  markTaskAsLabeled(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/status/done`);
+  markTaskAsDone(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -131,11 +114,11 @@ class TaskGateway {
   }
 
   /**
-   * @param {Task} task
+   * @param {string} taskId
    * @returns {AbortablePromise}
    */
-  markTaskAsWaiting(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/status/todo`);
+  markTaskAsTodo(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/todo`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
