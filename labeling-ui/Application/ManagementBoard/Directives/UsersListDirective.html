@@ -1,22 +1,20 @@
 <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<div class="grid-block align-center">
-    <div class="grid-content shrink">
-        <table st-table="vm.displayedUsers"
-               st-safe-src="vm.users"
-               class="more-space hover sortable table"
+<div class="grid-block shrink">
+    <div class="grid-content">
+        <table class="table more-space auto-size hover"
                ng-hide="vm.loadingInProgress"
         >
             <thead>
             <tr>
-                <th st-sort="username">Username</th>
-                <th st-sort="email">Email</th>
-                <th st-sort="getReadableRoleForUser">Role</th>
-                <th st-sort="lastLogin">Last Login</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Last Login</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="user in vm.displayedUsers">
+            <tr ng-repeat="user in vm.users">
                 <td ui-sref="labeling.users.detail({userId: user.id})">{{user.username}}</td>
                 <td ui-sref="labeling.users.detail({userId: user.id})">{{user.email}}</td>
                 <td ui-sref="labeling.users.detail({userId: user.id})">{{user.roles | singleRole | readableRole}}</td>
