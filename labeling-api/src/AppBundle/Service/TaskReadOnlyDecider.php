@@ -33,7 +33,9 @@ class TaskReadOnlyDecider
      */
     public function isTaskReadOnlyForUser(Model\User $user, Model\LabelingTask $labelingTask)
     {
-        if ($labelingTask->getAssignedUserId() !== null && $labelingTask->getStatus() === Model\LabelingTask::STATUS_TODO) {
+        if ($labelingTask->getAssignedUserId() !== null &&
+            ($labelingTask->getStatus() === Model\LabelingTask::STATUS_TODO || $labelingTask->getStatus() === Model\LabelingTask::STATUS_IN_PROGRESS)
+        ) {
             return $user !== $this->userFacade->getUserById($labelingTask->getAssignedUserId());
         }
 
