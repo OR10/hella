@@ -109,7 +109,7 @@ class TaskGateway {
           return response.data.result;
         }
 
-        throw new Error(`Failed marking task (${task.id}) as labeled.`);
+        throw new Error(`Failed marking task (${taskId}) as labeled.`);
       });
   }
 
@@ -125,7 +125,7 @@ class TaskGateway {
           return response.data.result;
         }
 
-        throw new Error(`Failed marking task (${task.id}) as waiting.`);
+        throw new Error(`Failed marking task (${taskId}) as waiting.`);
       });
   }
 
