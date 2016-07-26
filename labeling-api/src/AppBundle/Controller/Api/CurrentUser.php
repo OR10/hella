@@ -137,17 +137,19 @@ class CurrentUser extends Controller\Base
         $reopenProject      = true;
         $exportProject      = false;
         $reportProject      = true;
-        $moveProjectToDone  = true;
+        $moveProjectToDone  = false;
         $reopenTask         = false;
-        $viewTaskList       = true;
+        $viewTaskList       = false;
         $viewClosedProjects = false;
         $viewTodoProjects   = false;
 
+        if ($user->hasRole(Model\User::ROLE_LABELER)) {
+            $viewTaskList = true;
+        }
         if ($user->hasRole(Model\User::ROLE_CLIENT)) {
             $viewClosedProjects = true;
             $viewTodoProjects   = true;
         }
-
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
             $projectButton      = true;
@@ -159,6 +161,8 @@ class CurrentUser extends Controller\Base
             $reopenTask         = true;
             $viewClosedProjects = true;
             $viewTodoProjects   = true;
+            $viewTaskList       = true;
+            $moveProjectToDone  = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton        = true;
@@ -171,6 +175,8 @@ class CurrentUser extends Controller\Base
             $viewClosedProjects = true;
             $viewTodoProjects   = true;
             $acceptProject      = true;
+            $viewTaskList       = true;
+            $moveProjectToDone  = true;
         }
 
         return View\View::create()->setData(
