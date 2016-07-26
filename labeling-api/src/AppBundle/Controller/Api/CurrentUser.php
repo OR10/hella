@@ -133,7 +133,7 @@ class CurrentUser extends Controller\Base
         $unassignPermission = false;
         $deleteProject      = true;
         $createNewProject   = true;
-        $acceptProject      = true;
+        $acceptProject      = false;
         $reopenProject      = true;
         $exportProject      = false;
         $reportProject      = true;
@@ -170,6 +170,7 @@ class CurrentUser extends Controller\Base
             $reopenTask         = true;
             $viewClosedProjects = true;
             $viewTodoProjects   = true;
+            $acceptProject      = true;
         }
 
         return View\View::create()->setData(
