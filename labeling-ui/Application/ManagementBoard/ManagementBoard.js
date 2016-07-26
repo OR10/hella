@@ -11,7 +11,6 @@ import TitleBarDirective from './Directives/TitleBarDirective';
 import ProjectsController from './Controllers/ProjectsController';
 import ProjectsView from './Views/ProjectsView.html!';
 import ProjectGateway from './Gateways/ProjectGateway';
-import ProjectListLazyStoreService from './Services/ProjectListLazyStoreService';
 import ProjectListDirective from './Directives/ProjectListDirective';
 
 import ProjectExportController from './Controllers/ProjectExportController';
@@ -138,7 +137,6 @@ class ManagementBoard extends Module {
 
     this.module.service('userGateway', UserGateway);
     this.module.service('projectGateway', ProjectGateway);
-    this.module.service('projectListLazyStoreService', ProjectListLazyStoreService);
 
     this.registerDirective('titleBar', TitleBarDirective);
     this.registerDirective('tabView', TabViewDirective);
