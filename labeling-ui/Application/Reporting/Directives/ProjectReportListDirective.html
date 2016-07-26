@@ -1,0 +1,31 @@
+<div class="grid-block text-center vertical container">
+
+    <h2>Available Project Reports</h2>
+    <div class="grid-container">
+        <div class="grid-content">
+            <table class="table hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Id</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-show="vm.reports.length" ng-repeat="export in vm.reports track by export.id">
+                    <td>
+                       <a ng-href="{{vm.showReport(report.projectId, report.id)}}">{{report.name}}</a>
+                    </td>
+                    <td>
+                        <a ng-href="{{vm.showReport(report.projectId, report.id)}}">{{report.id}}</a>
+                    </td>
+                </tr>
+                <tr ng-show="!vm.reports.length"
+                    class="no-hover"
+                >
+                    <td colspan="2" class="no-tasks">No Reports avaialble.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
