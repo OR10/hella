@@ -29,11 +29,10 @@
                            user="vm.user"
                            user-permissions="vm.userPermissions">
                 </task-list>
-                <h2 ng-if="vm.userPermissions.canViewClosedTasks">
+                <h2>
                     Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.done}})</span>
                 </h2>
-                <task-list ng-if="vm.userPermissions.canViewClosedTasks"
-                           task-status="done"
+                <task-list task-status="done"
                            project-id="vm.projectId"
                            user="vm.user"
                            user-permissions="vm.userPermissions">
