@@ -11,7 +11,8 @@
     <div class="grid-block text-center vertical">
         <h1>Choose a Project</h1>
         <tab-view>
-            <tab header="Todo {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
+            <tab ng-if="vm.userPermissions.canViewTodoProjects"
+                 header="Todo {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     Todo <span ng-hide='vm.projectCount == null'>({{vm.projectCount.todo}})</span>
