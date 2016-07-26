@@ -68,7 +68,7 @@
             + `in_progress`: `30` (number) - Number of in_progress jobs
             + todo: `40` (number) - Number of todo jobs
 
-## Set Projects State to in progress [/api/project/{projectId}/inProgress]
+## Set Projects State to in progress [/api/project/{projectId}/status/accept]
 
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
@@ -79,7 +79,7 @@
     + Attributes
         + result true
 
-## Set Projects State to done [/api/project/{projectId}/done]
+## Set Projects State to done [/api/project/{projectId}/status/done]
 
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.

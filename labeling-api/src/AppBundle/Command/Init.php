@@ -178,7 +178,7 @@ class Init extends Base
     {
         $this->writeSection($output, 'Creating users');
 
-        $users = ['admin', 'label_coordinator', 'user'];
+        $users = ['admin', 'label_coordinator', 'user', 'client'];
 
         if ($this->userPassword !== null) {
 
@@ -191,6 +191,9 @@ class Init extends Base
                         break;
                     case 'label_coordinator':
                         $roleName = Model\User::ROLE_LABEL_COORDINATOR;
+                        break;
+                    case 'client':
+                        $roleName = Model\User::ROLE_CLIENT;
                         break;
                     case 'user':
                         $roleName = Model\User::ROLE_LABELER;

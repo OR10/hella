@@ -134,6 +134,10 @@
         <service id="annostation.labeling_api.controller.api.labeling_group" class="AppBundle\Controller\Api\LabelingGroup">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group" />
         </service>
+        <service id="annostation.labeling_api.controller.api.project.status" class="AppBundle\Controller\Api\Project\Status">
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <argument type="service" id="security.token_storage" />
+        </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">
             <argument type="service" id="twig"/>

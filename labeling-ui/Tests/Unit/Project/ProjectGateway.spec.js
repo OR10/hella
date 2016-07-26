@@ -133,7 +133,7 @@ describe('ProjectGateway', () => {
       result: true,
     };
 
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/inProgress').respond(response);
+    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/status/accept').respond(response);
 
     gateway.acceptProject('PROJECT_ID').then(result => {
       expect(result).toEqual(response.result);
@@ -148,7 +148,7 @@ describe('ProjectGateway', () => {
       result: true,
     };
 
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/done').respond(response);
+    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/status/done').respond(response);
 
     gateway.closeProject('PROJECT_ID').then(result => {
       expect(result).toEqual(response.result);

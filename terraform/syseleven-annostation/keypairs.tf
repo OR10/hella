@@ -1,0 +1,4 @@
+resource "openstack_compute_keypair_v2" "crosscan-chh" {
+    name = "crosscan-chh"
+    public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9hXRmSLWPkAZLCArJBzQMyIkW3WXLAO+T37QbjqwTwl2j2VV+DyHf8wMFVdOhFeblMFoIPyDK96fq8xS+MlhonTGh5qgEBjCWUSoWutc0JvbzNktOngdFxlNs8FjYnsuPsMbjZRDvM0wBWwsqWzEQ+5fbHcI1r8dNiS1wsVvOSi6wG5Nrf2mO2JWkr+fp+4HcaFMTPqgxqJnOA6lRkQtLmzMdbbC6R4ouNr2PcW9lZjh8CtqwBGkS+nW7IPetavCjg0a3ekczdtAonPEhpmVAjuZHpD/kGsDMDFmVJkEw192kdmgifqKzs1nhyOXefOo36KgD6YkjeealhwV8gUAX"
+}

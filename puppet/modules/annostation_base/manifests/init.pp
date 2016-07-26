@@ -30,6 +30,7 @@ class annostation_base(
     $packages = [
         'ack-grep',
         'ant',
+        'curl',
         'git',
         'htop',
         'libav-tools',

@@ -156,7 +156,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($project->getStatus(), Model\Project::STATUS_TODO);
         $this->assertSame($project->getCoordinator(), null);
 
-        $this->createRequest('/api/project/%s/inProgress', [$project->getId()])
+        $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -172,7 +172,7 @@ class ProjectTest extends Tests\WebTestCase
         $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
         $this->projectFacade->save($project);
 
-        $this->createRequest('/api/project/%s/done', [$project->getId()])
+        $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 

@@ -107,6 +107,11 @@ api_labeling_group:
     type: rest
     name_prefix: app_api_labeling_group
 
+api_project_status:
+    resource: "annostation.labeling_api.controller.api.project.status"
+    type: rest
+    name_prefix: app_api_project_status
+
 dimension_prediction:
     resource: "annostation.labeling_api.controller.dimension_prediction"
     type: rest

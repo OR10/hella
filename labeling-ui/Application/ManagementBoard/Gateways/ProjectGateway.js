@@ -91,7 +91,7 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   acceptProject(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/inProgress`);
+    const url = this._apiService.getApiUrl(`/project/${projectId}/status/accept`);
     return this._bufferedHttp.post(url, undefined, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -107,7 +107,7 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   closeProject(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/done`);
+    const url = this._apiService.getApiUrl(`/project/${projectId}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {

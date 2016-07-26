@@ -227,41 +227,4 @@ class Project extends Controller\Base
     {
         return View\View::create()->setData(['result' => $project]);
     }
-
-    /**
-     * Set the Project to status inProgress and assign the current user to this project
-     *
-     * @Rest\POST("/{project}/inProgress")
-     *
-     * @param $project
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function setProjectStatusToInProgressAction(Model\Project $project)
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
-        $project->setCoordinator($user->getId());
-        $this->projectFacade->save($project);
-
-        return View\View::create()->setData(['result' => true]);
-    }
-
-    /**
-     * Set the Project to status done
-     *
-     * @Rest\POST("/{project}/done")
-     *
-     * @param $project
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function setProjectStatusToDoneAction(Model\Project $project)
-    {
-        $project->setStatus(Model\Project::STATUS_DONE);
-        $this->projectFacade->save($project);
-
-        return View\View::create()->setData(['result' => true]);
-    }
 }
