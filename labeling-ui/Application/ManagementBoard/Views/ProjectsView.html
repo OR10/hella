@@ -28,7 +28,8 @@
                 <project-list user="vm.user" user-permissions="vm.userPermissions"
                               project-status="in_progress"></project-list>
             </tab>
-            <tab header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
+            <tab ng-if="vm.userPermissions.canViewClosedProjects"
+                 header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     Done <span ng-hide='vm.projectCount == null'>({{vm.projectCount.done}})</span>
