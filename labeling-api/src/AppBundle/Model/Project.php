@@ -44,7 +44,7 @@ class Project
     private $status = self::STATUS_TODO;
 
     /**
-     * @var CouchDB\Field(type="string")
+     * @CouchDB\Field(type="string")
      */
     private $coordinator = null;
 
