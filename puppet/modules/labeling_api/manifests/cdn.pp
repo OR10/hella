@@ -5,6 +5,8 @@ class labeling_api::cdn(
   $allowed_origin = $labeling_api::params::frame_cdn_allowed_origin,
   $expires = $labeling_api::params::frame_cdn_expires,
   $httpv2 = false,
+  $sslCertFile = '/etc/nginx/labeling_api-ssl-certificate.crt',
+  $sslKeyFile = '/etc/nginx/labeling_api-ssl-certificate.key',
 ) {
   if $configure_nginx {
     include ::nginx
@@ -41,8 +43,8 @@ class labeling_api::cdn(
       vhostDir           => $vhost_dir,
       vhostPort          => $vhost_port,
       httpv2             => $httpv2,
-      sslCertFile        => '/etc/nginx/labeling_api-ssl-certificate.crt',
-      sslKeyFile         => '/etc/nginx/labeling_api-ssl-certificate.key',
+      sslCertFile        => $sslCertFile,
+      sslKeyFile         => $sslKeyFile,
       locationRawPrepend => $_locationRawPrepend,
       addHeader          => $_addHeader,
       vhostCfgAppend     => $_vhostCfgAppend,

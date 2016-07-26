@@ -8,6 +8,8 @@ class labeling_api::app(
   $is_vagrant_vm = false,
   $port = 80,
   $httpv2 = false,
+  $sslCertFile = undef,
+  $sslKeyFile = undef,
 ) {
   include ::labeling_api::common
 
@@ -18,6 +20,8 @@ class labeling_api::app(
     client_max_body_size => $client_max_body_size,
     port => $port,
     httpv2 => $httpv2,
+    sslCertFile => $sslCertFile,
+    sslKeyFile => $sslKeyFile,
     not_found_redirect => '/labeling/index.html',
   }
 

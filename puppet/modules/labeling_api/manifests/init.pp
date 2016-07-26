@@ -6,6 +6,7 @@ class labeling_api(
   $run_composer_install = false,
   $tideways = false,
   $redis = false,
+  $letsencrypt = false,
 ) {
   include ::labeling_api::params
 
@@ -37,5 +38,10 @@ class labeling_api(
 
   if $tideways {
     include ::tideways
+  }
+
+  if $letsencrypt {
+    include ::letsencrypt
+    include ::annostation_letsencrypt
   }
 }

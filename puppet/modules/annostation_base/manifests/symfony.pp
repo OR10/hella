@@ -8,6 +8,8 @@ define annostation_base::symfony(
   $not_found_redirect = '=404',
   $authBasic = undef,
   $authBasicFile = undef,
+  $sslCertFile = undef,
+  $sslKeyFile = undef,
 ) {
   include ::php
   include ::nginx
@@ -27,12 +29,24 @@ define annostation_base::symfony(
       $_vhostPort = $port
     }
 
+    if $sslCertFile {
+      $_sslCertFile = $sslCertFile
+    } else {
+      $_sslCertFile = "/etc/nginx/${name}-ssl-certificate.key"
+    }
+
+    if $sslKeyFile {
+      $_sslKeyFile = $sslKeyFile
+    } else {
+      $_sslKeyFile = "/etc/nginx/${name}-ssl-certificate.key"
+    }
+
     annostation_base::nginx_vhost { $name:
       vhostDir          => "${app_path}/web",
       vhostPort         => $_vhostPort,
       httpv2            => $httpv2,
-      sslCertFile       => "/etc/nginx/${name}-ssl-certificate.crt",
-      sslKeyFile        => "/etc/nginx/${name}-ssl-certificate.key",
+      sslCertFile       => $_sslCertFile,
+      sslKeyFile        => $_sslKeyFile,
       indexFiles        => [$app_main_script],
       tryFiles          => ['$uri', "/${app_main_script}\$is_args\$args"],
       clientMaxBodySize => $client_max_body_size,
