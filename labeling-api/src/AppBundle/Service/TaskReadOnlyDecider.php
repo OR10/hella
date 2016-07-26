@@ -43,7 +43,7 @@ class TaskReadOnlyDecider
             return false;
         }
 
-        if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR])) {
+        if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
             return $labelingTask->getStatus() !== Model\LabelingTask::STATUS_TODO;
         }
 
