@@ -16,7 +16,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
     count = "${var.app-count}"
 
     name = "app-${count.index}.labeltool"
-    image_name = "Ubuntu 14.04 sys11-cloudimg amd64"
+    image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
     flavor_name = "m1.small"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
 
@@ -56,7 +56,7 @@ resource "openstack_compute_instance_v2" "labeltool-couchdb" {
     count = "${var.couchdb-count}"
 
     name = "couchdb-${count.index}.labeltool"
-    image_name = "Ubuntu 14.04 sys11-cloudimg amd64"
+    image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
     flavor_name = "m1.small"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
 
