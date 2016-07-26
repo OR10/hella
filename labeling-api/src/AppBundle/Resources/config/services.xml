@@ -111,6 +111,15 @@
             <argument type="service" id="annostation.labeling_api.service.task_incomplete" />
         </service>
 
+        <service id="annostation.labeling_api.service.report" class="AppBundle\Service\Report">
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.report" />
+        </service>
+
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger" />
 
         <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">

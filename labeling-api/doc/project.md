@@ -89,3 +89,37 @@
 + Response 200 (application/json)
     + Attributes
         + result true
+
+## Create a new Report [/api/project/{projectId}/report]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Create New Report [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result array(Report)
+        
+## Get all Report for Project [/api/project/{projectId}/report]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Reports by Project [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result array(Report)     
+
+## Get Report by Report ID [/api/project/{projectId}/report/{reportId}]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+    + reportId: `a87f77b135c47576bbde8bca9eac2204` (string, required) - The id of the report.
+
+### Report by id [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result array(Report)

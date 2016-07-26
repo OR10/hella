@@ -32,5 +32,10 @@
             <argument type="service" id="annostation.labeling_api.service.project_exporter.csv" />
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.report" class="AppBundle\Worker\JobInstruction\Report">
+            <argument type="service" id="annostation.labeling_api.service.report" />
+            <argument type="service" id="annostation.labeling_api.database.facade.report" />
+        </service>
     </services>
 </container>

@@ -157,3 +157,34 @@
 + rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the Labeling Group
 + coordinators: `[]` (array) - Array of the coordinator IDs
 + labelers: `[]` (array) - Array of the labelers IDs
+
+# Report
++ id: `36047d429d50548893be41c6880632fd` (string) - Labeling Group ID
++ rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the Labeling Group
++ reportStatus: `in_progress` (string)
++ projectId: `in_315c18731e6a3989d933017a1e47b1dd` (string)
++ projectStatus: `` (string)
++ projectCreatedAt: `1468379894` (number)
++ projectMovedToInProgressAt: `1468379894` (number)
++ projectMovedToDoneAt: `1468379894` (number)
++ numberOfVideosInProject: `130` (number)
++ numberOfTasksInProject: `390` (number)
++ projectLabelType: `` (string)
++ projectDueDate: `1468379894` (number)
++ numberOfToDoTasks: `0` (number)
++ numberOfInProgressTasks: `0` (number)
++ numberOfDoneTasks: `390` (number)
++ numberOfToDoReviewTasks: `0` (number)
++ numberOfInProgressReviewTasks: `0` (number)
++ numberOfDoneReviewTasks: `0` (number)
++ numberOfToDoRevisionTasks: `0` (number)
++ numberOfInProgressRevisionTasks: `0` (number)
++ numberOfDoneRevisionTasks: `0` (number)
++ numberOfLabeledThingInFrames: `15783` (number)
++ numberOfLabeledThingInFrameClasses: `32819` (number)
++ numberOfLabeledThings: `4537` (number)
++ numberOfLabeledThingClasses: `4537` (number)
++ totalTime: `460990` (number)
++ totalLabelingTime: `0` (number)
++ totalReviewTime: `0` (number)
++ totalRevisionTime: `0` (number)

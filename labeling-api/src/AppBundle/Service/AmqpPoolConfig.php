@@ -42,6 +42,7 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
             'AppBundle\Worker\Jobs\Interpolation' => 'annostation.labeling_api.worker.job_instruction.interpolation',
             'AppBundle\Worker\Jobs\CsvExporter' => 'annostation.labeling_api.worker.job_instruction.csv_exporter',
             'AppBundle\Worker\Jobs\ProjectCsvExporter' => 'annostation.labeling_api.worker.job_instruction.project_csv_exporter',
+            'AppBundle\Worker\Jobs\Report' => 'annostation.labeling_api.worker.job_instruction.report',
         );
     }
 }

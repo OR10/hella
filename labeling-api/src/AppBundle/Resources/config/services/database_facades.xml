@@ -59,5 +59,9 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.report" class="AppBundle\Database\Facade\Report">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
     </services>
 </container>
