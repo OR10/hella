@@ -9,9 +9,9 @@ class UserProfileController {
    * @param {UserGateway} userGateway injected
    * @param {SingleRoleFilter} singleRoleFilter
    * @param {ModalService} modalService
-   * @param {angular.$location} $location
+   * @param {$state} $state
    */
-  constructor($scope, userGateway, singleRoleFilter, modalService, $location) {
+  constructor($scope, userGateway, singleRoleFilter, modalService, $state) {
     if (this.readonly === undefined) {
       this.readonly = true;
     }
@@ -41,10 +41,10 @@ class UserProfileController {
     this._modalService = modalService;
 
     /**
-     * @type {angular.$location}
+     * @type {$state}
      * @private
      */
-    this._$location = $location;
+    this._$state = $state;
 
     /**
      * @type {User}
@@ -140,7 +140,7 @@ class UserProfileController {
       message: 'All changes made to the user information will be lost. Continue?',
       confirmButtonText: 'Leave',
       cancelButtonText: 'Cancel',
-    }, () => this._$location.path('/users'));
+    }, () => this._$state.go('labeling.users.list'));
 
     modal.activate();
   }
@@ -159,9 +159,14 @@ class UserProfileController {
       this._userGateway.createUser(this.user).then(user => {
         this.user = user;
         this.loadingInProgress = false;
+        this._$state.go('labeling.users.list');
       });
     } else {
-      this._userGateway.updateUser(this.user).then(() => this.loadingInProgress = false);
+      this._userGateway.updateUser(this.user).then(
+        () => {
+          this.loadingInProgress = false;
+          this._$state.go('labeling.users.list');
+        });
     }
   }
 
@@ -269,7 +274,7 @@ UserProfileController.$inject = [
   'userGateway',
   'singleRoleFilter',
   'modalService',
-  '$location',
+  '$state',
 ];
 
 export default UserProfileController;
