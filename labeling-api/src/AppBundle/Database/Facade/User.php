@@ -128,7 +128,7 @@ class User
 
     /**
      * @param array $userIds
-     * @return \Traversable
+     * @return array
      */
     public function getUserByIds(array $userIds)
     {
