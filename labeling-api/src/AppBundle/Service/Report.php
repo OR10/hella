@@ -126,7 +126,7 @@ class Report
 
         $timesPerProject = $this->projectFacade->getTimeForProject($project);
         $report->setTotalTime(
-            $timesPerProject[0]['value']
+            isset($timesPerProject[0]['value']) ? $timesPerProject[0]['value'] : 0
         );
         $report->setTotalLabelingTime(0);
         $report->setTotalReviewTime(0);
