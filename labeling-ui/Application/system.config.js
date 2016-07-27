@@ -66,9 +66,10 @@ System.config({
     },
 
     "npm:foundation-apps@1.2.0/js/angular/*": {
-      "deps": [
-        "angular"
-      ]
+      "format": "cjs",
+      "globals": {
+        "angular": "angular"
+      }
     },
   },
 
