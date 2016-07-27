@@ -169,7 +169,7 @@ class ProjectListController {
    * @param {number} projectId
    */
   openReport(projectId) { // eslint-disable-line no-unused-vars
-    // @TODO: Implement
+    this._$state.go('labeling.reporting.list', {projectId});
   }
 
   _triggerReloadAll() {
