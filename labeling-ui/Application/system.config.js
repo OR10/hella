@@ -46,12 +46,6 @@ System.config({
         "angular": "angular"
       }
     },
-    "github:angular/bower-angular-mocks@1.4.7/angular-mocks.js": {
-      "format": "cjs",
-      "globals": {
-        "angular": "angular"
-      }
-    },
     "github:angular-ui/ui-router@0.2.15/angular-ui-router.js": {
       "format": "cjs",
       "globals": {
