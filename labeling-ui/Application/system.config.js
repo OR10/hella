@@ -14,12 +14,7 @@ System.config({
   },
 
   meta: {
-    "Application/main.js": {
-      "deps": [
-        "angular"
-      ]
-    },
-    "angular": {
+    "github:angular/bower-angular@*": {
       "deps": [
         "jquery"
       ]
@@ -29,37 +24,37 @@ System.config({
         "angular"
       ]
     },
-    "github:angular/bower-angular-animate@*/*.js": {
+    "github:angular/bower-angular-animate@*": {
       "deps": [
         "angular"
       ]
     },
-    "github:codef0rmer/angular-dragdrop@*/src/*.js": {
+    "github:codef0rmer/angular-dragdrop@*": {
       "deps": [
         "angular"
       ]
     },
-    "github:chieffancypants/angular-hotkeys@*/build/*.js": {
+    "github:chieffancypants/angular-hotkeys@*": {
       "deps": [
         "angular"
       ]
     },
-    "github:angular/bower-angular-mocks@*/*.js": {
+    "github:angular/bower-angular-mocks@*": {
       "deps": [
         "angular"
       ]
     },
-    "github:angular-ui/ui-router@*/*.js": {
+    "github:angular-ui/ui-router@*": {
       "deps": [
         "angular"
       ]
     },
-    "npm:v-accordion@*/dist/*.js": {
+    "npm:v-accordion@*": {
       "deps": [
         "angular"
       ]
     },
-    "npm:foundation-apps@*/js/**/*": {
+    "npm:foundation-apps@*": {
       "deps": [
         "angular"
       ]
