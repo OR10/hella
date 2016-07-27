@@ -55,7 +55,10 @@ class LabelingGroup extends Controller\Base
     public function listAction(HttpFoundation\Request $request)
     {
         $labelingGroups = $this->labelingGroupFacade->findAll();
-        $users = $this->getUserListForLabelingGroup($labelingGroups->toArray());
+        $users = [];
+        foreach($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
+            $users[$user->getId()] = $user;
+        }
 
         return View\View::create()->setData(
             [
@@ -82,8 +85,12 @@ class LabelingGroup extends Controller\Base
         $labeler      = $request->request->get('labeler', []);
 
         $labelingGroup = new Model\LabelingGroup($coordinators, $labeler);
-        $users = $this->getUserListForLabelingGroup([$labelingGroup]);
         $this->labelingGroupFacade->save($labelingGroup);
+
+        $users = [];
+        foreach($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+            $users[$user->getId()] = $user;
+        }
 
         return View\View::create()->setData(
             [
@@ -116,9 +123,13 @@ class LabelingGroup extends Controller\Base
 
         $labelingGroup->setCoordinators($coordinators);
         $labelingGroup->setLabeler($labeler);
-
         $this->labelingGroupFacade->save($labelingGroup);
-        $users = $this->getUserListForLabelingGroup([$labelingGroup]);
+
+        $users = [];
+        foreach($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+            $users[$user->getId()] = $user;
+        }
+
         return View\View::create()->setData(
             [
                 'result' => [
@@ -156,7 +167,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      * @param $labelingGroups
-     * @return \Traversable
+     * @return array
      */
     private function getUserListForLabelingGroup($labelingGroups)
     {

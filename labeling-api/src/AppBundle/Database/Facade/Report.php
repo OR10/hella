@@ -20,7 +20,7 @@ class Report
 
     /**
      * @param $id
-     * @return Model\LabelingGroup
+     * @return Model\Report
      */
     public function find($id)
     {
