@@ -127,6 +127,40 @@ class User
     }
 
     /**
+     * @param array $userIds
+     * @return \Traversable
+     */
+    public function getUserByIds(array $userIds)
+    {
+        $idsInChunks = array_chunk($userIds, 100);
+        $users       = array();
+        foreach ($idsInChunks as $idsInChunk) {
+            $users = array_merge(
+                $users,
+                $this->documentManager
+                    ->createQuery('annostation_user', 'by_id')
+                    ->onlyDocs(true)
+                    ->setKeys($idsInChunk)
+                    ->execute()
+                    ->toArray()
+            );
+        }
+
+        return array_values(
+            array_filter(
+                $users,
+                function (Model\User $user) {
+                    if ($user->isLocked()) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            )
+        );
+    }
+
+    /**
      * Returns the user profile image raw data
      *
      * @param Model\User $user

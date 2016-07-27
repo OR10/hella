@@ -14,7 +14,7 @@
 
 + Response 200 (application/json)
     + Attributes
-        + result LabelingGroup
+        + result (LabelingGroup)
 
 ## Update a Labeling Group [/api/labelingGroup/{labelingGroupId}]
 
@@ -26,7 +26,7 @@
 
 + Response 200 (application/json)
     + Attributes
-        + result LabelingGroup
+        + result (LabelingGroup)
 
 ## Delete a Labeling Group [/api/labelingGroup/{labelingGroupId}]
 

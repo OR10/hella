@@ -25,9 +25,23 @@ class LabelingGroup extends Controller\Base
      */
     private $labelingGroupFacade;
 
-    public function __construct(Facade\LabelingGroup $labelingGroupFacade)
+    /**
+     * @var Facade\User
+     */
+    private $userFacade;
+
+    /**
+     * LabelingGroup constructor.
+     * @param Facade\LabelingGroup $labelingGroupFacade
+     * @param Facade\User          $userFacade
+     */
+    public function __construct(
+        Facade\LabelingGroup $labelingGroupFacade,
+        Facade\User $userFacade
+    )
     {
         $this->labelingGroupFacade = $labelingGroupFacade;
+        $this->userFacade = $userFacade;
     }
 
     /**
@@ -41,10 +55,15 @@ class LabelingGroup extends Controller\Base
     public function listAction(HttpFoundation\Request $request)
     {
         $labelingGroups = $this->labelingGroupFacade->findAll();
+        $users = $this->getUserListForLabelingGroup($labelingGroups->toArray());
+
         return View\View::create()->setData(
             [
                 'totalRows' => $labelingGroups->getTotalRows(),
-                'result' => $labelingGroups->toArray(),
+                'result' => [
+                    'labelingGroups' => $labelingGroups->toArray(),
+                    'users' => $users,
+                    ]
             ]
         );
     }
@@ -63,11 +82,15 @@ class LabelingGroup extends Controller\Base
         $labeler      = $request->request->get('labeler', []);
 
         $labelingGroup = new Model\LabelingGroup($coordinators, $labeler);
+        $users = $this->getUserListForLabelingGroup([$labelingGroup]);
         $this->labelingGroupFacade->save($labelingGroup);
 
         return View\View::create()->setData(
             [
-                'result' => $labelingGroup,
+                'result' => [
+                    'labelingGroups' => $labelingGroup,
+                    'users' => $users,
+                ]
             ]
         );
     }
@@ -95,9 +118,13 @@ class LabelingGroup extends Controller\Base
         $labelingGroup->setLabeler($labeler);
 
         $this->labelingGroupFacade->save($labelingGroup);
+        $users = $this->getUserListForLabelingGroup([$labelingGroup]);
         return View\View::create()->setData(
             [
-                'result' => $labelingGroup,
+                'result' => [
+                    'labelingGroups' => $labelingGroup,
+                    'users' => $users,
+                ]
             ]
         );
     }
@@ -125,5 +152,26 @@ class LabelingGroup extends Controller\Base
                 'result' => true,
             ]
         );
+    }
+
+    /**
+     * @param $labelingGroups
+     * @return \Traversable
+     */
+    private function getUserListForLabelingGroup($labelingGroups)
+    {
+        $labelingUserIds = array_map(function(Model\LabelingGroup $labelingGroup) {
+            return array_unique(
+                array_merge(
+                    $labelingGroup->getCoordinators(),
+                    $labelingGroup->getLabeler()
+                )
+            );
+        }, $labelingGroups);
+        $users = [];
+        foreach($labelingUserIds as $labelingUserId) {
+            $users = array_merge($users, $labelingUserId);
+        }
+        return $this->userFacade->getUserByIds(array_unique($users));
     }
 }
