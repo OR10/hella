@@ -17,7 +17,7 @@ class ReportingListController {
   }
 
   startReport() {
-    console.log('starting report');
+    // @TODO: implement
   }
 }
 

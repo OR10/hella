@@ -40,7 +40,7 @@ class SystemJsLoadOrderCommand {
 
   runDependencyTreeGeneration(config, entrypoint, include, exclude) {
     return Promise.resolve()
-      .then(() => console.log('Running dependency trace...'))
+      .then(() => console.log('Running dependency trace...')) // eslint-disable-line no-console
       .then(() => this.getTrace(config, entrypoint))
       .then(trace => {
         const includeRegExp = new RegExp(include);
@@ -54,7 +54,7 @@ class SystemJsLoadOrderCommand {
   }
 
   walkDependencies(trace, startModule, includeRegExp, excludeRegExp, level = 0) {
-    console.log(this.getIndentationForLevel(level) + startModule);
+    console.log(this.getIndentationForLevel(level) + startModule); // eslint-disable-line no-console
     const dependents = this.getDependentsForModule(trace, startModule)
       .filter(module => module.match(includeRegExp) !== null)
       .filter(module => module.match(excludeRegExp) === null);
@@ -74,7 +74,7 @@ class SystemJsLoadOrderCommand {
 
   getIndentationForLevel(level) {
     let indent = '';
-    for (let i = 0; i < level; i++) {
+    for (let index = 0; index < level; index++) {
       indent = indent + ' ';
     }
 
