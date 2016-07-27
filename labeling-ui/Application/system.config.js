@@ -14,51 +14,52 @@ System.config({
   },
 
   meta: {
-    "github:angular/bower-angular@*": {
-      "deps": [
-        "jquery"
-      ]
-    },
     "Distribution/Templates/*": {
       "deps": [
         "angular"
       ]
     },
-    "github:angular/bower-angular-animate@*": {
+    "github:angular/bower-angular@1.4.8/angular.js": {
+      "deps": [
+        "jquery"
+      ]
+    },
+    "github:angular/bower-angular-animate@1.4.8/angular-animate.js": {
       "deps": [
         "angular"
       ]
     },
-    "github:codef0rmer/angular-dragdrop@*": {
+    "github:codef0rmer/angular-dragdrop@1.0.12/src/angular-dragdrop.js": {
       "deps": [
         "angular"
       ]
     },
-    "github:chieffancypants/angular-hotkeys@*": {
+    "github:chieffancypants/angular-hotkeys@1.6.0/build/hotkeys.js": {
       "deps": [
         "angular"
       ]
     },
-    "github:angular/bower-angular-mocks@*": {
+    "github:angular/bower-angular-mocks@1.4.7/angular-mocks.js": {
       "deps": [
         "angular"
       ]
     },
-    "github:angular-ui/ui-router@*": {
+    "github:angular-ui/ui-router@0.2.15/angular-ui-router.js": {
       "deps": [
         "angular"
       ]
     },
-    "npm:v-accordion@*": {
+    "npm:v-accordion@1.4.1/index.js": {
       "deps": [
         "angular"
       ]
     },
-    "npm:foundation-apps@*": {
+
+    "npm:foundation-apps@1.2.0/js/angular/*": {
       "deps": [
         "angular"
       ]
-    }
+    },
   },
 
   map: {
