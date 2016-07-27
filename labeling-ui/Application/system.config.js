@@ -49,7 +49,7 @@ System.config({
         "angular"
       ]
     },
-    "npm:v-accordion@1.4.1/index.js": {
+    "npm:v-accordion@1.4.1/dist/v-accordion.js": {
       "deps": [
         "angular"
       ]
