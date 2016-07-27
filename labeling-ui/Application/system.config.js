@@ -14,6 +14,16 @@ System.config({
   },
 
   meta: {
+    "Application/main.js": {
+      "deps": [
+        "angular"
+      ]
+    },
+    "angular": {
+      "deps": [
+        "jquery"
+      ]
+    },
     "Distribution/Templates/*": {
       "deps": [
         "angular"
