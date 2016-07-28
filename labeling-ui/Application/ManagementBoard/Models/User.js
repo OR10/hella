@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash.clonedeep';
+
 /**
  * Model for a User
  */
@@ -61,7 +63,10 @@ class User {
    */
   toJSON() {
     const {id, username, email, enabled, lastLogin, locked, roles, password} = this;
-    return {id, username, email, enabled, lastLogin, locked, roles, password};
+    return {
+      roles: cloneDeep(roles),
+      id, username, email, enabled, lastLogin, locked, password,
+    };
   }
 }
 
