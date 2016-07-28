@@ -142,7 +142,7 @@ class ViewerTitleBarController {
       () => {
         this._taskGateway.markTaskAsDone(this.task.id)
           .then(() => {
-            this._$state.go('labeling.tasks');
+            this._$state.go('labeling.tasks.list', {projectId: this.task.projectId});
           })
           .catch(response => {
             if (response.status === 412) {
