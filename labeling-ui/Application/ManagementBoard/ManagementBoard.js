@@ -28,6 +28,8 @@ import UserProfileDirective from './Directives/UserProfileDirective';
 import LabelingGroupsController from './Controllers/LabelingGroupsController';
 import LabelingGroupsView from './Views/LabelingGroupsView.html!';
 import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
+import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
+
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 
@@ -147,6 +149,7 @@ class ManagementBoard extends Module {
     this.registerDirective('taskList', TaskListDirective);
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
+    this.registerDirective('labelingGroupList', LabelingGroupListDirective);
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
