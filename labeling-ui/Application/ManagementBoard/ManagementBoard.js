@@ -25,6 +25,9 @@ import UserGateway from './Gateways/UserGateway';
 import UsersListDirective from './Directives/UsersListDirective';
 import UserProfileDirective from './Directives/UserProfileDirective';
 
+import LabelingGroupsController from './Controllers/LabelingGroupsController';
+import LabelingGroupsView from './Views/LabelingGroupsView.html!';
+import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 
@@ -104,6 +107,22 @@ class ManagementBoard extends Module {
           controller: UsersDetailController,
           controllerAs: 'vm',
           template: UsersDetailView,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.labeling-groups', {
+      url: 'labelingGroups',
+      redirectTo: 'labeling.labeling-groups.list',
+    });
+
+    $stateProvider.state('labeling.labeling-groups.list', {
+      url: '/',
+      views: {
+        '@': {
+          controller: LabelingGroupsController,
+          controllerAs: 'vm',
+          template: LabelingGroupsView,
         },
       },
     });
