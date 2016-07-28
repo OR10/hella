@@ -213,7 +213,7 @@ class BufferedHttpProvider {
 
       let processableData = [];
 
-      const specialKeys = ['labeledThingsInFrame', 'labeledThings', 'labeledThing', 'labeledThingInFrame'];
+      const specialKeys = ['labeledThingsInFrame', 'labeledThings', 'labeledThing', 'labeledThingInFrame', 'labelingGroups'];
 
       if (specialKeys.reduce((find, key) => find || data.result[key] !== undefined, false)) {
         specialKeys.forEach(key => {
