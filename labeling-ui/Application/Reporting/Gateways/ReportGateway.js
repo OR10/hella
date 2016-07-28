@@ -25,9 +25,9 @@ class ReportGateway {
    *
    * @return {AbortablePromise<Object|Error>}
    */
-  createReport(projectId) {
+  startReport(projectId) {
     const url = this._apiService.getApiUrl(`/project/${projectId}/report`);
-    return this._bufferedHttp.post(url, undefined, 'report')
+    return this._bufferedHttp.post(url, undefined, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
