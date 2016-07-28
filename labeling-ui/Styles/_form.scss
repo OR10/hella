@@ -8,7 +8,7 @@ fieldset {
   }
 }
 
-input {
+input, select {
   &.error {
     border: 2px solid orangered !important;
   }
