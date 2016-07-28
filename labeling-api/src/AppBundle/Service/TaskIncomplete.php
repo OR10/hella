@@ -86,6 +86,14 @@ class TaskIncomplete
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
+        $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
+        $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
+        $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
+
+        if (empty($rootStructure['children'])) {
+            return false;
+        }
+
         if (empty($labeledThingInFrame->getClasses())) {
             $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
             if ($labeledThingInFrame === null) {
@@ -94,9 +102,6 @@ class TaskIncomplete
         }
 
         $classes = $labeledThingInFrame->getClasses();
-        $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
-        $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
-        $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
 
         foreach ($rootStructure['children'] as $child) {
             if (!$this->searchStructureForClasses($classes, $child)) {
