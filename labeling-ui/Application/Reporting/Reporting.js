@@ -41,8 +41,11 @@ class Reporting extends Module {
           controllerAs: 'vm',
           template: ReportingListTemplate,
           resolve: {
-            project: ['$stateParams', 'reportGateway', ($stateParams, reportGateway) => {
-              return reportGateway.getProjects($stateParams.projectId);
+            project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
+              return projectGateway.getProject($stateParams.projectId);
+            }],
+            reports: ['$stateParams', 'reportGateway', ($stateParams, reportGateway) => {
+              return reportGateway.getReports($stateParams.projectId);
             }],
           },
         },
