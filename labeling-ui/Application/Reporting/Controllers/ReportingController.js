@@ -11,8 +11,6 @@ class ReportingController {
     this.userPermissions = userPermissions;
     this.project = project;
     this.report = report;
-
-    console.log(project, report);
   }
 }
 
