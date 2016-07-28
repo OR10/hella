@@ -189,7 +189,11 @@ class LabeledThing extends Controller\Base
         if ($request->request->get('rev') !== $labeledThing->getRev()) {
             throw new Exception\ConflictHttpException('Invalid revision');
         }
-        $classes    = $request->request->get('classes', []);
+        if ($task->getLabelInstruction() === Model\LabelingTask::INSTRUCTION_LANE) {
+            $classes = ['lane-event'];
+        }else{
+            $classes = $request->request->get('classes', []);
+        }
         $frameRange = $this->createFrameRange(
             $request->request->get('frameRange'),
             new Model\FrameIndexRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())

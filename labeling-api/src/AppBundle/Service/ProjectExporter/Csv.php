@@ -128,6 +128,9 @@ class Csv implements Service\ProjectExporter
                 'vehicle' => array(
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
                     Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
+                ),
+                'lane' => array(
+                    Model\LabelingTask::INSTRUCTION_LANE
                 )
             );
 
@@ -160,6 +163,9 @@ class Csv implements Service\ProjectExporter
                             break;
                         case Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE:
                             $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getVehicleIgnoreLabelingData($task));
+                            break;
+                        case Model\LabelingTask::INSTRUCTION_LANE:
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getLaneLabelingData($task));
                             break;
                     }
                 }
@@ -395,6 +401,36 @@ class Csv implements Service\ProjectExporter
                 }
 
                 return $result;
+            },
+            $labeledThingsInFramesWithGhostClasses
+        );
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @return mixed
+     */
+    public function getLaneLabelingData(Model\LabelingTask $task)
+    {
+        $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
+        $frameNumberMapping                    = $task->getFrameNumberMapping();
+        $labelInstruction                      = $task->getLabelInstruction();
+
+        return array_map(
+            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
+                return array(
+                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'label_class'  => $labelInstruction,
+                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'    => 0,
+                    'truncation'   => 0,
+                    'direction'    => 'none',
+                    'id'           => NULL,
+                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
+                );
             },
             $labeledThingsInFramesWithGhostClasses
         );

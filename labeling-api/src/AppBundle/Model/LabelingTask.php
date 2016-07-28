@@ -12,6 +12,7 @@ class LabelingTask
 {
     const TYPE_META_LABELING = 'meta-labeling';
     const TYPE_OBJECT_LABELING = 'object-labeling';
+
     const DRAWING_TOOL_RECTANGLE = 'rectangle';
     const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
     const DRAWING_TOOL_CUBOID = 'cuboid';
@@ -21,6 +22,7 @@ class LabelingTask
     const INSTRUCTION_CYCLIST = 'cyclist';
     const INSTRUCTION_IGNORE = 'ignore';
     const INSTRUCTION_IGNORE_VEHICLE = 'ignore-vehicle';
+    const INSTRUCTION_LANE = 'lane';
 
     const STATUS_PREPROCESSING = 'preprocessing';
     const STATUS_IN_PROGRESS = 'in_progress';
