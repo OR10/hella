@@ -142,6 +142,7 @@ class CurrentUser extends Controller\Base
         $viewTaskList       = false;
         $viewClosedProjects = false;
         $viewTodoProjects   = false;
+        $editLabelingGroups = false;
 
         if ($user->hasRole(Model\User::ROLE_LABELER)) {
             $viewTaskList = true;
@@ -163,6 +164,7 @@ class CurrentUser extends Controller\Base
             $viewTodoProjects   = true;
             $viewTaskList       = true;
             $moveProjectToDone  = true;
+            $editLabelingGroups = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton        = true;
@@ -200,6 +202,7 @@ class CurrentUser extends Controller\Base
                         'canViewTaskList' => $viewTaskList,
                         'canViewClosedProjects' => $viewClosedProjects,
                         'canViewTodoProjects' => $viewTodoProjects,
+                        'canEditLabelingGroups' => $editLabelingGroups,
                     ]
             ]
         );
