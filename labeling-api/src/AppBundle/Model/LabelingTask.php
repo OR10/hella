@@ -168,15 +168,21 @@ class LabelingTask
     private $createdAt;
 
     /**
-     * @param Video $video
-     * @param Project $project
-     * @param array $frameNumberMapping
-     * @param string $taskType
-     * @param string $drawingTool
-     * @param array $predefinedClasses
-     * @param array $requiredImageTypes
-     *
+     * @var bool
+     * @CouchDB\Field(type="boolean")
+     */
+    private $hideAttributeSelector = false;
+
+    /**
+     * @param Video     $video
+     * @param Project   $project
+     * @param array     $frameNumberMapping
+     * @param string    $taskType
+     * @param string    $drawingTool
+     * @param array     $predefinedClasses
+     * @param array     $requiredImageTypes
      * @param \DateTime $createdAt
+     * @param           $hideAttributeSelector
      * @return LabelingTask
      */
     public static function create(
@@ -187,7 +193,8 @@ class LabelingTask
         $drawingTool = null,
         $predefinedClasses = array(),
         array $requiredImageTypes = array(),
-        \DateTime $createdAt = null
+        \DateTime $createdAt = null,
+        $hideAttributeSelector = false
     ) {
         return new static(
             $video,
@@ -197,19 +204,21 @@ class LabelingTask
             $drawingTool,
             $predefinedClasses,
             $requiredImageTypes,
-            $createdAt
+            $createdAt,
+            $hideAttributeSelector
         );
     }
 
     /**
-     * @param Video $video
-     * @param Project $project
-     * @param array $frameNumberMapping
-     * @param string $taskType
-     * @param string $drawingTool
-     * @param array $predefinedClasses
-     * @param array $requiredImageTypes
+     * @param Video     $video
+     * @param Project   $project
+     * @param array     $frameNumberMapping
+     * @param string    $taskType
+     * @param string    $drawingTool
+     * @param array     $predefinedClasses
+     * @param array     $requiredImageTypes
      * @param \DateTime $createdAt
+     * @param bool      $hideAttributeSelector
      */
     public function __construct(
         Video $video,
@@ -219,18 +228,20 @@ class LabelingTask
         $drawingTool = null,
         $predefinedClasses = array(),
         array $requiredImageTypes = array(),
-        \DateTime $createdAt = null
+        \DateTime $createdAt = null,
+        $hideAttributeSelector = false
     ) {
-        $this->videoId            = $video->getId();
-        $this->projectId          = $project->getId();
-        $this->frameNumberMapping = $frameNumberMapping;
-        $this->taskType           = $taskType;
-        $this->drawingTool        = $drawingTool;
-        $this->predefinedClasses  = $predefinedClasses;
-        $this->requiredImageTypes = $requiredImageTypes;
+        $this->videoId               = $video->getId();
+        $this->projectId             = $project->getId();
+        $this->frameNumberMapping    = $frameNumberMapping;
+        $this->taskType              = $taskType;
+        $this->drawingTool           = $drawingTool;
+        $this->predefinedClasses     = $predefinedClasses;
+        $this->requiredImageTypes    = $requiredImageTypes;
+        $this->hideAttributeSelector = $hideAttributeSelector;
         if ($createdAt === null) {
             $this->createdAt = new \DateTime();
-        }else{
+        } else {
             $this->createdAt = $createdAt;
         }
     }

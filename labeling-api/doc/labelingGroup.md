@@ -7,6 +7,17 @@
 + Response 200 (application/json)
     + Attributes
         + result array(LabelingGroup)
+        
+## Get a Labeling Group [/api/labelingGroup/{labelingGroupId}]
+
++ Parameters
+    + labelingGroupId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the labeling group.
+
+### Get a Labeling Group [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result array(LabelingGroup)
 
 ## Add a new Labeling Group [/api/labelingGroup]
 
@@ -20,6 +31,7 @@
 
 + Parameters
     + labelingGroupId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the labeling group.
+
 ### Update a Labeling Group [PUT]
 + Request (application/json)
     + Attributes (LabelingGroup)

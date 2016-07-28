@@ -73,6 +73,31 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
+     * @Rest\Get("{labelingGroup}")
+     *
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingGroup    $labelingGroup
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getGroupAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
+    {
+        $users = [];
+        foreach($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+            $users[$user->getId()] = $user;
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'labelingGroups' => $labelingGroup,
+                    'users' => $users,
+                    ]
+            ]
+        );
+    }
+
+    /**
+     *
      * @Rest\Post("")
      *
      * @param HttpFoundation\Request $request
