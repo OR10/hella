@@ -1,19 +1,19 @@
 class ReportingListController {
-
   /**
    * @param {User} user
    * @param {UserPermissions} userPermissions
    * @param {ReportGateway} reportGateway
    * @param {ModalService} modalService
    * @param {Project} project
+   * @param {Array.<Report>} reports
    */
-  constructor(user, userPermissions, reportGateway, modalService, project) {
+  constructor(user, userPermissions, reportGateway, modalService, project, reports) {
     this.user = user;
     this.userPermissions = userPermissions;
     this._reportGateway = reportGateway;
     this._modalService = modalService;
     this.project = project;
-    this.reports = [];
+    this.reports = reports;
   }
 
   startReport() {
@@ -52,6 +52,7 @@ ReportingListController.$inject = [
   'reportGateway',
   'modalService',
   'project',
+  'reports',
 ];
 
 export default ReportingListController;

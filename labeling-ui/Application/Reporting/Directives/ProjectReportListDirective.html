@@ -6,17 +6,17 @@
             <table class="table hover">
                 <thead>
                 <tr>
-                    <th>Name</th>
                     <th>Id</th>
+                    <th>Creation Date</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-show="vm.reports.length" ng-repeat="export in vm.reports track by export.id">
+                <tr ng-show="vm.reports.length" ng-repeat="report in vm.reports track by report.id">
                     <td>
-                       <a ng-href="{{vm.showReport(report.projectId, report.id)}}">{{report.name}}</a>
+                       <a ui-sref="labeling.reporting.show({projectId: report.projectId, reportId: report.id})">{{report.id}}</a>
                     </td>
                     <td>
-                        <a ng-href="{{vm.showReport(report.projectId, report.id)}}">{{report.id}}</a>
+                       <a ui-sref="labeling.reporting.show({projectId: report.projectId, reportId: report.id})">{{report.reportCreationDate | date: 'yyyy-MM-dd H:mm:ss'}}</a>
                     </td>
                 </tr>
                 <tr ng-show="!vm.reports.length"
