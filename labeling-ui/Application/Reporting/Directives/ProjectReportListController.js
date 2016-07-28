@@ -1,9 +1,8 @@
 /**
- * Controller of the {@link ReportListDirective}
+ * Controller of the {@link ProjectReportListDirective}
  */
 class ProjectReportListController {
   /**
-   * @param {ApiService} ApiService injected
    */
   constructor() {
   }
