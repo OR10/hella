@@ -176,11 +176,6 @@ class LabelingGroup extends Controller\Base
      */
     public function deleteAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
     {
-        $revision = $request->request->get('_rev');
-        if ($revision !== $labelingGroup->getRev()) {
-            throw new Exception\ConflictHttpException('Revision mismatch');
-        }
-
         $this->labelingGroupFacade->delete($labelingGroup);
 
         return View\View::create()->setData(
