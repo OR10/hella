@@ -110,7 +110,7 @@ class LabelingGroupsDetailController {
   }
 
   addLabeler(id) {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find(candidate => candidate.id === id);
     if (this.groupLabelers.includes(user)) {
       return;
     }
