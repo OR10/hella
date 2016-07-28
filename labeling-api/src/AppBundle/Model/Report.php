@@ -48,14 +48,29 @@ class Report
     private $projectCreatedAt;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $projectCreatedBy;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $projectMovedToInProgressAt;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $projectMovedToInProgressBy;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $projectMovedToDoneAt;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $projectMovedToDoneBy;
 
     /**
      * @CouchDB\Field(type="integer")
@@ -619,5 +634,29 @@ class Report
     public function getReportCreationDate()
     {
         return $this->reportCreationDate->getTimestamp();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectMovedToDoneBy()
+    {
+        return $this->projectMovedToDoneBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectMovedToInProgressBy()
+    {
+        return $this->projectMovedToInProgressBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectCreatedBy()
+    {
+        return $this->projectCreatedBy;
     }
 }
