@@ -27,6 +27,8 @@ import UserProfileDirective from './Directives/UserProfileDirective';
 
 import LabelingGroupsController from './Controllers/LabelingGroupsController';
 import LabelingGroupsView from './Views/LabelingGroupsView.html!';
+import LabelingGroupsDetailController from './Controllers/LabelingGroupsDetailController';
+import LabelingGroupsDetailView from './Views/LabelingGroupsDetailView.html!';
 import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
 import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
 
@@ -125,6 +127,17 @@ class ManagementBoard extends Module {
           controller: LabelingGroupsController,
           controllerAs: 'vm',
           template: LabelingGroupsView,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.labeling-groups.detail', {
+      url: '/:groupId',
+      views: {
+        '@': {
+          controller: LabelingGroupsDetailController,
+          controllerAs: 'vm',
+          template: LabelingGroupsDetailView,
         },
       },
     });
