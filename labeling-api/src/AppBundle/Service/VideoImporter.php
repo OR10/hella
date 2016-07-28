@@ -247,6 +247,10 @@ class VideoImporter
         $drawingToolOptions,
         $metadata
     ) {
+        $hideAttributeSelector = false;
+        if ($instruction === Model\LabelingTask::INSTRUCTION_LANE) {
+            $hideAttributeSelector = true;
+        }
         $labelingTask = new Model\LabelingTask(
             $video,
             $project,
@@ -254,7 +258,9 @@ class VideoImporter
             $taskType,
             $drawingTool,
             $predefinedClasses,
-            $imageTypes
+            $imageTypes,
+            null,
+            $hideAttributeSelector
         );
 
         $labelingTask->setDescriptionTitle('Identify the person');
