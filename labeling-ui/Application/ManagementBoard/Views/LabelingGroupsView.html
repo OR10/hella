@@ -1,0 +1,22 @@
+<div class="grid-frame vertical">
+    <title-bar class="grid-block noscroll header"
+               user="vm.user"
+               user-permissions="vm.userPermissions"
+               back-link="labeling.projects.list"
+               back-link-text="Back to project list"
+               show-username="true"
+               show-logout-button="true"
+    >
+    </title-bar>
+    <div class="grid-block vertical">
+        <div class="grid-block align-center shrink">
+            <h2>Labeling Groups</h2>
+        </div>
+        <div class="grid-block align-center">
+            <labeling-group-list class="grid-block"
+                                 user="vm.user"
+                                 user-permissions="vm.userPermissions">
+            </labeling-group-list>
+        </div>
+    </div>
+</div>

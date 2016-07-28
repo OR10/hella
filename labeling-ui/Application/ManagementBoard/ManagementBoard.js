@@ -25,6 +25,13 @@ import UserGateway from './Gateways/UserGateway';
 import UsersListDirective from './Directives/UsersListDirective';
 import UserProfileDirective from './Directives/UserProfileDirective';
 
+import LabelingGroupsController from './Controllers/LabelingGroupsController';
+import LabelingGroupsView from './Views/LabelingGroupsView.html!';
+import LabelingGroupsDetailController from './Controllers/LabelingGroupsDetailController';
+import LabelingGroupsDetailView from './Views/LabelingGroupsDetailView.html!';
+import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
+import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
+
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 
@@ -107,6 +114,33 @@ class ManagementBoard extends Module {
         },
       },
     });
+
+    $stateProvider.state('labeling.labeling-groups', {
+      url: 'labelingGroups',
+      redirectTo: 'labeling.labeling-groups.list',
+    });
+
+    $stateProvider.state('labeling.labeling-groups.list', {
+      url: '/',
+      views: {
+        '@': {
+          controller: LabelingGroupsController,
+          controllerAs: 'vm',
+          template: LabelingGroupsView,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.labeling-groups.detail', {
+      url: '/:groupId',
+      views: {
+        '@': {
+          controller: LabelingGroupsDetailController,
+          controllerAs: 'vm',
+          template: LabelingGroupsDetailView,
+        },
+      },
+    });
   }
 
   /**
@@ -116,6 +150,7 @@ class ManagementBoard extends Module {
     this.module = angular.module('AnnoStation.ManagementBoard', []);
 
     this.module.service('userGateway', UserGateway);
+    this.module.service('labelingGroupGateway', LabelingGroupGateway);
     this.module.service('projectGateway', ProjectGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);
@@ -127,6 +162,7 @@ class ManagementBoard extends Module {
     this.registerDirective('taskList', TaskListDirective);
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
+    this.registerDirective('labelingGroupList', LabelingGroupListDirective);
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);

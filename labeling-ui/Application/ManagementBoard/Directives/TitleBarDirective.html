@@ -8,8 +8,9 @@
     </div>
 
     <div class="grid-block button-list">
-        <a class="header-button" ng-show="vm.userPermissions.canViewVideoUploadButton" href="/upload">Upload video</a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users">Manage users</a>
+        <a class="header-button" ng-show="vm.userPermissions.canViewVideoUploadButton" href="/upload">Upload Video</a>
+        <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users">Manage Users</a>
+        <a class="header-button" ng-show="vm.userPermissions.canEditLabelingGroups" ui-sref="labeling.labeling-groups.list">Manage Labeling Groups</a>
         <ng-transclude></ng-transclude>
     </div>
 

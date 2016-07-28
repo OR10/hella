@@ -1,0 +1,68 @@
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <div class="grid-block align-right shrink">
+        <div class="grid-block horizontal shrink">
+            <div class="grid-content"
+                 style="margin-bottom: .5rem; margin-top: 2rem;">
+                <button tooltip="Create new Labeling Group"
+                        ng-click="vm.createNewGroup()"
+                >
+                    <i class="fa fa-plus"></i>&nbsp;Create new Group
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="grid-content">
+        <table class="table"
+               ng-class="{hover: vm.loadingInProgress == false && vm.groups.length > 0}"
+        >
+            <!--
+                 Display proper no groups information
+             -->
+            <thead ng-if="vm.groups.length == 0">
+            <tr>
+                <th>Message</th>
+            </tr>
+            </thead>
+            <tbody ng-if="vm.groups.length == 0">
+
+            <tr ng-switch="vm.loadingInProgress">
+                <td ng-switch-when="true">Loading labeling groups...</td>
+                <td ng-switch-default>There are currently no labeling groups available.</td>
+            </tr>
+            </tbody>
+
+            <!--
+                 Display real information
+             -->
+            <thead ng-if="vm.groups.length > 0">
+            <tr>
+                <th>Label Coordinator</th>
+                <th>Group Members</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody ng-if="vm.groups.length > 0">
+            <tr ng-repeat="group in vm.groups track by group.id"
+                ng-click="vm.openGroup(group.id)">
+                <td>{{vm.users[group.coordinators[0]].username}}</td>
+                <td>
+                    <ul>
+                        <li ng-repeat="labelerId in group.labelers">
+                            {{vm.users[labelerId].username}}
+                        </li>
+                    </ul>
+                </td>
+                <td class="action-cell" ng-click="$event.stopPropagation()">
+                    <button tooltip="Delete Group"
+                            ng-click="vm.deleteGroup(group.id)"
+                    >
+                        <i class="fa fa-close"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
