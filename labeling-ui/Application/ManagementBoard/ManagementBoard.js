@@ -116,6 +116,7 @@ class ManagementBoard extends Module {
     this.module = angular.module('AnnoStation.ManagementBoard', []);
 
     this.module.service('userGateway', UserGateway);
+    this.module.service('labelingGroupGateway', LabelingGroupGateway);
     this.module.service('projectGateway', ProjectGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);
