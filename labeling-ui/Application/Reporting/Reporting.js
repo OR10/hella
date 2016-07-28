@@ -1,5 +1,7 @@
 import Module from 'Application/Module';
 
+import ReportGateway from './Gateways/ReportGateway';
+
 import ReportingListController from './Controllers/ReportingListController';
 import ReportingListTemplate from './Views/ReportingListView.html!';
 
@@ -42,6 +44,9 @@ class Reporting extends Module {
             project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
               return projectGateway.getProject($stateParams.projectId);
             }],
+            reports: ['$stateParams', 'reportGateway', ($stateParams, reportGateway) => {
+              return reportGateway.getReports($stateParams.projectId);
+            }],
           },
         },
       },
@@ -55,8 +60,11 @@ class Reporting extends Module {
           controllerAs: 'vm',
           template: ReportingTemplate,
           resolve: {
+            project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
+              return projectGateway.getProject($stateParams.projectId);
+            }],
             report: ['$stateParams', 'reportGateway', ($stateParams, reportGateway) => {
-              return reportGateway.getReport($stateParams.reportId);
+              return reportGateway.getReport($stateParams.projectId, $stateParams.reportId);
             }],
           },
         },
@@ -88,6 +96,8 @@ class Reporting extends Module {
 
     this.registerDirective('projectExportList', ProjectExportListDirective);
     this.registerDirective('projectReportList', ProjectReportListDirective);
+
+    this.module.service('reportGateway', ReportGateway);
   }
 }
 

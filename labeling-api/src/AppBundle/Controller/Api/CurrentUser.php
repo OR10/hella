@@ -136,7 +136,7 @@ class CurrentUser extends Controller\Base
         $acceptProject      = false;
         $reopenProject      = true;
         $exportProject      = false;
-        $reportProject      = true;
+        $viewProjectReport  = false;
         $moveProjectToDone  = false;
         $reopenTask         = false;
         $viewTaskList       = false;
@@ -165,6 +165,7 @@ class CurrentUser extends Controller\Base
             $viewTaskList       = true;
             $moveProjectToDone  = true;
             $editLabelingGroups = true;
+            $viewProjectReport  = true;
         }
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton        = true;
@@ -196,7 +197,7 @@ class CurrentUser extends Controller\Base
                         'canAcceptProject' => $acceptProject,
                         'canReopenProject' => $reopenProject,
                         'canExportProject' => $exportProject,
-                        'canReportProject' => $reportProject,
+                        'canViewProjectReport' => $viewProjectReport,
                         'canMoveProjectToDone' => $moveProjectToDone,
                         'canReopenTask' => $reopenTask,
                         'canViewTaskList' => $viewTaskList,

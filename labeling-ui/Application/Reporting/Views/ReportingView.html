@@ -1,0 +1,172 @@
+<div class="grid-frame vertical">
+    <title-bar class="grid-block noscroll header"
+               user="vm.user"
+               user-permissions="vm.userPermissions"
+               back-link="labeling.projects"
+               back-link-text="Back to project list"
+               show-username="true"
+               show-logout-button="true"
+    >
+    </title-bar>
+
+    <div class="grid-content">
+        <h1>Report for Project: {{vm.project.name}}
+            <small ng-if="vm.report.projectStatus !== done">(The Project status is currently:
+                "{{vm.report.projectStatus}}"
+                )
+            </small>
+        </h1>
+
+        <hr>
+        
+        <h2>Project Status</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Create</th>
+                <th>inProgress</th>
+                <th>Done</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Project created by {{}}</td>
+                <td>Project accepted by {{}}</td>
+                <td>Project completed by {{}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2>Labeling Process Details</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th colspan="3">Labeling</th>
+                <th colspan="3">Review (instructed by {{}})</th>
+                <th colspan="3">Review</th>
+            </tr>
+            <tr>
+                <th>Todo</th>
+                <th>inProgress</th>
+                <th>Done</th>
+                <th>Todo</th>
+                <th>inProgress</th>
+                <th>Done</th>
+                <th>Todo</th>
+                <th>inProgress</th>
+                <th>Done</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{vm.report.numberOfToDoTasks}}</td>
+                <td>{{vm.report.numberOfInProgressTasks}}</td>
+                <td>{{vm.report.numberOfDoneTasks}}</td>
+                <td>{{vm.report.numberOfToDoReviewTasks}}</td>
+                <td>{{vm.report.numberOfInProgressReviewTasks}}</td>
+                <td>{{vm.report.numberOfDoneReviewTasks}}</td>
+                <td>{{vm.report.numberOfToDoRevisionTasks}}</td>
+                <td>{{vm.report.numberOfInProgressRevisionTasks}}</td>
+                <td>{{vm.report.numberOfDoneRevisionTasks}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2>Label Statistics</h2>
+        <p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Number of Object Frames</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{vm.report.numberOfLabeledThingInFrames}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+        </p>
+        <p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th colspan="3">Total Number of Objects</th>
+            </tr>
+            <tr>
+                <th>class1</th>
+                <th>class2</th>
+                <th>class3</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{}}</td>
+                <td>{{}}</td>
+                <td>{{}}</td>
+            </tr>
+            </tbody>
+        </table>
+        </p>
+        <p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Number of Attributes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{vm.report.numberOfLabeledThingInFrameClasses}}</td>
+            </tr>
+            </tbody>
+        </table>
+        </p>
+        <p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th colspan="4">Time spent to complete the Project</th>
+            </tr>
+            <tr>
+                <th>Labeling</th>
+                <th>Review</th>
+                <th>Revision</th>
+                <th>Sum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{vm.report.totalLabelingTime}}</td>
+                <td>{{vm.report.totalReviewTime}}</td>
+                <td>{{vm.report.totalRevisionTime}}</td>
+                <td>{{vm.report.totalTime}}</td>
+            </tr>
+            </tbody>
+        </table>
+        </p>
+        <p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th colspan="4">Average Project data</th>
+            </tr>
+            <tr>
+                <th>Average Time per ObjectFrame</th>
+                <th colspan="2">Average Time per Video / VideoFrame</th>
+                <th>Average Object frames per Video</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>0{{}}</td>
+                <td>0{{}}</td>
+                <td>0{{}}</td>
+                <td>0{{}}</td>
+            </tr>
+            </tbody>
+        </table>
+        </p>
+    </div>
+</div>
