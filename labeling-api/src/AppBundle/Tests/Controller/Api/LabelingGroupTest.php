@@ -111,7 +111,7 @@ class LabelingGroupTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
-                    '_rev' => $labelingGroup->getRev(),
+                    'rev' => $labelingGroup->getRev(),
                     'coordinators' => $labelingGroup->getCoordinators(),
                     'labeler' => $labelingGroup->getLabeler(),
                 ]
@@ -145,7 +145,6 @@ class LabelingGroupTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->setJsonBody(
                 [
-                    '_rev' => $labelingGroup->getRev(),
                     'coordinators' => $labelingGroup->getCoordinators(),
                     'labeler' => $labelingGroup->getLabeler(),
                 ]

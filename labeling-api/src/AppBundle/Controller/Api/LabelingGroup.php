@@ -138,7 +138,7 @@ class LabelingGroup extends Controller\Base
      */
     public function updateAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
     {
-        $revision     = $request->request->get('_rev');
+        $revision     = $request->request->get('rev');
         $coordinators = $request->request->get('coordinators', []);
         $labeler      = $request->request->get('labeler', []);
 
