@@ -23,6 +23,11 @@ class Report
     private $rev;
 
     /**
+     * @CouchDB\Field(type="datetime")
+     */
+    private $reportCreationDate;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $reportStatus = self::REPORT_STATUS_IN_PROGRESS;
@@ -157,18 +162,23 @@ class Report
      */
     private $totalRevisionTime;
 
-    public function __construct(Project $project)
+    public function __construct(Project $project, $creationDate)
     {
+        if ($creationDate === null) {
+            $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
         $this->projectId = $project->getId();
+        $this->reportCreationDate = $creationDate;
     }
 
     /**
      * @param Project $project
+     * @param null    $creationDate
      * @return static
      */
-    public static function create(Project $project)
+    public static function create(Project $project, $creationDate = null)
     {
-        return new static($project);
+        return new static($project, $creationDate);
     }
 
     /**
@@ -601,5 +611,13 @@ class Report
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReportCreationDate()
+    {
+        return $this->reportCreationDate->getTimestamp();
     }
 }
