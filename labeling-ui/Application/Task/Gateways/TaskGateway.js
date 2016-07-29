@@ -1,3 +1,6 @@
+import Task from '../Model/Task';
+import User from 'Application/ManagementBoard/Models/User';
+
 /**
  * Gateway for retrieving information about Tasks
  */
@@ -21,12 +24,18 @@ class TaskGateway {
   /**
    * Retrieves a list of available {@link Task}s and their associated videos for a certain project
    *
+   * @param {string} projectId
+   * @param {string} phase
+   * @param {string} status
+   * @param {number?} limit
+   * @param {number?} offset
    * @return {AbortablePromise<{taskTypes: TaskTypes, videos: Object<string, Video>}|Error>}
    */
-  getTasksForProject(projectId, status, limit = null, offset = null) {
+  getTasksForProjectWithPhaseAndStatus(projectId, phase, status, limit = null, offset = null) {
     const params = {
       project: projectId,
       taskStatus: status,
+      phase,
     };
 
     if (limit) {
@@ -41,11 +50,16 @@ class TaskGateway {
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (!response.data) {
-          throw new Error('Failed loading task list');
+        if (response.data && response.data.totalRows && response.data.result && response.data.result.tasks && response.data.result.users) {
+          const users = {};
+          Object.keys(response.data.result.users).forEach(userId => users[userId] = new User(response.data.result.users[userId]));
+          return {
+            totalRows: response.data.totalRows,
+            tasks: response.data.result.tasks.map(task => new Task(task, users)),
+          };
         }
 
-        return response.data;
+        throw new Error('Failed loading task list');
       });
   }
 
@@ -60,8 +74,10 @@ class TaskGateway {
     const url = this._apiService.getApiUrl(`/task/${id}`);
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
+        if (response.data && response.data.result && response.data.result.task && response.data.result.users) {
+          const users = {};
+          Object.keys(response.data.result.users).forEach(userId => users[userId] = new User(response.data.result.users[userId]));
+          return new Task(response.data.result.task, users);
         }
 
         throw new Error(`Failed loading task with id ${id}`);

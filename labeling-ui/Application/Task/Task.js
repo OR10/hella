@@ -14,7 +14,7 @@ import PopupPanelDirective from './Directives/PopupPanelDirective';
  *
  * @extends Module
  */
-class Task extends Module {
+class TaskModule extends Module {
   /**
    * @inheritDoc
    */
@@ -69,8 +69,8 @@ class Task extends Module {
   }
 }
 
-Task.prototype.config.$inject = [
+TaskModule.prototype.config.$inject = [
   '$stateProvider',
 ];
 
-export default Task;
+export default TaskModule;

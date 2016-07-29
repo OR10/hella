@@ -3,6 +3,8 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
+import Task from 'Application/Task/Model/Task';
+import User from 'Application/ManagementBoard/Models/User';
 import TaskGateway from 'Application/Task/Gateways/TaskGateway';
 
 describe('TaskGateway', () => {
@@ -35,29 +37,29 @@ describe('TaskGateway', () => {
     expect(gateway instanceof TaskGateway).toBe(true);
   });
 
-  it('should load a list of tasks for a given project and status', done => {
-    const projectId = '123123123';
+  it('should load a list of tasks for a given project, phase and status', done => {
+    const projectId = 'project-id-1';
     const status = 'todo';
-    const tasksResponse = {
-      result: [
-        {foo: 'bar'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-      ],
-      totalRows: 10,
+    const phase = 'labeling';
+    const response = {
+      result: {
+        tasks: [
+          {id: 'task-1'},
+          {id: 'task-2'},
+          {id: 'task-3'},
+          {id: 'task-4'},
+          {id: 'task-5'},
+        ],
+        users: {},
+      },
+      totalRows: 5,
     };
 
-    $httpBackend.expectGET(`/backend/api/task?project=${projectId}&taskStatus=${status}`).respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/task?phase=${phase}&project=${projectId}&taskStatus=${status}`).respond(response);
 
-    gateway.getTasksForProject(projectId, status).then(tasks => {
-      expect(tasks).toEqual(tasksResponse);
+    gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status).then(result => {
+      expect(result.totalRows).toEqual(5);
+      expect(result.tasks).toEqual(response.result.tasks.map(task => new Task(task, response.result.users)));
       done();
     });
 
@@ -65,25 +67,72 @@ describe('TaskGateway', () => {
   });
 
   it('should load a list of tasks for a given project and status with limit and offset', done => {
-    const projectId = '123123123';
+    const projectId = 'project-id-1';
     const status = 'todo';
+    const phase = 'labeling';
     const limit = 5;
     const offset = 10;
-    const tasksResponse = {
-      result: [
-        {foo: 'bar'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-        {bar: 'baz'},
-      ],
+    const response = {
+      result: {
+        tasks: [
+          {id: 'task-1'},
+          {id: 'task-2'},
+          {id: 'task-3'},
+          {id: 'task-4'},
+          {id: 'task-5'},
+        ],
+        users: {},
+      },
+      totalRows: 100,
+    };
+
+    $httpBackend.expectGET(
+      `/backend/api/task?limit=${limit}&offset=${offset}&phase=${phase}&project=${projectId}&taskStatus=${status}`
+    ).respond(response);
+
+    gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status, limit, offset).then(result => {
+      expect(result.totalRows).toEqual(100);
+      expect(result.tasks).toEqual(response.result.tasks.map(task => new Task(task, response.result.users)));
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should inject side-loaded users into tasks while fetching a list', done => {
+    const projectId = 'project-id-1';
+    const status = 'todo';
+    const phase = 'labeling';
+    const response = {
+      result: {
+        tasks: [
+          {id: 'task-1'},
+          {id: 'task-2'},
+          {id: 'task-3'},
+          {id: 'task-4'},
+          {id: 'task-5'},
+        ],
+        users: {
+          'user-1': {id: 'user-1'},
+          'user-2': {id: 'user-2'},
+          'user-3': {id: 'user-3'},
+        },
+      },
       totalRows: 5,
     };
 
-    $httpBackend.expectGET(`/backend/api/task?limit=${limit}&offset=${offset}&project=${projectId}&taskStatus=${status}`).respond(tasksResponse);
+    $httpBackend.expectGET(
+      `/backend/api/task?phase=${phase}&project=${projectId}&taskStatus=${status}`
+    ).respond(response);
 
-    gateway.getTasksForProject(projectId, status, limit, offset).then(tasks => {
-      expect(tasks).toEqual(tasksResponse);
+    gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status).then(result => {
+      const userMapping = {
+        'user-1': new User(response.result.users['user-1']),
+        'user-2': new User(response.result.users['user-2']),
+        'user-3': new User(response.result.users['user-3']),
+      };
+
+      expect(result.tasks).toEqual(response.result.tasks.map(task => new Task(task, userMapping)));
       done();
     });
 
@@ -91,14 +140,39 @@ describe('TaskGateway', () => {
   });
 
   it('should load information for a single task', done => {
-    const taskResponse = {
-      result: {foo: 'bar'},
+    const response = {
+      result: {
+        task: {id: 'task-id-1'},
+        users: {},
+      },
     };
 
-    $httpBackend.expectGET('/backend/api/task/123asdf').respond(taskResponse);
+    $httpBackend.expectGET('/backend/api/task/task-id-1').respond(response);
 
-    gateway.getTask('123asdf').then(task => {
-      expect(task).toEqual(taskResponse.result);
+    gateway.getTask('task-id-1').then(task => {
+      expect(task).toEqual(new Task(response.result.task, response.result.users));
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should inject side-loaded users into task while fetching single task', done => {
+    const response = {
+      result: {
+        task: {id: 'task-id-1'},
+        users: {
+          'user-1': {id: 'user-1'},
+        },
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/task/task-id-1').respond(response);
+
+    gateway.getTask('task-id-1').then(task => {
+      expect(task).toEqual(
+        new Task(response.result.task, {'user-1': new User(response.result.users['user-1'])})
+      );
       done();
     });
 
