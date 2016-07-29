@@ -81,25 +81,26 @@ class TaskListController {
     const limit = itemsPerPage;
     const offset = (page - 1) * itemsPerPage;
 
-    this._taskGateway.getTasksForProject(this.projectId, this.taskStatus, limit, offset).then(response => {
-      this.totalRows = response.totalRows;
+    this._taskGateway.getTasksForProjectWithPhaseAndStatus(this.projectId, this.taskPhase, this.taskStatus, limit, offset)
+      .then(result => {
+        this.totalRows = result.totalRows;
 
-      this.tasks = response.result.map(task => {
-        return {
-          id: task.id,
-          type: task.taskType,
-          title: task.video.name,
-          range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
-          assignee: task.assignedUser,
-          assigneeId: task.assignedUserId,
-          status: this.taskStatus,
-          labelInstruction: task.labelInstruction,
-          reopen: task.reopen,
-        };
+        this.tasks = result.tasks.map(task => {
+          const assignedUser = task.getLatestAssignedUserForPhase(this.taskPhase);
+          return {
+            id: task.id,
+            type: task.taskType,
+            title: task.video.name,
+            range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
+            latestAssignee: assignedUser,
+            status: this.taskStatus,
+            labelInstruction: task.labelInstruction,
+            reopen: task.reopen,
+          };
+        });
+
+        this.loadingInProgress = false;
       });
-
-      this.loadingInProgress = false;
-    });
   }
 
   _triggerReloadAll() {
