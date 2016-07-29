@@ -43,7 +43,9 @@ class FilesystemFrameCdn extends FrameCdn
         $cdnPath  = sprintf('%s/%s', $video->getId(), $imageType->getName());
         $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());
 
-        $this->fileSystem->createDir($cdnPath);
+        if (!$this->fileSystem->has($cdnPath)) {
+            $this->fileSystem->createDir($cdnPath);
+        }
         $this->fileSystem->put($filePath, $imageData);
     }
 
