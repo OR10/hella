@@ -32,7 +32,7 @@ define annostation_base::symfony(
     if $sslCertFile {
       $_sslCertFile = $sslCertFile
     } else {
-      $_sslCertFile = "/etc/nginx/${name}-ssl-certificate.key"
+      $_sslCertFile = "/etc/nginx/${name}-ssl-certificate.crt"
     }
 
     if $sslKeyFile {
