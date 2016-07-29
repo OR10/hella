@@ -14,11 +14,19 @@ define annostation_base::nginx_vhost(
   $authBasic = undef,
   $authBasicFile = undef,
   $useDefaultLocation = true,
+  $proxy = undef,
+  $proxyHeaders = []
 ) {
+  if $proxy {
+    $_vhostDir = undef
+  } else {
+    $_vhostDir = $vhostDir
+  }
+
   if $httpv2 {
     nginx::resource::vhost { $name:
       ensure               => present,
-      www_root             => $vhostDir,
+      www_root             => $_vhostDir,
       listen_port          => $vhostPort,
       listen_options       => 'http2',
       ssl                  => true,
@@ -35,11 +43,13 @@ define annostation_base::nginx_vhost(
       auth_basic           => $authBasic,
       auth_basic_user_file => $authBasicFile,
       use_default_location => $useDefaultLocation,
+      proxy                => $proxy,
+      proxy_set_header     => $proxyHeaders,
     }
   } else {
     nginx::resource::vhost { $name:
       ensure               => present,
-      www_root             => $vhostDir,
+      www_root             => $_vhostDir,
       listen_port          => $vhostPort,
       index_files          => $indexFiles,
       try_files            => $tryFiles,
@@ -51,6 +61,8 @@ define annostation_base::nginx_vhost(
       auth_basic           => $authBasic,
       auth_basic_user_file => $authBasicFile,
       use_default_location => $useDefaultLocation,
+      proxy                => $proxy,
+      proxy_set_header     => $proxyHeaders,
     }
   }
 }

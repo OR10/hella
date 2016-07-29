@@ -1,9 +1,16 @@
 class labeling_api::cdn(
   $configure_nginx = $labeling_api::params::configure_nginx,
+
+  $type = $labeling_api::params::frame_cdn_type,
+
   $vhost_dir = $labeling_api::params::frame_cdn_dir,
+  $proxy = $labeling_api::params::frame_cdn_s3_base_url,
+
   $vhost_port = $labeling_api::params::frame_cdn_port,
+
   $allowed_origin = $labeling_api::params::frame_cdn_allowed_origin,
   $expires = $labeling_api::params::frame_cdn_expires,
+
   $httpv2 = false,
   $sslCertFile = '/etc/nginx/labeling_api-ssl-certificate.crt',
   $sslKeyFile = '/etc/nginx/labeling_api-ssl-certificate.key',
@@ -39,15 +46,38 @@ class labeling_api::cdn(
       $_locationRawPrepend = []
     }
 
-    annostation_base::nginx_vhost { 'labeling_api_cdn':
-      vhostDir           => $vhost_dir,
-      vhostPort          => $vhost_port,
-      httpv2             => $httpv2,
-      sslCertFile        => $sslCertFile,
-      sslKeyFile         => $sslKeyFile,
-      locationRawPrepend => $_locationRawPrepend,
-      addHeader          => $_addHeader,
-      vhostCfgAppend     => $_vhostCfgAppend,
+    case $type {
+      'filesystem': {
+        annostation_base::nginx_vhost { 'labeling_api_cdn':
+          vhostDir           => $vhost_dir,
+          vhostPort          => $vhost_port,
+          httpv2             => $httpv2,
+          sslCertFile        => $sslCertFile,
+          sslKeyFile         => $sslKeyFile,
+          locationRawPrepend => $_locationRawPrepend,
+          addHeader          => $_addHeader,
+          vhostCfgAppend     => $_vhostCfgAppend,
+        }
+      }
+      's3': {
+        $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
+
+        annostation_base::nginx_vhost { 'labeling_api_cdn':
+          proxy              => $proxy,
+          proxyHeaders       => ["Host ${_proxyHostHeader}"],
+          vhostDir           => $vhost_dir,
+          vhostPort          => $vhost_port,
+          httpv2             => $httpv2,
+          sslCertFile        => $sslCertFile,
+          sslKeyFile         => $sslKeyFile,
+          locationRawPrepend => $_locationRawPrepend,
+          addHeader          => $_addHeader,
+          vhostCfgAppend     => $_vhostCfgAppend,
+        }
+      }
+      default: {
+        fail("Unsupported frame cdn type: ${type}")
+      }
     }
   }
 }

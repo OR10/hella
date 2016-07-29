@@ -38,11 +38,24 @@ class labeling_api::params(
   $redis_host = '127.0.0.1',
   $redis_port = '6379',
 
+  # valid types are: filesystem, s3
+  $frame_cdn_type = 'filesystem',
+
+  # in case of using a filesystem
   $frame_cdn_dir = undef,
-  $frame_cdn_base_url = undef,
-  $frame_cdn_port = 80,
+
+  # in case of using a s3 storage
+  $frame_cdn_s3_base_url = undef,
+  $frame_cdn_s3_bucket   = undef,
+  $frame_cdn_s3_region   = undef,
+  $frame_cdn_s3_key      = undef,
+  $frame_cdn_s3_secret   = undef,
+
+  # general settings for the nginx vhost
+  $frame_cdn_base_url       = undef,
+  $frame_cdn_port           = 80,
   $frame_cdn_allowed_origin = undef,
-  $frame_cdn_expires = '30d',
+  $frame_cdn_expires        = '30d',
 
   $user_password = undef,
 

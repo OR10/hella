@@ -13,18 +13,21 @@ class labeling_api::common(
   $frameCdnDir = $labeling_api::params::frame_cdn_dir,
   $sslCert = undef,
 ) {
-  if $frameCdnDir =~ /^(\/.+)\/[^\/]+/ {
-    $frameCdnDirectory = [$1, $frameCdnDir]
-  } else {
-    $frameCdnDirectory = $frameCdnDir
+
+  if $frameCdnDir {
+    if $frameCdnDir =~ /^(\/.+)\/[^\/]+/ {
+      $frameCdnDirectory = [$1, $frameCdnDir]
+    } else {
+      $frameCdnDirectory = $frameCdnDir
+    }
+
+    file { $frameCdnDirectory:
+      ensure => 'directory',
+      mode   => "777",
+    }
   }
 
   file { $cacheDir:
-    ensure => 'directory',
-    mode   => "777",
-  }
-
-  file { $frameCdnDirectory:
     ensure => 'directory',
     mode   => "777",
   }

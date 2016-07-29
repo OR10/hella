@@ -24,6 +24,15 @@ parameters:
     ffprobe_executable: <%= @ffprobe_executable %>
 
     frame_cdn_dir: <%= @frame_cdn_dir %>
+
+    <% if @frame_cdn_type == 's3' %>
+    frame_cdn_s3_base_url: <%= @frame_cdn_s3_base_url %>
+    frame_cdn_s3_region: <%= @frame_cdn_s3_region %>
+    frame_cdn_s3_bucket: <%= @frame_cdn_s3_bucket %>
+    frame_cdn_s3_key: <%= @frame_cdn_s3_key %>
+    frame_cdn_s3_secret: <%= @frame_cdn_s3_secret %>
+    <% end %>
+
     frame_cdn_base_url: <%= @frame_cdn_base_url %>
 
     <% if @user_password != nil %>
@@ -40,3 +49,34 @@ parameters:
 
     redis_host: <%= @redis_host %>
     redis_port: <%= @redis_port %>
+
+<% if @frame_cdn_type == 'filesystem' %>
+oneup_flysystem:
+    adapters:
+        frame_cdn_dir_adapter:
+            local:
+                directory: %frame_cdn_dir%
+<% end %>
+
+<% if @frame_cdn_type == 's3' %>
+oneup_flysystem:
+    adapters:
+            frame_cdn_dir_adapter:
+                awss3v3:
+                    client: frame_cdn.s3_client
+                    bucket: "<%= @frame_cdn_s3_bucket %>"
+
+services:
+    frame_cdn.s3_client:
+        class: Aws\S3\S3Client
+        arguments:
+            -
+                version: 'latest'
+                region: "<%= @frame_cdn_s3_region %>"
+                endpoint: '<%= @frame_cdn_s3_base_url %>'
+                validate: false
+                bucket_endpoint: true
+                credentials:
+                    key: "<%= @frame_cdn_s3_key %>"
+                    secret: "<%= @frame_cdn_s3_secret %>"
+<% end %>
