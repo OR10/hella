@@ -113,9 +113,6 @@ oneup_flysystem:
             cache_adapter:
                 local:
                     directory: %cache_dir%
-            frame_cdn_dir_adapter:
-                local:
-                    directory: %frame_cdn_dir%
 
     filesystems:
         cache:
@@ -128,6 +125,7 @@ oneup_flysystem:
             cache: ~
             alias: ~
             mount: ~
+            visibility: public
 
 snc_redis:
     clients:
