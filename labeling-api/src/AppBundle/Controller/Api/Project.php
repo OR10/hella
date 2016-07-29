@@ -204,7 +204,7 @@ class Project extends Controller\Base
     {
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_TODO];
+        return $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][Model\LabelingTask::STATUS_IN_PROGRESS];
     }
 
     private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
