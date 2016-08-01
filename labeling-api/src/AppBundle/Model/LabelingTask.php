@@ -29,6 +29,10 @@ class LabelingTask
     const STATUS_TODO = 'todo';
     const STATUS_DONE = 'done';
 
+    const PHASE_LABELING = 'labeling';
+    const PHASE_REVIEW = 'review';
+    const PHASE_REVISION = 'revision';
+
     /**
      * @var string
      * @CouchDB\Id
@@ -81,11 +85,11 @@ class LabelingTask
     private $requiredImageTypes;
 
     /**
-     * @var string
-     * @CouchDB\Field(type="string")
+     * @var array
+     * @CouchDB\Field(type="mixed")
      * @Serializer\Groups({"statistics"})
      */
-    private $status = 'preprocessing';
+    private $status = [self::PHASE_LABELING => self::STATUS_PREPROCESSING];
 
     /**
      * @var string
@@ -117,6 +121,12 @@ class LabelingTask
      * @CouchDB\Field(type="mixed")
      */
     private $assignedUser = null;
+
+    /**
+     * @var string|null
+     * @CouchDB\Field(type="mixed")
+     */
+    private $assignmentHistory = null;
 
     /**
      * @var string|null
@@ -355,21 +365,30 @@ class LabelingTask
     }
 
     /**
-     * @param string $status
-     *
+     * @param           $phase
+     * @param string    $status
      * @return $this
      */
-    public function setStatus($status)
+    public function setStatus($phase, $status)
     {
-        $this->status = $status;
+        $this->status[$phase] = $status;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @param $phase
+     * @return array
      */
-    public function getStatus()
+    public function getStatus($phase)
+    {
+        return $this->status[$phase];
+    }
+
+    /**
+     * @return array
+     */
+    public function getRawStatus()
     {
         return $this->status;
     }
@@ -386,7 +405,7 @@ class LabelingTask
                 return;
             }
         }
-        $this->setStatus(self::STATUS_TODO);
+        $this->setStatus(self::PHASE_LABELING, self::STATUS_TODO);
 
         return $this;
     }
@@ -569,5 +588,29 @@ class LabelingTask
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAssignmentHistory()
+    {
+        return $this->assignmentHistory;
+    }
+
+    /**
+     * @param User      $user
+     * @param \DateTime $date
+     * @param           $phase
+     * @param           $status
+     */
+    public function addAssignmentHistory(User $user, \DateTime $date, $phase, $status)
+    {
+        $this->assignmentHistory[] = [
+            $user->getId(),
+            $date->getTimestamp(),
+            $phase,
+            $status
+        ];
     }
 }

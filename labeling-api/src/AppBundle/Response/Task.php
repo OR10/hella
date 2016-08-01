@@ -23,13 +23,15 @@ class Task
      * @param Facade\User          $userFacade
      * @param Facade\Project       $projectFacade
      * @param                      $numberOfTotalDocuments
+     * @param                      $phase
      */
     public function __construct(
         $labelingTasks,
         Facade\Video $videoFacade,
         Facade\User $userFacade,
         Facade\Project $projectFacade,
-        $numberOfTotalDocuments
+        $numberOfTotalDocuments,
+        $phase
     )
     {
         $this->totalRows = $numberOfTotalDocuments;
@@ -42,7 +44,7 @@ class Task
                 'descriptionTitle' => $labelingTask->getDescriptionTitle(),
                 'descriptionText' => $labelingTask->getDescriptionText(),
                 'requiredImageTypes' => $labelingTask->getRequiredImageTypes(),
-                'status' => $labelingTask->getStatus(),
+                'status' => $labelingTask->getStatus($phase),
                 'taskType' => $labelingTask->getTaskType(),
                 'predefinedClasses' => $labelingTask->getPredefinedClasses(),
                 'drawingTool' => $labelingTask->getDrawingTool(),

@@ -95,20 +95,22 @@ class Index extends Base
         /**
          * @var UploadedFile $file
          */
-        $file               = $request->files->get('file');
-        $calibrationFile    = $request->files->get('calibrationFile');
-        $projectName        = $request->request->get('project');
-        $splitLength        = $request->request->getInt('splitLength', 0);
-        $lossless           = $request->request->get('lossless', false);
-        $objectLabeling     = $request->request->get('object-labeling', false);
-        $metaLabeling       = $request->request->get('meta-labeling', false);
-        $overflow           = (bool) $request->request->get('overflow', false);
-        $drawingToolVehicle = $request->request->get('drawingToolVehicle', 'rectangle');
-        $drawingToolPerson  = $request->request->get('drawingToolPerson', 'pedestrian');
-        $drawingToolCyclist = $request->request->get('drawingToolCyclist', 'rectangle');
-        $drawingToolIgnore  = $request->request->get('drawingToolIgnore', 'rectangle');
-        $drawingToolIgnoreVehicle  = $request->request->get('drawingToolIgnoreVehicle', 'rectangle');
-        $drawingToolLane    = $request->request->get('drawingToolLane', 'rectangle');
+        $file                     = $request->files->get('file');
+        $calibrationFile          = $request->files->get('calibrationFile');
+        $projectName              = $request->request->get('project');
+        $splitLength              = $request->request->getInt('splitLength', 0);
+        $lossless                 = $request->request->get('lossless', false);
+        $objectLabeling           = $request->request->get('object-labeling', false);
+        $metaLabeling             = $request->request->get('meta-labeling', false);
+        $overflow                 = (bool)$request->request->get('overflow', false);
+        $drawingToolVehicle       = $request->request->get('drawingToolVehicle', 'rectangle');
+        $drawingToolPerson        = $request->request->get('drawingToolPerson', 'pedestrian');
+        $drawingToolCyclist       = $request->request->get('drawingToolCyclist', 'rectangle');
+        $drawingToolIgnore        = $request->request->get('drawingToolIgnore', 'rectangle');
+        $drawingToolIgnoreVehicle = $request->request->get('drawingToolIgnoreVehicle', 'rectangle');
+        $drawingToolLane          = $request->request->get('drawingToolLane', 'rectangle');
+        $review                   = $request->request->get('review', false);
+        $revision                 = $request->request->get('revision', false);
         $drawingToolOptions = array(
             'pedestrian' => array(
                 'minimalHeight' => $request->request->get('pedestrianMinimalHeight', '22'),
@@ -189,7 +191,9 @@ class Index extends Base
                 $overflow ? 16 : null,
                 $drawingToolOptions,
                 $frameStepSize,
-                $startFrame
+                $startFrame,
+                $review,
+                $revision
             );
 
             $viewData['taskIds'] = array_map(

@@ -269,7 +269,7 @@ class LabeledFrameTest extends Tests\WebTestCase
             range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::STATUS_TODO);
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
         $task->setLabelStructure(
             json_decode(
                 file_get_contents(

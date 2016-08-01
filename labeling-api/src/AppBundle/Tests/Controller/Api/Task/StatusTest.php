@@ -49,7 +49,7 @@ class StatusTest extends Tests\WebTestCase
 
     public function testMarkWaitingTaskAsLabeled()
     {
-        $this->task->setStatus(Model\LabelingTask::STATUS_TODO);
+        $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
         $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_DONE])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
@@ -57,12 +57,12 @@ class StatusTest extends Tests\WebTestCase
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_DONE);
+        $this->assertEquals($task->getStatus(Model\LabelingTask::PHASE_LABELING), Model\LabelingTask::STATUS_DONE);
     }
 
     public function testReopenLabeledTask()
     {
-        $this->task->setStatus(Model\LabelingTask::STATUS_DONE);
+        $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
         $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_TODO])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
@@ -70,14 +70,14 @@ class StatusTest extends Tests\WebTestCase
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_TODO);
+        $this->assertEquals($task->getStatus(Model\LabelingTask::PHASE_LABELING), Model\LabelingTask::STATUS_TODO);
         $this->assertTrue($task->isReopen());
     }
 
     public function testBeginTask()
     {
         $this->task->setAssignedUser('');
-        $this->task->setStatus(Model\LabelingTask::STATUS_TODO);
+        $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
 
         $response = $this->createRequest('/api/task/%s/status/begin', [$this->task->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -86,7 +86,7 @@ class StatusTest extends Tests\WebTestCase
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($task->getStatus(), Model\LabelingTask::STATUS_IN_PROGRESS);
+        $this->assertEquals($task->getStatus(Model\LabelingTask::PHASE_LABELING), Model\LabelingTask::STATUS_IN_PROGRESS);
         $this->assertEquals($task->getAssignedUserId(), $this->user->getId());
     }
 
@@ -108,7 +108,7 @@ class StatusTest extends Tests\WebTestCase
             range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::STATUS_TODO);
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
         $this->task = $this->labelingTaskFacade->save($task);
     }
 }

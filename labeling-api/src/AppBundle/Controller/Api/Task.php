@@ -83,6 +83,7 @@ class Task extends Controller\Base
     {
         $offset      = $request->query->has('offset') ? $request->query->getInt('offset') : null;
         $limit       = $request->query->has('limit') ? $request->query->getInt('limit') : null;
+        $taskPhase   = $request->query->has('phase') ? $request->query->get('phase') : Model\LabelingTask::PHASE_LABELING;
         $taskStatus  = $request->query->has('taskStatus') ? $request->query->get('taskStatus') : null;
 
         $project = null;
@@ -140,7 +141,7 @@ class Task extends Controller\Base
         });
 
         return new View\View(
-            new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade, $numberOfTotalDocuments)
+            new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade, $numberOfTotalDocuments, $taskPhase)
             ,
             HttpFoundation\Response::HTTP_ACCEPTED
         );
