@@ -1,5 +1,11 @@
 function(doc) {
-  if (doc.type === 'AppBundle.Model.LabelingTask') {
-    emit([doc.status, doc.videoId]);
+  if (doc.type === 'AppBundle.Model.LabelingTask' && doc.status.labeling) {
+    emit(['labeling', doc.status.labeling, doc.videoId]);
+  }
+  if (doc.type === 'AppBundle.Model.LabelingTask' && doc.status.review) {
+    emit(['review', doc.status.review, doc.videoId]);
+  }
+  if (doc.type === 'AppBundle.Model.LabelingTask' && doc.status.revision) {
+    emit(['revision', doc.status.revision, doc.videoId]);
   }
 }

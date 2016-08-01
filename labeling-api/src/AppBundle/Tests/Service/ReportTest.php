@@ -61,17 +61,17 @@ class ReportTest extends Tests\KernelTestCase
         $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($task, $user, 1337));
 
         $taskToDo    = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $taskToDo->setStatus(Model\LabelingTask::STATUS_TODO);
+        $taskToDo->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
         $this->labelingTaskFacade->save($taskToDo);
         $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($taskToDo, $user, 1337));
 
         $taskInProgress    = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $taskInProgress->setStatus(Model\LabelingTask::STATUS_IN_PROGRESS);
+        $taskInProgress->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $this->labelingTaskFacade->save($taskInProgress);
         $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($taskInProgress, $user, 1337));
 
         $taskDone    = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $taskDone->setStatus(Model\LabelingTask::STATUS_DONE);
+        $taskDone->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
         $this->labelingTaskFacade->save($taskDone);
         $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($taskDone, $user, 1337));
 

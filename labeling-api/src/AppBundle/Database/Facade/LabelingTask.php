@@ -36,19 +36,21 @@ class LabelingTask
 
     /**
      * @param Model\Video|null $video
-     * @param $status
-     * @param null $skip
-     * @param null $limit
+     * @param                  $status
+     * @param null             $skip
+     * @param null             $limit
+     * @param string           $phase
      * @return Model\LabelingTask[]
      */
     public function findAllByStatus(
         Model\Video $video = null,
         $status,
         $skip = null,
-        $limit = null
+        $limit = null,
+        $phase = Model\LabelingTask::PHASE_LABELING
     ) {
-        $startKey = [$status];
-        $endKey = [$status];
+        $startKey = [$phase, $status];
+        $endKey = [$phase, $status];
 
         if ($video !== null) {
             $startKey[] = $video->getId();
@@ -106,20 +108,22 @@ class LabelingTask
     }
 
     /**
-     * @param $status
+     * @param                    $status
      * @param Model\Project|null $project
-     * @param null $skip
-     * @param null $limit
+     * @param null               $skip
+     * @param null               $limit
+     * @param string             $phase
      * @return array
      */
     public function findAllByStatusAndProject(
         $status,
         Model\Project $project = null,
         $skip = null,
-        $limit = null
+        $limit = null,
+        $phase = Model\LabelingTask::PHASE_LABELING
     ) {
-        $startKey = [$status];
-        $endKey = [$status];
+        $startKey = [$phase, $status];
+        $endKey = [$phase, $status];
 
         if ($project !== null) {
             $startKey[] = $project->getId();
@@ -464,16 +468,40 @@ class LabelingTask
 
     /**
      * @param Model\Project $project
+     * @param               $phase
      * @param               $status
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function getSumOfTasksByProjectAndStatus(Model\Project $project, $status)
+    public function getSumOfTasksByProjectAndStatus(Model\Project $project, $phase, $status)
     {
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
-            ->setKey([$project->getId(), $status])
+            ->setKey([$project->getId(), $phase, $status])
             ->setGroup(true)
             ->setReduce(true)
             ->execute();
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @return string
+     */
+    public function getCurrentPhase(Model\LabelingTask $labelingTask)
+    {
+        $phasesByStates = $labelingTask->getRawStatus();
+        foreach ($phasesByStates as $phase => $status) {
+            if ($phase === Model\LabelingTask::PHASE_LABELING && $status !== Model\LabelingTask::STATUS_DONE) {
+                return Model\LabelingTask::PHASE_LABELING;
+            }
+            if ($phase === Model\LabelingTask::PHASE_REVIEW && $status !== Model\LabelingTask::STATUS_DONE) {
+                return Model\LabelingTask::PHASE_REVIEW;
+            }
+
+            if ($phase === Model\LabelingTask::PHASE_REVISION && $status !== Model\LabelingTask::STATUS_DONE) {
+                return Model\LabelingTask::PHASE_REVISION;
+            }
+        }
+
+        return Model\LabelingTask::PHASE_LABELING;
     }
 }

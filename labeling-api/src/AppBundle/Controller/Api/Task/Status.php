@@ -51,6 +51,9 @@ class Status extends Controller\Base
      */
     public function postLabeledStatusAction(Model\LabelingTask $task)
     {
+        /** @var Model\User $user */
+        $user  = $this->tokenStorage->getToken()->getUser();
+        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
         $isOneLabeledFrameComplete = false;
         if ($task->getTaskType() === 'meta-labeling') {
@@ -75,7 +78,7 @@ class Status extends Controller\Base
         }
 
 
-        $task->setStatus(Model\LabelingTask::STATUS_DONE);
+        $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
@@ -90,13 +93,14 @@ class Status extends Controller\Base
      */
     public function postWaitingStatusAction(Model\LabelingTask $task)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user  = $this->tokenStorage->getToken()->getUser();
+        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            if ($task->getStatus() === Model\LabelingTask::STATUS_DONE) {
+            if ($task->getStatus($phase) === Model\LabelingTask::STATUS_DONE) {
                 $task->setReopen(true);
             }
-            $task->setStatus(Model\LabelingTask::STATUS_TODO);
+            $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
@@ -114,13 +118,14 @@ class Status extends Controller\Base
      */
     public function postInProgressStatusAction(Model\LabelingTask $task)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user  = $this->tokenStorage->getToken()->getUser();
+        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            if ($task->getStatus() === Model\LabelingTask::STATUS_DONE) {
+            if ($task->getStatus($phase) === Model\LabelingTask::STATUS_DONE) {
                 $task->setReopen(true);
             }
-            $task->setStatus(Model\LabelingTask::STATUS_IN_PROGRESS);
+            $task->setStatus($phase, Model\LabelingTask::STATUS_IN_PROGRESS);
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
@@ -132,17 +137,28 @@ class Status extends Controller\Base
     /**
      * @Rest\Post("/{task}/status/begin")
      *
-     * @param Model\LabelingTask $task
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask     $task
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function beginTaskAction(Model\LabelingTask $task)
+    public function beginTaskAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
         /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user  = $this->tokenStorage->getToken()->getUser();
+        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
-        if ($task->getStatus() === Model\LabelingTask::STATUS_TODO) {
-            $task->setStatus(Model\LabelingTask::STATUS_IN_PROGRESS);
+        if ($task->getStatus($phase) === Model\LabelingTask::STATUS_TODO) {
+            $task->setStatus(
+                $phase,
+                Model\LabelingTask::STATUS_IN_PROGRESS
+            );
+            $task->addAssignmentHistory(
+                $user,
+                new \DateTime('now', new \DateTimeZone('UTC')),
+                $phase,
+                Model\LabelingTask::STATUS_IN_PROGRESS
+            );
         }
         $task->setAssignedUser($user->getId());
         $this->labelingTaskFacade->save($task);
@@ -161,8 +177,9 @@ class Status extends Controller\Base
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
+        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            $task->setStatus(Model\LabelingTask::STATUS_TODO);
+            $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
             $task->setReopen(true);
             $task->setAssignedUser(null);
             $this->labelingTaskFacade->save($task);

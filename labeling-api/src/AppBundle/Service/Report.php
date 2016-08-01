@@ -80,6 +80,7 @@ class Report
         /** Number of Tasks by Status */
         $numberOfToDoTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
             $project,
+            Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_TODO
         )->toArray();
         $numberOfToDoTasks = count($numberOfToDoTasks) === 0 ? 0 : $numberOfToDoTasks[0]['value'];
@@ -87,6 +88,7 @@ class Report
 
         $numberOfInProgressTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
             $project,
+            Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_IN_PROGRESS
         )->toArray();
         $numberOfInProgressTasks = count($numberOfInProgressTasks) === 0 ? 0 : $numberOfInProgressTasks[0]['value'];
@@ -94,6 +96,7 @@ class Report
 
         $numberOfDoneTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
             $project,
+            Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_DONE
         )->toArray();
         $numberOfDoneTasks = count($numberOfDoneTasks) === 0 ? 0 : $numberOfDoneTasks[0]['value'];

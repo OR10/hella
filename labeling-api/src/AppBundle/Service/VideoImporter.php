@@ -83,23 +83,23 @@ class VideoImporter
     }
 
     /**
-     * @param string $name The name for the video (usually the basename).
-     * @param string $projectName
-     * @param string $path The filesystem path to the video file.
-     * @param $calibrationFile
-     * @param bool $lossless Wether or not the UI should use lossless compressed images.
-     * @param int $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param bool $isObjectLabeling
-     * @param bool $isMetaLabeling
-     * @param array $labelInstructions
+     * @param string   $name The name for the video (usually the basename).
+     * @param string   $projectName
+     * @param string   $path The filesystem path to the video file.
+     * @param          $calibrationFile
+     * @param bool     $lossless Wether or not the UI should use lossless compressed images.
+     * @param int      $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param bool     $isObjectLabeling
+     * @param bool     $isMetaLabeling
+     * @param array    $labelInstructions
      * @param int|null $minimalVisibleShapeOverflow
-     * @param array $drawingToolOptions
-     * @param int $frameSkip
-     * @param int $startFrame
+     * @param array    $drawingToolOptions
+     * @param int      $frameSkip
+     * @param int      $startFrame
+     * @param          $review
+     * @param          $revision
      *
      * @return Model\LabelingTask[]
-     * @throws Video\Exception\MetaDataReader
-     * @throws \Exception
      */
     public function import(
         $name,
@@ -114,7 +114,9 @@ class VideoImporter
         $minimalVisibleShapeOverflow = null,
         $drawingToolOptions = array(),
         $frameSkip = 1,
-        $startFrame = 1
+        $startFrame = 1,
+        $review = false,
+        $revision = false
     ) {
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
@@ -191,7 +193,9 @@ class VideoImporter
                     null,
                     null,
                     $drawingToolOptions,
-                    $metadata
+                    $metadata,
+                    $review,
+                    $revision
                 );
             }
 
@@ -208,7 +212,9 @@ class VideoImporter
                         $labelInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
-                        $metadata
+                        $metadata,
+                        $review,
+                        $revision
                     );
                 }
             }
@@ -245,7 +251,9 @@ class VideoImporter
         $instruction,
         $minimalVisibleShapeOverflow,
         $drawingToolOptions,
-        $metadata
+        $metadata,
+        $review,
+        $revision
     ) {
         $hideAttributeSelector = false;
         if ($instruction === Model\LabelingTask::INSTRUCTION_LANE) {
@@ -280,6 +288,13 @@ class VideoImporter
         $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $labelingTask->setDrawingToolOptions($drawingToolOptions);
         $labelingTask->setMetaData($metadata);
+
+        if ($review) {
+            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
+        }
+        if ($revision) {
+            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
+        }
 
         $this->labelingTaskFacade->save($labelingTask);
 
