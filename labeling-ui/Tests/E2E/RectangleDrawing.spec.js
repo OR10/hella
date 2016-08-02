@@ -36,7 +36,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -53,7 +53,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawTwoRectangles')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -70,7 +70,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -93,7 +93,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -120,7 +120,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -148,7 +148,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -182,7 +182,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -216,7 +216,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 600, y: 500}) // initial position
@@ -251,7 +251,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
 
@@ -281,7 +281,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1,
       assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
     ]));
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
@@ -313,7 +313,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame,
       assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing,
     ]));
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
@@ -372,7 +372,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4,
       assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
     ]));
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 300}) // initial position
@@ -414,7 +414,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()

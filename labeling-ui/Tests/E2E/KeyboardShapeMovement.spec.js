@@ -46,7 +46,7 @@ describe('Keyboard Shape Movement', () => {
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameLeft,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 150, y: 150}) // select shape
@@ -136,7 +136,7 @@ describe('Keyboard Shape Movement', () => {
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 150, y: 150}) // select shape
@@ -235,7 +235,7 @@ describe('Keyboard Shape Movement', () => {
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 190, y: 250}) // select shape
@@ -325,7 +325,7 @@ describe('Keyboard Shape Movement', () => {
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 190, y: 250}) // select shape
@@ -424,7 +424,7 @@ describe('Keyboard Shape Movement', () => {
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 521, y: 336}) // select shape
@@ -514,7 +514,7 @@ describe('Keyboard Shape Movement', () => {
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .mouseMove(viewer, {x: 521, y: 336}) // select shape
