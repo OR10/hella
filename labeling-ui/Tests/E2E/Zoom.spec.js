@@ -43,7 +43,7 @@ describe('Zoom', () => {
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .sendKeys('+')
@@ -72,7 +72,7 @@ describe('Zoom', () => {
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
             .sendKeys('+')
@@ -117,7 +117,7 @@ describe('Zoom', () => {
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
         ]));
 
-        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(
             () => {
               interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 10);
@@ -152,7 +152,7 @@ describe('Zoom', () => {
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
         ]));
 
-        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(
             () => {
               interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20);
@@ -182,7 +182,7 @@ describe('Zoom', () => {
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
         ]));
 
-        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(
             () => {
               browser.actions()
