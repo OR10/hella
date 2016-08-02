@@ -602,21 +602,13 @@ class LabelingTask
      * @param           $phase
      * @param           $status
      */
-    public function addAssignmentHistory(User $user, \DateTime $date, $phase, $status)
+    public function addAssignmentHistory(User $user = null, \DateTime $date, $phase, $status)
     {
         $this->assignmentHistory[] = [
-            $user->getId(),
+            $user instanceof User ? $user->getId() : null,
             $date->getTimestamp(),
             $phase,
             $status
         ];
-    }
-
-    /**
-     * @param null|string $assignmentHistory
-     */
-    public function setAssignmentHistory($assignmentHistory)
-    {
-        $this->assignmentHistory = $assignmentHistory;
     }
 }
