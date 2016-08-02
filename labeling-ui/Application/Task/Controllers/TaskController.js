@@ -9,6 +9,7 @@ class TaskController {
   /**
    * @param {angular.Scope} $scope
    * @param {angular.$q} $q
+   * @param {Object} $stateParams
    * @param {{task: Task, video: Video}} initialData
    * @param {User} user
    * @param {Object} userPermissions
@@ -24,6 +25,7 @@ class TaskController {
    */
   constructor($scope,
               $q,
+              $stateParams,
               initialData,
               user,
               userPermissions,
@@ -49,6 +51,11 @@ class TaskController {
      * @type {angular.Scope}
      */
     this.$scope = $scope;
+
+    /**
+     * @type {string}
+     */
+    this.taskPhase = $stateParams.phase;
 
     /**
      * @type {Task}
@@ -389,6 +396,7 @@ class TaskController {
 TaskController.$inject = [
   '$scope',
   '$q',
+  '$stateParams',
   'initialData',
   'user',
   'userPermissions',
