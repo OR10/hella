@@ -225,21 +225,14 @@ class ProjectListController {
         if (project.totalLabelingTimeInSeconds === undefined) {
           return null;
         }
-
-        const duration = moment.duration(project.totalLabelingTimeInSeconds, 'seconds');
-
-        const formattedDuration = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'].reduce(
-          (formatted, range) => formatted === '' && duration[range]() === 0
-            ? ''
-            : formatted + ' ' + duration[range]() + range.substr(0, 1),
-          ''
-        ).trim();
-
-        if (formattedDuration === '') {
+        if (project.totalLabelingTimeInSeconds === 0) {
           return 'not started';
         }
 
-        return formattedDuration;
+        const hours = Math.floor(project.totalLabelingTimeInSeconds / 60);
+        const minutes = project.totalLabelingTimeInSeconds % 60;
+
+        return `${hours}.${Math.ceil(minutes / 60)}h`;
       },
     };
 
