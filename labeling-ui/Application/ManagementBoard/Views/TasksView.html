@@ -41,14 +41,67 @@
                            user-permissions="vm.userPermissions">
                 </task-list>
             </tab>
-            <!--
             <tab header="Review {{vm.taskCount !== null ? '(' + vm.taskCount.review.overall + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    The concept of Review tasks is not implemented yet
+                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.in_progress}})</span>
                 </h2>
+                <task-list task-phase="review"
+                           task-status="in_progress"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permissions="vm.userPermissions">
+                </task-list>
+                <h2>
+                    Todo <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.todo}})</span>
+                </h2>
+                <task-list task-phase="review"
+                           task-status="todo"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permissions="vm.userPermissions">
+                </task-list>
+                <h2>
+                    Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.done}})</span>
+                </h2>
+                <task-list task-phase="review"
+                           task-status="done"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permissions="vm.userPermissions">
+                </task-list>
             </tab>
-            -->
+            <tab ng-if="vm.taskCount !== null && vm.taskCount.revision.overall !== 0"
+                 header="Revision {{vm.taskCount !== null ? '(' + vm.taskCount.revision.overall + ')' : ''}}"
+                 create-on-first-view="true">
+                <h2>
+                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.in_progress}})</span>
+                </h2>
+                <task-list task-phase="revision"
+                           task-status="in_progress"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permissions="vm.userPermissions">
+                </task-list>
+                <h2>
+                    Todo <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.todo}})</span>
+                </h2>
+                <task-list task-phase="revision"
+                           task-status="todo"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permissions="vm.userPermissions">
+                </task-list>
+                <h2>
+                    Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.done}})</span>
+                </h2>
+                <task-list task-phase="revision"
+                           task-status="done"
+                           project-id="vm.projectId"
+                           user="vm.user"
+                           user-permissions="vm.userPermissions">
+                </task-list>
+            </tab>
         </tab-view>
     </div>
 </div>
