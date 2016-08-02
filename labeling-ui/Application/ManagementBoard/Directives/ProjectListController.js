@@ -182,9 +182,10 @@ class ProjectListController {
     const propertyToColumnMap = {
       'statusFormatted': 'Status',
       'name': 'Name',
-      'videoCount': 'Video #',
-      'taskCount': 'Task #',
+      'videosCount': 'Video #',
+      'taskCount': 'Job #',
       'taskInProgressCount': 'In Progress #',
+      'taskFinishedCount': 'Done #',
       'taskFinishCount': 'Finished #',
       'finishedPercentageFormatted': '% finished',
       'labeledThingInFramesCount': 'Object frames',
