@@ -33,28 +33,8 @@ class TaskModule extends Module {
    * @inheritDoc
    */
   config($stateProvider) {
-    /**
-     * @param {Object} $stateParams
-     * @param {TaskGateway} taskGateway
-     * @param {VideoGateway} videoGateway
-     * @returns {AbortablePromise}
-     */
-    function initialDataResolver($stateParams, taskGateway, videoGateway) {
-      return taskGateway.getTask($stateParams.taskId)
-        .then(
-          task => videoGateway.getVideo(task.videoId)
-            .then(video => ({task, video}))
-        );
-    }
-
-    initialDataResolver.$inject = [
-      '$stateParams',
-      'taskGateway',
-      'videoGateway',
-    ];
-
     $stateProvider.state('labeling.tasks.detail', {
-      url: '/:taskId',
+      url: '/:taskId/:phase',
       views: {
         '@': {
           controller: TaskController,
@@ -63,7 +43,18 @@ class TaskModule extends Module {
         },
       },
       resolve: {
-        initialData: initialDataResolver,
+        initialData: [
+          '$stateParams',
+          'taskGateway',
+          'videoGateway',
+          ($stateParams, taskGateway, videoGateway) => {
+            return taskGateway.getTask($stateParams.taskId)
+              .then(
+                task => videoGateway.getVideo(task.videoId)
+                  .then(video => ({task, video}))
+              );
+          },
+        ],
       },
     });
   }

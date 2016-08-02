@@ -177,6 +177,30 @@ class Task {
     return this.lookupUserFromAssignment(latestAssignmentForPhase.userId);
   }
 
+  /**
+   * @param {string} phase
+   * @returns {string|null}
+   */
+  getStatusForPhase(phase) {
+    if (this.status[phase] === undefined) {
+      return null;
+    }
+
+    return this.status[phase];
+  }
+
+  /**
+   *
+   * @param {string} status
+   * @returns {boolean}
+   */
+  hasStatusInAnyPhase(status) {
+    return Object.keys(this.status).reduce(
+      (hasStatus, key) => hasStatus || this.status[key] === status,
+      false
+    );
+  }
+
   toJSON() {
     const {
       id,
