@@ -204,8 +204,12 @@ class Status extends Controller\Base
                 Model\LabelingTask::STATUS_TODO
             );
             $task->setReopen(true);
-            $assignedHistory = $task->getAssignmentHistory();
-            $task->setAssignmentHistory(array_pop($assignedHistory));
+            $task->addAssignmentHistory(
+                null,
+                new \DateTime('now', new \DateTimeZone('UTC')),
+                $phase,
+                Model\LabelingTask::STATUS_TODO
+            );
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);

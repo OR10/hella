@@ -72,14 +72,19 @@ class User extends Controller\Base
     public function deleteAssignedLabelingTaskAction(Model\LabelingTask $task, Model\User $user)
     {
         $this->isUserAllowedToAssignTo($user);
+        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
         if ($task->getAssignedUserId() !== $user->getId()) {
             throw new Exception\BadRequestHttpException('You are not allowed to delete this task assignment');
         }
 
-        $assignedHistory = $task->getAssignmentHistory();
+        $task->addAssignmentHistory(
+            null,
+            new \DateTime('now', new \DateTimeZone('UTC')),
+            $phase,
+            Model\LabelingTask::STATUS_TODO
+        );
 
-        $task->setAssignmentHistory(array_pop($assignedHistory));
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
