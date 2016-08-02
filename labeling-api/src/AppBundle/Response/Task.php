@@ -44,7 +44,7 @@ class Task
                 'descriptionTitle' => $labelingTask->getDescriptionTitle(),
                 'descriptionText' => $labelingTask->getDescriptionText(),
                 'requiredImageTypes' => $labelingTask->getRequiredImageTypes(),
-                'status' => $labelingTask->getStatus($phase),
+                'status' => $labelingTask->getRawStatus(),
                 'taskType' => $labelingTask->getTaskType(),
                 'predefinedClasses' => $labelingTask->getPredefinedClasses(),
                 'drawingTool' => $labelingTask->getDrawingTool(),
