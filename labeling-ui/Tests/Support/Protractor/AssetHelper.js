@@ -50,7 +50,11 @@ class AssetHelper {
       if (stats.isDirectory()) {
         structure[key] = this._loadDirStructure(filePath, suffix);
       } else if (path.extname(filePath) === suffix) {
-        structure[key] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        try {
+          structure[key] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        } catch (error) {
+          throw new Error(`Error loading asset "${filePath}": ${error.message}`);
+        }
       }
     });
 

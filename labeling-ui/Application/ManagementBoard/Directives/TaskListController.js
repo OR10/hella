@@ -60,7 +60,7 @@ class TaskListController {
   }
 
   openTask(taskId) {
-    this._$state.go('labeling.tasks.detail', {taskId});
+    this._$state.go('labeling.tasks.detail', {taskId, phase: this.taskPhase});
   }
 
   unassignTask(taskId, assigneeId) {
@@ -93,7 +93,7 @@ class TaskListController {
             title: task.video.name,
             range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
             latestAssignee: assignedUser,
-            status: this.taskStatus,
+            status: task.getStatusForPhase(this.taskPhase),
             labelInstruction: task.labelInstruction,
             reopen: task.reopen,
           };

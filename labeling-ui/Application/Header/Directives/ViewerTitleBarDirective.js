@@ -9,6 +9,7 @@ class ViewerTitleBarDirective {
     this.scope = {
       video: '=',
       task: '=',
+      taskPhase: '@',
       user: '=',
       userPermissions: '=',
       selectedPaperShape: '=',

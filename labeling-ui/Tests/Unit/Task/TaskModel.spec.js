@@ -1,11 +1,7 @@
-import 'jquery';
-import angular from 'angular';
-import {module, inject} from 'angular-mocks';
-
 import Task from 'Application/Task/Model/Task';
 import User from 'Application/ManagementBoard/Models/User';
 
-fdescribe('Task model', () => {
+describe('Task model', () => {
   let users;
   let task;
 

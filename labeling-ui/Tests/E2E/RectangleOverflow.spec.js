@@ -39,7 +39,7 @@ describe('Rectangle Overflow', () => {
       assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 190, y: 190}) // initial position
@@ -73,7 +73,7 @@ describe('Rectangle Overflow', () => {
       assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -107,7 +107,7 @@ describe('Rectangle Overflow', () => {
       assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 190, y: 190}) // initial position
@@ -141,7 +141,7 @@ describe('Rectangle Overflow', () => {
       assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID')
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
