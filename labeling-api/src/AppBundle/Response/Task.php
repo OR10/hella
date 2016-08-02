@@ -37,7 +37,15 @@ class Task
         $this->totalRows = $numberOfTotalDocuments;
         foreach ($labelingTasks as $labelingTask) {
             $user = $labelingTask->getUserId() === null ? null : $userFacade->getUserById($labelingTask->getUserId());
-            $assignedUser = $labelingTask->getAssignedUserId() === null ? null : $userFacade->getUserById($labelingTask->getAssignedUserId());
+            $assignedUsers = array_unique(
+                $userFacade->getUserByIds(
+                    array_map(
+                        function ($assignedUser) {
+                            return $assignedUser[0];
+                        },
+                        $labelingTask->getAssignmentHistory() === null ? [] : $labelingTask->getAssignmentHistory())
+                )
+            );
             $this->result[] = [
                 'id' => $labelingTask->getId(),
                 'rev' => $labelingTask->getRev(),
@@ -59,10 +67,10 @@ class Task
                 'createdAt' => $labelingTask->getCreatedAt(),
                 'userId' => $labelingTask->getUserId(),
                 'user' => $user instanceof Model\User ? $user->getUsername() : null,
-                'assignedUserId' => $labelingTask->getAssignedUserId(),
-                'assignedUser' => $assignedUser instanceof Model\User ? $assignedUser->getUsername() : null,
                 'video' => $videoFacade->find($labelingTask->getVideoId()),
                 'project' => $projectFacade->find($labelingTask->getProjectId()),
+                'assignmentHistory' => $labelingTask->getAssignmentHistory(),
+                'users' => $assignedUsers,
             ];
         }
     }
