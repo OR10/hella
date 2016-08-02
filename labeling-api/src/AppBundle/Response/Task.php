@@ -10,7 +10,10 @@ class Task
     /**
      * @var Model\LabelingTask[]
      */
-    private $result = [];
+    private $result = [
+        'tasks' => [],
+        'users' => [],
+    ];
 
     /**
      * @var int
@@ -32,12 +35,13 @@ class Task
         Facade\Project $projectFacade,
         $numberOfTotalDocuments,
         $phase
-    )
-    {
+    ) {
         $this->totalRows = $numberOfTotalDocuments;
+        $users = [];
         foreach ($labelingTasks as $labelingTask) {
             $user = $labelingTask->getUserId() === null ? null : $userFacade->getUserById($labelingTask->getUserId());
-            $assignedUsers = array_unique(
+
+            $users = array_merge(
                 $userFacade->getUserByIds(
                     array_map(
                         function ($assignedUser) {
@@ -45,8 +49,10 @@ class Task
                         },
                         $labelingTask->getAssignmentHistory() === null ? [] : $labelingTask->getAssignmentHistory())
                 )
+                , $users
             );
-            $this->result[] = [
+
+            $this->result['tasks'][] = [
                 'id' => $labelingTask->getId(),
                 'rev' => $labelingTask->getRev(),
                 'descriptionTitle' => $labelingTask->getDescriptionTitle(),
@@ -71,8 +77,12 @@ class Task
                 'project' => $projectFacade->find($labelingTask->getProjectId()),
                 'assignmentHistory' => $labelingTask->getAssignmentHistory(),
                 'assignedUserId' => $labelingTask->getAssignedUserId(),
-                'users' => $assignedUsers,
             ];
+        }
+        /** @var Model\User $user */
+        foreach ($users as $user) {
+            if (!isset($this->result['users'][$user->getId()]))
+            $this->result['users'][$user->getId()] = $user;
         }
     }
 }
