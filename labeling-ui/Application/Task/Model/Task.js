@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash.clonedeep'
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Primary Task model
@@ -147,7 +147,7 @@ class Task {
           return -1;
         } else if (firstAssignedAt === secondAssignedAt) {
           return 0;
-        } else {
+        } else { // eslint-disable-line no-else-return
           return 1;
         }
       }
@@ -168,7 +168,7 @@ class Task {
     return this._users[userId];
   }
 
-  /**#
+  /**
    * @param {string} phase
    * @returns {User|null}
    */
