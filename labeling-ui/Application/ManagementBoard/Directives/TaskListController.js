@@ -60,7 +60,7 @@ class TaskListController {
   }
 
   openTask(taskId) {
-    this._$state.go('labeling.tasks.detail', {taskId});
+    this._$state.go('labeling.tasks.detail', {taskId, phase: this.taskPhase});
   }
 
   unassignTask(taskId, assigneeId) {
