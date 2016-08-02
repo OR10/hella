@@ -119,6 +119,13 @@ class ImportVideos extends Base
                         'drawingTool' => 'rectangle',
                     ),
                 );
+            case 'lane':
+                return array(
+                    array(
+                        'instruction' => Model\LabelingTask::INSTRUCTION_LANE,
+                        'drawingTool' => 'rectangle',
+                    ),
+                );
         }
 
         throw new \Exception('Type' . $type . ' not supported');
