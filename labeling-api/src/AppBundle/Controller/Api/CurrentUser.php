@@ -128,7 +128,7 @@ class CurrentUser extends Controller\Base
         $statsButton        = false;
         $projectButton      = false;
         $userListButton     = false;
-        $videoUploadButton  = false;
+        $uploadNewVideo     = false;
         $reopenButton       = false;
         $unassignPermission = false;
         $deleteProject      = true;
@@ -150,12 +150,13 @@ class CurrentUser extends Controller\Base
         if ($user->hasRole(Model\User::ROLE_CLIENT)) {
             $viewClosedProjects = true;
             $viewTodoProjects   = true;
+            $uploadNewVideo     = true;
+            $moveProjectToDone  = true;
         }
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
             $projectButton      = true;
             $userListButton     = true;
-            $videoUploadButton  = true;
             $reopenButton       = true;
             $unassignPermission = true;
             $exportProject      = true;
@@ -170,7 +171,6 @@ class CurrentUser extends Controller\Base
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $statsButton        = true;
             $projectButton      = true;
-            $videoUploadButton  = true;
             $reopenButton       = true;
             $unassignPermission = true;
             $exportProject      = true;
@@ -188,7 +188,7 @@ class CurrentUser extends Controller\Base
                     [
                         'canViewStatsButton' => $statsButton,
                         'canViewUserListButton' => $userListButton,
-                        'canViewVideoUploadButton' => $videoUploadButton,
+                        'canUploadNewVideo' => $uploadNewVideo,
                         'canViewReopenButton' => $reopenButton,
                         'unassignPermission' => $unassignPermission,
                         'canViewProjectButton' => $projectButton,
