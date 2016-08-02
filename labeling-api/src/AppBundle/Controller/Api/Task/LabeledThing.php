@@ -190,7 +190,7 @@ class LabeledThing extends Controller\Base
             throw new Exception\ConflictHttpException('Invalid revision');
         }
         if ($task->getLabelInstruction() === Model\LabelingTask::INSTRUCTION_LANE) {
-            $classes = ['lane-exit'];
+            $classes = ['Lane-Exit'];
         }else{
             $classes = $request->request->get('classes', []);
         }
