@@ -79,6 +79,12 @@ class Status extends Controller\Base
 
 
         $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
+        $task->addAssignmentHistory(
+            $user,
+            new \DateTime('now', new \DateTimeZone('UTC')),
+            $phase,
+            Model\LabelingTask::STATUS_DONE
+        );
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
@@ -101,6 +107,12 @@ class Status extends Controller\Base
                 $task->setReopen(true);
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
+            $task->addAssignmentHistory(
+                $user,
+                new \DateTime('now', new \DateTimeZone('UTC')),
+                $phase,
+                Model\LabelingTask::STATUS_TODO
+            );
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
@@ -126,6 +138,12 @@ class Status extends Controller\Base
                 $task->setReopen(true);
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_IN_PROGRESS);
+            $task->addAssignmentHistory(
+                $user,
+                new \DateTime('now', new \DateTimeZone('UTC')),
+                $phase,
+                Model\LabelingTask::STATUS_IN_PROGRESS
+            );
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
@@ -180,6 +198,12 @@ class Status extends Controller\Base
         $phase = $this->labelingTaskFacade->getCurrentPhase($task);
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
+            $task->addAssignmentHistory(
+                $user,
+                new \DateTime('now', new \DateTimeZone('UTC')),
+                $phase,
+                Model\LabelingTask::STATUS_TODO
+            );
             $task->setReopen(true);
             $task->setAssignedUser(null);
             $this->labelingTaskFacade->save($task);
