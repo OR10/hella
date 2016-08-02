@@ -178,7 +178,6 @@ class Status extends Controller\Base
                 Model\LabelingTask::STATUS_IN_PROGRESS
             );
         }
-        $task->setAssignedUser($user->getId());
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
@@ -205,7 +204,8 @@ class Status extends Controller\Base
                 Model\LabelingTask::STATUS_TODO
             );
             $task->setReopen(true);
-            $task->setAssignedUser(null);
+            $assignedHistory = $task->getAssignmentHistory();
+            $task->setAssignmentHistory(array_pop($assignedHistory));
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
