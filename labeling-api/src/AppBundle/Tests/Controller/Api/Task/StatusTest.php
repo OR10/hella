@@ -76,7 +76,6 @@ class StatusTest extends Tests\WebTestCase
 
     public function testBeginTask()
     {
-        $this->task->setAssignedUser('');
         $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
 
         $response = $this->createRequest('/api/task/%s/status/begin', [$this->task->getId()])

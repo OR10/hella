@@ -120,12 +120,6 @@ class LabelingTask
      * @var string|null
      * @CouchDB\Field(type="mixed")
      */
-    private $assignedUser = null;
-
-    /**
-     * @var string|null
-     * @CouchDB\Field(type="mixed")
-     */
     private $assignmentHistory = null;
 
     /**
@@ -415,19 +409,23 @@ class LabelingTask
      */
     public function getAssignedUserId()
     {
-        return $this->assignedUser;
-    }
+        if ($this->getAssignmentHistory() === null) {
+            return null;
+        }
 
-    /**
-     * @param $userId
-     *
-     * @return LabelingTask
-     */
-    public function setAssignedUser($userId)
-    {
-        $this->assignedUser = $userId;
+        $assignedUsersIds = $this->getAssignmentHistory();
 
-        return $this;
+        usort($assignedUsersIds, function ($a, $b) {
+            if ($a[1] === null || $b[1] === null) {
+                return -1;
+            }
+            if ($a[1] === $b[1]) {
+                return 0;
+            }
+            return ($a[1] > $b[1]) ? -1 : 1;
+        });
+
+        return $assignedUsersIds[0][0];
     }
 
     /**
@@ -612,5 +610,13 @@ class LabelingTask
             $phase,
             $status
         ];
+    }
+
+    /**
+     * @param null|string $assignmentHistory
+     */
+    public function setAssignmentHistory($assignmentHistory)
+    {
+        $this->assignmentHistory = $assignmentHistory;
     }
 }
