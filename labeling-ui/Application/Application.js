@@ -12,7 +12,7 @@ import 'v-accordion/dist/v-accordion.css!';
 import ApplicationController from './ApplicationController';
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
-import TaskModule from './Task/Task';
+import TaskModule from './Task/TaskModule';
 import ManagementBoardModule from './ManagementBoard/ManagementBoard';
 import UserProfileModule from './UserProfile/UserProfile';
 import FrameModule from './Frame/Frame';
