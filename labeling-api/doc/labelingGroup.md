@@ -50,3 +50,11 @@
 + Response 200 (application/json)
     + Attributes
         + result: `true`
+        
+## My Labeling Group [/api/labelingGroup/user/groups]
+
+### My Labeling Group [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result: array(LabelingGroup)

@@ -31,17 +31,59 @@ class LabelingGroup extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * LabelingGroup constructor.
      * @param Facade\LabelingGroup $labelingGroupFacade
      * @param Facade\User          $userFacade
+     * @param Storage\TokenStorage $tokenStorage
      */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
-        Facade\User $userFacade
+        Facade\User $userFacade,
+        Storage\TokenStorage $tokenStorage
     )
     {
         $this->labelingGroupFacade = $labelingGroupFacade;
-        $this->userFacade = $userFacade;
+        $this->userFacade          = $userFacade;
+        $this->tokenStorage        = $tokenStorage;
+    }
+
+    /**
+     *
+     * @Rest\Get("/user/groups")
+     *
+     * @param HttpFoundation\Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function myOwnGroupsAction(HttpFoundation\Request $request)
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if (!$user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            throw new Exception\AccessDeniedHttpException();
+        }
+
+        $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator($user);
+        $users = [];
+        foreach($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
+            $users[$user->getId()] = $user;
+        }
+
+        return View\View::create()->setData(
+            [
+                'totalRows' => $labelingGroups->getTotalRows(),
+                'result' => [
+                    'labelingGroups' => $labelingGroups->toArray(),
+                    'users' => $users,
+                ]
+            ]
+        );
     }
 
     /**
