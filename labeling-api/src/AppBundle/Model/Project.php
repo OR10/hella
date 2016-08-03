@@ -49,6 +49,11 @@ class Project
     private $coordinator = null;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $labelingGroupId;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -167,5 +172,21 @@ class Project
     public function setCreationDate($creationDate)
     {
         $this->creationDate = $creationDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLabelingGroupId()
+    {
+        return $this->labelingGroupId;
+    }
+
+    /**
+     * @param mixed $labelingGroupId
+     */
+    public function setLabelingGroupId($labelingGroupId)
+    {
+        $this->labelingGroupId = $labelingGroupId;
     }
 }
