@@ -37,7 +37,7 @@ class TaskTimer
     private $userId;
 
     /**
-     * @CouchDB\Field(type="integer")
+     * @CouchDB\Field(type="mixed")
      */
     private $timeInSeconds = [LabelingTask::PHASE_LABELING => 0];
 
