@@ -48,7 +48,7 @@ class LabelingGroup {
       coordinators: cloneDeep(coordinators),
       labeler: cloneDeep(labelers),
       name: clone(name),
-      id
+      id,
     };
   }
 }
