@@ -52,7 +52,7 @@ class Project
     public function getTimePerProject()
     {
         $resultSet = $this->documentManager
-            ->createQuery('annostation_task_timer', 'sum_by_projectId')
+            ->createQuery('annostation_task_timer_sum_by_projectId', 'filter')
             ->setGroup(true)
             ->execute()
             ->toArray();
@@ -67,7 +67,7 @@ class Project
     public function getTimeForProject(Model\Project $project)
     {
         $resultSet = $this->documentManager
-            ->createQuery('annostation_task_timer', 'sum_by_projectId')
+            ->createQuery('annostation_task_timer_sum_by_projectId', 'filter')
             ->setGroup(true)
             ->setKey($project->getId())
             ->execute()
