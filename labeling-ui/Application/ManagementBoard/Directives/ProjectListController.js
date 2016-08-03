@@ -174,9 +174,19 @@ class ProjectListController {
         selectionData,
       },
       groupId => {
-        this.loadingInProgress = true;
-        this._projectGateway.acceptProject(projectId, groupId)
-          .then(() => this._triggerReloadAll());
+        if (groupId) {
+          this.loadingInProgress = true;
+          this._projectGateway.acceptProject(projectId, groupId)
+            .then(() => this._triggerReloadAll());
+        } else {
+          const warnModal = this._modalService.getAlertWarningDialog({
+            title: 'No Group Selected',
+            headline: 'You need to select a labeling group',
+            message: 'You need to select a labeling group to assign to this Project. Without a selected labeling group the project can not be accepted!',
+            confirmButtonText: 'Understood',
+          });
+          warnModal.activate();
+        }
         this.showLoadingMask = false;
       },
       () => {
