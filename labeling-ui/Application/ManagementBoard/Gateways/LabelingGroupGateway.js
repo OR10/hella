@@ -48,6 +48,23 @@ class LabelingGroupGateway {
   }
 
   /**
+   * Get all labeling groups in which i am the coordinator
+   *
+   * @returns {AbortablePromise<LabelingGroup>|Error}
+   */
+  getMyLabelingGroups() {
+    const url = this._apiService.getApiUrl('/labelingGroup');
+    return this._bufferedHttp.get(url, undefined, 'labelingGroups')
+      .then(response => {
+        return [
+          {id: '12341', name: 'Group1'},
+          {id: '45674', name: 'Group2'},
+          {id: '90798', name: 'Group3'},
+        ];
+      });
+  }
+
+  /**
    * Create a new LabelingGroup
    *
    * @param {LabelingGroup} group
