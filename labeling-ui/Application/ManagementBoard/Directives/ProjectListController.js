@@ -160,8 +160,8 @@ class ProjectListController {
   acceptProject(projectId, projectName) {
     this.showLoadingMask = true;
 
-    this._labelingGroupGateway.getMyLabelingGroups().then(groups => {
-      const selectionData = groups.map(group => {
+    this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
+      const selectionData = reponse.labelingGroups.map(group => {
         return {id: group.id, name: group.name};
       });
 
@@ -173,11 +173,10 @@ class ProjectListController {
         cancelButtonText: 'Cancel',
         selectionData,
       },
-      selection => {
+      groupId => {
         this.loadingInProgress = true;
-        this._projectGateway.acceptProject(projectId)
+        this._projectGateway.acceptProject(projectId, groupId)
           .then(() => this._triggerReloadAll());
-        // this._labelingGroupGateway
         this.showLoadingMask = false;
       },
       () => {
