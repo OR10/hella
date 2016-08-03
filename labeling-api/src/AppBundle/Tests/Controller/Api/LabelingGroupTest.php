@@ -42,7 +42,7 @@ class LabelingGroupTest extends Tests\WebTestCase
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
 
-        $labelingGroup = $this->createLabelingGroup($coordinators, $labeler);
+        $labelingGroup = $this->createLabelingGroup($coordinators, $labeler, 'foobar');
 
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_GET)
@@ -64,6 +64,7 @@ class LabelingGroupTest extends Tests\WebTestCase
                     $labelingUser1->getId(),
                     $labelingUser2->getId(),
                 ],
+                'name' => 'foobar',
             ]
         ]);
     }
@@ -156,9 +157,9 @@ class LabelingGroupTest extends Tests\WebTestCase
         $this->assertSame($expectedLabelingGroup, null);
     }
 
-    private function createLabelingGroup($coordinators, $labeler)
+    private function createLabelingGroup($coordinators, $labeler, $name = null)
     {
-        $labelingGroup = new Model\LabelingGroup($coordinators, $labeler);
+        $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
         return $this->labelingGroupFacade->save($labelingGroup);
     }
 
