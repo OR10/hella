@@ -46,16 +46,19 @@ class Status extends Controller\Base
      *
      * @Rest\POST("/{project}/status/accept")
      *
-     * @param $project
-     *
+     * @param HttpFoundation\Request $request
+     * @param Model\Project          $project
      * @return \FOS\RestBundle\View\View
      */
-    public function setProjectStatusToInProgressAction(Model\Project $project)
+    public function setProjectStatusToInProgressAction(HttpFoundation\Request $request, Model\Project $project)
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
+        $assignedGroupId = $request->request->get('assignedGroupId');
+
         $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
         $project->setCoordinator($user->getId());
+        $project->setLabelingGroupId($assignedGroupId);
         $this->projectFacade->save($project);
 
         return View\View::create()->setData(['result' => true]);
