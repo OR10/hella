@@ -108,8 +108,9 @@ class LabelingGroup extends Controller\Base
     {
         $coordinators = $request->request->get('coordinators', []);
         $labeler      = $request->request->get('labeler', []);
+        $name         = $request->request->get('name', null);
 
-        $labelingGroup = new Model\LabelingGroup($coordinators, $labeler);
+        $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
         $this->labelingGroupFacade->save($labelingGroup);
 
         $users = [];
@@ -141,6 +142,7 @@ class LabelingGroup extends Controller\Base
         $revision     = $request->request->get('rev');
         $coordinators = $request->request->get('coordinators', []);
         $labeler      = $request->request->get('labeler', []);
+        $name         = $request->request->get('name', null);
 
         if ($revision !== $labelingGroup->getRev()) {
             throw new Exception\ConflictHttpException('Revision mismatch');
@@ -148,6 +150,7 @@ class LabelingGroup extends Controller\Base
 
         $labelingGroup->setCoordinators($coordinators);
         $labelingGroup->setLabeler($labeler);
+        $labelingGroup->setName($name);
         $this->labelingGroupFacade->save($labelingGroup);
 
         $users = [];

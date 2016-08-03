@@ -30,6 +30,11 @@ class LabelingGroup
     private $labeler = [];
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $name;
+
+    /**
      * @param $coordinators
      * @param $labeler
      * @return static
@@ -43,11 +48,13 @@ class LabelingGroup
      * LabelingGroup constructor.
      * @param $coordinators
      * @param $labeler
+     * @param $name
      */
-    public function __construct($coordinators, $labeler)
+    public function __construct($coordinators, $labeler, $name = null)
     {
         $this->coordinators = $coordinators;
         $this->labeler      = $labeler;
+        $this->name         = $name;
     }
 
     /**
@@ -96,5 +103,21 @@ class LabelingGroup
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }
