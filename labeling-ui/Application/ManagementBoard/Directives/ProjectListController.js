@@ -230,8 +230,9 @@ class ProjectListController {
           return 'not started';
         }
 
-        const hours = Math.floor(project.totalLabelingTimeInSeconds / 60);
-        const minutes = project.totalLabelingTimeInSeconds % 60;
+        const totalMinutes = project.totalLabelingTimeInSeconds / 60;
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
 
         return `${hours}.${Math.ceil(minutes / 60)}h`;
       },
