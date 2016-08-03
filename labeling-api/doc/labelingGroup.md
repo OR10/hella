@@ -49,7 +49,7 @@
 
 + Response 200 (application/json)
     + Attributes
-        + result: `true`
+        + result: true
         
 ## My Labeling Group [/api/labelingGroup/user/groups]
 
@@ -57,4 +57,4 @@
 
 + Response 200 (application/json)
     + Attributes
-        + result: array(LabelingGroup)
+        + result array(LabelingGroup)
