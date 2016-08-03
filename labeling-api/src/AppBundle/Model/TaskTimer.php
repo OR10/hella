@@ -2,7 +2,6 @@
 
 namespace AppBundle\Model;
 
-use AppBundle\Model\TaskExport\Exception;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
 
