@@ -12,6 +12,7 @@ class ProjectListDirective {
       projectStatus: '@',
       user: '=',
       userPermissions: '=',
+      showLoadingMask: '=',
     };
 
     this.template = projectListTemplate;
