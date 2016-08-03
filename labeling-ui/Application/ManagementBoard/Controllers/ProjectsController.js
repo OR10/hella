@@ -37,6 +37,11 @@ class ProjectsController {
      */
     this.projectCount = null;
 
+    /**
+     * @type {boolean}
+     */
+    this.showLoadingMask = false;
+
     // Initial load of counts
     this._loadProjectCount();
 

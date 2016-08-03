@@ -70,6 +70,11 @@ class LabelingGroupsDetailController {
     this.group = null;
 
     /**
+     * @type {string}
+     */
+    this.groupName = '';
+
+    /**
      * @type {null|string}
      */
     this.groupCoordinatorId = null;
@@ -100,6 +105,7 @@ class LabelingGroupsDetailController {
     this.validation = {
       coordinator: true,
       labelers: true,
+      name: true,
     };
 
     if (!this.createMode) {
@@ -157,6 +163,7 @@ class LabelingGroupsDetailController {
         id: this.group.id,
         coordinators: [this.groupCoordinatorId],
         labelers: this.groupLabelers.map(labeler => labeler.id),
+        name: this.groupName,
       })
     ).then(() => --this.loadingInProgress);
   }
@@ -167,6 +174,7 @@ class LabelingGroupsDetailController {
       new LabelingGroup({
         coordinators: [this.groupCoordinatorId],
         labelers: this.groupLabelers.map(labeler => labeler.id),
+        name: this.groupName,
       })
     ).then(() => --this.loadingInProgress);
   }
@@ -179,6 +187,7 @@ class LabelingGroupsDetailController {
   _validateGroup() {
     let valid = true;
 
+    this.validation.name = true;
     this.validation.coordinator = true;
     this.validation.labelers = true;
 
@@ -188,6 +197,10 @@ class LabelingGroupsDetailController {
 
     if (this.groupLabelers.length === 0) {
       this.validation.labelers = valid = false;
+    }
+
+    if (this.groupName === '') {
+      this.validation.name = valid = false;
     }
 
     return valid;
@@ -203,6 +216,7 @@ class LabelingGroupsDetailController {
 
       this.groupCoordinatorId = this.group.coordinators[0];
       this.groupLabelers = this.group.labelers.map(labelerId => result.users[labelerId]);
+      this.groupName = this.group.name;
 
       --this.loadingInProgress;
     });

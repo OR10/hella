@@ -1,6 +1,7 @@
 import infoModalTemplate from './ModalService/InfoModal.html!';
 import warningModalTemplate from './ModalService/WarningModal.html!';
 import alertModalTemplate from './ModalService/AlertModal.html!';
+import selectionModalTemplate from './ModalService/SelectionModal.html!';
 import angular from 'angular';
 
 /**
@@ -27,7 +28,7 @@ class ModalService {
   }
 
   _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
-    const {message, headline, title, confirmButtonText, cancelButtonText} = scope;
+    const {message, headline, title, confirmButtonText, cancelButtonText, selectionData} = scope;
     const noop = () => {
     };
     const onConfirm = confirmCallback || noop;
@@ -64,15 +65,16 @@ class ModalService {
           message,
           headline,
           title,
+          selectionData,
           confirmButtonText,
           cancelButtonText,
           cancelCallback: cancelCallbackWrapper,
-          confirmCallback: () => {
+          confirmCallback: selection => {
             modal.deactivate();
             this._modalOpen = false;
             this._keyboardShortcutService.popContext();
             this._keyboardShortcutService.clearContext('modal');
-            onConfirm();
+            onConfirm(selection);
             setTimeout(
               () => {
                 modal.destroy();
@@ -123,6 +125,10 @@ class ModalService {
 
   getAlertWarningDialog(scope, confirmCallback) {
     return this._createModal('modal-warning', alertModalTemplate, scope, confirmCallback);
+  }
+
+  getSelectionDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-selection', selectionModalTemplate, scope, confirmCallback, cancelCallback);
   }
 }
 

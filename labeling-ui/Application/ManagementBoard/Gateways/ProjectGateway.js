@@ -88,11 +88,12 @@ class ProjectGateway {
 
   /**
    * @param {string} projectId
+   * @param {string} groupId
    * @returns {AbortablePromise}
    */
-  acceptProject(projectId) {
+  acceptProject(projectId, groupId) {
     const url = this._apiService.getApiUrl(`/project/${projectId}/status/accept`);
-    return this._bufferedHttp.post(url, undefined, undefined, 'project')
+    return this._bufferedHttp.post(url, {assignedGroupId: groupId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;

@@ -9,6 +9,7 @@
     >
     </title-bar>
     <div class="grid-block text-center vertical">
+        <loading-mask ng-if="vm.showLoadingMask" spinner="true"></loading-mask>
         <h1>Choose a Project</h1>
         <tab-view>
             <tab ng-if="vm.userPermissions.canViewTodoProjects"
@@ -18,6 +19,7 @@
                     Todo <span ng-hide='vm.projectCount == null'>({{vm.projectCount.todo}})</span>
                 </h2>
                 <project-list user="vm.user"
+                              show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"
                               project-status="todo"></project-list>
             </tab>
@@ -26,7 +28,9 @@
                 <h2>
                     InProgress <span ng-hide='vm.projectCount == null'>({{vm.projectCount.in_progress}})</span>
                 </h2>
-                <project-list user="vm.user" user-permissions="vm.userPermissions"
+                <project-list user="vm.user"
+                              show-loading-mask="vm.showLoadingMask"
+                              user-permissions="vm.userPermissions"
                               project-status="in_progress"></project-list>
             </tab>
             <tab ng-if="vm.userPermissions.canViewClosedProjects"
@@ -36,6 +40,7 @@
                     Done <span ng-hide='vm.projectCount == null'>({{vm.projectCount.done}})</span>
                 </h2>
                 <project-list user="vm.user"
+                              show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"
                               project-status="done"></project-list>
             </tab>

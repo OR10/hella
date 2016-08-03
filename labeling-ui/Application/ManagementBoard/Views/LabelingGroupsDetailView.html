@@ -16,6 +16,13 @@
         <div class="grid-block align-center">
             <form class="grid-content">
                 <fieldset>
+                    <legend>Label Group Name</legend>
+                    <input type="text"
+                           placeholder="Group name"
+                           ng-class="{error: !vm.validation.name}"
+                           ng-model="vm.groupName">
+                </fieldset>
+                <fieldset>
                     <legend>Label Coordinator</legend>
                     <select id="coordinator" ng-model="vm.groupCoordinatorId"
                             ng-class="{error: !vm.validation.coordinator}">
