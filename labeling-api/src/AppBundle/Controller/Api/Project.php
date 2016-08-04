@@ -245,7 +245,7 @@ class Project extends Controller\Base
         if (!isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()])) {
             $this->sumOfTasksByProjectsAndStatusCache = array_merge(
                 $this->sumOfTasksByProjectsAndStatusCache,
-                array($project->getId() => $this->labelingTaskFacade->getSumOfTasksByProject($project))
+                array($project->getId() => $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project))
             );
         }
     }

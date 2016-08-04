@@ -428,7 +428,7 @@ class LabelingTask
      * @param Model\Project $project
      * @return array
      */
-    public function getSumOfTasksByProject(Model\Project $project)
+    public function getSumOfTasksByPhaseForProject(Model\Project $project)
     {
         $result = array();
         $query = $this->documentManager
