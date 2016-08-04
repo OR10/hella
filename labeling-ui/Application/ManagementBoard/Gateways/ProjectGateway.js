@@ -105,6 +105,23 @@ class ProjectGateway {
 
   /**
    * @param {string} projectId
+   * @param {string} labelCoordinatorId
+   * @returns {AbortablePromise}
+   */
+  assignCoordinator(projectId, labelCoordinatorId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/assign`);
+    return this._bufferedHttp.post(url, {assignedLabelCoordinatorId: labelCoordinatorId}, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed accepting project (${projectId}).`);
+      });
+  }
+
+  /**
+   * @param {string} projectId
    * @returns {AbortablePromise}
    */
   closeProject(projectId) {
