@@ -50,7 +50,13 @@ class TaskGateway {
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
-        if (response.data && response.data.totalRows && response.data.result && response.data.result.tasks && response.data.result.users) {
+        if (
+          response.data !== undefined &&
+          response.data.totalRows !== undefined &&
+          response.data.result !== undefined &&
+          response.data.result.tasks !== undefined &&
+          response.data.result.users !== undefined
+        ) {
           const users = {};
           Object.keys(response.data.result.users).forEach(userId => users[userId] = new User(response.data.result.users[userId]));
           return {
