@@ -61,7 +61,7 @@ class LabelingTask
         }
 
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'by_status_videoId')
+            ->createQuery('annostation_labeling_task_by_phase_status_and_video_001', 'view')
             ->setStartKey($startKey)
             ->setEndKey($endKey);
 
@@ -134,7 +134,7 @@ class LabelingTask
         }
 
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'by_status_and_project')
+            ->createQuery('annostation_labeling_task_by_phase_status_and_project_001', 'view')
             ->setStartKey($startKey)
             ->setEndKey($endKey);
 
@@ -352,7 +352,7 @@ class LabelingTask
                 $timesGroupedById = array_merge(
                     $timesGroupedById,
                     $this->documentManager
-                        ->createQuery('annostation_task_timer', 'sum_by_taskId')
+                        ->createQuery('annostation_task_timer_sum_by_taskId_001', 'view')
                         ->setGroup(true)
                         ->setKeys($idsInChunk)
                         ->execute()
@@ -361,7 +361,7 @@ class LabelingTask
             }
         }else{
             $query = $this->documentManager
-                ->createQuery('annostation_task_timer', 'sum_by_taskId')
+                ->createQuery('annostation_task_timer_sum_by_taskId_001', 'view')
                 ->setGroup(true);
             $timesGroupedById = $query->execute()->toArray();
         }
@@ -431,7 +431,7 @@ class LabelingTask
     public function getSumOfTasksByProject(Model\Project $project)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
+            ->createQuery('annostation_labeling_task_sum_of_tasks_by_project_phase_and_status_001', 'view')
             ->setStartKey([$project->getId()])
             ->setEndKey([$project->getId(), []])
             ->setGroup(true)
@@ -459,7 +459,7 @@ class LabelingTask
     public function getSumOfTasksByStatus()
     {
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
+            ->createQuery('annostation_labeling_task_sum_of_tasks_by_project_phase_and_status_001', 'view')
             ->setReduce(true)
             ->onlyDocs(false);
 
@@ -475,7 +475,7 @@ class LabelingTask
     public function getSumOfTasksByProjectAndStatus(Model\Project $project, $phase, $status)
     {
         return $this->documentManager
-            ->createQuery('annostation_labeling_task', 'sum_of_tasks_by_project_and_status')
+            ->createQuery('annostation_labeling_task_sum_of_tasks_by_project_phase_and_status_001', 'view')
             ->setKey([$project->getId(), $phase, $status])
             ->setGroup(true)
             ->setReduce(true)
