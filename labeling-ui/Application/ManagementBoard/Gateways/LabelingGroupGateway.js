@@ -48,6 +48,23 @@ class LabelingGroupGateway {
   }
 
   /**
+   * Get all labeling groups in which i am the coordinator
+   *
+   * @returns {AbortablePromise<LabelingGroup>|Error}
+   */
+  getMyLabelingGroups() {
+    const url = this._apiService.getApiUrl('/labelingGroup/user/groups');
+    return this._bufferedHttp.get(url, undefined, 'labelingGroups')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error('Failed loading labeling groups for the current user.');
+      });
+  }
+
+  /**
    * Create a new LabelingGroup
    *
    * @param {LabelingGroup} group

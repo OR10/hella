@@ -1,3 +1,4 @@
+import clone from 'lodash.clone';
 import cloneDeep from 'lodash.clonedeep';
 
 /**
@@ -14,6 +15,11 @@ class LabelingGroup {
      * @type {string|undefined}
      */
     this.id = group.id;
+
+    /**
+     * @type {string}
+     */
+    this.name = group.name;
 
     /**
      * @type {Array.<string>}
@@ -37,11 +43,13 @@ class LabelingGroup {
    * @return {Object}
    */
   toJSON() {
-    const {id, coordinators, labelers} = this;
+    const {id, name, coordinators, labelers} = this;
     return {
       coordinators: cloneDeep(coordinators),
       labeler: cloneDeep(labelers),
-      id};
+      name: clone(name),
+      id,
+    };
   }
 }
 

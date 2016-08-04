@@ -8,9 +8,10 @@ class ProjectListController {
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {ProjectGateway} projectGateway
+   * @param {LabelingGroupGateway} labelingGroupGateway
    * @param {ModalService} modalService
    */
-  constructor($scope, $state, projectGateway, modalService) {
+  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -28,6 +29,12 @@ class ProjectListController {
      * @private
      */
     this._projectGateway = projectGateway;
+
+    /**
+     * @type {LabelingGroupGateway}
+     * @private
+     */
+    this._labelingGroupGateway = labelingGroupGateway;
 
     /**
      * @type {ModalService}
@@ -151,18 +158,42 @@ class ProjectListController {
   }
 
   acceptProject(projectId, projectName) {
-    const modal = this._modalService.getWarningDialog({
-      title: 'Accept project',
-      headline: `You are about to accept the "${projectName}" project. Proceed?`,
-      message: 'Accepting the project makes your team responsible for labeling and processing all associated tasks.',
-      confirmButtonText: 'Accept',
-      cancelButtonText: 'Cancel',
-    }, () => {
-      this.loadingInProgress = true;
-      this._projectGateway.acceptProject(projectId)
-        .then(() => this._triggerReloadAll());
+    this.showLoadingMask = true;
+
+    this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
+      const selectionData = reponse.labelingGroups.map(group => {
+        return {id: group.id, name: group.name};
+      });
+
+      const modal = this._modalService.getSelectionDialog({
+        title: 'Accept project',
+        headline: `You are about to accept the "${projectName}" project. Proceed?`,
+        message: 'Accepting the project makes your team responsible for labeling and processing all associated tasks. Please select a team that you want to assign to this project',
+        confirmButtonText: 'Accept and Assign',
+        cancelButtonText: 'Cancel',
+        selectionData,
+      },
+      groupId => {
+        if (groupId) {
+          this.loadingInProgress = true;
+          this._projectGateway.acceptProject(projectId, groupId)
+            .then(() => this._triggerReloadAll());
+        } else {
+          const warnModal = this._modalService.getAlertWarningDialog({
+            title: 'No Group Selected',
+            headline: 'You need to select a labeling group',
+            message: 'You need to select a labeling group to assign to this Project. Without a selected labeling group the project can not be accepted!',
+            confirmButtonText: 'Understood',
+          });
+          warnModal.activate();
+        }
+        this.showLoadingMask = false;
+      },
+      () => {
+        this.showLoadingMask = false;
+      });
+      modal.activate();
     });
-    modal.activate();
   }
 
   /**
@@ -257,6 +288,7 @@ ProjectListController.$inject = [
   '$scope',
   '$state',
   'projectGateway',
+  'labelingGroupGateway',
   'modalService',
 ];
 

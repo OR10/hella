@@ -146,4 +146,32 @@ describe('LabelingGroup', () => {
 
     $httpBackend.flush();
   });
+
+  it('should get my labeling groups', done => {
+    const response = {
+      result: {
+        labelingGroups: [
+          {
+            id: 'group-id-1',
+            labeler: ['labeler-id-1', 'labeler-id-2'],
+            coordinators: ['coordinator-id-1'],
+          },
+        ],
+        users: {
+          'labeler-id-1': {id: 'labeler-id-1', username: 'labeler-1', email: 'foo@bar.baz'},
+          'labeler-id-2': {id: 'labeler-id-2', username: 'labeler-2', email: 'foo@bar.baz'},
+          'coordinator-id-1': {id: 'coordinator-id-1', username: 'coordinator-1', email: 'foo@bar.baz'},
+          'coordinator-id-2': {id: 'coordinator-id-2', username: 'coordinator-2', email: 'foo@bar.baz'},
+        },
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/labelingGroup/user/groups').respond(response);
+    gateway.getMyLabelingGroups().then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });
