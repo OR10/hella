@@ -8,6 +8,7 @@ imports:
 parameters:
     locale: en
     jms_serializer.cache_naming_strategy.class: AppBundle\Serializer\IdenticalUnlessSpecifiedPropertyNamingStrategy
+    doctrine_couchdb.odm.configuration.class: AppBundle\Migration\Configuration
 
 framework:
     #esi:             ~
