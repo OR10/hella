@@ -405,27 +405,28 @@ class LabelingTask
     }
 
     /**
-     * @return null|int
+     * @param $phase
+     * @return int|null
      */
-    public function getAssignedUserId()
+    public function getLatestAssignedUserIdForPhase($phase)
     {
-        if ($this->getAssignmentHistory() === null) {
+        $historyEntries = $this->getAssignmentHistory();
+        if (empty($historyEntries)) {
             return null;
         }
 
-        $assignedUsersIds = $this->getAssignmentHistory();
-
-        usort($assignedUsersIds, function ($a, $b) {
-            if ($a[1] === null || $b[1] === null) {
-                return -1;
-            }
-            if ($a[1] === $b[1]) {
-                return 0;
-            }
-            return ($a[1] > $b[1]) ? -1 : 1;
+        $historyEntries = array_filter($historyEntries, function($history) use ($phase) {
+            return ($history['phase'] === $phase);
         });
 
-        return $assignedUsersIds[0][0];
+        usort($historyEntries, function ($a, $b) {
+            if ($a['createdAt'] === $b['createdAt']) {
+                return 0;
+            }
+            return ($a['createdAt'] < $b['createdAt']) ? -1 : 1;
+        });
+
+        return $historyEntries[0]['userId'];
     }
 
     /**

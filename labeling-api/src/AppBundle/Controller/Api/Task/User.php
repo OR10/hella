@@ -74,7 +74,7 @@ class User extends Controller\Base
         $this->isUserAllowedToAssignTo($user);
         $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
-        if ($task->getAssignedUserId() !== $user->getId()) {
+        if ($task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()) {
             throw new Exception\BadRequestHttpException('You are not allowed to delete this task assignment');
         }
 
