@@ -10,6 +10,6 @@ function(doc) {
     } else {
         // Migration of status from string to object
         // See AppBundle\Migration\LabelingTaskStatusPhase
-        emit([doc.projectId, 'labeling', doc.status.labeling], 1);
+        emit([doc.projectId, 'labeling', doc.status], 1);
     }
 }
