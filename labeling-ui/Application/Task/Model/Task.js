@@ -18,9 +18,9 @@ class Task {
     this.id = task.id;
 
     /**
-     * @type {string}
+     * @type {Object}
      */
-    this.videoId = task.videoId;
+    this.video = task.video;
 
     /**
      * @type {string}
@@ -204,7 +204,7 @@ class Task {
   toJSON() {
     const {
       id,
-      videoId,
+      video,
       createdAt,
       descriptionText,
       descriptionTitle,
@@ -237,8 +237,8 @@ class Task {
       requiredImageTypes: cloneDeep(requiredImageTypes),
       status: cloneDeep(status),
       assignmentHistory: cloneDeep(assignmentHistory),
+      video: cloneDeep(video),
       id,
-      videoId,
       createdAt,
       descriptionText,
       descriptionTitle,
