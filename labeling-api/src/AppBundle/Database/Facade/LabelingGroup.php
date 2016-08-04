@@ -64,12 +64,14 @@ class LabelingGroup
      * @param Model\User $user
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAllByCoordinator(Model\User $user)
+    public function findAllByCoordinator(Model\User $user = null)
     {
-        return $this->documentManager
+        $query = $this->documentManager
             ->createQuery('annostation_labeling_group_by_coordinator', 'filter')
-            ->setKey($user->getId())
-            ->onlyDocs(true)
-            ->execute();
+            ->onlyDocs(true);
+        if ($user instanceof Model\User) {
+            $query->setKey($user->getId());
+        }
+        return $query->execute();
     }
 }

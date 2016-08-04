@@ -54,6 +54,41 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
+     * @Rest\Get("/user/coordinators")
+     *
+     * @param HttpFoundation\Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function getAllCoordinatorsAction(HttpFoundation\Request $request)
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if (!$user->hasRole(Model\User::ROLE_CLIENT)) {
+            throw new Exception\AccessDeniedHttpException();
+        }
+
+        $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator();
+        $users = [];
+        foreach($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
+            if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+                $users[] = [
+                    'id' => $user->getId(),
+                    'name' => $user->getUsername(),
+                ];
+            }
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' => $users
+            ]
+        );
+    }
+
+    /**
+     *
      * @Rest\Get("/user/groups")
      *
      * @param HttpFoundation\Request $request

@@ -58,3 +58,13 @@
 + Response 200 (application/json)
     + Attributes
         + result array(LabelingGroup)
+
+## Get all Coordinators [/api/labelingGroup/user/coordinators]
+
+### Get all Coordinators [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + id:`36047d429d50548893be41c6880632fd` (string) - The id of the user.
+            + username: `Christian` (string) - username of the user
