@@ -606,10 +606,10 @@ class LabelingTask
     public function addAssignmentHistory(User $user = null, \DateTime $date, $phase, $status)
     {
         $this->assignmentHistory[] = [
-            $user instanceof User ? $user->getId() : null,
-            $date->getTimestamp(),
-            $phase,
-            $status
+            'userId' => $user instanceof User ? $user->getId() : null,
+            'createdAt' => $date->getTimestamp(),
+            'phase' => $phase,
+            'status' => $status,
         ];
     }
 }

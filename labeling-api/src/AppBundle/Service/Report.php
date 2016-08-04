@@ -199,8 +199,20 @@ class Report
      */
     private function getNumberOfTaskInProject(Model\Project $project)
     {
-        $tasks = $this->labelingTaskFacade->getSumOfTasksByProject($project);
-        return array_sum($tasks[$project->getId()]);
+        $sumOfTasksByProjectAndPhase = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+
+        $phases = array(
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::PHASE_REVISION
+        );
+
+        $sumOfTasks = 0;
+        foreach ($phases as $phase) {
+            $sumOfTasks += array_sum($sumOfTasksByProjectAndPhase[$phase]);
+        }
+
+        return $sumOfTasks;
     }
 
     /**

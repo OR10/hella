@@ -42,13 +42,11 @@ class TaskCount extends Controller\Base
      */
     public function getTaskCountAction(HttpFoundation\Request $request, Model\Project $project)
     {
-        $sumLabeling = $this->labelingTask->getSumOfTasksByProject($project);
+        $sumLabeling = $this->labelingTask->getSumOfTasksByPhaseForProject($project);
 
         return View\View::create()->setData(
             [
-                'result' => [
-                    'labeling' => $sumLabeling[$project->getId()]
-                ],
+                'result' => $sumLabeling,
             ]
         );
     }

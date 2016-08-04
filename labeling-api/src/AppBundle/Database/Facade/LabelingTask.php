@@ -426,28 +426,35 @@ class LabelingTask
 
     /**
      * @param Model\Project $project
-     * @return \Doctrine\CouchDB\View\Result
+     * @return array
      */
-    public function getSumOfTasksByProject(Model\Project $project)
+    public function getSumOfTasksByPhaseForProject(Model\Project $project)
     {
+        $result = array();
         $query = $this->documentManager
             ->createQuery('annostation_labeling_task_sum_of_tasks_by_project_phase_and_status_001', 'view')
             ->setStartKey([$project->getId()])
             ->setEndKey([$project->getId(), []])
             ->setGroup(true)
-            ->setGroupLevel(2)
             ->setReduce(true)
             ->execute()
             ->toArray();
 
-        $result[$project->getId()] = [
-            Model\LabelingTask::STATUS_PREPROCESSING => 0,
-            Model\LabelingTask::STATUS_TODO => 0,
-            Model\LabelingTask::STATUS_IN_PROGRESS => 0,
-            Model\LabelingTask::STATUS_DONE => 0,
-        ];
+        $phases = array(
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::PHASE_REVISION
+        );
+        foreach ($phases as $phase) {
+            $result[$phase] = [
+                Model\LabelingTask::STATUS_PREPROCESSING => 0,
+                Model\LabelingTask::STATUS_TODO => 0,
+                Model\LabelingTask::STATUS_IN_PROGRESS => 0,
+                Model\LabelingTask::STATUS_DONE => 0,
+            ];
+        }
         foreach ($query as $mapping) {
-            $result[$mapping['key'][0]][$mapping['key'][1]] = $mapping['value'];
+            $result[$mapping['key'][1]][$mapping['key'][2]] = $mapping['value'];
         }
 
         return $result;
