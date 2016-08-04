@@ -49,7 +49,7 @@
             </td>
             <td>{{task.title}}</td>
             <td>{{task.range}}</td>
-            <td>{{task.lastestAssignee.username}}</td>
+            <td>{{task.latestAssignee.username}}</td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
                 <button tooltip="Unassign user: {{task.latestAssignee.username}}"
                         ng-if="vm.userPermissions.unassignPermission && task.latestAssignee != null && task.status !== 'done'"
