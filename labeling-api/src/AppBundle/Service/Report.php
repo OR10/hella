@@ -127,10 +127,12 @@ class Report
             $this->getSumOfLabeledThingInFrameClasses($project)
         );
 
-        $timesPerProject = $this->projectFacade->getTimeForProject($project);
-        $report->setTotalTime(
-            isset($timesPerProject[0]['value']) ? $timesPerProject[0]['value'] : 0
-        );
+        $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
+        $sumOfTimeByPhase = 0;
+        foreach($timeByPhaseForProject as $phase => $time) {
+            $sumOfTimeByPhase += $time;
+        }
+        $report->setTotalTime($sumOfTimeByPhase);
         $report->setTotalLabelingTime(0);
         $report->setTotalReviewTime(0);
         $report->setTotalRevisionTime(0);
