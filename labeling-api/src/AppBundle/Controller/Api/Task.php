@@ -103,27 +103,27 @@ class Task extends Controller\Base
             case Model\LabelingTask::STATUS_PREPROCESSING:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_PREPROCESSING, $project, $offset, $limit
+                        Model\LabelingTask::STATUS_PREPROCESSING, $project, $offset, $limit, $taskPhase
                     )->toArray();
                     $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_PREPROCESSING];
                 }
                 break;
             case Model\LabelingTask::STATUS_IN_PROGRESS:
                 $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_IN_PROGRESS, $project, $offset, $limit
+                    Model\LabelingTask::STATUS_IN_PROGRESS, $project, $offset, $limit, $taskPhase
                 )->toArray();
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_IN_PROGRESS];
                 break;
             case Model\LabelingTask::STATUS_TODO:
                 $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_TODO, $project, $offset, $limit
+                    Model\LabelingTask::STATUS_TODO, $project, $offset, $limit, $taskPhase
                 )->toArray();
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
                 if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_DONE, $project, $offset, $limit
+                        Model\LabelingTask::STATUS_DONE, $project, $offset, $limit, $taskPhase
                     )->toArray();
                 }
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
