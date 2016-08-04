@@ -73,7 +73,7 @@ class Project
             ->execute()
             ->toArray();
 
-        return $resultSet;
+        return $resultSet[0]['value'];
     }
     
     /**
