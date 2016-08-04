@@ -46,9 +46,7 @@ class TaskCount extends Controller\Base
 
         return View\View::create()->setData(
             [
-                'result' => [
-                    'labeling' => $sumLabeling[$project->getId()]
-                ],
+                'result' => $sumLabeling,
             ]
         );
     }
