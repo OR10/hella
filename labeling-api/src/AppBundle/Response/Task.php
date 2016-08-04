@@ -44,8 +44,8 @@ class Task
             $users = array_merge(
                 $userFacade->getUserByIds(
                     array_map(
-                        function ($assignedUser) {
-                            return $assignedUser[0];
+                        function ($historyEntry) {
+                            return $historyEntry['userId'];
                         },
                         $labelingTask->getAssignmentHistory() === null ? [] : $labelingTask->getAssignmentHistory())
                 )
