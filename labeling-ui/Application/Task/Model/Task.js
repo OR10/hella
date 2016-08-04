@@ -18,9 +18,9 @@ class Task {
     this.id = task.id;
 
     /**
-     * @type {string}
+     * @type {Object}
      */
-    this.videoId = task.videoId;
+    this.video = task.video;
 
     /**
      * @type {string}
@@ -136,8 +136,17 @@ class Task {
    * @returns {Object}
    */
   getLatestAssignmentForPhase(phase) {
+    // This should not happen. Should be fixed in the backend!
+    if (this.assignmentHistory === null) {
+      return null;
+    }
+
     const assignmentsForPhase = this.assignmentHistory
       .filter(assignment => assignment.phase === phase);
+
+    if (assignmentsForPhase.length === 0) {
+      return null;
+    }
 
     assignmentsForPhase.sort(
       (firstAssignment, secondAssignment) => {
@@ -174,6 +183,11 @@ class Task {
    */
   getLatestAssignedUserForPhase(phase) {
     const latestAssignmentForPhase = this.getLatestAssignmentForPhase(phase);
+
+    if (latestAssignmentForPhase === null) {
+      return null;
+    }
+
     return this.lookupUserFromAssignment(latestAssignmentForPhase.userId);
   }
 
@@ -204,7 +218,7 @@ class Task {
   toJSON() {
     const {
       id,
-      videoId,
+      video,
       createdAt,
       descriptionText,
       descriptionTitle,
@@ -237,8 +251,8 @@ class Task {
       requiredImageTypes: cloneDeep(requiredImageTypes),
       status: cloneDeep(status),
       assignmentHistory: cloneDeep(assignmentHistory),
+      video: cloneDeep(video),
       id,
-      videoId,
       createdAt,
       descriptionText,
       descriptionTitle,
