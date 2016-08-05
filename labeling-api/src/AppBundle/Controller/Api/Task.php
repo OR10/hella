@@ -157,7 +157,32 @@ class Task extends Controller\Base
      */
     public function getTaskAction(Model\LabelingTask $task)
     {
-        return View\View::create()->setData(['result' => $task]);
+        $users = array();
+        $users = array_merge(
+            $this->userFacade->getUserByIds(
+                array_map(
+                    function ($historyEntry) {
+                        return $historyEntry['userId'];
+                    },
+                    $task->getAssignmentHistory() === null ? [] : $task->getAssignmentHistory())
+            )
+            , $users
+        );
+
+        $userByUserIds = array();
+        /** @var Model\User $user */
+        foreach ($users as $user) {
+            $userByUserIds[$user->getId()] = $user;
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'task' => $task,
+                    'users' => $userByUserIds,
+                ]
+            ]
+        );
     }
 
     /**
