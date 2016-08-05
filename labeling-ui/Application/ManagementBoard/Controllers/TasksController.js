@@ -87,7 +87,7 @@ class TasksController {
       const defaults = {};
       phases.forEach(phase => {
         defaults[phase] = {};
-        states.forEach(status => defaults[phase][status] = 0)
+        states.forEach(status => defaults[phase][status] = 0);
       });
 
       const defaultedTaskCount = merge({}, defaults, taskCount);
