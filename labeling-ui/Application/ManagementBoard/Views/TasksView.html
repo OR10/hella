@@ -14,19 +14,19 @@
             <tab header="Labeling {{vm.taskCount !== null ? '(' + vm.taskCount.labeling.overall + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    Todo <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.todo}})</span>
+                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.in_progress}})</span>
                 </h2>
                 <task-list task-phase="labeling"
-                           task-status="todo"
+                           task-status="in_progress"
                            project-id="vm.projectId"
                            user="vm.user"
                            user-permissions="vm.userPermissions">
                 </task-list>
                 <h2>
-                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.in_progress}})</span>
+                    Todo <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.todo}})</span>
                 </h2>
                 <task-list task-phase="labeling"
-                           task-status="in_progress"
+                           task-status="todo"
                            project-id="vm.projectId"
                            user="vm.user"
                            user-permissions="vm.userPermissions">
