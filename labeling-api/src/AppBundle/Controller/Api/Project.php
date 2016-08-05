@@ -136,7 +136,7 @@ class Project extends Controller\Base
                 'creationTimestamp' => $project->getCreationDate(),
             );
 
-            if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+            if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
                 $responseProject['taskFinishedCount']          = $this->getSumOfCompletedTasksForProject($project);
                 $responseProject['taskInProgressCount']        = $this->getSumOfInProgressTasksForProject($project);
@@ -161,7 +161,7 @@ class Project extends Controller\Base
             });
         }
 
-        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
             foreach (array_keys($result) as $status) {
                 $result[$status] = array_map(function ($data) {
                     unset($data['creationTimestamp']);
