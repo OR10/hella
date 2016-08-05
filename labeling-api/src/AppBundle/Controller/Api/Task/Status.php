@@ -80,7 +80,8 @@ class Status extends Controller\Base
 
         $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
 
-        if ($phase === Model\LabelingTask::PHASE_LABELING) {
+        $rawStatusByPhase = $task->getRawStatus();
+        if (array_key_exists(Model\LabelingTask::PHASE_REVIEW, $rawStatusByPhase) && $phase === Model\LabelingTask::PHASE_LABELING) {
             $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
         }
 
