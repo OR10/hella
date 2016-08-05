@@ -226,8 +226,8 @@ class Task {
    */
   hasUserInStatus(userId, status) {
     return this.assignmentHistory.filter(entry => {
-      return entry.userId === userId && entry.status === status;
-    }).length !== 0;
+        return entry.userId === userId && entry.status === status;
+      }).length !== 0;
   }
 
   /**
