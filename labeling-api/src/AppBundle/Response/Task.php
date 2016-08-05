@@ -69,7 +69,7 @@ class Task
                 'minimalVisibleShapeOverflow' => $labelingTask->getMinimalVisibleShapeOverflow(),
                 'frameNumberMapping' => $labelingTask->getFrameNumberMapping(),
                 'metaData' => $labelingTask->getMetaData(),
-                'reopen' => $labelingTask->isReopen(),
+                'reopen' => $labelingTask->getReopenByPhase(),
                 'createdAt' => $labelingTask->getCreatedAt(),
                 'userId' => $labelingTask->getUserId(),
                 'user' => $user instanceof Model\User ? $user->getUsername() : null,

@@ -108,8 +108,9 @@ class Status extends Controller\Base
         $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            if ($task->getStatus($phase) === Model\LabelingTask::STATUS_DONE) {
-                $task->setReopen(true);
+            if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION &&
+            $task->getStatus($phase) !== Model\LabelingTask::STATUS_PREPROCESSING) {
+                throw new Exception\BadRequestHttpException();
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
             $task->addAssignmentHistory(
@@ -139,8 +140,8 @@ class Status extends Controller\Base
         $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            if ($task->getStatus($phase) === Model\LabelingTask::STATUS_DONE) {
-                $task->setReopen(true);
+            if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_TODO) {
+                throw new Exception\BadRequestHttpException();
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_IN_PROGRESS);
             $task->addAssignmentHistory(
@@ -191,15 +192,15 @@ class Status extends Controller\Base
     /**
      * @Rest\Post("/{task}/status/reopen")
      *
-     * @param Model\LabelingTask $task
-     *
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask     $task
      * @return \FOS\RestBundle\View\View
      */
-    public function reopenTaskAction(Model\LabelingTask $task)
+    public function reopenTaskAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+        $phase = $request->request->get('phase');
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
             $task->addAssignmentHistory(
@@ -208,7 +209,7 @@ class Status extends Controller\Base
                 $phase,
                 Model\LabelingTask::STATUS_TODO
             );
-            $task->setReopen(true);
+            $task->setReopen($phase, true);
             $task->addAssignmentHistory(
                 null,
                 new \DateTime('now', new \DateTimeZone('UTC')),

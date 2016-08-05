@@ -162,9 +162,13 @@ class LabelingTask
 
     /**
      * @var bool
-     * @CouchDB\Field(type="boolean")
+     * @CouchDB\Field(type="mixed")
      */
-    private $reopen = false;
+    private $reopen = array(
+        self::PHASE_LABELING => false,
+        self::PHASE_REVIEW => false,
+        self::PHASE_REVISION => false,
+    );
 
     /**
      * @var \DateTime
@@ -544,16 +548,17 @@ class LabelingTask
 
     /**
      * @param boolean $reopen
+     * @param         $phase
      */
-    public function setReopen($reopen)
+    public function setReopen($phase, $reopen)
     {
-        $this->reopen = $reopen;
+        $this->reopen[$phase] = $reopen;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isReopen()
+    public function getReopenByPhase()
     {
         return $this->reopen;
     }

@@ -63,15 +63,14 @@ class StatusTest extends Tests\WebTestCase
     public function testReopenLabeledTask()
     {
         $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
-        $response = $this->createRequest(self::ROUTE, [$this->task->getId(), Model\LabelingTask::STATUS_TODO])
+        $response = $this->createRequest(self::ROUTE, [ $this->task->getId(), Model\LabelingTask::STATUS_TODO])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
             ->getResponse();
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($task->getStatus(Model\LabelingTask::PHASE_LABELING), Model\LabelingTask::STATUS_TODO);
-        $this->assertTrue($task->isReopen());
+        $this->assertEquals($response->getStatusCode(), 400);
     }
 
     public function testBeginTask()

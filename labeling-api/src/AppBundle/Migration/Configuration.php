@@ -13,6 +13,7 @@ class Configuration extends CouchDB\Configuration
                 new TaskTimerPhase(),
                 new LabelingTaskStatusPhase(),
                 new LabelingTaskAssignmentHistory(),
+                new LabelingTaskReopenByPhase(),
             )
         );
     }
