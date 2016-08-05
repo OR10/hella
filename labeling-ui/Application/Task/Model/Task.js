@@ -246,6 +246,7 @@ class Task {
     const {
       id,
       video,
+      videoId,
       createdAt,
       descriptionText,
       descriptionTitle,
@@ -291,6 +292,7 @@ class Task {
       projectId,
       readOnly,
       taskType,
+      videoId,
     };
   }
 }
