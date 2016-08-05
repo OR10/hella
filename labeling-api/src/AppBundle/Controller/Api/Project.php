@@ -46,21 +46,29 @@ class Project extends Controller\Base
     private $tokenStorage;
 
     /**
+     * @var Facade\User
+     */
+    private $userFacade;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Storage\TokenStorage       $tokenStorage
+     * @param Facade\User                $userFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorage $tokenStorage,
+        Facade\User $userFacade
     ) {
         $this->projectFacade             = $projectFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->tokenStorage              = $tokenStorage;
+        $this->userFacade                = $userFacade;
     }
 
     /**
@@ -261,6 +269,30 @@ class Project extends Controller\Base
      */
     public function getTaskAction(Model\Project $project)
     {
+        return View\View::create()->setData(['result' => $project]);
+    }
+
+    /**
+     * Assign a label coordinator to a project
+     *
+     * @Rest\Post("/{project}/assign")
+     *
+     * @param HttpFoundation\Request $request
+     * @param Model\Project          $project
+     * @return \FOS\RestBundle\View\View
+     */
+    public function assignProjectToUserAction(HttpFoundation\Request $request, Model\Project $project)
+    {
+        $assignedLabelCoordinatorId = $request->request->get('assignedLabelCoordinatorId', null);
+
+        $coordinator = $this->userFacade->getUserById($assignedLabelCoordinatorId);
+        if (!$coordinator->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            throw new Exception\AccessDeniedHttpException();
+        }
+
+        $project->setCoordinator($assignedLabelCoordinatorId);
+        $project = $this->projectFacade->save($project);
+
         return View\View::create()->setData(['result' => $project]);
     }
 }

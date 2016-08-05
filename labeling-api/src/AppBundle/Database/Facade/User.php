@@ -161,6 +161,19 @@ class User
     }
 
     /**
+     * @param $role
+     * @return mixed
+     */
+    public function getUserByRole($role)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_user_by_role_001', 'view')
+            ->onlyDocs(true)
+            ->setKey($role)
+            ->execute();
+    }
+
+    /**
      * Returns the user profile image raw data
      *
      * @param Model\User $user

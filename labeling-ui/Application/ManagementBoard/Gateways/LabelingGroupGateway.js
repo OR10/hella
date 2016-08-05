@@ -65,6 +65,23 @@ class LabelingGroupGateway {
   }
 
   /**
+   * Get all label coordinators
+   *
+   * @returns {AbortablePromise|Error}
+   */
+  getLabelCoordinators() {
+    const url = this._apiService.getApiUrl('/labelingGroup/user/coordinators');
+    return this._bufferedHttp.get(url, undefined, 'labelingGroups')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error('Failed loading labeling groups for the current user.');
+      });
+  }
+
+  /**
    * Create a new LabelingGroup
    *
    * @param {LabelingGroup} group

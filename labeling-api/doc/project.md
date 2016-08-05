@@ -123,3 +123,15 @@
 + Response 200 (application/json)
     + Attributes
         + result array(Report)
+
+## Assign project to label coordinator [/api/project/{projectId}/assign]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+    + assignedLabelCoordinatorId: `a87f77b135c47576bbde8bca9eac2204` (string, required) - The id of the coordinator user.
+
+### Assign Project to Coordinator [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result Project

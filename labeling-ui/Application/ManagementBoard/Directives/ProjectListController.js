@@ -197,6 +197,44 @@ class ProjectListController {
   }
 
   /**
+   * @param {string} projectId
+   */
+  assignProject(projectId) {
+    this.showLoadingMask = true;
+
+    this._labelingGroupGateway.getLabelCoordinators().then(response => {
+      const modal = this._modalService.getSelectionDialog({
+        title: 'Assign Label Coordinator',
+        headline: `Select a label coordinator to assign to this project`,
+        message: 'Please select a label coordinator that you want to assign to this project',
+        confirmButtonText: 'Assign',
+        cancelButtonText: 'Cancel',
+        selectionData: response,
+      },
+      labelCoordinatorId => {
+        if (labelCoordinatorId) {
+          this.loadingInProgress = true;
+          this._projectGateway.assignCoordinator(projectId, labelCoordinatorId)
+            .then(() => this._triggerReloadAll());
+        } else {
+          const warnModal = this._modalService.getAlertWarningDialog({
+            title: 'No Label Coordinator Selected',
+            headline: 'You need to select a label coordinator',
+            message: 'You need to select a label coordinator to assign to this Project. Without a selected labeling coordinator the project can not be accepted!',
+            confirmButtonText: 'Understood',
+          });
+          warnModal.activate();
+        }
+        this.showLoadingMask = false;
+      },
+      () => {
+        this.showLoadingMask = false;
+      });
+      modal.activate();
+    });
+  }
+
+  /**
    * @param {number} projectId
    */
   openReport(projectId) { // eslint-disable-line no-unused-vars

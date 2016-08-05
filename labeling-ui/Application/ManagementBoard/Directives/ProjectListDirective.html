@@ -50,6 +50,13 @@
                     <i class="fa fa-check-square-o"></i>
                 </button>
 
+                <button tooltip="Assign project to a label coordinator"
+                        ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
+                        ng-click="vm.assignProject(project.id, project.name)"
+                >
+                    <i class="fa fa-user"></i>
+                </button>
+
                 <button tooltip="Close Project (Move to done)"
                         ng-if="vm.userPermissions.canMoveProjectToDone && project.status == 'in_progress'"
                         ng-click="vm.closeProject(project.id, project.name)"

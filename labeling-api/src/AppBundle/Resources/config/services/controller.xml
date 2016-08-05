@@ -38,6 +38,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="security.token_storage" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task.export"

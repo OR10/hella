@@ -143,6 +143,7 @@ class CurrentUser extends Controller\Base
         $viewClosedProjects = false;
         $viewTodoProjects   = false;
         $editLabelingGroups = false;
+        $assignProject      = false;
 
         if ($user->hasRole(Model\User::ROLE_LABELER)) {
             $viewTaskList = true;
@@ -152,6 +153,7 @@ class CurrentUser extends Controller\Base
             $viewTodoProjects   = true;
             $uploadNewVideo     = true;
             $moveProjectToDone  = true;
+            $assignProject      = true;
         }
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $statsButton        = true;
@@ -204,6 +206,7 @@ class CurrentUser extends Controller\Base
                         'canViewClosedProjects' => $viewClosedProjects,
                         'canViewTodoProjects' => $viewTodoProjects,
                         'canEditLabelingGroups' => $editLabelingGroups,
+                        'canAssignProject' => $assignProject,
                     ]
             ]
         );
