@@ -68,8 +68,8 @@ class TaskListController {
       .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
   }
 
-  reopenTask(taskId) {
-    this._taskGateway.reopenTask(taskId).then(() => this._triggerReloadAll());
+  reopenTask(taskId, phase) {
+    this._taskGateway.reopenTask(taskId, phase).then(() => this._triggerReloadAll());
   }
 
   updatePage(page, itemsPerPage) {

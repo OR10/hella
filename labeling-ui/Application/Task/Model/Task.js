@@ -113,7 +113,9 @@ class Task {
     this.readOnly = task.readOnly;
 
     /**
-     * @type {boolean}
+     * Reopened information splitted by phase
+     *
+     * @type {Object.<string, boolean>}
      */
     this.reopen = task.reopen;
 
@@ -277,6 +279,7 @@ class Task {
       status: cloneDeep(status),
       assignmentHistory: cloneDeep(assignmentHistory),
       video: cloneDeep(video),
+      reopen: cloneDeep(reopen),
       id,
       createdAt,
       descriptionText,
@@ -287,7 +290,6 @@ class Task {
       minimalVisibleShapeOverflow,
       projectId,
       readOnly,
-      reopen,
       taskType,
     };
   }

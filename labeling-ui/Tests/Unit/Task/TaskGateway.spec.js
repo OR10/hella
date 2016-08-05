@@ -275,19 +275,25 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should reopen a task', done => {
-    const markResponse = {
-      result: {success: true},
-    };
+  using([
+    ['labeling'],
+    ['review'],
+    ['revision'],
+  ], phase => {
+    it('should reopen a task', done => {
+      const markResponse = {
+        result: {success: true},
+      };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/reopen').respond(markResponse);
+      $httpBackend.expectPOST('/backend/api/task/123asdf/status/reopen', {phase}).respond(markResponse);
 
-    gateway.reopenTask('123asdf').then(result => {
-      expect(result).toEqual(markResponse.result);
-      done();
+      gateway.reopenTask('123asdf', phase).then(result => {
+        expect(result).toEqual(markResponse.result);
+        done();
+      });
+
+      $httpBackend.flush();
     });
-
-    $httpBackend.flush();
   });
 
   it('should unassign a user from a task', done => {

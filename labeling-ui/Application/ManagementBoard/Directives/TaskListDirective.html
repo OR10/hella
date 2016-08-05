@@ -44,7 +44,7 @@
                 <i ng-if="task.labelInstruction === 'ignore-vehicle'" class="fa fa-eye-slash" tooltip="Ignore Vehicle"></i>
                 <i ng-if="task.labelInstruction === 'lane'" class="fa fa-long-arrow-up" tooltip="Lane"></i>
                 <i ng-if="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                <i ng-if="task.reopen" class="fa fa-retweet" tooltip="Reopened"></i>
+                <i ng-if="task.reopen[vm.taskPhase] === true" class="fa fa-retweet" tooltip="Reopened"></i>
                 &nbsp;{{task.type}}
             </td>
             <td>{{task.title}}</td>
@@ -58,7 +58,7 @@
                 </button>
                 <button tooltip="Reopen task"
                         ng-if="vm.userPermissions.canReopenTask && task.status === 'done'"
-                        ng-click="vm.reopenTask(task.id)">
+                        ng-click="vm.reopenTask(task.id, vm.taskPhase)">
                     <i class="fa fa-refresh"></i>
                 </button>
             </td>
