@@ -64,27 +64,33 @@ class TasksController {
    */
   _loadTaskCount(projectId) {
     this._taskGateway.getTaskCount(projectId).then(taskCount => {
-      const defaultedTaskCount = merge({}, {
-        labeling: {
-          todo: 0,
-          in_progress: 0,
-          done: 0,
-          processing: 0,
-        },
-        review: {
-          todo: 0,
-          in_progress: 0,
-          done: 0,
-        },
-        revision: {
-          todo: 0,
-          in_progress: 0,
-          done: 0,
-        },
-      }, taskCount);
+      const phases = [
+        'labeling',
+        'review',
+        'revision',
+      ];
+
+      const states = [
+        'waiting_for_precondition',
+        'preprocessing',
+        'todo',
+        'in_progress',
+        'done',
+      ];
+
+      const statesForOverallCalculation = [
+        'todo',
+        'in_progress',
+        'done',
+      ];
+
+      const defaults = {};
+      phases.forEach(phase => states.forEach(status => defaults[phase][status] = 0));
+
+      const defaultedTaskCount = merge({}, defaults, taskCount);
 
       Object.keys(defaultedTaskCount).forEach(
-        type => defaultedTaskCount[type].overall = Object.keys(defaultedTaskCount[type]).reduce(
+        type => defaultedTaskCount[type].overall = statesForOverallCalculation.reduce(
           (sum, status) => sum + defaultedTaskCount[type][status],
           0
         )
