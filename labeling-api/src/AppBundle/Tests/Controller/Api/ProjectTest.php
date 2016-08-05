@@ -181,6 +181,29 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($actualProject->getStatus(), Model\Project::STATUS_DONE);
     }
 
+    public function testAssignCoordinatorToProject()
+    {
+        $project = Model\Project::create('foobar');
+        $this->projectFacade->save($project);
+
+        /** @var Model\User $coordinator */
+        $coordinator = $this->getService('fos_user.util.user_manipulator')
+            ->create('foobar_label_coordinator', self::PASSWORD, self::EMAIL, true, false);
+        $coordinator->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+
+        $this->createRequest('/api/project/%s/assign', [$project->getId()])
+            ->setJsonBody(
+                [
+                    'assignedLabelCoordinatorId' => $coordinator->getId(),
+                ]
+            )
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute();
+
+        $actualProject = $this->projectFacade->find($project->getId());
+        $this->assertSame($actualProject->getCoordinator(), $coordinator->getId());
+    }
+
     protected function setUpImplementation()
     {
         /** @var Facade\Project projectFacade */
