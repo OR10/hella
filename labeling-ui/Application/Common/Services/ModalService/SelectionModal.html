@@ -5,7 +5,6 @@
     <h3 class="modal-body-headline">{{headline}}</h3>
     <p class="modal-body-content">{{message}}</p>
     <select ng-model="selection">
-        <option selected>Please make a selection</option>
         <option ng-repeat="option in selectionData" value="{{option.id}}">{{option.name}}</option>
     </select>
 </div>

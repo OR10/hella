@@ -28,7 +28,9 @@ class ModalService {
   }
 
   _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
-    const {message, headline, title, confirmButtonText, cancelButtonText, selectionData} = scope;
+    const {message, headline, title, confirmButtonText, cancelButtonText} = scope;
+    const selectionData = [{name: 'Please make a selection'}].concat(scope.selectionData);
+
     const noop = () => {
     };
     const onConfirm = confirmCallback || noop;
