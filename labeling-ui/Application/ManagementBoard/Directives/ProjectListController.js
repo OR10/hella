@@ -165,6 +165,18 @@ class ProjectListController {
         return {id: group.id, name: group.name};
       });
 
+      if (!selectionData.length) {
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'No labeling groups',
+          headline: 'There are no labeling groups',
+          message: 'You have no labeling groups that could be assigned to this project. Please create a group and try to assign this project again.',
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
+        this.showLoadingMask = false;
+        return;
+      }
+
       const modal = this._modalService.getSelectionDialog({
         title: 'Accept project',
         headline: `You are about to accept the "${projectName}" project. Proceed?`,
@@ -187,12 +199,9 @@ class ProjectListController {
           });
           warnModal.activate();
         }
-        this.showLoadingMask = false;
-      },
-      () => {
-        this.showLoadingMask = false;
       });
       modal.activate();
+      this.showLoadingMask = false;
     });
   }
 
@@ -203,6 +212,17 @@ class ProjectListController {
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getLabelCoordinators().then(response => {
+      if (!response.length) {
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'No label coordinators',
+          headline: 'There are no label coordinators',
+          message: 'There are no labeling coordinators that could be assigned to this project. Please contact the admin and wait for further assistance.',
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
+        this.showLoadingMask = false;
+      }
+
       const modal = this._modalService.getSelectionDialog({
         title: 'Assign Label Coordinator',
         headline: `Select a label coordinator to assign to this project`,
@@ -225,12 +245,9 @@ class ProjectListController {
           });
           warnModal.activate();
         }
-        this.showLoadingMask = false;
-      },
-      () => {
-        this.showLoadingMask = false;
       });
       modal.activate();
+      this.showLoadingMask = false;
     });
   }
 
