@@ -267,7 +267,7 @@ class Project extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getTaskAction(Model\Project $project)
+    public function getProjectAction(Model\Project $project)
     {
         return View\View::create()->setData(['result' => $project]);
     }
