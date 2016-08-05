@@ -28,6 +28,7 @@ class LabelingTask
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_TODO = 'todo';
     const STATUS_DONE = 'done';
+    const STATUS_WAITING_FOR_PRECONDITION = 'waiting_for_precondition';
 
     const PHASE_LABELING = 'labeling';
     const PHASE_REVIEW = 'review';

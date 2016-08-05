@@ -290,10 +290,10 @@ class VideoImporter
         $labelingTask->setMetaData($metadata);
 
         if ($review) {
-            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
+            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
         }
         if ($revision) {
-            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
+            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
         }
 
         $this->labelingTaskFacade->save($labelingTask);
