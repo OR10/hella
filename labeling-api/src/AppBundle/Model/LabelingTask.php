@@ -420,10 +420,10 @@ class LabelingTask
         });
 
         usort($historyEntries, function ($a, $b) {
-            if ($a['createdAt'] === $b['createdAt']) {
+            if ($a['assignedAt'] === $b['assignedAt']) {
                 return 0;
             }
-            return ($a['createdAt'] < $b['createdAt']) ? -1 : 1;
+            return ($a['assignedAt'] < $b['assignedAt']) ? -1 : 1;
         });
 
         return $historyEntries[0]['userId'];
@@ -607,7 +607,7 @@ class LabelingTask
     {
         $this->assignmentHistory[] = [
             'userId' => $user instanceof User ? $user->getId() : null,
-            'createdAt' => $date->getTimestamp(),
+            'assignedAt' => $date->getTimestamp(),
             'phase' => $phase,
             'status' => $status,
         ];
