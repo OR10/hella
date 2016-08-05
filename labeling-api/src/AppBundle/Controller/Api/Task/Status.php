@@ -79,6 +79,11 @@ class Status extends Controller\Base
 
 
         $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
+
+        if ($phase === Model\LabelingTask::PHASE_LABELING) {
+            $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
+        }
+
         $task->addAssignmentHistory(
             $user,
             new \DateTime('now', new \DateTimeZone('UTC')),
