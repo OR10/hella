@@ -23,6 +23,21 @@ class Task {
     this.video = task.video;
 
     /**
+     * @type {string|null}
+     */
+    this.videoId = null;
+
+    // @HACK: The backend provides to different task models while presenting a single task or presenting a list of tasks
+    //        The list does proivde a full video object, while the single task only provides a videoId.
+    // @TODO: The list should only provide the needed (listed) information and a special version of the model, while the full
+    //        task should provide either an embedded video or a videoId. (Backend work)
+    if (task.video !== undefined && task.videoId === undefined) {
+      this.videoId = task.video.id;
+    } else if (task.videoId !== undefined) {
+      this.videoId = task.videoId;
+    }
+
+    /**
      * @type {string}
      */
     this.createdAt = task.createdAt;
