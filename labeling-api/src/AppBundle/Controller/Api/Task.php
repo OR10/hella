@@ -141,8 +141,7 @@ class Task extends Controller\Base
         });
 
         return new View\View(
-            new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade, $numberOfTotalDocuments, $taskPhase)
-            ,
+            new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade, $numberOfTotalDocuments, $taskPhase),
             HttpFoundation\Response::HTTP_ACCEPTED
         );
     }
