@@ -5,7 +5,7 @@ function(doc) {
 
     if (typeof doc.status === 'object') {
         Object.keys(doc.status).forEach(function(phase) {
-            emit([doc.projectId, phase, doc.status.labeling], 1);
+            emit([doc.projectId, phase, doc.status[phase]], 1);
         });
     } else {
         // Migration of status from string to object
