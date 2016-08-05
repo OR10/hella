@@ -69,15 +69,12 @@ class LabelingGroup extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator();
         $users = [];
-        foreach($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
-            if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-                $users[] = [
-                    'id' => $user->getId(),
-                    'name' => $user->getUsername(),
-                ];
-            }
+        foreach ($this->userFacade->getUserByRole(Model\User::ROLE_LABEL_COORDINATOR)->toArray() as $user) {
+            $users[] = [
+                'id' => $user->getId(),
+                'name' => $user->getUsername(),
+            ];
         }
 
         return View\View::create()->setData(
