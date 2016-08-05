@@ -64,4 +64,57 @@ describe('Task model', () => {
 
     expect(user).toEqual(users['user-id-3']);
   });
+
+  it('should extract id from embedded video', () => {
+    const taskWithVideo = {
+      id: 'task-id-2',
+      assignmentHistory: [
+        {userId: null, assignedAt: '100', phase: 'labeling', status: 'todo'},
+        {userId: 'user-id-1', assignedAt: '123', phase: 'labeling', status: 'in_progress'},
+        {userId: 'user-id-2', assignedAt: '423', phase: 'labeling', status: 'in_progress'},
+        {userId: null, assignedAt: '888', phase: 'review', status: 'todo'},
+        {userId: 'user-id-3', assignedAt: '999', phase: 'review', status: 'in_progress'},
+      ],
+      video: {
+        id: 'video-id-1',
+      },
+    };
+    const model = new Task(taskWithVideo, users);
+    expect(model.videoId).toEqual('video-id-1');
+  });
+
+  it('should process videoId with priority if present', () => {
+    const taskWithVideoAndVideoId = {
+      id: 'task-id-2',
+      assignmentHistory: [
+        {userId: null, assignedAt: '100', phase: 'labeling', status: 'todo'},
+        {userId: 'user-id-1', assignedAt: '123', phase: 'labeling', status: 'in_progress'},
+        {userId: 'user-id-2', assignedAt: '423', phase: 'labeling', status: 'in_progress'},
+        {userId: null, assignedAt: '888', phase: 'review', status: 'todo'},
+        {userId: 'user-id-3', assignedAt: '999', phase: 'review', status: 'in_progress'},
+      ],
+      video: {
+        id: 'video-id-1',
+      },
+      videoId: 'prioritized-video-id-1',
+    };
+    const model = new Task(taskWithVideoAndVideoId, users);
+    expect(model.videoId).toEqual('prioritized-video-id-1');
+  });
+
+  it('should utilize videoId without video being present', () => {
+    const taskWithVideoId = {
+      id: 'task-id-2',
+      assignmentHistory: [
+        {userId: null, assignedAt: '100', phase: 'labeling', status: 'todo'},
+        {userId: 'user-id-1', assignedAt: '123', phase: 'labeling', status: 'in_progress'},
+        {userId: 'user-id-2', assignedAt: '423', phase: 'labeling', status: 'in_progress'},
+        {userId: null, assignedAt: '888', phase: 'review', status: 'todo'},
+        {userId: 'user-id-3', assignedAt: '999', phase: 'review', status: 'in_progress'},
+      ],
+      videoId: 'video-id-1',
+    };
+    const model = new Task(taskWithVideoId, users);
+    expect(model.videoId).toEqual('video-id-1');
+  });
 });
