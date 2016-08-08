@@ -317,10 +317,9 @@ class ProjectListController {
         }
 
         const totalMinutes = project.totalLabelingTimeInSeconds / 60;
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
+        const time = Math.round(totalMinutes / 6) / 10;
 
-        return `${hours}.${Math.ceil(minutes / 60)}h`;
+        return `${time}h`;
       },
     };
 
