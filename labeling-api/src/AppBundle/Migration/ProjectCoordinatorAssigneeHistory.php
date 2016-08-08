@@ -18,7 +18,7 @@ class ProjectCoordinatorAssigneeHistory implements Migrations\DocumentMigration
 
         $data['coordinatorAssignmentHistory']   = array();
         $data['coordinatorAssignmentHistory'][] = array(
-            'userId' => $data['coordinator'],
+            'userId' => isset($data['coordinator']) ? $data['coordinator'] : null,
             'assignedAt' => 1470644479,
             'status' => $data['status'],
         );
