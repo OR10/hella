@@ -82,7 +82,7 @@ class User extends Controller\Base
             null,
             new \DateTime('now', new \DateTimeZone('UTC')),
             $phase,
-            Model\LabelingTask::STATUS_TODO
+            $task->getStatus($phase)
         );
 
         $this->labelingTaskFacade->save($task);
