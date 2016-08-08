@@ -428,7 +428,7 @@ class LabelingTask
             if ($a['assignedAt'] === $b['assignedAt']) {
                 return 0;
             }
-            return ($a['assignedAt'] < $b['assignedAt']) ? -1 : 1;
+            return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
         });
 
         return $historyEntries[0]['userId'];
