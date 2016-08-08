@@ -14,6 +14,7 @@ class Configuration extends CouchDB\Configuration
                 new LabelingTaskStatusPhase(),
                 new LabelingTaskAssignmentHistory(),
                 new LabelingTaskReopenByPhase(),
+                new ProjectCoordinatorAssigneeHistory(),
             )
         );
     }

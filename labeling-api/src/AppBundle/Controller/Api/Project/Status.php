@@ -57,7 +57,7 @@ class Status extends Controller\Base
         $assignedGroupId = $request->request->get('assignedGroupId');
 
         $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
-        $project->setCoordinator($user->getId());
+        $project->addCoordinatorAssignmentHistory($user);
         $project->setLabelingGroupId($assignedGroupId);
         $this->projectFacade->save($project);
 

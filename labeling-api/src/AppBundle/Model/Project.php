@@ -44,9 +44,9 @@ class Project
     private $status = self::STATUS_TODO;
 
     /**
-     * @CouchDB\Field(type="string")
+     * @CouchDB\Field(type="mixed")
      */
-    private $coordinator = null;
+    private $coordinatorAssignmentHistory = null;
 
     /**
      * @CouchDB\Field(type="string")
@@ -153,17 +153,45 @@ class Project
     /**
      * @return CouchDB\Field
      */
-    public function getCoordinator()
+    public function getCoordinatorAssignmentHistory()
     {
-        return $this->coordinator;
+        return $this->coordinatorAssignmentHistory;
     }
 
     /**
-     * @param CouchDB\Field $coordinator
+     * @param User      $user
+     * @param \DateTime $date
      */
-    public function setCoordinator($coordinator)
+    public function addCoordinatorAssignmentHistory(User $user = null, \DateTime $date = null)
     {
-        $this->coordinator = $coordinator;
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+        $this->coordinatorAssignmentHistory[] = array(
+            'userId' => $user->getId(),
+            'assignedAt' => $date->getTimestamp(),
+            'status' => $this->getStatus(),
+        );
+    }
+
+    /**
+     * @return null
+     */
+    public function getLatestAssignedCoordinatorUserId()
+    {
+        $historyEntries = $this->getCoordinatorAssignmentHistory();
+        if (empty($historyEntries)) {
+            return null;
+        }
+
+        usort($historyEntries, function ($a, $b) {
+            if ($a['assignedAt'] === $b['assignedAt']) {
+                return 0;
+            }
+            return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
+        });
+
+        return $historyEntries[0]['userId'];
     }
 
     /**

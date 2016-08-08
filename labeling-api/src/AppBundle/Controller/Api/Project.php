@@ -290,7 +290,7 @@ class Project extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $project->setCoordinator($assignedLabelCoordinatorId);
+        $project->addCoordinatorAssignmentHistory($coordinator);
         $project = $this->projectFacade->save($project);
 
         return View\View::create()->setData(['result' => $project]);
