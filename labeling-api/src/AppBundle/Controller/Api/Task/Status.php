@@ -178,11 +178,13 @@ class Status extends Controller\Base
                 $phase,
                 Model\LabelingTask::STATUS_IN_PROGRESS
             );
+        }
+        if ($task->getLatestAssignedUserIdForPhase($phase) === null) {
             $task->addAssignmentHistory(
                 $user,
                 new \DateTime('now', new \DateTimeZone('UTC')),
                 $phase,
-                Model\LabelingTask::STATUS_IN_PROGRESS
+                $task->getStatus($phase)
             );
         }
         $this->labelingTaskFacade->save($task);
