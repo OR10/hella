@@ -33,13 +33,6 @@ class CurrentUserPermissions
     public function __construct(Storage\TokenStorage $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
-        $this->token        = $this->tokenStorage->getToken();
-
-        if ($this->token !== null) {
-            $this->user = $this->token->getUser();
-        } else {
-            $this->user = null;
-        }
     }
 
     /**
@@ -154,23 +147,26 @@ class CurrentUserPermissions
 
     public function getPermissions()
     {
+        $token = $this->tokenStorage->getToken();
+        $user  = $token->getUser();
+
         $permissions = $this->getPermissionDefaults();
 
         // Non loggedin user has no permissions
-        if ($this->user === null) {
+        if ($user === null) {
             return $permissions;
         }
 
-        if ($this->user->hasRole(Model\User::ROLE_LABELER)) {
+        if ($user->hasRole(Model\User::ROLE_LABELER)) {
             $permissions = $this->applyLabelerPermissions($permissions);
         }
-        if ($this->user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $permissions = $this->applyLabelCoordinatorPermissions($permissions);
         }
-        if ($this->user->hasRole(Model\User::ROLE_CLIENT)) {
+        if ($user->hasRole(Model\User::ROLE_CLIENT)) {
             $permissions = $this->applyClientPermissions($permissions);
         }
-        if ($this->user->hasRole(Model\User::ROLE_ADMIN)) {
+        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             $permissions = $this->applyAdminPermissions($permissions);
         }
 
