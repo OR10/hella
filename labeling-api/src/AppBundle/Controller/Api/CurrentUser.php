@@ -6,6 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Service;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
@@ -37,16 +38,28 @@ class CurrentUser extends Controller\Base
     private $encoderFactory;
 
     /**
-     * CurrentUser constructor.
-     * @param Storage\TokenStorage $tokenStorage
-     * @param Encoder\EncoderFactory $encoderFactory
-     * @param Facade\User $userFacade
+     * @var Service\CurrentUserPermissions
      */
-    public function __construct(Storage\TokenStorage $tokenStorage, Encoder\EncoderFactory $encoderFactory, Facade\User $userFacade)
-    {
-        $this->tokenStorage = $tokenStorage;
-        $this->userFacade   = $userFacade;
-        $this->encoderFactory = $encoderFactory;
+    private $currentUserPermissions;
+
+    /**
+     * CurrentUser constructor.
+     *
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param Encoder\EncoderFactory         $encoderFactory
+     * @param Facade\User                    $userFacade
+     * @param Service\CurrentUserPermissions $currentUserPermissions
+     */
+    public function __construct(
+        Storage\TokenStorage $tokenStorage,
+        Encoder\EncoderFactory $encoderFactory,
+        Facade\User $userFacade,
+        Service\CurrentUserPermissions $currentUserPermissions
+    ) {
+        $this->tokenStorage           = $tokenStorage;
+        $this->userFacade             = $userFacade;
+        $this->encoderFactory         = $encoderFactory;
+        $this->currentUserPermissions = $currentUserPermissions;
     }
 
     /**
@@ -55,13 +68,16 @@ class CurrentUser extends Controller\Base
     public function profileAction()
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        return View\View::create()->setData([
-            'result' => [
-                'id' => $user->getId(),
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-            ],
-        ]);
+
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'id'       => $user->getId(),
+                    'username' => $user->getUsername(),
+                    'email'    => $user->getEmail(),
+                ],
+            ]
+        );
     }
 
     /**
@@ -93,6 +109,7 @@ class CurrentUser extends Controller\Base
      * @Rest\Put("/password")
      *
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function editUserPasswordAction(HttpFoundation\Request $request)
@@ -112,7 +129,9 @@ class CurrentUser extends Controller\Base
             return View\View::create()->setData(['result' => ['success' => true]]);
         }
 
-        throw new Exception\BadRequestHttpException('Failed to save the new password. The current password is not correct');
+        throw new Exception\BadRequestHttpException(
+            'Failed to save the new password. The current password is not correct'
+        );
     }
 
     /**
@@ -122,92 +141,9 @@ class CurrentUser extends Controller\Base
      */
     public function getUserPermissionsAction()
     {
-        /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        $statsButton        = false;
-        $projectButton      = false;
-        $userListButton     = false;
-        $uploadNewVideo     = false;
-        $reopenButton       = false;
-        $unassignPermission = false;
-        $deleteProject      = true;
-        $createNewProject   = true;
-        $acceptProject      = false;
-        $reopenProject      = true;
-        $exportProject      = false;
-        $viewProjectReport  = false;
-        $moveProjectToDone  = false;
-        $reopenTask         = false;
-        $viewTaskList       = false;
-        $viewClosedProjects = false;
-        $viewTodoProjects   = false;
-        $editLabelingGroups = false;
-        $assignProject      = false;
-
-        if ($user->hasRole(Model\User::ROLE_LABELER)) {
-            $viewTaskList = true;
-        }
-        if ($user->hasRole(Model\User::ROLE_CLIENT)) {
-            $viewClosedProjects = true;
-            $viewTodoProjects   = true;
-            $uploadNewVideo     = true;
-            $moveProjectToDone  = true;
-            $assignProject      = true;
-        }
-        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
-            $statsButton        = true;
-            $projectButton      = true;
-            $userListButton     = true;
-            $reopenButton       = true;
-            $unassignPermission = true;
-            $exportProject      = true;
-            $reopenTask         = true;
-            $viewClosedProjects = true;
-            $viewTodoProjects   = true;
-            $viewTaskList       = true;
-            $moveProjectToDone  = true;
-            $editLabelingGroups = true;
-            $viewProjectReport  = true;
-        }
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            $statsButton        = true;
-            $projectButton      = true;
-            $reopenButton       = true;
-            $unassignPermission = true;
-            $exportProject      = true;
-            $reopenTask         = true;
-            $viewClosedProjects = true;
-            $viewTodoProjects   = true;
-            $acceptProject      = true;
-            $viewTaskList       = true;
-            $moveProjectToDone  = true;
-        }
-
         return View\View::create()->setData(
             [
-                'result' =>
-                    [
-                        'canViewStatsButton' => $statsButton,
-                        'canViewUserListButton' => $userListButton,
-                        'canUploadNewVideo' => $uploadNewVideo,
-                        'canViewReopenButton' => $reopenButton,
-                        'unassignPermission' => $unassignPermission,
-                        'canViewProjectButton' => $projectButton,
-                        'canDeleteProject' => $deleteProject,
-                        'canCreateNewProject' => $createNewProject,
-                        'canAcceptProject' => $acceptProject,
-                        'canReopenProject' => $reopenProject,
-                        'canExportProject' => $exportProject,
-                        'canViewProjectReport' => $viewProjectReport,
-                        'canMoveProjectToDone' => $moveProjectToDone,
-                        'canReopenTask' => $reopenTask,
-                        'canViewTaskList' => $viewTaskList,
-                        'canViewClosedProjects' => $viewClosedProjects,
-                        'canViewTodoProjects' => $viewTodoProjects,
-                        'canEditLabelingGroups' => $editLabelingGroups,
-                        'canAssignProject' => $assignProject,
-                    ]
+                'result' => $this->currentUserPermissions->getPermissions(),
             ]
         );
     }
