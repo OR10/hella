@@ -6,8 +6,9 @@ class TaskListController {
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {TaskGateway} taskGateway injected
+   * @param {ModalService} modalService
    */
-  constructor($scope, $state, taskGateway) {
+  constructor($scope, $state, taskGateway, modalService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -25,6 +26,18 @@ class TaskListController {
      * @private
      */
     this._taskGateway = taskGateway;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._rawTasksById = {};
 
     /**
      * @type {boolean}
@@ -60,7 +73,27 @@ class TaskListController {
   }
 
   openTask(taskId) {
-    this._$state.go('labeling.tasks.detail', {taskId, phase: this.taskPhase});
+    if (this._rawTasksById[taskId].isUserAllowedToAssign(this.user)) {
+      this.loadingInProgress = true;
+      this._taskGateway.assignAndMarkAsInProgress(taskId).then(() => {
+        this.goToTask(taskId, this.taskPhase);
+      });
+    } else {
+      const modal = this._modalService.getInfoDialog({
+        title: 'Task already assigned',
+        headline: 'This task is already assigned to someone else',
+        message: 'This task is already assigned to someone else. You are only allowed to open it in real only mode',
+        confirmButtonText: 'Open read only',
+        cancelButtonText: 'Cancel',
+      }, () => {
+        this.goToTask(taskId, this.taskPhase);
+      });
+      modal.activate();
+    }
+  }
+
+  goToTask(taskId, phase) {
+    this._$state.go('labeling.tasks.detail', {taskId, phase});
   }
 
   unassignTask(taskId, assigneeId) {
@@ -84,6 +117,10 @@ class TaskListController {
     this._taskGateway.getTasksForProjectWithPhaseAndStatus(this.projectId, this.taskPhase, this.taskStatus, limit, offset)
       .then(result => {
         this.totalRows = result.totalRows;
+
+        result.tasks.forEach(task => {
+          this._rawTasksById[task.id] = task;
+        });
 
         this.tasks = result.tasks.map(task => {
           const assignedUser = task.getLatestAssignedUserForPhase(this.taskPhase);
@@ -112,6 +149,7 @@ TaskListController.$inject = [
   '$scope',
   '$state',
   'taskGateway',
+  'modalService',
 ];
 
 export default TaskListController;
