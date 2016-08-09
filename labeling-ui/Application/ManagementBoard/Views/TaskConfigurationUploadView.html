@@ -1,0 +1,43 @@
+<div class="grid-frame vertical">
+    <title-bar class="grid-block noscroll header"
+               user="vm.user"
+               user-permissions="vm.userPermissions"
+               back-link="labeling.task-configurations.list"
+               back-link-text="Back to task configurations"
+               show-username="true"
+               show-logout-button="true"
+    >
+    </title-bar>
+    <div class="grid-block text-center vertical">
+        <h2>Task Configuration Upload</h2>
+        <div class="grid-block horizontal align-center">
+            <loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
+            <form style="min-width: 600px;">
+                <fieldset>
+                    <legend>Configuration</legend>
+                    <label>Name</label>
+                    <input type="text"
+                           ng-model="vm.configurationName"
+                           placeholder="Configuration Name"
+                           ng-class="{error: !vm.validation.name}" />
+                    <label>XML File</label>
+                    <input type="file"
+                           file-model="vm.configurationFile"
+                           ng-class="{error: !vm.validation.file}" />
+                </fieldset>
+                <div class="button-area">
+                    <button class="pull-right"
+                            ng-click="vm.uploadConfiguration()"
+                    >
+                        Upload
+                    </button>
+                    <button class="pull-left"
+                            ui-sref="labeling.task-configurations.list"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

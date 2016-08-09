@@ -18,6 +18,7 @@ import LoadingMaskDirective from './Directives/LoadingMaskDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
 import RightClickDirective from './Directives/RightClickDirective';
 import TooltipDirective from './Directives/TooltipDirective';
+import FileModelDirective from './Directives/FileModelDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
@@ -72,6 +73,7 @@ class Common extends Module {
     this.registerDirective('splitView', SplitViewDirective);
     this.registerDirective('asRightClick', RightClickDirective);
     this.registerDirective('tooltip', TooltipDirective);
+    this.registerDirective('fileModel', FileModelDirective);
 
     this.module.config(
       ['$compileProvider', '$httpProvider', 'loggerServiceProvider',

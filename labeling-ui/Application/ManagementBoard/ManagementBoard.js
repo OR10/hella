@@ -35,6 +35,8 @@ import LabelingGroupListDirective from './Directives/LabelingGroupListDirective'
 import TaskConfigurationGateway from './Gateways/TaskConfigurationGateway';
 import TaskConfigurationController from './Controllers/TaskConfigurationController';
 import TaskConfigurationView from './Views/TaskConfigurationView.html!';
+import TaskConfigurationUploadController from './Controllers/TaskConfigurationUploadController';
+import TaskConfigurationUploadView from './Views/TaskConfigurationUploadView.html!';
 
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
@@ -158,6 +160,17 @@ class ManagementBoard extends Module {
           controller: TaskConfigurationController,
           controllerAs: 'vm',
           template: TaskConfigurationView,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.task-configurations.upload', {
+      url: '/upload',
+      views: {
+        '@': {
+          controller: TaskConfigurationUploadController,
+          controllerAs: 'vm',
+          template: TaskConfigurationUploadView,
         },
       },
     });
