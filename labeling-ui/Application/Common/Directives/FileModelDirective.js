@@ -13,7 +13,7 @@ class FileModelDirective {
   }
 
   link($scope, $element, attributes) {
-    const model = this._$parse(attributes['fileModel']);
+    const model = this._$parse(attributes['fileModel']); // eslint-disable-line dot-notation
 
     $element.bind('change',
       () => $scope.$apply(
