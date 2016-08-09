@@ -32,6 +32,10 @@ import LabelingGroupsDetailView from './Views/LabelingGroupsDetailView.html!';
 import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
 import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
 
+import TaskConfigurationGateway from './Gateways/TaskConfigurationGateway';
+import TaskConfigurationController from './Controllers/TaskConfigurationController';
+import TaskConfigurationView from './Views/TaskConfigurationView.html!';
+
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 
@@ -141,6 +145,22 @@ class ManagementBoard extends Module {
         },
       },
     });
+
+    $stateProvider.state('labeling.task-configurations', {
+      url: 'taskConfigurations',
+      redirectTo: 'labeling.task.configurations.list',
+    });
+
+    $stateProvider.state('labeling.task-configurations.list', {
+      url: '/',
+      views: {
+        '@': {
+          controller: TaskConfigurationController,
+          controllerAs: 'vm',
+          template: TaskConfigurationView,
+        },
+      },
+    });
   }
 
   /**
@@ -151,6 +171,7 @@ class ManagementBoard extends Module {
 
     this.module.service('userGateway', UserGateway);
     this.module.service('labelingGroupGateway', LabelingGroupGateway);
+    this.module.service('taskConfigurationGateway', TaskConfigurationGateway);
     this.module.service('projectGateway', ProjectGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);

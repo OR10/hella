@@ -9,6 +9,7 @@
 
     <div class="grid-block button-list">
         <a class="header-button" ng-show="vm.userPermissions.canUploadNewVideo" href="/upload">Upload Video</a>
+        <a class="header-button" ng-show="vm.userPermissions.canUploadTaskConfiguration" ui-sref="labeling.task-configurations.list">Upload Task Configuration</a>
         <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users">Manage Users</a>
         <a class="header-button" ng-show="vm.userPermissions.canEditLabelingGroups" ui-sref="labeling.labeling-groups.list">Manage Labeling Groups</a>
         <ng-transclude></ng-transclude>
