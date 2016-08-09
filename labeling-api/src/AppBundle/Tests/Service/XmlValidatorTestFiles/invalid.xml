@@ -1,0 +1,14 @@
+<labelTaskConfig shape="rectangle">
+    <class name="Type" id="type">
+        <value id="car">Car</value>
+        <value id="truck">Truck</value>
+    </class>
+    <class name="Occlusion" id="occlusion">
+        <value id="occlusion-0">0%-25%</value>
+        <value id="occlusion-25">25%-100%</value>
+    </class>
+    <class name="Occlusion" id="occlusion">
+        <value id="occlusion-0">0%-25%</value>
+        <value id="occlusion-25">25%-100%</value>
+    </class>
+</labelTaskConfig>

@@ -174,5 +174,14 @@
         <service id="annostation.labeling_api.service.current_user_permissions" class="AppBundle\Service\CurrentUserPermissions">
             <argument type="service" id="security.token_storage" />
         </service>
+
+        <service id="annostation.labeling_api.service.xml_validator.schema.simple_xml_label_config" class="AppBundle\Service\XmlValidator\Schema\SimpleXmlLabelConfig">
+        </service>
+
+        <service id="annostation.labeling_api.service.xml_validator" class="AppBundle\Service\XmlValidator">
+            <argument type="service" id="annostation.labeling_api.service.xml_validator.schema.simple_xml_label_config" />
+        </service>
+
+
     </services>
 </container>
