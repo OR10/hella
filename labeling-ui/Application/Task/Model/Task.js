@@ -242,6 +242,33 @@ class Task {
     );
   }
 
+  /**
+   * Checks if the given user is allowed to assign this task
+   *
+   * @param {User} user
+   * @returns {boolean}
+   */
+  isUserAllowedToAssign(user) {
+    if (this.status.labeling && this.status.labeling === 'todo') {
+      const assignment = this.getLatestAssignedUserForPhase('labeling');
+
+      return !assignment || assignment.id !== user.id;
+    }
+
+    if (this.status.review && this.status.review === 'todo') {
+      const assignment = this.getLatestAssignedUserForPhase('review');
+
+      return !assignment || assignment.id !== user.id;
+    }
+
+    // TODO: check if this is the wanted behaviour
+    if (this.status.revision === 'todo') {
+      return true;
+    }
+
+    return false;
+  }
+
   toJSON() {
     const {
       id,

@@ -627,7 +627,7 @@ class Csv implements Service\ProjectExporter
         }
 
         $labeledTasks = array_filter($tasks, function(Model\LabelingTask $task) use ($requiredTasksInstructions){
-            return in_array($task->getLabelInstruction(), $requiredTasksInstructions) && $task->getStatus() === Model\LabelingTask::STATUS_DONE;
+            return in_array($task->getLabelInstruction(), $requiredTasksInstructions) && $task->getStatus(Model\LabelingTask::PHASE_LABELING) === Model\LabelingTask::STATUS_DONE;
         });
 
         $labeledTaskInstructions = array_map(function(Model\LabelingTask $task) {

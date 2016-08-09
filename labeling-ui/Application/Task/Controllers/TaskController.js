@@ -319,11 +319,6 @@ class TaskController {
     applicationState.$watch('sidebarRight.isDisabled', disabled => this.rightSidebarDisabled = disabled);
     applicationState.$watch('sidebarRight.isWorking', working => this.rightSidebarWorking = working);
     applicationState.$watch('sidebarRight.isInFrameChange', inFrameChange => this.rightSidebarShowBackdrop = !inFrameChange);
-
-    if (!this.task.assignedUser) {
-      this._taskGateway.assignAndMarkAsInProgress(this.task.id);
-      // @TODO: Handle error here!
-    }
   }
 
   _initializeLabelingStructure() {
