@@ -43,7 +43,6 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/done")
-     * @ForbidReadonlyTasks
      *
      * @param Model\LabelingTask $task
      *
@@ -54,6 +53,11 @@ class Status extends Controller\Base
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR]) &&
+            $task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
+        }
 
         $isOneLabeledFrameComplete = false;
         if ($task->getTaskType() === 'meta-labeling') {
