@@ -292,11 +292,11 @@ class BufferedHttpProvider {
         buffer.queue.push({
           method: options.method,
           execute: resolveInternal => {
-            if (!!options.data) {
+            if (!!options.data && !(options.data instanceof FormData)) {
               options.data = _transformToJSON(options.data);
             }
 
-            if (!!options.data && this._autoExtractInject) {
+            if (!!options.data && !(options.data instanceof FormData) && this._autoExtractInject) {
               _injectRevision(options.data);
             }
 
