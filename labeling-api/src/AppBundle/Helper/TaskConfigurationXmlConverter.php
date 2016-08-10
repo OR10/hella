@@ -121,14 +121,35 @@ class TaskConfigurationXmlConverter
 
         $xpath = new \DOMXPath($this->document);
 
-        foreach($xpath->query('class') as $classNode) {
+        foreach ($xpath->query('class') as $classNode) {
             $uiStructure[$classNode->getAttribute('id')] = array('challenge' => $classNode->getAttribute('name'));
         }
 
-        foreach($xpath->query('class/value') as $valueNode) {
+        foreach ($xpath->query('class/value') as $valueNode) {
             $uiStructure[$valueNode->getAttribute('id')] = array('response' => $valueNode->getAttribute('name'));
         }
 
         return $uiStructure;
+    }
+
+    public function getDrawingTool()
+    {
+        $xpath = new \DOMXPath($this->document);
+
+        return $xpath->evaluate("string(/*/@shape)");
+    }
+
+    /**
+     * Retrieve the json-like array representation of the information stored in the XML
+     *
+     * @return array
+     */
+    public function convertToJson()
+    {
+        return array(
+            'labelStructure'   => $this->getLabelStructure(),
+            'labelStructureUi' => $this->getLabelStructureUi(),
+            'drawingTool'      => $this->getDrawingTool(),
+        );
     }
 }

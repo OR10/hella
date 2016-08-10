@@ -7,6 +7,20 @@ use AppBundle\Helper;
 
 class TaskConfigurationXmlConverterTest extends Tests\KernelTestCase
 {
+    private function createProviderComposition(array $providers)
+    {
+        $mergedRows = array();
+        for ($rowIndex = 0; $rowIndex < count($providers[0]); $rowIndex++) {
+            $providerRows = array();
+            foreach ($providers as $provider) {
+                $providerRows[] = $provider[$rowIndex];
+            }
+            $mergedRows[$rowIndex] = call_user_func_array('\array_merge', $providerRows);
+        }
+
+        return $mergedRows;
+    }
+
     public function provideValidXml()
     {
         return array(
@@ -65,39 +79,68 @@ EOF
         return array(
             array(
                 array(
-                    'type-id' => array('challenge' => 'type-name'),
-                    'occlusion-id' => array('challenge' => 'occlusion-name'),
-                    'car-id' => array('response' => 'car-name'),
-                    'truck-id' => array('response' => 'truck-name'),
-                    'occlusion-25-id' => array('response' => 'occlusion-25-name'),
-                    'occlusion-50-id' => array('response' => 'occlusion-50-name'),
-                    'occlusion-75-id' => array('response' => 'occlusion-75-name'),
+                    'type-id'          => array('challenge' => 'type-name'),
+                    'occlusion-id'     => array('challenge' => 'occlusion-name'),
+                    'car-id'           => array('response' => 'car-name'),
+                    'truck-id'         => array('response' => 'truck-name'),
+                    'occlusion-25-id'  => array('response' => 'occlusion-25-name'),
+                    'occlusion-50-id'  => array('response' => 'occlusion-50-name'),
+                    'occlusion-75-id'  => array('response' => 'occlusion-75-name'),
                     'occlusion-100-id' => array('response' => 'occlusion-100-name'),
-                )
+                ),
             ),
         );
     }
 
-    public function provideValidXmlWithLabelStructure() {
-        $validXml = $this->provideValidXml();
-        $labelStructure = $this->provideLabelStructure();
-        $mergedRows = array();
-        foreach($validXml as $rowIndex => $row) {
-            $mergedRows[$rowIndex] = array_merge($validXml[$rowIndex], $labelStructure[$rowIndex]);
-        }
-
-        return $mergedRows;
+    public function provideDrawingTool()
+    {
+        return array(
+            array(
+                'rectangle',
+            ),
+        );
     }
 
-    public function provideValidXmlWithLabelStructureUi() {
-        $validXml = $this->provideValidXml();
-        $labelStructureUi = $this->provideLabelStructureUi();
-        $mergedRows = array();
-        foreach($validXml as $rowIndex => $row) {
-            $mergedRows[$rowIndex] = array_merge($validXml[$rowIndex], $labelStructureUi[$rowIndex]);
-        }
+    public function provideValidXmlWithDrawingTool()
+    {
+        return $this->createProviderComposition(
+            [
+                $this->provideValidXml(),
+                $this->provideDrawingTool(),
+            ]
+        );
+    }
 
-        return $mergedRows;
+    public function provideValidXmlWithLabelStructure()
+    {
+        return $this->createProviderComposition(
+            [
+                $this->provideValidXml(),
+                $this->provideLabelStructure(),
+            ]
+        );
+    }
+
+    public function provideValidXmlWithLabelStructureUi()
+    {
+        return $this->createProviderComposition(
+            [
+                $this->provideValidXml(),
+                $this->provideLabelStructureUi(),
+            ]
+        );
+    }
+
+    public function provideValidXmlWithLabelStructureLabelStructureUiAndDrawingTool()
+    {
+        return $this->createProviderComposition(
+            [
+                $this->provideValidXml(),
+                $this->provideLabelStructure(),
+                $this->provideLabelStructureUi(),
+                $this->provideDrawingTool(),
+            ]
+        );
     }
 
     public function provideInvalidXml()
@@ -174,6 +217,34 @@ EOF
         $this->assertEquals(
             $labelStructureUi,
             $converter->getLabelStructureUi()
+        );
+    }
+
+    /**
+     * @dataProvider provideValidXmlWithDrawingTool
+     */
+    public function testConvertToDrawingTool($xml, $drawingTool)
+    {
+        $converter = $this->createConverter($xml);
+        $this->assertEquals(
+            $drawingTool,
+            $converter->getDrawingTool()
+        );
+    }
+
+    /**
+     * @dataProvider provideValidXmlWithLabelStructureLabelStrutureUiAndDrawingTool
+     */
+    public function testConvertToJson($xml, $labelStructure, $labelStructureUi, $drawingTool)
+    {
+        $converter = $this->createConverter($xml);
+        $this->assertEquals(
+            array(
+                'labelStructure'   => $labelStructure,
+                'labelStructureUi' => $labelStructureUi,
+                'drawingTool'      => $drawingTool,
+            ),
+            $converter->convertToJson()
         );
     }
 }
