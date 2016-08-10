@@ -67,9 +67,6 @@ class XmlValidator
                 $return = 'Unknown Error: ';
         }
         $return .= trim($error->message);
-        if ($error->file) {
-            $return .=    ' in ' . $error->file;
-        }
         $return .= ' on line ' . $error->line;
 
         return $return;
