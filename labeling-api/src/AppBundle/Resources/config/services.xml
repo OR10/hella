@@ -34,6 +34,12 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" priority="-256"/>
         </service>
 
+        <service id="annostation.labeling_api.annotations.driver.check_permissions" class="AppBundle\Annotations\Driver\CheckPermissions">
+            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="annostation.labeling_api.service.current_user_permissions" />
+            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
+        </service>
+
         <service id="annostation.labeling_api.service.video.meta_data_reader" class="AppBundle\Service\Video\MetaDataReader">
             <argument>%ffprobe_executable%</argument>
         </service>
@@ -63,6 +69,7 @@
             <argument type="service" id="annostation.labeling_api.service.label_structure" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
             <argument type="service" id="annostation.labeling_api.service.calibration_file_converter" />
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
         </service>
 
         <service id="annostation.labeling_api.service.calibration_file_converter" class="AppBundle\Service\CalibrationFileConverter">

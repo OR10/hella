@@ -183,6 +183,12 @@ class LabelingTask
     private $hideAttributeSelector = false;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $taskConfigurationId;
+
+    /**
      * @param Video     $video
      * @param Project   $project
      * @param array     $frameNumberMapping
@@ -191,7 +197,8 @@ class LabelingTask
      * @param array     $predefinedClasses
      * @param array     $requiredImageTypes
      * @param \DateTime $createdAt
-     * @param           $hideAttributeSelector
+     * @param bool      $hideAttributeSelector
+     * @param null      $taskConfigurationId
      * @return LabelingTask
      */
     public static function create(
@@ -203,7 +210,8 @@ class LabelingTask
         $predefinedClasses = array(),
         array $requiredImageTypes = array(),
         \DateTime $createdAt = null,
-        $hideAttributeSelector = false
+        $hideAttributeSelector = false,
+        $taskConfigurationId = null
     ) {
         return new static(
             $video,
@@ -214,7 +222,8 @@ class LabelingTask
             $predefinedClasses,
             $requiredImageTypes,
             $createdAt,
-            $hideAttributeSelector
+            $hideAttributeSelector,
+            $taskConfigurationId
         );
     }
 
@@ -228,6 +237,7 @@ class LabelingTask
      * @param array     $requiredImageTypes
      * @param \DateTime $createdAt
      * @param bool      $hideAttributeSelector
+     * @param           $taskConfigurationId
      */
     public function __construct(
         Video $video,
@@ -238,7 +248,8 @@ class LabelingTask
         $predefinedClasses = array(),
         array $requiredImageTypes = array(),
         \DateTime $createdAt = null,
-        $hideAttributeSelector = false
+        $hideAttributeSelector = false,
+        $taskConfigurationId = null
     ) {
         $this->videoId               = $video->getId();
         $this->projectId             = $project->getId();
@@ -248,6 +259,7 @@ class LabelingTask
         $this->predefinedClasses     = $predefinedClasses;
         $this->requiredImageTypes    = $requiredImageTypes;
         $this->hideAttributeSelector = $hideAttributeSelector;
+        $this->taskConfigurationId   = $taskConfigurationId;
         if ($createdAt === null) {
             $this->createdAt = new \DateTime();
         } else {

@@ -121,3 +121,8 @@ dimension_prediction:
     resource: "annostation.labeling_api.controller.dimension_prediction"
     type: rest
     name_prefix: app_dimension_prediction_
+
+api_task_configuration:
+    resource: "annostation.labeling_api.controller.api.task_configuration"
+    type: rest
+    name_prefix: app_api_task_configuration

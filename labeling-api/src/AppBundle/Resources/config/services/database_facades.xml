@@ -63,5 +63,9 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.task_configuration" class="AppBundle\Database\Facade\TaskConfiguration">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
     </services>
 </container>

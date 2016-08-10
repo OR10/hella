@@ -16,12 +16,19 @@ class ImportVideos extends Base
     private $videoImporterService;
 
     /**
-     * @param Service\VideoImporter $videoImporterService
+     * @var Facade\User
      */
-    public function __construct(Service\VideoImporter $videoImporterService)
+    private $userFacade;
+
+    /**
+     * @param Service\VideoImporter $videoImporterService
+     * @param Facade\User           $userFacade
+     */
+    public function __construct(Service\VideoImporter $videoImporterService, Facade\User $userFacade)
     {
         parent::__construct();
         $this->videoImporterService = $videoImporterService;
+        $this->userFacade           = $userFacade;
     }
 
     protected function configure()
@@ -31,12 +38,14 @@ class ImportVideos extends Base
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
             ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
             ->addArgument('type', Input\InputArgument::REQUIRED, 'Pedestrian or vehicle')
-            ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
-            ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
-            ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
-            ->addArgument('pedestrianMinimalHeight', Input\InputArgument::OPTIONAL, 'Video pedestrian minimal height', 22)
-            ->addArgument('cuboidMinimalHeight', Input\InputArgument::OPTIONAL, 'Video cuboid minimal height', 15)
-            ->addArgument('overflow', Input\InputArgument::OPTIONAL, 'Allow video overflow', 16);
+            ->addOption('taskConfigurationId', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationID (userId is required)')
+            ->addOption('userId', null, Input\InputOption::VALUE_REQUIRED, 'UserId used for importing')
+            ->addOption('splitLength', null, Input\InputOption::VALUE_REQUIRED, 'Video split length', 0)
+            ->addOption('startFrame', null, Input\InputOption::VALUE_REQUIRED, 'Video start frame', 22)
+            ->addOption('frameStepSize', null, Input\InputOption::VALUE_REQUIRED, 'Video frame step size', 22)
+            ->addOption('pedestrianMinimalHeight', null, Input\InputOption::VALUE_REQUIRED, 'Video pedestrian minimal height', 22)
+            ->addOption('cuboidMinimalHeight', null, Input\InputOption::VALUE_REQUIRED, 'Video cuboid minimal height', 15)
+            ->addOption('overflow', null, Input\InputOption::VALUE_REQUIRED, 'Allow video overflow', 16);
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
@@ -57,12 +66,14 @@ class ImportVideos extends Base
 
             $drawingToolOptions = array(
                 'pedestrian' => array(
-                    'minimalHeight' => $input->getArgument('pedestrianMinimalHeight'),
+                    'minimalHeight' => $input->getOption('pedestrianMinimalHeight'),
                 ),
                 'cuboid' => array(
-                    'minimalHeight' => $input->getArgument('cuboidMinimalHeight'),
+                    'minimalHeight' => $input->getOption('cuboidMinimalHeight'),
                 ),
             );
+
+            $user = $input->getOption('userId') === null ? null : $this->userFacade->getUserById($input->getOption('userId'));
 
             $tasks = $this->videoImporterService->import(
                 basename($videoFile),
@@ -70,14 +81,18 @@ class ImportVideos extends Base
                 $videoFile,
                 $calibrationFilePath,
                 false,
-                $input->getArgument('splitLength'),
+                $input->getOption('splitLength'),
                 true,
                 false,
                 $this->getLabelInstructions($input->getArgument('type')),
-                $input->getArgument('overflow'),
+                $input->getOption('overflow'),
                 $drawingToolOptions,
-                $input->getArgument('frameStepSize'),
-                $input->getArgument('startFrame')
+                $input->getOption('frameStepSize'),
+                $input->getOption('startFrame'),
+                false,
+                false,
+                $input->getOption('taskConfigurationId'),
+                $user
             );
 
             foreach($tasks as $task) {
