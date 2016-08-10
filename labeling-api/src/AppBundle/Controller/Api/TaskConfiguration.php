@@ -31,8 +31,10 @@ class TaskConfiguration extends Controller\Base
     /**
      * TaskConfiguration constructor
      */
-    public function __construct(Service\CurrentUserPermissions $currentUserPermissions, Facade\TaskConfiguration $taskConfigurationFacade)
-    {
+    public function __construct(
+        Service\CurrentUserPermissions $currentUserPermissions,
+        Facade\TaskConfiguration $taskConfigurationFacade
+    ) {
         $this->currentUserPermissions = $currentUserPermissions;
         $this->taskConfigurationFacade = $taskConfigurationFacade;
     }
@@ -66,6 +68,6 @@ class TaskConfiguration extends Controller\Base
 
         $this->taskConfigurationFacade->save($taskConfiguration);
 
-        return View\View::create()->setData($taskConfiguration);
+        return View\View::create()->setData(['result' => $taskConfiguration]);
     }
 }
