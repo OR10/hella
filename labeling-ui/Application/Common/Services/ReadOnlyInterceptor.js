@@ -4,9 +4,20 @@
 class ErrorInterceptor {
   /**
    * @param {angular.Scope} $rootScope injected
+   * @param {angular.$q} $q
    */
-  constructor($rootScope) {
-    this.$rootScope = $rootScope;
+  constructor($rootScope, $q) {
+    /**
+     * @type {angular.Scope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     this.responseError = this.responseError.bind(this);
   }
@@ -22,11 +33,14 @@ class ErrorInterceptor {
       if (rejection.data.error.type === 'ReadOnlyHttpException') {
         this.$rootScope.$broadcast('readOnlyError', rejection.data.error);
       }
-      return Promise.reject(rejection);
     }
+    return this._$q.reject(rejection);
   }
 }
 
-ErrorInterceptor.$inject = ['$rootScope'];
+ErrorInterceptor.$inject = [
+  '$rootScope',
+  '$q',
+];
 
 export default ErrorInterceptor;

@@ -7,8 +7,9 @@ class TaskConfigurationGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {angular.$q} $q
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, $q) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -20,6 +21,8 @@ class TaskConfigurationGateway {
      * @private
      */
     this._apiService = apiService;
+
+    this._$q = $q;
   }
 
   /**
@@ -54,6 +57,12 @@ class TaskConfigurationGateway {
         }
 
         throw new Error('Failed uploading new task configuration');
+      })
+      .catch(response => {
+        if (response.data && response.data.error) {
+          return this._$q.reject(response.data.error);
+        }
+        return this._$q.reject('Failed uploading new task configuration');
       });
   }
 }
@@ -61,6 +70,7 @@ class TaskConfigurationGateway {
 TaskConfigurationGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  '$q',
 ];
 
 export default TaskConfigurationGateway;

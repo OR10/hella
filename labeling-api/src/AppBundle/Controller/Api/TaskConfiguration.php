@@ -88,7 +88,7 @@ class TaskConfiguration extends Controller\Base
         if ($errorMessage !== null) {
             return View\View::create()
                 ->setData(['error' => $errorMessage])
-                ->setStatusCode(400);
+                ->setStatusCode(406);
         }
 
         $file    = $request->files->get('file');
