@@ -7,8 +7,9 @@ class TaskConfigurationUploadController {
    * @param {User} user
    * @param {Object} userPermissions
    * @param {TaskConfigurationGateway} taskConfigurationGateway
+   * @param {ModalService} modalService
    */
-  constructor($state, user, userPermissions, taskConfigurationGateway) {
+  constructor($state, user, userPermissions, taskConfigurationGateway, modalService) {
     /**
      * @type {angular.$state}
      * @private
@@ -30,6 +31,12 @@ class TaskConfigurationUploadController {
      * @private
      */
     this._taskConfigurationGateway = taskConfigurationGateway;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
 
     /**
      * @type {string}
@@ -65,6 +72,16 @@ class TaskConfigurationUploadController {
       .then(() => {
         --this.loadingInProgress;
         this._$state.go('labeling.task-configurations.list');
+      })
+      .catch(errorMessage => {
+        --this.loadingInProgress;
+        const errorModal = this._modalService.getAlertWarningDialog({
+          title: 'Malformed Task Configuration',
+          headline: 'Your Task Configuration XML is malformed.',
+          message: errorMessage,
+          confirmButtonText: 'Understood',
+        });
+        errorModal.activate();
       });
   }
 
@@ -82,6 +99,7 @@ TaskConfigurationUploadController.$inject = [
   'user',
   'userPermissions',
   'taskConfigurationGateway',
+  'modalService',
 ];
 
 export default TaskConfigurationUploadController;
