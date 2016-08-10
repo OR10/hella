@@ -1,10 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <labelTaskConfig shape="rectangle">
-    <class name="Type" id="type">
-        <value id="car">Car</value>
-        <value id="truck">Truck</value>
+    <class id="type-id" name="type-name">
+        <value id="car-id" name="car-name"/>
+        <value id="truck-id" name="truck-name"/>
     </class>
-    <class name="Occlusion" id="occlusion">
-        <value id="occlusion-0">0%-25%</value>
-        <value id="occlusion-25">25%-100%</value>
+    <class id="occlusion-id" name="occlusion-name">
+        <value id="occlusion-25-id" name="occlusion-25-name"/>
+        <value id="occlusion-50-id" name="occlusion-50-name"/>
+        <value id="occlusion-75-id" name="occlusion-75-name"/>
+        <value id="occlusion-100-id" name="occlusion-100-name"/>
     </class>
 </labelTaskConfig>
