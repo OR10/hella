@@ -233,7 +233,7 @@ EOF
     }
 
     /**
-     * @dataProvider provideValidXmlWithLabelStructureLabelStrutureUiAndDrawingTool
+     * @dataProvider provideValidXmlWithLabelStructureLabelStructureUiAndDrawingTool
      */
     public function testConvertToJson($xml, $labelStructure, $labelStructureUi, $drawingTool)
     {
