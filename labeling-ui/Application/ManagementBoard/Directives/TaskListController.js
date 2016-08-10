@@ -73,7 +73,14 @@ class TaskListController {
   }
 
   openTask(taskId) {
-    if (this._rawTasksById[taskId].isUserAllowedToAssign(this.user)) {
+    // If this is the users task open it
+    if (this._rawTasksById[taskId].isUsersTask(this.user)) {
+      this.goToTask(taskId, this.taskPhase);
+      return;
+    }
+
+    // If it is not the users tasks check if assignment is possible
+    if (!this._rawTasksById[taskId] || this._rawTasksById[taskId].isUserAllowedToAssign(this.user)) {
       this.loadingInProgress = true;
       this._taskGateway.assignAndMarkAsInProgress(taskId).then(() => {
         this.goToTask(taskId, this.taskPhase);
