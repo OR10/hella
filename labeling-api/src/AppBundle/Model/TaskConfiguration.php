@@ -115,4 +115,12 @@ class TaskConfiguration
     {
         return $this->file;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
 }
