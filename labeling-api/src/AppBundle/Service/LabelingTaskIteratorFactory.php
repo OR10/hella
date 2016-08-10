@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Helper\Iterator;
+namespace AppBundle\Service;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -22,7 +22,7 @@ class LabelingTaskIteratorFactory
 
     /**
      * @param Model\Project $project
-     * @return LabelingTask
+     * @return Iterator\LabelingTask
      */
     public function create(Model\Project $project)
     {

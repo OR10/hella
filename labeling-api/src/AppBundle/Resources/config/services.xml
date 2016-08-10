@@ -193,5 +193,8 @@
                  class="AppBundle\Service\TaskConfigurationXmlConverterFactory">
         </service>
 
+        <service id="annostation.labeling_api.service.labeling_task_iterator_factory"
+                 class="AppBundle\Service\LabelingTaskIteratorFactory">
+        </service>
     </services>
 </container>
