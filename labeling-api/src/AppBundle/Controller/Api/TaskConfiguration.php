@@ -40,21 +40,29 @@ class TaskConfiguration extends Controller\Base
     private $xmlValidator;
 
     /**
-     * @param Service\CurrentUserPermissions $currentUserPermissions
-     * @param Facade\TaskConfiguration       $taskConfigurationFacade
-     * @param Storage\TokenStorage           $tokenStorage
-     * @param Service\XmlValidator           $xmlValidator
+     * @var Service\TaskConfigurationXmlConverterFactory
+     */
+    private $configurationXmlConverterFactory;
+
+    /**
+     * @param Service\CurrentUserPermissions               $currentUserPermissions
+     * @param Facade\TaskConfiguration                     $taskConfigurationFacade
+     * @param Storage\TokenStorage                         $tokenStorage
+     * @param Service\XmlValidator                         $xmlValidator
+     * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
      */
     public function __construct(
         Service\CurrentUserPermissions $currentUserPermissions,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Storage\TokenStorage $tokenStorage,
-        Service\XmlValidator $xmlValidator
+        Service\XmlValidator $xmlValidator,
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
     ) {
-        $this->currentUserPermissions  = $currentUserPermissions;
-        $this->taskConfigurationFacade = $taskConfigurationFacade;
-        $this->tokenStorage            = $tokenStorage;
-        $this->xmlValidator            = $xmlValidator;
+        $this->currentUserPermissions           = $currentUserPermissions;
+        $this->taskConfigurationFacade          = $taskConfigurationFacade;
+        $this->tokenStorage                     = $tokenStorage;
+        $this->xmlValidator                     = $xmlValidator;
+        $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
     }
 
     /**
@@ -83,16 +91,20 @@ class TaskConfiguration extends Controller\Base
                 ->setStatusCode(400);
         }
 
-        $file = $request->files->get('file');
-        $name = $request->get('name');
-        $user = $this->tokenStorage->getToken()->getUser();
+        $file    = $request->files->get('file');
+        $xmlData = file_get_contents($file->getPathName());
+        $name    = $request->get('name');
+        $user    = $this->tokenStorage->getToken()->getUser();
+
+        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
 
         $taskConfiguration = new Model\TaskConfiguration(
             $name,
             $file->getClientOriginalName(),
             $file->getMimeType(),
-            file_get_contents($file->getPathName()),
-            $user->getId()
+            $xmlData,
+            $user->getId(),
+            $taskConfigurationXmlConverter->convertToJson()
         );
 
         $this->taskConfigurationFacade->save($taskConfiguration);
