@@ -6,19 +6,15 @@
                 <xs:element name="class" maxOccurs="unbounded" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="value" maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="value" maxOccurs="unbounded" minOccurs="1">
                                 <xs:complexType>
-                                    <xs:simpleContent>
-                                        <xs:extension base="xs:string">
-                                            <xs:attribute type="xs:string" name="id"/>
-                                            <xs:attribute type="xs:string" name="icon" use="optional"/>
-                                        </xs:extension>
-                                    </xs:simpleContent>
+                                    <xs:attribute type="xs:string" name="id"/>
+                                    <xs:attribute type="xs:string" name="name"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
-                        <xs:attribute type="xs:string" name="name"/>
                         <xs:attribute type="xs:string" name="id"/>
+                        <xs:attribute type="xs:string" name="name"/>
                     </xs:complexType>
                     <xs:unique name="UniqueValueId">
                         <xs:selector xpath="value"/>
