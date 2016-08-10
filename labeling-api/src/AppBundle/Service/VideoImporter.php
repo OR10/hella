@@ -52,15 +52,20 @@ class VideoImporter
     private $calibrationFileConverter;
 
     /**
-     * @param Facade\Project $projectFacade
-     * @param Facade\Video $videoFacade
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @var Facade\TaskConfiguration
+     */
+    private $taskConfigurationFacade;
+
+    /**
+     * @param Facade\Project               $projectFacade
+     * @param Facade\Video                 $videoFacade
+     * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
-     * @param Video\VideoFrameSplitter $frameCdnSplitter
-     * @param Service\LabelStructure $labelStructureService
-     * @param WorkerPool\Facade $facadeAMQP
-     *
-     * @param CalibrationFileConverter $calibrationFileConverter
+     * @param Video\VideoFrameSplitter     $frameCdnSplitter
+     * @param Service\LabelStructure       $labelStructureService
+     * @param WorkerPool\Facade            $facadeAMQP
+     * @param CalibrationFileConverter     $calibrationFileConverter
+     * @param Facade\TaskConfiguration     $taskConfigurationFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -70,36 +75,40 @@ class VideoImporter
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
         Service\LabelStructure $labelStructureService,
         WorkerPool\Facade $facadeAMQP,
-        Service\CalibrationFileConverter $calibrationFileConverter
+        Service\CalibrationFileConverter $calibrationFileConverter,
+        Facade\TaskConfiguration $taskConfigurationFacade
     ) {
-        $this->projectFacade         = $projectFacade;
-        $this->videoFacade           = $videoFacade;
-        $this->metaDataReader        = $metaDataReader;
-        $this->frameCdnSplitter      = $frameCdnSplitter;
-        $this->labelingTaskFacade    = $labelingTaskFacade;
-        $this->labelStructureService = $labelStructureService;
-        $this->facadeAMQP            = $facadeAMQP;
+        $this->projectFacade            = $projectFacade;
+        $this->videoFacade              = $videoFacade;
+        $this->metaDataReader           = $metaDataReader;
+        $this->frameCdnSplitter         = $frameCdnSplitter;
+        $this->labelingTaskFacade       = $labelingTaskFacade;
+        $this->labelStructureService    = $labelStructureService;
+        $this->facadeAMQP               = $facadeAMQP;
         $this->calibrationFileConverter = $calibrationFileConverter;
+        $this->taskConfigurationFacade  = $taskConfigurationFacade;
     }
 
     /**
-     * @param string   $name The name for the video (usually the basename).
-     * @param string   $projectName
-     * @param string   $path The filesystem path to the video file.
-     * @param          $calibrationFile
-     * @param bool     $lossless Wether or not the UI should use lossless compressed images.
-     * @param int      $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param bool     $isObjectLabeling
-     * @param bool     $isMetaLabeling
-     * @param array    $labelInstructions
-     * @param int|null $minimalVisibleShapeOverflow
-     * @param array    $drawingToolOptions
-     * @param int      $frameSkip
-     * @param int      $startFrame
-     * @param          $review
-     * @param          $revision
-     *
+     * @param string     $name The name for the video (usually the basename).
+     * @param string     $projectName
+     * @param string     $path The filesystem path to the video file.
+     * @param            $calibrationFile
+     * @param bool       $lossless Wether or not the UI should use lossless compressed images.
+     * @param int        $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param bool       $isObjectLabeling
+     * @param bool       $isMetaLabeling
+     * @param array      $labelInstructions
+     * @param int|null   $minimalVisibleShapeOverflow
+     * @param array      $drawingToolOptions
+     * @param int        $frameSkip
+     * @param int        $startFrame
+     * @param bool       $review
+     * @param bool       $revision
+     * @param null       $taskConfigurationId
+     * @param Model\User $user
      * @return Model\LabelingTask[]
+     * @throws \Exception
      */
     public function import(
         $name,
@@ -116,8 +125,21 @@ class VideoImporter
         $frameSkip = 1,
         $startFrame = 1,
         $review = false,
-        $revision = false
+        $revision = false,
+        $taskConfigurationId = null,
+        Model\User $user = null
     ) {
+        if ($taskConfigurationId !== null) {
+            $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
+            if ($taskConfiguration === null) {
+                throw new \Exception('No Task Configuration found for ' . $taskConfigurationId);
+            }
+            if ($user === null || $user->getId() !== $taskConfiguration->getUserId()) {
+                throw new \Exception('This User is not allowed to use this Task Configuration.');
+            }
+        }
+
+
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         if ($calibrationFile !== null) {
@@ -195,7 +217,8 @@ class VideoImporter
                     $drawingToolOptions,
                     $metadata,
                     $review,
-                    $revision
+                    $revision,
+                    $taskConfigurationId
                 );
             }
 
@@ -214,7 +237,8 @@ class VideoImporter
                         $drawingToolOptions,
                         $metadata,
                         $review,
-                        $revision
+                        $revision,
+                        $taskConfigurationId
                     );
                 }
             }
@@ -237,6 +261,9 @@ class VideoImporter
      * @param int|null         $minimalVisibleShapeOverflow
      * @param                  $drawingToolOptions
      * @param                  $metadata
+     * @param                  $review
+     * @param                  $revision
+     * @param                  $taskConfigurationId
      *
      * @return Model\LabelingTask
      */
@@ -253,7 +280,8 @@ class VideoImporter
         $drawingToolOptions,
         $metadata,
         $review,
-        $revision
+        $revision,
+        $taskConfigurationId
     ) {
         $hideAttributeSelector = false;
         if ($instruction === Model\LabelingTask::INSTRUCTION_LANE) {
@@ -268,7 +296,8 @@ class VideoImporter
             $predefinedClasses,
             $imageTypes,
             null,
-            $hideAttributeSelector
+            $hideAttributeSelector,
+            $taskConfigurationId
         );
 
         $labelingTask->setDescriptionTitle('Identify the person');

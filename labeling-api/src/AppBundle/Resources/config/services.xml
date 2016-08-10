@@ -69,6 +69,7 @@
             <argument type="service" id="annostation.labeling_api.service.label_structure" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
             <argument type="service" id="annostation.labeling_api.service.calibration_file_converter" />
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
         </service>
 
         <service id="annostation.labeling_api.service.calibration_file_converter" class="AppBundle\Service\CalibrationFileConverter">
