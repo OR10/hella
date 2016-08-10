@@ -64,7 +64,7 @@ class TaskConfigurationUploadController {
     this._taskConfigurationGateway.uploadTaskConfiguration(this.configurationName, this.configurationFile)
       .then(() => {
         --this.loadingInProgress;
-        this._$state.go('labeling.task-configuration.list');
+        this._$state.go('labeling.task-configurations.list');
       });
   }
 
