@@ -209,6 +209,46 @@ class Task {
   }
 
   /**
+   * Returns ths phase the task is currently in
+   *
+   * @returns {string}
+   */
+  getPhase() {
+    if (this.status.review && (this.status.review === 'todo' || this.status.review === 'in_progress')) {
+      return 'review';
+    }
+
+    if (
+      this.status.revision
+      && (
+        this.status.revision === 'todo'
+        || this.status.revision === 'in_progress'
+        || this.status.revision === 'done'
+      )
+    ) {
+      return 'revision';
+    }
+
+    return 'labeling';
+  }
+
+  /**
+   * Checks if this tasks is currently assigned to the provided user
+   *
+   * @param {User }user
+   * @returns {boolean}
+   */
+  isUsersTask(user) {
+    const assignedUser = this.getLatestAssignedUserForPhase(this.getPhase());
+
+    if (assignedUser && assignedUser.id === user.id) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * @param {string} phase
    * @returns {string|null}
    */
@@ -259,6 +299,15 @@ class Task {
       const assignment = this.getLatestAssignedUserForPhase('review');
 
       return !assignment || assignment.id !== user.id;
+    }
+
+    // If no user is assigned, assignment is always allowed
+    if (
+      !this.getLatestAssignedUserForPhase('labeling')
+      && !this.getLatestAssignedUserForPhase('review')
+      && !this.getLatestAssignedUserForPhase('revision')
+    ) {
+      return true;
     }
 
     // TODO: check if this is the wanted behaviour
