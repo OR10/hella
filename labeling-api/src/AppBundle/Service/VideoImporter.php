@@ -287,6 +287,19 @@ class VideoImporter
         if ($instruction === Model\LabelingTask::INSTRUCTION_LANE) {
             $hideAttributeSelector = true;
         }
+
+        if ($taskConfigurationId === null) {
+            $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction($taskType, $instruction);
+            $labelStructureUi = $this->labelStructureService->getLabelStructureUiForTypeAndInstruction($taskType, $instruction);
+        } else {
+            $taskConfiguration     = $this->taskConfigurationFacade->find($taskConfigurationId);
+            $taskConfigurationJson = $taskConfiguration->getJson();
+            $labelStructure        = $taskConfigurationJson['labelStructure'];
+            $labelStructureUi      = $taskConfigurationJson['labelStructureUi'];
+            // Replacing the drawingTool with the given drawingTool from the task configuration
+            $drawingTool           = $taskConfigurationJson['drawingTool'];
+        }
+
         $labelingTask = new Model\LabelingTask(
             $video,
             $project,
@@ -307,10 +320,10 @@ class VideoImporter
         );
 
         $labelingTask->setLabelStructure(
-            $this->labelStructureService->getLabelStructureForTypeAndInstruction($taskType, $instruction)
+            $labelStructure
         );
         $labelingTask->setLabelStructureUi(
-            $this->labelStructureService->getLabelStructureUiForTypeAndInstruction($taskType, $instruction)
+            $labelStructureUi
         );
         $labelingTask->setLabelInstruction($instruction);
 
