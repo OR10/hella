@@ -16,12 +16,19 @@ class ImportVideos extends Base
     private $videoImporterService;
 
     /**
-     * @param Service\VideoImporter $videoImporterService
+     * @var Facade\User
      */
-    public function __construct(Service\VideoImporter $videoImporterService)
+    private $userFacade;
+
+    /**
+     * @param Service\VideoImporter $videoImporterService
+     * @param Facade\User           $userFacade
+     */
+    public function __construct(Service\VideoImporter $videoImporterService, Facade\User $userFacade)
     {
         parent::__construct();
         $this->videoImporterService = $videoImporterService;
+        $this->userFacade           = $userFacade;
     }
 
     protected function configure()
@@ -31,6 +38,8 @@ class ImportVideos extends Base
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
             ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
             ->addArgument('type', Input\InputArgument::REQUIRED, 'Pedestrian or vehicle')
+            ->addArgument('taskConfigurationId', Input\InputArgument::OPTIONAL, 'Task ConfigurationID (userId is required)')
+            ->addArgument('userId', Input\InputArgument::OPTIONAL, 'UserId used for importing')
             ->addArgument('splitLength', Input\InputArgument::OPTIONAL, 'Video split length', 0)
             ->addArgument('startFrame', Input\InputArgument::OPTIONAL, 'Video start frame', 22)
             ->addArgument('frameStepSize', Input\InputArgument::OPTIONAL, 'Video frame step size', 22)
@@ -64,6 +73,8 @@ class ImportVideos extends Base
                 ),
             );
 
+            $user = $input->getArgument('userId') === null ? null : $this->userFacade->getUserById($input->getArgument('userId'));
+
             $tasks = $this->videoImporterService->import(
                 basename($videoFile),
                 $input->getArgument('project'),
@@ -77,7 +88,11 @@ class ImportVideos extends Base
                 $input->getArgument('overflow'),
                 $drawingToolOptions,
                 $input->getArgument('frameStepSize'),
-                $input->getArgument('startFrame')
+                $input->getArgument('startFrame'),
+                false,
+                false,
+                $input->getArgument('taskConfigurationId'),
+                $user
             );
 
             foreach($tasks as $task) {

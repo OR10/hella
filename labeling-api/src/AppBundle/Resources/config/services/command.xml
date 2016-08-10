@@ -21,6 +21,7 @@
         </service>
         <service id="annostation.labeling_api.command.import_videos_command" class="AppBundle\Command\ImportVideos">
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <tag name="console.command"/>
         </service>
 
