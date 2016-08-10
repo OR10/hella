@@ -35,18 +35,26 @@ class TaskConfiguration extends Controller\Base
     private $tokenStorage;
 
     /**
+     * @var Service\XmlValidator
+     */
+    private $xmlValidator;
+
+    /**
      * @param Service\CurrentUserPermissions $currentUserPermissions
      * @param Facade\TaskConfiguration       $taskConfigurationFacade
      * @param Storage\TokenStorage           $tokenStorage
+     * @param Service\XmlValidator           $xmlValidator
      */
     public function __construct(
         Service\CurrentUserPermissions $currentUserPermissions,
         Facade\TaskConfiguration $taskConfigurationFacade,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorage $tokenStorage,
+        Service\XmlValidator $xmlValidator
     ) {
         $this->currentUserPermissions  = $currentUserPermissions;
         $this->taskConfigurationFacade = $taskConfigurationFacade;
         $this->tokenStorage            = $tokenStorage;
+        $this->xmlValidator            = $xmlValidator;
     }
 
     /**
@@ -63,6 +71,15 @@ class TaskConfiguration extends Controller\Base
         if (!$request->files->has('file') || !$request->get('name')) {
             return View\View::create()
                 ->setData(['error' => 'Invalid data'])
+                ->setStatusCode(400);
+        }
+
+        $xml = new \DOMDocument();
+        $xml->load($request->files->get('file'));
+        $errorMessage = $this->xmlValidator->validate($xml);
+        if ($errorMessage !== null) {
+            return View\View::create()
+                ->setData(['error' => $errorMessage])
                 ->setStatusCode(400);
         }
 
