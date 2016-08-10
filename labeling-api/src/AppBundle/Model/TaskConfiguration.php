@@ -38,16 +38,28 @@ class TaskConfiguration
     private $file;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $userId;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $timestamp;
+
+    /**
      * TaskConfiguraion constructor.
      *
-     * @param $name
-     * @param $filename
-     * @param $contentType
-     * @param $binaryData
+     * @param      $name
+     * @param      $filename
+     * @param      $contentType
+     * @param      $binaryData
+     * @param      $userId
+     * @param null $date
      *
      * @throws Exception\EmptyData
      */
-    public function __construct($name, $filename, $contentType, $binaryData)
+    public function __construct($name, $filename, $contentType, $binaryData, $userId, $date = null)
     {
         if (!is_string($filename) || empty($filename)) {
             throw new \InvalidArgumentException('Invalid filename');
@@ -65,8 +77,14 @@ class TaskConfiguration
             throw new Exception\EmptyData();
         }
 
-        $this->name = $name;
-        $this->filename = $filename;
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        $this->name      = $name;
+        $this->filename  = $filename;
+        $this->timestamp = $date->getTimestamp();
+        $this->userId    = $userId;
 
         $this->file[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
             $binaryData,
