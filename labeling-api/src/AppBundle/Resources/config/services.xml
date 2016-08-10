@@ -182,6 +182,9 @@
             <argument type="service" id="annostation.labeling_api.service.xml_validator.schema.simple_xml_label_config" />
         </service>
 
+        <service id="annostation.labeling_api.service.task_configuration_xml_converter_factory"
+                 class="AppBundle\Service\TaskConfigurationXmlConverterFactory">
+        </service>
 
     </services>
 </container>
