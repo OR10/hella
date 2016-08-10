@@ -197,5 +197,10 @@
                  class="AppBundle\Service\LabelingTaskIteratorFactory">
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
         </service>
+
+        <service id="annostation.labeling_api.service.labeled_thing_in_frame_iterator_factory"
+                 class="AppBundle\Service\LabeledThingInFrameIteratorFactory">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+        </service>
     </services>
 </container>

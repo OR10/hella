@@ -8,24 +8,25 @@ use AppBundle\Helper\Iterator;
 class LabelingTaskIteratorFactory
 {
     /**
-     * @var Facade\LabelingTask
+     * @var Facade\Project
      */
-    private $labelingTaskFacade;
+    private $projectFacade;
 
     /**
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Facade\Project $projectFacade
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade)
+    public function __construct(Facade\Project $projectFacade)
     {
-        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->projectFacade = $projectFacade;
     }
 
     /**
      * @param Model\Project $project
+     *
      * @return Iterator\LabelingTask
      */
     public function create(Model\Project $project)
     {
-        return new Iterator\LabelingTask($this->labelingTaskFacade, $project);
+        return new Iterator\LabelingTask($this->projectFacade, $project);
     }
 }
