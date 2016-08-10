@@ -48,6 +48,11 @@ class TaskConfiguration
     private $timestamp;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $json;
+
+    /**
      * TaskConfiguraion constructor.
      *
      * @param      $name
@@ -55,11 +60,12 @@ class TaskConfiguration
      * @param      $contentType
      * @param      $binaryData
      * @param      $userId
+     * @param      $json
      * @param null $date
      *
      * @throws Exception\EmptyData
      */
-    public function __construct($name, $filename, $contentType, $binaryData, $userId, $date = null)
+    public function __construct($name, $filename, $contentType, $binaryData, $userId, $json, $date = null)
     {
         if (!is_string($filename) || empty($filename)) {
             throw new \InvalidArgumentException('Invalid filename');
@@ -85,6 +91,7 @@ class TaskConfiguration
         $this->filename  = $filename;
         $this->timestamp = $date->getTimestamp();
         $this->userId    = $userId;
+        $this->json      = $json;
 
         $this->file[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
             $binaryData,
@@ -122,5 +129,13 @@ class TaskConfiguration
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJson()
+    {
+        return $this->json;
     }
 }
