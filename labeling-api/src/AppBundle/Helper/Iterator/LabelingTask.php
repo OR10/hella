@@ -18,19 +18,20 @@ class LabelingTask implements \IteratorAggregate
     private $labelingTasks = [];
 
     /**
-     * @var Facade\LabelingTask
+     * @var Facade\Project
      */
-    private $labelingTaskFacade;
+    private $projectFacade;
 
     /**
      * LabelingTask constructor.
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Model\Project       $project
+     *
+     * @param Facade\Project $projectFacade
+     * @param Model\Project                      $project
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade, Model\Project $project)
+    public function __construct(Facade\Project $projectFacade, Model\Project $project)
     {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->project            = $project;
+        $this->projectFacade = $projectFacade;
+        $this->project       = $project;
     }
 
     public function getIterator()
@@ -41,9 +42,7 @@ class LabelingTask implements \IteratorAggregate
     private function labelingTaskIteratorGenerator()
     {
         if (empty($this->labelingTasks)) {
-            $this->labelingTasks = $this->labelingTaskFacade->findAllByProjects(
-                [$this->project->getId()]
-            );
+            $this->labelingTasks = $this->projectFacade->getTasksByProject($this->project);
         }
 
         foreach ($this->labelingTasks as $labelingTask) {
