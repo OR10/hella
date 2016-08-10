@@ -4,9 +4,20 @@
 class AuthInterceptor {
   /**
    * @param {angular.Scope} $rootScope injected
+   * @param {angular.$q} $q
    */
-  constructor($rootScope) {
-    this.$rootScope = $rootScope;
+  constructor($rootScope, $q) {
+    /**
+     * @type {angular.Scope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     this.responseError = this.responseError.bind(this);
   }
@@ -19,13 +30,16 @@ class AuthInterceptor {
    */
   responseError(rejection) {
     if (rejection.status === 401) {
-      this.$rootScope.$emit('unauthorized', rejection.config.url);
+      this._$rootScope.$emit('unauthorized', rejection.config.url);
     }
 
-    return Promise.reject(rejection);
+    return this._$q.reject(rejection);
   }
 }
 
-AuthInterceptor.$inject = ['$rootScope'];
+AuthInterceptor.$inject = [
+  '$rootScope',
+  '$q',
+];
 
 export default AuthInterceptor;

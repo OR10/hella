@@ -4,9 +4,11 @@
 class ErrorInterceptor {
   /**
    * @param {angular.Scope} $rootScope injected
+   * @param {angular.$q} $q
    */
-  constructor($rootScope) {
-    this.$rootScope = $rootScope;
+  constructor($rootScope, $q) {
+    this._$rootScope = $rootScope;
+    this._$q = $q;
 
     this.responseError = this.responseError.bind(this);
   }
@@ -19,17 +21,20 @@ class ErrorInterceptor {
    */
   responseError(rejection) {
     if (rejection.status >= 500 && rejection.status <= 599) {
-      this.$rootScope.$broadcast('serverError', rejection.data.error);
+      this._$rootScope.$broadcast('serverError', rejection.data.error);
     }
 
     if (rejection.status >= 400 && rejection.status <= 499) {
-      this.$rootScope.$broadcast('clientError', rejection.data.error);
+      this._$rootScope.$broadcast('clientError', rejection.data.error);
     }
 
-    return Promise.reject(rejection);
+    return this._$q.reject(rejection);
   }
 }
 
-ErrorInterceptor.$inject = ['$rootScope'];
+ErrorInterceptor.$inject = [
+  '$rootScope',
+  '$q'
+];
 
 export default ErrorInterceptor;
