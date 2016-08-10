@@ -34,7 +34,7 @@ class ErrorInterceptor {
 
 ErrorInterceptor.$inject = [
   '$rootScope',
-  '$q'
+  '$q',
 ];
 
 export default ErrorInterceptor;
