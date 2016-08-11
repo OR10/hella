@@ -221,12 +221,20 @@
                  public="false">
         </service>
 
+        <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"
+                 class="AppBundle\Helper\Export\ShapeColumns\Pedestrian"
+                 public="false">
+        </service>
+
         <service id="annostation.labeling_api.service.shape_columns_factory"
                  class="AppBundle\Service\ShapeColumnsFactory">
             <argument type="collection">
                 <argument type="service"
                           key="rectangle"
                           id="annostation.labeling_api.helper.export.shape_columns.rectangle"/>
+                <argument type="service"
+                          key="pedestrian"
+                          id="annostation.labeling_api.helper.export.shape_columns.pedestrian"/>
             </argument>
         </service>
     </services>
