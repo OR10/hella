@@ -2,7 +2,8 @@
 
 namespace AppBundle\Helper\Export;
 
-abstract class Cell {
+abstract class Cell
+{
     /**
      * Retrieve the raw value of this Cell
      *
@@ -17,7 +18,8 @@ abstract class Cell {
      *
      * @return string
      */
-    public function toCsv($enclosure = '"') {
+    public function toCsv($enclosure = '"')
+    {
         return sprintf(
             '%s%s%s',
             $enclosure,
@@ -37,7 +39,8 @@ abstract class Cell {
      *
      * @return string
      */
-    protected function escapeForEnclosure($enclosure, $value) {
+    protected function escapeForEnclosure($enclosure, $value)
+    {
         return addcslashes($value, $enclosure);
     }
 }

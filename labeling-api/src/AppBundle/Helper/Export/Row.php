@@ -2,7 +2,8 @@
 
 namespace AppBundle\Helper\Export;
 
-class Row {
+class Row
+{
     /**
      * @var Cell[]
      */
@@ -13,7 +14,8 @@ class Row {
      *
      * @param Cell[] $cells
      */
-    public function __construct(array $cells = array()) {
+    public function __construct(array $cells = array())
+    {
         $this->cells = $cells;
     }
 
@@ -22,7 +24,8 @@ class Row {
      *
      * @param Cell $cell
      */
-    public function addCell(Cell $cell) {
+    public function addCell(Cell $cell)
+    {
         $this->cells[] = $cell;
     }
 
@@ -31,9 +34,10 @@ class Row {
      *
      * @return string[]
      */
-    public function getValues() {
+    public function getValues()
+    {
         $cellValues = array();
-        foreach($this->cells as $cell) {
+        foreach ($this->cells as $cell) {
             $cellValues[] = $cell->getValue();
         }
 
@@ -48,7 +52,8 @@ class Row {
      *
      * @return string
      */
-    public function toCsv($delimiter = ',', $enclosure = '"') {
+    public function toCsv($delimiter = ',', $enclosure = '"')
+    {
         $cellStrings = array();
         foreach ($this->cells as $cell) {
             $cellStrings[] = $cell->toCsv($enclosure);

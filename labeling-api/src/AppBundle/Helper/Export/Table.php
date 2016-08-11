@@ -2,7 +2,8 @@
 
 namespace AppBundle\Helper\Export;
 
-class Table {
+class Table
+{
     /**
      * @var Row[]
      */
@@ -13,7 +14,8 @@ class Table {
      *
      * @param Row[] $rows
      */
-    public function __construct(array $rows = array()) {
+    public function __construct(array $rows = array())
+    {
         $this->rows = $rows;
     }
 
@@ -22,7 +24,8 @@ class Table {
      *
      * @param Row $row
      */
-    public function addRow(Row $row) {
+    public function addRow(Row $row)
+    {
         $this->rows[] = $row;
     }
 
@@ -31,9 +34,10 @@ class Table {
      *
      * @return string[][]
      */
-    public function getValues() {
+    public function getValues()
+    {
         $rowValues = array();
-        foreach($this->rows as $row) {
+        foreach ($this->rows as $row) {
             $rowValues[] = $row->getValues();
         }
 
@@ -49,9 +53,10 @@ class Table {
      *
      * @return string
      */
-    public function toCsv($linebreak = "\r\n", $delimiter = ',', $enclosure = '"') {
+    public function toCsv($linebreak = "\r\n", $delimiter = ',', $enclosure = '"')
+    {
         $rowStrings = array();
-        foreach($this->rows as $row) {
+        foreach ($this->rows as $row) {
             $rowStrings[] = $row->toCsv($delimiter, $enclosure);
         }
 
