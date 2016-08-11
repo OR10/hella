@@ -202,10 +202,13 @@
                  class="AppBundle\Service\LabeledThingInFrameIteratorFactory">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
         </service>
-        
+
         <service id="annostation.labeling_api.service.exporter_csv" class="AppBundle\Service\Exporter\Csv">
             <argument type="service" id="annostation.labeling_api.database.facade.exporter" />
         </service>
 
+        <service id="annostation.labeling_api.service.column_group_factory"
+                 class="AppBundle\Service\ColumnGroupFactory">
+        </service>
     </services>
 </container>

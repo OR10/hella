@@ -4,7 +4,7 @@ namespace AppBundle\Helper\Export\ColumnGroup;
 
 use AppBundle\Helper\Export;
 
-class Unique extends Export\ColumnGroup {
+class Unique extends Plain {
     /**
      * Unique constructor.
      *
