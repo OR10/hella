@@ -210,5 +210,19 @@
         <service id="annostation.labeling_api.service.column_group_factory"
                  class="AppBundle\Service\ColumnGroupFactory">
         </service>
+
+        <service id="annostation.labeling_api.helper.export.shape_columns.rectangle"
+                 class="AppBundle\Helper\Export\ShapeColumns\Rectangle"
+                 public="false">
+        </service>
+
+        <service id="annostation.labeling_api.service.shape_columns_factory"
+                 class="AppBundle\Service\ShapeColumnsFactory">
+            <argument type="collection">
+                <argument type="service"
+                          key="rectangle"
+                          id="annostation.labeling_api.helper.export.shape_columns.rectangle"/>
+            </argument>
+        </service>
     </services>
 </container>
