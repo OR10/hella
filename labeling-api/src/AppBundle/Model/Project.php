@@ -54,6 +54,11 @@ class Project
     private $labelingGroupId;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $availableExports = ['legacy'];
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -216,5 +221,21 @@ class Project
     public function setLabelingGroupId($labelingGroupId)
     {
         $this->labelingGroupId = $labelingGroupId;
+    }
+
+    /**
+     * @param mixed $availableExports
+     */
+    public function setAvailableExports($availableExports)
+    {
+        $this->availableExports = $availableExports;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvailableExports()
+    {
+        return $this->availableExports;
     }
 }
