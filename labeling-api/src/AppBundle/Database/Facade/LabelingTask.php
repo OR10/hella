@@ -25,6 +25,31 @@ class LabelingTask
         return $this->documentManager->find(Model\LabelingTask::class, $id);
     }
 
+    /**
+     * @param string[] $ids
+     *
+     * @return Model\LabelingTask[]
+     */
+    public function findByVideoIds(array $ids)
+    {
+        $idsInChunks = array_chunk($ids, 100);
+
+        $tasks = array();
+        foreach ($idsInChunks as $idsInChunk) {
+            $tasks = array_merge(
+                $tasks,
+                $this->documentManager
+                    ->createQuery('annostation_labeling_task_by_video_id_001', 'view')
+                    ->setKeys($idsInChunk)
+                    ->onlyDocs(true)
+                    ->toArray()
+                    ->execute()
+            );
+        }
+
+        return $tasks;
+    }
+
     public function findAll()
     {
         return $this->documentManager
