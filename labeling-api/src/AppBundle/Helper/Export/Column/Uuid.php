@@ -19,7 +19,7 @@ class Uuid extends Export\Column
      */
     public function getHeader()
     {
-        // TODO: Implement getHeader() method.
+        return 'UUID';
     }
 
     /**
@@ -30,6 +30,6 @@ class Uuid extends Export\Column
      */
     public function getDefaultValue()
     {
-        // TODO: Implement getDefaultValue() method.
+        return '';
     }
 }
