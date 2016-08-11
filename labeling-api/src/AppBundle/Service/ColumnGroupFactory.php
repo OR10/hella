@@ -13,6 +13,11 @@ class ColumnGroupFactory
     {
     }
 
+    /**
+     * @param string $type
+     *
+     * @return ColumnGroup
+     */
     public function create($type = self::PLAIN)
     {
         return new $type();
