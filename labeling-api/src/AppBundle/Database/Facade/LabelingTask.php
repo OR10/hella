@@ -42,8 +42,8 @@ class LabelingTask
                     ->createQuery('annostation_labeling_task_by_video_id_001', 'view')
                     ->setKeys($idsInChunk)
                     ->onlyDocs(true)
-                    ->toArray()
                     ->execute()
+                    ->toArray()
             );
         }
 
