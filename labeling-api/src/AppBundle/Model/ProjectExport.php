@@ -37,14 +37,25 @@ class ProjectExport
     private $filename;
 
     /**
-     * @param Project $project
-     * @param array $exportVideoIds
+     * @CouchDB\Field(type="datetime")
      */
-    public function __construct(Project $project, array $exportVideoIds, $filename)
+    private $date;
+
+    /**
+     * @param Project   $project
+     * @param array     $exportVideoIds
+     * @param           $filename
+     * @param \DateTime $date
+     */
+    public function __construct(Project $project, array $exportVideoIds, $filename, \DateTime $date = null)
     {
         $this->projectId      = $project->getId();
         $this->videoExportIds = $exportVideoIds;
         $this->filename       = $filename;
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+        $this->date = $date;
     }
 
     /**
