@@ -6,14 +6,16 @@
             <table class="table hover">
                 <thead>
                 <tr>
-                    <th>Filename</th>
+                    <th>Date</th>
                     <th>Id</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-show="vm.exports.length" ng-repeat="export in vm.exports track by export.id">
                     <td>
-                       <a ng-href="{{vm.downloadUrl(export.projectId, export.id)}}">{{export.filename}}</a>
+                       <a ng-href="{{vm.downloadUrl(export.projectId, export.id)}}">
+                           {{export.date ? export.date : 'unknown'}}
+                       </a>
                     </td>
                     <td>
                         <a ng-href="{{vm.downloadUrl(export.projectId, export.id)}}">{{export.id}}</a>
