@@ -10,20 +10,20 @@ class Table
     private $rows;
 
     /**
-     * @var Column[]
+     * @var ColumnGroup
      */
-    private $columns;
+    private $columnGroup;
 
     /**
      * Table constructor.
      *
-     * @param Column[] $columns
+     * @param ColumnGroup $columnGroup
      * @param Row[] $rows
      */
-    public function __construct(array $columns, array $rows = array())
+    public function __construct(ColumnGroup $columnGroup, array $rows = array())
     {
         $this->rows = $rows;
-        $this->columns = $columns;
+        $this->columnGroup = $columnGroup;
     }
 
     /**
@@ -66,7 +66,7 @@ class Table
 
         // Add header line
         $headerColumns = array();
-        foreach($this->columns as $column) {
+        foreach($this->columnGroup->getColumns() as $column) {
             $headerColumns[] = $column->toCsv($enclosure);
         }
         $rowStrings[] = implode($delimiter, $headerColumns);
