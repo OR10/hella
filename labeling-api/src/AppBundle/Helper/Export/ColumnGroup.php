@@ -23,6 +23,7 @@ abstract class ColumnGroup
      * Create an array of Cells foreach registered Column using the given data
      *
      * @param Model\Project             $project
+     * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
      *
@@ -30,6 +31,7 @@ abstract class ColumnGroup
      */
     public abstract function createCells(
         Model\Project $project,
+        Model\Video $video,
         Model\LabelingTask $task,
         Model\LabeledThingInFrame $labeledThingInFrame
     );
@@ -38,6 +40,7 @@ abstract class ColumnGroup
      * Create a Row containing a cell for each column in this group based on the given data
      *
      * @param Model\Project             $project
+     * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
      *
@@ -45,6 +48,7 @@ abstract class ColumnGroup
      */
     public abstract function createRow(
         Model\Project $project,
+        Model\Video $video,
         Model\LabelingTask $task,
         Model\LabeledThingInFrame $labeledThingInFrame
     );

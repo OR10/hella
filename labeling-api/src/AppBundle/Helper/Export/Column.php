@@ -7,6 +7,7 @@ abstract class Column
 {
     /**
      * @param Model\Project             $project
+     * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
      *
@@ -14,6 +15,7 @@ abstract class Column
      */
     public abstract function createCell(
         Model\Project $project,
+        Model\Video $video,
         Model\LabelingTask $task,
         Model\LabeledThingInFrame $labeledThingInFrame
     );
