@@ -11,7 +11,7 @@ class ShapeColumnsFactory
      */
     private $drawingToolToShapeColumnsMapping;
 
-    public function __constructor(array $drawingToolToShapeColumnsMapping) {
+    public function __construct(array $drawingToolToShapeColumnsMapping) {
         $this->drawingToolToShapeColumnsMapping = $drawingToolToShapeColumnsMapping;
     }
 
