@@ -63,6 +63,7 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
     {
         return array(
             array("rectangle"),
+            array("pedestrian"),
         );
     }
 
@@ -77,6 +78,14 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
                     new Column\Rectangle(Column\Rectangle::TYPE_HEIGHT),
                 ],
             ),
+            array(
+                [
+                    new Column\Pedestrian(Column\Pedestrian::TYPE_X),
+                    new Column\Pedestrian(Column\Pedestrian::TYPE_Y),
+                    new Column\Pedestrian(Column\Pedestrian::TYPE_WIDTH),
+                    new Column\Pedestrian(Column\Pedestrian::TYPE_HEIGHT),
+                ],
+            ),
         );
     }
 
@@ -89,6 +98,14 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
                     'position_y' => '456',
                     'width'      => '666',
                     'height'     => '556',
+                ],
+            ),
+            array(
+                [
+                    'position_x' => '418',
+                    'position_y' => '200',
+                    'width'      => '164',
+                    'height'     => '400',
                 ],
             ),
         );
@@ -125,8 +142,16 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             'type'                  => 'rectangle',
             'id'                    => 'shape-id-1',
             'labeledThingInFrameId' => 'some-ltif-id',
-            'topLeft'               => array('x' => 123, 'y' => '456'),
-            'bottomRight'           => array('x' => 789, 'y' => '1012'),
+            'topLeft'               => array('x' => 123, 'y' => 456),
+            'bottomRight'           => array('x' => 789, 'y' => 1012),
+        );
+
+        $pedestrianShape = array(
+            'type'                  => 'pedestrian',
+            'id'                    => 'shape-id-1',
+            'labeledThingInFrameId' => 'some-ltif-id',
+            'topCenter'               => array('x' => 500, 'y' => 200),
+            'bottomCenter'           => array('x' => 500, 'y' => 600),
         );
 
         $this->project                            = $this->createProject('project-id-1');
@@ -139,6 +164,11 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->labeledThing,
             23,
             array($rectangleShape)
+        );
+        $this->labeledThingsInFrames['pedestrian'] = $this->createLabeledThingInFrame(
+            $this->labeledThing,
+            42,
+            array($pedestrianShape)
         );
     }
 

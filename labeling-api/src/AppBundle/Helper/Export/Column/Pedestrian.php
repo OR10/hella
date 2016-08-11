@@ -6,11 +6,13 @@ use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Cell;
 use AppBundle\Model;
 
-class Rectangle extends Export\Column {
+class Pedestrian extends Export\Column {
     const TYPE_X = 'type.x';
     const TYPE_Y = 'type.y';
     const TYPE_WIDTH = 'type.width';
     const TYPE_HEIGHT = 'type.height';
+
+    const ASPECT_RATIO = 0.41;
 
     /**
      * @var string
@@ -33,23 +35,24 @@ class Rectangle extends Export\Column {
         Model\LabeledThingInFrame $labeledThingInFrame
     ) {
         $shapes = $labeledThingInFrame->getShapes();
-
         if(count($shapes) === 0) {
             return null;
         }
 
-        $rectangleShape = $shapes[0];
+        $pedestrianShape = $shapes[0];
 
-        if ($rectangleShape['type'] !== 'rectangle') {
+        if ($pedestrianShape['type'] !== 'pedestrian') {
             return null;
         }
 
-        $topLeftX = $rectangleShape['topLeft']['x'];
-        $topLeftY = $rectangleShape['topLeft']['y'];
-        $bottomRightX = $rectangleShape['bottomRight']['x'];
-        $bottomRightY = $rectangleShape['bottomRight']['y'];
-        $width = $bottomRightX - $topLeftX;
-        $height = $bottomRightY - $topLeftY;
+        $topCenterX = $pedestrianShape['topCenter']['x'];
+        $topCenterY = $pedestrianShape['topCenter']['y'];
+        $bottomCenterY = $pedestrianShape['bottomCenter']['y'];
+
+        $height = $bottomCenterY - $topCenterY;
+        $width = $height * self::ASPECT_RATIO;
+        $topLeftX = $topCenterX - ($width / 2);
+        $topLeftY = $topCenterY;
 
         switch ($this->type) {
             case self::TYPE_X:
@@ -61,7 +64,7 @@ class Rectangle extends Export\Column {
             case self::TYPE_HEIGHT:
             return new Cell\Integer($this, $height);
             default:
-                throw new \RuntimeException('Unknown Rectangle Column Type: ' . $this->type);
+                throw new \RuntimeException('Unknown Pedestrian Column Type: ' . $this->type);
         }
     }
 
@@ -77,7 +80,7 @@ class Rectangle extends Export\Column {
             case self::TYPE_HEIGHT:
                 return 'height';
             default:
-                throw new \RuntimeException('Unknown Rectangle Column Type: ' . $this->type);
+                throw new \RuntimeException('Unknown Pedestrian Column Type: ' . $this->type);
         }
     }
 
