@@ -7,6 +7,7 @@ use AppBundle\Helper\Export\Column;
 
 class Pedestrian extends Export\ShapeColumns
 {
+
     public function __construct()
     {
     }

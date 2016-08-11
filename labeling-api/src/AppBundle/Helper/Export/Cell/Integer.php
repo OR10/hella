@@ -15,13 +15,10 @@ class Integer extends Export\Cell
     /**
      * Integer constructor.
      *
-     * @param Column $column
      * @param int    $value
      */
-    public function __construct(Column $column, $value)
+    public function __construct($value)
     {
-        parent::__construct($column);
-
         $this->value = $value;
     }
 

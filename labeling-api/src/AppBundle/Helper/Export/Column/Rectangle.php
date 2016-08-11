@@ -35,13 +35,13 @@ class Rectangle extends Export\Column {
         $shapes = $labeledThingInFrame->getShapes();
 
         if(count($shapes) === 0) {
-            return null;
+            return new Cell\DefaultValue($this);
         }
 
         $rectangleShape = $shapes[0];
 
         if ($rectangleShape['type'] !== 'rectangle') {
-            return null;
+            return new Cell\DefaultValue($this);
         }
 
         $topLeftX = $rectangleShape['topLeft']['x'];
@@ -53,13 +53,13 @@ class Rectangle extends Export\Column {
 
         switch ($this->type) {
             case self::TYPE_X:
-                return new Cell\Integer($this, $topLeftX);
+                return new Cell\Integer($topLeftX);
             case self::TYPE_Y:
-                return new Cell\Integer($this, $topLeftY);
+                return new Cell\Integer($topLeftY);
             case self::TYPE_WIDTH:
-                return new Cell\Integer($this, $width);
+                return new Cell\Integer($width);
             case self::TYPE_HEIGHT:
-            return new Cell\Integer($this, $height);
+            return new Cell\Integer($height);
             default:
                 throw new \RuntimeException('Unknown Rectangle Column Type: ' . $this->type);
         }

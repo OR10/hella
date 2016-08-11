@@ -150,17 +150,17 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             'type'                  => 'pedestrian',
             'id'                    => 'shape-id-1',
             'labeledThingInFrameId' => 'some-ltif-id',
-            'topCenter'               => array('x' => 500, 'y' => 200),
-            'bottomCenter'           => array('x' => 500, 'y' => 600),
+            'topCenter'             => array('x' => 500, 'y' => 200),
+            'bottomCenter'          => array('x' => 500, 'y' => 600),
         );
 
-        $this->project                            = $this->createProject('project-id-1');
-        $this->video                              = $this->createVideo('video-id-1');
-        $this->task                               = $this->createTask($this->project, $this->video);
-        $this->labeledThing                       = $this->createLabeledThing($this->task);
+        $this->project      = $this->createProject('project-id-1');
+        $this->video        = $this->createVideo('video-id-1');
+        $this->task         = $this->createTask($this->project, $this->video);
+        $this->labeledThing = $this->createLabeledThing($this->task);
 
-        $this->labeledThingsInFrames = array();
-        $this->labeledThingsInFrames['rectangle'] = $this->createLabeledThingInFrame(
+        $this->labeledThingsInFrames               = array();
+        $this->labeledThingsInFrames['rectangle']  = $this->createLabeledThingInFrame(
             $this->labeledThing,
             23,
             array($rectangleShape)
@@ -231,6 +231,48 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
         $this->assertEquals(
             $headers,
             array_keys($expectedValues)
+        );
+    }
+
+    public function testShapeColumnsAreMergedByHeader()
+    {
+        $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
+        $columnGroup->addColumns(
+            $this->shapeColumnsFactory->create('pedestrian')
+        );
+        $columnGroup->addColumns(
+            $this->shapeColumnsFactory->create('rectangle')
+        );
+
+        $rectangleRow = $columnGroup->createRow(
+            $this->project,
+            $this->video,
+            $this->task,
+            $this->labeledThingsInFrames['rectangle']
+        );
+
+        $pedestrianRow = $columnGroup->createRow(
+            $this->project,
+            $this->video,
+            $this->task,
+            $this->labeledThingsInFrames['pedestrian']
+        );
+
+        $this->assertEquals(
+            ['123', '456', '666', '556'],
+            $rectangleRow->getValues()
+        );
+
+        $this->assertEquals(
+            ['418', '200', '164', '400'],
+            $pedestrianRow->getValues()
+        );
+
+        $this->assertEquals(
+            array_map(function($column) {
+                return $column->getHeader();
+            },$columnGroup->getColumns()),
+            ['position_x', 'position_y', 'width', 'height']
         );
     }
 }

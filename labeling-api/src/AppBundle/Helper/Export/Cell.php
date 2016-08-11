@@ -5,18 +5,6 @@ namespace AppBundle\Helper\Export;
 abstract class Cell
 {
     /**
-     * @var Column
-     */
-    protected $column;
-
-    /**
-     * @param Column $column
-     */
-    public function __construct(Column $column) {
-        $this->column = $column;
-    }
-
-    /**
      * Retrieve the raw value of this Cell
      *
      * @return string
@@ -33,10 +21,6 @@ abstract class Cell
     public function toCsv($enclosure = '"')
     {
         $value = $this->getValue();
-
-        if ($value === null) {
-            $value = $this->column->getDefaultValue();
-        }
 
         return sprintf(
             '%s%s%s',

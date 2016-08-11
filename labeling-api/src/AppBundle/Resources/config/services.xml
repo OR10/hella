@@ -216,13 +216,13 @@
                  class="AppBundle\Service\ColumnGroupFactory">
         </service>
 
-        <service id="annostation.labeling_api.helper.export.shape_columns.rectangle"
-                 class="AppBundle\Helper\Export\ShapeColumns\Rectangle"
+        <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"
+                 class="AppBundle\Helper\Export\ShapeColumns\Pedestrian"
                  public="false">
         </service>
 
-        <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"
-                 class="AppBundle\Helper\Export\ShapeColumns\Pedestrian"
+        <service id="annostation.labeling_api.helper.export.shape_columns.rectangle"
+                 class="AppBundle\Helper\Export\ShapeColumns\Rectangle"
                  public="false">
         </service>
 
