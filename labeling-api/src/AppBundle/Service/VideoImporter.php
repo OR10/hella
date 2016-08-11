@@ -107,6 +107,7 @@ class VideoImporter
      * @param bool       $revision
      * @param null       $taskConfigurationId
      * @param Model\User $user
+     * @param bool       $legacyExport
      * @return Model\LabelingTask[]
      * @throws \Exception
      */
@@ -127,7 +128,8 @@ class VideoImporter
         $review = false,
         $revision = false,
         $taskConfigurationId = null,
-        Model\User $user = null
+        Model\User $user = null,
+        $legacyExport = false
     ) {
         if ($taskConfigurationId !== null) {
             $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
@@ -155,6 +157,11 @@ class VideoImporter
         $project = $this->projectFacade->findByName($projectName);
         if ($project === null) {
             $project = new Model\Project($projectName);
+            if ($legacyExport) {
+                $project->setAvailableExports(['legacy']);
+            }else{
+                $project->setAvailableExports(['genericXml']);
+            }
             $this->projectFacade->save($project);
         }
 

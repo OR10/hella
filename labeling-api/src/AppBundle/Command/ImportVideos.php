@@ -45,7 +45,8 @@ class ImportVideos extends Base
             ->addOption('frameStepSize', null, Input\InputOption::VALUE_REQUIRED, 'Video frame step size', 22)
             ->addOption('pedestrianMinimalHeight', null, Input\InputOption::VALUE_REQUIRED, 'Video pedestrian minimal height', 22)
             ->addOption('cuboidMinimalHeight', null, Input\InputOption::VALUE_REQUIRED, 'Video cuboid minimal height', 15)
-            ->addOption('overflow', null, Input\InputOption::VALUE_REQUIRED, 'Allow video overflow', 16);
+            ->addOption('overflow', null, Input\InputOption::VALUE_REQUIRED, 'Allow video overflow', 16)
+            ->addOption('legacyExport', null, Input\InputOption::VALUE_NONE, 'Use the legacy exporter');
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
@@ -92,7 +93,8 @@ class ImportVideos extends Base
                 false,
                 false,
                 $input->getOption('taskConfigurationId'),
-                $user
+                $user,
+                $input->getOption('legacyExport')
             );
 
             foreach($tasks as $task) {

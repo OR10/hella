@@ -193,7 +193,10 @@ class Index extends Base
                 $frameStepSize,
                 $startFrame,
                 $review,
-                $revision
+                $revision,
+                null,
+                null,
+                true
             );
 
             $viewData['taskIds'] = array_map(
