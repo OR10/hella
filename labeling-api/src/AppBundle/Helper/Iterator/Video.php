@@ -59,7 +59,7 @@ class Video implements \IteratorAggregate
 
         $videoIds = array_map(
             function (Model\LabelingTask $task) {
-                return $task->getId();
+                return $task->getVideoId();
             },
             $this->labelingTasks
         );
