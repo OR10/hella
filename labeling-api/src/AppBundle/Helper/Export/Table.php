@@ -10,13 +10,20 @@ class Table
     private $rows;
 
     /**
+     * @var Column[]
+     */
+    private $columns;
+
+    /**
      * Table constructor.
      *
+     * @param Column[] $columns
      * @param Row[] $rows
      */
-    public function __construct(array $rows = array())
+    public function __construct(array $columns, array $rows = array())
     {
         $this->rows = $rows;
+        $this->columns = $columns;
     }
 
     /**
@@ -56,10 +63,20 @@ class Table
     public function toCsv($linebreak = "\r\n", $delimiter = ',', $enclosure = '"')
     {
         $rowStrings = array();
+
+        // Add header line
+        $headerColumns = array();
+        foreach($this->columns as $column) {
+            $headerColumns[] = $column->toCsv($enclosure);
+        }
+        $rowStrings[] = implode($delimiter, $headerColumns);
+
+        // Add all rows
         foreach ($this->rows as $row) {
             $rowStrings[] = $row->toCsv($delimiter, $enclosure);
         }
 
+        // Create full csv
         return implode($linebreak, $rowStrings);
     }
 }
