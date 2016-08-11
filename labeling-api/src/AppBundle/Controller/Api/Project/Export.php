@@ -39,19 +39,27 @@ class Export extends Controller\Base
     private $videoExportFacade;
 
     /**
+     * @var Facade\Exporter
+     */
+    private $exporterFacade;
+
+    /**
      * @param Facade\ProjectExport $projectExport
-     * @param Facade\VideoExport $videoExportFacade
-     * @param AMQP\FacadeAMQP $amqpFacade
+     * @param Facade\VideoExport   $videoExportFacade
+     * @param AMQP\FacadeAMQP      $amqpFacade
+     * @param Facade\Exporter      $exporterFacade
      */
     public function __construct(
         Facade\ProjectExport $projectExport,
         Facade\VideoExport $videoExportFacade,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Facade\Exporter $exporterFacade
     )
     {
-        $this->amqpFacade = $amqpFacade;
-        $this->projectExport = $projectExport;
+        $this->amqpFacade        = $amqpFacade;
+        $this->projectExport     = $projectExport;
         $this->videoExportFacade = $videoExportFacade;
+        $this->exporterFacade    = $exporterFacade;
     }
 
     /**
@@ -62,7 +70,13 @@ class Export extends Controller\Base
      */
     public function listExportsAction(Model\Project $project)
     {
-        $exports = $this->projectExport->findAllByProject($project);
+        $availableExports = $project->getAvailableExports();
+        $exporter = reset($availableExports);
+        if ($exporter === 'genericXml') {
+            $exports = $this->exporterFacade->findAllByProject($project);
+        }else{
+            $exports = $this->projectExport->findAllByProject($project);
+        }
 
         return View\View::create()->setData([
             'totalCount' => count($exports),
@@ -71,14 +85,60 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{project}/export/{projectExport}")
+     * @Rest\Get("/{project}/export/{exportId}")
      *
      * @param Model\Project $project
-     * @param Model\ProjectExport $projectExport
+     * @param               $exportId
      * @return HttpFoundation\Response
-     * @throws ProjectException\Csv
+     * @throws Exception\Csv
      */
-    public function getExportAction(Model\Project $project, Model\ProjectExport $projectExport)
+    public function getExportAction(Model\Project $project, $exportId)
+    {
+        $availableExports = $project->getAvailableExports();
+        $exporter = reset($availableExports);
+
+        if ($exporter === 'genericXml') {
+            $export = $this->exporterFacade->find($exportId);
+            return $this->getGenericXmlZipContent($project, $export);
+        }else{
+            $projectExport = $this->projectExport->find($exportId);
+            return $this->getLegacyZipContent($project, $projectExport);
+        }
+    }
+
+    /**
+     * @param Model\Project $project
+     * @param Model\Export  $export
+     * @return HttpFoundation\Response
+     */
+    private function getGenericXmlZipContent(Model\Project $project, Model\Export $export)
+    {
+        if ($project->getId() !== $export->getProjectId()) {
+            throw new Exception\NotFoundHttpException('Requested export is not valid for this project');
+        }
+
+        $attachments = $export->getAttachments();
+        $attachment = reset($attachments);
+        return new HttpFoundation\Response(
+            $attachment->getRawData(),
+            HttpFoundation\Response::HTTP_OK,
+            [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => sprintf(
+                    'attachment; filename="export_%s.zip"',
+                    $export->getDate()->format('Y-m-d_H-i-s')
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @param Model\Project $project
+     * @param               $projectExport
+     * @return HttpFoundation\Response
+     * @throws Exception\Csv
+     */
+    private function getLegacyZipContent(Model\Project $project, Model\ProjectExport $projectExport)
     {
         if ($project->getId() !== $projectExport->getProjectId()) {
             throw new Exception\NotFoundHttpException('Requested export is not valid for this project');
@@ -91,7 +151,11 @@ class Export extends Controller\Base
             throw new ProjectException\Csv(sprintf('Unable to open zip archive at "%s"', $zipFilename));
         }
 
-        foreach($projectExport->getVideoExportIds() as $videoExportId) {
+        $videoExportIds = $projectExport->getVideoExportIds();
+        if (empty($videoExportIds)) {
+            $zip->addEmptyDir('.');
+        }
+        foreach($videoExportIds as $videoExportId) {
             $videoExport = $this->videoExportFacade->find($videoExportId);
 
             if (!$zip->addFromString($videoExport->getFilename(), $videoExport->getRawData())) {
@@ -128,7 +192,16 @@ class Export extends Controller\Base
      */
     public function getCsvExportAction(Model\Project $project)
     {
-        $this->amqpFacade->addJob(new Jobs\ProjectCsvExporter($project->getId()));
+        foreach($project->getAvailableExports() as $exportType) {
+            switch ($exportType) {
+                case 'legacy':
+                    $this->amqpFacade->addJob(new Jobs\ProjectCsvExporter($project->getId()));
+                    break;
+                case 'genericXml':
+                    $this->amqpFacade->addJob(new Jobs\Exporter($project->getId()));
+                    break;
+            }
+        }
 
         return View\View::create()
             ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
