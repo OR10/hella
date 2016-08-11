@@ -94,11 +94,17 @@ class CouchDbTestCase extends Tests\WebTestCase
         return $user;
     }
 
-    protected function createVideo($name)
+    protected function createVideo($name, $calibration = null)
     {
-        return $this->videoFacade->save(
-            Model\Video::create($name)
-        );
+        $video = Model\Video::create($name);
+        if ($calibration !== null) {
+            $video->setCameraMatrix($calibration['cameraMatrix']);
+            $video->setDistortionCoefficients($calibration['distortionCoefficients']);
+            $video->setRotationMatrix($calibration['rotationMatrix']);
+            $video->setTranslation($calibration['translation']);
+        }
+
+        return $this->videoFacade->save($video);
     }
 
     protected function createProject($name)

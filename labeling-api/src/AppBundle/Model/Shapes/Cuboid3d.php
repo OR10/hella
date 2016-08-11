@@ -84,7 +84,7 @@ class Cuboid3d extends Model\Shape
     /**
      * @param array
      *
-     * @return Rectangle
+     * @return Cuboid3d
      *
      * @throws \RuntimeException
      */
