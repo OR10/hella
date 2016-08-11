@@ -13,6 +13,17 @@ abstract class ColumnGroup
     public abstract function addColumn(Column $column);
 
     /**
+     * Add a column to the group
+     *
+     * @param Column[] $columns
+     */
+    public function addColumns(array $columns) {
+        foreach($columns as $column) {
+            $this->addColumn($column);
+        }
+    }
+
+    /**
      * Get array of all registered Columns
      *
      * @return Column[]
