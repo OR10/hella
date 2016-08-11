@@ -45,19 +45,20 @@ class Plain extends Export\ColumnGroup
      * Create an array of Cells foreach registered Column using the given data
      *
      * @param Model\Project             $project
+     * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
-     *
      * @return Export\Cell[]
      */
     public function createCells(
         Model\Project $project,
+        Model\Video $video,
         Model\LabelingTask $task,
         Model\LabeledThingInFrame $labeledThingInFrame
     ) {
         $cells = array();
         foreach ($this->columns as $column) {
-            $cells[] = $column->createCell($project, $task, $labeledThingInFrame);
+            $cells[] = $column->createCell($project, $video, $task, $labeledThingInFrame);
         }
 
         return $cells;
@@ -67,19 +68,21 @@ class Plain extends Export\ColumnGroup
      * Create a Row containing a cell for each column in this group based on the given data
      *
      * @param Model\Project             $project
+     * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
-     *
      * @return Export\Row
      */
     public function createRow(
         Model\Project $project,
+        Model\Video $video,
         Model\LabelingTask $task,
         Model\LabeledThingInFrame $labeledThingInFrame
     ) {
         return new Export\Row(
             $this->createCells(
                 $project,
+                $video,
                 $task,
                 $labeledThingInFrame
             )
