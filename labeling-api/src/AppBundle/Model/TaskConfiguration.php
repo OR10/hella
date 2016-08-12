@@ -138,4 +138,34 @@ class TaskConfiguration
     {
         return $this->json;
     }
+
+    /**
+     * Get the filename for the raw data attached to this document.
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        if ($this->filename === null) {
+            throw new \RuntimeException('Broken Configuration document: missing filename');
+        }
+
+        return $this->filename;
+    }
+
+    /**
+     * Return a string containing the raw data of the export.
+     *
+     * @return string
+     */
+    public function getRawData()
+    {
+        $filename = $this->getFilename();
+
+        if (isset($this->file[$filename])) {
+            return $this->file[$filename]->getRawData();
+        }
+
+        throw new \RuntimeException('Broken VideoExport document: missing attachment');
+    }
 }
