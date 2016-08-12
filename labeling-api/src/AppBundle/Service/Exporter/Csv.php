@@ -85,9 +85,10 @@ class Csv
         $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
 
 
-        $columnGroup->addColumn(
-            new Column\Uuid()
-        );
+        $columnGroup->addColumns([
+            new Column\Uuid(),
+            new Column\FrameNumber(),
+        ]);
 
         $videoIterator = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
         foreach ($videoIterator as $video) {
