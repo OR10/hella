@@ -129,36 +129,42 @@ class Index extends Base
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
                 'drawingTool' => $drawingToolVehicle,
+                'taskConfiguration' => null,
             );
         }
         if ($request->request->get('person', false)) {
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
                 'drawingTool' => $drawingToolPerson,
+                'taskConfiguration' => null,
             );
         }
         if ($request->request->get('cyclist', false)) {
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_CYCLIST,
                 'drawingTool' => $drawingToolCyclist,
+                'taskConfiguration' => null,
             );
         }
         if ($request->request->get('ignore', false)) {
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
                 'drawingTool' => $drawingToolIgnore,
+                'taskConfiguration' => null,
             );
         }
         if ($request->request->get('ignore-vehicle', false)) {
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
                 'drawingTool' => $drawingToolIgnoreVehicle,
+                'taskConfiguration' => null,
             );
         }
         if ($request->request->get('lane', false)) {
             $labelInstructions[] = array(
                 'instruction' => Model\LabelingTask::INSTRUCTION_LANE,
                 'drawingTool' => $drawingToolLane,
+                'taskConfiguration' => null,
             );
         }
 

@@ -64,6 +64,7 @@ class ImportVideo extends Base
                 array(
                     'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
                     'drawingTool' => 'pedestrian',
+                    'taskConfiguration' => null,
                 )
             );
 

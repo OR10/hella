@@ -322,10 +322,12 @@ class Init extends Base
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
                         'drawingTool' => 'pedestrian',
+                        'taskConfiguration' => null,
                     ),
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
                         'drawingTool' => 'rectangle',
+                        'taskConfiguration' => null,
                     )
                 ),
                 null,

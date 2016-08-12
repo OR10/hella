@@ -127,21 +127,9 @@ class VideoImporter
         $startFrame = 1,
         $review = false,
         $revision = false,
-        $taskConfigurationId = null,
         Model\User $user = null,
         $legacyExport = false
     ) {
-        if ($taskConfigurationId !== null) {
-            $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
-            if ($taskConfiguration === null) {
-                throw new \Exception('No Task Configuration found for ' . $taskConfigurationId);
-            }
-            if ($user === null || $user->getId() !== $taskConfiguration->getUserId()) {
-                throw new \Exception('This User is not allowed to use this Task Configuration.');
-            }
-        }
-
-
         $video = new Model\Video($name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         if ($calibrationFile !== null) {
@@ -225,12 +213,21 @@ class VideoImporter
                     $metadata,
                     $review,
                     $revision,
-                    $taskConfigurationId
+                    null
                 );
             }
 
             if ($isObjectLabeling) {
                 foreach ($labelInstructions as $labelInstruction) {
+                    if ($labelInstruction['taskConfiguration'] !== null) {
+                        $taskConfiguration = $this->taskConfigurationFacade->find($labelInstruction['taskConfiguration']);
+                        if ($taskConfiguration === null) {
+                            throw new \Exception('No Task Configuration found for ' . $labelInstruction['taskConfiguration']);
+                        }
+                        if ($user === null || $user->getId() !== $taskConfiguration->getUserId()) {
+                            throw new \Exception('This User is not allowed to use this Task Configuration.');
+                        }
+                    }
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
@@ -245,7 +242,7 @@ class VideoImporter
                         $metadata,
                         $review,
                         $revision,
-                        $taskConfigurationId
+                        $labelInstruction['taskConfiguration']
                     );
                 }
             }

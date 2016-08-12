@@ -38,7 +38,12 @@ class ImportVideos extends Base
             ->addArgument('directory', Input\InputArgument::REQUIRED, 'Path to the video directory.')
             ->addArgument('project', Input\InputArgument::REQUIRED, 'Project name')
             ->addArgument('type', Input\InputArgument::REQUIRED, 'Pedestrian or vehicle')
-            ->addOption('taskConfigurationId', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationID (userId is required)')
+            ->addOption('taskConfigurationIdVehicle', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationId for vehicle instruction')
+            ->addOption('taskConfigurationIdPerson', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationId for person instruction')
+            ->addOption('taskConfigurationIdCyclist', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationId for cyclist instruction')
+            ->addOption('taskConfigurationIdIgnore', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationId for ignore instruction')
+            ->addOption('taskConfigurationIdIgnoreVehicle', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationId for ignore-vehicle instruction')
+            ->addOption('taskConfigurationIdLane', null, Input\InputOption::VALUE_REQUIRED, 'Task ConfigurationId for lane instruction')
             ->addOption('userId', null, Input\InputOption::VALUE_REQUIRED, 'UserId used for importing')
             ->addOption('splitLength', null, Input\InputOption::VALUE_REQUIRED, 'Video split length', 0)
             ->addOption('startFrame', null, Input\InputOption::VALUE_REQUIRED, 'Video start frame', 22)
@@ -85,14 +90,13 @@ class ImportVideos extends Base
                 $input->getOption('splitLength'),
                 true,
                 false,
-                $this->getLabelInstructions($input->getArgument('type')),
+                $this->getLabelInstructions($input->getArgument('type'), $input),
                 $input->getOption('overflow'),
                 $drawingToolOptions,
                 $input->getOption('frameStepSize'),
                 $input->getOption('startFrame'),
                 false,
                 false,
-                $input->getOption('taskConfigurationId'),
                 $user,
                 $input->getOption('legacyExport')
             );
@@ -107,40 +111,62 @@ class ImportVideos extends Base
         }
     }
 
-    private function getLabelInstructions($type)
+    private function getLabelInstructions($type, Input\InputInterface $input)
     {
         switch ($type) {
             case 'pedestrian':
+                if (!$input->getOption('legacyExport') && (
+                        $input->getOption('taskConfigurationIdPerson') === null ||
+                        $input->getOption('taskConfigurationIdCyclist') === null ||
+                        $input->getOption('taskConfigurationIdIgnore') === null)
+                ) {
+                    throw new \Exception('Missing Person, Cyclist or Ignore TaskConfiguration');
+                }
                 return array(
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
                         'drawingTool' => 'pedestrian',
+                        'taskConfiguration' => $input->getOption('taskConfigurationIdPerson')
                     ),
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_CYCLIST,
                         'drawingTool' => 'rectangle',
+                        'taskConfiguration' => $input->getOption('taskConfigurationIdCyclist')
                     ),
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE,
                         'drawingTool' => 'rectangle',
+                        'taskConfiguration' => $input->getOption('taskConfigurationIdIgnore')
                     ),
                 );
             case 'vehicle':
+                if (!$input->getOption('legacyExport') && (
+                        $input->getOption('taskConfigurationIdVehicle') === null ||
+                        $input->getOption('taskConfigurationIdIgnoreVehicle') === null)
+                ) {
+                    throw new \Exception('Missing Vehicle or IgnoreVehicle TaskConfiguration');
+                }
                 return array(
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
                         'drawingTool' => 'cuboid',
+                        'taskConfiguration' => $input->getOption('taskConfigurationIdVehicle')
                     ),
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
                         'drawingTool' => 'rectangle',
+                        'taskConfiguration' => $input->getOption('taskConfigurationIdIgnoreVehicle')
                     ),
                 );
             case 'lane':
+                if (!$input->getOption('legacyExport') && $input->getOption('taskConfigurationIdLane') === null) {
+                    throw new \Exception('Missing Lane TaskConfiguration');
+                }
                 return array(
                     array(
                         'instruction' => Model\LabelingTask::INSTRUCTION_LANE,
                         'drawingTool' => 'rectangle',
+                        'taskConfiguration' => $input->getOption('taskConfigurationIdLane')
                     ),
                 );
         }
