@@ -217,6 +217,7 @@ class VideoImporterTest extends Tests\KernelTestCase
                 array(
                     'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
                     'drawingTool' => 'rectangle',
+                    'taskConfiguration' => null,
                 )
             ),
             $minimalVisibleShapeOverflow,
