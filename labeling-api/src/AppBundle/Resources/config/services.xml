@@ -210,6 +210,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.service.column_group_factory" />
+            <argument type="service" id="annostation.labeling_api.service.shape_columns_factory" />
         </service>
 
         <service id="annostation.labeling_api.service.column_group_factory"

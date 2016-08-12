@@ -30,22 +30,30 @@ class Csv
      * @var Service\ColumnGroupFactory
      */
     private $columnGroupFactory;
+
     /**
      * @var Facade\Video
      */
     private $videoFacade;
+
     /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
 
     /**
-     * @param Facade\Exporter            $exporterFacade
-     * @param Facade\Project             $projectFacade
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\Video               $videoFacade
-     * @param Facade\LabelingTask        $labelingTaskFacade
-     * @param Service\ColumnGroupFactory $columnGroupFactory
+     * @var Service\ShapeColumnsFactory
+     */
+    private $shapeColumnsFactory;
+
+    /**
+     * @param Facade\Exporter             $exporterFacade
+     * @param Facade\Project              $projectFacade
+     * @param Facade\LabeledThingInFrame  $labeledThingInFrameFacade
+     * @param Facade\Video                $videoFacade
+     * @param Facade\LabelingTask         $labelingTaskFacade
+     * @param Service\ColumnGroupFactory  $columnGroupFactory
+     * @param Service\ShapeColumnsFactory $shapeColumnsFactory
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -53,7 +61,8 @@ class Csv
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Service\ColumnGroupFactory $columnGroupFactory
+        Service\ColumnGroupFactory $columnGroupFactory,
+        Service\ShapeColumnsFactory $shapeColumnsFactory
     )
     {
         $this->exporterFacade            = $exporterFacade;
@@ -62,6 +71,7 @@ class Csv
         $this->columnGroupFactory        = $columnGroupFactory;
         $this->videoFacade               = $videoFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->shapeColumnsFactory       = $shapeColumnsFactory;
     }
 
     /**
@@ -73,14 +83,18 @@ class Csv
 
         /** @var ColumnGroup\Unique $columnGroup */
         $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
-        $columnGroup->addColumn(new Column\Uuid());
+
+
+        $columnGroup->addColumn(
+            new Column\Uuid()
+        );
 
         $videoIterator = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
         foreach ($videoIterator as $video) {
             $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
-
             $table = new Export\Table($columnGroup);
             foreach ($labelingTaskIterator as $task) {
+                $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
                 $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame($this->labeledThingInFrameFacade, $task);
                 foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
                     $row = $columnGroup->createRow($project, $video, $task, $labeledThingInFrame);
