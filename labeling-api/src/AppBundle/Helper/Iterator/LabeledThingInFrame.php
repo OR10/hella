@@ -4,6 +4,7 @@ namespace AppBundle\Helper\Iterator;
 use Traversable;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Service;
 
 class LabeledThingInFrame implements \IteratorAggregate
 {
@@ -23,15 +24,26 @@ class LabeledThingInFrame implements \IteratorAggregate
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Service\GhostClassesPropagation
+     */
+    private $ghostClassesPropagation;
+
+    /**
      * LabelingTask constructor.
      *
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Model\LabelingTask         $task
+     * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
+     * @param Model\LabelingTask              $task
+     * @param Service\GhostClassesPropagation $ghostClassesPropagation
      */
-    public function __construct(Facade\LabeledThingInFrame $labeledThingInFrameFacade, Model\LabelingTask $task)
+    public function __construct(
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Model\LabelingTask $task,
+        Service\GhostClassesPropagation $ghostClassesPropagation
+    )
     {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->task                      = $task;
+        $this->ghostClassesPropagation   = $ghostClassesPropagation;
     }
 
     public function getIterator()
@@ -46,6 +58,10 @@ class LabeledThingInFrame implements \IteratorAggregate
                 $this->task
             );
         }
+
+        $this->labeledThingsInFrames = $this->ghostClassesPropagation->propagateGhostClasses(
+            $this->labeledThingsInFrames
+        );
 
         foreach ($this->labeledThingsInFrames as $labeledThingInFrame) {
             yield $labeledThingInFrame;

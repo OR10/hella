@@ -211,6 +211,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.service.column_group_factory" />
             <argument type="service" id="annostation.labeling_api.service.shape_columns_factory" />
+            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory" />
+            <argument type="service" id="annostation.labeling_api.service.class_columns_factory" />
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
+            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
         </service>
 
         <service id="annostation.labeling_api.service.column_group_factory"

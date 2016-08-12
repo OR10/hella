@@ -47,13 +47,34 @@ class Csv
     private $shapeColumnsFactory;
 
     /**
-     * @param Facade\Exporter             $exporterFacade
-     * @param Facade\Project              $projectFacade
-     * @param Facade\LabeledThingInFrame  $labeledThingInFrameFacade
-     * @param Facade\Video                $videoFacade
-     * @param Facade\LabelingTask         $labelingTaskFacade
-     * @param Service\ColumnGroupFactory  $columnGroupFactory
-     * @param Service\ShapeColumnsFactory $shapeColumnsFactory
+     * @var Service\TaskConfigurationXmlConverterFactory
+     */
+    private $configurationXmlConverterFactory;
+    /**
+     * @var Service\ClassColumnsFactory
+     */
+    private $classColumnsFactory;
+    /**
+     * @var Facade\TaskConfiguration
+     */
+    private $taskConfiguration;
+    /**
+     * @var Service\GhostClassesPropagation
+     */
+    private $ghostClassesPropagation;
+
+    /**
+     * @param Facade\Exporter                              $exporterFacade
+     * @param Facade\Project                               $projectFacade
+     * @param Facade\LabeledThingInFrame                   $labeledThingInFrameFacade
+     * @param Facade\Video                                 $videoFacade
+     * @param Facade\LabelingTask                          $labelingTaskFacade
+     * @param Service\ColumnGroupFactory                   $columnGroupFactory
+     * @param Service\ShapeColumnsFactory                  $shapeColumnsFactory
+     * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+     * @param Service\ClassColumnsFactory                  $classColumnsFactory
+     * @param Facade\TaskConfiguration                     $taskConfiguration
+     * @param Service\GhostClassesPropagation              $ghostClassesPropagation
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -62,16 +83,24 @@ class Csv
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\ColumnGroupFactory $columnGroupFactory,
-        Service\ShapeColumnsFactory $shapeColumnsFactory
+        Service\ShapeColumnsFactory $shapeColumnsFactory,
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
+        Service\ClassColumnsFactory $classColumnsFactory,
+        Facade\TaskConfiguration $taskConfiguration,
+        Service\GhostClassesPropagation $ghostClassesPropagation
     )
     {
-        $this->exporterFacade            = $exporterFacade;
-        $this->projectFacade             = $projectFacade;
-        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->columnGroupFactory        = $columnGroupFactory;
-        $this->videoFacade               = $videoFacade;
-        $this->labelingTaskFacade        = $labelingTaskFacade;
-        $this->shapeColumnsFactory       = $shapeColumnsFactory;
+        $this->exporterFacade                   = $exporterFacade;
+        $this->projectFacade                    = $projectFacade;
+        $this->labeledThingInFrameFacade        = $labeledThingInFrameFacade;
+        $this->columnGroupFactory               = $columnGroupFactory;
+        $this->videoFacade                      = $videoFacade;
+        $this->labelingTaskFacade               = $labelingTaskFacade;
+        $this->shapeColumnsFactory              = $shapeColumnsFactory;
+        $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
+        $this->classColumnsFactory              = $classColumnsFactory;
+        $this->taskConfiguration                = $taskConfiguration;
+        $this->ghostClassesPropagation          = $ghostClassesPropagation;
     }
 
     /**
@@ -91,13 +120,24 @@ class Csv
 
             // generate columns for this Video
             $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
+            /** @var Model\LabelingTask $task */
             foreach ($labelingTaskIterator as $task) {
                 $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
+
+                $xmlConfiguration = $this->taskConfiguration->find($task->getTaskConfigurationId());
+                $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter($xmlConfiguration->getRawData());
+                $columnGroup->addColumns(
+                    $this->classColumnsFactory->create($configurationXmlConverterFactory->getClassStructure())
+                );
             }
 
             $table = new Export\Table($columnGroup);
             foreach ($labelingTaskIterator as $task) {
-                $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame($this->labeledThingInFrameFacade, $task);
+                $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame(
+                    $this->labeledThingInFrameFacade,
+                    $task,
+                    $this->ghostClassesPropagation
+                );
                 foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
                     $row = $columnGroup->createRow($project, $video, $task, $labeledThingInFrame);
                     $table->addRow($row);
@@ -105,7 +145,6 @@ class Csv
             }
             $csvFileData[$video->getName()] = $table->toCsv();
         }
-
 
         $zipContent = $this->compressData($csvFileData);
 
