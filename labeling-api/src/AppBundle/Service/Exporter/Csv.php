@@ -80,22 +80,23 @@ class Csv
     public function export(Model\Project $project)
     {
         $csvFileData = array();
-
-        /** @var ColumnGroup\Unique $columnGroup */
-        $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
-
-
-        $columnGroup->addColumns([
-            new Column\Uuid(),
-            new Column\FrameNumber(),
-        ]);
-
         $videoIterator = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
         foreach ($videoIterator as $video) {
+            /** @var ColumnGroup\Unique $columnGroup */
+            $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
+            $columnGroup->addColumns([
+                new Column\Uuid(),
+                new Column\FrameNumber(),
+            ]);
+
+            // generate columns for this Video
             $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
-            $table = new Export\Table($columnGroup);
             foreach ($labelingTaskIterator as $task) {
                 $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
+            }
+
+            $table = new Export\Table($columnGroup);
+            foreach ($labelingTaskIterator as $task) {
                 $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame($this->labeledThingInFrameFacade, $task);
                 foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
                     $row = $columnGroup->createRow($project, $video, $task, $labeledThingInFrame);
