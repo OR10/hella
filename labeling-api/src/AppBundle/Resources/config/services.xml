@@ -247,5 +247,9 @@
                           id="annostation.labeling_api.helper.export.shape_columns.cuboid"/>
             </argument>
         </service>
+
+        <service id="annostation.labeling_api.service.class_columns_factory"
+                 class="AppBundle\Service\ClassColumnsFactory">
+        </service>
     </services>
 </container>
