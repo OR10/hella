@@ -28,7 +28,9 @@ class LabeledThingInFrameIteratorTest extends Tests\CouchDbTestCase
     private $secondTaskLtifs;
 
     private function createIterator(Model\LabelingTask $task) {
-        return new Iterator\LabeledThingInFrame($this->labeledThingInFrameFacade, $task);
+        $ghostClassesPropagationService = $this->getAnnostationService('service.ghost_classes_propagation');
+
+        return new Iterator\LabeledThingInFrame($this->labeledThingInFrameFacade, $task, $ghostClassesPropagationService);
     }
 
     public function setUpImplementation()
