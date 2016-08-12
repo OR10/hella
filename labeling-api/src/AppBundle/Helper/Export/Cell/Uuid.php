@@ -20,6 +20,6 @@ class Uuid extends Export\Cell
 
     public function getValue()
     {
-        return $this->labeledThingInFrame->getId();
+        return $this->labeledThingInFrame->getLabeledThingId();
     }
 }
