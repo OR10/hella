@@ -630,4 +630,12 @@ class LabelingTask
             'status' => $status,
         ];
     }
+
+    /**
+     * @return string
+     */
+    public function getTaskConfigurationId()
+    {
+        return $this->taskConfigurationId;
+    }
 }
