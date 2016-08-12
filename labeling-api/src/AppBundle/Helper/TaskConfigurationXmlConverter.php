@@ -152,4 +152,23 @@ class TaskConfigurationXmlConverter
             'drawingTool'      => $this->getDrawingTool(),
         );
     }
+
+    /**
+     * @return string[][]
+     */
+    public function getClassStructure()
+    {
+        $classes = array();
+        $xpath   = new \DOMXPath($this->document);
+
+        foreach ($xpath->query('class') as $classNode) {
+            $values = array();
+            foreach ($xpath->query('value', $classNode) as $valueNode) {
+                $values[] = $valueNode->getAttribute('id');
+            }
+            $classes[$classNode->getAttribute('id')] = $values;
+        }
+
+        return $classes;
+    }
 }
