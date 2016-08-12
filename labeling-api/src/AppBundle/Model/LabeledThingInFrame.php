@@ -347,4 +347,14 @@ class LabeledThingInFrame
     public function getGhostClasses() {
         return $this->ghostClasses;
     }
+
+    /**
+     * @return array
+     */
+    public function getClassesWithGhostClasses() {
+        if ($this->getGhostClasses() === null) {
+            return $this->getClasses();
+        }
+        return array_merge($this->getClasses(), $this->getGhostClasses());
+    }
 }
