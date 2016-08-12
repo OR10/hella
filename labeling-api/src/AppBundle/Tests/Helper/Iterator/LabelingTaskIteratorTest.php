@@ -12,12 +12,22 @@ class LabelingTaskIteratorTest extends Tests\CouchDbTestCase
     /**
      * @var Model\Project
      */
-    private $secondProject;
+    private $firstProject;
 
     /**
      * @var Model\Project
      */
-    private $firstProject;
+    private $secondProject;
+
+    /**
+     * @var Model\Video
+     */
+    private $firstVideo;
+
+    /**
+     * @var Model\Video
+     */
+    private $secondVideo;
 
     /**
      * @var Model\LabelingTask[]
@@ -29,32 +39,33 @@ class LabelingTaskIteratorTest extends Tests\CouchDbTestCase
      */
     private $secondProjectTasks;
 
-    private function createIterator(Model\Project $project)
+    private function createIterator(Model\Video $video)
     {
-        return new Iterator\LabelingTask($this->projectFacade, $project);
+        return new Iterator\LabelingTask($this->labelingTaskFacade, $video);
     }
 
     public function setUpImplementation()
     {
         parent::setUpImplementation();
 
-        $video               = $this->createVideo('video-id-1');
+        $this->firstVideo    = $this->createVideo('video-id-1');
+        $this->secondVideo   = $this->createVideo('video-id-2');
         $this->firstProject  = $this->createProject('project-id-1');
         $this->secondProject = $this->createProject('project-id-2');
 
         $this->firstProjectTasks  = array();
         $this->secondProjectTasks = array();
 
-        $this->firstProjectTasks[] = $this->createTask($this->firstProject, $video);
-        $this->firstProjectTasks[] = $this->createTask($this->firstProject, $video);
-        $this->firstProjectTasks[] = $this->createTask($this->firstProject, $video);
+        $this->firstProjectTasks[] = $this->createTask($this->firstProject, $this->firstVideo);
+        $this->firstProjectTasks[] = $this->createTask($this->firstProject, $this->firstVideo);
+        $this->firstProjectTasks[] = $this->createTask($this->firstProject, $this->firstVideo);
 
-        $this->secondProjectTasks[] = $this->createTask($this->secondProject, $video);
+        $this->secondProjectTasks[] = $this->createTask($this->secondProject, $this->secondVideo);
     }
 
     public function testImplementsTraversable()
     {
-        $iterator = $this->createIterator($this->firstProject);
+        $iterator = $this->createIterator($this->firstVideo);
         $this->assertSame(
             true,
             $iterator instanceof \Traversable
@@ -63,7 +74,7 @@ class LabelingTaskIteratorTest extends Tests\CouchDbTestCase
 
     public function testIteratesProjectWithOneTask()
     {
-        $iterator = $this->createIterator($this->secondProject);
+        $iterator = $this->createIterator($this->secondVideo);
         $tasks    = array();
         foreach ($iterator as $task) {
             $tasks[] = $task;
@@ -77,7 +88,7 @@ class LabelingTaskIteratorTest extends Tests\CouchDbTestCase
 
     public function testIteratesProjectWithMultipleTasks()
     {
-        $iterator = $this->createIterator($this->firstProject);
+        $iterator = $this->createIterator($this->firstVideo);
         $tasks    = array();
         foreach ($iterator as $task) {
             $tasks[] = $task;
