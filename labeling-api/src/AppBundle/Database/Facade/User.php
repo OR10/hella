@@ -77,7 +77,13 @@ class User
      */
     public function deleteUser(Model\User $user)
     {
+        $sessionUser = $this->tokenStorage->getToken()->getUser();
+
         $user->setLocked(true);
+        $user->addLockHistoryEntry(
+            $sessionUser,
+            new \DateTime('now', new \DateTimeZone('UTC'))
+        );
         $this->userManager->updateUser($user);
 
         return true;

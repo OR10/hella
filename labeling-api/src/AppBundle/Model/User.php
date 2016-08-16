@@ -28,6 +28,11 @@ class User extends BaseUser
      */
     protected $token = '';
 
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $lockHistory = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -70,5 +75,17 @@ class User extends BaseUser
     public function setToken($token)
     {
         $this->token = $token;
+    }
+
+    /**
+     * @param User      $user
+     * @param \DateTime $dateTime
+     */
+    public function addLockHistoryEntry(User $user, \DateTime $dateTime)
+    {
+        $this->lockHistory[] = [
+            'userId' => $user->getId(),
+            'dateTime' => $dateTime->getTimestamp()
+        ];
     }
 }
