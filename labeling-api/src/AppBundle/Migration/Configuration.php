@@ -16,6 +16,7 @@ class Configuration extends CouchDB\Configuration
                 new LabelingTaskReopenByPhase(),
                 new ProjectCoordinatorAssigneeHistory(),
                 new ProjectAvailableExportsDefault(),
+                new UserLockedState(),
             )
         );
     }
