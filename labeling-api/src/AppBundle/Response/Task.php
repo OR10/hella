@@ -48,7 +48,7 @@ class Task
                             return $historyEntry['userId'];
                         },
                         $labelingTask->getAssignmentHistory() === null ? [] : $labelingTask->getAssignmentHistory())
-                )
+                , false)
                 , $users
             );
 

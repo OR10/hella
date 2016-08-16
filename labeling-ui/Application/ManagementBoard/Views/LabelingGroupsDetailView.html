@@ -45,7 +45,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="labeler in vm.groupLabelers track by labeler.id">
-                            <td>{{labeler.username}}</td>
+                            <td ng-if="!labeler.locked">{{labeler.username}}</td>
+                            <td ng-if="labeler.locked"><i tooltip="This User has been deactivated.">{{labeler.username}}</i></td>
                             <td>{{labeler.email}}</td>
                             <td class="action-cell">
                                 <button tooltip="Remove {{labeler.username}} from group"

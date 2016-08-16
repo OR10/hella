@@ -280,6 +280,6 @@ class LabelingGroup extends Controller\Base
         foreach($labelingUserIds as $labelingUserId) {
             $users = array_merge($users, $labelingUserId);
         }
-        return $this->userFacade->getUserByIds(array_unique($users));
+        return $this->userFacade->getUserByIds(array_unique($users), false);
     }
 }

@@ -160,12 +160,19 @@ class Task extends Controller\Base
         $users = array();
         $users = array_merge(
             $this->userFacade->getUserByIds(
-                array_map(
-                    function ($historyEntry) {
-                        return $historyEntry['userId'];
-                    },
-                    $task->getAssignmentHistory() === null ? [] : $task->getAssignmentHistory())
-            )
+                array_unique(
+                    array_filter(
+                        array_map(
+                            function ($historyEntry) {
+                                return $historyEntry['userId'];
+                            },
+                            $task->getAssignmentHistory() === null ? [] : $task->getAssignmentHistory()
+                        )
+                        , function ($userId) {
+                        return $userId !== null;
+                    })
+                )
+            , false)
             , $users
         );
 

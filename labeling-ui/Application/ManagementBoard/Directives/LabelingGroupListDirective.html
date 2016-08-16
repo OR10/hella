@@ -51,7 +51,10 @@
                 <td>
                     <ul>
                         <li ng-repeat="labelerId in group.labelers">
-                            {{vm.users[labelerId].username}}
+                            <span ng-if="!vm.users[labelerId].locked">{{vm.users[labelerId].username}}</span>
+                            <span ng-if="vm.users[labelerId].locked">
+                                <i tooltip="This User has been deactivated.">{{vm.users[labelerId].username}}</i>
+                            </span>
                         </li>
                     </ul>
                 </td>
