@@ -128,9 +128,10 @@ class User
 
     /**
      * @param array $userIds
+     * @param bool  $ignoreLocked
      * @return array
      */
-    public function getUserByIds(array $userIds)
+    public function getUserByIds(array $userIds, $ignoreLocked = true)
     {
         $idsInChunks = array_chunk($userIds, 100);
         $users       = array();
@@ -146,8 +147,8 @@ class User
             );
         }
 
-        return array_values(
-            array_filter(
+        if ($ignoreLocked) {
+            $users = array_filter(
                 $users,
                 function (Model\User $user) {
                     if ($user->isLocked()) {
@@ -156,8 +157,10 @@ class User
 
                     return true;
                 }
-            )
-        );
+            );
+        }
+
+        return array_values($users);
     }
 
     /**
