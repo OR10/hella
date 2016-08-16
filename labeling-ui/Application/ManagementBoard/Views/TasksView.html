@@ -11,7 +11,7 @@
     <div class="grid-block text-center vertical">
         <h2>{{vm.project.name}}</h2>
         <tab-view>
-            <tab header="Labeling {{vm.taskCount !== null ? '(' + vm.taskCount.labeling.overall + ')' : ''}}"
+            <tab header="Labeling {{vm.taskCount !== null ? '(' + (vm.taskCount.labeling.in_progress + vm.taskCount.labeling.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.in_progress}})</span>
@@ -41,7 +41,7 @@
                            user-permissions="vm.userPermissions">
                 </task-list>
             </tab>
-            <tab header="Review {{vm.taskCount !== null ? '(' + vm.taskCount.review.overall + ')' : ''}}"
+            <tab header="Review {{vm.taskCount !== null ? '(' + (vm.taskCount.review.in_progress + vm.taskCount.review.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.in_progress}})</span>
