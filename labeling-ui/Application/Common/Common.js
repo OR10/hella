@@ -32,6 +32,8 @@ import 'foundation-apps/js/angular/components/common/common';
 import 'foundation-apps/js/angular/components/modal/modal';
 
 import 'angular-ui-router';
+import 'flowjs/dist/flow.js';
+import 'ng-flow/dist/ng-flow';
 
 /**
  * Common Module
@@ -49,6 +51,7 @@ class Common extends Module {
       'foundation.common',
       'foundation.modal',
       'ui.router',
+      'flow',
     ]);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);
