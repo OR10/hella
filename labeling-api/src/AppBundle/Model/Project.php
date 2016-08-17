@@ -286,4 +286,36 @@ class Project
     {
         return $this->availableExports;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLabelingValidationProcesses()
+    {
+        return $this->labelingValidationProcesses;
+    }
+
+    /**
+     * @param mixed $labelingValidationProcesses
+     */
+    public function setLabelingValidationProcesses($labelingValidationProcesses)
+    {
+        $this->labelingValidationProcesses = $labelingValidationProcesses;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaskVideoSettings()
+    {
+        return $this->taskVideoSettings;
+    }
+
+    /**
+     * @param mixed $taskVideoSettings
+     */
+    public function setTaskVideoSettings($taskVideoSettings)
+    {
+        $this->taskVideoSettings = $taskVideoSettings;
+    }
 }
