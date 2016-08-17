@@ -187,22 +187,22 @@ class Init extends Base
 
                 switch($username){
                     case 'admin':
-                        $roleName = Model\User::ROLE_ADMIN;
+                        $roleNames = [Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT];
                         break;
                     case 'label_coordinator':
-                        $roleName = Model\User::ROLE_LABEL_COORDINATOR;
+                        $roleNames = [Model\User::ROLE_LABEL_COORDINATOR];
                         break;
                     case 'client':
-                        $roleName = Model\User::ROLE_CLIENT;
+                        $roleNames = [Model\User::ROLE_CLIENT];
                         break;
                     case 'user':
-                        $roleName = Model\User::ROLE_LABELER;
+                        $roleNames = [Model\User::ROLE_LABELER];
                         break;
                     default:
-                        $roleName = 'ROLE_USER';
+                        $roleNames = 'ROLE_USER';
                 }
 
-                $user->setRoles(array($roleName));
+                $user->setRoles($roleNames);
 
                 $this->userFacade->updateUser($user);
 
