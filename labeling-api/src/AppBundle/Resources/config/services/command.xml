@@ -56,5 +56,10 @@
             <argument type="service" id="annostation.labeling_api.service.label_importer.csv"/>
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.project_review_video_settings_migration" class="AppBundle\Command\ProjectReviewVideoSettingsMigration">
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
