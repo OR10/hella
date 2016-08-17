@@ -144,7 +144,22 @@ class VideoImporter
 
         $project = $this->projectFacade->findByName($projectName);
         if ($project === null) {
-            $project = new Model\Project($projectName);
+            $labelingValidationProcesses = [];
+            if ($review) {
+                $labelingValidationProcesses[] = 'review';
+            }
+            if ($revision) {
+                $labelingValidationProcesses[] = 'revision';
+            }
+            $project = new Model\Project(
+                $projectName,
+                null,
+                null,
+                $labelingValidationProcesses,
+                $frameSkip,
+                $startFrame,
+                $splitLength
+            );
             if ($legacyExport) {
                 $project->setAvailableExports(['legacy']);
             }else{
