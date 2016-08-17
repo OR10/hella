@@ -25,6 +25,21 @@
         + totalRows: `5` (number) - Total Number of documents in the database
         + result array(Project)
 
+## Create a new Project [/api/project]
+
++ Parameters
+    + name: `Some Project` (string) - Project name
+    + review: `true` (boolean) - Review process?
+    + frameSkip: `22` (number) - Number of frame skips
+    + startFrameNumber: `22` (number) - Start frame number
+    + splitEach: `0` (number) - Split task every x sec
+
+### Create Project [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result (Project)
+
 ## Get a list of all finished exports for this project [/api/project/{projectId}/export]
 
 + Parameters

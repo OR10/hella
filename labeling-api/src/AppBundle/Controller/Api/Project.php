@@ -184,6 +184,46 @@ class Project extends Controller\Base
     }
 
     /**
+     * Create a new Project
+     *
+     * @Rest\Post("")
+     *
+     * @param HttpFoundation\Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function addProjectAction(HttpFoundation\Request $request)
+    {
+        $name             = $request->request->get('name');
+        $review           = $request->request->get('review');
+        $frameSkip        = $request->request->get('frameSkip');
+        $startFrameNumber = $request->request->get('startFrameNumber');
+        $splitEach        = $request->request->get('splitEach');
+
+        $labelingValidationProcesses = [];
+        if ($review) {
+            $labelingValidationProcesses[] = 'review';
+        }
+
+        $project = Model\Project::create(
+            $name,
+            null,
+            null,
+            $labelingValidationProcesses,
+            $frameSkip,
+            $startFrameNumber,
+            $splitEach
+        );
+        $project = $this->projectFacade->save($project);
+
+        return View\View::create()->setData(
+            [
+                'result' => $project,
+            ]
+        );
+    }
+
+    /**
      * @param Model\Project $project
      * @return int|mixed
      */
