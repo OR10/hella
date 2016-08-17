@@ -43,10 +43,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.migrate_project_date_and_status" class="AppBundle\Command\MigrateProjectDateAndStatus">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.create_label_structure"
                  class="AppBundle\Command\CreateLabelStructure">
             <tag name="console.command"/>
