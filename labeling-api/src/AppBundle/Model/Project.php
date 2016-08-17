@@ -68,7 +68,7 @@ class Project
      */
     private $taskVideoSettings = [
         'frameSkip' => 1,
-        'startFrameNumber' => 0,
+        'startFrameNumber' => 1,
         'splitEach' => 0
     ];
 
