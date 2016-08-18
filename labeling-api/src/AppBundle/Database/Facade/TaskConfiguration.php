@@ -40,4 +40,20 @@ class TaskConfiguration
     {
         return $this->documentManager->find(Model\TaskConfiguration::class, $id);
     }
+
+    /**
+     * Return all task configurations for this user
+     *
+     * @param Model\User $user
+     * @return mixed
+     */
+    public function getTaskConfigurationsByUser(Model\User $user)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_task_configuration_by_userId_001', 'view')
+            ->setKey([$user->getId()])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
 }

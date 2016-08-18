@@ -3,6 +3,7 @@ namespace AppBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
+use AppBundle\Response;
 use AppBundle\Controller;
 use AppBundle\Service;
 use AppBundle\View;
@@ -63,6 +64,22 @@ class TaskConfiguration extends Controller\Base
         $this->tokenStorage                     = $tokenStorage;
         $this->xmlValidator                     = $xmlValidator;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
+    }
+
+    /**
+     * @Rest\Get("")
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function listConfigurationsAction()
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $taskConfigurations = $this->taskConfigurationFacade->getTaskConfigurationsByUser($user);
+
+        return new View\View(
+            new Response\SimpleTaskConfiguration($taskConfigurations)
+        );
     }
 
     /**
