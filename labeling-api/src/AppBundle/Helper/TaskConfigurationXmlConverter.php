@@ -139,6 +139,24 @@ class TaskConfigurationXmlConverter
         return $xpath->evaluate("string(/*/@shape)");
     }
 
+    public function getDrawingToolOptions()
+    {
+        $xpath = new \DOMXPath($this->document);
+
+        return [
+            $this->getDrawingTool() => [
+                'minimalHeight' => $xpath->evaluate("string(/*/@minimalHeight)")
+            ]
+        ];
+    }
+
+    public function getMinimalVisibleShapeOverflow()
+    {
+        $xpath = new \DOMXPath($this->document);
+
+        return $xpath->evaluate("string(/*/@allowOverflow)");
+    }
+
     /**
      * Retrieve the json-like array representation of the information stored in the XML
      *
@@ -147,9 +165,11 @@ class TaskConfigurationXmlConverter
     public function convertToJson()
     {
         return array(
-            'labelStructure'   => $this->getLabelStructure(),
+            'labelStructure' => $this->getLabelStructure(),
             'labelStructureUi' => $this->getLabelStructureUi(),
-            'drawingTool'      => $this->getDrawingTool(),
+            'drawingTool' => $this->getDrawingTool(),
+            'drawingToolOptions' => $this->getDrawingToolOptions(),
+            'minimalVisibleShapeOverflow' => $this->getMinimalVisibleShapeOverflow(),
         );
     }
 
