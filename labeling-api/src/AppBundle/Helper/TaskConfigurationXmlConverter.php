@@ -145,7 +145,7 @@ class TaskConfigurationXmlConverter
 
         return [
             $this->getDrawingTool() => [
-                'minimalHeight' => $xpath->evaluate("string(/*/@minimalHeight)")
+                'minimalHeight' => $xpath->evaluate("number(/*/@minimalHeight)")
             ]
         ];
     }
@@ -154,7 +154,7 @@ class TaskConfigurationXmlConverter
     {
         $xpath = new \DOMXPath($this->document);
 
-        return $xpath->evaluate("string(/*/@allowOverflow)");
+        return $xpath->evaluate("number(/*/@minimalVisibleShapeOverflow)");
     }
 
     /**
