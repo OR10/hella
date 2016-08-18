@@ -360,6 +360,6 @@ class ProjectTest extends Tests\WebTestCase
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->setRoles([Model\User::ROLE_ADMIN]);
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
     }
 }

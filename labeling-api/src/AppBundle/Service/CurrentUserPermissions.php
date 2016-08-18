@@ -65,6 +65,7 @@ class CurrentUserPermissions
             'canEditLabelingGroups'      => false,
             'canAssignProject'           => false,
             'canUploadTaskConfiguration' => false,
+            'canCreateProject'           => false,
         );
     }
 
@@ -115,6 +116,7 @@ class CurrentUserPermissions
                 'canDeleteProject'           => true,
                 'canCreateNewProject'        => true,
                 'canReopenProject'           => true,
+                'canCreateProject'           => true,
             )
         );
     }

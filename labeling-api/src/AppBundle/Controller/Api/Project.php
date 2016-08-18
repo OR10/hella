@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -187,6 +188,8 @@ class Project extends Controller\Base
      * Create a new Project
      *
      * @Rest\Post("")
+     *
+     * @CheckPermissions({"canCreateProject"})
      *
      * @param HttpFoundation\Request $request
      *
