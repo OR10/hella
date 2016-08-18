@@ -17,10 +17,22 @@ class WorkerStarter extends Base
      */
     private $AMQPPoolConfig;
 
-    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig)
+    /**
+     * @var Facade\LoggerFacade
+     */
+    private $loggerFacade;
+
+    /**
+     * WorkerStarter constructor.
+     *
+     * @param Service\AMQPPoolConfig $AMQPPoolConfig
+     * @param \cscntLogger           $logger
+     */
+    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig, \cscntLogger $logger)
     {
         parent::__construct();
         $this->AMQPPoolConfig = $AMQPPoolConfig;
+        $this->loggerFacade   = new Facade\LoggerFacade($logger, \cscntLogFacility::WORKER_POOL);
     }
 
     protected function configure()
@@ -48,11 +60,13 @@ class WorkerStarter extends Base
 
         if ($primaryQueue === null) {
             $output->writeln("<error>Unknown queue: {$primary}</error>");
+
             return 1;
         }
 
         if ($secondaryQueue === null) {
             $output->writeln("<error>Unknown queue: {$secondary}</error>");
+
             return 1;
         }
 
@@ -60,9 +74,12 @@ class WorkerStarter extends Base
 
         $exceptionEstimator   = new AMQP\ExceptionEstimator();
         $queueFinder          = new AMQP\ExceptionQueueFinder($exceptionEstimator);
-        $loggerFacade         = new Facade\LoggerFacade(new \cscntLogger(), \cscntLogFacility::WORKER_POOL);
         $jobSource            = new AMQP\JobSourceAMQP($primaryQueue, $secondaryQueue, $channel);
-        $rescheduleManager    = new AMQP\AMQPRescheduleManager($this->AMQPPoolConfig, $queueFinder, $loggerFacade);
+        $rescheduleManager    = new AMQP\AMQPRescheduleManager(
+            $this->AMQPPoolConfig,
+            $queueFinder,
+            $this->loggerFacade
+        );
         $instructionInstances = $this->AMQPPoolConfig->instructionInstances;
         $container            = $this->getContainer();
         $serviceInstances     = new JobInstructionFactory\ServicesInstances($instructionInstances, $container);
@@ -76,7 +93,7 @@ class WorkerStarter extends Base
         $worker = new WorkerPool\Worker(
             $jobSource,
             $serviceInstances,
-            $loggerFacade,
+            $this->loggerFacade,
             $rescheduleManager,
             new NewRelic\Aggregated($newRelicWrapper)
         );
@@ -87,10 +104,7 @@ class WorkerStarter extends Base
             $channel->close();
             $connection->close();
         } catch (\Exception $e) {
-            $loggerFacade->logString(
-                'Error during worker execution: ' . $e->getMessage(),
-                \cscntLogPayload::SEVERITY_ERROR
-            );
+            $this->loggerFacade->logException($e, \cscntLogPayload::SEVERITY_ERROR);
 
             return 1;
         }
@@ -98,6 +112,7 @@ class WorkerStarter extends Base
 
     /**
      * @param $marker
+     *
      * @return string
      */
     private function getQueue($marker)
