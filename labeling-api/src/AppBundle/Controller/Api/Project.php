@@ -199,6 +199,7 @@ class Project extends Controller\Base
         $frameSkip        = $request->request->get('frameSkip');
         $startFrameNumber = $request->request->get('startFrameNumber');
         $splitEach        = $request->request->get('splitEach');
+        $projectType      = $request->request->get('projectType');
 
         $labelingValidationProcesses = [];
         if ($review) {
@@ -214,6 +215,59 @@ class Project extends Controller\Base
             $startFrameNumber,
             $splitEach
         );
+
+        $project->setAvailableExports([$projectType]);
+
+        switch($projectType) {
+            case 'legacy':
+                if ($request->request->get('vehicle', false)) {
+                    $project->addLegacyTaskType(
+                        Model\LabelingTask::INSTRUCTION_VEHICLE,
+                        $request->request->get('drawingToolVehicle', 'rectangle')
+                    );
+                }
+                if ($request->request->get('person', false)) {
+                    $project->addLegacyTaskType(
+                        Model\LabelingTask::INSTRUCTION_PERSON,
+                        $request->request->get('drawingToolPerson', 'pedestrian')
+                    );
+                }
+                if ($request->request->get('cyclist', false)) {
+                    $project->addLegacyTaskType(
+                        Model\LabelingTask::INSTRUCTION_CYCLIST,
+                        $request->request->get('drawingToolCyclist', 'rectangle')
+                    );
+                }
+                if ($request->request->get('ignore', false)) {
+                    $project->addLegacyTaskType(
+                        Model\LabelingTask::INSTRUCTION_IGNORE,
+                        $request->request->get('drawingToolIgnore', 'rectangle')
+                    );
+                }
+                if ($request->request->get('ignore-vehicle', false)) {
+                    $project->addLegacyTaskType(
+                        Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
+                        $request->request->get('drawingToolIgnoreVehicle', 'rectangle')
+                    );
+                }
+                if ($request->request->get('lane', false)) {
+                    $project->addLegacyTaskType(
+                        Model\LabelingTask::INSTRUCTION_LANE,
+                        $request->request->get('drawingToolLane', 'rectangle')
+                    );
+                }
+                break;
+            case 'genericXml':
+                foreach($request->request->get('taskTypeConfigurations') as $taskTypeConfiguration) {
+                    $project->addGenericXmlTaskType(
+                        $taskTypeConfiguration['type'],
+                        $taskTypeConfiguration['taskConfigurationId']
+                    );
+                }
+                break;
+        }
+
+
         $project = $this->projectFacade->save($project);
 
         return View\View::create()->setData(

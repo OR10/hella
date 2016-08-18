@@ -162,8 +162,14 @@ class VideoImporter
             );
             if ($legacyExport) {
                 $project->setAvailableExports(['legacy']);
+                foreach($labelInstructions as $labelInstruction) {
+                    $project->addLegacyTaskType($labelInstruction['instruction'], $labelInstruction['drawingTool']);
+                }
             }else{
                 $project->setAvailableExports(['genericXml']);
+                foreach($labelInstructions as $labelInstruction) {
+                    $project->addGenericXmlTaskType($labelInstruction['instruction'], $labelInstruction['taskConfiguration']);
+                }
             }
             $this->projectFacade->save($project);
         }
