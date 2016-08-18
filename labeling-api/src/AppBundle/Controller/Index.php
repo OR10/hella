@@ -201,7 +201,6 @@ class Index extends Base
                 $review,
                 $revision,
                 null,
-                null,
                 true
             );
 

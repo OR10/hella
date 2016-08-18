@@ -331,7 +331,13 @@ class Init extends Base
                     )
                 ),
                 null,
-                'rectangle'
+                'rectangle',
+                1,
+                1,
+                false,
+                false,
+                null,
+                true
             );
         }
     }
