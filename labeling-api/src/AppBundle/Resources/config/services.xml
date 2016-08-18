@@ -128,7 +128,12 @@
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
         </service>
 
-        <service id="annostation.labeling_api.vendor.logger" class="cscntLogger" />
+        <service id="annostation.labeling_api.vendor.logger" class="cscntLogger">
+            <factory service="annostation.labeling_api.service.logger_factory" method="createLogger"/>
+            <argument>%kernel.logs_dir%/labeling_api_%kernel.environment%.log</argument>
+            <argument>null</argument>
+            <argument>30</argument><!-- log severity -->
+        </service>
 
         <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">
             <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
@@ -254,6 +259,9 @@
 
         <service id="annostation.labeling_api.service.class_columns_factory"
                  class="AppBundle\Service\ClassColumnsFactory">
+        </service>
+
+        <service id="annostation.labeling_api.service.logger_factory" class="AppBundle\Service\LoggerFactory">
         </service>
     </services>
 </container>
