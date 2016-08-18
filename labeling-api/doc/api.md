@@ -26,3 +26,4 @@ broken a 400 status code should be returned.
 <!-- include(project.md) -->
 <!-- include(dimensionPrediction.md) -->
 <!-- include(labelingGroup.md) -->
+<!-- include(taskConfiguration.md) -->
