@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation;
 
 class ProjectTest extends Tests\WebTestCase
 {
+    const ROUTE = '/api/project';
+
     /**
      * @var Facade\Project
      */
@@ -202,6 +204,32 @@ class ProjectTest extends Tests\WebTestCase
 
         $actualProject = $this->projectFacade->find($project->getId());
         $this->assertSame($actualProject->getLatestAssignedCoordinatorUserId(), $coordinator->getId());
+    }
+
+    public function testSaveProject()
+    {
+        $response = $this->createRequest(self::ROUTE)
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->setJsonBody(
+                [
+                    'name' => 'Some Test Project',
+                    'review' => true,
+                    'frameSkip' => 22,
+                    'startFrameNumber' => 22,
+                    'splitEach' => 600,
+                ]
+            )
+            ->execute()
+            ->getResponse();
+
+        $response        = \json_decode($response->getContent(), true);
+        $responseProject = $response['result'];
+
+        $this->assertSame($responseProject['name'], 'Some Test Project');
+        $this->assertSame($responseProject['labelingValidationProcesses'], ['review']);
+        $this->assertSame($responseProject['taskVideoSettings']['frameSkip'], 22);
+        $this->assertSame($responseProject['taskVideoSettings']['startFrameNumber'], 22);
+        $this->assertSame($responseProject['taskVideoSettings']['splitEach'], 600);
     }
 
     protected function setUpImplementation()
