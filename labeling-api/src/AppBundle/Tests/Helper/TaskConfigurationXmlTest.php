@@ -27,7 +27,7 @@ class TaskConfigurationXmlConverterTest extends Tests\KernelTestCase
             array(
                 <<<'EOF'
 <?xml version="1.0" encoding="UTF-8" ?>
-<labelTaskConfig shape="rectangle">
+<labelTaskConfig shape="rectangle"  minimalVisibleShapeOverflow="16" minimalHeight="5">
   <class id="type-id" name="type-name">
     <value id="car-id" name="car-name"/>
     <value id="truck-id" name="truck-name"/>
@@ -243,6 +243,12 @@ EOF
                 'labelStructure'   => $labelStructure,
                 'labelStructureUi' => $labelStructureUi,
                 'drawingTool'      => $drawingTool,
+                'drawingToolOptions' => [
+                    $drawingTool => [
+                        'minimalHeight' => 5
+                    ]
+                ],
+                'minimalVisibleShapeOverflow' => 16,
             ),
             $converter->convertToJson()
         );
