@@ -73,6 +73,14 @@ class Project
     ];
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $taskTypes = [
+        'legacy' => [],
+        'genericXml' => [],
+    ];
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -317,5 +325,45 @@ class Project
     public function setTaskVideoSettings($taskVideoSettings)
     {
         $this->taskVideoSettings = $taskVideoSettings;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLegacyTaskTypes()
+    {
+        return $this->taskTypes['legacy'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGenericXmlTaskTypes()
+    {
+        return $this->taskTypes['genericXml'];
+    }
+
+    /**
+     * @param $type
+     * @param $drawingTool
+     */
+    public function addLegacyTaskType($type, $drawingTool)
+    {
+        $this->taskTypes['legacy'][] = [
+            'type' => $type,
+            'drawingTool' => $drawingTool,
+        ];
+    }
+
+    /**
+     * @param $type
+     * @param $taskConfigurationId
+     */
+    public function addGenericXmlTaskType($type, $taskConfigurationId)
+    {
+        $this->taskTypes['genericXml'][] = [
+            'type' => $type,
+            'taskConfigurationId' => $taskConfigurationId,
+        ];
     }
 }
