@@ -206,7 +206,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($actualProject->getLatestAssignedCoordinatorUserId(), $coordinator->getId());
     }
 
-    public function testSaveProject()
+    public function testSaveLegacyProject()
     {
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -217,6 +217,19 @@ class ProjectTest extends Tests\WebTestCase
                     'frameSkip' => 22,
                     'startFrameNumber' => 22,
                     'splitEach' => 600,
+                    'projectType' => 'legacy',
+                    'vehicle' => true,
+                    'drawingToolVehicle' => 'cuboid3d',
+                    'person' => true,
+                    'drawingToolPerson' => 'cuboid3d',
+                    'cyclist' => true,
+                    'drawingToolCyclist' => 'cuboid3d',
+                    'ignore' => true,
+                    'drawingToolIgnore' => 'cuboid3d',
+                    'ignore-vehicle' => true,
+                    'drawingToolIgnoreVehicle' => 'cuboid3d',
+                    'lane' => true,
+                    'drawingToolLane' => 'cuboid3d',
                 ]
             )
             ->execute()
@@ -224,12 +237,120 @@ class ProjectTest extends Tests\WebTestCase
 
         $response        = \json_decode($response->getContent(), true);
         $responseProject = $response['result'];
+        $expectedLegacyTaskTypes = [
+            [
+                'type' => 'vehicle',
+                'drawingTool' => 'cuboid3d',
+            ],
+            [
+                'type' => 'person',
+                'drawingTool' => 'cuboid3d',
+            ],
+            [
+                'type' => 'cyclist',
+                'drawingTool' => 'cuboid3d',
+            ],
+            [
+                'type' => 'ignore',
+                'drawingTool' => 'cuboid3d',
+            ],
+            [
+                'type' => 'ignore-vehicle',
+                'drawingTool' => 'cuboid3d',
+            ],
+            [
+                'type' => 'lane',
+                'drawingTool' => 'cuboid3d',
+            ],
+        ];
 
         $this->assertSame($responseProject['name'], 'Some Test Project');
         $this->assertSame($responseProject['labelingValidationProcesses'], ['review']);
         $this->assertSame($responseProject['taskVideoSettings']['frameSkip'], 22);
         $this->assertSame($responseProject['taskVideoSettings']['startFrameNumber'], 22);
         $this->assertSame($responseProject['taskVideoSettings']['splitEach'], 600);
+        $this->assertSame($responseProject['taskTypes']['legacy'], $expectedLegacyTaskTypes);
+    }
+
+
+    public function testSaveGenericXmlProject()
+    {
+        $response = $this->createRequest(self::ROUTE)
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->setJsonBody(
+                [
+                    'name' => 'Some Test Project',
+                    'review' => true,
+                    'frameSkip' => 22,
+                    'startFrameNumber' => 22,
+                    'splitEach' => 600,
+                    'projectType' => 'genericXml',
+                    'taskTypeConfigurations' => [
+                        [
+                            'type' => 'vehicle',
+                            'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+                        ],
+                        [
+                            'type' => 'person',
+                            'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+                        ],
+                        [
+                            'type' => 'cyclist',
+                            'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+                        ],
+                        [
+                            'type' => 'ignore',
+                            'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+                        ],
+                        [
+                            'type' => 'ignore-vehicle',
+                            'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+                        ],
+                        [
+                            'type' => 'lane',
+                            'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+                        ],
+                    ]
+                ]
+            )
+            ->execute()
+            ->getResponse();
+
+        $response        = \json_decode($response->getContent(), true);
+        $responseProject = $response['result'];
+        $expectedGenericXmlTaskTypes = [
+            [
+                'type' => 'vehicle',
+                'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+            ],
+            [
+                'type' => 'person',
+                'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+            ],
+            [
+                'type' => 'cyclist',
+                'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+            ],
+            [
+                'type' => 'ignore',
+                'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+            ],
+            [
+                'type' => 'ignore-vehicle',
+                'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+            ],
+            [
+                'type' => 'lane',
+                'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
+            ],
+        ];
+
+        $this->assertSame($responseProject['name'], 'Some Test Project');
+        $this->assertSame($responseProject['labelingValidationProcesses'], ['review']);
+        $this->assertSame($responseProject['taskVideoSettings']['frameSkip'], 22);
+        $this->assertSame($responseProject['taskVideoSettings']['startFrameNumber'], 22);
+        $this->assertSame($responseProject['taskVideoSettings']['splitEach'], 600);
+        $this->assertSame($responseProject['taskTypes']['genericXml'], $expectedGenericXmlTaskTypes);
     }
 
     protected function setUpImplementation()
