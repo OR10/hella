@@ -145,7 +145,7 @@ class Csv
                     $table->addRow($row);
                 }
             }
-            $zipData[$video->getName()] = $table->toCsv();
+            $zipData[$video->getName() . '.csv'] = $table->toCsv();
         }
 
         /** @var Model\TaskConfiguration $taskConfiguration */
@@ -185,7 +185,7 @@ class Csv
             $zip->addEmptyDir('.');
         }
         foreach ($data as $filename => $value) {
-            $zip->addFromString($filename . '.csv', $value);
+            $zip->addFromString($filename, $value);
         }
 
         $zip->close();
