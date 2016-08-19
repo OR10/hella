@@ -155,7 +155,7 @@ class BatchUpload extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{project}/complete")
+     * @Rest\Post("/{project}/complete")
      *
      * @param Model\Project $project
      *
