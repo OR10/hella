@@ -67,18 +67,36 @@ class Project
      * @CouchDB\Field(type="mixed")
      */
     private $taskVideoSettings = [
-        'frameSkip' => 1,
+        'frameSkip'        => 1,
         'startFrameNumber' => 1,
-        'splitEach' => 0
+        'splitEach'        => 0,
     ];
 
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $taskTypes = [
-        'legacy' => [],
+    private $taskInstructions = [
+        'legacy'     => [],
         'genericXml' => [],
     ];
+
+    /**
+     * Map basename($video->getName()) => $video->getId()
+     *
+     * @var string[]
+     *
+     * @CouchDB\Field(type="mixed")
+     */
+    private $videos = [];
+
+    /**
+     * Map basename($calibrationData->getName()) => $calibrationData->getId()
+     *
+     * @var string[]
+     *
+     * @CouchDB\Field(type="mixed")
+     */
+    private $calibrations = [];
 
     /**
      * Static factory method for easy use of the fluent interface.
@@ -91,6 +109,7 @@ class Project
      * @param int    $frameSkip
      * @param int    $startFrameNumber
      * @param int    $splitEach
+     *
      * @return static
      */
     public static function create(
@@ -134,7 +153,7 @@ class Project
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
         }
-        $this->name                                  = (string)$name;
+        $this->name                                  = (string) $name;
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;
@@ -229,9 +248,9 @@ class Project
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
         $this->coordinatorAssignmentHistory[] = array(
-            'userId' => $user->getId(),
+            'userId'     => $user->getId(),
             'assignedAt' => $date->getTimestamp(),
-            'status' => $this->getStatus(),
+            'status'     => $this->getStatus(),
         );
     }
 
@@ -245,12 +264,16 @@ class Project
             return null;
         }
 
-        usort($historyEntries, function ($a, $b) {
-            if ($a['assignedAt'] === $b['assignedAt']) {
-                return 0;
+        usort(
+            $historyEntries,
+            function ($a, $b) {
+                if ($a['assignedAt'] === $b['assignedAt']) {
+                    return 0;
+                }
+
+                return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
             }
-            return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
-        });
+        );
 
         return $historyEntries[0]['userId'];
     }
@@ -311,6 +334,16 @@ class Project
         $this->labelingValidationProcesses = $labelingValidationProcesses;
     }
 
+    public function hasReviewValidationProcess()
+    {
+        return in_array('review', $this->labelingValidationProcesses);
+    }
+
+    public function hasRevisionValidationProcess()
+    {
+        return in_array('revision', $this->labelingValidationProcesses);
+    }
+
     /**
      * @return mixed
      */
@@ -330,40 +363,138 @@ class Project
     /**
      * @return mixed
      */
-    public function getLegacyTaskTypes()
+    public function getLegacyTaskInstructions()
     {
-        return $this->taskTypes['legacy'];
+        return $this->taskInstructions['legacy'];
     }
 
     /**
      * @return mixed
      */
-    public function getGenericXmlTaskTypes()
+    public function getGenericXmlTaskInstructions()
     {
-        return $this->taskTypes['genericXml'];
+        return $this->taskInstructions['genericXml'];
     }
 
     /**
-     * @param $type
+     * @param $instruction
      * @param $drawingTool
      */
-    public function addLegacyTaskType($type, $drawingTool)
+    public function addLegacyTaskInstruction($instruction, $drawingTool)
     {
-        $this->taskTypes['legacy'][] = [
-            'type' => $type,
+        $this->taskInstructions['legacy'][] = [
+            'instruction' => $instruction,
             'drawingTool' => $drawingTool,
         ];
     }
 
     /**
-     * @param $type
+     * @param $instruction
      * @param $taskConfigurationId
      */
-    public function addGenericXmlTaskType($type, $taskConfigurationId)
+    public function addGenericXmlTaskInstruction($instruction, $taskConfigurationId)
     {
-        $this->taskTypes['genericXml'][] = [
-            'type' => $type,
+        $this->taskInstructions['genericXml'][] = [
+            'instruction'         => $instruction,
             'taskConfigurationId' => $taskConfigurationId,
         ];
+    }
+
+    public function hasVideo(Video $video)
+    {
+        return is_array($this->videos) && array_key_exists($this->getVideoKey($video), $this->videos);
+    }
+
+    /**
+     * @param Video $video
+     */
+    public function addVideo(Video $video)
+    {
+        if ($this->hasVideo($video)) {
+            throw new \InvalidArgumentException(sprintf('Video already exists: %s', $video->getName()));
+        }
+
+        if ($video->getId() === null) {
+            throw new \LogicException('Trying to reference a not yet persisted video');
+        }
+
+        $this->videos[$this->getVideoKey($video)] = $video->getId();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getVideoIds()
+    {
+        return $this->videos;
+    }
+
+    /**
+     * @param Video $video
+     *
+     * @return string
+     */
+    private function getVideoKey(Video $video)
+    {
+        return basename($video->getName());
+    }
+
+    /**
+     * @param CalibrationData $calibrationData
+     *
+     * @return bool
+     */
+    public function hasCalibrationData(CalibrationData $calibrationData)
+    {
+        return is_array($this->calibrations)
+        && array_key_exists($this->getCalibrationDataKey($calibrationData), $this->calibrations);
+    }
+
+    /**
+     * @param CalibrationData $calibrationData
+     */
+    public function addCalibrationData(CalibrationData $calibrationData)
+    {
+        if ($this->hasCalibrationData($calibrationData)) {
+            throw new \InvalidArgumentException(
+                sprintf('Calibration data already exists: %s', $calibrationData->getName())
+            );
+        }
+
+        if ($calibrationData->getId() === null) {
+            throw new \LogicException('Trying to reference a not yet persisted calibration data');
+        }
+
+        $this->calibrations[$this->getCalibrationDataKey($calibrationData)] = $calibrationData->getId();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCalibrations()
+    {
+        return $this->calibrations;
+    }
+
+    /**
+     * @param CalibrationData $calibrationData
+     *
+     * @return string
+     */
+    private function getCalibrationDataKey(CalibrationData $calibrationData)
+    {
+        return basename($calibrationData->getName());
+    }
+
+    /**
+     * @param Video $video
+     *
+     * @return string|null
+     */
+    public function getCalibrationDataIdForVideo(Video $video)
+    {
+        $key = $this->getVideoKey($video);
+
+        return isset($this->calibrations[$key]) ? $this->calibrations[$key] : null;
     }
 }

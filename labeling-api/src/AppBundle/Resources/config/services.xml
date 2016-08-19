@@ -13,6 +13,10 @@
         <import resource="services/worker.xml"/>
     </imports>
 
+    <parameters>
+        <parameter key="annostation.labeling_api.project_batch_upload_cache_dir">%cache_dir%/project_batch_upload</parameter>
+    </parameters>
+
     <services>
         <service id="annostation.labeling_api.event_listener.response_serializer" class="AppBundle\EventListener\ResponseSerializer">
             <argument type="service" id="fos_rest.view_handler" />
@@ -61,15 +65,16 @@
         </service>
 
         <service id="annostation.labeling_api.service.video_importer" class="AppBundle\Service\VideoImporter">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader" />
-            <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
-            <argument type="service" id="annostation.labeling_api.service.label_structure" />
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
-            <argument type="service" id="annostation.labeling_api.service.calibration_file_converter" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader"/>
+            <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter"/>
+            <argument type="service" id="annostation.labeling_api.service.label_structure"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.calibration_file_converter"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
         </service>
 
         <service id="annostation.labeling_api.service.calibration_file_converter" class="AppBundle\Service\CalibrationFileConverter">
@@ -259,6 +264,14 @@
 
         <service id="annostation.labeling_api.service.class_columns_factory"
                  class="AppBundle\Service\ClassColumnsFactory">
+        </service>
+
+        <service id="annostation.labeling_api.service.task_creator" class="AppBundle\Service\TaskCreator">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <argument type="service" id="annostation.labeling_api.service.label_structure"/>
+            <argument type="service" id="annostation.labeling_api.vendor.logger"/>
         </service>
 
         <service id="annostation.labeling_api.service.logger_factory" class="AppBundle\Service\LoggerFactory">

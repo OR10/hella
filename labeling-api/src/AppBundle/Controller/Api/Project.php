@@ -224,37 +224,37 @@ class Project extends Controller\Base
         switch($projectType) {
             case 'legacy':
                 if ($request->request->get('vehicle', false)) {
-                    $project->addLegacyTaskType(
+                    $project->addLegacyTaskInstruction(
                         Model\LabelingTask::INSTRUCTION_VEHICLE,
                         $request->request->get('drawingToolVehicle', 'rectangle')
                     );
                 }
                 if ($request->request->get('person', false)) {
-                    $project->addLegacyTaskType(
+                    $project->addLegacyTaskInstruction(
                         Model\LabelingTask::INSTRUCTION_PERSON,
                         $request->request->get('drawingToolPerson', 'pedestrian')
                     );
                 }
                 if ($request->request->get('cyclist', false)) {
-                    $project->addLegacyTaskType(
+                    $project->addLegacyTaskInstruction(
                         Model\LabelingTask::INSTRUCTION_CYCLIST,
                         $request->request->get('drawingToolCyclist', 'rectangle')
                     );
                 }
                 if ($request->request->get('ignore', false)) {
-                    $project->addLegacyTaskType(
+                    $project->addLegacyTaskInstruction(
                         Model\LabelingTask::INSTRUCTION_IGNORE,
                         $request->request->get('drawingToolIgnore', 'rectangle')
                     );
                 }
                 if ($request->request->get('ignore-vehicle', false)) {
-                    $project->addLegacyTaskType(
+                    $project->addLegacyTaskInstruction(
                         Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
                         $request->request->get('drawingToolIgnoreVehicle', 'rectangle')
                     );
                 }
                 if ($request->request->get('lane', false)) {
-                    $project->addLegacyTaskType(
+                    $project->addLegacyTaskInstruction(
                         Model\LabelingTask::INSTRUCTION_LANE,
                         $request->request->get('drawingToolLane', 'rectangle')
                     );
@@ -262,7 +262,7 @@ class Project extends Controller\Base
                 break;
             case 'genericXml':
                 foreach($request->request->get('taskTypeConfigurations') as $taskTypeConfiguration) {
-                    $project->addGenericXmlTaskType(
+                    $project->addGenericXmlTaskInstruction(
                         $taskTypeConfiguration['type'],
                         $taskTypeConfiguration['taskConfigurationId']
                     );

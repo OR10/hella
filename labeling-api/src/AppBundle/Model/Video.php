@@ -270,4 +270,17 @@ class Video
     {
         return $this->rev;
     }
+
+    /**
+     * @param CalibrationData $calibrationData
+     */
+    public function setCalibrationData(CalibrationData $calibrationData)
+    {
+        $this->setCalibrationId($calibrationData->getId());
+        $this->setRawCalibration($calibrationData->getRawCalibration());
+        $this->setCameraMatrix($calibrationData->getCameraMatrix());
+        $this->setRotationMatrix($calibrationData->getRotationMatrix());
+        $this->setTranslation($calibrationData->getTranslation());
+        $this->setDistortionCoefficients($calibrationData->getDistortionCoefficients());
+    }
 }

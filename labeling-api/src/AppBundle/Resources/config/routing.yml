@@ -7,6 +7,10 @@ api_video:
     type: rest
     name_prefix: app_api_video_
 
+api_project_batch_upload:
+    resource: "AppBundle\Controller\Api\\Project\BatchUpload"
+    type: annotation
+
 api_users:
     resource: "annostation.labeling_api.controller.api.users"
     type: rest

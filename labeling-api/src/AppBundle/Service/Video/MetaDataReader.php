@@ -7,7 +7,7 @@ use Symfony\Component\Process;
 
 class MetaDataReader
 {
-    const COMMANDLINE = '%s -show_format -show_streams -of json -v quiet %s';
+    const COMMANDLINE = '%s -show_format -show_streams -of json -v quiet "%s"';
 
     /**
      * @var string
@@ -25,7 +25,11 @@ class MetaDataReader
     /**
      * Read and set the meta data for the given video.
      *
-     * @param Model\Video\MetaData $video
+     * @param $filename
+     *
+     * @return Model\Video\MetaData
+     *
+     * @throws Exception\MetaDataReader
      */
     public function readMetaData($filename)
     {
