@@ -108,8 +108,9 @@ class Csv
      */
     public function export(Model\Project $project)
     {
-        $csvFileData = array();
+        $zipData = array();
         $videoIterator = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
+        $taskConfigurations = [];
         foreach ($videoIterator as $video) {
             /** @var ColumnGroup\Unique $columnGroup */
             $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
@@ -129,6 +130,7 @@ class Csv
                 $columnGroup->addColumns(
                     $this->classColumnsFactory->create($configurationXmlConverterFactory->getClassStructure())
                 );
+                $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
             }
 
             $table = new Export\Table($columnGroup);
@@ -143,10 +145,16 @@ class Csv
                     $table->addRow($row);
                 }
             }
-            $csvFileData[$video->getName()] = $table->toCsv();
+            $zipData[$video->getName()] = $table->toCsv();
         }
 
-        $zipContent = $this->compressData($csvFileData);
+        /** @var Model\TaskConfiguration $taskConfiguration */
+        foreach ($taskConfigurations as $taskConfiguration) {
+            $filename = sprintf('%s_%s', $taskConfiguration->getName(), $taskConfiguration->getFilename());
+            $zipData[$filename] = $taskConfiguration->getRawData();
+        }
+
+        $zipContent = $this->compressData($zipData);
 
         $date     = new \DateTime('now', new \DateTimeZone('UTC'));
         $filename = sprintf(
