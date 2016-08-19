@@ -25,7 +25,11 @@ class MetaDataReader
     /**
      * Read and set the meta data for the given video.
      *
-     * @param Model\Video\MetaData $video
+     * @param $filename
+     *
+     * @return Model\Video\MetaData
+     *
+     * @throws Exception\MetaDataReader
      */
     public function readMetaData($filename)
     {
