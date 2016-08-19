@@ -7,7 +7,7 @@ use Symfony\Component\Process;
 
 class MetaDataReader
 {
-    const COMMANDLINE = '%s -show_format -show_streams -of json -v quiet %s';
+    const COMMANDLINE = '%s -show_format -show_streams -of json -v quiet "%s"';
 
     /**
      * @var string
