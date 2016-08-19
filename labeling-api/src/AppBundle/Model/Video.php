@@ -2,6 +2,7 @@
 
 namespace AppBundle\Model;
 
+use AppBundle\Model\Video\MetaData;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -59,6 +60,8 @@ class Video
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
+     *
+     * @return Video
      */
     public static function create($name)
     {
@@ -91,21 +94,25 @@ class Video
 
     /**
      * @param string $name
+     *
      * @return Video
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
      * @param Video\MetaData
+     *
      * @return Video
      */
     public function setMetaData(Video\MetaData $metaData)
     {
         $this->metaData = $metaData;
+
         return $this;
     }
 
@@ -114,6 +121,15 @@ class Video
      */
     public function getMetaData()
     {
+        if (is_array($this->metaData)) {
+            $metaData = new MetaData();
+            $properties = ['format', 'width', 'height', 'fps', 'duration', 'sizeInBytes', 'numberOfFrames', 'raw'];
+            foreach ($properties as $property) {
+                $metaData->$property = $this->metaData[$property];
+            }
+            $this->metaData = $metaData;
+        }
+
         return $this->metaData;
     }
 
@@ -125,6 +141,7 @@ class Video
         if ($this->getId() === null) {
             throw new \LogicException('Trying to use id of not persisted video');
         }
+
         return $this->getId() . DIRECTORY_SEPARATOR . 'source';
     }
 
@@ -140,10 +157,13 @@ class Video
      * @param $imageType
      * @param $key
      * @param $value
+     *
+     * @return Video
      */
     public function setImageType($imageType, $key, $value)
     {
         $this->imageTypes[$imageType][$key] = $value;
+
         return $this;
     }
 
@@ -159,12 +179,15 @@ class Video
 
     /**
      * @param string $imageType
+     *
+     * @return bool
      */
     public function isImageTypeConverted($imageType)
     {
         if (isset($this->imageTypes[$imageType]['converted'])) {
             return $this->imageTypes[$imageType]['converted'];
         }
+
         return false;
     }
 
