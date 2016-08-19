@@ -13,7 +13,7 @@ abstract class Column
      *
      * @return Cell|null
      */
-    public abstract function createCell(
+    abstract public function createCell(
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
@@ -25,7 +25,7 @@ abstract class Column
      *
      * @return string
      */
-    public abstract function getHeader();
+    abstract public function getHeader();
 
     /**
      * Provide the default value which should be used for this column if a cell is unable to provide a value for the
@@ -33,7 +33,7 @@ abstract class Column
      *
      * @return string
      */
-    public abstract function getDefaultValue();
+    abstract public function getDefaultValue();
 
     /**
      * Generate a csv encoded version of the header value
@@ -42,7 +42,8 @@ abstract class Column
      *
      * @return string
      */
-    public function toCsv($enclosure = '"') {
+    public function toCsv($enclosure = '"')
+    {
         return sprintf(
             '%s%s%s',
             $enclosure,
@@ -66,5 +67,4 @@ abstract class Column
     {
         return addcslashes($value, $enclosure);
     }
-
 }

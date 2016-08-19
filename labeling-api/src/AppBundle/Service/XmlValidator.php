@@ -75,7 +75,8 @@ class XmlValidator
     /**
      * @return string
      */
-    private function libxmlDisplayErrors() {
+    private function libxmlDisplayErrors()
+    {
         $errors = libxml_get_errors();
         foreach ($errors as $error) {
             return $this->libxmlDisplayError($error);

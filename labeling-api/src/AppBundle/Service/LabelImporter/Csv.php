@@ -88,7 +88,7 @@ class Csv implements Service\LabelImporter
         if ($this->progressIndicator !== null) {
             $this->progressIndicator->start(count($data));
         }
-        
+
         foreach ($data as $label) {
             $instruction  = $this->extractInstruction($label);
             $task         = $this->findTaskForInstructionAndFrame($tasks, $instruction, $label['frame_number']);
@@ -130,7 +130,7 @@ class Csv implements Service\LabelImporter
                 $labeledThing,
                 $labeledThingInFrame
             );
-            
+
             if ($this->progressIndicator !== null) {
                 $this->progressIndicator->advance();
             }
@@ -217,7 +217,7 @@ class Csv implements Service\LabelImporter
      * @param int                $width
      * @param int                $height
      *
-     * @return Model\Shapes\Rectangle
+     * @return Model\Shapes\Pedestrian|Model\Shapes\Rectangle
      */
     protected function getShape(Model\LabelingTask $task, $x, $y, $width, $height)
     {

@@ -52,7 +52,7 @@ class Unique extends Plain
     private function flattenColumns(array $columns)
     {
         $flatColumns = array();
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             if ($column instanceof Export\Column\Multi) {
                 $flatColumns = array_merge($flatColumns, $this->flattenColumns($column->getColumns()));
             } else {

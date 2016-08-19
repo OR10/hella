@@ -14,7 +14,6 @@ use Symfony\Component\HttpKernel\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
-
 /**
  * @Rest\Prefix("/api/users")
  * @Rest\Route(service="annostation.labeling_api.controller.api.users")
@@ -84,7 +83,8 @@ class Users extends Controller\Base
     public function getUserAction(Model\User $user)
     {
         return View\View::create()->setData(
-            ['result' => ['user' => $this->getUserResponse($user)]]);
+            ['result' => ['user' => $this->getUserResponse($user)]]
+        );
     }
 
     /**
@@ -107,7 +107,7 @@ class Users extends Controller\Base
             $request->request->getBoolean('locked')
         );
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $user->addRole($role);
         }
         $this->userFacade->updateUser($user);
@@ -137,7 +137,7 @@ class Users extends Controller\Base
             $user->setPlainPassword($request->request->get('password'));
         }
         $this->removeAllUserRoles($user);
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $user->addRole($role);
         }
 
@@ -193,7 +193,7 @@ class Users extends Controller\Base
     private function removeAllUserRoles(Model\User $user)
     {
         $roles = $user->getRoles();
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $user->removeRole($role);
         }
         $this->userFacade->updateUser($user);

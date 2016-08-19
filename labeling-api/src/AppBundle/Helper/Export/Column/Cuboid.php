@@ -38,9 +38,9 @@ class Cuboid extends Export\Column
 
     /**
      * @param Service\DepthBuffer $depthBuffer
-     * @param string $type
-     * @param int    $vertexIndex
-     * @param string $axis
+     * @param string              $type
+     * @param int                 $vertexIndex
+     * @param string              $axis
      */
     public function __construct($depthBuffer, $type, $vertexIndex, $axis)
     {
@@ -79,7 +79,12 @@ class Cuboid extends Export\Column
 
         switch ($this->type) {
             case self::TYPE_2D:
-                return $this->create2dValueCell($cuboidShape, $video->getCalibration(), $this->vertexIndex, $this->axis);
+                return $this->create2dValueCell(
+                    $cuboidShape,
+                    $video->getCalibration(),
+                    $this->vertexIndex,
+                    $this->axis
+                );
             case self::TYPE_3D:
                 return $this->create3dValueCell($cuboidRawShape['vehicleCoordinates'], $this->vertexIndex, $this->axis);
             default:
@@ -95,9 +100,11 @@ class Cuboid extends Export\Column
      *
      * @return Cell
      */
-    private function create2dValueCell(Model\Shapes\Cuboid3d $cuboid3d, $calibration, $index, $axis) {
+    private function create2dValueCell(Model\Shapes\Cuboid3d $cuboid3d, $calibration, $index, $axis)
+    {
         $axisToIndex = array('x' => 0, 'y' => 1, 'z' => 2);
-        $cuboid2d = $this->depthBuffer->getVertices($cuboid3d, $calibration)[0];
+        $cuboid2d    = $this->depthBuffer->getVertices($cuboid3d, $calibration)[0];
+
         return new Cell\FloatingPoint($cuboid2d[$index][$axisToIndex[$axis]], 4);
     }
 
@@ -108,8 +115,10 @@ class Cuboid extends Export\Column
      *
      * @return Cell
      */
-    private function create3dValueCell($vertices, $index, $axis) {
+    private function create3dValueCell($vertices, $index, $axis)
+    {
         $axisToIndex = array('x' => 0, 'y' => 1, 'z' => 2);
+
         return new Cell\FloatingPoint($vertices[$index][$axisToIndex[$axis]], 4);
     }
 

@@ -28,7 +28,7 @@ class Regex
             $classesToExtract = $labeledThingInFrame->getClasses();
         }
 
-        foreach($classesToExtract as $class) {
+        foreach ($classesToExtract as $class) {
             preg_match($this->regexPattern, $class, $matches);
             if (isset($matches[$this->groupName])) {
                 return $matches[$this->groupName];

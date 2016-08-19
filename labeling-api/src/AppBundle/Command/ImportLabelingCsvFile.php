@@ -232,14 +232,12 @@ class ImportLabelingCsvFile extends Base
         $csvContent = file_get_contents($csvFile);
         $data       = array();
 
-        foreach (
-            preg_split(
-                "(\r\n|\r|\n)",
-                $csvContent,
-                -1,
-                PREG_SPLIT_NO_EMPTY
-            ) as $line
-        ) {
+        foreach (preg_split(
+            "(\r\n|\r|\n)",
+            $csvContent,
+            -1,
+            PREG_SPLIT_NO_EMPTY
+        ) as $line) {
             if (empty($line)) {
                 continue;
             }
@@ -297,14 +295,14 @@ class ImportLabelingCsvFile extends Base
 
         $taskImageTypes = array();
 
-        foreach($sourceImageTypes as $sourceImageType) {
+        foreach ($sourceImageTypes as $sourceImageType) {
             if ($video->hasImageType($sourceImageType)) {
                 $taskImageTypes[] = $sourceImageType;
                 break;
             }
         }
 
-        foreach($thumbnailImageTypes as $thumbnailImageType) {
+        foreach ($thumbnailImageTypes as $thumbnailImageType) {
             if ($video->hasImageType($thumbnailImageType)) {
                 $taskImageTypes[] = $thumbnailImageType;
                 break;

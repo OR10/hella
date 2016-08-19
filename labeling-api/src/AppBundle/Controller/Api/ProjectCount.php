@@ -42,7 +42,7 @@ class ProjectCount extends Controller\Base
     public function getProjectCountAction(HttpFoundation\Request $request)
     {
         $sum = array();
-        foreach($this->projectFacade->getSumOfProjectsByStatus()->toArray() as $sumByStatus) {
+        foreach ($this->projectFacade->getSumOfProjectsByStatus()->toArray() as $sumByStatus) {
             $sum[$sumByStatus['key'][0]] = $sumByStatus['value'];
         }
 

@@ -21,7 +21,8 @@ class Multi extends Export\Column
         $this->columns = $columns;
     }
 
-    public function getColumns() {
+    public function getColumns()
+    {
         return $this->columns;
     }
 
@@ -44,7 +45,7 @@ class Multi extends Export\Column
             $this->columns
         );
 
-        foreach($cells as $cell) {
+        foreach ($cells as $cell) {
             /** @var Export\Cell $cell */
             if (!($cell instanceof Cell\DefaultValue)) {
                 // Utilize the first cell, which provides a value

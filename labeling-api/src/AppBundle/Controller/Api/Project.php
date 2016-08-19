@@ -113,7 +113,7 @@ class Project extends Controller\Base
 
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects->toArray());
         $numberOfVideos = array();
-        foreach($videosByProjects as $videosByProject) {
+        foreach ($videosByProjects as $videosByProject) {
             $projectId = $videosByProject['key'];
             $videoId = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;
@@ -133,7 +133,8 @@ class Project extends Controller\Base
                 'name' => $project->getName(),
                 'status' => $project->getStatus(),
                 'finishedPercentage' => round(
-                    $this->getSumOfTasksForProject($project) === 0 ? 100 : 100 / $this->getSumOfTasksForProject($project) * $this->getSumOfCompletedTasksForProject($project)),
+                    $this->getSumOfTasksForProject($project) === 0 ? 100 : 100 / $this->getSumOfTasksForProject($project) * $this->getSumOfCompletedTasksForProject($project)
+                ),
                 'creationTimestamp' => $project->getCreationDate(),
             );
 
@@ -150,7 +151,7 @@ class Project extends Controller\Base
             $result[$project->getStatus()][] = $responseProject;
         }
 
-        foreach(array_keys($result) as $status) {
+        foreach (array_keys($result) as $status) {
             usort($result[$status], function ($a, $b) {
                 if ($a['creationTimestamp'] === null || $b['creationTimestamp'] === null) {
                     return -1;
@@ -179,7 +180,7 @@ class Project extends Controller\Base
                     $result[Model\Project::STATUS_TODO],
                     $result[Model\Project::STATUS_DONE],
                     $result[null] //@TODO remove this later
-                    ),
+                ),
             ]
         );
     }
@@ -261,7 +262,7 @@ class Project extends Controller\Base
                 }
                 break;
             case 'genericXml':
-                foreach($request->request->get('taskTypeConfigurations') as $taskTypeConfiguration) {
+                foreach ($request->request->get('taskTypeConfigurations') as $taskTypeConfiguration) {
                     $project->addGenericXmlTaskInstruction(
                         $taskTypeConfiguration['type'],
                         $taskTypeConfiguration['taskConfigurationId']

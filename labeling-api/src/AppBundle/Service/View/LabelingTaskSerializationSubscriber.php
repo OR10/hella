@@ -57,5 +57,4 @@ class LabelingTaskSerializationSubscriber implements EventDispatcher\EventSubscr
 
         $event->getVisitor()->addData('readOnly', $readOnly);
     }
-
 }

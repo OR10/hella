@@ -56,8 +56,7 @@ class LabeledThing extends Controller\Base
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Service\TaskIncomplete $taskIncompleteService
-    )
-    {
+    ) {
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
@@ -76,7 +75,7 @@ class LabeledThing extends Controller\Base
     {
         if ($request->query->get('incompleteOnly', false) === 'true') {
             $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
-        }else {
+        } else {
             $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
         }
 
@@ -191,12 +190,13 @@ class LabeledThing extends Controller\Base
         }
         if ($task->getLabelInstruction() === Model\LabelingTask::INSTRUCTION_LANE) {
             $classes = ['Lane-Exit'];
-        }else{
+        } else {
             $classes = $request->request->get('classes', []);
         }
         $frameRange = $this->createFrameRange(
             $request->request->get('frameRange'),
-            new Model\FrameIndexRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
+            new Model\FrameIndexRange(
+                min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
             )
         );
         if ($frameRange === null) {

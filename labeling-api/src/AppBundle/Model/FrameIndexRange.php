@@ -40,7 +40,7 @@ class FrameIndexRange
     /**
      * @param integer $startFrameIndex First frame index of this range.
      * @param integer|null $endFrameIndex Last frame index of this range.
-     * 
+     *
      * @throws Exception\InvalidRange
      * @throws Exception\InvalidStartFrameIndex
      */

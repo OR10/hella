@@ -153,8 +153,7 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals($labeledThingInFrameInRange, $labeledThingsInFrame[0]);
     }
 
-    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameIndexIfLabeledThingDoesNotYetExistForStartFrameIndex(
-    )
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameIndexIfLabeledThingDoesNotYetExistForStartFrameIndex()
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
@@ -186,8 +185,7 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->assertEquals($labeledThingInFrame, $labeledThingsInFrame[0]);
     }
 
-    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameIndexIfLabeledThingDoesNotYetExistForEndFrameIndex(
-    )
+    public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameIndexIfLabeledThingDoesNotYetExistForEndFrameIndex()
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);

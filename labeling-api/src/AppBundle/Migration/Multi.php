@@ -15,7 +15,7 @@ class Multi implements Migrations\DocumentMigration
     public function migrate(array $data)
     {
         $currentData = $data;
-        foreach($this->migrations as $migration) {
+        foreach ($this->migrations as $migration) {
             $currentData = $migration->migrate($currentData);
         }
         return $currentData;

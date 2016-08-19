@@ -31,8 +31,7 @@ class Report extends WorkerPool\JobInstruction
     public function __construct(
         Service\Report $reportingService,
         Facade\Report $reportFacade
-    )
-    {
+    ) {
         $this->reportService = $reportingService;
         $this->reportFacade  = $reportFacade;
     }

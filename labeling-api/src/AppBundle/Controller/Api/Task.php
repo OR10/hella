@@ -7,13 +7,12 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\View;
+use AppBundle\Response;
 use AppBundle\Service;
+use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Response;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -61,8 +60,7 @@ class Task extends Controller\Base
         Service\FrameCdn $frameCdn,
         Facade\User $userFacade,
         Facade\Project $projectFacade
-    )
-    {
+    ) {
         $this->videoFacade        = $videoFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->frameCdn           = $frameCdn;
@@ -97,51 +95,81 @@ class Task extends Controller\Base
 
         $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
 
-        $tasks = [];
+        $tasks                  = [];
         $numberOfTotalDocuments = 0;
         switch ($taskStatus) {
             case Model\LabelingTask::STATUS_PREPROCESSING:
                 if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_PREPROCESSING, $project, $offset, $limit, $taskPhase
+                        Model\LabelingTask::STATUS_PREPROCESSING,
+                        $project,
+                        $offset,
+                        $limit,
+                        $taskPhase
                     )->toArray();
+
                     $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_PREPROCESSING];
                 }
                 break;
             case Model\LabelingTask::STATUS_IN_PROGRESS:
-                $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_IN_PROGRESS, $project, $offset, $limit, $taskPhase
+                $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    Model\LabelingTask::STATUS_IN_PROGRESS,
+                    $project,
+                    $offset,
+                    $limit,
+                    $taskPhase
                 )->toArray();
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_IN_PROGRESS];
                 break;
             case Model\LabelingTask::STATUS_TODO:
-                $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_TODO, $project, $offset, $limit, $taskPhase
+                $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    Model\LabelingTask::STATUS_TODO,
+                    $project,
+                    $offset,
+                    $limit,
+                    $taskPhase
                 )->toArray();
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
-                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
+                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator(
+                    ) || $this->userFacade->isAdmin()
+                ) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_DONE, $project, $offset, $limit, $taskPhase
+                        Model\LabelingTask::STATUS_DONE,
+                        $project,
+                        $offset,
+                        $limit,
+                        $taskPhase
                     )->toArray();
                 }
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
                 break;
         }
 
-        usort($tasks, function ($a, $b) {
-            if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
-                return -1;
+        usort(
+            $tasks,
+            function ($a, $b) {
+                if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
+                    return -1;
+                }
+                if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
+                    return 0;
+                }
+
+                return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
             }
-            if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
-                return 0;
-            }
-            return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
-        });
+        );
 
         return new View\View(
-            new Response\Task($tasks, $this->videoFacade, $this->userFacade, $this->projectFacade, $numberOfTotalDocuments, $taskPhase),
+            new Response\Task(
+                $tasks,
+                $this->videoFacade,
+                $this->userFacade,
+                $this->projectFacade,
+                $numberOfTotalDocuments,
+                $taskPhase
+            ),
             HttpFoundation\Response::HTTP_ACCEPTED
         );
     }
@@ -167,13 +195,15 @@ class Task extends Controller\Base
                                 return $historyEntry['userId'];
                             },
                             $task->getAssignmentHistory() === null ? [] : $task->getAssignmentHistory()
-                        )
-                        , function ($userId) {
-                        return $userId !== null;
-                    })
-                )
-            , false)
-            , $users
+                        ),
+                        function ($userId) {
+                            return $userId !== null;
+                        }
+                    )
+                ),
+                false
+            ),
+            $users
         );
 
         $userByUserIds = array();
@@ -185,9 +215,9 @@ class Task extends Controller\Base
         return View\View::create()->setData(
             [
                 'result' => [
-                    'task' => $task,
+                    'task'  => $task,
                     'users' => $userByUserIds,
-                ]
+                ],
             ]
         );
     }
@@ -205,9 +235,9 @@ class Task extends Controller\Base
         return View\View::create()->setData(
             [
                 'result' => [
-                    'structure' => $this->labelingTaskFacade->getLabelStructure($task),
+                    'structure'  => $this->labelingTaskFacade->getLabelStructure($task),
                     'annotation' => $this->labelingTaskFacade->getLabelAnnotation($task),
-                ]
+                ],
             ]
         );
     }

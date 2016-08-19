@@ -1,7 +1,9 @@
 <?php
 namespace AppBundle\Helper\Export\Cell;
+
 use AppBundle\Helper\Export;
 use AppBundle\Model;
+
 class Uuid extends Export\Cell
 {
     /**

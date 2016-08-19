@@ -219,12 +219,13 @@ class KittiTest extends Tests\KernelTestCase
             'car',
             [
                 new Shapes\Polygon(
-                    'test', [
-                    ['x' => 7, 'y' => 8],
-                    ['x' => 17, 'y' => 28],
-                    ['x' => -7, 'y' => -8],
-                    ['x' => 107, 'y' => 308],
-                ]
+                    'test',
+                    [
+                        ['x' => 7, 'y' => 8],
+                        ['x' => 17, 'y' => 28],
+                        ['x' => -7, 'y' => -8],
+                        ['x' => 107, 'y' => 308],
+                    ]
                 ),
             ]
         );
@@ -246,12 +247,13 @@ class KittiTest extends Tests\KernelTestCase
             'car',
             [
                 new Shapes\Polygon(
-                    'test', [
-                    ['x' => 7, 'y' => 8],
-                    ['x' => 17, 'y' => 28],
-                    ['x' => -7, 'y' => -8],
-                    ['x' => 107, 'y' => 308],
-                ]
+                    'test',
+                    [
+                        ['x' => 7, 'y' => 8],
+                        ['x' => 17, 'y' => 28],
+                        ['x' => -7, 'y' => -8],
+                        ['x' => 107, 'y' => 308],
+                    ]
                 ),
             ]
         );
@@ -296,7 +298,8 @@ class KittiTest extends Tests\KernelTestCase
         $incomplete = false
     ) {
         $frameRange   = new Model\FrameIndexRange(
-            min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
+            min($task->getFrameNumberMapping()),
+            max($task->getFrameNumberMapping())
         );
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)

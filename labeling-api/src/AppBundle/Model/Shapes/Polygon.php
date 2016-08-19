@@ -13,7 +13,7 @@ class Polygon extends Model\Shape
 
     private $points = [];
 
-    static public function createFromArray(array $shape)
+    public static function createFromArray(array $shape)
     {
         if (!isset($shape['id']) || !isset($shape['points']) || !is_array($shape['points'])) {
             throw new \RuntimeException('Invalid polygon shape');

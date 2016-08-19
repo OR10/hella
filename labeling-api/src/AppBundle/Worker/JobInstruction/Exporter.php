@@ -31,8 +31,7 @@ class Exporter extends WorkerPool\JobInstruction
     public function __construct(
         Service\Exporter\Csv $csvExporter,
         Facade\Project $projectFacade
-    )
-    {
+    ) {
         $this->projectFacade = $projectFacade;
         $this->csvExporter   = $csvExporter;
     }

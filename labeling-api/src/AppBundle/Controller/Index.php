@@ -181,7 +181,7 @@ class Index extends Base
 
         if ($file === null) {
             $viewData['error'] = 'No file given.';
-        } else if (empty($projectName)) {
+        } elseif (empty($projectName)) {
             $viewData['error'] = 'No Project specified.';
         } else {
             $tasks = $this->videoImporterService->import(

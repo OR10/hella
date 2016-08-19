@@ -38,7 +38,7 @@ class Ellipse extends Model\Shape
      *
      * @throws \RuntimeException
      */
-    static public function createFromArray(array $shape)
+    public static function createFromArray(array $shape)
     {
         if (!isset($shape['id'])
             || !isset($shape['point']['x'])

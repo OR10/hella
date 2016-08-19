@@ -240,13 +240,13 @@ EOF
         $converter = $this->createConverter($xml);
         $this->assertEquals(
             array(
-                'labelStructure'   => $labelStructure,
-                'labelStructureUi' => $labelStructureUi,
-                'drawingTool'      => $drawingTool,
-                'drawingToolOptions' => [
+                'labelStructure'              => $labelStructure,
+                'labelStructureUi'            => $labelStructureUi,
+                'drawingTool'                 => $drawingTool,
+                'drawingToolOptions'          => [
                     $drawingTool => [
-                        'minimalHeight' => 5
-                    ]
+                        'minimalHeight' => 5,
+                    ],
                 ],
                 'minimalVisibleShapeOverflow' => 16,
             ),

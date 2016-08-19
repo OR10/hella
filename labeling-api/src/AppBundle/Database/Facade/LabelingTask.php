@@ -101,7 +101,7 @@ class LabelingTask
         $result = $query->onlyDocs(true)->execute()->toArray();
 
         uasort($result, function (Model\LabelingTask $a, Model\LabelingTask $b) {
-            if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime ) {
+            if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime) {
                 return 0;
             }
             if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
@@ -384,7 +384,7 @@ class LabelingTask
                         ->toArray()
                 );
             }
-        }else{
+        } else {
             $query = $this->documentManager
                 ->createQuery('annostation_task_timer_sum_by_taskId_001', 'view')
                 ->setGroup(true);
@@ -410,7 +410,7 @@ class LabelingTask
                         ->toArray()
                 );
             }
-        }else{
+        } else {
             $query = $this->documentManager
                 ->createQuery('annostation_labeled_thing', 'count_by_taskId')
                 ->setGroup(true);

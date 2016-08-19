@@ -45,7 +45,8 @@ class LabeledThingInFrame
     /**
      * @param Model\LabeledThingInFrame[] $labeledThingsInFrame
      */
-    public function saveAll(array $labeledThingsInFrame) {
+    public function saveAll(array $labeledThingsInFrame)
+    {
         $numberOfMissingIds = array_reduce(
             $labeledThingsInFrame,
             function($numberOfMissingIds, $labeledThingInFrame) {
@@ -95,7 +96,7 @@ class LabeledThingInFrame
 
     public function delete(array $labeledThingInFrames)
     {
-        foreach($labeledThingInFrames as $labeledThingInFrame) {
+        foreach ($labeledThingInFrames as $labeledThingInFrame) {
             $this->documentManager->remove($labeledThingInFrame);
         }
         $this->documentManager->flush();

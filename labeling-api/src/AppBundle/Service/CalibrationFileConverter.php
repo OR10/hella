@@ -87,9 +87,9 @@ class CalibrationFileConverter
     {
         preg_match_all('/-?(\d*\.)\d+/', $this->data['extern_2_ea'], $rotations);
 
-        $yaw   = (float)$rotations[0][0] * (pi() / 180);
-        $pitch = (float)$rotations[0][1] * (pi() / 180);
-        $roll  = (float)$rotations[0][2] * (pi() / 180);
+        $yaw   = (float) $rotations[0][0] * (pi() / 180);
+        $pitch = (float) $rotations[0][1] * (pi() / 180);
+        $roll  = (float) $rotations[0][2] * (pi() / 180);
 
         return array(
             cos($roll) * $yaw + cos($yaw) * $roll * $pitch,
@@ -134,38 +134,22 @@ class CalibrationFileConverter
     {
         preg_match_all('/-?(\d*\.)?\d+/', $this->data['intern_2_kappa'], $kappa);
 
-        return array(
-            (float) $kappa[0][0],
-            (float) $kappa[0][1],
-            0,
-            0,
-            0,
-        );
+        return array((float) $kappa[0][0], (float) $kappa[0][1], 0, 0, 0,);
     }
 
     /**
      * @param $filePath
+     *
      * @return array
      */
     private function parseCsvFile($filePath)
     {
         $data = array();
-        foreach (
-            preg_split(
-                "(\r\n|\r|\n)",
-                file_get_contents($filePath),
-                -1,
-                PREG_SPLIT_NO_EMPTY
-            ) as $line
-        ) {
+        foreach (preg_split("(\r\n|\r|\n)", file_get_contents($filePath), -1, PREG_SPLIT_NO_EMPTY) as $line) {
             if (empty($line)) {
                 continue;
             }
-            $data[] = str_getcsv(
-                $line,
-                ';',
-                ''
-            );
+            $data[] = str_getcsv($line, ';', '');
         }
 
         $data = $this->convertArrayToHashmap($data);
@@ -175,17 +159,16 @@ class CalibrationFileConverter
 
     /**
      * @param array $rows
+     *
      * @return mixed
      */
     private function convertArrayToHashmap(array $rows)
     {
         $header = array_shift($rows);
+
         return array_map(
             function (array $row) use ($header) {
-                return array_combine(
-                    $header,
-                    $row
-                );
+                return array_combine($header, $row);
             },
             $rows
         );

@@ -5,7 +5,6 @@ namespace AppBundle\Model;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
-
 /**
  * @CouchDB\Document
  */

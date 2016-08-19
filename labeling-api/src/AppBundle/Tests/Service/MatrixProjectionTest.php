@@ -25,23 +25,23 @@ class MatrixProjectionTest extends Tests\KernelTestCase
         return array(
             array(
                 new Matrix\Vector4(10, 0, 0, 1),
-                new Matrix\Vector3(513.38264574242555, 451.52191267597999, 1)
+                new Matrix\Vector3(513.38264574242555, 451.52191267597999, 1),
             ),
             array(
                 new Matrix\Vector4(10, -3, 0, 1),
-                new Matrix\Vector3(837.01389489958046, 446.51296059359379, 1)
+                new Matrix\Vector3(837.01389489958046, 446.51296059359379, 1),
             ),
             array(
                 new Matrix\Vector4(10, 3, 0, 1),
-                new Matrix\Vector3(191.3082775041201, 452.27059987790159, 1)
+                new Matrix\Vector3(191.3082775041201, 452.27059987790159, 1),
             ),
             array(
                 new Matrix\Vector4(10, 0, 2, 1),
-                new Matrix\Vector3(511.1937227726749, 232.04437984222375, 1)
+                new Matrix\Vector3(511.1937227726749, 232.04437984222375, 1),
             ),
             array(
                 new Matrix\Vector4(55.099998, 5.2, 0.8, 1),
-                new Matrix\Vector3(406.90605769293109, 324.24409057197249, 1)
+                new Matrix\Vector3(406.90605769293109, 324.24409057197249, 1),
             ),
         );
     }
@@ -65,9 +65,9 @@ class MatrixProjectionTest extends Tests\KernelTestCase
         $k0 = -0.207642;
         $k1 = 0.039917;
 
-        $yaw = 0.013573;
+        $yaw   = 0.013573;
         $pitch = 0.003194;
-        $roll = 0.010063;
+        $roll  = 0.010063;
 
         $camX = -1.099854;
         $camY = -0.079834;
@@ -79,26 +79,54 @@ class MatrixProjectionTest extends Tests\KernelTestCase
         $cosy = cos($yaw);
 
         $calibrationData = [
-            'cameraMatrix' => [
-                $fx, $ga, $xc, 0,
-                0, $fy, $yc, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
+            'cameraMatrix'           => [
+                $fx,
+                $ga,
+                $xc,
+                0,
+                0,
+                $fy,
+                $yc,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
             ],
-            'rotationMatrix' => [
-                $cosr * $yaw + $cosy * $roll * $pitch, $yaw * $roll * $pitch - $cosr * $cosy, -$roll * $cosp, 0,
-                $cosy * $cosr * $pitch - $roll * $yaw, $cosy * $roll + $cosr * $pitch * $yaw, -$cosr * $cosp, 0,
-                $cosp * $cosy, $cosp * $yaw, $pitch, 0,
-                0, 0, 0, 1,
+            'rotationMatrix'         => [
+                $cosr * $yaw + $cosy * $roll * $pitch,
+                $yaw * $roll * $pitch - $cosr * $cosy,
+                -$roll * $cosp,
+                0,
+                $cosy * $cosr * $pitch - $roll * $yaw,
+                $cosy * $roll + $cosr * $pitch * $yaw,
+                -$cosr * $cosp,
+                0,
+                $cosp * $cosy,
+                $cosp * $yaw,
+                $pitch,
+                0,
+                0,
+                0,
+                0,
+                1,
             ],
-            'translation' => [
+            'translation'            => [
                 $camX,
                 $camY,
                 $camZ,
             ],
             'distortionCoefficients' => [
-                $k0, $k1, 0, 0, 0,
-            ]
+                $k0,
+                $k1,
+                0,
+                0,
+                0,
+            ],
         ];
 
         $vectorOut = $this->matrixProjectionService->project3dTo2d($vectorIn, $calibrationData);

@@ -47,8 +47,8 @@ class Project
     }
 
     /**
- * @return array
- */
+    * @return array
+    */
     public function getTimePerProject()
     {
         $resultSet = $this->documentManager
@@ -92,7 +92,7 @@ class Project
 
         if (count($result) < 1) {
             return null;
-        } else if (count($result) > 1) {
+        } elseif (count($result) > 1) {
             throw new \RuntimeException('Non unique project name ' . $name . ' found.');
         }
         

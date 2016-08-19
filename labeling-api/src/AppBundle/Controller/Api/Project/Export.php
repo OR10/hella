@@ -54,8 +54,7 @@ class Export extends Controller\Base
         Facade\VideoExport $videoExportFacade,
         AMQP\FacadeAMQP $amqpFacade,
         Facade\Exporter $exporterFacade
-    )
-    {
+    ) {
         $this->amqpFacade        = $amqpFacade;
         $this->projectExport     = $projectExport;
         $this->videoExportFacade = $videoExportFacade;
@@ -74,7 +73,7 @@ class Export extends Controller\Base
         $exporter = reset($availableExports);
         if ($exporter === 'genericXml') {
             $exports = $this->exporterFacade->findAllByProject($project);
-        }else{
+        } else {
             $exports = $this->projectExport->findAllByProject($project);
         }
 
@@ -100,7 +99,7 @@ class Export extends Controller\Base
         if ($exporter === 'genericXml') {
             $export = $this->exporterFacade->find($exportId);
             return $this->getGenericXmlZipContent($project, $export);
-        }else{
+        } else {
             $projectExport = $this->projectExport->find($exportId);
             return $this->getLegacyZipContent($project, $projectExport);
         }
@@ -155,7 +154,7 @@ class Export extends Controller\Base
         if (empty($videoExportIds)) {
             $zip->addEmptyDir('.');
         }
-        foreach($videoExportIds as $videoExportId) {
+        foreach ($videoExportIds as $videoExportId) {
             $videoExport = $this->videoExportFacade->find($videoExportId);
 
             if (!$zip->addFromString($videoExport->getFilename(), $videoExport->getRawData())) {
@@ -192,7 +191,7 @@ class Export extends Controller\Base
      */
     public function getCsvExportAction(Model\Project $project)
     {
-        foreach($project->getAvailableExports() as $exportType) {
+        foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
                     $this->amqpFacade->addJob(new Jobs\ProjectCsvExporter($project->getId()));

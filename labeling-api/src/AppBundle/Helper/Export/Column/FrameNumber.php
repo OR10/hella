@@ -7,8 +7,12 @@ use AppBundle\Model;
 
 class FrameNumber extends Export\Column
 {
-    public function createCell(Model\Project $project, Model\Video $video, Model\LabelingTask $task, Model\LabeledThingInFrame $labeledThingInFrame)
-    {
+    public function createCell(
+        Model\Project $project,
+        Model\Video $video,
+        Model\LabelingTask $task,
+        Model\LabeledThingInFrame $labeledThingInFrame
+    ) {
         return new Cell\FrameNumber($task, $labeledThingInFrame);
     }
 

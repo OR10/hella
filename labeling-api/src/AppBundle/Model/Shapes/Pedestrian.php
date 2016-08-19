@@ -41,7 +41,7 @@ class Pedestrian extends Model\Shape
         $this->bottomCenterY = $bottomCenterY;
     }
 
-    static public function createFromArray(array $shape)
+    public static function createFromArray(array $shape)
     {
         if (!isset($shape['id'])
             || !isset($shape['topCenter']['x'])

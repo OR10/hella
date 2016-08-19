@@ -32,7 +32,7 @@ class Video
             $calibrationData = $calibrationDataFacade->findById($video->getCalibrationId());
             $result['rawCalibration'] = $calibrationData->getRawCalibration();
             $result['calibration'] = $calibrationData->getCalibration();
-        }else{
+        } else {
             $result['rawCalibration'] = $video->getRawCalibration();
             $result['calibration'] = $video->getCalibration();
         }

@@ -17,7 +17,7 @@ class Object
     private $boundingBox;
 
     /**
-     * @param string $type
+     * @param string             $type
      * @param Shapes\BoundingBox $boundingBox
      */
     public function __construct($type, Shapes\BoundingBox $boundingBox)

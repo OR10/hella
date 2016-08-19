@@ -35,9 +35,9 @@ class ForbidReadonlyTasks
     private $taskReadOnlyDecider;
 
     /**
-     * @param CommonAnnotations\Reader $reader
-     * @param Session\SessionInterface $session
-     * @param Storage\TokenStorage $tokenStorage
+     * @param CommonAnnotations\Reader    $reader
+     * @param Session\SessionInterface    $session
+     * @param Storage\TokenStorage        $tokenStorage
      * @param Service\TaskReadOnlyDecider $taskReadOnlyDecider
      */
     public function __construct(
@@ -45,11 +45,10 @@ class ForbidReadonlyTasks
         Session\SessionInterface $session,
         Storage\TokenStorage $tokenStorage,
         Service\TaskReadOnlyDecider $taskReadOnlyDecider
-    )
-    {
-        $this->reader = $reader;
-        $this->session = $session;
-        $this->tokenStorage = $tokenStorage;
+    ) {
+        $this->reader              = $reader;
+        $this->session             = $session;
+        $this->tokenStorage        = $tokenStorage;
         $this->taskReadOnlyDecider = $taskReadOnlyDecider;
     }
 
@@ -62,11 +61,11 @@ class ForbidReadonlyTasks
             return;
         }
 
-        $class = new \ReflectionClass($controller[0]);
+        $class      = new \ReflectionClass($controller[0]);
         $annotation = $this->reader->getClassAnnotation($class, Annotations\ForbidReadonlyTasks::class);
 
         if ($annotation === null) {
-            $method = $class->getMethod($controller[1]);
+            $method     = $class->getMethod($controller[1]);
             $annotation = $this->reader->getMethodAnnotation($method, Annotations\ForbidReadonlyTasks::class);
         }
 
@@ -74,7 +73,7 @@ class ForbidReadonlyTasks
             $attributes = $event->getRequest()->attributes;
             /** @var Model\LabelingTask $labelingTask */
             $labelingTask = $attributes->get($annotation->getTaskPropertyName());
-            $user = $this->tokenStorage->getToken()->getUser();
+            $user         = $this->tokenStorage->getToken()->getUser();
             if (!$labelingTask instanceof Model\LabelingTask) {
                 throw new \InvalidArgumentException('The given type of LabelingTask is invalid');
             }

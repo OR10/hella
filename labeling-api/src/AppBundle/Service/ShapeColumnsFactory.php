@@ -11,7 +11,8 @@ class ShapeColumnsFactory
      */
     private $drawingToolToShapeColumnsMapping;
 
-    public function __construct(array $drawingToolToShapeColumnsMapping) {
+    public function __construct(array $drawingToolToShapeColumnsMapping)
+    {
         $this->drawingToolToShapeColumnsMapping = $drawingToolToShapeColumnsMapping;
     }
 
@@ -22,7 +23,8 @@ class ShapeColumnsFactory
      *
      * @return Export\Column[]
      */
-    public function create($drawingTool) {
+    public function create($drawingTool)
+    {
         if (!array_key_exists($drawingTool, $this->drawingToolToShapeColumnsMapping)) {
             throw new \RuntimeException('Unable to find ShapeColumns mapping for ' . $drawingTool);
         }

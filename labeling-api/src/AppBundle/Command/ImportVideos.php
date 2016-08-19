@@ -224,7 +224,10 @@ class ImportVideos extends Base
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_CYCLIST, 'rectangle');
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_IGNORE, 'rectangle');
         } else {
-            if ($taskConfigurationIdPerson === null || $taskConfigurationIdCyclist === null || $taskConfigurationIdIgnore === null) {
+            if ($taskConfigurationIdPerson === null
+                || $taskConfigurationIdCyclist === null
+                || $taskConfigurationIdIgnore === null
+            ) {
                 throw new \Exception('Missing Person, Cyclist or Ignore TaskConfiguration');
             }
 

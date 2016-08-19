@@ -18,7 +18,7 @@ class UserLockedState implements Migrations\DocumentMigration
 
         if ($data['locked'] === '0') {
             $data['locked'] = false;
-        }else{
+        } else {
             $data['locked'] = true;
         }
 

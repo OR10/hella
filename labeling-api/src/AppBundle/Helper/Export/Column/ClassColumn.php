@@ -41,8 +41,7 @@ class ClassColumn extends Export\Column
         Model\Video $video,
         Model\LabelingTask $task,
         Model\LabeledThingInFrame $labeledThingInFrame
-    )
-    {
+    ) {
         return new Cell\ShapeClass($this->classValues, $labeledThingInFrame->getClassesWithGhostClasses());
     }
 

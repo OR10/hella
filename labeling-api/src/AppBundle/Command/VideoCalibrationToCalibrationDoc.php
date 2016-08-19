@@ -28,7 +28,7 @@ class VideoCalibrationToCalibrationDoc extends Base
     public function __construct(Facade\Video $videoFacade, Facade\CalibrationData $calibrationDataFacade)
     {
         parent::__construct();
-        $this->videoFacade     = $videoFacade;
+        $this->videoFacade           = $videoFacade;
         $this->calibrationDataFacade = $calibrationDataFacade;
     }
 
@@ -44,23 +44,29 @@ class VideoCalibrationToCalibrationDoc extends Base
 
         /** @var Model\Video $video */
         foreach ($videos as $video) {
-            if ($video->getCalibration() !== null && $video->getRawCalibration() !== null && $video->getCalibrationId() === null) {
-                $pathinfo = pathinfo($video->getName());
-                $calibrationFileName = sprintf('%s.csv', $pathinfo['filename']);
+            if ($video->getCalibration() !== null
+                && $video->getRawCalibration() !== null
+                && $video->getCalibrationId() === null
+            ) {
+                $pathinfo             = pathinfo($video->getName());
+                $calibrationFileName  = sprintf('%s.csv', $pathinfo['filename']);
                 $videoCalibrationData = $video->getCalibration();
-                $calibrationData = new Model\CalibrationData($calibrationFileName);
+                $calibrationData      = new Model\CalibrationData($calibrationFileName);
+
                 $calibrationData->setRawCalibration($video->getRawCalibration());
                 $calibrationData->setCameraMatrix($videoCalibrationData['cameraMatrix']);
                 $calibrationData->setRotationMatrix($videoCalibrationData['rotationMatrix']);
                 $calibrationData->setTranslation($videoCalibrationData['translation']);
                 $calibrationData->setDistortionCoefficients($videoCalibrationData['distortionCoefficients']);
                 $calibrationData = $this->calibrationDataFacade->save($calibrationData);
+
                 $video->setCalibrationId($calibrationData->getId());
                 $video->setRawCalibration(null);
                 $video->setCameraMatrix(null);
                 $video->setRotationMatrix(null);
                 $video->setTranslation(null);
                 $video->setDistortionCoefficients(null);
+
                 $this->videoFacade->save($video);
             }
 

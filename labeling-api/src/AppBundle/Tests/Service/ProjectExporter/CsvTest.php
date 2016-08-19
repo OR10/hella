@@ -48,13 +48,13 @@ class CsvProjectTest extends Tests\KernelTestCase
 
     protected function setUpImplementation()
     {
-        $this->videoFacade = $this->getAnnostationService('database.facade.video');
-        $this->projectFacade = $this->getAnnostationService('database.facade.project');
-        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
-        $this->labeledThingFacade = $this->getAnnostationService('database.facade.labeled_thing');
+        $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
-        $this->exporter = $this->getAnnostationService('service.project_exporter.csv');
-        $this->calibrationFileConverter = $this->getAnnostationService('service.calibration_file_converter');
+        $this->exporter                  = $this->getAnnostationService('service.project_exporter.csv');
+        $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
     }
 
     public function pedestrianProvider()
@@ -65,96 +65,96 @@ class CsvProjectTest extends Tests\KernelTestCase
                 Model\LabelingTask::INSTRUCTION_PERSON,
                 array(
                     array(
-                        'id' => 'pedestrian-1',
-                        'type' => 'pedestrian',
-                        'topCenter' => array(
+                        'id'           => 'pedestrian-1',
+                        'type'         => 'pedestrian',
+                        'topCenter'    => array(
                             'x' => 578,
                             'y' => 293,
                         ),
                         'bottomCenter' => array(
                             'x' => 578,
                             'y' => 466,
-                        )
-                    )
+                        ),
+                    ),
                 ),
                 array('occlusion-25', 'truncation-25-50', 'direction-front-right'),
                 array(
                     array(
                         'frame_number' => 1,
-                        'label_class' => 'person',
-                        'position_x' => 542,
-                        'position_y' => 293,
-                        'width' => 71,
-                        'height' => 173,
-                        'occlusion' => 1,
-                        'truncation' => 2,
-                        'direction' => 'front-right',
-                    )
-                )
+                        'label_class'  => 'person',
+                        'position_x'   => 542,
+                        'position_y'   => 293,
+                        'width'        => 71,
+                        'height'       => 173,
+                        'occlusion'    => 1,
+                        'truncation'   => 2,
+                        'direction'    => 'front-right',
+                    ),
+                ),
             ),
             array(
                 Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
                 Model\LabelingTask::INSTRUCTION_IGNORE,
                 array(
                     array(
-                        'id' => 'pedestrian-1',
-                        'type' => 'rectangle',
-                        'topLeft' => array(
+                        'id'          => 'pedestrian-1',
+                        'type'        => 'rectangle',
+                        'topLeft'     => array(
                             'x' => 332,
                             'y' => 284,
                         ),
                         'bottomRight' => array(
                             'x' => 440,
                             'y' => 391,
-                        )
-                    )
+                        ),
+                    ),
                 ),
                 array('cyclist'),
                 array(
                     array(
                         'frame_number' => 1,
-                        'label_class' => 'ignore',
-                        'position_x' => 332,
-                        'position_y' => 284,
-                        'width' => 108,
-                        'height' => 107,
-                        'occlusion' => 'unknown',
-                        'truncation' => 'unknown',
-                        'direction' => null,
-                    )
-                )
+                        'label_class'  => 'ignore',
+                        'position_x'   => 332,
+                        'position_y'   => 284,
+                        'width'        => 108,
+                        'height'       => 107,
+                        'occlusion'    => 'unknown',
+                        'truncation'   => 'unknown',
+                        'direction'    => null,
+                    ),
+                ),
             ),
             array(
                 Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
                 Model\LabelingTask::INSTRUCTION_CYCLIST,
                 array(
                     array(
-                        'id' => 'pedestrian-1',
-                        'type' => 'rectangle',
-                        'topLeft' => array(
+                        'id'          => 'pedestrian-1',
+                        'type'        => 'rectangle',
+                        'topLeft'     => array(
                             'x' => 332,
                             'y' => 284,
                         ),
                         'bottomRight' => array(
                             'x' => 440,
                             'y' => 391,
-                        )
-                    )
+                        ),
+                    ),
                 ),
                 array('occlusion-25', 'truncation-25-50', 'direction-front-right'),
                 array(
                     array(
                         'frame_number' => 1,
-                        'label_class' => 'cyclist',
-                        'position_x' => 332,
-                        'position_y' => 284,
-                        'width' => 108,
-                        'height' => 107,
-                        'occlusion' => 1,
-                        'truncation' => 2,
-                        'direction' => 'front-right',
-                    )
-                )
+                        'label_class'  => 'cyclist',
+                        'position_x'   => 332,
+                        'position_y'   => 284,
+                        'width'        => 108,
+                        'height'       => 107,
+                        'occlusion'    => 1,
+                        'truncation'   => 2,
+                        'direction'    => 'front-right',
+                    ),
+                ),
             ),
         );
     }
@@ -167,8 +167,8 @@ class CsvProjectTest extends Tests\KernelTestCase
                 Model\LabelingTask::INSTRUCTION_VEHICLE,
                 array(
                     array(
-                        'id' => 'pedestrian-1',
-                        'type' => 'cuboid3d',
+                        'id'                 => 'pedestrian-1',
+                        'type'               => 'cuboid3d',
                         'vehicleCoordinates' => array(
                             [16, 6.5, 1.7],
                             [16, 4.8, 1.7],
@@ -177,22 +177,22 @@ class CsvProjectTest extends Tests\KernelTestCase
                             [20, 6.5, 1.7],
                             [20, 4.8, 1.7],
                             [20, 4.8, 0],
-                            [20, 6.5, 0]
+                            [20, 6.5, 0],
                         ),
-                    )
+                    ),
                 ),
                 array('occlusion-25', 'truncation-25-50', 'direction-front-right'),
                 array(
                     array(
-                        'frame_number' => 1,
-                        'position_x' => 'null',
-                        'position_y' => 'null',
-                        'width' => 'null',
-                        'height' => 'null',
-                        'occlusion' => 1,
-                        'truncation' => 2,
-                        'direction' => '3d data',
-                        'vehicleType' => null,
+                        'frame_number'  => 1,
+                        'position_x'    => 'null',
+                        'position_y'    => 'null',
+                        'width'         => 'null',
+                        'height'        => 'null',
+                        'occlusion'     => 1,
+                        'truncation'    => 2,
+                        'direction'     => '3d data',
+                        'vehicleType'   => null,
                         'vertex_2d_0_x' => 112.8062,
                         'vertex_2d_0_y' => 285.9309,
                         'vertex_2d_1_x' => 227.0971,
@@ -233,8 +233,8 @@ class CsvProjectTest extends Tests\KernelTestCase
                         'vertex_3d_7_x' => 20,
                         'vertex_3d_7_y' => 6.5,
                         'vertex_3d_7_z' => 0,
-                    )
-                )
+                    ),
+                ),
             ),
         );
     }
@@ -266,12 +266,15 @@ class CsvProjectTest extends Tests\KernelTestCase
 
         $export = $this->exporter->getPedestrianLabelingData($labelingTask);
 
-        $export = array_map(function ($data) {
-            unset($data['id']);
-            unset($data['uuid']);
+        $export = array_map(
+            function ($data) {
+                unset($data['id']);
+                unset($data['uuid']);
 
-            return $data;
-        }, $export);
+                return $data;
+            },
+            $export
+        );
 
         $this->assertEquals($expected, $export);
     }
@@ -303,12 +306,15 @@ class CsvProjectTest extends Tests\KernelTestCase
 
         $export = $this->exporter->getVehicleLabelingData($labelingTask);
 
-        $export = array_map(function ($data) {
-            unset($data['id']);
-            unset($data['uuid']);
+        $export = array_map(
+            function ($data) {
+                unset($data['id']);
+                unset($data['uuid']);
 
-            return $data;
-        }, $export);
+                return $data;
+            },
+            $export
+        );
 
         $this->assertEquals($expected, $export);
     }
@@ -318,8 +324,9 @@ class CsvProjectTest extends Tests\KernelTestCase
      *
      * @param array $frameNumberMapping
      *
-     * @param $drawingTool
-     * @param $labelInstruction
+     * @param       $drawingTool
+     * @param       $labelInstruction
+     *
      * @return Model\LabelingTask
      */
     private function createLabelingTask(array $frameNumberMapping, $drawingTool, $labelInstruction)
@@ -353,10 +360,10 @@ class CsvProjectTest extends Tests\KernelTestCase
      *
      * @param Model\LabelingTask $task
      * @param                    $frameIndex
-     * @param null $type
-     * @param array $classes
-     * @param array $shapes
-     * @param bool $incomplete
+     * @param null               $type
+     * @param array              $classes
+     * @param array              $shapes
+     * @param bool               $incomplete
      *
      * @return Model\LabeledThingInFrame
      */
@@ -367,8 +374,7 @@ class CsvProjectTest extends Tests\KernelTestCase
         $classes = [],
         array $shapes = [],
         $incomplete = false
-    )
-    {
+    ) {
         $labeledThing = $this->labeledThingFacade->save(
             Model\LabeledThing::create($task)
                 ->setFrameRange(
@@ -377,7 +383,7 @@ class CsvProjectTest extends Tests\KernelTestCase
                         $frameIndex
                     )
                 )
-                ->setClasses($type === null ? [] : [(string)$type])
+                ->setClasses($type === null ? [] : [(string) $type])
         );
 
         return $this->labeledThingInFrameFacade->save(

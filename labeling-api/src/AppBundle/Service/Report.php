@@ -53,8 +53,7 @@ class Report
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\Report $reportFacade
-    )
-    {
+    ) {
         $this->projectFacade             = $projectFacade;
         $this->videoFacade               = $videoFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
@@ -129,7 +128,7 @@ class Report
 
         $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
         $sumOfTimeByPhase = 0;
-        foreach($timeByPhaseForProject as $phase => $time) {
+        foreach ($timeByPhaseForProject as $phase => $time) {
             $sumOfTimeByPhase += $time;
         }
         $report->setTotalTime($sumOfTimeByPhase);
@@ -223,7 +222,7 @@ class Report
     {
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects([$project]);
         $numberOfVideos = array();
-        foreach($videosByProjects as $videosByProject) {
+        foreach ($videosByProjects as $videosByProject) {
             $projectId = $videosByProject['key'];
             $videoId = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;

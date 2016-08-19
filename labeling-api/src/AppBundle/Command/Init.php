@@ -227,13 +227,16 @@ class Init extends Base
         $users = ['admin', 'label_coordinator', 'user', 'client'];
 
         if ($this->userPassword !== null) {
-
             foreach ($users as $username) {
                 $user = $this->userFacade->createUser($username, $username . '@example.com', $this->userPassword);
 
-                switch($username){
+                switch ($username) {
                     case 'admin':
-                        $roleNames = [Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT];
+                        $roleNames = [
+                            Model\User::ROLE_ADMIN,
+                            Model\User::ROLE_LABEL_COORDINATOR,
+                            Model\User::ROLE_CLIENT,
+                        ];
                         break;
                     case 'label_coordinator':
                         $roleNames = [Model\User::ROLE_LABEL_COORDINATOR];
@@ -256,7 +259,11 @@ class Init extends Base
 
                 $this->writeInfo(
                     $output,
-                    "Created user <comment>{$username}</comment> with password: <comment>{$this->userPassword}</comment>"
+                    sprintf(
+                        'Created user <comment>%s</comment> with password: <comment>%s</comment>',
+                        $username,
+                        $this->userPassword
+                    )
                 );
             }
         } else {
@@ -319,6 +326,7 @@ class Init extends Base
 
         if ($skipImport) {
             $this->writeInfo($output, 'skipping video import');
+
             return true;
         }
 
@@ -333,6 +341,7 @@ class Init extends Base
             $this->importVideos($project, $videoBasePath, ['anno_short.avi', 'anno_night.avi'], $output, $lossless);
         } catch (\Exception $e) {
             $this->writeError($output, $e->getMessage());
+
             return false;
         }
 
@@ -346,9 +355,14 @@ class Init extends Base
      * @param OutputInterface $output
      * @param                 $lossless
      */
-    private function importVideos(Model\Project $project, string $videoBasePath, array $fileNames, OutputInterface $output, $lossless)
-    {
-        foreach($fileNames as $fileName) {
+    private function importVideos(
+        Model\Project $project,
+        string $videoBasePath,
+        array $fileNames,
+        OutputInterface $output,
+        $lossless
+    ) {
+        foreach ($fileNames as $fileName) {
             $sourcePath = sprintf('%s/%s', $videoBasePath, $fileName);
             $this->writeInfo($output, sprintf('Importing default video <comment>%s</comment>', $sourcePath));
             $path = tempnam($this->cacheDir, 'anno_sample_videos');

@@ -38,7 +38,7 @@ class Rectangle extends Model\Shape
      *
      * @throws \RuntimeException
      */
-    static public function createFromArray(array $shape)
+    public static function createFromArray(array $shape)
     {
         if (!isset($shape['id'])
             || !isset($shape['topLeft']['x'])
@@ -54,7 +54,7 @@ class Rectangle extends Model\Shape
                     isset($shape['topLeft']['y']) ? $shape['topLeft']['y'] : '',
                     isset($shape['bottomRight']['x']) ? $shape['bottomRight']['x'] : '',
                     isset($shape['bottomRight']['y']) ? $shape['bottomRight']['y'] : ''
-                    )
+                )
             );
         }
 

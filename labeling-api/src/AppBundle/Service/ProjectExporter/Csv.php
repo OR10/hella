@@ -137,7 +137,6 @@ class Csv implements Service\ProjectExporter
             $consideredTasks = array();
             $videoExportIds = array();
             foreach ($taskGroups as $groupName => $groupInstructions) {
-
                 $tasks = $this->getLabeledTasksForProject(
                     $project,
                     $groupInstructions
@@ -254,7 +253,7 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => 0,
                     'truncation'   => 0,
                     'direction'    => 'none',
-                    'id'           => NULL,
+                    'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
             },
@@ -299,7 +298,7 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => $occlusion,
                     'truncation'   => $truncation,
                     'direction'    => $direction,
-                    'id'           => NULL,
+                    'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
             },
@@ -337,7 +336,7 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => $occlusion,
                     'truncation'   => $truncation,
                     'direction'    => '3d data',
-                    'id'           => NULL,
+                    'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
 
@@ -387,7 +386,7 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => 'none',
                     'truncation'   => 'none',
                     'direction'    => 'none',
-                    'id'           => NULL,
+                    'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
                 foreach (range(0, 7) as $vertexPoint) {
@@ -428,7 +427,7 @@ class Csv implements Service\ProjectExporter
                     'occlusion'    => 0,
                     'truncation'   => 0,
                     'direction'    => 'none',
-                    'id'           => NULL,
+                    'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
             },

@@ -18,7 +18,6 @@ class XmlValidator extends Tests\KernelTestCase
         $xml->load(__DIR__ . '/XmlValidatorTestFiles/valid.xml');
 
         $this->assertTrue($this->xmlValidatorService->isXmlValid($xml));
-
     }
 
     public function testInvalidXmlFile()

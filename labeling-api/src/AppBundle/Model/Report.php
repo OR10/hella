@@ -9,8 +9,8 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
  */
 class Report
 {
-    CONST REPORT_STATUS_IN_PROGRESS = 'in_progress';
-    CONST REPORT_STATUS_DONE = 'done';
+    const REPORT_STATUS_IN_PROGRESS = 'in_progress';
+    const REPORT_STATUS_DONE = 'done';
 
     /**
      * @CouchDB\Id

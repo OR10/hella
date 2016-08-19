@@ -61,5 +61,4 @@ class RegexBuilder
     {
         return new Regex($this);
     }
-
 }

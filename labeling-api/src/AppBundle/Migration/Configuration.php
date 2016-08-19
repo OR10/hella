@@ -3,7 +3,6 @@ namespace AppBundle\Migration;
 
 use Doctrine\ODM\CouchDB;
 
-
 class Configuration extends CouchDB\Configuration
 {
     public function getMigrations()

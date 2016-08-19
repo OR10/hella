@@ -10,15 +10,16 @@ abstract class ColumnGroup
      *
      * @param Column $column
      */
-    public abstract function addColumn(Column $column);
+    abstract public function addColumn(Column $column);
 
     /**
      * Add a column to the group
      *
      * @param Column[] $columns
      */
-    public function addColumns(array $columns) {
-        foreach($columns as $column) {
+    public function addColumns(array $columns)
+    {
+        foreach ($columns as $column) {
             $this->addColumn($column);
         }
     }
@@ -28,7 +29,7 @@ abstract class ColumnGroup
      *
      * @return Column[]
      */
-    public abstract function getColumns();
+    abstract public function getColumns();
 
     /**
      * Create an array of Cells foreach registered Column using the given data
@@ -40,7 +41,7 @@ abstract class ColumnGroup
      *
      * @return Cell[]
      */
-    public abstract function createCells(
+    abstract public function createCells(
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
@@ -57,7 +58,7 @@ abstract class ColumnGroup
      *
      * @return Row
      */
-    public abstract function createRow(
+    abstract public function createRow(
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,

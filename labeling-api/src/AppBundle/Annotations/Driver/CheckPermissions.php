@@ -27,7 +27,7 @@ class CheckPermissions
         \Doctrine\Common\Annotations\Reader $reader,
         CurrentUserPermissions $currentUserPermissions
     ) {
-        $this->reader = $reader;
+        $this->reader                 = $reader;
         $this->currentUserPermissions = $currentUserPermissions;
     }
 
@@ -40,7 +40,8 @@ class CheckPermissions
         $controller = new \ReflectionObject($controllerEvent[0]);// get controller
         $method     = $controller->getMethod($controllerEvent[1]);// get method
 
-        foreach ($this->reader->getMethodAnnotations($method) as $annotation) { //Start of annotations reading
+        foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
+            // Start of annotations reading
             if ($annotation instanceof Annotations\CheckPermissions) {
                 $allowed = false;
                 foreach ($annotation->getPermissions() as $permission) {
@@ -54,5 +55,4 @@ class CheckPermissions
             }
         }
     }
-
 }

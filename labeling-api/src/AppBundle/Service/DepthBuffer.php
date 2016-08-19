@@ -15,6 +15,7 @@ class DepthBuffer
 
     /**
      * DepthBuffer constructor.
+     *
      * @param MatrixProjection $matrixProjection
      */
     public function __construct(MatrixProjection $matrixProjection)
@@ -41,12 +42,15 @@ class DepthBuffer
 
     public function getVertices(Shapes\Cuboid3d $cuboid3d, $calibrationData)
     {
-        $projection = array_map(function ($vertex) use ($calibrationData) {
-            if ($vertex->getX() === null || $vertex->getY() === null ||$vertex->getZ() === null) {
-                return $vertex;
-            }
-            return $this->matrixProjection->project3dTo2d($vertex, $calibrationData);
-        }, $cuboid3d->getVertices()
+        $projection = array_map(
+            function ($vertex) use ($calibrationData) {
+                if ($vertex->getX() === null || $vertex->getY() === null || $vertex->getZ() === null) {
+                    return $vertex;
+                }
+
+                return $this->matrixProjection->project3dTo2d($vertex, $calibrationData);
+            },
+            $cuboid3d->getVertices()
         );
 
         $cuboid2dWithoutDepth = new Shapes\Cuboid2d(
@@ -60,29 +64,38 @@ class DepthBuffer
             $projection[6]->toArray(),
             $projection[7]->toArray()
         );
+
         $faces = $this->getFacesForCuboid($cuboid2dWithoutDepth, $cuboid3d);
 
-        usort($faces, function ($faceA, $faceB) {
-            $maxDepthFaceA = max(
-                array_map(function ($vertices3d) {
-                    return $vertices3d->getX();
-                }, $faceA['vertices3d']
-                )
-            );
-            $maxDepthFaceB = max(
-                array_map(function ($vertices3d) {
-                    return $vertices3d->getX();
-                }, $faceB['vertices3d']
-                )
-            );
-            if ($maxDepthFaceA < $maxDepthFaceB) {
-                return -1;
-            } else if ($maxDepthFaceA === $maxDepthFaceB) {
-                return 0;
-            } else {
-                return 1;
+        usort(
+            $faces,
+            function ($faceA, $faceB) {
+                $maxDepthFaceA = max(
+                    array_map(
+                        function ($vertices3d) {
+                            return $vertices3d->getX();
+                        },
+                        $faceA['vertices3d']
+                    )
+                );
+                $maxDepthFaceB = max(
+                    array_map(
+                        function ($vertices3d) {
+                            return $vertices3d->getX();
+                        },
+                        $faceB['vertices3d']
+                    )
+                );
+
+                if ($maxDepthFaceA < $maxDepthFaceB) {
+                    return -1;
+                } elseif ($maxDepthFaceA === $maxDepthFaceB) {
+                    return 0;
+                } else {
+                    return 1;
+                }
             }
-        });
+        );
 
         return $this->projectFacesWithDepth($faces);
     }
@@ -95,40 +108,40 @@ class DepthBuffer
         $faces = array();
 
         $faces[] = [
-            'name' => 'front',
+            'name'       => 'front',
             'vertices2d' => [$c2[0], $c2[1], $c2[2], $c2[3]],
             'vertices3d' => [$c3[0], $c3[1], $c3[2], $c3[3]],
-            'order' => [0, 1, 2, 3],
+            'order'      => [0, 1, 2, 3],
         ];
         $faces[] = [
-            'name' => 'back',
+            'name'       => 'back',
             'vertices2d' => [$c2[4], $c2[5], $c2[6], $c2[7]],
             'vertices3d' => [$c3[4], $c3[5], $c3[6], $c3[7]],
-            'order' => [4, 5, 6, 7],
+            'order'      => [4, 5, 6, 7],
         ];
         $faces[] = [
-            'name' => 'left',
+            'name'       => 'left',
             'vertices2d' => [$c2[4], $c2[0], $c2[3], $c2[7]],
             'vertices3d' => [$c3[4], $c3[0], $c3[3], $c3[7]],
-            'order' => [4, 0, 3, 7],
+            'order'      => [4, 0, 3, 7],
         ];
         $faces[] = [
-            'name' => 'right',
+            'name'       => 'right',
             'vertices2d' => [$c2[5], $c2[1], $c2[2], $c2[6]],
             'vertices3d' => [$c3[5], $c3[1], $c3[2], $c3[6]],
-            'order' => [5, 1, 2, 6],
+            'order'      => [5, 1, 2, 6],
         ];
         $faces[] = [
-            'name' => 'top',
+            'name'       => 'top',
             'vertices2d' => [$c2[4], $c2[0], $c2[1], $c2[5]],
             'vertices3d' => [$c3[4], $c3[0], $c3[1], $c3[5]],
-            'order' => [4, 0, 1, 5],
+            'order'      => [4, 0, 1, 5],
         ];
         $faces[] = [
-            'name' => 'bottom',
+            'name'       => 'bottom',
             'vertices2d' => [$c2[7], $c2[6], $c2[2], $c2[3]],
             'vertices3d' => [$c3[7], $c3[6], $c3[2], $c3[3]],
-            'order' => [7, 6, 2, 3],
+            'order'      => [7, 6, 2, 3],
         ];
 
         return $faces;
@@ -163,7 +176,7 @@ class DepthBuffer
         $offsetX = $minMaxFaces2d['x']['min'] * -1;
         $offsetY = $minMaxFaces2d['y']['min'] * -1;
 
-        $imageWidth = $minMaxFaces2d['x']['max'] - $minMaxFaces2d['x']['min'];
+        $imageWidth  = $minMaxFaces2d['x']['max'] - $minMaxFaces2d['x']['min'];
         $imageHeight = $minMaxFaces2d['y']['max'] - $minMaxFaces2d['y']['min'];
 
         $image = \imagecreatetruecolor(ceil($imageWidth), ceil($imageHeight));
@@ -172,11 +185,12 @@ class DepthBuffer
 
         imagefill($image, 0, 0, $black);
 
-        $vertices = array();
+        $vertices         = array();
         $vertexVisibility = array();
 
         foreach ($faces as $face) {
-            $hiddenVertices = array_filter($face['vertices2d'],
+            $hiddenVertices = array_filter(
+                $face['vertices2d'],
                 function ($vertex) use ($image, $offsetX, $offsetY) {
                     return $this->isPixelDrawn($image, $vertex, $offsetX, $offsetY);
                 }
@@ -186,15 +200,22 @@ class DepthBuffer
                     continue;
                 }
 
-                $vertices[$vertexIndex] = [$face['vertices2d'][$index]->getX(), $face['vertices2d'][$index]->getY()];
+                $vertices[$vertexIndex]         = [
+                    $face['vertices2d'][$index]->getX(),
+                    $face['vertices2d'][$index]->getY(),
+                ];
                 $vertexVisibility[$vertexIndex] = !isset($hiddenVertices[$index]);
             }
 
             $points = array(
-                $face['vertices2d'][0]->getX() + $offsetX, $face['vertices2d'][0]->getY() + $offsetY,
-                $face['vertices2d'][1]->getX() + $offsetX, $face['vertices2d'][1]->getY() + $offsetY,
-                $face['vertices2d'][2]->getX() + $offsetX, $face['vertices2d'][2]->getY() + $offsetY,
-                $face['vertices2d'][3]->getX() + $offsetX, $face['vertices2d'][3]->getY() + $offsetY,
+                $face['vertices2d'][0]->getX() + $offsetX,
+                $face['vertices2d'][0]->getY() + $offsetY,
+                $face['vertices2d'][1]->getX() + $offsetX,
+                $face['vertices2d'][1]->getY() + $offsetY,
+                $face['vertices2d'][2]->getX() + $offsetX,
+                $face['vertices2d'][2]->getY() + $offsetY,
+                $face['vertices2d'][3]->getX() + $offsetX,
+                $face['vertices2d'][3]->getY() + $offsetY,
             );
             \imagefilledpolygon($image, $points, 4, $white);
         }

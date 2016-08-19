@@ -344,14 +344,16 @@ class LabeledThingInFrame
     /**
      * @return string[]|null
      */
-    public function getGhostClasses() {
+    public function getGhostClasses()
+    {
         return $this->ghostClasses;
     }
 
     /**
      * @return array
      */
-    public function getClassesWithGhostClasses() {
+    public function getClassesWithGhostClasses()
+    {
         if ($this->getGhostClasses() === null) {
             return $this->getClasses();
         }

@@ -30,24 +30,24 @@ class CalibrationFileConverterTest extends Tests\KernelTestCase
             array(
                 __DIR__ . '/CalibrationFileConverter/SMPC16C00103_SE-OOX687_20150616_145418_rgb_c.csv',
                 array(
-                    "rawCalibrationData" => array(
-                        "camera" => "SMPC16_C0_0103",
-                        "intern_px" => "1104",
-                        "intern_py" => "620",
-                        "intern_half" => " true",
-                        "intern_2_fx" => "1220.70739746",
-                        "intern_2_fy" => "1221.07788086",
-                        "intern_2_ga" => "0.0",
-                        "intern_2_xc" => "559.203125",
-                        "intern_2_yc" => "306.796875",
+                    "rawCalibrationData"     => array(
+                        "camera"         => "SMPC16_C0_0103",
+                        "intern_px"      => "1104",
+                        "intern_py"      => "620",
+                        "intern_half"    => " true",
+                        "intern_2_fx"    => "1220.70739746",
+                        "intern_2_fy"    => "1221.07788086",
+                        "intern_2_ga"    => "0.0",
+                        "intern_2_xc"    => "559.203125",
+                        "intern_2_yc"    => "306.796875",
                         "intern_2_kappa" => "[-0.192208706592, 0.0590421349576]",
-                        "extern_h" => "0.0",
-                        "extern_2_X" => "-1.09999997616",
-                        "extern_2_Y" => "0.0799999982119",
-                        "extern_2_Z" => "1.39999997616",
-                        "extern_2_ea" => "[\"Z90X90Z\", 0.013573, 0.003194, 0.010063]"
+                        "extern_h"       => "0.0",
+                        "extern_2_X"     => "-1.09999997616",
+                        "extern_2_Y"     => "0.0799999982119",
+                        "extern_2_Z"     => "1.39999997616",
+                        "extern_2_ea"    => "[\"Z90X90Z\", 0.013573, 0.003194, 0.010063]",
                     ),
-                    "cameraMatrix" => array(
+                    "cameraMatrix"           => array(
                         1220.70739746,
                         0.0,
                         559.203125,
@@ -63,9 +63,9 @@ class CalibrationFileConverterTest extends Tests\KernelTestCase
                         0,
                         0,
                         0,
-                        1
+                        1,
                     ),
-                    "rotationMatrix" => array(
+                    "rotationMatrix"         => array(
                         0.00023690332649533,
                         -0.99999995651502,
                         -0.00017563248235529,
@@ -81,22 +81,22 @@ class CalibrationFileConverterTest extends Tests\KernelTestCase
                         0,
                         0,
                         0,
-                        1
+                        1,
                     ),
-                    "translation" => array(
+                    "translation"            => array(
                         -1.09999997616,
                         0.0799999982119,
-                        1.39999997616
+                        1.39999997616,
                     ),
                     "distortionCoefficients" => array(
                         -0.192208706592,
                         0.0590421349576,
                         0,
                         0,
-                        0
-                    )
-                )
-            )
+                        0,
+                    ),
+                ),
+            ),
         );
     }
 

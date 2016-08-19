@@ -39,8 +39,7 @@ class LabeledThingInFrame implements \IteratorAggregate
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Model\LabelingTask $task,
         Service\GhostClassesPropagation $ghostClassesPropagation
-    )
-    {
+    ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->task                      = $task;
         $this->ghostClassesPropagation   = $ghostClassesPropagation;

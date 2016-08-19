@@ -45,8 +45,7 @@ class LabelingGroup extends Controller\Base
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\User $userFacade,
         Storage\TokenStorage $tokenStorage
-    )
-    {
+    ) {
         $this->labelingGroupFacade = $labelingGroupFacade;
         $this->userFacade          = $userFacade;
         $this->tokenStorage        = $tokenStorage;
@@ -103,7 +102,7 @@ class LabelingGroup extends Controller\Base
 
         $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator($user);
         $users = [];
-        foreach($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
+        foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
             $users[$user->getId()] = $user;
         }
 
@@ -130,7 +129,7 @@ class LabelingGroup extends Controller\Base
     {
         $labelingGroups = $this->labelingGroupFacade->findAll();
         $users = [];
-        foreach($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
+        foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
             $users[$user->getId()] = $user;
         }
 
@@ -156,7 +155,7 @@ class LabelingGroup extends Controller\Base
     public function getGroupAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
     {
         $users = [];
-        foreach($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+        foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
             $users[$user->getId()] = $user;
         }
 
@@ -188,7 +187,7 @@ class LabelingGroup extends Controller\Base
         $this->labelingGroupFacade->save($labelingGroup);
 
         $users = [];
-        foreach($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+        foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
             $users[$user->getId()] = $user;
         }
 
@@ -228,7 +227,7 @@ class LabelingGroup extends Controller\Base
         $this->labelingGroupFacade->save($labelingGroup);
 
         $users = [];
-        foreach($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+        foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
             $users[$user->getId()] = $user;
         }
 
@@ -277,7 +276,7 @@ class LabelingGroup extends Controller\Base
             );
         }, $labelingGroups);
         $users = [];
-        foreach($labelingUserIds as $labelingUserId) {
+        foreach ($labelingUserIds as $labelingUserId) {
             $users = array_merge($users, $labelingUserId);
         }
         return $this->userFacade->getUserByIds(array_unique($users), false);

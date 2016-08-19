@@ -314,7 +314,7 @@ class Linear implements Interpolation\Algorithm
 
         if (count($numberOfCurrentInvisibleVertices) == 4) {
             $invisibleVerticesIndex = $numberOfCurrentInvisibleVertices;
-        }else{
+        } else {
             $invisibleVerticesIndex = $numberOfEndInvisibleVertices;
         }
 

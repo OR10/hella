@@ -88,8 +88,7 @@ class Csv
         Service\ClassColumnsFactory $classColumnsFactory,
         Facade\TaskConfiguration $taskConfiguration,
         Service\GhostClassesPropagation $ghostClassesPropagation
-    )
-    {
+    ) {
         $this->exporterFacade                   = $exporterFacade;
         $this->projectFacade                    = $projectFacade;
         $this->labeledThingInFrameFacade        = $labeledThingInFrameFacade;

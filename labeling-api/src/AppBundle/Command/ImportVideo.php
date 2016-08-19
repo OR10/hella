@@ -68,16 +68,13 @@ class ImportVideo extends Base
         $this->writeSection($output, "Importing video from file <comment>{$filename}</>");
 
         try {
-            $stream    = fopen($filename, 'r+');
-            $info      = pathinfo($filename);
-            $videoName = basename($filename);
+            $info                = pathinfo($filename);
+            $videoName           = basename($filename);
+            $basename            = basename($filename, '.' . $info['extension']);
+            $calibrationFilePath = sprintf('%s/%s_calib.csv', $info['dirname'], $basename);
 
-            $calibrationFilePath = null;
-            if (is_file($info['dirname'] . '/' . basename($filename, '.' . $info['extension']) . '_calib.csv')) {
-                $calibrationFilePath = $info['dirname'] . '/' . basename(
-                        $filename,
-                        '.' . $info['extension']
-                    ) . '_calib.csv';
+            if (!is_file($calibrationFilePath)) {
+                $calibrationFilePath = null;
             }
 
             $projectName = $input->getArgument('projectName');

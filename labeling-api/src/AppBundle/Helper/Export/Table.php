@@ -18,11 +18,11 @@ class Table
      * Table constructor.
      *
      * @param ColumnGroup $columnGroup
-     * @param Row[] $rows
+     * @param Row[]       $rows
      */
     public function __construct(ColumnGroup $columnGroup, array $rows = array())
     {
-        $this->rows = $rows;
+        $this->rows        = $rows;
         $this->columnGroup = $columnGroup;
     }
 
@@ -66,7 +66,7 @@ class Table
 
         // Add header line
         $headerColumns = array();
-        foreach($this->columnGroup->getColumns() as $column) {
+        foreach ($this->columnGroup->getColumns() as $column) {
             $headerColumns[] = $column->toCsv($enclosure);
         }
         $rowStrings[] = implode($delimiter, $headerColumns);

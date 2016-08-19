@@ -48,7 +48,7 @@ class Export
     public function __construct(Project $project, $filename, $binaryData, $contentType, \DateTime $date = null)
     {
         $this->projectId   = $project->getId();
-        if($date === null) {
+        if ($date === null) {
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
         $this->date = $date;

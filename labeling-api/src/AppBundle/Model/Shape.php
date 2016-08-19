@@ -29,10 +29,10 @@ abstract class Shape
             throw new \RuntimeException("Unsupported type '{$shapeAsArray['type']}'");
         }
 
-		return call_user_func(
-			[static::$availableShapes[$shapeAsArray['type']], 'createFromArray'],
-			$shapeAsArray
-		);
+        return call_user_func(
+            [static::$availableShapes[$shapeAsArray['type']], 'createFromArray'],
+            $shapeAsArray
+        );
     }
 
     /**

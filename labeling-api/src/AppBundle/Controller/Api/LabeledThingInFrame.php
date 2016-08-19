@@ -128,7 +128,7 @@ class LabeledThingInFrame extends Controller\Base
             foreach ($shapes as $shape) {
                 Model\Shape::createFromArray($shape);
             }
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new Exception\BadRequestHttpException($e->getMessage());
         }
         $labeledThingInFrame->setShapes($shapes);

@@ -133,7 +133,7 @@ class Kitti implements Service\TaskExporter
     {
         $frameNumberMapping = $task->getFrameNumberMapping();
         $result = array();
-        foreach($frameNumberMapping as $frameNumber) {
+        foreach ($frameNumberMapping as $frameNumber) {
             $result[$frameNumber] = [];
         }
 

@@ -37,7 +37,7 @@ class Task
         $phase
     ) {
         $this->totalRows = $numberOfTotalDocuments;
-        $users = [];
+        $users           = [];
         foreach ($labelingTasks as $labelingTask) {
             $user = $labelingTask->getUserId() === null ? null : $userFacade->getUserById($labelingTask->getUserId());
 
@@ -47,41 +47,44 @@ class Task
                         function ($historyEntry) {
                             return $historyEntry['userId'];
                         },
-                        $labelingTask->getAssignmentHistory() === null ? [] : $labelingTask->getAssignmentHistory())
-                , false)
-                , $users
+                        $labelingTask->getAssignmentHistory() === null ? [] : $labelingTask->getAssignmentHistory()
+                    ),
+                    false
+                ),
+                $users
             );
 
             $this->result['tasks'][] = [
-                'id' => $labelingTask->getId(),
-                'rev' => $labelingTask->getRev(),
-                'descriptionTitle' => $labelingTask->getDescriptionTitle(),
-                'descriptionText' => $labelingTask->getDescriptionText(),
-                'requiredImageTypes' => $labelingTask->getRequiredImageTypes(),
-                'status' => $labelingTask->getRawStatus(),
-                'taskType' => $labelingTask->getTaskType(),
-                'predefinedClasses' => $labelingTask->getPredefinedClasses(),
-                'drawingTool' => $labelingTask->getDrawingTool(),
-                'drawingToolOptions' => $labelingTask->getDrawingToolOptions(),
-                'labelStructure' => $labelingTask->getLabelStructure(),
-                'labelStructureUi' => $labelingTask->getLabelStructureUi(),
-                'labelInstruction' => $labelingTask->getLabelInstruction(),
+                'id'                          => $labelingTask->getId(),
+                'rev'                         => $labelingTask->getRev(),
+                'descriptionTitle'            => $labelingTask->getDescriptionTitle(),
+                'descriptionText'             => $labelingTask->getDescriptionText(),
+                'requiredImageTypes'          => $labelingTask->getRequiredImageTypes(),
+                'status'                      => $labelingTask->getRawStatus(),
+                'taskType'                    => $labelingTask->getTaskType(),
+                'predefinedClasses'           => $labelingTask->getPredefinedClasses(),
+                'drawingTool'                 => $labelingTask->getDrawingTool(),
+                'drawingToolOptions'          => $labelingTask->getDrawingToolOptions(),
+                'labelStructure'              => $labelingTask->getLabelStructure(),
+                'labelStructureUi'            => $labelingTask->getLabelStructureUi(),
+                'labelInstruction'            => $labelingTask->getLabelInstruction(),
                 'minimalVisibleShapeOverflow' => $labelingTask->getMinimalVisibleShapeOverflow(),
-                'frameNumberMapping' => $labelingTask->getFrameNumberMapping(),
-                'metaData' => $labelingTask->getMetaData(),
-                'reopen' => $labelingTask->getReopenByPhase(),
-                'createdAt' => $labelingTask->getCreatedAt(),
-                'userId' => $labelingTask->getUserId(),
-                'user' => $user instanceof Model\User ? $user->getUsername() : null,
-                'video' => $videoFacade->find($labelingTask->getVideoId()),
-                'project' => $projectFacade->find($labelingTask->getProjectId()),
-                'assignmentHistory' => $labelingTask->getAssignmentHistory(),
+                'frameNumberMapping'          => $labelingTask->getFrameNumberMapping(),
+                'metaData'                    => $labelingTask->getMetaData(),
+                'reopen'                      => $labelingTask->getReopenByPhase(),
+                'createdAt'                   => $labelingTask->getCreatedAt(),
+                'userId'                      => $labelingTask->getUserId(),
+                'user'                        => $user instanceof Model\User ? $user->getUsername() : null,
+                'video'                       => $videoFacade->find($labelingTask->getVideoId()),
+                'project'                     => $projectFacade->find($labelingTask->getProjectId()),
+                'assignmentHistory'           => $labelingTask->getAssignmentHistory(),
             ];
         }
         /** @var Model\User $user */
         foreach ($users as $user) {
-            if (!isset($this->result['users'][$user->getId()]))
-            $this->result['users'][$user->getId()] = $user;
+            if (!isset($this->result['users'][$user->getId()])) {
+                $this->result['users'][$user->getId()] = $user;
+            }
         }
     }
 }

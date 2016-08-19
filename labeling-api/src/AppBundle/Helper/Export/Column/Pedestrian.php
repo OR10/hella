@@ -6,7 +6,8 @@ use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Cell;
 use AppBundle\Model;
 
-class Pedestrian extends Export\Column {
+class Pedestrian extends Export\Column
+{
     const TYPE_X = 'type.x';
     const TYPE_Y = 'type.y';
     const TYPE_WIDTH = 'type.width';
@@ -24,7 +25,8 @@ class Pedestrian extends Export\Column {
      *
      * @param string $type
      */
-    public function __construct($type) {
+    public function __construct($type)
+    {
         $this->type = $type;
     }
 
@@ -35,7 +37,7 @@ class Pedestrian extends Export\Column {
         Model\LabeledThingInFrame $labeledThingInFrame
     ) {
         $shapes = $labeledThingInFrame->getShapes();
-        if(count($shapes) === 0) {
+        if (count($shapes) === 0) {
             return new Cell\DefaultValue($this);
         }
 
@@ -62,7 +64,7 @@ class Pedestrian extends Export\Column {
             case self::TYPE_WIDTH:
                 return new Cell\Integer($width);
             case self::TYPE_HEIGHT:
-            return new Cell\Integer($height);
+                return new Cell\Integer($height);
             default:
                 throw new \RuntimeException('Unknown Pedestrian Column Type: ' . $this->type);
         }

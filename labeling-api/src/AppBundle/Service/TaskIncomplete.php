@@ -32,8 +32,7 @@ class TaskIncomplete
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade
-    )
-    {
+    ) {
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade = $labeledThingFacade;
@@ -41,7 +40,7 @@ class TaskIncomplete
 
     public function revalideLabeledThingInFrameIncompleteStatus(Model\LabeledThing $labeledThing, Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameIndex()+1, 0 , null);
+        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameIndex()+1, 0, null);
 
         usort($labeledThingInFrames, function($a, $b) {
             if ($a->getFrameIndex() === $b->getFrameIndex()) {
@@ -54,7 +53,7 @@ class TaskIncomplete
         $incompleteStatus = $labeledThingInFrame->getIncomplete();
 
         $updatedLabeledThingInFrame = array();
-        foreach($labeledThingInFrames as $labeledThingInFrameToCheck) {
+        foreach ($labeledThingInFrames as $labeledThingInFrameToCheck) {
             if (!empty($labeledThingInFrameToCheck->getClasses())) {
                 break;
             }
@@ -71,7 +70,7 @@ class TaskIncomplete
         if (empty($labeledThingInFrames)) {
             return false;
         }
-        foreach($labeledThingInFrames as $labeledThingInFrame) {
+        foreach ($labeledThingInFrames as $labeledThingInFrame) {
             if ($this->isLabeledThingInFrameIncomplete($labeledThingInFrame)) {
                 return true;
             }

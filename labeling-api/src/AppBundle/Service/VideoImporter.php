@@ -261,7 +261,6 @@ class VideoImporter
                 $video->getId(),
                 $video->getSourceVideoPath(),
                 ImageType\Base::create($imageTypeName)
-
             );
 
             $amqpFacade = $this->facadeAMQP;

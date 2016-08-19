@@ -47,7 +47,7 @@ class LabeledFrame extends Controller\Base
         Facade\LabeledFrame $labeledFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\TaskIncomplete $taskIncompleteService
-    ){
+    ) {
         $this->labeledFrameFacade = $labeledFrameFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->taskIncompleteService = $taskIncompleteService;

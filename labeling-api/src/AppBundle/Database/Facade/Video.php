@@ -107,12 +107,13 @@ class Video
 
     /**
      * Fetch all videos with a certain name
-     * 
+     *
      * @param string $name
      *
      * @return Model\Video[]
      */
-    public function fetchAllByName($name) {
+    public function fetchAllByName($name)
+    {
         return $this->documentManager
             ->createQuery('annostation_video', 'by_name')
             ->setKey([$name])

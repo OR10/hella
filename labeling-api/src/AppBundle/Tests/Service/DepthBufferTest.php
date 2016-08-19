@@ -55,13 +55,13 @@ class DepthBufferTest extends Tests\KernelTestCase
      * @dataProvider dataProvider
      *
      * @param Shapes\Cuboid3d $cuboid3d
-     * @param array $expectedVertices
-     * @param array $expectedVertexVisibility
+     * @param array           $expectedVertices
+     * @param array           $expectedVertexVisibility
      */
     public function testDepthBuffer(Shapes\Cuboid3d $cuboid3d, array $expectedVertices, array $expectedVertexVisibility)
     {
         $calibrationData = [
-            'cameraMatrix' => [
+            'cameraMatrix'           => [
                 1220.70739746,
                 0,
                 559.203125,
@@ -77,9 +77,9 @@ class DepthBufferTest extends Tests\KernelTestCase
                 0,
                 0,
                 0,
-                1
+                1,
             ],
-            'rotationMatrix' => [
+            'rotationMatrix'         => [
                 0,
                 -1,
                 0,
@@ -95,20 +95,20 @@ class DepthBufferTest extends Tests\KernelTestCase
                 0,
                 0,
                 0,
-                1
+                1,
             ],
-            'translation' => [
+            'translation'            => [
                 -1.09999997616,
                 0.0799999982119,
-                1.39999997616
+                1.39999997616,
             ],
             'distortionCoefficients' => [
                 -0.192208706592,
                 0.0590421349576,
                 0,
                 0,
-                0
-            ]
+                0,
+            ],
         ];
 
         $vertices = $this->depthBufferService->getVertices($cuboid3d, $calibrationData);
