@@ -146,7 +146,7 @@ class BatchUpload extends Controller\Base
                     );
                 }
             } finally {
-                // we ignore errors here since this directory will be cleaned up periodically
+                // we ignore errors here since this directory will be cleaned up periodically anyway
                 @unlink($targetPath);
             }
         }
@@ -177,20 +177,18 @@ class BatchUpload extends Controller\Base
             )
         );
 
-        try {
-            $user = $this->tokenStorage->getToken()->getUser();
+        if (!empty($videoIds)) {
+            try {
+                $user   = $this->tokenStorage->getToken()->getUser();
+                $videos = $this->videoFacade->findById($videoIds);
 
-            foreach ($videoIds as $videoId) {
-                $video = $this->videoFacade->find($videoId);
-                if ($video === null) {
-                    throw new HttpKernel\Exception\BadRequestHttpException(sprintf('Video not found: %s', $videoId));
+                foreach ($videos as $video) {
+                    $tasks = array_merge($tasks, $this->taskCreator->createTasks($user, $project, $video));
                 }
-
-                $tasks = array_merge($tasks, $this->taskCreator->createTasks($user, $project, $video));
+            } catch (\Exception $exception) {
+                $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
+                throw $exception;
             }
-        } catch (\Exception $exception) {
-            $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-            throw $exception;
         }
 
         return new View\View(
