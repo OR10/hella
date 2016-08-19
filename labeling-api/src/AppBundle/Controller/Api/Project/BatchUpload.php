@@ -39,6 +39,11 @@ class BatchUpload extends Controller\Base
     private $videoFacade;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $taskFacade;
+
+    /**
      * @var Service\VideoImporter
      */
     private $videoImporter;
@@ -67,6 +72,7 @@ class BatchUpload extends Controller\Base
      * @param Storage\TokenStorage  $tokenStorage
      * @param Facade\Project        $projectFacade
      * @param Facade\Video          $videoFacade
+     * @param Facade\LabelingTask   $taskFacade
      * @param Service\VideoImporter $videoImporter
      * @param Service\TaskCreator   $taskCreator
      * @param Twig\TwigEngine       $twigEngine
@@ -77,6 +83,7 @@ class BatchUpload extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
+        Facade\LabelingTask $taskFacade,
         Service\VideoImporter $videoImporter,
         Service\TaskCreator $taskCreator,
         Twig\TwigEngine $twigEngine,
@@ -86,6 +93,7 @@ class BatchUpload extends Controller\Base
         $this->tokenStorage   = $tokenStorage;
         $this->projectFacade  = $projectFacade;
         $this->videoFacade    = $videoFacade;
+        $this->taskFacade     = $taskFacade;
         $this->videoImporter  = $videoImporter;
         $this->taskCreator    = $taskCreator;
         $this->twigEngine     = $twigEngine;
@@ -159,14 +167,25 @@ class BatchUpload extends Controller\Base
     {
         $tasks = [];
 
+        $videoIds = array_diff(
+            $project->getVideoIds(),
+            array_map(
+                function (Model\LabelingTask $task) {
+                    return $task->getVideoId();
+                },
+                $this->taskFacade->findByVideoIds($project->getVideoIds())
+            )
+        );
+
         try {
             $user = $this->tokenStorage->getToken()->getUser();
 
-            foreach ($project->getVideoIds() as $videoId) {
+            foreach ($videoIds as $videoId) {
                 $video = $this->videoFacade->find($videoId);
                 if ($video === null) {
-                    // TODO: log or throw?
+                    throw new HttpKernel\Exception\BadRequestHttpException(sprintf('Video not found: %s', $videoId));
                 }
+
                 $tasks = array_merge($tasks, $this->taskCreator->createTasks($user, $project, $video));
             }
         } catch (\Exception $exception) {
