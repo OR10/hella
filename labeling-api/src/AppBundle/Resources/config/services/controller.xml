@@ -15,6 +15,7 @@
                 id="annostation.labeling_api.controller.api.video"
                 class="AppBundle\Controller\Api\Video">
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data" />
         </service>
         <service
                 id="annostation.labeling_api.controller.api.users"

@@ -10,6 +10,7 @@ use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use AppBundle\Response;
 
 /**
  * @Rest\Prefix("/api/video")
@@ -24,9 +25,19 @@ class Video extends Controller\Base
      */
     private $videoFacade;
 
-    public function __construct(Facade\Video $videoFacade)
+    /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
+    /**
+     * @param Facade\Video           $videoFacade
+     * @param Facade\CalibrationData $calibrationDataFacade
+     */
+    public function __construct(Facade\Video $videoFacade, Facade\CalibrationData $calibrationDataFacade)
     {
-        $this->videoFacade = $videoFacade;
+        $this->videoFacade           = $videoFacade;
+        $this->calibrationDataFacade = $calibrationDataFacade;
     }
 
     /**
@@ -34,7 +45,9 @@ class Video extends Controller\Base
      */
     public function listAction()
     {
-        return View\View::create()->setData(['result' => $this->videoFacade->findAll()]);
+        return new View\View(
+            new Response\Videos($this->videoFacade->findAll(), $this->calibrationDataFacade)
+        );
     }
 
     /**
@@ -42,10 +55,12 @@ class Video extends Controller\Base
      *
      * @param $video
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function getVideoAction(Model\Video $video)
     {
-        return View\View::create()->setData(['result' => $video]);
+        return new View\View(
+            new Response\Video($video, $this->calibrationDataFacade)
+        );
     }
 }
