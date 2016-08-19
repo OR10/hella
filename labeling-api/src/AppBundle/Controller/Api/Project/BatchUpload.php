@@ -114,7 +114,8 @@ class BatchUpload extends Controller\Base
      */
     public function uploadAction(Model\Project $project)
     {
-        $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $project->getId()]);
+        $user                  = $this->tokenStorage->getToken()->getUser();
+        $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);
         $chunkDirectory        = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
 
         $this->ensureDirectoryExists($projectCacheDirectory);
@@ -132,6 +133,7 @@ class BatchUpload extends Controller\Base
 
         if ($file->validateFile()) {
             $targetPath = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $request->getFileName()]);
+
             try {
                 $file->save($targetPath);
 
@@ -233,7 +235,7 @@ class BatchUpload extends Controller\Base
     private function ensureDirectoryExists(string $directory)
     {
         if (!is_dir($directory)) {
-            if (!mkdir($directory)) {
+            if (!mkdir($directory, 0777, true)) {
                 throw new \RuntimeException(sprintf('Failed to create directory: %s', $directory));
             }
         }
