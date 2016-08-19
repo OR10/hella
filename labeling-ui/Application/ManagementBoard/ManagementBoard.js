@@ -10,6 +10,8 @@ import TitleBarDirective from './Directives/TitleBarDirective';
 
 import ProjectsController from './Controllers/ProjectsController';
 import ProjectsView from './Views/ProjectsView.html!';
+import ProjectCreateController from './Controllers/ProjectCreateController';
+import ProjectCreateView from './Views/ProjectCreateView.html!';
 import ProjectGateway from './Gateways/ProjectGateway';
 import ProjectListDirective from './Directives/ProjectListDirective';
 
@@ -67,6 +69,17 @@ class ManagementBoard extends Module {
           controller: ProjectsController,
           controllerAs: 'vm',
           template: ProjectsView,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.projects.create', {
+      url: '/create',
+      views: {
+        '@': {
+          controller: ProjectCreateController,
+          controllerAs: 'vm',
+          template: ProjectCreateView,
         },
       },
     });
