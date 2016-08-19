@@ -254,4 +254,12 @@ class Video
     {
         $this->calibrationId = $calibrationId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCalibrationId()
+    {
+        return $this->calibrationId;
+    }
 }
