@@ -135,6 +135,22 @@ class ProjectGateway {
         throw new Error(`Failed closing project (setting to state done): ${projectId}.`);
       });
   }
+
+  /**
+   * @param {Object} data
+   * @returns {*}
+   */
+  createProject(data) {
+    const url = this._apiService.getApiUrl(`/project`);
+    return this._bufferedHttp.post(url, data, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed creating the project`);
+      });
+  }
 }
 
 ProjectGateway.$inject = ['ApiService', 'bufferedHttp'];
