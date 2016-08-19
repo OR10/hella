@@ -129,9 +129,16 @@ class BatchUpload extends Controller\Base
             throw new HttpKernel\Exception\BadRequestHttpException();
         }
 
-        if ($project->hasVideo($request->getFileName())) {
+        if ($this->isVideoFile($request->getFileName()) && $project->hasVideo($request->getFileName())) {
             throw new HttpKernel\Exception\ConflictHttpException(
                 sprintf('Video already exists in project: %s', $request->getFileName())
+            );
+        } elseif ($this->isCalibrationFile($request->getFileName()) && $project->hasCalibrationData(
+                $request->getFileName()
+            )
+        ) {
+            throw new HttpKernel\Exception\ConflictHttpException(
+                sprintf('Calibration data already exists in project: %s', $request->getFileName())
             );
         }
 

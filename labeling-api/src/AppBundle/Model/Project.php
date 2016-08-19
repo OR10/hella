@@ -442,13 +442,13 @@ class Project
     }
 
     /**
-     * @param CalibrationData $calibrationData
+     * @param string $calibrationDataName
      *
      * @return bool
      */
-    public function hasCalibrationData(CalibrationData $calibrationData)
+    public function hasCalibrationData(string $calibrationDataName)
     {
-        $videoKey = $this->getVideoKey($calibrationData->getName());
+        $videoKey = $this->getVideoKey($calibrationDataName);
 
         return is_array($this->calibrations) && array_key_exists($videoKey, $this->calibrations);
     }
@@ -458,7 +458,7 @@ class Project
      */
     public function addCalibrationData(CalibrationData $calibrationData)
     {
-        if ($this->hasCalibrationData($calibrationData)) {
+        if ($this->hasCalibrationData($calibrationData->getName())) {
             throw new \InvalidArgumentException(
                 sprintf('Calibration data already exists: %s', $calibrationData->getName())
             );
