@@ -356,7 +356,7 @@ class Init extends Base
 
             $video = $this->videoImporterService->importVideo($project, $fileName, $path, $lossless);
 
-            $this->taskCreator->createTasks($this->users['admin'], $project, $video);
+            $this->taskCreator->createTasks($project, $video, $this->users['admin']);
         }
     }
 }

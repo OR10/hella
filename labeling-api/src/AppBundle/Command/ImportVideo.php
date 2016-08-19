@@ -16,12 +16,29 @@ class ImportVideo extends Base
     private $videoImporterService;
 
     /**
-     * @param Service\VideoImporter $videoImporterService
+     * @var Facade\Project
      */
-    public function __construct(Service\VideoImporter $videoImporterService)
-    {
+    private $projectFacade;
+
+    /**
+     * @var Service\TaskCreator
+     */
+    private $taskCreator;
+
+    /**
+     * @param Facade\Project        $projectFacade
+     * @param Service\VideoImporter $videoImporterService
+     * @param Service\TaskCreator   $taskCreator
+     */
+    public function __construct(
+        Facade\Project $projectFacade,
+        Service\VideoImporter $videoImporterService,
+        Service\TaskCreator $taskCreator
+    ) {
         parent::__construct();
         $this->videoImporterService = $videoImporterService;
+        $this->projectFacade        = $projectFacade;
+        $this->taskCreator          = $taskCreator;
     }
 
     protected function configure()
@@ -57,33 +74,38 @@ class ImportVideo extends Base
 
             $calibrationFilePath = null;
             if (is_file($info['dirname'] . '/' . basename($filename, '.' . $info['extension']) . '_calib.csv')) {
-                $calibrationFilePath = $info['dirname'] . '/' . basename($filename, '.' . $info['extension']) . '_calib.csv';
+                $calibrationFilePath = $info['dirname'] . '/' . basename(
+                        $filename,
+                        '.' . $info['extension']
+                    ) . '_calib.csv';
             }
 
-            $labelInstructions = array(
-                array(
-                    'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
-                    'drawingTool' => 'pedestrian',
-                    'taskConfiguration' => null,
-                )
+            $projectName = $input->getArgument('projectName');
+            $project     = $this->projectFacade->findByName($projectName);
+            if ($project === null) {
+                $project = Model\Project::create($projectName, null, null, [], 1, 1, 0);
+
+                $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'pedestrian');
+
+                $this->projectFacade->save($project);
+            }
+
+            $video = $this->videoImporterService->importVideo(
+                $project,
+                $videoName,
+                $filename,
+                $input->getOption('lossless')
             );
 
-            $tasks = $this->videoImporterService->import(
-                $videoName,
-                $input->getArgument('projectName'),
-                $filename,
-                $calibrationFilePath,
-                $input->getOption('lossless'),
-                $input->getOption('chunk-size'),
-                true,
-                false,
-                $labelInstructions
-            );
+            if ($calibrationFilePath !== null) {
+                $this->videoImporterService->importCalibrationData($project, $calibrationFilePath);
+            }
+
+            $tasks = $this->taskCreator->createTasks($project, $video);
 
             if (count($tasks) > 0) {
                 $this->writeInfo($output, "VideoId: <comment>{$tasks[0]->getVideoId()}</>");
             }
-
 
             foreach ($tasks as $task) {
                 $this->writeInfo($output, "Task type: <comment> {$task->getTaskType()}</>");
