@@ -99,15 +99,15 @@ class VideoImporter
 
     /**
      * @param Model\Project $project
+     * @param string        $videoName
      * @param string        $videoFilePath
      * @param bool          $lossless
      *
      * @return Model\Video
      */
-    public function importVideo(Model\Project $project, string $videoFilePath, bool $lossless)
+    public function importVideo(Model\Project $project, string $videoName, string $videoFilePath, bool $lossless)
     {
         $imageTypes = $this->getImageTypes($lossless);
-        $videoName  = basename($videoFilePath);
         $video      = new Model\Video($videoName);
 
         $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
@@ -234,13 +234,19 @@ class VideoImporter
             );
             if ($legacyExport) {
                 $project->setAvailableExports(['legacy']);
-                foreach($labelInstructions as $labelInstruction) {
-                    $project->addLegacyTaskInstruction($labelInstruction['instruction'], $labelInstruction['drawingTool']);
+                foreach ($labelInstructions as $labelInstruction) {
+                    $project->addLegacyTaskInstruction(
+                        $labelInstruction['instruction'],
+                        $labelInstruction['drawingTool']
+                    );
                 }
             } else {
                 $project->setAvailableExports(['genericXml']);
-                foreach($labelInstructions as $labelInstruction) {
-                    $project->addGenericXmlTaskInstruction($labelInstruction['instruction'], $labelInstruction['taskConfiguration']);
+                foreach ($labelInstructions as $labelInstruction) {
+                    $project->addGenericXmlTaskInstruction(
+                        $labelInstruction['instruction'],
+                        $labelInstruction['taskConfiguration']
+                    );
                 }
             }
             $this->projectFacade->save($project);

@@ -413,7 +413,7 @@ class LabelingTask
     {
         foreach ($this->getRequiredImageTypes() as $requiredImageType) {
             if (!$video->isImageTypeConverted($requiredImageType)) {
-                return;
+                return $this;
             }
         }
         $this->setStatus(self::PHASE_LABELING, self::STATUS_TODO);

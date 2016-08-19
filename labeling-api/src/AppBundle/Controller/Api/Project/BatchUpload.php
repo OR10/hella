@@ -129,9 +129,16 @@ class BatchUpload extends Controller\Base
             throw new HttpKernel\Exception\BadRequestHttpException();
         }
 
-        if ($project->hasVideo($request->getFileName())) {
+        if ($this->isVideoFile($request->getFileName()) && $project->hasVideo($request->getFileName())) {
             throw new HttpKernel\Exception\ConflictHttpException(
                 sprintf('Video already exists in project: %s', $request->getFileName())
+            );
+        } elseif ($this->isCalibrationFile($request->getFileName()) && $project->hasCalibrationData(
+                $request->getFileName()
+            )
+        ) {
+            throw new HttpKernel\Exception\ConflictHttpException(
+                sprintf('Calibration data already exists in project: %s', $request->getFileName())
             );
         }
 
@@ -145,7 +152,7 @@ class BatchUpload extends Controller\Base
 
                 if ($this->isVideoFile($request->getFileName())) {
                     // for now, we always use compressed images
-                    $this->videoImporter->importVideo($project, $targetPath, false);
+                    $this->videoImporter->importVideo($project, basename($targetPath), $targetPath, false);
                 } elseif ($this->isCalibrationFile($request->getFileName())) {
                     $this->videoImporter->importCalibrationData($project, $targetPath);
                 } else {
@@ -193,7 +200,7 @@ class BatchUpload extends Controller\Base
                 $videos = $this->videoFacade->findById($videoIds);
 
                 foreach ($videos as $video) {
-                    $tasks = array_merge($tasks, $this->taskCreator->createTasks($user, $project, $video));
+                    $tasks = array_merge($tasks, $this->taskCreator->createTasks($project, $video, $user));
                 }
             } catch (\Exception $exception) {
                 $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
