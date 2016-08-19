@@ -145,6 +145,8 @@ class BatchUpload extends Controller\Base
                         sprintf('Invalid file: %s', $request->getFileName())
                     );
                 }
+            } catch (\InvalidArgumentException $exception) {
+                throw new HttpKernel\Exception\ConflictHttpException($exception->getMessage(), $exception);
             } finally {
                 // we ignore errors here since this directory will be cleaned up periodically anyway
                 @unlink($targetPath);
