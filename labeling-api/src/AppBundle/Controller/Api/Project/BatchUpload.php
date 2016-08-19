@@ -145,7 +145,7 @@ class BatchUpload extends Controller\Base
 
                 if ($this->isVideoFile($request->getFileName())) {
                     // for now, we always use compressed images
-                    $this->videoImporter->importVideo($project, $targetPath, false);
+                    $this->videoImporter->importVideo($project, basename($targetPath), $targetPath, false);
                 } elseif ($this->isCalibrationFile($request->getFileName())) {
                     $this->videoImporter->importCalibrationData($project, $targetPath);
                 } else {

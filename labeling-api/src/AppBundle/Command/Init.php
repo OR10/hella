@@ -23,6 +23,11 @@ class Init extends Base
     private $videoImporterService;
 
     /**
+     * @var Service\TaskCreator
+     */
+    private $taskCreator;
+
+    /**
      * @var string
      */
     private $couchDatabase;
@@ -31,35 +36,70 @@ class Init extends Base
      * @var string
      */
     private $userPassword;
+
     /**
      * @var Facade\User
      */
     private $userFacade;
 
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
+     * @var Model\User[]
+     */
+    private $users = [];
+
+    /**
+     * Init constructor.
+     *
+     * @param CouchDB\CouchDBClient $couchClient
+     * @param Service\VideoImporter $videoImporterService
+     * @param Service\TaskCreator   $taskCreator
+     * @param                       $couchDatabase
+     * @param                       $userPassword
+     * @param                       $cacheDir
+     * @param                       $frameCdnDir
+     * @param Facade\User           $userFacade
+     * @param Facade\Project        $projectFacade
+     */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
         Service\VideoImporter $videoImporterService,
+        Service\TaskCreator $taskCreator,
         $couchDatabase,
         $userPassword,
         $cacheDir,
         $frameCdnDir,
-        Facade\User $userFacade
+        Facade\User $userFacade,
+        Facade\Project $projectFacade
     ) {
         parent::__construct();
 
         $this->couchClient          = $couchClient;
         $this->videoImporterService = $videoImporterService;
+        $this->taskCreator          = $taskCreator;
         $this->couchDatabase        = (string) $couchDatabase;
         $this->userPassword         = (string) $userPassword;
         $this->cacheDir             = (string) $cacheDir;
         $this->frameCdnDir          = (string) $frameCdnDir;
         $this->userFacade           = $userFacade;
+        $this->projectFacade        = $projectFacade;
     }
 
     protected function configure()
     {
         $this->setName('annostation:init')
             ->setDescription('Initializes the database to a clean known state')
+            ->addOption(
+                'video-base-path',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Base path for importing videos',
+                'http://192.168.123.7'
+            )
             ->addOption(
                 'drop-database',
                 null,
@@ -102,7 +142,13 @@ class Init extends Base
             return 1;
         }
 
-        if (!$this->downloadSampleVideo($output, $input->getOption('skip-import'), $input->getOption('lossless'))) {
+        if (!$this->downloadSampleVideo(
+            $output,
+            $input->getOption('video-base-path'),
+            $input->getOption('skip-import'),
+            $input->getOption('lossless')
+        )
+        ) {
             return 1;
         }
     }
@@ -206,6 +252,8 @@ class Init extends Base
 
                 $this->userFacade->updateUser($user);
 
+                $this->users[$user->getUsername()] = $user;
+
                 $this->writeInfo(
                     $output,
                     "Created user <comment>{$username}</comment> with password: <comment>{$this->userPassword}</comment>"
@@ -265,7 +313,7 @@ class Init extends Base
         return true;
     }
 
-    private function downloadSampleVideo(OutputInterface $output, $skipImport, $lossless)
+    private function downloadSampleVideo(OutputInterface $output, string $videoBasePath, $skipImport, $lossless)
     {
         $this->writeSection($output, 'Video Import');
 
@@ -275,17 +323,16 @@ class Init extends Base
         }
 
         try {
-            $path = $this->importVideos(
-                array('anno_short.avi', 'anno_night.avi'),
-                $output,
-                $lossless
-            );
-        } catch (\Exception $e) {
-            $this->writeError(
-                $output,
-                $e->getMessage()
-            );
+            $project = Model\Project::create('Example project', null, null, [], 1, 1, 0);
 
+            $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'pedestrian');
+            $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'rectangle');
+
+            $this->projectFacade->save($project);
+
+            $this->importVideos($project, $videoBasePath, ['anno_short.avi', 'anno_night.avi'], $output, $lossless);
+        } catch (\Exception $e) {
+            $this->writeError($output, $e->getMessage());
             return false;
         }
 
@@ -293,52 +340,23 @@ class Init extends Base
     }
 
     /**
-     * @param array $fileNames
+     * @param Model\Project   $project
+     * @param string          $videoBasePath
+     * @param array           $fileNames
      * @param OutputInterface $output
-     * @param $lossless
+     * @param                 $lossless
      */
-    private function importVideos(array $fileNames, OutputInterface $output, $lossless)
+    private function importVideos(Model\Project $project, string $videoBasePath, array $fileNames, OutputInterface $output, $lossless)
     {
         foreach($fileNames as $fileName) {
-            $this->writeInfo(
-                $output,
-                "Importing default video <comment>http://192.168.123.7/" . $fileName . "</comment>"
-            );
+            $sourcePath = sprintf('%s/%s', $videoBasePath, $fileName);
+            $this->writeInfo($output, sprintf('Importing default video <comment>%s</comment>', $sourcePath));
             $path = tempnam($this->cacheDir, 'anno_sample_videos');
-            file_put_contents(
-                $path,
-                file_get_contents("http://192.168.123.7/" . $fileName)
-            );
-            $this->videoImporterService->import(
-                'example.avi',
-                'Example Project',
-                $path,
-                null,
-                $lossless,
-                0,
-                true,
-                true,
-                array(
-                    array(
-                        'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
-                        'drawingTool' => 'pedestrian',
-                        'taskConfiguration' => null,
-                    ),
-                    array(
-                        'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
-                        'drawingTool' => 'rectangle',
-                        'taskConfiguration' => null,
-                    )
-                ),
-                null,
-                'rectangle',
-                1,
-                1,
-                false,
-                false,
-                null,
-                true
-            );
+            file_put_contents($path, file_get_contents($sourcePath));
+
+            $video = $this->videoImporterService->importVideo($project, $fileName, $path, $lossless);
+
+            $this->taskCreator->createTasks($this->users['admin'], $project, $video);
         }
     }
 }
