@@ -39,6 +39,13 @@ class Video
     private $imageTypes;
 
     /**
+     * @var string
+     *
+     * @CouchDB\Field(type="string")
+     */
+    private $calibrationId;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $rawCalibration;
@@ -215,5 +222,13 @@ class Video
     public function getCalibration()
     {
         return $this->calibration;
+    }
+
+    /**
+     * @param $calibrationId
+     */
+    public function setCalibrationId($calibrationId)
+    {
+        $this->calibrationId = $calibrationId;
     }
 }
