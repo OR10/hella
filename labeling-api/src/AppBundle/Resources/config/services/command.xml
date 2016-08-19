@@ -63,5 +63,10 @@
             <argument type="service" id="annostation.labeling_api.service.label_importer.csv"/>
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.project.cleanup_batch_upload_directory"
+                 class="AppBundle\Command\Project\CleanupBatchUploadDirectory">
+            <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
