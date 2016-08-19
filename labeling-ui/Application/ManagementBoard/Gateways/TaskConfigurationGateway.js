@@ -65,6 +65,22 @@ class TaskConfigurationGateway {
         return this._$q.reject('Failed uploading new task configuration');
       });
   }
+
+  /**
+   * Get all configurations the current users has created
+   *
+   * @returns {AbortablePromise}
+   */
+  getConfigurations() {
+    const url = this._apiService.getApiUrl('/taskConfiguration');
+
+    return this._bufferedHttp.get(url, undefined, 'task-configuration').then(response => {
+      if (response.data && response.data.result) {
+        // return new TaskConfiguration(response.data.result);
+        return response.data.result;
+      }
+    });
+  }
 }
 
 TaskConfigurationGateway.$inject = [
