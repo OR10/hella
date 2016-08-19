@@ -200,7 +200,7 @@ class BatchUpload extends Controller\Base
                 $videos = $this->videoFacade->findById($videoIds);
 
                 foreach ($videos as $video) {
-                    $tasks = array_merge($tasks, $this->taskCreator->createTasks($user, $project, $video));
+                    $tasks = array_merge($tasks, $this->taskCreator->createTasks($project, $video, $user));
                 }
             } catch (\Exception $exception) {
                 $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);

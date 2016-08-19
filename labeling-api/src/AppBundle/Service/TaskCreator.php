@@ -61,22 +61,21 @@ class TaskCreator
     }
 
     /**
-     * @param Model\User    $user
-     * @param Model\Project $project
-     * @param Model\Video   $video
+     * @param Model\Project   $project
+     * @param Model\Video     $video
+     * @param Model\User|null $user
      *
      * @return Model\LabelingTask[]
-     *
      * @throws \Exception
      */
-    public function createTasks(Model\User $user, Model\Project $project, Model\Video $video)
+    public function createTasks(Model\Project $project, Model\Video $video, Model\User $user = null)
     {
         $this->loggerFacade->logString(
             sprintf(
-                'Start creating tasks as user %s for project %s and video %s',
-                $user->getUsername(),
+                'Start creating tasks for project %s and video %s (as %s)',
                 $project->getId(),
-                $video->getId()
+                $video->getId(),
+                $user !== null ? $user->getUsername() : 'unknown'
             ),
             \cscntLogPayload::SEVERITY_DEBUG
         );
@@ -157,7 +156,7 @@ class TaskCreator
                 }
 
                 foreach ($project->getGenericXmlTaskInstructions() as $genericXmlTaskInstruction) {
-                    $this->checkGenericXmlTaskInstructionPermissions($user, $genericXmlTaskInstruction);
+                    $this->checkGenericXmlTaskInstructionPermissions($genericXmlTaskInstruction, $user);
 
                     $tasks[] = $this->addTask(
                         $video,
@@ -284,12 +283,13 @@ class TaskCreator
     }
 
     /**
-     * @param Model\User $user
      * @param array      $labelInstruction
+     *
+     * @param Model\User $user
      *
      * @throws \Exception
      */
-    private function checkGenericXmlTaskInstructionPermissions(Model\User $user, array $labelInstruction)
+    private function checkGenericXmlTaskInstructionPermissions(array $labelInstruction, Model\User $user = null)
     {
         $taskConfiguration = $this->taskConfigurationFacade->find($labelInstruction['taskConfigurationId']);
 
