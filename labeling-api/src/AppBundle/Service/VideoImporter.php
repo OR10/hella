@@ -22,6 +22,11 @@ class VideoImporter
     private $videoFacade;
 
     /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
+    /**
      * @var Service\Video\MetaDataReader
      */
     private $metaDataReader;
@@ -45,7 +50,7 @@ class VideoImporter
      * @var WorkerPool\Facade
      */
     private $facadeAMQP;
-    
+
     /**
      * @var CalibrationFileConverter
      */
@@ -59,6 +64,7 @@ class VideoImporter
     /**
      * @param Facade\Project               $projectFacade
      * @param Facade\Video                 $videoFacade
+     * @param Facade\CalibrationData       $calibrationDataFacade
      * @param Facade\LabelingTask          $labelingTaskFacade
      * @param Service\Video\MetaDataReader $metaDataReader
      * @param Video\VideoFrameSplitter     $frameCdnSplitter
@@ -70,6 +76,7 @@ class VideoImporter
     public function __construct(
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
+        Facade\CalibrationData $calibrationDataFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
@@ -90,10 +97,73 @@ class VideoImporter
     }
 
     /**
+     * @param Model\Project $project
+     * @param string        $videoFilePath
+     * @param bool          $lossless
+     *
+     * @return Model\Video
+     */
+    public function importVideo(Model\Project $project, string $videoFilePath, bool $lossless)
+    {
+        $imageTypes = $this->getImageTypes($lossless);
+        $videoName  = basename($videoFilePath);
+        $video      = new Model\Video($videoName);
+
+        $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
+        $this->videoFacade->save($video, $videoFilePath);
+
+        $project->addVideo($video);
+        $this->projectFacade->save($project);
+
+        foreach ($imageTypes as $imageTypeName) {
+            $video->setImageType($imageTypeName, 'converted', false);
+            $this->videoFacade->update();
+            $job = new Jobs\VideoFrameSplitter(
+                $video->getId(),
+                $video->getSourceVideoPath(),
+                ImageType\Base::create($imageTypeName)
+            );
+
+            $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        }
+
+        return $video;
+    }
+
+    /**
+     * @param Model\Project $project
+     * @param string        $calibrationFilePath
+     *
+     * @return Model\CalibrationData
+     */
+    public function importCalibrationData(Model\Project $project, string $calibrationFilePath)
+    {
+        $calibrationName = basename($calibrationFilePath);
+
+        $this->calibrationFileConverter->setCalibrationData($calibrationFilePath);
+
+        $calibration = new Model\CalibrationData($calibrationName);
+
+        $calibration->setRawCalibration($this->calibrationFileConverter->getRawData());
+        $calibration->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+        $calibration->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+        $calibration->setTranslation($this->calibrationFileConverter->getTranslation());
+        $calibration->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+
+        $this->calibrationDataFacade->save($calibration);
+
+        $project->addCalibrationData($calibration);
+
+        $this->projectFacade->save($project);
+
+        return $calibration;
+    }
+
+    /**
      * @param string     $name The name for the video (usually the basename).
      * @param string     $projectName
      * @param string     $path The filesystem path to the video file.
-     * @param            $calibrationFile
+     * @param string     $calibrationFile
      * @param bool       $lossless Wether or not the UI should use lossless compressed images.
      * @param int        $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
      * @param bool       $isObjectLabeling
@@ -105,10 +175,11 @@ class VideoImporter
      * @param int        $startFrame
      * @param bool       $review
      * @param bool       $revision
-     * @param null       $taskConfigurationId
      * @param Model\User $user
      * @param bool       $legacyExport
+     *
      * @return Model\LabelingTask[]
+     *
      * @throws \Exception
      */
     public function import(
@@ -163,12 +234,12 @@ class VideoImporter
             if ($legacyExport) {
                 $project->setAvailableExports(['legacy']);
                 foreach($labelInstructions as $labelInstruction) {
-                    $project->addLegacyTaskType($labelInstruction['instruction'], $labelInstruction['drawingTool']);
+                    $project->addLegacyTaskInstruction($labelInstruction['instruction'], $labelInstruction['drawingTool']);
                 }
-            }else{
+            } else {
                 $project->setAvailableExports(['genericXml']);
                 foreach($labelInstructions as $labelInstruction) {
-                    $project->addGenericXmlTaskType($labelInstruction['instruction'], $labelInstruction['taskConfiguration']);
+                    $project->addGenericXmlTaskInstruction($labelInstruction['instruction'], $labelInstruction['taskConfiguration']);
                 }
             }
             $this->projectFacade->save($project);
@@ -241,9 +312,13 @@ class VideoImporter
             if ($isObjectLabeling) {
                 foreach ($labelInstructions as $labelInstruction) {
                     if ($labelInstruction['taskConfiguration'] !== null) {
-                        $taskConfiguration = $this->taskConfigurationFacade->find($labelInstruction['taskConfiguration']);
+                        $taskConfiguration = $this->taskConfigurationFacade->find(
+                            $labelInstruction['taskConfiguration']
+                        );
                         if ($taskConfiguration === null) {
-                            throw new \Exception('No Task Configuration found for ' . $labelInstruction['taskConfiguration']);
+                            throw new \Exception(
+                                'No Task Configuration found for ' . $labelInstruction['taskConfiguration']
+                            );
                         }
                         if ($user === null || $user->getId() !== $taskConfiguration->getUserId()) {
                             throw new \Exception('This User is not allowed to use this Task Configuration.');
@@ -314,15 +389,21 @@ class VideoImporter
         }
 
         if ($taskConfigurationId === null) {
-            $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction($taskType, $instruction);
-            $labelStructureUi = $this->labelStructureService->getLabelStructureUiForTypeAndInstruction($taskType, $instruction);
+            $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
+                $taskType,
+                $instruction
+            );
+            $labelStructureUi = $this->labelStructureService->getLabelStructureUiForTypeAndInstruction(
+                $taskType,
+                $instruction
+            );
         } else {
             $taskConfiguration     = $this->taskConfigurationFacade->find($taskConfigurationId);
             $taskConfigurationJson = $taskConfiguration->getJson();
             $labelStructure        = $taskConfigurationJson['labelStructure'];
             $labelStructureUi      = $taskConfigurationJson['labelStructureUi'];
             // Replacing the drawingTool with the given drawingTool from the task configuration
-            $drawingTool           = $taskConfigurationJson['drawingTool'];
+            $drawingTool = $taskConfigurationJson['drawingTool'];
         }
 
         $labelingTask = new Model\LabelingTask(
@@ -357,10 +438,16 @@ class VideoImporter
         $labelingTask->setMetaData($metadata);
 
         if ($review) {
-            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+            $labelingTask->setStatus(
+                Model\LabelingTask::PHASE_REVIEW,
+                Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+            );
         }
         if ($revision) {
-            $labelingTask->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+            $labelingTask->setStatus(
+                Model\LabelingTask::PHASE_REVISION,
+                Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+            );
         }
 
         $this->labelingTaskFacade->save($labelingTask);
