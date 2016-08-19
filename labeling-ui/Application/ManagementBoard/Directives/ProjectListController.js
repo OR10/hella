@@ -133,6 +133,13 @@ class ProjectListController {
   }
 
   /**
+   * @param {string} projectId
+   */
+  goToUploadPage(projectId) {
+    this._$state.go('labeling.upload', {projectId});
+  }
+
+  /**
    * @param {number} projectId
    */
   closeProject(projectId, projectName) { // eslint-disable-line no-unused-vars

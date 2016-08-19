@@ -36,6 +36,13 @@
         <tr ng-repeat="project in vm.projects track by project.id" ng-click="vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">{{project[column.property]}}</td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
+                <button tooltip="Upload Videos"
+                        ng-if="vm.userPermissions.canUploadNewVideo"
+                        ng-click="vm.goToUploadPage(project.id)"
+                >
+                    <i class="fa fa-cloud-upload"></i>
+                </button>
+
                 <button tooltip="Export Project"
                         ng-if="vm.userPermissions.canExportProject"
                         ng-click="vm.exportProject(project.id)"
