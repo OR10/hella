@@ -237,29 +237,29 @@ class ProjectTest extends Tests\WebTestCase
 
         $response        = \json_decode($response->getContent(), true);
         $responseProject = $response['result'];
-        $expectedLegacyTaskTypes = [
+        $expectedLegacyTaskInstructions = [
             [
-                'type' => 'vehicle',
+                'instruction' => 'vehicle',
                 'drawingTool' => 'cuboid3d',
             ],
             [
-                'type' => 'person',
+                'instruction' => 'person',
                 'drawingTool' => 'cuboid3d',
             ],
             [
-                'type' => 'cyclist',
+                'instruction' => 'cyclist',
                 'drawingTool' => 'cuboid3d',
             ],
             [
-                'type' => 'ignore',
+                'instruction' => 'ignore',
                 'drawingTool' => 'cuboid3d',
             ],
             [
-                'type' => 'ignore-vehicle',
+                'instruction' => 'ignore-vehicle',
                 'drawingTool' => 'cuboid3d',
             ],
             [
-                'type' => 'lane',
+                'instruction' => 'lane',
                 'drawingTool' => 'cuboid3d',
             ],
         ];
@@ -269,7 +269,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($responseProject['taskVideoSettings']['frameSkip'], 22);
         $this->assertSame($responseProject['taskVideoSettings']['startFrameNumber'], 22);
         $this->assertSame($responseProject['taskVideoSettings']['splitEach'], 600);
-        $this->assertSame($responseProject['taskTypes']['legacy'], $expectedLegacyTaskTypes);
+        $this->assertSame($responseProject['taskInstructions']['legacy'], $expectedLegacyTaskInstructions);
     }
 
 
@@ -318,29 +318,29 @@ class ProjectTest extends Tests\WebTestCase
 
         $response        = \json_decode($response->getContent(), true);
         $responseProject = $response['result'];
-        $expectedGenericXmlTaskTypes = [
+        $expectedGenericXmlTaskInstructions = [
             [
-                'type' => 'vehicle',
+                'instruction' => 'vehicle',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'type' => 'person',
+                'instruction' => 'person',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'type' => 'cyclist',
+                'instruction' => 'cyclist',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'type' => 'ignore',
+                'instruction' => 'ignore',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'type' => 'ignore-vehicle',
+                'instruction' => 'ignore-vehicle',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'type' => 'lane',
+                'instruction' => 'lane',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
         ];
@@ -350,7 +350,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($responseProject['taskVideoSettings']['frameSkip'], 22);
         $this->assertSame($responseProject['taskVideoSettings']['startFrameNumber'], 22);
         $this->assertSame($responseProject['taskVideoSettings']['splitEach'], 600);
-        $this->assertSame($responseProject['taskTypes']['genericXml'], $expectedGenericXmlTaskTypes);
+        $this->assertSame($responseProject['taskInstructions']['genericXml'], $expectedGenericXmlTaskInstructions);
     }
 
     protected function setUpImplementation()
