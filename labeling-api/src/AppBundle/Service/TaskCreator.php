@@ -82,7 +82,7 @@ class TaskCreator
         );
 
         try {
-            if (!$project->hasVideo($video)) {
+            if (!$project->hasVideo($video->getName())) {
                 throw new \InvalidArgumentException(
                     sprintf('Video %s is not assigned to project %s', $video->getId(), $project->getId())
                 );

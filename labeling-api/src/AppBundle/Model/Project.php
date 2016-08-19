@@ -400,9 +400,11 @@ class Project
         ];
     }
 
-    public function hasVideo(Video $video)
+    public function hasVideo(string $videoName)
     {
-        return is_array($this->videos) && array_key_exists($this->getVideoKey($video), $this->videos);
+        $videoKey = $this->getVideoKey($videoName);
+
+        return is_array($this->videos) && array_key_exists($videoKey, $this->videos);
     }
 
     /**
@@ -410,7 +412,7 @@ class Project
      */
     public function addVideo(Video $video)
     {
-        if ($this->hasVideo($video)) {
+        if ($this->hasVideo($video->getName())) {
             throw new \InvalidArgumentException(sprintf('Video already exists: %s', $video->getName()));
         }
 
@@ -418,7 +420,7 @@ class Project
             throw new \LogicException('Trying to reference a not yet persisted video');
         }
 
-        $this->videos[$this->getVideoKey($video)] = $video->getId();
+        $this->videos[$this->getVideoKey($video->getName())] = $video->getId();
     }
 
     /**
@@ -430,13 +432,13 @@ class Project
     }
 
     /**
-     * @param Video $video
+     * @param string $videoName
      *
      * @return string
      */
-    private function getVideoKey(Video $video)
+    private function getVideoKey(string $videoName)
     {
-        return basename($video->getName());
+        return basename($videoName, '.' . pathinfo($videoName, PATHINFO_EXTENSION));
     }
 
     /**
@@ -446,8 +448,9 @@ class Project
      */
     public function hasCalibrationData(CalibrationData $calibrationData)
     {
-        return is_array($this->calibrations)
-        && array_key_exists($this->getCalibrationDataKey($calibrationData), $this->calibrations);
+        $videoKey = $this->getVideoKey($calibrationData->getName());
+
+        return is_array($this->calibrations) && array_key_exists($videoKey, $this->calibrations);
     }
 
     /**
@@ -465,7 +468,7 @@ class Project
             throw new \LogicException('Trying to reference a not yet persisted calibration data');
         }
 
-        $this->calibrations[$this->getCalibrationDataKey($calibrationData)] = $calibrationData->getId();
+        $this->calibrations[$this->getVideoKey($calibrationData->getName())] = $calibrationData->getId();
     }
 
     /**
@@ -477,23 +480,13 @@ class Project
     }
 
     /**
-     * @param CalibrationData $calibrationData
-     *
-     * @return string
-     */
-    private function getCalibrationDataKey(CalibrationData $calibrationData)
-    {
-        return basename($calibrationData->getName());
-    }
-
-    /**
      * @param Video $video
      *
      * @return string|null
      */
     public function getCalibrationDataIdForVideo(Video $video)
     {
-        $key = $this->getVideoKey($video);
+        $key = $this->getVideoKey($video->getName());
 
         return isset($this->calibrations[$key]) ? $this->calibrations[$key] : null;
     }
