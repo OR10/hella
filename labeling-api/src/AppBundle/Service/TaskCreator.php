@@ -268,6 +268,7 @@ class TaskCreator
         $task->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $task->setDrawingToolOptions($drawingToolOptions);
         $task->setMetaData($metadata);
+        $task->setStatusIfAllImagesAreConverted($video);
 
         if ($review) {
             $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
