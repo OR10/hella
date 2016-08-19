@@ -8,6 +8,9 @@ import PaginationControlsDirective from './Directives/PaginationControlsDirectiv
 
 import TitleBarDirective from './Directives/TitleBarDirective';
 
+import UploadController from './Controllers/UploadController';
+import UploadView from './Views/UploadView.html!';
+
 import ProjectsController from './Controllers/ProjectsController';
 import ProjectsView from './Views/ProjectsView.html!';
 import ProjectCreateController from './Controllers/ProjectCreateController';
@@ -42,6 +45,7 @@ import TaskConfigurationUploadView from './Views/TaskConfigurationUploadView.htm
 
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
+import FileSizeFilterProvider from './Filters/FileSizeFilterProvider';
 
 
 /**
@@ -57,6 +61,24 @@ class ManagementBoard extends Module {
    * @param {angular.$stateProvider} $stateProvider
    */
   config($stateProvider) {
+    $stateProvider.state('labeling.upload', {
+      url: 'upload/:projectId',
+      views: {
+        '@': {
+          controller: UploadController,
+          controllerAs: 'vm',
+          template: UploadView,
+        },
+      },
+      resolve: {
+        project: [
+          '$stateParams',
+          'projectGateway',
+          ($stateParams, projectGateway) => projectGateway.getProject($stateParams.projectId),
+        ],
+      },
+    });
+
     $stateProvider.state('labeling.projects', {
       url: 'projects',
       redirectTo: 'labeling.projects.list',
@@ -213,6 +235,7 @@ class ManagementBoard extends Module {
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
+    this.module.filter('fileSize', FileSizeFilterProvider);
   }
 }
 
