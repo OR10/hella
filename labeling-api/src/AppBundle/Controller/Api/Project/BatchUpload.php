@@ -129,6 +129,12 @@ class BatchUpload extends Controller\Base
             throw new HttpKernel\Exception\BadRequestHttpException();
         }
 
+        if ($project->hasVideo($request->getFileName())) {
+            throw new HttpKernel\Exception\ConflictHttpException(
+                sprintf('Video already exists in project: %s', $request->getFileName())
+            );
+        }
+
         $file->saveChunk();
 
         if ($file->validateFile()) {
