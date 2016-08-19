@@ -1,0 +1,111 @@
+<div class="grid-frame vertical upload-form" flow-prevent-drop>
+    <title-bar class="grid-block noscroll header"
+               user="vm.user"
+               user-permissions="vm.userPermissions"
+               back-link="labeling.projects.list"
+               back-link-text="Go to project list"
+               show-username="true"
+               show-logout-button="true"
+    >
+    </title-bar>
+    <div class="grid-block vertical"
+         flow-init="{target: vm.targetPath, testChunks: false}"
+         flow-complete="vm.uploadComplete()"
+         flow-upload-started="vm.uploadStarted()"
+         flow-file-error="vm.fileError($file, $message, $flow)"
+    >
+
+        <div class="grid-block align-center shrink">
+            <loading-mask ng-if="vm.uploadLoadingMask" spinner="true"></loading-mask>
+            <div class="grid-content"
+                 flow-drop
+                 style="margin-top: 1em; padding: 5em; border: 4px dashed #fff; text-align: center;"
+            >
+                <h2><i class="fa fa-cloud-upload"></i> Select/Drop files for Project: "{{vm.project.name}}"</h2>
+                <input
+                        type="file"
+                        flow-btn
+                        multiple
+                        style="margin: 0 auto;"
+                />
+            </div>
+        </div>
+
+        <div class="grid-content">
+            <h3 style="margin-top: 1em;">Selected files</h3>
+            <table class="table table-hover table-bordered table-striped" flow-transfers>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Progress</th>
+                    <th width="150px">Status</th>
+                    <th width="150px"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="file in transfers">
+                    <td>{{file.name}}</td>
+                    <td>{{file.size | fileSize}}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-meter success"
+                                 ng-style="{ 'width': (file.progress() * 100) + '%'}"
+                            ></div>
+                        </div>
+                    </td>
+                    <td>
+                        <i class="fa fa-spinner fa-pulse" ng-show="file.isUploading() && !file.isComplete()"></i>
+                        <i class="fa fa-check" ng-show="file.isComplete() && !file.isUploading()"></i>
+                        <i class="fa fa-warning" ng-show="file.errorMessage.message" tooltip="{{file.errorMessage.message}}"></i>
+                    </td>
+                    <td>
+                        <button tooltip="Pause upload for this file"
+                                ng-show="file.isUploading()"
+                                ng-click="file.pause()">
+                            <i class="fa fa-pause"></i>
+                        </button>
+                        <button tooltip="Resume upload for this file"
+                                ng-show="file.paused"
+                                ng-click="file.resume()">
+                            <i class="fa fa-cloud-upload"></i>
+                        </button>
+                        <button tooltip="Remove upload from list"
+                                ng-hide="file.isComplete()"
+                                ng-click="file.cancel()">
+                            <i class="fa fa-close"></i>
+                        </button>
+                        <!--<button tooltip="Retry upload for this file"-->
+                                <!--ng-show="file.error"-->
+                                <!--ng-click="file.retry()">-->
+                            <!--<i class="fa fa-refresh"></i>-->
+                        <!--</button>-->
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="button-area"
+                 style="margin-top: 2em"
+            >
+                <button class="pull-right"
+                        ng-click="$flow.resume()"
+                >
+                    <i class="fa fa-cloud-upload"></i> Upload
+                </button>
+                <button class="pull-right divider"
+                        ng-click="$flow.pause()"
+                >
+                    <i class="fa fa-pause"></i> Pause
+                </button>
+                <button class="pull-right divider"
+                        ng-click="$flow.cancel()"
+                >
+                    <i class="fa fa-close"></i> Clear list
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
