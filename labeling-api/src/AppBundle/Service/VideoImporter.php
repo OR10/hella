@@ -87,6 +87,7 @@ class VideoImporter
     ) {
         $this->projectFacade            = $projectFacade;
         $this->videoFacade              = $videoFacade;
+        $this->calibrationDataFacade    = $calibrationDataFacade;
         $this->metaDataReader           = $metaDataReader;
         $this->frameCdnSplitter         = $frameCdnSplitter;
         $this->labelingTaskFacade       = $labelingTaskFacade;
