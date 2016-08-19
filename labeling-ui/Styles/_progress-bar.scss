@@ -1,0 +1,30 @@
+// Progress bar
+.progress {
+  background-color: $body-background;
+  height: 1rem;
+
+  .success {
+    background-color: $headlines;
+  }
+}
+
+// Progress bar meter
+.progress-meter {
+  position: relative;
+  display: block;
+  width: 0;
+  height: 100%;
+  background-color: $element-divider;
+
+  // Progress bar meter text
+  .progress-meter-text {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+  }
+}
