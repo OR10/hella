@@ -150,3 +150,19 @@
 + Response 200 (application/json)
     + Attributes
         + result Project
+
+## Batch upload chunk [POST /api/project/batchUpload/{projectId}]
+
+This route provides an api endpoint to upload file chunks for the flow library.
+The POST body is not documented here, please have a look at https://github.com/flowjs/flow-php-server.
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+## Batch upload complete [POST /api/project/batchUpload/{projectId}/complete]
+
+This route creates the tasks for all uploaded videos of the given project once all chunks were uploaded completely.
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
