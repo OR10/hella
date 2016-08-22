@@ -100,6 +100,8 @@ class BatchUpload extends Controller\Base
         $this->cacheDirectory = $cacheDirectory;
         $this->loggerFacade   = new LoggerFacade($logger, self::class);
 
+        clearstatcache();
+
         if (!is_dir($this->cacheDirectory) && !mkdir($this->cacheDirectory)) {
             throw new \RuntimeException(sprintf('Unable to create cache directory: %s', $this->cacheDirectory));
         }
