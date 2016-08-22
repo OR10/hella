@@ -1,0 +1,11 @@
+.drop-area {
+  margin-top: 1em;
+  padding: 5em;
+  border: 4px dashed #fff;
+  text-align: center;
+}
+
+.drop-area-active {
+  border: 4px dashed $headlines;
+  background-color: $element-background;
+}
