@@ -103,6 +103,10 @@ doctrine_couch_db:
                         dir: "Model"
 
 fos_rest:
+    format_listener:
+        enabled: true
+        rules:
+          - { path: '^/', priorities: ['json', 'html'], fallback_format: json, prefer_extension: false}
     serializer:
         serialize_null: true
     routing_loader:
