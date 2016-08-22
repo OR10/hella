@@ -226,18 +226,20 @@ class LabeledThingInFrame extends Controller\Base
         $expectedFrameIndexes = range($frameIndex + $offset, $frameIndex + $offset + $limit - 1);
 
         $labeledThingsInFrameWithinRangeWithGhosts = array();
-        if ($includeGhosts) {
-            $labeledThingsInFrameWithinRangeWithGhosts = $this->createLabeledThingInFrameGhosts(
-                $labeledThingsInFrame,
-                $expectedFrameIndexes
-            );
-        } else {
-            $labeledThingsInFrameWithinRangeWithGhosts = array_filter(
-                $labeledThingsInFrame,
-                function ($labeledThingInFrame) use ($expectedFrameIndexes) {
-                    return in_array($labeledThingInFrame->getFrameIndex(), $expectedFrameIndexes);
-                }
-            );
+        if (!empty($labeledThingsInFrame)) {
+            if ($includeGhosts) {
+                $labeledThingsInFrameWithinRangeWithGhosts = $this->createLabeledThingInFrameGhosts(
+                    $labeledThingsInFrame,
+                    $expectedFrameIndexes
+                );
+            } else {
+                $labeledThingsInFrameWithinRangeWithGhosts = array_filter(
+                    $labeledThingsInFrame,
+                    function ($labeledThingInFrame) use ($expectedFrameIndexes) {
+                        return in_array($labeledThingInFrame->getFrameIndex(), $expectedFrameIndexes);
+                    }
+                );
+            }
         }
 
         // @TODO: May be optimized as we already fetched a list of all LabeledThingsInFrame before
