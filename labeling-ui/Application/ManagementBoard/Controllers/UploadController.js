@@ -4,16 +4,25 @@
 class UploadController {
   /**
    * @param {$rootScope.$scope} $scope
+   * @param {$state} $state
    * @param {User} user
    * @param {Object} userPermissions
    * @param {Object} project
+   * @param {ProjectGateway} projectGateway
+   * @param {ModalService} modalService
    */
-  constructor($scope, user, userPermissions, project) {
+  constructor($scope, $state, user, userPermissions, project, projectGateway, modalService) {
     /**
      * @type {$rootScope.$scope}
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {$state}
+     * @private
+     */
+    this._$state = $state;
 
     /**
      * @type {User}
@@ -31,6 +40,18 @@ class UploadController {
     this.userPermissions = userPermissions;
 
     /**
+     * @type {ProjectGateway}
+     * @private
+     */
+    this._projectGateway = projectGateway;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
      * @type {boolean}
      */
     this.uploadLoadingMask = false;
@@ -42,8 +63,21 @@ class UploadController {
   }
 
   uploadComplete() {
-    // Trigger backened route /api/project/batchUpload/{projectId}/complete
-    this.uploadLoadingMask = false;
+    this._projectGateway.markUploadAsFinished(this.project.id).then(() => {
+      this.uploadLoadingMask = false;
+      const modal = this._modalService.getInfoDialog({
+        title: 'Upload complete',
+        headline: 'Your upload is complete',
+        message: 'Your upload is complete and the task creation process has started. Do you want to go to the project list to view this project?',
+        confirmButtonText: 'Go to Project List',
+        cancelButtonText: 'Cancel',
+      }, () => {
+        this._$state.go('labeling.projects.list');
+      });
+      modal.activate();
+    }).catch(() => {
+      this.uploadLoadingMask = false;
+    });
   }
 
   uploadStarted() {
@@ -57,9 +91,12 @@ class UploadController {
 
 UploadController.$inject = [
   '$scope',
+  '$state',
   'user',
   'userPermissions',
   'project',
+  'projectGateway',
+  'modalService',
 ];
 
 export default UploadController;
