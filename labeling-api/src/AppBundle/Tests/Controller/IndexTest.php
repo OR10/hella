@@ -17,7 +17,10 @@ class IndexTest extends Tests\WebTestCase
 
     public function testIndexPageRequiresLogin()
     {
-        $response = $this->createRequest(self::ROUTE)->setServerParameters([])->execute()->getResponse();
+        $response = $this->createRequest(self::ROUTE)
+            ->setServerParameters(['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'])
+            ->execute()
+            ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_FOUND, $response->getStatusCode());
         $this->assertEquals('/login', $response->headers->get('Location'));

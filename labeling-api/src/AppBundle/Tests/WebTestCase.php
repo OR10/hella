@@ -43,6 +43,7 @@ class WebTestCase extends KernelTestCase
     {
         return [
             'CONTENT_TYPE'  => 'application/json',
+            'HTTP_ACCEPT'   => 'application/json',
             'PHP_AUTH_USER' => self::USERNAME,
             'PHP_AUTH_PW'   => self::PASSWORD,
         ];
