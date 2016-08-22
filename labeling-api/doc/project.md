@@ -115,7 +115,7 @@
 + Response 200 (application/json)
     + Attributes
         + result array(Report)
-        
+
 ## Get all Report for Project [/api/project/{projectId}/report]
 
 + Parameters
@@ -125,7 +125,7 @@
 
 + Response 200 (application/json)
     + Attributes
-        + result array(Report)     
+        + result array(Report)
 
 ## Get Report by Report ID [/api/project/{projectId}/report/{reportId}]
 
