@@ -69,7 +69,7 @@ class TaskConfiguration extends Controller\Base
     /**
      * @Rest\Get("")
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function listConfigurationsAction()
     {
