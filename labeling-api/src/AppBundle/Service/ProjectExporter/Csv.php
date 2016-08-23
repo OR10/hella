@@ -5,7 +5,6 @@ namespace AppBundle\Service\ProjectExporter;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shape;
-use AppBundle\Model\ProjectExporter;
 use AppBundle\Service;
 use AppBundle\Service\ProjectExporter\Exception;
 
@@ -144,6 +143,7 @@ class Csv implements Service\ProjectExporter
 
                 $data = array();
                 foreach ($tasks as $task) {
+                    /** @var Model\LabelingTask $task */
                     if (!isset($data[$task->getVideoId()])) {
                         $data[$task->getVideoId()] = array();
                     }
@@ -242,6 +242,7 @@ class Csv implements Service\ProjectExporter
 
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
+                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $ignoreType = $this->getClassByRegex('/^(person|cyclist)$/', 1, $labeledThingInFrame);
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
@@ -284,6 +285,7 @@ class Csv implements Service\ProjectExporter
 
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
+                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $direction   = $this->getClassByRegex('/^(direction-(\w+|(\w+-\w+)))$/', 2, $labeledThingInFrame);
                 $occlusion   = $this->getOcclusion($labeledThingInFrame);
                 $truncation  = $this->getTruncation($labeledThingInFrame);
@@ -318,6 +320,7 @@ class Csv implements Service\ProjectExporter
 
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $task) {
+                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $vehicleType = $this->getClassByRegex(
                     '/^(car|truck|van|2-wheeler-vehicle|bus|misc-vehicle)$/',
                     0,
@@ -375,6 +378,7 @@ class Csv implements Service\ProjectExporter
 
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
+                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $ignoreType = $this->getClassByRegex('/^(ignore-vehicle)$/', 1, $labeledThingInFrame);
                 $result = array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
@@ -417,6 +421,7 @@ class Csv implements Service\ProjectExporter
 
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
+                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 return array(
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
@@ -513,11 +518,11 @@ class Csv implements Service\ProjectExporter
     }
 
     /**
-     * @param Model\LabeledThing $labeledThingInFrame
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
      *
      * @return array
      */
-    private function getPosition($labeledThingInFrame)
+    private function getPosition(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
@@ -553,11 +558,11 @@ class Csv implements Service\ProjectExporter
     }
 
     /**
-     * @param Model\LabeledThing $labeledThingInFrame
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
      *
      * @return array
      */
-    private function getDimensions($labeledThingInFrame)
+    private function getDimensions(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
