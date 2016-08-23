@@ -81,10 +81,10 @@ class Task extends Controller\Base
      */
     public function listAction(HttpFoundation\Request $request)
     {
-        $offset      = $request->query->has('offset') ? $request->query->getInt('offset') : null;
-        $limit       = $request->query->has('limit') ? $request->query->getInt('limit') : null;
-        $taskPhase   = $request->query->has('phase') ? $request->query->get('phase') : Model\LabelingTask::PHASE_LABELING;
-        $taskStatus  = $request->query->has('taskStatus') ? $request->query->get('taskStatus') : null;
+        $offset     = $request->query->has('offset') ? $request->query->getInt('offset') : null;
+        $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
+        $taskPhase  = $request->query->get('phase', Model\LabelingTask::PHASE_LABELING);
+        $taskStatus = $request->query->get('taskStatus');
 
         $project = null;
         if ($request->query->has('project')) {
