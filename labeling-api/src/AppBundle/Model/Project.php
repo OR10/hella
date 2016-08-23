@@ -153,6 +153,11 @@ class Project
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
         }
+
+        if (trim($name) === '') {
+            throw new \InvalidArgumentException(sprintf('Missing project name'));
+        }
+
         $this->name                                  = (string) $name;
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;

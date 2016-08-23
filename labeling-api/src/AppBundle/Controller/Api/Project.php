@@ -87,7 +87,7 @@ class Project extends Controller\Base
         $offset = $request->query->get('offset', null);
         $status = $request->query->get('projectStatus', null);
         /** @var Model\User $user */
-        $user   = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
 
         switch ($status) {
             case Model\Project::STATUS_TODO:
@@ -99,46 +99,50 @@ class Project extends Controller\Base
                 $projects = $this->projectFacade->findAll($limit, $offset);
         }
 
-        $result   = array(
+        $result = array(
             Model\Project::STATUS_IN_PROGRESS => array(),
-            Model\Project::STATUS_TODO => array(),
-            Model\Project::STATUS_DONE => array(),
-            null => array() //@TODO remove this later
+            Model\Project::STATUS_TODO        => array(),
+            Model\Project::STATUS_DONE        => array(),
+            null                              => array() //@TODO remove this later
         );
-
 
         foreach ($this->projectFacade->getTimePerProject() as $mapping) {
             $projectTimeMapping[$mapping['key']] = array_sum($mapping['value']);
         }
 
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects->toArray());
-        $numberOfVideos = array();
+        $numberOfVideos   = array();
         foreach ($videosByProjects as $videosByProject) {
-            $projectId = $videosByProject['key'];
-            $videoId = $videosByProject['value'];
+            $projectId                    = $videosByProject['key'];
+            $videoId                      = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;
         }
         $numberOfVideos = array_map(
-            function($videoByProject) {
+            function ($videoByProject) {
                 return count(array_unique($videoByProject));
             },
             $numberOfVideos
         );
 
         foreach ($projects->toArray() as $project) {
-            $timeInSeconds     = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
+            $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
-            $responseProject = array(
-                'id' => $project->getId(),
-                'name' => $project->getName(),
-                'status' => $project->getStatus(),
+            $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
+            $sumOfCompletedTasksForProject = $this->getSumOfCompletedTasksForProject($project);
+            $responseProject               = array(
+                'id'                 => $project->getId(),
+                'name'               => $project->getName(),
+                'status'             => $project->getStatus(),
                 'finishedPercentage' => round(
-                    $this->getSumOfTasksForProject($project) === 0 ? 100 : 100 / $this->getSumOfTasksForProject($project) * $this->getSumOfCompletedTasksForProject($project)
+                    $sumOfTasksForProject === 0 ? 100 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
-                'creationTimestamp' => $project->getCreationDate(),
+                'creationTimestamp'  => $project->getCreationDate(),
             );
 
-            if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
+            if ($user->hasOneRoleOf(
+                [Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT]
+            )
+            ) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
                 $responseProject['taskFinishedCount']          = $this->getSumOfCompletedTasksForProject($project);
                 $responseProject['taskInProgressCount']        = $this->getSumOfInProgressTasksForProject($project);
@@ -152,30 +156,38 @@ class Project extends Controller\Base
         }
 
         foreach (array_keys($result) as $status) {
-            usort($result[$status], function ($a, $b) {
-                if ($a['creationTimestamp'] === null || $b['creationTimestamp'] === null) {
-                    return -1;
+            usort(
+                $result[$status],
+                function ($a, $b) {
+                    if ($a['creationTimestamp'] === null || $b['creationTimestamp'] === null) {
+                        return -1;
+                    }
+                    if ($a['creationTimestamp'] === $b['creationTimestamp']) {
+                        return 0;
+                    }
+
+                    return ($a['creationTimestamp'] > $b['creationTimestamp']) ? -1 : 1;
                 }
-                if ($a['creationTimestamp'] === $b['creationTimestamp']) {
-                    return 0;
-                }
-                return ($a['creationTimestamp'] > $b['creationTimestamp']) ? -1 : 1;
-            });
+            );
         }
 
         if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
             foreach (array_keys($result) as $status) {
-                $result[$status] = array_map(function ($data) {
-                    unset($data['creationTimestamp']);
-                    return $data;
-                }, $result[$status]);
+                $result[$status] = array_map(
+                    function ($data) {
+                        unset($data['creationTimestamp']);
+
+                        return $data;
+                    },
+                    $result[$status]
+                );
             }
         }
 
         return View\View::create()->setData(
             [
                 'totalRows' => $projects->getTotalRows(),
-                'result' => array_merge(
+                'result'    => array_merge(
                     $result[Model\Project::STATUS_IN_PROGRESS],
                     $result[Model\Project::STATUS_TODO],
                     $result[Model\Project::STATUS_DONE],
@@ -210,19 +222,23 @@ class Project extends Controller\Base
             $labelingValidationProcesses[] = 'review';
         }
 
-        $project = Model\Project::create(
-            $name,
-            null,
-            null,
-            $labelingValidationProcesses,
-            $frameSkip,
-            $startFrameNumber,
-            $splitEach
-        );
+        try {
+            $project = Model\Project::create(
+                $name,
+                null,
+                null,
+                $labelingValidationProcesses,
+                $frameSkip,
+                $startFrameNumber,
+                $splitEach
+            );
 
-        $project->setAvailableExports([$projectType]);
+            $project->setAvailableExports([$projectType]);
+        } catch (\InvalidArgumentException $exception) {
+            throw new Exception\BadRequestHttpException($exception->getMessage(), $exception);
+        }
 
-        switch($projectType) {
+        switch ($projectType) {
             case 'legacy':
                 if ($request->request->get('vehicle', false)) {
                     $project->addLegacyTaskInstruction(
@@ -262,7 +278,13 @@ class Project extends Controller\Base
                 }
                 break;
             case 'genericXml':
-                foreach ($request->request->get('taskTypeConfigurations') as $taskTypeConfiguration) {
+                $taskTypeConfigurations = $request->request->get('taskTypeConfigurations');
+
+                if (empty($taskTypeConfigurations)) {
+                    throw new Exception\BadRequestHttpException('Missing task type configuration');
+                }
+
+                foreach ($taskTypeConfigurations as $taskTypeConfiguration) {
                     $project->addGenericXmlTaskInstruction(
                         $taskTypeConfiguration['type'],
                         $taskTypeConfiguration['taskConfigurationId']
@@ -270,7 +292,6 @@ class Project extends Controller\Base
                 }
                 break;
         }
-
 
         $project = $this->projectFacade->save($project);
 
@@ -283,6 +304,7 @@ class Project extends Controller\Base
 
     /**
      * @param Model\Project $project
+     *
      * @return int|mixed
      */
     private function getSumOfTasksForProject(Model\Project $project)
@@ -292,7 +314,7 @@ class Project extends Controller\Base
         $phases = array(
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION
+            Model\LabelingTask::PHASE_REVISION,
         );
 
         $sumOfTasks = 0;
@@ -305,6 +327,7 @@ class Project extends Controller\Base
 
     /**
      * @param Model\Project $project
+     *
      * @return int|mixed
      */
     private function getSumOfCompletedTasksForProject(Model\Project $project)
@@ -314,7 +337,7 @@ class Project extends Controller\Base
         $phases = array(
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION
+            Model\LabelingTask::PHASE_REVISION,
         );
 
         $sumOfDoneTasks = 0;
@@ -327,16 +350,17 @@ class Project extends Controller\Base
 
     /**
      * @param Model\Project $project
+     *
      * @return int|mixed
      */
     private function getSumOfInProgressTasksForProject(Model\Project $project)
     {
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        $phases = array(
+        $phases               = array(
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION
+            Model\LabelingTask::PHASE_REVISION,
         );
         $sumOfInProgressTasks = 0;
         foreach ($phases as $phase) {
@@ -377,6 +401,7 @@ class Project extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function assignProjectToUserAction(HttpFoundation\Request $request, Model\Project $project)
