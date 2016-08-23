@@ -23,6 +23,7 @@ class TaskReadOnlyDecider
 
     /**
      * TaskReadOnlyDecider constructor.
+     *
      * @param Facade\User         $userFacade
      * @param Facade\LabelingTask $labelingTaskFacade
      */
@@ -35,11 +36,12 @@ class TaskReadOnlyDecider
     /**
      * @param Model\User         $user
      * @param Model\LabelingTask $labelingTask
+     *
      * @return bool
      */
     public function isTaskReadOnlyForUser(Model\User $user, Model\LabelingTask $labelingTask)
     {
-        $phase = $this->labelingTaskFacade->getCurrentPhase($labelingTask);
+        $phase      = $this->labelingTaskFacade->getCurrentPhase($labelingTask);
         $taskStatus = $labelingTask->getStatus($phase);
         if ($labelingTask->getLatestAssignedUserIdForPhase($phase) !== null &&
             ($taskStatus === Model\LabelingTask::STATUS_TODO || $taskStatus === Model\LabelingTask::STATUS_IN_PROGRESS)

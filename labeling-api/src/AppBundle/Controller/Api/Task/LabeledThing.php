@@ -46,10 +46,10 @@ class LabeledThing extends Controller\Base
     /**
      * LabeledThing constructor.
      *
-     * @param Facade\LabeledThing $labeledThingFacade
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Facade\LabeledThing        $labeledThingFacade
+     * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Service\TaskIncomplete $taskIncompleteService
+     * @param Service\TaskIncomplete     $taskIncompleteService
      */
     public function __construct(
         Facade\LabeledThing $labeledThingFacade,
@@ -79,10 +79,12 @@ class LabeledThing extends Controller\Base
             $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
         }
 
-        return View\View::create()->setData([
-            'totalCount' => count($labeledThings),
-            'result' => $labeledThings,
-        ]);
+        return View\View::create()->setData(
+            [
+                'totalCount' => count($labeledThings),
+                'result'     => $labeledThings,
+            ]
+        );
     }
 
     /**
@@ -96,9 +98,11 @@ class LabeledThing extends Controller\Base
     {
         $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
 
-        return View\View::create()->setData([
-            'result' => ['count' => count($labeledThings)],
-        ]);
+        return View\View::create()->setData(
+            [
+                'result' => ['count' => count($labeledThings)],
+            ]
+        );
     }
 
     /**
@@ -195,9 +199,7 @@ class LabeledThing extends Controller\Base
         }
         $frameRange = $this->createFrameRange(
             $request->request->get('frameRange'),
-            new Model\FrameIndexRange(
-                min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping())
-            )
+            new Model\FrameIndexRange(min($task->getFrameNumberMapping()), max($task->getFrameNumberMapping()))
         );
         if ($frameRange === null) {
             throw new Exception\BadRequestHttpException('Missing frameRange');
@@ -227,9 +229,10 @@ class LabeledThing extends Controller\Base
      * @Rest\Delete("/{task}/labeledThing/{labeledThing}")
      * @ForbidReadonlyTasks
      *
-     * @param Model\LabelingTask $task
-     * @param Model\LabeledThing $labeledThing
+     * @param Model\LabelingTask     $task
+     * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
+     *
      * @return \FOS\RestBundle\View\View
      * @internal param string $taskId
      */

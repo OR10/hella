@@ -1,12 +1,15 @@
 <?php
+
 namespace AppBundle\Service;
 
-use \crosscan\WorkerPool\AMQP;
+use crosscan\WorkerPool\AMQP;
+use AppBundle\Worker\Jobs;
 
 class AmqpPoolConfig extends AMQP\AMQPPoolConfig
 {
     /**
      * AMQPPoolConfig constructor.
+     *
      * @param string    $host
      * @param int       $port
      * @param string    $vhost
@@ -26,24 +29,23 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
     ) {
         parent::__construct();
 
-        $this->host                      = $host;
-        $this->port                      = $port;
-        $this->vhost                     = $vhost;
-        $this->username                  = $username;
-        $this->password                  = $password;
-        $this->useDeadLetterExchange     = $useDeadLetterExchange;
-        $this->useAlternateExchange      = $useAlternateExchange;
-        $this->heartBeatSeconds          = 0;
-
+        $this->host                  = $host;
+        $this->port                  = $port;
+        $this->vhost                 = $vhost;
+        $this->username              = $username;
+        $this->password              = $password;
+        $this->useDeadLetterExchange = $useDeadLetterExchange;
+        $this->useAlternateExchange  = $useAlternateExchange;
+        $this->heartBeatSeconds      = 0;
 
         $this->instructionInstances = array(
-            'AppBundle\Worker\Jobs\VideoFrameSplitter' => 'annostation.labeling_api.worker.job_instruction.video',
-            'AppBundle\Worker\Jobs\KittiExporter' => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
-            'AppBundle\Worker\Jobs\Interpolation' => 'annostation.labeling_api.worker.job_instruction.interpolation',
-            'AppBundle\Worker\Jobs\CsvExporter' => 'annostation.labeling_api.worker.job_instruction.csv_exporter',
-            'AppBundle\Worker\Jobs\ProjectCsvExporter' => 'annostation.labeling_api.worker.job_instruction.project_csv_exporter',
-            'AppBundle\Worker\Jobs\Report' => 'annostation.labeling_api.worker.job_instruction.report',
-            'AppBundle\Worker\Jobs\Exporter' => 'annostation.labeling_api.worker.job_instruction.exporter',
+            Jobs\VideoFrameSplitter::class => 'annostation.labeling_api.worker.job_instruction.video',
+            Jobs\KittiExporter::class      => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
+            Jobs\Interpolation::class      => 'annostation.labeling_api.worker.job_instruction.interpolation',
+            Jobs\CsvExporter::class        => 'annostation.labeling_api.worker.job_instruction.csv_exporter',
+            Jobs\ProjectCsvExporter::class => 'annostation.labeling_api.worker.job_instruction.project_csv_exporter',
+            Jobs\Report::class             => 'annostation.labeling_api.worker.job_instruction.report',
+            Jobs\Exporter::class           => 'annostation.labeling_api.worker.job_instruction.exporter',
         );
     }
 }

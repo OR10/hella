@@ -18,9 +18,9 @@ class CustomException extends ExceptionController
     /**
      * Converts an Exception to a Response
      *
-     * @param Request              $request   The request
+     * @param Request              $request The request
      * @param FlattenException     $exception A FlattenException instance
-     * @param DebugLoggerInterface $logger    A DebugLoggerInterface instance
+     * @param DebugLoggerInterface $logger A DebugLoggerInterface instance
      *
      * @return Response
      *
@@ -29,21 +29,26 @@ class CustomException extends ExceptionController
     public function showAction(Request $request, FlattenException $exception, DebugLoggerInterface $logger = null)
     {
         $currentContent = $this->getAndCleanOutputBuffering($request->headers->get('X-Php-Ob-Level', -1));
-        $showException = $request->attributes->get('showException', $this->debug); // As opposed to an additional parameter, this maintains BC
+        $showException  = $request->attributes->get(
+            'showException',
+            $this->debug
+        ); // As opposed to an additional parameter, this maintains BC
 
-        $code = $exception->getStatusCode();
+        $code          = $exception->getStatusCode();
         $exceptionName = join('', array_slice(explode('\\', $exception->getClass()), -1));
 
-        return new Response($this->twig->render(
-            (string) $this->findTemplate($request, 'json', $code, $showException),
-            array(
-                'type' => $exceptionName,
-                'status_code' => $code,
-                'status_text' => $exception->getMessage(),
-                'exception' => $exception,
-                'logger' => $logger,
-                'currentContent' => $currentContent,
+        return new Response(
+            $this->twig->render(
+                (string) $this->findTemplate($request, 'json', $code, $showException),
+                array(
+                    'type'           => $exceptionName,
+                    'status_code'    => $code,
+                    'status_text'    => $exception->getMessage(),
+                    'exception'      => $exception,
+                    'logger'         => $logger,
+                    'currentContent' => $currentContent,
+                )
             )
-        ));
+        );
     }
 }

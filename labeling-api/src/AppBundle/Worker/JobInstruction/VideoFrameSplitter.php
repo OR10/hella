@@ -41,6 +41,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
 
     /**
      * Video constructor.
+     *
      * @param VideoService\VideoFrameSplitter $videoFrameSplitter
      * @param Facade\Video                    $videoFacade
      * @param Flysystem\FileSystem            $fileSystem
@@ -89,7 +90,9 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
         $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
-        foreach ($this->labelingTaskFacade->findAllByStatus($video, Model\LabelingTask::STATUS_PREPROCESSING) as $disabledTask) {
+
+        $disabledTasks = $this->labelingTaskFacade->findAllByStatus($video, Model\LabelingTask::STATUS_PREPROCESSING);
+        foreach ($disabledTasks as $disabledTask) {
             $disabledTask->setStatusIfAllImagesAreConverted($video);
             $this->labelingTaskFacade->save($disabledTask);
         }
@@ -106,11 +109,18 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
      * @param                $height
      * @param int            $retryCount
      * @param int            $maxRetries
+     *
      * @throws CouchDB\UpdateConflictException
      * @internal param ImageType\Base $imageType
      */
-    private function updateDocument(Model\Video $video, ImageType\Base $imageType, $width, $height, $retryCount = 0, $maxRetries = 1)
-    {
+    private function updateDocument(
+        Model\Video $video,
+        ImageType\Base $imageType,
+        $width,
+        $height,
+        $retryCount = 0,
+        $maxRetries = 1
+    ) {
         $imageTypeName = $imageType->getName();
         try {
             $this->videoFacade->refresh($video);

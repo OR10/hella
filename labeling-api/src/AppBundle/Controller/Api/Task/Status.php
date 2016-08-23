@@ -32,13 +32,13 @@ class Status extends Controller\Base
     private $tokenStorage;
 
     /**
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Facade\LabelingTask  $labelingTaskFacade
      * @param Storage\TokenStorage $tokenStorage
      */
     public function __construct(Facade\LabelingTask $labelingTaskFacade, Storage\TokenStorage $tokenStorage)
     {
         $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->tokenStorage = $tokenStorage;
+        $this->tokenStorage       = $tokenStorage;
     }
 
     /**
@@ -54,8 +54,9 @@ class Status extends Controller\Base
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $this->labelingTaskFacade->getCurrentPhase($task);
 
-        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR]) &&
-            $task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()) {
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])
+            && $task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()
+        ) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
         }
 
@@ -81,11 +82,12 @@ class Status extends Controller\Base
             }
         }
 
-
         $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
 
         $rawStatusByPhase = $task->getRawStatus();
-        if (array_key_exists(Model\LabelingTask::PHASE_REVIEW, $rawStatusByPhase) && $phase === Model\LabelingTask::PHASE_LABELING) {
+        if (array_key_exists(Model\LabelingTask::PHASE_REVIEW, $rawStatusByPhase)
+            && $phase === Model\LabelingTask::PHASE_LABELING
+        ) {
             $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
         }
 
@@ -114,7 +116,8 @@ class Status extends Controller\Base
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION &&
-            $task->getStatus($phase) !== Model\LabelingTask::STATUS_PREPROCESSING) {
+                $task->getStatus($phase) !== Model\LabelingTask::STATUS_PREPROCESSING
+            ) {
                 throw new Exception\BadRequestHttpException();
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
@@ -201,12 +204,13 @@ class Status extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function reopenTaskAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
         /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $request->request->get('phase');
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);

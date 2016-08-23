@@ -38,8 +38,8 @@ class LabeledThingInFrame extends Controller\Base
 
     /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\LabeledThing $labeledThingFacade
-     * @param Service\TaskIncomplete $taskIncompleteService
+     * @param Facade\LabeledThing        $labeledThingFacade
+     * @param Service\TaskIncomplete     $taskIncompleteService
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
@@ -55,7 +55,8 @@ class LabeledThingInFrame extends Controller\Base
      * @Rest\Get("/{labeledThingInFrame}")
      *
      * @param Model\LabeledThingInFrame $labeledThingInFrame
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request    $request
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingInFrameAction(
@@ -113,11 +114,15 @@ class LabeledThingInFrame extends Controller\Base
             }
 
             if ($labeledThingId !== $labeledThingInFrame->getLabeledThingId()) {
-                throw new Exception\BadRequestHttpException('LabeledThingId did not match with the labeledThingInFrame thingId');
+                throw new Exception\BadRequestHttpException(
+                    'LabeledThingId did not match with the labeledThingInFrame thingId'
+                );
             }
 
             if ((int) $frameIndex !== $labeledThingInFrame->getFrameIndex()) {
-                throw new Exception\BadRequestHttpException('FrameIndex did not match with the labeledThingInFrame FrameIndex');
+                throw new Exception\BadRequestHttpException(
+                    'FrameIndex did not match with the labeledThingInFrame FrameIndex'
+                );
             }
         }
 
@@ -140,7 +145,10 @@ class LabeledThingInFrame extends Controller\Base
         );
 
         if ($incompleteBefore !== $labeledThingInFrame->getIncomplete()) {
-            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
+            $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus(
+                $labeledThing,
+                $labeledThingInFrame
+            );
         }
 
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
@@ -150,18 +158,23 @@ class LabeledThingInFrame extends Controller\Base
         $this->labeledThingFacade->save($labeledThing);
 
         if (empty($labeledThingInFrame->getClasses())) {
-            $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+            $previousClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+                $labeledThingInFrame
+            );
             if ($previousClasses instanceof Model\LabeledThingInFrame) {
                 $labeledThingInFrame->setGhostClasses($previousClasses->getClasses());
             }
         }
 
         return View\View::create()->setData(
-            ['result' =>
-                [
-                    'labeledThingInFrame' => $labeledThingInFrame,
-                    'labeledThing' => $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId()),
-                ]
+            [
+                'result' =>
+                    [
+                        'labeledThingInFrame' => $labeledThingInFrame,
+                        'labeledThing'        => $this->labeledThingFacade->find(
+                            $labeledThingInFrame->getLabeledThingId()
+                        ),
+                    ],
             ]
         );
     }

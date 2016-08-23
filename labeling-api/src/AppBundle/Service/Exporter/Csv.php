@@ -107,16 +107,18 @@ class Csv
      */
     public function export(Model\Project $project)
     {
-        $zipData = array();
-        $videoIterator = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
+        $zipData            = array();
+        $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
         $taskConfigurations = [];
         foreach ($videoIterator as $video) {
             /** @var ColumnGroup\Unique $columnGroup */
             $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
-            $columnGroup->addColumns([
-                new Column\Uuid(),
-                new Column\FrameNumber(),
-            ]);
+            $columnGroup->addColumns(
+                [
+                    new Column\Uuid(),
+                    new Column\FrameNumber(),
+                ]
+            );
 
             // generate columns for this Video
             $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
@@ -124,8 +126,10 @@ class Csv
             foreach ($labelingTaskIterator as $task) {
                 $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
 
-                $xmlConfiguration = $this->taskConfiguration->find($task->getTaskConfigurationId());
-                $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter($xmlConfiguration->getRawData());
+                $xmlConfiguration                 = $this->taskConfiguration->find($task->getTaskConfigurationId());
+                $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter(
+                    $xmlConfiguration->getRawData()
+                );
                 $columnGroup->addColumns(
                     $this->classColumnsFactory->create($configurationXmlConverterFactory->getClassStructure())
                 );
@@ -149,7 +153,7 @@ class Csv
 
         /** @var Model\TaskConfiguration $taskConfiguration */
         foreach ($taskConfigurations as $taskConfiguration) {
-            $filename = sprintf('%s_%s', $taskConfiguration->getName(), $taskConfiguration->getFilename());
+            $filename           = sprintf('%s_%s', $taskConfiguration->getName(), $taskConfiguration->getFilename());
             $zipData[$filename] = $taskConfiguration->getRawData();
         }
 
@@ -163,11 +167,11 @@ class Csv
 
         $export = new Model\Export($project, $filename, $zipContent, 'application/zip');
         $this->exporterFacade->save($export);
-
     }
 
     /**
      * @param array $data
+     *
      * @return string
      * @throws \Exception
      */
