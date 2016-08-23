@@ -72,7 +72,7 @@ class ProjectCreateController {
     /**
      * @type {number}
      */
-    this.splitEach = 600;
+    this.splitEach = 0;
 
     /**
      * @type {boolean}
