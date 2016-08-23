@@ -257,6 +257,10 @@ class CuboidDrawingTool extends DrawingTool {
         this._bottomPoint = this._topPoint.clone();
         this._topPoint.y = tmpPoint.y;
       }
+
+      if (this._projection3d.projectBottomCoordinateTo3d(this._bottomPoint).x < 0) {
+        this._cleanUp();
+      }
     }
   }
 
@@ -293,8 +297,17 @@ class CuboidDrawingTool extends DrawingTool {
     this._topPoint = null;
     this._bottomPoint = null;
     this._sidePoint = null;
+
+    if (this._heightLine) {
+      this._heightLine.remove();
+    }
     this._heightLine = null;
+
+    if (this._widthLine) {
+      this._widthLine.remove();
+    }
     this._widthLine = null;
+
     this._startCreation = false;
   }
 
