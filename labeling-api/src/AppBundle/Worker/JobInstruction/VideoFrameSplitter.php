@@ -122,7 +122,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
             if ($retryCount > $maxRetries) {
                 throw $updateConflictException;
             }
-            $this->updateDocument($video, $retryCount + 1);
+            $this->updateDocument($video, $retryCount + 1, $width, $height);
         }
     }
 }
