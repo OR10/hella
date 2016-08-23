@@ -25,19 +25,36 @@
       ]
     },
     {
-      "name": "occlusion",
+      "name": "front-back-occlusion",
       "children": [
         {
-          "name": "occlusion-0"
+          "name": "front-back-occlusion-0"
         },
         {
-          "name": "occlusion-25"
+          "name": "front-back-occlusion-25"
         },
         {
-          "name": "occlusion-25-50"
+          "name": "front-back-occlusion-25-50"
         },
         {
-          "name": "occlusion-50"
+          "name": "front-back-occlusion-50"
+        }
+      ]
+    },
+    {
+      "name": "side-occlusion",
+      "children": [
+        {
+          "name": "side-occlusion-0"
+        },
+        {
+          "name": "side-occlusion-25"
+        },
+        {
+          "name": "side-occlusion-25-50"
+        },
+        {
+          "name": "side-occlusion-50"
         }
       ]
     },

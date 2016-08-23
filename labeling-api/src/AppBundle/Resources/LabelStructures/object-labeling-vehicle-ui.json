@@ -20,19 +20,34 @@
   "misc-vehicle": {
     "response": "Misc vehicle"
   },
-  "occlusion": {
-    "challenge": "Occlusion"
+  "front-back-occlusion": {
+    "challenge": "Occlusion Front/Back"
   },
-  "occlusion-0": {
+  "front-back-occlusion-0": {
     "response": "0%"
   },
-  "occlusion-25": {
+  "front-back-occlusion-25": {
     "response": "< 25%"
   },
-  "occlusion-25-50": {
+  "front-back-occlusion-25-50": {
     "response": "25% - 50%"
   },
-  "occlusion-50": {
+  "front-back-occlusion-50": {
+    "response": "> 50%"
+  },
+  "side-occlusion": {
+    "challenge": "Occlusion Side"
+  },
+  "side-occlusion-0": {
+    "response": "0%"
+  },
+  "side-occlusion-25": {
+    "response": "< 25%"
+  },
+  "side-occlusion-25-50": {
+    "response": "25% - 50%"
+  },
+  "side-occlusion-50": {
     "response": "> 50%"
   },
   "truncation": {
