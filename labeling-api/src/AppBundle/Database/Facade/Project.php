@@ -2,9 +2,8 @@
 namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
-use Doctrine\ODM\CouchDB;
-use JMS\Serializer\Exception\RuntimeException;
 use Doctrine\CouchDB\View;
+use Doctrine\ODM\CouchDB;
 
 class Project
 {
@@ -97,6 +96,11 @@ class Project
         }
         
         return $result[0];
+    }
+
+    public function reload(Model\Project $project)
+    {
+        return $this->documentManager->refresh($project);
     }
     
     /**

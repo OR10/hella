@@ -80,6 +80,8 @@ class TaskCreator
             \cscntLogPayload::SEVERITY_DEBUG
         );
 
+        $tasks = [];
+
         try {
             if (!$project->hasVideo($video->getName())) {
                 throw new \InvalidArgumentException(
@@ -99,7 +101,6 @@ class TaskCreator
                 ],
             ];
 
-            $tasks               = [];
             $taskVideoSettings   = $project->getTaskVideoSettings();
             $splitLength         = (int) $taskVideoSettings['splitEach'];
             $frameSkip           = (int) $taskVideoSettings['frameSkip'];
@@ -279,6 +280,11 @@ class TaskCreator
         }
 
         $this->taskFacade->save($task);
+
+        $this->loggerFacade->logString(
+            sprintf('Created tasks with id %s', $task->getId()),
+            \cscntLogPayload::SEVERITY_DEBUG
+        );
 
         return $task;
     }

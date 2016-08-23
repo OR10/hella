@@ -12,7 +12,6 @@ use crosscan\Logger\Facade\LoggerFacade;
 use Flow;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Bridge\Twig;
-use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
@@ -102,8 +101,13 @@ class BatchUpload extends Controller\Base
 
         clearstatcache();
 
-        if (!is_dir($this->cacheDirectory) && !mkdir($this->cacheDirectory)) {
-            throw new \RuntimeException(sprintf('Unable to create cache directory: %s', $this->cacheDirectory));
+        // another request may create the directory between checking for existence and attempt to create the directory,
+        // so we double check the existence here and disable the internal error for creating the directory
+        if (!is_dir($this->cacheDirectory) && !@mkdir($this->cacheDirectory)) {
+            clearstatcache();
+            if (!is_dir($this->cacheDirectory)) {
+                throw new \RuntimeException(sprintf('Unable to create cache directory: %s', $this->cacheDirectory));
+            }
         }
     }
 
@@ -123,13 +127,19 @@ class BatchUpload extends Controller\Base
         $this->ensureDirectoryExists($projectCacheDirectory);
         $this->ensureDirectoryExists($chunkDirectory);
 
-        $request = new Flow\Request();
-        $config  = new Flow\Config(['tempDir' => $chunkDirectory]);
-        $file    = new Flow\File($config, $request);
+        $request    = new Flow\Request();
+        $config     = new Flow\Config(['tempDir' => $chunkDirectory]);
+        $file       = new Flow\File($config, $request);
+        $targetPath = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $request->getFileName()]);
 
         if (!$file->validateChunk()) {
             throw new HttpKernel\Exception\BadRequestHttpException();
         }
+
+        // There are some situations where the same previous request is aborted and send again from the ui.
+        // However, the started php process will not be aborted which means the file may already be merged
+        // and we have to check if the request may be a duplicate
+        clearstatcache();
 
         if ($this->isVideoFile($request->getFileName())) {
             if ($project->hasVideo($request->getFileName())) {
@@ -152,8 +162,6 @@ class BatchUpload extends Controller\Base
         $file->saveChunk();
 
         if ($file->validateFile()) {
-            $targetPath = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $request->getFileName()]);
-
             try {
                 $file->save($targetPath);
 
@@ -175,7 +183,7 @@ class BatchUpload extends Controller\Base
             }
         }
 
-        return new View\View();
+        return new View\View(['result' => []]);
     }
 
     /**
@@ -189,17 +197,18 @@ class BatchUpload extends Controller\Base
      */
     public function uploadCompleteAction(Model\Project $project)
     {
+        clearstatcache();
+
         $tasks = [];
 
-        $videoIds = array_diff(
-            $project->getVideoIds(),
-            array_map(
-                function (Model\LabelingTask $task) {
-                    return $task->getVideoId();
-                },
-                $this->taskFacade->findByVideoIds($project->getVideoIds())
-            )
+        $videoIdsWithExistingTasks = array_map(
+            function (Model\LabelingTask $task) {
+                return $task->getVideoId();
+            },
+            $this->taskFacade->findByVideoIds($project->getVideoIds())
         );
+
+        $videoIds = array_diff($project->getVideoIds(), $videoIdsWithExistingTasks);
 
         if (!empty($videoIds)) {
             try {
@@ -254,8 +263,9 @@ class BatchUpload extends Controller\Base
      */
     private function ensureDirectoryExists(string $directory)
     {
-        if (!is_dir($directory)) {
-            if (!mkdir($directory, 0777, true)) {
+        clearstatcache();
+        if (!is_dir($directory) && !@mkdir($directory, 0777, true)) {
+            if (!is_dir($directory)) {
                 throw new \RuntimeException(sprintf('Failed to create directory: %s', $directory));
             }
         }

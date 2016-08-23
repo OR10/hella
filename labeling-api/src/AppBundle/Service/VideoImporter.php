@@ -8,6 +8,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 use crosscan\WorkerPool;
+use Doctrine\ODM\CouchDB;
 
 class VideoImporter
 {
@@ -104,6 +105,8 @@ class VideoImporter
      * @param bool          $lossless
      *
      * @return Model\Video
+     *
+     * @throws CouchDB\UpdateConflictException
      */
     public function importVideo(Model\Project $project, string $videoName, string $videoFilePath, bool $lossless)
     {
@@ -113,8 +116,22 @@ class VideoImporter
         $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
         $this->videoFacade->save($video, $videoFilePath);
 
-        $project->addVideo($video);
-        $this->projectFacade->save($project);
+        $conflictException = null;
+        for ($retries = 0; $retries < 5; ++$retries) {
+            $conflictException = null;
+            try {
+                $project->addVideo($video);
+                $this->projectFacade->save($project);
+                break;
+            } catch (CouchDB\UpdateConflictException $exception) {
+                $conflictException = $exception;
+                $this->projectFacade->reload($project);
+            }
+        }
+
+        if ($conflictException !== null) {
+            throw $conflictException;
+        }
 
         foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
@@ -136,6 +153,8 @@ class VideoImporter
      * @param string        $calibrationFilePath
      *
      * @return Model\CalibrationData
+     *
+     * @throws CouchDB\UpdateConflictException
      */
     public function importCalibrationData(Model\Project $project, string $calibrationFilePath)
     {
@@ -153,9 +172,22 @@ class VideoImporter
 
         $this->calibrationDataFacade->save($calibration);
 
-        $project->addCalibrationData($calibration);
+        $conflictException = null;
+        for ($retries = 0; $retries < 5; ++$retries) {
+            $conflictException = null;
+            try {
+                $project->addCalibrationData($calibration);
+                $this->projectFacade->save($project);
+                break;
+            } catch (CouchDB\UpdateConflictException $exception) {
+                $conflictException = $exception;
+                $this->projectFacade->reload($project);
+            }
+        }
 
-        $this->projectFacade->save($project);
+        if ($conflictException !== null) {
+            throw $conflictException;
+        }
 
         return $calibration;
     }
