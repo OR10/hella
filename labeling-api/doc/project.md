@@ -159,6 +159,14 @@ The POST body is not documented here, please have a look at https://github.com/f
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
 
++ Response 200 (application/json)
+
++ Response 400 (application/json)
+
++ Response 409 (application/json)
+
++ Response 500 (application/json)
+
 ## Batch upload complete [POST /api/project/batchUpload/{projectId}/complete]
 
 This route creates the tasks for all uploaded videos of the given project once all chunks were uploaded completely.
@@ -166,3 +174,7 @@ This route creates the tasks for all uploaded videos of the given project once a
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
 
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + taskIds (array)
