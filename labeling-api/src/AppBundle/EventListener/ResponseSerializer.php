@@ -64,7 +64,7 @@ class ResponseSerializer
                     ->setTemplate('AppBundle::debug.html.twig')
                     ->setData(
                         array(
-                            'json' => addslashes($this->serializer->serialize($controllerResult, 'json')),
+                            'json' => $this->serializer->serialize($controllerResult, 'json'),
                             'xml'  => $this->serializer->serialize($controllerResult, 'xml')
                         )
                     );

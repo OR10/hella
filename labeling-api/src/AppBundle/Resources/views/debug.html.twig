@@ -10,14 +10,14 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>
+    <script src="https://yandex.st/highlightjs/7.3/highlight.min.js"></script>
     <script type="text/javascript">
         (function() {
 
             hljs.tabReplace = '    '; //4 spaces
             hljs.initHighlightingOnLoad();
 
-            obj = JSON.parse('{{ json|raw }}');
+            obj = JSON.parse('{{ json | escape('js') | raw }}');
 
 
             document.getElementById("json").appendChild(document.createTextNode(JSON.stringify(obj, null, 4)));
@@ -33,5 +33,5 @@
             display: none;
         }
     </style>
-    <link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/solarized_light.min.css">
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/7.3/styles/solarized_light.min.css">
 {% endblock %}
