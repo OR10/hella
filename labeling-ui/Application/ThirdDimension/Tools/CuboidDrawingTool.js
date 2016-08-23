@@ -31,6 +31,12 @@ class CuboidDrawingTool extends DrawingTool {
     super($scope, drawingContext, entityIdService, entityColorService, video, task);
 
     /**
+     * @type {$rootScope.Scope}
+     * @private
+     */
+    this._$scope = $scope;
+
+    /**
      * @type {PaperRectangle}
      * @private
      */
@@ -259,6 +265,7 @@ class CuboidDrawingTool extends DrawingTool {
       }
 
       if (this._projection3d.projectBottomCoordinateTo3d(this._bottomPoint).x < 0) {
+        this._$scope.$emit('drawingtool:exception', 'Drawing above the horizon is not possible. The invalid shape has been removed!');
         this._cleanUp();
       }
     }

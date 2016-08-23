@@ -527,6 +527,17 @@ class ViewerController {
       }
     );
 
+    $scope.$on(
+      'drawingtool:exception', (event, message) => {
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'Error',
+          headline: `There was an error in the drawing tool`,
+          message,
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
+      });
+
     // Initial prefetching of all frames
     if (this.task.taskType === 'object-labeling') {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
