@@ -326,21 +326,32 @@ class Csv implements Service\ProjectExporter
                     0,
                     $labeledThingInFrame
                 );
-                $occlusion   = $this->getOcclusion($labeledThingInFrame);
+                if ($this->hasOcclusion($labeledThingInFrame)) {
+                    $occlusion          = $this->getOcclusion($labeledThingInFrame);
+                    $occlusionFrontBack = '';
+                    $occlusionSide      = '';
+                } else {
+                    $occlusion          = '';
+                    $occlusionFrontBack = $this->getOcclusion($labeledThingInFrame, 'front-back');
+                    $occlusionSide      = $this->getOcclusion($labeledThingInFrame, 'side');
+                }
+
                 $truncation  = $this->getTruncation($labeledThingInFrame);
 
                 $result = array(
-                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
-                    'vehicleType'  => $vehicleType,
-                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
-                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
-                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
-                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
-                    'occlusion'    => $occlusion,
-                    'truncation'   => $truncation,
-                    'direction'    => '3d data',
-                    'id'           => null,
-                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
+                    'frame_number'         => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'vehicleType'          => $vehicleType,
+                    'position_x'           => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'           => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'                => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'               => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'            => $occlusion,
+                    'occlusion_front-back' => $occlusionFrontBack,
+                    'occlusion_side'       => $occlusionSide,
+                    'truncation'           => $truncation,
+                    'direction'            => '3d data',
+                    'id'                   => null,
+                    'uuid'                 => $labeledThingInFrame->getLabeledThingId(),
                 );
 
                 if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID) {
@@ -381,17 +392,19 @@ class Csv implements Service\ProjectExporter
                 /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $ignoreType = $this->getClassByRegex('/^(ignore-vehicle)$/', 1, $labeledThingInFrame);
                 $result = array(
-                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
-                    'label_class'  => $ignoreType,
-                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
-                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
-                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
-                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
-                    'occlusion'    => 'none',
-                    'truncation'   => 'none',
-                    'direction'    => 'none',
-                    'id'           => null,
-                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
+                    'frame_number'         => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'label_class'          => $ignoreType,
+                    'position_x'           => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'           => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'                => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'               => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'            => 'none',
+                    'occlusion-front-back' => 'none',
+                    'occlusion-side'       => 'none',
+                    'truncation'           => 'none',
+                    'direction'            => 'none',
+                    'id'                   => null,
+                    'uuid'                 => $labeledThingInFrame->getLabeledThingId(),
                 );
                 foreach (range(0, 7) as $vertexPoint) {
                     $result['vertex_2d_' . $vertexPoint . '_x'] = 'null';
@@ -442,11 +455,14 @@ class Csv implements Service\ProjectExporter
 
     /**
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param string|null?                    $type
+     *
      * @return int|string
      */
-    private function getOcclusion(Model\LabeledThingInFrame $labeledThingInFrame)
+    private function getOcclusion(Model\LabeledThingInFrame $labeledThingInFrame, $type = null)
     {
-        switch ($this->getClassByRegex('/^(occlusion-(\d{1,2}|(\d{1,2}-\d{1,2})))$/', 2, $labeledThingInFrame)) {
+        $occlusionClassPrefix = $type === null ? 'occlusion' : $type . '-occlusion';
+        switch ($this->getClassByRegex('/^(' . $occlusionClassPrefix . '-(\d{1,2}|(\d{1,2}-\d{1,2})))$/', 2, $labeledThingInFrame)) {
             case '0':
                 return 0;
             break;
@@ -462,6 +478,26 @@ class Csv implements Service\ProjectExporter
             default:
                 return 'unknown';
         }
+    }
+
+    /**
+     * Determine if the given LabeledThingInFrame has a specific occlusion-type set.
+     *
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param string|null? $type
+     *
+     * @return bool
+     */
+    private function hasOcclusion(Model\LabeledThingInFrame $labeledThingInFrame, $type = null) {
+        $occlusionClassPrefix = $type === null ? 'occlusion-' : $type . '-occlusion-';
+        $classesToSearch = $labeledThingInFrame->getClassesWithGhostClasses();
+        foreach($classesToSearch as $possibleOcclusion) {
+            if (strpos($possibleOcclusion, $occlusionClassPrefix) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
