@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Service\View;
 
+use JMS\Serializer;
 use JMS\Serializer\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AppBundle\Model;
@@ -55,6 +56,11 @@ class LabelingTaskSerializationSubscriber implements EventDispatcher\EventSubscr
         $labelingTask = $event->getObject();
         $readOnly = $this->taskReadOnlyDeciderService->isTaskReadOnlyForUser($user, $labelingTask);
 
-        $event->getVisitor()->addData('readOnly', $readOnly);
+        /** @var Serializer\GenericSerializationVisitor|Serializer\AbstractVisitor $visitor */
+        $visitor = $event->getVisitor();
+
+        if ($visitor instanceof Serializer\GenericSerializationVisitor) {
+            $visitor->addData('readOnly', $readOnly);
+        }
     }
 }
