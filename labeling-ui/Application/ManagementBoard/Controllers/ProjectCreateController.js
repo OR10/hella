@@ -148,13 +148,13 @@ class ProjectCreateController {
      * @type {Array.<Object>}
      */
     this.taskTypes = [
-      {id: 'vehicle', name: 'Vehicle'},
-      {id: 'parked-cars', name: 'Parked Cars'},
+      //{id: 'vehicle', name: 'Vehicle'},
+      //{id: 'parked-cars', name: 'Parked Cars'},
       {id: 'person', name: 'Person'},
       {id: 'cyclist', name: 'Cyclist'},
       {id: 'ignore', name: 'Ignore'},
-      {id: 'ignore-vehicle', name: 'Ignore Vehicle'},
-      {id: 'lane', name: 'Lane'},
+      //{id: 'ignore-vehicle', name: 'Ignore Vehicle'},
+      //{id: 'lane', name: 'Lane'},
     ];
 
     /**
