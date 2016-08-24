@@ -276,6 +276,12 @@ class Project extends Controller\Base
                         $request->request->get('drawingToolLane', 'rectangle')
                     );
                 }
+                if ($request->request->get('parked-cars', false)) {
+                    $project->addLegacyTaskInstruction(
+                        Model\LabelingTask::INSTRUCTION_PARKED_CARS,
+                        $request->request->get('drawingToolParkedCars', 'cuboid')
+                    );
+                }
                 break;
             case 'genericXml':
                 $taskTypeConfigurations = $request->request->get('taskTypeConfigurations');
