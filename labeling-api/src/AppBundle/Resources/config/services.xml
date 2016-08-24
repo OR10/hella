@@ -59,6 +59,16 @@
             <argument type="service" id="oneup_flysystem.cache_filesystem"/>
         </service>
 
+        <service id="annostation.labeling_api.service.s3uploader" class="AppBundle\Service\S3Uploader">
+            <argument>%s3cli_executable%</argument>
+            <argument>%cache_dir%</argument>
+            <argument>%frame_cdn_s3_bucket%</argument>
+            <argument>%frame_cdn_s3_key%</argument>
+            <argument>%frame_cdn_s3_secret%</argument>
+            <argument>%frame_cdn_s3_host_base%</argument>
+            <argument>%frame_cdn_s3_host_bucket%</argument>
+        </service>
+
         <service id="annostation.labeling_api.service.task_read_only_decider" class="AppBundle\Service\TaskReadOnlyDecider">
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
