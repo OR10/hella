@@ -43,6 +43,7 @@
                 <i ng-if="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
                 <i ng-if="task.labelInstruction === 'ignore-vehicle'" class="fa fa-eye-slash" tooltip="Ignore Vehicle"></i>
                 <i ng-if="task.labelInstruction === 'lane'" class="fa fa-long-arrow-up" tooltip="Lane"></i>
+                <i ng-if="task.labelInstruction === 'parked-cars'" class="fa fa-ellipsis-v " tooltip="Parked Cars"></i>
                 <i ng-if="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
                 <i ng-if="task.reopen[vm.taskPhase] === true" class="fa fa-retweet" tooltip="Reopened"></i>
                 &nbsp;{{task.type}}

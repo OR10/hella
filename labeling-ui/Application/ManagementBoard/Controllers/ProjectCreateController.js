@@ -102,6 +102,11 @@ class ProjectCreateController {
     /**
      * @type {boolean}
      */
+    this.parkedCars = false;
+
+    /**
+     * @type {boolean}
+     */
     this.ignore = false;
 
     /**
@@ -135,10 +140,16 @@ class ProjectCreateController {
     this.drawingToolIgnore = 'rectangle';
 
     /**
+     * @type {string}
+     */
+    this.drawingToolParkedCars = 'cuboid';
+
+    /**
      * @type {Array.<Object>}
      */
     this.taskTypes = [
       {id: 'vehicle', name: 'Vehicle'},
+      {id: 'parked-cars', name: 'Parked Cars'},
       {id: 'person', name: 'Person'},
       {id: 'cyclist', name: 'Cyclist'},
       {id: 'ignore', name: 'Ignore'},
@@ -251,6 +262,8 @@ class ProjectCreateController {
       drawingToolIgnoreVehicle: this.drawingToolIgnoreVehicle,
       lane: this.lane,
       drawingToolLane: this.drawingToolLane,
+      'parked-cars': this.parkedCars,
+      drawingToolParkedCars: this.drawingToolParkedCars,
     };
 
     this._projectGateway.createProject(data).then(() => {
