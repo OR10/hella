@@ -834,6 +834,15 @@ class PaperCuboid extends PaperShape {
     return this._projection2d.projectCuboidTo2d(this._cuboid3d).vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
   }
 
+  get bounds() {
+    const bottomCornerIndex = this._cuboidInteractionResolver.getPrimaryCornerIndex();
+    const topCornerIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(CuboidInteractionResolver.HEIGHT);
+    const height2d = this._projectedCuboid.vertices[bottomCornerIndex].y - this._projectedCuboid.vertices[topCornerIndex].y;
+    const height3d = this._cuboid3d.vertices[topCornerIndex].z;
+
+    return {height2d, height3d};
+  }
+
   /**
    * Convert to JSON for Storage
    */
