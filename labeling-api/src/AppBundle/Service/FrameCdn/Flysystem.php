@@ -1,30 +1,34 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\FrameCdn;
 
+use AppBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use League\Flysystem;
+use League;
 
-class FilesystemFrameCdn extends FrameCdn
+class Flysystem extends Service\FrameCdn
 {
     /**
      * @var string
      */
     protected $frameCdnBaseUrl;
+
     /**
-     * @var Flysystem\FileSystem
+     * @var League\Flysystem\Filesystem
      */
-    private $fileSystem;
+    protected $fileSystem;
 
     /**
      * FrameCdn constructor.
      *
-     * @param string               $frameCdnBaseUrl
-     * @param Flysystem\FileSystem $fileSystem
+     * @param string                      $frameCdnBaseUrl
+     * @param League\Flysystem\Filesystem $fileSystem
      */
-    public function __construct($frameCdnBaseUrl, Flysystem\FileSystem $fileSystem)
+    public function __construct($frameCdnBaseUrl, League\Flysystem\Filesystem $fileSystem)
     {
+        parent::__construct();
+
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
         $this->fileSystem      = $fileSystem;
     }
@@ -50,8 +54,8 @@ class FilesystemFrameCdn extends FrameCdn
     }
 
     /**
-     * @param Model\LabelingTask $labelingTask
-     * @param ImageType\Base $imageType
+     * @param Model\LabelingTask          $labelingTask
+     * @param ImageType\Base              $imageType
      * @param Model\FrameIndexRange|array $frameNumbers
      *
      * @return array
@@ -65,7 +69,7 @@ class FilesystemFrameCdn extends FrameCdn
         foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
                 "frameIndex" => $index,
-                'url' => sprintf(
+                'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
                     $this->frameCdnBaseUrl,
                     $labelingTask->getVideoId(),
