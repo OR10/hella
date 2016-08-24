@@ -1,29 +1,31 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\FrameCdn;
 
+use AppBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use League\Flysystem;
+use League;
 
-class FlysystemFrameCdn extends FrameCdn
+class Flysystem extends Service\FrameCdn
 {
     /**
      * @var string
      */
     protected $frameCdnBaseUrl;
+
     /**
-     * @var Flysystem\Filesystem
+     * @var League\Flysystem\Filesystem
      */
-    private $fileSystem;
+    protected $fileSystem;
 
     /**
      * FrameCdn constructor.
      *
-     * @param string               $frameCdnBaseUrl
-     * @param Flysystem\Filesystem $fileSystem
+     * @param string                      $frameCdnBaseUrl
+     * @param League\Flysystem\Filesystem $fileSystem
      */
-    public function __construct($frameCdnBaseUrl, Flysystem\Filesystem $fileSystem)
+    public function __construct($frameCdnBaseUrl, League\Flysystem\Filesystem $fileSystem)
     {
         parent::__construct();
 
@@ -52,8 +54,8 @@ class FlysystemFrameCdn extends FrameCdn
     }
 
     /**
-     * @param Model\LabelingTask $labelingTask
-     * @param ImageType\Base $imageType
+     * @param Model\LabelingTask          $labelingTask
+     * @param ImageType\Base              $imageType
      * @param Model\FrameIndexRange|array $frameNumbers
      *
      * @return array
@@ -67,7 +69,7 @@ class FlysystemFrameCdn extends FrameCdn
         foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
                 "frameIndex" => $index,
-                'url' => sprintf(
+                'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
                     $this->frameCdnBaseUrl,
                     $labelingTask->getVideoId(),

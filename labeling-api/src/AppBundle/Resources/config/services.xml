@@ -48,7 +48,7 @@
             <argument>%ffprobe_executable%</argument>
         </service>
 
-        <service id="annostation.labeling_api.service.frame_cdn.flysystem" class="AppBundle\Service\FlysystemFrameCdn">
+        <service id="annostation.labeling_api.service.frame_cdn.flysystem" class="AppBundle\Service\FrameCdn\Flysystem">
             <argument>%frame_cdn_base_url%</argument>
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem" />
         </service>
