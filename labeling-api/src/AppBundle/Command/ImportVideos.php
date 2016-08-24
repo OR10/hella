@@ -173,6 +173,7 @@ class ImportVideos extends Base
         $taskConfigurationIdVehicle       = $input->getOption('taskConfigurationIdVehicle');
         $taskConfigurationIdVehicleIgnore = $input->getOption('taskConfigurationIdIgnoreVehicle');
         $taskConfigurationIdLane          = $input->getOption('taskConfigurationIdLane');
+        $taskConfigurationIdParkedCars    = $input->getOption('taskConfigurationIdParkedCars');
 
         switch ($type) {
             case 'pedestrian':
@@ -184,7 +185,6 @@ class ImportVideos extends Base
                     $taskConfigurationIdIgnore
                 );
                 break;
-
             case 'vehicle':
                 $this->addVehicleInstructions(
                     $project,
@@ -193,9 +193,11 @@ class ImportVideos extends Base
                     $taskConfigurationIdVehicleIgnore
                 );
                 break;
-
             case 'lane':
                 $this->addLaneInstructions($project, $isLegacy, $taskConfigurationIdLane);
+                break;
+            case 'parked-cars':
+                $this->addParkedCarsInstructions($project, $isLegacy, $taskConfigurationIdParkedCars);
                 break;
 
             default:
@@ -215,9 +217,9 @@ class ImportVideos extends Base
     private function addPedestrianInstructions(
         Model\Project $project,
         bool $isLegacy,
-        int $taskConfigurationIdPerson = null,
-        int $taskConfigurationIdCyclist = null,
-        int $taskConfigurationIdIgnore = null
+        $taskConfigurationIdPerson = null,
+        $taskConfigurationIdCyclist = null,
+        $taskConfigurationIdIgnore = null
     ) {
         if ($isLegacy) {
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'pedestrian');
@@ -249,16 +251,16 @@ class ImportVideos extends Base
     /**
      * @param Model\Project $project
      * @param bool          $isLegacy
-     * @param int|null      $taskConfigurationIdVehicle
-     * @param int|null      $taskConfigurationIdVehicleIgnore
+     * @param string|null      $taskConfigurationIdVehicle
+     * @param string|null      $taskConfigurationIdVehicleIgnore
      *
      * @throws \Exception
      */
     private function addVehicleInstructions(
         Model\Project $project,
         bool $isLegacy,
-        int $taskConfigurationIdVehicle = null,
-        int $taskConfigurationIdVehicleIgnore = null
+        $taskConfigurationIdVehicle = null,
+        $taskConfigurationIdVehicleIgnore = null
     ) {
         if ($isLegacy) {
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'cuboid');
@@ -282,11 +284,11 @@ class ImportVideos extends Base
     /**
      * @param Model\Project $project
      * @param bool          $isLegacy
-     * @param int|null      $taskConfigurationIdLane
+     * @param string|null   $taskConfigurationIdLane
      *
      * @throws \Exception
      */
-    private function addLaneInstructions(Model\Project $project, bool $isLegacy, int $taskConfigurationIdLane = null)
+    private function addLaneInstructions(Model\Project $project, bool $isLegacy, $taskConfigurationIdLane = null)
     {
         if ($isLegacy) {
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_LANE, 'rectangle');
@@ -298,6 +300,29 @@ class ImportVideos extends Base
             $project->addGenericXmlTaskInstruction(
                 Model\LabelingTask::INSTRUCTION_LANE,
                 $taskConfigurationIdLane
+            );
+        }
+    }
+
+    /**
+     * @param Model\Project $project
+     * @param bool          $isLegacy
+     * @param string|null   $taskConfigurationIdParkedCars
+     * @throws \Exception
+     *
+     */
+    private function addParkedCarsInstructions(Model\Project $project, bool $isLegacy, $taskConfigurationIdParkedCars = null)
+    {
+        if ($isLegacy) {
+            $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PARKED_CARS, 'cuboid');
+        } else {
+            if ($taskConfigurationIdParkedCars === null) {
+                throw new \Exception('Missing Parked Cars TaskConfiguration');
+            }
+
+            $project->addGenericXmlTaskInstruction(
+                Model\LabelingTask::INSTRUCTION_PARKED_CARS,
+                $taskConfigurationIdParkedCars
             );
         }
     }
