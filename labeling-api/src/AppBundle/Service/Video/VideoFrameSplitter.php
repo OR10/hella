@@ -88,6 +88,7 @@ class VideoFrameSplitter
             }
         );
 
+        $this->frameCdn->beginBatchTransaction($video);
         foreach ($files as $file) {
             $this->imageSizes[(int) $file['basename']] = getimagesizefromstring($this->fileSystem->read($file['path']));
             $this->frameCdn->save(
@@ -97,6 +98,7 @@ class VideoFrameSplitter
                 $this->fileSystem->read($file['path'])
             );
         }
+        $this->frameCdn->commit();
 
         $this->fileSystem->deleteDir($tempDir);
     }
