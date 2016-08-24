@@ -13,7 +13,7 @@ class FilesystemFrameCdn extends FrameCdn
      */
     protected $frameCdnBaseUrl;
     /**
-     * @var Flysystem\FileSystem
+     * @var Flysystem\Filesystem
      */
     private $fileSystem;
 
@@ -21,9 +21,9 @@ class FilesystemFrameCdn extends FrameCdn
      * FrameCdn constructor.
      *
      * @param string               $frameCdnBaseUrl
-     * @param Flysystem\FileSystem $fileSystem
+     * @param Flysystem\Filesystem $fileSystem
      */
-    public function __construct($frameCdnBaseUrl, Flysystem\FileSystem $fileSystem)
+    public function __construct($frameCdnBaseUrl, Flysystem\Filesystem $fileSystem)
     {
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
         $this->fileSystem      = $fileSystem;

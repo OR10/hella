@@ -31,7 +31,7 @@ class VideoFrameSplitter
     private $frameCdn;
 
     /**
-     * @var Flysystem\FileSystem
+     * @var Flysystem\Filesystem
      */
     private $fileSystem;
 
@@ -43,14 +43,14 @@ class VideoFrameSplitter
     /**
      * FrameCdnSplitter constructor.
      *
-     * @param Service\FrameCdn      $frameCdn
-     * @param                       $ffmpegExecutable
-     * @param Flysystem\FileSystem  $fileSystem
+     * @param Service\FrameCdn     $frameCdn
+     * @param string               $ffmpegExecutable
+     * @param Flysystem\Filesystem $fileSystem
      */
     public function __construct(
         Service\FrameCdn $frameCdn,
         $ffmpegExecutable,
-        Flysystem\FileSystem $fileSystem
+        Flysystem\Filesystem $fileSystem
     ) {
         $this->ffmpegExecutable = $ffmpegExecutable;
         $this->frameCdn         = $frameCdn;

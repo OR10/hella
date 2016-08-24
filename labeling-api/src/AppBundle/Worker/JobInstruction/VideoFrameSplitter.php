@@ -6,6 +6,7 @@ use crosscan\WorkerPool;
 use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AppBundle\Service\Video as VideoService;
+use AppBundle\Worker\Jobs;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use League\Flysystem;
@@ -30,7 +31,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     private $labelingTaskFacade;
 
     /**
-     * @var Flysystem\FileSystem
+     * @var Flysystem\Filesystem
      */
     private $fileSystem;
 
@@ -44,14 +45,15 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
      *
      * @param VideoService\VideoFrameSplitter $videoFrameSplitter
      * @param Facade\Video                    $videoFacade
-     * @param Flysystem\FileSystem            $fileSystem
+     * @param Facade\LabelingTask             $labelingTaskFacade
+     * @param Flysystem\Filesystem            $fileSystem
      * @param string                          $cacheDir
      */
     public function __construct(
         VideoService\VideoFrameSplitter $videoFrameSplitter,
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Flysystem\FileSystem $fileSystem,
+        Flysystem\Filesystem $fileSystem,
         $cacheDir
     ) {
         $this->videoFrameSplitter = $videoFrameSplitter;
@@ -70,6 +72,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
         /** @var Model\Video $video */
+        /** @var Jobs\VideoFrameSplitter $job */
         $video = $this->videoFacade->find($job->videoId);
 
         if ($video === null) {
