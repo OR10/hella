@@ -23,6 +23,7 @@ class LabelingTask
     const INSTRUCTION_IGNORE = 'ignore';
     const INSTRUCTION_IGNORE_VEHICLE = 'ignore-vehicle';
     const INSTRUCTION_LANE = 'lane';
+    const INSTRUCTION_PARKED_CARS = 'parked-cars';
 
     const STATUS_PREPROCESSING = 'preprocessing';
     const STATUS_IN_PROGRESS = 'in_progress';
