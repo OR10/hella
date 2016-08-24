@@ -368,7 +368,7 @@ class VideoImporter
                         $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         $labelInstruction['drawingTool'],
-                        ['pedestrian'],
+                        [],
                         $imageTypes,
                         $labelInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
