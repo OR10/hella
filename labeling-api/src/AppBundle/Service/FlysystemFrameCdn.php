@@ -6,7 +6,7 @@ use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use League\Flysystem;
 
-class FilesystemFrameCdn extends FrameCdn
+class FlysystemFrameCdn extends FrameCdn
 {
     /**
      * @var string
@@ -25,6 +25,8 @@ class FilesystemFrameCdn extends FrameCdn
      */
     public function __construct($frameCdnBaseUrl, Flysystem\Filesystem $fileSystem)
     {
+        parent::__construct();
+
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
         $this->fileSystem      = $fileSystem;
     }
