@@ -1,0 +1,21 @@
+.user-role-bar {
+  height: 2px;
+  padding: 0 0.5rem;
+
+  .role-line{
+    height: 2px;
+  }
+
+  .ROLE_ADMIN {
+    background-color: #FF0000;
+  }
+  .ROLE_LABEL_COORDINATOR {
+    background-color: #FFD700;
+  }
+  .ROLE_CLIENT {
+    background-color: #8A2BE2;
+  }
+  .ROLE_USER {
+    background-color: #008000;
+  }
+}
