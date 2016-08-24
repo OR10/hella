@@ -130,6 +130,9 @@ class Csv implements Service\ProjectExporter
                 ),
                 'lane' => array(
                     Model\LabelingTask::INSTRUCTION_LANE
+                ),
+                'parked-cars' => array(
+                    Model\LabelingTask::INSTRUCTION_PARKED_CARS
                 )
             );
 
@@ -165,6 +168,9 @@ class Csv implements Service\ProjectExporter
                             break;
                         case Model\LabelingTask::INSTRUCTION_LANE:
                             $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getLaneLabelingData($task));
+                            break;
+                        case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
+                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getParkedCarsLabelingData($task));
                             break;
                     }
                 }
@@ -448,6 +454,58 @@ class Csv implements Service\ProjectExporter
                     'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
                 );
+            },
+            $labeledThingsInFramesWithGhostClasses
+        );
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @return mixed
+     */
+    public function getParkedCarsLabelingData(Model\LabelingTask $task)
+    {
+        $labeledThingsInFramesWithGhostClasses = $this->loadLabeledThingsInFrame($task);
+        $frameNumberMapping                    = $task->getFrameNumberMapping();
+        $labelInstruction                      = $task->getLabelInstruction();
+
+        return array_map(
+            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction, $task) {
+                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+                $result = array(
+                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'label_class'  => $labelInstruction,
+                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'    => 0,
+                    'occlusion-front-back' => 'none',
+                    'occlusion-side'       => 'none',
+                    'truncation'   => 0,
+                    'direction'    => '3d data',
+                    'id'           => null,
+                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
+                );
+
+                if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID) {
+                    $video = $this->videoFacade->find($task->getVideoId());
+                    $vertices2d = $this->getCuboidVertices($labeledThingInFrame, $video)[0];
+                    foreach (range(0, 7) as $vertexPoint) {
+                        $result['vertex_2d_' . $vertexPoint . '_x'] = ($vertices2d[$vertexPoint][0] === null) ? 'null' : round($vertices2d[$vertexPoint][0], 4);
+                        $result['vertex_2d_' . $vertexPoint . '_y'] = ($vertices2d[$vertexPoint][1] === null) ? 'null' : round($vertices2d[$vertexPoint][1], 4);
+                    }
+
+                    $vertices3d = $labeledThingInFrame->getShapes()[0]['vehicleCoordinates'];
+                    foreach (range(0, 7) as $vertexPoint) {
+                        $result['vertex_3d_' . $vertexPoint . '_x'] = ($vertices3d[$vertexPoint][0] === null) ? 'null' : round($vertices3d[$vertexPoint][0], 4);
+                        $result['vertex_3d_' . $vertexPoint . '_y'] = ($vertices3d[$vertexPoint][1] === null) ? 'null' : round($vertices3d[$vertexPoint][1], 4);
+                        $result['vertex_3d_' . $vertexPoint . '_z'] = ($vertices3d[$vertexPoint][2] === null) ? 'null' : round($vertices3d[$vertexPoint][2], 4);
+                    }
+
+                }
+
+                return $result;
             },
             $labeledThingsInFramesWithGhostClasses
         );
