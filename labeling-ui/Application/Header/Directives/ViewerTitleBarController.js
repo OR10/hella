@@ -101,6 +101,16 @@ class ViewerTitleBarController {
         this.shapeBounds = null;
       }
     });
+
+    $scope.$watchGroup(['vm.selectedPaperShape.bounds.height2d', 'vm.selectedPaperShape.bounds.height3d'], newValues => {
+      const height2d = newValues[0];
+      const height3d = newValues[1];
+      if (height2d && height3d) {
+        this.shapeBounds = `Height: ${parseInt(height2d, 10)}px (${height3d.toFixed(2)}m)`;
+      } else {
+        this.shapeBounds = null;
+      }
+    });
   }
 
   _registerOnEvents() {
