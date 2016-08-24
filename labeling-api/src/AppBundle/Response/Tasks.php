@@ -5,7 +5,7 @@ namespace AppBundle\Response;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
 
-class Task
+class Tasks
 {
     /**
      * @var Model\LabelingTask[]

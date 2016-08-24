@@ -162,7 +162,7 @@ class Task extends Controller\Base
         );
 
         return new View\View(
-            new Response\Task(
+            new Response\Tasks(
                 $tasks,
                 $this->videoFacade,
                 $this->userFacade,
