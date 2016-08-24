@@ -67,6 +67,7 @@ class CurrentUser extends Controller\Base
      */
     public function profileAction()
     {
+        /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
         return View\View::create()->setData(
@@ -75,6 +76,7 @@ class CurrentUser extends Controller\Base
                     'id'       => $user->getId(),
                     'username' => $user->getUsername(),
                     'email'    => $user->getEmail(),
+                    'roles'    => $user->getRoles(),
                 ],
             ]
         );
