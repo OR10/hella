@@ -53,6 +53,12 @@
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem" />
         </service>
 
+        <service id="annostation.labeling_api.service.frame_cdn.s3_batch_upload" class="AppBundle\Service\FrameCdn\S3BatchUpload">
+            <argument>%frame_cdn_base_url%</argument>
+            <argument>%cache_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.service.s3uploader" />
+        </service>
+
         <service id="annostation.labeling_api.service.video.video_frame_splitter" class="AppBundle\Service\Video\VideoFrameSplitter">
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.flysystem" />
             <argument>%ffmpeg_executable%</argument>
