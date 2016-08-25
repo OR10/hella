@@ -3,7 +3,7 @@ namespace AppBundle\Service;
 
 use Symfony\Component\Process;
 
-class S3Uploader
+class S3CliUploader
 {
     /**
      * Timeout of the upload process

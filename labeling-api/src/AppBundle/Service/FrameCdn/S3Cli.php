@@ -8,7 +8,7 @@ use AppBundle\Model\Video\ImageType;
 use League\Flysystem\Adapter;
 use League\Flysystem\Filesystem;
 
-class S3BatchUpload extends Service\FrameCdn
+class S3Cli extends Service\FrameCdn
 {
     /**
      * @var string
@@ -38,11 +38,11 @@ class S3BatchUpload extends Service\FrameCdn
     /**
      * FrameCdn constructor.
      *
-     * @param string             $frameCdnBaseUrl
-     * @param string             $cacheDirectory
-     * @param Service\S3Uploader $uploader
+     * @param string                $frameCdnBaseUrl
+     * @param string                $cacheDirectory
+     * @param Service\S3CliUploader $uploader
      */
-    public function __construct($frameCdnBaseUrl, $cacheDirectory, Service\S3Uploader $uploader)
+    public function __construct($frameCdnBaseUrl, $cacheDirectory, Service\S3CliUploader $uploader)
     {
         parent::__construct();
 
