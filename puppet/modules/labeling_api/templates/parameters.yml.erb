@@ -23,8 +23,6 @@ parameters:
     ffmpeg_executable: <%= @ffmpeg_executable %>
     ffprobe_executable: <%= @ffprobe_executable %>
 
-    s3cli_executable: <%= @s3cli_executable %>
-
     frame_cdn_dir: <%= @frame_cdn_dir %>
 
     <% if @frame_cdn_type == 's3' %>
@@ -35,8 +33,10 @@ parameters:
     frame_cdn_s3_secret: <%= @frame_cdn_s3_secret %>
     <% end %>
 
-    <% if @frame_cdn_type == 's3-cli' %>
-    s3cli_executable: "<%= @s3cli_executable %>"
+    <% if @frame_cdn_type == 's3-cmd' %>
+    s3cmd_executable: "<%= @s3cmd_executable %>"
+    parallel_executable: "<%= @parallel_executable %>"
+    frame_cdn_s3_parallel_uploads_per_worker: "<%= @frame_cdn_s3_parallel_uploads_per_worker %>"
     frame_cdn_s3_host_base: "<%= @frame_cdn_s3_host_base %>"
     frame_cdn_s3_host_bucket: "<%= @frame_cdn_s3_host_bucket %>"
     frame_cdn_s3_bucket: "<%= @frame_cdn_s3_bucket %>"
@@ -92,7 +92,7 @@ services:
                     secret: "<%= @frame_cdn_s3_secret %>"
 <% end %>
 
-<% if @frame_cdn_type == 's3-cli' %>
+<% if @frame_cdn_type == 's3-cmd' %>
 oneup_flysystem:
     adapters:
         frame_cdn_dir_adapter:
@@ -100,10 +100,12 @@ oneup_flysystem:
                 directory: %frame_cdn_dir%
 
 services:
-    annostation.labeling_api.service.s3_cli_uploader:
-        class: AppBundle\Service\S3CliUploader
+    annostation.labeling_api.service.s3_cmd_uploader:
+        class: AppBundle\Service\S3CmdUploader
         arguments:
-            - '%s3cli_executable%'
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%frame_cdn_s3_parallel_uploads_per_worker%'
             - '%cache_dir%'
             - '%frame_cdn_s3_bucket%'
             - '%frame_cdn_s3_key%'
@@ -111,13 +113,13 @@ services:
             - '%frame_cdn_s3_host_base%'
             - '%frame_cdn_s3_host_bucket%'
 
-    annostation.labeling_api.service.frame_cdn.s3_cli:
-        class: AppBundle\Service\FrameCdn\S3Cli
+    annostation.labeling_api.service.frame_cdn.s3_cmd:
+        class: AppBundle\Service\FrameCdn\S3Cmd
         arguments:
             - '%frame_cdn_base_url%'
             - '%cache_dir%'
-            - '@annostation.labeling_api.service.s3_cli_uploader'
+            - '@annostation.labeling_api.service.s3_cmd_uploader'
 
     annostation.labeling_api.service.frame_cdn.selected-alias:
-        alias: annostation.labeling_api.service.frame_cdn.s3_cli
+        alias: annostation.labeling_api.service.frame_cdn.s3_cmd
 <% end %>

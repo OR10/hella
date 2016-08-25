@@ -1,9 +1,10 @@
 <?php
 namespace AppBundle\Service;
 
+use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Process;
 
-class S3CliUploader
+class S3CmdUploader
 {
     /**
      * Timeout of the upload process
@@ -13,7 +14,17 @@ class S3CliUploader
     /**
      * @var string
      */
-    private $s3CliExecutable;
+    private $s3CmdExecutable;
+
+    /**
+     * @var string
+     */
+    private $parallelExecutable;
+
+    /**
+     * @var int
+     */
+    private $numberOfParallelConnections;
 
     /**
      * @var string
@@ -48,7 +59,9 @@ class S3CliUploader
     /**
      * S3Uploader constructor.
      *
-     * @param string $s3CliExecutable
+     * @param string $s3CmdExecutable
+     * @param string $parallelExecutable
+     * @param int    $numberOfParallelConnections
      * @param string $cacheDirectory
      * @param string $bucket
      * @param string $accessKey
@@ -57,7 +70,9 @@ class S3CliUploader
      * @param string $hostBucket
      */
     public function __construct(
-        $s3CliExecutable,
+        $s3CmdExecutable,
+        $parallelExecutable,
+        $numberOfParallelConnections,
         $cacheDirectory,
         $bucket,
         $accessKey,
@@ -65,13 +80,15 @@ class S3CliUploader
         $hostBase,
         $hostBucket
     ) {
-        $this->s3CliExecutable = $s3CliExecutable;
-        $this->cacheDirectory  = $cacheDirectory;
-        $this->bucket          = $bucket;
-        $this->accessKey       = $accessKey;
-        $this->secretKey       = $secretKey;
-        $this->hostBase        = $hostBase;
-        $this->hostBucket      = $hostBucket;
+        $this->s3CmdExecutable             = $s3CmdExecutable;
+        $this->parallelExecutable          = $parallelExecutable;
+        $this->numberOfParallelConnections = $numberOfParallelConnections;
+        $this->cacheDirectory              = $cacheDirectory;
+        $this->bucket                      = $bucket;
+        $this->accessKey                   = $accessKey;
+        $this->secretKey                   = $secretKey;
+        $this->hostBase                    = $hostBase;
+        $this->hostBucket                  = $hostBucket;
     }
 
     public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3)
@@ -96,15 +113,19 @@ class S3CliUploader
     {
         $builder = new Process\ProcessBuilder();
         $builder
-            ->setPrefix($this->s3CliExecutable)
+            ->setPrefix($this->parallelExecutable)
+            ->add('-j' . $this->numberOfParallelConnections)
+            ->add($this->s3CmdExecutable)
             ->add('--config')
             ->add($configFile)
-            ->add('sync')
-            ->add('--delete-removed')
-            ->add($sourceDirectory)
-            ->add($this->getS3Uri($targetDirectoryOnS3));
+            ->add('put')
+            ->add('{}')
+            ->add($this->getS3Uri($targetDirectoryOnS3) . '/{}');
 
         $process = $builder->getProcess();
+
+        $process->setWorkingDirectory($sourceDirectory);
+        $process->setInput($this->getRelativeUploadFileList($sourceDirectory));
         $process->setTimeout(self::TIMEOUT);
 
         return $process;
@@ -121,6 +142,28 @@ class S3CliUploader
             $this->bucket,
             $targetDirectory
         );
+    }
+
+    private function getRelativeUploadFileList($sourceDirectory)
+    {
+        $iterator = new \CallbackFilterIterator(
+            new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($sourceDirectory)
+            ),
+            function ($current) {
+                /** @var \SplFileInfo $current */
+                return $current->isFile();
+            }
+        );
+
+        $sourceDirectoryLength = strlen($sourceDirectory);
+        $fileList              = array();
+        foreach ($iterator as $file) {
+            $pathname   = $file->getPathname();
+            $fileList[] = substr($pathname, $sourceDirectoryLength + 1);
+        }
+
+        return $fileList;
     }
 
     /**
@@ -143,7 +186,7 @@ class S3CliUploader
         $checkSslCertificate = true,
         $checkSslHostname = false
     ) {
-        $tempFile = tempnam($this->cacheDirectory, 's3cli_upload_config');
+        $tempFile = tempnam($this->cacheDirectory, 's3cmd_upload_config');
         file_put_contents(
             $tempFile,
             sprintf(
