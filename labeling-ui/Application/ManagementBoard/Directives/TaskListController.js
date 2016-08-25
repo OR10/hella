@@ -135,7 +135,7 @@ class TaskListController {
             id: task.id,
             type: task.taskType,
             title: task.video.name,
-            range: `${task.metaData.frameRange.startFrameNumber} - ${task.metaData.frameRange.endFrameNumber}`,
+            range: `${task.frameNumberMapping[0]} - ${task.frameNumberMapping[task.frameNumberMapping.length - 1]}`,
             latestAssignee: assignedUser,
             status: task.getStatusForPhase(this.taskPhase),
             labelInstruction: task.labelInstruction,
