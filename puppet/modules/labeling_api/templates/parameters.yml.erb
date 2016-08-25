@@ -36,11 +36,12 @@ parameters:
     <% end %>
 
     <% if @frame_cdn_type == 's3-cli' %>
-    frame_cdn_s3_host_base: <%= @frame_cdn_s3_host_base %>
-    frame_cdn_s3_host_bucket: <%= @frame_cdn_s3_host_bucket %>
-    frame_cdn_s3_bucket: <%= @frame_cdn_s3_bucket %>
-    frame_cdn_s3_key: <%= @frame_cdn_s3_key %>
-    frame_cdn_s3_secret: <%= @frame_cdn_s3_secret %>
+    s3cli_executable: "<%= @s3cli_executable %>"
+    frame_cdn_s3_host_base: "<%= @frame_cdn_s3_host_base %>"
+    frame_cdn_s3_host_bucket: "<%= @frame_cdn_s3_host_bucket %>"
+    frame_cdn_s3_bucket: "<%= @frame_cdn_s3_bucket %>"
+    frame_cdn_s3_key: "<%= @frame_cdn_s3_key %>"
+    frame_cdn_s3_secret: "<%= @frame_cdn_s3_secret %>"
     <% end %>
 
     frame_cdn_base_url: <%= @frame_cdn_base_url %>
@@ -92,26 +93,30 @@ services:
 <% end %>
 
 <% if @frame_cdn_type == 's3-cli' %>
+oneup_flysystem:
+    adapters:
+        frame_cdn_dir_adapter:
+            local:
+                directory: %frame_cdn_dir%
+
 services:
     annostation.labeling_api.service.s3_cli_uploader:
         class: AppBundle\Service\S3CliUploader
-        arguments: [
-            '%s3cli_executable%',
-            '%cache_dir%',
-            '%frame_cdn_s3_bucket%',
-            '%frame_cdn_s3_key%',
-            '%frame_cdn_s3_secret%',
-            '%frame_cdn_s3_host_base%',
-            '%frame_cdn_s3_host_bucket%'
-        ]
+        arguments:
+            - '%s3cli_executable%'
+            - '%cache_dir%'
+            - '%frame_cdn_s3_bucket%'
+            - '%frame_cdn_s3_key%'
+            - '%frame_cdn_s3_secret%'
+            - '%frame_cdn_s3_host_base%'
+            - '%frame_cdn_s3_host_bucket%'
 
     annostation.labeling_api.service.frame_cdn.s3_cli:
         class: AppBundle\Service\FrameCdn\S3Cli
-        arguments: [
-            '%frame_cdn_base_url%',
-            '%cache_dir%',
-            '@annostation.labeling_api.service.s3_cli_uploader'
-        ]
+        arguments:
+            - '%frame_cdn_base_url%'
+            - '%cache_dir%'
+            - '@annostation.labeling_api.service.s3_cli_uploader'
 
     annostation.labeling_api.service.frame_cdn.selected-alias:
         alias: annostation.labeling_api.service.frame_cdn.s3_cli

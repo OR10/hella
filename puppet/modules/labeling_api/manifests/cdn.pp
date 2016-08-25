@@ -75,6 +75,22 @@ class labeling_api::cdn(
           vhostCfgAppend     => $_vhostCfgAppend,
         }
       }
+      's3-cli': {
+        $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
+
+        annostation_base::nginx_vhost { 'labeling_api_cdn':
+          proxy              => $proxy,
+          proxyHeaders       => ["Host ${_proxyHostHeader}"],
+          vhostDir           => $vhost_dir,
+          vhostPort          => $vhost_port,
+          httpv2             => $httpv2,
+          sslCertFile        => $sslCertFile,
+          sslKeyFile         => $sslKeyFile,
+          locationRawPrepend => $_locationRawPrepend,
+          addHeader          => $_addHeader,
+          vhostCfgAppend     => $_vhostCfgAppend,
+        }
+      }
       default: {
         fail("Unsupported frame cdn type: ${type}")
       }
