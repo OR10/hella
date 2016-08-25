@@ -122,6 +122,7 @@ class S3CmdUploader
             ->add($this->s3CmdExecutable)
             ->add('--config')
             ->add($configFile)
+            ->add('--acl-public')
             ->add('put')
             ->add('{}')
             ->add($this->getS3Uri($targetDirectoryOnS3 . '/{}'));
