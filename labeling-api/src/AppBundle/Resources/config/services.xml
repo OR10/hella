@@ -53,26 +53,17 @@
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem" />
         </service>
 
-        <service id="annostation.labeling_api.service.frame_cdn.s3_batch_upload" class="AppBundle\Service\FrameCdn\S3BatchUpload">
-            <argument>%frame_cdn_base_url%</argument>
-            <argument>%cache_dir%</argument>
-            <argument type="service" id="annostation.labeling_api.service.s3uploader" />
-        </service>
+        <!--
+          - Default frame_cdn implementation is the flysystem one
+          - It may be overridden through the parameters.yml for different systems
+          -->
+        <service id="annostation.labeling_api.service.frame_cdn.selected-alias"
+                 alias="annostation.labeling_api.service.frame_cdn.flysystem"/>
 
         <service id="annostation.labeling_api.service.video.video_frame_splitter" class="AppBundle\Service\Video\VideoFrameSplitter">
-            <argument type="service" id="annostation.labeling_api.service.frame_cdn.flysystem" />
+            <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias" />
             <argument>%ffmpeg_executable%</argument>
             <argument type="service" id="oneup_flysystem.cache_filesystem"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.s3uploader" class="AppBundle\Service\S3Uploader">
-            <argument>%s3cli_executable%</argument>
-            <argument>%cache_dir%</argument>
-            <argument>%frame_cdn_s3_bucket%</argument>
-            <argument>%frame_cdn_s3_key%</argument>
-            <argument>%frame_cdn_s3_secret%</argument>
-            <argument>%frame_cdn_s3_host_base%</argument>
-            <argument>%frame_cdn_s3_host_bucket%</argument>
         </service>
 
         <service id="annostation.labeling_api.service.task_read_only_decider" class="AppBundle\Service\TaskReadOnlyDecider">
