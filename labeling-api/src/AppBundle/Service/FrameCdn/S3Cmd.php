@@ -79,8 +79,7 @@ class S3Cmd extends Service\FrameCdn
             $imageType->getName()
         );
         $filePath = sprintf(
-            '%s/%s/%s.%s',
-            $this->currentBatchDirectory,
+            '%s/%s.%s',
             $cdnPath,
             $frameIndex,
             $imageType->getExtension()
