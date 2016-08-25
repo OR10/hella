@@ -102,7 +102,7 @@ class ViewerTitleBarController {
       }
     });
 
-    $scope.$watchGroup(['vm.selectedPaperShape.bounds.height2d', 'vm.selectedPaperShape.bounds.height3d'], newValues => {
+    $scope.$watchGroup(['vm.selectedPaperShape.dimensions.height2d', 'vm.selectedPaperShape.dimensions.height3d'], newValues => {
       const height2d = newValues[0];
       const height3d = newValues[1];
       if (height2d && height3d) {
