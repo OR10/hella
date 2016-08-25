@@ -51,10 +51,12 @@ class labeling_api::params(
   $frame_cdn_s3_key      = undef,
   $frame_cdn_s3_secret   = undef,
 
-  # additional parameters in case of using s3-cli tool
-  $s3cli_executable         = 's3-cli',
-  $frame_cdn_s3_host_base   = undef,
-  $frame_cdn_s3_host_bucket = undef,
+  # additional parameters in case of using s3cmd tool
+  $s3cmd_executable                         = 's3cmd',
+  $parallel_executable                      = 'parallel',
+  $frame_cdn_s3_host_base                   = undef,
+  $frame_cdn_s3_host_bucket                 = undef,
+  $frame_cdn_s3_parallel_uploads_per_worker = 10,
 
   # general settings for the nginx vhost
   $frame_cdn_base_url       = undef,

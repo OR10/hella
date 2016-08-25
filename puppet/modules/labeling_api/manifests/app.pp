@@ -13,15 +13,8 @@ class labeling_api::app(
 ) {
   include ::labeling_api::common
 
-  if $labeling_api::params::frame_cdn_type == 's3-cli' {
-    ensure_packages([
-      's3-cli',
-    ], {
-      provider => 'npm',
-      require => [
-        Package['npm'],
-      ]
-    })
+  if $labeling_api::params::frame_cdn_type == 's3-cmd' {
+    ensure_packages(['s3cmd', 'parallel'])
   }
 
   ::annostation_base::symfony { 'labeling_api':

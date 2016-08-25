@@ -75,7 +75,7 @@ class labeling_api::cdn(
           vhostCfgAppend     => $_vhostCfgAppend,
         }
       }
-      's3-cli': {
+      's3-cmd': {
         $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
 
         annostation_base::nginx_vhost { 'labeling_api_cdn':
