@@ -124,7 +124,7 @@ class S3CmdUploader
             ->add($configFile)
             ->add('put')
             ->add('{}')
-            ->add($this->getS3Uri($targetDirectoryOnS3) . '/{}');
+            ->add($this->getS3Uri($targetDirectoryOnS3 . '/{}'));
 
         $process = $builder->getProcess();
 
@@ -137,14 +137,17 @@ class S3CmdUploader
 
     private function getS3Uri($targetDirectory = '')
     {
-        if (strpos($targetDirectory, '/') === 1) {
-            $targetDirectory = substr($targetDirectory, 1);
+        $sanitizedTargetDirectory = preg_replace('(/+)', '/', $targetDirectory);
+
+        if (strpos($sanitizedTargetDirectory, '/') === 0) {
+            $sanitizedTargetDirectory = substr($sanitizedTargetDirectory, 1);
         }
+
 
         return sprintf(
             's3://%s/%s',
             $this->bucket,
-            $targetDirectory
+            $sanitizedTargetDirectory
         );
     }
 
