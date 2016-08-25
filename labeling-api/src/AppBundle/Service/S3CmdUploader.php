@@ -107,6 +107,10 @@ class S3CmdUploader
         } finally {
             unlink($configFile);
         }
+
+        if ($process->getExitCode() !== 0) {
+            throw new \RuntimeException('Execution of extern s3cmd upload command unsuccessful: ' . $process->getErrorOutput());
+        }
     }
 
     private function getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3)
