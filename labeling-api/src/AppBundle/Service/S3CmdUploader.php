@@ -193,7 +193,7 @@ class S3CmdUploader
         $checkSslCertificate = true,
         $checkSslHostname = false
     ) {
-        $tempFile = tempnam($this->cacheDirectory, 's3cmd_upload_config');
+        $tempFile = tempnam($this->cacheDirectory, 's3cmd_upload_config_');
         file_put_contents(
             $tempFile,
             sprintf(
