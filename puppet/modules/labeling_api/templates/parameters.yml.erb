@@ -75,7 +75,7 @@ oneup_flysystem:
             frame_cdn_dir_adapter:
                 awss3v3:
                     client: frame_cdn.s3_client
-                    bucket: "<%= @frame_cdn_s3_bucket %>"
+                    bucket: "%frame_cdn_s3_bucket%"
 
 services:
     frame_cdn.s3_client:
@@ -83,13 +83,13 @@ services:
         arguments:
             -
                 version: 'latest'
-                region: "<%= @frame_cdn_s3_region %>"
-                endpoint: '<%= @frame_cdn_s3_base_url %>'
+                region: "%frame_cdn_s3_region%"
+                endpoint: '%frame_cdn_s3_base_url%'
                 validate: false
                 bucket_endpoint: true
                 credentials:
-                    key: "<%= @frame_cdn_s3_key %>"
-                    secret: "<%= @frame_cdn_s3_secret %>"
+                    key: "%frame_cdn_s3_key%"
+                    secret: "%frame_cdn_s3_secret%"
 <% end %>
 
 <% if @frame_cdn_type == 's3-cmd' %>
