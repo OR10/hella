@@ -170,7 +170,7 @@ class S3CmdUploader
             $fileList[] = substr($pathname, $sourceDirectoryLength + 1);
         }
 
-        return $fileList;
+        return implode("\n", $fileList);
     }
 
     /**
