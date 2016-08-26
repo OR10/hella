@@ -80,7 +80,7 @@ class ImportVideo extends Base
             $projectName = $input->getArgument('projectName');
             $project     = $this->projectFacade->findByName($projectName);
             if ($project === null) {
-                $project = Model\Project::create($projectName, null, null, [], 1, 1, 0);
+                $project = Model\Project::create($projectName, null, null, null, [], 1, 1, 0);
 
                 $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'pedestrian');
 

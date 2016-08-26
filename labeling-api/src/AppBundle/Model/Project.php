@@ -99,21 +99,27 @@ class Project
     private $calibrations = [];
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $userId;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
      *
+     * @param null   $userId
      * @param null   $creationDate
      * @param null   $dueDate
      * @param array  $labelingValidationProcesses
      * @param int    $frameSkip
      * @param int    $startFrameNumber
      * @param int    $splitEach
-     *
      * @return static
      */
     public static function create(
         $name,
+        $userId = null,
         $creationDate = null,
         $dueDate = null,
         $labelingValidationProcesses = [],
@@ -123,6 +129,7 @@ class Project
     ) {
         return new static(
             $name,
+            $userId,
             $creationDate,
             $dueDate,
             $labelingValidationProcesses,
@@ -134,6 +141,7 @@ class Project
 
     /**
      * @param string $name
+     * @param null   $userId
      * @param null   $creationDate
      * @param null   $dueDate
      * @param array  $labelingValidationProcesses
@@ -143,6 +151,7 @@ class Project
      */
     public function __construct(
         $name,
+        $userId = null,
         $creationDate = null,
         $dueDate = null,
         $labelingValidationProcesses = [],
@@ -159,6 +168,7 @@ class Project
         }
 
         $this->name                                  = (string) $name;
+        $this->setUserId($userId);
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;
@@ -494,5 +504,21 @@ class Project
         $key = $this->getVideoKey($video->getName());
 
         return isset($this->calibrations[$key]) ? $this->calibrations[$key] : null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param mixed $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
     }
 }

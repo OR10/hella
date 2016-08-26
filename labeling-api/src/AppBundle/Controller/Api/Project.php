@@ -216,6 +216,8 @@ class Project extends Controller\Base
         $startFrameNumber = $request->request->get('startFrameNumber');
         $splitEach        = $request->request->get('splitEach');
         $projectType      = $request->request->get('projectType');
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
 
         $labelingValidationProcesses = [];
         if ($review) {
@@ -225,6 +227,7 @@ class Project extends Controller\Base
         try {
             $project = Model\Project::create(
                 $name,
+                $user->getId(),
                 null,
                 null,
                 $labelingValidationProcesses,

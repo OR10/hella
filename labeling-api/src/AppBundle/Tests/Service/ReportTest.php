@@ -53,7 +53,7 @@ class ReportTest extends Tests\KernelTestCase
         $creationDate = new \DateTime('2016-07-27 00:00:00', new \DateTimeZone('UTC'));
         $dueDate      = new \DateTime('2016-07-29 00:00:00', new \DateTimeZone('UTC'));
 
-        $project = $this->projectFacade->save(Model\Project::create('foo', $creationDate, $dueDate));
+        $project = $this->projectFacade->save(Model\Project::create('foo', $user->getId(), $creationDate, $dueDate));
         $video   = $this->videoFacade->save(Model\Video::create('foobar'));
         $task    = $this->labelingTaskFacade->save(
             Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING)

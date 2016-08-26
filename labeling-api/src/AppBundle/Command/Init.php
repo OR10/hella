@@ -331,7 +331,7 @@ class Init extends Base
         }
 
         try {
-            $project = Model\Project::create('Example project', null, null, [], 1, 1, 0);
+            $project = Model\Project::create('Example project', null, null, null, [], 1, 1, 0);
 
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'pedestrian');
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'rectangle');

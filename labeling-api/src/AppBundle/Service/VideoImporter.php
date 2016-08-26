@@ -259,6 +259,7 @@ class VideoImporter
                 $projectName,
                 null,
                 null,
+                null,
                 $labelingValidationProcesses,
                 $frameSkip,
                 $startFrame,

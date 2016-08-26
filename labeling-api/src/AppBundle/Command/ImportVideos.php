@@ -130,7 +130,7 @@ class ImportVideos extends Base
         $userId           = $input->getOption('userId');
         $user             = $userId === null ? null : $this->userFacade->getUserById($userId);
 
-        $project = Model\Project::create($projectName, null, null, [], $frameSkip, $startFrameNumber, $splitEach);
+        $project = Model\Project::create($projectName, null, null, null, [], $frameSkip, $startFrameNumber, $splitEach);
 
         $this->addLabelInstructions($project, $input);
 

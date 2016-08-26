@@ -136,7 +136,7 @@ class ProjectTest extends Tests\WebTestCase
     public function testProjectList($projects, $expectedProjects)
     {
         foreach ($projects as $projectData) {
-            $project = Model\Project::create($projectData['name'], $projectData['date']);
+            $project = Model\Project::create($projectData['name'], null, $projectData['date']);
             $project->setStatus($projectData['status']);
             $this->projectFacade->save($project);
         }
