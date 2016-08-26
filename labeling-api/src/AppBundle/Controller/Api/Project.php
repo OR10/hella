@@ -136,7 +136,8 @@ class Project extends Controller\Base
                 'finishedPercentage' => round(
                     $sumOfTasksForProject === 0 ? 100 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
-                'creationTimestamp'  => $project->getCreationDate(),
+                'creationTimestamp'        => $project->getCreationDate(),
+                'taskInPreProcessingCount' => $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_PREPROCESSING)
             );
 
             if ($user->hasOneRoleOf(
