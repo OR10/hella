@@ -128,7 +128,7 @@ class Project extends Controller\Base
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
-            $sumOfCompletedTasksForProject = $this->getSumOfCompletedTasksForProject($project);
+            $sumOfCompletedTasksForProject = $this->getSumOfTaskByLabelingStatus($project, Model\Project::STATUS_DONE);
             $responseProject               = array(
                 'id'                 => $project->getId(),
                 'name'               => $project->getName(),
@@ -144,8 +144,8 @@ class Project extends Controller\Base
             )
             ) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
-                $responseProject['taskFinishedCount']          = $this->getSumOfCompletedTasksForProject($project);
-                $responseProject['taskInProgressCount']        = $this->getSumOfInProgressTasksForProject($project);
+                $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
+                $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus($project, Model\Project::STATUS_IN_PROGRESS);
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
                 $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
                 $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
@@ -334,12 +334,7 @@ class Project extends Controller\Base
         return $sumOfTasks;
     }
 
-    /**
-     * @param Model\Project $project
-     *
-     * @return int|mixed
-     */
-    private function getSumOfCompletedTasksForProject(Model\Project $project)
+    private function getSumOfTaskByLabelingStatus(Model\Project $project, $status)
     {
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
@@ -349,34 +344,12 @@ class Project extends Controller\Base
             Model\LabelingTask::PHASE_REVISION,
         );
 
-        $sumOfDoneTasks = 0;
+        $sumOfTasks = 0;
         foreach ($phases as $phase) {
-            $sumOfDoneTasks += $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase][Model\LabelingTask::STATUS_DONE];
+            $sumOfTasks += $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase][$status];
         }
 
-        return $sumOfDoneTasks;
-    }
-
-    /**
-     * @param Model\Project $project
-     *
-     * @return int|mixed
-     */
-    private function getSumOfInProgressTasksForProject(Model\Project $project)
-    {
-        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
-
-        $phases               = array(
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION,
-        );
-        $sumOfInProgressTasks = 0;
-        foreach ($phases as $phase) {
-            $sumOfInProgressTasks += $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase][Model\LabelingTask::STATUS_IN_PROGRESS];
-        }
-
-        return $sumOfInProgressTasks;
+        return $sumOfTasks;
     }
 
     private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
