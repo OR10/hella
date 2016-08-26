@@ -92,6 +92,12 @@ class ImportVideos extends Base
                 Input\InputOption::VALUE_REQUIRED,
                 'Task ConfigurationId for lane instruction'
             )
+            ->addOption(
+                'taskConfigurationIdParkedCars',
+                null,
+                Input\InputOption::VALUE_REQUIRED,
+                'Task ConfigurationId for parked-cars instruction'
+            )
             ->addOption('userId', null, Input\InputOption::VALUE_REQUIRED, 'UserId used for importing')
             ->addOption('splitLength', null, Input\InputOption::VALUE_REQUIRED, 'Video split length', 0)
             ->addOption('startFrame', null, Input\InputOption::VALUE_REQUIRED, 'Video start frame', 22)
