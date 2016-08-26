@@ -128,7 +128,7 @@ class Project extends Controller\Base
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
-            $sumOfCompletedTasksForProject = $this->getSumOfTaskByLabelingStatus($project, Model\Project::STATUS_DONE);
+            $sumOfCompletedTasksForProject = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_DONE);
             $responseProject               = array(
                 'id'                 => $project->getId(),
                 'name'               => $project->getName(),
@@ -145,7 +145,7 @@ class Project extends Controller\Base
             ) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
-                $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus($project, Model\Project::STATUS_IN_PROGRESS);
+                $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_IN_PROGRESS);
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
                 $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
                 $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
