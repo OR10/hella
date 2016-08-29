@@ -93,10 +93,22 @@ class Project extends Controller\Base
             case Model\Project::STATUS_TODO:
             case Model\Project::STATUS_IN_PROGRESS:
             case Model\Project::STATUS_DONE:
-                $projects = $this->projectFacade->findAllByStatus($status, $limit, $offset);
+                if ($user->hasRole(Model\User::ROLE_CLIENT) && !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER])) {
+                    $projects = $this->projectFacade->getProjectsForUserAndStatus($user, $status, $limit, $offset);
+                    $totalRows = $this->projectFacade->getProjectsForUserAndStatusTotalRows($user, $status);
+                }else {
+                    $projects = $this->projectFacade->findAllByStatus($status, $limit, $offset);
+                    $totalRows = $projects->getTotalRows();
+                }
                 break;
             default:
-                $projects = $this->projectFacade->findAll($limit, $offset);
+                if ($user->hasRole(Model\User::ROLE_CLIENT) && !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER])) {
+                    $projects = $this->projectFacade->getProjectsForUserAndStatus($user, null, $limit, $offset);
+                    $totalRows = array_sum(array_values($this->projectFacade->getProjectsForUserAndStatusTotalRows($user)));
+                }else {
+                    $projects = $this->projectFacade->findAll($limit, $offset);
+                    $totalRows = $projects->getTotalRows();
+                }
         }
 
         $result = array(
@@ -187,7 +199,7 @@ class Project extends Controller\Base
 
         return View\View::create()->setData(
             [
-                'totalRows' => $projects->getTotalRows(),
+                'totalRows' => $totalRows,
                 'result'    => array_merge(
                     $result[Model\Project::STATUS_IN_PROGRESS],
                     $result[Model\Project::STATUS_TODO],

@@ -6,9 +6,11 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
+use AppBundle\Model;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
  * @Rest\Prefix("/api/projectCount")
@@ -24,12 +26,19 @@ class ProjectCount extends Controller\Base
     private $projectFacade;
 
     /**
-     * ProjectCount constructor.
-     * @param Facade\Project $projectFacade
+     * @var Storage\TokenStorage
      */
-    public function __construct(Facade\Project $projectFacade)
+    private $tokenStorage;
+
+    /**
+     * ProjectCount constructor.
+     * @param Facade\Project       $projectFacade
+     * @param Storage\TokenStorage $tokenStorage
+     */
+    public function __construct(Facade\Project $projectFacade, Storage\TokenStorage $tokenStorage)
     {
         $this->projectFacade = $projectFacade;
+        $this->tokenStorage  = $tokenStorage;
     }
 
     /**
@@ -41,9 +50,16 @@ class ProjectCount extends Controller\Base
      */
     public function getProjectCountAction(HttpFoundation\Request $request)
     {
-        $sum = array();
-        foreach ($this->projectFacade->getSumOfProjectsByStatus()->toArray() as $sumByStatus) {
-            $sum[$sumByStatus['key'][0]] = $sumByStatus['value'];
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->hasRole(Model\User::ROLE_CLIENT) && !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER])) {
+            $sum = $this->projectFacade->getProjectsForUserAndStatusTotalRows($user);
+        } else {
+            $sum = array();
+            foreach ($this->projectFacade->getSumOfProjectsByStatus()->toArray() as $sumByStatus) {
+                $sum[$sumByStatus['key'][0]] = $sumByStatus['value'];
+            }
         }
 
         return View\View::create()->setData(

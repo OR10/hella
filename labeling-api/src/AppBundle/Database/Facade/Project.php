@@ -165,4 +165,62 @@ class Project
 
         return $query->execute();
     }
+
+    /**
+     * @param Model\User $user
+     * @param            $status
+     * @param null       $limit
+     * @param int        $offset
+     * @param bool       $totalRowsCount
+     * @return mixed
+     */
+    public function getProjectsForUserAndStatus(
+        Model\User $user,
+        $status = null,
+        $limit = null,
+        $offset = 0,
+        $totalRowsCount = false
+    ) {
+        $query = $this->documentManager
+            ->createQuery('annostation_project_by_userId_and_status_001', 'view');
+
+        if ($status !== null) {
+            $query->setKey([$user->getId(), $status]);
+        } else {
+            $query->setStartKey([$user->getId(), null]);
+            $query->setEndKey([$user->getId(), []]);
+        }
+
+        if ($totalRowsCount) {
+            $query->setReduce(true);
+            $query->setGroup(true);
+        }else{
+            $query->setReduce(false);
+            $query->onlyDocs(true);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit((int)$limit)
+                ->setSkip((int)$offset);
+        }
+
+        return $query->execute();
+    }
+
+    /**
+     * @param Model\User $user
+     * @param null       $status
+     * @return array
+     */
+    public function getProjectsForUserAndStatusTotalRows(Model\User $user, $status = null)
+    {
+        $rows = $this->getProjectsForUserAndStatus($user, $status, null, 0, true)->toArray();
+
+        $totalRowsByStatus = [];
+        foreach($rows as $row) {
+            $totalRowsByStatus[$row['key'][1]] = $row['value'];
+        }
+
+        return $totalRowsByStatus;
+    }
 }
