@@ -54,7 +54,7 @@ class ProjectCount extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if (($user->hasRole(Model\User::ROLE_CLIENT) || $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) &&
-            !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER])) {
+            !$user->hasOneRoleOf([Model\User::ROLE_ADMIN])) {
             $sum = $this->projectFacade->getProjectsForUserAndStatusTotalRows($user);
         } else {
             $sum = array();
