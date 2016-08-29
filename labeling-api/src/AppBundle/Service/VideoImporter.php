@@ -363,13 +363,17 @@ class VideoImporter
                             throw new \Exception('This User is not allowed to use this Task Configuration.');
                         }
                     }
+                    $predefinedClasses = [];
+                    if ($labelInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
+                        $predefinedClasses = ['parked-car'];
+                    }
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
                         $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         $labelInstruction['drawingTool'],
-                        [],
+                        $predefinedClasses,
                         $imageTypes,
                         $labelInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
@@ -422,9 +426,13 @@ class VideoImporter
         $revision,
         $taskConfigurationId
     ) {
-        $hideAttributeSelector = false;
-        if ($instruction === Model\LabelingTask::INSTRUCTION_LANE) {
-            $hideAttributeSelector = true;
+        switch ($instruction) {
+            case Model\LabelingTask::INSTRUCTION_LANE:
+            case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
+                $hideAttributeSelector = true;
+                break;
+            default:
+                $hideAttributeSelector = false;
         }
 
         if ($taskConfigurationId === null) {

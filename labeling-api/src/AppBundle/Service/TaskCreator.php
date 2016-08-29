@@ -138,13 +138,17 @@ class TaskCreator
                 ];
 
                 foreach ($project->getLegacyTaskInstructions() as $legacyTaskInstruction) {
+                    $predefinedClasses = [];
+                    if ($legacyTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
+                        $predefinedClasses = ['parked-car'];
+                    }
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
                         $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         $legacyTaskInstruction['drawingTool'],
-                        [],
+                        $predefinedClasses,
                         $imageTypes,
                         $legacyTaskInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
@@ -158,14 +162,17 @@ class TaskCreator
 
                 foreach ($project->getGenericXmlTaskInstructions() as $genericXmlTaskInstruction) {
                     $this->checkGenericXmlTaskInstructionPermissions($genericXmlTaskInstruction, $user);
-
+                    $predefinedClasses = [];
+                    if ($genericXmlTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
+                        $predefinedClasses = ['parked-car'];
+                    }
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
                         $frameNumberMapping,
                         Model\LabelingTask::TYPE_OBJECT_LABELING,
                         null,
-                        [],
+                        $predefinedClasses,
                         $imageTypes,
                         $genericXmlTaskInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
@@ -221,7 +228,14 @@ class TaskCreator
         $revision,
         $taskConfigurationId
     ) {
-        $hideAttributeSelector = $instruction === Model\LabelingTask::INSTRUCTION_LANE ? true : false;
+        switch ($instruction) {
+            case Model\LabelingTask::INSTRUCTION_LANE:
+            case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
+                $hideAttributeSelector = true;
+                break;
+            default:
+                $hideAttributeSelector = false;
+        }
 
         if ($taskConfigurationId === null) {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
