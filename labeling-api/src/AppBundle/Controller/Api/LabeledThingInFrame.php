@@ -37,18 +37,26 @@ class LabeledThingInFrame extends Controller\Base
     private $taskIncompleteService;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Service\TaskIncomplete     $taskIncompleteService
+     * @param Facade\LabelingTask        $labelingTaskFacade
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Service\TaskIncomplete $taskIncompleteService
+        Service\TaskIncomplete $taskIncompleteService,
+        Facade\LabelingTask $labelingTaskFacade
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
     }
 
     /**
@@ -126,7 +134,14 @@ class LabeledThingInFrame extends Controller\Base
             }
         }
 
-        $labeledThingInFrame->setClasses($classes);
+        $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
+
+        $labeledThingInFrame->setClasses(
+            array_merge(
+                $classes,
+                $task->getPredefinedClasses()
+            )
+        );
 
         // Check if the shapes are valid
         try {

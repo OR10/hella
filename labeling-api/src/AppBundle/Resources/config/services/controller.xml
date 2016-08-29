@@ -70,6 +70,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.service.task_incomplete" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task.labeled__frame"

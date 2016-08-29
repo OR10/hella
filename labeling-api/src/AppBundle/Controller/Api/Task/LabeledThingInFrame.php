@@ -90,7 +90,12 @@ class LabeledThingInFrame extends Controller\Base
             $labeledThingInFrame = new Model\LabeledThingInFrame($labeledThing, $frameIndex);
             $labeledThingInFrame->setId($labeledThingInFrameId);
             $labeledThingInFrame->setShapes($shapes);
-            $labeledThingInFrame->setClasses($classes);
+            $labeledThingInFrame->setClasses(
+                array_merge(
+                    $classes,
+                    $task->getPredefinedClasses()
+                )
+            );
             $labeledThingInFrame->setIncomplete($incomplete);
         } catch (\Exception $e) {
             throw new Exception\BadRequestHttpException('Failed to create a new LabeledThingInFrame');
