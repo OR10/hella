@@ -639,4 +639,12 @@ class LabelingTask
     {
         return $this->taskConfigurationId;
     }
+
+    /**
+     * @param array $predefinedClasses
+     */
+    public function setPredefinedClasses($predefinedClasses)
+    {
+        $this->predefinedClasses = $predefinedClasses;
+    }
 }
