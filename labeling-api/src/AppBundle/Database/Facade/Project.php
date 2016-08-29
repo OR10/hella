@@ -181,9 +181,13 @@ class Project
         $offset = 0,
         $totalRowsCount = false
     ) {
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            $designDocument = 'annostation_project_by_assigned_userId_and_status_001';
+        }else {
+            $designDocument = 'annostation_project_by_userId_and_status_001';
+        }
         $query = $this->documentManager
-            ->createQuery('annostation_project_by_userId_and_status_001', 'view');
-
+            ->createQuery($designDocument, 'view');
         if ($status !== null) {
             $query->setKey([$user->getId(), $status]);
         } else {

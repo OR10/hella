@@ -93,7 +93,8 @@ class Project extends Controller\Base
             case Model\Project::STATUS_TODO:
             case Model\Project::STATUS_IN_PROGRESS:
             case Model\Project::STATUS_DONE:
-                if ($user->hasRole(Model\User::ROLE_CLIENT) && !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER])) {
+                if (($user->hasRole(Model\User::ROLE_CLIENT) || $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) &&
+                    !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER])) {
                     $projects = $this->projectFacade->getProjectsForUserAndStatus($user, $status, $limit, $offset);
                     $totalRows = $this->projectFacade->getProjectsForUserAndStatusTotalRows($user, $status);
                 }else {
@@ -102,7 +103,8 @@ class Project extends Controller\Base
                 }
                 break;
             default:
-                if ($user->hasRole(Model\User::ROLE_CLIENT) && !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER])) {
+                if (($user->hasRole(Model\User::ROLE_CLIENT) || $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) &&
+                    !$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER])) {
                     $projects = $this->projectFacade->getProjectsForUserAndStatus($user, null, $limit, $offset);
                     $totalRows = array_sum(array_values($this->projectFacade->getProjectsForUserAndStatusTotalRows($user)));
                 }else {
