@@ -13,6 +13,7 @@ use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -48,24 +49,32 @@ class Task extends Controller\Base
     private $projectFacade;
 
     /**
-     * @param Facade\Video        $videoFacade
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Service\FrameCdn    $frameCdn
-     * @param Facade\User         $userFacade
-     * @param Facade\Project      $projectFacade
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
+     * @param Facade\Video         $videoFacade
+     * @param Facade\LabelingTask  $labelingTaskFacade
+     * @param Service\FrameCdn     $frameCdn
+     * @param Facade\User          $userFacade
+     * @param Facade\Project       $projectFacade
+     * @param Storage\TokenStorage $tokenStorage
      */
     public function __construct(
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\FrameCdn $frameCdn,
         Facade\User $userFacade,
-        Facade\Project $projectFacade
+        Facade\Project $projectFacade,
+        Storage\TokenStorage $tokenStorage
     ) {
         $this->videoFacade        = $videoFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->frameCdn           = $frameCdn;
         $this->userFacade         = $userFacade;
         $this->projectFacade      = $projectFacade;
+        $this->tokenStorage       = $tokenStorage;
     }
 
     /**
@@ -83,10 +92,15 @@ class Task extends Controller\Base
         $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
         $taskPhase  = $request->query->get('phase', Model\LabelingTask::PHASE_LABELING);
         $taskStatus = $request->query->get('taskStatus');
+        $user       = $this->tokenStorage->getToken()->getUser();
 
         $project = null;
         if ($request->query->has('project')) {
             $project = $this->projectFacade->find($request->query->get('project'));
+
+            if (!$this->userFacade->hasPermissionForProject($user, $project)) {
+                throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
+            }
         }
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
