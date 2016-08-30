@@ -140,6 +140,8 @@ class ProjectTest extends Tests\WebTestCase
      */
     public function testProjectList($projects, $expectedProjects)
     {
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+
         foreach ($projects as $projectData) {
             $project = Model\Project::create($projectData['name'], null, $projectData['date']);
             $project->setStatus($projectData['status']);
@@ -157,6 +159,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSetProjectInProgress()
     {
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+
         $project = Model\Project::create('foobar');
         $this->projectFacade->save($project);
 
@@ -175,6 +179,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSetProjectDone()
     {
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+
         $project = Model\Project::create('foobar');
         $project->setStatus(Model\Project::STATUS_IN_PROGRESS);
         $this->projectFacade->save($project);
@@ -190,6 +196,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testAssignCoordinatorToProject()
     {
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+
         $project = Model\Project::create('foobar');
         $this->projectFacade->save($project);
 
@@ -213,6 +221,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSaveLegacyProject()
     {
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
@@ -277,9 +287,10 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($responseProject['taskInstructions']['legacy'], $expectedLegacyTaskInstructions);
     }
 
-
     public function testSaveGenericXmlProject()
     {
+        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
@@ -358,6 +369,48 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($responseProject['taskInstructions']['genericXml'], $expectedGenericXmlTaskInstructions);
     }
 
+    public function testGetProjectsForLabelCoordinator()
+    {
+        $project = Model\Project::create('Test Project');
+        $this->projectFacade->save($project);
+
+        $this->user->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+
+        $request = $this->createRequest('/api/project')->execute();
+        $data    = $request->getJsonResponseBody();
+
+        $this->assertSame(0, $data['totalRows']);
+
+        $project->addCoordinatorAssignmentHistory($this->user);
+        $this->projectFacade->save($project);
+
+        $request = $this->createRequest('/api/project')->execute();
+        $data    = $request->getJsonResponseBody();
+
+        $this->assertSame(1, $data['totalRows']);
+    }
+
+    public function testGetProjectsForClient()
+    {
+        $project = Model\Project::create('Test Project');
+        $this->projectFacade->save($project);
+
+        $this->user->setRoles([Model\User::ROLE_CLIENT]);
+
+        $request = $this->createRequest('/api/project')->execute();
+        $data    = $request->getJsonResponseBody();
+
+        $this->assertSame(0, $data['totalRows']);
+
+        $project->setUserId($this->user->getId());
+        $this->projectFacade->save($project);
+
+        $request = $this->createRequest('/api/project')->execute();
+        $data    = $request->getJsonResponseBody();
+
+        $this->assertSame(1, $data['totalRows']);
+    }
+
     protected function setUpImplementation()
     {
         /** @var Facade\Project projectFacade */
@@ -365,6 +418,5 @@ class ProjectTest extends Tests\WebTestCase
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
     }
 }
