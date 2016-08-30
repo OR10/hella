@@ -199,6 +199,12 @@ class Task extends Controller\Base
      */
     public function getTaskAction(Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $user    = $this->tokenStorage->getToken()->getUser();
+        if (!$this->userFacade->hasPermissionForProject($user, $project)) {
+            throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
+        }
+
         $users = array();
         $users = array_merge(
             $this->userFacade->getUserByIds(
