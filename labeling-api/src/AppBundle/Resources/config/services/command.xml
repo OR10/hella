@@ -80,6 +80,12 @@
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.assign_default_labeling_group"
+                 class="AppBundle\Command\AssignDefaultLabelingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <tag name="console.command"/>
+        </service>
         <service id="annostation.labeling_api.command.project.cleanup_batch_upload_directory"
                  class="AppBundle\Command\Project\CleanupBatchUploadDirectory">
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
