@@ -379,11 +379,23 @@ class Project extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
-     *
      * @return \FOS\RestBundle\View\View
+     * @throws \Exception
      */
     public function assignProjectToUserAction(HttpFoundation\Request $request, Model\Project $project)
     {
+        $sumOfPreProcessingTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
+            $project,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_PREPROCESSING
+        )->toArray();
+
+        if (isset($sumOfPreProcessingTasks[0]['value']) && $sumOfPreProcessingTasks[0]['value'] > 0) {
+            throw new Exception\PreconditionFailedHttpException(
+                'You can\'t assign this project until all videos are imported'
+            );
+        }
+
         $assignedLabelCoordinatorId = $request->request->get('assignedLabelCoordinatorId', null);
 
         $coordinator = $this->userFacade->getUserById($assignedLabelCoordinatorId);
