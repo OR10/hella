@@ -153,13 +153,20 @@ class Project
     }
 
     /**
+     * @param null $status
      * @return View\Result
      */
-    public function getSumOfProjectsByStatus()
+    public function getSumOfProjectsByStatus($status = null)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_project', 'sum_by_status_and_projectId')
-            ->setReduce(true)
+            ->createQuery('annostation_project', 'sum_by_status_and_projectId');
+
+        if ($status !== null) {
+            $query->setStartKey([$status, null]);
+            $query->setEndKey([$status, []]);
+        }
+        $query->setReduce(true)
+            ->setGroup(true)
             ->setGroupLevel(1)
             ->onlyDocs(false);
 
@@ -169,62 +176,76 @@ class Project
     /**
      * @param Model\User $user
      * @param            $status
-     * @param null       $limit
-     * @param int        $offset
-     * @param bool       $totalRowsCount
+     * @param bool       $countOnly
      * @return mixed
      */
-    public function getProjectsForUserAndStatus(
+    public function findAllByUserAndStatus(
         Model\User $user,
-        $status = null,
-        $limit = null,
-        $offset = 0,
-        $totalRowsCount = false
-    ) {
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            $designDocument = 'annostation_project_by_assigned_userId_and_status_001';
-        }else {
-            $designDocument = 'annostation_project_by_userId_and_status_001';
-        }
-        $query = $this->documentManager
-            ->createQuery($designDocument, 'view');
-        if ($status !== null) {
-            $query->setKey([$user->getId(), $status]);
-        } else {
-            $query->setStartKey([$user->getId(), null]);
-            $query->setEndKey([$user->getId(), []]);
-        }
-
-        if ($totalRowsCount) {
-            $query->setReduce(true);
-            $query->setGroup(true);
-        }else{
-            $query->setReduce(false);
-            $query->onlyDocs(true);
-        }
-
-        if ($limit !== null) {
-            $query->setLimit((int)$limit)
-                ->setSkip((int)$offset);
-        }
-
-        return $query->execute();
-    }
-
-    /**
-     * @param Model\User $user
-     * @param null       $status
-     * @return array
-     */
-    public function getProjectsForUserAndStatusTotalRows(Model\User $user, $status = null)
+        $status,
+        $countOnly = false
+    )
     {
-        $rows = $this->getProjectsForUserAndStatus($user, $status, null, 0, true)->toArray();
-
-        $totalRowsByStatus = [];
-        foreach($rows as $row) {
-            $totalRowsByStatus[$row['key'][1]] = $row['value'];
+        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
+            if ($countOnly) {
+                return $this->getSumOfProjectsByStatus($status);
+            } else {
+                return $this->findAllByStatus($status);
+            }
         }
 
-        return $totalRowsByStatus;
+        if ($user->hasRole(Model\User::ROLE_CLIENT)) {
+            $query = $this->documentManager
+                ->createQuery('annostation_project_by_userId_and_status_001', 'view');
+            $query->setKey([$user->getId(), $status]);
+            if ($countOnly) {
+                $query->setReduce(true);
+                $query->setGroup(true);
+            } else {
+                $query->onlyDocs(true);
+                $query->setReduce(false);
+            }
+
+            return $query->execute();
+        }
+
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            $query = $this->documentManager
+                ->createQuery('annostation_project_by_assigned_userId_and_status_001', 'view');
+            $query->setKey([$user->getId(), $status]);
+            if ($countOnly) {
+                $query->setReduce(true);
+                $query->setGroup(true);
+            } else {
+                $query->onlyDocs(true);
+                $query->setReduce(false);
+            }
+
+            return $query->execute();
+        }
+
+        if ($user->hasRole(Model\User::ROLE_LABELER)) {
+            $query = $this->documentManager
+                ->createQuery('annostation_labeling_group_by_labeler', 'view');
+            $query->setKey($user->getId());
+
+            $labelingGroups = $query->execute()->toArray();
+
+            $keys = array_map(function ($labelingGroup) use ($status) {
+                return [$labelingGroup['id'], $status];
+            }, $labelingGroups);
+
+            $query = $this->documentManager
+                ->createQuery('annostation_project_by_labeling_group_and_status_001', 'view');
+            $query->setKeys($keys);
+            if ($countOnly) {
+                $query->setReduce(true);
+                $query->setGroup(true);
+            } else {
+                $query->onlyDocs(true);
+                $query->setReduce(false);
+            }
+
+            return $query->execute();
+        }
     }
 }

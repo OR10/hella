@@ -53,13 +53,19 @@ class ProjectCount extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if (($user->hasRole(Model\User::ROLE_CLIENT) || $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) &&
-            !$user->hasOneRoleOf([Model\User::ROLE_ADMIN])) {
-            $sum = $this->projectFacade->getProjectsForUserAndStatusTotalRows($user);
-        } else {
-            $sum = array();
-            foreach ($this->projectFacade->getSumOfProjectsByStatus()->toArray() as $sumByStatus) {
-                $sum[$sumByStatus['key'][0]] = $sumByStatus['value'];
+        $states = [
+            Model\Project::STATUS_TODO,
+            Model\Project::STATUS_IN_PROGRESS,
+            Model\Project::STATUS_DONE,
+        ];
+
+        $sum = array();
+        foreach ($states as $status) {
+            if (!array_key_exists($status, $sum)) {
+                $sum[$status] = 0;
+            }
+            foreach ($this->projectFacade->findAllByUserAndStatus($user, $status, true)->toArray() as $sumByStatus) {
+                $sum[$status] = $sumByStatus['value'];
             }
         }
 

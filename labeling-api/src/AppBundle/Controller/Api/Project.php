@@ -89,28 +89,25 @@ class Project extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        switch ($status) {
-            case Model\Project::STATUS_TODO:
-            case Model\Project::STATUS_IN_PROGRESS:
-            case Model\Project::STATUS_DONE:
-                if (($user->hasRole(Model\User::ROLE_CLIENT) || $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) &&
-                    !$user->hasOneRoleOf([Model\User::ROLE_ADMIN])) {
-                    $projects = $this->projectFacade->getProjectsForUserAndStatus($user, $status, $limit, $offset);
-                    $totalRows = $this->projectFacade->getProjectsForUserAndStatusTotalRows($user, $status);
-                }else {
-                    $projects = $this->projectFacade->findAllByStatus($status, $limit, $offset);
-                    $totalRows = $projects->getTotalRows();
+        $projects  = $this->projectFacade->findAllByUserAndStatus($user, $status)->toArray();
+        $totalRows = count($projects);
+
+        usort(
+            $projects,
+            function (Model\Project $a, Model\Project $b) {
+                if ($a->getCreationDate() === null || $b->getCreationDate() === null) {
+                    return -1;
                 }
-                break;
-            default:
-                if (($user->hasRole(Model\User::ROLE_CLIENT) || $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) &&
-                    !$user->hasOneRoleOf([Model\User::ROLE_ADMIN])) {
-                    $projects = $this->projectFacade->getProjectsForUserAndStatus($user, null, $limit, $offset);
-                    $totalRows = array_sum(array_values($this->projectFacade->getProjectsForUserAndStatusTotalRows($user)));
-                }else {
-                    $projects = $this->projectFacade->findAll($limit, $offset);
-                    $totalRows = $projects->getTotalRows();
+                if ($a->getCreationDate() === $b->getCreationDate()) {
+                    return 0;
                 }
+
+                return ($a->getCreationDate() > $b->getCreationDate()) ? -1 : 1;
+            }
+        );
+
+        if ($limit !== null && $offset !== null) {
+            $projects = array_slice($projects, $offset, $limit);
         }
 
         $result = array(
@@ -124,7 +121,7 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key']] = array_sum($mapping['value']);
         }
 
-        $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects->toArray());
+        $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
         $numberOfVideos   = array();
         foreach ($videosByProjects as $videosByProject) {
             $projectId                    = $videosByProject['key'];
@@ -138,7 +135,7 @@ class Project extends Controller\Base
             $numberOfVideos
         );
 
-        foreach ($projects->toArray() as $project) {
+        foreach ($projects as $project) {
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
@@ -168,22 +165,6 @@ class Project extends Controller\Base
             }
 
             $result[$project->getStatus()][] = $responseProject;
-        }
-
-        foreach (array_keys($result) as $status) {
-            usort(
-                $result[$status],
-                function ($a, $b) {
-                    if ($a['creationTimestamp'] === null || $b['creationTimestamp'] === null) {
-                        return -1;
-                    }
-                    if ($a['creationTimestamp'] === $b['creationTimestamp']) {
-                        return 0;
-                    }
-
-                    return ($a['creationTimestamp'] > $b['creationTimestamp']) ? -1 : 1;
-                }
-            );
         }
 
         if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {

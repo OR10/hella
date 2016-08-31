@@ -57,76 +57,86 @@ class ProjectTest extends Tests\WebTestCase
                     ),
                 ),
                 array(
-                    array(
-                        'name' => 'Test Project in progress',
-                        'status' => Model\Project::STATUS_IN_PROGRESS,
-                        'finishedPercentage' => 100,
-                        'creationTimestamp' => 1468319400,
-                        'taskInPreProcessingCount' => 0,
-                        'taskCount' => 0,
-                        'taskFinishedCount' => 0,
-                        'taskInProgressCount' => 0,
-                        'totalLabelingTimeInSeconds' => 0,
-                        'labeledThingInFramesCount' => 0,
-                        'videosCount' => 0,
-                        'dueTimestamp' => null,
-                    ),
-                    array(
-                        'name' => 'Test Project 3',
-                        'status' => Model\Project::STATUS_TODO,
-                        'finishedPercentage' => 100,
-                        'creationTimestamp' => 1468324800,
-                        'taskInPreProcessingCount' => 0,
-                        'taskCount' => 0,
-                        'taskFinishedCount' => 0,
-                        'taskInProgressCount' => 0,
-                        'totalLabelingTimeInSeconds' => 0,
-                        'labeledThingInFramesCount' => 0,
-                        'videosCount' => 0,
-                        'dueTimestamp' => null,
-                    ),
-                    array(
-                        'name' => 'Test Project 1',
-                        'status' => Model\Project::STATUS_TODO,
-                        'finishedPercentage' => 100,
-                        'creationTimestamp' => 1468321200,
-                        'taskInPreProcessingCount' => 0,
-                        'taskCount' => 0,
-                        'taskFinishedCount' => 0,
-                        'taskInProgressCount' => 0,
-                        'totalLabelingTimeInSeconds' => 0,
-                        'labeledThingInFramesCount' => 0,
-                        'videosCount' => 0,
-                        'dueTimestamp' => null,
-                    ),
-                    array(
-                        'name' => 'Test Project 2',
-                        'status' => Model\Project::STATUS_TODO,
-                        'finishedPercentage' => 100,
-                        'creationTimestamp' => 1468317600,
-                        'taskInPreProcessingCount' => 0,
-                        'taskCount' => 0,
-                        'taskFinishedCount' => 0,
-                        'taskInProgressCount' => 0,
-                        'totalLabelingTimeInSeconds' => 0,
-                        'labeledThingInFramesCount' => 0,
-                        'videosCount' => 0,
-                        'dueTimestamp' => null,
-                    ),
-                    array(
-                        'name' => 'Test Project done',
-                        'status' => Model\Project::STATUS_DONE,
-                        'finishedPercentage' => 100,
-                        'creationTimestamp' => 1468323000,
-                        'taskInPreProcessingCount' => 0,
-                        'taskCount' => 0,
-                        'taskFinishedCount' => 0,
-                        'taskInProgressCount' => 0,
-                        'totalLabelingTimeInSeconds' => 0,
-                        'labeledThingInFramesCount' => 0,
-                        'videosCount' => 0,
-                        'dueTimestamp' => null,
-                    ),
+                    Model\Project::STATUS_IN_PROGRESS =>
+                        array(
+                            array(
+                                'name' => 'Test Project in progress',
+                                'status' => Model\Project::STATUS_IN_PROGRESS,
+                                'finishedPercentage' => 100,
+                                'creationTimestamp' => 1468319400,
+                                'taskInPreProcessingCount' => 0,
+                                'taskCount' => 0,
+                                'taskFinishedCount' => 0,
+                                'taskInProgressCount' => 0,
+                                'totalLabelingTimeInSeconds' => 0,
+                                'labeledThingInFramesCount' => 0,
+                                'videosCount' => 0,
+                                'dueTimestamp' => null,
+                            ),
+                        ),
+                    Model\Project::STATUS_TODO =>
+                        array(
+
+                            array(
+                                'name' => 'Test Project 3',
+                                'status' => Model\Project::STATUS_TODO,
+                                'finishedPercentage' => 100,
+                                'creationTimestamp' => 1468324800,
+                                'taskInPreProcessingCount' => 0,
+                                'taskCount' => 0,
+                                'taskFinishedCount' => 0,
+                                'taskInProgressCount' => 0,
+                                'totalLabelingTimeInSeconds' => 0,
+                                'labeledThingInFramesCount' => 0,
+                                'videosCount' => 0,
+                                'dueTimestamp' => null,
+                            ),
+                            array(
+                                'name' => 'Test Project 1',
+                                'status' => Model\Project::STATUS_TODO,
+                                'finishedPercentage' => 100,
+                                'creationTimestamp' => 1468321200,
+                                'taskInPreProcessingCount' => 0,
+                                'taskCount' => 0,
+                                'taskFinishedCount' => 0,
+                                'taskInProgressCount' => 0,
+                                'totalLabelingTimeInSeconds' => 0,
+                                'labeledThingInFramesCount' => 0,
+                                'videosCount' => 0,
+                                'dueTimestamp' => null,
+                            ),
+                            array(
+                                'name' => 'Test Project 2',
+                                'status' => Model\Project::STATUS_TODO,
+                                'finishedPercentage' => 100,
+                                'creationTimestamp' => 1468317600,
+                                'taskInPreProcessingCount' => 0,
+                                'taskCount' => 0,
+                                'taskFinishedCount' => 0,
+                                'taskInProgressCount' => 0,
+                                'totalLabelingTimeInSeconds' => 0,
+                                'labeledThingInFramesCount' => 0,
+                                'videosCount' => 0,
+                                'dueTimestamp' => null,
+                            ),
+                        ),
+                    Model\Project::STATUS_DONE =>
+                        array(
+                            array(
+                                'name' => 'Test Project done',
+                                'status' => Model\Project::STATUS_DONE,
+                                'finishedPercentage' => 100,
+                                'creationTimestamp' => 1468323000,
+                                'taskInPreProcessingCount' => 0,
+                                'taskCount' => 0,
+                                'taskFinishedCount' => 0,
+                                'taskInProgressCount' => 0,
+                                'totalLabelingTimeInSeconds' => 0,
+                                'labeledThingInFramesCount' => 0,
+                                'videosCount' => 0,
+                                'dueTimestamp' => null,
+                            ),
+                        ),
                 )
             )
         );
@@ -148,13 +158,15 @@ class ProjectTest extends Tests\WebTestCase
             $this->projectFacade->save($project);
         }
 
-        $request = $this->createRequest('/api/project')->execute();
-        $data = array_map(function($project) {
-            unset($project['id']);
-            return $project;
-        }, $request->getJsonResponseBody()['result']);
+        foreach ($expectedProjects as $status => $expectedProjectsForState) {
+            $request = $this->createRequest('/api/project?projectStatus=' . $status)->execute();
+            $data    = array_map(function ($project) {
+                unset($project['id']);
+                return $project;
+            }, $request->getJsonResponseBody()['result']);
 
-        $this->assertSame($expectedProjects, $data);
+            $this->assertSame($expectedProjectsForState, $data);
+        }
     }
 
     public function testSetProjectInProgress()
@@ -250,8 +262,8 @@ class ProjectTest extends Tests\WebTestCase
             ->execute()
             ->getResponse();
 
-        $response        = \json_decode($response->getContent(), true);
-        $responseProject = $response['result'];
+        $response                       = \json_decode($response->getContent(), true);
+        $responseProject                = $response['result'];
         $expectedLegacyTaskInstructions = [
             [
                 'instruction' => 'vehicle',
@@ -332,8 +344,8 @@ class ProjectTest extends Tests\WebTestCase
             ->execute()
             ->getResponse();
 
-        $response        = \json_decode($response->getContent(), true);
-        $responseProject = $response['result'];
+        $response                           = \json_decode($response->getContent(), true);
+        $responseProject                    = $response['result'];
         $expectedGenericXmlTaskInstructions = [
             [
                 'instruction' => 'vehicle',
@@ -376,7 +388,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $this->user->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
 
-        $request = $this->createRequest('/api/project')->execute();
+        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
         $data    = $request->getJsonResponseBody();
 
         $this->assertSame(0, $data['totalRows']);
@@ -384,7 +396,7 @@ class ProjectTest extends Tests\WebTestCase
         $project->addCoordinatorAssignmentHistory($this->user);
         $this->projectFacade->save($project);
 
-        $request = $this->createRequest('/api/project')->execute();
+        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
         $data    = $request->getJsonResponseBody();
 
         $this->assertSame(1, $data['totalRows']);
@@ -397,7 +409,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $this->user->setRoles([Model\User::ROLE_CLIENT]);
 
-        $request = $this->createRequest('/api/project')->execute();
+        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
         $data    = $request->getJsonResponseBody();
 
         $this->assertSame(0, $data['totalRows']);
@@ -405,7 +417,7 @@ class ProjectTest extends Tests\WebTestCase
         $project->setUserId($this->user->getId());
         $this->projectFacade->save($project);
 
-        $request = $this->createRequest('/api/project')->execute();
+        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
         $data    = $request->getJsonResponseBody();
 
         $this->assertSame(1, $data['totalRows']);
