@@ -62,7 +62,7 @@
 
                 <button tooltip="Assign project to a label coordinator"
                         ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
-                        ng-click="vm.assignProject(project.id, project.name)"
+                        ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
                 >
                     <i class="fa fa-user"></i>
                 </button>

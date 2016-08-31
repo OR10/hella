@@ -215,7 +215,7 @@ class ProjectListController {
   /**
    * @param {string} projectId
    */
-  assignProject(projectId) {
+  assignProject(projectId, taskInPreProcessingCount) {
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getLabelCoordinators().then(response => {
@@ -228,6 +228,18 @@ class ProjectListController {
         });
         modal.activate();
         this.showLoadingMask = false;
+      }
+
+      if (taskInPreProcessingCount > 0) {
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'PreProcessing Videos',
+          headline: 'We are still importing videos please wait...',
+          message: 'You can\'t assign this project until all videos are imported',
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
+        this.showLoadingMask = false;
+        return;
       }
 
       const modal = this._modalService.getSelectionDialog({
