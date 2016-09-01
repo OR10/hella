@@ -144,7 +144,7 @@ class Project extends Controller\Base
                 'id'                 => $project->getId(),
                 'name'               => $project->getName(),
                 'status'             => $project->getStatus(),
-                'finishedPercentage' => round(
+                'finishedPercentage' => floor(
                     $sumOfTasksForProject === 0 ? 100 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
