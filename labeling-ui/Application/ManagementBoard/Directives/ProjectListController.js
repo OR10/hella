@@ -140,20 +140,32 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {string} projectId
+   * @param {string} projectName
+   * @param {boolean} projectFinished
    */
-  closeProject(projectId, projectName) { // eslint-disable-line no-unused-vars
-    const modal = this._modalService.getWarningDialog({
-      title: 'Close project',
-      headline: `You are about to close the "${projectName}" project. Proceed?`,
-      message: 'Closing the project moves it into the "done" state, indicating all currently assigned work has been successfully completed.',
-      confirmButtonText: 'Continue',
-      cancelButtonText: 'Cancel',
-    }, () => {
-      this.loadingInProgress = true;
-      this._projectGateway.closeProject(projectId)
-        .then(() => this._triggerReloadAll());
-    });
+  closeProject(projectId, projectName, projectFinished) {
+    let modal = null;
+    if (!projectFinished && !this.userPermissions.canMoveInProgressProjectToDone) {
+      modal = this._modalService.getAlertWarningDialog({
+        title: 'Close project',
+        headline: `The project "${projectName}" can not be closed yet.`,
+        message: 'There are still non finished tasks inside this project therefore it can not be closed.',
+        confirmButtonText: 'Understood',
+      });
+    } else {
+      modal = this._modalService.getWarningDialog({
+        title: 'Close project',
+        headline: `You are about to close the "${projectName}" project. Proceed?`,
+        message: 'Closing the project moves it into the "done" state, indicating all currently assigned work has been successfully completed.',
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+      }, () => {
+        this.loadingInProgress = true;
+        this._projectGateway.closeProject(projectId)
+          .then(() => this._triggerReloadAll());
+      });
+    }
     modal.activate();
   }
 

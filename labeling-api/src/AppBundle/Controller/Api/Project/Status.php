@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\ForbidReadonlyTasks;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -78,6 +79,7 @@ class Status extends Controller\Base
      * Set the Project to status done
      *
      * @Rest\POST("/{project}/status/done")
+     * @CheckPermissions({"canMoveFinishedProjectToDone", "canMoveInProgressProjectToDone"})
      *
      * @param $project
      *
