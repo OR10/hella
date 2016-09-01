@@ -38,11 +38,17 @@ class TaskCreator
     private $loggerFacade;
 
     /**
+     * @var Facade\Video
+     */
+    private $videoFacade;
+
+    /**
      * TaskCreator constructor.
      *
      * @param Facade\LabelingTask      $taskFacade
      * @param Facade\TaskConfiguration $taskConfigurationFacade
      * @param Facade\CalibrationData   $calibrationDataFacade
+     * @param Facade\Video             $videoFacade
      * @param LabelStructure           $labelStructureService
      * @param \cscntLogger             $logger
      */
@@ -50,6 +56,7 @@ class TaskCreator
         Facade\LabelingTask $taskFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Facade\CalibrationData $calibrationDataFacade,
+        Facade\Video $videoFacade,
         Service\LabelStructure $labelStructureService,
         \cscntLogger $logger
     ) {
@@ -58,6 +65,7 @@ class TaskCreator
         $this->taskConfigurationFacade = $taskConfigurationFacade;
         $this->labelStructureService   = $labelStructureService;
         $this->loggerFacade            = new LoggerFacade($logger, self::class);
+        $this->videoFacade             = $videoFacade;
     }
 
     /**
@@ -118,6 +126,7 @@ class TaskCreator
                     throw new \Exception(sprintf('Calibration data not found: %s', $calibrationDataId));
                 }
                 $video->setCalibrationData($calibrationData);
+                $this->videoFacade->save($video);
             }
 
             if ($splitLength > 0) {
