@@ -282,6 +282,9 @@
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
         </service>
 
+        <service id="annostation.labeling_api.service.couch_db_update_conflict_retry" class="AppBundle\Service\CouchDbUpdateConflictRetry">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
         <service id="annostation.labeling_api.service.logger_factory" class="AppBundle\Service\LoggerFactory">
         </service>
     </services>
