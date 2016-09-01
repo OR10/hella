@@ -60,7 +60,7 @@ class TaskConfigurationGateway {
       })
       .catch(response => {
         if (response.data && response.data.error) {
-          return this._$q.reject(response.data.error);
+          return this._$q.reject({code: response.status, message: response.data.error});
         }
         return this._$q.reject('Failed uploading new task configuration');
       });

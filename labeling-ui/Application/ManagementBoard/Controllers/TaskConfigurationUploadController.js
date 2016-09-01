@@ -73,12 +73,23 @@ class TaskConfigurationUploadController {
         --this.loadingInProgress;
         this._$state.go('labeling.task-configurations.list');
       })
-      .catch(errorMessage => {
+      .catch(error => {
         --this.loadingInProgress;
+        let headline = null;
+        switch (error.code) {
+          case 406:
+            headline = 'Malformed XML Configuration.';
+            break;
+          case 409:
+            headline = 'Duplicate configuration.';
+            break;
+          default:
+            headline = 'XML Task Configuration Upload failed.';
+        }
         const errorModal = this._modalService.getAlertWarningDialog({
-          title: 'Malformed Task Configuration',
-          headline: 'Your Task Configuration XML is malformed.',
-          message: errorMessage,
+          title: 'Error uploading Task Configuration',
+          headline,
+          message: error.message,
           confirmButtonText: 'Understood',
         });
         errorModal.activate();
