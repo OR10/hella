@@ -99,6 +99,18 @@ class TaskConfiguration extends Controller\Base
                 ->setStatusCode(400);
         }
 
+        $user = $this->tokenStorage->getToken()->getUser();
+        $name = $request->get('name');
+        if (count($this->taskConfigurationFacade->getTaskConfigurationsByUserAndName($user, $name)) > 0) {
+            return View\View::create()
+                ->setData(['error' => sprintf(
+                    'A Task Configuration with the name %s already exists',
+                    $name
+                )])
+                ->setStatusCode(409);
+        }
+
+
         $xml = new \DOMDocument();
         $xml->load($request->files->get('file'));
         $errorMessage = $this->xmlValidator->validate($xml);
@@ -110,7 +122,6 @@ class TaskConfiguration extends Controller\Base
 
         $file    = $request->files->get('file');
         $xmlData = file_get_contents($file->getPathName());
-        $name    = $request->get('name');
         $user    = $this->tokenStorage->getToken()->getUser();
 
         $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
