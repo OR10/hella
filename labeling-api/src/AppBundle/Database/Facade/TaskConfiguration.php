@@ -56,4 +56,20 @@ class TaskConfiguration
             ->execute()
             ->toArray();
     }
+
+    /**
+     * Get the Task Configuration by name and userId
+     * @param Model\User $user
+     * @param            $name
+     * @return mixed
+     */
+    public function getTaskConfigurationsByUserAndName(Model\User $user, $name)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_task_configuration_by_userId_and_name_001', 'view')
+            ->setKey([$user->getId(), $name])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
 }
