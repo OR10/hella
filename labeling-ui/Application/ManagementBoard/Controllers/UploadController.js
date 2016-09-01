@@ -1,6 +1,3 @@
-/**
- * Controller for the initial entrypoint route into the application
- */
 class UploadController {
   /**
    * @param {$rootScope.$scope} $scope
@@ -84,8 +81,17 @@ class UploadController {
     this.uploadLoadingMask = true;
   }
 
+  fileAdded(file) {
+    file.hasUploadError = () => false;
+  }
+
+  filesAdded(files) {
+    files.forEach(file => this.fileAdded(file));
+  }
+
   fileError(file, message) {
     file.errorMessage = JSON.parse(message).error;
+    file.hasUploadError = () => true;
   }
 }
 

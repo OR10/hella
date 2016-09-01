@@ -13,6 +13,8 @@
          flow-complete="vm.uploadComplete()"
          flow-upload-started="vm.uploadStarted()"
          flow-file-error="vm.fileError($file, $message, $flow)"
+         flow-file-added="vm.fileAdded($file, $event, $flow)"
+         flow-files-added="vm.filesAdded($files, $event, $flow)"
     >
 
         <div class="grid-block align-center shrink">
@@ -57,10 +59,17 @@
                         </div>
                     </td>
                     <td>
-                        <i class="fa fa-spinner fa-pulse" ng-show="file.isUploading() && !file.isComplete()"></i>
-                        <i class="fa fa-check" ng-show="file.isComplete() && !file.isUploading()"></i>
-                        <i class="fa fa-warning" ng-show="file.errorMessage.message"
-                           tooltip="{{file.errorMessage.message}}"></i>
+                        <i class="fa fa-spinner fa-pulse"
+                           ng-style="{display: file.isUploading() ? 'inline-block' : 'none'}">
+                            <!-- For unknown reasons ng-show or ng-if have a strange 'delay' here. Therefore the style hack is used -->
+                        </i>
+                        <i class="fa fa-check"
+                           ng-if="!file.isUploading() && file.isComplete() && file.errorMessage.message == undefined">
+                        </i>
+                        <i class="fa fa-warning"
+                           ng-if="!file.isUploading() && file.isComplete() && file.hasUploadError()"
+                           tooltip="{{file.errorMessage.message}}">
+                        </i>
                     </td>
                     <td>
                         <button tooltip="Pause upload for this file"
