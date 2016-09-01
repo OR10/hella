@@ -32,13 +32,23 @@ class Status extends Controller\Base
     private $projectFacade;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
      * @param Facade\Project       $projectFacade
+     * @param Facade\LabelingTask  $labelingTaskFacade
      * @param Storage\TokenStorage $tokenStorage
      */
-    public function __construct(Facade\Project $projectFacade, Storage\TokenStorage $tokenStorage)
-    {
-        $this->tokenStorage  = $tokenStorage;
-        $this->projectFacade = $projectFacade;
+    public function __construct(
+        Facade\Project $projectFacade,
+        Facade\LabelingTask $labelingTaskFacade,
+        Storage\TokenStorage $tokenStorage
+    ) {
+        $this->tokenStorage       = $tokenStorage;
+        $this->projectFacade      = $projectFacade;
+        $this->labelingTaskFacade = $labelingTaskFacade;
     }
 
     /**
@@ -75,6 +85,25 @@ class Status extends Controller\Base
      */
     public function setProjectStatusToDoneAction(Model\Project $project)
     {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            $sumOfTasksByPhaseForProject = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+            foreach($sumOfTasksByPhaseForProject as $phase => $status) {
+                // @TODO Remove this if the revision process is finally implemented
+                if ($phase === Model\LabelingTask::PHASE_REVISION) {
+                    continue;
+                }
+                if ($status[Model\LabelingTask::STATUS_PREPROCESSING] > 0 ||
+                    $status[Model\LabelingTask::STATUS_IN_PROGRESS] > 0 ||
+                    $status[Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION] > 0
+                ) {
+                    throw new Exception\BadRequestHttpException('Project has incomplete tasks');
+                }
+            }
+        }
+
         $project->setStatus(Model\Project::STATUS_DONE);
         $this->projectFacade->save($project);
 
