@@ -62,7 +62,7 @@ class ProjectTest extends Tests\WebTestCase
                             array(
                                 'name' => 'Test Project in progress',
                                 'status' => Model\Project::STATUS_IN_PROGRESS,
-                                'finishedPercentage' => 100,
+                                'finishedPercentage' => 0,
                                 'creationTimestamp' => 1468319400,
                                 'taskInPreProcessingCount' => 0,
                                 'taskCount' => 0,
@@ -80,7 +80,7 @@ class ProjectTest extends Tests\WebTestCase
                             array(
                                 'name' => 'Test Project 3',
                                 'status' => Model\Project::STATUS_TODO,
-                                'finishedPercentage' => 100,
+                                'finishedPercentage' => 0,
                                 'creationTimestamp' => 1468324800,
                                 'taskInPreProcessingCount' => 0,
                                 'taskCount' => 0,
@@ -94,7 +94,7 @@ class ProjectTest extends Tests\WebTestCase
                             array(
                                 'name' => 'Test Project 1',
                                 'status' => Model\Project::STATUS_TODO,
-                                'finishedPercentage' => 100,
+                                'finishedPercentage' => 0,
                                 'creationTimestamp' => 1468321200,
                                 'taskInPreProcessingCount' => 0,
                                 'taskCount' => 0,
@@ -108,7 +108,7 @@ class ProjectTest extends Tests\WebTestCase
                             array(
                                 'name' => 'Test Project 2',
                                 'status' => Model\Project::STATUS_TODO,
-                                'finishedPercentage' => 100,
+                                'finishedPercentage' => 0,
                                 'creationTimestamp' => 1468317600,
                                 'taskInPreProcessingCount' => 0,
                                 'taskCount' => 0,
@@ -125,7 +125,7 @@ class ProjectTest extends Tests\WebTestCase
                             array(
                                 'name' => 'Test Project done',
                                 'status' => Model\Project::STATUS_DONE,
-                                'finishedPercentage' => 100,
+                                'finishedPercentage' => 0,
                                 'creationTimestamp' => 1468323000,
                                 'taskInPreProcessingCount' => 0,
                                 'taskCount' => 0,
