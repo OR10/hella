@@ -19,7 +19,7 @@
     >
 
         <div class="grid-block align-center shrink">
-            <loading-mask ng-if="vm.uploadLoadingMask" spinner="true"></loading-mask>
+            <loading-mask ng-if="vm.uploadInProgress" spinner="true"></loading-mask>
             <div class="grid-content drop-area"
                  flow-drop
                  ng-class="class"

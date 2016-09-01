@@ -2,6 +2,7 @@ import debounce from 'lodash.debounce';
 
 class UploadController {
   /**
+   * @param {$rootScope} $rootScope
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {User} user
@@ -10,7 +11,13 @@ class UploadController {
    * @param {ProjectGateway} projectGateway
    * @param {ModalService} modalService
    */
-  constructor($scope, $state, user, userPermissions, project, projectGateway, modalService) {
+  constructor($rootScope, $scope, $state, user, userPermissions, project, projectGateway, modalService) {
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -59,18 +66,58 @@ class UploadController {
     /**
      * @type {boolean}
      */
-    this.uploadLoadingMask = false;
+    this.uploadInProgress = false;
 
     /**
      * @type {string}
      */
     this.targetPath = `/api/project/batchUpload/${this.project.id}`;
+
+    /**
+     * @type {null|Function}
+     * @private
+     */
+    this._unregisterUiRouterInterception = null;
+
+    $scope.$on('$destroy', () => this._uninstallNavigationInterceptions());
+
+    this._windowBeforeUnload = event => {
+      // The message is not shown in newer chrome versions, but a generic window will be shown.
+      const message = `DO NOT LEAVE THIS PAGE!\n\nAn upload is currently running. If you leave this page or close the browser window it will be stopped.\n\nPlease click 'Stay' now to continue the upload.`;
+      event.returnValue = message;
+      return message;
+    };
+  }
+
+  _installNavigationInterceptions() {
+    this._unregisterUiRouterInterception = this._$rootScope.$on('$stateChangeStart', event => {
+      event.preventDefault();
+      const modal = this._modalService.getAlertWarningDialog({
+        title: 'Upload in progress',
+        headline: 'The page can not be left, while upload is in progress.',
+        message: 'While an upload is running you can not leave the upload page. You may however open a second browser window, while the upload is running.',
+        confirmButtonText: 'Understood',
+      });
+      modal.activate();
+    });
+
+    window.addEventListener('beforeunload', this._windowBeforeUnload);
+  }
+
+  _uninstallNavigationInterceptions() {
+    if (this._unregisterUiRouterInterception !== null) {
+      this._unregisterUiRouterInterception();
+      this._unregisterUiRouterInterception = null;
+    }
+
+    window.removeEventListener('beforeunload', this._windowBeforeUnload);
   }
 
   _uploadComplete() {
     this._projectGateway.markUploadAsFinished(this.project.id)
       .then(() => {
-        this.uploadLoadingMask = false;
+        this.uploadInProgress = false;
+        this._uninstallNavigationInterceptions();
         if (this._hasFilesWithError()) {
           this._showCompletedWithErrorsModal();
         } else {
@@ -78,7 +125,8 @@ class UploadController {
         }
       })
       .catch(() => {
-        this.uploadLoadingMask = false;
+        this.uploadInProgress = false;
+        this._uninstallNavigationInterceptions();
         this._showCompletedWithErrorsModal();
       });
   }
@@ -112,7 +160,8 @@ class UploadController {
   }
 
   uploadStarted() {
-    this.uploadLoadingMask = true;
+    this.uploadInProgress = true;
+    this._installNavigationInterceptions();
   }
 
   fileAdded(file) {
@@ -130,6 +179,7 @@ class UploadController {
 }
 
 UploadController.$inject = [
+  '$rootScope',
   '$scope',
   '$state',
   'user',
