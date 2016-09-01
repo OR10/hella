@@ -145,7 +145,7 @@ class Project extends Controller\Base
                 'name'               => $project->getName(),
                 'status'             => $project->getStatus(),
                 'finishedPercentage' => floor(
-                    $sumOfTasksForProject === 0 ? 100 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
+                    $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
                 'taskInPreProcessingCount' => $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_PREPROCESSING)
