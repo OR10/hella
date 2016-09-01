@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
@@ -64,6 +65,8 @@ class Export extends Controller\Base
     /**
      * @Rest\Get("/{project}/export")
      *
+     * @CheckPermissions({"canExportProject"})
+     *
      * @param Model\Project $project
      * @return \FOS\RestBundle\View\View
      */
@@ -86,6 +89,7 @@ class Export extends Controller\Base
     /**
      * @Rest\Get("/{project}/export/{exportId}")
      *
+     * @CheckPermissions({"canExportProject"})
      * @param Model\Project $project
      * @param               $exportId
      * @return HttpFoundation\Response
@@ -184,6 +188,8 @@ class Export extends Controller\Base
 
     /**
      * @Rest\Post("/{project}/export/csv")
+     *
+     * @CheckPermissions({"canExportProject"})
      *
      * @param Model\Project $project
      * @return HttpFoundation\Response

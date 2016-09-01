@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
@@ -56,6 +57,7 @@ class Export extends Controller\Base
      * @Rest\Get("/{task}/export")
      *
      * @param Model\LabelingTask $task
+     * @return \FOS\RestBundle\View\View
      */
     public function listExportsAction(Model\LabelingTask $task)
     {

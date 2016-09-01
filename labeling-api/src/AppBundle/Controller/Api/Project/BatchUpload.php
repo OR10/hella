@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -114,6 +115,8 @@ class BatchUpload extends Controller\Base
     /**
      * @Rest\Post("/{project}")
      *
+     * @CheckPermissions({"canUploadNewVideo"})
+     *
      * @param Model\Project $project
      *
      * @return View\View
@@ -188,6 +191,8 @@ class BatchUpload extends Controller\Base
 
     /**
      * @Rest\Post("/{project}/complete")
+     *
+     * @CheckPermissions({"canUploadNewVideo"})
      *
      * @param Model\Project $project
      *

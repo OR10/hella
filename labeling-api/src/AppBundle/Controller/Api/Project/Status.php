@@ -57,6 +57,8 @@ class Status extends Controller\Base
      *
      * @Rest\POST("/{project}/status/accept")
      *
+     * @CheckPermissions({"canAcceptProject"})
+     *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
      * @return \FOS\RestBundle\View\View

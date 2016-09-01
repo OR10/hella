@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -173,6 +174,8 @@ class LabelingGroup extends Controller\Base
      *
      * @Rest\Post("")
      *
+     * @CheckPermissions({"canEditLabelingGroups"})
+     *
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
@@ -204,6 +207,8 @@ class LabelingGroup extends Controller\Base
     /**
      *
      * @Rest\Put("/{labelingGroup}")
+     *
+     * @CheckPermissions({"canEditLabelingGroups"})
      *
      * @param HttpFoundation\Request $request
      *
@@ -244,6 +249,8 @@ class LabelingGroup extends Controller\Base
     /**
      *
      * @Rest\Delete("/{labelingGroup}")
+     *
+     * @CheckPermissions({"canEditLabelingGroups"})
      *
      * @param HttpFoundation\Request $request
      *

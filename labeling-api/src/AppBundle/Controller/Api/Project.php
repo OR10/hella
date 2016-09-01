@@ -198,7 +198,7 @@ class Project extends Controller\Base
      *
      * @Rest\Post("")
      *
-     * @CheckPermissions({"canCreateProject"})
+     * @CheckPermissions({"canCreateProject", "canCreateNewProject"})
      *
      * @param HttpFoundation\Request $request
      *
@@ -374,6 +374,8 @@ class Project extends Controller\Base
 
     /**
      * Assign a label coordinator to a project
+     *
+     * @CheckPermissions({"canAssignProject"})
      *
      * @Rest\Post("/{project}/assign")
      *

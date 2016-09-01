@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
+use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
@@ -47,6 +48,8 @@ class Report extends Controller\Base
      *
      * @Rest\Get("/{project}/report/{report}")
      *
+     * @CheckPermissions({"canViewProjectReport"})
+     *
      * @param $report
      *
      * @return \FOS\RestBundle\View\View
@@ -58,6 +61,8 @@ class Report extends Controller\Base
 
     /**
      * Return all reports for this project
+     *
+     * @CheckPermissions({"canViewProjectReport"})
      *
      * @Rest\Get("/{project}/report")
      *
@@ -76,6 +81,8 @@ class Report extends Controller\Base
 
     /**
      * Create a new report for this project
+     *
+     * @CheckPermissions({"canViewProjectReport"})
      *
      * @Rest\Post("/{project}/report")
      *

@@ -172,5 +172,6 @@ class LabelingGroupTest extends Tests\WebTestCase
         $this->userService = $this->getService('fos_user.util.user_manipulator');
 
         $this->user = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->user->setRoles([Model\User::ROLE_ADMIN]);
     }
 }
