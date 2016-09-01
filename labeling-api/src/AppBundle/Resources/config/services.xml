@@ -279,6 +279,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.service.label_structure"/>
+            <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
         </service>
 

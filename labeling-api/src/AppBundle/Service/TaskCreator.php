@@ -43,14 +43,20 @@ class TaskCreator
     private $videoFacade;
 
     /**
+     * @var CouchDbUpdateConflictRetry
+     */
+    private $couchDbUpdateConflictRetryService;
+
+    /**
      * TaskCreator constructor.
      *
-     * @param Facade\LabelingTask      $taskFacade
-     * @param Facade\TaskConfiguration $taskConfigurationFacade
-     * @param Facade\CalibrationData   $calibrationDataFacade
-     * @param Facade\Video             $videoFacade
-     * @param LabelStructure           $labelStructureService
-     * @param \cscntLogger             $logger
+     * @param Facade\LabelingTask        $taskFacade
+     * @param Facade\TaskConfiguration   $taskConfigurationFacade
+     * @param Facade\CalibrationData     $calibrationDataFacade
+     * @param Facade\Video               $videoFacade
+     * @param LabelStructure             $labelStructureService
+     * @param CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService
+     * @param \cscntLogger               $logger
      */
     public function __construct(
         Facade\LabelingTask $taskFacade,
@@ -58,14 +64,16 @@ class TaskCreator
         Facade\CalibrationData $calibrationDataFacade,
         Facade\Video $videoFacade,
         Service\LabelStructure $labelStructureService,
+        Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService,
         \cscntLogger $logger
     ) {
-        $this->taskFacade              = $taskFacade;
-        $this->calibrationDataFacade   = $calibrationDataFacade;
-        $this->taskConfigurationFacade = $taskConfigurationFacade;
-        $this->labelStructureService   = $labelStructureService;
-        $this->loggerFacade            = new LoggerFacade($logger, self::class);
-        $this->videoFacade             = $videoFacade;
+        $this->taskFacade                        = $taskFacade;
+        $this->calibrationDataFacade             = $calibrationDataFacade;
+        $this->taskConfigurationFacade           = $taskConfigurationFacade;
+        $this->labelStructureService             = $labelStructureService;
+        $this->loggerFacade                      = new LoggerFacade($logger, self::class);
+        $this->videoFacade                       = $videoFacade;
+        $this->couchDbUpdateConflictRetryService = $couchDbUpdateConflictRetryService;
     }
 
     /**
@@ -125,8 +133,13 @@ class TaskCreator
                 if ($calibrationData === null) {
                     throw new \Exception(sprintf('Calibration data not found: %s', $calibrationDataId));
                 }
-                $video->setCalibrationData($calibrationData);
-                $this->videoFacade->save($video);
+
+                $this->couchDbUpdateConflictRetryService->save(
+                    $video,
+                    function (Model\Video $video) use ($calibrationData) {
+                        $video->setCalibrationData($calibrationData);
+                    }
+                );
             }
 
             if ($splitLength > 0) {
