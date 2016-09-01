@@ -39,6 +39,11 @@ class LabeledThingTest extends Tests\WebTestCase
      */
     private $labeledThingInFrameFacade;
 
+    /**
+     * @var Model\User
+     */
+    private $user;
+
     public function testGetLabeledThingDocument()
     {
         $task = $this->createLabelingTask();
@@ -261,9 +266,9 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
 
-        $user = $this->getService('fos_user.util.user_manipulator')
+        $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_ADMIN);
     }
 
     private function createLabelingTask($startRange = 10, $endRange = 20)
@@ -276,7 +281,13 @@ class LabeledThingTest extends Tests\WebTestCase
             range($startRange, $endRange),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $task->addAssignmentHistory(
+            $this->user,
+            new \DateTime,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS
+        );
         $task->setLabelStructure(
             json_decode(
                 file_get_contents(

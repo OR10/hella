@@ -57,6 +57,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
      */
     private $labeledThing;
 
+    /**
+     * @var Model\User
+     */
+    private $user;
+
     public function testGetLabeledThingInFrameDocument()
     {
         $labeledThingInFrame = $this->createLabeledThingInFrame();
@@ -240,7 +245,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labelingThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
 
-        $this->getService('fos_user.util.user_manipulator')
+        $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
 
         $this->video   = $this->videoFacade->save(Model\Video::create('foobar'));
@@ -250,6 +255,13 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             $this->project,
             range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
+        );
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $task->addAssignmentHistory(
+            $this->user,
+            new \DateTime,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS
         );
         $task->setLabelStructure(
             json_decode(

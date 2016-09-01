@@ -54,6 +54,11 @@ class InterpolateTest extends Tests\WebTestCase
     private $task;
 
     /**
+     * @var Model\User
+     */
+    private $user;
+
+    /**
      * @var Model\LabeledThing
      */
     private $labeledThing;
@@ -88,6 +93,14 @@ class InterpolateTest extends Tests\WebTestCase
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )
         );
+        $otherTask->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $otherTask->addAssignmentHistory(
+            $this->user,
+            new \DateTime,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS
+        );
+        $this->labelingTaskFacade->save($otherTask);
 
         $response = $this->createRequest(self::ROUTE, [$otherTask->getId(), $this->labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -115,9 +128,9 @@ class InterpolateTest extends Tests\WebTestCase
         $this->labeledThingFacade   = $this->getAnnostationService('database.facade.labeled_thing');
         $this->interpolationService = $this->getAnnostationService('service.interpolation');
 
-        $user = $this->getService('fos_user.util.user_manipulator')
+        $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_ADMIN);
 
         $this->video   = $this->videoFacade->save(Model\Video::create('Testvideo'));
         $this->project = $this->projectFacade->save(Model\Project::create('test project'));
@@ -127,7 +140,13 @@ class InterpolateTest extends Tests\WebTestCase
             range(1, 10),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $task->addAssignmentHistory(
+            $this->user,
+            new \DateTime,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS
+        );
         $this->task         = $this->labelingTaskFacade->save($task);
         $this->labeledThing = $this->labeledThingFacade->save(Model\LabeledThing::create($this->task));
     }

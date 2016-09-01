@@ -47,6 +47,11 @@ class LabeledFrameTest extends Tests\WebTestCase
      */
     private $task;
 
+    /**
+     * @var Model\User
+     */
+    private $user;
+
     public function testGetLabeledFrameDocument()
     {
         $frame   = $this->createLabeledFrame($this->task);
@@ -257,9 +262,9 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledFrameFacade = $this->getAnnostationService('database.facade.labeled_frame');
 
-        $user = $this->getService('fos_user.util.user_manipulator')
+        $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_ADMIN);
 
         $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
         $this->project = $this->projectFacade->save(Model\Project::create('test project'));
@@ -269,7 +274,13 @@ class LabeledFrameTest extends Tests\WebTestCase
             range(10, 20),
             Model\LabelingTask::TYPE_OBJECT_LABELING
         );
-        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $task->addAssignmentHistory(
+            $this->user,
+            new \DateTime,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS
+        );
         $task->setLabelStructure(
             json_decode(
                 file_get_contents(
