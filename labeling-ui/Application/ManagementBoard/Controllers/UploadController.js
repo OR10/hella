@@ -1,3 +1,5 @@
+import debounce from 'lodash.debounce';
+
 class UploadController {
   /**
    * @param {$rootScope.$scope} $scope
@@ -37,6 +39,12 @@ class UploadController {
     this.userPermissions = userPermissions;
 
     /**
+     * @type {Function}
+     */
+    // Flow seems to fire this callback multiple times upon completion. No idea why.
+    this.uploadComplete = debounce(() => this._uploadComplete(), 500, {leading: true, trailing: false});
+
+    /**
      * @type {ProjectGateway}
      * @private
      */
@@ -59,22 +67,48 @@ class UploadController {
     this.targetPath = `/api/project/batchUpload/${this.project.id}`;
   }
 
-  uploadComplete() {
-    this._projectGateway.markUploadAsFinished(this.project.id).then(() => {
-      this.uploadLoadingMask = false;
-      const modal = this._modalService.getInfoDialog({
-        title: 'Upload complete',
-        headline: 'Your upload is complete',
-        message: 'Your upload is complete and the task creation process has started. Do you want to go to the project list to view this project?',
-        confirmButtonText: 'Go to Project List',
-        cancelButtonText: 'Cancel',
-      }, () => {
-        this._$state.go('labeling.projects.list');
+  _uploadComplete() {
+    this._projectGateway.markUploadAsFinished(this.project.id)
+      .then(() => {
+        this.uploadLoadingMask = false;
+        if (this._hasFilesWithError()) {
+          this._showCompletedWithErrorsModal();
+        } else {
+          this._showCompletedModal();
+        }
+      })
+      .catch(() => {
+        this.uploadLoadingMask = false;
+        this._showCompletedWithErrorsModal();
       });
-      modal.activate();
-    }).catch(() => {
-      this.uploadLoadingMask = false;
+  }
+
+  _hasFilesWithError() {
+    return this.$flow.files
+      .reduce((before, file) => before || file.hasUploadError(), false);
+  }
+
+  _showCompletedWithErrorsModal() {
+    const modal = this._modalService.getAlertWarningDialog({
+      title: 'Upload completed with errors',
+      headline: 'Your upload is complete, but errors occured.',
+      message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.',
+      confirmButtonText: 'Understood',
     });
+    modal.activate();
+  }
+
+  _showCompletedModal() {
+    const modal = this._modalService.getInfoDialog({
+      title: 'Upload complete',
+      headline: 'Your upload is complete',
+      message: 'Your upload is complete and the task creation process has started. Do you want to go to the project list to view this project?',
+      confirmButtonText: 'Go to Project List',
+      cancelButtonText: 'Cancel',
+    }, () => {
+      this._$state.go('labeling.projects.list');
+    });
+    modal.activate();
   }
 
   uploadStarted() {
