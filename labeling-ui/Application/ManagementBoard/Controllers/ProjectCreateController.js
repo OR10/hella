@@ -9,8 +9,9 @@ class ProjectCreateController {
    * @param {Object} userPermissions
    * @param {ProjectGateway} projectGateway
    * @param {TaskConfigurationGateway} taskConfigurationGateway
+   * @param {ModalService} modalService
    */
-  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway) {
+  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -45,9 +46,15 @@ class ProjectCreateController {
     this._taskConfigurationGateway = taskConfigurationGateway;
 
     /**
-     * @type {boolean}
+     * @type {ModalService}
+     * @private
      */
-    this.loadingInProgress = false;
+    this._modalService = modalService;
+
+    /**
+     * @type {integer}
+     */
+    this.loadingInProgress = 0;
 
     /**
      * @type {null}
@@ -214,7 +221,7 @@ class ProjectCreateController {
    * Save a project with genericXml export
    */
   saveGeneric() {
-    this.loadingInProgress = true;
+    ++this.loadingInProgress;
 
     const taskTypeConfigurations = this.labelingTaskTypes.map(taskType => {
       return {
@@ -232,16 +239,32 @@ class ProjectCreateController {
       taskTypeConfigurations,
     };
 
-    this._projectGateway.createProject(data).then(() => {
-      this.goBack();
+    this._projectGateway.createProject(data)
+      .then(() => {
+        --this.loadingInProgress;
+        this.goBack();
+      })
+      .catch(error => {
+        --this.loadingInProgress;
+        this._handleCreationError(error);
+      });
+  }
+
+  _handleCreationError(error) {
+    const modal = this._modalService.getAlertWarningDialog({
+      title: 'Error creating project',
+      headline: `The project could not be created.`,
+      message: error.data.error.message,
+      confirmButtonText: 'Understood',
     });
+    modal.activate();
   }
 
   /**
    * Save a project with legacy export
    */
   saveLegacy() {
-    this.loadingInProgress = true;
+    ++this.loadingInProgress;
 
     const data = {
       name: this.name,
@@ -266,9 +289,15 @@ class ProjectCreateController {
       drawingToolParkedCars: this.drawingToolParkedCars,
     };
 
-    this._projectGateway.createProject(data).then(() => {
-      this.goBack();
-    });
+    this._projectGateway.createProject(data)
+      .then(() => {
+        --this.loadingInProgress;
+        this.goBack();
+      })
+      .catch(error => {
+        --this.loadingInProgress;
+        this._handleCreationError(error);
+      });
   }
 
   /**
@@ -287,6 +316,7 @@ ProjectCreateController.$inject = [
   'userPermissions',
   'projectGateway',
   'taskConfigurationGateway',
+  'modalService',
 ];
 
 export default ProjectCreateController;
