@@ -186,6 +186,13 @@ class LabelingGroup extends Controller\Base
         $labeler      = $request->request->get('labeler', []);
         $name         = $request->request->get('name', null);
 
+        if (count($coordinators) === 0 ||
+            count($labeler) === 0 ||
+            $name === null || $name === ''
+        ) {
+            throw new Exception\BadRequestHttpException();
+        }
+
         $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
         $this->labelingGroupFacade->save($labelingGroup);
 
