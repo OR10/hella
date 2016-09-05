@@ -55,20 +55,30 @@ class Init extends Base
      * @var Facade\LabelingGroup
      */
     private $labelingGroupFacade;
+    /**
+     * @var Service\TaskConfigurationXmlConverterFactory
+     */
+    private $configurationXmlConverterFactory;
+    /**
+     * @var Facade\TaskConfiguration
+     */
+    private $taskConfigurationFacade;
 
     /**
      * Init constructor.
      *
-     * @param CouchDB\CouchDBClient $couchClient
-     * @param Service\VideoImporter $videoImporterService
-     * @param Service\TaskCreator   $taskCreator
-     * @param                       $couchDatabase
-     * @param                       $userPassword
-     * @param                       $cacheDir
-     * @param                       $frameCdnDir
-     * @param Facade\User           $userFacade
-     * @param Facade\Project        $projectFacade
-     * @param Facade\LabelingGroup  $labelingGroupFacade
+     * @param CouchDB\CouchDBClient                        $couchClient
+     * @param Service\VideoImporter                        $videoImporterService
+     * @param Service\TaskCreator                          $taskCreator
+     * @param                                              $couchDatabase
+     * @param                                              $userPassword
+     * @param                                              $cacheDir
+     * @param                                              $frameCdnDir
+     * @param Facade\User                                  $userFacade
+     * @param Facade\Project                               $projectFacade
+     * @param Facade\LabelingGroup                         $labelingGroupFacade
+     * @param Facade\TaskConfiguration                     $taskConfigurationFacade
+     * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -80,20 +90,24 @@ class Init extends Base
         $frameCdnDir,
         Facade\User $userFacade,
         Facade\Project $projectFacade,
-        Facade\LabelingGroup $labelingGroupFacade
+        Facade\LabelingGroup $labelingGroupFacade,
+        Facade\TaskConfiguration $taskConfigurationFacade,
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
     ) {
         parent::__construct();
 
-        $this->couchClient          = $couchClient;
-        $this->videoImporterService = $videoImporterService;
-        $this->taskCreator          = $taskCreator;
-        $this->couchDatabase        = (string) $couchDatabase;
-        $this->userPassword         = (string) $userPassword;
-        $this->cacheDir             = (string) $cacheDir;
-        $this->frameCdnDir          = (string) $frameCdnDir;
-        $this->userFacade           = $userFacade;
-        $this->projectFacade        = $projectFacade;
-        $this->labelingGroupFacade  = $labelingGroupFacade;
+        $this->couchClient                      = $couchClient;
+        $this->videoImporterService             = $videoImporterService;
+        $this->taskCreator                      = $taskCreator;
+        $this->couchDatabase                    = (string)$couchDatabase;
+        $this->userPassword                     = (string)$userPassword;
+        $this->cacheDir                         = (string)$cacheDir;
+        $this->frameCdnDir                      = (string)$frameCdnDir;
+        $this->userFacade                       = $userFacade;
+        $this->projectFacade                    = $projectFacade;
+        $this->labelingGroupFacade              = $labelingGroupFacade;
+        $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
+        $this->taskConfigurationFacade          = $taskConfigurationFacade;
     }
 
     protected function configure()
@@ -150,6 +164,10 @@ class Init extends Base
         }
 
         if (!$this->createLabelGroup($output)) {
+            return 1;
+        }
+
+        if (!$this->addXmlConfiguration($output)) {
             return 1;
         }
 
@@ -348,6 +366,32 @@ class Init extends Base
         }
 
         return true;
+    }
+
+    private function addXmlConfiguration(OutputInterface $output)
+    {
+        $xmlData = '<?xml version="1.0" encoding="UTF-8" ?>
+                <labelTaskConfig shape="rectangle" minimalVisibleShapeOverflow="150" minimalHeight="0">
+                    <class id="type" name="Type">
+                    <value id="person" name="Person"/>
+                    <value id="cyclist" name="Cyclist"/>
+                </class>
+                </labelTaskConfig>';
+
+        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
+
+        $config = new Model\TaskConfiguration(
+            'Sample Configuration',
+            'example.xml',
+            'application/xml',
+            $xmlData,
+            $this->users['client']->getId(),
+            $taskConfigurationXmlConverter->convertToJson()
+        );
+
+        $this->taskConfigurationFacade->save($config);
+
+        $this->writeSection($output, 'Added new Sample Task Configuration for the Client User');
     }
 
     private function downloadSampleVideo(OutputInterface $output, string $videoBasePath, $skipImport, $lossless)
