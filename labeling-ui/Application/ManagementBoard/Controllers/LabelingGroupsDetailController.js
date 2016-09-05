@@ -191,7 +191,7 @@ class LabelingGroupsDetailController {
     this.validation.coordinator = true;
     this.validation.labelers = true;
 
-    if (this.groupCoordinatorId === null && this.groupCoordinatorId === undefined) {
+    if (this.groupCoordinatorId === null || this.groupCoordinatorId === undefined) {
       this.validation.coordinator = valid = false;
     }
 
