@@ -28,6 +28,77 @@ class LabelingGroupTest extends Tests\WebTestCase
      */
     private $userService;
 
+    public function provideInvalidLabelingGroups()
+    {
+        return array(
+            // Missing name
+            array(
+                [
+                    'coordinators' => [
+                        '4b1ae8ac5323af2673b73dbfcf5aa6de',
+                    ],
+                    'labeler'      => [
+                        'fc687f8423e6d27e616925eb3bae8e57',
+                    ],
+                ],
+            ),
+            // Missing coordinators
+            array(
+                [
+                    'name'    => 'A Labeling Group',
+                    'labeler' => [
+                        'fc687f8423e6d27e616925eb3bae8e57',
+                    ],
+                ],
+            ),
+            // Missing labelers
+            array(
+                [
+                    'name'         => 'A Labeling Group',
+                    'coordinators' => [
+                        '4b1ae8ac5323af2673b73dbfcf5aa6de',
+                    ],
+                ],
+            ),
+            // Missing everything
+            array(
+                [],
+            ),
+            // Empty name
+            array(
+                [
+                    'name'         => '',
+                    'coordinators' => [
+                        '4b1ae8ac5323af2673b73dbfcf5aa6de',
+                    ],
+                    'labeler'      => [
+                        'fc687f8423e6d27e616925eb3bae8e57',
+                    ],
+                ],
+            ),
+            // Empty coordinators
+            array(
+                [
+                    'name'         => 'A Labeling Group',
+                    'coordinators' => [],
+                    'labeler'      => [
+                        'fc687f8423e6d27e616925eb3bae8e57',
+                    ],
+                ],
+            ),
+            // Empty labelers
+            array(
+                [
+                    'name'         => 'A Labeling Group',
+                    'coordinators' => [
+                        '4b1ae8ac5323af2673b73dbfcf5aa6de',
+                    ],
+                    'labeler'      => [],
+                ],
+            ),
+        );
+    }
+
     public function testGetLabelingGroup()
     {
         /** @var Model\User $coordinatorUser1 */
@@ -81,6 +152,7 @@ class LabelingGroupTest extends Tests\WebTestCase
                     'labeler' => [
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
+                    'name' => 'Some cool group',
                 ]
             )
             ->execute();
@@ -90,6 +162,19 @@ class LabelingGroupTest extends Tests\WebTestCase
         $expectedLabelingGroup = $this->labelingGroupFacade->find($content->result->labelingGroups->id);
 
         $this->assertSame($content->result->labelingGroups->coordinators, $expectedLabelingGroup->getCoordinators());
+    }
+
+    /**
+     * @dataProvider provideInvalidLabelingGroups
+     */
+    public function testCreateNewLabelingGroupWithMissingInformationIsRejected($data)
+    {
+        $response = $this->createRequest(self::ROUTE)
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->setJsonBody($data)
+            ->execute();
+
+        $this->assertSame(400, $response->getResponse()->getStatusCode());
     }
 
     public function testUpdateLabelingGroup()
