@@ -51,6 +51,10 @@ class Init extends Base
      * @var Model\User[]
      */
     private $users = [];
+    /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
 
     /**
      * Init constructor.
@@ -64,6 +68,7 @@ class Init extends Base
      * @param                       $frameCdnDir
      * @param Facade\User           $userFacade
      * @param Facade\Project        $projectFacade
+     * @param Facade\LabelingGroup  $labelingGroupFacade
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -74,7 +79,8 @@ class Init extends Base
         $cacheDir,
         $frameCdnDir,
         Facade\User $userFacade,
-        Facade\Project $projectFacade
+        Facade\Project $projectFacade,
+        Facade\LabelingGroup $labelingGroupFacade
     ) {
         parent::__construct();
 
@@ -87,6 +93,7 @@ class Init extends Base
         $this->frameCdnDir          = (string) $frameCdnDir;
         $this->userFacade           = $userFacade;
         $this->projectFacade        = $projectFacade;
+        $this->labelingGroupFacade  = $labelingGroupFacade;
     }
 
     protected function configure()
@@ -139,6 +146,10 @@ class Init extends Base
         }
 
         if (!$this->createUser($output)) {
+            return 1;
+        }
+
+        if (!$this->createLabelGroup($output)) {
             return 1;
         }
 
@@ -269,6 +280,25 @@ class Init extends Base
         } else {
             $this->writeInfo($output, "<comment>Users are not created due to an empty password!</comment>");
         }
+
+        return true;
+    }
+
+    private function createLabelGroup(OutputInterface $output)
+    {
+        if (!isset($this->users['label_coordinator']) || !isset($this->users['user'])) {
+            return false;
+        }
+
+        $labelGroup = new Model\LabelingGroup(
+            [$this->users['label_coordinator']->getId()],
+            [$this->users['user']->getId()],
+            'Example Labeling Group'
+        );
+
+        $this->labelingGroupFacade->save($labelGroup);
+
+        $this->writeSection($output, 'Added new LabelGroup for label_coordinator and user');
 
         return true;
     }
