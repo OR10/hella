@@ -70,6 +70,7 @@ class Report
         $report->setProjectCreatedAt($project->getCreationDate());
         $report->setProjectCreatedBy($project->getUserId());
         $report->setProjectDueDate($project->getDueDate());
+        $report->setLabelingValidationProcesses($project->getLabelingValidationProcesses());
 
         $report->setNumberOfVideosInProject(
             $this->getNumberOfVideosInProject($project)

@@ -46,6 +46,11 @@ class ReportTest extends Tests\KernelTestCase
 
     public function testProcessReport()
     {
+        $phases = [
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::PHASE_REVISION,
+        ];
         /** @var Model\User $user */
         $user = $this->getService('fos_user.util.user_manipulator')
             ->create('foobar', 'baar', 'foobar@baar.de', true, false);
@@ -53,7 +58,15 @@ class ReportTest extends Tests\KernelTestCase
         $creationDate = new \DateTime('2016-07-27 00:00:00', new \DateTimeZone('UTC'));
         $dueDate      = new \DateTime('2016-07-29 00:00:00', new \DateTimeZone('UTC'));
 
-        $project = $this->projectFacade->save(Model\Project::create('foo', $user->getId(), $creationDate, $dueDate));
+        $project = $this->projectFacade->save(
+            Model\Project::create(
+                'foo',
+                $user->getId(),
+                $creationDate,
+                $dueDate,
+                $phases
+            )
+        );
         $video   = $this->videoFacade->save(Model\Video::create('foobar'));
 
         $this->createLabelingTasks(
@@ -160,7 +173,7 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame(null, $actualReport->getProjectMovedToDoneAt()); //@TODO not implemented yet
         $this->assertSame(1, $actualReport->getNumberOfVideosInProject());
         $this->assertSame(60, $actualReport->getNumberOfTasksInProject());
-        $this->assertSame(null, $actualReport->getProjectLabelType()); //@TODO not implemented yet
+        $this->assertSame($phases, $actualReport->getLabelingValidationProcesses());
         $this->assertSame($project->getDueDate(), $actualReport->getProjectDueDate());
 
         $this->assertSame(2, $actualReport->getNumberOfToDoTasks());

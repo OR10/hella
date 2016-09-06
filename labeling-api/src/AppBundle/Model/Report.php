@@ -83,9 +83,9 @@ class Report
     private $numberOfTasksInProject;
 
     /**
-     * @CouchDB\Field(type="string")
+     * @CouchDB\Field(type="mixed")
      */
-    private $projectLabelType;
+    private $labelingValidationProcesses;
 
     /**
      * @CouchDB\Field(type="integer")
@@ -279,17 +279,17 @@ class Report
     /**
      * @return mixed
      */
-    public function getProjectLabelType()
+    public function getLabelingValidationProcesses()
     {
-        return $this->projectLabelType;
+        return $this->labelingValidationProcesses;
     }
 
     /**
-     * @param mixed $projectLabelType
+     * @param mixed $labelingValidationProcesses
      */
-    public function setProjectLabelType($projectLabelType)
+    public function setLabelingValidationProcesses($labelingValidationProcesses)
     {
-        $this->projectLabelType = $projectLabelType;
+        $this->labelingValidationProcesses = $labelingValidationProcesses;
     }
 
     /**
