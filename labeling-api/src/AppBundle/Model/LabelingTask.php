@@ -437,6 +437,10 @@ class LabelingTask
             return ($history['phase'] === $phase);
         });
 
+        if (empty($historyEntries)) {
+            return null;
+        }
+
         usort($historyEntries, function ($a, $b) {
             if ($a['assignedAt'] === $b['assignedAt']) {
                 return 0;
