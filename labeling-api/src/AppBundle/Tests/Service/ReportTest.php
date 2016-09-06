@@ -55,39 +55,96 @@ class ReportTest extends Tests\KernelTestCase
 
         $project = $this->projectFacade->save(Model\Project::create('foo', $user->getId(), $creationDate, $dueDate));
         $video   = $this->videoFacade->save(Model\Video::create('foobar'));
-        $task    = $this->labelingTaskFacade->save(
-            Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING)
-        );
-        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($task, $user, 1337));
 
-        $taskToDo = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $taskToDo->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
-        $this->labelingTaskFacade->save($taskToDo);
-        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($taskToDo, $user, 1337));
-
-        $taskInProgress = Model\LabelingTask::create(
+        $this->createLabelingTasks(
             $video,
             $project,
-            [10, 100],
-            Model\LabelingTask::TYPE_OBJECT_LABELING
+            $user,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_TODO,
+            100,
+            2
         );
-        $taskInProgress->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
-        $this->labelingTaskFacade->save($taskInProgress);
-        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($taskInProgress, $user, 1337));
 
-        $taskDone = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $taskDone->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
-        $this->labelingTaskFacade->save($taskDone);
-        $this->labelingTaskFacade->saveTimer(new Model\TaskTimer($taskDone, $user, 1337));
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            200,
+            3
+        );
 
-        foreach (range(0, 9) as $i) {
-            $labeledThing = Model\LabeledThing::create($task);
-            $labeledThing->setClasses(['foobar', 'foobar2', 'foobar3']);
-            $this->labeledThingFacade->save($labeledThing);
-            $this->labeledThingInFrameFacade->save(
-                Model\LabeledThingInFrame::create($labeledThing, 30, ['foobar', 'foobar2'])
-            );
-        }
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_DONE,
+            300,
+            4
+        );
+
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::STATUS_TODO,
+            400,
+            5
+        );
+
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            500,
+            4
+        );
+
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::STATUS_DONE,
+            600,
+            3
+        );
+
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_REVISION,
+            Model\LabelingTask::STATUS_TODO,
+            700,
+            4
+        );
+
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_REVISION,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            800,
+            3
+        );
+
+        $this->createLabelingTasks(
+            $video,
+            $project,
+            $user,
+            Model\LabelingTask::PHASE_REVISION,
+            Model\LabelingTask::STATUS_DONE,
+            900,
+            2
+        );
 
         $report = Model\Report::create($project);
         $this->reportFacade->save($report);
@@ -102,32 +159,66 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame(null, $actualReport->getProjectMovedToInProgressAt()); //@TODO not implemented yet
         $this->assertSame(null, $actualReport->getProjectMovedToDoneAt()); //@TODO not implemented yet
         $this->assertSame(1, $actualReport->getNumberOfVideosInProject());
-        $this->assertSame(4, $actualReport->getNumberOfTasksInProject());
+        $this->assertSame(60, $actualReport->getNumberOfTasksInProject());
         $this->assertSame(null, $actualReport->getProjectLabelType()); //@TODO not implemented yet
         $this->assertSame($project->getDueDate(), $actualReport->getProjectDueDate());
 
-        $this->assertSame(1, $actualReport->getNumberOfToDoTasks());
-        $this->assertSame(1, $actualReport->getNumberOfInProgressTasks());
-        $this->assertSame(1, $actualReport->getNumberOfDoneTasks());
+        $this->assertSame(2, $actualReport->getNumberOfToDoTasks());
+        $this->assertSame(3, $actualReport->getNumberOfInProgressTasks());
+        $this->assertSame(25, $actualReport->getNumberOfDoneTasks());
 
-        $this->assertSame(0, $actualReport->getNumberOfToDoReviewTasks()); //@TODO not implemented yet
-        $this->assertSame(0, $actualReport->getNumberOfInProgressReviewTasks()); //@TODO not implemented yet
-        $this->assertSame(0, $actualReport->getNumberOfDoneReviewTasks()); //@TODO not implemented yet
+        $this->assertSame(5, $actualReport->getNumberOfToDoReviewTasks());
+        $this->assertSame(4, $actualReport->getNumberOfInProgressReviewTasks());
+        $this->assertSame(12, $actualReport->getNumberOfDoneReviewTasks());
 
-        $this->assertSame(0, $actualReport->getNumberOfToDoRevisionTasks()); //@TODO not implemented yet
-        $this->assertSame(0, $actualReport->getNumberOfInProgressRevisionTasks()); //@TODO not implemented yet
-        $this->assertSame(0, $actualReport->getNumberOfDoneRevisionTasks()); //@TODO not implemented yet
+        $this->assertSame(4, $actualReport->getNumberOfToDoRevisionTasks());
+        $this->assertSame(3, $actualReport->getNumberOfInProgressRevisionTasks());
+        $this->assertSame(2, $actualReport->getNumberOfDoneRevisionTasks());
 
-        $this->assertSame(10, $actualReport->getNumberOfLabeledThingInFrames());
-        $this->assertSame(20, $actualReport->getNumberOfLabeledThingInFrameClasses());
+        $this->assertSame(300, $actualReport->getNumberOfLabeledThingInFrames());
+        $this->assertSame(600, $actualReport->getNumberOfLabeledThingInFrameClasses());
 
-        $this->assertSame(10, $actualReport->getNumberOfLabeledThings());
-        $this->assertSame(30, $actualReport->getNumberOfLabeledThingClasses());
+        $this->assertSame(300, $actualReport->getNumberOfLabeledThings());
+        $this->assertSame(900, $actualReport->getNumberOfLabeledThingClasses());
 
-        $this->assertSame(5348, $actualReport->getTotalTime());
+        $this->assertSame(27600, $actualReport->getTotalTime());
         $this->assertSame(0, $actualReport->getTotalLabelingTime()); //@TODO not implemented yet
         $this->assertSame(0, $actualReport->getTotalReviewTime()); //@TODO not implemented yet
         $this->assertSame(0, $actualReport->getTotalRevisionTime()); //@TODO not implemented yet
+    }
+
+    private function createLabelingTasks(
+        Model\Video $video,
+        Model\Project $project,
+        Model\User $user,
+        $phase,
+        $status,
+        $timeInSeconds,
+        $numberOfTasks
+    ) {
+        foreach (range(1, $numberOfTasks) as $i) {
+            $task = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
+            $task->setStatus($phase, $status);
+            if ($phase === Model\LabelingTask::PHASE_REVIEW || $phase === Model\LabelingTask::PHASE_REVISION) {
+                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+            }
+            if ($phase === Model\LabelingTask::PHASE_REVISION) {
+                $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+            }
+            $this->labelingTaskFacade->save($task);
+            $timer = new Model\TaskTimer($task, $user, $timeInSeconds);
+            $timer->setTimeInSeconds($phase, $timeInSeconds);
+            $this->labelingTaskFacade->saveTimer($timer);
+
+            foreach (range(0, 9) as $i2) {
+                $labeledThing = Model\LabeledThing::create($task);
+                $labeledThing->setClasses(['foobar', 'foobar2', 'foobar3']);
+                $this->labeledThingFacade->save($labeledThing);
+                $this->labeledThingInFrameFacade->save(
+                    Model\LabeledThingInFrame::create($labeledThing, 30, ['foobar', 'foobar2'])
+                );
+            }
+        }
     }
 
     public function setUpImplementation()

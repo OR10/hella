@@ -71,47 +71,54 @@ class Report
         $report->setProjectCreatedBy($project->getUserId());
         $report->setProjectDueDate($project->getDueDate());
 
-        $report->setNumberOfTasksInProject(
-            $this->getNumberOfTaskInProject($project)
-        );
         $report->setNumberOfVideosInProject(
             $this->getNumberOfVideosInProject($project)
         );
-
-        /** Number of Tasks by Status */
-        $numberOfToDoTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
-            $project,
+        $numberOfTaskByPhaseAndStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+        $phases = array(
             Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_TODO
-        )->toArray();
-        $numberOfToDoTasks = count($numberOfToDoTasks) === 0 ? 0 : $numberOfToDoTasks[0]['value'];
-        $report->setNumberOfToDoTasks($numberOfToDoTasks);
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::PHASE_REVISION
+        );
 
-        $numberOfInProgressTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
-            $project,
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_IN_PROGRESS
-        )->toArray();
-        $numberOfInProgressTasks = count($numberOfInProgressTasks) === 0 ? 0 : $numberOfInProgressTasks[0]['value'];
-        $report->setNumberOfInProgressTasks($numberOfInProgressTasks);
+        $sumOfTasks = 0;
+        foreach ($phases as $phase) {
+            $sumOfTasks += array_sum($numberOfTaskByPhaseAndStatus[$phase]);
+        }
+        $report->setNumberOfTasksInProject($sumOfTasks);
 
-        $numberOfDoneTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
-            $project,
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_DONE
-        )->toArray();
-        $numberOfDoneTasks = count($numberOfDoneTasks) === 0 ? 0 : $numberOfDoneTasks[0]['value'];
-        $report->setNumberOfDoneTasks($numberOfDoneTasks);
+        /** Number of Labeling Tasks */
+        $report->setNumberOfToDoTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_TODO]
+        );
+        $report->setNumberOfInProgressTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_IN_PROGRESS]
+        );
+        $report->setNumberOfDoneTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_DONE]
+        );
 
         /** Number of Review Tasks by Status */
-        $report->setNumberOfToDoReviewTasks(0);
-        $report->setNumberOfInProgressReviewTasks(0);
-        $report->setNumberOfDoneReviewTasks(0);
+        $report->setNumberOfToDoReviewTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_TODO]
+        );
+        $report->setNumberOfInProgressReviewTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_IN_PROGRESS]
+        );
+        $report->setNumberOfDoneReviewTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_DONE]
+        );
 
         /** Number of Revision Tasks by Status */
-        $report->setNumberOfToDoRevisionTasks(0);
-        $report->setNumberOfInProgressRevisionTasks(0);
-        $report->setNumberOfDoneRevisionTasks(0);
+        $report->setNumberOfToDoRevisionTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_TODO]
+        );
+        $report->setNumberOfInProgressRevisionTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_IN_PROGRESS]
+        );
+        $report->setNumberOfDoneRevisionTasks(
+            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_DONE]
+        );
 
         $report->setNumberOfLabeledThings(
             $this->getSumOfLabeledThings($project)
@@ -192,28 +199,6 @@ class Report
         }
 
         return $count;
-    }
-
-    /**
-     * @param Model\Project $project
-     * @return int
-     */
-    private function getNumberOfTaskInProject(Model\Project $project)
-    {
-        $sumOfTasksByProjectAndPhase = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-
-        $phases = array(
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION
-        );
-
-        $sumOfTasks = 0;
-        foreach ($phases as $phase) {
-            $sumOfTasks += array_sum($sumOfTasksByProjectAndPhase[$phase]);
-        }
-
-        return $sumOfTasks;
     }
 
     /**
