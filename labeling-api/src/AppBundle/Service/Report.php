@@ -136,14 +136,19 @@ class Report
         );
 
         $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
+        foreach ($phases as $phase) {
+            if (!key_exists($phase, $timeByPhaseForProject)) {
+                $timeByPhaseForProject[$phase] = 0;
+            }
+        }
         $sumOfTimeByPhase = 0;
         foreach ($timeByPhaseForProject as $phase => $time) {
             $sumOfTimeByPhase += $time;
         }
         $report->setTotalTime($sumOfTimeByPhase);
-        $report->setTotalLabelingTime(0);
-        $report->setTotalReviewTime(0);
-        $report->setTotalRevisionTime(0);
+        $report->setTotalLabelingTime($timeByPhaseForProject[Model\LabelingTask::PHASE_LABELING]);
+        $report->setTotalReviewTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVIEW]);
+        $report->setTotalRevisionTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVISION]);
 
         $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
         $this->reportFacade->save($report);

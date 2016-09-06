@@ -182,9 +182,9 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame(900, $actualReport->getNumberOfLabeledThingClasses());
 
         $this->assertSame(27600, $actualReport->getTotalTime());
-        $this->assertSame(0, $actualReport->getTotalLabelingTime()); //@TODO not implemented yet
-        $this->assertSame(0, $actualReport->getTotalReviewTime()); //@TODO not implemented yet
-        $this->assertSame(0, $actualReport->getTotalRevisionTime()); //@TODO not implemented yet
+        $this->assertSame(14800, $actualReport->getTotalLabelingTime());
+        $this->assertSame(5800, $actualReport->getTotalReviewTime());
+        $this->assertSame(7000, $actualReport->getTotalRevisionTime());
     }
 
     private function createLabelingTasks(
