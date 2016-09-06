@@ -65,8 +65,10 @@ class Report
     public function processReport(Model\Report $report)
     {
         $project = $this->projectFacade->find($report->getProjectId());
+
         $report->setProjectStatus($project->getStatus());
         $report->setProjectCreatedAt($project->getCreationDate());
+        $report->setProjectCreatedBy($project->getUserId());
         $report->setProjectDueDate($project->getDueDate());
 
         $report->setNumberOfTasksInProject(

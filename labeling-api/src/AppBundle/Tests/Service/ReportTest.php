@@ -98,6 +98,7 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame($project->getId(), $actualReport->getProjectId());
         $this->assertSame($project->getStatus(), $actualReport->getProjectStatus());
         $this->assertSame($project->getCreationDate(), $actualReport->getProjectCreatedAt());
+        $this->assertSame($project->getUserId(), $actualReport->getProjectCreatedBy());
         $this->assertSame(null, $actualReport->getProjectMovedToInProgressAt()); //@TODO not implemented yet
         $this->assertSame(null, $actualReport->getProjectMovedToDoneAt()); //@TODO not implemented yet
         $this->assertSame(1, $actualReport->getNumberOfVideosInProject());

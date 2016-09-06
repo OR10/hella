@@ -659,4 +659,12 @@ class Report
     {
         return $this->projectCreatedBy;
     }
+
+    /**
+     * @param mixed $projectCreatedBy
+     */
+    public function setProjectCreatedBy($projectCreatedBy)
+    {
+        $this->projectCreatedBy = $projectCreatedBy;
+    }
 }
