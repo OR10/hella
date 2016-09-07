@@ -34,6 +34,11 @@ class CouchDbTestCase extends Tests\WebTestCase
     protected $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\LabelingGroup
+     */
+    protected $labelingGroupFacade;
+
+    /**
      * @var UserManipulator
      */
     protected $userManipulator;
@@ -114,13 +119,30 @@ class CouchDbTestCase extends Tests\WebTestCase
         );
     }
 
-    public function setUpImplementation()
+    protected function createLabelingGroup(Model\User $coordinator, array $labelers)
+    {
+        return $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create(
+                [$coordinator->getId()],
+                array_map(
+                    function ($labeler) {
+                        /** @var Model\User $labeler */
+                        return $labeler->getId();
+                    },
+                    $labelers
+                )
+            )
+        );
+    }
+
+    protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
         $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->labelingGroupFacade       = $this->getAnnostationService('database.facade.labeling_group');
 
         $this->userManipulator = $this->getService('fos_user.util.user_manipulator');
     }
