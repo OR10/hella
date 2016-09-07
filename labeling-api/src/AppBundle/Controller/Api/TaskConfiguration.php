@@ -6,6 +6,7 @@ use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Response;
 use AppBundle\Controller;
 use AppBundle\Service;
+use AppBundle\Service\Authentication;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 class TaskConfiguration extends Controller\Base
 {
     /**
-     * @var Service\CurrentUserPermissions
+     * @var Authentication\UserPermissions
      */
     private $currentUserPermissions;
     /**
@@ -46,14 +47,14 @@ class TaskConfiguration extends Controller\Base
     private $configurationXmlConverterFactory;
 
     /**
-     * @param Service\CurrentUserPermissions               $currentUserPermissions
+     * @param Authentication\UserPermissions                      $currentUserPermissions
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Storage\TokenStorage                         $tokenStorage
      * @param Service\XmlValidator                         $xmlValidator
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
      */
     public function __construct(
-        Service\CurrentUserPermissions $currentUserPermissions,
+        Authentication\UserPermissions $currentUserPermissions,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Storage\TokenStorage $tokenStorage,
         Service\XmlValidator $xmlValidator,
