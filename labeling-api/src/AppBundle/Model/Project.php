@@ -201,7 +201,7 @@ class Project
     /**
      * @param string $name
      *
-     * @return Video
+     * @return Project
      */
     public function setName($name)
     {
@@ -263,7 +263,7 @@ class Project
     }
 
     /**
-     * @return CouchDB\Field
+     * @return array
      */
     public function getCoordinatorAssignmentHistory()
     {
