@@ -18,6 +18,7 @@ class LabelingGroup
 
     /**
      * @param $id
+     *
      * @return Model\LabelingGroup
      */
     public function find($id)
@@ -27,6 +28,7 @@ class LabelingGroup
 
     /**
      * @param Model\LabelingGroup $labelingGroup
+     *
      * @return Model\LabelingGroup
      */
     public function save(Model\LabelingGroup $labelingGroup)
@@ -39,6 +41,7 @@ class LabelingGroup
 
     /**
      * @param Model\LabelingGroup $labelingGroup
+     *
      * @return Model\LabelingGroup
      */
     public function delete(Model\LabelingGroup $labelingGroup)
@@ -62,6 +65,7 @@ class LabelingGroup
 
     /**
      * @param Model\User $user
+     *
      * @return \Doctrine\CouchDB\View\Result
      */
     public function findAllByCoordinator(Model\User $user = null)
@@ -72,6 +76,26 @@ class LabelingGroup
         if ($user instanceof Model\User) {
             $query->setKey($user->getId());
         }
+
         return $query->execute();
+    }
+
+    /**
+     * Find and retrieve all LabelingGroups a specific user is listed in as either Labeler or LabelCoordinator.
+     *
+     * @param Model\User $user
+     *
+     * @return Model\LabelingGroup[]
+     */
+    public function findAllByUser(Model\User $user): array
+    {
+        $resultSet = $this->documentManager
+            ->createQuery('annostation_labeling_group_by_user_and_user_type_001', 'view')
+            ->onlyDocs(true)
+            ->setStartKey([$user->getId(), ''])
+            ->setEndKey([$user->getId(), []])
+            ->execute();
+
+        return $resultSet->toArray();
     }
 }
