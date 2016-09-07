@@ -40,7 +40,7 @@
 
         <service id="annostation.labeling_api.annotations.driver.check_permissions" class="AppBundle\Annotations\Driver\CheckPermissions">
             <argument type="service" id="annotation_reader" />
-            <argument type="service" id="annostation.labeling_api.service.current_user_permissions" />
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
@@ -195,7 +195,7 @@
             <argument type="service" id="fos_user.user_manager" />
         </service>
 
-        <service id="annostation.labeling_api.service.current_user_permissions" class="AppBundle\Service\CurrentUserPermissions">
+        <service id="annostation.labeling_api.service.authentication.user_permissions" class="AppBundle\Service\Authentication\UserPermissions">
             <argument type="service" id="security.token_storage" />
         </service>
 
