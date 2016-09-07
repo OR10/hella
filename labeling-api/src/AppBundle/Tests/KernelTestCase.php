@@ -90,7 +90,7 @@ class KernelTestCase extends Test\KernelTestCase
     /**
     * Overwrite this method to get specific metadata.
     *
-    * @return Array
+    * @return array
     */
     protected function getMetadata()
     {
