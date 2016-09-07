@@ -92,7 +92,7 @@ class LabelingGroup
         $resultSet = $this->documentManager
             ->createQuery('annostation_labeling_group_by_user_and_user_type_001', 'view')
             ->onlyDocs(true)
-            ->setStartKey([$user->getId(), ''])
+            ->setStartKey([$user->getId()])
             ->setEndKey([$user->getId(), []])
             ->execute();
 
