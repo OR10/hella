@@ -141,7 +141,8 @@ class Project
     public function findAllByStatus($status, $limit = null, $offset = 0)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_project', 'by_status_' . $status)
+            ->createQuery('annostation_project', 'by_status')
+            ->setKey([$status])
             ->onlyDocs(true);
 
         if ($limit !== null) {

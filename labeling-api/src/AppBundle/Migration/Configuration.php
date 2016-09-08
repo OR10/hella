@@ -16,6 +16,7 @@ class Configuration extends CouchDB\Configuration
                 new ProjectCoordinatorAssigneeHistory(),
                 new ProjectAvailableExportsDefault(),
                 new UserLockedState(),
+                new ProjectStatusHistory(),
             )
         );
     }

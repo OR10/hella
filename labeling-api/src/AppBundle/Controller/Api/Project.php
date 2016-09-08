@@ -223,7 +223,7 @@ class Project extends Controller\Base
         try {
             $project = Model\Project::create(
                 $name,
-                $user->getId(),
+                $user,
                 null,
                 null,
                 $labelingValidationProcesses,

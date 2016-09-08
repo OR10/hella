@@ -39,9 +39,9 @@ class Project
     private $dueDate;
 
     /**
-     * @CouchDB\Field(type="string")
+     * @CouchDB\Field(type="mixed")
      */
-    private $status = self::STATUS_TODO;
+    private $status;
 
     /**
      * @CouchDB\Field(type="mixed")
@@ -108,7 +108,7 @@ class Project
      *
      * @param string $name
      *
-     * @param null   $userId
+     * @param User   $user
      * @param null   $creationDate
      * @param null   $dueDate
      * @param array  $labelingValidationProcesses
@@ -119,7 +119,7 @@ class Project
      */
     public static function create(
         $name,
-        $userId = null,
+        User $user = null,
         $creationDate = null,
         $dueDate = null,
         $labelingValidationProcesses = [],
@@ -129,7 +129,7 @@ class Project
     ) {
         return new static(
             $name,
-            $userId,
+            $user,
             $creationDate,
             $dueDate,
             $labelingValidationProcesses,
@@ -141,7 +141,7 @@ class Project
 
     /**
      * @param string $name
-     * @param null   $userId
+     * @param User   $user
      * @param null   $creationDate
      * @param null   $dueDate
      * @param array  $labelingValidationProcesses
@@ -151,7 +151,7 @@ class Project
      */
     public function __construct(
         $name,
-        $userId = null,
+        User $user = null,
         $creationDate = null,
         $dueDate = null,
         $labelingValidationProcesses = [],
@@ -168,13 +168,18 @@ class Project
         }
 
         $this->name                                  = (string) $name;
-        $this->setUserId($userId);
+        $this->setUserId($user->getId());
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;
         $this->taskVideoSettings['frameSkip']        = (int) $frameSkip;
         $this->taskVideoSettings['startFrameNumber'] = (int) $startFrameNumber;
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
+        $this->addStatusHistory(
+            $user,
+            new \DateTime('now', new \DateTimeZone('UTC')),
+            self::STATUS_TODO
+        );
     }
 
     /**
@@ -222,7 +227,19 @@ class Project
      */
     public function getStatus()
     {
-        return $this->status;
+        if (!is_array($this->status)) {
+            return $this->status;
+        }
+
+        $statusHistory = $this->status;
+        usort($statusHistory, function ($a, $b) {
+            if ($a['timestamp'] === $b['timestamp']) {
+                return 0;
+            }
+            return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
+        });
+
+        return $statusHistory[0]['status'];
     }
 
     /**
@@ -520,5 +537,29 @@ class Project
     public function setUserId($userId)
     {
         $this->userId = $userId;
+    }
+
+    /**
+     * @param User|null $user
+     * @param \DateTime $date
+     * @param           $status
+     */
+    public function addStatusHistory(User $user = null, \DateTime $date, $status)
+    {
+        if (!is_array($this->status)) {
+            $this->status = [
+                [
+                    'userId' => $user instanceof User ? $user->getId() : null,
+                    'timestamp' => $date->getTimestamp(),
+                    'status' => $status,
+                ]
+            ];
+        } else {
+            $this->status[] = [
+                'userId' => $user instanceof User ? $user->getId() : null,
+                'timestamp' => $date->getTimestamp(),
+                'status' => $status,
+            ];
+        }
     }
 }
