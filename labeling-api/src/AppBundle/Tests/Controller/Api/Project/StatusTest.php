@@ -81,7 +81,7 @@ class StatusTest extends Tests\WebTestCase
 
     private function createProject()
     {
-        $project = Model\Project::create('foobar');
+        $project = Model\Project::create('foobar', null, new \DateTime('2016-09-08', new \DateTimeZone('UTC')));
         $project->addCoordinatorAssignmentHistory($this->user);
         $this->projectFacade->save($project);
 

@@ -177,7 +177,7 @@ class Project
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
         $this->addStatusHistory(
             $user,
-            new \DateTime('now', new \DateTimeZone('UTC')),
+            $creationDate,
             self::STATUS_TODO
         );
     }

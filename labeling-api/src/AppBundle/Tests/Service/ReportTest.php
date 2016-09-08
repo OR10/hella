@@ -61,7 +61,7 @@ class ReportTest extends Tests\KernelTestCase
         $project = $this->projectFacade->save(
             Model\Project::create(
                 'foo',
-                $user->getId(),
+                $user,
                 $creationDate,
                 $dueDate,
                 $phases

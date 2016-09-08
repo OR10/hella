@@ -173,7 +173,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar');
+        $project = Model\Project::create('foobar', null, new \DateTime('2016-09-08', new \DateTimeZone('UTC')));
         $this->projectFacade->save($project);
 
         $this->assertSame($project->getStatus(), Model\Project::STATUS_TODO);
@@ -391,7 +391,7 @@ class ProjectTest extends Tests\WebTestCase
         $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
         $data    = $request->getJsonResponseBody();
 
-        $this->assertSame(0, $data['totalRows']);
+        $this->assertSame(0, count($data['result']));
 
         $project->addCoordinatorAssignmentHistory($this->user);
         $this->projectFacade->save($project);
@@ -399,7 +399,7 @@ class ProjectTest extends Tests\WebTestCase
         $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
         $data    = $request->getJsonResponseBody();
 
-        $this->assertSame(1, $data['totalRows']);
+        $this->assertSame(1, count($data['result']));
     }
 
     public function testGetProjectsForClient()
