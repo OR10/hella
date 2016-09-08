@@ -136,6 +136,14 @@ class Report
             $this->getSumOfLabeledThingInFrameClasses($project)
         );
 
+        $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
+            $this->labeledThingInFrameFacade->getSumOfTotalClassesForProject($project)
+        );
+
+        $report->setNumberOfUniqueClassesInLabeledThingInFrameByClasses(
+            $this->labeledThingInFrameFacade->getSumOfUniqueClassesForProject($project)
+        );
+
         $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
         foreach ($phases as $phase) {
             if (!key_exists($phase, $timeByPhaseForProject)) {

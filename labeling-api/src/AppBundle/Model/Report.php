@@ -148,6 +148,11 @@ class Report
     private $numberOfLabeledThingInFrameClasses;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $numberOfTotalClassesInLabeledThingInFrameByClasses;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $numberOfLabeledThings;
@@ -156,6 +161,11 @@ class Report
      * @CouchDB\Field(type="integer")
      */
     private $numberOfLabeledThingClasses;
+
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $numberOfUniqueClassesInLabeledThingInFrameByClasses;
 
     /**
      * @CouchDB\Field(type="integer")
@@ -666,5 +676,37 @@ class Report
     public function setProjectCreatedBy($projectCreatedBy)
     {
         $this->projectCreatedBy = $projectCreatedBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfTotalClassesInLabeledThingInFrameByClasses()
+    {
+        return $this->numberOfTotalClassesInLabeledThingInFrameByClasses;
+    }
+
+    /**
+     * @param mixed $numberOfTotalClassesInLabeledThingInFrameByClasses
+     */
+    public function setNumberOfTotalClassesInLabeledThingInFrameByClasses($numberOfTotalClassesInLabeledThingInFrameByClasses)
+    {
+        $this->numberOfTotalClassesInLabeledThingInFrameByClasses = $numberOfTotalClassesInLabeledThingInFrameByClasses;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
+    {
+        return $this->numberOfUniqueClassesInLabeledThingInFrameByClasses;
+    }
+
+    /**
+     * @param mixed $numberOfUniqueClassesInLabeledThingInFrameByClasses
+     */
+    public function setNumberOfUniqueClassesInLabeledThingInFrameByClasses($numberOfUniqueClassesInLabeledThingInFrameByClasses)
+    {
+        $this->numberOfUniqueClassesInLabeledThingInFrameByClasses = $numberOfUniqueClassesInLabeledThingInFrameByClasses;
     }
 }

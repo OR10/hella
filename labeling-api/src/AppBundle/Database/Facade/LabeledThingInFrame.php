@@ -184,4 +184,57 @@ class LabeledThingInFrame
 
         return 0;
     }
+
+    /**
+     * @param Model\Project $project
+     * @return array
+     */
+    public function getSumOfTotalClassesForProject(Model\Project $project)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame_by_project_id_class_and_labeled_thing_id_001', 'view')
+            ->setReduce(true)
+            ->setStartKey([$project->getId(), null])
+            ->setEndKey([$project->getId(), []])
+            ->setGroupLevel(2)
+            ->execute()
+            ->toArray();
+
+
+        $result = array();
+        foreach($query as $value) {
+            $result[$value['key'][1]] = $value['value'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Model\Project $project
+     * @return array
+     */
+    public function getSumOfUniqueClassesForProject(Model\Project $project)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame_by_project_id_class_and_labeled_thing_id_001', 'view')
+            ->setReduce(true)
+            ->setStartKey([$project->getId(), null, null])
+            ->setEndKey([$project->getId(), [], []])
+            ->setGroup(true)
+            ->setGroupLevel(3)
+            ->execute()
+            ->toArray();
+
+
+        $result = array();
+        foreach($query as $value) {
+            if (key_exists($value['key'][1], $result)) {
+                $result[$value['key'][1]] += 1;
+            }else{
+                $result[$value['key'][1]] = 1;
+            }
+        }
+
+        return $result;
+    }
 }

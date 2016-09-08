@@ -191,8 +191,18 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame(300, $actualReport->getNumberOfLabeledThingInFrames());
         $this->assertSame(600, $actualReport->getNumberOfLabeledThingInFrameClasses());
 
-        $this->assertSame(300, $actualReport->getNumberOfLabeledThings());
-        $this->assertSame(900, $actualReport->getNumberOfLabeledThingClasses());
+        $this->assertSame(30, $actualReport->getNumberOfLabeledThings());
+        $this->assertSame(90, $actualReport->getNumberOfLabeledThingClasses());
+
+        $this->assertSame(
+            ['foobar' => 300, 'foobar2' => 300],
+            $actualReport->getNumberOfTotalClassesInLabeledThingInFrameByClasses()
+        );
+
+        $this->assertSame(
+            ['foobar' => 30, 'foobar2' => 30],
+            $actualReport->getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
+        );
 
         $this->assertSame(27600, $actualReport->getTotalTime());
         $this->assertSame(14800, $actualReport->getTotalLabelingTime());
@@ -223,9 +233,9 @@ class ReportTest extends Tests\KernelTestCase
             $timer->setTimeInSeconds($phase, $timeInSeconds);
             $this->labelingTaskFacade->saveTimer($timer);
 
+            $labeledThing = Model\LabeledThing::create($task);
+            $labeledThing->setClasses(['foobar', 'foobar2', 'foobar3']);
             foreach (range(0, 9) as $i2) {
-                $labeledThing = Model\LabeledThing::create($task);
-                $labeledThing->setClasses(['foobar', 'foobar2', 'foobar3']);
                 $this->labeledThingFacade->save($labeledThing);
                 $this->labeledThingInFrameFacade->save(
                     Model\LabeledThingInFrame::create($labeledThing, 30, ['foobar', 'foobar2'])
