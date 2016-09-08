@@ -243,11 +243,11 @@ class Project
     }
 
     /**
-     * @param mixed $status
+     * @return mixed
      */
-    public function setStatus($status)
+    public function getStatusHistory()
     {
-        $this->status = $status;
+        return $this->status;
     }
 
     /**
