@@ -1,5 +1,5 @@
 function(doc) {
-    if (!doc.type === 'AppBundle.Model.LabeledThingInFrame') {
+    if (doc.type !== 'AppBundle.Model.LabeledThingInFrame') {
         return;
     }
 
