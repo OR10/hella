@@ -4,6 +4,6 @@ function(doc) {
     }
 
     doc.classes.forEach(function(class) {
-        emit([doc.projectId, class, doc.frameIndex], 1);
+        emit([doc.projectId, class, doc.labeledThingId], 1);
     });
 }
