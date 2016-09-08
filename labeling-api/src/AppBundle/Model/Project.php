@@ -168,7 +168,7 @@ class Project
         }
 
         $this->name                                  = (string) $name;
-        $this->setUserId($user->getId());
+        $this->setUserId($user instanceof User ? $user->getId() : null);
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;
