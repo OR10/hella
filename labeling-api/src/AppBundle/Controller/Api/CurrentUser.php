@@ -7,6 +7,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service;
+use AppBundle\Service\Authentication;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
@@ -38,23 +39,23 @@ class CurrentUser extends Controller\Base
     private $encoderFactory;
 
     /**
-     * @var Service\CurrentUserPermissions
+     * @var Authentication\UserPermissions
      */
     private $currentUserPermissions;
 
     /**
      * CurrentUser constructor.
      *
-     * @param Storage\TokenStorage           $tokenStorage
-     * @param Encoder\EncoderFactory         $encoderFactory
-     * @param Facade\User                    $userFacade
-     * @param Service\CurrentUserPermissions $currentUserPermissions
+     * @param Storage\TokenStorage    $tokenStorage
+     * @param Encoder\EncoderFactory  $encoderFactory
+     * @param Facade\User             $userFacade
+     * @param Service\UserPermissions $currentUserPermissions
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
         Encoder\EncoderFactory $encoderFactory,
         Facade\User $userFacade,
-        Service\CurrentUserPermissions $currentUserPermissions
+        Authentication\UserPermissions $currentUserPermissions
     ) {
         $this->tokenStorage           = $tokenStorage;
         $this->userFacade             = $userFacade;

@@ -3,7 +3,7 @@
 namespace AppBundle\Annotations\Driver;
 
 use AppBundle\Annotations;
-use AppBundle\Service\CurrentUserPermissions;
+use AppBundle\Service\Authentication\UserPermissions;
 use Symfony\Component\HttpKernel\Event;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -15,17 +15,17 @@ class CheckPermissions
     private $reader;
 
     /**
-     * @var CurrentUserPermissions
+     * @var UserPermissions
      */
     private $currentUserPermissions;
 
     /**
      * @param \Doctrine\Common\Annotations\Reader $reader
-     * @param CurrentUserPermissions              $currentUserPermissions
+     * @param UserPermissions                     $currentUserPermissions
      */
     public function __construct(
         \Doctrine\Common\Annotations\Reader $reader,
-        CurrentUserPermissions $currentUserPermissions
+        UserPermissions $currentUserPermissions
     ) {
         $this->reader                 = $reader;
         $this->currentUserPermissions = $currentUserPermissions;

@@ -115,7 +115,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.encoder_factory" />
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
-            <argument type="service" id="annostation.labeling_api.service.current_user_permissions" />
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
         </service>
 
         <service id="annostation.labeling_api.controller.api.statistics" class="AppBundle\Controller\Api\Statistics">
@@ -139,7 +139,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
         <service id="annostation.labeling_api.controller.api.task_configuration" class="AppBundle\Controller\Api\TaskConfiguration">
-            <argument type="service" id="annostation.labeling_api.service.current_user_permissions" />
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="annostation.labeling_api.service.xml_validator" />

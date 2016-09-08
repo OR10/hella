@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\Authentication;
 
 use AppBundle\Model;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 /**
  * Service to retrieve permissions for currently loggedin user
  */
-class CurrentUserPermissions
+class UserPermissions
 {
     /**
      * @var Storage\TokenStorage
