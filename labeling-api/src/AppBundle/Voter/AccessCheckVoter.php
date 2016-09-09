@@ -22,11 +22,12 @@ abstract class AccessCheckVoter implements VoterInterface
     abstract protected function getClass(): string;
 
     /**
-     * Provide a list of AccessCheck implementation. The first one to return true will stop the evaluation chain.
+     * Provide a list of AccessCheck implementation for a given attribute.
+     * The first one to return true will stop the evaluation chain.
      *
      * @return AccessCheck[]
      */
-    abstract protected function getChecks(): array;
+    abstract protected function getChecks(string $attribute): array;
 
     /**
      * Checks if the voter supports the given attribute.
@@ -63,8 +64,26 @@ abstract class AccessCheckVoter implements VoterInterface
      */
     public function vote(TokenInterface $token, $object, array $attributes)
     {
-        if (get_class($object) !== $this->getClass()) {
-            throw new \RuntimeException('Received non supported object in voter: ' . $this->getClass() . ' expected');
+        // Unfortunately the interface enforces the support methods, but does not use them to check if a vote is
+        // applicable or not. Therefore this is done here manually
+        if ($object === null || !$this->supportsClass(get_class($object))) {
+            return VoterInterface::ACCESS_ABSTAIN;
+        }
+
+        $anyAttributeSupported = array_reduce(
+            $attributes,
+            function ($supported, $attribute) {
+                if ($supported === true) {
+                    return $supported;
+                } else {
+                    return $this->supportsAttribute($attribute);
+                }
+            },
+            false
+        );
+
+        if ($anyAttributeSupported === false) {
+            return VoterInterface::ACCESS_ABSTAIN;
         }
 
         $user = $token->getUser();
@@ -74,18 +93,25 @@ abstract class AccessCheckVoter implements VoterInterface
             return VoterInterface::ACCESS_DENIED;
         }
 
-        // Currently there is no authorization differentiation between read and write access
-        return $this->anyCheckFulfilled(
-            $this->getChecks(),
-            $user,
-            $object
-        ) ? VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
+        foreach($attributes as $attribute) {
+            $decision = $this->anyCheckFulfilled(
+                $this->getChecks($attribute),
+                $user,
+                $object
+            );
+
+            // All attributes must check out in order to allow access
+            if ($decision === false) {
+                return VoterInterface::ACCESS_DENIED;
+            }
+        }
+        return VoterInterface::ACCESS_GRANTED;
     }
 
     /**
      * @param AccessCheck[] $checks
-     * @param Model\User           $user
-     * @param object               $object
+     * @param Model\User    $user
+     * @param object        $object
      *
      * @return bool
      */

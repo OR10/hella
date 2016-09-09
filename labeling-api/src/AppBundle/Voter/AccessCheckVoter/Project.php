@@ -18,8 +18,7 @@ class Project extends AccessCheckVoter
 
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade
-    )
-    {
+    ) {
         /*
          * The checks are based on the nature of the user account:
          *
@@ -29,9 +28,16 @@ class Project extends AccessCheckVoter
          *
          */
         $this->checks = array(
-            new AccessCheck\ClientIsProjectCreator(),
-            new AccessCheck\LabelCoordinatorIsAssignedToProject(),
-            new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
+            self::PROJECT_READ => [
+                new AccessCheck\ClientIsProjectCreator(),
+                new AccessCheck\LabelCoordinatorIsAssignedToProject(),
+                new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
+            ],
+            self::PROJECT_WRITE => [
+                new AccessCheck\ClientIsProjectCreator(),
+                new AccessCheck\LabelCoordinatorIsAssignedToProject(),
+                new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
+            ],
         );
     }
 
@@ -61,10 +67,12 @@ class Project extends AccessCheckVoter
     /**
      * Provide a list of AccessCheck implementation. The first one to return true will stop the evaluation chain.
      *
-     * @return AccessCheck[]
+     * @param string $attribute
+     *
+     * @return \AppBundle\Voter\AccessCheck[]|array
      */
-    protected function getChecks(): array
+    protected function getChecks(string $attribute): array
     {
-        return $this->checks;
+        return $this->checks[$attribute];
     }
 }
