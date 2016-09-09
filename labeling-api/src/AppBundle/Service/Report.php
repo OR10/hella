@@ -184,7 +184,7 @@ class Report
                 }
             }
         }
-        $report->setProjectMovedToInProgressBy($projectMovedToDoneBy);
+        $report->setProjectMovedToInProgressBy($projectMovedToInProgressBy);
         $report->setProjectMovedToInProgressAt($projectMovedToInProgressAt);
         $report->setProjectMovedToDoneBy($projectMovedToDoneBy);
         $report->setProjectMovedToDoneAt($projectMovedToDoneAt);
