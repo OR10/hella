@@ -7,6 +7,7 @@ use AppBundle\Voter\AccessCheckVoter;
 use AppBundle\Model;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
  * Access Permission Voter for LabelingTasks
@@ -26,9 +27,9 @@ class Task extends AccessCheckVoter
     private $checks;
 
     /**
-     * @var AccessDecisionManagerInterface
+     * @var AccessCheckVoter\Project
      */
-    private $decisionManager;
+    private $projectVoter;
 
     /**
      * @var Facade\Project
@@ -36,15 +37,15 @@ class Task extends AccessCheckVoter
     private $projectFacade;
 
     /**
-     * @param AccessDecisionManagerInterface $decisionManager
-     * @param Facade\Project                 $projectFacade
+     * @param AccessCheckVoter\Project $projectVoter
+     * @param Facade\Project           $projectFacade
      */
     public function __construct(
-        AccessDecisionManagerInterface $decisionManager,
+        AccessCheckVoter\Project $projectVoter,
         Facade\Project $projectFacade
     ) {
-        $this->decisionManager = $decisionManager;
-        $this->projectFacade   = $projectFacade;
+        $this->projectVoter  = $projectVoter;
+        $this->projectFacade = $projectFacade;
 
         /*
          * In order to allow Task access the following conditions need to apply:
@@ -107,7 +108,7 @@ class Task extends AccessCheckVoter
             $projectAttributes[] = Project::PROJECT_WRITE;
         }
 
-        return $this->decisionManager->decide($token, $projectAttributes, $project);
+        return $this->projectVoter->vote($token, $project, $projectAttributes) === VoterInterface::ACCESS_GRANTED;
     }
 
     /**

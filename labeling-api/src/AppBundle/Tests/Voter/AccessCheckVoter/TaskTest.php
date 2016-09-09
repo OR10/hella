@@ -53,9 +53,9 @@ class TaskTest extends Tests\CouchDbTestCase
     private $labelCoordinator;
 
     /**
-     * @var AccessDecisionManagerInterface
+     * @var AccessCheckVoter\Project
      */
-    private $decisionManager;
+    private $projectVoter;
 
     public function provideRoles()
     {
@@ -89,10 +89,12 @@ class TaskTest extends Tests\CouchDbTestCase
     {
         parent::setUpImplementation();
 
-        $this->decisionManager = $this->getMockBuilder(AccessDecisionManagerInterface::class)->getMock();
-        $this->decisionManager->method('decide')->willReturn(true);
+        $this->projectVoter = $this->getMockBuilder(AccessCheckVoter\Project::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->projectVoter->method('vote')->willReturn(VoterInterface::ACCESS_GRANTED);
 
-        $this->voter = new AccessCheckVoter\Task($this->decisionManager, $this->projectFacade);
+        $this->voter = new AccessCheckVoter\Task($this->projectVoter, $this->projectFacade);
 
         $this->user = $this->createUser();
         $this->user->removeRole(Model\User::ROLE_ADMIN);
@@ -185,15 +187,15 @@ class TaskTest extends Tests\CouchDbTestCase
      * @param $projectAttributes
      */
     public function testProjectVoteIsTriggeredAsPrerequisite($taskAttributes, $projectAttributes) {
-        $decisionManager = $this->decisionManager;
-        /** @var PHPUnit_Framework_MockObject_MockObject $decisionManager */
-        $decisionManager
+        $projectVoter = $this->projectVoter;
+        /** @var PHPUnit_Framework_MockObject_MockObject $projectVoter */
+        $projectVoter
             ->expects($this->once())
-            ->method('decide')
+            ->method('vote')
             ->with(
                 $this->equalTo($this->token),
-                $this->equalTo($projectAttributes),
-                $this->equalTo($this->project)
+                $this->equalTo($this->project),
+                $this->equalTo($projectAttributes)
             );
 
         $this->voter->voteOnAttribute($this->token, $this->task, $taskAttributes);
