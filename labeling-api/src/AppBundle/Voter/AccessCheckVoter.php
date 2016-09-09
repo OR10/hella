@@ -5,52 +5,31 @@ use AppBundle\Model;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
-abstract class AccessCheckVoter implements VoterInterface
+abstract class AccessCheckVoter extends AbstractVoter
 {
-    /**
-     * Provide a full list of all accepted attributes
-     *
-     * @return string[]
-     */
-    abstract protected function getAttributes(): array;
-
-    /**
-     * Provide the type of the accepted class (object)
-     *
-     * @return string
-     */
-    abstract protected function getClass(): string;
-
     /**
      * Provide a list of AccessCheck implementation for a given attribute.
      * The first one to return true will stop the evaluation chain.
      *
-     * @return AccessCheck[]
+     * @param string $attribute
+     *
+     * @return AccessCheck[]|array
      */
     abstract protected function getChecks(string $attribute): array;
 
     /**
-     * Checks if the voter supports the given attribute.
+     * Execute certain checks/votes, which need to be done before the defined AccessChecks are executed
+     * if this method returns false the vote will be denied
      *
-     * @param string $attribute An attribute
+     * @param TokenInterface $token
+     * @param object| null   $object
+     * @param array          $attributes
      *
-     * @return bool true if this Voter supports the attribute, false otherwise
+     * @return bool
      */
-    public function supportsAttribute($attribute)
+    protected function arePreconditionsMet(TokenInterface $token, $object, array $attributes): bool
     {
-        return in_array($attribute, $this->getAttributes());
-    }
-
-    /**
-     * Checks if the voter supports the given class.
-     *
-     * @param string $class A class name
-     *
-     * @return bool true if this Voter can process the class
-     */
-    public function supportsClass($class)
-    {
-        return $class === $this->getClass();
+        return true;
     }
 
     /**
@@ -60,52 +39,28 @@ abstract class AccessCheckVoter implements VoterInterface
      * @param object|null    $object The object to secure
      * @param array          $attributes An array of attributes associated with the method being invoked
      *
-     * @return int either ACCESS_GRANTED, ACCESS_ABSTAIN, or ACCESS_DENIED
+     * @return bool
      */
-    public function vote(TokenInterface $token, $object, array $attributes)
+    public function voteOnAttribute(TokenInterface $token, $object, array $attributes)
     {
-        // Unfortunately the interface enforces the support methods, but does not use them to check if a vote is
-        // applicable or not. Therefore this is done here manually
-        if ($object === null || !$this->supportsClass(get_class($object))) {
-            return VoterInterface::ACCESS_ABSTAIN;
+        if ($this->arePreconditionsMet($token, $object, $attributes) !== true) {
+            return false;
         }
 
-        $anyAttributeSupported = array_reduce(
-            $attributes,
-            function ($supported, $attribute) {
-                if ($supported === true) {
-                    return $supported;
-                } else {
-                    return $this->supportsAttribute($attribute);
-                }
-            },
-            false
-        );
-
-        if ($anyAttributeSupported === false) {
-            return VoterInterface::ACCESS_ABSTAIN;
-        }
-
-        $user = $token->getUser();
-
-        if (!($user instanceof Model\User)) {
-            // User not logged in.
-            return VoterInterface::ACCESS_DENIED;
-        }
-
-        foreach($attributes as $attribute) {
+        foreach ($attributes as $attribute) {
             $decision = $this->anyCheckFulfilled(
                 $this->getChecks($attribute),
-                $user,
+                $token->getUser(),
                 $object
             );
 
             // All attributes must check out in order to allow access
             if ($decision === false) {
-                return VoterInterface::ACCESS_DENIED;
+                return false;
             }
         }
-        return VoterInterface::ACCESS_GRANTED;
+
+        return true;
     }
 
     /**
