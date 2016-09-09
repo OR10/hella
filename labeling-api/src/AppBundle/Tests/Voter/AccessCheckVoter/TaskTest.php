@@ -5,7 +5,9 @@ use AppBundle\Model;
 use AppBundle\Tests;
 use AppBundle\Voter\AccessCheckVoter;
 use FOS\UserBundle\Util\UserManipulator;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class TaskTest extends Tests\CouchDbTestCase
@@ -50,6 +52,11 @@ class TaskTest extends Tests\CouchDbTestCase
      */
     private $labelCoordinator;
 
+    /**
+     * @var AccessDecisionManagerInterface
+     */
+    private $decisionManager;
+
     public function provideRoles()
     {
         return array(
@@ -60,11 +67,32 @@ class TaskTest extends Tests\CouchDbTestCase
         );
     }
 
+    public function provideAttributes()
+    {
+        return array(
+            [
+                [AccessCheckVoter\Task::TASK_READ],
+                [AccessCheckVoter\Project::PROJECT_READ],
+            ],
+            [
+                [AccessCheckVoter\Task::TASK_WRITE],
+                [AccessCheckVoter\Project::PROJECT_WRITE],
+            ],
+            [
+                [AccessCheckVoter\Task::TASK_READ, AccessCheckVoter\Task::TASK_WRITE],
+                [AccessCheckVoter\Project::PROJECT_READ, AccessCheckVoter\Project::PROJECT_WRITE],
+            ],
+        );
+    }
+
     protected function setUpImplementation()
     {
         parent::setUpImplementation();
 
-        $this->voter = $this->getAnnostationService('voter.access_check.task');
+        $this->decisionManager = $this->getMockBuilder(AccessDecisionManagerInterface::class)->getMock();
+        $this->decisionManager->method('decide')->willReturn(true);
+
+        $this->voter = new AccessCheckVoter\Task($this->decisionManager, $this->projectFacade);
 
         $this->user = $this->createUser();
         $this->user->removeRole(Model\User::ROLE_ADMIN);
@@ -103,9 +131,8 @@ class TaskTest extends Tests\CouchDbTestCase
         );
         $this->labelingTaskFacade->save($this->task);
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->task, [AccessCheckVoter\Task::TASK_READ])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->task, [AccessCheckVoter\Task::TASK_READ])
         );
     }
 
@@ -116,9 +143,8 @@ class TaskTest extends Tests\CouchDbTestCase
     {
         $this->user->addRole($role);
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->task, [AccessCheckVoter\Task::TASK_READ])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->task, [AccessCheckVoter\Task::TASK_READ])
         );
     }
 
@@ -136,9 +162,8 @@ class TaskTest extends Tests\CouchDbTestCase
         );
         $this->labelingTaskFacade->save($this->task);
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->task, [AccessCheckVoter\Task::TASK_WRITE])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->task, [AccessCheckVoter\Task::TASK_WRITE])
         );
     }
 
@@ -148,10 +173,30 @@ class TaskTest extends Tests\CouchDbTestCase
     public function testNotAssignedUserHasNoWriteAccess($role) {
         $this->user->addRole($role);
 
-        $this->assertSame(
-            VoterInterface::ACCESS_DENIED,
-            $this->voter->vote($this->token, $this->task, [AccessCheckVoter\Task::TASK_WRITE])
+        $this->assertFalse(
+            $this->voter->voteOnAttribute($this->token, $this->task, [AccessCheckVoter\Task::TASK_WRITE])
         );
+    }
+
+    /**
+     * @dataProvider provideAttributes
+     *
+     * @param $taskAttributes
+     * @param $projectAttributes
+     */
+    public function testProjectVoteIsTriggeredAsPrerequisite($taskAttributes, $projectAttributes) {
+        $decisionManager = $this->decisionManager;
+        /** @var PHPUnit_Framework_MockObject_MockObject $decisionManager */
+        $decisionManager
+            ->expects($this->once())
+            ->method('decide')
+            ->with(
+                $this->equalTo($this->token),
+                $this->equalTo($projectAttributes),
+                $this->equalTo($this->project)
+            );
+
+        $this->voter->voteOnAttribute($this->token, $this->task, $taskAttributes);
     }
 
     public function testSupportsTaskSpecificAttributes()

@@ -55,9 +55,8 @@ class ProjectTest extends Tests\CouchDbTestCase
         $this->user->addRole(Model\User::ROLE_CLIENT);
         $this->project->setUserId($this->user->getId());
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
         );
     }
 
@@ -66,9 +65,8 @@ class ProjectTest extends Tests\CouchDbTestCase
         $this->user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
         $this->project->addCoordinatorAssignmentHistory($this->user);
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
         );
     }
 
@@ -87,9 +85,8 @@ class ProjectTest extends Tests\CouchDbTestCase
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
         );
     }
 
@@ -98,9 +95,8 @@ class ProjectTest extends Tests\CouchDbTestCase
         $this->user->addRole(Model\User::ROLE_CLIENT);
         $this->project->setUserId($this->user->getId());
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
         );
     }
 
@@ -109,9 +105,8 @@ class ProjectTest extends Tests\CouchDbTestCase
         $this->user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
         $this->project->addCoordinatorAssignmentHistory($this->user);
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
         );
     }
 
@@ -130,9 +125,8 @@ class ProjectTest extends Tests\CouchDbTestCase
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
 
-        $this->assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $this->voter->vote($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
         );
     }
 
