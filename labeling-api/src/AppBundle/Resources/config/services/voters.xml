@@ -8,5 +8,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group" />
             <tag name="security.voter"/>
         </service>
+        <service id="annostation.labeling_api.voter.access_check.task"
+                 class="AppBundle\Voter\AccessCheckVoter\Task">
+            <tag name="security.voter"/>
+        </service>
     </services>
 </container>
