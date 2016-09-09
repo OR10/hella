@@ -6,20 +6,31 @@
             <table class="table hover">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Id</th>
                     <th>Creation Date</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-show="vm.reports.length" ng-repeat="report in vm.reports track by report.id">
-                    <td>
-                       <a ui-sref="labeling.reporting.show({projectId: report.projectId, reportId: report.id})">{{report.id}}</a>
+                <tr ng-if="vm.reports.length"
+                    ng-repeat="report in vm.reports track by report.id"
+                    ng-click="vm.openReport(report.id)">
+                    <td ng-switch="report.reportStatus">
+                        <div ng-switch-when="done">
+                            <i class="fa fa-download"></i>
+                        </div>
+                        <div ng-switch-default>
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
                     </td>
                     <td>
-                       <a ui-sref="labeling.reporting.show({projectId: report.projectId, reportId: report.id})">{{report.reportCreationDate | date: 'yyyy-MM-dd H:mm:ss'}}</a>
+                        {{report.id}}
+                    </td>
+                    <td>
+                        {{report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss'}}
                     </td>
                 </tr>
-                <tr ng-show="!vm.reports.length"
+                <tr ng-if="!vm.reports.length"
                     class="no-hover"
                 >
                     <td colspan="2" class="no-tasks">No Reports avaialble.</td>
