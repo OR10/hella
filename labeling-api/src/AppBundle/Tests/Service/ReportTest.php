@@ -88,7 +88,12 @@ class ReportTest extends Tests\KernelTestCase
             Model\Project::STATUS_DONE
         );
         $project = $this->projectFacade->save($project);
-        $video = $this->videoFacade->save(Model\Video::create('foobar'));
+
+        $video                         = Model\Video::create('foobar');
+        $videoMetaData                 = new Model\Video\MetaData();
+        $videoMetaData->numberOfFrames = 661;
+        $video->setMetaData($videoMetaData);
+        $video = $this->videoFacade->save($video);
 
         $this->createLabelingTasks(
             $video,
@@ -247,6 +252,31 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame(14800, $actualReport->getTotalLabelingTime());
         $this->assertSame(5800, $actualReport->getTotalReviewTime());
         $this->assertSame(7000, $actualReport->getTotalRevisionTime());
+
+        $this->assertSame(
+            0.0,
+            $actualReport->getAverageLabeledThingInFramesPerVideoFrame()
+        );
+
+        $this->assertSame(
+            920.0,
+            $actualReport->getAverageTimePerLabeledThing()
+        );
+
+        $this->assertSame(
+            92.0,
+            $actualReport->getAverageTimePerLabeledThingInFrame()
+        );
+
+        $this->assertSame(
+            27600.0,
+            $actualReport->getAverageTimePerVideo()
+        );
+
+        $this->assertSame(
+            1.0,
+            $actualReport->getAverageTimePerVideoFrame()
+        );
     }
 
     private function createLabelingTasks(

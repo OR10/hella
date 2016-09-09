@@ -53,7 +53,8 @@ class Report
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\Report $reportFacade
-    ) {
+    )
+    {
         $this->projectFacade             = $projectFacade;
         $this->videoFacade               = $videoFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
@@ -72,11 +73,12 @@ class Report
         $report->setProjectDueDate($project->getDueDate());
         $report->setLabelingValidationProcesses($project->getLabelingValidationProcesses());
 
+        $numberOfVideos = $this->getNumberOfVideosInProject($project);
         $report->setNumberOfVideosInProject(
-            $this->getNumberOfVideosInProject($project)
+            $numberOfVideos
         );
         $numberOfTaskByPhaseAndStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-        $phases = array(
+        $phases                       = array(
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
             Model\LabelingTask::PHASE_REVISION
@@ -121,15 +123,17 @@ class Report
             $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_DONE]
         );
 
+        $totalNumberOfLabeledThings = $this->getSumOfLabeledThings($project);
         $report->setNumberOfLabeledThings(
-            $this->getSumOfLabeledThings($project)
+            $totalNumberOfLabeledThings
         );
         $report->setNumberOfLabeledThingClasses(
             $this->getSumOfLabeledThingClasses($project)
         );
 
+        $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
         $report->setNumberOfLabeledThingInFrames(
-            $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project)
+            $totalNumberOfLabeledThingInFrames
         );
 
         $report->setNumberOfLabeledThingInFrameClasses(
@@ -163,7 +167,7 @@ class Report
         $projectMovedToDoneBy       = null;
         $projectMovedToInProgressAt = null;
         $projectMovedToInProgressBy = null;
-        $projectStatusHistory = $project->getStatusHistory();
+        $projectStatusHistory       = $project->getStatusHistory();
         if (is_array($projectStatusHistory)) {
             usort($projectStatusHistory, function ($a, $b) {
                 if ($a['timestamp'] === $b['timestamp']) {
@@ -171,14 +175,16 @@ class Report
                 }
                 return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
             });
-            foreach($projectStatusHistory as $projectStatus) {
+            foreach ($projectStatusHistory as $projectStatus) {
                 if ($projectStatus['status'] === Model\Project::STATUS_IN_PROGRESS &&
-                    $projectMovedToInProgressAt === null && $projectMovedToInProgressBy === null) {
+                    $projectMovedToInProgressAt === null && $projectMovedToInProgressBy === null
+                ) {
                     $projectMovedToInProgressAt = $projectStatus['timestamp'];
                     $projectMovedToInProgressBy = $projectStatus['userId'];
                 }
                 if ($projectStatus['status'] === Model\Project::STATUS_DONE &&
-                    $projectMovedToDoneAt === null && $projectMovedToDoneBy === null) {
+                    $projectMovedToDoneAt === null && $projectMovedToDoneBy === null
+                ) {
                     $projectMovedToDoneAt = $projectStatus['timestamp'];
                     $projectMovedToDoneBy = $projectStatus['userId'];
                 }
@@ -188,6 +194,25 @@ class Report
         $report->setProjectMovedToInProgressAt($projectMovedToInProgressAt);
         $report->setProjectMovedToDoneBy($projectMovedToDoneBy);
         $report->setProjectMovedToDoneAt($projectMovedToDoneAt);
+
+        $numberOfVideoFrames = $this->getSumOfVideoFramesForProject($project);
+
+        if ($numberOfVideoFrames > 0) {
+            $report->setAverageTimePerVideoFrame(round($sumOfTimeByPhase / $numberOfVideoFrames));
+            $report->setAverageLabeledThingInFramesPerVideoFrame(round($totalNumberOfLabeledThingInFrames / $numberOfVideoFrames));
+        }
+
+        if ($numberOfVideos > 0) {
+            $report->setAverageTimePerVideo(round($sumOfTimeByPhase / $numberOfVideos));
+        }
+
+        if ($totalNumberOfLabeledThings > 0) {
+            $report->setAverageTimePerLabeledThing(round($sumOfTimeByPhase / $totalNumberOfLabeledThings));
+        }
+
+        if ($totalNumberOfLabeledThingInFrames > 0) {
+            $report->setAverageTimePerLabeledThingInFrame(round($sumOfTimeByPhase / $totalNumberOfLabeledThingInFrames));
+        }
 
         $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
         $this->reportFacade->save($report);
@@ -252,19 +277,38 @@ class Report
     private function getNumberOfVideosInProject(Model\Project $project)
     {
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects([$project]);
-        $numberOfVideos = array();
+        $numberOfVideos   = array();
         foreach ($videosByProjects as $videosByProject) {
-            $projectId = $videosByProject['key'];
-            $videoId = $videosByProject['value'];
+            $projectId                    = $videosByProject['key'];
+            $videoId                      = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;
         }
         $numberOfVideos = array_map(
-            function($videoByProject) {
+            function ($videoByProject) {
                 return count(array_unique($videoByProject));
             },
             $numberOfVideos
         );
 
         return $numberOfVideos[$project->getId()];
+    }
+
+    private function getSumOfVideoFramesForProject(Model\Project $project)
+    {
+        $videosByProjects = $this->labelingTaskFacade->findAllByProjects([$project]);
+        $videos           = array();
+        foreach ($videosByProjects as $videosByProject) {
+            $videoId  = $videosByProject['value'];
+            $videos[] = $this->videoFacade->find($videoId);
+        }
+
+        return array_sum(
+            array_map(function (Model\Video $video) {
+                return $video->getMetaData()->numberOfFrames;
+            }, array_filter($videos, function (Model\Video $video) {
+                    return isset($video->getMetaData()->numberOfFrames);
+                })
+            )
+        );
     }
 }

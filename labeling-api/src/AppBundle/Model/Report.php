@@ -187,6 +187,31 @@ class Report
      */
     private $totalRevisionTime;
 
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $averageTimePerLabeledThingInFrame;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $averageTimePerVideo;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $averageTimePerVideoFrame;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $averageLabeledThingInFramesPerVideoFrame;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $averageTimePerLabeledThing;
+
     public function __construct(Project $project, $creationDate)
     {
         if ($creationDate === null) {
@@ -724,5 +749,85 @@ class Report
     public function setProjectMovedToDoneBy($projectMovedToDoneBy)
     {
         $this->projectMovedToDoneBy = $projectMovedToDoneBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageTimePerLabeledThingInFrame()
+    {
+        return $this->averageTimePerLabeledThingInFrame;
+    }
+
+    /**
+     * @param mixed $averageTimePerLabeledThingInFrame
+     */
+    public function setAverageTimePerLabeledThingInFrame($averageTimePerLabeledThingInFrame)
+    {
+        $this->averageTimePerLabeledThingInFrame = $averageTimePerLabeledThingInFrame;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageTimePerVideo()
+    {
+        return $this->averageTimePerVideo;
+    }
+
+    /**
+     * @param mixed $averageTimePerVideo
+     */
+    public function setAverageTimePerVideo($averageTimePerVideo)
+    {
+        $this->averageTimePerVideo = $averageTimePerVideo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageTimePerVideoFrame()
+    {
+        return $this->averageTimePerVideoFrame;
+    }
+
+    /**
+     * @param mixed $averageTimePerVideoFrame
+     */
+    public function setAverageTimePerVideoFrame($averageTimePerVideoFrame)
+    {
+        $this->averageTimePerVideoFrame = $averageTimePerVideoFrame;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageLabeledThingInFramesPerVideoFrame()
+    {
+        return $this->averageLabeledThingInFramesPerVideoFrame;
+    }
+
+    /**
+     * @param mixed $averageLabeledThingInFramesPerVideoFrame
+     */
+    public function setAverageLabeledThingInFramesPerVideoFrame($averageLabeledThingInFramesPerVideoFrame)
+    {
+        $this->averageLabeledThingInFramesPerVideoFrame = $averageLabeledThingInFramesPerVideoFrame;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageTimePerLabeledThing()
+    {
+        return $this->averageTimePerLabeledThing;
+    }
+
+    /**
+     * @param mixed $averageTimePerLabeledThing
+     */
+    public function setAverageTimePerLabeledThing($averageTimePerLabeledThing)
+    {
+        $this->averageTimePerLabeledThing = $averageTimePerLabeledThing;
     }
 }
