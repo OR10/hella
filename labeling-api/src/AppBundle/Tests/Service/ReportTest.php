@@ -55,19 +55,40 @@ class ReportTest extends Tests\KernelTestCase
         $user = $this->getService('fos_user.util.user_manipulator')
             ->create('foobar', 'baar', 'foobar@baar.de', true, false);
 
+        /** @var Model\User $moveToInProgressUser */
+        $moveToInProgressUser = $this->getService('fos_user.util.user_manipulator')
+            ->create('in_progress_user', 'in_progress_user', 'in_progress_user@foo.de', true, false);
+
+        /** @var Model\User $moveToDoneUser */
+        $moveToDoneUser = $this->getService('fos_user.util.user_manipulator')
+            ->create('done_user', 'done_user', 'done_user@foo.de', true, false);
+
         $creationDate = new \DateTime('2016-07-27 00:00:00', new \DateTimeZone('UTC'));
         $dueDate      = new \DateTime('2016-07-29 00:00:00', new \DateTimeZone('UTC'));
 
-        $project = $this->projectFacade->save(
-            Model\Project::create(
-                'foo',
-                $user,
-                $creationDate,
-                $dueDate,
-                $phases
-            )
+        $project = Model\Project::create(
+            'foo',
+            $user,
+            $creationDate,
+            $dueDate,
+            $phases
         );
-        $video   = $this->videoFacade->save(Model\Video::create('foobar'));
+
+        $projectMovedToInProgressDateTime = new \DateTime('2016-09-09 10:00', new \DateTimeZone('UTC'));
+        $projectMovedToDoneDateTime       = new \DateTime('2016-09-09 15:00', new \DateTimeZone('UTC'));
+        $project->addStatusHistory(
+            $moveToInProgressUser,
+            $projectMovedToInProgressDateTime,
+            Model\Project::STATUS_IN_PROGRESS
+        );
+
+        $project->addStatusHistory(
+            $moveToDoneUser,
+            new \DateTime('2016-09-09 15:00', new \DateTimeZone('UTC')),
+            Model\Project::STATUS_DONE
+        );
+        $project = $this->projectFacade->save($project);
+        $video = $this->videoFacade->save(Model\Video::create('foobar'));
 
         $this->createLabelingTasks(
             $video,
@@ -169,8 +190,6 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertSame($project->getStatus(), $actualReport->getProjectStatus());
         $this->assertSame($project->getCreationDate(), $actualReport->getProjectCreatedAt());
         $this->assertSame($project->getUserId(), $actualReport->getProjectCreatedBy());
-        $this->assertSame(null, $actualReport->getProjectMovedToInProgressAt()); //@TODO not implemented yet
-        $this->assertSame(null, $actualReport->getProjectMovedToDoneAt()); //@TODO not implemented yet
         $this->assertSame(1, $actualReport->getNumberOfVideosInProject());
         $this->assertSame(60, $actualReport->getNumberOfTasksInProject());
         $this->assertSame($phases, $actualReport->getLabelingValidationProcesses());
@@ -204,6 +223,26 @@ class ReportTest extends Tests\KernelTestCase
             $actualReport->getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
         );
 
+        $this->assertSame(
+            $moveToInProgressUser->getId(),
+            $actualReport->getProjectMovedToInProgressBy()
+        );
+
+        $this->assertSame(
+            $projectMovedToInProgressDateTime->getTimestamp(),
+            $actualReport->getProjectMovedToInProgressAt()
+        );
+
+        $this->assertSame(
+            $moveToDoneUser->getId(),
+            $actualReport->getProjectMovedToDoneBy()
+        );
+
+        $this->assertSame(
+            $projectMovedToDoneDateTime->getTimestamp(),
+            $actualReport->getProjectMovedToDoneAt()
+        );
+
         $this->assertSame(27600, $actualReport->getTotalTime());
         $this->assertSame(14800, $actualReport->getTotalLabelingTime());
         $this->assertSame(5800, $actualReport->getTotalReviewTime());
@@ -218,7 +257,8 @@ class ReportTest extends Tests\KernelTestCase
         $status,
         $timeInSeconds,
         $numberOfTasks
-    ) {
+    )
+    {
         foreach (range(1, $numberOfTasks) as $i) {
             $task = Model\LabelingTask::create($video, $project, [10, 100], Model\LabelingTask::TYPE_OBJECT_LABELING);
             $task->setStatus($phase, $status);
