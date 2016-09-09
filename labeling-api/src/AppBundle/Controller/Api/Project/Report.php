@@ -56,6 +56,9 @@ class Report extends Controller\Base
      */
     public function getReportAction(Model\Report $report)
     {
+        if ($report->getReportStatus() !== Model\Report::REPORT_STATUS_DONE) {
+            throw new Exception\NotFoundHttpException();
+        }
         return View\View::create()->setData(['result' => $report]);
     }
 
