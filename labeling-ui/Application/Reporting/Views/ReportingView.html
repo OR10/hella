@@ -11,49 +11,61 @@
 
     <div class="grid-content">
         <h1>Report for Project: {{vm.project.name}}
-            <small ng-if="vm.report.projectStatus !== done">(The Project status is currently:
-                "{{vm.report.projectStatus}}"
-                )
+            <small ng-switch="vm.project.projectStatus">
+                <span ng-switch-when="done">Done</span>
+                <span ng-switch-when="in_progress">In Progress</span>
+                <span ng-switch-default>{{vm.project.projectStatus}}</span>
             </small>
         </h1>
+        <h3 style="margin-top: 1.2rem">Report created: {{vm.report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</h3>
 
-        <hr>
-        
-        <h2>Project Status</h2>
+        <hr />
+
+        <h2 style="margin-top: 1.6rem">Project Status</h2>
         <table class="table">
             <thead>
             <tr>
-                <th>Create</th>
-                <th>inProgress</th>
-                <th>Done</th>
+                <th>Phase</th>
+                <th>Date</th>
+                <th>User</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>Project created by {{}}</td>
-                <td>Project accepted by {{}}</td>
-                <td>Project completed by {{}}</td>
+                <td>Created</td>
+                <td>{{vm.report.projectCreatedAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
+                <td>{{vm.report.projectCreatedBy}}</td>
+            </tr>
+            <tr ng-if="vm.report.projectMovedToInProgressAt != null">
+                <td>In Progress</td>
+                <td>{{vm.report.projectMovedToInProgressAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
+                <td>{{vm.report.projectMovedToInProgressBy}}</td>
+            </tr>
+            <tr ng-if="vm.report.projectMovedToDoneAt != null">
+                <td>Done</td>
+                <td>{{vm.report.projectMovedToDoneAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
+                <td>{{vm.report.projectMovedToDoneBy}}</td>
             </tr>
             </tbody>
         </table>
 
-        <h2>Labeling Process Details</h2>
+        <h2 style="margin-top: 1.6rem">Labeling Process Details</h2>
         <table class="table">
             <thead>
             <tr>
                 <th colspan="3">Labeling</th>
-                <th colspan="3">Review (instructed by {{}})</th>
                 <th colspan="3">Review</th>
+                <th colspan="3">Revision</th>
             </tr>
             <tr>
                 <th>Todo</th>
-                <th>inProgress</th>
+                <th>In Progress</th>
                 <th>Done</th>
                 <th>Todo</th>
-                <th>inProgress</th>
+                <th>In Progress</th>
                 <th>Done</th>
                 <th>Todo</th>
-                <th>inProgress</th>
+                <th>In Progress</th>
                 <th>Done</th>
             </tr>
             </thead>
@@ -72,101 +84,121 @@
             </tbody>
         </table>
 
-        <h2>Label Statistics</h2>
-        <p>
+        <h2 style="margin-top: 1.6rem">Label Statistics</h2>
+        <h3 style="margin-top: 1.2rem">Basic</h3>
         <table class="table">
             <thead>
             <tr>
-                <th>Number of Object Frames</th>
+                <th>Statistics</th>
+                <th>Value</th>
             </tr>
             </thead>
             <tbody>
             <tr>
+                <td>Number of Videos</td>
+                <td>{{vm.report.numberOfVideosInProject}}</td>
+            </tr>
+            <tr>
+                <td>Number of Tasks</td>
+                <td>{{vm.report.numberOfTasksInProject}}</td>
+            </tr>
+            <tr>
+                <td>Number of Object Frames</td>
                 <td>{{vm.report.numberOfLabeledThingInFrames}}</td>
             </tr>
-
-            </tbody>
-        </table>
-        </p>
-        <p>
-        <table class="table">
-            <thead>
             <tr>
-                <th colspan="3">Total Number of Objects</th>
+                <td>Number of Objects</td>
+                <td>{{vm.report.numberOfLabeledThings}}</td>
             </tr>
             <tr>
-                <th>class1</th>
-                <th>class2</th>
-                <th>class3</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>{{}}</td>
-                <td>{{}}</td>
-                <td>{{}}</td>
-            </tr>
-            </tbody>
-        </table>
-        </p>
-        <p>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Number of Attributes</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
+                <td>Number of Attribute Frames</td>
                 <td>{{vm.report.numberOfLabeledThingInFrameClasses}}</td>
             </tr>
+            <tr>
+                <td>Number of Attributes</td>
+                <td>{{vm.report.numberOfLabeledThingClasses}}</td>
+            </tr>
             </tbody>
         </table>
-        </p>
-        <p>
+
+        <h3 style="margin-top: 1.2rem">Objects by Class</h3>
         <table class="table">
             <thead>
             <tr>
-                <th colspan="4">Time spent to complete the Project</th>
+                <th>Attribute Class</th>
+                <th>Amount</th>
             </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(classname, value) in vm.report.numberOfTotalClassesInLabeledThingInFrameByClasses track by $index">
+                    <td>{{classname}}</td>
+                    <td>{{value}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin-top: 1.2rem">Time spent</h3>
+        <table class="table">
+            <thead>
             <tr>
-                <th>Labeling</th>
-                <th>Review</th>
-                <th>Revision</th>
-                <th>Sum</th>
+                <th>Phase</th>
+                <th>Time</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>{{vm.report.totalLabelingTime}}</td>
-                <td>{{vm.report.totalReviewTime}}</td>
-                <td>{{vm.report.totalRevisionTime}}</td>
-                <td>{{vm.report.totalTime}}</td>
+                <td>Labeling</td>
+                <td>{{vm.report.totalLabelingTime | readableTimespan}}</td>
+            </tr>
+            <tr>
+                <td>Review</td>
+                <td>{{vm.report.totalReviewTime | readableTimespan}}</td>
+            </tr>
+            <tr>
+                <td>Revision</td>
+                <td>{{vm.report.totalRevisionTime | readableTimespan}}</td>
             </tr>
             </tbody>
+            <tfoot>
+            <tr>
+                <td style="text-align: left;">Sum</td>
+                <td style="text-align: left;">{{vm.report.totalTime | readableTimespan}}</td>
+            </tr>
+            </tfoot>
         </table>
-        </p>
-        <p>
+
+        <h3 style="margin-top: 1.2rem">Averages</h3>
         <table class="table">
             <thead>
             <tr>
-                <th colspan="4">Average Project data</th>
+                <th>Average</th>
+                <th>Value</th>
             </tr>
             <tr>
-                <th>Average Time per ObjectFrame</th>
-                <th colspan="2">Average Time per Video / VideoFrame</th>
-                <th>Average Object frames per Video</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>0{{}}</td>
-                <td>0{{}}</td>
-                <td>0{{}}</td>
-                <td>0{{}}</td>
+                <td>Average Time per Video</td>
+                <td>{{vm.report.averageTimePerVideo | readableTimespan}}</td>
+            </tr>
+            <tr>
+                <td>Average Time per Video Frame</td>
+                <td>{{vm.report.averageTimePerVideoFrame | readableTimespan}}</td>
+            </tr>
+            <tr>
+                <td>Average Time per Object Frame</td>
+                <td>{{vm.report.averageTimePerLabeledThingInFrame}}s</td>
+            </tr>
+            <tr>
+                <td>Average Time per Object</td>
+                <td>{{vm.report.averageTimePerLabeledThing}}s</td>
+            </tr>
+            <tr>
+                <td>Average Object Frames per Video Frame</td>
+                <td>{{vm.report.averageLabeledThingInFramesPerVideoFrame}}</td>
             </tr>
             </tbody>
         </table>
-        </p>
     </div>
 </div>

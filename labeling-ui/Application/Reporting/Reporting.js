@@ -14,6 +14,7 @@ import projectExportTemplate from './Views/ProjectExportView.html!';
 import ProjectExportListDirective from './Directives/ProjectExportListDirective';
 import ProjectReportListDirective from './Directives/ProjectReportListDirective';
 
+import ReadableTimespanFilterProvider from '../Reporting/Filters/ReadableTimespanFilterProvider';
 
 /**
  * Reporting Module
@@ -98,6 +99,8 @@ class Reporting extends Module {
     this.registerDirective('projectReportList', ProjectReportListDirective);
 
     this.module.service('reportGateway', ReportGateway);
+
+    this.module.filter('readableTimespan', ReadableTimespanFilterProvider);
   }
 }
 
