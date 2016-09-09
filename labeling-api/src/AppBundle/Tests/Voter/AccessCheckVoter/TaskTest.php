@@ -79,7 +79,7 @@ class TaskTest extends Tests\CouchDbTestCase
 
         $this->project = Model\Project::create(
             'project-1',
-            $this->user->getId()
+            $this->user
         );
         $this->project->setUserId($this->client->getId());
         $this->project->addCoordinatorAssignmentHistory($this->labelCoordinator);

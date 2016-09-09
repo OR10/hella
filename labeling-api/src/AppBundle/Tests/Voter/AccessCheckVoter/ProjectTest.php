@@ -44,7 +44,7 @@ class ProjectTest extends Tests\CouchDbTestCase
 
         $this->project = Model\Project::create(
             'project-1',
-            $this->user->getId()
+            $this->user
         );
         $this->project->setUserId('some-client-user-id');
         $this->projectFacade->save($this->project);
