@@ -6,6 +6,7 @@ use AppBundle\Voter\AccessCheck;
 use AppBundle\Voter\AccessCheckVoter;
 use AppBundle\Model;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 /**
  * Access Permission Voter for LabelingTasks
@@ -18,16 +19,33 @@ class Task extends AccessCheckVoter
 {
     const TASK_READ = 'task.read';
     const TASK_WRITE = 'task.write';
-    const TASK_ASSIGN = 'task.assign';
-    const TASK_UNASSIGN = 'task.unassign';
 
     /**
      * @var AccessCheck[]
      */
     private $checks;
 
-    public function __construct()
-    {
+    /**
+     * @var AccessDecisionManagerInterface
+     */
+    private $decisionManager;
+
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
+     * @param AccessDecisionManagerInterface $decisionManager
+     * @param Facade\Project                 $projectFacade
+     */
+    public function __construct(
+        AccessDecisionManagerInterface $decisionManager,
+        Facade\Project $projectFacade
+    ) {
+        $this->decisionManager = $decisionManager;
+        $this->projectFacade   = $projectFacade;
+
         /*
          * In order to allow Task access the following conditions need to apply:
          *
@@ -65,6 +83,31 @@ class Task extends AccessCheckVoter
     protected function getClass(): string
     {
         return Model\LabelingTask::class;
+    }
+
+    /**
+     * Check whether the user has access to the Project before allowing any operation on the task
+     *
+     * @param TokenInterface $token
+     * @param object| null   $object
+     * @param array          $attributes
+     *
+     * @return bool
+     */
+    protected function arePreconditionsMet(TokenInterface $token, $object, array $attributes): bool
+    {
+        /** @var Model\LabelingTask $object */
+        $project = $this->projectFacade->find($object->getProjectId());
+
+        $projectAttributes = [];
+        if (in_array(self::TASK_READ, $attributes)) {
+            $projectAttributes[] = Project::PROJECT_READ;
+        }
+        if (in_array(self::TASK_WRITE, $attributes)) {
+            $projectAttributes[] = Project::PROJECT_WRITE;
+        }
+
+        return $this->decisionManager->decide($token, $projectAttributes, $project);
     }
 
     /**
