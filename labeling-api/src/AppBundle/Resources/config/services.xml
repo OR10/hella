@@ -200,6 +200,11 @@
             <argument type="service" id="security.token_storage" />
         </service>
 
+        <service id="annostation.labeling_api.service.authorization"
+                 class="AppBundle\Service\Authorization">
+            <argument type="service" id="security.authorization_checker"/>
+        </service>
+
         <service id="annostation.labeling_api.service.xml_validator.schema.simple_xml_label_config" class="AppBundle\Service\XmlValidator\Schema\SimpleXmlLabelConfig">
         </service>
 
