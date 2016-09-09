@@ -159,6 +159,36 @@ class Report
         $report->setTotalReviewTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVIEW]);
         $report->setTotalRevisionTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVISION]);
 
+        $projectMovedToDoneAt       = null;
+        $projectMovedToDoneBy       = null;
+        $projectMovedToInProgressAt = null;
+        $projectMovedToInProgressBy = null;
+        $projectStatusHistory = $project->getStatusHistory();
+        if (is_array($projectStatusHistory)) {
+            usort($projectStatusHistory, function ($a, $b) {
+                if ($a['timestamp'] === $b['timestamp']) {
+                    return 0;
+                }
+                return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
+            });
+            foreach($projectStatusHistory as $projectStatus) {
+                if ($projectStatus['status'] === Model\Project::STATUS_IN_PROGRESS &&
+                    $projectMovedToInProgressAt === null && $projectMovedToInProgressBy === null) {
+                    $projectMovedToInProgressAt = $projectStatus['timestamp'];
+                    $projectMovedToInProgressBy = $projectStatus['userId'];
+                }
+                if ($projectStatus['status'] === Model\Project::STATUS_DONE &&
+                    $projectMovedToDoneAt === null && $projectMovedToDoneBy === null) {
+                    $projectMovedToDoneAt = $projectStatus['timestamp'];
+                    $projectMovedToDoneBy = $projectStatus['userId'];
+                }
+            }
+        }
+        $report->setProjectMovedToInProgressBy($projectMovedToDoneBy);
+        $report->setProjectMovedToInProgressAt($projectMovedToInProgressAt);
+        $report->setProjectMovedToDoneBy($projectMovedToDoneBy);
+        $report->setProjectMovedToDoneAt($projectMovedToDoneAt);
+
         $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
         $this->reportFacade->save($report);
     }

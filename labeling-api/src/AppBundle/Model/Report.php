@@ -709,4 +709,20 @@ class Report
     {
         $this->numberOfUniqueClassesInLabeledThingInFrameByClasses = $numberOfUniqueClassesInLabeledThingInFrameByClasses;
     }
+
+    /**
+     * @param mixed $projectMovedToInProgressBy
+     */
+    public function setProjectMovedToInProgressBy($projectMovedToInProgressBy)
+    {
+        $this->projectMovedToInProgressBy = $projectMovedToInProgressBy;
+    }
+
+    /**
+     * @param mixed $projectMovedToDoneBy
+     */
+    public function setProjectMovedToDoneBy($projectMovedToDoneBy)
+    {
+        $this->projectMovedToDoneBy = $projectMovedToDoneBy;
+    }
 }
