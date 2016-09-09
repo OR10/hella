@@ -23,7 +23,7 @@ class Report
     private $rev;
 
     /**
-     * @CouchDB\Field(type="datetime")
+     * @CouchDB\Field(type="integer")
      */
     private $reportCreationDate;
 
@@ -218,7 +218,7 @@ class Report
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
         }
         $this->projectId = $project->getId();
-        $this->reportCreationDate = $creationDate;
+        $this->reportCreationDate = $creationDate->getTimestamp();
     }
 
     /**
@@ -668,7 +668,7 @@ class Report
      */
     public function getReportCreationDate()
     {
-        return $this->reportCreationDate->getTimestamp();
+        return $this->reportCreationDate;
     }
 
     /**
