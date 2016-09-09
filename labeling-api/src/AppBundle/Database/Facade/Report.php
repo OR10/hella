@@ -34,8 +34,9 @@ class Report
     public function findAllByProject(Model\Project $project)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_report_by_project_id', 'by_project')
-            ->setKey([$project->getId()])
+            ->createQuery('annostation_report_by_project_id_and_date_001', 'view')
+            ->setStartKey([$project->getId(), null])
+            ->setEndKey([$project->getId(), []])
             ->onlyDocs(true);
 
         return $query->execute();
