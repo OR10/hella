@@ -14,6 +14,7 @@ use AppBundle\Worker\Jobs;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use AppBundle\Response;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -70,15 +71,14 @@ class Report extends Controller\Base
      * @Rest\Get("/{project}/report")
      *
      * @param Model\Project $project
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function getReportsForProjectAction(Model\Project $project)
     {
         $reports = $this->reportFacade->findAllByProject($project)->toArray();
-        return View\View::create()->setData(
-            [
-                'result' => $reports,
-            ]
+
+        return new View\View(
+            new Response\SimpleReports($reports)
         );
     }
 
