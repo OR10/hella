@@ -43,21 +43,29 @@ class LabeledThingInFrame extends Controller\Base
     private $ghostClassesPropagationService;
 
     /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
      * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
      * @param Facade\LabeledThing             $labeledThingFacade
      * @param Facade\LabelingTask             $labelingTaskFacade
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
+     * @param Service\Authorization           $authorizationService
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Service\GhostClassesPropagation $ghostClassesPropagationService
+        Service\GhostClassesPropagation $ghostClassesPropagationService,
+        Service\Authorization $authorizationService
     ) {
         $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
         $this->labeledThingFacade             = $labeledThingFacade;
         $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->ghostClassesPropagationService = $ghostClassesPropagationService;
+        $this->authorizationService           = $authorizationService;
     }
 
     /**
@@ -75,6 +83,8 @@ class LabeledThingInFrame extends Controller\Base
         $frameIndex,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         $labeledThingInFrameId = $request->request->get('id', null);
         $labeledThingId        = $request->request->get('labeledThingId');
         $shapes                = $request->request->get('shapes', []);
@@ -118,6 +128,8 @@ class LabeledThingInFrame extends Controller\Base
         HttpFoundation\Request $request,
         Model\LabelingTask $task
     ) {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $limit = $request->query->getInt('limit', 0);
 
         if ($request->query->get('incompleteOnly', false) === 'true') {
@@ -143,6 +155,8 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabelingTask $task,
         $frameIndex
     ) {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $fetchLabeledThings = $request->query->getBoolean('labeledThings', true);
         $offset             = $request->query->get('offset');
         $limit              = $request->query->get('limit');
@@ -218,6 +232,8 @@ class LabeledThingInFrame extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $includeGhosts = $request->query->getBoolean('includeGhosts', true);
         $offset        = (int) $request->query->get('offset', 0);
         $limit         = (int) $request->query->get('limit', 1);

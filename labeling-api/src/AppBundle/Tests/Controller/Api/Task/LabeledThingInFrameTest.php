@@ -42,6 +42,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     private $labelingThingInFrameFacade;
 
     /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
+
+    /**
      * @var Model\Video
      */
     private $video;
@@ -285,14 +290,20 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingTaskFacade         = $this->getAnnostationService('database.facade.labeling_task');
         $this->labelingThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labelingThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->labelingGroupFacade        = $this->getAnnostationService('database.facade.labelingGroup');
         $this->serializer                 = $this->getService('serializer');
 
         $user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $user->addRole(Model\User::ROLE_ADMIN);
+        $user->addRole(Model\User::ROLE_LABELER);
+
+        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$user->getId()]));
+
+        $this->project = Model\Project::create('test project', $user);
+        $this->project->setLabelingGroupId($labelingGroup->getId());
+        $this->projectFacade->save($this->project);
 
         $this->video   = $this->videoFacade->save(Model\Video::create('foobar'));
-        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
         $task          = Model\LabelingTask::create(
             $this->video,
             $this->project,
