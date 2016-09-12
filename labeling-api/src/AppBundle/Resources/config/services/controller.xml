@@ -101,6 +101,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.status" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.timer" class="AppBundle\Controller\Api\Task\Timer">

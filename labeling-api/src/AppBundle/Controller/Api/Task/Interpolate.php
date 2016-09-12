@@ -8,6 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 use crosscan\WorkerPool\AMQP;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -41,23 +42,30 @@ class Interpolate extends Controller\Base
      * @var AMQP\FacadeAMQP
      */
     private $amqpFacade;
+    /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
 
     /**
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Facade\LabeledThing $labeledThingFacade
-     * @param Facade\Status $statusFacade
-     * @param AMQP\FacadeAMQP $amqpFacade
+     * @param Facade\LabelingTask   $labelingTaskFacade
+     * @param Facade\LabeledThing   $labeledThingFacade
+     * @param Facade\Status         $statusFacade
+     * @param AMQP\FacadeAMQP       $amqpFacade
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\Status $statusFacade,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Service\Authorization $authorizationService
     ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->labeledThingFacade = $labeledThingFacade;
-        $this->statusFacade       = $statusFacade;
-        $this->amqpFacade         = $amqpFacade;
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->labeledThingFacade   = $labeledThingFacade;
+        $this->statusFacade         = $statusFacade;
+        $this->amqpFacade           = $amqpFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -76,6 +84,8 @@ class Interpolate extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException('Requested export is not valid for this task');
         }
