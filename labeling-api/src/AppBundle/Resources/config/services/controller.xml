@@ -155,6 +155,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="security.token_storage" />
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
         <service id="annostation.labeling_api.controller.api.project.report" class="AppBundle\Controller\Api\Project\Report">
             <argument type="service" id="annostation.labeling_api.database.facade.report" />

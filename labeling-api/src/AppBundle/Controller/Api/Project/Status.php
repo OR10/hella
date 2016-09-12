@@ -9,6 +9,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -38,18 +39,26 @@ class Status extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @param Facade\Project       $projectFacade
-     * @param Facade\LabelingTask  $labelingTaskFacade
-     * @param Storage\TokenStorage $tokenStorage
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\Project        $projectFacade
+     * @param Facade\LabelingTask   $labelingTaskFacade
+     * @param Storage\TokenStorage  $tokenStorage
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorage $tokenStorage,
+        Service\Authorization $authorizationService
     ) {
-        $this->tokenStorage       = $tokenStorage;
-        $this->projectFacade      = $projectFacade;
-        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->projectFacade        = $projectFacade;
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -65,6 +74,8 @@ class Status extends Controller\Base
      */
     public function setProjectStatusToInProgressAction(HttpFoundation\Request $request, Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         $user = $this->tokenStorage->getToken()->getUser();
 
         $assignedGroupId = $request->request->get('assignedGroupId');
@@ -93,6 +104,8 @@ class Status extends Controller\Base
      */
     public function setProjectStatusToDoneAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
