@@ -28,6 +28,11 @@ class TimerTest extends Tests\WebTestCase
     private $labelingTaskFacade;
 
     /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
+
+    /**
      * @var Model\User
      */
     private $user;
@@ -142,21 +147,27 @@ class TimerTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $this->videoFacade        = $this->getAnnostationService('database.facade.video');
-        $this->projectFacade        = $this->getAnnostationService('database.facade.project');
-        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $this->videoFacade         = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade       = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
 
         $userManipulator = $this->getService('fos_user.util.user_manipulator');
 
         $this->user = $userManipulator
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_LABELER);
 
         $this->otherUser = $userManipulator
             ->create('someOtherUser', 'someOtherPassword', 'some@other.email', true, false);
 
+        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+
+        $this->project = Model\Project::create('test project', $this->user);
+        $this->project->setLabelingGroupId($labelingGroup->getId());
+        $this->projectFacade->save($this->project);
+
         $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
-        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
         $task = Model\LabelingTask::create(
             $this->video,
             $this->project,
