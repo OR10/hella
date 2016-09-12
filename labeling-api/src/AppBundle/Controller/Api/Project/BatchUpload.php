@@ -67,6 +67,11 @@ class BatchUpload extends Controller\Base
      * @var string
      */
     private $cacheDirectory;
+    
+    /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
 
     /**
      * @param Storage\TokenStorage  $tokenStorage
@@ -78,6 +83,7 @@ class BatchUpload extends Controller\Base
      * @param Twig\TwigEngine       $twigEngine
      * @param string                $cacheDirectory
      * @param \cscntLogger          $logger
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -88,7 +94,8 @@ class BatchUpload extends Controller\Base
         Service\TaskCreator $taskCreator,
         Twig\TwigEngine $twigEngine,
         string $cacheDirectory,
-        \cscntLogger $logger
+        \cscntLogger $logger,
+        Service\Authorization $authorizationService
     ) {
         $this->tokenStorage   = $tokenStorage;
         $this->projectFacade  = $projectFacade;
@@ -99,6 +106,7 @@ class BatchUpload extends Controller\Base
         $this->twigEngine     = $twigEngine;
         $this->cacheDirectory = $cacheDirectory;
         $this->loggerFacade   = new LoggerFacade($logger, self::class);
+        $this->authorizationService = $authorizationService;
 
         clearstatcache();
 
@@ -123,6 +131,7 @@ class BatchUpload extends Controller\Base
      */
     public function uploadAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
         $user                  = $this->tokenStorage->getToken()->getUser();
         $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);
         $chunkDirectory        = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
@@ -202,6 +211,8 @@ class BatchUpload extends Controller\Base
      */
     public function uploadCompleteAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         clearstatcache();
 
         $tasks = [];
