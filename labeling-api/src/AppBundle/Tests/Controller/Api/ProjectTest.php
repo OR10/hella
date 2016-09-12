@@ -173,7 +173,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar', null, new \DateTime('2016-09-08', new \DateTimeZone('UTC')));
+        $project = Model\Project::create('foobar', $this->user, new \DateTime('2016-09-08', new \DateTimeZone('UTC')));
         $this->projectFacade->save($project);
 
         $this->assertSame($project->getStatus(), Model\Project::STATUS_TODO);
@@ -193,7 +193,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar', null, new \DateTime('2016-09-08'));
+        $project = Model\Project::create('foobar', $this->user, new \DateTime('2016-09-08'));
         $project->addStatusHistory(null, new \DateTime(), Model\Project::STATUS_IN_PROGRESS);
         $this->projectFacade->save($project);
 
