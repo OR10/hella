@@ -7,6 +7,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -25,12 +26,19 @@ class TaskCount extends Controller\Base
     private $labelingTask;
 
     /**
-     * ProjectCount constructor.
-     * @param Facade\LabelingTask $labelingTask
+     * @var Service\Authorization
      */
-    public function __construct(Facade\LabelingTask $labelingTask)
+    private $authorizationService;
+
+    /**
+     * ProjectCount constructor.
+     * @param Facade\LabelingTask   $labelingTask
+     * @param Service\Authorization $authorizationService
+     */
+    public function __construct(Facade\LabelingTask $labelingTask, Service\Authorization $authorizationService)
     {
-        $this->labelingTask = $labelingTask;
+        $this->labelingTask         = $labelingTask;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -42,6 +50,8 @@ class TaskCount extends Controller\Base
      */
     public function getTaskCountAction(HttpFoundation\Request $request, Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+
         $sumLabeling = $this->labelingTask->getSumOfTasksByPhaseForProject($project);
 
         return View\View::create()->setData(

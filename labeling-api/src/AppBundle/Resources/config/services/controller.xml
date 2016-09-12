@@ -146,6 +146,7 @@
         </service>
         <service id="annostation.labeling_api.controller.api.task_count" class="AppBundle\Controller\Api\TaskCount">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
         <service id="annostation.labeling_api.controller.api.task_configuration" class="AppBundle\Controller\Api\TaskConfiguration">
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
