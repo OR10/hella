@@ -210,7 +210,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar');
+        $project = Model\Project::create('foobar', $this->user);
         $this->projectFacade->save($project);
 
         /** @var Model\User $coordinator */

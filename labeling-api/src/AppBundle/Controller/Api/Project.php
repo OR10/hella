@@ -8,6 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -52,24 +53,32 @@ class Project extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Storage\TokenStorage       $tokenStorage
      * @param Facade\User                $userFacade
+     * @param Service\Authorization      $authorizationService
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
-        Facade\User $userFacade
+        Facade\User $userFacade,
+        Service\Authorization $authorizationService
     ) {
         $this->projectFacade             = $projectFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->tokenStorage              = $tokenStorage;
         $this->userFacade                = $userFacade;
+        $this->authorizationService      = $authorizationService;
     }
 
     /**
@@ -369,6 +378,8 @@ class Project extends Controller\Base
      */
     public function getProjectAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+
         return View\View::create()->setData(['result' => $project]);
     }
 
@@ -386,6 +397,8 @@ class Project extends Controller\Base
      */
     public function assignProjectToUserAction(HttpFoundation\Request $request, Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         $sumOfPreProcessingTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
             $project,
             Model\LabelingTask::PHASE_LABELING,
