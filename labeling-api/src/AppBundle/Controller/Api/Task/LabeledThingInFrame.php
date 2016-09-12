@@ -204,17 +204,16 @@ class LabeledThingInFrame extends Controller\Base
      * clone-source (for now) because of historical reasons.
      * This may change sometime.
      *
-     * @Rest\Get("/{taskId}/labeledThingInFrame/{frameIndex}/{labeledThing}")
+     * @Rest\Get("/{task}/labeledThingInFrame/{frameIndex}/{labeledThing}")
      *
-     * @param string                 $taskId
+     * @param Model\LabelingTask     $task
      * @param int                    $frameIndex
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
-     *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingInFrameWithinFrameIndexAction(
-        $taskId,
+        Model\LabelingTask $task,
         $frameIndex,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
