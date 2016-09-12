@@ -37,20 +37,26 @@ class LabeledFrame extends Controller\Base
     private $taskIncompleteService;
 
     /**
-     * @param Facade\LabeledFrame $labeledFrameFacade
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\LabeledFrame    $labeledFrameFacade
+     * @param Facade\LabelingTask    $labelingTaskFacade
      * @param Service\TaskIncomplete $taskIncompleteService
-     * @internal param Facade\LabeledFrame $labeledFrame
-     * @internal param Facade\LabelingTask $labelingTask
+     * @param Service\Authorization  $authorizationService
      */
     public function __construct(
         Facade\LabeledFrame $labeledFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
-        Service\TaskIncomplete $taskIncompleteService
+        Service\TaskIncomplete $taskIncompleteService,
+        Service\Authorization $authorizationService
     ) {
         $this->labeledFrameFacade = $labeledFrameFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->taskIncompleteService = $taskIncompleteService;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -60,13 +66,15 @@ class LabeledFrame extends Controller\Base
      * @param Model\LabelingTask     $task
      * @param int                    $frameIndex
      *
-     * @return View\View
+     * @return \FOS\RestBundle\View\View
      */
     public function getLabeledFrameAction(
         HttpFoundation\Request $request,
         Model\LabelingTask $task,
         $frameIndex
     ) {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $frameIndex  = (int) $frameIndex;
         $offset       = $request->query->get('offset');
         $limit        = $request->query->get('limit');
@@ -119,6 +127,8 @@ class LabeledFrame extends Controller\Base
      */
     public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameIndex)
     {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         if (($labeledFrame = $this->labelingTaskFacade->getLabeledFrame($task, $frameIndex)) === null) {
             throw new Exception\NotFoundHttpException('LabeledFrame not found');
         }
@@ -146,6 +156,8 @@ class LabeledFrame extends Controller\Base
         $frameIndex,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         $labeledFrameId  = $request->request->get('id');
         $revision        = $request->request->get('rev');
         $bodyFrameIndex = (int) $request->request->get('frameIndex');
