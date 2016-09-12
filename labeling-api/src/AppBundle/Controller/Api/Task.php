@@ -54,12 +54,18 @@ class Task extends Controller\Base
     private $tokenStorage;
 
     /**
-     * @param Facade\Video         $videoFacade
-     * @param Facade\LabelingTask  $labelingTaskFacade
-     * @param Service\FrameCdn     $frameCdn
-     * @param Facade\User          $userFacade
-     * @param Facade\Project       $projectFacade
-     * @param Storage\TokenStorage $tokenStorage
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\Video          $videoFacade
+     * @param Facade\LabelingTask   $labelingTaskFacade
+     * @param Service\FrameCdn      $frameCdn
+     * @param Facade\User           $userFacade
+     * @param Facade\Project        $projectFacade
+     * @param Storage\TokenStorage  $tokenStorage
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\Video $videoFacade,
@@ -67,14 +73,16 @@ class Task extends Controller\Base
         Service\FrameCdn $frameCdn,
         Facade\User $userFacade,
         Facade\Project $projectFacade,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorage $tokenStorage,
+        Service\Authorization $authorizationService
     ) {
-        $this->videoFacade        = $videoFacade;
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->frameCdn           = $frameCdn;
-        $this->userFacade         = $userFacade;
-        $this->projectFacade      = $projectFacade;
-        $this->tokenStorage       = $tokenStorage;
+        $this->videoFacade          = $videoFacade;
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->frameCdn             = $frameCdn;
+        $this->userFacade           = $userFacade;
+        $this->projectFacade        = $projectFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -199,6 +207,8 @@ class Task extends Controller\Base
      */
     public function getTaskAction(Model\LabelingTask $task)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $project = $this->projectFacade->find($task->getProjectId());
         $user    = $this->tokenStorage->getToken()->getUser();
         if (!$this->userFacade->hasPermissionForProject($user, $project)) {
@@ -252,6 +262,8 @@ class Task extends Controller\Base
      */
     public function getTaskLabelStructureAction(Model\LabelingTask $task)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         return View\View::create()->setData(
             [
                 'result' => [
@@ -279,6 +291,8 @@ class Task extends Controller\Base
      */
     public function showFrameLocationsAction(Model\LabelingTask $task, $type, HttpFoundation\Request $request)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $offset            = $request->query->getDigits('offset');
         $limit             = $request->query->getDigits('limit');
         $frameIndexMapping = $task->getFrameNumberMapping();
