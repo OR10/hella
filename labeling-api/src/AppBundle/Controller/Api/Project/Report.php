@@ -8,6 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use crosscan\WorkerPool\AMQP;
 use AppBundle\Worker\Jobs;
@@ -34,14 +35,24 @@ class Report extends Controller\Base
     private $amqpFacade;
 
     /**
-     * Report constructor.
-     * @param Facade\Report   $reportFacade
-     * @param AMQP\FacadeAMQP $amqpFacade
+     * @var Service\Authorization
      */
-    public function __construct(Facade\Report $reportFacade, AMQP\FacadeAMQP $amqpFacade)
-    {
-        $this->reportFacade = $reportFacade;
-        $this->amqpFacade   = $amqpFacade;
+    private $authorizationService;
+
+    /**
+     * Report constructor.
+     * @param Facade\Report         $reportFacade
+     * @param AMQP\FacadeAMQP       $amqpFacade
+     * @param Service\Authorization $authorizationService
+     */
+    public function __construct(
+        Facade\Report $reportFacade,
+        AMQP\FacadeAMQP $amqpFacade,
+        Service\Authorization $authorizationService
+    ) {
+        $this->reportFacade         = $reportFacade;
+        $this->amqpFacade           = $amqpFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -75,6 +86,8 @@ class Report extends Controller\Base
      */
     public function getReportsForProjectAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+
         $reports = $this->reportFacade->findAllByProject($project)->toArray();
 
         return new View\View(
@@ -94,6 +107,8 @@ class Report extends Controller\Base
      */
     public function createNewReportForProjectAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         $report = Model\Report::create($project);
         $this->reportFacade->save($report);
         $this->amqpFacade->addJob(new Jobs\Report($report->getId()));

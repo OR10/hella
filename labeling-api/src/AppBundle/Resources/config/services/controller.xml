@@ -159,6 +159,7 @@
         <service id="annostation.labeling_api.controller.api.project.report" class="AppBundle\Controller\Api\Project\Report">
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">
