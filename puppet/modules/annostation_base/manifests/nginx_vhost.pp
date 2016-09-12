@@ -46,6 +46,13 @@ define annostation_base::nginx_vhost(
       proxy                => $proxy,
       proxy_set_header     => $proxyHeaders,
     }
+
+    nginx::resource::vhost { "${name}-redirect":
+      ensure               => present,
+      location_custom_cfg => {
+        'return' => 'https://$host$request_uri',
+      },
+    }
   } else {
     nginx::resource::vhost { $name:
       ensure               => present,
