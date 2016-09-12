@@ -34,6 +34,11 @@ class InterpolateTest extends Tests\WebTestCase
     private $labeledThingFacade;
 
     /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
+
+    /**
      * @var Service\Interpolation
      */
     private $interpolationService;
@@ -126,14 +131,20 @@ class InterpolateTest extends Tests\WebTestCase
         $this->projectFacade        = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade   = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade   = $this->getAnnostationService('database.facade.labeled_thing');
+        $this->labelingGroupFacade  = $this->getAnnostationService('database.facade.labeling_group');
         $this->interpolationService = $this->getAnnostationService('service.interpolation');
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $this->user->addRole(Model\User::ROLE_ADMIN);
 
+        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+
+        $this->project = Model\Project::create('test project', $this->user);
+        $this->project->setLabelingGroupId($labelingGroup->getId());
+        $this->projectFacade->save($this->project);
+
         $this->video   = $this->videoFacade->save(Model\Video::create('Testvideo'));
-        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
         $task          = Model\LabelingTask::create(
             $this->video,
             $this->project,
