@@ -56,6 +56,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video_export"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task.labeled_thing_in_frame"

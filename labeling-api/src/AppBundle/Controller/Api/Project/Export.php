@@ -45,21 +45,29 @@ class Export extends Controller\Base
     private $exporterFacade;
 
     /**
-     * @param Facade\ProjectExport $projectExport
-     * @param Facade\VideoExport   $videoExportFacade
-     * @param AMQP\FacadeAMQP      $amqpFacade
-     * @param Facade\Exporter      $exporterFacade
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\ProjectExport  $projectExport
+     * @param Facade\VideoExport    $videoExportFacade
+     * @param AMQP\FacadeAMQP       $amqpFacade
+     * @param Facade\Exporter       $exporterFacade
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\ProjectExport $projectExport,
         Facade\VideoExport $videoExportFacade,
         AMQP\FacadeAMQP $amqpFacade,
-        Facade\Exporter $exporterFacade
+        Facade\Exporter $exporterFacade,
+        Service\Authorization $authorizationService
     ) {
-        $this->amqpFacade        = $amqpFacade;
-        $this->projectExport     = $projectExport;
-        $this->videoExportFacade = $videoExportFacade;
-        $this->exporterFacade    = $exporterFacade;
+        $this->amqpFacade           = $amqpFacade;
+        $this->projectExport        = $projectExport;
+        $this->videoExportFacade    = $videoExportFacade;
+        $this->exporterFacade       = $exporterFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -72,6 +80,8 @@ class Export extends Controller\Base
      */
     public function listExportsAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+
         $availableExports = $project->getAvailableExports();
         $exporter = reset($availableExports);
         if ($exporter === 'genericXml') {
@@ -97,6 +107,8 @@ class Export extends Controller\Base
      */
     public function getExportAction(Model\Project $project, $exportId)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+
         $availableExports = $project->getAvailableExports();
         $exporter = reset($availableExports);
 
