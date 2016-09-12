@@ -25,6 +25,7 @@ class Project extends AccessCheckVoter
          * - Client: Creator of the Project
          * - LabelCoordinator: Directly assigned to the project
          * - Labeler: Inside a LabelingGroup, which has a LabelCoordinator, which is assigned to the project
+         * - Admin: grant access to all projects
          *
          */
         $this->checks = array(
@@ -32,11 +33,13 @@ class Project extends AccessCheckVoter
                 new AccessCheck\ClientIsProjectCreator(),
                 new AccessCheck\LabelCoordinatorIsAssignedToProject(),
                 new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
+                new AccessCheck\HasAdminRole(),
             ],
             self::PROJECT_WRITE => [
                 new AccessCheck\ClientIsProjectCreator(),
                 new AccessCheck\LabelCoordinatorIsAssignedToProject(),
                 new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
+                new AccessCheck\HasAdminRole(),
             ],
         );
     }

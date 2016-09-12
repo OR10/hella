@@ -90,6 +90,18 @@ class ProjectTest extends Tests\CouchDbTestCase
         );
     }
 
+    public function testAdminHasReadAccess()
+    {
+        $this->user->addRole(Model\User::ROLE_ADMIN);
+
+        $assignedLabelCoordinator = $this->createUser('assigned-label-coordinator');
+        $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
+
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
+        );
+    }
+
     public function testAssignedClientHasWriteAccess()
     {
         $this->user->addRole(Model\User::ROLE_CLIENT);
@@ -124,6 +136,18 @@ class ProjectTest extends Tests\CouchDbTestCase
         $otherLabelingGroup      = $this->createLabelingGroup($otherLabelCoordinator, [$otherUser]);
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
+
+        $this->assertTrue(
+            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
+        );
+    }
+
+    public function testAdminHasWriteAccess()
+    {
+        $this->user->addRole(Model\User::ROLE_ADMIN);
+
+        $assignedLabelCoordinator = $this->createUser('assigned-label-coordinator');
+        $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
 
         $this->assertTrue(
             $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
