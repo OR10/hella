@@ -8,6 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -37,18 +38,26 @@ class Timer extends Controller\Base
     private $tokenStorage;
 
     /**
-     * @param Facade\LabelingTask         $labelingTaskFacade
-     * @param Facade\User                 $userFacade
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\LabelingTask           $labelingTaskFacade
+     * @param Facade\User                   $userFacade
      * @param Storage\TokenStorageInterface $tokenStorage
+     * @param Service\Authorization         $authorizationService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\User $userFacade,
-        Storage\TokenStorageInterface $tokenStorage
+        Storage\TokenStorageInterface $tokenStorage,
+        Service\Authorization $authorizationService
     ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->userFacade         = $userFacade;
-        $this->tokenStorage       = $tokenStorage;
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->userFacade           = $userFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -56,6 +65,8 @@ class Timer extends Controller\Base
      */
     public function getTimerAction(Model\LabelingTask $task, Model\User $user)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         if ($user !== $this->tokenStorage->getToken()->getUser()) {
             throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
         }
@@ -78,6 +89,8 @@ class Timer extends Controller\Base
         Model\LabelingTask $task,
         Model\User $user
     ) {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         if ($user !== $this->tokenStorage->getToken()->getUser()) {
             throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
         }
