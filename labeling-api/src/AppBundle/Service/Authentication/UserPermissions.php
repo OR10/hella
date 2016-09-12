@@ -98,6 +98,7 @@ class UserPermissions
                 'canDeleteProject'             => true,
                 'canCreateNewProject'          => true,
                 'canReopenProject'             => true,
+                'canViewProjectReport'         => true,
             )
         );
     }
