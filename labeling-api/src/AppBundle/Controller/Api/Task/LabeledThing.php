@@ -44,23 +44,31 @@ class LabeledThing extends Controller\Base
     private $taskIncompleteService;
 
     /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
      * LabeledThing constructor.
      *
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Service\TaskIncomplete     $taskIncompleteService
+     * @param Service\Authorization      $authorizationService
      */
     public function __construct(
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Service\TaskIncomplete $taskIncompleteService
+        Service\TaskIncomplete $taskIncompleteService,
+        Service\Authorization $authorizationService
     ) {
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
+        $this->authorizationService      = $authorizationService;
     }
 
     /**
@@ -73,6 +81,8 @@ class LabeledThing extends Controller\Base
      */
     public function getAllLabeledThingsAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         if ($request->query->get('incompleteOnly', false) === 'true') {
             $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
         } else {
@@ -96,6 +106,8 @@ class LabeledThing extends Controller\Base
      */
     public function getAllIncompleteLabeledThingsCountAction(Model\LabelingTask $task)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
 
         return View\View::create()->setData(
@@ -116,6 +128,8 @@ class LabeledThing extends Controller\Base
      */
     public function saveLabeledThingAction(Model\LabelingTask $task, HttpFoundation\Request $request)
     {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         if (($labeledThingId = $request->request->get('id')) !== null) {
             if ($this->labeledThingFacade->find($labeledThingId) !== null) {
                 throw new Exception\BadRequestHttpException('LabeledThing not found');
@@ -153,6 +167,8 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException('Requested LabeledThing is not valid for this task');
         }
@@ -175,6 +191,8 @@ class LabeledThing extends Controller\Base
         HttpFoundation\Request $request,
         Model\LabeledThing $labeledThing = null
     ) {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         if (($lineColor = $request->request->get('lineColor')) === null) {
             throw new Exception\BadRequestHttpException('Missing lineColor');
         }
@@ -240,6 +258,8 @@ class LabeledThing extends Controller\Base
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException('Requested LabeledThing is not valid for this task');
         }
