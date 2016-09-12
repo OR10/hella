@@ -209,6 +209,8 @@ class Export extends Controller\Base
      */
     public function getCsvExportAction(Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+        
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
