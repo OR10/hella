@@ -39,18 +39,26 @@ class Export extends Controller\Base
     private $amqpFacade;
 
     /**
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Facade\TaskExport   $taskExportFacade
-     * @param AMQP\FacadeAMQP     $amqpFacade
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\LabelingTask   $labelingTaskFacade
+     * @param Facade\TaskExport     $taskExportFacade
+     * @param AMQP\FacadeAMQP       $amqpFacade
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\TaskExport $taskExportFacade,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Service\Authorization $authorizationService
     ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->taskExportFacade   = $taskExportFacade;
-        $this->amqpFacade         = $amqpFacade;
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->taskExportFacade     = $taskExportFacade;
+        $this->amqpFacade           = $amqpFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -61,6 +69,8 @@ class Export extends Controller\Base
      */
     public function listExportsAction(Model\LabelingTask $task)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         $exports = $this->taskExportFacade->findAllByTask($task);
 
         return View\View::create()->setData([
@@ -78,6 +88,8 @@ class Export extends Controller\Base
      */
     public function getExportAction(Model\LabelingTask $task, Model\TaskExport $taskExport)
     {
+        $this->authorizationService->denyIfTaskIsNotReadable($task);
+
         if ($taskExport->getTaskId() !== $task->getId()) {
             throw new Exception\NotFoundHttpException('Requested export is not valid for this task');
         }
@@ -104,6 +116,8 @@ class Export extends Controller\Base
      */
     public function getCsvExportAction(Model\LabelingTask $task)
     {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         $this->amqpFacade->addJob(new Jobs\CsvExporter($task->getId()));
 
         return View\View::create()
@@ -120,6 +134,8 @@ class Export extends Controller\Base
      */
     public function getKittiExportAction(Model\LabelingTask $task)
     {
+        $this->authorizationService->denyIfTaskIsNotWritable($task);
+
         $this->amqpFacade->addJob(new Jobs\KittiExporter($task->getId()));
 
         return View\View::create()
