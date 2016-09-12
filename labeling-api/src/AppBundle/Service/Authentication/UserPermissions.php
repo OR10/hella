@@ -118,6 +118,7 @@ class UserPermissions
                 'canCreateNewProject'            => true,
                 'canReopenProject'               => true,
                 'canCreateProject'               => true,
+                'canViewProjectReport'           => true,
             )
         );
     }
