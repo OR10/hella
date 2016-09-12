@@ -141,20 +141,19 @@ class LabeledThing extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskId}/labeledThing/{labeledThing}")
+     * @Rest\Get("/{task}/labeledThing/{labeledThing}")
      *
-     * @param string                 $taskId
+     * @param Model\LabelingTask     $task
      * @param Model\LabeledThing     $labeledThing
      * @param HttpFoundation\Request $request
-     *
      * @return \FOS\RestBundle\View\View
      */
     public function getLabeledThingAction(
-        $taskId,
+        Model\LabelingTask $task,
         Model\LabeledThing $labeledThing,
         HttpFoundation\Request $request
     ) {
-        if ($labeledThing->getTaskId() !== $taskId) {
+        if ($labeledThing->getTaskId() !== $task->getId()) {
             throw new Exception\BadRequestHttpException('Requested LabeledThing is not valid for this task');
         }
 
