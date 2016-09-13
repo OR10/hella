@@ -3,70 +3,65 @@
 namespace AppBundle\Tests\Controller\Api;
 
 use AppBundle\Tests;
-use AppBundle\Tests\Controller;
-use AppBundle\Model;
-use AppBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
 
 class CustomExceptionTest extends Tests\WebTestCase
 {
-    /**
-     * @dataProvider requestProvider
-     *
-     * @param $route
-     * @param $method
-     * @param $expectedResponseCode
-     * @param $expectedResponseContent
-     */
-    public function testRequestExceptions($route, $method, $expectedResponseCode, $expectedResponseContent)
+    public function testNotFoundHttpException()
     {
-        $response = $this->createRequest($route, array('debug' => false))
-            ->setMethod($method)
-            ->execute()
-            ->getResponse();
+        $requestWrapper = $this->createRequest('/api/foobar')
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->execute();
 
-        $this->assertEquals($expectedResponseCode, $response->getStatusCode());
+        $expectedResponseBody = [
+            'error' => [
+                'type'    => 'NotFoundHttpException',
+                'code'    => HttpFoundation\Response::HTTP_NOT_FOUND,
+                'message' => 'No route found for "DELETE /api/foobar"',
+            ],
+        ];
 
-        $responseContent = json_decode($response->getContent(), true);
-
-        $this->assertEquals($expectedResponseContent['error']['type'], $responseContent['error']['type']);
-        $this->assertEquals($expectedResponseContent['error']['code'], $responseContent['error']['code']);
-        $this->assertEquals($expectedResponseContent['error']['message'], $responseContent['error']['message']);
+        $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $requestWrapper->getResponse()->getStatusCode());
+        $this->assertEquals($expectedResponseBody, $this->getRelevantJsonBody($requestWrapper));
     }
 
-    public function requestProvider()
+    public function testBadRequestHttpException()
     {
-        return array(
-            array(
-                '/api/foobar',
-                HttpFoundation\Request::METHOD_DELETE,
-                HttpFoundation\Response::HTTP_NOT_FOUND,
-                array(
-                    'error' => array(
-                        'type' => 'NotFoundHttpException',
-                        'code' => 404,
-                        'message' => 'No route found for "DELETE /api/foobar"',
-                    )
-                )
-            ),
-            array(
-                '/api/user/password',
-                HttpFoundation\Request::METHOD_PUT,
-                HttpFoundation\Response::HTTP_BAD_REQUEST,
-                array(
-                    'error' => array(
-                        'type' => 'BadRequestHttpException',
-                        'code' => 400,
-                        'message' => 'Failed to save the new password. The current password is not correct',
-                    )
-                )
-            )
-        );
+        $requestWrapper = $this->createRequest('/api/user/password')
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->execute();
+
+        $expectedResponseBody = [
+            'error' => [
+                'type'    => 'BadRequestHttpException',
+                'code'    => HttpFoundation\Response::HTTP_BAD_REQUEST,
+                'message' => 'Failed to save the new password. The current password is not correct',
+            ],
+        ];
+
+        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $requestWrapper->getResponse()->getStatusCode());
+        $this->assertEquals($expectedResponseBody, $this->getRelevantJsonBody($requestWrapper));
     }
 
     protected function setUpImplementation()
     {
         $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+    }
+
+    /**
+     * @param Tests\RequestWrapper $requestWrapper
+     *
+     * @return array
+     */
+    private function getRelevantJsonBody(Tests\RequestWrapper $requestWrapper)
+    {
+        $body = $requestWrapper->getJsonResponseBody();
+
+        if (is_array($body) && isset($body['error']['exception'])) {
+            unset($body['error']['exception']);
+        }
+
+        return $body;
     }
 }
