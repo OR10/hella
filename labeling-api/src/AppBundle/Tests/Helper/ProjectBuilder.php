@@ -82,7 +82,7 @@ class ProjectBuilder
         $this->currentStatus   = $status;
         $this->statusChanges[] = [
             'status'    => $status,
-            'changedAt' => $changedAt,
+            'changedAt' => $changedAt ?: new \DateTime(),
             'changedBy' => $changedBy,
         ];
 
