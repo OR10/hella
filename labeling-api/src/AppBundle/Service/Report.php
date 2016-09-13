@@ -68,8 +68,17 @@ class Report
         $project = $this->projectFacade->find($report->getProjectId());
 
         $report->setProjectStatus($project->getStatus());
+
         $report->setProjectCreatedAt($project->getCreationDate());
         $report->setProjectCreatedBy($project->getUserId());
+
+        $projectMovedToInProgress = $project->getLastStateForStatus(Model\Project::STATUS_IN_PROGRESS);
+        $projectMovedToDoneBy     = $project->getLastStateForStatus(Model\Project::STATUS_DONE);
+        $report->setProjectMovedToInProgressBy($projectMovedToInProgress['userId']);
+        $report->setProjectMovedToInProgressAt($projectMovedToInProgress['timestamp']);
+        $report->setProjectMovedToDoneBy($projectMovedToDoneBy['userId']);
+        $report->setProjectMovedToDoneAt($projectMovedToDoneBy['timestamp']);
+
         $report->setProjectDueDate($project->getDueDate());
         $report->setLabelingValidationProcesses($project->getLabelingValidationProcesses());
 
