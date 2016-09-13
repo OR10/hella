@@ -3,14 +3,10 @@ namespace AppBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
-use AppBundle\Model;
 use AppBundle\Service;
-use League\Flysystem;
-use Doctrine\ODM\CouchDB;
-use AppBundle\Model\Video\ImageType;
+use AppBundle\Worker\Jobs;
 
 class ProjectCsvExporter extends WorkerPool\JobInstruction
 {
@@ -26,7 +22,7 @@ class ProjectCsvExporter extends WorkerPool\JobInstruction
 
     /**
      * @param Service\ProjectExporter\Csv $csvProjectExporter
-     * @param Facade\Project $projectFacade
+     * @param Facade\Project              $projectFacade
      */
     public function __construct(
         Service\ProjectExporter\Csv $csvProjectExporter,
@@ -42,9 +38,15 @@ class ProjectCsvExporter extends WorkerPool\JobInstruction
      */
     public function run(Job $job, Logger\Facade\LoggerFacade $logger)
     {
+        /** @var Jobs\ProjectCsvExporter $job */
+
         $project = $this->projectFacade->find($job->getProjectId());
         if ($project === null) {
-            // @todo log project-not-found
+            $logger->logString(
+                sprintf('Project not found, id: %s', $job->getProjectId()),
+                \cscntLogPayload::SEVERITY_ERROR
+            );
+
             return;
         }
 
