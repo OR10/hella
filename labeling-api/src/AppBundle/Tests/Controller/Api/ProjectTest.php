@@ -27,191 +27,142 @@ class ProjectTest extends Tests\WebTestCase
      */
     public function projectsDataProvider()
     {
-        return array(
-            array(
-                array(
-                    array(
-                        'name' => 'Test Project in progress',
-                        'date' => new \DateTime('2016-07-12 10:30:00', new \DateTimeZone('UTC')),
-                        'status' => Model\Project::STATUS_IN_PROGRESS
-                    ),
-                    array(
-                        'name' => 'Test Project done',
-                        'date' => new \DateTime('2016-07-12 11:30:00', new \DateTimeZone('UTC')),
-                        'status' => Model\Project::STATUS_DONE
-                    ),
-                    array(
-                        'name' => 'Test Project 1',
-                        'date' => new \DateTime('2016-07-12 11:00:00', new \DateTimeZone('UTC')),
-                        'status' => Model\Project::STATUS_TODO
-                    ),
-                    array(
-                        'name' => 'Test Project 2',
-                        'date' => new \DateTime('2016-07-12 10:00:00', new \DateTimeZone('UTC')),
-                        'status' => Model\Project::STATUS_TODO
-                    ),
-                    array(
-                        'name' => 'Test Project 3',
-                        'date' => new \DateTime('2016-07-12 12:00:00', new \DateTimeZone('UTC')),
-                        'status' => Model\Project::STATUS_TODO
-                    ),
-                ),
-                array(
-                    Model\Project::STATUS_IN_PROGRESS =>
-                        array(
-                            array(
-                                'name' => 'Test Project in progress',
-                                'status' => Model\Project::STATUS_IN_PROGRESS,
-                                'finishedPercentage' => 0,
-                                'creationTimestamp' => 1468319400,
-                                'taskInPreProcessingCount' => 0,
-                                'taskCount' => 0,
-                                'taskFinishedCount' => 0,
-                                'taskInProgressCount' => 0,
-                                'totalLabelingTimeInSeconds' => 0,
-                                'labeledThingInFramesCount' => 0,
-                                'videosCount' => 0,
-                                'dueTimestamp' => null,
-                            ),
-                        ),
-                    Model\Project::STATUS_TODO =>
-                        array(
+        $inProgressBuilder = Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_IN_PROGRESS);
+        $todoBuilder       = Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_TODO);
+        $doneBuilder       = Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_DONE);
 
-                            array(
-                                'name' => 'Test Project 3',
-                                'status' => Model\Project::STATUS_TODO,
-                                'finishedPercentage' => 0,
-                                'creationTimestamp' => 1468324800,
-                                'taskInPreProcessingCount' => 0,
-                                'taskCount' => 0,
-                                'taskFinishedCount' => 0,
-                                'taskInProgressCount' => 0,
-                                'totalLabelingTimeInSeconds' => 0,
-                                'labeledThingInFramesCount' => 0,
-                                'videosCount' => 0,
-                                'dueTimestamp' => null,
-                            ),
-                            array(
-                                'name' => 'Test Project 1',
-                                'status' => Model\Project::STATUS_TODO,
-                                'finishedPercentage' => 0,
-                                'creationTimestamp' => 1468321200,
-                                'taskInPreProcessingCount' => 0,
-                                'taskCount' => 0,
-                                'taskFinishedCount' => 0,
-                                'taskInProgressCount' => 0,
-                                'totalLabelingTimeInSeconds' => 0,
-                                'labeledThingInFramesCount' => 0,
-                                'videosCount' => 0,
-                                'dueTimestamp' => null,
-                            ),
-                            array(
-                                'name' => 'Test Project 2',
-                                'status' => Model\Project::STATUS_TODO,
-                                'finishedPercentage' => 0,
-                                'creationTimestamp' => 1468317600,
-                                'taskInPreProcessingCount' => 0,
-                                'taskCount' => 0,
-                                'taskFinishedCount' => 0,
-                                'taskInProgressCount' => 0,
-                                'totalLabelingTimeInSeconds' => 0,
-                                'labeledThingInFramesCount' => 0,
-                                'videosCount' => 0,
-                                'dueTimestamp' => null,
-                            ),
-                        ),
-                    Model\Project::STATUS_DONE =>
-                        array(
-                            array(
-                                'name' => 'Test Project done',
-                                'status' => Model\Project::STATUS_DONE,
-                                'finishedPercentage' => 0,
-                                'creationTimestamp' => 1468323000,
-                                'taskInPreProcessingCount' => 0,
-                                'taskCount' => 0,
-                                'taskFinishedCount' => 0,
-                                'taskInProgressCount' => 0,
-                                'totalLabelingTimeInSeconds' => 0,
-                                'labeledThingInFramesCount' => 0,
-                                'videosCount' => 0,
-                                'dueTimestamp' => null,
-                            ),
-                        ),
-                )
-            )
-        );
+        return [
+            'projects in progress' => [
+                'status'           => Model\Project::STATUS_IN_PROGRESS,
+                'expectedProjects' => [
+                    $inProgressBuilder->withName('Test Project in progress')->buildArray(),
+                ],
+            ],
+            'projects in todo'     => [
+                'status'           => Model\Project::STATUS_TODO,
+                'expectedProjects' => [
+                    $todoBuilder->withName('Test Project 3')->buildArray(),
+                    $todoBuilder->withName('Test Project 1')->buildArray(),
+                    $todoBuilder->withName('Test Project 2')->buildArray(),
+                ],
+            ],
+            'projects done'        => [
+                'status'           => Model\Project::STATUS_DONE,
+                'expectedProjects' => [
+                    $doneBuilder->withName('Test Project done')->buildArray(),
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider projectsDataProvider
      *
-     * @param $projects
-     * @param $expectedProjects
+     * @param string $status
+     * @param array  $expectedProjects
      */
-    public function testProjectList($projects, $expectedProjects)
+    public function testProjectList(string $status, array $expectedProjects)
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        foreach ($projects as $projectData) {
-            $project = Model\Project::create($projectData['name'], null, $projectData['date']);
-            $project->addStatusHistory(null, new \DateTime(), $projectData['status']);
-            $this->projectFacade->save($project);
-        }
+        $this->createProjectsForProjectListTest();
 
-        foreach ($expectedProjects as $status => $expectedProjectsForState) {
-            $request = $this->createRequest('/api/project?projectStatus=' . $status)->execute();
-            $data    = array_map(function ($project) {
-                unset($project['id']);
+        $request = $this->createRequest('/api/project?projectStatus=' . $status)->execute();
+        $data    = array_map(
+            function ($project) {
+                $project['id']                = null;
+                $project['creationTimestamp'] = 0;
+
                 return $project;
-            }, $request->getJsonResponseBody()['result']);
+            },
+            $request->getJsonResponseBody()['result']
+        );
 
-            $this->assertSame($expectedProjectsForState, $data);
-        }
+        $this->assertEquals($expectedProjects, $data);
+    }
+
+    /**
+     * Create a bunch of projects for testing project list by status.
+     */
+    private function createProjectsForProjectListTest()
+    {
+        $projectBuilder = Tests\Helper\ProjectBuilder::create();
+
+        $this->projectFacade->save(
+            $projectBuilder
+                ->withName('Test Project 1')
+                ->withCreationDate(new \DateTime('2016-07-12T11:00:00+00:00'))
+                ->build()
+        );
+
+        $this->projectFacade->save(
+            $projectBuilder
+                ->withName('Test Project 2')
+                ->withCreationDate(new \DateTime('2016-07-12T10:00:00+00:00'))
+                ->build()
+        );
+
+        $this->projectFacade->save(
+            $projectBuilder
+                ->withName('Test Project 3')
+                ->withCreationDate(new \DateTime('2016-07-12T12:00:00+00:00'))
+                ->build()
+        );
+
+        $this->projectFacade->save(
+            $projectBuilder
+                ->withName('Test Project in progress')
+                ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
+                ->withCreationDate(new \DateTime('2016-07-12T10:30:00+00:00'))
+                ->build()
+        );
+
+        $this->projectFacade->save(
+            $projectBuilder
+                ->withName('Test Project done')
+                ->withStatusChange(Model\Project::STATUS_DONE)
+                ->withCreationDate(new \DateTime('2016-07-12T11:30:00+00:00'))
+                ->build()
+        );
     }
 
     public function testSetProjectInProgress()
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar', $this->user, new \DateTime('2016-09-08', new \DateTimeZone('UTC')));
-        $this->projectFacade->save($project);
+        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
-        $this->assertSame($project->getStatus(), Model\Project::STATUS_TODO);
-        $this->assertSame($project->getCoordinatorAssignmentHistory(), null);
+        $this->assertEquals($project->getStatus(), Model\Project::STATUS_TODO);
+        $this->assertNull($project->getCoordinatorAssignmentHistory());
 
         $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
-        $actualProject = $this->projectFacade->find($project->getId());
-
-        $this->assertSame($actualProject->getStatus(), Model\Project::STATUS_IN_PROGRESS);
-        $this->assertSame($actualProject->getLatestAssignedCoordinatorUserId(), $this->user->getId());
+        $this->assertEquals(Model\Project::STATUS_IN_PROGRESS, $project->getStatus());
+        $this->assertEquals($this->user->getId(), $project->getLatestAssignedCoordinatorUserId());
     }
 
     public function testSetProjectDone()
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar', $this->user, new \DateTime('2016-09-08'));
-        $project->addStatusHistory(null, new \DateTime(), Model\Project::STATUS_IN_PROGRESS);
-        $this->projectFacade->save($project);
+        $project = $this->projectFacade->save(
+            Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_IN_PROGRESS)->build()
+        );
 
         $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
-        $actualProject = $this->projectFacade->find($project->getId());
-
-        $this->assertSame($actualProject->getStatus(), Model\Project::STATUS_DONE);
+        $this->assertEquals(Model\Project::STATUS_DONE, $project->getStatus());
     }
 
     public function testAssignCoordinatorToProject()
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = Model\Project::create('foobar', $this->user);
-        $this->projectFacade->save($project);
+        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
         /** @var Model\User $coordinator */
         $coordinator = $this->getService('fos_user.util.user_manipulator')
@@ -227,8 +178,7 @@ class ProjectTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
-        $actualProject = $this->projectFacade->find($project->getId());
-        $this->assertSame($actualProject->getLatestAssignedCoordinatorUserId(), $coordinator->getId());
+        $this->assertEquals($project->getLatestAssignedCoordinatorUserId(), $coordinator->getId());
     }
 
     public function testSaveLegacyProject()
@@ -239,24 +189,24 @@ class ProjectTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
-                    'name' => 'Some Test Project',
-                    'review' => true,
-                    'frameSkip' => 22,
-                    'startFrameNumber' => 22,
-                    'splitEach' => 600,
-                    'projectType' => 'legacy',
-                    'vehicle' => true,
-                    'drawingToolVehicle' => 'cuboid3d',
-                    'person' => true,
-                    'drawingToolPerson' => 'cuboid3d',
-                    'cyclist' => true,
-                    'drawingToolCyclist' => 'cuboid3d',
-                    'ignore' => true,
-                    'drawingToolIgnore' => 'cuboid3d',
-                    'ignore-vehicle' => true,
+                    'name'                     => 'Some Test Project',
+                    'review'                   => true,
+                    'frameSkip'                => 22,
+                    'startFrameNumber'         => 22,
+                    'splitEach'                => 600,
+                    'projectType'              => 'legacy',
+                    'vehicle'                  => true,
+                    'drawingToolVehicle'       => 'cuboid3d',
+                    'person'                   => true,
+                    'drawingToolPerson'        => 'cuboid3d',
+                    'cyclist'                  => true,
+                    'drawingToolCyclist'       => 'cuboid3d',
+                    'ignore'                   => true,
+                    'drawingToolIgnore'        => 'cuboid3d',
+                    'ignore-vehicle'           => true,
                     'drawingToolIgnoreVehicle' => 'cuboid3d',
-                    'lane' => true,
-                    'drawingToolLane' => 'cuboid3d',
+                    'lane'                     => true,
+                    'drawingToolLane'          => 'cuboid3d',
                 ]
             )
             ->execute()
@@ -307,38 +257,38 @@ class ProjectTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
-                    'name' => 'Some Test Project',
-                    'review' => true,
-                    'frameSkip' => 22,
-                    'startFrameNumber' => 22,
-                    'splitEach' => 600,
-                    'projectType' => 'genericXml',
+                    'name'                   => 'Some Test Project',
+                    'review'                 => true,
+                    'frameSkip'              => 22,
+                    'startFrameNumber'       => 22,
+                    'splitEach'              => 600,
+                    'projectType'            => 'genericXml',
                     'taskTypeConfigurations' => [
                         [
-                            'type' => 'vehicle',
+                            'type'                => 'vehicle',
                             'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
                         ],
                         [
-                            'type' => 'person',
+                            'type'                => 'person',
                             'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
                         ],
                         [
-                            'type' => 'cyclist',
+                            'type'                => 'cyclist',
                             'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
                         ],
                         [
-                            'type' => 'ignore',
+                            'type'                => 'ignore',
                             'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
                         ],
                         [
-                            'type' => 'ignore-vehicle',
+                            'type'                => 'ignore-vehicle',
                             'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
                         ],
                         [
-                            'type' => 'lane',
+                            'type'                => 'lane',
                             'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
                         ],
-                    ]
+                    ],
                 ]
             )
             ->execute()
@@ -348,27 +298,27 @@ class ProjectTest extends Tests\WebTestCase
         $responseProject                    = $response['result'];
         $expectedGenericXmlTaskInstructions = [
             [
-                'instruction' => 'vehicle',
+                'instruction'         => 'vehicle',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'instruction' => 'person',
+                'instruction'         => 'person',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'instruction' => 'cyclist',
+                'instruction'         => 'cyclist',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'instruction' => 'ignore',
+                'instruction'         => 'ignore',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'instruction' => 'ignore-vehicle',
+                'instruction'         => 'ignore-vehicle',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
             [
-                'instruction' => 'lane',
+                'instruction'         => 'lane',
                 'taskConfigurationId' => '18d07df7d2a2e4441192f403841ebf45',
             ],
         ];
