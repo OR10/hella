@@ -53,7 +53,7 @@ class Index extends Base
     /**
      * @Configuration\Route("/")
      */
-    public function indexAction(HttpFoundation\Request $request)
+    public function indexAction()
     {
         return new RedirectResponse('/labeling');
     }
