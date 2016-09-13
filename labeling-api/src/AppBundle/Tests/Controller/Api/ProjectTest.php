@@ -130,7 +130,11 @@ class ProjectTest extends Tests\WebTestCase
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
-        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
+        $project = $this->projectFacade->save(
+            Tests\Helper\ProjectBuilder::create()
+                ->withCreationDate(new \DateTime('yesterday'))
+                ->build()
+        );
 
         $this->assertEquals($project->getStatus(), Model\Project::STATUS_TODO);
         $this->assertNull($project->getCoordinatorAssignmentHistory());

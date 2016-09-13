@@ -70,6 +70,15 @@ class ProjectBuilder
      */
     public function withStatusChange(string $status, \DateTime $changedAt = null, Model\User $changedBy = null)
     {
+        if ($changedAt === null) {
+            if (empty($this->statusChanges)) {
+                $changedAt = new \DateTime();
+            }else{
+                $changedAt = clone end($this->statusChanges)['changedAt'];
+                $changedAt->modify('+1 second');
+            }
+        }
+
         $this->currentStatus   = $status;
         $this->statusChanges[] = [
             'status'    => $status,
