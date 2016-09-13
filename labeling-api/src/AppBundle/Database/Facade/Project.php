@@ -72,6 +72,10 @@ class Project
             ->execute()
             ->toArray();
 
+        if (empty($resultSet)) {
+            return array();
+        }
+
         return $resultSet[0]['value'];
     }
     
