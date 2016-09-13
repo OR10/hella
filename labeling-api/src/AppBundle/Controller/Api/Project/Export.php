@@ -148,10 +148,12 @@ class Export extends Controller\Base
     }
 
     /**
-     * @param Model\Project $project
-     * @param               $projectExport
+     * @param Model\Project       $project
+     * @param Model\ProjectExport $projectExport
+     *
      * @return HttpFoundation\Response
-     * @throws Exception\Csv
+     *
+     * @throws ProjectException\Csv
      */
     private function getLegacyZipContent(Model\Project $project, Model\ProjectExport $projectExport)
     {
@@ -179,7 +181,7 @@ class Export extends Controller\Base
         }
         $zip->close();
 
-        $return = new HttpFoundation\Response(
+        $response = new HttpFoundation\Response(
             file_get_contents($zipFilename),
             HttpFoundation\Response::HTTP_OK,
             [
@@ -195,7 +197,7 @@ class Export extends Controller\Base
             throw new ProjectException\Csv(sprintf('Unable to remove temporary zip file at "%s"', $zipFilename));
         }
 
-        return $return;
+        return $response;
     }
 
     /**
