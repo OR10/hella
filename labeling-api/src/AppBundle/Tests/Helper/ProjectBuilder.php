@@ -111,7 +111,7 @@ class ProjectBuilder
             'name'                       => $this->name,
             'status'                     => $this->currentStatus,
             'finishedPercentage'         => 0,
-            'creationTimestamp'          => $this->creationDate->getTimestamp(),
+            'creationTimestamp'          => $this->creationDate ? $this->creationDate->getTimestamp() : 0,
             'taskInPreProcessingCount'   => 0,
             'taskCount'                  => 0,
             'taskFinishedCount'          => 0,
