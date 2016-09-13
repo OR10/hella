@@ -88,7 +88,7 @@ class Project extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function listAction(HttpFoundation\Request $request)
     {
@@ -189,7 +189,7 @@ class Project extends Controller\Base
             }
         }
 
-        return View\View::create()->setData(
+        return new View\View(
             [
                 'totalRows' => $totalRows,
                 'result'    => array_merge(
