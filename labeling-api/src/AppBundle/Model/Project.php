@@ -243,6 +243,37 @@ class Project
     }
 
     /**
+     * @param $status
+     * @return array
+     */
+    public function getLastStateForStatus($status)
+    {
+        if (!is_array($this->status)) {
+            return null;
+        }
+
+        $inProgressStates = array_filter(
+            $this->status,
+            function($state) use ($status) {
+                return $state['status'] === $status;
+            }
+        );
+
+        if (empty($inProgressStates)) {
+            return null;
+        }
+
+        usort($inProgressStates, function ($a, $b) {
+            if ($a['timestamp'] === $b['timestamp']) {
+                return 0;
+            }
+            return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
+        });
+
+        return $inProgressStates[0];
+    }
+
+    /**
      * @return mixed
      */
     public function getStatusHistory()
