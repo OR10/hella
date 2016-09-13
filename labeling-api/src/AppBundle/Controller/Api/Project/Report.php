@@ -38,21 +38,28 @@ class Report extends Controller\Base
      * @var Service\Authorization
      */
     private $authorizationService;
+    /**
+     * @var Facade\User
+     */
+    private $userFacade;
 
     /**
      * Report constructor.
      * @param Facade\Report         $reportFacade
      * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Service\Authorization $authorizationService
+     * @param Facade\User           $userFacade
      */
     public function __construct(
         Facade\Report $reportFacade,
         AMQP\FacadeAMQP $amqpFacade,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Facade\User $userFacade
     ) {
         $this->reportFacade         = $reportFacade;
         $this->amqpFacade           = $amqpFacade;
         $this->authorizationService = $authorizationService;
+        $this->userFacade           = $userFacade;
     }
 
     /**
@@ -71,7 +78,26 @@ class Report extends Controller\Base
         if ($report->getReportStatus() !== Model\Report::REPORT_STATUS_DONE) {
             throw new Exception\NotFoundHttpException();
         }
-        return View\View::create()->setData(['result' => $report]);
+
+        $userIds = array_unique(
+            array(
+                $report->getProjectCreatedBy(),
+                $report->getProjectMovedToInProgressBy(),
+                $report->getProjectMovedToDoneBy(),
+            )
+        );
+
+        $users = array();
+        foreach ($this->userFacade->getUserByIds($userIds) as $user) {
+            $users[$user->getId()] = $user->getUsername();
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' => $report,
+                'users'  => $users,
+            ]
+        );
     }
 
     /**

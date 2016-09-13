@@ -170,6 +170,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user" />
         </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">
