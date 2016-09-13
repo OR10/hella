@@ -72,7 +72,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $this->createProjectsForProjectListTest();
 
-        $request = $this->createRequest('/api/project?projectStatus=' . $status)->execute();
+        $request = $this->requestProjectsByStatus($status);
         $data    = array_map(
             function ($project) {
                 $project['id']                = null;
@@ -131,6 +131,18 @@ class ProjectTest extends Tests\WebTestCase
         );
     }
 
+    /**
+     * Helper method to request projects of a given status.
+     *
+     * @param string $status
+     *
+     * @return Tests\RequestWrapper
+     */
+    private function requestProjectsByStatus(string $status)
+    {
+        return $this->createRequest(sprintf('/api/project?projectStatus=%s', $status))->execute();
+    }
+
     public function testSetProjectInProgress()
     {
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
@@ -157,7 +169,10 @@ class ProjectTest extends Tests\WebTestCase
         $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
 
         $project = $this->projectFacade->save(
-            Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_IN_PROGRESS)->build()
+            Tests\Helper\ProjectBuilder::create()
+                ->withCreationDate(new \DateTime('yesterday'))
+                ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
+                ->build()
         );
 
         $this->createRequest('/api/project/%s/status/done', [$project->getId()])
@@ -343,12 +358,11 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testGetProjectsForLabelCoordinator()
     {
-        $project = Model\Project::create('Test Project');
-        $this->projectFacade->save($project);
+        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
         $this->user->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
 
-        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
+        $request = $this->requestProjectsByStatus(Model\Project::STATUS_TODO);
         $data    = $request->getJsonResponseBody();
 
         $this->assertSame(0, count($data['result']));
@@ -356,39 +370,52 @@ class ProjectTest extends Tests\WebTestCase
         $project->addCoordinatorAssignmentHistory($this->user);
         $this->projectFacade->save($project);
 
-        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
+        $request = $this->requestProjectsByStatus(Model\Project::STATUS_TODO);
         $data    = $request->getJsonResponseBody();
 
         $this->assertSame(1, count($data['result']));
     }
 
-    public function testGetProjectsForClient()
+    public function testGetProjectsForClientReturnsEmptyProjectListIfClientHasNoProjects()
     {
-        $project = Model\Project::create('Test Project');
-        $this->projectFacade->save($project);
-
         $this->user->setRoles([Model\User::ROLE_CLIENT]);
 
-        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
-        $data    = $request->getJsonResponseBody();
+        $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
-        $this->assertSame(0, $data['totalRows']);
+        $responseBody = $this->requestProjectsByStatus(Model\Project::STATUS_TODO)->getJsonResponseBody();
 
-        $project->setUserId($this->user->getId());
-        $this->projectFacade->save($project);
+        $this->assertEquals(Tests\Helper\ProjectListResponseBuilder::create()->build(), $responseBody);
+    }
 
-        $request = $this->createRequest('/api/project?projectStatus=todo')->execute();
-        $data    = $request->getJsonResponseBody();
+    public function testGetProjectsForClientReturnsOwnProjects()
+    {
+        $this->user->setRoles([Model\User::ROLE_CLIENT]);
 
-        $this->assertSame(1, $data['totalRows']);
+        $projectBuilder = Tests\Helper\ProjectBuilder::create();
+
+        $project = $this->projectFacade->save(
+            $projectBuilder->withProjectOwnedByUserId($this->user->getId())->build()
+        );
+
+        $responseBody         = $this->requestProjectsByStatus(Model\Project::STATUS_TODO)->getJsonResponseBody();
+        $expectedResponseBody = Tests\Helper\ProjectListResponseBuilder::create()
+            ->withProjects(
+                [
+                    $projectBuilder
+                        ->withId($project->getId())
+                        ->withCreationDate(date_create()->setTimestamp($project->getCreationDate()))
+                        ->buildArray(),
+                ]
+            )
+            ->build();
+
+        $this->assertEquals($expectedResponseBody, $responseBody);
     }
 
     protected function setUpImplementation()
     {
-        /** @var Facade\Project projectFacade */
         $this->projectFacade = $this->getAnnostationService('database.facade.project');
-
-        $this->userFacade = $this->getAnnostationService('database.facade.user');
+        $this->userFacade    = $this->getAnnostationService('database.facade.user');
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
