@@ -17,7 +17,7 @@
                 <span ng-switch-default>{{vm.project.projectStatus}}</span>
             </small>
         </h1>
-        <h3 style="margin-top: 1.2rem">Report created: {{vm.report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</h3>
+        <h3 style="margin-top: 1.2rem">Report created: {{vm.report.report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</h3>
 
         <hr />
 
@@ -33,18 +33,18 @@
             <tbody>
             <tr>
                 <td>Created</td>
-                <td>{{vm.report.projectCreatedAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
-                <td>{{vm.report.projectCreatedBy}}</td>
+                <td>{{vm.report.report.projectCreatedAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
+                <td>{{vm.report.users[vm.report.report.projectCreatedBy]}}</td>
             </tr>
-            <tr ng-if="vm.report.projectMovedToInProgressAt != null">
+            <tr ng-if="vm.report.report.projectMovedToInProgressAt != null">
                 <td>In Progress</td>
-                <td>{{vm.report.projectMovedToInProgressAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
-                <td>{{vm.report.projectMovedToInProgressBy}}</td>
+                <td>{{vm.report.report.projectMovedToInProgressAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
+                <td>{{vm.report.users[vm.report.report.projectMovedToInProgressBy]}}</td>
             </tr>
-            <tr ng-if="vm.report.projectMovedToDoneAt != null">
+            <tr ng-if="vm.report.report.projectMovedToDoneAt != null">
                 <td>Done</td>
-                <td>{{vm.report.projectMovedToDoneAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
-                <td>{{vm.report.projectMovedToDoneBy}}</td>
+                <td>{{vm.report.report.projectMovedToDoneAt * 1000 | date: 'yyyy-MM-dd H:mm:ss' }}</td>
+                <td>{{vm.report.users[vm.report.report.projectMovedToDoneBy]}}</td>
             </tr>
             </tbody>
         </table>
@@ -71,15 +71,15 @@
             </thead>
             <tbody>
             <tr>
-                <td>{{vm.report.numberOfToDoTasks}}</td>
-                <td>{{vm.report.numberOfInProgressTasks}}</td>
-                <td>{{vm.report.numberOfDoneTasks}}</td>
-                <td>{{vm.report.numberOfToDoReviewTasks}}</td>
-                <td>{{vm.report.numberOfInProgressReviewTasks}}</td>
-                <td>{{vm.report.numberOfDoneReviewTasks}}</td>
-                <td>{{vm.report.numberOfToDoRevisionTasks}}</td>
-                <td>{{vm.report.numberOfInProgressRevisionTasks}}</td>
-                <td>{{vm.report.numberOfDoneRevisionTasks}}</td>
+                <td>{{vm.report.report.numberOfToDoTasks}}</td>
+                <td>{{vm.report.report.numberOfInProgressTasks}}</td>
+                <td>{{vm.report.report.numberOfDoneTasks}}</td>
+                <td>{{vm.report.report.numberOfToDoReviewTasks}}</td>
+                <td>{{vm.report.report.numberOfInProgressReviewTasks}}</td>
+                <td>{{vm.report.report.numberOfDoneReviewTasks}}</td>
+                <td>{{vm.report.report.numberOfToDoRevisionTasks}}</td>
+                <td>{{vm.report.report.numberOfInProgressRevisionTasks}}</td>
+                <td>{{vm.report.report.numberOfDoneRevisionTasks}}</td>
             </tr>
             </tbody>
         </table>
@@ -96,27 +96,27 @@
             <tbody>
             <tr>
                 <td>Number of Videos</td>
-                <td>{{vm.report.numberOfVideosInProject}}</td>
+                <td>{{vm.report.report.numberOfVideosInProject}}</td>
             </tr>
             <tr>
                 <td>Number of Tasks</td>
-                <td>{{vm.report.numberOfTasksInProject}}</td>
+                <td>{{vm.report.report.numberOfTasksInProject}}</td>
             </tr>
             <tr>
                 <td>Number of Object Frames</td>
-                <td>{{vm.report.numberOfLabeledThingInFrames}}</td>
+                <td>{{vm.report.report.numberOfLabeledThingInFrames}}</td>
             </tr>
             <tr>
                 <td>Number of Objects</td>
-                <td>{{vm.report.numberOfLabeledThings}}</td>
+                <td>{{vm.report.report.numberOfLabeledThings}}</td>
             </tr>
             <tr>
                 <td>Number of Attribute Frames</td>
-                <td>{{vm.report.numberOfLabeledThingInFrameClasses}}</td>
+                <td>{{vm.report.report.numberOfLabeledThingInFrameClasses}}</td>
             </tr>
             <tr>
                 <td>Number of Attributes</td>
-                <td>{{vm.report.numberOfLabeledThingClasses}}</td>
+                <td>{{vm.report.report.numberOfLabeledThingClasses}}</td>
             </tr>
             </tbody>
         </table>
@@ -130,7 +130,7 @@
             </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="(classname, value) in vm.report.numberOfTotalClassesInLabeledThingInFrameByClasses track by $index">
+                <tr ng-repeat="(classname, value) in vm.report.report.numberOfTotalClassesInLabeledThingInFrameByClasses track by $index">
                     <td>{{classname}}</td>
                     <td>{{value}}</td>
                 </tr>
@@ -148,21 +148,21 @@
             <tbody>
             <tr>
                 <td>Labeling</td>
-                <td>{{vm.report.totalLabelingTime | readableTimespan}}</td>
+                <td>{{vm.report.report.totalLabelingTime | readableTimespan}}</td>
             </tr>
             <tr>
                 <td>Review</td>
-                <td>{{vm.report.totalReviewTime | readableTimespan}}</td>
+                <td>{{vm.report.report.totalReviewTime | readableTimespan}}</td>
             </tr>
             <tr>
                 <td>Revision</td>
-                <td>{{vm.report.totalRevisionTime | readableTimespan}}</td>
+                <td>{{vm.report.report.totalRevisionTime | readableTimespan}}</td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <td style="text-align: left;">Sum</td>
-                <td style="text-align: left;">{{vm.report.totalTime | readableTimespan}}</td>
+                <td style="text-align: left;">{{vm.report.report.totalTime | readableTimespan}}</td>
             </tr>
             </tfoot>
         </table>
@@ -180,23 +180,23 @@
             <tbody>
             <tr>
                 <td>Average Time per Video</td>
-                <td>{{vm.report.averageTimePerVideo | readableTimespan}}</td>
+                <td>{{vm.report.report.averageTimePerVideo | readableTimespan}}</td>
             </tr>
             <tr>
                 <td>Average Time per Video Frame</td>
-                <td>{{vm.report.averageTimePerVideoFrame | readableTimespan}}</td>
+                <td>{{vm.report.report.averageTimePerVideoFrame | readableTimespan}}</td>
             </tr>
             <tr>
                 <td>Average Time per Object Frame</td>
-                <td>{{vm.report.averageTimePerLabeledThingInFrame}}s</td>
+                <td>{{vm.report.report.averageTimePerLabeledThingInFrame}}s</td>
             </tr>
             <tr>
                 <td>Average Time per Object</td>
-                <td>{{vm.report.averageTimePerLabeledThing}}s</td>
+                <td>{{vm.report.report.averageTimePerLabeledThing}}s</td>
             </tr>
             <tr>
                 <td>Average Object Frames per Video Frame</td>
-                <td>{{vm.report.averageLabeledThingInFramesPerVideoFrame}}</td>
+                <td>{{vm.report.report.averageLabeledThingInFramesPerVideoFrame}}</td>
             </tr>
             </tbody>
         </table>
