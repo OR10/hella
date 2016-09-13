@@ -119,37 +119,37 @@ class Csv implements Service\ProjectExporter
     public function exportProject(Model\Project $project)
     {
         try {
-            $taskGroups = array(
-                'pedestrian'  => array(
+            $taskGroups = [
+                'pedestrian'  => [
                     Model\LabelingTask::INSTRUCTION_PERSON,
                     Model\LabelingTask::INSTRUCTION_CYCLIST,
                     Model\LabelingTask::INSTRUCTION_IGNORE,
-                ),
-                'vehicle'     => array(
+                ],
+                'vehicle'     => [
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
                     Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
-                ),
-                'lane'        => array(
+                ],
+                'lane'        => [
                     Model\LabelingTask::INSTRUCTION_LANE
-                ),
-                'parked-cars' => array(
+                ],
+                'parked-cars' => [
                     Model\LabelingTask::INSTRUCTION_PARKED_CARS
-                ),
-            );
+                ],
+            ];
 
-            $consideredTasks = array();
-            $videoExportIds  = array();
+            $consideredTasks = [];
+            $videoExportIds  = [];
             foreach ($taskGroups as $groupName => $groupInstructions) {
                 $tasks = $this->getLabeledTasksForProject(
                     $project,
                     $groupInstructions
                 );
 
-                $data = array();
+                $data = [];
                 foreach ($tasks as $task) {
                     /** @var Model\LabelingTask $task */
                     if (!isset($data[$task->getVideoId()])) {
-                        $data[$task->getVideoId()] = array();
+                        $data[$task->getVideoId()] = [];
                     }
                     switch ($task->getLabelInstruction()) {
                         case Model\LabelingTask::INSTRUCTION_PERSON:
@@ -292,7 +292,7 @@ class Csv implements Service\ProjectExporter
                 /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $ignoreType = $this->getClassByRegex('/^(person|cyclist)$/', 1, $labeledThingInFrame);
 
-                return array(
+                return [
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction . '-' . $ignoreType,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
@@ -304,7 +304,7 @@ class Csv implements Service\ProjectExporter
                     'direction'    => 'none',
                     'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
-                );
+                ];
             },
             $labeledThingsInFramesWithGhostClasses
         );
@@ -340,7 +340,7 @@ class Csv implements Service\ProjectExporter
                 $occlusion  = $this->getOcclusion($labeledThingInFrame);
                 $truncation = $this->getTruncation($labeledThingInFrame);
 
-                return array(
+                return [
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
@@ -352,7 +352,7 @@ class Csv implements Service\ProjectExporter
                     'direction'    => $direction,
                     'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
-                );
+                ];
             },
             $labeledThingsInFramesWithGhostClasses
         );
@@ -388,7 +388,7 @@ class Csv implements Service\ProjectExporter
 
                 $truncation = $this->getTruncation($labeledThingInFrame);
 
-                $result = array(
+                $result = [
                     'frame_number'         => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'vehicleType'          => $vehicleType,
                     'position_x'           => $this->getPosition($labeledThingInFrame)['x'],
@@ -402,7 +402,7 @@ class Csv implements Service\ProjectExporter
                     'direction'            => '3d data',
                     'id'                   => null,
                     'uuid'                 => $labeledThingInFrame->getLabeledThingId(),
-                );
+                ];
 
                 if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID) {
                     $video      = $this->videoFacade->find($task->getVideoId());
@@ -446,7 +446,7 @@ class Csv implements Service\ProjectExporter
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                 $ignoreType = $this->getClassByRegex('/^(ignore-vehicle)$/', 1, $labeledThingInFrame);
-                $result     = array(
+                $result     = [
                     'frame_number'         => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'          => $ignoreType,
                     'position_x'           => $this->getPosition($labeledThingInFrame)['x'],
@@ -460,7 +460,7 @@ class Csv implements Service\ProjectExporter
                     'direction'            => 'none',
                     'id'                   => null,
                     'uuid'                 => $labeledThingInFrame->getLabeledThingId(),
-                );
+                ];
                 foreach (range(0, 7) as $vertexPoint) {
                     $result['vertex_2d_' . $vertexPoint . '_x'] = 'null';
                     $result['vertex_2d_' . $vertexPoint . '_y'] = 'null';
@@ -491,7 +491,7 @@ class Csv implements Service\ProjectExporter
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 /** @var Model\LabeledThingInFrame $labeledThingInFrame */
-                return array(
+                return [
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
@@ -503,7 +503,7 @@ class Csv implements Service\ProjectExporter
                     'direction'    => 'none',
                     'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
-                );
+                ];
             },
             $labeledThingsInFramesWithGhostClasses
         );
@@ -522,7 +522,7 @@ class Csv implements Service\ProjectExporter
         return array_map(
             function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction, $task) {
                 /** @var Model\LabeledThingInFrame $labeledThingInFrame */
-                $result = array(
+                $result = [
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
                     'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
@@ -536,7 +536,7 @@ class Csv implements Service\ProjectExporter
                     'direction'    => '3d data',
                     'id'           => null,
                     'uuid'         => $labeledThingInFrame->getLabeledThingId(),
-                );
+                ];
 
                 if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID) {
                     $video = $this->videoFacade->find($task->getVideoId());
@@ -670,35 +670,35 @@ class Csv implements Service\ProjectExporter
     {
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
-            return array(
+            return [
                 'x' => 'null',
                 'y' => 'null',
-            );
+            ];
         }
 
         $shape = Shape::createFromArray($shapes[0]);
 
         switch ($shape->getType()) {
             case 'rectangle':
-                return array(
+                return [
                     'x' => (int) round($shape->getLeft()),
                     'y' => (int) round($shape->getTop()),
-                );
+                ];
                 break;
             case 'pedestrian':
                 $heightHalf = ($shape->getBottomCenterY() - $shape->getTopCenterY()) / 2;
                 $widthHalf  = $heightHalf * 0.41;
 
-                return array(
+                return [
                     'x' => (int) ($shape->getTopCenterX() - $widthHalf),
                     'y' => (int) $shape->getTopCenterY(),
-                );
+                ];
                 break;
             default:
-                return array(
+                return [
                     'x' => 'null',
                     'y' => 'null',
-                );
+                ];
         }
     }
 
@@ -711,35 +711,35 @@ class Csv implements Service\ProjectExporter
     {
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
-            return array(
+            return [
                 'width'  => 'null',
                 'height' => 'null',
-            );
+            ];
         }
 
         $shape = Shape::createFromArray($shapes[0]);
 
         switch ($shape->getType()) {
             case 'rectangle':
-                return array(
+                return [
                     'width'  => (int) round($shape->getWidth()),
                     'height' => (int) round($shape->getHeight()),
-                );
+                ];
                 break;
             case 'pedestrian':
                 $heightHalf = ($shape->getBottomCenterY() - $shape->getTopCenterY()) / 2;
                 $widthHalf  = $heightHalf * 0.41;
 
-                return array(
+                return [
                     'width'  => (int) round($widthHalf * 2),
                     'height' => (int) round(($shape->getBottomCenterY() - $shape->getTopCenterY())),
-                );
+                ];
                 break;
             default:
-                return array(
+                return [
                     'width'  => 'null',
                     'height' => 'null',
-                );
+                ];
         }
     }
 
@@ -777,7 +777,7 @@ class Csv implements Service\ProjectExporter
         );
 
         if (count(array_intersect($taskInstructions, $requiredTasksInstructions)) === 0) {
-            return array();
+            return [];
         }
 
         $labeledTasks = array_filter(
@@ -798,7 +798,7 @@ class Csv implements Service\ProjectExporter
 
         // If the required types are missing, return no tasks
         if (count(array_unique(array_intersect($labeledTaskInstructions, $requiredTasksInstructions))) !== count($requiredTasksInstructions)) {
-            return array();
+            return [];
         }
 
         foreach ($labeledTasks as $labeledTask) {
