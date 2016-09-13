@@ -135,7 +135,7 @@ class User
     /**
      * @param array $userIds
      * @param bool  $ignoreLocked
-     * @return array
+     * @return Model\User[]
      */
     public function getUserByIds(array $userIds, $ignoreLocked = true)
     {
