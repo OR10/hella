@@ -94,8 +94,10 @@ class Report extends Controller\Base
 
         return View\View::create()->setData(
             [
-                'result' => $report,
-                'users'  => $users,
+                'result' => [
+                    'report' => $report,
+                    'users' => $users,
+                ]
             ]
         );
     }
