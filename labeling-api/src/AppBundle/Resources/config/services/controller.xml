@@ -127,11 +127,6 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
         </service>
 
-        <service id="annostation.labeling_api.controller.api.statistics" class="AppBundle\Controller\Api\Statistics">
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-        </service>
-
         <service id="annostation.labeling_api.controller.api.task.status" class="AppBundle\Controller\Api\Task\Status">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="security.token_storage" />

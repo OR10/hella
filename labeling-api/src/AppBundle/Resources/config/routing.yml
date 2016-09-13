@@ -91,11 +91,6 @@ api_current_user:
     type: rest
     name_prefix: app_api_current_user_
 
-api_statistics:
-    resource: "annostation.labeling_api.controller.api.statistics"
-    type: rest
-    name_prefix: app_api_statistics_
-
 api_project_count:
     resource: "annostation.labeling_api.controller.api.project_count"
     type: rest

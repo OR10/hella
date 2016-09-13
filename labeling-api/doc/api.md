@@ -21,7 +21,6 @@ broken a 400 status code should be returned.
 <!-- include(labeledThing.md) -->
 <!-- include(status.md) -->
 <!-- include(currentUser.md) -->
-<!-- include(statistics.md) -->
 <!-- include(users.md) -->
 <!-- include(project.md) -->
 <!-- include(dimensionPrediction.md) -->
