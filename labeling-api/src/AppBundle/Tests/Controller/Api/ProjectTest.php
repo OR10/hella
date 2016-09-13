@@ -18,6 +18,11 @@ class ProjectTest extends Tests\WebTestCase
     private $projectFacade;
 
     /**
+     * @var Facade\User
+     */
+    private $userFacade;
+
+    /**
      * @var Model\User
      */
     private $user;
@@ -168,21 +173,22 @@ class ProjectTest extends Tests\WebTestCase
 
         $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
-        /** @var Model\User $coordinator */
-        $coordinator = $this->getService('fos_user.util.user_manipulator')
-            ->create('foobar_label_coordinator', self::PASSWORD, self::EMAIL, true, false);
-        $coordinator->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+        $coordinator = $this->userFacade->updateUser(
+            Tests\Helper\UserBuilder::createDefaultLabelCoordinator()->build()
+        );
 
-        $this->createRequest('/api/project/%s/assign', [$project->getId()])
+        $response = $this->createRequest('/api/project/%s/assign', [$project->getId()])
             ->setJsonBody(
                 [
                     'assignedLabelCoordinatorId' => $coordinator->getId(),
                 ]
             )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->execute();
+            ->execute()
+            ->getResponse();
 
-        $this->assertEquals($project->getLatestAssignedCoordinatorUserId(), $coordinator->getId());
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals($coordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
     }
 
     public function testSaveLegacyProject()
@@ -381,6 +387,8 @@ class ProjectTest extends Tests\WebTestCase
     {
         /** @var Facade\Project projectFacade */
         $this->projectFacade = $this->getAnnostationService('database.facade.project');
+
+        $this->userFacade = $this->getAnnostationService('database.facade.user');
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
