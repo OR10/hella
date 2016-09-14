@@ -128,12 +128,10 @@ class Csv implements Service\ProjectExporter
                 'vehicle'     => [
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
                     Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
+                    Model\LabelingTask::INSTRUCTION_PARKED_CARS
                 ],
                 'lane'        => [
                     Model\LabelingTask::INSTRUCTION_LANE
-                ],
-                'parked-cars' => [
-                    Model\LabelingTask::INSTRUCTION_PARKED_CARS
                 ],
             ];
 
