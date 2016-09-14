@@ -368,32 +368,6 @@ class LabelingTask
         $this->documentManager->flush();
     }
 
-    public function getTotalTimesGroupedByTaskId(array $tasks = null)
-    {
-        if ($tasks !== null) {
-            $idsInChunks = array_chunk($this->mapTasksToTaskIds($tasks), 100);
-            $timesGroupedById = array();
-            foreach ($idsInChunks as $idsInChunk) {
-                $timesGroupedById = array_merge(
-                    $timesGroupedById,
-                    $this->documentManager
-                        ->createQuery('annostation_task_timer_sum_by_taskId_001', 'view')
-                        ->setGroup(true)
-                        ->setKeys($idsInChunk)
-                        ->execute()
-                        ->toArray()
-                );
-            }
-        } else {
-            $query = $this->documentManager
-                ->createQuery('annostation_task_timer_sum_by_taskId_001', 'view')
-                ->setGroup(true);
-            $timesGroupedById = $query->execute()->toArray();
-        }
-
-        return array_column($timesGroupedById, 'value', 'key');
-    }
-
     public function getTotalNumberOfLabeledThingsGroupedByTaskId(array $tasks = null)
     {
         if ($tasks !== null) {
