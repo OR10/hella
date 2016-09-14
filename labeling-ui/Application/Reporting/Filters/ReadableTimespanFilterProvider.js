@@ -1,8 +1,11 @@
 function ReadableTimespanFilterProvider() {
   return function readableTimespan(timespanInSeconds) {
-    const totalMinutes = timespanInSeconds / 60;
-    const time = Math.round(totalMinutes / 6) / 10;
-    return `${time}h`;
+    const hours = parseInt( timespanInSeconds / 3600 ) % 24;
+    const minutes = parseInt(timespanInSeconds / 60) % 60;
+    if (hours === 0) {
+      return `${minutes}m`;
+    }
+    return `${hours}h ${minutes}m`;
   };
 }
 
