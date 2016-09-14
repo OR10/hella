@@ -158,12 +158,12 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertEquals(90, $actualReport->getNumberOfLabeledThingClasses());
 
         $this->assertEquals(
-            ['foobar' => 300, 'foobar2' => 300],
+            ['foobar1' => 300, 'foobar2' => 300],
             $actualReport->getNumberOfTotalClassesInLabeledThingInFrameByClasses()
         );
 
         $this->assertEquals(
-            ['foobar' => 30, 'foobar2' => 30],
+            ['foobar1' => 30, 'foobar2' => 30],
             $actualReport->getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
         );
 
@@ -245,7 +245,7 @@ class ReportTest extends Tests\KernelTestCase
 
             foreach (range(0, 9) as $i2) {
                 $this->labeledThingInFrameFacade->save(
-                    Model\LabeledThingInFrame::create($labeledThing, 30, ['foobar', 'foobar2'])
+                    Tests\Helper\LabeledThingInFrameBuilder::create()->withLabeledThing($labeledThing)->build()
                 );
             }
         }
