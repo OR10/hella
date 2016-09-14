@@ -82,6 +82,35 @@ class Project
 
         return $resultSet[0]['value'];
     }
+
+    /**
+     * @param Model\Project $project
+     * @return array
+     */
+    public function getTimeForLabelingTaskInProject(Model\Project $project)
+    {
+        $timeByTasksAndPhases = $this->documentManager
+            ->createQuery('annostation_task_timer_sum_by_projectId_and_taskId_001', 'view')
+            ->setGroup(true)
+            ->setStartKey([$project->getId(), null])
+            ->setEndKey([$project->getId(), []])
+            ->execute()
+            ->toArray();
+
+        if (empty($timeByTasksAndPhases)) {
+            return array();
+        }
+
+        $result = array();
+        foreach($timeByTasksAndPhases as $byTask) {
+            $taskId = $byTask['key'][1];
+            $result[$taskId] = $byTask['value'];
+        }
+
+        return $result;
+    }
+
+
     
     /**
      * @param string $name
