@@ -230,7 +230,6 @@ class ReportTest extends Tests\KernelTestCase
                 ->withProject($this->project)
                 ->withStatus($phase, $status)
                 ->build();
-
             $this->labelingTaskFacade->save($task);
 
             $timer = Tests\Helper\LabelingTimerBuilder::create()
@@ -239,13 +238,12 @@ class ReportTest extends Tests\KernelTestCase
                 ->withTimeInSeconds($timeInSeconds)
                 ->withPhase($phase)
                 ->build();
-
             $this->labelingTaskFacade->saveTimer($timer);
 
-            $labeledThing = Model\LabeledThing::create($task);
-            $labeledThing->setClasses(['foobar', 'foobar2', 'foobar3']);
+            $labeledThing = Tests\Helper\LabeledThingBuilder::create()->withTask($task)->build();
+            $this->labeledThingFacade->save($labeledThing);
+
             foreach (range(0, 9) as $i2) {
-                $this->labeledThingFacade->save($labeledThing);
                 $this->labeledThingInFrameFacade->save(
                     Model\LabeledThingInFrame::create($labeledThing, 30, ['foobar', 'foobar2'])
                 );
