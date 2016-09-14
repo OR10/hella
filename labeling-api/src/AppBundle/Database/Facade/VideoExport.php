@@ -29,9 +29,16 @@ class VideoExport
         return $this->documentManager->find(Model\VideoExport::class, $id);
     }
 
+    /**
+     * @param Model\VideoExport $videoExport
+     *
+     * @return Model\VideoExport
+     */
     public function save(Model\VideoExport $videoExport)
     {
         $this->documentManager->persist($videoExport);
         $this->documentManager->flush();
+
+        return $videoExport;
     }
 }

@@ -113,7 +113,7 @@ class Csv implements Service\ProjectExporter
      *
      * @param Model\Project $project
      *
-     * @return mixed
+     * @return Model\ProjectExport
      *
      * @throws Exception\Csv
      * @throws \Exception
@@ -204,6 +204,8 @@ class Csv implements Service\ProjectExporter
             );
 
             $this->projectExportFacade->save($projectExport);
+
+            return $projectExport;
         } catch (\Exception $e) {
             throw $e;
         }
