@@ -44,22 +44,39 @@ class Report extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
+     * @var Facade\Video
+     */
+    private $videoFacade;
+
+    /**
      * Report constructor.
+     *
      * @param Facade\Report         $reportFacade
      * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Service\Authorization $authorizationService
      * @param Facade\User           $userFacade
+     * @param Facade\Project        $projectFacade
+     * @param Facade\Video          $videoFacade
      */
     public function __construct(
         Facade\Report $reportFacade,
         AMQP\FacadeAMQP $amqpFacade,
         Service\Authorization $authorizationService,
-        Facade\User $userFacade
+        Facade\User $userFacade,
+        Facade\Project $projectFacade,
+        Facade\Video $videoFacade
     ) {
         $this->reportFacade         = $reportFacade;
         $this->amqpFacade           = $amqpFacade;
         $this->authorizationService = $authorizationService;
         $this->userFacade           = $userFacade;
+        $this->projectFacade        = $projectFacade;
+        $this->videoFacade          = $videoFacade;
     }
 
     /**
@@ -69,14 +86,24 @@ class Report extends Controller\Base
      *
      * @CheckPermissions({"canViewProjectReport"})
      *
-     * @param $report
+     * @param Model\Project $project
+     * @param Model\Report  $report
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getReportAction(Model\Report $report)
+    public function getReportAction(Model\Project $project, Model\Report $report)
     {
         if ($report->getReportStatus() !== Model\Report::REPORT_STATUS_DONE) {
             throw new Exception\NotFoundHttpException();
+        }
+
+        $tasks = array();
+        foreach($this->projectFacade->getTasksByProject($project) as $task) {
+            $video = $this->videoFacade->find($task->getVideoId());
+            $tasks[$task->getId()] = array(
+                'videoName'   => $video->getName(),
+                'labelInstruction' => $task->getLabelInstruction(),
+            );
         }
 
         $userIds = array_unique(
@@ -96,8 +123,9 @@ class Report extends Controller\Base
             [
                 'result' => [
                     'report' => $report,
-                    'users' => $users,
-                ]
+                    'tasks'  => $tasks,
+                    'users'  => $users,
+                ],
             ]
         );
     }
@@ -110,6 +138,7 @@ class Report extends Controller\Base
      * @Rest\Get("/{project}/report")
      *
      * @param Model\Project $project
+     *
      * @return View\View
      */
     public function getReportsForProjectAction(Model\Project $project)
@@ -131,6 +160,7 @@ class Report extends Controller\Base
      * @Rest\Post("/{project}/report")
      *
      * @param Model\Project $project
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function createNewReportForProjectAction(Model\Project $project)
@@ -140,6 +170,7 @@ class Report extends Controller\Base
         $report = Model\Report::create($project);
         $this->reportFacade->save($report);
         $this->amqpFacade->addJob(new Jobs\Report($report->getId()));
+
         return View\View::create()->setData(['result' => $report]);
     }
 }
