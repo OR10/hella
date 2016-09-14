@@ -187,8 +187,8 @@ class ReportTest extends Tests\KernelTestCase
             $actualReport->getProjectMovedToDoneAt()
         );
 
-        $this->assertEquals(27600, $actualReport->getTotalTime());
-        $this->assertEquals(14800, $actualReport->getTotalLabelingTime());
+        $this->assertEquals(14800, $actualReport->getTotalTime());
+        $this->assertEquals(2000, $actualReport->getTotalLabelingTime());
         $this->assertEquals(5800, $actualReport->getTotalReviewTime());
         $this->assertEquals(7000, $actualReport->getTotalRevisionTime());
 
@@ -198,17 +198,17 @@ class ReportTest extends Tests\KernelTestCase
         );
 
         $this->assertEquals(
-            920.0,
+            493.0,
             $actualReport->getAverageTimePerLabeledThing()
         );
 
         $this->assertEquals(
-            92.0,
+            49.0,
             $actualReport->getAverageTimePerLabeledThingInFrame()
         );
 
         $this->assertEquals(
-            27600.0,
+            14800.0,
             $actualReport->getAverageTimePerVideo()
         );
 
@@ -232,8 +232,14 @@ class ReportTest extends Tests\KernelTestCase
                 ->build();
 
             $this->labelingTaskFacade->save($task);
-            $timer = new Model\TaskTimer($task, $this->user, $timeInSeconds);
-            $timer->setTimeInSeconds($phase, $timeInSeconds);
+
+            $timer = Tests\Helper\LabelingTimerBuilder::create()
+                ->withTask($task)
+                ->withUser($this->user)
+                ->withTimeInSeconds($timeInSeconds)
+                ->withPhase($phase)
+                ->build();
+
             $this->labelingTaskFacade->saveTimer($timer);
 
             $labeledThing = Model\LabeledThing::create($task);
