@@ -127,7 +127,7 @@ class Project extends Controller\Base
         );
 
         foreach ($this->projectFacade->getTimePerProject() as $mapping) {
-            $projectTimeMapping[$mapping['key']] = array_sum($mapping['value']);
+            $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
