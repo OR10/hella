@@ -59,6 +59,11 @@ class ReportTest extends Tests\KernelTestCase
      */
     private $video;
 
+    /**
+     * @var array
+     */
+    private $expectedTotalTimeByTasksAndPhases;
+
     public function testProcessReport()
     {
         $phases = [
@@ -192,6 +197,8 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertEquals(5800, $actualReport->getTotalReviewTime());
         $this->assertEquals(7000, $actualReport->getTotalRevisionTime());
 
+        $this->assertEquals($this->expectedTotalTimeByTasksAndPhases, $actualReport->getTotalTimeByTasksAndPhases());
+
         $this->assertEquals(
             0.0,
             $actualReport->getAverageLabeledThingInFramesPerVideoFrame()
@@ -231,6 +238,8 @@ class ReportTest extends Tests\KernelTestCase
                 ->withStatus($phase, $status)
                 ->build();
             $this->labelingTaskFacade->save($task);
+            $this->expectedTotalTimeByTasksAndPhases[$task->getId()][Model\LabelingTask::PHASE_LABELING] = 0;
+            $this->expectedTotalTimeByTasksAndPhases[$task->getId()][$phase] = $timeInSeconds;
 
             $timer = Tests\Helper\LabelingTimerBuilder::create()
                 ->withTask($task)

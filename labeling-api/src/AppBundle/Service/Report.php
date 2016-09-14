@@ -172,6 +172,8 @@ class Report
         $report->setTotalReviewTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVIEW]);
         $report->setTotalRevisionTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVISION]);
 
+        $report->setTotalTimeByTasksAndPhases($this->projectFacade->getTimeForLabelingTaskInProject($project));
+
         $projectMovedToDoneAt       = null;
         $projectMovedToDoneBy       = null;
         $projectMovedToInProgressAt = null;
