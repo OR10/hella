@@ -141,28 +141,41 @@
         <table class="table">
             <thead>
             <tr>
-                <th>Phase</th>
-                <th>Time</th>
+                <th>Task</th>
+                <th>Label Time</th>
+                <th>Review Time</th>
+                <th>Revision Time</th>
+                <th>Sum</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>Labeling</td>
-                <td>{{vm.report.report.totalLabelingTime | readableTimespan}}</td>
-            </tr>
-            <tr>
-                <td>Review</td>
-                <td>{{vm.report.report.totalReviewTime | readableTimespan}}</td>
-            </tr>
-            <tr>
-                <td>Revision</td>
-                <td>{{vm.report.report.totalRevisionTime | readableTimespan}}</td>
+            <tr ng-repeat="(taskId, value) in vm.report.report.totalTimeByTasksAndPhases track by $index">
+                <td>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'ignore-vehicle'" class="fa fa-eye-slash" tooltip="Ignore Vehicle"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'lane'" class="fa fa-long-arrow-up" tooltip="Lane"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === 'parked-cars'" class="fa fa-ellipsis-v " tooltip="Parked Cars"></i>
+                    <i ng-if="vm.report.tasks[taskId].labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+                    {{vm.report.tasks[taskId].videoName}}
+                </td>
+                <td>{{value.labeling | readableTimespan}}</td>
+                <td ng-if="value.review">{{value.review | readableTimespan}}</td>
+                <td ng-if="!value.review">-</td>
+                <td ng-if="value.revision">{{value.revision | readableTimespan}}</td>
+                <td ng-if="!value.revision">-</td>
+                <td>{{value.labeling + value.review + value.revision | readableTimespan}}</td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
-                <td style="text-align: left;">Sum</td>
-                <td style="text-align: left;">{{vm.report.report.totalTime | readableTimespan}}</td>
+                <td style="text-align: left;"></td>
+                <td style="text-align: left;">{{vm.report.report.totalLabelingTime | readableTimespan}}</td>
+                <td style="text-align: left;">{{vm.report.report.totalReviewTime | readableTimespan}}</td>
+                <td style="text-align: left;">{{vm.report.report.totalRevisionTime | readableTimespan}}</td>
+                <td style="text-align: left;">{{vm.report.report.totalLabelingTime + vm.report.report.totalReviewTime + vm.report.report.totalRevisionTime  | readableTimespan}}</td>
             </tr>
             </tfoot>
         </table>
