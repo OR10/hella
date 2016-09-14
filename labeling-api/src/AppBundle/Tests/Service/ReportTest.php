@@ -190,96 +190,96 @@ class ReportTest extends Tests\KernelTestCase
         $this->reportService->processReport($report);
         $actualReport = $this->reportFacade->find($report->getId());
 
-        $this->assertSame(Model\Report::REPORT_STATUS_DONE, $actualReport->getReportStatus());
-        $this->assertSame($project->getId(), $actualReport->getProjectId());
-        $this->assertSame($project->getStatus(), $actualReport->getProjectStatus());
+        $this->assertEquals(Model\Report::REPORT_STATUS_DONE, $actualReport->getReportStatus());
+        $this->assertEquals($project->getId(), $actualReport->getProjectId());
+        $this->assertEquals($project->getStatus(), $actualReport->getProjectStatus());
 
-        $this->assertSame($project->getCreationDate(), $actualReport->getProjectCreatedAt());
-        $this->assertSame($project->getUserId(), $actualReport->getProjectCreatedBy());
-        $this->assertSame($projectMovedToDoneDateTime->getTimestamp(), $actualReport->getProjectMovedToDoneAt());
-        $this->assertSame($moveToDoneUser->getId(), $actualReport->getProjectMovedToDoneBy());
-        $this->assertSame($projectMovedToInProgressDateTime->getTimestamp(), $actualReport->getProjectMovedToInProgressAt());
-        $this->assertSame($moveToInProgressUser->getId(), $actualReport->getProjectMovedToInProgressBy());
+        $this->assertEquals($project->getCreationDate(), $actualReport->getProjectCreatedAt());
+        $this->assertEquals($project->getUserId(), $actualReport->getProjectCreatedBy());
+        $this->assertEquals($projectMovedToDoneDateTime->getTimestamp(), $actualReport->getProjectMovedToDoneAt());
+        $this->assertEquals($moveToDoneUser->getId(), $actualReport->getProjectMovedToDoneBy());
+        $this->assertEquals($projectMovedToInProgressDateTime->getTimestamp(), $actualReport->getProjectMovedToInProgressAt());
+        $this->assertEquals($moveToInProgressUser->getId(), $actualReport->getProjectMovedToInProgressBy());
 
-        $this->assertSame(1, $actualReport->getNumberOfVideosInProject());
-        $this->assertSame(60, $actualReport->getNumberOfTasksInProject());
-        $this->assertSame($phases, $actualReport->getLabelingValidationProcesses());
-        $this->assertSame($project->getDueDate(), $actualReport->getProjectDueDate());
+        $this->assertEquals(1, $actualReport->getNumberOfVideosInProject());
+        $this->assertEquals(60, $actualReport->getNumberOfTasksInProject());
+        $this->assertEquals($phases, $actualReport->getLabelingValidationProcesses());
+        $this->assertEquals($project->getDueDate(), $actualReport->getProjectDueDate());
 
-        $this->assertSame(2, $actualReport->getNumberOfToDoTasks());
-        $this->assertSame(3, $actualReport->getNumberOfInProgressTasks());
-        $this->assertSame(25, $actualReport->getNumberOfDoneTasks());
+        $this->assertEquals(2, $actualReport->getNumberOfToDoTasks());
+        $this->assertEquals(3, $actualReport->getNumberOfInProgressTasks());
+        $this->assertEquals(25, $actualReport->getNumberOfDoneTasks());
 
-        $this->assertSame(5, $actualReport->getNumberOfToDoReviewTasks());
-        $this->assertSame(4, $actualReport->getNumberOfInProgressReviewTasks());
-        $this->assertSame(12, $actualReport->getNumberOfDoneReviewTasks());
+        $this->assertEquals(5, $actualReport->getNumberOfToDoReviewTasks());
+        $this->assertEquals(4, $actualReport->getNumberOfInProgressReviewTasks());
+        $this->assertEquals(12, $actualReport->getNumberOfDoneReviewTasks());
 
-        $this->assertSame(4, $actualReport->getNumberOfToDoRevisionTasks());
-        $this->assertSame(3, $actualReport->getNumberOfInProgressRevisionTasks());
-        $this->assertSame(2, $actualReport->getNumberOfDoneRevisionTasks());
+        $this->assertEquals(4, $actualReport->getNumberOfToDoRevisionTasks());
+        $this->assertEquals(3, $actualReport->getNumberOfInProgressRevisionTasks());
+        $this->assertEquals(2, $actualReport->getNumberOfDoneRevisionTasks());
 
-        $this->assertSame(300, $actualReport->getNumberOfLabeledThingInFrames());
-        $this->assertSame(600, $actualReport->getNumberOfLabeledThingInFrameClasses());
+        $this->assertEquals(300, $actualReport->getNumberOfLabeledThingInFrames());
+        $this->assertEquals(600, $actualReport->getNumberOfLabeledThingInFrameClasses());
 
-        $this->assertSame(30, $actualReport->getNumberOfLabeledThings());
-        $this->assertSame(90, $actualReport->getNumberOfLabeledThingClasses());
+        $this->assertEquals(30, $actualReport->getNumberOfLabeledThings());
+        $this->assertEquals(90, $actualReport->getNumberOfLabeledThingClasses());
 
-        $this->assertSame(
+        $this->assertEquals(
             ['foobar' => 300, 'foobar2' => 300],
             $actualReport->getNumberOfTotalClassesInLabeledThingInFrameByClasses()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             ['foobar' => 30, 'foobar2' => 30],
             $actualReport->getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $moveToInProgressUser->getId(),
             $actualReport->getProjectMovedToInProgressBy()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $projectMovedToInProgressDateTime->getTimestamp(),
             $actualReport->getProjectMovedToInProgressAt()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $moveToDoneUser->getId(),
             $actualReport->getProjectMovedToDoneBy()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $projectMovedToDoneDateTime->getTimestamp(),
             $actualReport->getProjectMovedToDoneAt()
         );
 
-        $this->assertSame(27600, $actualReport->getTotalTime());
-        $this->assertSame(14800, $actualReport->getTotalLabelingTime());
-        $this->assertSame(5800, $actualReport->getTotalReviewTime());
-        $this->assertSame(7000, $actualReport->getTotalRevisionTime());
+        $this->assertEquals(27600, $actualReport->getTotalTime());
+        $this->assertEquals(14800, $actualReport->getTotalLabelingTime());
+        $this->assertEquals(5800, $actualReport->getTotalReviewTime());
+        $this->assertEquals(7000, $actualReport->getTotalRevisionTime());
 
-        $this->assertSame(
+        $this->assertEquals(
             0.0,
             $actualReport->getAverageLabeledThingInFramesPerVideoFrame()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             920.0,
             $actualReport->getAverageTimePerLabeledThing()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             92.0,
             $actualReport->getAverageTimePerLabeledThingInFrame()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             27600.0,
             $actualReport->getAverageTimePerVideo()
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             1.0,
             $actualReport->getAverageTimePerVideoFrame()
         );
