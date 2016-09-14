@@ -157,7 +157,7 @@ class Project
      * Return all task for this project
      *
      * @param Model\Project $project
-     * @return mixed
+     * @return Model\LabelingTask[]
      */
     public function getTasksByProject(Model\Project $project)
     {
