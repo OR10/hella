@@ -89,9 +89,9 @@ class Csv implements Service\ProjectExporter
         Facade\Video $videoFacade,
         Facade\VideoExport $videoExportFacade,
         Service\DepthBuffer $depthBufferService,
-        $headline = true,
-        $delimiter = ',',
-        $enclosure = '"'
+        bool $headline = true,
+        string $delimiter = ',',
+        string $enclosure = '"'
     ) {
         $this->ghostClassesPropagationService = $ghostClassesPropagationService;
         $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
@@ -107,167 +107,102 @@ class Csv implements Service\ProjectExporter
     }
 
     /**
-     * Export data for the given task.
+     * Export data for the given project.
+     *
+     * Only tasks with status done are considered.
      *
      * @param Model\Project $project
      *
      * @return mixed
+     *
      * @throws Exception\Csv
      * @throws \Exception
-     *
      */
     public function exportProject(Model\Project $project)
     {
         try {
+            // the generated zip file contains one csv file for each task group
             $taskGroups = [
-                'pedestrian'  => [
+                'pedestrian' => [
                     Model\LabelingTask::INSTRUCTION_PERSON,
                     Model\LabelingTask::INSTRUCTION_CYCLIST,
                     Model\LabelingTask::INSTRUCTION_IGNORE,
                 ],
-                'vehicle'     => [
+                'vehicle'    => [
                     Model\LabelingTask::INSTRUCTION_VEHICLE,
                     Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
-                    Model\LabelingTask::INSTRUCTION_PARKED_CARS
+                    Model\LabelingTask::INSTRUCTION_PARKED_CARS,
                 ],
-                'lane'        => [
-                    Model\LabelingTask::INSTRUCTION_LANE
+                'lane'       => [
+                    Model\LabelingTask::INSTRUCTION_LANE,
                 ],
+            ];
+
+            $labelDataDispatcherMap = [
+                Model\LabelingTask::INSTRUCTION_PERSON         => function (Model\LabelingTask $task) {
+                    return $this->getPedestrianLabelingData($task);
+                },
+                Model\LabelingTask::INSTRUCTION_CYCLIST        => function (Model\LabelingTask $task) {
+                    return $this->getCyclistLabelingData($task);
+                },
+                Model\LabelingTask::INSTRUCTION_IGNORE         => function (Model\LabelingTask $task) {
+                    return $this->getIgnoreLabelingData($task);
+                },
+                Model\LabelingTask::INSTRUCTION_VEHICLE        => function (Model\LabelingTask $task) {
+                    return $this->getVehicleLabelingData($task);
+                },
+                Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE => function (Model\LabelingTask $task) {
+                    return $this->getVehicleIgnoreLabelingData($task);
+                },
+                Model\LabelingTask::INSTRUCTION_LANE           => function (Model\LabelingTask $task) {
+                    return $this->getLaneLabelingData($task);
+                },
+                Model\LabelingTask::INSTRUCTION_PARKED_CARS    => function (Model\LabelingTask $task) {
+                    return $this->getParkedCarsLabelingData($task);
+                },
             ];
 
             $consideredTasks = [];
             $videoExportIds  = [];
             foreach ($taskGroups as $groupName => $groupInstructions) {
-                $tasks = $this->getLabeledTasksForProject(
-                    $project,
-                    $groupInstructions
-                );
+                $tasks = $this->getLabeledTasksForProject($project, $groupInstructions);
 
                 $data = [];
                 foreach ($tasks as $task) {
-                    /** @var Model\LabelingTask $task */
                     if (!isset($data[$task->getVideoId()])) {
                         $data[$task->getVideoId()] = [];
                     }
-                    switch ($task->getLabelInstruction()) {
-                        case Model\LabelingTask::INSTRUCTION_PERSON:
-                            $data[$task->getVideoId()] = array_merge(
-                                $data[$task->getVideoId()],
-                                $this->getPedestrianLabelingData($task)
-                            );
-                            break;
-                        case Model\LabelingTask::INSTRUCTION_CYCLIST:
-                            $data[$task->getVideoId()] = array_merge(
-                                $data[$task->getVideoId()],
-                                $this->getCyclistLabelingData($task)
-                            );
-                            break;
-                        case Model\LabelingTask::INSTRUCTION_IGNORE:
-                            $data[$task->getVideoId()] = array_merge(
-                                $data[$task->getVideoId()],
-                                $this->getIgnoreLabelingData($task)
-                            );
-                            break;
-                        case Model\LabelingTask::INSTRUCTION_VEHICLE:
-                            $data[$task->getVideoId()] = array_merge(
-                                $data[$task->getVideoId()],
-                                $this->getVehicleLabelingData($task)
-                            );
-                            break;
-                        case Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE:
-                            $data[$task->getVideoId()] = array_merge(
-                                $data[$task->getVideoId()],
-                                $this->getVehicleIgnoreLabelingData($task)
-                            );
-                            break;
-                        case Model\LabelingTask::INSTRUCTION_LANE:
-                            $data[$task->getVideoId()] = array_merge(
-                                $data[$task->getVideoId()],
-                                $this->getLaneLabelingData($task)
-                            );
-                            break;
-                        case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
-                            $data[$task->getVideoId()] = array_merge($data[$task->getVideoId()], $this->getParkedCarsLabelingData($task));
-                            break;
-                    }
+
+                    $data[$task->getVideoId()] = array_merge(
+                        $data[$task->getVideoId()],
+                        $labelDataDispatcherMap[$task->getLabelInstruction()]($task)
+                    );
                 }
+
                 $consideredTasks = array_merge($tasks, $consideredTasks);
 
                 foreach ($data as $videoId => $videoData) {
-                    if (empty($videoData)) {
-                        continue;
-                    }
-
-                    uasort(
+                    $videoExport = $this->createVideoExport(
+                        $project,
                         $videoData,
-                        function ($a, $b) {
-                            if ($a['frame_number'] === $b['frame_number']) {
-                                return 0;
-                            }
-
-                            return ($a['frame_number'] < $b['frame_number']) ? -1 : 1;
-                        }
-                    );
-
-                    $shortUuidNumbers = array_flip(
-                        array_unique(
-                            array_map(
-                                function ($label) {
-                                    return $label['uuid'];
-                                },
-                                $videoData
-                            )
-                        )
-                    );
-
-                    $videoData = array_map(
-                        function ($label) use ($shortUuidNumbers) {
-                            $label['id'] = $shortUuidNumbers[$label['uuid']];
-
-                            return $label;
-                        },
-                        $videoData
-                    );
-
-                    $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
-
-                    $fp = fopen($tempCsvFile, 'w');
-                    if ($this->headline) {
-                        fputcsv($fp, array_keys($videoData[0]), $this->delimiter, $this->enclosure);
-                    }
-                    foreach ($videoData as $labeledThingInFrame) {
-                        fputcsv($fp, $labeledThingInFrame, $this->delimiter, $this->enclosure);
-                    }
-                    fclose($fp);
-
-                    $video    = $this->videoFacade->find($videoId);
-                    $filename = sprintf(
-                        'export_%s_%s_%s.csv',
-                        str_replace(' ', '_', $project->getName()),
+                        $videoId,
                         $groupName,
-                        str_replace(' ', '_', $video->getName())
+                        $consideredTasks
                     );
 
-                    $videoExport = new Model\VideoExport(
-                        $video,
-                        $consideredTasks,
-                        $filename,
-                        'text/csv',
-                        file_get_contents($tempCsvFile)
-                    );
-                    $this->videoExportFacade->save($videoExport);
-                    $videoExportIds[] = $videoExport->getId();
-                    if (!unlink($tempCsvFile)) {
-                        throw new Exception\Csv(sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile));
+                    if ($videoExport !== null) {
+                        $videoExportIds[] = $videoExport->getId();
                     }
                 }
             }
+
             $date          = new \DateTime('now', new \DateTimeZone('UTC'));
             $projectExport = new Model\ProjectExport(
                 $project,
                 $videoExportIds,
                 sprintf('csv_%s.zip', $date->format('Ymd_His'))
             );
+
             $this->projectExportFacade->save($projectExport);
         } catch (\Exception $e) {
             throw $e;
@@ -286,8 +221,7 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
-                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 $ignoreType = $this->getClassByRegex('/^(person|cyclist)$/', 1, $labeledThingInFrame);
 
                 return [
@@ -332,8 +266,7 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
-                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 $direction  = $this->getClassByRegex('/^(direction-(\w+|(\w+-\w+)))$/', 2, $labeledThingInFrame);
                 $occlusion  = $this->getOcclusion($labeledThingInFrame);
                 $truncation = $this->getTruncation($labeledThingInFrame);
@@ -367,8 +300,7 @@ class Csv implements Service\ProjectExporter
         $frameNumberMapping                    = $task->getFrameNumberMapping();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping, $task) {
-                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping, $task) {
                 $vehicleType = $this->getClassByRegex(
                     '/^(car|truck|van|2-wheeler-vehicle|bus|misc-vehicle)$/',
                     0,
@@ -441,8 +373,7 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
-                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 $ignoreType = $this->getClassByRegex('/^(ignore-vehicle)$/', 1, $labeledThingInFrame);
                 $result     = [
                     'frame_number'         => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
@@ -487,8 +418,7 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
-                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping, $labelInstruction) {
                 return [
                     'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
                     'label_class'  => $labelInstruction,
@@ -509,6 +439,7 @@ class Csv implements Service\ProjectExporter
 
     /**
      * @param Model\LabelingTask $task
+     *
      * @return mixed
      */
     public function getParkedCarsLabelingData(Model\LabelingTask $task)
@@ -518,39 +449,45 @@ class Csv implements Service\ProjectExporter
         $labelInstruction                      = $task->getLabelInstruction();
 
         return array_map(
-            function ($labeledThingInFrame) use ($frameNumberMapping, $labelInstruction, $task) {
-                /** @var Model\LabeledThingInFrame $labeledThingInFrame */
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use (
+                $frameNumberMapping,
+                $labelInstruction,
+                $task
+            ) {
                 $result = [
-                    'frame_number' => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
-                    'label_class'  => $labelInstruction,
-                    'position_x'   => $this->getPosition($labeledThingInFrame)['x'],
-                    'position_y'   => $this->getPosition($labeledThingInFrame)['y'],
-                    'width'        => $this->getDimensions($labeledThingInFrame)['width'],
-                    'height'       => $this->getDimensions($labeledThingInFrame)['height'],
-                    'occlusion'    => 'none',
+                    'frame_number'         => $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
+                    'label_class'          => $labelInstruction,
+                    'position_x'           => $this->getPosition($labeledThingInFrame)['x'],
+                    'position_y'           => $this->getPosition($labeledThingInFrame)['y'],
+                    'width'                => $this->getDimensions($labeledThingInFrame)['width'],
+                    'height'               => $this->getDimensions($labeledThingInFrame)['height'],
+                    'occlusion'            => 'none',
                     'occlusion-front-back' => 'none',
                     'occlusion-side'       => 'none',
-                    'truncation'   => 'none',
-                    'direction'    => '3d data',
-                    'id'           => null,
-                    'uuid'         => $labeledThingInFrame->getLabeledThingId(),
+                    'truncation'           => 'none',
+                    'direction'            => '3d data',
+                    'id'                   => null,
+                    'uuid'                 => $labeledThingInFrame->getLabeledThingId(),
                 ];
 
                 if ($task->getDrawingTool() === Model\LabelingTask::DRAWING_TOOL_CUBOID) {
-                    $video = $this->videoFacade->find($task->getVideoId());
+                    $floatValue = function ($value) {
+                        return $value === null ? 'null' : round($value, 4);
+                    };
+
+                    $video      = $this->videoFacade->find($task->getVideoId());
                     $vertices2d = $this->getCuboidVertices($labeledThingInFrame, $video)[0];
                     foreach (range(0, 7) as $vertexPoint) {
-                        $result['vertex_2d_' . $vertexPoint . '_x'] = ($vertices2d[$vertexPoint][0] === null) ? 'null' : round($vertices2d[$vertexPoint][0], 4);
-                        $result['vertex_2d_' . $vertexPoint . '_y'] = ($vertices2d[$vertexPoint][1] === null) ? 'null' : round($vertices2d[$vertexPoint][1], 4);
+                        $result['vertex_2d_' . $vertexPoint . '_x'] = $floatValue($vertices2d[$vertexPoint][0]);
+                        $result['vertex_2d_' . $vertexPoint . '_y'] = $floatValue($vertices2d[$vertexPoint][1]);
                     }
 
                     $vertices3d = $labeledThingInFrame->getShapes()[0]['vehicleCoordinates'];
                     foreach (range(0, 7) as $vertexPoint) {
-                        $result['vertex_3d_' . $vertexPoint . '_x'] = ($vertices3d[$vertexPoint][0] === null) ? 'null' : round($vertices3d[$vertexPoint][0], 4);
-                        $result['vertex_3d_' . $vertexPoint . '_y'] = ($vertices3d[$vertexPoint][1] === null) ? 'null' : round($vertices3d[$vertexPoint][1], 4);
-                        $result['vertex_3d_' . $vertexPoint . '_z'] = ($vertices3d[$vertexPoint][2] === null) ? 'null' : round($vertices3d[$vertexPoint][2], 4);
+                        $result['vertex_3d_' . $vertexPoint . '_x'] = $floatValue($vertices3d[$vertexPoint][0]);
+                        $result['vertex_3d_' . $vertexPoint . '_y'] = $floatValue($vertices3d[$vertexPoint][1]);
+                        $result['vertex_3d_' . $vertexPoint . '_z'] = $floatValue($vertices3d[$vertexPoint][2]);
                     }
-
                 }
 
                 return $result;
@@ -760,7 +697,8 @@ class Csv implements Service\ProjectExporter
      * @param Model\Project $project
      * @param array         $requiredTasksInstructions
      *
-     * @return mixed
+     * @return Model\LabelingTask[]
+     *
      * @throws \Exception
      */
     public function getLabeledTasksForProject(Model\Project $project, array $requiredTasksInstructions)
@@ -781,9 +719,11 @@ class Csv implements Service\ProjectExporter
         $labeledTasks = array_filter(
             $tasks,
             function (Model\LabelingTask $task) use ($requiredTasksInstructions) {
-                return in_array($task->getLabelInstruction(), $requiredTasksInstructions) && $task->getStatus(
-                    Model\LabelingTask::PHASE_LABELING
-                ) === Model\LabelingTask::STATUS_DONE;
+                if (in_array($task->getLabelInstruction(), $requiredTasksInstructions)) {
+                    return $task->getStatus(Model\LabelingTask::PHASE_LABELING) === Model\LabelingTask::STATUS_DONE;
+                }
+
+                return false;
             }
         );
 
@@ -795,7 +735,9 @@ class Csv implements Service\ProjectExporter
         );
 
         // If the required types are missing, return no tasks
-        if (count(array_unique(array_intersect($labeledTaskInstructions, $requiredTasksInstructions))) !== count($requiredTasksInstructions)) {
+        if (count(array_unique(array_intersect($labeledTaskInstructions, $requiredTasksInstructions)))
+            !== count($requiredTasksInstructions)
+        ) {
             return [];
         }
 
@@ -806,5 +748,86 @@ class Csv implements Service\ProjectExporter
         }
 
         return $labeledTasks;
+    }
+
+    /**
+     * Creates the VideoExport document and returns it.
+     *
+     * If no video export could be created, e.g. if there is no data, `null` is returned.
+     *
+     * @param Model\Project        $project
+     * @param array                $videoData
+     * @param string               $videoId
+     * @param string               $groupName
+     * @param Model\LabelingTask[] $consideredTasks
+     *
+     * @return Model\VideoExport|null
+     *
+     * @throws Exception\Csv
+     */
+    private function createVideoExport(
+        Model\Project $project,
+        array $videoData,
+        string $videoId,
+        string $groupName,
+        array $consideredTasks
+    ) {
+        if (empty($videoData)) {
+            return null;
+        }
+
+        uasort(
+            $videoData,
+            function ($a, $b) {
+                return $a['frame_number'] <=> $b['frame_number'];
+            }
+        );
+
+        $shortUuidNumbers = array_flip(array_unique(array_column($videoData, 'uuid')));
+
+        $videoData = array_map(
+            function ($label) use ($shortUuidNumbers) {
+                $label['id'] = $shortUuidNumbers[$label['uuid']];
+
+                return $label;
+            },
+            $videoData
+        );
+
+        $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
+
+        $fp = fopen($tempCsvFile, 'w');
+        if ($this->headline) {
+            fputcsv($fp, array_keys($videoData[0]), $this->delimiter, $this->enclosure);
+        }
+
+        foreach ($videoData as $labeledThingInFrame) {
+            fputcsv($fp, $labeledThingInFrame, $this->delimiter, $this->enclosure);
+        }
+        fclose($fp);
+
+        $video    = $this->videoFacade->find($videoId);
+        $filename = sprintf(
+            'export_%s_%s_%s.csv',
+            str_replace(' ', '_', $project->getName()),
+            $groupName,
+            str_replace(' ', '_', $video->getName())
+        );
+
+        $videoExport = $this->videoExportFacade->save(
+            new Model\VideoExport(
+                $video,
+                $consideredTasks,
+                $filename,
+                'text/csv',
+                file_get_contents($tempCsvFile)
+            )
+        );
+
+        if (!unlink($tempCsvFile)) {
+            throw new Exception\Csv(sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile));
+        }
+
+        return $videoExport;
     }
 }
