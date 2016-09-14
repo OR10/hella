@@ -188,6 +188,12 @@ class Report
     private $totalRevisionTime;
 
     /**
+     * @var array
+     * @CouchDB\Field(type="mixed")
+     */
+    private $totalTimeByTasksAndPhases;
+
+    /**
      * @CouchDB\Field(type="integer")
      */
     private $averageTimePerLabeledThingInFrame;
@@ -829,5 +835,21 @@ class Report
     public function setAverageTimePerLabeledThing($averageTimePerLabeledThing)
     {
         $this->averageTimePerLabeledThing = $averageTimePerLabeledThing;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalTimeByTasksAndPhases()
+    {
+        return $this->totalTimeByTasksAndPhases;
+    }
+
+    /**
+     * @param mixed $totalTimeByTasksAndPhases
+     */
+    public function setTotalTimeByTasksAndPhases($totalTimeByTasksAndPhases)
+    {
+        $this->totalTimeByTasksAndPhases = $totalTimeByTasksAndPhases;
     }
 }
