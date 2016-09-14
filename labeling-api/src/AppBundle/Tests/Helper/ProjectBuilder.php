@@ -22,6 +22,11 @@ class ProjectBuilder
     /**
      * @var string
      */
+    private $owningUserId;
+
+    /**
+     * @var string
+     */
     private $currentStatus = Model\Project::STATUS_TODO;
 
     /**
@@ -50,6 +55,18 @@ class ProjectBuilder
     }
 
     /**
+     * @param string $id
+     *
+     * @return ProjectBuilder
+     */
+    public function withId(string $id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      *
      * @return ProjectBuilder
@@ -57,6 +74,18 @@ class ProjectBuilder
     public function withName(string $name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @param string $userId
+     *
+     * @return ProjectBuilder
+     */
+    public function withProjectOwnedByUserId(string $userId)
+    {
+        $this->owningUserId = $userId;
 
         return $this;
     }
@@ -73,7 +102,7 @@ class ProjectBuilder
         if ($changedAt === null) {
             if (empty($this->statusChanges)) {
                 $changedAt = new \DateTime();
-            }else{
+            } else {
                 $changedAt = clone end($this->statusChanges)['changedAt'];
                 $changedAt->modify('+1 second');
             }
@@ -82,7 +111,7 @@ class ProjectBuilder
         $this->currentStatus   = $status;
         $this->statusChanges[] = [
             'status'    => $status,
-            'changedAt' => $changedAt,
+            'changedAt' => $changedAt ?: new \DateTime(),
             'changedBy' => $changedBy,
         ];
 
@@ -131,6 +160,10 @@ class ProjectBuilder
         $creationDate = $this->creationDate === null ? null : clone $this->creationDate;
 
         $project = Model\Project::create($this->name, null, $creationDate, null, [], 1, 0, 0);
+
+        if ($this->owningUserId !== null) {
+            $project->setUserId($this->owningUserId);
+        }
 
         foreach ($this->statusChanges as $change) {
             $project->addStatusHistory($change['changedBy'], $change['changedAt'], $change['status']);
