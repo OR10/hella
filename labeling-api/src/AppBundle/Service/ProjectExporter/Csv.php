@@ -16,7 +16,7 @@ class Csv implements Service\ProjectExporter
     private $labeledThingInFrameFacade;
 
     /**
-     * @var Facade\TaskExport
+     * @var Facade\ProjectExport
      */
     private $projectExportFacade;
 
