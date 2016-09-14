@@ -40,6 +40,16 @@ class ProjectBuilder
     private $creationDate;
 
     /**
+     * @var \DateTime
+     */
+    private $dueDate;
+
+    /**
+     * @var array
+     */
+    private $phases = [];
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -131,6 +141,30 @@ class ProjectBuilder
     }
 
     /**
+     * @param \DateTime $dueDate
+     *
+     * @return $this
+     */
+    public function withDueDate(\DateTime $dueDate)
+    {
+        $this->dueDate = $dueDate;
+
+        return $this;
+    }
+
+    /**
+     * @param array $phases
+     *
+     * @return $this
+     */
+    public function withPhases(array $phases)
+    {
+        $this->phases = $phases;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function buildArray()
@@ -159,7 +193,7 @@ class ProjectBuilder
     {
         $creationDate = $this->creationDate === null ? null : clone $this->creationDate;
 
-        $project = Model\Project::create($this->name, null, $creationDate, null, [], 1, 0, 0);
+        $project = Model\Project::create($this->name, null, $creationDate, $this->dueDate, $this->phases, 1, 0, 0);
 
         if ($this->owningUserId !== null) {
             $project->setUserId($this->owningUserId);
