@@ -10,29 +10,29 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class LabelingTask
 {
-    const TYPE_META_LABELING = 'meta-labeling';
+    const TYPE_META_LABELING   = 'meta-labeling';
     const TYPE_OBJECT_LABELING = 'object-labeling';
 
-    const DRAWING_TOOL_RECTANGLE = 'rectangle';
+    const DRAWING_TOOL_RECTANGLE  = 'rectangle';
     const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
-    const DRAWING_TOOL_CUBOID = 'cuboid';
+    const DRAWING_TOOL_CUBOID     = 'cuboid';
 
-    const INSTRUCTION_VEHICLE = 'vehicle';
-    const INSTRUCTION_PERSON = 'person';
-    const INSTRUCTION_CYCLIST = 'cyclist';
-    const INSTRUCTION_IGNORE = 'ignore';
+    const INSTRUCTION_VEHICLE        = 'vehicle';
+    const INSTRUCTION_PERSON         = 'person';
+    const INSTRUCTION_CYCLIST        = 'cyclist';
+    const INSTRUCTION_IGNORE         = 'ignore';
     const INSTRUCTION_IGNORE_VEHICLE = 'ignore-vehicle';
-    const INSTRUCTION_LANE = 'lane';
-    const INSTRUCTION_PARKED_CARS = 'parked-cars';
+    const INSTRUCTION_LANE           = 'lane';
+    const INSTRUCTION_PARKED_CARS    = 'parked-cars';
 
-    const STATUS_PREPROCESSING = 'preprocessing';
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_TODO = 'todo';
-    const STATUS_DONE = 'done';
+    const STATUS_PREPROCESSING            = 'preprocessing';
+    const STATUS_IN_PROGRESS              = 'in_progress';
+    const STATUS_TODO                     = 'todo';
+    const STATUS_DONE                     = 'done';
     const STATUS_WAITING_FOR_PRECONDITION = 'waiting_for_precondition';
 
     const PHASE_LABELING = 'labeling';
-    const PHASE_REVIEW = 'review';
+    const PHASE_REVIEW   = 'review';
     const PHASE_REVISION = 'revision';
 
     /**
@@ -167,7 +167,7 @@ class LabelingTask
      */
     private $reopen = array(
         self::PHASE_LABELING => false,
-        self::PHASE_REVIEW => false,
+        self::PHASE_REVIEW   => false,
         self::PHASE_REVISION => false,
     );
 
@@ -199,20 +199,21 @@ class LabelingTask
      * @param array     $requiredImageTypes
      * @param \DateTime $createdAt
      * @param bool      $hideAttributeSelector
-     * @param null      $taskConfigurationId
+     * @param string    $taskConfigurationId
+     *
      * @return LabelingTask
      */
     public static function create(
         Video $video,
         Project $project,
         array $frameNumberMapping,
-        $taskType,
-        $drawingTool = null,
-        $predefinedClasses = array(),
+        string $taskType,
+        string $drawingTool = null,
+        array $predefinedClasses = array(),
         array $requiredImageTypes = array(),
         \DateTime $createdAt = null,
-        $hideAttributeSelector = false,
-        $taskConfigurationId = null
+        bool $hideAttributeSelector = false,
+        string $taskConfigurationId = null
     ) {
         return new static(
             $video,
@@ -238,19 +239,19 @@ class LabelingTask
      * @param array     $requiredImageTypes
      * @param \DateTime $createdAt
      * @param bool      $hideAttributeSelector
-     * @param           $taskConfigurationId
+     * @param string    $taskConfigurationId
      */
     public function __construct(
         Video $video,
         Project $project,
         array $frameNumberMapping,
-        $taskType,
-        $drawingTool = null,
-        $predefinedClasses = array(),
+        string $taskType,
+        string $drawingTool = null,
+        array $predefinedClasses = array(),
         array $requiredImageTypes = array(),
         \DateTime $createdAt = null,
-        $hideAttributeSelector = false,
-        $taskConfigurationId = null
+        bool $hideAttributeSelector = false,
+        string $taskConfigurationId = null
     ) {
         $this->videoId               = $video->getId();
         $this->projectId             = $project->getId();
@@ -261,11 +262,7 @@ class LabelingTask
         $this->requiredImageTypes    = $requiredImageTypes;
         $this->hideAttributeSelector = $hideAttributeSelector;
         $this->taskConfigurationId   = $taskConfigurationId;
-        if ($createdAt === null) {
-            $this->createdAt = new \DateTime();
-        } else {
-            $this->createdAt = $createdAt;
-        }
+        $this->createdAt             = $createdAt ? clone $createdAt : new \DateTime();
     }
 
     /**
@@ -379,6 +376,7 @@ class LabelingTask
     /**
      * @param           $phase
      * @param string    $status
+     *
      * @return $this
      */
     public function setStatus($phase, $status)
@@ -390,6 +388,7 @@ class LabelingTask
 
     /**
      * @param $phase
+     *
      * @return array
      */
     public function getStatus($phase)
@@ -424,6 +423,7 @@ class LabelingTask
 
     /**
      * @param $phase
+     *
      * @return int|null
      */
     public function getLatestAssignedUserIdForPhase($phase)
@@ -433,20 +433,27 @@ class LabelingTask
             return null;
         }
 
-        $historyEntries = array_filter($historyEntries, function($history) use ($phase) {
-            return ($history['phase'] === $phase);
-        });
+        $historyEntries = array_filter(
+            $historyEntries,
+            function ($history) use ($phase) {
+                return ($history['phase'] === $phase);
+            }
+        );
 
         if (empty($historyEntries)) {
             return null;
         }
 
-        usort($historyEntries, function ($a, $b) {
-            if ($a['assignedAt'] === $b['assignedAt']) {
-                return 0;
+        usort(
+            $historyEntries,
+            function ($a, $b) {
+                if ($a['assignedAt'] === $b['assignedAt']) {
+                    return 0;
+                }
+
+                return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
             }
-            return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
-        });
+        );
 
         return $historyEntries[0]['userId'];
     }
@@ -629,10 +636,10 @@ class LabelingTask
     public function addAssignmentHistory(User $user = null, \DateTime $date, $phase, $status)
     {
         $this->assignmentHistory[] = [
-            'userId' => $user instanceof User ? $user->getId() : null,
+            'userId'     => $user instanceof User ? $user->getId() : null,
             'assignedAt' => $date->getTimestamp(),
-            'phase' => $phase,
-            'status' => $status,
+            'phase'      => $phase,
+            'status'     => $status,
         ];
     }
 
