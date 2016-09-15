@@ -38,7 +38,7 @@ class CalibrationData
     public function save(Model\CalibrationData $calibrationData)
     {
         $this->documentManager->persist($calibrationData);
-        $this->documentManager->flush($calibrationData);
+        $this->documentManager->flush();
 
         return $calibrationData;
     }
