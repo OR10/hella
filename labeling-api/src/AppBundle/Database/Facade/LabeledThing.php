@@ -11,6 +11,9 @@ class LabeledThing
      */
     private $documentManager;
 
+    /**
+     * @param CouchDB\DocumentManager $documentManager
+     */
     public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
@@ -41,9 +44,9 @@ class LabeledThing
 
         return $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex')
+            ->onlyDocs(true)
             ->setStartKey([$labeledThing->getId(), $frameRange->getStartFrameIndex()])
             ->setEndKey([$labeledThing->getId(), $frameRange->getEndFrameIndex()])
-            ->onlyDocs(true)
             ->execute()
             ->toArray();
     }
@@ -56,17 +59,17 @@ class LabeledThing
     {
         return $this->documentManager
             ->createQuery('annostation_labeled_thing', 'incomplete')
+            ->onlyDocs(true)
             ->setStartKey([$labelingTask->getId(), true])
             ->setEndKey([$labelingTask->getId(), true])
-            ->onlyDocs(true)
             ->execute()
             ->toArray();
     }
 
     /**
-     * @param array $labeledThingIds
+     * @param string[] $labeledThingIds
      *
-     * @return array
+     * @return Model\LabeledThing[]
      */
     public function getLabeledThingsById(array $labeledThingIds)
     {
@@ -78,8 +81,8 @@ class LabeledThing
                 $labeledThings,
                 $this->documentManager
                     ->createQuery('annostation_labeled_thing', 'by_id')
-                    ->setKeys($idsInChunk)
                     ->onlyDocs(true)
+                    ->setKeys($idsInChunk)
                     ->execute()
                     ->toArray()
             );
@@ -110,11 +113,11 @@ class LabeledThing
     }
 
     /**
-     * @param $id
+     * @param string $id
      *
      * @return Model\LabeledThing
      */
-    public function find($id)
+    public function find(string $id)
     {
         return $this->documentManager->find(Model\LabeledThing::class, $id);
     }

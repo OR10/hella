@@ -11,17 +11,22 @@ class LabelingGroup
      */
     private $documentManager;
 
+    /**
+     * LabelingGroup constructor.
+     *
+     * @param CouchDB\DocumentManager $documentManager
+     */
     public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
     }
 
     /**
-     * @param $id
+     * @param string $id
      *
      * @return Model\LabelingGroup
      */
-    public function find($id)
+    public function find(string $id)
     {
         return $this->documentManager->find(Model\LabelingGroup::class, $id);
     }
@@ -73,6 +78,7 @@ class LabelingGroup
         $query = $this->documentManager
             ->createQuery('annostation_labeling_group_by_coordinator', 'filter')
             ->onlyDocs(true);
+
         if ($user instanceof Model\User) {
             $query->setKey($user->getId());
         }

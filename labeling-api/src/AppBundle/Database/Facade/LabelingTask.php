@@ -11,6 +11,11 @@ class LabelingTask
      */
     private $documentManager;
 
+    /**
+     * LabelingTask constructor.
+     *
+     * @param CouchDB\DocumentManager $documentManager
+     */
     public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
@@ -18,6 +23,7 @@ class LabelingTask
 
     /**
      * @param $id
+     *
      * @return Model\LabelingTask
      */
     public function find($id)
@@ -51,7 +57,7 @@ class LabelingTask
     }
 
     /**
-     * @return array
+     * @return Model\LabelingTask[]
      */
     public function findAll()
     {
@@ -64,32 +70,34 @@ class LabelingTask
 
     /**
      * @param Model\Video|null $video
-     * @param                  $status
-     * @param null             $skip
-     * @param null             $limit
+     * @param string           $status
+     * @param int              $skip
+     * @param int              $limit
      * @param string           $phase
+     *
      * @return Model\LabelingTask[]
      */
     public function findAllByStatus(
         Model\Video $video = null,
-        $status,
-        $skip = null,
-        $limit = null,
-        $phase = Model\LabelingTask::PHASE_LABELING
+        string $status,
+        int $skip = null,
+        int $limit = null,
+        string $phase = Model\LabelingTask::PHASE_LABELING
     ) {
         $startKey = [$phase, $status];
-        $endKey = [$phase, $status];
+        $endKey   = [$phase, $status];
 
         if ($video !== null) {
             $startKey[] = $video->getId();
-            $endKey[] = $video->getId();
+            $endKey[]   = $video->getId();
         } else {
             $startKey[] = null;
-            $endKey[] = [];
+            $endKey[]   = [];
         }
 
         $query = $this->documentManager
             ->createQuery('annostation_labeling_task_by_phase_status_and_video_001', 'view')
+            ->onlyDocs(true)
             ->setStartKey($startKey)
             ->setEndKey($endKey);
 
@@ -101,17 +109,22 @@ class LabelingTask
             $query->setLimit($limit);
         }
 
-        $result = $query->onlyDocs(true)->execute()->toArray();
+        $result = $query->execute()->toArray();
 
-        uasort($result, function (Model\LabelingTask $a, Model\LabelingTask $b) {
-            if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime) {
-                return 0;
+        uasort(
+            $result,
+            function (Model\LabelingTask $a, Model\LabelingTask $b) {
+                if (!$a->getCreatedAt() instanceof \DateTime || !$b->getCreatedAt() instanceof \DateTime) {
+                    return 0;
+                }
+
+                if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
+                    return 0;
+                }
+
+                return ($a->getCreatedAt()->getTimestamp() < $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
             }
-            if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
-                return 0;
-            }
-            return ($a->getCreatedAt()->getTimestamp() < $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
-        });
+        );
 
         return array_values($result);
     }
@@ -133,13 +146,17 @@ class LabelingTask
 
     /**
      * @param $projects
+     *
      * @return array
      */
     public function findAllByProjects($projects)
     {
-        $projectIds = array_map(function(Model\Project $project) {
-            return $project->getId();
-        }, $projects);
+        $projectIds = array_map(
+            function (Model\Project $project) {
+                return $project->getId();
+            },
+            $projects
+        );
 
         $query = $this->documentManager
             ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
@@ -151,33 +168,35 @@ class LabelingTask
     }
 
     /**
-     * @param                    $status
+     * @param string             $status
      * @param Model\Project|null $project
-     * @param null               $skip
-     * @param null               $limit
+     * @param int                $skip
+     * @param int                $limit
      * @param string             $phase
+     *
      * @return array
      */
     public function findAllByStatusAndProject(
-        $status,
+        string $status,
         Model\Project $project = null,
-        $skip = null,
-        $limit = null,
-        $phase = Model\LabelingTask::PHASE_LABELING
+        int $skip = null,
+        int $limit = null,
+        string $phase = Model\LabelingTask::PHASE_LABELING
     ) {
         $startKey = [$phase, $status];
-        $endKey = [$phase, $status];
+        $endKey   = [$phase, $status];
 
         if ($project !== null) {
             $startKey[] = $project->getId();
-            $endKey[] = $project->getId();
+            $endKey[]   = $project->getId();
         } else {
             $startKey[] = null;
-            $endKey[] = [];
+            $endKey[]   = [];
         }
 
         $query = $this->documentManager
             ->createQuery('annostation_labeling_task_by_phase_status_and_project_001', 'view')
+            ->onlyDocs(true)
             ->setStartKey($startKey)
             ->setEndKey($endKey);
 
@@ -189,9 +208,14 @@ class LabelingTask
             $query->setLimit($limit);
         }
 
-        return $query->onlyDocs(true)->execute();
+        return $query->execute();
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return Model\Video
+     */
     public function getVideo(Model\LabelingTask $labelingTask)
     {
         return $this->documentManager->find(Model\Video::class, $labelingTask->getVideoId());
@@ -210,22 +234,18 @@ class LabelingTask
         $endFrameIndex = null
     ) {
         if ($startFrameIndex === null) {
-            $startFrameIndex = min(
-                array_keys($labelingTask->getFrameNumberMapping())
-            );
+            $startFrameIndex = min(array_keys($labelingTask->getFrameNumberMapping()));
         }
 
         if ($endFrameIndex === null) {
-            $endFrameIndex = max(
-                array_keys($labelingTask->getFrameNumberMapping())
-            );
+            $endFrameIndex = max(array_keys($labelingTask->getFrameNumberMapping()));
         }
 
         return $this->documentManager
             ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
+            ->onlyDocs(true)
             ->setStartKey([$labelingTask->getId(), (int) $startFrameIndex])
             ->setEndKey([$labelingTask->getId(), (int) $endFrameIndex])
-            ->onlyDocs(true)
             ->execute()
             ->toArray();
     }
@@ -259,18 +279,18 @@ class LabelingTask
         $endFrameIndex   = $frameIndex;
 
         if ($startFrameIndex > $endFrameIndex) {
-            $tmp = $startFrameIndex;
+            $tmp             = $startFrameIndex;
             $startFrameIndex = $endFrameIndex;
-            $endFrameIndex = $tmp;
+            $endFrameIndex   = $tmp;
         }
 
         $result = $this->documentManager
             ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
+            ->onlyDocs(true)
             ->setStartKey([$task->getId(), $endFrameIndex])
             ->setEndKey([$task->getId(), $startFrameIndex])
             ->setDescending(true)
             ->setLimit(1)
-            ->onlyDocs(true)
             ->execute()
             ->toArray();
 
@@ -283,6 +303,7 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $labelingTask
+     *
      * @return Model\LabeledThing[]
      */
     public function getLabeledThings(Model\LabelingTask $labelingTask)
@@ -424,7 +445,7 @@ class LabelingTask
     {
         if ($tasks !== null) {
             $idsInChunks = array_chunk($this->mapTasksToTaskIds($tasks), 100);
-            $result = array();
+            $result      = array();
             foreach ($idsInChunks as $idsInChunk) {
                 $result = array_merge(
                     $result,
@@ -455,7 +476,7 @@ class LabelingTask
     public function mapTasksToTaskIds(array $tasks)
     {
         return array_map(
-            function(Model\LabelingTask $task) {
+            function (Model\LabelingTask $task) {
                 return $task->getId();
             },
             $tasks
@@ -464,6 +485,7 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $task
+     *
      * @return array
      */
     public function getLabelStructure(Model\LabelingTask $task)
@@ -473,6 +495,7 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $task
+     *
      * @return array
      */
     public function getLabelAnnotation(Model\LabelingTask $task)
@@ -482,12 +505,13 @@ class LabelingTask
 
     /**
      * @param Model\Project $project
+     *
      * @return array
      */
     public function getSumOfTasksByPhaseForProject(Model\Project $project)
     {
         $result = array();
-        $query = $this->documentManager
+        $query  = $this->documentManager
             ->createQuery('annostation_labeling_task_sum_of_tasks_by_project_phase_and_status_001', 'view')
             ->setStartKey([$project->getId()])
             ->setEndKey([$project->getId(), []])
@@ -499,14 +523,14 @@ class LabelingTask
         $phases = array(
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION
+            Model\LabelingTask::PHASE_REVISION,
         );
         foreach ($phases as $phase) {
             $result[$phase] = [
-                Model\LabelingTask::STATUS_PREPROCESSING => 0,
-                Model\LabelingTask::STATUS_TODO => 0,
-                Model\LabelingTask::STATUS_IN_PROGRESS => 0,
-                Model\LabelingTask::STATUS_DONE => 0,
+                Model\LabelingTask::STATUS_PREPROCESSING            => 0,
+                Model\LabelingTask::STATUS_TODO                     => 0,
+                Model\LabelingTask::STATUS_IN_PROGRESS              => 0,
+                Model\LabelingTask::STATUS_DONE                     => 0,
                 Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION => 0,
             ];
         }
@@ -534,6 +558,7 @@ class LabelingTask
      * @param Model\Project $project
      * @param               $phase
      * @param               $status
+     *
      * @return \Doctrine\CouchDB\View\Result
      */
     public function getSumOfTasksByProjectAndStatus(Model\Project $project, $phase, $status)
@@ -548,6 +573,7 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $labelingTask
+     *
      * @return string
      */
     public function getCurrentPhase(Model\LabelingTask $labelingTask)

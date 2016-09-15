@@ -3,7 +3,6 @@ namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
 use Doctrine\ODM\CouchDB;
-use Doctrine\CouchDB\View;
 
 class Exporter
 {
@@ -12,24 +11,28 @@ class Exporter
      */
     private $documentManager;
 
+    /**
+     * @param CouchDB\DocumentManager $documentManager
+     */
     public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
     }
 
     /**
-     * @param $id
+     * @param string $id
+     *
      * @return Model\Export
      */
-    public function find($id)
+    public function find(string $id)
     {
         return $this->documentManager->find(Model\Export::class, $id);
     }
 
     /**
      * @param Model\Export $export
-     * @return Model\Export
      *
+     * @return Model\Export
      */
     public function save(Model\Export $export)
     {
@@ -41,16 +44,17 @@ class Exporter
 
     /**
      * @param Model\Project $project
-     * @return array
+     *
+     * @return Model\Export[]
      */
     public function findAllByProject(Model\Project $project)
     {
         return $this->documentManager
             ->createQuery('annostation_exporter_by_project_and_date_001', 'view')
+            ->onlyDocs(true)
             ->setStartKey([$project->getId(), []])
             ->setEndKey([$project->getId(), null])
             ->setDescending(true)
-            ->onlyDocs(true)
             ->execute()
             ->toArray();
     }

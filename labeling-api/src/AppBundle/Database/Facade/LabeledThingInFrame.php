@@ -11,6 +11,9 @@ class LabeledThingInFrame
      */
     private $documentManager;
 
+    /**
+     * @param CouchDB\DocumentManager $documentManager
+     */
     public function __construct(CouchDB\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
@@ -34,11 +37,7 @@ class LabeledThingInFrame
     public function save(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         if ($labeledThingInFrame->getId() === null) {
-            $uuids = $this->documentManager->getCouchDBClient()->getUuids();
-            if (!is_array($uuids) || empty($uuids)) {
-                throw new \RuntimeException("Error retrieving uuid for LabeledThingInFrame");
-            }
-            $labeledThingInFrame->setId($uuids[0]);
+            $labeledThingInFrame->setId($this->getUuids(1)[0]);
         }
 
         $this->documentManager->persist($labeledThingInFrame);
@@ -54,16 +53,17 @@ class LabeledThingInFrame
     {
         $numberOfMissingIds = array_reduce(
             $labeledThingsInFrame,
-            function($numberOfMissingIds, $labeledThingInFrame) {
+            function ($numberOfMissingIds, Model\LabeledThingInFrame $labeledThingInFrame) {
                 if ($labeledThingInFrame->getId() === null) {
                     return $numberOfMissingIds + 1;
                 }
+
                 return $numberOfMissingIds;
             },
             0
         );
 
-        $uuids = $numberOfMissingIds > 0 ? $this->documentManager->getCouchDBClient()->getUuids($numberOfMissingIds) : [];
+        $uuids = $this->getUuids($numberOfMissingIds);
 
         foreach ($labeledThingsInFrame as $labeledThingInFrame) {
             if ($labeledThingInFrame->getId() === null) {
@@ -78,7 +78,7 @@ class LabeledThingInFrame
     /**
      * @param Model\LabeledThing $labeledThing
      *
-     * @return array
+     * @return Model\LabeledThingInFrame[]
      */
     public function getLabeledThingInFramesOutsideRange(Model\LabeledThing $labeledThing)
     {
@@ -88,16 +88,16 @@ class LabeledThingInFrame
 
         $beforeRange = $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex')
+            ->onlyDocs(true)
             ->setStartKey([$labeledThing->getId(), 0])
             ->setEndKey([$labeledThing->getId(), $start - 1])
-            ->onlyDocs(true)
             ->execute()
             ->toArray();
 
         $afterRange = $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex')
-            ->setStartKey([$labeledThing->getId(), $end + 1])
             ->onlyDocs(true)
+            ->setStartKey([$labeledThing->getId(), $end + 1])
             ->execute()
             ->toArray();
 
@@ -105,7 +105,7 @@ class LabeledThingInFrame
     }
 
     /**
-     * @param array $labeledThingInFrames
+     * @param Model\LabeledThingInFrame[] $labeledThingInFrames
      */
     public function delete(array $labeledThingInFrames)
     {
@@ -117,56 +117,57 @@ class LabeledThingInFrame
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param int $limit
-     * @return array
+     * @param int                $limit
+     *
+     * @return Model\LabeledThingInFrame[]
      */
-    public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $limit = 0)
+    public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, int $limit = 0)
     {
         $documentManager = $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId')
-            ->setKey($labelingTask->getId())
-            ->onlyDocs(true);
+            ->onlyDocs(true)
+            ->setKey($labelingTask->getId());
 
         if ($limit > 0) {
             $documentManager->setLimit($limit);
         }
-        return $documentManager
-            ->execute()
-            ->toArray();
+
+        return $documentManager->execute()->toArray();
     }
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @param int $limit
-     * @return array
+     * @param int                $limit
+     *
+     * @return Model\LabeledThingInFrame[]
      */
     public function getIncompleteLabeledThingsInFrame(Model\LabelingTask $labelingTask, $limit = 0)
     {
         $documentManager = $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'incomplete')
+            ->onlyDocs(true)
             ->setStartKey([$labelingTask->getId(), true])
-            ->setEndKey([$labelingTask->getId(), true])
-            ->onlyDocs(true);
+            ->setEndKey([$labelingTask->getId(), true]);
 
         if ($limit > 0) {
             $documentManager->setLimit($limit);
         }
-        return $documentManager
-            ->execute()
-            ->toArray();
+
+        return $documentManager->execute()->toArray();
     }
 
     /**
      * @param Model\LabeledThingInFrame $labeledThingInFrame
-     * @return array|null
+     *
+     * @return Model\LabeledThingInFrame[]
      */
     public function getPreviousLabeledThingInFrameWithClasses(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         $result = $this->documentManager
             ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex_count_by_classes')
+            ->onlyDocs(true)
             ->setEndKey([$labeledThingInFrame->getLabeledThingId(), 0, 1])
             ->setStartKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameIndex(), '*'])
-            ->onlyDocs(true)
             ->setLimit(1)
             ->setDescending(true)
             ->execute()
@@ -175,11 +176,13 @@ class LabeledThingInFrame
         if (empty($result)) {
             return null;
         }
+
         return $result[0];
     }
 
     /**
      * @param Model\Project $project
+     *
      * @return int
      */
     public function getSumOfLabeledThingInFramesByProject(Model\Project $project)
@@ -200,6 +203,7 @@ class LabeledThingInFrame
 
     /**
      * @param Model\Project $project
+     *
      * @return array
      */
     public function getSumOfTotalClassesForProject(Model\Project $project)
@@ -213,9 +217,8 @@ class LabeledThingInFrame
             ->execute()
             ->toArray();
 
-
         $result = array();
-        foreach($query as $value) {
+        foreach ($query as $value) {
             $result[$value['key'][1]] = $value['value'];
         }
 
@@ -224,6 +227,7 @@ class LabeledThingInFrame
 
     /**
      * @param Model\Project $project
+     *
      * @return array
      */
     public function getSumOfUniqueClassesForProject(Model\Project $project)
@@ -238,16 +242,37 @@ class LabeledThingInFrame
             ->execute()
             ->toArray();
 
-
         $result = array();
-        foreach($query as $value) {
+        foreach ($query as $value) {
             if (key_exists($value['key'][1], $result)) {
                 $result[$value['key'][1]] += 1;
-            }else{
+            } else {
                 $result[$value['key'][1]] = 1;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Get a number of uuids.
+     *
+     * @param int $count
+     *
+     * @return array
+     */
+    private function getUuids(int $count)
+    {
+        if ($count <= 0) {
+            return [];
+        }
+
+        $uuids = $this->documentManager->getCouchDBClient()->getUuids($count);
+
+        if (!is_array($uuids) || empty($uuids)) {
+            throw new \RuntimeException("Error retrieving uuid for LabeledThingInFrame");
+        }
+
+        return $uuids;
     }
 }

@@ -5,6 +5,9 @@ namespace AppBundle\Database\Facade;
 use AppBundle\Model;
 use Doctrine\ODM\CouchDB;
 
+/**
+ * Simple facade for video calibration data.
+ */
 class CalibrationData
 {
     /**
