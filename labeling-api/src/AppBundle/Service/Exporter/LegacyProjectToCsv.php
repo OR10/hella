@@ -1,14 +1,13 @@
 <?php
 
-namespace AppBundle\Service\ProjectExporter;
+namespace AppBundle\Service\Exporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shape;
 use AppBundle\Service;
-use AppBundle\Service\ProjectExporter\Exception;
 
-class Csv implements Service\ProjectExporter
+class LegacyProjectToCsv implements Service\ProjectExporter
 {
     /**
      * @var Facade\LabeledThingInFrame
@@ -115,7 +114,7 @@ class Csv implements Service\ProjectExporter
      *
      * @return Model\ProjectExport
      *
-     * @throws Exception\Csv
+     * @throws Exception\LegacyProjectToCsv
      * @throws \Exception
      */
     public function exportProject(Model\Project $project)
@@ -578,7 +577,7 @@ class Csv implements Service\ProjectExporter
      */
     private function getClassByRegex($regex, $groupName, Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $builder = new Service\ProjectExporter\Extractor\RegexBuilder();
+        $builder = new Service\Exporter\Extractor\RegexBuilder();
         $builder->setRegexPattern($regex);
         $builder->setGroupName($groupName);
         $regexExtractor = $builder->getRegexExtractor();
@@ -765,7 +764,7 @@ class Csv implements Service\ProjectExporter
      *
      * @return Model\VideoExport|null
      *
-     * @throws Exception\Csv
+     * @throws Exception\LegacyProjectToCsv
      */
     private function createVideoExport(
         Model\Project $project,
@@ -827,7 +826,9 @@ class Csv implements Service\ProjectExporter
         );
 
         if (!unlink($tempCsvFile)) {
-            throw new Exception\Csv(sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile));
+            throw new Exception\LegacyProjectToCsv(
+                sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile)
+            );
         }
 
         return $videoExport;

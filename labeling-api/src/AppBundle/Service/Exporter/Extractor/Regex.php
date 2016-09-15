@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Service\ProjectExporter\Extractor;
+namespace AppBundle\Service\Exporter\Extractor;
 
 use AppBundle\Model;
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace AppBundle\Tests\Service\ProjectExporter;
+namespace AppBundle\Tests\Service\Exporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AppBundle\Service;
-use AppBundle\Service\ProjectExporter;
+use AppBundle\Service\Exporter;
 use AppBundle\Tests;
 
-class CsvTest extends Tests\KernelTestCase
+class LegacyProjectToCsvTest extends Tests\KernelTestCase
 {
     /**
      * @var Facade\Video
@@ -42,7 +42,7 @@ class CsvTest extends Tests\KernelTestCase
     private $labeledThingInFrameFacade;
 
     /**
-     * @var ProjectExporter\Csv
+     * @var Exporter\LegacyProjectToCsv
      */
     private $exporter;
 
@@ -69,7 +69,7 @@ class CsvTest extends Tests\KernelTestCase
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
-        $this->exporter                  = $this->getAnnostationService('service.project_exporter.csv');
+        $this->exporter                  = $this->getAnnostationService('service.exporter.legacy_project_to_csv');
         $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
         $this->project                   = $this->createProject();
         $this->video                     = $this->createVideo();

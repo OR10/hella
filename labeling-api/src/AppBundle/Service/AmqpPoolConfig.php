@@ -38,13 +38,15 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
         $this->useAlternateExchange  = $useAlternateExchange;
         $this->heartBeatSeconds      = 0;
 
+        // @formatter:off
         $this->instructionInstances = array(
-            Jobs\VideoFrameSplitter::class => 'annostation.labeling_api.worker.job_instruction.video',
-            Jobs\KittiExporter::class      => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
-            Jobs\Interpolation::class      => 'annostation.labeling_api.worker.job_instruction.interpolation',
-            Jobs\ProjectCsvExporter::class => 'annostation.labeling_api.worker.job_instruction.project_csv_exporter',
-            Jobs\Report::class             => 'annostation.labeling_api.worker.job_instruction.report',
-            Jobs\Exporter::class           => 'annostation.labeling_api.worker.job_instruction.exporter',
+            Jobs\VideoFrameSplitter::class             => 'annostation.labeling_api.worker.job_instruction.video',
+            Jobs\KittiExporter::class                  => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
+            Jobs\Interpolation::class                  => 'annostation.labeling_api.worker.job_instruction.interpolation',
+            Jobs\Report::class                         => 'annostation.labeling_api.worker.job_instruction.report',
+            Jobs\LegacyProjectToCsvExporter::class     => 'annostation.labeling_api.worker.job_instruction.legacy_project_to_csv_exporter',
+            Jobs\GenericXmlProjectToCsvExporter::class => 'annostation.labeling_api.worker.job_instruction.generic_xml_project_to_csv_exporter',
         );
+        // @formatter:on
     }
 }

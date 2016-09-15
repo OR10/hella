@@ -23,18 +23,18 @@
             <argument type="service" id="annostation.labeling_api.database.facade.status" />
         </service>
 
-        <service id="annostation.labeling_api.worker.job_instruction.project_csv_exporter" class="AppBundle\Worker\JobInstruction\ProjectCsvExporter">
-            <argument type="service" id="annostation.labeling_api.service.project_exporter.csv" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-        </service>
-
         <service id="annostation.labeling_api.worker.job_instruction.report" class="AppBundle\Worker\JobInstruction\Report">
             <argument type="service" id="annostation.labeling_api.service.report" />
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
         </service>
 
-        <service id="annostation.labeling_api.worker.job_instruction.exporter" class="AppBundle\Worker\JobInstruction\Exporter">
-            <argument type="service" id="annostation.labeling_api.service.exporter_csv" />
+        <service id="annostation.labeling_api.worker.job_instruction.legacy_project_to_csv_exporter" class="AppBundle\Worker\JobInstruction\LegacyProjectToCsvExporter">
+            <argument type="service" id="annostation.labeling_api.service.exporter.legacy_project_to_csv" />
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.generic_xml_project_to_csv_exporter" class="AppBundle\Worker\JobInstruction\GenericXmlProjectToCsvExporter">
+            <argument type="service" id="annostation.labeling_api.service.exporter.generic_xml_project_to_csv" />
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
         </service>
     </services>
