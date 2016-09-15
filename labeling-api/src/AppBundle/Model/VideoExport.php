@@ -87,7 +87,7 @@ class VideoExport
      */
     public function getVideoId()
     {
-        return $this->VideoId;
+        return $this->videoId;
     }
 
     /**

@@ -10,7 +10,6 @@ use AppBundle\Worker\Jobs;
 
 class ProjectCsvExporter extends WorkerPool\JobInstruction
 {
-
     /**
      * @var Service\ProjectExporter\Csv
      */
@@ -24,10 +23,8 @@ class ProjectCsvExporter extends WorkerPool\JobInstruction
      * @param Service\ProjectExporter\Csv $csvProjectExporter
      * @param Facade\Project              $projectFacade
      */
-    public function __construct(
-        Service\ProjectExporter\Csv $csvProjectExporter,
-        Facade\Project $projectFacade
-    ) {
+    public function __construct(Service\ProjectExporter\Csv $csvProjectExporter, Facade\Project $projectFacade)
+    {
         $this->csvProjectExporter = $csvProjectExporter;
         $this->projectFacade      = $projectFacade;
     }

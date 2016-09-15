@@ -43,19 +43,16 @@ class ProjectExport
 
     /**
      * @param Project   $project
-     * @param array     $exportVideoIds
-     * @param           $filename
+     * @param string[]  $exportVideoIds
+     * @param string    $filename
      * @param \DateTime $date
      */
-    public function __construct(Project $project, array $exportVideoIds, $filename, \DateTime $date = null)
+    public function __construct(Project $project, array $exportVideoIds, string $filename, \DateTime $date = null)
     {
         $this->projectId      = $project->getId();
         $this->videoExportIds = $exportVideoIds;
         $this->filename       = $filename;
-        if ($date === null) {
-            $date = new \DateTime('now', new \DateTimeZone('UTC'));
-        }
-        $this->date = $date;
+        $this->date           = $date === null ? new \DateTime('now', new \DateTimeZone('UTC')) : clone $date;
     }
 
     /**
@@ -69,7 +66,7 @@ class ProjectExport
     }
 
     /**
-     * @return mixed
+     * @return string[]
      */
     public function getVideoExportIds()
     {

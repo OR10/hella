@@ -16,6 +16,8 @@ class WebTestCase extends KernelTestCase
     /**
      * Create a client for testing controllers.
      *
+     * @param array $server
+     *
      * @return FrameworkBundle\Client
      */
     protected function createClient(array $server = null)
@@ -31,14 +33,20 @@ class WebTestCase extends KernelTestCase
     }
 
     /**
+     * @param string $path
+     * @param array  $parameters
+     *
      * @return RequestWrapper
      */
-    protected function createRequest($path, array $parameters = [])
+    protected function createRequest(string $path, array $parameters = [])
     {
         return RequestWrapper::create($this->createClient([]), vsprintf($path, $parameters))
             ->setServerParameters($this->getDefaultServerParameters());
     }
 
+    /**
+     * @return array
+     */
     private function getDefaultServerParameters()
     {
         return [
