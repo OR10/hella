@@ -3,15 +3,14 @@ namespace AppBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 
-class ProjectCsvExporter extends WorkerPool\JobInstruction
+class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction
 {
     /**
-     * @var Service\ProjectExporter\Csv
+     * @var Service\Exporter\LegacyProjectToCsv
      */
     private $csvProjectExporter;
     /**
@@ -20,22 +19,22 @@ class ProjectCsvExporter extends WorkerPool\JobInstruction
     private $projectFacade;
 
     /**
-     * @param Service\ProjectExporter\Csv $csvProjectExporter
-     * @param Facade\Project              $projectFacade
+     * @param Service\Exporter\LegacyProjectToCsv $csvProjectExporter
+     * @param Facade\Project                      $projectFacade
      */
-    public function __construct(Service\ProjectExporter\Csv $csvProjectExporter, Facade\Project $projectFacade)
+    public function __construct(Service\Exporter\LegacyProjectToCsv $csvProjectExporter, Facade\Project $projectFacade)
     {
         $this->csvProjectExporter = $csvProjectExporter;
         $this->projectFacade      = $projectFacade;
     }
 
     /**
-     * @param Job                        $job
+     * @param WorkerPool\Job             $job
      * @param Logger\Facade\LoggerFacade $logger
      */
-    public function run(Job $job, Logger\Facade\LoggerFacade $logger)
+    public function run(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
     {
-        /** @var Jobs\ProjectCsvExporter $job */
+        /** @var Jobs\LegacyProjectToCsvExporter $job */
 
         $project = $this->projectFacade->find($job->getProjectId());
         if ($project === null) {

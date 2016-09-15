@@ -9,7 +9,7 @@ use AppBundle\Helper\Export\Column;
 use AppBundle\Service;
 use AppBundle\Helper\Export\ColumnGroup;
 
-class Csv
+class GenericXmlProjectToCsv
 {
     /**
      * @var Facade\Exporter

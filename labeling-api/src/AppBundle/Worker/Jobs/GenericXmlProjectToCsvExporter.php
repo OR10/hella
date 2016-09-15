@@ -3,7 +3,7 @@ namespace AppBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
 
-class Exporter extends WorkerPool\Job
+class GenericXmlProjectToCsvExporter extends WorkerPool\Job
 {
     /**
      * @var string
@@ -13,9 +13,9 @@ class Exporter extends WorkerPool\Job
     /**
      * @param string $projectId
      */
-    public function __construct($projectId)
+    public function __construct(string $projectId)
     {
-        $this->projectId = (string) $projectId;
+        $this->projectId = $projectId;
     }
 
     /**
