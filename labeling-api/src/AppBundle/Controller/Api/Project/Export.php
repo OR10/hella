@@ -209,7 +209,7 @@ class Export extends Controller\Base
      * @return HttpFoundation\Response
      *
      */
-    public function getCsvExportAction(Model\Project $project)
+    public function postCsvExportAction(Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
         
