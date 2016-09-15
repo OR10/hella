@@ -42,7 +42,6 @@ class AmqpPoolConfig extends AMQP\AMQPPoolConfig
             Jobs\VideoFrameSplitter::class => 'annostation.labeling_api.worker.job_instruction.video',
             Jobs\KittiExporter::class      => 'annostation.labeling_api.worker.job_instruction.kitti_exporter',
             Jobs\Interpolation::class      => 'annostation.labeling_api.worker.job_instruction.interpolation',
-            Jobs\CsvExporter::class        => 'annostation.labeling_api.worker.job_instruction.csv_exporter',
             Jobs\ProjectCsvExporter::class => 'annostation.labeling_api.worker.job_instruction.project_csv_exporter',
             Jobs\Report::class             => 'annostation.labeling_api.worker.job_instruction.report',
             Jobs\Exporter::class           => 'annostation.labeling_api.worker.job_instruction.exporter',

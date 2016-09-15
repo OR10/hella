@@ -17,11 +17,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
 
-        <service id="annostation.labeling_api.worker.job_instruction.csv_exporter" class="AppBundle\Worker\JobInstruction\CsvExporter">
-            <argument type="service" id="annostation.labeling_api.service.task_exporter.csv" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-        </service>
-
         <service id="annostation.labeling_api.worker.job_instruction.interpolation" class="AppBundle\Worker\JobInstruction\Interpolation">
             <argument type="service" id="annostation.labeling_api.service.interpolation" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
