@@ -172,7 +172,10 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             $consideredTasks = [];
             $videoExportIds  = [];
             foreach ($taskGroups as $groupName => $groupInstructions) {
-                $tasks = $this->getLabeledTasksForProject($project, $groupInstructions);
+                $tasks = $this->getLabeledTasksForProject(
+                    $project,
+                    $this->getRequiredGroupInstructions($project, $groupInstructions)
+                );
 
                 $data = [];
                 foreach ($tasks as $task) {
@@ -843,5 +846,29 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         }
 
         return $videoExport;
+    }
+
+    /**
+     * Return the intersection of defined instructions of the project and the required instructions of a task group.
+     *
+     * This is required to support old project exports that don't have all required group instructions defined on the
+     * project.
+     *
+     * @param Model\Project $project
+     * @param string[]      $groupInstructions
+     *
+     * @return string[]
+     */
+    private function getRequiredGroupInstructions(Model\Project $project, array $groupInstructions)
+    {
+        return array_intersect(
+            array_map(
+                function (array $instruction) {
+                    return $instruction['instruction'];
+                },
+                $project->getLegacyTaskInstructions()
+            ),
+            $groupInstructions
+        );
     }
 }
