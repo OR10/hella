@@ -94,5 +94,10 @@
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.warmup_couchdb_views" class="AppBundle\Command\WarmUpCouchDbViews">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
