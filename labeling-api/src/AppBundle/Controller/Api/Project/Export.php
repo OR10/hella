@@ -32,7 +32,7 @@ class Export extends Controller\Base
     /**
      * @var Facade\ProjectExport
      */
-    private $projectExport;
+    private $projectExportFacade;
 
     /**
      * @var Facade\VideoExport
@@ -50,21 +50,21 @@ class Export extends Controller\Base
     private $authorizationService;
 
     /**
-     * @param Facade\ProjectExport  $projectExport
+     * @param Facade\ProjectExport  $projectExportFacade
      * @param Facade\VideoExport    $videoExportFacade
      * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Facade\Exporter       $exporterFacade
      * @param Service\Authorization $authorizationService
      */
     public function __construct(
-        Facade\ProjectExport $projectExport,
+        Facade\ProjectExport $projectExportFacade,
         Facade\VideoExport $videoExportFacade,
         AMQP\FacadeAMQP $amqpFacade,
         Facade\Exporter $exporterFacade,
         Service\Authorization $authorizationService
     ) {
         $this->amqpFacade           = $amqpFacade;
-        $this->projectExport        = $projectExport;
+        $this->projectExportFacade  = $projectExportFacade;
         $this->videoExportFacade    = $videoExportFacade;
         $this->exporterFacade       = $exporterFacade;
         $this->authorizationService = $authorizationService;
@@ -88,7 +88,7 @@ class Export extends Controller\Base
         if ($exporter === 'genericXml') {
             $exports = $this->exporterFacade->findAllByProject($project);
         } else {
-            $exports = $this->projectExport->findAllByProject($project);
+            $exports = $this->projectExportFacade->findAllByProject($project);
         }
 
         return View\View::create()->setData(
@@ -123,7 +123,7 @@ class Export extends Controller\Base
 
             return $this->getGenericXmlZipContent($project, $export);
         } else {
-            $projectExport = $this->projectExport->find($exportId);
+            $projectExport = $this->projectExportFacade->find($exportId);
 
             return $this->getLegacyZipContent($project, $projectExport);
         }

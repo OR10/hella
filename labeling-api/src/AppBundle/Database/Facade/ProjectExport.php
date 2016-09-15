@@ -32,8 +32,10 @@ class ProjectExport
     public function findAllByProject(Model\Project $project)
     {
         return $this->documentManager
-            ->createQuery('annostation_project_export', 'by_projectId')
-            ->setKey($project->getId())
+            ->createQuery('annostation_project_export_002', 'by_projectId_date')
+            ->setStartKey([$project->getId(), []])
+            ->setEndKey([$project->getId(), null])
+            ->setDescending(true)
             ->onlyDocs(true)
             ->execute()
             ->toArray();
