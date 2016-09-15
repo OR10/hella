@@ -76,6 +76,7 @@ class Export extends Controller\Base
      * @CheckPermissions({"canExportProject"})
      *
      * @param Model\Project $project
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function listExportsAction(Model\Project $project)
@@ -83,40 +84,47 @@ class Export extends Controller\Base
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $availableExports = $project->getAvailableExports();
-        $exporter = reset($availableExports);
+        $exporter         = reset($availableExports);
         if ($exporter === 'genericXml') {
             $exports = $this->exporterFacade->findAllByProject($project);
         } else {
             $exports = $this->projectExport->findAllByProject($project);
         }
 
-        return View\View::create()->setData([
-            'totalCount' => count($exports),
-            'result'     => $exports,
-        ]);
+        return View\View::create()->setData(
+            [
+                'totalCount' => count($exports),
+                'result'     => $exports,
+            ]
+        );
     }
 
     /**
      * @Rest\Get("/{project}/export/{exportId}")
      *
      * @CheckPermissions({"canExportProject"})
+     *
      * @param Model\Project $project
-     * @param               $exportId
+     * @param string        $exportId
+     *
      * @return HttpFoundation\Response
+     *
      * @throws Exception\Csv
      */
-    public function getExportAction(Model\Project $project, $exportId)
+    public function getExportAction(Model\Project $project, string $exportId)
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $availableExports = $project->getAvailableExports();
-        $exporter = reset($availableExports);
+        $exporter         = reset($availableExports);
 
         if ($exporter === 'genericXml') {
             $export = $this->exporterFacade->find($exportId);
+
             return $this->getGenericXmlZipContent($project, $export);
         } else {
             $projectExport = $this->projectExport->find($exportId);
+
             return $this->getLegacyZipContent($project, $projectExport);
         }
     }
@@ -124,6 +132,7 @@ class Export extends Controller\Base
     /**
      * @param Model\Project $project
      * @param Model\Export  $export
+     *
      * @return HttpFoundation\Response
      */
     private function getGenericXmlZipContent(Model\Project $project, Model\Export $export)
@@ -133,12 +142,13 @@ class Export extends Controller\Base
         }
 
         $attachments = $export->getAttachments();
-        $attachment = reset($attachments);
+        $attachment  = reset($attachments);
+
         return new HttpFoundation\Response(
             $attachment->getRawData(),
             HttpFoundation\Response::HTTP_OK,
             [
-                'Content-Type' => 'text/csv',
+                'Content-Type'        => 'text/csv',
                 'Content-Disposition' => sprintf(
                     'attachment; filename="export_%s.zip"',
                     $export->getDate()->format('Y-m-d_H-i-s')
@@ -185,7 +195,7 @@ class Export extends Controller\Base
             file_get_contents($zipFilename),
             HttpFoundation\Response::HTTP_OK,
             [
-                'Content-Type' => 'text/csv',
+                'Content-Type'        => 'text/csv',
                 'Content-Disposition' => sprintf(
                     'attachment; filename="%s"',
                     $projectExport->getFilename()
@@ -206,13 +216,14 @@ class Export extends Controller\Base
      * @CheckPermissions({"canExportProject"})
      *
      * @param Model\Project $project
+     *
      * @return HttpFoundation\Response
      *
      */
     public function postCsvExportAction(Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
-        
+
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
