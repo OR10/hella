@@ -47,16 +47,6 @@ class Video
     private $calibrationId;
 
     /**
-     * @CouchDB\Field(type="mixed")
-     */
-    private $rawCalibration;
-
-    /**
-     * @CouchDB\Field(type="mixed")
-     */
-    private $calibration;
-
-    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -192,62 +182,6 @@ class Video
     }
 
     /**
-     * @param mixed $cameraMatrix
-     */
-    public function setCameraMatrix($cameraMatrix)
-    {
-        $this->calibration['cameraMatrix'] = $cameraMatrix;
-    }
-
-    /**
-     * @param mixed $rotationMatrix
-     */
-    public function setRotationMatrix($rotationMatrix)
-    {
-        $this->calibration['rotationMatrix'] = $rotationMatrix;
-    }
-
-    /**
-     * @param mixed $translation
-     */
-    public function setTranslation($translation)
-    {
-        $this->calibration['translation'] = $translation;
-    }
-
-    /**
-     * @param mixed $distortionCoefficients
-     */
-    public function setDistortionCoefficients($distortionCoefficients)
-    {
-        $this->calibration['distortionCoefficients'] = $distortionCoefficients;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRawCalibration()
-    {
-        return $this->rawCalibration;
-    }
-
-    /**
-     * @param mixed $rawCalibration
-     */
-    public function setRawCalibration($rawCalibration)
-    {
-        $this->rawCalibration = $rawCalibration;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCalibration()
-    {
-        return $this->calibration;
-    }
-
-    /**
      * @param $calibrationId
      */
     public function setCalibrationId($calibrationId)
@@ -277,10 +211,5 @@ class Video
     public function setCalibrationData(CalibrationData $calibrationData)
     {
         $this->setCalibrationId($calibrationData->getId());
-        $this->setRawCalibration($calibrationData->getRawCalibration());
-        $this->setCameraMatrix($calibrationData->getCameraMatrix());
-        $this->setRotationMatrix($calibrationData->getRotationMatrix());
-        $this->setTranslation($calibrationData->getTranslation());
-        $this->setDistortionCoefficients($calibrationData->getDistortionCoefficients());
     }
 }

@@ -45,6 +45,11 @@ class LinearTest extends Tests\KernelTestCase
      */
     private $calibrationFileConverter;
 
+    /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
     public function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -54,6 +59,7 @@ class LinearTest extends Tests\KernelTestCase
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->algorithm                 = $this->getAnnostationService('service.interpolation.algorithm.linear');
         $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
+        $this->calibrationDataFacade     = $this->getAnnostationService('database.facade.calibration_data');
     }
 
     /**
@@ -997,12 +1003,16 @@ class LinearTest extends Tests\KernelTestCase
     {
         $video = Model\Video::create('Testvideo');
         $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
-        $video->setRawCalibration($this->calibrationFileConverter->getRawData());
-        $video->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
-        $video->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
-        $video->setTranslation($this->calibrationFileConverter->getTranslation());
-        $video->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
 
+        $calibrationData = new Model\CalibrationData('Testvideo');
+        $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
+        $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+        $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+        $calibrationData->setTranslation($this->calibrationFileConverter->getTranslation());
+        $calibrationData->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+
+        $this->calibrationDataFacade->save($calibrationData);
+        $video->setCalibrationId($calibrationData->getId());
         $video = $this->videoFacade->save($video);
 
         return $this->labelingTaskFacade->save(

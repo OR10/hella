@@ -64,6 +64,11 @@ class GenericXmlProjectToCsv
     private $ghostClassesPropagation;
 
     /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
+    /**
      * @param Facade\Exporter                              $exporterFacade
      * @param Facade\Project                               $projectFacade
      * @param Facade\LabeledThingInFrame                   $labeledThingInFrameFacade
@@ -75,6 +80,7 @@ class GenericXmlProjectToCsv
      * @param Service\ClassColumnsFactory                  $classColumnsFactory
      * @param Facade\TaskConfiguration                     $taskConfiguration
      * @param Service\GhostClassesPropagation              $ghostClassesPropagation
+     * @param Facade\CalibrationData                       $calibrationDataFacade
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -87,7 +93,8 @@ class GenericXmlProjectToCsv
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
         Service\ClassColumnsFactory $classColumnsFactory,
         Facade\TaskConfiguration $taskConfiguration,
-        Service\GhostClassesPropagation $ghostClassesPropagation
+        Service\GhostClassesPropagation $ghostClassesPropagation,
+        Facade\CalibrationData $calibrationDataFacade
     ) {
         $this->exporterFacade                   = $exporterFacade;
         $this->projectFacade                    = $projectFacade;
@@ -100,6 +107,7 @@ class GenericXmlProjectToCsv
         $this->classColumnsFactory              = $classColumnsFactory;
         $this->taskConfiguration                = $taskConfiguration;
         $this->ghostClassesPropagation          = $ghostClassesPropagation;
+        $this->calibrationDataFacade            = $calibrationDataFacade;
     }
 
     /**
@@ -111,6 +119,7 @@ class GenericXmlProjectToCsv
         $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
         $taskConfigurations = [];
         foreach ($videoIterator as $video) {
+            $videoCalibration = $this->calibrationDataFacade->findById($video->getCalibrationId());
             /** @var ColumnGroup\Unique $columnGroup */
             $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
             $columnGroup->addColumns(
@@ -144,7 +153,13 @@ class GenericXmlProjectToCsv
                     $this->ghostClassesPropagation
                 );
                 foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
-                    $row = $columnGroup->createRow($project, $video, $task, $labeledThingInFrame);
+                    $row = $columnGroup->createRow(
+                        $project,
+                        $video,
+                        $task,
+                        $labeledThingInFrame,
+                        $videoCalibration->getCalibration()
+                    );
                     $table->addRow($row);
                 }
             }

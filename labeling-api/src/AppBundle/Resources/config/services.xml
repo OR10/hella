@@ -117,6 +117,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
             <argument type="service" id="annostation.labeling_api.database.facade.video_export" />
             <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data" />
         </service>
 
         <service id="annostation.labeling_api.service.exporter.generic_xml_project_to_csv" class="AppBundle\Service\Exporter\GenericXmlProjectToCsv">

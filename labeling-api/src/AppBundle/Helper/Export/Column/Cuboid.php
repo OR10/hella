@@ -55,6 +55,7 @@ class Cuboid extends Export\Column
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\CalibrationData     $calibrationData
      *
      * @return Cell
      */
@@ -62,7 +63,8 @@ class Cuboid extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\CalibrationData $calibrationData = null
     ) {
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {
@@ -81,7 +83,7 @@ class Cuboid extends Export\Column
             case self::TYPE_2D:
                 return $this->create2dValueCell(
                     $cuboidShape,
-                    $video->getCalibration(),
+                    $calibrationData->getCalibration(),
                     $this->vertexIndex,
                     $this->axis
                 );

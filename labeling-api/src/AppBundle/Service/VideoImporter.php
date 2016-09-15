@@ -238,11 +238,15 @@ class VideoImporter
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         if ($calibrationFile !== null) {
             $this->calibrationFileConverter->setCalibrationData($calibrationFile);
-            $video->setRawCalibration($this->calibrationFileConverter->getRawData());
-            $video->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
-            $video->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
-            $video->setTranslation($this->calibrationFileConverter->getTranslation());
-            $video->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+            $calibrationData = new Model\CalibrationData($name);
+            $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
+            $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+            $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+            $calibrationData->setTranslation($this->calibrationFileConverter->getTranslation());
+            $calibrationData->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+
+            $this->calibrationDataFacade->save($calibrationData);
+            $video->setCalibrationId($calibrationData->getId());
         }
         $this->videoFacade->save($video, $path);
 

@@ -61,9 +61,15 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
      */
     private $video;
 
+    /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->calibrationDataFacade     = $this->getAnnostationService('database.facade.calibration_data');
         $this->videoExportFacade         = $this->getAnnostationService('database.facade.video_export');
         $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
@@ -405,11 +411,15 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
         $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
 
         $this->video = Model\Video::create('test_video');
-        $this->video->setRawCalibration($this->calibrationFileConverter->getRawData());
-        $this->video->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
-        $this->video->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
-        $this->video->setTranslation($this->calibrationFileConverter->getTranslation());
-        $this->video->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+
+        $calibrationData = new Model\CalibrationData('test_video');
+        $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
+        $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
+        $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
+        $calibrationData->setTranslation($this->calibrationFileConverter->getTranslation());
+        $calibrationData->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
+        $this->calibrationDataFacade->save($calibrationData);
+        $this->video->setCalibrationId($calibrationData->getId());
 
         return $this->videoFacade->save($this->video);
     }

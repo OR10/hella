@@ -37,24 +37,32 @@ class Linear implements Interpolation\Algorithm
     private $depthBuffer;
 
     /**
-     * @param Facade\LabeledThing $labeledThingFacade
-     * @param Facade\Video $videoFacade
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
+    /**
+     * @param Facade\LabeledThing      $labeledThingFacade
+     * @param Facade\Video             $videoFacade
+     * @param Facade\LabelingTask      $labelingTaskFacade
      * @param Service\MatrixProjection $matrixProjection
-     * @param Service\DepthBuffer $depthBuffer
+     * @param Service\DepthBuffer      $depthBuffer
+     * @param Facade\CalibrationData   $calibrationDataFacade
      */
     public function __construct(
         Facade\LabeledThing $labeledThingFacade,
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\MatrixProjection $matrixProjection,
-        Service\DepthBuffer $depthBuffer
+        Service\DepthBuffer $depthBuffer,
+        Facade\CalibrationData $calibrationDataFacade
     ) {
-        $this->labeledThingFacade = $labeledThingFacade;
-        $this->videoFacade = $videoFacade;
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->matrixProjection = $matrixProjection;
-        $this->depthBuffer = $depthBuffer;
+        $this->labeledThingFacade    = $labeledThingFacade;
+        $this->videoFacade           = $videoFacade;
+        $this->labelingTaskFacade    = $labelingTaskFacade;
+        $this->matrixProjection      = $matrixProjection;
+        $this->depthBuffer           = $depthBuffer;
+        $this->calibrationDataFacade = $calibrationDataFacade;
     }
 
     public function getName()
@@ -89,7 +97,11 @@ class Linear implements Interpolation\Algorithm
         while (count($labeledThingsInFrame) > 1) {
             $current = array_shift($labeledThingsInFrame);
             $emit($current);
-            $this->doInterpolate($current, $labeledThingsInFrame[0], $emit, $video->getCalibration());
+            $calibrationData = null;
+            if ($video->getCalibrationId() !== null) {
+                $calibrationData = $this->calibrationDataFacade->findById($video->getCalibrationId())->getCalibration();
+            }
+            $this->doInterpolate($current, $labeledThingsInFrame[0], $emit, $calibrationData);
         }
 
         $emit($labeledThingsInFrame[0]);

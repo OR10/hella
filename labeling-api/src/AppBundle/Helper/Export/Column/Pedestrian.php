@@ -34,7 +34,8 @@ class Pedestrian extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\CalibrationData $calibrationData = null
     ) {
         $shapes = $labeledThingInFrame->getShapes();
         if (count($shapes) === 0) {

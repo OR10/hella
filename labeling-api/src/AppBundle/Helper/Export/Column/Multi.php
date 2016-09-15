@@ -30,7 +30,8 @@ class Multi extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\CalibrationData $calibrationData = null
     ) {
         $cells = array_map(
             function ($column) use ($project, $video, $task, $labeledThingInFrame) {

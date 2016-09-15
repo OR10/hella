@@ -65,6 +65,11 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     private $depthBufferService;
 
     /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
+    /**
      * Csv constructor.
      *
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
@@ -75,6 +80,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      * @param Facade\Video                    $videoFacade
      * @param Facade\VideoExport              $videoExportFacade
      * @param Service\DepthBuffer             $depthBufferService
+     * @param Facade\CalibrationData          $calibrationDataFacade
      * @param bool                            $headline
      * @param string                          $delimiter
      * @param string                          $enclosure
@@ -88,6 +94,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         Facade\Video $videoFacade,
         Facade\VideoExport $videoExportFacade,
         Service\DepthBuffer $depthBufferService,
+        Facade\CalibrationData $calibrationDataFacade,
         bool $headline = true,
         string $delimiter = ',',
         string $enclosure = '"'
@@ -103,6 +110,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         $this->videoExportFacade              = $videoExportFacade;
         $this->labeledThing                   = $labeledThing;
         $this->depthBufferService             = $depthBufferService;
+        $this->calibrationDataFacade          = $calibrationDataFacade;
     }
 
     /**
@@ -594,7 +602,10 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             throw new \Exception('Unsupported type ' . $shape->getType());
         }
 
-        return $this->depthBufferService->getVertices($shape, $video->getCalibration());
+        return $this->depthBufferService->getVertices(
+            $shape,
+            $this->calibrationDataFacade->findById($video->getCalibrationId())->getCalibration()
+        );
     }
 
     /**

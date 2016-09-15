@@ -32,6 +32,11 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
     private $video;
 
     /**
+     * @var Model\CalibrationData
+     */
+    private $calibrationData;
+
+    /**
      * @var Model\LabelingTask
      */
     private $task;
@@ -315,10 +320,11 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             ],
         );
 
-        $this->project      = $this->createProject('project-id-1');
-        $this->video        = $this->createVideo('video-id-1', $calibration);
-        $this->task         = $this->createTask($this->project, $this->video);
-        $this->labeledThing = $this->createLabeledThing($this->task);
+        $this->project         = $this->createProject('project-id-1');
+        $this->calibrationData = $this->createCalibrationData('video-id-1', $calibration);
+        $this->video           = $this->createVideo('video-id-1', $this->calibrationData);
+        $this->task            = $this->createTask($this->project, $this->video);
+        $this->labeledThing    = $this->createLabeledThing($this->task);
 
         $this->labeledThingsInFrames               = array();
         $this->labeledThingsInFrames['rectangle']  = $this->createLabeledThingInFrame(
@@ -378,7 +384,8 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->project,
             $this->video,
             $this->task,
-            $this->labeledThingsInFrames[$drawingTool]
+            $this->labeledThingsInFrames[$drawingTool],
+            $this->calibrationData
         );
 
         $this->assertEquals(
@@ -421,14 +428,16 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->project,
             $this->video,
             $this->task,
-            $this->labeledThingsInFrames['rectangle']
+            $this->labeledThingsInFrames['rectangle'],
+            $this->calibrationData
         );
 
         $pedestrianRow = $columnGroup->createRow(
             $this->project,
             $this->video,
             $this->task,
-            $this->labeledThingsInFrames['pedestrian']
+            $this->labeledThingsInFrames['pedestrian'],
+            $this->calibrationData
         );
 
         $this->assertEquals(

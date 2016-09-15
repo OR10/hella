@@ -48,17 +48,20 @@ class Plain extends Export\ColumnGroup
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\CalibrationData     $calibrationData
+     *
      * @return Export\Cell[]
      */
     public function createCells(
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\CalibrationData $calibrationData = null
     ) {
         $cells = array();
         foreach ($this->columns as $column) {
-            $cells[] = $column->createCell($project, $video, $task, $labeledThingInFrame);
+            $cells[] = $column->createCell($project, $video, $task, $labeledThingInFrame, $calibrationData);
         }
 
         return $cells;
@@ -71,20 +74,24 @@ class Plain extends Export\ColumnGroup
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\CalibrationData     $calibrationData
+     *
      * @return Export\Row
      */
     public function createRow(
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\CalibrationData $calibrationData = null
     ) {
         return new Export\Row(
             $this->createCells(
                 $project,
                 $video,
                 $task,
-                $labeledThingInFrame
+                $labeledThingInFrame,
+                $calibrationData
             )
         );
     }

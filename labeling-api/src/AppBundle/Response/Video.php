@@ -26,15 +26,14 @@ class Video
             'name' => $video->getName(),
             'metaData' => $video->getMetaData(),
             'imageTypes' => $video->getImageTypes(),
+            'rawCalibration' => null,
+            'calibration' => null,
         ];
 
         if ($video->getCalibrationId() !== null) {
             $calibrationData = $calibrationDataFacade->findById($video->getCalibrationId());
             $result['rawCalibration'] = $calibrationData->getRawCalibration();
             $result['calibration'] = $calibrationData->getCalibration();
-        } else {
-            $result['rawCalibration'] = $video->getRawCalibration();
-            $result['calibration'] = $video->getCalibration();
         }
 
         $this->result = $result;

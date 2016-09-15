@@ -14,6 +14,11 @@ class CouchDbTestCase extends Tests\WebTestCase
     protected $videoFacade;
 
     /**
+     * @var Facade\CalibrationData
+     */
+    protected $calibrationDataFacade;
+
+    /**
      * @var Facade\LabelingTask
      */
     protected $labelingTaskFacade;
@@ -99,17 +104,27 @@ class CouchDbTestCase extends Tests\WebTestCase
         return $user;
     }
 
-    protected function createVideo($name, $calibration = null)
+    protected function createVideo($name, Model\CalibrationData $calibrationData = null)
     {
         $video = Model\Video::create($name);
-        if ($calibration !== null) {
-            $video->setCameraMatrix($calibration['cameraMatrix']);
-            $video->setDistortionCoefficients($calibration['distortionCoefficients']);
-            $video->setRotationMatrix($calibration['rotationMatrix']);
-            $video->setTranslation($calibration['translation']);
+        if ($calibrationData !== null) {
+            $video->setCalibrationId($calibrationData->getId());
         }
 
         return $this->videoFacade->save($video);
+    }
+
+    protected function createCalibrationData($name, $calibration)
+    {
+        $calibrationData = new Model\CalibrationData($name);
+        $calibrationData->setCameraMatrix($calibration['cameraMatrix']);
+        $calibrationData->setDistortionCoefficients($calibration['distortionCoefficients']);
+        $calibrationData->setRotationMatrix($calibration['rotationMatrix']);
+        $calibrationData->setTranslation($calibration['translation']);
+
+        $this->calibrationDataFacade->save($calibrationData);
+
+        return $calibrationData;
     }
 
     protected function createProject($name)
@@ -138,6 +153,7 @@ class CouchDbTestCase extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
+        $this->calibrationDataFacade     = $this->getAnnostationService('database.facade.calibration_data');
         $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');

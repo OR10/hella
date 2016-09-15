@@ -11,7 +11,8 @@ class Uuid extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\CalibrationData $calibrationData = null
     ) {
         return new Cell\Uuid($labeledThingInFrame);
     }
