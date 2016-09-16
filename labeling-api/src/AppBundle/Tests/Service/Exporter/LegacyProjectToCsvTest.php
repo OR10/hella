@@ -285,6 +285,19 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
             $this->labelingTaskFacade->save($task);
         }
 
+        $this->project->addLegacyTaskInstruction(
+            Model\LabelingTask::INSTRUCTION_VEHICLE,
+            Model\LabelingTask::DRAWING_TOOL_CUBOID
+        );
+        $this->project->addLegacyTaskInstruction(
+            Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
+            Model\LabelingTask::DRAWING_TOOL_CUBOID
+        );
+        $this->project->addLegacyTaskInstruction(
+            Model\LabelingTask::INSTRUCTION_PARKED_CARS,
+            Model\LabelingTask::DRAWING_TOOL_CUBOID
+        );
+
         // define expectations
         $expectedExportFilename = sprintf(
             'export_%s_vehicle_%s.csv',

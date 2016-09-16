@@ -99,5 +99,11 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.set_missing_label_instructions_in_projects" class="AppBundle\Command\SetMissingLabelInstructionsInProjects">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
