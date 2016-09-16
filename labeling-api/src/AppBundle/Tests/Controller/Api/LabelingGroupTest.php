@@ -94,26 +94,10 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testGetLabelingGroup()
     {
-        /** @var Model\User $coordinatorUser1 */
-        $coordinatorUser1 = $this->userService->create(
-            'coordinatorUser1',
-            'foo',
-            'coordinatorUser1@foo.de',
-            true,
-            false
-        );
-        /** @var Model\User $coordinatorUser2 */
-        $coordinatorUser2 = $this->userService->create(
-            'coordinatorUser2',
-            'foo',
-            'coordinatorUser2@foo.de',
-            true,
-            false
-        );
-        /** @var Model\User $labelingUser1 */
-        $labelingUser1 = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
-        /** @var Model\User $labelingUser2 */
-        $labelingUser2 = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
+        $coordinatorUser1 = $this->createUser('coordinatorUser1');
+        $coordinatorUser2 = $this->createUser('coordinatorUser2');
+        $labelingUser1    = $this->createUser('labelingUser1');
+        $labelingUser2    = $this->createUser('labelingUser2');
 
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
@@ -187,26 +171,10 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testUpdateLabelingGroup()
     {
-        /** @var Model\User $coordinatorUser1 */
-        $coordinatorUser1 = $this->userService->create(
-            'coordinatorUser1',
-            'foo',
-            'coordinatorUser1@foo.de',
-            true,
-            false
-        );
-        /** @var Model\User $coordinatorUser2 */
-        $coordinatorUser2 = $this->userService->create(
-            'coordinatorUser2',
-            'foo',
-            'coordinatorUser2@foo.de',
-            true,
-            false
-        );
-        /** @var Model\User $labelingUser1 */
-        $labelingUser1 = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
-        /** @var Model\User $labelingUser2 */
-        $labelingUser2 = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
+        $coordinatorUser1 = $this->createUser('coordinatorUser1');
+        $coordinatorUser2 = $this->createUser('coordinatorUser2');
+        $labelingUser1    = $this->createUser('labelingUser1');
+        $labelingUser2    = $this->createUser('labelingUser2');
 
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
@@ -233,26 +201,10 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testDeleteLabelingGroup()
     {
-        /** @var Model\User $coordinatorUser1 */
-        $coordinatorUser1 = $this->userService->create(
-            'coordinatorUser1',
-            'foo',
-            'coordinatorUser1@foo.de',
-            true,
-            false
-        );
-        /** @var Model\User $coordinatorUser2 */
-        $coordinatorUser2 = $this->userService->create(
-            'coordinatorUser2',
-            'foo',
-            'coordinatorUser2@foo.de',
-            true,
-            false
-        );
-        /** @var Model\User $labelingUser1 */
-        $labelingUser1 = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
-        /** @var Model\User $labelingUser2 */
-        $labelingUser2 = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
+        $coordinatorUser1 = $this->createUser('coordinatorUser1');
+        $coordinatorUser2 = $this->createUser('coordinatorUser2');
+        $labelingUser1    = $this->createUser('labelingUser1');
+        $labelingUser2    = $this->createUser('labelingUser2');
 
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
@@ -274,22 +226,36 @@ class LabelingGroupTest extends Tests\WebTestCase
         $this->assertSame($expectedLabelingGroup, null);
     }
 
-    private function createLabelingGroup($coordinators, $labeler, $name = null)
+    protected function setUpImplementation()
+    {
+        $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
+        $this->userService         = $this->getService('fos_user.util.user_manipulator');
+
+        $this->user = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->user->setRoles([Model\User::ROLE_ADMIN]);
+    }
+
+    /**
+     * @param        $coordinators
+     * @param        $labeler
+     * @param string $name
+     *
+     * @return Model\LabelingGroup
+     */
+    private function createLabelingGroup($coordinators, $labeler, string $name = null)
     {
         $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
 
         return $this->labelingGroupFacade->save($labelingGroup);
     }
 
-    protected function setUpImplementation()
+    /**
+     * @param string $username
+     *
+     * @return Model\User|\FOS\UserBundle\Model\UserInterface
+     */
+    private function createUser(string $username)
     {
-        /** @var Facade\LabelingGroup labelingGroupFacade */
-        $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
-
-        /** @var Util\UserManipulator userService */
-        $this->userService = $this->getService('fos_user.util.user_manipulator');
-
-        $this->user = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->setRoles([Model\User::ROLE_ADMIN]);
+        return $this->userService->create($username, 'foo', sprintf('%s@example.com', $username), true, false);
     }
 }
