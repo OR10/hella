@@ -35,6 +35,9 @@ class Status
         return $this->documentManager->find($class, $id);
     }
 
+    /**
+     * @param Model\Status $status
+     */
     public function save(Model\Status $status)
     {
         $this->documentManager->persist($status);

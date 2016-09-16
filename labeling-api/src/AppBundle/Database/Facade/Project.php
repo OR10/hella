@@ -135,6 +135,9 @@ class Project
         return $result[0];
     }
 
+    /**
+     * @param Model\Project $project
+     */
     public function reload(Model\Project $project)
     {
         return $this->documentManager->refresh($project);

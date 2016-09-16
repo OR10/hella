@@ -29,6 +29,11 @@ class TaskExport
         return $this->documentManager->find(Model\TaskExport::class, $id);
     }
 
+    /**
+     * @param Model\LabelingTask $task
+     *
+     * @return array
+     */
     public function findAllByTask(Model\LabelingTask $task)
     {
         return $this->documentManager
@@ -39,6 +44,9 @@ class TaskExport
             ->toArray();
     }
 
+    /**
+     * @param Model\TaskExport $taskExport
+     */
     public function save(Model\TaskExport $taskExport)
     {
         $this->documentManager->persist($taskExport);

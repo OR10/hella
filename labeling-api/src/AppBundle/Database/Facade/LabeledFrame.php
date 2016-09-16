@@ -30,6 +30,8 @@ class LabeledFrame
 
     /**
      * @param Model\LabeledFrame $labeledFrame
+     *
+     * @return Model\LabeledFrame
      */
     public function save(Model\LabeledFrame $labeledFrame)
     {

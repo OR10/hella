@@ -41,7 +41,7 @@ class Exporter
 
     /**
      * @param Model\Project $project
-     * @return mixed
+     * @return array
      */
     public function findAllByProject(Model\Project $project)
     {

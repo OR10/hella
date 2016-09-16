@@ -29,6 +29,11 @@ class ProjectExport
         return $this->documentManager->find(Model\ProjectExport::class, $id);
     }
 
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
     public function findAllByProject(Model\Project $project)
     {
         return $this->documentManager
@@ -41,6 +46,9 @@ class ProjectExport
             ->toArray();
     }
 
+    /**
+     * @param Model\ProjectExport $taskExport
+     */
     public function save(Model\ProjectExport $taskExport)
     {
         $this->documentManager->persist($taskExport);

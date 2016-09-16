@@ -50,6 +50,9 @@ class LabelingTask
         return $tasks;
     }
 
+    /**
+     * @return array
+     */
     public function findAll()
     {
         return $this->documentManager
@@ -293,6 +296,13 @@ class LabelingTask
             ->toArray();
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param null               $skip
+     * @param null               $limit
+     *
+     * @return array
+     */
     public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $skip = null, $limit = null)
     {
         $query = $this->documentManager
@@ -311,6 +321,12 @@ class LabelingTask
         return $query->onlyDocs(true)->execute()->toArray();
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param                    $frameIndex
+     *
+     * @return array
+     */
     public function getLabeledThingsInFrameForFrameIndex(Model\LabelingTask $labelingTask, $frameIndex)
     {
         return $this->documentManager
@@ -321,6 +337,13 @@ class LabelingTask
             ->toArray();
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param null               $startFrameIndex
+     * @param null               $endFrameIndex
+     *
+     * @return array
+     */
     public function getLabeledThingsInFrameForFrameRange(
         Model\LabelingTask $labelingTask,
         $startFrameIndex = null,
@@ -360,6 +383,12 @@ class LabelingTask
         return $labelingTask;
     }
 
+    /**
+     * @param Model\LabelingTask $task
+     * @param Model\User         $user
+     *
+     * @return array|null
+     */
     public function getTimerForTaskAndUser(Model\LabelingTask $task, Model\User $user)
     {
         $result = $this->documentManager
@@ -377,12 +406,20 @@ class LabelingTask
         return $result[0];
     }
 
+    /**
+     * @param Model\TaskTimer $taskTimer
+     */
     public function saveTimer(Model\TaskTimer $taskTimer)
     {
         $this->documentManager->persist($taskTimer);
         $this->documentManager->flush();
     }
 
+    /**
+     * @param array|null $tasks
+     *
+     * @return array
+     */
     public function getTotalNumberOfLabeledThingsGroupedByTaskId(array $tasks = null)
     {
         if ($tasks !== null) {
@@ -410,6 +447,11 @@ class LabelingTask
         return array_column($result, 'value', 'key');
     }
 
+    /**
+     * @param array $tasks
+     *
+     * @return array
+     */
     public function mapTasksToTaskIds(array $tasks)
     {
         return array_map(

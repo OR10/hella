@@ -45,7 +45,7 @@ class TaskConfiguration
      * Return all task configurations for this user
      *
      * @param Model\User $user
-     * @return mixed
+     * @return array
      */
     public function getTaskConfigurationsByUser(Model\User $user)
     {
@@ -61,7 +61,7 @@ class TaskConfiguration
      * Get the Task Configuration by name and userId
      * @param Model\User $user
      * @param            $name
-     * @return mixed
+     * @return array
      */
     public function getTaskConfigurationsByUserAndName(Model\User $user, $name)
     {

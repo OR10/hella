@@ -16,11 +16,19 @@ class PrelabeledFrame
         $this->documentManager = $documentManager;
     }
 
+    /**
+     * @param Model\PrelabeledFrame $prelabeledFrame
+     *
+     * @return Model\Video
+     */
     public function getVideo(Model\PrelabeledFrame $prelabeledFrame)
     {
         return $this->documentManager->find(Model\Video::class, $prelabeledFrame->getVideoId());
     }
 
+    /**
+     * @param Model\PrelabeledFrame $prelabeledFrame
+     */
     public function save(Model\PrelabeledFrame $prelabeledFrame)
     {
         $this->documentManager->persist($prelabeledFrame);

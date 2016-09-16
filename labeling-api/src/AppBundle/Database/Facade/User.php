@@ -171,7 +171,7 @@ class User
 
     /**
      * @param $role
-     * @return mixed
+     * @return Model\User[]
      */
     public function getUserByRole($role)
     {

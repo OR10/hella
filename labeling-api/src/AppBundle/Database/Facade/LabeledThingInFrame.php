@@ -26,6 +26,11 @@ class LabeledThingInFrame
         return $this->documentManager->find(Model\LabeledThingInFrame::class, $id);
     }
 
+    /**
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     *
+     * @return Model\LabeledThingInFrame
+     */
     public function save(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         if ($labeledThingInFrame->getId() === null) {
@@ -70,6 +75,11 @@ class LabeledThingInFrame
         $this->documentManager->flush();
     }
 
+    /**
+     * @param Model\LabeledThing $labeledThing
+     *
+     * @return array
+     */
     public function getLabeledThingInFramesOutsideRange(Model\LabeledThing $labeledThing)
     {
         $frameRange = $labeledThing->getFrameRange();
@@ -94,6 +104,9 @@ class LabeledThingInFrame
         return array_merge($beforeRange, $afterRange);
     }
 
+    /**
+     * @param array $labeledThingInFrames
+     */
     public function delete(array $labeledThingInFrames)
     {
         foreach ($labeledThingInFrames as $labeledThingInFrame) {
@@ -105,7 +118,7 @@ class LabeledThingInFrame
     /**
      * @param Model\LabelingTask $labelingTask
      * @param int $limit
-     * @return mixed
+     * @return array
      */
     public function getLabeledThingsInFrame(Model\LabelingTask $labelingTask, $limit = 0)
     {
@@ -125,7 +138,7 @@ class LabeledThingInFrame
     /**
      * @param Model\LabelingTask $labelingTask
      * @param int $limit
-     * @return mixed
+     * @return array
      */
     public function getIncompleteLabeledThingsInFrame(Model\LabelingTask $labelingTask, $limit = 0)
     {
@@ -145,7 +158,7 @@ class LabeledThingInFrame
 
     /**
      * @param Model\LabeledThingInFrame $labeledThingInFrame
-     * @return mixed
+     * @return array|null
      */
     public function getPreviousLabeledThingInFrameWithClasses(Model\LabeledThingInFrame $labeledThingInFrame)
     {

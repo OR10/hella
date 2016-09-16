@@ -50,7 +50,7 @@ class LabeledThing
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @return mixed
+     * @return array
      */
     public function getIncompleteLabeledThings(Model\LabelingTask $labelingTask)
     {
@@ -63,6 +63,11 @@ class LabeledThing
             ->toArray();
     }
 
+    /**
+     * @param array $labeledThingIds
+     *
+     * @return array
+     */
     public function getLabeledThingsById(array $labeledThingIds)
     {
         $idsInChunks = array_chunk($labeledThingIds, 100);
@@ -83,6 +88,11 @@ class LabeledThing
         return $labeledThings;
     }
 
+    /**
+     * @param Model\LabeledThing $labeledThing
+     *
+     * @return Model\LabeledThing
+     */
     public function save(Model\LabeledThing $labeledThing)
     {
         if ($labeledThing->getId() === null) {

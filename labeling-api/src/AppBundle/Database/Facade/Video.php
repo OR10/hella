@@ -132,6 +132,9 @@ class Video
         //TODO: implement
     }
 
+    /**
+     * @param Model\Video $video
+     */
     public function refresh(Model\Video $video)
     {
         $this->documentManager->refresh($video);
