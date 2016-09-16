@@ -428,7 +428,11 @@ class Project
      */
     public function getLegacyTaskInstructions()
     {
-        return $this->taskInstructions['legacy'];
+        if (isset($this->taskInstructions['legacy']) && is_array($this->taskInstructions['legacy'])) {
+            return $this->taskInstructions['legacy'];
+        }
+
+        return [];
     }
 
     /**
@@ -445,6 +449,7 @@ class Project
      */
     public function addLegacyTaskInstruction($instruction, $drawingTool)
     {
+        $this->checkTaskInstructionProperty();
         $this->taskInstructions['legacy'][] = [
             'instruction' => $instruction,
             'drawingTool' => $drawingTool,
@@ -457,6 +462,7 @@ class Project
      */
     public function addGenericXmlTaskInstruction($instruction, $taskConfigurationId)
     {
+        $this->checkTaskInstructionProperty();
         $this->taskInstructions['genericXml'][] = [
             'instruction'         => $instruction,
             'taskConfigurationId' => $taskConfigurationId,
@@ -573,23 +579,27 @@ class Project
     /**
      * @param User|null $user
      * @param \DateTime $date
-     * @param           $status
+     * @param string    $status
      */
-    public function addStatusHistory(User $user = null, \DateTime $date, $status)
+    public function addStatusHistory(User $user = null, \DateTime $date, string $status)
     {
         if (!is_array($this->status)) {
-            $this->status = [
-                [
-                    'userId' => $user instanceof User ? $user->getId() : null,
-                    'timestamp' => $date->getTimestamp(),
-                    'status' => $status,
-                ]
-            ];
-        } else {
-            $this->status[] = [
-                'userId' => $user instanceof User ? $user->getId() : null,
-                'timestamp' => $date->getTimestamp(),
-                'status' => $status,
+            $this->status = [];
+        }
+
+        $this->status[] = [
+            'userId'    => $user instanceof User ? $user->getId() : null,
+            'timestamp' => $date->getTimestamp(),
+            'status'    => $status,
+        ];
+    }
+
+    private function checkTaskInstructionProperty()
+    {
+        if ($this->taskInstructions === null) {
+            $this->taskInstructions = [
+                'legacy'     => [],
+                'genericXml' => [],
             ];
         }
     }
