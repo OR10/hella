@@ -39,7 +39,7 @@ class Status extends Controller\Base
      * @param string $type
      * @param string $statusId
      *
-     * @return View\View
+     * @return \FOS\RestBundle\View\View
      */
     public function getStatusAction($type, $statusId)
     {

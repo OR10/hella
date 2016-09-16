@@ -122,8 +122,6 @@ class LabeledFrame extends Controller\Base
      * @param int                $frameIndex
      *
      * @return \FOS\RestBundle\View\View
-     * @internal param $documentId
-     *
      */
     public function deleteLabeledFrameAction(Model\LabelingTask $task, $frameIndex)
     {
@@ -148,8 +146,6 @@ class LabeledFrame extends Controller\Base
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
-     *
-     * @internal param HttpFoundation\Request $request
      */
     public function putLabeledThingInFrameAction(
         Model\LabelingTask $task,

@@ -392,6 +392,7 @@ class Project extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
+     *
      * @return \FOS\RestBundle\View\View
      * @throws \Exception
      */

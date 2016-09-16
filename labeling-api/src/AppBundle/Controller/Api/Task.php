@@ -34,7 +34,7 @@ class Task extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @var Facade\FrameCdn
+     * @var Service\FrameCdn
      */
     private $frameCdn;
 

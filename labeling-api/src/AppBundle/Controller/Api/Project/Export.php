@@ -108,8 +108,6 @@ class Export extends Controller\Base
      * @param string        $exportId
      *
      * @return HttpFoundation\Response
-     *
-     * @throws Exception\Csv
      */
     public function getExportAction(Model\Project $project, string $exportId)
     {

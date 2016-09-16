@@ -81,8 +81,6 @@ class LabeledThingInFrame extends Controller\Base
      * @param Model\LabeledThingInFrame|null $labeledThingInFrame
      *
      * @return \FOS\RestBundle\View\View
-     *
-     * @internal param HttpFoundation\Request $request
      */
     public function putLabeledThingInFrameAction(
         HttpFoundation\Request $request,
@@ -201,8 +199,6 @@ class LabeledThingInFrame extends Controller\Base
      * @param HttpFoundation\Request    $request
      *
      * @return \FOS\RestBundle\View\View
-     *
-     * @internal param HttpFoundation\Request $request
      */
     public function deleteLabeledThingInFrameAction(
         Model\LabeledThingInFrame $labeledThingInFrame,

@@ -251,7 +251,6 @@ class LabeledThing extends Controller\Base
      * @param HttpFoundation\Request $request
      *
      * @return \FOS\RestBundle\View\View
-     * @internal param string $taskId
      */
     public function deleteLabeledThingAction(
         Model\LabelingTask $task,

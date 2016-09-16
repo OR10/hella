@@ -151,6 +151,7 @@ class LabelingGroup extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingGroup    $labelingGroup
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function getGroupAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
@@ -218,8 +219,8 @@ class LabelingGroup extends Controller\Base
      * @CheckPermissions({"canEditLabelingGroups"})
      *
      * @param HttpFoundation\Request $request
-     *
      * @param Model\LabelingGroup    $labelingGroup
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function updateAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
@@ -260,8 +261,8 @@ class LabelingGroup extends Controller\Base
      * @CheckPermissions({"canEditLabelingGroups"})
      *
      * @param HttpFoundation\Request $request
-     *
      * @param Model\LabelingGroup    $labelingGroup
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function deleteAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
@@ -277,6 +278,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      * @param $labelingGroups
+     *
      * @return array
      */
     private function getUserListForLabelingGroup($labelingGroups)
@@ -293,6 +295,7 @@ class LabelingGroup extends Controller\Base
         foreach ($labelingUserIds as $labelingUserId) {
             $users = array_merge($users, $labelingUserId);
         }
+
         return $this->userFacade->getUserByIds(array_unique($users), false);
     }
 }

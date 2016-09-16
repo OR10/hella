@@ -83,6 +83,12 @@ class Timer extends Controller\Base
     /**
      * @Rest\Put("/{task}/timer/{user}")
      * @ForbidReadonlyTasks
+     *
+     * @param HttpFoundation\Request $request
+     * @param Model\LabelingTask     $task
+     * @param Model\User             $user
+     *
+     * @return \FOS\RestBundle\View\View
      */
     public function putTimerAction(
         HttpFoundation\Request $request,

@@ -65,6 +65,8 @@ class CurrentUser extends Controller\Base
 
     /**
      * @Rest\Get("/profile")
+     *
+     * @return \FOS\RestBundle\View\View
      */
     public function profileAction()
     {
@@ -86,7 +88,7 @@ class CurrentUser extends Controller\Base
     /**
      * @Rest\Get("/profile/picture")
      *
-     * @return \FOS\RestBundle\View\View
+     * @return HttpFoundation\Response
      */
     public function profilePictureAction()
     {
