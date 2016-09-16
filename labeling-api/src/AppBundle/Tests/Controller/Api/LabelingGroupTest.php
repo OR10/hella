@@ -30,9 +30,8 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function provideInvalidLabelingGroups()
     {
-        return array(
-            // Missing name
-            array(
+        return [
+            'missing name'        => [
                 [
                     'coordinators' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
@@ -41,31 +40,27 @@ class LabelingGroupTest extends Tests\WebTestCase
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
                 ],
-            ),
-            // Missing coordinators
-            array(
+            ],
+            'missing coordinator' => [
                 [
                     'name'    => 'A Labeling Group',
                     'labeler' => [
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
                 ],
-            ),
-            // Missing labelers
-            array(
+            ],
+            'missing labelers'    => [
                 [
                     'name'         => 'A Labeling Group',
                     'coordinators' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
                 ],
-            ),
-            // Missing everything
-            array(
+            ],
+            'missing everything'  => [
                 [],
-            ),
-            // Empty name
-            array(
+            ],
+            'empty name'          => [
                 [
                     'name'         => '',
                     'coordinators' => [
@@ -75,9 +70,8 @@ class LabelingGroupTest extends Tests\WebTestCase
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
                 ],
-            ),
-            // Empty coordinators
-            array(
+            ],
+            'empty coordinators'  => [
                 [
                     'name'         => 'A Labeling Group',
                     'coordinators' => [],
@@ -85,9 +79,8 @@ class LabelingGroupTest extends Tests\WebTestCase
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
                 ],
-            ),
-            // Empty labelers
-            array(
+            ],
+            'empty labelers'      => [
                 [
                     'name'         => 'A Labeling Group',
                     'coordinators' => [
@@ -95,20 +88,32 @@ class LabelingGroupTest extends Tests\WebTestCase
                     ],
                     'labeler'      => [],
                 ],
-            ),
-        );
+            ],
+        ];
     }
 
     public function testGetLabelingGroup()
     {
         /** @var Model\User $coordinatorUser1 */
-        $coordinatorUser1 = $this->userService->create('coordinatorUser1', 'foo', 'coordinatorUser1@foo.de', true, false);
+        $coordinatorUser1 = $this->userService->create(
+            'coordinatorUser1',
+            'foo',
+            'coordinatorUser1@foo.de',
+            true,
+            false
+        );
         /** @var Model\User $coordinatorUser2 */
-        $coordinatorUser2 = $this->userService->create('coordinatorUser2', 'foo', 'coordinatorUser2@foo.de', true, false);
+        $coordinatorUser2 = $this->userService->create(
+            'coordinatorUser2',
+            'foo',
+            'coordinatorUser2@foo.de',
+            true,
+            false
+        );
         /** @var Model\User $labelingUser1 */
-        $labelingUser1    = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
+        $labelingUser1 = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
         /** @var Model\User $labelingUser2 */
-        $labelingUser2    = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
+        $labelingUser2 = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
 
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
@@ -123,21 +128,24 @@ class LabelingGroupTest extends Tests\WebTestCase
         $content = \json_decode($response->getContent(), true);
 
         $this->assertSame($content['totalRows'], 1);
-        $this->assertSame($content['result']['labelingGroups'], [
+        $this->assertSame(
+            $content['result']['labelingGroups'],
             [
-                'id' => $labelingGroup->getId(),
-                'rev' => $labelingGroup->getRev(),
-                'coordinators' => [
-                    $coordinatorUser1->getId(),
-                    $coordinatorUser2->getId(),
+                [
+                    'id'           => $labelingGroup->getId(),
+                    'rev'          => $labelingGroup->getRev(),
+                    'coordinators' => [
+                        $coordinatorUser1->getId(),
+                        $coordinatorUser2->getId(),
+                    ],
+                    'labeler'      => [
+                        $labelingUser1->getId(),
+                        $labelingUser2->getId(),
+                    ],
+                    'name'         => 'foobar',
                 ],
-                'labeler' => [
-                    $labelingUser1->getId(),
-                    $labelingUser2->getId(),
-                ],
-                'name' => 'foobar',
             ]
-        ]);
+        );
     }
 
     public function testCreateNewLabelingGroup()
@@ -149,10 +157,10 @@ class LabelingGroupTest extends Tests\WebTestCase
                     'coordinators' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
-                    'labeler' => [
+                    'labeler'      => [
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
-                    'name' => 'Some cool group',
+                    'name'         => 'Some cool group',
                 ]
             )
             ->execute();
@@ -180,13 +188,25 @@ class LabelingGroupTest extends Tests\WebTestCase
     public function testUpdateLabelingGroup()
     {
         /** @var Model\User $coordinatorUser1 */
-        $coordinatorUser1 = $this->userService->create('coordinatorUser1', 'foo', 'coordinatorUser1@foo.de', true, false);
+        $coordinatorUser1 = $this->userService->create(
+            'coordinatorUser1',
+            'foo',
+            'coordinatorUser1@foo.de',
+            true,
+            false
+        );
         /** @var Model\User $coordinatorUser2 */
-        $coordinatorUser2 = $this->userService->create('coordinatorUser2', 'foo', 'coordinatorUser2@foo.de', true, false);
+        $coordinatorUser2 = $this->userService->create(
+            'coordinatorUser2',
+            'foo',
+            'coordinatorUser2@foo.de',
+            true,
+            false
+        );
         /** @var Model\User $labelingUser1 */
-        $labelingUser1    = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
+        $labelingUser1 = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
         /** @var Model\User $labelingUser2 */
-        $labelingUser2    = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
+        $labelingUser2 = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
 
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
@@ -197,9 +217,9 @@ class LabelingGroupTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
-                    'rev' => $labelingGroup->getRev(),
+                    'rev'          => $labelingGroup->getRev(),
                     'coordinators' => $labelingGroup->getCoordinators(),
-                    'labeler' => $labelingGroup->getLabeler(),
+                    'labeler'      => $labelingGroup->getLabeler(),
                 ]
             )
             ->execute();
@@ -214,13 +234,25 @@ class LabelingGroupTest extends Tests\WebTestCase
     public function testDeleteLabelingGroup()
     {
         /** @var Model\User $coordinatorUser1 */
-        $coordinatorUser1 = $this->userService->create('coordinatorUser1', 'foo', 'coordinatorUser1@foo.de', true, false);
+        $coordinatorUser1 = $this->userService->create(
+            'coordinatorUser1',
+            'foo',
+            'coordinatorUser1@foo.de',
+            true,
+            false
+        );
         /** @var Model\User $coordinatorUser2 */
-        $coordinatorUser2 = $this->userService->create('coordinatorUser2', 'foo', 'coordinatorUser2@foo.de', true, false);
+        $coordinatorUser2 = $this->userService->create(
+            'coordinatorUser2',
+            'foo',
+            'coordinatorUser2@foo.de',
+            true,
+            false
+        );
         /** @var Model\User $labelingUser1 */
-        $labelingUser1    = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
+        $labelingUser1 = $this->userService->create('labelingUser1', 'foo', 'labelingUser1@foo.de', true, false);
         /** @var Model\User $labelingUser2 */
-        $labelingUser2    = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
+        $labelingUser2 = $this->userService->create('labelingUser2', 'foo', 'labelingUser2@foo.de', true, false);
 
         $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
@@ -232,7 +264,7 @@ class LabelingGroupTest extends Tests\WebTestCase
             ->setJsonBody(
                 [
                     'coordinators' => $labelingGroup->getCoordinators(),
-                    'labeler' => $labelingGroup->getLabeler(),
+                    'labeler'      => $labelingGroup->getLabeler(),
                 ]
             )
             ->execute();
@@ -245,6 +277,7 @@ class LabelingGroupTest extends Tests\WebTestCase
     private function createLabelingGroup($coordinators, $labeler, $name = null)
     {
         $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
+
         return $this->labelingGroupFacade->save($labelingGroup);
     }
 
