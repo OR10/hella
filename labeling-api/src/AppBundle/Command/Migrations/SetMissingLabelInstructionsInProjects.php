@@ -1,12 +1,13 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Migrations;
 
+use AppBundle\Command;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use Symfony\Component\Console;
 
-class SetMissingLabelInstructionsInProjects extends Base
+class SetMissingLabelInstructionsInProjects extends Command\Base
 {
     /**
      * @var Facade\Project
@@ -31,7 +32,7 @@ class SetMissingLabelInstructionsInProjects extends Base
 
     protected function configure()
     {
-        $this->setName('annostation:set-missing-label-instructions-in-projects');
+        $this->setName('annostation:migrate:set-missing-label-instructions-in-projects');
         $this->addOption('dry-run', null, Console\Input\InputOption::VALUE_NONE, "Don't actually change anything.");
     }
 
