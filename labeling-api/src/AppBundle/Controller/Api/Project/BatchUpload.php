@@ -54,11 +54,6 @@ class BatchUpload extends Controller\Base
     private $taskCreator;
 
     /**
-     * @var Twig\TwigEngine
-     */
-    private $twigEngine;
-
-    /**
      * @var LoggerFacade
      */
     private $loggerFacade;
@@ -80,7 +75,6 @@ class BatchUpload extends Controller\Base
      * @param Facade\LabelingTask   $taskFacade
      * @param Service\VideoImporter $videoImporter
      * @param Service\TaskCreator   $taskCreator
-     * @param Twig\TwigEngine       $twigEngine
      * @param string                $cacheDirectory
      * @param \cscntLogger          $logger
      * @param Service\Authorization $authorizationService
@@ -92,7 +86,6 @@ class BatchUpload extends Controller\Base
         Facade\LabelingTask $taskFacade,
         Service\VideoImporter $videoImporter,
         Service\TaskCreator $taskCreator,
-        Twig\TwigEngine $twigEngine,
         string $cacheDirectory,
         \cscntLogger $logger,
         Service\Authorization $authorizationService
@@ -103,7 +96,6 @@ class BatchUpload extends Controller\Base
         $this->taskFacade           = $taskFacade;
         $this->videoImporter        = $videoImporter;
         $this->taskCreator          = $taskCreator;
-        $this->twigEngine           = $twigEngine;
         $this->cacheDirectory       = $cacheDirectory;
         $this->loggerFacade         = new LoggerFacade($logger, self::class);
         $this->authorizationService = $authorizationService;
