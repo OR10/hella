@@ -67,7 +67,7 @@ class BatchUpload extends Controller\Base
      * @var string
      */
     private $cacheDirectory;
-    
+
     /**
      * @var Service\Authorization
      */
@@ -97,15 +97,15 @@ class BatchUpload extends Controller\Base
         \cscntLogger $logger,
         Service\Authorization $authorizationService
     ) {
-        $this->tokenStorage   = $tokenStorage;
-        $this->projectFacade  = $projectFacade;
-        $this->videoFacade    = $videoFacade;
-        $this->taskFacade     = $taskFacade;
-        $this->videoImporter  = $videoImporter;
-        $this->taskCreator    = $taskCreator;
-        $this->twigEngine     = $twigEngine;
-        $this->cacheDirectory = $cacheDirectory;
-        $this->loggerFacade   = new LoggerFacade($logger, self::class);
+        $this->tokenStorage         = $tokenStorage;
+        $this->projectFacade        = $projectFacade;
+        $this->videoFacade          = $videoFacade;
+        $this->taskFacade           = $taskFacade;
+        $this->videoImporter        = $videoImporter;
+        $this->taskCreator          = $taskCreator;
+        $this->twigEngine           = $twigEngine;
+        $this->cacheDirectory       = $cacheDirectory;
+        $this->loggerFacade         = new LoggerFacade($logger, self::class);
         $this->authorizationService = $authorizationService;
 
         clearstatcache();
@@ -132,6 +132,8 @@ class BatchUpload extends Controller\Base
     public function uploadAction(Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
+        $this->denyIfProjectIsDone($project);
+
         $user                  = $this->tokenStorage->getToken()->getUser();
         $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);
         $chunkDirectory        = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
@@ -212,6 +214,7 @@ class BatchUpload extends Controller\Base
     public function uploadCompleteAction(Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
+        $this->denyIfProjectIsDone($project);
 
         clearstatcache();
 
@@ -284,6 +287,18 @@ class BatchUpload extends Controller\Base
             if (!is_dir($directory)) {
                 throw new \RuntimeException(sprintf('Failed to create directory: %s', $directory));
             }
+        }
+    }
+
+    /**
+     * @param Model\Project $project
+     */
+    private function denyIfProjectIsDone(Model\Project $project)
+    {
+        if ($project->getStatus() === Model\Project::STATUS_DONE) {
+            throw new HttpKernel\Exception\AccessDeniedHttpException(
+                'Uploading files for a done project is not allowed'
+            );
         }
     }
 }
