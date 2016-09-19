@@ -9,9 +9,9 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
  */
 class Project
 {
-    const STATUS_TODO = 'todo';
+    const STATUS_TODO        = 'todo';
     const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_DONE = 'done';
+    const STATUS_DONE        = 'done';
 
     /**
      * @CouchDB\Id
@@ -115,6 +115,7 @@ class Project
      * @param int    $frameSkip
      * @param int    $startFrameNumber
      * @param int    $splitEach
+     *
      * @return static
      */
     public static function create(
@@ -168,18 +169,15 @@ class Project
         }
 
         $this->name                                  = (string) $name;
-        $this->setUserId($user instanceof User ? $user->getId() : null);
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;
         $this->taskVideoSettings['frameSkip']        = (int) $frameSkip;
         $this->taskVideoSettings['startFrameNumber'] = (int) $startFrameNumber;
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
-        $this->addStatusHistory(
-            $user,
-            $creationDate,
-            self::STATUS_TODO
-        );
+
+        $this->setUserId($user instanceof User ? $user->getId() : null);
+        $this->addStatusHistory($user, $creationDate, self::STATUS_TODO);
     }
 
     /**
@@ -232,18 +230,23 @@ class Project
         }
 
         $statusHistory = $this->status;
-        usort($statusHistory, function ($a, $b) {
-            if ($a['timestamp'] === $b['timestamp']) {
-                return 0;
+        usort(
+            $statusHistory,
+            function ($a, $b) {
+                if ($a['timestamp'] === $b['timestamp']) {
+                    return 0;
+                }
+
+                return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
             }
-            return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
-        });
+        );
 
         return $statusHistory[0]['status'];
     }
 
     /**
      * @param $status
+     *
      * @return array
      */
     public function getLastStateForStatus($status)
@@ -254,7 +257,7 @@ class Project
 
         $inProgressStates = array_filter(
             $this->status,
-            function($state) use ($status) {
+            function ($state) use ($status) {
                 return $state['status'] === $status;
             }
         );
@@ -263,12 +266,16 @@ class Project
             return null;
         }
 
-        usort($inProgressStates, function ($a, $b) {
-            if ($a['timestamp'] === $b['timestamp']) {
-                return 0;
+        usort(
+            $inProgressStates,
+            function ($a, $b) {
+                if ($a['timestamp'] === $b['timestamp']) {
+                    return 0;
+                }
+
+                return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
             }
-            return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
-        });
+        );
 
         return $inProgressStates[0];
     }
