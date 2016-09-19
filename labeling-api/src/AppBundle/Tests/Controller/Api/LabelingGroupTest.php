@@ -18,11 +18,6 @@ class LabelingGroupTest extends Tests\WebTestCase
      */
     private $labelingGroupFacade;
 
-    /**
-     * @var Util\UserManipulator
-     */
-    private $userService;
-
     public function provideInvalidLabelingGroups()
     {
         return [

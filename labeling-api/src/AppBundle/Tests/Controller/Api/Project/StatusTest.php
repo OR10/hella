@@ -31,11 +31,6 @@ class StatusTest extends Tests\WebTestCase
      */
     private $labelingTaskFacade;
 
-    /**
-     * @var Util\UserManipulator
-     */
-    private $userService;
-
     public function testAcceptProject()
     {
         $project = $this->createProject();
@@ -116,9 +111,6 @@ class StatusTest extends Tests\WebTestCase
 
         /** @var Facade\LabelingTask labelingTaskFacade */
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
-
-        /** @var Util\UserManipulator userService */
-        $this->userService = $this->getService('fos_user.util.user_manipulator');
 
         $this->user = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $this->user->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
