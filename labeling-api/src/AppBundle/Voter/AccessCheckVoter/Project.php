@@ -8,7 +8,7 @@ use AppBundle\Model;
 
 class Project extends AccessCheckVoter
 {
-    const PROJECT_READ = 'project.read';
+    const PROJECT_READ  = 'project.read';
     const PROJECT_WRITE = 'project.write';
 
     /**
@@ -16,9 +16,8 @@ class Project extends AccessCheckVoter
      */
     private $checks;
 
-    public function __construct(
-        Facade\LabelingGroup $labelingGroupFacade
-    ) {
+    public function __construct(Facade\LabelingGroup $labelingGroupFacade)
+    {
         /*
          * The checks are based on the nature of the user account:
          *
@@ -28,8 +27,8 @@ class Project extends AccessCheckVoter
          * - Admin: grant access to all projects
          *
          */
-        $this->checks = array(
-            self::PROJECT_READ => [
+        $this->checks = [
+            self::PROJECT_READ  => [
                 new AccessCheck\ClientIsProjectCreator(),
                 new AccessCheck\LabelCoordinatorIsAssignedToProject(),
                 new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
@@ -41,7 +40,7 @@ class Project extends AccessCheckVoter
                 new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
                 new AccessCheck\HasAdminRole(),
             ],
-        );
+        ];
     }
 
     /**
@@ -51,10 +50,10 @@ class Project extends AccessCheckVoter
      */
     protected function getAttributes(): array
     {
-        return array(
+        return [
             self::PROJECT_READ,
             self::PROJECT_WRITE,
-        );
+        ];
     }
 
     /**

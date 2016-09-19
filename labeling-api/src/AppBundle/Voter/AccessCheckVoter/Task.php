@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class Task extends AccessCheckVoter
 {
-    const TASK_READ = 'task.read';
+    const TASK_READ  = 'task.read';
     const TASK_WRITE = 'task.write';
 
     /**
@@ -40,10 +40,8 @@ class Task extends AccessCheckVoter
      * @param AccessCheckVoter\Project $projectVoter
      * @param Facade\Project           $projectFacade
      */
-    public function __construct(
-        AccessCheckVoter\Project $projectVoter,
-        Facade\Project $projectFacade
-    ) {
+    public function __construct(AccessCheckVoter\Project $projectVoter, Facade\Project $projectFacade)
+    {
         $this->projectVoter  = $projectVoter;
         $this->projectFacade = $projectFacade;
 
@@ -53,14 +51,14 @@ class Task extends AccessCheckVoter
          * - Read always allowed
          * - Write only allowed if user is assigned to task.
          */
-        $this->checks = array(
+        $this->checks = [
             self::TASK_READ  => [
                 new AccessCheck\AlwaysGranted(),
             ],
             self::TASK_WRITE => [
                 new AccessCheck\TaskIsAssignedToUserInAnyPhase(),
             ],
-        );
+        ];
     }
 
     /**
@@ -70,10 +68,10 @@ class Task extends AccessCheckVoter
      */
     protected function getAttributes(): array
     {
-        return array(
+        return [
             self::TASK_READ,
             self::TASK_WRITE,
-        );
+        ];
     }
 
     /**
