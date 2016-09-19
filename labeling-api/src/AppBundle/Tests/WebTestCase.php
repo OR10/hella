@@ -9,10 +9,6 @@ use Symfony\Bundle\FrameworkBundle;
  */
 class WebTestCase extends KernelTestCase
 {
-    const USERNAME = 'user';
-    const PASSWORD = 'password';
-    const EMAIL    = 'user@example.com';
-
     /**
      * Create a client for testing controllers.
      *

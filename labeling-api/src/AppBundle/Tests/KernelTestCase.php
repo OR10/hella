@@ -2,9 +2,10 @@
 
 namespace AppBundle\Tests;
 
-use Doctrine\DBAL\Schema;
+use AppBundle\Model;
 use Doctrine\ORM;
-use Doctrine\ORM\Tools;
+use FOS\UserBundle;
+use FOS\UserBundle\Util;
 use JMS\Serializer;
 use Symfony\Bundle\FrameworkBundle\Test;
 
@@ -20,6 +21,10 @@ class KernelTestCase extends Test\KernelTestCase
     const ENTITY_MANAGER = 'doctrine.orm.entity_manager';
 
     const ANNOSTATION_SERVICE_PATTERN = 'annostation.labeling_api.%s';
+
+    const USERNAME = 'user';
+    const PASSWORD = 'password';
+    const EMAIL    = 'user@example.com';
 
     /**
      * @var \Doctrine\CouchDB\CouchDBClient
@@ -37,6 +42,16 @@ class KernelTestCase extends Test\KernelTestCase
     protected $entityManager;
 
     /**
+     * @var Util\UserManipulator
+     */
+    protected $userService;
+
+    /**
+     * @var Model\User|UserBundle\Model\UserInterface
+     */
+    protected $defaultUser;
+
+    /**
      * Setup test case.
      *
      * This method is declared `final` to ensure the kernel is booted and the
@@ -51,6 +66,7 @@ class KernelTestCase extends Test\KernelTestCase
 
         $this->couchdbClient = $this->getService(self::COUCHDB_CLIENT);
         $this->entityManager = $this->getService(self::ENTITY_MANAGER);
+        $this->userService   = $this->getService('fos_user.util.user_manipulator');
 
         $this->couchDbName = $this->getContainer()->getParameter('database_name');
 
@@ -88,10 +104,10 @@ class KernelTestCase extends Test\KernelTestCase
     }
 
     /**
-    * Overwrite this method to get specific metadata.
-    *
-    * @return array
-    */
+     * Overwrite this method to get specific metadata.
+     *
+     * @return array
+     */
     protected function getMetadata()
     {
         return $this->entityManager->getMetadataFactory()->getAllMetadata();
@@ -154,5 +170,13 @@ class KernelTestCase extends Test\KernelTestCase
                 ),
             true
         );
+    }
+
+    /**
+     * Create and store a default user usable for tests.
+     */
+    protected function createDefaultUser()
+    {
+        $this->defaultUser = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
     }
 }

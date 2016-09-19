@@ -19,11 +19,6 @@ class LabelingGroupTest extends Tests\WebTestCase
     private $labelingGroupFacade;
 
     /**
-     * @var Model\User
-     */
-    private $user;
-
-    /**
      * @var Util\UserManipulator
      */
     private $userService;
@@ -229,10 +224,9 @@ class LabelingGroupTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
-        $this->userService         = $this->getService('fos_user.util.user_manipulator');
 
-        $this->user = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->setRoles([Model\User::ROLE_ADMIN]);
+        $this->createDefaultUser();
+        $this->defaultUser->setRoles([Model\User::ROLE_ADMIN]);
     }
 
     /**
