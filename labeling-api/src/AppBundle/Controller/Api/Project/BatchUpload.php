@@ -12,7 +12,7 @@ use AppBundle\View;
 use crosscan\Logger\Facade\LoggerFacade;
 use Flow;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Bridge\Twig;
+use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
@@ -117,11 +117,12 @@ class BatchUpload extends Controller\Base
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *
-     * @param Model\Project $project
+     * @param Model\Project          $project
+     * @param HttpFoundation\Request $request
      *
      * @return View\View
      */
-    public function uploadAction(Model\Project $project)
+    public function uploadAction(Model\Project $project, HttpFoundation\Request $request)
     {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsDone($project);
@@ -133,10 +134,21 @@ class BatchUpload extends Controller\Base
         $this->ensureDirectoryExists($projectCacheDirectory);
         $this->ensureDirectoryExists($chunkDirectory);
 
-        $request    = new Flow\Request();
-        $config     = new Flow\Config(['tempDir' => $chunkDirectory]);
-        $file       = new Flow\File($config, $request);
-        $targetPath = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $request->getFileName()]);
+        /** @var HttpFoundation\File\UploadedFile $uploadedFileChunk */
+        $uploadedFileChunk = $request->files->get('file');
+        $flowRequest       = new Flow\Request(
+            $request->request->all(),
+            [
+                'error'    => $uploadedFileChunk->getError(),
+                'name'     => $uploadedFileChunk->getClientOriginalName(),
+                'type'     => $uploadedFileChunk->getClientMimeType(),
+                'tmp_name' => $uploadedFileChunk->getPathname(),
+                'size'     => $uploadedFileChunk->getSize(),
+            ]
+        );
+        $config            = new Flow\Config(['tempDir' => $chunkDirectory]);
+        $file              = new Flow\File($config, $flowRequest);
+        $targetPath        = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $flowRequest->getFileName()]);
 
         if (!$file->validateChunk()) {
             throw new HttpKernel\Exception\BadRequestHttpException();
@@ -147,21 +159,21 @@ class BatchUpload extends Controller\Base
         // and we have to check if the request may be a duplicate
         clearstatcache();
 
-        if ($this->isVideoFile($request->getFileName())) {
-            if ($project->hasVideo($request->getFileName())) {
+        if ($this->isVideoFile($flowRequest->getFileName())) {
+            if ($project->hasVideo($flowRequest->getFileName())) {
                 throw new HttpKernel\Exception\ConflictHttpException(
-                    sprintf('Video already exists in project: %s', $request->getFileName())
+                    sprintf('Video already exists in project: %s', $flowRequest->getFileName())
                 );
             }
-        } elseif ($this->isCalibrationFile($request->getFileName())) {
-            if ($project->hasCalibrationData($request->getFileName())) {
+        } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
+            if ($project->hasCalibrationData($flowRequest->getFileName())) {
                 throw new HttpKernel\Exception\ConflictHttpException(
-                    sprintf('Calibration data already exists in project: %s', $request->getFileName())
+                    sprintf('Calibration data already exists in project: %s', $flowRequest->getFileName())
                 );
             }
         } else {
             throw new HttpKernel\Exception\BadRequestHttpException(
-                sprintf('Invalid file: %s', $request->getFileName())
+                sprintf('Invalid file: %s', $flowRequest->getFileName())
             );
         }
 
@@ -171,14 +183,14 @@ class BatchUpload extends Controller\Base
             try {
                 $file->save($targetPath);
 
-                if ($this->isVideoFile($request->getFileName())) {
+                if ($this->isVideoFile($flowRequest->getFileName())) {
                     // for now, we always use compressed images
                     $this->videoImporter->importVideo($project, basename($targetPath), $targetPath, false);
-                } elseif ($this->isCalibrationFile($request->getFileName())) {
+                } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
                     $this->videoImporter->importCalibrationData($project, $targetPath);
                 } else {
                     throw new HttpKernel\Exception\BadRequestHttpException(
-                        sprintf('Invalid file: %s', $request->getFileName())
+                        sprintf('Invalid file: %s', $flowRequest->getFileName())
                     );
                 }
             } catch (\InvalidArgumentException $exception) {
