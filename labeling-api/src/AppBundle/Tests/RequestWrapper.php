@@ -57,12 +57,17 @@ class RequestWrapper
     private $body;
 
     /**
+     * @var HttpFoundation\Response
+     */
+    private $response;
+
+    /**
      * @param FrameworkBundle\Client $client
      * @param string                 $path
      *
      * @return RequestWrapper
      */
-    public static function create(FrameworkBundle\Client $client, $path)
+    public static function create(FrameworkBundle\Client $client, string $path)
     {
         return new static($client, $path);
     }
@@ -71,10 +76,10 @@ class RequestWrapper
      * @param FrameworkBundle\Client $client
      * @param string                 $path
      */
-    private function __construct(FrameworkBundle\Client $client, $path)
+    private function __construct(FrameworkBundle\Client $client, string $path)
     {
         $this->client = $client;
-        $this->path   = (string) $path;
+        $this->path   = $path;
     }
 
     /**
@@ -82,9 +87,9 @@ class RequestWrapper
      *
      * @return RequestWrapper
      */
-    public function setMethod($method)
+    public function setMethod(string $method)
     {
-        $this->method = (string) $method;
+        $this->method = $method;
 
         return $this;
     }
@@ -102,7 +107,7 @@ class RequestWrapper
     }
 
     /**
-     * @param string[] $requestParameters
+     * @param string[] $parameters
      *
      * @return RequestWrapper
      */
@@ -113,6 +118,11 @@ class RequestWrapper
         return $this;
     }
 
+    /**
+     * @param array $serverParameters
+     *
+     * @return $this
+     */
     public function setServerParameters(array $serverParameters)
     {
         $this->serverParameters = $serverParameters;
@@ -120,13 +130,35 @@ class RequestWrapper
         return $this;
     }
 
-    public function setBody($body)
+    /**
+     * @param array $files
+     *
+     * @return RequestWrapper
+     */
+    public function setFiles(array $files)
     {
-        $this->body = (string) $body;
+        $this->files = $files;
 
         return $this;
     }
 
+    /**
+     * @param $body
+     *
+     * @return $this
+     */
+    public function setBody(string $body)
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @param array $body
+     *
+     * @return RequestWrapper
+     */
     public function setJsonBody(array $body)
     {
         return $this->setBody(json_encode($body));
