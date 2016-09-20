@@ -312,11 +312,12 @@ class Project
      * @param User      $user
      * @param \DateTime $date
      */
-    public function addCoordinatorAssignmentHistory(User $user = null, \DateTime $date = null)
+    public function addCoordinatorAssignmentHistory(User $user, \DateTime $date = null)
     {
         if ($date === null) {
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
+
         $this->coordinatorAssignmentHistory[] = array(
             'userId'     => $user->getId(),
             'assignedAt' => $date->getTimestamp(),
