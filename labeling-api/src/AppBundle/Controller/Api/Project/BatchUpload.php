@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Api\Project;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
+use AppBundle\Controller\Api\Project\Exception as ProjectException;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service;
@@ -222,7 +223,8 @@ class BatchUpload extends Controller\Base
 
         clearstatcache();
 
-        $tasks = [];
+        $tasks                        = [];
+        $videosWithoutCalibrationData = [];
 
         $videoIdsWithExistingTasks = array_map(
             function (Model\LabelingTask $task) {
@@ -234,16 +236,18 @@ class BatchUpload extends Controller\Base
         $videoIds = array_diff($project->getVideoIds(), $videoIdsWithExistingTasks);
 
         if (!empty($videoIds)) {
-            try {
-                $user   = $this->tokenStorage->getToken()->getUser();
-                $videos = $this->videoFacade->findById($videoIds);
+            $user   = $this->tokenStorage->getToken()->getUser();
+            $videos = $this->videoFacade->findById($videoIds);
 
-                foreach ($videos as $video) {
+            foreach ($videos as $video) {
+                try {
                     $tasks = array_merge($tasks, $this->taskCreator->createTasks($project, $video, $user));
+                } catch (ProjectException\Missing3dVideoCalibrationData $exception) {
+                    $videosWithoutCalibrationData[] = $video;
+                } catch (\Exception $exception) {
+                    $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
+                    throw $exception;
                 }
-            } catch (\Exception $exception) {
-                $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-                throw $exception;
             }
         }
 
@@ -255,6 +259,12 @@ class BatchUpload extends Controller\Base
                             return $task->getId();
                         },
                         $tasks
+                    ),
+                    'missing3dVideoCalibrationData' => array_map(
+                        function (Model\Video $video) {
+                            return $video->getId();
+                        },
+                        $videosWithoutCalibrationData
                     ),
                 ],
             ]

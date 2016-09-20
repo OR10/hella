@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Controller\Api\Project\Exception\Missing3dVideoCalibrationData;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service;
@@ -128,10 +129,33 @@ class TaskCreator
             $videoFrameMapping   = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
             $frameMappingChunks  = [];
 
+            $legacyDrawingTools     = array_map(
+                function ($instruction) {
+                    return $instruction['drawingTool'];
+                },
+                $project->getLegacyTaskInstructions()
+            );
+            $genericXmlDrawingTools = array_map(
+                function ($instruction) {
+                    return $instruction['drawingTool'];
+                },
+                $project->getLegacyTaskInstructions()
+            );
+
+            $drawingTools = array_unique(array_merge($legacyDrawingTools, $genericXmlDrawingTools));
+
+            if ($calibrationDataId === null && in_array(Model\LabelingTask::DRAWING_TOOL_CUBOID, $drawingTools)) {
+                throw new Missing3dVideoCalibrationData(
+                    sprintf('Calibration data not found: %s', $calibrationDataId)
+                );
+            }
+
             if ($calibrationDataId !== null) {
                 $calibrationData = $this->calibrationDataFacade->findById($calibrationDataId);
                 if ($calibrationData === null) {
-                    throw new \Exception(sprintf('Calibration data not found: %s', $calibrationDataId));
+                    throw new Missing3dVideoCalibrationData(
+                        sprintf('Calibration data not found: %s', $calibrationDataId)
+                    );
                 }
 
                 $this->couchDbUpdateConflictRetryService->save(
