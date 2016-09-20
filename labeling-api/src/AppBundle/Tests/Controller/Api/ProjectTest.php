@@ -145,21 +145,27 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSetProjectInProgress()
     {
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+        $client      = $this->user;
+        $coordinator = $this->user;
+        $coordinator->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
 
         $project = $this->projectFacade->save(
             Tests\Helper\ProjectBuilder::create()
                 ->withCreationDate(new \DateTime('yesterday'))
+                ->withProjectOwnedByUserId($client->getId())
+                ->withAddedCoordinatorAssignment($coordinator, new \DateTime('-1 minute'))
                 ->build()
         );
 
         $this->assertEquals($project->getStatus(), Model\Project::STATUS_TODO);
-        $this->assertNull($project->getCoordinatorAssignmentHistory());
+        $this->assertCount(1, $project->getCoordinatorAssignmentHistory());
+        $this->assertEquals($coordinator->getId(), $project->getCoordinatorAssignmentHistory()[0]['userId']);
 
-        $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
+        $requestWrapper = $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertEquals(Model\Project::STATUS_IN_PROGRESS, $project->getStatus());
         $this->assertEquals($this->user->getId(), $project->getLatestAssignedCoordinatorUserId());
     }

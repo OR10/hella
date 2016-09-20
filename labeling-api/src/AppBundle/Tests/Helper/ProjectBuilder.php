@@ -70,6 +70,11 @@ class ProjectBuilder
     private $calibrationData;
 
     /**
+     * @var array
+     */
+    private $coordinatorAssignments = [];
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -149,6 +154,32 @@ class ProjectBuilder
     }
 
     /**
+     * @return $this
+     */
+    public function withEmptyCoordinatorAssignments()
+    {
+        $this->coordinatorAssignments = [];
+
+        return $this;
+    }
+
+    /**
+     * @param Model\User     $coordinator
+     * @param \DateTime|null $dateTime
+     *
+     * @return $this
+     */
+    public function withAddedCoordinatorAssignment(Model\User $coordinator, \DateTime $dateTime = null)
+    {
+        $this->coordinatorAssignments[] = [
+            'coordinator' => $coordinator,
+            'dateTime'    => $dateTime,
+        ];
+
+        return $this;
+    }
+
+    /**
      * @param \DateTime $creationDate
      *
      * @return ProjectBuilder
@@ -184,6 +215,11 @@ class ProjectBuilder
         return $this;
     }
 
+    /**
+     * @param array $instruction
+     *
+     * @return $this
+     */
     public function withLegacyTaskInstruction(array $instruction)
     {
         $this->legacyTaskInstruction = $instruction;
@@ -191,6 +227,11 @@ class ProjectBuilder
         return $this;
     }
 
+    /**
+     * @param Model\Video $video
+     *
+     * @return $this
+     */
     public function withVideo(Model\Video $video)
     {
         $this->video = $video;
@@ -198,6 +239,11 @@ class ProjectBuilder
         return $this;
     }
 
+    /**
+     * @param Model\CalibrationData $calibrationData
+     *
+     * @return $this
+     */
     public function withCalibrationData(Model\CalibrationData $calibrationData)
     {
         $this->calibrationData = $calibrationData;
@@ -252,7 +298,14 @@ class ProjectBuilder
             $project->addStatusHistory($change['changedBy'], $change['changedAt'], $change['status']);
         }
 
-        foreach($this->legacyTaskInstruction as $instruction) {
+        foreach ($this->coordinatorAssignments as $coordinatorAssignment) {
+            $project->addCoordinatorAssignmentHistory(
+                $coordinatorAssignment['coordinator'],
+                $coordinatorAssignment['dateTime']
+            );
+        }
+
+        foreach ($this->legacyTaskInstruction as $instruction) {
             $project->addLegacyTaskInstruction($instruction['instruction'], $instruction['drawingTool']);
         }
 
