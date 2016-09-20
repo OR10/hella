@@ -131,6 +131,20 @@ class RequestWrapper
     }
 
     /**
+     * @param string $username
+     * @param string $password
+     *
+     * @return RequestWrapper
+     */
+    public function withCredentials(string $username, string $password)
+    {
+        $this->serverParameters['PHP_AUTH_USER'] = $username;
+        $this->serverParameters['PHP_AUTH_PW']   = $password;
+
+        return $this;
+    }
+
+    /**
      * @param array $files
      *
      * @return RequestWrapper

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Tests;
 
+use AppBundle\Database;
 use AppBundle\Model;
 use Doctrine\ORM;
 use FOS\UserBundle;
@@ -47,6 +48,11 @@ class KernelTestCase extends Test\KernelTestCase
     protected $userService;
 
     /**
+     * @var Database\Facade\User
+     */
+    protected $userFacade;
+
+    /**
      * @var Model\User|UserBundle\Model\UserInterface
      */
     protected $defaultUser;
@@ -67,6 +73,7 @@ class KernelTestCase extends Test\KernelTestCase
         $this->couchdbClient = $this->getService(self::COUCHDB_CLIENT);
         $this->entityManager = $this->getService(self::ENTITY_MANAGER);
         $this->userService   = $this->getService('fos_user.util.user_manipulator');
+        $this->userFacade    = $this->getAnnostationService('database.facade.user');
 
         $this->couchDbName = $this->getContainer()->getParameter('database_name');
 
@@ -178,5 +185,59 @@ class KernelTestCase extends Test\KernelTestCase
     protected function createDefaultUser()
     {
         $this->defaultUser = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+    }
+
+    /**
+     * Create a persisted client with its username as password.
+     *
+     * @param string $username
+     *
+     * @return Model\User
+     */
+    protected function createClientUser(string $username)
+    {
+        $client = new Model\User();
+        $client->setUsername($username);
+        $client->setPlainPassword($username);
+        $client->setEnabled(true);
+        $client->setRoles([Model\User::ROLE_CLIENT]);
+
+        return $this->userFacade->updateUser($client);
+    }
+
+    /**
+     * Create a persisted label coordinator with its username as password.
+     *
+     * @param string $username
+     *
+     * @return Model\User
+     */
+    protected function createLabelCoordinatorUser(string $username)
+    {
+        $labelCoordinator = new Model\User();
+        $labelCoordinator->setUsername($username);
+        $labelCoordinator->setPlainPassword($username);
+        $labelCoordinator->setEnabled(true);
+        $labelCoordinator->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+
+        return $this->userFacade->updateUser($labelCoordinator);
+    }
+
+    /**
+     * Create a persisted labeler with its username as password.
+     *
+     * @param string $username
+     *
+     * @return Model\User
+     */
+    protected function createLabelerUser(string $username)
+    {
+        $labelCoordinator = new Model\User();
+        $labelCoordinator->setUsername($username);
+        $labelCoordinator->setPlainPassword($username);
+        $labelCoordinator->setEnabled(true);
+        $labelCoordinator->setRoles([Model\User::ROLE_LABELER]);
+
+        return $this->userFacade->updateUser($labelCoordinator);
     }
 }

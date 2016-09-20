@@ -18,14 +18,14 @@ class ProjectTest extends Tests\WebTestCase
     private $projectFacade;
 
     /**
-     * @var Facade\User
+     * @var Model\User
      */
-    private $userFacade;
+    private $client;
 
     /**
      * @var Model\User
      */
-    private $user;
+    private $labelCoordinator;
 
     /**
      * @return array
@@ -68,12 +68,13 @@ class ProjectTest extends Tests\WebTestCase
      */
     public function testProjectList(string $status, array $expectedProjects)
     {
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
-
         $this->createProjectsForProjectListTest();
 
-        $request = $this->requestProjectsByStatus($status);
-        $data    = array_map(
+        $request = $this->prepareProjectsByStatusRequest($status)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->execute();
+
+        $data = array_map(
             function ($project) {
                 $project['id']                = null;
                 $project['creationTimestamp'] = 0;
@@ -91,7 +92,8 @@ class ProjectTest extends Tests\WebTestCase
      */
     private function createProjectsForProjectListTest()
     {
-        $projectBuilder = Tests\Helper\ProjectBuilder::create();
+        $projectBuilder = Tests\Helper\ProjectBuilder::create()
+            ->withProjectOwnedByUserId($this->client->getId());
 
         $this->projectFacade->save(
             $projectBuilder
@@ -138,86 +140,83 @@ class ProjectTest extends Tests\WebTestCase
      *
      * @return Tests\RequestWrapper
      */
-    private function requestProjectsByStatus(string $status)
+    private function prepareProjectsByStatusRequest(string $status)
     {
-        return $this->createRequest(sprintf('/api/project?projectStatus=%s', $status))->execute();
+        return $this->createRequest(sprintf('/api/project?projectStatus=%s', $status));
     }
 
     public function testSetProjectInProgress()
     {
-        $client      = $this->user;
-        $coordinator = $this->user;
-        $coordinator->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
-
         $project = $this->projectFacade->save(
             Tests\Helper\ProjectBuilder::create()
                 ->withCreationDate(new \DateTime('yesterday'))
-                ->withProjectOwnedByUserId($client->getId())
-                ->withAddedCoordinatorAssignment($coordinator, new \DateTime('-1 minute'))
+                ->withProjectOwnedByUserId($this->client->getId())
+                ->withAddedCoordinatorAssignment($this->labelCoordinator, new \DateTime('-1 minute'))
                 ->build()
         );
 
         $this->assertEquals($project->getStatus(), Model\Project::STATUS_TODO);
         $this->assertCount(1, $project->getCoordinatorAssignmentHistory());
-        $this->assertEquals($coordinator->getId(), $project->getCoordinatorAssignmentHistory()[0]['userId']);
+        $this->assertEquals($this->labelCoordinator->getId(), $project->getCoordinatorAssignmentHistory()[0]['userId']);
 
         $requestWrapper = $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertEquals(Model\Project::STATUS_IN_PROGRESS, $project->getStatus());
-        $this->assertEquals($this->user->getId(), $project->getLatestAssignedCoordinatorUserId());
+        $this->assertCount(2, $project->getCoordinatorAssignmentHistory());
+        $this->assertEquals($this->labelCoordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
     }
 
     public function testSetProjectDone()
     {
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
-
         $project = $this->projectFacade->save(
             Tests\Helper\ProjectBuilder::create()
                 ->withCreationDate(new \DateTime('yesterday'))
+                ->withProjectOwnedByUserId($this->client->getId())
                 ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
                 ->build()
         );
 
-        $this->createRequest('/api/project/%s/status/done', [$project->getId()])
+        $requestWrapper = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
             ->execute();
 
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertEquals(Model\Project::STATUS_DONE, $project->getStatus());
     }
 
     public function testAssignCoordinatorToProject()
     {
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
-
-        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
-
-        $coordinator = $this->userFacade->updateUser(
-            Tests\Helper\UserBuilder::createDefaultLabelCoordinator()->build()
+        $project = $this->projectFacade->save(
+            Tests\Helper\ProjectBuilder::create()
+                ->withProjectOwnedByUserId($this->client->getId())
+                ->build()
         );
 
         $response = $this->createRequest('/api/project/%s/assign', [$project->getId()])
             ->setJsonBody(
                 [
-                    'assignedLabelCoordinatorId' => $coordinator->getId(),
+                    'assignedLabelCoordinatorId' => $this->labelCoordinator->getId(),
                 ]
             )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
             ->execute()
             ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals($coordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
+        $this->assertEquals($this->labelCoordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
     }
 
     public function testSaveLegacyProject()
     {
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
-
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
             ->setJsonBody(
                 [
                     'name'                     => 'Some Test Project',
@@ -282,10 +281,9 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSaveGenericXmlProject()
     {
-        $this->user->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
-
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
             ->setJsonBody(
                 [
                     'name'                   => 'Some Test Project',
@@ -366,44 +364,46 @@ class ProjectTest extends Tests\WebTestCase
     {
         $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
-        $this->user->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+        $requestWrapper = $this->prepareProjectsByStatusRequest(Model\Project::STATUS_TODO)
+            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername());
 
-        $request = $this->requestProjectsByStatus(Model\Project::STATUS_TODO);
-        $data    = $request->getJsonResponseBody();
+        $data = $requestWrapper->execute()->getJsonResponseBody();
 
         $this->assertSame(0, count($data['result']));
 
-        $project->addCoordinatorAssignmentHistory($this->user);
+        $project->addCoordinatorAssignmentHistory($this->labelCoordinator);
         $this->projectFacade->save($project);
 
-        $request = $this->requestProjectsByStatus(Model\Project::STATUS_TODO);
-        $data    = $request->getJsonResponseBody();
+        $data = $requestWrapper->execute()->getJsonResponseBody();
 
         $this->assertSame(1, count($data['result']));
     }
 
     public function testGetProjectsForClientReturnsEmptyProjectListIfClientHasNoProjects()
     {
-        $this->user->setRoles([Model\User::ROLE_CLIENT]);
-
         $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
-        $responseBody = $this->requestProjectsByStatus(Model\Project::STATUS_TODO)->getJsonResponseBody();
+        $responseBody = $this->prepareProjectsByStatusRequest(Model\Project::STATUS_TODO)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->execute()
+            ->getJsonResponseBody();
 
         $this->assertEquals(Tests\Helper\ProjectListResponseBuilder::create()->build(), $responseBody);
     }
 
     public function testGetProjectsForClientReturnsOwnProjects()
     {
-        $this->user->setRoles([Model\User::ROLE_CLIENT]);
-
         $projectBuilder = Tests\Helper\ProjectBuilder::create();
 
         $project = $this->projectFacade->save(
-            $projectBuilder->withProjectOwnedByUserId($this->user->getId())->build()
+            $projectBuilder->withProjectOwnedByUserId($this->client->getId())->build()
         );
 
-        $responseBody         = $this->requestProjectsByStatus(Model\Project::STATUS_TODO)->getJsonResponseBody();
+        $responseBody = $this->prepareProjectsByStatusRequest(Model\Project::STATUS_TODO)
+            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->execute()
+            ->getJsonResponseBody();
+
         $expectedResponseBody = Tests\Helper\ProjectListResponseBuilder::create()
             ->withProjects(
                 [
@@ -420,10 +420,8 @@ class ProjectTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $this->projectFacade = $this->getAnnostationService('database.facade.project');
-        $this->userFacade    = $this->getAnnostationService('database.facade.user');
-
-        $this->user = $this->getService('fos_user.util.user_manipulator')
-            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->projectFacade    = $this->getAnnostationService('database.facade.project');
+        $this->client           = $this->createClientUser('client');
+        $this->labelCoordinator = $this->createLabelCoordinatorUser('label_coordinator');
     }
 }
