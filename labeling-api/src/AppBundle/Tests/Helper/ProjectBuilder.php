@@ -50,6 +50,26 @@ class ProjectBuilder
     private $phases = [];
 
     /**
+     * @var array
+     */
+    private $legacyTaskInstruction = [
+        [
+            'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
+            'drawingTool' => Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+        ],
+    ];
+
+    /**
+     * @var Model\Video
+     */
+    private $video;
+
+    /**
+     * @var Model\CalibrationData
+     */
+    private $calibrationData;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -164,6 +184,27 @@ class ProjectBuilder
         return $this;
     }
 
+    public function withLegacyTaskInstruction(array $instruction)
+    {
+        $this->legacyTaskInstruction = $instruction;
+
+        return $this;
+    }
+
+    public function withVideo(Model\Video $video)
+    {
+        $this->video = $video;
+
+        return $this;
+    }
+
+    public function withCalibrationData(Model\CalibrationData $calibrationData)
+    {
+        $this->calibrationData = $calibrationData;
+
+        return $this;
+    }
+
     /**
      * @return array
      */
@@ -193,14 +234,26 @@ class ProjectBuilder
     {
         $creationDate = $this->creationDate === null ? null : clone $this->creationDate;
 
-        $project = Model\Project::create($this->name, null, $creationDate, $this->dueDate, $this->phases, 1, 0, 0);
+        $project = Model\Project::create($this->name, null, $creationDate, $this->dueDate, $this->phases, 1, 1, 0);
 
         if ($this->owningUserId !== null) {
             $project->setUserId($this->owningUserId);
         }
 
+        if ($this->video !== null) {
+            $project->addVideo($this->video);
+        }
+
+        if ($this->calibrationData !== null) {
+            $project->addCalibrationData($this->calibrationData);
+        }
+
         foreach ($this->statusChanges as $change) {
             $project->addStatusHistory($change['changedBy'], $change['changedAt'], $change['status']);
+        }
+
+        foreach($this->legacyTaskInstruction as $instruction) {
+            $project->addLegacyTaskInstruction($instruction['instruction'], $instruction['drawingTool']);
         }
 
         return $project;
