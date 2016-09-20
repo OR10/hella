@@ -132,6 +132,7 @@
             <argument type="service" id="annostation.labeling_api.service.class_columns_factory" />
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data" />
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.csv" class="AppBundle\Service\LabelImporter\Csv">

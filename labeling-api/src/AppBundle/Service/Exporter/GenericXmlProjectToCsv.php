@@ -158,7 +158,7 @@ class GenericXmlProjectToCsv
                         $video,
                         $task,
                         $labeledThingInFrame,
-                        $videoCalibration->getCalibration()
+                        $videoCalibration
                     );
                     $table->addRow($row);
                 }
