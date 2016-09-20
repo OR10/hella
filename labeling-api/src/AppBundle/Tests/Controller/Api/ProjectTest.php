@@ -421,7 +421,7 @@ class ProjectTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->projectFacade    = $this->getAnnostationService('database.facade.project');
-        $this->client           = $this->createClientUser('client');
-        $this->labelCoordinator = $this->createLabelCoordinatorUser('label_coordinator');
+        $this->client           = $this->createClientUser();
+        $this->labelCoordinator = $this->createLabelCoordinatorUser();
     }
 }

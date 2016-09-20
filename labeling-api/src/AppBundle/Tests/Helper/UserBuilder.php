@@ -12,6 +12,11 @@ class UserBuilder
     private $username = 'testuser';
 
     /**
+     * @var string
+     */
+    private $plainPassword = 'testuser';
+
+    /**
      * @var string[]
      */
     private $roles = [Model\User::ROLE_DEFAULT];
@@ -24,6 +29,19 @@ class UserBuilder
     }
 
     /**
+     * Create a default client.
+     *
+     * @return UserBuilder
+     */
+    public static function createDefaultClient()
+    {
+        return self::create()
+            ->withUsername('client')
+            ->withPlainPassword('client')
+            ->withRoles([Model\User::ROLE_CLIENT]);
+    }
+
+    /**
      * Create a default label coordinator.
      *
      * @return UserBuilder
@@ -31,8 +49,22 @@ class UserBuilder
     public static function createDefaultLabelCoordinator()
     {
         return self::create()
-            ->withUsername('foobar_label_coordinator')
+            ->withUsername('label_coordinator')
+            ->withPlainPassword('label_coordinator')
             ->withRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+    }
+
+    /**
+     * Create a default labeler.
+     *
+     * @return UserBuilder
+     */
+    public static function createDefaultLabeler()
+    {
+        return self::create()
+            ->withUsername('labeler')
+            ->withPlainPassword('labeler')
+            ->withRoles([Model\User::ROLE_LABELER]);
     }
 
     /**
@@ -60,6 +92,18 @@ class UserBuilder
     }
 
     /**
+     * @param string $password
+     *
+     * @return UserBuilder
+     */
+    public function withPlainPassword(string $password)
+    {
+        $this->plainPassword = $password;
+
+        return $this;
+    }
+
+    /**
      * @return UserBuilder
      */
     public static function create()
@@ -75,6 +119,7 @@ class UserBuilder
         $user = new Model\User();
 
         $user->setUsername($this->username);
+        $user->setPlainPassword($this->plainPassword);
         $user->setRoles($this->roles);
         $user->setEnabled(true);
 

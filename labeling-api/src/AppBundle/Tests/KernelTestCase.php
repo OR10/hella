@@ -190,54 +190,30 @@ class KernelTestCase extends Test\KernelTestCase
     /**
      * Create a persisted client with its username as password.
      *
-     * @param string $username
-     *
      * @return Model\User
      */
-    protected function createClientUser(string $username)
+    protected function createClientUser()
     {
-        $client = new Model\User();
-        $client->setUsername($username);
-        $client->setPlainPassword($username);
-        $client->setEnabled(true);
-        $client->setRoles([Model\User::ROLE_CLIENT]);
-
-        return $this->userFacade->updateUser($client);
+        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultClient()->build());
     }
 
     /**
      * Create a persisted label coordinator with its username as password.
      *
-     * @param string $username
-     *
      * @return Model\User
      */
-    protected function createLabelCoordinatorUser(string $username)
+    protected function createLabelCoordinatorUser()
     {
-        $labelCoordinator = new Model\User();
-        $labelCoordinator->setUsername($username);
-        $labelCoordinator->setPlainPassword($username);
-        $labelCoordinator->setEnabled(true);
-        $labelCoordinator->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
-
-        return $this->userFacade->updateUser($labelCoordinator);
+        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultLabelCoordinator()->build());
     }
 
     /**
      * Create a persisted labeler with its username as password.
      *
-     * @param string $username
-     *
      * @return Model\User
      */
-    protected function createLabelerUser(string $username)
+    protected function createLabelerUser()
     {
-        $labelCoordinator = new Model\User();
-        $labelCoordinator->setUsername($username);
-        $labelCoordinator->setPlainPassword($username);
-        $labelCoordinator->setEnabled(true);
-        $labelCoordinator->setRoles([Model\User::ROLE_LABELER]);
-
-        return $this->userFacade->updateUser($labelCoordinator);
+        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultLabeler()->build());
     }
 }
