@@ -115,16 +115,16 @@ class UploadController {
 
   _uploadComplete() {
     this._projectGateway.markUploadAsFinished(this.project.id)
-      .then(() => {
+      .then(result => {
         this.uploadInProgress = false;
         this._uninstallNavigationInterceptions();
         if (this._hasFilesWithError()) {
-          this._showCompletedWithErrorsModal();
+          this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
         } else {
-          this._showCompletedModal();
+          this._showCompletedModal(result.missing3dVideoCalibrationData);
         }
       })
-      .catch(() => {
+      .catch((result) => {
         this.uploadInProgress = false;
         this._uninstallNavigationInterceptions();
         this._showCompletedWithErrorsModal();
@@ -136,26 +136,55 @@ class UploadController {
       .reduce((before, file) => before || file.hasUploadError(), false);
   }
 
-  _showCompletedWithErrorsModal() {
-    const modal = this._modalService.getAlertWarningDialog({
-      title: 'Upload completed with errors',
-      headline: 'Your upload is complete, but errors occured.',
-      message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.',
-      confirmButtonText: 'Understood',
-    });
+  _showCompletedWithErrorsModal(videos) {
+    let modal = null;
+    if (videos) {
+      const listData = videos.map(video => {
+        return {name: video};
+      });
+      modal = this._modalService.getListDialog({
+        title: 'Upload completed with errors',
+        headline: 'Your upload is complete, but errors occured.',
+        message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly. ' +
+        'Some of the uploaded videos are missing calibration data. Please upload the calibration data for the following videos:',
+        confirmButtonText: 'Understood',
+        listData,
+      });
+    } else {
+      modal = this._modalService.getAlertWarningDialog({
+        title: 'Upload completed with errors',
+        headline: 'Your upload is complete, but errors occured.',
+        message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.',
+        confirmButtonText: 'Understood',
+      });
+    }
     modal.activate();
   }
 
-  _showCompletedModal() {
-    const modal = this._modalService.getInfoDialog({
-      title: 'Upload complete',
-      headline: 'Your upload is complete',
-      message: 'Your upload is complete and the task creation process has started. Do you want to go to the project list to view this project?',
-      confirmButtonText: 'Go to Project List',
-      cancelButtonText: 'Cancel',
-    }, () => {
-      this._$state.go('labeling.projects.list');
-    });
+  _showCompletedModal(videos) {
+    let modal = null;
+    if (videos) {
+      const listData = videos.map(video => {
+        return {name: video};
+      });
+      modal = this._modalService.getListDialog({
+        title: 'Upload complete',
+        headline: 'Your upload is complete',
+        message: 'Your upload is complete but some of the calibration data is missing. Please upload the calibration data for the following videos:',
+        cancelButtonText: 'Understood',
+        listData,
+      });
+    } else {
+      modal = this._modalService.getInfoDialog({
+        title: 'Upload complete',
+        headline: 'Your upload is complete',
+        message: 'Your upload is complete and the task creation process has started. Do you want to go to the project list to view this project?',
+        confirmButtonText: 'Go to Project List',
+        cancelButtonText: 'Cancel',
+      }, () => {
+        this._$state.go('labeling.projects.list');
+      });
+    }
     modal.activate();
   }
 

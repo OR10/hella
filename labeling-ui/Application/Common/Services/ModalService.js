@@ -2,6 +2,7 @@ import infoModalTemplate from './ModalService/InfoModal.html!';
 import warningModalTemplate from './ModalService/WarningModal.html!';
 import alertModalTemplate from './ModalService/AlertModal.html!';
 import selectionModalTemplate from './ModalService/SelectionModal.html!';
+import listModalTemplate from './ModalService/ListModal.html!';
 import angular from 'angular';
 
 /**
@@ -30,6 +31,7 @@ class ModalService {
   _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
     const {message, headline, title, confirmButtonText, cancelButtonText} = scope;
     const selectionData = [{name: 'Please make a selection'}].concat(scope.selectionData);
+    const listData = scope.listData;
 
     const noop = () => {
     };
@@ -68,6 +70,7 @@ class ModalService {
           headline,
           title,
           selectionData,
+          listData,
           confirmButtonText,
           cancelButtonText,
           cancelCallback: cancelCallbackWrapper,
@@ -131,6 +134,10 @@ class ModalService {
 
   getSelectionDialog(scope, confirmCallback, cancelCallback) {
     return this._createModal('modal-selection', selectionModalTemplate, scope, confirmCallback, cancelCallback);
+  }
+
+  getListDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-list', listModalTemplate, scope, confirmCallback, cancelCallback);
   }
 }
 
