@@ -535,7 +535,11 @@ class ViewerController {
           message,
           confirmButtonText: 'Understood',
         });
-        modal.activate();
+
+        // This is needed to allow to tool to notice the pending mouse events
+        this._$timeout(() => {
+          modal.activate();
+        }, 100);
       });
 
     // Initial prefetching of all frames
