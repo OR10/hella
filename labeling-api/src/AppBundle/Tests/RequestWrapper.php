@@ -2,6 +2,7 @@
 
 namespace AppBundle\Tests;
 
+use AppBundle\Model;
 use Symfony\Bundle\FrameworkBundle;
 use Symfony\Component\DomCrawler;
 use Symfony\Component\HttpFoundation;
@@ -142,6 +143,16 @@ class RequestWrapper
         $this->serverParameters['PHP_AUTH_PW']   = $password;
 
         return $this;
+    }
+
+    /**
+     * @param Model\User $user
+     *
+     * @return RequestWrapper
+     */
+    public function withCredentialsFromUsername(Model\User $user)
+    {
+        return $this->withCredentials($user->getUsername(), $user->getUsername());
     }
 
     /**

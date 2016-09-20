@@ -47,7 +47,7 @@ class StatusTest extends Tests\WebTestCase
         $labelingGroup = $this->createLabelingGroup($this->labelCoordinator);
 
         $requestWrapper = $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
-            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
+            ->withCredentialsFromUsername($this->labelCoordinator)
             ->setJsonBody(
                 [
                     'assignedGroupId' => $labelingGroup->getId(),
@@ -68,7 +68,7 @@ class StatusTest extends Tests\WebTestCase
 
         $requestWrapper = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
+            ->withCredentialsFromUsername($this->labelCoordinator)
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
@@ -82,7 +82,7 @@ class StatusTest extends Tests\WebTestCase
 
         $response = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
+            ->withCredentialsFromUsername($this->labelCoordinator)
             ->execute();
 
         $this->assertSame($response->getResponse()->getStatusCode(), 400);

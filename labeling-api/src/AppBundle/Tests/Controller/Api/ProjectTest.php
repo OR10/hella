@@ -71,7 +71,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->createProjectsForProjectListTest();
 
         $request = $this->prepareProjectsByStatusRequest($status)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->execute();
 
         $data = array_map(
@@ -161,7 +161,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $requestWrapper = $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
+            ->withCredentialsFromUsername($this->labelCoordinator)
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
@@ -182,7 +182,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $requestWrapper = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
@@ -204,7 +204,7 @@ class ProjectTest extends Tests\WebTestCase
                 ]
             )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->execute()
             ->getResponse();
 
@@ -216,7 +216,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->setJsonBody(
                 [
                     'name'                     => 'Some Test Project',
@@ -283,7 +283,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $response = $this->createRequest(self::ROUTE)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->setJsonBody(
                 [
                     'name'                   => 'Some Test Project',
@@ -365,7 +365,7 @@ class ProjectTest extends Tests\WebTestCase
         $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
         $requestWrapper = $this->prepareProjectsByStatusRequest(Model\Project::STATUS_TODO)
-            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername());
+            ->withCredentialsFromUsername($this->labelCoordinator);
 
         $data = $requestWrapper->execute()->getJsonResponseBody();
 
@@ -384,7 +384,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->projectFacade->save(Tests\Helper\ProjectBuilder::create()->build());
 
         $responseBody = $this->prepareProjectsByStatusRequest(Model\Project::STATUS_TODO)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->execute()
             ->getJsonResponseBody();
 
@@ -400,7 +400,7 @@ class ProjectTest extends Tests\WebTestCase
         );
 
         $responseBody = $this->prepareProjectsByStatusRequest(Model\Project::STATUS_TODO)
-            ->withCredentials($this->client->getUsername(), $this->client->getUsername())
+            ->withCredentialsFromUsername($this->client)
             ->execute()
             ->getJsonResponseBody();
 
