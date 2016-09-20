@@ -17,9 +17,9 @@ class StatusTest extends Tests\WebTestCase
     private $projectFacade;
 
     /**
-     * @var Model\User
+     * @var Facade\LabelingTask
      */
-    private $user;
+    private $labelingTaskFacade;
 
     /**
      * @var Facade\LabelingGroup
@@ -27,15 +27,27 @@ class StatusTest extends Tests\WebTestCase
     private $labelingGroupFacade;
 
     /**
-     * @var Facade\LabelingTask
+     * @var Model\User
      */
-    private $labelingTaskFacade;
+    private $client;
+
+    /**
+     * @var Model\User
+     */
+    private $labelCoordinator;
+
+    /**
+     * @var Model\User
+     */
+    private $labeler;
 
     public function testAcceptProject()
     {
-        $project = $this->createProject();
-        $labelingGroup = $this->createLabelingGroup($this->user);
-        $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
+        $project       = $this->createProject();
+        $labelingGroup = $this->createLabelingGroup($this->labelCoordinator);
+
+        $requestWrapper = $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
+            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
             ->setJsonBody(
                 [
                     'assignedGroupId' => $labelingGroup->getId(),
@@ -44,75 +56,92 @@ class StatusTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
-        $project = $this->projectFacade->find($project->getId());
-
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertSame(Model\Project::STATUS_IN_PROGRESS, $project->getStatus());
-        $this->assertSame($this->user->getId(), $project->getLatestAssignedCoordinatorUserId());
+        $this->assertSame($this->labelCoordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
         $this->assertSame($labelingGroup->getId(), $project->getLabelingGroupId());
     }
 
     public function testDoneProject()
     {
         $project = $this->createProject();
-        $this->createRequest('/api/project/%s/status/done', [$project->getId()])
+
+        $requestWrapper = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
             ->execute();
 
-        $project = $this->projectFacade->find($project->getId());
-
+        $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertSame(Model\Project::STATUS_DONE, $project->getStatus());
     }
 
     public function testDoneProjectWithIncompleteTasks()
     {
-        $project      = $this->createProject();
+        $project = $this->createProject();
         $this->createTask($project);
-        $reponse =$this->createRequest('/api/project/%s/status/done', [$project->getId()])
+
+        $response = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentials($this->labelCoordinator->getUsername(), $this->labelCoordinator->getUsername())
             ->execute();
 
-        $this->assertSame($reponse->getResponse()->getStatusCode(), 400);
+        $this->assertSame($response->getResponse()->getStatusCode(), 400);
     }
 
+    /**
+     * Create a project to run the tests against.
+     *
+     * @return Model\Project
+     */
     private function createProject()
     {
-        $project = Model\Project::create('foobar', null, new \DateTime('2016-09-08', new \DateTimeZone('UTC')));
-        $project->addCoordinatorAssignmentHistory($this->user);
-        $this->projectFacade->save($project);
-
-        return $project;
+        return $this->projectFacade->save(
+            Tests\Helper\ProjectBuilder::create()
+                ->withName('foobar')
+                ->withCreationDate(new \DateTime('yesterday'))
+                ->withProjectOwnedByUserId($this->client->getId())
+                ->withAddedCoordinatorAssignment($this->labelCoordinator, new \DateTime('yesterday'))
+                ->build()
+        );
     }
 
+    /**
+     * Create and persist a labeling group for the given coordinator with the default labeler.
+     *
+     * @param Model\User $coordinator
+     *
+     * @return Model\LabelingGroup
+     */
     private function createLabelingGroup(Model\User $coordinator)
     {
-        $labeler = $this->userService->create('somelabeler', '123', 'a@b.c', true, false);
-        $labelingGroup = Model\LabelingGroup::create($coordinator, $labeler);
-        $this->labelingGroupFacade->save($labelingGroup);
-
-        return $labelingGroup;
+        return $this->labelingGroupFacade->save(Model\LabelingGroup::create($coordinator, $this->labeler));
     }
 
+    /**
+     * Create and persist a simple task for the given project.
+     *
+     * @param Model\Project $project
+     *
+     * @return Model\LabelingTask
+     */
     private function createTask(Model\Project $project)
     {
-        $video = new Model\Video('foobar');
-        $labelingTask = Model\LabelingTask::create($video, $project, [], Model\LabelingTask::TYPE_OBJECT_LABELING);
-        $this->labelingTaskFacade->save($labelingTask);
-
-        return $labelingTask;
+        return $this->labelingTaskFacade->save(
+            Tests\Helper\LabelingTaskBuilder::create()
+                ->withProject($project)
+                ->withVideo(Tests\Helper\VideoBuilder::create()->build())
+                ->withTaskType(Model\LabelingTask::TYPE_OBJECT_LABELING)
+                ->build()
+        );
     }
 
     protected function setUpImplementation()
     {
-        /** @var Facade\Project projectFacade */
-        $this->projectFacade = $this->getAnnostationService('database.facade.project');
-
-        /** @var Facade\LabelingGroup labelingGroupFacade */
+        $this->projectFacade       = $this->getAnnostationService('database.facade.project');
         $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
-
-        /** @var Facade\LabelingTask labelingTaskFacade */
-        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
-
-        $this->user = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->setRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+        $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
+        $this->client              = $this->createClientUser();
+        $this->labelCoordinator    = $this->createLabelCoordinatorUser();
+        $this->labeler             = $this->createLabelerUser();
     }
 }

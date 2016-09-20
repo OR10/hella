@@ -22,12 +22,12 @@ class LabelingTaskBuilder
     /**
      * @var array
      */
-    private $status;
+    private $status = [];
 
     /**
      * @var array
      */
-    private $frameNumberMapping;
+    private $frameNumberMapping = [];
 
     /**
      * @var string
