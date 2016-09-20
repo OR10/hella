@@ -39,6 +39,7 @@ class Report
 
     /**
      * Report constructor.
+     *
      * @param Facade\Project             $projectFacade
      * @param Facade\Video               $videoFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
@@ -53,8 +54,7 @@ class Report
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\Report $reportFacade
-    )
-    {
+    ) {
         $this->projectFacade             = $projectFacade;
         $this->videoFacade               = $videoFacade;
         $this->labelingTaskFacade        = $labelingTaskFacade;
@@ -83,14 +83,12 @@ class Report
         $report->setLabelingValidationProcesses($project->getLabelingValidationProcesses());
 
         $numberOfVideos = $this->getNumberOfVideosInProject($project);
-        $report->setNumberOfVideosInProject(
-            $numberOfVideos
-        );
+        $report->setNumberOfVideosInProject($numberOfVideos);
         $numberOfTaskByPhaseAndStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
         $phases                       = array(
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION
+            Model\LabelingTask::PHASE_REVISION,
         );
 
         $sumOfTasks = 0;
@@ -140,7 +138,9 @@ class Report
             $this->getSumOfLabeledThingClasses($project)
         );
 
-        $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
+        $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
+            $project
+        );
         $report->setNumberOfLabeledThingInFrames(
             $totalNumberOfLabeledThingInFrames
         );
@@ -180,12 +180,16 @@ class Report
         $projectMovedToInProgressBy = null;
         $projectStatusHistory       = $project->getStatusHistory();
         if (is_array($projectStatusHistory)) {
-            usort($projectStatusHistory, function ($a, $b) {
-                if ($a['timestamp'] === $b['timestamp']) {
-                    return 0;
+            usort(
+                $projectStatusHistory,
+                function ($a, $b) {
+                    if ($a['timestamp'] === $b['timestamp']) {
+                        return 0;
+                    }
+
+                    return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
                 }
-                return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
-            });
+            );
             foreach ($projectStatusHistory as $projectStatus) {
                 if ($projectStatus['status'] === Model\Project::STATUS_IN_PROGRESS &&
                     $projectMovedToInProgressAt === null && $projectMovedToInProgressBy === null
@@ -210,7 +214,9 @@ class Report
 
         if ($numberOfVideoFrames > 0) {
             $report->setAverageTimePerVideoFrame(round($sumOfTimeByPhase / $numberOfVideoFrames));
-            $report->setAverageLabeledThingInFramesPerVideoFrame(round($totalNumberOfLabeledThingInFrames / $numberOfVideoFrames));
+            $report->setAverageLabeledThingInFramesPerVideoFrame(
+                round($totalNumberOfLabeledThingInFrames / $numberOfVideoFrames)
+            );
         }
 
         if ($numberOfVideos > 0) {
@@ -222,7 +228,9 @@ class Report
         }
 
         if ($totalNumberOfLabeledThingInFrames > 0) {
-            $report->setAverageTimePerLabeledThingInFrame(round($sumOfTimeByPhase / $totalNumberOfLabeledThingInFrames));
+            $report->setAverageTimePerLabeledThingInFrame(
+                round($sumOfTimeByPhase / $totalNumberOfLabeledThingInFrames)
+            );
         }
 
         $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
@@ -231,6 +239,7 @@ class Report
 
     /**
      * @param $project
+     *
      * @return int
      */
     private function getSumOfLabeledThings($project)
@@ -246,6 +255,7 @@ class Report
 
     /**
      * @param $project
+     *
      * @return int|number
      */
     private function getSumOfLabeledThingClasses($project)
@@ -253,9 +263,12 @@ class Report
         $tasks = $this->projectFacade->getTasksByProject($project);
         $count = 0;
         foreach ($tasks as $task) {
-            $labeledThingsClassCount = array_map(function (Model\LabeledThing $labeledThing) {
-                return count($labeledThing->getClasses());
-            }, $this->labelingTaskFacade->getLabeledThings($task));
+            $labeledThingsClassCount = array_map(
+                function (Model\LabeledThing $labeledThing) {
+                    return count($labeledThing->getClasses());
+                },
+                $this->labelingTaskFacade->getLabeledThings($task)
+            );
 
             $count += array_sum($labeledThingsClassCount);
         }
@@ -265,6 +278,7 @@ class Report
 
     /**
      * @param $project
+     *
      * @return int|number
      */
     private function getSumOfLabeledThingInFrameClasses($project)
@@ -272,9 +286,12 @@ class Report
         $tasks = $this->projectFacade->getTasksByProject($project);
         $count = 0;
         foreach ($tasks as $task) {
-            $labeledThingInFramesClassCount = array_map(function (Model\LabeledThingInFrame $labeledThingInFrame) {
-                return count($labeledThingInFrame->getClasses());
-            }, $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task));
+            $labeledThingInFramesClassCount = array_map(
+                function (Model\LabeledThingInFrame $labeledThingInFrame) {
+                    return count($labeledThingInFrame->getClasses());
+                },
+                $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task)
+            );
             $count += array_sum($labeledThingInFramesClassCount);
         }
 
@@ -283,17 +300,20 @@ class Report
 
     /**
      * @param Model\Project $project
-     * @return array
+     *
+     * @return int
      */
     private function getNumberOfVideosInProject(Model\Project $project)
     {
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects([$project]);
         $numberOfVideos   = array();
+
         foreach ($videosByProjects as $videosByProject) {
             $projectId                    = $videosByProject['key'];
             $videoId                      = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;
         }
+
         $numberOfVideos = array_map(
             function ($videoByProject) {
                 return count(array_unique($videoByProject));
@@ -301,7 +321,7 @@ class Report
             $numberOfVideos
         );
 
-        return $numberOfVideos[$project->getId()];
+        return array_key_exists($project->getId(), $numberOfVideos) ? $numberOfVideos[$project->getId()] : 0;
     }
 
     private function getSumOfVideoFramesForProject(Model\Project $project)
@@ -314,11 +334,16 @@ class Report
         }
 
         return array_sum(
-            array_map(function (Model\Video $video) {
-                return $video->getMetaData()->numberOfFrames;
-            }, array_filter($videos, function (Model\Video $video) {
-                    return isset($video->getMetaData()->numberOfFrames);
-                })
+            array_map(
+                function (Model\Video $video) {
+                    return $video->getMetaData()->numberOfFrames;
+                },
+                array_filter(
+                    $videos,
+                    function (Model\Video $video) {
+                        return isset($video->getMetaData()->numberOfFrames);
+                    }
+                )
             )
         );
     }

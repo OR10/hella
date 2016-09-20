@@ -154,6 +154,12 @@ class CuboidDrawingTool extends DrawingTool {
 
     const point = event.point;
     if (this._topPoint && this._bottomPoint && !this._sidePoint) {
+      if (this._projection3d.projectBottomCoordinateTo3d(point).x < 0) {
+        this._$scope.$emit('drawingtool:exception', 'Drawing above the horizon is not possible. The invalid shape has been removed!');
+        this._cleanUp();
+        return;
+      }
+
       this._sidePoint = point;
       this._heightLine.remove();
       this._widthLine.remove();

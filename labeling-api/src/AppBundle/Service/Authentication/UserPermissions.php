@@ -3,6 +3,7 @@
 namespace AppBundle\Service\Authentication;
 
 use AppBundle\Model;
+use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
@@ -11,19 +12,51 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 class UserPermissions
 {
     /**
+     * @todo chh: duplicate permission? canCreateProject, canCreateNewProject
+     * @todo chh: missing permission? canViewTaskListOfClosedProject
+     */
+    // @codingStandardsIgnoreStart
+    // @formatter:off
+    const PERMISSION_MAP = [
+        // Label-Project
+        'canAcceptProject'               => [                                                 Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canMoveProjectToDone'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canViewClosedProjects'          => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canViewTodoProjects'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canCreateProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
+        'canMoveFinishedProjectToDone'   => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canMoveInProgressProjectToDone' => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
+        'canViewStatsButton'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canViewProjectButton'           => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canDeleteProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canCreateNewProject'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canReopenProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canExportProject'               => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canViewProjectReport'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canAssignProject'               => [                        Model\User::ROLE_CLIENT                                                              ],
+
+        // Label-Jobs
+        'canViewTaskList'                => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
+        'canViewTaskListOfClosedProject' => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canViewReopenButton'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'unassignPermission'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canReopenTask'                  => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+
+        // User management
+        'canEditLabelingGroups'          => [Model\User::ROLE_ADMIN                                                                                       ],
+        'canViewUserListButton'          => [Model\User::ROLE_ADMIN                                                                                       ],
+
+        // Management board
+        'canUploadNewVideo'              => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                             ],
+        'canUploadTaskConfiguration'     => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                             ],
+    ];
+    // @formatter:on
+    // @codingStandardsIgnoreEnd
+
+    /**
      * @var Storage\TokenStorage
      */
     private $tokenStorage;
-
-    /**
-     * @var null|Model\User
-     */
-    private $user;
-
-    /**
-     * @var null|\Symfony\Component\Security\Core\Authentication\Token\TokenInterface
-     */
-    private $token;
 
     /**
      * CurrentUserPermission constructor.
@@ -36,153 +69,37 @@ class UserPermissions
     }
 
     /**
-     * Retrieve a list of all available permissions.
-     *
-     * By default all permissions must be `false`.
-     *
-     * @return array
+     * @return bool[]
      */
-    private function getPermissionDefaults()
-    {
-        return array(
-            'canViewStatsButton'         => false,
-            'canViewUserListButton'      => false,
-            'canUploadNewVideo'          => false,
-            'canViewReopenButton'        => false,
-            'unassignPermission'         => false,
-            'canViewProjectButton'       => false,
-            'canDeleteProject'           => false,
-            'canCreateNewProject'        => false,
-            'canAcceptProject'           => false,
-            'canReopenProject'           => false,
-            'canExportProject'           => false,
-            'canViewProjectReport'       => false,
-            'canMoveProjectToDone'       => false,
-            'canReopenTask'              => false,
-            'canViewTaskList'            => false,
-            'canViewClosedProjects'      => false,
-            'canViewTodoProjects'        => false,
-            'canEditLabelingGroups'      => false,
-            'canAssignProject'           => false,
-            'canUploadTaskConfiguration' => false,
-            'canCreateProject'           => false,
-        );
-    }
-
-    private function applyLabelerPermissions($permissions)
-    {
-        return array_merge(
-            $permissions,
-            array(
-                'canViewTaskList' => true,
-            )
-        );
-    }
-
-    private function applyLabelCoordinatorPermissions($permissions)
-    {
-        return array_merge(
-            $permissions,
-            array(
-                'canViewStatsButton'           => true,
-                'canViewProjectButton'         => true,
-                'canViewReopenButton'          => true,
-                'unassignPermission'           => true,
-                'canExportProject'             => true,
-                'canReopenTask'                => true,
-                'canViewClosedProjects'        => true,
-                'canViewTodoProjects'          => true,
-                'canAcceptProject'             => true,
-                'canViewTaskList'              => true,
-                'canMoveFinishedProjectToDone' => true,
-                'canDeleteProject'             => true,
-                'canCreateNewProject'          => true,
-                'canReopenProject'             => true,
-                'canViewProjectReport'         => true,
-            )
-        );
-    }
-
-    private function applyClientPermissions($permissions)
-    {
-        return array_merge(
-            $permissions,
-            array(
-                'canMoveInProgressProjectToDone' => true,
-                'canMoveFinishedProjectToDone'   => true,
-                'canViewClosedProjects'          => true,
-                'canViewTodoProjects'            => true,
-                'canUploadNewVideo'              => true,
-                'canAssignProject'               => true,
-                'canUploadTaskConfiguration'     => true,
-                'canDeleteProject'               => true,
-                'canCreateNewProject'            => true,
-                'canReopenProject'               => true,
-                'canCreateProject'               => true,
-                'canViewProjectReport'           => true,
-            )
-        );
-    }
-
-    private function applyAdminPermissions($permissions)
-    {
-        return array_merge(
-            $permissions,
-            array(
-                'canViewUserListButton'          => true,
-                'canViewStatsButton'             => true,
-                'canViewProjectButton'           => true,
-                'canViewReopenButton'            => true,
-                'unassignPermission'             => true,
-                'canExportProject'               => true,
-                'canReopenTask'                  => true,
-                'canMoveInProgressProjectToDone' => true,
-                'canMoveFinishedProjectToDone'   => true,
-                'canViewClosedProjects'          => true,
-                'canViewTodoProjects'            => true,
-                'canAcceptProject'               => true,
-                'canViewTaskList'                => true,
-                'canEditLabelingGroups'          => true,
-                'canViewProjectReport'           => true,
-                'canDeleteProject'               => true,
-                'canCreateNewProject'            => true,
-                'canReopenProject'               => true,
-            )
-        );
-    }
-
     public function getPermissions()
     {
-        $token = $this->tokenStorage->getToken();
-        $user  = $token->getUser();
+        /** @var UserInterface $user */
+        $user = $this->tokenStorage->getToken()->getUser();
 
-        $permissions = $this->getPermissionDefaults();
+        $permissions = [];
 
-        // Non loggedin user has no permissions
-        if ($user === null) {
-            return $permissions;
-        }
-
-        if ($user->hasRole(Model\User::ROLE_LABELER)) {
-            $permissions = $this->applyLabelerPermissions($permissions);
-        }
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            $permissions = $this->applyLabelCoordinatorPermissions($permissions);
-        }
-        if ($user->hasRole(Model\User::ROLE_CLIENT)) {
-            $permissions = $this->applyClientPermissions($permissions);
-        }
-        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
-            $permissions = $this->applyAdminPermissions($permissions);
+        foreach (self::PERMISSION_MAP as $permission => $roles) {
+            $permissions[$permission] = array_reduce(
+                $roles,
+                function (bool $granted, string $role) use ($user) {
+                    return $granted || $user->hasRole($role);
+                },
+                false
+            );
         }
 
         return $permissions;
     }
 
-    public function hasPermission($permission)
+    /**
+     * @param string $permission
+     *
+     * @return bool
+     */
+    public function hasPermission(string $permission)
     {
         $permissions = $this->getPermissions();
 
-        return (array_key_exists($permission, $permissions) && $permissions[$permission] === true);
+        return array_key_exists($permission, $permissions) && $permissions[$permission] === true;
     }
 }
