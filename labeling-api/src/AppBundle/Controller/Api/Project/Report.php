@@ -93,6 +93,7 @@ class Report extends Controller\Base
      */
     public function getReportAction(Model\Project $project, Model\Report $report)
     {
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
         if ($report->getReportStatus() !== Model\Report::REPORT_STATUS_DONE) {
             throw new Exception\NotFoundHttpException();
         }
