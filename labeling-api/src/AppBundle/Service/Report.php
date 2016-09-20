@@ -283,7 +283,8 @@ class Report
 
     /**
      * @param Model\Project $project
-     * @return array
+     *
+     * @return int
      */
     private function getNumberOfVideosInProject(Model\Project $project)
     {
@@ -301,7 +302,7 @@ class Report
             $numberOfVideos
         );
 
-        return $numberOfVideos[$project->getId()];
+        return array_key_exists($project->getId(), $numberOfVideos) ? $numberOfVideos[$project->getId()] : 0;
     }
 
     private function getSumOfVideoFramesForProject(Model\Project $project)
