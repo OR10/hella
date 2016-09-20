@@ -262,7 +262,7 @@ class BatchUpload extends Controller\Base
                     ),
                     'missing3dVideoCalibrationData' => array_map(
                         function (Model\Video $video) {
-                            return $video->getId();
+                            return $video->getName();
                         },
                         $videosWithoutCalibrationData
                     ),
