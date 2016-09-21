@@ -112,12 +112,12 @@
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project_export" />
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
             <argument type="service" id="annostation.labeling_api.database.facade.video_export" />
             <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data" />
+            <argument type="service" id="annostation.labeling_api.database.facade.exporter" />
         </service>
 
         <service id="annostation.labeling_api.service.exporter.generic_xml_project_to_csv" class="AppBundle\Service\Exporter\GenericXmlProjectToCsv">

@@ -7,24 +7,23 @@ use AppBundle\Model;
 class LegacyProjectToCsvExporter extends WorkerPool\Job
 {
     /**
-     * @var Model\ProjectExport
+     * @var Model\Export
      */
-    private $projectExport;
+    private $export;
 
     /**
-     * @param Model\ProjectExport $projectExport
-     *
+     * @param Model\Export $export
      */
-    public function __construct(Model\ProjectExport $projectExport)
+    public function __construct(Model\Export $export)
     {
-        $this->projectExport = $projectExport;
+        $this->export = $export;
     }
 
     /**
-     * @return Model\ProjectExport
+     * @return Model\Export
      */
-    public function getProjectExport(): Model\ProjectExport
+    public function getExport(): Model\Export
     {
-        return $this->projectExport;
+        return $this->export;
     }
 }

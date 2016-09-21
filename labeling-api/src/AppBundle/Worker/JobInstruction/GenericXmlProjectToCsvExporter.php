@@ -3,7 +3,6 @@ namespace AppBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use AppBundle\Database\Facade;
 use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 

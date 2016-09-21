@@ -149,4 +149,12 @@ class ProjectExport
     {
         $this->errorMessage = $errorMessage;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 }

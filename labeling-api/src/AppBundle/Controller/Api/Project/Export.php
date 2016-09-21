@@ -83,13 +83,7 @@ class Export extends Controller\Base
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
-        $availableExports = $project->getAvailableExports();
-        $exporter         = reset($availableExports);
-        if ($exporter === 'genericXml') {
-            $exports = $this->exporterFacade->findAllByProject($project);
-        } else {
-            $exports = $this->projectExportFacade->findAllByProject($project);
-        }
+        $exports = $this->exporterFacade->findAllByProject($project);
 
         return View\View::create()->setData(
             [
@@ -115,18 +109,9 @@ class Export extends Controller\Base
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
-        $availableExports = $project->getAvailableExports();
-        $exporter         = reset($availableExports);
+        $export = $this->exporterFacade->find($exportId);
 
-        if ($exporter === 'genericXml') {
-            $export = $this->exporterFacade->find($exportId);
-
-            return $this->getGenericXmlZipContent($project, $export);
-        } else {
-            $projectExport = $this->projectExportFacade->find($exportId);
-
-            return $this->getLegacyZipContent($project, $projectExport);
-        }
+        return $this->getExportContent($project, $export);
     }
 
     /**
@@ -135,7 +120,7 @@ class Export extends Controller\Base
      *
      * @return HttpFoundation\Response
      */
-    private function getGenericXmlZipContent(Model\Project $project, Model\Export $export)
+    private function getExportContent(Model\Project $project, Model\Export $export)
     {
         if ($project->getId() !== $export->getProjectId()) {
             throw new Exception\NotFoundHttpException('Requested export is not valid for this project');
@@ -158,59 +143,6 @@ class Export extends Controller\Base
     }
 
     /**
-     * @param Model\Project       $project
-     * @param Model\ProjectExport $projectExport
-     *
-     * @return HttpFoundation\Response
-     *
-     * @throws ProjectException\Csv
-     */
-    private function getLegacyZipContent(Model\Project $project, Model\ProjectExport $projectExport)
-    {
-        if ($project->getId() !== $projectExport->getProjectId()) {
-            throw new Exception\NotFoundHttpException('Requested export is not valid for this project');
-        }
-
-        $zipFilename = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
-
-        $zip = new \ZipArchive();
-        if ($zip->open($zipFilename, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new ProjectException\Csv(sprintf('Unable to open zip archive at "%s"', $zipFilename));
-        }
-
-        $videoExportIds = $projectExport->getVideoExportIds();
-        if (empty($videoExportIds)) {
-            $zip->addEmptyDir('.');
-        }
-        foreach ($videoExportIds as $videoExportId) {
-            $videoExport = $this->videoExportFacade->find($videoExportId);
-
-            if (!$zip->addFromString($videoExport->getFilename(), $videoExport->getRawData())) {
-                throw new ProjectException\Csv('Unable to add content to zip archive');
-            }
-        }
-        $zip->close();
-
-        $response = new HttpFoundation\Response(
-            file_get_contents($zipFilename),
-            HttpFoundation\Response::HTTP_OK,
-            [
-                'Content-Type'        => 'text/csv',
-                'Content-Disposition' => sprintf(
-                    'attachment; filename="%s"',
-                    $projectExport->getFilename()
-                ),
-            ]
-        );
-
-        if (!unlink($zipFilename)) {
-            throw new ProjectException\Csv(sprintf('Unable to remove temporary zip file at "%s"', $zipFilename));
-        }
-
-        return $response;
-    }
-
-    /**
      * @Rest\Post("/{project}/export/csv")
      *
      * @CheckPermissions({"canExportProject"})
@@ -224,18 +156,14 @@ class Export extends Controller\Base
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
+        $export = new Model\Export($project);
+        $this->exporterFacade->save($export);
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
-                    $projectExport = new Model\ProjectExport($project);
-                    $this->projectExportFacade->save($projectExport);
-
-                    $this->amqpFacade->addJob(new Jobs\LegacyProjectToCsvExporter($projectExport));
+                    $this->amqpFacade->addJob(new Jobs\LegacyProjectToCsvExporter($export));
                     break;
                 case 'genericXml':
-                    $export = new Model\Export($project);
-                    $this->exporterFacade->save($export);
-
                     $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($export));
                     break;
             }

@@ -54,4 +54,13 @@ class ProjectExport
         $this->documentManager->persist($taskExport);
         $this->documentManager->flush();
     }
+
+    /**
+     * @param Model\ProjectExport $projectExport
+     */
+    public function delete(Model\ProjectExport $projectExport)
+    {
+        $this->documentManager->remove($projectExport);
+        $this->documentManager->flush();
+    }
 }

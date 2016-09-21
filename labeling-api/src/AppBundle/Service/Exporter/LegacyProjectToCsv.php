@@ -15,11 +15,6 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     private $labeledThingInFrameFacade;
 
     /**
-     * @var Facade\ProjectExport
-     */
-    private $projectExportFacade;
-
-    /**
      * @var bool
      */
     private $headline;
@@ -70,17 +65,22 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     private $calibrationDataFacade;
 
     /**
+     * @var Facade\Exporter
+     */
+    private $exporterFacade;
+
+    /**
      * Csv constructor.
      *
      * @param Service\GhostClassesPropagation $ghostClassesPropagationService
      * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
      * @param Facade\LabeledThing             $labeledThing
-     * @param Facade\ProjectExport            $projectExportFacade
      * @param Facade\Project                  $projectFacade
      * @param Facade\Video                    $videoFacade
      * @param Facade\VideoExport              $videoExportFacade
      * @param Service\DepthBuffer             $depthBufferService
      * @param Facade\CalibrationData          $calibrationDataFacade
+     * @param Facade\Exporter                 $exporterFacade
      * @param bool                            $headline
      * @param string                          $delimiter
      * @param string                          $enclosure
@@ -89,19 +89,18 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         Service\GhostClassesPropagation $ghostClassesPropagationService,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThing,
-        Facade\ProjectExport $projectExportFacade,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
         Facade\VideoExport $videoExportFacade,
         Service\DepthBuffer $depthBufferService,
         Facade\CalibrationData $calibrationDataFacade,
+        Facade\Exporter $exporterFacade,
         bool $headline = true,
         string $delimiter = ',',
         string $enclosure = '"'
     ) {
         $this->ghostClassesPropagationService = $ghostClassesPropagationService;
         $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
-        $this->projectExportFacade            = $projectExportFacade;
         $this->headline                       = $headline;
         $this->delimiter                      = $delimiter;
         $this->enclosure                      = $enclosure;
@@ -111,6 +110,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         $this->labeledThing                   = $labeledThing;
         $this->depthBufferService             = $depthBufferService;
         $this->calibrationDataFacade          = $calibrationDataFacade;
+        $this->exporterFacade                 = $exporterFacade;
     }
 
     /**
@@ -118,18 +118,17 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      *
      * Only tasks with status done are considered.
      *
-     * @param Model\ProjectExport $projectExport
+     * @param Model\Export $export
      *
-     * @return Model\ProjectExport
+     * @return Model\Export
      * @throws \Exception
-     *
      */
-    public function exportProject(Model\ProjectExport $projectExport)
+    public function exportProject(Model\Export $export)
     {
-        $projectExport = $this->projectExportFacade->find($projectExport->getId());
-        $projectExport->setStatus(Model\ProjectExport::EXPORT_STATUS_IN_PROGRESS);
-        $this->projectExportFacade->save($projectExport);
-        $project = $this->projectFacade->find($projectExport->getProjectId());
+        $export = $this->exporterFacade->find($export->getId());
+        $export->setStatus(Model\Export::EXPORT_STATUS_IN_PROGRESS);
+        $this->exporterFacade->save($export);
+        $project = $this->projectFacade->find($export->getProjectId());
         try {
             // the generated zip file contains one csv file for each task group
             $taskGroups = [
@@ -172,8 +171,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
                 },
             ];
 
-            $consideredTasks = [];
-            $videoExportIds  = [];
+            $zipData = [];
             foreach ($taskGroups as $groupName => $groupInstructions) {
                 $tasks = $this->getLabeledTasksForProject(
                     $project,
@@ -192,36 +190,32 @@ class LegacyProjectToCsv implements Service\ProjectExporter
                     );
                 }
 
-                $consideredTasks = array_merge($tasks, $consideredTasks);
-
                 foreach ($data as $videoId => $videoData) {
-                    $videoExport = $this->createVideoExport(
-                        $project,
-                        $videoData,
-                        $videoId,
+                    $video     = $this->videoFacade->find($videoId);
+                    $filename  = sprintf(
+                        'export_%s_%s_%s.csv',
+                        str_replace(' ', '_', $project->getName()),
                         $groupName,
-                        $consideredTasks
+                        str_replace(' ', '_', $video->getName())
                     );
-
-                    if ($videoExport !== null) {
-                        $videoExportIds[] = $videoExport->getId();
-                    }
+                    $zipData[$filename] = $this->getCsv($videoData);
                 }
             }
 
-            $date          = new \DateTime('now', new \DateTimeZone('UTC'));
+            $zipContent = $this->compressData($zipData);
+            $date       = new \DateTime('now', new \DateTimeZone('UTC'));
+            $filename   = sprintf('export_%s.zip', $date->format('Y-m-d-H-i-s'));
 
-            $projectExport->setVideoExportIds($videoExportIds);
-            $projectExport->setFilename(sprintf('csv_%s.zip', $date->format('Ymd_His')));
-            $projectExport->setStatus(Model\ProjectExport::EXPORT_STATUS_DONE);
-            $this->projectExportFacade->save($projectExport);
+            $export->addAttachment($filename, $zipContent, 'application/zip');
+            $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
+            $this->exporterFacade->save($export);
 
-            return $projectExport;
-        } catch (\Exception $e) {
-            $projectExport->setStatus(Model\ProjectExport::EXPORT_STATUS_ERROR);
-            $this->projectExportFacade->save($projectExport);
+            return $export;
+        }catch (\Exception $exception) {
+            $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
+            $this->exporterFacade->save($export);
 
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -774,23 +768,13 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      *
      * If no video export could be created, e.g. if there is no data, `null` is returned.
      *
-     * @param Model\Project        $project
-     * @param array                $videoData
-     * @param string               $videoId
-     * @param string               $groupName
-     * @param Model\LabelingTask[] $consideredTasks
+     * @param array $videoData
      *
      * @return Model\VideoExport|null
-     *
      * @throws Exception\LegacyProjectToCsv
      */
-    private function createVideoExport(
-        Model\Project $project,
-        array $videoData,
-        string $videoId,
-        string $groupName,
-        array $consideredTasks
-    ) {
+    private function getCsv(array $videoData)
+    {
         if (empty($videoData)) {
             return null;
         }
@@ -813,43 +797,16 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             $videoData
         );
 
-        $tempCsvFile = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
+        $rowStrings = array();
 
-        $fp = fopen($tempCsvFile, 'w');
-        if ($this->headline) {
-            fputcsv($fp, array_keys($videoData[0]), $this->delimiter, $this->enclosure);
-        }
+        // Add header line
+        $rowStrings[] = implode($this->delimiter, array_keys($videoData[0]));
 
         foreach ($videoData as $labeledThingInFrame) {
-            fputcsv($fp, $labeledThingInFrame, $this->delimiter, $this->enclosure);
-        }
-        fclose($fp);
-
-        $video    = $this->videoFacade->find($videoId);
-        $filename = sprintf(
-            'export_%s_%s_%s.csv',
-            str_replace(' ', '_', $project->getName()),
-            $groupName,
-            str_replace(' ', '_', $video->getName())
-        );
-
-        $videoExport = $this->videoExportFacade->save(
-            new Model\VideoExport(
-                $video,
-                $consideredTasks,
-                $filename,
-                'text/csv',
-                file_get_contents($tempCsvFile)
-            )
-        );
-
-        if (!unlink($tempCsvFile)) {
-            throw new Exception\LegacyProjectToCsv(
-                sprintf('Unable to remove temporary csv file at "%s"', $tempCsvFile)
-            );
+            $rowStrings[] = implode($this->delimiter, $labeledThingInFrame);
         }
 
-        return $videoExport;
+        return implode("\r\n", $rowStrings);
     }
 
     /**
@@ -874,5 +831,32 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             ),
             $groupInstructions
         );
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function compressData(array $data)
+    {
+        $zipFilename = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFilename, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \Exception(sprintf('Unable to open zip archive at "%s"', $zipFilename));
+        }
+
+        if (empty($files)) {
+            $zip->addEmptyDir('.');
+        }
+        foreach ($data as $filename => $value) {
+            $zip->addFromString($filename, $value);
+        }
+
+        $zip->close();
+
+        return file_get_contents($zipFilename);
     }
 }

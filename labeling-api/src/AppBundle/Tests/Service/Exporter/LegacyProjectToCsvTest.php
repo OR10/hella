@@ -67,9 +67,9 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
     private $calibrationDataFacade;
 
     /**
-     * @var Facade\ProjectExport
+     * @var Facade\Exporter
      */
-    private $projectExportFacade;
+    private $exporterFacade;
 
     protected function setUpImplementation()
     {
@@ -82,7 +82,7 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->exporter                  = $this->getAnnostationService('service.exporter.legacy_project_to_csv');
         $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
-        $this->projectExportFacade       = $this->getAnnostationService('database.facade.project_export');
+        $this->exporterFacade            = $this->getAnnostationService('database.facade.exporter');
         $this->project                   = $this->createProject();
         $this->video                     = $this->createVideo();
     }
@@ -358,16 +358,21 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
             )
             ->buildWithStringValues();
 
-        $projectExport = new Model\ProjectExport($this->project);
-        $this->projectExportFacade->save($projectExport);
+        $projectExport = new Model\Export($this->project);
+        $this->exporterFacade->save($projectExport);
         $projectExport = $this->exporter->exportProject($projectExport);
-        $this->assertCount(1, $projectExport->getVideoExportIds());
 
-        $videoExport = $this->videoExportFacade->find($projectExport->getVideoExportIds()[0]);
-        $this->assertNotNull($videoExport);
-        $this->assertEquals($expectedExportFilename, $videoExport->getFilename());
+        $attachments = array_values($projectExport->getAttachments());
 
-        $exportedData = $this->mapCsvData($videoExport->getRawData());
+        $zipFilename = tempnam(sys_get_temp_dir(), 'anno-export-csv-');
+        file_put_contents($zipFilename, $attachments[0]->getRawData());
+        $zip = new \ZipArchive();
+        $zip->open($zipFilename);
+        $zip->extractTo(sys_get_temp_dir(), array($expectedExportFilename));
+
+        $csvContent = file_get_contents(sys_get_temp_dir() . '/' . $expectedExportFilename);
+
+        $exportedData = $this->mapCsvData($csvContent);
         $this->assertEquals([$expectedParkedCarsRow, $expectedIgnoreVehicleRow, $expectedVehicleRow], $exportedData);
     }
 

@@ -3,7 +3,6 @@ namespace AppBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use AppBundle\Database\Facade;
 use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 
@@ -30,7 +29,7 @@ class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction
     {
         try {
             /** @var Jobs\LegacyProjectToCsvExporter $job */
-            $this->csvProjectExporter->exportProject($job->getProjectExport());
+            $this->csvProjectExporter->exportProject($job->getExport());
         }catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
         }
