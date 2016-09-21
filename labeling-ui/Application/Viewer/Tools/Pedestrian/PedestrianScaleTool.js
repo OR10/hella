@@ -56,6 +56,10 @@ class PedestrianScaleTool extends Tool {
       this._modified = false;
       this._paperPedestrian.fixOrientation();
       this.emit('shape:update', this._paperPedestrian);
+
+      if (!this._paperPedestrian.topCenter.x || !this._paperPedestrian.topCenter.y || !this._paperPedestrian.bottomCenter.x || !this._paperPedestrian.bottomCenter.y) {
+        this.logger.warn('tool:pedestrian:scale:finish', 'Pedestrian scale coords broken', this._paperPedestrian);
+      }
     }
 
     this._activeHandle = null;
@@ -77,6 +81,10 @@ class PedestrianScaleTool extends Tool {
     this._$scope.$apply(() => {
       this._context.withScope(() => {
         this._paperPedestrian.resize(this._activeHandle, point, minimalHeight);
+
+        if (!this._paperPedestrian.topCenter.x || !this._paperPedestrian.topCenter.y || !this._paperPedestrian.bottomCenter.x || !this._paperPedestrian.bottomCenter.y) {
+          this.logger.warn('tool:pedestrian:scale:perform', 'Pedestrian scale coords broken', this._paperPedestrian);
+        }
       });
     });
   }

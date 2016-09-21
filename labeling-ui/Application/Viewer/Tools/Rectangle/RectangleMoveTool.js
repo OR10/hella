@@ -97,6 +97,11 @@ class RectangleMoveTool extends Tool {
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
+
+    if (!shape.topLeft.x || !shape.topLeft.y || !shape.bottomRight.x || !shape.bottomRight.y) {
+      this.logger.warn('tool:rectangle:move:finish', 'Rectangle move coords broken', shape);
+    }
+
     this.emit('shape:update', shape);
   }
 }

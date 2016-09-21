@@ -97,6 +97,11 @@ class PedestrianMoveTool extends Tool {
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
+
+    if (!shape.topCenter.x || !shape.topCenter.y || !shape.bottomCenter.x || !shape.bottomCenter.y) {
+      this.logger.warn('tool:pedestrian:move:finish', 'Pedestrian move coords broken', shape);
+    }
+
     this.emit('shape:update', shape);
   }
 }

@@ -81,6 +81,10 @@ class PedestrianDrawingTool extends DrawingTool {
    */
   onMouseDown(event) {
     this._startPosition = event.point;
+
+    if (!this._startPosition.x || !this._startPosition.y) {
+      this.logger.warn('tool:pedestrian:create:start', 'Pedestrian start coords broken', this._startPosition);
+    }
   }
 
   /**
@@ -126,6 +130,11 @@ class PedestrianDrawingTool extends DrawingTool {
     labeledThingInFrame.shapes.push(this._pedestrian.toJSON());
 
     this.emit('shape:create', this._pedestrian);
+
+    if (!this._pedestrian.topCenter.x || !this._pedestrian.topCenter.y || !this._pedestrian.bottomCenter.x || !this._pedestrian.bottomCenter.y) {
+      this.logger.warn('tool:pedestrian:create:finish', 'Pedestrian completion coords broken', this._pedestrian);
+    }
+
     this._pedestrian = null;
   }
 
