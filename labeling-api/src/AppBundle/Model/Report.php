@@ -11,6 +11,7 @@ class Report
 {
     const REPORT_STATUS_IN_PROGRESS = 'in_progress';
     const REPORT_STATUS_DONE = 'done';
+    const REPORT_STATUS_ERROR = 'error';
 
     /**
      * @CouchDB\Id
@@ -31,6 +32,11 @@ class Report
      * @CouchDB\Field(type="string")
      */
     private $reportStatus = self::REPORT_STATUS_IN_PROGRESS;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $errorMessage;
 
     /**
      * @CouchDB\Field(type="string")
@@ -851,5 +857,21 @@ class Report
     public function setTotalTimeByTasksAndPhases($totalTimeByTasksAndPhases)
     {
         $this->totalTimeByTasksAndPhases = $totalTimeByTasksAndPhases;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param mixed $errorMessage
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
 }
