@@ -158,6 +158,13 @@
             <argument>30</argument><!-- log severity -->
         </service>
 
+        <service id="annostation.labeling_api.ui_logger" class="cscntLogger">
+            <factory service="annostation.labeling_api.service.logger_factory" method="createLogger"/>
+            <argument>%kernel.logs_dir%/labeling_ui.log</argument>
+            <argument>null</argument>
+            <argument>30</argument><!-- log severity -->
+        </service>
+
         <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">
             <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
             <argument type="service" id="annostation.labeling_api.vendor.logger" />

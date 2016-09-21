@@ -188,5 +188,9 @@
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.ui_log" class="AppBundle\Controller\Api\UiLog">
+            <argument type="service" id="annostation.labeling_api.ui_logger"/>
+        </service>
     </services>
 </container>

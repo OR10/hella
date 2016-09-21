@@ -125,3 +125,9 @@ api_task_configuration:
     resource: "annostation.labeling_api.controller.api.task_configuration"
     type: rest
     name_prefix: app_api_task_configuration
+
+api_ui_log:
+    resource: "annostation.labeling_api.controller.api.ui_log"
+    type: rest
+    name_prefix: app_api_ui_log
+
