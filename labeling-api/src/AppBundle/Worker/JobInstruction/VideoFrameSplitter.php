@@ -71,37 +71,46 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
      */
     public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
-        /** @var Model\Video $video */
-        /** @var Jobs\VideoFrameSplitter $job */
-        $video = $this->videoFacade->find($job->videoId);
+        try {
+            /** @var Model\Video $video */
+            /** @var Jobs\VideoFrameSplitter $job */
+            $video = $this->videoFacade->find($job->videoId);
 
-        if ($video === null) {
-            throw new \RuntimeException("Video '{$job->videoId}' could not be found");
-        }
+            if ($video === null) {
+                throw new \RuntimeException("Video '{$job->videoId}' could not be found");
+            }
 
-        $tmpFile = tempnam($this->cacheDir, 'source_video');
+            $tmpFile = tempnam($this->cacheDir, 'source_video');
 
-        if ($tmpFile === false) {
-            throw new \RuntimeException('Error creating temporary file for video data');
-        }
+            if ($tmpFile === false) {
+                throw new \RuntimeException('Error creating temporary file for video data');
+            }
 
-        if (file_put_contents($tmpFile, $this->fileSystem->readStream($video->getSourceVideoPath())) === false) {
-            throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
-        }
+            if (file_put_contents($tmpFile, $this->fileSystem->readStream($video->getSourceVideoPath())) === false) {
+                throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
+            }
 
-        $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
-        $imageSizes = $this->videoFrameSplitter->getImageSizes();
+            $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
+            $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
-        $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
+            $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
 
-        $disabledTasks = $this->labelingTaskFacade->findAllByStatus($video, Model\LabelingTask::STATUS_PREPROCESSING);
-        foreach ($disabledTasks as $disabledTask) {
-            $disabledTask->setStatusIfAllImagesAreConverted($video);
-            $this->labelingTaskFacade->save($disabledTask);
-        }
+            $disabledTasks = $this->labelingTaskFacade->findAllByStatus(
+                $video,
+                Model\LabelingTask::STATUS_PREPROCESSING
+            );
+            foreach ($disabledTasks as $disabledTask) {
+                $disabledTask->setStatusIfAllImagesAreConverted($video);
+                $this->labelingTaskFacade->save($disabledTask);
+            }
 
-        if (!unlink($tmpFile)) {
-            throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+            if (!unlink($tmpFile)) {
+                throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+            }
+        } catch (\Exception $exception) {
+            $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
+        } catch (\Throwable $throwable) {
+            $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
         }
     }
 
