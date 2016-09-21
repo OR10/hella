@@ -3,14 +3,11 @@ namespace AppBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
-use AppBundle\Model;
 use AppBundle\Service;
-use League\Flysystem;
-use Doctrine\ODM\CouchDB;
-use AppBundle\Model\Video\ImageType;
+use AppBundle\Worker\Jobs;
+
 
 class Report extends WorkerPool\JobInstruction
 {
@@ -42,12 +39,21 @@ class Report extends WorkerPool\JobInstruction
      */
     public function run(Job $job, Logger\Facade\LoggerFacade $logger)
     {
+        /** @var Jobs\Report $job */
         $report = $this->reportFacade->find($job->getReportId());
         if ($report === null) {
-            // @todo log report-not-found
+            $logger->logString(
+                sprintf('No report found for id %s', $job->getReportId()),
+                \cscntLogPayload::SEVERITY_WARNING
+            );
+
             return;
         }
 
-        $this->reportService->processReport($report);
+        try {
+            $this->reportService->processReport($report);
+        }catch (\Exception $exception) {
+            $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
+        }
     }
 }

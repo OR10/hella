@@ -63,178 +63,190 @@ class Report
         $this->reportFacade              = $reportFacade;
     }
 
+    /**
+     * @param Model\Report $report
+     *
+     * @throws \Exception
+     */
     public function processReport(Model\Report $report)
     {
-        $project = $this->projectFacade->find($report->getProjectId());
+        try {
+            $project = $this->projectFacade->find($report->getProjectId());
 
-        $report->setProjectStatus($project->getStatus());
+            $report->setProjectStatus($project->getStatus());
 
-        $report->setProjectCreatedAt($project->getCreationDate());
-        $report->setProjectCreatedBy($project->getUserId());
+            $report->setProjectCreatedAt($project->getCreationDate());
+            $report->setProjectCreatedBy($project->getUserId());
 
-        $projectMovedToInProgress = $project->getLastStateForStatus(Model\Project::STATUS_IN_PROGRESS);
-        $projectMovedToDoneBy     = $project->getLastStateForStatus(Model\Project::STATUS_DONE);
-        $report->setProjectMovedToInProgressBy($projectMovedToInProgress['userId']);
-        $report->setProjectMovedToInProgressAt($projectMovedToInProgress['timestamp']);
-        $report->setProjectMovedToDoneBy($projectMovedToDoneBy['userId']);
-        $report->setProjectMovedToDoneAt($projectMovedToDoneBy['timestamp']);
+            $projectMovedToInProgress = $project->getLastStateForStatus(Model\Project::STATUS_IN_PROGRESS);
+            $projectMovedToDoneBy     = $project->getLastStateForStatus(Model\Project::STATUS_DONE);
+            $report->setProjectMovedToInProgressBy($projectMovedToInProgress['userId']);
+            $report->setProjectMovedToInProgressAt($projectMovedToInProgress['timestamp']);
+            $report->setProjectMovedToDoneBy($projectMovedToDoneBy['userId']);
+            $report->setProjectMovedToDoneAt($projectMovedToDoneBy['timestamp']);
 
-        $report->setProjectDueDate($project->getDueDate());
-        $report->setLabelingValidationProcesses($project->getLabelingValidationProcesses());
+            $report->setProjectDueDate($project->getDueDate());
+            $report->setLabelingValidationProcesses($project->getLabelingValidationProcesses());
 
-        $numberOfVideos = $this->getNumberOfVideosInProject($project);
-        $report->setNumberOfVideosInProject($numberOfVideos);
-        $numberOfTaskByPhaseAndStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-        $phases                       = array(
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION,
-        );
+            $numberOfVideos = $this->getNumberOfVideosInProject($project);
+            $report->setNumberOfVideosInProject($numberOfVideos);
+            $numberOfTaskByPhaseAndStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+            $phases                       = array(
+                Model\LabelingTask::PHASE_LABELING,
+                Model\LabelingTask::PHASE_REVIEW,
+                Model\LabelingTask::PHASE_REVISION,
+            );
 
-        $sumOfTasks = 0;
-        foreach ($phases as $phase) {
-            $sumOfTasks += array_sum($numberOfTaskByPhaseAndStatus[$phase]);
-        }
-        $report->setNumberOfTasksInProject($sumOfTasks);
-
-        /** Number of Labeling Tasks */
-        $report->setNumberOfToDoTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_TODO]
-        );
-        $report->setNumberOfInProgressTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_IN_PROGRESS]
-        );
-        $report->setNumberOfDoneTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_DONE]
-        );
-
-        /** Number of Review Tasks by Status */
-        $report->setNumberOfToDoReviewTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_TODO]
-        );
-        $report->setNumberOfInProgressReviewTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_IN_PROGRESS]
-        );
-        $report->setNumberOfDoneReviewTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_DONE]
-        );
-
-        /** Number of Revision Tasks by Status */
-        $report->setNumberOfToDoRevisionTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_TODO]
-        );
-        $report->setNumberOfInProgressRevisionTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_IN_PROGRESS]
-        );
-        $report->setNumberOfDoneRevisionTasks(
-            $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_DONE]
-        );
-
-        $totalNumberOfLabeledThings = $this->getSumOfLabeledThings($project);
-        $report->setNumberOfLabeledThings(
-            $totalNumberOfLabeledThings
-        );
-        $report->setNumberOfLabeledThingClasses(
-            $this->getSumOfLabeledThingClasses($project)
-        );
-
-        $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
-            $project
-        );
-        $report->setNumberOfLabeledThingInFrames(
-            $totalNumberOfLabeledThingInFrames
-        );
-
-        $report->setNumberOfLabeledThingInFrameClasses(
-            $this->getSumOfLabeledThingInFrameClasses($project)
-        );
-
-        $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
-            $this->labeledThingInFrameFacade->getSumOfTotalClassesForProject($project)
-        );
-
-        $report->setNumberOfUniqueClassesInLabeledThingInFrameByClasses(
-            $this->labeledThingInFrameFacade->getSumOfUniqueClassesForProject($project)
-        );
-
-        $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
-        foreach ($phases as $phase) {
-            if (!key_exists($phase, $timeByPhaseForProject)) {
-                $timeByPhaseForProject[$phase] = 0;
+            $sumOfTasks = 0;
+            foreach ($phases as $phase) {
+                $sumOfTasks += array_sum($numberOfTaskByPhaseAndStatus[$phase]);
             }
-        }
-        $sumOfTimeByPhase = 0;
-        foreach ($timeByPhaseForProject as $phase => $time) {
-            $sumOfTimeByPhase += $time;
-        }
-        $report->setTotalTime($sumOfTimeByPhase);
-        $report->setTotalLabelingTime($timeByPhaseForProject[Model\LabelingTask::PHASE_LABELING]);
-        $report->setTotalReviewTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVIEW]);
-        $report->setTotalRevisionTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVISION]);
+            $report->setNumberOfTasksInProject($sumOfTasks);
 
-        $report->setTotalTimeByTasksAndPhases($this->projectFacade->getTimeForLabelingTaskInProject($project));
+            /** Number of Labeling Tasks */
+            $report->setNumberOfToDoTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_TODO]
+            );
+            $report->setNumberOfInProgressTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_IN_PROGRESS]
+            );
+            $report->setNumberOfDoneTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_DONE]
+            );
 
-        $projectMovedToDoneAt       = null;
-        $projectMovedToDoneBy       = null;
-        $projectMovedToInProgressAt = null;
-        $projectMovedToInProgressBy = null;
-        $projectStatusHistory       = $project->getStatusHistory();
-        if (is_array($projectStatusHistory)) {
-            usort(
-                $projectStatusHistory,
-                function ($a, $b) {
-                    if ($a['timestamp'] === $b['timestamp']) {
-                        return 0;
+            /** Number of Review Tasks by Status */
+            $report->setNumberOfToDoReviewTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_TODO]
+            );
+            $report->setNumberOfInProgressReviewTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_IN_PROGRESS]
+            );
+            $report->setNumberOfDoneReviewTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_DONE]
+            );
+
+            /** Number of Revision Tasks by Status */
+            $report->setNumberOfToDoRevisionTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_TODO]
+            );
+            $report->setNumberOfInProgressRevisionTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_IN_PROGRESS]
+            );
+            $report->setNumberOfDoneRevisionTasks(
+                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_DONE]
+            );
+
+            $totalNumberOfLabeledThings = $this->getSumOfLabeledThings($project);
+            $report->setNumberOfLabeledThings(
+                $totalNumberOfLabeledThings
+            );
+            $report->setNumberOfLabeledThingClasses(
+                $this->getSumOfLabeledThingClasses($project)
+            );
+
+            $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
+                $project
+            );
+            $report->setNumberOfLabeledThingInFrames(
+                $totalNumberOfLabeledThingInFrames
+            );
+
+            $report->setNumberOfLabeledThingInFrameClasses(
+                $this->getSumOfLabeledThingInFrameClasses($project)
+            );
+
+            $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
+                $this->labeledThingInFrameFacade->getSumOfTotalClassesForProject($project)
+            );
+
+            $report->setNumberOfUniqueClassesInLabeledThingInFrameByClasses(
+                $this->labeledThingInFrameFacade->getSumOfUniqueClassesForProject($project)
+            );
+
+            $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
+            foreach ($phases as $phase) {
+                if (!key_exists($phase, $timeByPhaseForProject)) {
+                    $timeByPhaseForProject[$phase] = 0;
+                }
+            }
+            $sumOfTimeByPhase = 0;
+            foreach ($timeByPhaseForProject as $phase => $time) {
+                $sumOfTimeByPhase += $time;
+            }
+            $report->setTotalTime($sumOfTimeByPhase);
+            $report->setTotalLabelingTime($timeByPhaseForProject[Model\LabelingTask::PHASE_LABELING]);
+            $report->setTotalReviewTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVIEW]);
+            $report->setTotalRevisionTime($timeByPhaseForProject[Model\LabelingTask::PHASE_REVISION]);
+
+            $report->setTotalTimeByTasksAndPhases($this->projectFacade->getTimeForLabelingTaskInProject($project));
+
+            $projectMovedToDoneAt       = null;
+            $projectMovedToDoneBy       = null;
+            $projectMovedToInProgressAt = null;
+            $projectMovedToInProgressBy = null;
+            $projectStatusHistory       = $project->getStatusHistory();
+            if (is_array($projectStatusHistory)) {
+                usort(
+                    $projectStatusHistory,
+                    function ($a, $b) {
+                        if ($a['timestamp'] === $b['timestamp']) {
+                            return 0;
+                        }
+
+                        return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
                     }
-
-                    return ($a['timestamp'] > $b['timestamp']) ? -1 : 1;
-                }
-            );
-            foreach ($projectStatusHistory as $projectStatus) {
-                if ($projectStatus['status'] === Model\Project::STATUS_IN_PROGRESS &&
-                    $projectMovedToInProgressAt === null && $projectMovedToInProgressBy === null
-                ) {
-                    $projectMovedToInProgressAt = $projectStatus['timestamp'];
-                    $projectMovedToInProgressBy = $projectStatus['userId'];
-                }
-                if ($projectStatus['status'] === Model\Project::STATUS_DONE &&
-                    $projectMovedToDoneAt === null && $projectMovedToDoneBy === null
-                ) {
-                    $projectMovedToDoneAt = $projectStatus['timestamp'];
-                    $projectMovedToDoneBy = $projectStatus['userId'];
+                );
+                foreach ($projectStatusHistory as $projectStatus) {
+                    if ($projectStatus['status'] === Model\Project::STATUS_IN_PROGRESS &&
+                        $projectMovedToInProgressAt === null && $projectMovedToInProgressBy === null
+                    ) {
+                        $projectMovedToInProgressAt = $projectStatus['timestamp'];
+                        $projectMovedToInProgressBy = $projectStatus['userId'];
+                    }
+                    if ($projectStatus['status'] === Model\Project::STATUS_DONE &&
+                        $projectMovedToDoneAt === null && $projectMovedToDoneBy === null
+                    ) {
+                        $projectMovedToDoneAt = $projectStatus['timestamp'];
+                        $projectMovedToDoneBy = $projectStatus['userId'];
+                    }
                 }
             }
+            $report->setProjectMovedToInProgressBy($projectMovedToInProgressBy);
+            $report->setProjectMovedToInProgressAt($projectMovedToInProgressAt);
+            $report->setProjectMovedToDoneBy($projectMovedToDoneBy);
+            $report->setProjectMovedToDoneAt($projectMovedToDoneAt);
+
+            $numberOfVideoFrames = $this->getSumOfVideoFramesForProject($project);
+
+            if ($numberOfVideoFrames > 0) {
+                $report->setAverageTimePerVideoFrame(round($sumOfTimeByPhase / $numberOfVideoFrames));
+                $report->setAverageLabeledThingInFramesPerVideoFrame(
+                    round($totalNumberOfLabeledThingInFrames / $numberOfVideoFrames)
+                );
+            }
+
+            if ($numberOfVideos > 0) {
+                $report->setAverageTimePerVideo(round($sumOfTimeByPhase / $numberOfVideos));
+            }
+
+            if ($totalNumberOfLabeledThings > 0) {
+                $report->setAverageTimePerLabeledThing(round($sumOfTimeByPhase / $totalNumberOfLabeledThings));
+            }
+
+            if ($totalNumberOfLabeledThingInFrames > 0) {
+                $report->setAverageTimePerLabeledThingInFrame(
+                    round($sumOfTimeByPhase / $totalNumberOfLabeledThingInFrames)
+                );
+            }
+
+            $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
+            $this->reportFacade->save($report);
+        }catch (\Exception $exception) {
+            $report->setReportStatus(Model\Report::REPORT_STATUS_ERROR);
+            $this->reportFacade->save($report);
+
+            throw $exception;
         }
-        $report->setProjectMovedToInProgressBy($projectMovedToInProgressBy);
-        $report->setProjectMovedToInProgressAt($projectMovedToInProgressAt);
-        $report->setProjectMovedToDoneBy($projectMovedToDoneBy);
-        $report->setProjectMovedToDoneAt($projectMovedToDoneAt);
-
-        $numberOfVideoFrames = $this->getSumOfVideoFramesForProject($project);
-
-        if ($numberOfVideoFrames > 0) {
-            $report->setAverageTimePerVideoFrame(round($sumOfTimeByPhase / $numberOfVideoFrames));
-            $report->setAverageLabeledThingInFramesPerVideoFrame(
-                round($totalNumberOfLabeledThingInFrames / $numberOfVideoFrames)
-            );
-        }
-
-        if ($numberOfVideos > 0) {
-            $report->setAverageTimePerVideo(round($sumOfTimeByPhase / $numberOfVideos));
-        }
-
-        if ($totalNumberOfLabeledThings > 0) {
-            $report->setAverageTimePerLabeledThing(round($sumOfTimeByPhase / $totalNumberOfLabeledThings));
-        }
-
-        if ($totalNumberOfLabeledThingInFrames > 0) {
-            $report->setAverageTimePerLabeledThingInFrame(
-                round($sumOfTimeByPhase / $totalNumberOfLabeledThingInFrames)
-            );
-        }
-
-        $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
-        $this->reportFacade->save($report);
     }
 
     /**
