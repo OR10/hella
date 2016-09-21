@@ -22,7 +22,7 @@ class RemoteLogger {
     this._groupId = null;
   }
 
-  log(context, ...args) {
+  log(context, ...args) { // eslint-disable-line no-unused-vars
     // Backend currently only saves messages with a level of at least warning
     // this._log('info', context, args);
   }

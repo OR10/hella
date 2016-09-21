@@ -124,7 +124,7 @@ class UploadController {
           this._showCompletedModal(result.missing3dVideoCalibrationData);
         }
       })
-      .catch((result) => {
+      .catch(() => {
         this.uploadInProgress = false;
         this._uninstallNavigationInterceptions();
         this._showCompletedWithErrorsModal();
