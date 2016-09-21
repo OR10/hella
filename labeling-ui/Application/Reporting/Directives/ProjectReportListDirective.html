@@ -34,6 +34,8 @@
                     class="no-hover"
                 >
                     <td colspan="3" class="no-tasks">No Reports avaialble.</td>
+                <tr ng-if="!vm.reports.length" class="no-hover">
+                    <td colspan="3" class="no-tasks">No Reports available.</td>
                 </tr>
                 </tbody>
             </table>
