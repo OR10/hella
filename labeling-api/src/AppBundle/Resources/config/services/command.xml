@@ -107,15 +107,5 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <tag name="console.command"/>
         </service>
-
-        <service id="annostation.labeling_api.command.migrations.copy_and_delete_projectExportDocs_to_export_docs"
-                 class="AppBundle\Command\Migrations\CopyAndDeleteProjectExportDocsToExportDocs"
-        >
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.project_export"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video_export"/>
-            <tag name="console.command"/>
-        </service>
     </services>
 </container>
