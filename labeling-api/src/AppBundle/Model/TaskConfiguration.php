@@ -166,6 +166,6 @@ class TaskConfiguration
             return $this->file[$filename]->getRawData();
         }
 
-        throw new \RuntimeException('Broken VideoExport document: missing attachment');
+        throw new \RuntimeException('Broken Configuration document: missing attachment');
     }
 }
