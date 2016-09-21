@@ -23,6 +23,7 @@ class SimpleReports
                 'id' => $report->getId(),
                 'reportCreationDate' => $report->getReportCreationDate(),
                 'reportStatus' => $report->getReportStatus(),
+                'errorMessage' => $report->getErrorMessage(),
                 'projectId' => $report->getProjectId(),
             ];
         }, $reports);
