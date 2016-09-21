@@ -18,7 +18,7 @@ class Kitti implements Service\TaskExporter
      * This map maps a specific labeling class to a known object type of the
      * KITTI exporter.
      */
-    static $objectTypeMap = [
+    private static $objectTypeMap = [
         'pedestrian' => 'Pedestrian',
         'cyclist'    => 'Cyclist',
         'car'        => 'Car',
@@ -132,16 +132,16 @@ class Kitti implements Service\TaskExporter
     public function getInternalExportData(Model\LabelingTask $task)
     {
         $frameNumberMapping = $task->getFrameNumberMapping();
-        $result = array();
+        $result             = array();
         foreach ($frameNumberMapping as $frameNumber) {
             $result[$frameNumber] = [];
         }
 
         $labeledThingsInFrame = $this->labelingTaskFacade->getLabeledThingsInFrame($task);
-        $labeledThingIds = array_values(
+        $labeledThingIds      = array_values(
             array_unique(
                 array_map(
-                    function(Model\LabeledThingInFrame $labeledThingInFrame) {
+                    function (Model\LabeledThingInFrame $labeledThingInFrame) {
                         return $labeledThingInFrame->getLabeledThingId();
                     },
                     $labeledThingsInFrame
@@ -163,7 +163,7 @@ class Kitti implements Service\TaskExporter
             }
 
             try {
-                $frameNumber = $frameNumberMapping[$labeledThingInFrame->getFrameIndex()];
+                $frameNumber            = $frameNumberMapping[$labeledThingInFrame->getFrameIndex()];
                 $result[$frameNumber][] = new TaskExporter\Kitti\Object(
                     $this->getObjectType($labeledThings[$labeledThingInFrame->getLabeledThingId()]),
                     $labeledThingInFrame->getBoundingBox()

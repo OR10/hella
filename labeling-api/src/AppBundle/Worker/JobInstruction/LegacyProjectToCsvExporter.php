@@ -30,7 +30,7 @@ class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction
         try {
             /** @var Jobs\LegacyProjectToCsvExporter $job */
             $this->csvProjectExporter->exportProject($job->getExport());
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);

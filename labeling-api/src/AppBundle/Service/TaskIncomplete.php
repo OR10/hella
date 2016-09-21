@@ -24,8 +24,9 @@ class TaskIncomplete
 
     /**
      * TaskIncomplete constructor.
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Facade\LabeledThing $labeledThingFacade
+     *
+     * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      */
     public function __construct(
@@ -33,18 +34,28 @@ class TaskIncomplete
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade
     ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->labeledThingFacade = $labeledThingFacade;
+        $this->labeledThingFacade        = $labeledThingFacade;
     }
 
-    public function revalideLabeledThingInFrameIncompleteStatus(Model\LabeledThing $labeledThing, Model\LabeledThingInFrame $labeledThingInFrame)
-    {
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameIndex()+1, 0, null);
+    public function revalideLabeledThingInFrameIncompleteStatus(
+        Model\LabeledThing $labeledThing,
+        Model\LabeledThingInFrame $labeledThingInFrame
+    ) {
+        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames(
+            $labeledThing,
+            $labeledThingInFrame->getFrameIndex() + 1,
+            0,
+            null
+        );
 
-        usort($labeledThingInFrames, function($a, $b) {
+        usort(
+            $labeledThingInFrames,
+            function (Model\LabeledThingInFrame $a, Model\LabeledThingInFrame $b) {
                 return $a->getFrameIndex() <=> $b->getFrameIndex();
-        });
+            }
+        );
 
         $incompleteStatus = $labeledThingInFrame->getIncomplete();
 
@@ -77,12 +88,13 @@ class TaskIncomplete
 
     /**
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     *
      * @return bool
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
-        $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
+        $labeledThing  = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
+        $task          = $this->labelingTaskFacade->find($labeledThing->getTaskId());
         $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
 
         if (empty($rootStructure['children'])) {
@@ -90,7 +102,9 @@ class TaskIncomplete
         }
 
         if (empty($labeledThingInFrame->getClasses())) {
-            $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
+            $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+                $labeledThingInFrame
+            );
             if ($labeledThingInFrame === null) {
                 return true;
             }
@@ -109,12 +123,13 @@ class TaskIncomplete
 
     /**
      * @param Model\LabeledFrame $labeledFrame
+     *
      * @return bool
      */
     public function isLabeledFrameIncomplete(Model\LabeledFrame $labeledFrame)
     {
-        $classes = $labeledFrame->getClasses();
-        $task = $this->labelingTaskFacade->find($labeledFrame->getTaskId());
+        $classes       = $labeledFrame->getClasses();
+        $task          = $this->labelingTaskFacade->find($labeledFrame->getTaskId());
         $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
 
         foreach ($rootStructure['children'] as $child) {
@@ -127,9 +142,10 @@ class TaskIncomplete
     }
 
     /**
-     * @param $classes
-     * @param $structure
+     * @param     $classes
+     * @param     $structure
      * @param int $level
+     *
      * @return bool
      */
     private function searchStructureForClasses($classes, $structure, $level = 0)
@@ -141,6 +157,7 @@ class TaskIncomplete
                         return true;
                     }
                 }
+
                 return false;
             } else {
                 return true;

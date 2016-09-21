@@ -152,7 +152,7 @@ class GenericXmlProjectToCsv
                     );
                     $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
                 }
-                
+
                 $table = new Export\Table($columnGroup);
                 foreach ($labelingTaskIterator as $task) {
                     $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame(
@@ -195,7 +195,7 @@ class GenericXmlProjectToCsv
             $export->addAttachment($filename, $zipContent, 'application/zip');
             $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
             $this->exporterFacade->save($export);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);
 

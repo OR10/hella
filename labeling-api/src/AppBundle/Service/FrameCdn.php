@@ -4,7 +4,6 @@ namespace AppBundle\Service;
 
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use Doctrine\ODM\CouchDB;
 
 abstract class FrameCdn
 {
@@ -21,14 +20,14 @@ abstract class FrameCdn
     public function __construct()
     {
         $this->transactionInProgress = false;
-        $this->transactionVideo = null;
+        $this->transactionVideo      = null;
     }
 
     /**
      * Start a batch transaction before storing a lot of frames.
      *
-     * Batch transactions are not guaranteed to be atomic. Furthermore they are not guaranteed to only execute actions upon
-     * comitting.
+     * Batch transactions are not guaranteed to be atomic. Furthermore they are not guaranteed to only execute actions
+     * upon comitting.
      *
      * Storing files inside a transaction allows the service to possibly batch some of the storage operations for
      * better performance. Storing more than one frame should always be enclosed in a transaction.
@@ -41,13 +40,14 @@ abstract class FrameCdn
      *
      * @throws \RuntimeException
      */
-    public function beginBatchTransaction(Model\Video $video) {
+    public function beginBatchTransaction(Model\Video $video)
+    {
         if ($this->transactionInProgress === true) {
             throw new \RuntimeException('A frame cdn storage transaction is already in progress');
         }
 
         $this->transactionInProgress = true;
-        $this->transactionVideo = $video;
+        $this->transactionVideo      = $video;
     }
 
     /**
@@ -55,13 +55,14 @@ abstract class FrameCdn
      *
      * @return void
      */
-    public function commit() {
+    public function commit()
+    {
         if ($this->transactionInProgress === false) {
             throw new \RuntimeException('No frame cdn storage transaction in progress.');
         }
 
         $this->transactionInProgress = false;
-        $this->transactionVideo = null;
+        $this->transactionVideo      = null;
     }
 
     /**
@@ -72,12 +73,18 @@ abstract class FrameCdn
      *
      * @return mixed
      */
-    abstract public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameIndex, $imageData);
+    abstract public function save(
+        Model\Video $video,
+        Model\Video\ImageType\Base $imageType,
+        int $frameIndex,
+        string $imageData
+    );
 
     /**
      * @param Model\LabelingTask $labeledFrame
-     * @param ImageType\Base $imageType
-     * @param array $frameNumbers
+     * @param ImageType\Base     $imageType
+     * @param array              $frameNumbers
+     *
      * @return array
      */
     abstract public function getFrameLocations(

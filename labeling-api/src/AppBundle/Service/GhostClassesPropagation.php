@@ -46,36 +46,35 @@ class GhostClassesPropagation
         $propagatedClassesCache = array();
 
         foreach ($workingCopy as $labeledThingInFrame) {
+            $labeledThingId = $labeledThingInFrame->getLabeledThingId();
+
             if (!empty($labeledThingInFrame->getClasses())) {
                 // No ghost class look behind needed. LabeledThingInFrame is complete
                 // Remember the classes for LabeledThingsInFrame to come.
-                $propagatedClassesCache[$labeledThingInFrame->getLabeledThingId()] = $labeledThingInFrame->getClasses();
+                $propagatedClassesCache[$labeledThingId] = $labeledThingInFrame->getClasses();
                 continue;
             }
 
             // No classes set. Need to check for ghostClasses
-            if (!array_key_exists($labeledThingInFrame->getLabeledThingId(), $propagatedClassesCache)) {
-                $previousLabeledThingInFrameWithClasses = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
-                    $labeledThingInFrame
-                );
+            if (!array_key_exists($labeledThingId, $propagatedClassesCache)) {
+                $previousLabeledThingInFrameWithClasses = $this->labeledThingInFrameFacade
+                    ->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
 
                 // There might be no such previous LabeledThingInFrame
                 if (!($previousLabeledThingInFrameWithClasses instanceof Model\LabeledThingInFrame)) {
                     // Remember that there isn't a previous LabeledThingInFrame with classes for the next cycle
                     // Ghost classes are not set, as there are none
-                    $propagatedClassesCache[$labeledThingInFrame->getLabeledThingId()] = null;
+                    $propagatedClassesCache[$labeledThingId] = null;
                     continue;
                 }
 
                 // We found a previous LabeledThingInFrame with classes. The cache needs to be filled
-                $propagatedClassesCache[$labeledThingInFrame->getLabeledThingId()] = $previousLabeledThingInFrameWithClasses->getClasses();
+                $propagatedClassesCache[$labeledThingId] = $previousLabeledThingInFrameWithClasses->getClasses();
             }
 
             // Update the ghost classes for this LabeledThingInFrame with data from the cache, which is correctly filled
             // at this point.
-            $labeledThingInFrame->setGhostClasses(
-                $propagatedClassesCache[$labeledThingInFrame->getLabeledThingId()]
-            );
+            $labeledThingInFrame->setGhostClasses($propagatedClassesCache[$labeledThingId]);
         }
 
         return $workingCopy;

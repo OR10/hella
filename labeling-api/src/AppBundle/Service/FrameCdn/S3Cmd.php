@@ -70,7 +70,7 @@ class S3Cmd extends Service\FrameCdn
      * @return void
      * @throws \Exception
      */
-    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameIndex, $imageData)
+    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, int $frameIndex, string $imageData)
     {
         $cdnPath  = sprintf(
             '%s/%s/%s',
@@ -110,11 +110,8 @@ class S3Cmd extends Service\FrameCdn
      *
      * @return array
      */
-    public function getFrameLocations(
-        Model\LabelingTask $labelingTask,
-        ImageType\Base $imageType,
-        array $frameNumbers
-    ) {
+    public function getFrameLocations(Model\LabelingTask $labelingTask, ImageType\Base $imageType, array $frameNumbers)
+    {
         $urls = [];
         foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
@@ -146,5 +143,4 @@ class S3Cmd extends Service\FrameCdn
 
         return $tempDir;
     }
-
 }

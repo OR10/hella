@@ -90,11 +90,9 @@ class Interpolation
     }
 
     /**
-     * Interpolate for the whole frame range of the given `$labeledThing` using
-     * the algorithm identified by `$algorithmName`.
-     * The algorithm has to be added with `addAlgorithm` first.
-     * A status object may be passed as optional parameter which will be
-     * updated according to the interpolation status.
+     * Interpolate for the whole frame range of the given `$labeledThing` using the algorithm identified by
+     * `$algorithmName`. The algorithm has to be added with `addAlgorithm` first. A status object may be passed as
+     * optional parameter which will be updated according to the interpolation status.
      *
      * @param string                          $algorithmName
      * @param Model\LabeledThing              $labeledThing
@@ -126,7 +124,7 @@ class Interpolation
         Model\FrameIndexRange $frameRange,
         Model\Interpolation\Status $status = null
     ) {
-        $this->updateStatus($status, Model\Interpolation\Status::RUNNING);
+        $this->updateStatus(Model\Interpolation\Status::RUNNING, $status);
 
         try {
             $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getStartFrameIndex());
@@ -154,22 +152,22 @@ class Interpolation
                 $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
             }
 
-            $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
+            $this->updateStatus(Model\Interpolation\Status::SUCCESS, $status);
         } catch (Interpolation\Exception $interpolationException) {
-            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $interpolationException->getMessage());
+            $this->updateStatus(Model\Interpolation\Status::ERROR, $status, $interpolationException->getMessage());
         } catch (\Throwable $throwable) {
-            $this->updateStatus($status, Model\Interpolation\Status::ERROR);
+            $this->updateStatus(Model\Interpolation\Status::ERROR, $status);
         }
     }
 
     /**
      * Update the given `$status` if it is not null or otherwise do nothing.
      *
-     * @param Model\Interpolation\Status|null $status
      * @param string                          $newState
+     * @param Model\Interpolation\Status|null $status
      * @param string                          $message
      */
-    private function updateStatus(Model\Interpolation\Status $status = null, string $newState, string $message = null)
+    private function updateStatus(string $newState, Model\Interpolation\Status $status = null, string $message = null)
     {
         if ($status !== null) {
             $status->setStatus($newState, $message);

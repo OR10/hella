@@ -26,24 +26,26 @@ class User
 
     /**
      * User constructor.
+     *
      * @param FosUserModel\UserManager $userManager
-     * @param CouchDB\DocumentManager $documentManager
-     * @param Storage\TokenStorage $tokenStorage
+     * @param CouchDB\DocumentManager  $documentManager
+     * @param Storage\TokenStorage     $tokenStorage
      */
     public function __construct(
         FosUserModel\UserManager $userManager,
         CouchDB\DocumentManager $documentManager,
         Storage\TokenStorage $tokenStorage
     ) {
-        $this->userManager = $userManager;
+        $this->userManager     = $userManager;
         $this->documentManager = $documentManager;
-        $this->tokenStorage = $tokenStorage;
+        $this->tokenStorage    = $tokenStorage;
     }
 
     /**
      * @param $username
      * @param $email
      * @param $password
+     *
      * @return FosUserModel\UserInterface
      */
     public function createUser($username, $email, $password, $enabled = true, $locked = false)
@@ -62,6 +64,7 @@ class User
 
     /**
      * @param Model\User $user
+     *
      * @return Model\User
      */
     public function updateUser(Model\User $user)
@@ -73,6 +76,7 @@ class User
 
     /**
      * @param Model\User $user
+     *
      * @return bool
      */
     public function deleteUser(Model\User $user)
@@ -91,6 +95,7 @@ class User
 
     /**
      * @param $id
+     *
      * @return FosUserModel\UserInterface
      */
     public function getUserById($id)
@@ -100,6 +105,7 @@ class User
 
     /**
      * @param $token
+     *
      * @return FosUserModel\UserInterface
      */
     public function getUserByToken($token)
@@ -112,7 +118,7 @@ class User
      */
     public function getUserList()
     {
-        $users = $userProfileImages =  $this->documentManager
+        $users = $userProfileImages = $this->documentManager
             ->createQuery('annostation_user', 'by_id')
             ->onlyDocs(true)
             ->execute()
@@ -135,6 +141,7 @@ class User
     /**
      * @param array $userIds
      * @param bool  $ignoreLocked
+     *
      * @return Model\User[]
      */
     public function getUserByIds(array $userIds, $ignoreLocked = true)
@@ -171,6 +178,7 @@ class User
 
     /**
      * @param $role
+     *
      * @return Model\User[]
      */
     public function getUserByRole($role)
@@ -186,17 +194,18 @@ class User
      * Returns the user profile image raw data
      *
      * @param Model\User $user
+     *
      * @return null|String
      */
     public function getUserProfileImage(Model\User $user)
     {
-        $userProfileImages =  $this->documentManager
-        ->createQuery('annostation_user_profile_image', 'by_user_id')
-        ->setStartKey($user->getId())
-        ->setEndKey($user->getId())
-        ->onlyDocs(true)
-        ->execute()
-        ->toArray();
+        $userProfileImages = $this->documentManager
+            ->createQuery('annostation_user_profile_image', 'by_user_id')
+            ->setStartKey($user->getId())
+            ->setEndKey($user->getId())
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
         if (empty($userProfileImages)) {
             return null;
         }
@@ -240,6 +249,7 @@ class User
     /**
      * @param Model\User    $user
      * @param Model\Project $project
+     *
      * @return bool
      */
     public function hasPermissionForProject(Model\User $user, Model\Project $project)
@@ -248,14 +258,15 @@ class User
             return true;
         }
 
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR) && $project->getLatestAssignedCoordinatorUserId() === $user->getId()) {
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)
+            && $project->getLatestAssignedCoordinatorUserId() === $user->getId()
+        ) {
             return true;
         }
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER])) {
             return true;
         }
-
 
         return false;
     }
