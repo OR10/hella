@@ -55,7 +55,7 @@ class Interpolation
     public function addAlgorithm(Interpolation\Algorithm $algorithm)
     {
         if (isset($this->algorithms[$algorithm->getName()])) {
-            throw new Interpolation\Exception("Algorithm with name '{$algorithm->getName()}' already exsists");
+            throw new \InvalidArgumentException("Algorithm with name '{$algorithm->getName()}' already exsists");
         }
 
         $this->algorithms[$algorithm->getName()] = $algorithm;
@@ -155,7 +155,9 @@ class Interpolation
             }
 
             $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
-        } catch (\Exception $e) {
+        } catch (Interpolation\Exception $interpolationException) {
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $interpolationException->getMessage());
+        } catch (\Throwable $throwable) {
             $this->updateStatus($status, Model\Interpolation\Status::ERROR);
         }
     }
@@ -165,11 +167,12 @@ class Interpolation
      *
      * @param Model\Interpolation\Status|null $status
      * @param string                          $newState
+     * @param string                          $message
      */
-    private function updateStatus(Model\Interpolation\Status $status = null, $newState)
+    private function updateStatus(Model\Interpolation\Status $status = null, string $newState, string $message = null)
     {
         if ($status !== null) {
-            $status->setStatus($newState);
+            $status->setStatus($newState, $message);
             $this->statusFacade->save($status);
         }
     }

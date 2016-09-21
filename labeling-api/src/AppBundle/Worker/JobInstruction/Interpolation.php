@@ -48,26 +48,65 @@ class Interpolation extends WorkerPool\JobInstruction
      */
     public function run(Job $job, Logger\Facade\LoggerFacade $logger)
     {
-        if (!$job instanceof Jobs\Interpolation) {
-            throw new \RuntimeException("Invalid job type");
+        /** @var Jobs\Interpolation $job */
+
+        /** @var Model\Interpolation\Status|null $status */
+        $status = null;
+
+        try {
+            if ($job->getStatusId() !== null) {
+                $status = $this->statusFacade->find(Model\Interpolation\Status::class, $job->getStatusId());
+            }
+
+            if ($status === null) {
+                $logger->logString('Missing status for interpolation job', \cscntLogPayload::SEVERITY_ERROR);
+            }
+
+            $labeledThing = $this->labeledThingFacade->find($job->getLabeledThingId());
+
+            if ($labeledThing === null) {
+                $message = sprintf('Labeled thing not found with id: %s', $job->getLabeledThingId());
+                $logger->logString($message, \cscntLogPayload::SEVERITY_ERROR);
+
+                $this->markErrorStatus($logger, $status, $message);
+
+                return;
+            }
+
+            $this->interpolationService->interpolateForRange(
+                $job->getAlgorithm(),
+                $labeledThing,
+                $job->getFrameRange(),
+                $status
+            );
+        } catch (\Exception $exception) {
+            $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
+            $this->markErrorStatus($logger, $status);
+        } catch (\Throwable $throwable) {
+            $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
+            $this->markErrorStatus($logger, $status);
+        }
+    }
+
+    /**
+     * @param Logger\Facade\LoggerFacade      $logger
+     * @param Model\Interpolation\Status|null $status
+     * @param string                          $message
+     */
+    private function markErrorStatus(
+        Logger\Facade\LoggerFacade $logger,
+        Model\Interpolation\Status $status = null,
+        string $message = null
+    ) {
+        if ($status === null) {
+            return;
         }
 
-        $labeledThing = $this->labeledThingFacade->find($job->getLabeledThingId());
-
-        if ($labeledThing === null) {
-            throw new \RuntimeException("LabeledThing not found");
+        try {
+            $status->setStatus(Model\Interpolation\Status::ERROR, $message);
+            $this->statusFacade->save($status);
+        } catch (\Throwable $throwable) {
+            $logger->logString('Failed setting error status', \cscntLogPayload::SEVERITY_FATAL);
         }
-
-        // TODO: throw exception if status could not be found? or at least log sth about it?
-        $status = $job->getStatusId() !== null
-                ? $this->statusFacade->find(Model\Interpolation\Status::class, $job->getStatusId())
-                : null;
-
-        $this->interpolationService->interpolateForRange(
-            $job->getAlgorithm(),
-            $labeledThing,
-            $job->getFrameRange(),
-            $status
-        );
     }
 }
