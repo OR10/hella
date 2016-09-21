@@ -6,6 +6,7 @@ import ReadOnlyInterceptor from './Services/ReadOnlyInterceptor';
 import ErrorInterceptor from './Services/ErrorInterceptor';
 import RevisionManager from './Services/RevisionManager';
 import StatusGateway from './Gateways/StatusGateway';
+import LogGateway from './Gateways/LogGateway';
 import BufferedHttpProvider from './Services/BufferedHttpProvider';
 import EntityIdService from './Services/EntityIdService';
 import AbortablePromiseFactoryProvider from './Support/AbortablePromiseFactoryProvider';
@@ -25,6 +26,7 @@ import KeyboardShortcutService from './Services/KeyboardShortcutService';
 import DebouncerService from './Services/DebouncerService';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
+import RemoteLogger from './Loggers/RemoteLogger';
 
 import 'foundation-apps/js/angular/services/foundation.core';
 import 'foundation-apps/js/angular/services/foundation.core.animation';
@@ -61,6 +63,7 @@ class Common extends Module {
     this.module.service('entityIdService', EntityIdService);
     this.module.service('animationFrameService', AnimationFrameService);
     this.module.service('statusGateway', StatusGateway);
+    this.module.service('logGateway', LogGateway);
     this.module.service('entityColorService', EntityColorService);
     this.module.service('modalService', ModalService);
     this.module.service('releaseConfigService', ReleaseConfigService);
@@ -92,13 +95,18 @@ class Common extends Module {
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 
+          loggerServiceProvider.addContexts('tool:*');
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
           }
         },
       ]);
 
-    this.module.run(['$rootScope', '$state', ($rootScope, $state) => {
+    this.module.run(['$rootScope', '$state', 'loggerService', 'logGateway', ($rootScope, $state, loggerService, logGateway) => {
+      if (!Environment.isDevelopment) {
+        loggerService.addLogger(new RemoteLogger(logGateway));
+      }
+
       $rootScope.$on('unauthorized', () => {
         const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);
         window.location.assign(`/login?targetUrl=${targetUrl}`);
