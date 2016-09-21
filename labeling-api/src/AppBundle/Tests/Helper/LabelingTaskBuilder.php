@@ -32,21 +32,27 @@ class LabelingTaskBuilder
     /**
      * @var string
      */
-    private $taskType;
+    private $taskType = Model\LabelingTask::TYPE_OBJECT_LABELING;
 
     /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
     {
+        $this->frameNumberMapping = range(1, 661);
     }
 
     /**
+     * @param Model\Project $project
+     * @param Model\Video   $video
+     *
      * @return LabelingTaskBuilder
      */
-    public static function create()
+    public static function create(Model\Project $project, Model\Video $video)
     {
-        return new self();
+        $taskBuilder = new self();
+
+        return $taskBuilder->withProject($project)->withVideo($video);
     }
 
     /**
@@ -122,15 +128,9 @@ class LabelingTaskBuilder
      */
     public function build()
     {
-        if ($this->frameNumberMapping === null) {
-            $this->frameNumberMapping = range(1, 661);
-        }
-        if ($this->taskType === null) {
-            $this->taskType = Model\LabelingTask::TYPE_OBJECT_LABELING;
-        }
         $task = Model\LabelingTask::create($this->video, $this->project, $this->frameNumberMapping, $this->taskType);
 
-        foreach($this->status as $phase => $status) {
+        foreach ($this->status as $phase => $status) {
             $task->setStatus($phase, $status);
         }
 

@@ -127,10 +127,7 @@ class StatusTest extends Tests\WebTestCase
     private function createTask(Model\Project $project)
     {
         return $this->labelingTaskFacade->save(
-            Tests\Helper\LabelingTaskBuilder::create()
-                ->withProject($project)
-                ->withVideo(Tests\Helper\VideoBuilder::create()->build())
-                ->withTaskType(Model\LabelingTask::TYPE_OBJECT_LABELING)
+            Tests\Helper\LabelingTaskBuilder::create($project, Tests\Helper\VideoBuilder::create()->build())
                 ->build()
         );
     }

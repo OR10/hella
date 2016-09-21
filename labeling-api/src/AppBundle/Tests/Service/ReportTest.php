@@ -232,9 +232,7 @@ class ReportTest extends Tests\KernelTestCase
         $numberOfTasks
     ) {
         foreach (range(1, $numberOfTasks) as $i) {
-            $task = Tests\Helper\LabelingTaskBuilder::create()
-                ->withVideo($this->video)
-                ->withProject($this->project)
+            $task = Tests\Helper\LabelingTaskBuilder::create($this->project, $this->video)
                 ->withStatus($phase, $status)
                 ->build();
             $this->labelingTaskFacade->save($task);
