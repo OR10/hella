@@ -56,7 +56,6 @@
                 id="annostation.labeling_api.controller.api.project.export"
                 class="AppBundle\Controller\Api\Project\Export">
             <argument type="service" id="annostation.labeling_api.database.facade.project_export"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video_export"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>

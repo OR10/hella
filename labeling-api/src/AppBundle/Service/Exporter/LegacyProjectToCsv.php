@@ -45,11 +45,6 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     private $videoFacade;
 
     /**
-     * @var Facade\VideoExport
-     */
-    private $videoExportFacade;
-
-    /**
      * @var Facade\LabeledThing
      */
     private $labeledThing;
@@ -77,7 +72,6 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      * @param Facade\LabeledThing             $labeledThing
      * @param Facade\Project                  $projectFacade
      * @param Facade\Video                    $videoFacade
-     * @param Facade\VideoExport              $videoExportFacade
      * @param Service\DepthBuffer             $depthBufferService
      * @param Facade\CalibrationData          $calibrationDataFacade
      * @param Facade\Exporter                 $exporterFacade
@@ -91,7 +85,6 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         Facade\LabeledThing $labeledThing,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
-        Facade\VideoExport $videoExportFacade,
         Service\DepthBuffer $depthBufferService,
         Facade\CalibrationData $calibrationDataFacade,
         Facade\Exporter $exporterFacade,
@@ -106,7 +99,6 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         $this->enclosure                      = $enclosure;
         $this->projectFacade                  = $projectFacade;
         $this->videoFacade                    = $videoFacade;
-        $this->videoExportFacade              = $videoExportFacade;
         $this->labeledThing                   = $labeledThing;
         $this->depthBufferService             = $depthBufferService;
         $this->calibrationDataFacade          = $calibrationDataFacade;
@@ -764,14 +756,9 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     }
 
     /**
-     * Creates the VideoExport document and returns it.
-     *
-     * If no video export could be created, e.g. if there is no data, `null` is returned.
-     *
      * @param array $videoData
      *
-     * @return Model\VideoExport|null
-     * @throws Exception\LegacyProjectToCsv
+     * @return null|string
      */
     private function getCsv(array $videoData)
     {

@@ -35,11 +35,6 @@ class Export extends Controller\Base
     private $projectExportFacade;
 
     /**
-     * @var Facade\VideoExport
-     */
-    private $videoExportFacade;
-
-    /**
      * @var Facade\Exporter
      */
     private $exporterFacade;
@@ -51,21 +46,18 @@ class Export extends Controller\Base
 
     /**
      * @param Facade\ProjectExport  $projectExportFacade
-     * @param Facade\VideoExport    $videoExportFacade
      * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Facade\Exporter       $exporterFacade
      * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\ProjectExport $projectExportFacade,
-        Facade\VideoExport $videoExportFacade,
         AMQP\FacadeAMQP $amqpFacade,
         Facade\Exporter $exporterFacade,
         Service\Authorization $authorizationService
     ) {
         $this->amqpFacade           = $amqpFacade;
         $this->projectExportFacade  = $projectExportFacade;
-        $this->videoExportFacade    = $videoExportFacade;
         $this->exporterFacade       = $exporterFacade;
         $this->authorizationService = $authorizationService;
     }

@@ -17,11 +17,6 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
     private $videoFacade;
 
     /**
-     * @var Facade\VideoExport
-     */
-    private $videoExportFacade;
-
-    /**
      * @var Facade\Project
      */
     private $projectFacade;
@@ -75,7 +70,6 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
         $this->calibrationDataFacade     = $this->getAnnostationService('database.facade.calibration_data');
-        $this->videoExportFacade         = $this->getAnnostationService('database.facade.video_export');
         $this->projectFacade             = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
