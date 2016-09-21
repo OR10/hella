@@ -23,13 +23,26 @@ class ProjectReportListController {
   openReport(id) {
     const report = this.reports.find(possibleReport => possibleReport.id === id);
 
-    if (report === null || report.reportStatus !== 'done') {
+    if (report.reportStatus === 'in_progress') {
       const modal = this._modalService.getAlertWarningDialog({
         title: 'Report generation in progress',
         headline: 'This report is still being generated.',
         message: 'The requested report is still being generated for you. Please check back in a few moments, when its ready for consumption.',
         confirmButtonText: 'Understood',
       });
+      modal.activate();
+      return;
+    }
+
+    if (report.reportStatus === 'error') {
+      const modal = this._modalService.getAlertWarningDialog(
+        {
+          title: 'Error',
+          headline: 'There was an error generating the report',
+          message: 'There was an error while generating the report for this project.',
+          confirmButtonText: 'Understood',
+        }
+      );
       modal.activate();
       return;
     }

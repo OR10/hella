@@ -19,6 +19,10 @@
                         <div ng-switch-when="done">
                             <i class="fa fa-download"></i>
                         </div>
+                        <div ng-switch-when="error">
+                            <i ng-if="report.errorMessage != null" class="fa fa-warning" tooltip="{{report.errorMessage}}"></i>
+                            <i ng-if="report.errorMessage == null" class="fa fa-warning" tooltip="Failed to generate report"></i>
+                        </div>
                         <div ng-switch-default>
                             <i class="fa fa-spinner fa-pulse"></i>
                         </div>
@@ -30,10 +34,6 @@
                         {{report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss'}}
                     </td>
                 </tr>
-                <tr ng-if="!vm.reports.length"
-                    class="no-hover"
-                >
-                    <td colspan="3" class="no-tasks">No Reports avaialble.</td>
                 <tr ng-if="!vm.reports.length" class="no-hover">
                     <td colspan="3" class="no-tasks">No Reports available.</td>
                 </tr>
