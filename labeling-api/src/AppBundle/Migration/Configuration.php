@@ -17,6 +17,8 @@ class Configuration extends CouchDB\Configuration
                 new ProjectAvailableExportsDefault(),
                 new UserLockedState(),
                 new ProjectStatusHistory(),
+                new ExportStatus(),
+                new ProjectExportStatus(),
             )
         );
     }

@@ -11,6 +11,11 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class ProjectExport
 {
+    const EXPORT_STATUS_IN_WAITING = 'waiting';
+    const EXPORT_STATUS_IN_PROGRESS = 'in_progress';
+    const EXPORT_STATUS_DONE = 'done';
+    const EXPORT_STATUS_ERROR = 'error';
+
     /**
      * @CouchDB\Id
      */
@@ -42,17 +47,27 @@ class ProjectExport
     private $date;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $status = self::EXPORT_STATUS_IN_WAITING;
+
+    /**
      * @param Project   $project
-     * @param string[]  $exportVideoIds
-     * @param string    $filename
      * @param \DateTime $date
      */
-    public function __construct(Project $project, array $exportVideoIds, string $filename, \DateTime $date = null)
+    public function __construct(Project $project, \DateTime $date = null)
     {
         $this->projectId      = $project->getId();
-        $this->videoExportIds = $exportVideoIds;
-        $this->filename       = $filename;
         $this->date           = $date === null ? new \DateTime('now', new \DateTimeZone('UTC')) : clone $date;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -79,5 +94,37 @@ class ProjectExport
     public function getFilename()
     {
         return $this->filename;
+    }
+
+    /**
+     * @param mixed $filename
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+    }
+
+    /**
+     * @param mixed $videoExportIds
+     */
+    public function setVideoExportIds($videoExportIds)
+    {
+        $this->videoExportIds = $videoExportIds;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status)
+    {
+        $this->status = $status;
     }
 }

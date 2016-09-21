@@ -118,15 +118,18 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      *
      * Only tasks with status done are considered.
      *
-     * @param Model\Project $project
+     * @param Model\ProjectExport $projectExport
      *
      * @return Model\ProjectExport
-     *
-     * @throws Exception\LegacyProjectToCsv
      * @throws \Exception
+     *
      */
-    public function exportProject(Model\Project $project)
+    public function exportProject(Model\ProjectExport $projectExport)
     {
+        $projectExport = $this->projectExportFacade->find($projectExport->getId());
+        $projectExport->setStatus(Model\ProjectExport::EXPORT_STATUS_IN_PROGRESS);
+        $this->projectExportFacade->save($projectExport);
+        $project = $this->projectFacade->find($projectExport->getProjectId());
         try {
             // the generated zip file contains one csv file for each task group
             $taskGroups = [
@@ -207,12 +210,10 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             }
 
             $date          = new \DateTime('now', new \DateTimeZone('UTC'));
-            $projectExport = new Model\ProjectExport(
-                $project,
-                $videoExportIds,
-                sprintf('csv_%s.zip', $date->format('Ymd_His'))
-            );
 
+            $projectExport->setVideoExportIds($videoExportIds);
+            $projectExport->setFilename(sprintf('csv_%s.zip', $date->format('Ymd_His')));
+            $projectExport->setStatus(Model\ProjectExport::EXPORT_STATUS_DONE);
             $this->projectExportFacade->save($projectExport);
 
             return $projectExport;

@@ -9,9 +9,9 @@ interface ProjectExporter
     /**
      * Export data for the given task.
      *
-     * @param Model\Project $project
-     * @return mixed
+     * @param Model\ProjectExport $projectExport
      *
+     * @return mixed
      */
-    public function exportProject(Model\Project $project);
+    public function exportProject(Model\ProjectExport $projectExport);
 }

@@ -111,11 +111,16 @@ class GenericXmlProjectToCsv
     }
 
     /**
-     * @param Model\Project $project
+     * @param Model\Export $export
      */
-    public function export(Model\Project $project)
+    public function export(Model\Export $export)
     {
+        $export = $this->exporterFacade->find($export->getId());
+        $export->setStatus(Model\Export::EXPORT_STATUS_IN_PROGRESS);
+        $this->exporterFacade->save($export);
+
         $zipData            = array();
+        $project            = $this->projectFacade->find($export->getProjectId());
         $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
         $taskConfigurations = [];
         foreach ($videoIterator as $video) {
@@ -180,7 +185,8 @@ class GenericXmlProjectToCsv
             $date->format('Y-m-d-H-i-s')
         );
 
-        $export = new Model\Export($project, $filename, $zipContent, 'application/zip');
+        $export->addAttachment($filename, $zipContent, 'application/zip');
+        $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
         $this->exporterFacade->save($export);
     }
 

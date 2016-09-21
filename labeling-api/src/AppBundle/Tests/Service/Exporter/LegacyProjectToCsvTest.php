@@ -66,6 +66,11 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
      */
     private $calibrationDataFacade;
 
+    /**
+     * @var Facade\ProjectExport
+     */
+    private $projectExportFacade;
+
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -77,6 +82,7 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->exporter                  = $this->getAnnostationService('service.exporter.legacy_project_to_csv');
         $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
+        $this->projectExportFacade       = $this->getAnnostationService('database.facade.project_export');
         $this->project                   = $this->createProject();
         $this->video                     = $this->createVideo();
     }
@@ -352,7 +358,9 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
             )
             ->buildWithStringValues();
 
-        $projectExport = $this->exporter->exportProject($this->project);
+        $projectExport = new Model\ProjectExport($this->project);
+        $this->projectExportFacade->save($projectExport);
+        $projectExport = $this->exporter->exportProject($projectExport);
         $this->assertCount(1, $projectExport->getVideoExportIds());
 
         $videoExport = $this->videoExportFacade->find($projectExport->getVideoExportIds()[0]);

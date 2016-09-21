@@ -227,10 +227,16 @@ class Export extends Controller\Base
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
-                    $this->amqpFacade->addJob(new Jobs\LegacyProjectToCsvExporter($project->getId()));
+                    $projectExport = new Model\ProjectExport($project);
+                    $this->projectExportFacade->save($projectExport);
+
+                    $this->amqpFacade->addJob(new Jobs\LegacyProjectToCsvExporter($projectExport));
                     break;
                 case 'genericXml':
-                    $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($project->getId()));
+                    $export = new Model\Export($project);
+                    $this->exporterFacade->save($export);
+
+                    $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($export));
                     break;
             }
         }

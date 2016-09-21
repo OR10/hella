@@ -2,27 +2,30 @@
 namespace AppBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
+use AppBundle\Model;
 
 class GenericXmlProjectToCsvExporter extends WorkerPool\Job
 {
     /**
-     * @var string
+     * @var Model\Export
      */
-    private $projectId;
+    private $export;
 
     /**
-     * @param string $projectId
+     * GenericXmlProjectToCsvExporter constructor.
+     *
+     * @param Model\Export $export
      */
-    public function __construct(string $projectId)
+    public function __construct(Model\Export $export)
     {
-        $this->projectId = $projectId;
+        $this->export = $export;
     }
 
     /**
-     * @return string
+     * @return Model\Export
      */
-    public function getProjectId()
+    public function getExport()
     {
-        return $this->projectId;
+        return $this->export;
     }
 }

@@ -2,27 +2,29 @@
 namespace AppBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
+use AppBundle\Model;
 
 class LegacyProjectToCsvExporter extends WorkerPool\Job
 {
     /**
-     * @var string
+     * @var Model\ProjectExport
      */
-    private $projectId;
+    private $projectExport;
 
     /**
-     * @param string $projectId
+     * @param Model\ProjectExport $projectExport
+     *
      */
-    public function __construct(string $projectId)
+    public function __construct(Model\ProjectExport $projectExport)
     {
-        $this->projectId = $projectId;
+        $this->projectExport = $projectExport;
     }
 
     /**
-     * @return string
+     * @return Model\ProjectExport
      */
-    public function getProjectId()
+    public function getProjectExport(): Model\ProjectExport
     {
-        return $this->projectId;
+        return $this->projectExport;
     }
 }
