@@ -7,7 +7,6 @@ use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AppBundle\Service\Interpolation;
 use AppBundle\Service;
-use AppBundle\Helper\Matrix;
 
 class Linear implements Interpolation\Algorithm
 {
@@ -29,8 +28,8 @@ class Linear implements Interpolation\Algorithm
     /**
      * @var Service\MatrixProjection
      */
-
     private $matrixProjection;
+
     /**
      * @var Service\DepthBuffer
      */
@@ -70,13 +69,10 @@ class Linear implements Interpolation\Algorithm
         return 'linear';
     }
 
-    public function interpolate(
-        Model\LabeledThing $labeledThing,
-        Model\FrameIndexRange $frameRange,
-        callable $emit
-    ) {
-        $task = $this->labelingTaskFacade->find($labeledThing->getTaskId());
-        $video = $this->videoFacade->find($task->getVideoId());
+    public function interpolate(Model\LabeledThing $labeledThing, Model\FrameIndexRange $frameRange, callable $emit)
+    {
+        $task                 = $this->labelingTaskFacade->find($labeledThing->getTaskId());
+        $video                = $this->videoFacade->find($task->getVideoId());
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
             $frameRange->getStartFrameIndex(),
@@ -88,11 +84,7 @@ class Linear implements Interpolation\Algorithm
             throw new Interpolation\Exception('Insufficient labeled things in frame');
         }
 
-        $this->clonePrecedingLabeledThingsInFrame(
-            $frameRange->getStartFrameIndex(),
-            $labeledThingsInFrame[0],
-            $emit
-        );
+        $this->clonePrecedingLabeledThingsInFrame($frameRange->getStartFrameIndex(), $labeledThingsInFrame[0], $emit);
 
         while (count($labeledThingsInFrame) > 1) {
             $current = array_shift($labeledThingsInFrame);
@@ -106,11 +98,7 @@ class Linear implements Interpolation\Algorithm
 
         $emit($labeledThingsInFrame[0]);
 
-        $this->cloneSubsequentLabeledThingsInFrame(
-            $labeledThingsInFrame[0],
-            $frameRange->getEndFrameIndex(),
-            $emit
-        );
+        $this->cloneSubsequentLabeledThingsInFrame($labeledThingsInFrame[0], $frameRange->getEndFrameIndex(), $emit);
     }
 
     private function clonePrecedingLabeledThingsInFrame(
@@ -160,7 +148,12 @@ class Linear implements Interpolation\Algorithm
         foreach (range($start->getFrameIndex() + 1, $end->getFrameIndex() - 1) as $frameIndex) {
             $currentShapes = array_map(
                 function ($shape) use ($endShapes, $remainingSteps, $calibrationData) {
-                    return $this->interpolateShape($shape, $endShapes[$shape->getId()], $remainingSteps, $calibrationData);
+                    return $this->interpolateShape(
+                        $shape,
+                        $endShapes[$shape->getId()],
+                        $remainingSteps,
+                        $calibrationData
+                    );
                 },
                 $currentShapes
             );
@@ -172,6 +165,7 @@ class Linear implements Interpolation\Algorithm
                         if (get_class($shape) === Shapes\Cuboid3d::class) {
                             return $this->applyDepthBuffer($shape, $calibrationData);
                         }
+
                         return $shape;
                     },
                     $currentShapes
@@ -194,14 +188,16 @@ class Linear implements Interpolation\Algorithm
         foreach ($shapes as $shape) {
             $indexedShapes[$shape->getId()] = $shape;
         }
+
         return $indexedShapes;
     }
 
     /**
      * @param Model\Shape $current
      * @param Model\Shape $end
-     * @param int $steps
-     * @param $calibrationData
+     * @param int         $steps
+     * @param             $calibrationData
+     *
      * @return Model\Shape
      */
     private function interpolateShape(Model\Shape $current, Model\Shape $end, $steps, $calibrationData)
@@ -241,7 +237,7 @@ class Linear implements Interpolation\Algorithm
     /**
      * @param Shapes\Ellipse $current
      * @param Shapes\Ellipse $end
-     * @param int              $steps
+     * @param int            $steps
      *
      * @return Shapes\Ellipse
      */
@@ -259,7 +255,7 @@ class Linear implements Interpolation\Algorithm
     /**
      * @param Shapes\Pedestrian $current
      * @param Shapes\Pedestrian $end
-     * @param $steps
+     * @param                   $steps
      *
      * @return Shapes\Pedestrian
      */
@@ -277,14 +273,15 @@ class Linear implements Interpolation\Algorithm
     /**
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $current
      * @param Shapes\Cuboid3d|Shapes\Pedestrian $end
-     * @param $steps
+     * @param                                   $steps
+     *
      * @return Shapes\Pedestrian
      */
     private function interpolateCuboid3d(Shapes\Cuboid3d $current, Shapes\Cuboid3d $end, $steps)
     {
         $newCuboid3d = [];
-        $current = $this->getCuboidFromRect($current, $end);
-        $end     = $this->getCuboidFromRect($end, $current);
+        $current     = $this->getCuboidFromRect($current, $end);
+        $end         = $this->getCuboidFromRect($end, $current);
         foreach (range(0, 7) as $index) {
             $newCuboid3d[$index] = $this->cuboid3dCalculateNewVertex(
                 $current->toArray()['vehicleCoordinates'][$index],
@@ -294,7 +291,7 @@ class Linear implements Interpolation\Algorithm
         }
         $cuboid = Shapes\Cuboid3d::createFromArray(
             array(
-                'id' => $current->getId(),
+                'id'                 => $current->getId(),
                 'vehicleCoordinates' => $newCuboid3d,
             )
         );
@@ -304,19 +301,27 @@ class Linear implements Interpolation\Algorithm
 
     private function getCuboidFromRect(Shapes\Cuboid3d $currentCuboid3d, Shapes\Cuboid3d $endCuboid3d)
     {
-        $numberOfCurrentInvisibleVertices = array_filter($currentCuboid3d->toArray()['vehicleCoordinates'], function ($vertex) {
-            if ($vertex === null) {
-                return true;
-            }
-            return false;
-        });
+        $numberOfCurrentInvisibleVertices = array_filter(
+            $currentCuboid3d->toArray()['vehicleCoordinates'],
+            function ($vertex) {
+                if ($vertex === null) {
+                    return true;
+                }
 
-        $numberOfEndInvisibleVertices = array_filter($endCuboid3d->toArray()['vehicleCoordinates'], function ($vertex) {
-            if ($vertex === null) {
-                return true;
+                return false;
             }
-            return false;
-        });
+        );
+
+        $numberOfEndInvisibleVertices = array_filter(
+            $endCuboid3d->toArray()['vehicleCoordinates'],
+            function ($vertex) {
+                if ($vertex === null) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
 
         if ((count($numberOfCurrentInvisibleVertices) === 0) ||
             (count($numberOfCurrentInvisibleVertices) === 4 && count($numberOfEndInvisibleVertices) === 4)
@@ -333,98 +338,110 @@ class Linear implements Interpolation\Algorithm
         switch (array_keys($invisibleVerticesIndex)) {
             case array(0, 1, 2, 3):
                 $oppositeVertex = array(
-                    0 => 4,
-                    1 => 5,
-                    2 => 6,
-                    3 => 7,
+                    0        => 4,
+                    1        => 5,
+                    2        => 6,
+                    3        => 7,
                     'normal' => array(
                         array(
-                            6, 5
+                            6,
+                            5,
                         ),
                         array(
-                            6, 7
-                        )
-                    )
+                            6,
+                            7,
+                        ),
+                    ),
                 );
                 break;
             case array(1, 2, 5, 6):
                 $oppositeVertex = array(
-                    1 => 0,
-                    2 => 3,
-                    5 => 4,
-                    6 => 7,
+                    1        => 0,
+                    2        => 3,
+                    5        => 4,
+                    6        => 7,
                     'normal' => array(
                         array(
-                            7, 4,
+                            7,
+                            4,
                         ),
                         array(
-                            7, 3
-                        )
-                    )
+                            7,
+                            3,
+                        ),
+                    ),
                 );
                 break;
             case array(4, 5, 6, 7):
                 $oppositeVertex = array(
-                    4 => 0,
-                    5 => 1,
-                    6 => 2,
-                    7 => 3,
+                    4        => 0,
+                    5        => 1,
+                    6        => 2,
+                    7        => 3,
                     'normal' => array(
                         array(
-                            3, 0,
+                            3,
+                            0,
                         ),
                         array(
-                            3, 2
-                        )
-                    )
+                            3,
+                            2,
+                        ),
+                    ),
                 );
                 break;
             case array(0, 3, 4, 7):
                 $oppositeVertex = array(
-                    0 => 1,
-                    3 => 2,
-                    4 => 5,
-                    7 => 6,
+                    0        => 1,
+                    3        => 2,
+                    4        => 5,
+                    7        => 6,
                     'normal' => array(
                         array(
-                            2, 1,
+                            2,
+                            1,
                         ),
                         array(
-                            2, 6
-                        )
-                    )
+                            2,
+                            6,
+                        ),
+                    ),
                 );
                 break;
             case array(0, 1, 4, 5):
                 $oppositeVertex = array(
-                    0 => 3,
-                    1 => 2,
-                    4 => 7,
-                    5 => 6,
+                    0        => 3,
+                    1        => 2,
+                    4        => 7,
+                    5        => 6,
                     'normal' => array(
                         array(
-                            3, 7,
+                            3,
+                            7,
                         ),
                         array(
-                            3, 2
-                        )
-                    )
+                            3,
+                            2,
+                        ),
+                    ),
                 );
                 break;
             case array(2, 3, 6, 7):
                 $oppositeVertex = array(
-                    2 => 1,
-                    3 => 0,
-                    6 => 5,
-                    7 => 4,
+                    2        => 1,
+                    3        => 0,
+                    6        => 5,
+                    7        => 4,
                     'normal' => array(
                         array(
-                            1, 0,
+                            1,
+                            0,
                         ),
                         array(
-                            1, 5
-                        )
-                    )
+                            1,
+                            5,
+                        ),
+                    ),
                 );
                 break;
             default:
@@ -432,16 +449,22 @@ class Linear implements Interpolation\Algorithm
                 $oppositeVertex = array();
         }
 
-        $plainVector1 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][1]]);
-        $plainVector2 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract($currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]);
+        $plainVector1 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][0]]->subtract(
+            $currentCuboid3d->getVertices()[$oppositeVertex['normal'][0][1]]
+        );
+        $plainVector2 = $currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][0]]->subtract(
+            $currentCuboid3d->getVertices()[$oppositeVertex['normal'][1][1]]
+        );
 
-        $normalVector = $plainVector1->crossProduct($plainVector2);
-        $distance = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo($endCuboid3d->getVertices()[array_values($oppositeVertex)[0]]);
+        $normalVector   = $plainVector1->crossProduct($plainVector2);
+        $distance       = $endCuboid3d->getVertices()[array_keys($oppositeVertex)[0]]->getDistanceTo(
+            $endCuboid3d->getVertices()[array_values($oppositeVertex)[0]]
+        );
         $distanceVector = $normalVector->divide($normalVector->getLength())->multiply($distance);
 
         $newVertices = array(
-            'id' => $currentCuboid3d->getId(),
-            'type' => $currentCuboid3d->getType(),
+            'id'                 => $currentCuboid3d->getId(),
+            'type'               => $currentCuboid3d->getType(),
             'vehicleCoordinates' => array(),
         );
         foreach ($oppositeVertex as $targetVertexIndex => $sourceVertexIndex) {
@@ -466,6 +489,7 @@ class Linear implements Interpolation\Algorithm
      * @param $currentVertex
      * @param $endVertex
      * @param $steps
+     *
      * @return array
      */
     private function cuboid3dCalculateNewVertex($currentVertex, $endVertex, $steps)
@@ -473,6 +497,7 @@ class Linear implements Interpolation\Algorithm
         if ($currentVertex === null && $endVertex === null) {
             return null;
         }
+
         return [
             $currentVertex[0] + ($endVertex[0] - $currentVertex[0]) / $steps,
             $currentVertex[1] + ($endVertex[1] - $currentVertex[1]) / $steps,
@@ -482,20 +507,21 @@ class Linear implements Interpolation\Algorithm
 
     /**
      * @param Shapes\Cuboid3d $cuboid
-     * @param $calibrationData
+     * @param                 $calibrationData
+     *
      * @return Shapes\Cuboid3d|Shapes\Rectangle
      */
     private function applyDepthBuffer(Shapes\Cuboid3d $cuboid, $calibrationData)
     {
-        $vertices = $this->depthBuffer->getVertices(
-            $cuboid,
-            $calibrationData
-        );
+        $vertices = $this->depthBuffer->getVertices($cuboid, $calibrationData);
 
         $vertexVisibilityCount = count(
-            array_filter($vertices[1], function ($vertex) {
-                return $vertex;
-            })
+            array_filter(
+                $vertices[1],
+                function ($vertex) {
+                    return $vertex;
+                }
+            )
         );
 
         if ($vertexVisibilityCount <= 4) {
@@ -509,7 +535,7 @@ class Linear implements Interpolation\Algorithm
             }
             $cuboid = Shapes\Cuboid3d::createFromArray(
                 array(
-                    'id' => $cuboid->getId(),
+                    'id'                 => $cuboid->getId(),
                     'vehicleCoordinates' => $newCuboid3d,
                 )
             );
