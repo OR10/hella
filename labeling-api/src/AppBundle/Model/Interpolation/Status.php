@@ -14,7 +14,7 @@ class Status implements Model\Status
     const WAITING = 'waiting';
     const RUNNING = 'running';
     const SUCCESS = 'success';
-    const ERROR = 'error';
+    const ERROR   = 'error';
 
     /**
      * @Serializer\Exclude
@@ -46,6 +46,12 @@ class Status implements Model\Status
     private $status = self::WAITING;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $statusMessage;
+
+    /**
      * @return string
      */
     public function getId()
@@ -71,13 +77,15 @@ class Status implements Model\Status
 
     /**
      * @param string $status
+     * @param string $message
      */
-    public function setStatus($status)
+    public function setStatus(string $status, string $message = null)
     {
         if (!in_array($status, static::$validStates)) {
             throw new \RuntimeException("Invalid state '{$status}'");
         }
 
-        $this->status = $status;
+        $this->status        = $status;
+        $this->statusMessage = $message;
     }
 }

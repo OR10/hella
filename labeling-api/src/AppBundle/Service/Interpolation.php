@@ -7,13 +7,11 @@ use AppBundle\Model;
 use AppBundle\Service\Interpolation;
 
 /**
- * Service to interpolate the shapes of a `LabeledThing` for a given frame
- * range.
+ * Service to interpolate the shapes of a `LabeledThing` for a given frame range.
  *
- * The `LabeledThing` may contain any number of already existing
- * `LabeledThingInFrame`s which can and should be used by the algorithm
- * imlementation to create the missing `LabeledThingInFrame`s for the frames
- * that don't have any `LabeledThingInFrame` yet.
+ * The `LabeledThing` may contain any number of already existing `LabeledThingInFrame`s which can and should be used by
+ * the algorithm implementation to create the missing `LabeledThingInFrame`s for the frames that don't have any
+ * `LabeledThingInFrame` yet.
  */
 class Interpolation
 {
@@ -38,12 +36,11 @@ class Interpolation
     private $numberOfBulkUpdates = 100;
 
     /**
-     * @param Facade\LabeledThingInFrame
+     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\Status              $statusFacade
      */
-    public function __construct(
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\Status $statusFacade
-    ) {
+    public function __construct(Facade\LabeledThingInFrame $labeledThingInFrameFacade, Facade\Status $statusFacade)
+    {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->statusFacade              = $statusFacade;
     }
@@ -51,29 +48,33 @@ class Interpolation
     /**
      * Add new interpolation algorithm.
      *
-     * @param Interpolation\Algorithm
+     * @param Interpolation\Algorithm $algorithm
+     *
+     * @throws Interpolation\Exception
      */
     public function addAlgorithm(Interpolation\Algorithm $algorithm)
     {
         if (isset($this->algorithms[$algorithm->getName()])) {
-            throw new Interpolation\Exception("Algorithm with name '{$algorithm->getName()}' already exsists");
+            throw new \InvalidArgumentException("Algorithm with name '{$algorithm->getName()}' already exsists");
         }
 
         $this->algorithms[$algorithm->getName()] = $algorithm;
     }
 
     /**
-     * @param string $algorithmName
+     * @param string $name
      *
      * @return Interpolation\Algorithm
+     *
+     * @throws Interpolation\Exception
      */
-    public function getAlgorithm($name)
+    public function getAlgorithm(string $name)
     {
-        if (!isset($this->algorithms[(string) $name])) {
-            throw new Interpolation\Exception("Unknown algorithm '{$name}'");
+        if (!isset($this->algorithms[$name])) {
+            throw new Interpolation\Exception(sprintf('Unknown algorithm %s', $name));
         }
 
-        return $this->algorithms[(string) $name];
+        return $this->algorithms[$name];
     }
 
     /**
@@ -82,7 +83,7 @@ class Interpolation
     public function setNumberOfBulkUpdates($numberOfBulkUpdates)
     {
         if ($numberOfBulkUpdates < 1 || $numberOfBulkUpdates > 1000) {
-            throw new \InvalidArgumentException("Invalid number of bulk updates '{$numberOfBulkUpdates}'");
+            throw new \InvalidArgumentException(sprintf('Invalid number of bulk updates %s', $numberOfBulkUpdates));
         }
 
         $this->numberOfBulkUpdates = (int) $numberOfBulkUpdates;
@@ -116,7 +117,7 @@ class Interpolation
      *
      * @param string                          $algorithmName
      * @param Model\LabeledThing              $labeledThing
-     * @param Model\FrameIndexRange                $frameRange
+     * @param Model\FrameIndexRange           $frameRange
      * @param Model\Interpolation\Status|null $status
      */
     public function interpolateForRange(
@@ -138,7 +139,7 @@ class Interpolation
             $algorithm->interpolate(
                 $labeledThing,
                 $frameRange,
-                function(Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
+                function (Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
                     $labeledThingsInFrame[] = $labeledThingInFrame;
 
                     // TODO: make the number configurable
@@ -154,7 +155,9 @@ class Interpolation
             }
 
             $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
-        } catch (\Exception $e) {
+        } catch (Interpolation\Exception $interpolationException) {
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $interpolationException->getMessage());
+        } catch (\Throwable $throwable) {
             $this->updateStatus($status, Model\Interpolation\Status::ERROR);
         }
     }
@@ -164,11 +167,12 @@ class Interpolation
      *
      * @param Model\Interpolation\Status|null $status
      * @param string                          $newState
+     * @param string                          $message
      */
-    private function updateStatus(Model\Interpolation\Status $status = null, $newState)
+    private function updateStatus(Model\Interpolation\Status $status = null, string $newState, string $message = null)
     {
         if ($status !== null) {
-            $status->setStatus($newState);
+            $status->setStatus($newState, $message);
             $this->statusFacade->save($status);
         }
     }

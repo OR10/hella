@@ -43,13 +43,9 @@ interface Algorithm
      * The implementation is expected to invoke `$emit` for each new or
      * modified `LabeledThingInFrame`.
      *
-     * @param Model\LabeledThing $labeledThing
-     * @param Model\FrameIndexRange   $frameRange
-     * @param callable           $emit
+     * @param Model\LabeledThing    $labeledThing
+     * @param Model\FrameIndexRange $frameRange
+     * @param callable              $emit
      */
-    public function interpolate(
-        Model\LabeledThing $labeledThing,
-        Model\FrameIndexRange $frameRange,
-        callable $emit
-    );
+    public function interpolate(Model\LabeledThing $labeledThing, Model\FrameIndexRange $frameRange, callable $emit);
 }
