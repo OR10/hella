@@ -54,6 +54,8 @@ class Report extends WorkerPool\JobInstruction
             $this->reportService->processReport($report);
         }catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
+        } catch (\Throwable $throwable) {
+            $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
         }
     }
 }
