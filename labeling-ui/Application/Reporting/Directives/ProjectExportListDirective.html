@@ -17,6 +17,9 @@
                         <a ng-switch-when="done" ng-href="{{vm.downloadUrl(export.projectId, export.id)}}">
                                 <i class="fa fa-download"></i>
                         </a>
+                        <a ng-switch-when="error">
+                                <i class="fa fa-warning" tooltip="Failed to generate export"></i>
+                        </a>
                         <div ng-switch-default>
                             <i class="fa fa-spinner fa-pulse"></i>
                         </div>

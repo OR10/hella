@@ -119,75 +119,84 @@ class GenericXmlProjectToCsv
         $export->setStatus(Model\Export::EXPORT_STATUS_IN_PROGRESS);
         $this->exporterFacade->save($export);
 
-        $zipData            = array();
-        $project            = $this->projectFacade->find($export->getProjectId());
-        $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
-        $taskConfigurations = [];
-        foreach ($videoIterator as $video) {
-            $videoCalibration = $this->calibrationDataFacade->findById($video->getCalibrationId());
-            /** @var ColumnGroup\Unique $columnGroup */
-            $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
-            $columnGroup->addColumns(
-                [
-                    new Column\Uuid(),
-                    new Column\FrameNumber(),
-                ]
+        try {
+            $zipData            = array();
+            $project            = $this->projectFacade->find($export->getProjectId());
+            $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
+            $taskConfigurations = [];
+            foreach ($videoIterator as $video) {
+                $videoCalibration = $this->calibrationDataFacade->findById($video->getCalibrationId());
+                /** @var ColumnGroup\Unique $columnGroup */
+                $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
+                $columnGroup->addColumns(
+                    [
+                        new Column\Uuid(),
+                        new Column\FrameNumber(),
+                    ]
+                );
+
+                // generate columns for this Video
+                $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
+                /** @var Model\LabelingTask $task */
+                foreach ($labelingTaskIterator as $task) {
+                    $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
+
+                    $xmlConfiguration                 = $this->taskConfiguration->find($task->getTaskConfigurationId());
+                    $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter(
+                        $xmlConfiguration->getRawData()
+                    );
+                    $columnGroup->addColumns(
+                        $this->classColumnsFactory->create($configurationXmlConverterFactory->getClassStructure())
+                    );
+                    $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
+                }
+                
+                $table = new Export\Table($columnGroup);
+                foreach ($labelingTaskIterator as $task) {
+                    $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame(
+                        $this->labeledThingInFrameFacade,
+                        $task,
+                        $this->ghostClassesPropagation
+                    );
+                    foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
+                        $row = $columnGroup->createRow(
+                            $project,
+                            $video,
+                            $task,
+                            $labeledThingInFrame,
+                            $videoCalibration
+                        );
+                        $table->addRow($row);
+                    }
+                }
+                $zipData[$video->getName() . '.csv'] = $table->toCsv();
+            }
+
+            /** @var Model\TaskConfiguration $taskConfiguration */
+            foreach ($taskConfigurations as $taskConfiguration) {
+                $filename           = sprintf(
+                    '%s_%s',
+                    $taskConfiguration->getName(),
+                    $taskConfiguration->getFilename()
+                );
+                $zipData[$filename] = $taskConfiguration->getRawData();
+            }
+
+            $zipContent = $this->compressData($zipData);
+
+            $date     = new \DateTime('now', new \DateTimeZone('UTC'));
+            $filename = sprintf(
+                'export_%s.zip',
+                $date->format('Y-m-d-H-i-s')
             );
 
-            // generate columns for this Video
-            $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
-            /** @var Model\LabelingTask $task */
-            foreach ($labelingTaskIterator as $task) {
-                $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
-
-                $xmlConfiguration                 = $this->taskConfiguration->find($task->getTaskConfigurationId());
-                $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter(
-                    $xmlConfiguration->getRawData()
-                );
-                $columnGroup->addColumns(
-                    $this->classColumnsFactory->create($configurationXmlConverterFactory->getClassStructure())
-                );
-                $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
-            }
-
-            $table = new Export\Table($columnGroup);
-            foreach ($labelingTaskIterator as $task) {
-                $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame(
-                    $this->labeledThingInFrameFacade,
-                    $task,
-                    $this->ghostClassesPropagation
-                );
-                foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
-                    $row = $columnGroup->createRow(
-                        $project,
-                        $video,
-                        $task,
-                        $labeledThingInFrame,
-                        $videoCalibration
-                    );
-                    $table->addRow($row);
-                }
-            }
-            $zipData[$video->getName() . '.csv'] = $table->toCsv();
+            $export->addAttachment($filename, $zipContent, 'application/zip');
+            $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
+            $this->exporterFacade->save($export);
+        }catch (\Exception $exception) {
+            $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
+            $this->exporterFacade->save($export);
         }
-
-        /** @var Model\TaskConfiguration $taskConfiguration */
-        foreach ($taskConfigurations as $taskConfiguration) {
-            $filename           = sprintf('%s_%s', $taskConfiguration->getName(), $taskConfiguration->getFilename());
-            $zipData[$filename] = $taskConfiguration->getRawData();
-        }
-
-        $zipContent = $this->compressData($zipData);
-
-        $date     = new \DateTime('now', new \DateTimeZone('UTC'));
-        $filename = sprintf(
-            'export_%s.zip',
-            $date->format('Y-m-d-H-i-s')
-        );
-
-        $export->addAttachment($filename, $zipContent, 'application/zip');
-        $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
-        $this->exporterFacade->save($export);
     }
 
     /**
