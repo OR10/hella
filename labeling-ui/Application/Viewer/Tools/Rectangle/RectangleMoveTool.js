@@ -14,7 +14,7 @@ class RectangleMoveTool extends Tool {
    * @param {LoggerService} loggerService
    * @param {Object} [options]
    */
-  constructor($scope, drawingContext,  loggerService, options) {
+  constructor($scope, drawingContext, loggerService, options) {
     super(drawingContext, loggerService, options);
 
     /**
