@@ -78,10 +78,10 @@ class ToolService {
       this._loggerService.log('toolService:getTool', `Tool "${toolIdentifier}" was not created prior. Creating now.`);
       switch (actionIdentifier) {
         case 'drawing':
-          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._entityIdService, this._colorService, $scope.vm.video, $scope.vm.task));
+          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService, this._entityIdService, this._colorService, $scope.vm.video, $scope.vm.task));
           break;
         default:
-          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context));
+          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService));
       }
     }
     this._loggerService.log('toolService:getTool', `Returning tool "${toolIdentifier}"`);

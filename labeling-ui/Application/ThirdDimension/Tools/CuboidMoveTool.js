@@ -11,13 +11,14 @@ class CuboidMoveTool extends Tool {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param {LoggerService} loggerService
    */
-  constructor($scope, drawingContext) {
+  constructor($scope, drawingContext, loggerService) {
     const defaultOptions = {
       minimalHeight: 15,
     };
     const options = Object.assign({}, defaultOptions, $scope.vm.task.drawingToolOptions);
-    super(drawingContext, options);
+    super(drawingContext, loggerService, options);
 
     /**
      * @type {$rootScope.Scope}

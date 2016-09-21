@@ -11,13 +11,14 @@ class DrawingTool extends Tool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    * @param {Video} video
    * @param {Task} task
    */
-  constructor($scope, drawingContext, entityIdService, entityColorService, video, task) {
-    super(drawingContext, task.drawingToolOptions);
+  constructor($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task) {
+    super(drawingContext, loggerService, task.drawingToolOptions);
 
     /**
      * @type {$rootScope.Scope}

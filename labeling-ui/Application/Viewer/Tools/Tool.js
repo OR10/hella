@@ -7,9 +7,10 @@ import EventEmitter from 'event-emitter';
 export default class Tool extends EventEmitter {
   /**
    * @param {DrawingContext} drawingContext
+   * @param {LoggerService} loggerService
    * @param {Object} [options]
    */
-  constructor(drawingContext, options) {
+  constructor(drawingContext, loggerService, options) {
     super();
 
     /**
@@ -17,6 +18,12 @@ export default class Tool extends EventEmitter {
      * @protected
      */
     this._context = drawingContext;
+
+    /**
+     * @type {LoggerService}
+     */
+    this.logger = loggerService;
+
     /**
      * Tool options
      *

@@ -13,13 +13,14 @@ class RectangleDrawingTool extends DrawingTool {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    * @param {Video} video
    * @param {Task} task
    */
-  constructor($scope, drawingContext, entityIdService, entityColorService, video, task) {
-    super($scope, drawingContext, entityIdService, entityColorService, video, task);
+  constructor($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task) {
+    super($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task);
 
     /**
      * @type {PaperRectangle}

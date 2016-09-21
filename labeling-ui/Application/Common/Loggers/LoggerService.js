@@ -9,6 +9,13 @@ class LoggerService {
     this._loggers = loggers;
   }
 
+  /**
+   * @param {Logger} logger
+   */
+  addLogger(logger) {
+    this._loggers.push(logger);
+  }
+
   log(context, ...args) {
     this._dispatch('log', context, ...args);
   }

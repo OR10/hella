@@ -7,11 +7,13 @@ import Tool from '../Tool';
  */
 class PedestrianScaleTool extends Tool {
   /**
+   * @param $scope
    * @param {DrawingContext} drawingContext
+   * @param {LoggerService} loggerService
    * @param {Object} [options]
    */
-  constructor($scope, drawingContext, options) {
-    super(drawingContext, options);
+  constructor($scope, drawingContext, loggerService, options) {
+    super(drawingContext, loggerService, options);
     /**
      * @type {angular.$scope}
      * @private
