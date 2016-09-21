@@ -53,6 +53,12 @@ class ProjectExport
     private $status = self::EXPORT_STATUS_IN_WAITING;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $errorMessage;
+
+    /**
      * @param Project   $project
      * @param \DateTime $date
      */
@@ -126,5 +132,21 @@ class ProjectExport
     public function setStatus(string $status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage(): string
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string $errorMessage
+     */
+    public function setErrorMessage(string $errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
 }

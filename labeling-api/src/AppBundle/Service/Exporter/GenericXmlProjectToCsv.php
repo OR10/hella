@@ -112,6 +112,8 @@ class GenericXmlProjectToCsv
 
     /**
      * @param Model\Export $export
+     *
+     * @throws \Exception
      */
     public function export(Model\Export $export)
     {
