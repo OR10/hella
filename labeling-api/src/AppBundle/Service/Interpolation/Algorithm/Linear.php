@@ -73,6 +73,7 @@ class Linear implements Interpolation\Algorithm
     {
         $task                 = $this->labelingTaskFacade->find($labeledThing->getTaskId());
         $video                = $this->videoFacade->find($task->getVideoId());
+        $calibrationData      = $this->getVideoCalibration($video);
         $labeledThingsInFrame = $this->labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
             $frameRange->getStartFrameIndex(),
@@ -89,10 +90,6 @@ class Linear implements Interpolation\Algorithm
         while (count($labeledThingsInFrame) > 1) {
             $current = array_shift($labeledThingsInFrame);
             $emit($current);
-            $calibrationData = null;
-            if ($video->getCalibrationId() !== null) {
-                $calibrationData = $this->calibrationDataFacade->findById($video->getCalibrationId())->getCalibration();
-            }
             $this->doInterpolate($current, $labeledThingsInFrame[0], $emit, $calibrationData);
         }
 
@@ -542,5 +539,27 @@ class Linear implements Interpolation\Algorithm
         }
 
         return $cuboid;
+    }
+
+    /**
+     * Get the calibration for the given video as array.
+     *
+     * @param Model\Video $video
+     *
+     * @return array|null
+     */
+    private function getVideoCalibration(Model\Video $video)
+    {
+        if ($video->getCalibrationId() === null) {
+            return null;
+        }
+
+        $calibrationData = $this->calibrationDataFacade->findById($video->getCalibrationId());
+
+        if ($calibrationData === null) {
+            return null;
+        }
+
+        return $calibrationData->getCalibration();
     }
 }
