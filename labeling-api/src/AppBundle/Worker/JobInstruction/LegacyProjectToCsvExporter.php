@@ -28,7 +28,11 @@ class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction
      */
     public function run(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
     {
-        /** @var Jobs\LegacyProjectToCsvExporter $job */
-        $this->csvProjectExporter->exportProject($job->getProjectExport());
+        try {
+            /** @var Jobs\LegacyProjectToCsvExporter $job */
+            $this->csvProjectExporter->exportProject($job->getProjectExport());
+        }catch (\Exception $exception) {
+            $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
+        }
     }
 }

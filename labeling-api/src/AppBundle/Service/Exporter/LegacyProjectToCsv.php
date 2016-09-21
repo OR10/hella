@@ -220,6 +220,8 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         } catch (\Exception $e) {
             $projectExport->setStatus(Model\ProjectExport::EXPORT_STATUS_ERROR);
             $this->projectExportFacade->save($projectExport);
+
+            throw $e;
         }
     }
 

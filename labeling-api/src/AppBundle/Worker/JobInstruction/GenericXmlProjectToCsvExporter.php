@@ -28,7 +28,11 @@ class GenericXmlProjectToCsvExporter extends WorkerPool\JobInstruction
      */
     public function run(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
     {
-        /** @var Jobs\GenericXmlProjectToCsvExporter $job */
-        $this->csvExporter->export($job->getExport());
+        try {
+            /** @var Jobs\GenericXmlProjectToCsvExporter $job */
+            $this->csvExporter->export($job->getExport());
+        }catch (\Exception $exception) {
+            $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
+        }
     }
 }

@@ -196,6 +196,8 @@ class GenericXmlProjectToCsv
         }catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);
+
+            throw $exception;
         }
     }
 
