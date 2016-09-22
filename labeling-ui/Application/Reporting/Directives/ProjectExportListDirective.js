@@ -16,6 +16,7 @@ class ProjectExportListDirective {
 
     this.scope = {
       exports: '=',
+      project: '=',
     };
   }
 }

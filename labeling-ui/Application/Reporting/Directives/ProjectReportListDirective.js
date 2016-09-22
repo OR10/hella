@@ -16,6 +16,7 @@ class ProjectReportListDirective {
 
     this.scope = {
       reports: '=',
+      project: '=',
     };
   }
 }
