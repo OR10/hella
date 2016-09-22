@@ -43,11 +43,7 @@ class TaskIncomplete
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, $labeledThingInFrame->getFrameIndex()+1, 0, null);
 
         usort($labeledThingInFrames, function($a, $b) {
-            if ($a->getFrameIndex() === $b->getFrameIndex()) {
-                return 0;
-            }
-
-            return ($a->getFrameIndex() < $b->getFrameIndex()) ? -1 : 1;
+                return $a->getFrameIndex() <=> $b->getFrameIndex();
         });
 
         $incompleteStatus = $labeledThingInFrame->getIncomplete();
