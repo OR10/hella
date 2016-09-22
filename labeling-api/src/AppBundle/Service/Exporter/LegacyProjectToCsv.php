@@ -756,11 +756,19 @@ class LegacyProjectToCsv implements Service\ProjectExporter
 
         /** @var Model\LabelingTask $labeledTask */
         foreach ($labeledTasks as $labeledTask) {
-            if (count($this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame($labeledTask)) > 0) {
+            $incompleteLabeledThingInFrames = $this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame(
+                $labeledTask
+            );
+            if (count($incompleteLabeledThingInFrames) > 0) {
                 $video = $this->videoFacade->find($labeledTask->getVideoId());
+                $frameNumberMapping = $labeledTask->getFrameNumberMapping();
+                $frames = array_map(function(Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping) {
+                    return $frameNumberMapping[$labeledThingInFrame->getFrameIndex()];
+                }, $incompleteLabeledThingInFrames);
                 throw new Exception\TaskIncomplete(
                     sprintf(
-                        'Video "%s" (%s) is incomplete',
+                        'Incomplete shapes in frames (%s) in Video "%s" (%s)',
+                        implode(', ', $frames),
                         $video->getName(),
                         $labeledTask->getLabelInstruction()
                     )
