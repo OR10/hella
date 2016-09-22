@@ -16,6 +16,15 @@ describe('FrameGateway', () => {
     commonModule.registerWithAngular(angular);
     module('AnnoStation.Common');
 
+    module($provide => {
+      $provide.value('applicationConfig', {
+        Common: {
+          apiPrefix: '/api',
+          backendPrefix: '/backend',
+        },
+      });
+    });
+
     inject($injector => {
       frameLocation = {id: 'abc', type: 'source', frameIndex: 23, url: 'http://example.com/frame/23.png'};
 
