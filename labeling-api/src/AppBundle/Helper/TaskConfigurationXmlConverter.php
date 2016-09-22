@@ -145,7 +145,9 @@ class TaskConfigurationXmlConverter
 
         return [
             $this->getDrawingTool() => [
-                'minimalHeight' => $xpath->evaluate("number(/*/@minimalHeight)")
+                'minimalHeight' => is_nan($xpath->evaluate("number(/*/@minimalHeight)")) ? 22 : $xpath->evaluate(
+                    "number(/*/@minimalHeight)"
+                ),
             ]
         ];
     }
@@ -153,6 +155,10 @@ class TaskConfigurationXmlConverter
     public function getMinimalVisibleShapeOverflow()
     {
         $xpath = new \DOMXPath($this->document);
+
+        if (is_nan($xpath->evaluate("number(/*/@minimalVisibleShapeOverflow)"))) {
+            return null;
+        }
 
         return $xpath->evaluate("number(/*/@minimalVisibleShapeOverflow)");
     }
