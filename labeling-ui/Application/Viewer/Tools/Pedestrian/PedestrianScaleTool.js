@@ -57,7 +57,10 @@ class PedestrianScaleTool extends Tool {
       this._paperPedestrian.fixOrientation();
       this.emit('shape:update', this._paperPedestrian);
 
-      if (!this._paperPedestrian.topCenter.x || !this._paperPedestrian.topCenter.y || !this._paperPedestrian.bottomCenter.x || !this._paperPedestrian.bottomCenter.y) {
+      if (!this._paperPedestrian.toJSON().topCenter.x
+        || !this._paperPedestrian.toJSON().topCenter.y
+        || !this._paperPedestrian.toJSON().bottomCenter.x
+        || !this._paperPedestrian.toJSON().bottomCenter.y) {
         this.logger.warn('tool:pedestrian:scale:finish', 'Pedestrian scale coords broken', this._paperPedestrian);
       }
     }
@@ -82,7 +85,10 @@ class PedestrianScaleTool extends Tool {
       this._context.withScope(() => {
         this._paperPedestrian.resize(this._activeHandle, point, minimalHeight);
 
-        if (!this._paperPedestrian.topCenter.x || !this._paperPedestrian.topCenter.y || !this._paperPedestrian.bottomCenter.x || !this._paperPedestrian.bottomCenter.y) {
+        if (!this._paperPedestrian.toJSON().topCenter.x
+          || !this._paperPedestrian.toJSON().topCenter.y
+          || !this._paperPedestrian.toJSON().bottomCenter.x
+          || !this._paperPedestrian.toJSON().bottomCenter.y) {
           this.logger.warn('tool:pedestrian:scale:perform', 'Pedestrian scale coords broken', this._paperPedestrian);
         }
       });

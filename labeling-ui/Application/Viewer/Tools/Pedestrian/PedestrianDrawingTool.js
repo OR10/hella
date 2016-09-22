@@ -131,7 +131,10 @@ class PedestrianDrawingTool extends DrawingTool {
 
     this.emit('shape:create', this._pedestrian);
 
-    if (!this._pedestrian.topCenter.x || !this._pedestrian.topCenter.y || !this._pedestrian.bottomCenter.x || !this._pedestrian.bottomCenter.y) {
+    if (!this._pedestrian.toJSON().topCenter.x
+      || !this._pedestrian.toJSON().topCenter.y
+      || !this._pedestrian.toJSON().bottomCenter.x
+      || !this._pedestrian.toJSON().bottomCenter.y) {
       this.logger.warn('tool:pedestrian:create:finish', 'Pedestrian completion coords broken', this._pedestrian);
     }
 

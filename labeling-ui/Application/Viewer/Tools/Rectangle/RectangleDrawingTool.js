@@ -98,7 +98,10 @@ class RectangleDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());
 
-    if (!this._rect.topLeft.x || !this._rect.topLeft.y || !this._rect.bottomRight.x || !this._rect.bottomRight.y) {
+    if (!this._rect.toJSON().topLeft.x
+      || !this._rect.toJSON().topLeft.y
+      || !this._rect.toJSON().bottomRight.x
+      || !this._rect.toJSON().bottomRight.y) {
       this.logger.warn('tool:rectangle:create:finish', 'Rectangle completion coords broken', this._rect);
     }
 
