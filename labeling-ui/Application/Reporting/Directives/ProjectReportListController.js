@@ -3,10 +3,13 @@
  */
 class ProjectReportListController {
   /**
+   * @param {$rootScope} $rootScope
+   * @param {$interval} $interval
    * @param {$state} $state
    * @param {ModalService} modalService
+   * @param {ProjectGateway} projectGateway
    */
-  constructor($state, modalService) {
+  constructor($rootScope, $interval, $state, modalService, projectGateway) {
     /**
      * @type {$state}
      * @private
@@ -18,6 +21,19 @@ class ProjectReportListController {
      * @private
      */
     this._modalService = modalService;
+
+    const intervalInSeconds = 10;
+
+    const intervalPromise = $interval(() => {
+      projectGateway.getExports(this.project.id).then(data => {
+        this.exports = data;
+      });
+    }, 1000 * intervalInSeconds);
+
+    $rootScope.$on('$stateChangeStart',
+      () => {
+        $interval.cancel(intervalPromise);
+      });
   }
 
   openReport(id) {
@@ -58,8 +74,11 @@ class ProjectReportListController {
 }
 
 ProjectReportListController.$inject = [
+  '$rootScope',
+  '$interval',
   '$state',
   'modalService',
+  'projectGateway',
 ];
 
 export default ProjectReportListController;

@@ -3,14 +3,30 @@
  */
 class ProjectExportListController {
   /**
+   * @param {$rootScope} $rootScope
+   * @param {$interval} $interval
    * @param {ApiService} ApiService injected
+   * @param {ProjectGateway} projectGateway
    */
-  constructor(ApiService) {
+  constructor($rootScope, $interval, ApiService, projectGateway) {
     /**
      * The api service for building urls
      * @type {ApiService}
      */
     this.apiService = ApiService;
+
+    const intervalInSeconds = 10;
+
+    const intervalPromise = $interval(() => {
+      projectGateway.getExports(this.project.id).then(data => {
+        this.exports = data;
+      });
+    }, 1000 * intervalInSeconds);
+
+    $rootScope.$on('$stateChangeStart',
+      () => {
+        $interval.cancel(intervalPromise);
+      });
   }
 
   /**
@@ -28,7 +44,10 @@ class ProjectExportListController {
 }
 
 ProjectExportListController.$inject = [
+  '$rootScope',
+  '$interval',
   'ApiService',
+  'projectGateway',
 ];
 
 export default ProjectExportListController;
