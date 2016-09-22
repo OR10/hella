@@ -6,6 +6,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shape;
 use AppBundle\Service;
+use AppBundle\Service\Exporter\Exception;
 
 class LegacyProjectToCsv implements Service\ProjectExporter
 {
@@ -203,6 +204,12 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             $this->exporterFacade->save($export);
 
             return $export;
+        }catch (Exception\TaskIncomplete $incompleteException) {
+            $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
+            $export->setErrorMessage($incompleteException->getMessage());
+            $this->exporterFacade->save($export);
+
+            throw $incompleteException;
         }catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);
@@ -746,9 +753,17 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             return [];
         }
 
+        /** @var Model\LabelingTask $labeledTask */
         foreach ($labeledTasks as $labeledTask) {
             if (count($this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame($labeledTask)) > 0) {
-                throw new \Exception('Task not completed');
+                $video = $this->videoFacade->find($labeledTask->getVideoId());
+                throw new Exception\TaskIncomplete(
+                    sprintf(
+                        'Video "%s" (%s) is incomplete',
+                        $video->getName(),
+                        $labeledTask->getLabelInstruction()
+                    )
+                );
             }
         }
 
