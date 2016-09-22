@@ -184,13 +184,14 @@ class LegacyProjectToCsv implements Service\ProjectExporter
                 }
 
                 foreach ($data as $videoId => $videoData) {
-                    $video     = $this->videoFacade->find($videoId);
-                    $filename  = sprintf(
+                    $video    = $this->videoFacade->find($videoId);
+                    $filename = sprintf(
                         'export_%s_%s_%s.csv',
                         str_replace(' ', '_', $project->getName()),
                         $groupName,
                         str_replace(' ', '_', $video->getName())
                     );
+
                     $zipData[$filename] = $this->getCsv($videoData);
                 }
             }
@@ -204,13 +205,13 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             $this->exporterFacade->save($export);
 
             return $export;
-        }catch (Exception\TaskIncomplete $incompleteException) {
+        } catch (Exception\TaskIncomplete $incompleteException) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $export->setErrorMessage($incompleteException->getMessage());
             $this->exporterFacade->save($export);
 
             throw $incompleteException;
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);
 

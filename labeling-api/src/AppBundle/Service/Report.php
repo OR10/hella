@@ -144,9 +144,8 @@ class Report
                 $this->getSumOfLabeledThingClasses($project)
             );
 
-            $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
-                $project
-            );
+            $totalNumberOfLabeledThingInFrames = $this->labeledThingInFrameFacade
+                ->getSumOfLabeledThingInFramesByProject($project);
             $report->setNumberOfLabeledThingInFrames(
                 $totalNumberOfLabeledThingInFrames
             );
@@ -241,7 +240,7 @@ class Report
 
             $report->setReportStatus(Model\Report::REPORT_STATUS_DONE);
             $this->reportFacade->save($report);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $report->setReportStatus(Model\Report::REPORT_STATUS_ERROR);
             $this->reportFacade->save($report);
 

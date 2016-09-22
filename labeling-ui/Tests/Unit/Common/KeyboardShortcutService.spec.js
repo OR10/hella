@@ -21,6 +21,12 @@ describe('KeyboardShortcutService', () => {
         del: jasmine.createSpy('add').and.callFake(() => {
         }),
       });
+      $provide.value('applicationConfig', {
+        Common: {
+          apiPrefix: '/api',
+          backendPrefix: '/backend',
+        },
+      });
     });
 
     inject($injector => {

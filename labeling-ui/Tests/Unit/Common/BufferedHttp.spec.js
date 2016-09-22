@@ -32,6 +32,12 @@ describe('BufferedHttp', () => {
     module($provide => {
       $provide.value('revisionManager', revisionManager);
       $provide.value('$http', $http);
+      $provide.value('applicationConfig', {
+        Common: {
+          apiPrefix: '/api',
+          backendPrefix: '/backend',
+        },
+      });
     });
 
     inject($injector => {

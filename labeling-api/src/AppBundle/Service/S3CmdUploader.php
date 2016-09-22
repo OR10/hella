@@ -109,7 +109,9 @@ class S3CmdUploader
         }
 
         if ($process->getExitCode() !== 0) {
-            throw new \RuntimeException('Execution of extern s3cmd upload command unsuccessful: ' . $process->getErrorOutput());
+            throw new \RuntimeException(
+                'Execution of extern s3cmd upload command unsuccessful: ' . $process->getErrorOutput()
+            );
         }
     }
 
@@ -143,7 +145,6 @@ class S3CmdUploader
         if (strpos($sanitizedTargetDirectory, '/') === 0) {
             $sanitizedTargetDirectory = substr($sanitizedTargetDirectory, 1);
         }
-
 
         return sprintf(
             's3://%s/%s',

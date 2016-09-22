@@ -31,7 +31,7 @@ class CouchDbHttpSocketConnectionOptionsPass implements Compiler\CompilerPassInt
 
         if ($httpClient instanceof LoggingClient) {
             // @HACK to retrieve "real" client
-            $reflector = new \ReflectionObject($httpClient);
+            $reflector      = new \ReflectionObject($httpClient);
             $clientProperty = $reflector->getProperty('client');
             $clientProperty->setAccessible(true);
             $httpClient = $clientProperty->getValue($httpClient);

@@ -8,7 +8,6 @@ use AppBundle\Database\Facade;
 use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 
-
 class Report extends WorkerPool\JobInstruction
 {
     /**
@@ -52,7 +51,7 @@ class Report extends WorkerPool\JobInstruction
 
         try {
             $this->reportService->processReport($report);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
