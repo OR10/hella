@@ -77,7 +77,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {MultiTool}
      * @private
      */
-    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context);
+    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context, this._$scope.vm.readOnly === 'true');
     this._$scope.vm.multiTool = this._multiTool;
 
     /**

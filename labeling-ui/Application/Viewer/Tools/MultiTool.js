@@ -13,12 +13,13 @@ import hitResolver from '../Support/HitResolver';
 export default class MultiTool extends Tool {
   /**
    * @param {$rootScope.Scope} $scope
+   * @param {Boolean} readOnly
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ToolService} toolService
    * @param {DrawingContext} drawingContext
    * @param {Object} [options]
    */
-  constructor($scope, keyboardShortcutService, toolService, drawingContext, options) {
+  constructor($scope, keyboardShortcutService, toolService, drawingContext, readOnly, options) {
     super(drawingContext, options);
 
     /**
@@ -26,6 +27,11 @@ export default class MultiTool extends Tool {
      * @private
      */
     this._$scope = $scope;
+
+    /**
+     * @type {Boolean}
+     */
+    this._readOnly = readOnly;
 
     /**
      * @type {KeyboardShortcutService}
@@ -82,8 +88,10 @@ export default class MultiTool extends Tool {
     this._setDrawingTool();
     this._registerEventHandler();
 
+    if (!this._readOnly) {
     // Register Keyboard shortcuts
-    this._registerShortcuts();
+      this._registerShortcuts();
+    }
   }
 
   _setDrawingTool() {
