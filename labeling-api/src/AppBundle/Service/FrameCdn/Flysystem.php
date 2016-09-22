@@ -42,7 +42,7 @@ class Flysystem extends Service\FrameCdn
      * @return void
      * @throws \Exception
      */
-    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, $frameIndex, $imageData)
+    public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, int $frameIndex, string $imageData)
     {
         $cdnPath  = sprintf('%s/%s', $video->getId(), $imageType->getName());
         $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());
