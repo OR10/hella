@@ -10,6 +10,18 @@
 + Response 200 (application/json)
     + Attributes
         + result Project
+        
+## Get a a single project [/api/project/{projectId}]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Get a a single project [DELETE]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean) 
 
 ## Get a list of all projects [/api/project?limit={limit}&offset={offset}]
 

@@ -384,6 +384,42 @@ class Project extends Controller\Base
     }
 
     /**
+     * Return the project with the given id
+     *
+     * @Rest\Delete("/{project}")
+     *
+     * @param $project
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function deleteProjectAction(Model\Project $project)
+    {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT])) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to deleted this project.');
+        }
+
+        $projectStatus = $project->getStatus();
+        if ($projectStatus !== Model\Project::STATUS_DONE && $projectStatus !== Model\Project::STATUS_TODO) {
+            throw new Exception\NotAcceptableHttpException(
+                sprintf(
+                    'Its not allowed to delete a project with state "%s"',
+                    $projectStatus
+                )
+            );
+        }
+
+        $project->setDeleteFlag($user);
+        $this->projectFacade->save($project);
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
+    }
+
+    /**
      * Assign a label coordinator to a project
      *
      * @CheckPermissions({"canAssignProject"})

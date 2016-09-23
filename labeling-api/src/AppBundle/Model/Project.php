@@ -104,6 +104,24 @@ class Project
     private $userId;
 
     /**
+     * @var bool
+     * @CouchDB\Field(type="boolean")
+     */
+    private $deleted = false;
+
+    /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $deletedByUserId;
+
+    /**
+     * @var \DateTime
+     * @CouchDB\Field(type="datetime")
+     */
+    private $deletedAt;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -602,6 +620,21 @@ class Project
         ];
     }
 
+    /**
+     * @param User           $user
+     * @param \DateTime|null $date
+     */
+    public function setDeleteFlag(User $user, \DateTime $date = null)
+    {
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        $this->deleted         = true;
+        $this->deletedByUserId = $user->getId();
+        $this->deletedAt       = $date;
+    }
+
     private function checkTaskInstructionProperty()
     {
         if ($this->taskInstructions === null) {
@@ -610,5 +643,13 @@ class Project
                 'genericXml' => [],
             ];
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
     }
 }

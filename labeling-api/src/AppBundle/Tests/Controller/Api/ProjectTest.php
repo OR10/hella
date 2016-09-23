@@ -418,6 +418,24 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertEquals($expectedResponseBody, $responseBody);
     }
 
+    public function testDeleteProject()
+    {
+        $projectBuilder = Tests\Helper\ProjectBuilder::create()
+        ->withProjectOwnedByUserId($this->client->getId())
+        ->build();
+
+        $project = $this->projectFacade->save($projectBuilder);
+
+        $requestWrapper = $this->createRequest('/api/project/%s', [$project->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->withCredentialsFromUsername($this->client)
+            ->execute();
+
+        $project = $this->projectFacade->find($project->getId());
+
+        $this->assertTrue($project->isDeleted());
+    }
+
     protected function setUpImplementation()
     {
         $this->projectFacade    = $this->getAnnostationService('database.facade.project');
