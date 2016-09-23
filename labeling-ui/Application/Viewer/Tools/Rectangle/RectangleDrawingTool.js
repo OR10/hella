@@ -61,7 +61,7 @@ class RectangleDrawingTool extends DrawingTool {
 
   onMouseDown(event) {
     this._startPosition = event.point;
-    if (!this._startPosition.x || !this._startPosition.y) {
+    if (typeof this._startPosition.x !== 'number' || this._startPosition.y !== 'number') {
       this.logger.warn('tool:rectangle:create:start', 'Rectangle broken start position', this._startPosition);
     }
   }
@@ -98,10 +98,10 @@ class RectangleDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._rect.labeledThingInFrame;
     labeledThingInFrame.shapes.push(this._rect.toJSON());
 
-    if (!this._rect.toJSON().topLeft.x
-      || !this._rect.toJSON().topLeft.y
-      || !this._rect.toJSON().bottomRight.x
-      || !this._rect.toJSON().bottomRight.y) {
+    if (typeof this._rect.toJSON().topLeft.x !== 'number'
+      || typeof this._rect.toJSON().topLeft.y !== 'number'
+      || typeof this._rect.toJSON().bottomRight.x !== 'number'
+      || typeof this._rect.toJSON().bottomRight.y !== 'number') {
       this.logger.warn('tool:rectangle:create:finish', 'Rectangle completion coords broken', this._rect);
     }
 

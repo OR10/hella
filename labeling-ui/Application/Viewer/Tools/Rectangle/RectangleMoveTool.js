@@ -98,10 +98,10 @@ class RectangleMoveTool extends Tool {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
 
-    if (!shape.toJSON().topLeft.x
-      || !shape.toJSON().topLeft.y
-      || !shape.toJSON().bottomRight.x
-      || !shape.toJSON().bottomRight.y) {
+    if (typeof shape.toJSON().topLeft.x !== 'number'
+      || typeof shape.toJSON().topLeft.y !== 'number'
+      || typeof shape.toJSON().bottomRight.x !== 'number'
+      || typeof shape.toJSON().bottomRight.y !== 'number') {
       this.logger.warn('tool:rectangle:move:finish', 'Rectangle move coords broken', shape);
     }
 

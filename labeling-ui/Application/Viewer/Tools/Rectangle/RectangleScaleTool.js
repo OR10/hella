@@ -57,10 +57,10 @@ class RectangleScaleTool extends Tool {
       this._paperRectangle.fixOrientation();
       this.emit('shape:update', this._paperRectangle);
 
-      if (!this._paperRectangle.toJSON().topLeft.x
-        || !this._paperRectangle.toJSON().topLeft.y
-        || !this._paperRectangle.toJSON().bottomRight.x
-        || !this._paperRectangle.toJSON().bottomRight.y) {
+      if (typeof this._paperRectangle.toJSON().topLeft.x !== 'number'
+        || typeof this._paperRectangle.toJSON().topLeft.y !== 'number'
+        || typeof this._paperRectangle.toJSON().bottomRight.x !== 'number'
+        || typeof this._paperRectangle.toJSON().bottomRight.y !== 'number') {
         this.logger.warn('tool:rectangle:scale:finish', 'Rectangle scale coords broken', this._paperRectangle);
       }
     }
@@ -85,10 +85,10 @@ class RectangleScaleTool extends Tool {
       this._context.withScope(() => {
         this._paperRectangle.resize(this._activeHandle, point, minimalHeight);
 
-        if (!this._paperRectangle.toJSON().topLeft.x
-          || !this._paperRectangle.toJSON().topLeft.y
-          || !this._paperRectangle.toJSON().bottomRight.x
-          || !this._paperRectangle.toJSON().bottomRight.y) {
+        if (typeof this._paperRectangle.toJSON().topLeft.x !== 'number'
+          || typeof this._paperRectangle.toJSON().topLeft.y !== 'number'
+          || typeof this._paperRectangle.toJSON().bottomRight.x !== 'number'
+          || typeof this._paperRectangle.toJSON().bottomRight.y !== 'number') {
           this.logger.warn('tool:rectangle:scale:perform', 'Rectangle scale coords broken', this._paperRectangle);
         }
       });

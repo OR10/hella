@@ -82,7 +82,7 @@ class PedestrianDrawingTool extends DrawingTool {
   onMouseDown(event) {
     this._startPosition = event.point;
 
-    if (!this._startPosition.x || !this._startPosition.y) {
+    if (typeof this._startPosition.x !== 'number' || typeof this._startPosition.y !== 'number') {
       this.logger.warn('tool:pedestrian:create:start', 'Pedestrian start coords broken', this._startPosition);
     }
   }
@@ -131,10 +131,10 @@ class PedestrianDrawingTool extends DrawingTool {
 
     this.emit('shape:create', this._pedestrian);
 
-    if (!this._pedestrian.toJSON().topCenter.x
-      || !this._pedestrian.toJSON().topCenter.y
-      || !this._pedestrian.toJSON().bottomCenter.x
-      || !this._pedestrian.toJSON().bottomCenter.y) {
+    if (typeof this._pedestrian.toJSON().topCenter.x !== 'number'
+      || typeof this._pedestrian.toJSON().topCenter.y !== 'number'
+      || typeof this._pedestrian.toJSON().bottomCenter.x !== 'number'
+      || typeof this._pedestrian.toJSON().bottomCenter.y !== 'number') {
       this.logger.warn('tool:pedestrian:create:finish', 'Pedestrian completion coords broken', this._pedestrian);
     }
 
