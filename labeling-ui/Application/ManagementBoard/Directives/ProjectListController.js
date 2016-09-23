@@ -128,8 +128,21 @@ class ProjectListController {
   /**
    * @param {number} projectId
    */
-  deleteProject(projectId) { // eslint-disable-line no-unused-vars
-    // @TODO: Implement
+  deleteProject(projectId, projectName) {
+    const modal = this._modalService.getWarningDialog(
+      {
+        title: 'Delete this Project.',
+        headline: `You are about to delete the "${projectName}" project. Proceed?`,
+        message: ' Warning: All data related to this project will be deleted and they are no longer available.',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+      }, () => {
+      this.loadingInProgress = true;
+      this._projectGateway.deleteProject(projectId)
+          .then(() => this._triggerReloadAll());
+    }
+    );
+    modal.activate();
   }
 
   /**

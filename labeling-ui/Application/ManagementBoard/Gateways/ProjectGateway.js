@@ -137,6 +137,22 @@ class ProjectGateway {
   }
 
   /**
+   * @param {string} projectId
+   * @returns {AbortablePromise}
+   */
+  deleteProject(projectId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}`);
+    return this._bufferedHttp.delete(url, undefined, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to delete project: ${projectId}.`);
+      });
+  }
+
+  /**
    * @param {Object} data
    * @returns {*}
    */

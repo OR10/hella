@@ -76,13 +76,6 @@
                 </button>
 
                 <!--
-                <button tooltip="Delete Project: {{project.name}}"
-                        ng-if="vm.userPermissions.canDeleteProject"
-                        ng-click="vm.deleteProject(project.id)"
-                >
-                    <i class="fa fa-close"></i>
-                </button>
-
                 <button tooltip="Reopen Project"
                         ng-if="vm.userPermissions.canReopenProject"
                         ng-click="vm.reopenProject(project.id)"
@@ -96,6 +89,13 @@
                         ng-click="vm.openReport(project.id)"
                 >
                     <i class="fa fa-file-o"></i>
+                </button>
+
+                <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
+                        ng-if="vm.userPermissions.canDeleteProject && (project.status === 'todo' || project.status === 'done')"
+                        ng-click="vm.deleteProject(project.id, project.name)"
+                >
+                    <i class="fa fa-trash-o"></i>
                 </button>
             </td>
         </tr>
