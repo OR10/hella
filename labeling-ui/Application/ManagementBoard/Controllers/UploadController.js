@@ -136,10 +136,10 @@ class UploadController {
       .reduce((before, file) => before || file.hasUploadError(), false);
   }
 
-  _showCompletedWithErrorsModal(videos) {
+  _showCompletedWithErrorsModal(incompleteVideos) {
     let modal = null;
-    if (videos) {
-      const listData = videos.map(video => {
+    if (incompleteVideos.length) {
+      const listData = incompleteVideos.map(video => {
         return {name: video};
       });
       modal = this._modalService.getListDialog({
@@ -161,17 +161,17 @@ class UploadController {
     modal.activate();
   }
 
-  _showCompletedModal(videos) {
+  _showCompletedModal(incompleteVideos) {
     let modal = null;
-    if (videos) {
-      const listData = videos.map(video => {
+    if (incompleteVideos.length) {
+      const listData = incompleteVideos.map(video => {
         return {name: video};
       });
       modal = this._modalService.getListDialog({
         title: 'Upload complete',
         headline: 'Your upload is complete',
         message: 'Your upload is complete but some of the calibration data is missing. Please upload the calibration data for the following videos:',
-        cancelButtonText: 'Understood',
+        confirmButtonText: 'Understood',
         listData,
       });
     } else {
