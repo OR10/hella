@@ -245,6 +245,14 @@ class MediaControlsController {
           error => {
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
+
+            const modal = this._modalService.getAlertWarningDialog({
+              title: 'Interpolation error',
+              headline: 'There was an error with the interpolation. Please try again.',
+              confirmButtonText: 'Understood',
+            });
+            modal.activate();
+
             throw error;
           }
         );
