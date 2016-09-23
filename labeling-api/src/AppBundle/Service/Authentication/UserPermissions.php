@@ -28,7 +28,7 @@ class UserPermissions
         'canMoveInProgressProjectToDone' => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
         'canViewStatsButton'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canViewProjectButton'           => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canDeleteProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canDeleteProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
         'canCreateNewProject'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canReopenProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canExportProject'               => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
