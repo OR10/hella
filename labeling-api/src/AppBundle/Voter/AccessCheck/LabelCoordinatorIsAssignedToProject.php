@@ -17,6 +17,10 @@ class LabelCoordinatorIsAssignedToProject extends Voter\AccessCheck {
             throw new \RuntimeException('Project AccessCheck got non Project as object.');
         }
 
+        if ($object->isDeleted()) {
+            return false;
+        }
+
         return (
             $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR) &&
             $object->getLatestAssignedCoordinatorUserId() === $user->getId()

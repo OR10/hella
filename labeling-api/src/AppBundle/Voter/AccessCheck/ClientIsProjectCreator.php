@@ -18,6 +18,10 @@ class ClientIsProjectCreator extends Voter\AccessCheck
             throw new \RuntimeException('Project AccessCheck got non Project as object.');
         }
 
+        if ($object->isDeleted()) {
+            return false;
+        }
+
         return (
             $user->hasRole(Model\User::ROLE_CLIENT) &&
             $object->getUserId() === $user->getId()

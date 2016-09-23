@@ -30,6 +30,10 @@ class LabelerIsAssignedToProject extends Voter\AccessCheck
             throw new \RuntimeException('Project AccessCheck got non Project as object.');
         }
 
+        if ($object->isDeleted()) {
+            return false;
+        }
+
         $labelingGroupsOfUser   = $this->labelingGroupFacade->findAllByUser($user);
         $labelingGroupIdsOfUser = array_map(
             function ($labelingGroup) {
