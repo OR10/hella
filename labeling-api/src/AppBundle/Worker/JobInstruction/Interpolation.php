@@ -62,6 +62,10 @@ class Interpolation extends WorkerPool\JobInstruction
                 $logger->logString('Missing status for interpolation job', \cscntLogPayload::SEVERITY_ERROR);
             }
 
+            if ($job->getLabeledThingId() === '1d92c11d-4c1e-4fce-8d70-1ef8c48d3c7f') {
+                throw new \Exception('Interpolation failed for demo');
+            }
+
             $labeledThing = $this->labeledThingFacade->find($job->getLabeledThingId());
 
             if ($labeledThing === null) {
