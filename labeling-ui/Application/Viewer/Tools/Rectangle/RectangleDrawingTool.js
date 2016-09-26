@@ -61,7 +61,7 @@ class RectangleDrawingTool extends DrawingTool {
 
   onMouseDown(event) {
     this._startPosition = event.point;
-    if (typeof this._startPosition.x !== 'number' || this._startPosition.y !== 'number') {
+    if (typeof this._startPosition.x !== 'number' || typeof this._startPosition.y !== 'number') {
       this.logger.warn('tool:rectangle:create:start', 'Rectangle broken start position', this._startPosition);
     }
   }
