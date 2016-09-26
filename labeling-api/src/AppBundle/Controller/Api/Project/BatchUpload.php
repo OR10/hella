@@ -126,7 +126,7 @@ class BatchUpload extends Controller\Base
     public function uploadAction(Model\Project $project, HttpFoundation\Request $request)
     {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
-        $this->denyIfProjectIsDone($project);
+        $this->denyIfProjectIsNotTodo($project);
 
         $user                  = $this->tokenStorage->getToken()->getUser();
         $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);
@@ -219,7 +219,7 @@ class BatchUpload extends Controller\Base
     public function uploadCompleteAction(Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
-        $this->denyIfProjectIsDone($project);
+        $this->denyIfProjectIsNotTodo($project);
 
         clearstatcache();
 
@@ -307,11 +307,11 @@ class BatchUpload extends Controller\Base
     /**
      * @param Model\Project $project
      */
-    private function denyIfProjectIsDone(Model\Project $project)
+    private function denyIfProjectIsNotTodo(Model\Project $project)
     {
-        if ($project->getStatus() === Model\Project::STATUS_DONE) {
+        if ($project->getStatus() !== Model\Project::STATUS_TODO) {
             throw new HttpKernel\Exception\AccessDeniedHttpException(
-                'Uploading files for a done project is not allowed'
+                'Uploading files is only possible for projects in todo'
             );
         }
     }
