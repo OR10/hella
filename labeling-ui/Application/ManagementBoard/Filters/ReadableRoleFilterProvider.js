@@ -3,6 +3,8 @@ function ReadableRoleFilterProvider() {
     switch (role) {
       case 'ROLE_ADMIN':
         return 'Administrator';
+      case 'ROLE_CLIENT_COORDINATOR':
+        return 'Client + Coordinator';
       case 'ROLE_LABEL_COORDINATOR':
         return 'Label Coordinator';
       case 'ROLE_LABELER':
