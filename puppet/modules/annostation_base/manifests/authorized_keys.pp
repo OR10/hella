@@ -19,8 +19,8 @@ class annostation_base::authorized_keys() {
 
   ssh_authorized_key { 'fls@crosscan.com for root':
     user => 'root',
-    type => 'ssh-rsa',
-    key  => 'AAAAB3NzaC1yc2EAAAABIwAAAgEAvz9l2/Heiz+s7N9WR4fYW8pDQkfHMW1A0whot489Yr3nCLd4x2MgY0LF/Re7cuj6Egax1HO5ZEPEh8QvSSc5t9xyTVwkHsEJe/mHtfGyX3WfYgNIkrR25T7Ld4fDKosO9vln13zqHcl0Ubie37obSNFDHQ0QfPhYksG0B2UoRMdMocZ2mUMrT8rRkLWMvB65zjVMcSJBROO1AYh3kz3JsmbtlbDq07v3RUt6bQlQ/cjoaq8gGcuMNmmBCzMuQQytTU20qLKDW08hsckWwGN2qaEQJhvGYOjo8ztlkBzx8lf8GbNKiedXWzhArrDcbIndfYT9DZ/laNoEZbaqwnmc+5hYCCiqu2lQgAH/WcsXaaqIvbieluRmvgxslrOgLARM5zyx4K9hN5Dy/7X6pW/B43cI8JK7rA9ApmOWLU5I9yxozrbHzfkYmx2TVzD/4hV58mOHyvw+mtoyxUcw0XdNZHkuqSsu6Vn1nniJX3WhBhzYtQ6SDzznvBucPlD4JWhUJsUdrKi2br/gcwnSINCCtlHkjhXoNotX2G/KVE0Fb6B2JyiorSJS9jW2Mc68xqNzw8nrbCTLKbMtcpM16QTJpK1AwNjVKCmQ+E0D8NAHEwuIUz/F/hn2iLWznY3KbgwXOjz4bwnPJKxnm0kfA+3ArQ3JWF86umJEaPfbYXAVdZU=',
+    type => 'ssh-ed25519',
+    key  => 'AAAAC3NzaC1lZDI1NTE5AAAAID+p8NmefEMM0gvfcr36HUKzb/Dh7rx4JvHusSQ7xgVD',
   }
 
   ssh_authorized_key { 'ses@crosscan.com for root':
