@@ -63,7 +63,7 @@ class Interpolation extends WorkerPool\JobInstruction
             }
 
             if ($job->getLabeledThingId() === '1d92c11d-4c1e-4fce-8d70-1ef8c48d3c7f') {
-                throw new \Exception('Interpolation failed for demo');
+                throw new Service\Interpolation\Exception('Interpolation failed for demo');
             }
 
             $labeledThing = $this->labeledThingFacade->find($job->getLabeledThingId());
@@ -83,6 +83,9 @@ class Interpolation extends WorkerPool\JobInstruction
                 $job->getFrameRange(),
                 $status
             );
+        } catch (Service\Interpolation\Exception $exception) {
+            $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
+            $this->markErrorStatus($logger, $status, $exception->getMessage());
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
             $this->markErrorStatus($logger, $status);
