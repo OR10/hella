@@ -47,7 +47,7 @@ class FrameNumberInputDirective {
     /**
      * Only allow numbers and navigational keys
      */
-    function onKeyDown(event) {
+    function onKeyUp(event) {
       switch (true) {
         // Numbers
         case (event.keyCode >= 48 && event.keyCode <= 57):
@@ -89,6 +89,8 @@ class FrameNumberInputDirective {
 
         default:
           event.preventDefault();
+          editable.blur();
+          window.getSelection().removeAllRanges();
       }
     }
 
@@ -113,7 +115,7 @@ class FrameNumberInputDirective {
     };
 
     // Listen for change events to enable binding
-    editable.on('keydown', onKeyDown);
+    editable.on('keyup', onKeyUp);
     editable.on('blur', () => {
       scope.$evalAsync(onBlur);
     });
