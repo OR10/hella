@@ -96,6 +96,7 @@ class Common extends Module {
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 
           loggerServiceProvider.addContexts('tool:*');
+          loggerServiceProvider.addContexts('gateway:*');
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
           }

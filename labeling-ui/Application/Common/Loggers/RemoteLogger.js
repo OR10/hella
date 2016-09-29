@@ -33,13 +33,19 @@ class RemoteLogger {
 
   _log(level, context, args) {
     const {appCodeName, appName, appVersion, language, platform, product, userAgent, vendor} = navigator;
+
+    const trace = new Error().stack.replace(/^[^\(]+?[\n$]/gm, '')
+      .replace(/^\s+at\s+/gm, '')
+      .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+      .split('\n');
+
     const logEntry = {
       context,
       level,
       browser: {appCodeName, appName, appVersion, language, platform, product, userAgent, vendor},
       group: this._groupId,
       data: args,
-      trace: new Error().stack,
+      trace,
     };
 
     this._logGateway.logMessage(logEntry);
