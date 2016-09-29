@@ -40,6 +40,7 @@ set :log_level, :info
 # set :keep_releases, 5
 
 before :deploy, :local_composer_install
+before 'deploy:publishing', :symlink_log_folder
 before 'deploy:publishing', :symlink_symfony_configuration
 before 'deploy:published', :reload_php_fpm
 before 'deploy:published', :restart_supervisord
@@ -52,13 +53,21 @@ task :local_composer_install do
   system("composer install --no-scripts --optimize-autoloader")
 end
 
+task :symlink_log_folder do
+  on roles(:app) do
+    execute "sudo mkdir -p /var/log/labeling-api"
+    execute "sudo chown -R www-data /var/log/labeling-api"
+    execute "cd '#{release_path}'; rm -rf app/logs"
+    execute "cd '#{release_path}'; ln -snf /var/log/labeling-api app/logs"
+    execute "cd '#{release_path}'; sudo chown -R www-data app/logs/"
+  end
+end
+
 task :symlink_symfony_configuration do
   on roles(:app) do
     execute "cd '#{release_path}'; mkdir -p app/cache/prod"
-    execute "cd '#{release_path}'; mkdir -p app/logs"
     execute "cd '#{release_path}'; ln -snf /etc/AnnoStation/labeling-api/parameters.yml app/config/parameters.yml"
     execute "cd '#{release_path}'; sudo chown -R www-data app/cache/"
-    execute "cd '#{release_path}'; sudo chown -R www-data app/logs/"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod cache:clear"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod annostation:rabbitmq:setup"
     execute "cd '#{release_path}'; sudo -u www-data ./app/console --env=prod doctrine:couchdb:update-design-doc"
