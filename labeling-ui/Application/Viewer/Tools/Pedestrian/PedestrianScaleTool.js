@@ -76,9 +76,9 @@ class PedestrianScaleTool extends Tool {
     const point = event.point;
     this._modified = true;
 
-    const drawingToolOptions = this._$scope.vm.task.drawingToolOptions;
-    const minimalHeight = (drawingToolOptions && drawingToolOptions.rectangle && drawingToolOptions.rectangle.minimalHeight)
-      ? drawingToolOptions.rectangle.minimalHeight
+    const drawingToolOptions = this._options.pedestrian;
+    const minimalHeight = (drawingToolOptions && drawingToolOptions.minimalHeight)
+      ? drawingToolOptions.minimalHeight
       : 1;
 
     this._$scope.$apply(() => {

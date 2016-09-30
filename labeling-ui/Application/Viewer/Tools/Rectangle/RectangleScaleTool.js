@@ -76,14 +76,14 @@ class RectangleScaleTool extends Tool {
     const point = event.point;
     this._modified = true;
 
-    const drawingToolOptions = this._$scope.vm.task.drawingToolOptions;
-    const minimalHeight = (drawingToolOptions && drawingToolOptions.rectangle && drawingToolOptions.rectangle.minimalHeight)
-      ? drawingToolOptions.rectangle.minimalHeight
+    const drawingToolOptions = this._options.rectangle;
+    const minimalSize = (drawingToolOptions && drawingToolOptions.minimalHeight)
+      ? {width: 1, height: drawingToolOptions.minimalHeight}
       : {width: 1, height: 1};
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperRectangle.resize(this._activeHandle, point, minimalHeight);
+        this._paperRectangle.resize(this._activeHandle, point, minimalSize);
 
         if (typeof this._paperRectangle.toJSON().topLeft.x !== 'number'
           || typeof this._paperRectangle.toJSON().topLeft.y !== 'number'

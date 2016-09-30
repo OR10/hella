@@ -20,10 +20,6 @@ class PedestrianDrawingTool extends DrawingTool {
    * @param {Task} task
    */
   constructor($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task) {
-    const defaultOptions = {
-      minimalHeight: 1,
-    };
-    task.drawingToolOptions = Object.assign({}, defaultOptions, task.drawingToolOptions);
     super($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task);
 
     /**
@@ -94,10 +90,16 @@ class PedestrianDrawingTool extends DrawingTool {
    */
   onMouseDrag(event) {
     const point = event.point;
+
+    const drawingToolOptions = this._options.pedestrian;
+    const minimalHeight = (drawingToolOptions && drawingToolOptions.minimalHeight)
+      ? drawingToolOptions.minimalHeight
+      : 1;
+
     if (this._pedestrian) {
       this._$scope.$apply(
         () => {
-          this._pedestrian.resize(this._getScaleAnchor(point), point);
+          this._pedestrian.resize(this._getScaleAnchor(point), point, minimalHeight);
         }
       );
     } else {

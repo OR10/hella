@@ -81,7 +81,7 @@ class ToolService {
           toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService, this._entityIdService, this._colorService, $scope.vm.video, $scope.vm.task));
           break;
         default:
-          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService));
+          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService, $scope.vm.task.drawingToolOptions));
       }
     }
     this._loggerService.log('toolService:getTool', `Returning tool "${toolIdentifier}"`);

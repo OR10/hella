@@ -28,7 +28,7 @@ export default class Tool extends EventEmitter {
      * Tool options
      *
      * @type {Object}
-     * @private
+     * @protected
      */
     this._options = null;
 

@@ -68,10 +68,16 @@ class RectangleDrawingTool extends DrawingTool {
 
   onMouseDrag(event) {
     const point = event.point;
+
+    const drawingToolOptions = this._options.rectangle;
+    const minimalHeight = (drawingToolOptions && drawingToolOptions.minimalHeight)
+      ? drawingToolOptions.minimalHeight
+      : 1;
+
     if (this._rect) {
       this._$scope.$apply(
         () => {
-          this._rect.resize(this._getScaleAnchor(point), point);
+          this._rect.resize(this._getScaleAnchor(point), point, {width: 1, height: minimalHeight});
         }
       );
     } else {
