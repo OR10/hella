@@ -11,11 +11,7 @@ class CuboidScaleTool extends Tool {
    * @param {DrawingContext} drawingContext
    * @param {LoggerService} loggerService
    */
-  constructor($scope, drawingContext, loggerService) {
-    const defaultOptions = {
-      minimalHeight: 15,
-    };
-    const options = Object.assign({}, defaultOptions, $scope.vm.task.drawingToolOptions);
+  constructor($scope, drawingContext, loggerService, options) {
     super(drawingContext, loggerService, options);
 
     /**
@@ -75,7 +71,7 @@ class CuboidScaleTool extends Tool {
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperCuboid.resize(this._activeHandle, point, this._options.minimalHeight);
+        this._paperCuboid.resize(this._activeHandle, point, this._options.cuboid.minimalHeight);
       });
     });
   }

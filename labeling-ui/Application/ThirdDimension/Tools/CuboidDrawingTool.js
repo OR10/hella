@@ -25,10 +25,6 @@ class CuboidDrawingTool extends DrawingTool {
    * @param {Task} task
    */
   constructor($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task) {
-    const defaultOptions = {
-      minimalHeight: 15,
-    };
-    task.drawingToolOptions = Object.assign({}, defaultOptions, task.drawingToolOptions);
     super($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task);
 
     /**
