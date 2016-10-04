@@ -10,6 +10,7 @@
                   thing-layer="vm.thingLayer"
                   hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
                   label-instruction="vm.labelInstruction"
+                  class="no-select"
 ></viewer-title-bar>
 <div
      on-init="vm.onSplitViewInitialized()"
@@ -17,7 +18,7 @@
      gutter-size="10"
      sizes="vm.splitViewSizes"
      min-size="vm.minSizes"
-     class="main grid-block noscroll">
+     class="main grid-block noscroll no-select">
     <!--<div class="grid-block sidebar-left vertical noscrollbars" ng-show="vm.popupPanelOpen">-->
     <!--<div class="grid-block vertical">-->
         <!--<loading-mask ng-if="vm.leftSidebarDisabled" backdrop="vm.leftSidebarWorking" block-interaction="true"-->
@@ -55,10 +56,11 @@
                  freeze-thumbnails="vm.freezeThumbnails"
                  fps="vm.fps"
                  frame-skip="vm.frameSkip"
+                 class="no-select"
     ></popup-panel>
 
 
-    <viewer class="grid-block align-center noscroll"
+    <viewer class="grid-block align-center noscroll no-select"
             labeled-things-in-frame="vm.labeledThingsInFrame"
             selected-paper-shape="vm.selectedPaperShape"
             active-tool="vm.activeTool"
@@ -83,9 +85,13 @@
     ></viewer>
     <div class="grid-block small-6 sidebar-right"
          ng-if="vm.task.hideAttributeSelector !== true">
-        <loading-mask ng-if="vm.rightSidebarDisabled" backdrop="vm.rightSidebarShowBackdrop" block-interaction="true"
-                      spinner="vm.rightSidebarWorking"></loading-mask>
-        <label-selector class="grid-block"
+        <loading-mask ng-if="vm.rightSidebarDisabled"
+                      backdrop="vm.rightSidebarShowBackdrop"
+                      block-interaction="true"
+                      spinner="vm.rightSidebarWorking"
+                      class="no-select"
+        ></loading-mask>
+        <label-selector class="grid-block no-select"
                         labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
                         structure="vm.labelingStructure"
                         annotation="vm.labelingAnnotation"
@@ -113,11 +119,12 @@
                 video="vm.video"
                 bookmarked-frame-index="vm.bookmarkedFrameIndex"
                 show-crosshairs="vm.showCrosshairs"
+                class="no-select"
 ></media-controls>
 
 <div class="thumbnail-zone grid-block">
     <div class="viewer-film-reel-container grid-block">
-        <film-reel class="grid-block vertical" frame-position="vm.framePosition"
+        <film-reel class="grid-block vertical no-select" frame-position="vm.framePosition"
                    task="vm.task"
                    video="vm.video"
                    filters="vm.filters"
