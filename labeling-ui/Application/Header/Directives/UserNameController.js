@@ -19,9 +19,11 @@ class UserNameController {
         case 'ROLE_CLIENT':
           this.readableRoles.push('Client');
           break;
-        case 'ROLE_USER':
-          this.readableRoles.push('User');
+        case 'ROLE_LABELER':
+          this.readableRoles.push('Labeler');
           break;
+        // Ignore the USER role
+        case 'ROLE_USER':
         default:
       }
     });
