@@ -89,7 +89,7 @@ export default class MultiTool extends Tool {
     this._registerEventHandler();
 
     if (!this._readOnly) {
-    // Register Keyboard shortcuts
+      // Register Keyboard shortcuts
       this._registerShortcuts();
     }
   }
