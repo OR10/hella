@@ -53,7 +53,7 @@ class RectangleDrawingTool extends DrawingTool {
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         from,
-        new paper.Point(from.x + 1, from.y + 1),
+        from,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
