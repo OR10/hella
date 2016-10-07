@@ -228,13 +228,13 @@ class CuboidDrawingTool extends DrawingTool {
     this._bottomPoint.y = point.y;
 
     // Adhere to minimalHeight
-    if (Math.abs(this._bottomPoint.y - this._topPoint.y) < this._options.minimalHeight) {
+    if (Math.abs(this._bottomPoint.y - this._topPoint.y) < this._getMinimalHeight()) {
       if (this._bottomPoint.y > this._topPoint.y) {
         // Top to bottom
-        this._bottomPoint.y = this._topPoint.y + this._options.minimalHeight;
+        this._bottomPoint.y = this._topPoint.y + this._getMinimalHeight();
       } else {
         // Bottom to top
-        this._bottomPoint.y = this._topPoint.y - this._options.minimalHeight;
+        this._bottomPoint.y = this._topPoint.y - this._getMinimalHeight();
       }
     }
 
@@ -252,6 +252,10 @@ class CuboidDrawingTool extends DrawingTool {
         dashArray: PaperShape.LINE,
       });
     });
+  }
+
+  _getMinimalHeight() {
+    return this._options.cuboid && this._options.cuboid.minimalHeight && this._options.cuboid.minimalHeight > 0 ? this._options.cuboid.minimalHeight : 1;
   }
 
   onMouseUp() {
@@ -298,7 +302,7 @@ class CuboidDrawingTool extends DrawingTool {
 
     if (this._topPoint && this._bottomPoint && this._sidePoint && this._cuboid) {
       this._context.withScope(() => {
-        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this._options.minimalHeight);
+        this._cuboid.resize({name: CuboidInteractionResolver.DEPTH}, point, this._getMinimalHeight());
       });
     }
   }

@@ -62,6 +62,10 @@ class CuboidScaleTool extends Tool {
     this._paperCuboid = null;
   }
 
+  _getMinimalHeight() {
+    return this._options.cuboid && this._options.cuboid.minimalHeight && this._options.cuboid.minimalHeight > 0 ? this._options.cuboid.minimalHeight : 1;
+  }
+
   onMouseDrag(event) {
     if (!this._paperCuboid || !this._activeHandle) {
       return;
@@ -71,7 +75,7 @@ class CuboidScaleTool extends Tool {
 
     this._$scope.$apply(() => {
       this._context.withScope(() => {
-        this._paperCuboid.resize(this._activeHandle, point, this._options.cuboid.minimalHeight);
+        this._paperCuboid.resize(this._activeHandle, point, this._getMinimalHeight());
       });
     });
   }

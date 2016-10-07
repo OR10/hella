@@ -498,14 +498,9 @@ class PaperCuboid extends PaperShape {
 
   /**
    * @param {Point} point
-   * @param {Object} drawingToolOptions
+   * @param {Number} minimalHeight
    */
-  moveTo(point, drawingToolOptions) {
-    let minimalHeight = 15;
-    if (drawingToolOptions && drawingToolOptions.minimalHeight) {
-      minimalHeight = drawingToolOptions.minimalHeight;
-    }
-
+  moveTo(point, minimalHeight) {
     const targetPrimaryVertex2d = new Vector3(point.x, point.y, 1);
     // const sourcePrimaryVertex2d = this._projectedCuboid.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
 

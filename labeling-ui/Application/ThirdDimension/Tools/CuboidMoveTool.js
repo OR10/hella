@@ -90,6 +90,10 @@ class CuboidMoveTool extends Tool {
     this._moveTo(this._paperCuboid, point.add(this._offset));
   }
 
+  _getMinimalHeight() {
+    return this._options.cuboid && this._options.cuboid.minimalHeight && this._options.cuboid.minimalHeight > 0 ? this._options.cuboid.minimalHeight : 1;
+  }
+
   /**
    * @param {PaperShape} shape
    * @param {paper.Point} point
@@ -97,7 +101,7 @@ class CuboidMoveTool extends Tool {
    */
   _moveTo(shape, point) {
     this._context.withScope(() => {
-      shape.moveTo(this._restrictToViewport(shape, point), this._options);
+      shape.moveTo(this._restrictToViewport(shape, point), this._getMinimalHeight());
     });
     this.emit('shape:update', shape);
   }
