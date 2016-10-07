@@ -33,6 +33,12 @@ class PedestrianDrawingTool extends DrawingTool {
      * @private
      */
     this._startPosition = null;
+
+    /**
+     * @type {Handle|null}
+     * @private
+     */
+    this._creationHandle = null;
   }
 
   /**
@@ -67,6 +73,8 @@ class PedestrianDrawingTool extends DrawingTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
+      this._creationHandle = this._getScaleAnchor(to);
+      this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());
     });
   }
 
@@ -87,15 +95,10 @@ class PedestrianDrawingTool extends DrawingTool {
   onMouseDrag(event) {
     const point = event.point;
 
-    const drawingToolOptions = this._options.pedestrian;
-    const minimalHeight = (drawingToolOptions && drawingToolOptions.minimalHeight)
-      ? drawingToolOptions.minimalHeight
-      : 1;
-
     if (this._pedestrian) {
       this._$scope.$apply(
         () => {
-          this._pedestrian.resize(this._getScaleAnchor(point), point, minimalHeight);
+          this._pedestrian.resize(this._creationHandle, point, this._getMinimalHeight());
         }
       );
     } else {
@@ -137,6 +140,13 @@ class PedestrianDrawingTool extends DrawingTool {
       return new Handle('bottom-center', new paper.Point(this._startPosition.x, point.y));
     }
     return new Handle('top-center', new paper.Point(this._startPosition.x, point.y));
+  }
+
+  _getMinimalHeight() {
+    const drawingToolOptions = this._options.pedestrian;
+    return (drawingToolOptions && drawingToolOptions.minimalHeight && drawingToolOptions.minimalHeight > 0)
+      ? drawingToolOptions.minimalHeight
+      : 1;
   }
 
   createNewDefaultShape() {
