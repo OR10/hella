@@ -33,6 +33,12 @@ class RectangleDrawingTool extends DrawingTool {
      * @private
      */
     this._startPosition = null;
+
+    /**
+     * @type {Handle|null}
+     * @private
+     */
+    this._creationHandle = null;
   }
 
   startShape(from, to) {
@@ -42,20 +48,17 @@ class RectangleDrawingTool extends DrawingTool {
     }
     const labeledThingInFrame = this._createLabeledThingHierarchy();
 
-    const endPoint = new paper.Point(
-      Math.abs(from.x - to.x) === 0 ? to.x + 1 : to.x,
-      Math.abs(from.y - to.y) === 0 ? to.y + 1 : to.y
-    );
-
     this._context.withScope(() => {
       this._rect = new PaperRectangle(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         from,
-        endPoint,
+        new paper.Point(from.x + 1, from.y + 1),
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
+      this._creationHandle = this._getScaleAnchor(to);
+      this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
     });
   }
 
@@ -69,15 +72,10 @@ class RectangleDrawingTool extends DrawingTool {
   onMouseDrag(event) {
     const point = event.point;
 
-    const drawingToolOptions = this._options.rectangle;
-    const minimalHeight = (drawingToolOptions && drawingToolOptions.minimalHeight)
-      ? drawingToolOptions.minimalHeight
-      : 1;
-
     if (this._rect) {
       this._$scope.$apply(
         () => {
-          this._rect.resize(this._getScaleAnchor(point), point, {width: 1, height: minimalHeight});
+          this._rect.resize(this._creationHandle, point, {width: 1, height: this._getMinimalHeight()});
         }
       );
     } else {
@@ -113,6 +111,17 @@ class RectangleDrawingTool extends DrawingTool {
 
     this.emit('shape:create', this._rect);
     this._rect = null;
+  }
+
+  /**
+   * @return {number}
+   * @private
+   */
+  _getMinimalHeight() {
+    const drawingToolOptions = this._options.rectangle;
+    return (drawingToolOptions && drawingToolOptions.minimalHeight && drawingToolOptions.minimalHeight > 0)
+      ? drawingToolOptions.minimalHeight
+      : 1;
   }
 
   _getScaleAnchor(point) {
