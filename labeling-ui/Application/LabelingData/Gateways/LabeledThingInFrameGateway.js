@@ -1,7 +1,5 @@
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 import LabeledThing from '../Models/LabeledThing';
-import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
-import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 
 /**
  * Gateway for saving and retrieving {@link LabeledThingInFrame}s
