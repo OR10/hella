@@ -1,3 +1,4 @@
+import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
@@ -31,7 +32,10 @@ class PaperShapeFactory {
    * @private
    */
   _createRectangle(labeledThingInFrame, shape, color) {
-    return new PaperRectangle(labeledThingInFrame, shape.id, shape.topLeft, shape.bottomRight, color);
+    const topLeft = new paper.Point(shape.topLeft.x, shape.topLeft.y);
+    const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
+
+    return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color);
   }
 
   /**
@@ -42,7 +46,10 @@ class PaperShapeFactory {
    * @private
    */
   _createPedestrian(labeledThingInFrame, shape, color) {
-    return new PaperPedestrian(labeledThingInFrame, shape.id, shape.topCenter, shape.bottomCenter, color);
+    const topCenter = new paper.Point(shape.topCenter.x, shape.topCenter.y);
+    const bottomCenter = new paper.Point(shape.bottomCenter.x, shape.bottomCenter.y);
+
+    return new PaperPedestrian(labeledThingInFrame, shape.id, topCenter, bottomCenter, color);
   }
 
   /**
