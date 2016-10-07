@@ -125,34 +125,6 @@ class LabeledThingInFrameGateway {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
 
-    if (labeledThingInFrame.paperShapes[0]) {
-      const shape = labeledThingInFrame.paperShapes[0];
-      if (shape instanceof PaperRectangle) {
-        try {
-          if (typeof shape.toJSON().topLeft.x !== 'number'
-            || typeof shape.toJSON().topLeft.y !== 'number'
-            || typeof shape.toJSON().bottomRight.x !== 'number'
-            || typeof shape.toJSON().bottomRight.y !== 'number') {
-            this.logger.warn('gateway:labeledthinginframe:save:rectangle', 'Rectangle save coords broken', shape);
-          }
-        } catch (error) {
-          this.logger.warn('gateway:labeledthinginframe:save:rectangle', 'Rectangle save coords exception', error, shape);
-        }
-      }
-      if (shape instanceof PaperPedestrian) {
-        try {
-          if (typeof shape.toJSON().topCenter.x !== 'number'
-            || typeof shape.toJSON().topCenter.y !== 'number'
-            || typeof shape.toJSON().bottomCenter.x !== 'number'
-            || typeof shape.toJSON().bottomCenter.y !== 'number') {
-            this.logger.warn('gateway:labeledthinginframe:save:pedestrian', 'Pedestrian save coords broken', shape);
-          }
-        } catch (error) {
-          this.logger.warn('gateway:labeledthinginframe:save:pedestrian', 'Pedestrian save coords exception', error, shape);
-        }
-      }
-    }
-
     const url = this._apiService.getApiUrl(
       `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
