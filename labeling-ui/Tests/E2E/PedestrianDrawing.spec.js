@@ -307,6 +307,73 @@ describe('Pedestrian drawing', () => {
       });
   });
 
+  it('should draw a new pedestrian rectangle with minimal height', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.Task,
+      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing,
+      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1,
+    ]));
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial positiong
+          .mouseDown()
+          .mouseMove(viewer, {x: 300, y: 350}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianMinimalHeight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianMinimalHeight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1);
+        done();
+      });
+  });
+
+  it('should draw a new pedestrian rectangle with minimal height in reverse', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.Task,
+      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing,
+      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1,
+    ]));
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 400}) // initial positiong
+          .mouseDown()
+          .mouseMove(viewer, {x: 300, y: 350}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianMinimalHeight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianMinimalHeight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1);
+        done();
+      });
+  });
+
+
   it('should draw a new pedestrian rectangle with intermediary mouse movements', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,

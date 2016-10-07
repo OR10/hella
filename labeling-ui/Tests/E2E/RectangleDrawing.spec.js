@@ -306,6 +306,72 @@ describe('Rectangle drawing', () => {
       });
   });
 
+  it('should draw a new rectangle with minimal height', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
+      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing,
+      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
+    ]));
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 450, y: 350}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1);
+        done();
+      });
+  });
+
+  it('should draw a new rectangle with minimal height in reverse', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
+      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing,
+      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
+    ]));
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 450, y: 400}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 300, y: 350}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1);
+        done();
+      });
+  });
+
   it('should draw a new rectangle with intermediary mouse movements', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
