@@ -56,13 +56,6 @@ class PedestrianScaleTool extends Tool {
       this._modified = false;
       this._paperPedestrian.fixOrientation();
       this.emit('shape:update', this._paperPedestrian);
-
-      if (typeof this._paperPedestrian.toJSON().topCenter.x !== 'number'
-        || typeof this._paperPedestrian.toJSON().topCenter.y !== 'number'
-        || typeof this._paperPedestrian.toJSON().bottomCenter.x !== 'number'
-        || typeof this._paperPedestrian.toJSON().bottomCenter.y !== 'number') {
-        this.logger.warn('tool:pedestrian:scale:finish', 'Pedestrian scale coords broken', this._paperPedestrian);
-      }
     }
 
     this._activeHandle = null;
@@ -84,13 +77,6 @@ class PedestrianScaleTool extends Tool {
     this._$scope.$apply(() => {
       this._context.withScope(() => {
         this._paperPedestrian.resize(this._activeHandle, point, minimalHeight);
-
-        if (typeof this._paperPedestrian.toJSON().topCenter.x !== 'number'
-          || typeof this._paperPedestrian.toJSON().topCenter.y !== 'number'
-          || typeof this._paperPedestrian.toJSON().bottomCenter.x !== 'number'
-          || typeof this._paperPedestrian.toJSON().bottomCenter.y !== 'number') {
-          this.logger.warn('tool:pedestrian:scale:perform', 'Pedestrian scale coords broken', this._paperPedestrian);
-        }
       });
     });
   }

@@ -98,13 +98,6 @@ class PedestrianMoveTool extends Tool {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
 
-    if (typeof shape.toJSON().topCenter.x !== 'number'
-      || typeof shape.toJSON().topCenter.y !== 'number'
-      || typeof shape.toJSON().bottomCenter.x !== 'number'
-      || typeof shape.toJSON().bottomCenter.y !== 'number') {
-      this.logger.warn('tool:pedestrian:move:finish', 'Pedestrian move coords broken', shape);
-    }
-
     this.emit('shape:update', shape);
   }
 }

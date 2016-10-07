@@ -56,13 +56,6 @@ class RectangleScaleTool extends Tool {
       this._modified = false;
       this._paperRectangle.fixOrientation();
       this.emit('shape:update', this._paperRectangle);
-
-      if (typeof this._paperRectangle.toJSON().topLeft.x !== 'number'
-        || typeof this._paperRectangle.toJSON().topLeft.y !== 'number'
-        || typeof this._paperRectangle.toJSON().bottomRight.x !== 'number'
-        || typeof this._paperRectangle.toJSON().bottomRight.y !== 'number') {
-        this.logger.warn('tool:rectangle:scale:finish', 'Rectangle scale coords broken', this._paperRectangle);
-      }
     }
 
     this._activeHandle = null;
@@ -84,13 +77,6 @@ class RectangleScaleTool extends Tool {
     this._$scope.$apply(() => {
       this._context.withScope(() => {
         this._paperRectangle.resize(this._activeHandle, point, minimalSize);
-
-        if (typeof this._paperRectangle.toJSON().topLeft.x !== 'number'
-          || typeof this._paperRectangle.toJSON().topLeft.y !== 'number'
-          || typeof this._paperRectangle.toJSON().bottomRight.x !== 'number'
-          || typeof this._paperRectangle.toJSON().bottomRight.y !== 'number') {
-          this.logger.warn('tool:rectangle:scale:perform', 'Rectangle scale coords broken', this._paperRectangle);
-        }
       });
     });
   }
