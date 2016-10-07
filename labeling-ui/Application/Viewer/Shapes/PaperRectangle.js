@@ -193,18 +193,18 @@ class PaperRectangle extends PaperShape {
 
     switch (handle.name) {
       case 'top-left':
-        this._topLeft = this._enforceMinSize(point, this._bottomRight, minSize);
+        this._topLeft = this._enforceMinSize(this._bottomRight, point, minSize);
         break;
       case 'top-right':
-        minDistancePoint = this._enforceMinSize(point, new paper.Point(this._topLeft.x, this._bottomRight.y), minSize);
+        minDistancePoint = this._enforceMinSize(new paper.Point(this._topLeft.x, this._bottomRight.y), point, minSize);
         this._topLeft.y = minDistancePoint.y;
         this._bottomRight.x = minDistancePoint.x;
         break;
       case 'bottom-right':
-        this._bottomRight = this._enforceMinSize(point, this._topLeft, minSize);
+        this._bottomRight = this._enforceMinSize(this._topLeft, point, minSize);
         break;
       case 'bottom-left':
-        minDistancePoint = this._enforceMinSize(point, new paper.Point(this._bottomRight.x, this._topLeft.y), minSize);
+        minDistancePoint = this._enforceMinSize(new paper.Point(this._bottomRight.x, this._topLeft.y), point, minSize);
         this._topLeft.x = minDistancePoint.x;
         this._bottomRight.y = minDistancePoint.y;
         break;
@@ -216,17 +216,49 @@ class PaperRectangle extends PaperShape {
   }
 
   /**
-   * @param {Point} point
    * @param {Point} fixPoint
+   * @param {Point} point
    * @param {{width, height}} minSize
    * @returns {Point}
    * @private
    */
-  _enforceMinSize(point, fixPoint, minSize) {
+  _enforceMinSize(fixPoint, point, minSize) {
+    const newSize = this._calculateSize(fixPoint, point, minSize);
+    const {xDirection, yDirection} = this._calculateResizeDirecitons(fixPoint, point);
+
     return new paper.Point(
-      Math.abs(point.x - fixPoint.x) > minSize.width ? point.x : fixPoint.x + (((point.x - fixPoint.x) / Math.abs(point.x - fixPoint.x)) * minSize.width),
-      Math.abs(point.y - fixPoint.y) > minSize.height ? point.y : fixPoint.y + (((point.y - fixPoint.y) / Math.abs(point.y - fixPoint.y)) * minSize.height)
+      fixPoint.x + xDirection * newSize.width,
+      fixPoint.y + yDirection * newSize.height,
     );
+  }
+
+  /**
+   * @param {Point} fixPoint
+   * @param {Point} point
+   * @param {{width, height}} minSize
+   * @private
+   *
+   * @return {Size}
+   */
+  _calculateSize(fixPoint, point, minSize) {
+    const xDistance = Math.abs(fixPoint.x - point.x);
+    const yDistance = Math.abs(fixPoint.y - point.y);
+    const width = xDistance > minSize.width ? xDistance : minSize.width;
+    const height = yDistance > minSize.height ? yDistance : minSize.height;
+
+    return new paper.Size(width, height);
+  }
+
+  /**
+   * @param {Point} fixPoint
+   * @param {Point} point
+   * @private
+   */
+  _calculateResizeDirecitons(fixPoint, point) {
+    const xDirection = Math.abs(fixPoint.x - point.x) > fixPoint.x - point.x ? 1 : -1;
+    const yDirection = Math.abs(fixPoint.y - point.y) > fixPoint.y - point.y ? 1 : -1;
+
+    return {xDirection, yDirection};
   }
 
   /**
