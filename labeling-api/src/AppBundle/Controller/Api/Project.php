@@ -388,11 +388,12 @@ class Project extends Controller\Base
      *
      * @Rest\Delete("/{project}")
      *
-     * @param $project
+     * @param HttpFoundation\Request $request
+     * @param Model\Project          $project
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function deleteProjectAction(Model\Project $project)
+    public function deleteProjectAction(HttpFoundation\Request $request, Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
@@ -413,7 +414,11 @@ class Project extends Controller\Base
             );
         }
 
-        $project->setDeleteFlag($user);
+        $project->setDeleteFlag(
+            $user,
+            null,
+            $request->query->get('reasonText', '')
+        );
         $this->projectFacade->save($project);
 
         return View\View::create()->setData(['result' => ['success' => true]]);

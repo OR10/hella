@@ -122,6 +122,12 @@ class Project
     private $deletedAt;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $deletedReason;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -623,8 +629,9 @@ class Project
     /**
      * @param User           $user
      * @param \DateTime|null $date
+     * @param string         $reasonText
      */
-    public function setDeleteFlag(User $user, \DateTime $date = null)
+    public function setDeleteFlag(User $user, \DateTime $date = null, $reasonText = '')
     {
         if ($date === null) {
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
@@ -633,6 +640,7 @@ class Project
         $this->deleted         = true;
         $this->deletedByUserId = $user->getId();
         $this->deletedAt       = $date;
+        $this->deletedReason   = $reasonText;
     }
 
     private function checkTaskInstructionProperty()
