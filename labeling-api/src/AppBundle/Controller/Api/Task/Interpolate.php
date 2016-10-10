@@ -11,6 +11,7 @@ use AppBundle\View;
 use AppBundle\Service;
 use AppBundle\Worker\Jobs;
 use crosscan\WorkerPool\AMQP;
+use crosscan\WorkerPool;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -97,7 +98,7 @@ class Interpolate extends Controller\Base
         $status = new Model\Interpolation\Status();
         $this->statusFacade->save($status);
         $job = new Jobs\Interpolation($labeledThing->getId(), $algorithm, $labeledThing->getFrameRange(), $status);
-        $this->amqpFacade->addJob($job);
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
 
         return View\View::create()
             ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
