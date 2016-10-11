@@ -34,6 +34,7 @@ class labeling_api::params(
   $rabbitmq_password = 'guest',
   $rabbitmq_use_dead_letter_exchange = true,
   $rabbitmq_use_alternate_exchange = true,
+  $rabbitmq_management_port = 15672,
 
   $redis_host = '127.0.0.1',
   $redis_port = '6379',
