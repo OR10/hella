@@ -178,7 +178,7 @@ class UploadController {
       modal = this._modalService.getInfoDialog({
         title: 'Upload complete',
         headline: 'Your upload is complete',
-        message: 'Your upload is complete and the task creation process has started. Do you want to go to the project list to view this project?',
+        message: 'Your upload is complete and the task creation process has started. This may take a while. You can check the progress of the job creation for your project in the ToDo Tab. Do you want to go to the project list to view this project?',
         confirmButtonText: 'Go to Project List',
         cancelButtonText: 'Cancel',
       }, () => {
