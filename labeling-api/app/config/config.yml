@@ -141,3 +141,20 @@ snc_redis:
     session:
         client: default
         locking: false
+liip_monitor:
+    enable_controller: true
+    checks:
+        groups:
+            default:
+                doctrine_dbal: [default]
+                rabbit_mq:
+                    default:
+                        host: "%rabbitmq_host%"
+                        port: "%rabbitmq_port%"
+                        user: "%rabbitmq_user%"
+                        password: "%rabbitmq_password%"
+                        vhost: "%rabbitmq_vhost%"
+                disk_usage:
+                    warning:              70
+                    critical:             90
+                    path:                 '%cache_dir%'
