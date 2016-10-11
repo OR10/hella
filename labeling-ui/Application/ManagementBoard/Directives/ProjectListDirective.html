@@ -36,7 +36,8 @@
         <tr ng-repeat="project in vm.projects track by project.id" ng-click="vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">
                 {{project[column.property]}}
-                <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0" class="fa fa-spin fa-spinner"></i>
+                <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
+                   class="fa fa-spin fa-spinner" tooltip="Import in progress. {{project.taskInPreProcessingCount}} are not finished yet."></i>
                 <span ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0">({{project.taskInPreProcessingCount}})</span>
             </td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
