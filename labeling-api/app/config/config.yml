@@ -146,7 +146,6 @@ liip_monitor:
     checks:
         groups:
             default:
-                doctrine_dbal: [default]
                 rabbit_mq:
                     default:
                         host: "%rabbitmq_host%"
