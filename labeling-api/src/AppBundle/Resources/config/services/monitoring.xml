@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="monitoring_worker_groups" type="collection">
+            <parameter><![CDATA[worker-pool-starter-normal-low]]></parameter>
+            <parameter><![CDATA[worker-pool-starter-high-normal]]></parameter>
+        </parameter>
+    </parameters>
+
+    <services>
+        <service id="annostation.labeling_api.monitoring.check.rabbitmq_queue_fill_level_worker_garbage_queue"
+                 class="AppBundle\Service\Monitoring\Check\RabbitMqQueueFillLevel">
+            <argument>%rabbitmq_host%</argument>
+            <argument>%rabbitmq_management_port%</argument>
+            <argument>%rabbitmq_vhost%</argument>
+            <argument>%rabbitmq_user%</argument>
+            <argument>%rabbitmq_password%</argument>
+            <argument>worker.garbage-collection</argument>
+            <argument>0</argument>
+            <tag name="liip_monitor.check" alias="worker_garbage_queue_fill_level" group="default"/>
+        </service>
+    </services>
+</container>
