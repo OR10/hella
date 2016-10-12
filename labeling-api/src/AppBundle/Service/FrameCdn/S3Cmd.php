@@ -95,10 +95,12 @@ class S3Cmd extends Service\FrameCdn
     {
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
-        $this->uploader->uploadDirectory($batchDirectoryFullPath, '/');
-
-        if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
-            throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
+        try {
+            $this->uploader->uploadDirectory($batchDirectoryFullPath, '/');
+        } finally {
+            if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
+                throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
+            }
         }
 
         $this->currentBatchDirectory = null;

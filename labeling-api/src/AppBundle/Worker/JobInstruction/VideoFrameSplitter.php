@@ -71,6 +71,8 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
      */
     public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
+        $tmpFile = tempnam($this->cacheDir, 'source_video');
+
         try {
             /** @var Model\Video $video */
             /** @var Jobs\VideoFrameSplitter $job */
@@ -79,8 +81,6 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
             if ($video === null) {
                 throw new \RuntimeException("Video '{$job->videoId}' could not be found");
             }
-
-            $tmpFile = tempnam($this->cacheDir, 'source_video');
 
             if ($tmpFile === false) {
                 throw new \RuntimeException('Error creating temporary file for video data');
@@ -103,14 +103,14 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
                 $disabledTask->setStatusIfAllImagesAreConverted($video);
                 $this->labelingTaskFacade->save($disabledTask);
             }
-
-            if (!unlink($tmpFile)) {
-                throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
-            }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
+        } finally {
+            if (!unlink($tmpFile)) {
+                throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+            }
         }
     }
 

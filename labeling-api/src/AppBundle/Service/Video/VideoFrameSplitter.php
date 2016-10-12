@@ -67,41 +67,47 @@ class VideoFrameSplitter
     public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
     {
         $tempDir         = $this->getTempDirectory($type);
-        $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
-        $command         = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
-        $process = new Process($command);
-        $process->setTimeout(self::TIMEOUT);
-        $process->run();
+        try {
+            $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
+            $command         = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
+            $process = new Process($command);
+            $process->setTimeout(self::TIMEOUT);
+            $process->run();
 
-        $files = array_filter(
-            $this->fileSystem->listContents($tempDir),
-            function($file) use ($type) {
-                if ($file['extension'] === $type->getExtension()) {
-                    return true;
-                }
-                return false;
+            if (!$process->isSuccessful()) {
+                throw new \RuntimeException($process->getErrorOutput());
             }
-        );
 
-        $this->frameCdn->beginBatchTransaction($video);
-        foreach ($files as $file) {
-            $this->imageSizes[(int) $file['basename']] = getimagesizefromstring($this->fileSystem->read($file['path']));
-            $this->frameCdn->save(
-                $video,
-                $type,
-                (int) $file['basename'],
-                $this->fileSystem->read($file['path'])
+            $files = array_filter(
+                $this->fileSystem->listContents($tempDir),
+                function ($file) use ($type) {
+                    if ($file['extension'] === $type->getExtension()) {
+                        return true;
+                    }
+
+                    return false;
+                }
             );
-        }
-        $this->frameCdn->commit();
 
-        if (!$this->fileSystem->deleteDir($tempDir)) {
-            throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");
+            $this->frameCdn->beginBatchTransaction($video);
+            foreach ($files as $file) {
+                $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
+                    $this->fileSystem->read($file['path'])
+                );
+                $this->frameCdn->save(
+                    $video,
+                    $type,
+                    (int) $file['basename'],
+                    $this->fileSystem->read($file['path'])
+                );
+            }
+            $this->frameCdn->commit();
+        } finally {
+            if (!$this->fileSystem->deleteDir($tempDir)) {
+                throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");
+            }
         }
     }
 
