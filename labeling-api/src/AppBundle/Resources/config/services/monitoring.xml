@@ -22,5 +22,10 @@
             <argument>0</argument>
             <tag name="liip_monitor.check" alias="worker_garbage_queue_fill_level" group="default"/>
         </service>
+        <service id="annostation.labeling_api.monitoring.check.frame_cdn"
+                 class="AppBundle\Service\Monitoring\Check\FrameCdn">
+            <argument type="service" id="oneup_flysystem.frame_cdn_filesystem"/>
+            <tag name="liip_monitor.check" alias="frame_cdn" group="default"/>
+        </service>
     </services>
 </container>
