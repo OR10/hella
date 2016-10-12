@@ -57,7 +57,7 @@ class RectangleDrawingTool extends DrawingTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
-      this._creationHandle = this._getScaleAnchor(to);
+      this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
     });
   }
