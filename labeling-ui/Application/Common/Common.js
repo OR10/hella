@@ -54,6 +54,7 @@ class Common extends Module {
       'foundation.modal',
       'ui.router',
       'flow',
+      'cfp.hotkeys',
     ]);
     this.module.service('ApiService', ApiService);
     this.module.service('authInterceptor', AuthInterceptor);

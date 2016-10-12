@@ -8,7 +8,7 @@ import MediaControlsDirective from './Directives/MediaControlsDirective';
  */
 export default class MediaControls extends Module {
   registerWithAngular(angular) {
-    this.module = angular.module('AnnoStation.MediaControls', ['cfp.hotkeys']);
+    this.module = angular.module('AnnoStation.MediaControls', []);
 
     this.registerDirective('mediaControls', MediaControlsDirective);
   }
