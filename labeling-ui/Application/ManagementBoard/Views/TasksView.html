@@ -14,7 +14,7 @@
             <tab header="Labeling {{vm.taskCount !== null ? '(' + (vm.taskCount.labeling.in_progress + vm.taskCount.labeling.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.in_progress}})</span>
+                    In Progress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.in_progress}})</span>
                 </h2>
                 <task-list task-phase="labeling"
                            task-status="in_progress"
@@ -44,7 +44,7 @@
             <tab header="Review {{vm.taskCount !== null ? '(' + (vm.taskCount.review.in_progress + vm.taskCount.review.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.in_progress}})</span>
+                    In Progress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.in_progress}})</span>
                 </h2>
                 <task-list task-phase="review"
                            task-status="in_progress"
@@ -75,7 +75,7 @@
                  header="Revision {{vm.taskCount !== null ? '(' + vm.taskCount.revision.overall + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    InProgress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.in_progress}})</span>
+                    In Progress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.in_progress}})</span>
                 </h2>
                 <task-list task-phase="revision"
                            task-status="in_progress"

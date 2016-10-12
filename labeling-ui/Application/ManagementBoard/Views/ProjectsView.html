@@ -23,10 +23,10 @@
                               user-permissions="vm.userPermissions"
                               project-status="todo"></project-list>
             </tab>
-            <tab header="InProgress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
+            <tab header="In Progress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
-                    InProgress <span ng-hide='vm.projectCount == null'>({{vm.projectCount.in_progress}})</span>
+                    In Progress <span ng-hide='vm.projectCount == null'>({{vm.projectCount.in_progress}})</span>
                 </h2>
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
