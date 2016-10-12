@@ -28,6 +28,8 @@ import DebouncerService from './Services/DebouncerService';
 import ConsoleLogger from './Loggers/ConsoleLogger';
 import RemoteLogger from './Loggers/RemoteLogger';
 
+import hotkeysTemplate from './Views/hotkeysTemplate.html!';
+
 import 'foundation-apps/js/angular/services/foundation.core';
 import 'foundation-apps/js/angular/services/foundation.core.animation';
 import 'foundation-apps/js/angular/components/common/common';
@@ -83,8 +85,8 @@ class Common extends Module {
     this.registerDirective('fileModel', FileModelDirective);
 
     this.module.config(
-      ['$compileProvider', '$httpProvider', 'loggerServiceProvider',
-        ($compileProvider, $httpProvider, loggerServiceProvider) => {
+      ['$compileProvider', '$httpProvider', 'hotkeysProvider', 'loggerServiceProvider',
+        ($compileProvider, $httpProvider, hotkeysProvider, loggerServiceProvider) => {
           if (Environment.isProduction) {
             $compileProvider.debugInfoEnabled(false);
           }
@@ -93,6 +95,9 @@ class Common extends Module {
           $httpProvider.interceptors.push('errorInterceptor');
           $httpProvider.interceptors.push('readOnlyInterceptor');
           $httpProvider.interceptors.push('authInterceptor');
+
+          hotkeysProvider.template = hotkeysTemplate;
+          hotkeysProvider.templateTitle = 'Active Keyboard Shortcuts:';
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 

@@ -349,3 +349,32 @@ title-bar {
 .more-space {
   margin: 1rem 2rem;
 }
+
+.cfp-hotkeys-container {
+  .hotkeys {
+    width: 100%;
+    height: 100%;
+  }
+
+  h4.title {
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.5em;
+    margin: .5em auto;
+  }
+
+  .inner-container {
+    display: flex;
+    width: 100vw;
+    height: 90vh;
+    flex-flow: column wrap;
+    align-content: stretch;
+    align-items: center;
+
+    .hotkey-entry {
+      width: 30vw;
+      font-size: 1.2em;
+      margin-bottom: 1em;
+    }
+  }
+}
