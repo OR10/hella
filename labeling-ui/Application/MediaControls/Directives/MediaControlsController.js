@@ -416,7 +416,7 @@ class MediaControlsController {
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'i',
+      combo: 't',
       description: 'Interpolate the current selection',
       callback: this.handleInterpolation.bind(this),
     });

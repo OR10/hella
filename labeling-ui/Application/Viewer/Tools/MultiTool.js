@@ -197,12 +197,12 @@ export default class MultiTool extends Tool {
       callback: () => this._rotateCuboid(this._deg2rad(-10)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'ß',
+      combo: 'i',
       description: 'Change cuboid faces counter clockwise',
       callback: () => this._rotateCuboidFaces(false),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '0',
+      combo: 'u',
       description: 'Change cuboid faces clockwise',
       callback: () => this._rotateCuboidFaces(true),
     });
