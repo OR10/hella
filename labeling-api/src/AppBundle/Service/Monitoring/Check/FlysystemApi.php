@@ -10,7 +10,7 @@ use League\Flysystem;
 /**
  * Check implementation of the Frame CDN Service
  */
-class FrameCdn implements Check\CheckInterface
+class FlysystemApi implements Check\CheckInterface
 {
     /**
      * @var Flysystem\Filesystem
@@ -30,7 +30,7 @@ class FrameCdn implements Check\CheckInterface
     public function check()
     {
         $dateTime     = new \DateTime('now', new \DateTimeZone('UTC'));
-        $testFilePath = 'monitoring/frame_cdn_write_test.txt';
+        $testFilePath = 'monitoring/flysystem_test.txt';
 
         try {
             $this->fileSystem->put($testFilePath, $dateTime->getTimestamp());
@@ -64,6 +64,6 @@ class FrameCdn implements Check\CheckInterface
      */
     public function getLabel()
     {
-        return 'Frame CDN Service (write, read, delete)';
+        return 'Flysystem API Service (write, read, delete)';
     }
 }
