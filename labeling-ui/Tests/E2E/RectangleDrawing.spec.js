@@ -473,6 +473,70 @@ describe('Rectangle drawing', () => {
       });
   });
 
+  it('should draw a new rectangle with drag motion from top-right to bottom-left', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing,
+      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame,
+    ]));
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 500, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 500}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleOpposite')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
+  it('should draw a new rectangle with drag motion from bottom-left to top-right', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing,
+      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame,
+    ]));
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 500}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 500, y: 100}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleOpposite')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
+        browser.sleep(1000);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
   // Needs to be fixed in code
   xit('should correctly handle extra information in limited labeledThingInFrame request', done => {
     mock(sharedMocks.concat([
