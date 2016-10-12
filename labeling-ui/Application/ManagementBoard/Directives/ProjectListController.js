@@ -129,17 +129,19 @@ class ProjectListController {
    * @param {number} projectId
    */
   deleteProject(projectId, projectName) {
-    const modal = this._modalService.getWarningDialog(
+    const modal = this._modalService.getInputDialog(
       {
         title: 'Delete this Project.',
         headline: `You are about to delete the "${projectName}" project. Proceed?`,
-        message: ' Warning: All data related to this project will be deleted and they are no longer available.',
+        message: ' Warning: All data related to this project will be deleted and they are no longer available. Please give a reason why you want to delete the project:',
         confirmButtonText: 'Delete',
         cancelButtonText: 'Cancel',
-      }, () => {
-      this.loadingInProgress = true;
-      this._projectGateway.deleteProject(projectId)
+      }, input => {
+      if (input.length <= 140) {
+        this.loadingInProgress = true;
+        this._projectGateway.deleteProject(projectId)
           .then(() => this._triggerReloadAll());
+      }
     }
     );
     modal.activate();

@@ -1,4 +1,4 @@
-.modal-info, .modal-warning, .modal-selection, .modal-list {
+.modal-info, .modal-warning, .modal-selection, .modal-list, .modal-input {
   z-index: 10000;
 
   .modal {
@@ -50,6 +50,11 @@
         &:focus{
           color: $element-background;
           background-color: $headlines;
+        }
+
+        &:disabled{
+          color: darken($text, 10);
+          background-color: darken($element-background, 20);
         }
       }
 

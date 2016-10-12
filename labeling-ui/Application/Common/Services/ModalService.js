@@ -3,6 +3,7 @@ import warningModalTemplate from './ModalService/WarningModal.html!';
 import alertModalTemplate from './ModalService/AlertModal.html!';
 import selectionModalTemplate from './ModalService/SelectionModal.html!';
 import listModalTemplate from './ModalService/ListModal.html!';
+import inputModalTemplate from './ModalService/InputModal.html!';
 import angular from 'angular';
 
 /**
@@ -74,12 +75,12 @@ class ModalService {
           confirmButtonText,
           cancelButtonText,
           cancelCallback: cancelCallbackWrapper,
-          confirmCallback: selection => {
+          confirmCallback: data => {
             modal.deactivate();
             this._modalOpen = false;
             this._keyboardShortcutService.popContext();
             this._keyboardShortcutService.clearContext('modal');
-            onConfirm(selection);
+            onConfirm(data);
             setTimeout(
               () => {
                 modal.destroy();
@@ -138,6 +139,10 @@ class ModalService {
 
   getListDialog(scope, confirmCallback, cancelCallback) {
     return this._createModal('modal-list', listModalTemplate, scope, confirmCallback, cancelCallback);
+  }
+
+  getInputDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-input', inputModalTemplate, scope, confirmCallback, cancelCallback);
   }
 }
 
