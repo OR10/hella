@@ -100,7 +100,9 @@ class VideoFrameSplitter
         }
         $this->frameCdn->commit();
 
-        $this->fileSystem->deleteDir($tempDir);
+        if (!$this->fileSystem->deleteDir($tempDir)) {
+            throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");
+        }
     }
 
     /**

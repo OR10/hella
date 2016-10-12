@@ -105,7 +105,9 @@ class S3CmdUploader
         try {
             $process->mustRun();
         } finally {
-            unlink($configFile);
+            if (!unlink($configFile)) {
+                throw new \RuntimeException("Error removing temporary config file '{$configFile}'");
+            }
         }
 
         if ($process->getExitCode() !== 0) {
