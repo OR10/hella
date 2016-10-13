@@ -168,6 +168,38 @@ class ProjectGateway {
       });
   }
 
+  /**
+   * @param {String} projectId
+   * @return {*}
+   */
+  flagProject(projectId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/attention/enable`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to flag project: ${projectId}.`);
+      });
+  }
+
+  /**
+   * @param {String} projectId
+   * @return {*}
+   */
+  unflagProject(projectId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/attention/disable`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to unflag project: ${projectId}.`);
+      });
+  }
+
   markUploadAsFinished(projectId) {
     const url = this._apiService.getApiUrl(`/project/batchUpload/${projectId}/complete`);
 
