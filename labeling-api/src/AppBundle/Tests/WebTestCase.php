@@ -31,25 +31,30 @@ class WebTestCase extends KernelTestCase
     /**
      * @param string $path
      * @param array  $parameters
+     * @param null   $username
+     * @param null   $password
      *
      * @return RequestWrapper
      */
-    protected function createRequest(string $path, array $parameters = [])
+    protected function createRequest(string $path, array $parameters = [], $username = null, $password = null)
     {
         return RequestWrapper::create($this->createClient([]), vsprintf($path, $parameters))
-            ->setServerParameters($this->getDefaultServerParameters());
+            ->setServerParameters($this->getDefaultServerParameters($username, $password));
     }
 
     /**
+     * @param null $username
+     * @param null $password
+     *
      * @return array
      */
-    private function getDefaultServerParameters()
+    private function getDefaultServerParameters($username = null, $password = null)
     {
         return [
             'CONTENT_TYPE'  => 'application/json',
             'HTTP_ACCEPT'   => 'application/json',
-            'PHP_AUTH_USER' => self::USERNAME,
-            'PHP_AUTH_PW'   => self::PASSWORD,
+            'PHP_AUTH_USER' => $username === null ? self::USERNAME : $username,
+            'PHP_AUTH_PW'   => $password === null ? self::PASSWORD : $password,
         ];
     }
 }
