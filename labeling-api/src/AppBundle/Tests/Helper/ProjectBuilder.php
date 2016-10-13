@@ -75,6 +75,11 @@ class ProjectBuilder
     private $coordinatorAssignments = [];
 
     /**
+     * @var string
+     */
+    private $labelingGroupId;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -252,6 +257,18 @@ class ProjectBuilder
     }
 
     /**
+     * @param Model\LabelingGroup $labelingGroup
+     *
+     * @return $this
+     */
+    public function withLabelGroup(Model\LabelingGroup $labelingGroup)
+    {
+        $this->labelingGroupId = $labelingGroup->getId();
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function buildArray()
@@ -292,6 +309,10 @@ class ProjectBuilder
 
         if ($this->calibrationData !== null) {
             $project->addCalibrationData($this->calibrationData);
+        }
+
+        if ($this->labelingGroupId !== null) {
+            $project->setLabelingGroupId($this->labelingGroupId);
         }
 
         foreach ($this->statusChanges as $change) {
