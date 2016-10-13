@@ -11,12 +11,12 @@
     + Attributes
         + result Project
         
-## Get a a single project [/api/project/{projectId}]
+## Delete a Project [/api/project/{projectId}]
 
 + Parameters
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
 
-### Get a a single project [DELETE]
+### Delete a Project [POST]
 
 + Response 200 (application/json)
     + Attributes

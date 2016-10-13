@@ -386,7 +386,7 @@ class Project extends Controller\Base
     /**
      * Return the project with the given id
      *
-     * @Rest\Delete("/{project}")
+     * @Rest\Post("/{project}")
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
@@ -417,7 +417,7 @@ class Project extends Controller\Base
         $project->setDeleteFlag(
             $user,
             null,
-            $request->query->get('reasonText', '')
+            $request->get('message')
         );
         $this->projectFacade->save($project);
 
