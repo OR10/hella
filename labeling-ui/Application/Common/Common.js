@@ -38,6 +38,7 @@ import 'foundation-apps/js/angular/components/modal/modal';
 import 'angular-ui-router';
 import 'flowjs/dist/flow.js';
 import 'ng-flow/dist/ng-flow';
+import 'angular-hotkeys';
 
 /**
  * Common Module

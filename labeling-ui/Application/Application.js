@@ -1,6 +1,5 @@
 import 'core-js/es6/array';
 import angular from 'angular';
-import 'angular-hotkeys';
 import 'angular-ui-router';
 import 'angular-animate';
 
