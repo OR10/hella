@@ -189,6 +189,13 @@ class LabelingTask
      */
     private $taskConfigurationId;
 
+
+    /**
+     * @var bool
+     * @CouchDB\Field(type="boolean")
+     */
+    private $attentionFlag = false;
+
     /**
      * @param Video     $video
      * @param Project   $project
@@ -657,5 +664,21 @@ class LabelingTask
     public function setPredefinedClasses($predefinedClasses)
     {
         $this->predefinedClasses = $predefinedClasses;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAttentionFlag(): bool
+    {
+        return $this->attentionFlag;
+    }
+
+    /**
+     * @param boolean $attentionFlag
+     */
+    public function setAttentionFlag(bool $attentionFlag)
+    {
+        $this->attentionFlag = $attentionFlag;
     }
 }
