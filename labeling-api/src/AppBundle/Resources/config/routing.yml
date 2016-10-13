@@ -131,3 +131,7 @@ api_ui_log:
     type: rest
     name_prefix: app_api_ui_log
 
+api_task_attention:
+    resource: "annostation.labeling_api.controller.api.task.attention"
+    type: rest
+    name_prefix: app_api_task_attention

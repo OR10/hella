@@ -317,3 +317,31 @@ Remove any assignment and set status to todo
             + done: `20` (number) - Number of done jobs
             + preprocessing: `30` (number) - Number of preprocessing jobs
             + todo: `40` (number) - Number of todo jobs
+
+## Set attention flag to true [/api/task/{taskId}/attention/enable]
+
+Set attention flag to true
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set attention flag to true [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean)
+            
+## Set attention flag to false [/api/task/{taskId}/attention/disable]
+
+Set attention flag to false
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set attention flag to false [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean)
