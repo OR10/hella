@@ -47,7 +47,7 @@ class AttentionTest extends Tests\WebTestCase
 
         $actualTask = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertTrue($actualTask->isAttentionFlag());
+        $this->assertTrue($actualTask->isTaskAttentionFlag());
     }
 
     public function testDisableAttentionAsCoordinator()
@@ -66,7 +66,7 @@ class AttentionTest extends Tests\WebTestCase
 
         $actualTask = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertFalse($actualTask->isAttentionFlag());
+        $this->assertFalse($actualTask->isTaskAttentionFlag());
     }
 
     public function testEnableAttentionAsAnotherLabeler()

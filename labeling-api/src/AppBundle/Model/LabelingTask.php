@@ -191,10 +191,12 @@ class LabelingTask
 
 
     /**
-     * @var bool
-     * @CouchDB\Field(type="boolean")
+     * @var array
+     * @CouchDB\Field(type="mixed")
      */
-    private $attentionFlag = false;
+    private $attentionFlags = [
+        'task' => false,
+    ];
 
     /**
      * @param Video     $video
@@ -669,16 +671,16 @@ class LabelingTask
     /**
      * @return boolean
      */
-    public function isAttentionFlag(): bool
+    public function isTaskAttentionFlag(): bool
     {
-        return $this->attentionFlag;
+        return $this->attentionFlags['task'];
     }
 
     /**
      * @param boolean $attentionFlag
      */
-    public function setAttentionFlag(bool $attentionFlag)
+    public function setTaskAttentionFlag(bool $attentionFlag)
     {
-        $this->attentionFlag = $attentionFlag;
+        $this->attentionFlags['task'] = $attentionFlag;
     }
 }

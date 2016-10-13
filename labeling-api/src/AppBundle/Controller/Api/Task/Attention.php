@@ -74,7 +74,7 @@ class Attention extends Controller\Base
             $this->authorizationService->denyIfTaskIsNotWritable($task);
         }
 
-        $task->setAttentionFlag(true);
+        $task->setTaskAttentionFlag(true);
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
@@ -94,7 +94,7 @@ class Attention extends Controller\Base
         $project = $this->projectFacade->find($task->getProjectId());
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
-        $task->setAttentionFlag(false);
+        $task->setTaskAttentionFlag(false);
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
