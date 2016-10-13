@@ -594,4 +594,50 @@ class LabelingTask
 
         return Model\LabelingTask::PHASE_LABELING;
     }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @param int           $skip
+     * @param int           $limit
+     *
+     * @return array
+     */
+    public function getAttentionTasksForProject(Model\Project $project, int $skip = null, int $limit = null)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_attention_labeling_task_by_project_001', 'view')
+            ->setStartKey([$project->getId()])
+            ->setEndKey([$project->getId()])
+            ->setReduce(false)
+            ->onlyDocs(true);
+
+        if ($skip !== null) {
+            $query->setSkip($skip);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        return $query->execute()->toArray();
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return int
+     */
+    public function getTotalAttentionTasksCountForProject(Model\Project $project)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_attention_labeling_task_by_project_001', 'view')
+            ->setStartKey([$project->getId()])
+            ->setEndKey([$project->getId()])
+            ->setReduce(true)
+            ->execute()
+            ->toArray();
+
+        return (int) $query[0]['value'];
+    }
 }
