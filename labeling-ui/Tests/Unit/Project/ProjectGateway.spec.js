@@ -157,4 +157,21 @@ describe('ProjectGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should delete a project', done => {
+    const response = {
+      result: {
+        success: true,
+      },
+    };
+
+    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/delete').respond(response);
+
+    gateway.deleteProject('PROJECT_ID').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });

@@ -386,7 +386,7 @@ class Project extends Controller\Base
     /**
      * Return the project with the given id
      *
-     * @Rest\Post("/{project}")
+     * @Rest\Delete("/{project}/delete")
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
