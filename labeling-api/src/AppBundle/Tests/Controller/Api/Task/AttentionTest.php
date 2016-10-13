@@ -28,22 +28,7 @@ class AttentionTest extends Tests\WebTestCase
             ->execute()
             ->getResponse();
 
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    public function testEnableAttentionAsAnotherCoordinator()
-    {
-        $response = $this->createRequest(
-            '/api/task/%s/attention/enable',
-            [$this->task->getId()],
-            'label_coordinator_2',
-            'label_coordinator_2'
-        )
-            ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->execute()
-            ->getResponse();
-
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testEnableAttentionAsCoordinator()
@@ -84,19 +69,56 @@ class AttentionTest extends Tests\WebTestCase
         $this->assertFalse($actualTask->isAttentionFlag());
     }
 
+    public function testEnableAttentionAsAnotherLabeler()
+    {
+        $response = $this->createRequest(
+            '/api/task/%s/attention/enable',
+            [$this->task->getId()],
+            'label_coordinator_2',
+            'label_coordinator_2'
+        )
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
+
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    public function testEnableAttentionAsAnotherCoordinator()
+    {
+        $response = $this->createRequest(
+            '/api/task/%s/attention/enable',
+            [$this->task->getId()],
+            'labeler_2',
+            'labeler_2'
+        )
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->execute()
+            ->getResponse();
+
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
     protected function setUpImplementation()
     {
         /** @var Facade\Video $videoFacade */
         $videoFacade = $this->getAnnostationService('database.facade.video');
         /** @var Facade\Project $projectFacade */
-        $projectFacade = $this->getAnnostationService('database.facade.project');
-        /** @var Facade\LabelingTask $labelingTaskFacade */
+        $projectFacade            = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        /** @var Facade\LabelingGroup $labelingGroup */
+        $labelingGroup = $this->getAnnostationService('database.facade.labeling_group');
         /** @var Facade\User $userFacade */
         $userFacade = $this->getAnnostationService('database.facade.user');
 
-        $labelUser = $userFacade->updateUser(Helper\UserBuilder::createDefaultLabeler()->build());
-        $coordinatorUser = $userFacade->updateUser(Helper\UserBuilder::createDefaultLabelCoordinator()->build());
+        $labelerUser        = $userFacade->updateUser(Helper\UserBuilder::createDefaultLabeler()->build());
+        $anotherLabelerUser = Helper\UserBuilder::create()
+            ->withUsername('labeler_2')
+            ->withPlainPassword('labeler_2')
+            ->withRoles([Model\User::ROLE_LABELER])
+            ->build();
+        $this->userFacade->updateUser($anotherLabelerUser);
+        $coordinatorUser        = $userFacade->updateUser(Helper\UserBuilder::createDefaultLabelCoordinator()->build());
         $anotherCoordinatorUser = Helper\UserBuilder::create()
             ->withUsername('label_coordinator_2')
             ->withPlainPassword('label_coordinator_2')
@@ -104,13 +126,27 @@ class AttentionTest extends Tests\WebTestCase
             ->build();
         $this->userFacade->updateUser($anotherCoordinatorUser);
 
-        $project = Helper\ProjectBuilder::create();
-        $project->withAddedCoordinatorAssignment($coordinatorUser);
+        $labelingGroup = $labelingGroup->save(
+            Helper\LabelingGroupBuilder::create()
+                ->withCoordinators([$coordinatorUser->getId()])
+                ->withUsers([$labelerUser->getId()])
+                ->build()
+        );
+
+        $project = Helper\ProjectBuilder::create()
+            ->withAddedCoordinatorAssignment($coordinatorUser)
+            ->withLabelGroup($labelingGroup);
         $project = $projectFacade->save($project->build());
 
         $video = $videoFacade->save(Helper\VideoBuilder::create()->build());
 
-        $task = Helper\LabelingTaskBuilder::create($project, $video);
+        $task = Helper\LabelingTaskBuilder::create($project, $video)
+            ->withAddedUserAssignment(
+                $labelerUser,
+                null,
+                Model\LabelingTask::PHASE_LABELING,
+                Model\LabelingTask::STATUS_IN_PROGRESS
+            );
 
         $this->task = $this->labelingTaskFacade->save($task->build());
     }

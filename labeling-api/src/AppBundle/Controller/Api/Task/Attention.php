@@ -38,20 +38,25 @@ class Attention extends Controller\Base
      */
     private $authorizationService;
 
+    /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Project $projectFacade,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Storage\TokenStorage $tokenStorage
     ) {
         $this->labelingTaskFacade   = $labelingTaskFacade;
         $this->projectFacade        = $projectFacade;
         $this->authorizationService = $authorizationService;
+        $this->tokenStorage         = $tokenStorage;
     }
 
     /**
      * @Rest\Post("/{task}/attention/enable")
-     *
-     * @Security("has_role('ROLE_LABEL_COORDINATOR')")
      *
      * @param Model\LabelingTask $task
      *
@@ -59,8 +64,15 @@ class Attention extends Controller\Base
      */
     public function enableAttentionFlagAction(Model\LabelingTask $task)
     {
-        $project = $this->projectFacade->find($task->getProjectId());
-        $this->authorizationService->denyIfProjectIsNotWritable($project);
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            $project = $this->projectFacade->find($task->getProjectId());
+            $this->authorizationService->denyIfProjectIsNotWritable($project);
+        } else {
+            $this->authorizationService->denyIfTaskIsNotWritable($task);
+        }
 
         $task->setAttentionFlag(true);
         $this->labelingTaskFacade->save($task);
