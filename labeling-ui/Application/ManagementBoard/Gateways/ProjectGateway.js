@@ -140,9 +140,9 @@ class ProjectGateway {
    * @param {string} projectId
    * @returns {AbortablePromise}
    */
-  deleteProject(projectId) {
+  deleteProject(projectId, message) {
     const url = this._apiService.getApiUrl(`/project/${projectId}`);
-    return this._bufferedHttp.delete(url, undefined, undefined, 'project')
+    return this._bufferedHttp.post(url, {message}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
           return response.data.result;

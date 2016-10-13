@@ -137,10 +137,23 @@ class ProjectListController {
         confirmButtonText: 'Delete',
         cancelButtonText: 'Cancel',
       }, input => {
-      if (input.length <= 140) {
+      if (input.length <= 140 && input.length > 0) {
         this.loadingInProgress = true;
-        this._projectGateway.deleteProject(projectId)
+        this._projectGateway.deleteProject(projectId, input)
           .then(() => this._triggerReloadAll());
+      } else {
+        let headline;
+        if (!input || input.length === 0) {
+          headline = `The entered text is too short. Please enter a reason!`;
+        } else {
+          headline = `The entered text is too long. Please stay below 140 characters!`;
+        }
+        const warningModal = this._modalService.getAlertWarningDialog({
+          title: 'Error',
+          headline,
+          confirmButtonText: 'Understood',
+        });
+        warningModal.activate();
       }
     }
     );
