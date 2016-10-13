@@ -3,10 +3,12 @@
   gather_facts: no
   hosts: all
   become: yes
+
   vars_prompt:
       - name: "continue"
         prompt: "Are you sure? (type uppercase 'YES' to continue)"
         private: no
+
   tasks:
       - name: "Abort if unconfirmed"
         fail:
@@ -26,7 +28,7 @@
             --modulepath puppet/modules:puppet/vendor:/etc/puppet/modules
             --hiera_config=puppet/hiera/hiera.yaml
             --environmentpath puppet/environments/
-            --environment staging
-            puppet/environments/staging/manifests/site.pp
+            --environment {{ puppet_environment | default('staging') }}
+            puppet/environments/{{ puppet_environment | default('staging') }}/manifests/site.pp
         args:
             chdir: /tmp
