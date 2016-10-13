@@ -35,6 +35,11 @@ class LabelingTaskBuilder
     private $taskType = Model\LabelingTask::TYPE_OBJECT_LABELING;
 
     /**
+     * @var array
+     */
+    private $userAssignments = [];
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -103,6 +108,21 @@ class LabelingTaskBuilder
         return $this;
     }
 
+    public function withAddedUserAssignment(Model\User $user, \DateTime $dateTime = null, $phase, $status)
+    {
+        if ($dateTime === null) {
+            $dateTime = new \DateTime();
+        }
+        $this->userAssignments[] = [
+            'user'     => $user,
+            'dateTime' => $dateTime,
+            'phase'    => $phase,
+            'status'   => $status,
+        ];
+
+        return $this;
+    }
+
     /**
      * @param $phase
      * @param $status
@@ -129,6 +149,10 @@ class LabelingTaskBuilder
     public function build()
     {
         $task = Model\LabelingTask::create($this->video, $this->project, $this->frameNumberMapping, $this->taskType);
+
+        foreach($this->userAssignments as $assignment) {
+            $task->addAssignmentHistory($assignment['user'], $assignment['dateTime'], $assignment['phase'], $assignment['status']);
+        }
 
         foreach ($this->status as $phase => $status) {
             $task->setStatus($phase, $status);
