@@ -818,7 +818,7 @@ describe('Cuboid', () => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
-              .sendKeys('ß')
+              .sendKeys('i')
               .perform();
           })
           .then(
@@ -836,7 +836,7 @@ describe('Cuboid', () => {
           })
           .then(() => {
             browser.actions()
-              .sendKeys('ß')
+              .sendKeys('i')
               .perform();
           })
           .then(
@@ -854,7 +854,7 @@ describe('Cuboid', () => {
           })
           .then(() => {
             browser.actions()
-              .sendKeys('ß')
+              .sendKeys('i')
               .perform();
           })
           .then(
@@ -872,7 +872,7 @@ describe('Cuboid', () => {
           })
           .then(() => {
             browser.actions()
-              .sendKeys('ß')
+              .sendKeys('i')
               .perform();
           })
           .then(
@@ -906,7 +906,7 @@ describe('Cuboid', () => {
             browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
-              .sendKeys('0')
+              .sendKeys('u')
               .perform();
           })
           .then(
@@ -924,7 +924,7 @@ describe('Cuboid', () => {
           })
           .then(() => {
             browser.actions()
-              .sendKeys('0')
+              .sendKeys('u')
               .perform();
           })
           .then(
@@ -942,7 +942,7 @@ describe('Cuboid', () => {
           })
           .then(() => {
             browser.actions()
-              .sendKeys('0')
+              .sendKeys('u')
               .perform();
           })
           .then(
@@ -960,7 +960,7 @@ describe('Cuboid', () => {
           })
           .then(() => {
             browser.actions()
-              .sendKeys('0')
+              .sendKeys('u')
               .perform();
           })
           .then(
@@ -1241,7 +1241,7 @@ describe('Cuboid', () => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
-            .sendKeys('ß')
+            .sendKeys('i')
             .perform();
         })
         .then(
@@ -1259,7 +1259,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('ß')
+            .sendKeys('i')
             .perform();
         })
         .then(
@@ -1277,7 +1277,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('ß')
+            .sendKeys('i')
             .perform();
         })
         .then(
@@ -1295,7 +1295,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('ß')
+            .sendKeys('i')
             .perform();
         })
         .then(
@@ -1329,7 +1329,7 @@ describe('Cuboid', () => {
           browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
-            .sendKeys('0')
+            .sendKeys('u')
             .perform();
         })
         .then(
@@ -1347,7 +1347,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('0')
+            .sendKeys('u')
             .perform();
         })
         .then(
@@ -1365,7 +1365,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('0')
+            .sendKeys('u')
             .perform();
         })
         .then(
@@ -1383,7 +1383,7 @@ describe('Cuboid', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('0')
+            .sendKeys('u')
             .perform();
         })
         .then(
