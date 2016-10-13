@@ -190,3 +190,19 @@ This route creates the tasks for all uploaded videos of the given project once a
     + Attributes
         + result
             + taskIds (array)
+            
+## Get all Task with attention Flagging [/api/project/{projectId}/attentionTasks]
+
++ Parameters
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+    + offset: `10` (number, optional) - Set an offset
+    + limit: `5` (number, optional) - Limit the number is tasks
+
+### Get all Task with attention Flagging [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + tasks array(Task)
+            + users array(User)
+            + totalRows: `5`
