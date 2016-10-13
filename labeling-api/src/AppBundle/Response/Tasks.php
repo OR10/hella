@@ -26,15 +26,13 @@ class Tasks
      * @param Facade\User          $userFacade
      * @param Facade\Project       $projectFacade
      * @param                      $numberOfTotalDocuments
-     * @param                      $phase
      */
     public function __construct(
         $labelingTasks,
         Facade\Video $videoFacade,
         Facade\User $userFacade,
         Facade\Project $projectFacade,
-        $numberOfTotalDocuments,
-        $phase
+        $numberOfTotalDocuments
     ) {
         $this->totalRows = $numberOfTotalDocuments;
         $users           = [];

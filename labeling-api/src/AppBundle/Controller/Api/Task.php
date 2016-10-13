@@ -189,8 +189,7 @@ class Task extends Controller\Base
                 $this->videoFacade,
                 $this->userFacade,
                 $this->projectFacade,
-                $numberOfTotalDocuments,
-                $taskPhase
+                $numberOfTotalDocuments
             ),
             HttpFoundation\Response::HTTP_ACCEPTED
         );
