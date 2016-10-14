@@ -18,16 +18,19 @@ class ReportingListController {
 
   startReport() {
     this._reportGateway.startReport(this.project.id).then(() => {
-      const modal = this._modalService.getInfoDialog({
-        title: 'Report in progress',
-        headline: 'The requested Report operation has been triggered',
-        message: `The requested report has been triggered. It will be processed and should be available in this view shortly.`,
-        confirmButtonText: 'Understood',
-        cancelButtonText: false,
-      }, () => {
-        this._loadReportList();
-      });
-      modal.activate();
+      this._modalService.info(
+        {
+          title: 'Report in progress',
+          headline: 'The requested Report operation has been triggered',
+          message: `The requested report has been triggered. It will be processed and should be available in this view shortly.`,
+          confirmButtonText: 'Understood',
+        },
+        () => this._loadReportList(),
+        undefined,
+        {
+          abortable: false,
+        }
+      );
     });
   }
 
