@@ -55,6 +55,13 @@
                     <i class="fa fa-external-link"></i>
                 </button>
 
+                <button tooltip="Show flagged Tasks"
+                        ng-if="vm.userPermissions.canViewAttentionTasks"
+                        ng-click="vm.showFlaggedTasks(project.id)"
+                >
+                    <i class="fa fa-flag"></i>
+                </button>
+
                 <button tooltip="Accept Project and assign to team"
                         ng-if="vm.userPermissions.canAcceptProject && project.status == 'todo'"
                         ng-click="vm.acceptProject(project.id, project.name)"

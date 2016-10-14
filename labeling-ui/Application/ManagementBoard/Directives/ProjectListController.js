@@ -362,6 +362,10 @@ class ProjectListController {
     this._$state.go('labeling.reporting.list', {projectId});
   }
 
+  showFlaggedTasks(projectId) {
+    this._$state.go('labeling.projects.flagged', {projectId});
+  }
+
   _triggerReloadAll() {
     this._$scope.$emit('project-list:dependant-projects-changed');
   }
