@@ -12,6 +12,7 @@ use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
+use crosscan\Logger\Facade\LoggerFacade;
 
 /**
  * @Rest\Prefix("/api/labeledThingInFrame")
@@ -42,21 +43,29 @@ class LabeledThingInFrame extends Controller\Base
     private $labelingTaskFacade;
 
     /**
+     * @var LoggerFacade
+     */
+    private $logger;
+
+    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Service\TaskIncomplete     $taskIncompleteService
      * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param \cscntLogger               $logger
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
         Service\TaskIncomplete $taskIncompleteService,
-        Facade\LabelingTask $labelingTaskFacade
+        Facade\LabelingTask $labelingTaskFacade,
+        \cscntLogger $logger
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
         $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->logger                    = new LoggerFacade($logger, self::class);
     }
 
     /**
@@ -116,6 +125,16 @@ class LabeledThingInFrame extends Controller\Base
             }
         } else {
             if ($request->request->get('rev') !== $labeledThingInFrame->getRev()) {
+                $this->logger->logString(
+                    sprintf(
+                        '[Update Conflict] LabeledThingInFrame (%s) rev. (%s) does not match current rev. (%s) for task %s',
+                        $labeledThingInFrame->getId(),
+                        $request->request->get('rev'),
+                        $labeledThingInFrame->getRev(),
+                        $labeledThing->getTaskId()
+                    ),
+                    \cscntLogPayload::SEVERITY_WARNING
+                );
                 throw new Exception\ConflictHttpException('Revision mismatch');
             }
 
