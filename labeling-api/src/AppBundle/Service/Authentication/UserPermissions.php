@@ -34,7 +34,7 @@ class UserPermissions
         'canExportProject'               => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canViewProjectReport'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canAssignProject'               => [                        Model\User::ROLE_CLIENT                                                              ],
-        'canViewAttentionTasks'          => [                                                 Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canViewAttentionTasks'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
 
         // Label-Jobs
         'canViewTaskList'                => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
