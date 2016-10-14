@@ -427,7 +427,7 @@ class ProjectTest extends Tests\WebTestCase
         $project = $this->projectFacade->save($projectBuilder);
 
         $requestWrapper = $this->createRequest('/api/project/%s/delete', [$project->getId()])
-            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->withCredentialsFromUsername($this->client)
             ->execute();
 
