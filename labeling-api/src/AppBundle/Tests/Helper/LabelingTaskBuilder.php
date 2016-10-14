@@ -40,6 +40,11 @@ class LabelingTaskBuilder
     private $userAssignments = [];
 
     /**
+     * @var bool
+     */
+    private $attentionTaskFlag = false;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -143,6 +148,13 @@ class LabelingTaskBuilder
         return $this;
     }
 
+    public function withAttentionTaskFlag()
+    {
+        $this->attentionTaskFlag = true;
+
+        return $this;
+    }
+
     /**
      * @return Model\LabelingTask
      */
@@ -157,6 +169,8 @@ class LabelingTaskBuilder
         foreach ($this->status as $phase => $status) {
             $task->setStatus($phase, $status);
         }
+
+        $task->setTaskAttentionFlag($this->attentionTaskFlag);
 
         return $task;
     }
