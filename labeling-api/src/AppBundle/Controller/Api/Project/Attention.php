@@ -99,7 +99,7 @@ class Attention extends Controller\Base
                 $this->projectFacade,
                 $this->labelingTaskFacade->getTotalAttentionTasksCountForProject($project)
             ),
-            HttpFoundation\Response::HTTP_ACCEPTED
+            HttpFoundation\Response::HTTP_OK
         );
     }
 }
