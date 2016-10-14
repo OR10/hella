@@ -17,6 +17,8 @@ import ProjectCreateController from './Controllers/ProjectCreateController';
 import ProjectCreateView from './Views/ProjectCreateView.html!';
 import ProjectGateway from './Gateways/ProjectGateway';
 import ProjectListDirective from './Directives/ProjectListDirective';
+import ProjectFlaggedController from './Controllers/ProjectFlaggedController';
+import ProjectFlaggedView from './Views/ProjectFlaggedView.html!';
 
 import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
@@ -103,6 +105,24 @@ class ManagementBoard extends Module {
           controllerAs: 'vm',
           template: ProjectCreateView,
         },
+      },
+    });
+
+    $stateProvider.state('labeling.projects.flagged', {
+      url: '/:projectId/flagged',
+      views: {
+        '@': {
+          controller: ProjectFlaggedController,
+          controllerAs: 'vm',
+          template: ProjectFlaggedView,
+        },
+      },
+      resolve: {
+        project: [
+          '$stateParams',
+          'projectGateway',
+          ($stateParams, projectGateway) => projectGateway.getProject($stateParams.projectId),
+        ],
       },
     });
 
