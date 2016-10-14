@@ -59,6 +59,8 @@ class Attention extends Controller\Base
      *
      * @Rest\GET("/{project}/attentionTasks")
      *
+     * @CheckPermissions({"canViewAttentionTasks"})
+     *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
      *
