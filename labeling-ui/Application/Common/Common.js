@@ -25,6 +25,12 @@ import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
 import DebouncerService from './Services/DebouncerService';
 
+import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
+import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
+import inputDialogProvider from './Services/ModalDialogs/InputDialog';
+import listDialogProvider from './Services/ModalDialogs/ListDialog';
+import selectionDialogProvider from './Services/ModalDialogs/SelectionDialog';
+
 import ConsoleLogger from './Loggers/ConsoleLogger';
 import RemoteLogger from './Loggers/RemoteLogger';
 
@@ -78,6 +84,12 @@ class Common extends Module {
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);
     this.module.provider('applicationState', ApplicationStateProvider);
+
+    this.module.factory('ModalDialog', modalDialogProvider);
+    this.module.factory('InfoDialog', infoDialogProvider);
+    this.module.factory('InputDialog', inputDialogProvider);
+    this.module.factory('ListDialog', listDialogProvider);
+    this.module.factory('SelectionDialog', selectionDialogProvider);
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
     this.registerDirective('splitView', SplitViewDirective);
