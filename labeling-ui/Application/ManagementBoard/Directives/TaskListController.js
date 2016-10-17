@@ -106,6 +106,26 @@ class TaskListController {
       .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
   }
 
+  flagTask(taskId) {
+    if (this._rawTasksById[taskId].taskAttentionFlag) {
+      this._modalService.info(
+        {
+          title: 'Already Flagged',
+          headline: 'This task is already flagged! Please wait for the labeling coordinator to remove the flag.',
+          confirmButtonText: 'Understood',
+        },
+        undefined,
+        undefined,
+        {
+          abortable: false,
+        }
+      );
+      return;
+    }
+    this._taskGateway.flagTask(taskId)
+      .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
+  }
+
   reopenTask(taskId, phase) {
     this._taskGateway.reopenTask(taskId, phase).then(() => this._triggerReloadAll());
   }
@@ -138,6 +158,7 @@ class TaskListController {
             status: task.getStatusForPhase(this.taskPhase),
             labelInstruction: task.labelInstruction,
             reopen: task.reopen,
+            attentionFlag: task.taskAttentionFlag,
           };
         });
 

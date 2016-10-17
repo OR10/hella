@@ -58,6 +58,11 @@
                         ng-click="vm.unassignTask(task.id, task.latestAssignee.id)">
                     <i class="fa fa-close"></i>
                 </button>
+                <button tooltip="Flag this task"
+                        ng-if="vm.userPermissions.canFlagLabelingTask && task.latestAssignee.username === vm.user.username"
+                        ng-click="vm.flagTask(task.id)">
+                    <i class="fa fa-flag" ng-class="{flagged: task.attentionFlag}"></i>
+                </button>
                 <button tooltip="Reopen task"
                         ng-if="vm.userPermissions.canReopenTask && task.status === 'done'"
                         ng-click="vm.reopenTask(task.id, vm.taskPhase)">
