@@ -141,6 +141,10 @@ class ModalService {
   }
 }
 
-ModalService.$inject = ['ModalFactory', 'keyboardShortcutService'];
+ModalService.$inject = [
+  'ModalFactory',
+  'keyboardShortcutService',
+  'InfoDialog',
+];
 
 export default ModalService;
