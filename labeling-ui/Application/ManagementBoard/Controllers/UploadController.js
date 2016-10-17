@@ -10,7 +10,6 @@ class UploadController {
    * @param {Object} project
    * @param {ProjectGateway} projectGateway
    * @param {ModalService} modalService
-   * @param {InfoDialog.constructor} InfoDialog
    * @param {ListDialog.constructor} ListDialog
    */
   constructor($rootScope, $scope, $state, user, userPermissions, project, projectGateway, modalService, ListDialog) {
@@ -66,7 +65,7 @@ class UploadController {
     this._modalService = modalService;
 
     /**
-     * @type {ListDialog.constructor}
+     * @type {ListDialog}
      * @private
      */
     this._ListDialog = ListDialog;
