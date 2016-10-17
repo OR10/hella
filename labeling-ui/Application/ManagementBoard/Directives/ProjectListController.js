@@ -448,6 +448,8 @@ ProjectListController.$inject = [
   'projectGateway',
   'labelingGroupGateway',
   'modalService',
+  'InputDialog',
+  'SelectionDialog',
 ];
 
 export default ProjectListController;
