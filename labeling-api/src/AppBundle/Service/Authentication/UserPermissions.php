@@ -42,6 +42,8 @@ class UserPermissions
         'canViewReopenButton'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
         'unassignPermission'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canReopenTask'                  => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canFlagLabelingTask'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
+        'canUnflagLabelingTask'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
 
         // User management
         'canEditLabelingGroups'          => [Model\User::ROLE_ADMIN                                                                                       ],
