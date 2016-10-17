@@ -5,7 +5,7 @@
     <h3 class="modal-body-headline">{{headline}}</h3>
     <p class="modal-body-content">{{message}}</p>
     <input type="text" ng-model="userInput" ng-class="{error: userInput.length && userInput.length > maxLength}">
-    {{userInput.length || 0}}/{{maxLength}}
+    <span class="character-count">{{userInput.length || 0}}/{{maxLength}}</span>
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->
