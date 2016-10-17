@@ -86,16 +86,14 @@ class TaskListController {
         this.goToTask(taskId, this.taskPhase);
       });
     } else {
-      const modal = this._modalService.getInfoDialog({
-        title: 'Task already assigned',
-        headline: 'This task is already assigned to someone else',
-        message: 'This task is already assigned to someone else. You are only allowed to open it in real only mode',
-        confirmButtonText: 'Open read only',
-        cancelButtonText: 'Cancel',
-      }, () => {
-        this.goToTask(taskId, this.taskPhase);
-      });
-      modal.activate();
+      this._modalService.info(
+        {
+          title: 'Task already assigned',
+          headline: 'This task is already assigned to someone else',
+          message: 'This task is already assigned to someone else. You are only allowed to open it in real only mode',
+          confirmButtonText: 'Open read only',
+        }, () => this.goToTask(taskId, this.taskPhase)
+      );
     }
   }
 

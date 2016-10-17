@@ -86,13 +86,20 @@ class TaskConfigurationUploadController {
           default:
             headline = 'XML Task Configuration Upload failed.';
         }
-        const errorModal = this._modalService.getAlertWarningDialog({
-          title: 'Error uploading Task Configuration',
-          headline,
-          message: error.message,
-          confirmButtonText: 'Understood',
-        });
-        errorModal.activate();
+        this._modalService.info(
+          {
+            title: 'Error uploading Task Configuration',
+            headline,
+            message: error.message,
+            confirmButtonText: 'Understood',
+          },
+          undefined,
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
       });
   }
 

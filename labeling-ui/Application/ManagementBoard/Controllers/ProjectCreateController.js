@@ -251,13 +251,20 @@ class ProjectCreateController {
   }
 
   _handleCreationError(error) {
-    const modal = this._modalService.getAlertWarningDialog({
-      title: 'Error creating project',
-      headline: `The project could not be created.`,
-      message: error.data.error.message,
-      confirmButtonText: 'Understood',
-    });
-    modal.activate();
+    this._modalService.info(
+      {
+        title: 'Error creating project',
+        headline: `The project could not be created.`,
+        message: error.data.error.message,
+        confirmButtonText: 'Understood',
+      },
+      undefined,
+      undefined,
+      {
+        warning: true,
+        abortable: false,
+      }
+    );
   }
 
   /**

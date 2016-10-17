@@ -141,13 +141,12 @@ class ViewerTitleBarController {
   }
 
   handleCompleteState() {
-    const modal = this._modalService.getInfoDialog(
+    this._modalService.info(
       {
         title: 'Finish Task',
         headline: 'Mark this task as finished?',
         message: 'You are about to mark this task as being finished. After that it will be assigned back to the Label-Coordinator for review. You will not be able to change anything in this task from this point on.',
         confirmButtonText: 'Finish',
-        cancelButtonText: 'Cancel',
       },
       () => {
         this._taskGateway.markTaskAsDone(this.task.id)
@@ -156,20 +155,23 @@ class ViewerTitleBarController {
           })
           .catch(response => {
             if (response.status === 412) {
-              const alert = this._modalService.getAlertWarningDialog({
-                title: 'Finish Task',
-                headline: 'Incomplete labeling data',
-                message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
-                confirmButtonText: 'Ok',
-              }, this.handleIncompleteState());
-              alert.activate();
+              this._modalService.info(
+                {
+                  title: 'Finish Task',
+                  headline: 'Incomplete labeling data',
+                  message: 'Not all labeling data is complete. In order to finish this task you need to complete all labels!',
+                },
+                () => this.handleIncompleteState(),
+                undefined,
+                {
+                  warning: true,
+                  abortable: false,
+                }
+              );
             }
           });
-      },
-      () => {
       }
     );
-    modal.activate();
   }
 
   handleIncompleteState() {
@@ -202,13 +204,12 @@ class ViewerTitleBarController {
   }
 
   reOpenLabelingTask() {
-    const modal = this._modalService.getInfoDialog(
+    this._modalService.info(
       {
         title: 'Reopen Task',
         headline: 'Reopen this labeling task?',
         message: 'You are about to reopen this tasked. After this operation the task will be editable again by the labeler.',
         confirmButtonText: 'Reopen',
-        cancelButtonText: 'Cancel',
       },
       () => {
         this._applicationState.disableAll();
@@ -221,7 +222,6 @@ class ViewerTitleBarController {
           });
       }
     );
-    modal.activate();
   }
 
   refreshIncompleteCount() {

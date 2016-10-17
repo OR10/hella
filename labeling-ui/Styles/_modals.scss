@@ -1,4 +1,5 @@
-.modal-info, .modal-warning, .modal-selection, .modal-list, .modal-input {
+.modal-dialog-normal,
+.modal-dialog-warning {
   z-index: 10000;
 
   .modal {
@@ -69,13 +70,13 @@
   }
 }
 
-.modal-info {
+.modal-dialog-normal {
   .modal {
     border: 2px solid $element-divider;
   }
 }
 
-.modal-warning {
+.modal-dialog-warning {
   .modal {
     border: 2px solid $headlines;
   }

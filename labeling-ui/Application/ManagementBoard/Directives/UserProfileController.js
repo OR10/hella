@@ -134,15 +134,15 @@ class UserProfileController {
    * Cancel the current editing process
    */
   cancelEdit() {
-    const modal = this._modalService.getInfoDialog({
-      title: 'Cancel User Editing',
-      headline: `You are about to leave the current edit page. Proceed?`,
-      message: 'All changes made to the user information will be lost. Continue?',
-      confirmButtonText: 'Leave',
-      cancelButtonText: 'Cancel',
-    }, () => this._$state.go('labeling.users.list'));
-
-    modal.activate();
+    this._modalService.info(
+      {
+        title: 'Cancel User Editing',
+        headline: `You are about to leave the current edit page. Proceed?`,
+        message: 'All changes made to the user information will be lost. Continue?',
+        confirmButtonText: 'Leave',
+      },
+      () => this._$state.go('labeling.users.list')
+    );
   }
 
   saveChanges() {
@@ -176,18 +176,23 @@ class UserProfileController {
    * @param {User} user
    */
   deleteUser(user) {
-    const modal = this._modalService.getWarningDialog({
-      title: 'Delete user',
-      headline: `You are about to delete ${user.username}. Proceed?`,
-      message: 'Removal of users from the database can not be reverted. Once the user is deleted it can not be restored. Only a new user may be created.',
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-    }, () => {
-      this.loadingInProgress = true;
-      this._userGateway.deleteUser(user.id)
-        .then(() => this._$location.path('/users'));
-    });
-    modal.activate();
+    this._modalService.info(
+      {
+        title: 'Delete user',
+        headline: `You are about to delete ${user.username}. Proceed?`,
+        message: 'Removal of users from the database can not be reverted. Once the user is deleted it can not be restored. Only a new user may be created.',
+        confirmButtonText: 'Delete',
+      },
+      () => {
+        this.loadingInProgress = true;
+        this._userGateway.deleteUser(user.id)
+          .then(() => this._$location.path('/users'));
+      },
+      undefined,
+      {
+        warning: true,
+      }
+    );
   }
 
   _updateRoles() {
