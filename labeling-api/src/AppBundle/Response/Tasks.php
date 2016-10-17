@@ -76,6 +76,7 @@ class Tasks
                 'video'                       => $videoFacade->find($labelingTask->getVideoId()),
                 'project'                     => $projectFacade->find($labelingTask->getProjectId()),
                 'assignmentHistory'           => $labelingTask->getAssignmentHistory(),
+                'taskAttentionFlag'           => $labelingTask->isTaskAttentionFlag(),
             ];
         }
         /** @var Model\User $user */

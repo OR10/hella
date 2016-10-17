@@ -673,6 +673,9 @@ class LabelingTask
      */
     public function isTaskAttentionFlag(): bool
     {
+        if ($this->attentionFlags === null || !array_key_exists('task', $this->attentionFlags)) {
+            return false;
+        }
         return $this->attentionFlags['task'];
     }
 
