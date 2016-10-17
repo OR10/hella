@@ -23,6 +23,7 @@ import ProjectFlaggedView from './Views/ProjectFlaggedView.html!';
 import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
 import TaskListDirective from './Directives/TaskListDirective';
+import FlaggedTaskListDirective from './Directives/FlaggedTaskListDirective';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -252,6 +253,7 @@ class ManagementBoard extends Module {
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
     this.registerDirective('labelingGroupList', LabelingGroupListDirective);
+    this.registerDirective('flaggedTaskList', FlaggedTaskListDirective);
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);

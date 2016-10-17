@@ -1,0 +1,23 @@
+<div class="grid-frame vertical">
+    <title-bar class="grid-block noscroll header"
+               user="vm.user"
+               user-permissions="vm.userPermissions"
+               back-link="labeling.projects.list"
+               back-link-text="Go to project list"
+               show-username="true"
+               show-logout-button="true"
+    >
+    </title-bar>
+    <div class="grid-block vertical">
+        <div class="grid-block text-center vertical">
+            <h2>Flagged Tasks: "{{vm.project.name}}"</h2>
+            <div class="grid-content">
+                <flagged-task-list
+                        project="vm.project"
+                        user="vm.user"
+                        user-permissions="vm.userPermissions"
+                ></flagged-task-list>
+            </div>
+        </div>
+    </div>
+</div>
