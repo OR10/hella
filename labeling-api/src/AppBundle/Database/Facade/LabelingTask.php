@@ -638,6 +638,10 @@ class LabelingTask
             ->execute()
             ->toArray();
 
+        if (empty($query)) {
+            return 0;
+        }
+
         return (int) $query[0]['value'];
     }
 }
