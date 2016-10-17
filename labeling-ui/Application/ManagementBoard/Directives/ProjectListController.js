@@ -10,10 +10,8 @@ class ProjectListController {
    * @param {ProjectGateway} projectGateway
    * @param {LabelingGroupGateway} labelingGroupGateway
    * @param {ModalService} modalService
-   * @param {InputDialog} InputDialog
-   * @param {SelectionDialog} SelectionDialog
    */
-  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog) {
+  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -43,18 +41,6 @@ class ProjectListController {
      * @private
      */
     this._modalService = modalService;
-
-    /**
-     * @type {InputDialog}
-     * @private
-     */
-    this._InputDialog = InputDialog;
-
-    /**
-     * @type {SelectionDialog}
-     * @private
-     */
-    this._SelectionDialog = SelectionDialog;
 
     /**
      * @type {Array}
@@ -140,25 +126,38 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
+   * @param {number} projectId
    */
   deleteProject(projectId, projectName) {
-    this._modalService.show(
-      new this._InputDialog(
-        {
-          title: 'Delete this Project.',
-          headline: `You are about to delete the "${projectName}" project. Proceed?`,
-          message: ' Warning: All data related to this project will be deleted and they are no longer available. Please give a reason why you want to delete the project:',
-          confirmButtonText: 'Delete',
-        },
-        input => {
-          this.loadingInProgress = true;
-          this._projectGateway.deleteProject(projectId, input)
-            .then(() => this._triggerReloadAll());
+    const modal = this._modalService.getInputDialog(
+      {
+        title: 'Delete this Project.',
+        headline: `You are about to delete the "${projectName}" project. Proceed?`,
+        message: ' Warning: All data related to this project will be deleted and they are no longer available. Please give a reason why you want to delete the project:',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+      }, input => {
+      if (input.length <= 140 && input.length > 0) {
+        this.loadingInProgress = true;
+        this._projectGateway.deleteProject(projectId, input)
+          .then(() => this._triggerReloadAll());
+      } else {
+        let headline;
+        if (!input || input.length === 0) {
+          headline = `The entered text is too short. Please enter a reason!`;
+        } else {
+          headline = `The entered text is too long. Please stay below 140 characters!`;
         }
-      )
+        const warningModal = this._modalService.getAlertWarningDialog({
+          title: 'Error',
+          headline,
+          confirmButtonText: 'Understood',
+        });
+        warningModal.activate();
+      }
+    }
     );
+    modal.activate();
   }
 
   /**
@@ -174,36 +173,28 @@ class ProjectListController {
    * @param {boolean} projectFinished
    */
   closeProject(projectId, projectName, projectFinished) {
+    let modal = null;
     if (!projectFinished && !this.userPermissions.canMoveInProgressProjectToDone) {
-      this._modalService.info(
-        {
-          title: 'Close project',
-          headline: `The project "${projectName}" can not be closed yet.`,
-          message: 'There are still non finished tasks inside this project therefore it can not be closed.',
-          confirmButtonText: 'Understood',
-        },
-        undefined,
-        undefined,
-        {
-          abortable: false,
-          warning: true,
-        }
-      );
+      modal = this._modalService.getAlertWarningDialog({
+        title: 'Close project',
+        headline: `The project "${projectName}" can not be closed yet.`,
+        message: 'There are still non finished tasks inside this project therefore it can not be closed.',
+        confirmButtonText: 'Understood',
+      });
     } else {
-      this._modalService.info(
-        {
-          title: 'Close project',
-          headline: `You are about to close the "${projectName}" project. Proceed?`,
-          message: 'Closing the project moves it into the "done" state, indicating all currently assigned work has been successfully completed.',
-          confirmButtonText: 'Continue',
-        },
-        () => {
-          this.loadingInProgress = true;
-          this._projectGateway.closeProject(projectId)
-            .then(() => this._triggerReloadAll());
-        }
-      );
+      modal = this._modalService.getWarningDialog({
+        title: 'Close project',
+        headline: `You are about to close the "${projectName}" project. Proceed?`,
+        message: 'Closing the project moves it into the "done" state, indicating all currently assigned work has been successfully completed.',
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+      }, () => {
+        this.loadingInProgress = true;
+        this._projectGateway.closeProject(projectId)
+          .then(() => this._triggerReloadAll());
+      });
     }
+    modal.activate();
   }
 
   /**
@@ -222,56 +213,41 @@ class ProjectListController {
       });
 
       if (!selectionData.length) {
-        this._modalService.info(
-          {
-            title: 'No labeling groups',
-            headline: 'There are no labeling groups',
-            message: 'You have no labeling groups that could be assigned to this project. Please create a group and try to assign this project again.',
-            confirmButtonText: 'Understood',
-          },
-          undefined,
-          undefined,
-          {
-            abortable: false,
-          }
-        );
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'No labeling groups',
+          headline: 'There are no labeling groups',
+          message: 'You have no labeling groups that could be assigned to this project. Please create a group and try to assign this project again.',
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
         this.showLoadingMask = false;
         return;
       }
 
-      this._modalService.show(
-        new this._SelectionDialog(
-          {
-            title: 'Accept project',
-            headline: `You are about to accept the "${projectName}" project. Proceed?`,
-            message: 'Accepting the project makes your team responsible for labeling and processing all associated tasks. Please select a team that you want to assign to this project',
-            confirmButtonText: 'Accept and Assign',
-            data: selectionData,
-          },
-          groupId => {
-            if (groupId) {
-              this.loadingInProgress = true;
-              this._projectGateway.acceptProject(projectId, groupId)
-                .then(() => this._triggerReloadAll());
-            } else {
-              this._modalService.info(
-                {
-                  title: 'No Group Selected',
-                  headline: 'You need to select a labeling group',
-                  message: 'You need to select a labeling group to assign to this Project. Without a selected labeling group the project can not be accepted!',
-                  confirmButtonText: 'Understood',
-                },
-                undefined,
-                undefined,
-                {
-                  warning: true,
-                  abortable: false,
-                }
-              );
-            }
-          }
-        )
-      );
+      const modal = this._modalService.getSelectionDialog({
+        title: 'Accept project',
+        headline: `You are about to accept the "${projectName}" project. Proceed?`,
+        message: 'Accepting the project makes your team responsible for labeling and processing all associated tasks. Please select a team that you want to assign to this project',
+        confirmButtonText: 'Accept and Assign',
+        cancelButtonText: 'Cancel',
+        selectionData,
+      },
+      groupId => {
+        if (groupId) {
+          this.loadingInProgress = true;
+          this._projectGateway.acceptProject(projectId, groupId)
+            .then(() => this._triggerReloadAll());
+        } else {
+          const warnModal = this._modalService.getAlertWarningDialog({
+            title: 'No Group Selected',
+            headline: 'You need to select a labeling group',
+            message: 'You need to select a labeling group to assign to this Project. Without a selected labeling group the project can not be accepted!',
+            confirmButtonText: 'Understood',
+          });
+          warnModal.activate();
+        }
+      });
+      modal.activate();
       this.showLoadingMask = false;
     });
   }
@@ -284,73 +260,52 @@ class ProjectListController {
 
     this._labelingGroupGateway.getLabelCoordinators().then(response => {
       if (!response.length) {
-        this._modalService.info(
-          {
-            title: 'No label coordinators',
-            headline: 'There are no label coordinators',
-            message: 'There are no labeling coordinators that could be assigned to this project. Please contact the admin and wait for further assistance.',
-            confirmButtonText: 'Understood',
-          },
-          undefined,
-          undefined,
-          {
-            abortable: false,
-          }
-        );
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'No label coordinators',
+          headline: 'There are no label coordinators',
+          message: 'There are no labeling coordinators that could be assigned to this project. Please contact the admin and wait for further assistance.',
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
         this.showLoadingMask = false;
       }
 
       if (taskInPreProcessingCount > 0) {
-        this._modalService.info(
-          {
-            title: 'PreProcessing Videos',
-            headline: 'We are still importing videos please wait...',
-            message: 'You can\'t assign this project until all videos are imported',
-            confirmButtonText: 'Understood',
-          },
-          undefined,
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'PreProcessing Videos',
+          headline: 'We are still importing videos please wait...',
+          message: 'You can\'t assign this project until all videos are imported',
+          confirmButtonText: 'Understood',
+        });
+        modal.activate();
         this.showLoadingMask = false;
         return;
       }
 
-      this._modalService.show(
-        new this._SelectionDialog(
-          {
-            title: 'Assign Label Coordinator',
-            headline: `Select a label coordinator to assign to this project`,
-            message: 'Please select a label coordinator that you want to assign to this project',
-            confirmButtonText: 'Assign',
-            data: response,
-          },
-          labelCoordinatorId => {
-            if (labelCoordinatorId) {
-              this.loadingInProgress = true;
-              this._projectGateway.assignCoordinator(projectId, labelCoordinatorId)
-                .then(() => this._triggerReloadAll());
-            } else {
-              this._modalService.info(
-                {
-                  title: 'No Label Coordinator Selected',
-                  headline: 'You need to select a label coordinator',
-                  message: 'You need to select a label coordinator to assign to this Project. Without a selected labeling coordinator the project can not be accepted!',
-                  confirmButtonText: 'Understood',
-                },
-                undefined,
-                undefined,
-                {
-                  abortable: false,
-                }
-              );
-            }
-          }
-        )
-      );
+      const modal = this._modalService.getSelectionDialog({
+        title: 'Assign Label Coordinator',
+        headline: `Select a label coordinator to assign to this project`,
+        message: 'Please select a label coordinator that you want to assign to this project',
+        confirmButtonText: 'Assign',
+        cancelButtonText: 'Cancel',
+        selectionData: response,
+      },
+      labelCoordinatorId => {
+        if (labelCoordinatorId) {
+          this.loadingInProgress = true;
+          this._projectGateway.assignCoordinator(projectId, labelCoordinatorId)
+            .then(() => this._triggerReloadAll());
+        } else {
+          const warnModal = this._modalService.getAlertWarningDialog({
+            title: 'No Label Coordinator Selected',
+            headline: 'You need to select a label coordinator',
+            message: 'You need to select a label coordinator to assign to this Project. Without a selected labeling coordinator the project can not be accepted!',
+            confirmButtonText: 'Understood',
+          });
+          warnModal.activate();
+        }
+      });
+      modal.activate();
       this.showLoadingMask = false;
     });
   }

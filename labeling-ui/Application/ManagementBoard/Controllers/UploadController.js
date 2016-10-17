@@ -10,10 +10,8 @@ class UploadController {
    * @param {Object} project
    * @param {ProjectGateway} projectGateway
    * @param {ModalService} modalService
-   * @param {InfoDialog.constructor} InfoDialog
-   * @param {ListDialog.constructor} ListDialog
    */
-  constructor($rootScope, $scope, $state, user, userPermissions, project, projectGateway, modalService, ListDialog) {
+  constructor($rootScope, $scope, $state, user, userPermissions, project, projectGateway, modalService) {
     /**
      * @type {$rootScope}
      * @private
@@ -66,12 +64,6 @@ class UploadController {
     this._modalService = modalService;
 
     /**
-     * @type {ListDialog.constructor}
-     * @private
-     */
-    this._ListDialog = ListDialog;
-
-    /**
      * @type {boolean}
      */
     this.uploadInProgress = false;
@@ -100,20 +92,13 @@ class UploadController {
   _installNavigationInterceptions() {
     this._unregisterUiRouterInterception = this._$rootScope.$on('$stateChangeStart', event => {
       event.preventDefault();
-      this._modalService.info(
-        {
-          title: 'Upload in progress',
-          headline: 'The page can not be left, while upload is in progress.',
-          message: 'While an upload is running you can not leave the upload page. You may however open a second browser window, while the upload is running.',
-          confirmButtonText: 'Understood',
-        },
-        undefined,
-        undefined,
-        {
-          abortable: false,
-          warning: true,
-        }
-      );
+      const modal = this._modalService.getAlertWarningDialog({
+        title: 'Upload in progress',
+        headline: 'The page can not be left, while upload is in progress.',
+        message: 'While an upload is running you can not leave the upload page. You may however open a second browser window, while the upload is running.',
+        confirmButtonText: 'Understood',
+      });
+      modal.activate();
     });
 
     window.addEventListener('beforeunload', this._windowBeforeUnload);
@@ -152,75 +137,55 @@ class UploadController {
   }
 
   _showCompletedWithErrorsModal(incompleteVideos) {
-    if (incompleteVideos.length > 1) {
-      this._modalService.show(
-        new this._ListDialog(
-          {
-            title: 'Upload completed with errors',
-            headline: 'Your upload is complete, but errors occured.',
-            message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly. ' +
-            'Some of the uploaded videos are missing calibration data. Please upload the calibration data for the following videos:',
-            confirmButtonText: 'Understood',
-            data: incompleteVideos,
-          },
-          undefined,
-          undefined,
-          {
-            abortable: false,
-            warning: false,
-          }
-        )
-      );
-
-      return;
-    }
-    this._modalService.info(
-      {
+    let modal = null;
+    if (incompleteVideos.length) {
+      const listData = incompleteVideos.map(video => {
+        return {name: video};
+      });
+      modal = this._modalService.getListDialog({
+        title: 'Upload completed with errors',
+        headline: 'Your upload is complete, but errors occured.',
+        message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly. ' +
+        'Some of the uploaded videos are missing calibration data. Please upload the calibration data for the following videos:',
+        confirmButtonText: 'Understood',
+        listData,
+      });
+    } else {
+      modal = this._modalService.getAlertWarningDialog({
         title: 'Upload completed with errors',
         headline: 'Your upload is complete, but errors occured.',
         message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.',
         confirmButtonText: 'Understood',
-      },
-      undefined,
-      undefined,
-      {
-        abortable: false,
-        warning: true,
-      }
-    );
+      });
+    }
+    modal.activate();
   }
 
   _showCompletedModal(incompleteVideos) {
-    if (incompleteVideos.length > 0) {
-      this._modalService.show(
-        new this._ListDialog(
-          {
-            title: 'Upload complete',
-            headline: 'Your upload is complete',
-            message: 'Your upload is complete but some of the calibration data is missing. Please upload the calibration data for the following videos:',
-            confirmButtonText: 'Understood',
-            data: incompleteVideos,
-          },
-          undefined,
-          undefined,
-          {
-            abortable: false,
-          }
-        )
-      );
-
-      return;
-    }
-
-    this._modalService.info(
-      {
+    let modal = null;
+    if (incompleteVideos.length) {
+      const listData = incompleteVideos.map(video => {
+        return {name: video};
+      });
+      modal = this._modalService.getListDialog({
+        title: 'Upload complete',
+        headline: 'Your upload is complete',
+        message: 'Your upload is complete but some of the calibration data is missing. Please upload the calibration data for the following videos:',
+        confirmButtonText: 'Understood',
+        listData,
+      });
+    } else {
+      modal = this._modalService.getInfoDialog({
         title: 'Upload complete',
         headline: 'Your upload is complete',
         message: 'Your upload is complete and the task creation process has started. This may take a while. You can check the progress of the job creation for your project in the ToDo Tab. Do you want to go to the project list to view this project?',
         confirmButtonText: 'Go to Project List',
-      },
-      () => this._$state.go('labeling.projects.list')
-    );
+        cancelButtonText: 'Cancel',
+      }, () => {
+        this._$state.go('labeling.projects.list');
+      });
+    }
+    modal.activate();
   }
 
   uploadStarted() {
@@ -251,7 +216,6 @@ UploadController.$inject = [
   'project',
   'projectGateway',
   'modalService',
-  'ListDialog',
 ];
 
 export default UploadController;

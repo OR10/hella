@@ -84,23 +84,18 @@ class UsersListController {
    * @param {User} user
    */
   deleteUser(user) {
-    this._modalService.info(
-      {
-        title: 'Delete user',
-        headline: `You are about to delete ${user.username}. Proceed?`,
-        message: 'Removal of users from the database can not be reverted. Once the user is deleted it can not be restored. Only a new user may be created.',
-        confirmButtonText: 'Delete',
-      },
-      () => {
-        this.loadingInProgress = true;
-        this._userGateway.deleteUser(user.id)
-          .then(() => this._loadUsersList());
-      },
-      undefined,
-      {
-        warning: true,
-      }
-    );
+    const modal = this._modalService.getWarningDialog({
+      title: 'Delete user',
+      headline: `You are about to delete ${user.username}. Proceed?`,
+      message: 'Removal of users from the database can not be reverted. Once the user is deleted it can not be restored. Only a new user may be created.',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }, () => {
+      this.loadingInProgress = true;
+      this._userGateway.deleteUser(user.id)
+        .then(() => this._loadUsersList());
+    });
+    modal.activate();
   }
 }
 

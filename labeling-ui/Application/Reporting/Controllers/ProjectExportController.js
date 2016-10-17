@@ -22,19 +22,16 @@ class ProjectExportController {
    */
   startExport() {
     this._projectGateway.startExport(this.project.id).then(() => {
-      this._modalService.info(
-        {
-          title: 'Export in progress',
-          headline: 'The requested Export operation has been triggered',
-          message: `The requested export has been triggered. It will be processed and should be available in this view shortly.`,
-          confirmButtonText: 'Understood',
-        },
-        () => this._loadExportList(),
-        undefined,
-        {
-          abortable: false,
-        }
-      );
+      const modal = this._modalService.getInfoDialog({
+        title: 'Export in progress',
+        headline: 'The requested Export operation has been triggered',
+        message: `The requested export has been triggered. It will be processed and should be available in this view shortly.`,
+        confirmButtonText: 'Understood',
+        cancelButtonText: false,
+      }, () => {
+        this._loadExportList();
+      });
+      modal.activate();
     });
   }
 

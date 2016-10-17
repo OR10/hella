@@ -20,24 +20,19 @@ class LabelingController {
     this._modalService = modalService;
 
     this._$scope.$on('readOnlyError', () => {
-      this._modalService.info(
-        {
-          title: 'Read only',
-          headline: 'This task is read only',
-          message: 'This task is marked as read only. This is either because of the tasks being marked as finished or because of the task being worked on by another person. You are not allowed to make any changes!',
-          confirmButtonText: 'Reload page',
-        },
-        () => window.location.reload(),
-        undefined,
-        {
-          abortable: false,
-          warning: true,
-        }
-      );
+      const alert = this._modalService.getAlertWarningDialog({
+        title: 'Read only',
+        headline: 'This task is read only',
+        message: 'This task is marked as read only. This is either because of the tasks beein marked as finished or because of the task being worked on by another person. You are not allowed to make any changes!',
+        confirmButtonText: 'Reload page',
+      }, () => {
+        window.location.reload();
+      });
+      alert.activate();
     });
 
     this._$scope.$on('serverError', () => {
-      this._modalService.info(
+      const alert = this._modalService.getWarningDialog(
         {
           title: 'Error',
           headline: 'There was an error with the application!',
@@ -46,13 +41,11 @@ class LabelingController {
           cancelButtonText: 'Reload page',
         },
         () => this._$location.path('/'),
-        () => window.location.reload(),
-        {
-          warning: true,
-        }
-      );
+        () => window.location.reload());
+      alert.activate();
     });
   }
+
 }
 
 LabelingController.$inject = [

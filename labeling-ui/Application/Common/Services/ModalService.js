@@ -1,15 +1,16 @@
+import infoModalTemplate from './ModalService/InfoModal.html!';
+import warningModalTemplate from './ModalService/WarningModal.html!';
+import alertModalTemplate from './ModalService/AlertModal.html!';
+import selectionModalTemplate from './ModalService/SelectionModal.html!';
+import listModalTemplate from './ModalService/ListModal.html!';
+import inputModalTemplate from './ModalService/InputModal.html!';
 import angular from 'angular';
 
 /**
  * Service providing an interface to create modal dialog windows
  */
 class ModalService {
-  /**
-   * @param {ModalFactory} ModalFactory
-   * @param {KeyboardShortcutService} keyboardShortcutService
-   * @param {InfoDialog} InfoDialog
-   */
-  constructor(ModalFactory, keyboardShortcutService, InfoDialog) {
+  constructor(ModalFactory, keyboardShortcutService) {
     /**
      * @private
      */
@@ -22,35 +23,34 @@ class ModalService {
     this._keyboardShortcutService = keyboardShortcutService;
 
     /**
-     * @type {InfoDialog}
-     * @private
-     */
-    this._InfoDialog = InfoDialog;
-
-    /**
      * @type {boolean}
      * @private
      */
     this._modalOpen = false;
   }
 
-  /**
-   * @param {ModalDialog} dialog
-   * @returns {Object}
-   * @private
-   */
-  _createModal(dialog) {
+  _createModal(modalClass, template, scope, confirmCallback, cancelCallback) {
+    const {message, headline, title, confirmButtonText, cancelButtonText} = scope;
+    const selectionData = [{name: 'Please make a selection'}].concat(scope.selectionData);
+    const listData = scope.listData;
+
+    const noop = () => {
+    };
+    const onConfirm = confirmCallback || noop;
+    const onCancel = cancelCallback || noop;
+
     if (this._modalOpen) {
       throw new Error('Only one modal at a time is allowed open');
     }
 
-    const cancelCallback = dialog.getCancelCallback();
-    const confirmCallback = dialog.getConfirmCallback();
-
     let modal;
 
-    const safelyDestroyModal = () => {
-      // Wait until the animation has finished and the modal has disappeared before really destroying it.
+    const cancelCallbackWrapper = () => {
+      modal.deactivate();
+      this._modalOpen = false;
+      this._keyboardShortcutService.popContext();
+      this._keyboardShortcutService.clearContext('modal');
+      onCancel();
       setTimeout(
         () => {
           modal.destroy();
@@ -58,86 +58,91 @@ class ModalService {
       );
     };
 
-    const cancelCallbackWrapper = data => {
-      modal.deactivate();
-      this._modalOpen = false;
-      this._keyboardShortcutService.popContext();
-      this._keyboardShortcutService.clearContext('modal');
-      cancelCallback(data);
-      safelyDestroyModal();
-    };
+    modal = new this._ModalFactory(
+      {
+        class: modalClass,
+        overlay: true,
+        overlayClose: 'false', // This actually needs to be a string
+        template,
+        animationIn: 'slideInDown',
+        overlayIn: 'fadeIn',
+        contentScope: {
+          message,
+          headline,
+          title,
+          selectionData,
+          listData,
+          confirmButtonText,
+          cancelButtonText,
+          cancelCallback: cancelCallbackWrapper,
+          confirmCallback: data => {
+            modal.deactivate();
+            this._modalOpen = false;
+            this._keyboardShortcutService.popContext();
+            this._keyboardShortcutService.clearContext('modal');
+            onConfirm(data);
+            setTimeout(
+              () => {
+                modal.destroy();
+              }, 1000
+            );
+          },
+        },
+      }
+    );
 
-    const confirmCallbackWrapper = data => {
-      modal.deactivate();
-      this._modalOpen = false;
-      this._keyboardShortcutService.popContext();
-      this._keyboardShortcutService.clearContext('modal');
-      confirmCallback(data);
-      safelyDestroyModal();
-    };
 
-    // Create the modal using Foundations modal module
-    modal = new this._ModalFactory({
-      class: dialog.getCssClass(),
-      overlay: true,
-      overlayClose: 'false', // This actually needs to be a string
-      template: dialog.getTemplate(),
-      animationIn: 'slideInDown',
-      overlayIn: 'fadeIn',
-      contentScope: dialog.getScope(confirmCallbackWrapper, cancelCallbackWrapper),
-    });
+    return {
+      activate: () => {
+        this._keyboardShortcutService.addHotkey('modal', {
+          combo: 'esc',
+          description: 'Close the modal',
+          callback: cancelCallbackWrapper,
+        });
 
-    return {modal, cancelCallbackWrapper, confirmCallbackWrapper};
-  }
+        this._keyboardShortcutService.addHotkey('modal', {
+          combo: ['tab', 'shift+tab'],
+          description: 'Select the other button in the dialog',
+          callback: event => {
+            // Select the other button in the modal that is not in focus
+            angular.element(document.body).find('button:focus').parent().find('button:not(:focus)').focus();
+            event.preventDefault();
+          },
+        });
 
-  /**
-   *
-   * @param {ModalDialog} dialog
-   */
-  show(dialog) {
-    const {modal, cancelCallbackWrapper} = this._createModal(dialog);
+        this._modalOpen = true;
+        this._keyboardShortcutService.pushContext('modal');
+        modal.activate();
 
-    if (dialog.getOptions.abortable === true) {
-      this._keyboardShortcutService.addHotkey('modal', {
-        combo: 'esc',
-        description: 'Close the modal',
-        callback: cancelCallbackWrapper,
-      });
-    }
-
-    this._keyboardShortcutService.addHotkey('modal', {
-      combo: ['tab', 'shift+tab'],
-      description: 'Select the other button in the dialog',
-      callback: event => {
-        // Select the other button in the modal that is not in focus
-        angular.element(document.body).find('button:focus').parent().find('button:not(:focus)').focus();
-        event.preventDefault();
+        // @Hack: Autofocus seems not to work and direkt selection of the element is also not possible
+        // in the same Frame. Therefore the almighty setTimeout comes to save the day...
+        setTimeout(() => angular.element(document.body).find('.modal.is-active button.modal-button-confirm').focus(), 50);
       },
-    });
-
-    this._modalOpen = true;
-    this._keyboardShortcutService.pushContext('modal');
-    modal.activate();
-
-    // @Hack: Autofocus seems not to work and direct selection of the element is also not possible
-    // in the same Frame. Therefore the almighty setTimeout comes to save the day...
-    setTimeout(() => angular.element(document.body).find('.modal.is-active button.modal-button-confirm').focus(), 50);
+    };
   }
 
-  // Shortcuts to mostly used Dialog types
+  getInfoDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-info', infoModalTemplate, scope, confirmCallback, cancelCallback);
+  }
 
-  /**
-   * Create and show an Info Dialog
-   *
-   * See {@link InfoDialog} for details
-   *
-   * @param {{title: string?, headline: string?, message: string?, confirmButtonText: string?, cancelButtonText: string?}|undefined} content
-   * @param {Function|undefined} confirmCallback
-   * @param {Function|undefined} cancelCallback
-   * @param {Object|undefined} options
-   */
-  info(content, confirmCallback, cancelCallback, options) {
-    this.show(new this._InfoDialog(content, confirmCallback, cancelCallback, options));
+  getWarningDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-warning', warningModalTemplate, scope, confirmCallback, cancelCallback);
+  }
+
+  getAlertWarningDialog(scope, confirmCallback) {
+    return this._createModal('modal-warning', alertModalTemplate, scope, confirmCallback);
+  }
+
+  getSelectionDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-selection', selectionModalTemplate, scope, confirmCallback, cancelCallback);
+  }
+
+  getListDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-list', listModalTemplate, scope, confirmCallback, cancelCallback);
+  }
+
+  getInputDialog(scope, confirmCallback, cancelCallback) {
+    return this._createModal('modal-input', inputModalTemplate, scope, confirmCallback, cancelCallback);
   }
 }
 

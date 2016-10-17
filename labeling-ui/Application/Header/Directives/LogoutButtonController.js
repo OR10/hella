@@ -2,34 +2,29 @@
  * Controller of the {@link TimerDirective}
  */
 class LogoutButtonController {
-  constructor(modalService, InfoDialog) {
+  constructor(modalService) {
     /**
      * @type {ModalService}
      * @private
      */
     this._modalService = modalService;
-
-    /**
-     * @type {InfoDialog}
-     */
-    this._logoutDialog = new InfoDialog(
-      {
-        title: 'Logout',
-        headline: 'Do you want to log out?',
-        confirmButtonText: 'Logout',
-      },
-      () => window.location.assign('/logout')
-    );
   }
 
   handleLogoutClick() {
-    this._modalService.show(this._logoutDialog);
+    const modal = this._modalService.getInfoDialog({
+      title: 'Logout',
+      headline: 'Do you want to log out?',
+      confirmButtonText: 'Logout',
+      cancelButtonText: 'Cancel',
+    }, () => {
+      window.location.assign('/logout');
+    });
+    modal.activate();
   }
 }
 
 LogoutButtonController.$inject = [
   'modalService',
-  'InfoDialog',
 ];
 
 export default LogoutButtonController;

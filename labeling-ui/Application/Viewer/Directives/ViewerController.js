@@ -529,22 +529,16 @@ class ViewerController {
 
     $scope.$on(
       'drawingtool:exception', (event, message) => {
+        const modal = this._modalService.getAlertWarningDialog({
+          title: 'Error',
+          headline: `There was an error in the drawing tool`,
+          message,
+          confirmButtonText: 'Understood',
+        });
+
         // This is needed to allow to tool to notice the pending mouse events
         this._$timeout(() => {
-          this._modalService.info(
-            {
-              title: 'Error',
-              headline: `There was an error in the drawing tool`,
-              message,
-              confirmButtonText: 'Understood',
-            },
-            undefined,
-            undefined,
-            {
-              warning: true,
-              abortable: false,
-            }
-          );
+          modal.activate();
         }, 100);
       });
 
@@ -962,20 +956,15 @@ class ViewerController {
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame).catch(() => {
-      this._modalService.info(
-        {
-          title: 'Error',
-          headline: `There was an error updating the shape`,
-          message: `The shape could not be saved. Please contact the label coordinator and reload the page to continue with the labeling process!`,
-          confirmButtonText: 'Reload',
-        },
-        () => window.location.reload(),
-        undefined,
-        {
-          warning: true,
-          abortable: false,
-        }
-      );
+      const errorModal = this._modalService.getAlertWarningDialog({
+        title: 'Error',
+        headline: `There was an error updating the shape`,
+        message: `The shape could not be saved. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+        confirmButtonText: 'Reload',
+      }, () => {
+        window.location.reload();
+      });
+      errorModal.activate();
     });
   }
 
@@ -995,20 +984,15 @@ class ViewerController {
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
       .catch(() => {
-        this._modalService.info(
-          {
-            title: 'Error',
-            headline: `There was an error creating the shape`,
-            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
-            confirmButtonText: 'Reload',
-          },
-          () => window.location.reload(),
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
+        const errorModal = this._modalService.getAlertWarningDialog({
+          title: 'Error',
+          headline: `There was an error creating the shape`,
+          message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+          confirmButtonText: 'Reload',
+        }, () => {
+          window.location.reload();
+        });
+        errorModal.activate();
       })
       .then(() => {
         shape.publish();

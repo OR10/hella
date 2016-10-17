@@ -246,19 +246,12 @@ class MediaControlsController {
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
 
-            this._modalService.info(
-              {
-                title: 'Interpolation error',
-                headline: 'There was an error with the interpolation. Please try again.',
-                confirmButtonText: 'Understood',
-              },
-              undefined,
-              undefined,
-              {
-                warning: true,
-                abortable: false,
-              }
-            );
+            const modal = this._modalService.getAlertWarningDialog({
+              title: 'Interpolation error',
+              headline: 'There was an error with the interpolation. Please try again.',
+              confirmButtonText: 'Understood',
+            });
+            modal.activate();
 
             throw error;
           }
@@ -268,14 +261,15 @@ class MediaControlsController {
   }
 
   handleDeleteSelectionClicked() {
-    this._modalService.info(
-      {
-        title: 'Remove shape',
-        headline: 'The selected shape is going to be removed. Proceed?',
-        confirmButtonText: 'Delete',
-      },
-      () => this._deleteSelectedShape()
-    );
+    const deleteQuestion = this._modalService.getWarningDialog({
+      title: 'Remove shape',
+      headline: 'The selected shape is going to be removed. Proceed?',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }, () => {
+      this._deleteSelectedShape();
+    });
+    deleteQuestion.activate();
   }
 
   _deleteSelectedShape() {
@@ -285,18 +279,13 @@ class MediaControlsController {
 
     const onDeletionError = () => {
       this._applicationState.enableAll();
-      this._modalService.info(
-        {
-          title: 'Error',
-          headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
-        },
-        undefined,
-        undefined,
-        {
-          warning: true,
-          abortable: false,
-        }
-      );
+      const errorDialog = this._modalService.getAlertWarningDialog({
+        title: 'Error',
+        headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
+        confirmButtonText: 'Ok',
+      }, () => {
+      });
+      errorDialog.activate();
     };
 
     this._applicationState.disableAll();
