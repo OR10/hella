@@ -13,6 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use crosscan\Logger\Facade\LoggerFacade;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
  * @Rest\Prefix("/api/labeledThingInFrame")
@@ -48,24 +49,32 @@ class LabeledThingInFrame extends Controller\Base
     private $logger;
 
     /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Service\TaskIncomplete     $taskIncompleteService
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param \cscntLogger               $logger
+     * @param Storage\TokenStorage       $tokenStorage
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledThing $labeledThingFacade,
         Service\TaskIncomplete $taskIncompleteService,
         Facade\LabelingTask $labelingTaskFacade,
-        \cscntLogger $logger
+        \cscntLogger $logger,
+        Storage\TokenStorage $tokenStorage
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->logger                    = new LoggerFacade($logger, self::class);
+        $this->tokenStorage              = $tokenStorage;
     }
 
     /**
@@ -125,13 +134,15 @@ class LabeledThingInFrame extends Controller\Base
             }
         } else {
             if ($request->request->get('rev') !== $labeledThingInFrame->getRev()) {
+                $loginUser = $this->tokenStorage->getToken()->getUser();
                 $this->logger->logString(
                     sprintf(
-                        '[Update Conflict] LabeledThingInFrame (%s) rev. (%s) does not match current rev. (%s) for task %s',
+                        '[Update Conflict] LabeledThingInFrame (%s) rev. (%s) does not match current rev. (%s) for task %s (User: %s)',
                         $labeledThingInFrame->getId(),
                         $request->request->get('rev'),
                         $labeledThingInFrame->getRev(),
-                        $labeledThing->getTaskId()
+                        $labeledThing->getTaskId(),
+                        $loginUser
                     ),
                     \cscntLogPayload::SEVERITY_WARNING
                 );

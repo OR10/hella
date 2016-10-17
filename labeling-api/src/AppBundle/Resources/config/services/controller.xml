@@ -77,6 +77,7 @@
             <argument type="service" id="annostation.labeling_api.service.task_incomplete" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
+            <argument type="service" id="security.token_storage"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.task.labeled__frame"
