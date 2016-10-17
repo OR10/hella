@@ -458,7 +458,7 @@ gulp.task('deploy', () => {
         'index-protractor.html',
         'index-functional-template.html',
         'index-functional-template-min.html',
-        'index-dev.html'
+        'index-dev.html',
       ],
       root: 'Distribution/',
       hostname: deploymentIp,
