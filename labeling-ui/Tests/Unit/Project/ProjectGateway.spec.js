@@ -174,38 +174,4 @@ describe('ProjectGateway', () => {
 
     $httpBackend.flush();
   });
-
-  it('should flag a project', done => {
-    const response = {
-      result: {
-        success: true,
-      },
-    };
-
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/attention/enable').respond(response);
-
-    gateway.flagProject('PROJECT_ID').then(result => {
-      expect(result).toEqual(response.result);
-      done();
-    });
-
-    $httpBackend.flush();
-  });
-
-  it('should unflag a project', done => {
-    const response = {
-      result: {
-        success: true,
-      },
-    };
-
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/attention/disable').respond(response);
-
-    gateway.unflagProject('PROJECT_ID').then(result => {
-      expect(result).toEqual(response.result);
-      done();
-    });
-
-    $httpBackend.flush();
-  });
 });

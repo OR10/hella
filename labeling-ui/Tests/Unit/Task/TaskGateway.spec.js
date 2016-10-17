@@ -310,4 +310,38 @@ describe('TaskGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should flag a project', done => {
+    const response = {
+      result: {
+        success: true,
+      },
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/TASK_ID/attention/enable').respond(response);
+
+    gateway.flagTask('TASK_ID').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should unflag a project', done => {
+    const response = {
+      result: {
+        success: true,
+      },
+    };
+
+    $httpBackend.expectPOST('/backend/api/task/TASK_ID/attention/disable').respond(response);
+
+    gateway.unflagTask('TASK_ID').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });

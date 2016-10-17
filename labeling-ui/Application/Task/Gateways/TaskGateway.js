@@ -235,6 +235,77 @@ class TaskGateway {
         throw new Error(`Failed dissociating user (${userId}) from task (${taskId}).`);
       });
   }
+
+  /**
+   * @param {string} projectId
+   * @param {number?} limit
+   * @param {number?} offset
+   */
+  getFlaggedTasks(projectId, limit = null, offset = null) {
+    const params = {};
+
+    if (limit) {
+      params.limit = limit;
+    }
+
+    if (offset) {
+      params.offset = offset;
+    }
+
+    const url = this._apiService.getApiUrl(`/project/${projectId}/attentionTasks`, params);
+
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (
+          response.data !== undefined &&
+          response.data.totalRows !== undefined &&
+          response.data.result !== undefined &&
+          response.data.result.tasks !== undefined &&
+          response.data.result.users !== undefined
+        ) {
+          const users = {};
+          Object.keys(response.data.result.users).forEach(userId => users[userId] = new User(response.data.result.users[userId]));
+          return {
+            totalRows: response.data.totalRows,
+            tasks: response.data.result.tasks.map(task => new Task(task, users)),
+          };
+        }
+
+        throw new Error('Failed loading flagged task list');
+      });
+  }
+
+  /**
+   * @param {String} taskId
+   * @return {*}
+   */
+  flagTask(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/attention/enable`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to flag task: ${taskId}.`);
+      });
+  }
+
+  /**
+   * @param {String} taskId
+   * @return {*}
+   */
+  unflagTask(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/attention/disable`);
+    return this._bufferedHttp.post(url, undefined, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to unflag task: ${taskId}.`);
+      });
+  }
 }
 
 TaskGateway.$inject = [
