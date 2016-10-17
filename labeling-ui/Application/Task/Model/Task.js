@@ -146,6 +146,11 @@ class Task {
      * @private
      */
     this._users = users;
+
+    /**
+     * @type {Boolean}
+     */
+    this.taskAttentionFlag = task.taskAttentionFlag;
   }
 
   /**
