@@ -4,15 +4,15 @@
 <div class="modal-body noscrollbars">
     <h3 class="modal-body-headline">{{headline}}</h3>
     <p class="modal-body-content">{{message}}</p>
-    <select ng-model="selection">
+    <select class="modal-select" ng-model="selection">
         <option ng-repeat="option in data" value="{{option.id}}">{{option.name}}</option>
     </select>
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->
     <button ng-if="isAbortable" class="modal-button-cancel grid-content small-12" ng-click="cancelCallback()">{{cancelButtonText}}</button>
-    <button ng-if="isAbortable" class="modal-button-confirm grid-content small-12" ng-click="confirmCallback()" autofocus>{{confirmButtonText}}</button>
+    <button ng-if="isAbortable" class="modal-button-confirm grid-content small-12" ng-click="confirmCallback(selection)" autofocus>{{confirmButtonText}}</button>
 
     <!-- Non abortable Dialog -->
-    <button ng-if="!isAbortable" class="modal-button-confirm grid-content text-center" ng-click="confirmCallback()" autofocus>{{confirmButtonText}}</button>
+    <button ng-if="!isAbortable" class="modal-button-confirm grid-content text-center" ng-click="confirmCallback(selection)" autofocus>{{confirmButtonText}}</button>
 </div>
