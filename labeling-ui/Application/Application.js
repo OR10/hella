@@ -23,6 +23,8 @@ import FilmReelModule from './FilmReel/FilmReel';
 import MediaControlsModule from './MediaControls/MediaControls';
 import ReportingModule from './Reporting/Reporting';
 
+import Environment from './Common/Support/Environment';
+
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
 import commonModuleConfig from './Common/config.json!';
@@ -95,7 +97,15 @@ export default class Application {
           ...this.modules.map(mod => mod.module.name),
         ]);
 
-        this.setupRouting();
+        if (!Environment.isFunctionalTesting) {
+          /* *****************************************************************
+           * Functional tests do not setup the router
+           * *****************************************************************/
+          this.setupRouting();
+        }
+
+        // Allow each module to configure its angular module
+        this.modules.forEach(module => module.module.config(module.config));
 
         return this.buildApplicationConfig();
       }).then(config => {
@@ -159,8 +169,5 @@ export default class Application {
     ];
 
     this.app.config(routerConfigurator);
-
-    // Allow each module to configure its angular module
-    this.modules.forEach(module => module.module.config(module.config));
   }
 }

@@ -51,6 +51,31 @@ function execReturn(command, next) {
   child.stderr.on('data', data => stderr += data);
 }
 
+function runProtractor(protractorConfig, protractorServerConfig, testFiles, next) {
+  const augmentedProtractorConfig = Object.assign({}, protractorConfig);
+
+  if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
+    augmentedProtractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
+    augmentedProtractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+  } else {
+    augmentedProtractorConfig.args.push('--baseUrl', 'http://localhost:52343');
+  }
+
+  const protractorServer = new ProtractorServer(protractorServerConfig);
+  protractorServer.serve();
+
+  gulp.src(testFiles)
+    .pipe(protractor(augmentedProtractorConfig))
+    .on('error', error => {
+      protractorServer.close();
+      throw error;
+    })
+    .on('end', () => {
+      protractorServer.close();
+      next();
+    });
+}
+
 const $$ = gulpLoadPlugins({
   rename: {
     'gulp-angular-templatecache': 'angularTemplateCache',
@@ -68,6 +93,8 @@ paths.dir = {
   'tests': {
     'unit': 'Tests/Unit',
     'e2e': 'Tests/E2E',
+    'functional': 'Tests/Functional',
+    'fixtures': 'Tests/Fixtures',
   },
   'distribution': 'Distribution',
   'logs': 'Logs',
@@ -88,6 +115,7 @@ paths.files = {
   'tests': {
     'unit': `${paths.dir.tests.unit}/**/*.js`,
     'e2e': `${paths.dir.tests.e2e}/**/*.js`,
+    'functional': `${paths.dir.tests.functional}/**/*.js`,
   },
   'system': {
     'config': `${paths.dir.application}/system.config.js`,
@@ -299,68 +327,34 @@ gulp.task('copy-canteen', () => {
 gulp.task('webdriver-update', webdriverUpdate);
 
 gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], next => {
-  const protractorConfig = {
-    configFile: 'protractor.conf.js',
-    args: [],
-  };
-
-  if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    protractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
-    protractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
-  } else {
-    protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
-  }
-
-  const protractorServer = new ProtractorServer({
-    assetPath: 'Distribution',
-    port: 52343,
-  });
-
-  protractorServer.serve();
-
-  gulp.src(paths.files.tests.e2e)
-    .pipe(protractor(protractorConfig))
-    .on('error', error => {
-      protractorServer.close();
-      throw error;
-    })
-    .on('end', () => {
-      protractorServer.close();
-      next();
-    });
+  runProtractor(
+    {
+      configFile: 'protractor.e2e.conf.js',
+      args: [],
+    },
+    {
+      assetPath: 'Distribution',
+      port: 52343,
+    },
+    paths.files.tests.e2e,
+    next
+  );
 });
 
 gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-logs'], next => {
-  const protractorConfig = {
-    configFile: 'protractor.conf.js',
-    args: [],
-  };
-
-  if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    protractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
-    protractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
-  } else {
-    protractorConfig.args.push('--baseUrl', 'http://localhost:52343');
-  }
-
-  const protractorServer = new ProtractorServer({
-    assetPath: 'Distribution',
-    port: 52343,
-    indexFile: 'index-protractor.html',
-  });
-
-  protractorServer.serve();
-
-  gulp.src(paths.files.tests.e2e)
-    .pipe(protractor(protractorConfig))
-    .on('error', error => {
-      protractorServer.close();
-      throw error;
-    })
-    .on('end', () => {
-      protractorServer.close();
-      next();
-    });
+  runProtractor(
+    {
+      configFile: 'protractor.e2e.conf.js',
+      args: [],
+    },
+    {
+      assetPath: 'Distribution',
+      port: 52343,
+      indexFile: 'index-protractor.html',
+    },
+    paths.files.tests.e2e,
+    next
+  );
 });
 
 gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
@@ -369,6 +363,52 @@ gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-
 
 gulp.task('test-e2e-non-minified', ['webdriver-update'], next => {
   run('clean', 'build', 'copy-canteen', 'test-e2e-non-minified-run', next);
+});
+
+gulp.task('test-functional-run', ['webdriver-update', 'clean-logs'], next => {
+  runProtractor(
+    {
+      configFile: 'protractor.functional.conf.js',
+      args: [],
+    },
+    {
+      assetPath: 'Distribution',
+      port: 52343,
+      indexTemplate: {
+        templateFile: `${paths.dir.distribution}/index-functional-template-min.html`,
+        contentPath: `${paths.dir.tests.fixtures}/Functional`,
+      },
+    },
+    paths.files.tests.functional,
+    next
+  );
+});
+
+gulp.task('test-functional-non-minified-run', ['webdriver-update', 'clean-logs'], next => {
+  runProtractor(
+    {
+      configFile: 'protractor.functional.conf.js',
+      args: [],
+    },
+    {
+      assetPath: 'Distribution',
+      port: 52343,
+      indexTemplate: {
+        templateFile: `${paths.dir.distribution}/index-functional-template.html`,
+        contentPath: `${paths.dir.tests.fixtures}/Functional`,
+      },
+    },
+    paths.files.tests.functional,
+    next
+  );
+});
+
+gulp.task('test-functional', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
+  run('clean', 'build', 'optimize', 'test-functional-run', next);
+});
+
+gulp.task('test-functional-non-minified', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
+  run('clean', 'build', 'test-functional-non-minified-run', next);
 });
 
 gulp.task('build-sass', () => {
@@ -413,7 +453,7 @@ gulp.task('deploy', () => {
   return gulp.src('Distribution/**')
     .pipe($$.rsync({
       recurse: true,
-      exclude: ['index-protractor-min', 'index-protractor.html', 'index-dev.html'],
+      exclude: ['index-protractor-min.html', 'index-protractor.html', 'index-functional-template.html', 'index-dev.html'],
       root: 'Distribution/',
       hostname: deploymentIp,
       destination: '/var/www/labeling-ui',

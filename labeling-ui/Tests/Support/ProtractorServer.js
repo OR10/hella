@@ -17,6 +17,7 @@ export default class ProtractorServer {
       assetPath: 'Distribution',
       port: 52343,
       indexFile: 'index-protractor-min.html',
+      indexTemplate: null,
     };
 
     return Object.assign({}, defaultConfig, config);
@@ -72,6 +73,48 @@ export default class ProtractorServer {
     };
   }
 
+  createIndexTemplateMiddleware(assetDirectory, templateFile, contentDirectory) {
+    const template = fs.readFileSync(templateFile, 'utf8');
+    return (req, res, next) => {
+      const originalUrl = parseUrl.original(req);
+      const pathname = parseUrl(req).pathname;
+
+      // Ignore /labeling/ prefix, as the whole application depends on this.
+      let path = pathname.replace(/\/labeling\//, '/');
+      if (path === '/' && originalUrl.pathname.substr(-1) !== '/') {
+        path = '';
+      }
+
+      const stream = send(req, path, {
+        root: assetDirectory,
+      });
+
+      stream.on('error', error => {
+        if (error.code !== 'ENOENT') {
+          return next(error);
+        }
+
+        // Combine template and index file and serve it
+        fs.readFile(`${contentDirectory}/${path}`, 'utf8', (err, content) => {
+          if (err) {
+            // Propagate the original error from the send module, as our "rewrite" failed as well, but we want to
+            // provide the initial file request error :).
+            return next(error);
+          }
+
+          const processedTemplate = template.replace('{{ content }}', content);
+
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/html');
+          res.setHeader('Content-Length', Buffer.byteLength(processedTemplate));
+          res.end(processedTemplate);
+        });
+      });
+
+      stream.pipe(res);
+    };
+  }
+
   createFixturesMiddleware() {
     const options = {
       dir: `${process.cwd()}/Tests/Fixtures/Images`,
@@ -89,7 +132,8 @@ export default class ProtractorServer {
   }
 
   serve() {
-    let {port, assetPath} = this.config;
+    let {port} = this.config;
+    const {assetPath, indexFile, indexTemplate} = this.config;
 
     if (process.env.PORT) {
       port = process.env.PORT;
@@ -97,10 +141,21 @@ export default class ProtractorServer {
 
     Promise.resolve()
       .then(this.createFixturesMiddleware)
-      .then((fixturesMiddleware) => {
+      .then(fixturesMiddleware => {
         const app = connect();
         app.use('/fixtures/images', fixturesMiddleware);
-        app.use(this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/${this.config.indexFile}`));
+
+        if (indexTemplate !== null) {
+          // Do not rewrite everything to one indexfile. Instead allow a whole directory to be
+          // served with indexFiles, which are inserted into a given template
+          app.use(
+            this.createIndexTemplateMiddleware(assetPath, indexTemplate.templateFile, indexTemplate.contentPath)
+          );
+        } else {
+          app.use(
+            this.createOneForAllTheThingzMiddleware(assetPath, `${assetPath}/${indexFile}`)
+          );
+        }
         return app;
       })
       .then(app => {
