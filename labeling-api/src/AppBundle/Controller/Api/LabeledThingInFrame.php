@@ -137,12 +137,13 @@ class LabeledThingInFrame extends Controller\Base
                 $loginUser = $this->tokenStorage->getToken()->getUser();
                 $this->logger->logString(
                     sprintf(
-                        '[Update Conflict] LabeledThingInFrame (%s) rev. (%s) does not match current rev. (%s) for task %s (User: %s)',
+                        '[Update Conflict] LabeledThingInFrame (%s) rev. (%s) does not match current rev. (%s) for task %s (User: %s) [%s]',
                         $labeledThingInFrame->getId(),
                         $request->request->get('rev'),
                         $labeledThingInFrame->getRev(),
                         $labeledThing->getTaskId(),
-                        $loginUser
+                        $loginUser,
+                        \serialize($request->request->all())
                     ),
                     \cscntLogPayload::SEVERITY_WARNING
                 );
