@@ -50,6 +50,10 @@ import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 import FileSizeFilterProvider from './Filters/FileSizeFilterProvider';
 
+import SystemStatusController from './Controllers/SystemStatusController';
+import SystemStatusView from './Views/SystemStatusView.html!';
+import SystemGateway from './Gateways/SystemGateway';
+
 
 /**
  * ManagementBoard Module
@@ -230,6 +234,22 @@ class ManagementBoard extends Module {
         },
       },
     });
+
+    $stateProvider.state('labeling.system', {
+      url: 'system',
+      redirectTo: 'labeling.system.status',
+    });
+
+    $stateProvider.state('labeling.system.status', {
+      url: '/status',
+      views: {
+        '@': {
+          controller: SystemStatusController,
+          controllerAs: 'vm',
+          template: SystemStatusView,
+        },
+      },
+    });
   }
 
   /**
@@ -242,6 +262,7 @@ class ManagementBoard extends Module {
     this.module.service('labelingGroupGateway', LabelingGroupGateway);
     this.module.service('taskConfigurationGateway', TaskConfigurationGateway);
     this.module.service('projectGateway', ProjectGateway);
+    this.module.service('systemGateway', SystemGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);
     this.registerDirective('tabView', TabViewDirective);
