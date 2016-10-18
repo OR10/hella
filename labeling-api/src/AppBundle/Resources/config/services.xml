@@ -6,6 +6,7 @@
 
     <imports>
         <import resource="services/command.xml"/>
+        <import resource="services/event_listeners.xml"/>
         <import resource="services/controller.xml"/>
         <import resource="services/database_facades.xml"/>
         <import resource="services/interpolation_algorithms.xml"/>
