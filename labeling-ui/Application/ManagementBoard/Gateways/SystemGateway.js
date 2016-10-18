@@ -27,13 +27,26 @@ class SystemGateway {
    */
   getQueueStatus() {
     const url = this._apiService.getApiUrl('/system/queues');
-    return this._bufferedHttp.get(url, undefined, 'user')
+    return this._bufferedHttp.get(url, undefined, 'system')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
         }
 
         throw new Error('Failed loading queue status information');
+      });
+  }
+
+  /**
+   * Checks if the accumulated health status of the application is healthy
+   *
+   * @return {AbortablePromise}
+   */
+  isSystemHealthy() {
+    const url = this._apiService.getMonitorUrl('/health/http_status_checks');
+    return this._bufferedHttp.get(url, undefined, 'system')
+      .then(response => {
+        return response.status === 200;
       });
   }
 }
