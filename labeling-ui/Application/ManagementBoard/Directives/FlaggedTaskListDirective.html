@@ -35,7 +35,7 @@
         </tr>
         </thead>
         <tbody ng-if="vm.tasks.length > 0">
-        <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id, user)">
+        <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id)">
             <td>
                 <i ng-if="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
                 <i ng-if="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
