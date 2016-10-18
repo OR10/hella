@@ -140,3 +140,8 @@ api_project_attention:
     resource: "annostation.labeling_api.controller.api.project.attention"
     type: rest
     name_prefix: app_api_project_attention
+
+api_system:
+    resource: "annostation.labeling_api.controller.api.system"
+    type: rest
+    name_prefix: app_api_system
