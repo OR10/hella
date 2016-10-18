@@ -191,7 +191,7 @@ class BufferedHttpProvider {
         try {
           revisionManager.injectRevision(model);
         } catch (error) {
-          logger.warn('bufferedHttp:revisionManager', `Could not auto-inject revision into model: `, model);
+          logger.warn('bufferedHttp:revisionManager', `Could not auto-inject revision into model: ${error.toString()}: `, model);
         }
       });
     }
@@ -245,7 +245,7 @@ class BufferedHttpProvider {
         try {
           revisionManager.extractRevision(model);
         } catch (error) {
-          logger.warn('bufferedHttp:revisionManager', `Could not auto-extract revision: `, model);
+          logger.warn('bufferedHttp:revisionManager', `Could not auto-extract revision: ${error.toString()}: `, model);
         }
       });
     }
