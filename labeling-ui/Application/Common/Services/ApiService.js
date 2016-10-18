@@ -31,6 +31,25 @@ class ApiService {
   }
 
   /**
+   * Create a url to request a certain monitor path on the backend
+   *
+   * @param {string} path
+   * @param {Object} query
+   * @returns {string}
+   */
+  getMonitorUrl(path, query = {}) {
+    const {Common: {backendPrefix, monitorPrefix}} = this.configuration;
+    const location = `${backendPrefix}/${monitorPrefix}/${path}`.replace(/\/\/+/g, '/');
+    const encodedQuery = this.$httpParamSerializer(query);
+
+    if (encodedQuery !== '') {
+      return `${location}?${encodedQuery}`;
+    }
+
+    return location;
+  }
+
+  /**
    * Create a url to request a certain api path on the backend
    *
    * @param {string} path
