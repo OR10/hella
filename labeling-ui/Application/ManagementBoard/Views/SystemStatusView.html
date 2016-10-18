@@ -23,7 +23,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            worker.queue.high_prio
+                            High priority
                         </td>
                         <td>
                             {{vm.queueData['worker.queue.high_prio']}}
@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <td>
-                            worker.queue.normal_prio
+                            Normal priority
                         </td>
                         <td>
                             {{vm.queueData['worker.queue.normal_prio']}}
@@ -39,7 +39,7 @@
                     </tr>
                     <tr>
                         <td>
-                            worker.queue.low_prio
+                            Low priority
                         </td>
                         <td>
                             {{vm.queueData['worker.queue.low_prio']}}
@@ -47,42 +47,10 @@
                     </tr>
                     <tr>
                         <td>
-                            notification.reschedule
+                            Deferred Jobs
                         </td>
                         <td>
-                            {{vm.queueData['notification.reschedule']}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            worker.reschedule.30s
-                        </td>
-                        <td>
-                            {{vm.queueData['worker.reschedule.30s']}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            worker.reschedule.60s
-                        </td>
-                        <td>
-                            {{vm.queueData['worker.reschedule.60s']}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            worker.reschedule.300s
-                        </td>
-                        <td>
-                            {{vm.queueData['worker.reschedule.300s']}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            worker.reschedule.900s
-                        </td>
-                        <td>
-                            {{vm.queueData['worker.reschedule.900s']}}
+                            {{vm.queueData['worker.reschedule.30s'] + vm.queueData['worker.reschedule.60s'] + vm.queueData['worker.reschedule.300s'] + vm.queueData['worker.reschedule.900s']}}
                         </td>
                     </tr>
                     </tbody>
