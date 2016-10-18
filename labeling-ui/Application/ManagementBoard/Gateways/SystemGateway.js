@@ -1,5 +1,3 @@
-import User from '../Models/User';
-
 /**
  * Gateway for managing User information
  */
