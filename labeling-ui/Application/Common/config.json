@@ -1,6 +1,7 @@
 {
   "backendPrefix": "/",
   "apiPrefix": "/api",
+  "monitorPrefix": "/monitor",
   "frontendPrefix": "/",
   "appPrefix": "/labeling",
   "colorPalettes": {
