@@ -88,7 +88,7 @@ class TaskListController {
     );
   }
 
-  openTask(taskId) { //eslint-disable no-unused-vars
+  openTask(taskId) { // eslint-disable-line no-unused-vars
     // Which phase should we use?!
     // this._$state.go('labeling.tasks.detail', {taskId, phase});
   }
