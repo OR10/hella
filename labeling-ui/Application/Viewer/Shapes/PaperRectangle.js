@@ -228,7 +228,7 @@ class PaperRectangle extends PaperShape {
 
     return new paper.Point(
       fixPoint.x + xDirection * newSize.width,
-      fixPoint.y + yDirection * newSize.height,
+      fixPoint.y + yDirection * newSize.height
     );
   }
 
