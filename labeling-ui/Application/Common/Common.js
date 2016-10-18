@@ -115,6 +115,7 @@ class Common extends Module {
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 
           loggerServiceProvider.addContexts('bufferedHttp:revisionManager');
+          loggerServiceProvider.addContexts('httpInterceptor:*');
 
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
@@ -122,7 +123,60 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$state', 'loggerService', 'logGateway', ($rootScope, $state, loggerService, logGateway) => {
+    this.module.run(['$rootScope', '$state', '$location', 'loggerService', 'logGateway', 'modalService', ($rootScope, $state, $location, loggerService, logGateway, modalService) => {
+      $rootScope.$on('readOnlyError', error => {
+        loggerService.warn('httpInterceptor:readOnlyError', error);
+        modalService.info(
+          {
+            title: 'Read only',
+            headline: 'This task is read only',
+            message: 'This task is marked as read only. This is either because of the tasks being marked as finished or because of the task being worked on by another person. You are not allowed to make any changes!',
+            confirmButtonText: 'Reload page',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            abortable: false,
+            warning: true,
+          }
+        );
+      });
+
+      $rootScope.$on('serverError', error => {
+        loggerService.warn('httpInterceptor:serverError', error);
+        modalService.info(
+          {
+            title: 'Error',
+            headline: 'There was an error with the application!',
+            message: 'Please reaload the page or go back to the main page.',
+            confirmButtonText: 'Go to main page',
+            cancelButtonText: 'Reload page',
+          },
+          () => $location.path('/'),
+          () => window.location.reload(),
+          {
+            warning: true,
+          }
+        );
+      });
+
+      $rootScope.$on('revisionError', error => {
+        loggerService.warn('httpInterceptor:revisionError', error);
+        modalService.info(
+          {
+            title: 'Revision Error',
+            headline: 'There was an error with the application!',
+            message: 'Please reload the page and contact your label coordinator about this error.',
+            confirmButtonText: 'Reload Page',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      });
       if (!Environment.isDevelopment) {
         loggerService.addLogger(new RemoteLogger(logGateway));
       }
