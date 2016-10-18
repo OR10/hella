@@ -52,6 +52,41 @@ class LabelingController {
         }
       );
     });
+
+    // this._$scope.$on('clientError', () => {
+    //   this._modalService.info(
+    //     {
+    //       title: 'Error',
+    //       headline: 'There was an error with the application!',
+    //       message: 'Please reload the page or go back to the main page.',
+    //       confirmButtonText: 'Go to main page',
+    //       cancelButtonText: 'Reload page',
+    //     },
+    //     () => this._$location.path('/'),
+    //     () => window.location.reload(),
+    //     {
+    //       warning: true,
+    //     }
+    //   );
+    // });
+
+    this._$scope.$on('revisionError', () => {
+      this._modalService.info(
+        {
+          title: 'Error',
+          headline: 'There was an error with the application!',
+          message: 'Please reload the page and contact your label coordinator about this error.',
+          confirmButtonText: 'Reload Page',
+        },
+        () => window.location.reload(),
+        undefined,
+        {
+          warning: true,
+          abortable: false,
+        }
+      );
+    });
+
   }
 }
 

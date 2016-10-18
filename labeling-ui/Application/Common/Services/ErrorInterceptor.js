@@ -24,8 +24,12 @@ class ErrorInterceptor {
       this._$rootScope.$broadcast('serverError', rejection.data.error);
     }
 
-    if (rejection.status >= 400 && rejection.status <= 499) {
+    if (rejection.status >= 400 && rejection.status <= 499 && rejection.status !== 409) {
       this._$rootScope.$broadcast('clientError', rejection.data.error);
+    }
+
+    if (rejection.status === 409) {
+      this._$rootScope.$broadcast('revisionError', rejection.data.error);
     }
 
     return this._$q.reject(rejection);
