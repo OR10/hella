@@ -52,6 +52,10 @@ class UserPermissions
         // Management board
         'canUploadNewVideo'              => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                             ],
         'canUploadTaskConfiguration'     => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                             ],
+
+        // System Information
+        'canViewSystemQueues'            => [Model\User::ROLE_ADMIN                                                                                       ],
+        'canViewSystemStatus'            => [Model\User::ROLE_ADMIN                                                                                       ],
     ];
     // @formatter:on
     // @codingStandardsIgnoreEnd
