@@ -205,47 +205,19 @@ class BufferedHttpProvider {
      * @private
      */
     function _extractRevision(data) {
-      if (!data.result) {
-        // Assume we do not need to map the data
-        logger.warn('bufferedHttp:revisionManager', 'Encountered backend request without the usual {result: ...} structure.', data);
-        return;
-      }
-
-      let processableData = [];
-
-      const specialKeys = ['labeledThingsInFrame', 'labeledThings', 'labeledThing', 'labeledThingInFrame', 'labelingGroups'];
-
-      if (specialKeys.reduce((find, key) => find || data.result[key] !== undefined, false)) {
-        specialKeys.forEach(key => {
-          const value = data.result[key];
-          if (value === undefined) {
-            return;
-          }
-          if (isArray(value)) {
-            processableData = processableData.concat(value);
-          } else if (key === 'labeledThings' || key === 'labeledThingsInFrame') {
-            processableData = processableData.concat(Object.values(value));
-          } else {
-            processableData.push(value);
-          }
-        });
-      } else {
-        if (isArray(data.result)) {
-          processableData = processableData.concat(data.result);
-        } else {
-          processableData.push(data.result);
-        }
-      }
-
-      processableData.forEach(model => {
-        if (!model.id) {
-          return;
-        }
-
+      if (data.id !== undefined && data.rev !== undefined && data.id !== null && data.rev !== null) {
         try {
-          revisionManager.extractRevision(model);
+          revisionManager.extractRevision(data);
         } catch (error) {
-          logger.warn('bufferedHttp:revisionManager', `Could not auto-extract revision: ${error.toString()}: `, model);
+          logger.warn('bufferedHttp:revisionManager', `Could not auto-extract revision: ${error.toString()}: `, data);
+        }
+      }
+
+      Object.keys(data).forEach(key => {
+        if (Array.isArray(data[key])) {
+          data[key].forEach(value => _extractRevision(value));
+        } else if (typeof data[key] === 'object' && data[key] !== null) {
+          _extractRevision(data[key]);
         }
       });
     }
