@@ -114,8 +114,8 @@ class Common extends Module {
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 
-          loggerServiceProvider.addContexts('tool:*');
-          loggerServiceProvider.addContexts('gateway:*');
+          loggerServiceProvider.addContexts('bufferedHttp:*');
+
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
           }
