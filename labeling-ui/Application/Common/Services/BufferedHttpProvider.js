@@ -205,6 +205,10 @@ class BufferedHttpProvider {
      * @private
      */
     function _extractRevision(data) {
+      if (typeof data !== 'object' || data === null) {
+        return;
+      }
+
       if (data.id !== undefined && data.rev !== undefined && data.id !== null && data.rev !== null) {
         try {
           revisionManager.extractRevision(data);
