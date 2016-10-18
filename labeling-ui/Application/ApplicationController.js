@@ -73,7 +73,7 @@ class LabelingController {
     this._$scope.$on('revisionError', () => {
       this._modalService.info(
         {
-          title: 'Error',
+          title: 'Revision Error',
           headline: 'There was an error with the application!',
           message: 'Please reload the page and contact your label coordinator about this error.',
           confirmButtonText: 'Reload Page',
