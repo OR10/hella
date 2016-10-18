@@ -171,5 +171,40 @@ describe('ApiService', () => {
       const secondFrontendUrl = service.getFrontendUrl('/', {bar: 'bar', foo: 'foo'});
       expect(firstFrontendUrl).toEqual(secondFrontendUrl);
     });
+
+    using([
+      ['/', '/'],
+      ['', ''],
+      ['/', ''],
+      ['', '/'],
+    ], (monitorPrefix, appPrefix) => {
+      it('should work with two empty prefixes', () => {
+        const service = getApiService({monitorPrefix, appPrefix});
+        const monitorUrl = service.getMonitorUrl('/');
+        expect(monitorUrl).toEqual('/');
+      });
+    });
+
+    using([
+      ['', '/monitor'],
+      ['/', '/monitor'],
+    ], (monitorPrefix, appPrefix) => {
+      it('should work with empty monitorPrefix', () => {
+        const service = getApiService({monitorPrefix, appPrefix});
+        const monitorUrl = service.getFrontendUrl('/');
+        expect(monitorUrl).toEqual('/monitor/');
+      });
+    });
+
+    using([
+      ['/monitor', ''],
+      ['/monitor', '/'],
+    ], (monitorPrefix, appPrefix) => {
+      it('should work with empty appPrefix', () => {
+        const service = getApiService({monitorPrefix, appPrefix});
+        const monitorUrl = service.getFrontendUrl('/');
+        expect(monitorUrl).toEqual('/monitor/');
+      });
+    });
   });
 });

@@ -382,3 +382,16 @@ title-bar {
 .fa.flagged {
   color: $icon-hover;
 }
+
+.system-health {
+  border-radius: 50%;
+  width: .7em;
+  height: .7em;
+  background-color: red;
+  display: inline-block;
+  margin-right: .2em;
+
+  &.healthy {
+    background-color: green;
+  }
+}
