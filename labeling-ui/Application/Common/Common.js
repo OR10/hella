@@ -114,7 +114,7 @@ class Common extends Module {
 
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 
-          loggerServiceProvider.addContexts('bufferedHttp:*');
+          loggerServiceProvider.addContexts('bufferedHttp:revisionManager');
 
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
