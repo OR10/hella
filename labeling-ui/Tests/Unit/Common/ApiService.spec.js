@@ -4,13 +4,12 @@ import {module, inject} from 'angular-mocks';
 
 import ApiService from 'Application/Common/Services/ApiService';
 
-fdescribe('ApiService', () => {
+describe('ApiService', () => {
   let getApiService;
 
   beforeEach(() => {
     getApiService = (configuration = {}) => {
       let service;
-      console.log(configuration);
       module($provide => {
         $provide.value('applicationConfig', {Common: configuration});
       });
