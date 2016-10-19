@@ -1,6 +1,6 @@
 # Labeling Tool Userinterface
 
-This directory contains the User-Interface-Code for the HAGLA Labeling Tool.
+This directory contains the User-Interface-Code for the HAGL Labeling Tool.
 
 Everything concerning the Client-Side rendering of the UI, as well as it's server-side nodejs related code is stored here
 
