@@ -53,6 +53,12 @@ class TaskController {
     this.$scope = $scope;
 
     /**
+     * @type {angular.$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
+
+    /**
      * @type {string}
      */
     this.taskPhase = $stateParams.phase;
@@ -299,16 +305,30 @@ class TaskController {
       }
     );
 
-    $scope.$watch('vm.framePosition.position', (newPosition, oldPosition) => {
-      if (newPosition !== oldPosition || $location.hash() === '') {
-        $location.hash(newPosition);
+    $scope.$watchGroup(['vm.framePosition.position', 'vm.selectedPaperShape'], (newValues, oldValues) => {
+      const oldPosition = oldValues[0];
+      const newPosition = newValues[0];
+      const oldShape = oldValues[1];
+      const newShape = newValues[1];
+
+      if (newPosition !== oldPosition || newShape !== oldShape || $location.hash() === '') {
+        if (newShape && newShape.labeledThingInFrame && newShape.labeledThingInFrame.id !== null) {
+          $location.hash(`${newPosition}/${newShape.labeledThingInFrame.id}`);
+        } else {
+          $location.hash(`${newPosition}`);
+        }
       }
     });
 
     $scope.$watch(() => $location.hash(), (newHash, oldHash) => {
       if (newHash !== oldHash) {
         this.framePosition.goto(this._getFrameIndexFromUrl());
+        this._selectLabeledThingInFrameFromUrl();
       }
+    });
+
+    this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
+      this._selectLabeledThingInFrameFromUrl();
     });
 
     // @TODO: Only needed as long as the left sidebar is not used and only shown for the panel
@@ -364,10 +384,30 @@ class TaskController {
     this.$scope.$broadcast('sidebar.resized');
   }
 
+  _selectLabeledThingInFrameFromUrl() {
+    const hash = this._$location.hash();
+    const match = hash.split('/')[1];
+
+    if (!match) {
+      return;
+    }
+    this._$timeout(() => {
+      const labeledThingInFrame = this.labeledThingsInFrame.find(element => {
+        return match === element.id;
+      });
+      if (labeledThingInFrame) {
+        const shape = labeledThingInFrame.paperShapes[0];
+        this.selectedPaperShape = shape;
+        this.hideLabeledThingsInFrame = true;
+        this.thingLayer.update();
+      }
+    });
+  }
+
   _getFrameIndexFromUrl() {
     const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
 
-    const hash = this._$location.hash();
+    const hash = this._$location.hash().split('/')[0];
     const matches = hash.match(/(\d+)/);
 
     if (!matches || matches.length < 2 || !matches[1]) {
