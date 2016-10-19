@@ -44,9 +44,9 @@ class TitleBarController {
   }
 
   updateHealthStatus() {
-    this._systemGateway.isSystemHealthy().then(healthy => {
-      this.isSystemHealthy = healthy;
-    });
+    // this._systemGateway.isSystemHealthy().then(healthy => {
+    //   this.isSystemHealthy = healthy;
+    // });
   }
 
   handleBackButton() {
