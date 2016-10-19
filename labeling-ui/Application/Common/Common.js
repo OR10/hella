@@ -115,7 +115,7 @@ class Common extends Module {
           loggerServiceProvider.registerLogger(new ConsoleLogger());
 
           loggerServiceProvider.addContexts('bufferedHttp:revisionManager');
-          loggerServiceProvider.addContexts('httpInterceptor:*');
+          loggerServiceProvider.addContexts('http:*');
 
           if (Environment.isDevelopment) {
             loggerServiceProvider.addContexts('*');
@@ -125,7 +125,6 @@ class Common extends Module {
 
     this.module.run(['$rootScope', '$state', '$location', 'loggerService', 'logGateway', 'modalService', ($rootScope, $state, $location, loggerService, logGateway, modalService) => {
       $rootScope.$on('readOnlyError', error => {
-        loggerService.warn('httpInterceptor:readOnlyError', error);
         modalService.info(
           {
             title: 'Read only',
@@ -143,7 +142,6 @@ class Common extends Module {
       });
 
       $rootScope.$on('serverError', error => {
-        loggerService.warn('httpInterceptor:serverError', error);
         modalService.info(
           {
             title: 'Error',
@@ -161,7 +159,6 @@ class Common extends Module {
       });
 
       $rootScope.$on('revisionError', error => {
-        loggerService.warn('httpInterceptor:revisionError', error);
         modalService.info(
           {
             title: 'Revision Error',
@@ -177,6 +174,24 @@ class Common extends Module {
           }
         );
       });
+
+      $rootScope.$on('httpInterrupted', error => {
+        modalService.info(
+          {
+            title: 'Http Connection Error',
+            headline: 'There was an error with the application!',
+            message: 'Please reload the page and contact your label coordinator about this error.',
+            confirmButtonText: 'Reload Page',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      });
+
       if (!Environment.isDevelopment) {
         loggerService.addLogger(new RemoteLogger(logGateway));
       }

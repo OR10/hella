@@ -5,10 +5,26 @@ class ErrorInterceptor {
   /**
    * @param {angular.Scope} $rootScope injected
    * @param {angular.$q} $q
+   * @param {LoggerService} loggerService
    */
-  constructor($rootScope, $q) {
+  constructor($rootScope, $q, loggerService) {
+    /**
+     * @type {angular.Scope}
+     * @private
+     */
     this._$rootScope = $rootScope;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
     this._$q = $q;
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = loggerService;
 
     this.responseError = this.responseError.bind(this);
   }
@@ -20,15 +36,21 @@ class ErrorInterceptor {
    * @returns {Promise}
    */
   responseError(rejection) {
-    if (rejection.status >= 500 && rejection.status <= 599) {
+    // Response interuption
+    if (rejection.status === -1) {
+      // Check if the request was deliberately aborted by the application
+      if (!rejection.config.timeout || rejection.config.timeout.$$state === undefined || rejection.config.timeout.$$state.status !== 1) {
+        this._logger.warn('http:interrupted', 'A http connection was interrupted/aborted', rejection);
+        this._$rootScope.$broadcast('httpInterrupted');
+      }
+    } else if (rejection.status >= 500 && rejection.status <= 599) {
+      this._logger.warn('http:servererror', 'A server error (5xx) occured upon a request', rejection);
       this._$rootScope.$broadcast('serverError', rejection.data.error);
-    }
-
-    if (rejection.status >= 400 && rejection.status <= 499 && rejection.status !== 409) {
+    } else if (rejection.status >= 400 && rejection.status <= 499 && rejection.status !== 409) {
+      this._logger.warn('http:clienterror', 'A client error (4xx) occured upon a request', rejection);
       this._$rootScope.$broadcast('clientError', rejection.data.error);
-    }
-
-    if (rejection.status === 409) {
+    } else if (rejection.status === 409) {
+      this._logger.warn('http:revisionerror', 'A revision mismatch (409) occured upon a request', rejection);
       this._$rootScope.$broadcast('revisionError', rejection.data.error);
     }
 
@@ -39,6 +61,7 @@ class ErrorInterceptor {
 ErrorInterceptor.$inject = [
   '$rootScope',
   '$q',
+  'loggerService',
 ];
 
 export default ErrorInterceptor;
