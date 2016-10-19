@@ -32,7 +32,7 @@ class UserProfile extends Module {
     $stateProvider.state('labeling.user.profile', {
       url: '/profile',
       views: {
-        '@': {
+        '@labeling': {
           controller: UserProfileController,
           controllerAs: 'vm',
           template: userProfileTemplate,
@@ -48,7 +48,7 @@ class UserProfile extends Module {
     $stateProvider.state('labeling.user.password', {
       url: '/password',
       views: {
-        '@': {
+        '@labeling': {
           controller: UserPasswordController,
           controllerAs: 'vm',
           template: userPasswordTemplate,

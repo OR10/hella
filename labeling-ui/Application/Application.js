@@ -153,6 +153,7 @@ export default class Application {
             '@': {
               controller: ApplicationController,
               controllerAs: 'vm',
+              template: '<ui-view class="grid-frame vertical"></ui-view>',
             },
           },
           resolve: {

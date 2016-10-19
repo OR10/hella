@@ -36,7 +36,7 @@ class TaskModule extends Module {
     $stateProvider.state('labeling.tasks.detail', {
       url: '/:taskId/:phase',
       views: {
-        '@': {
+        '@labeling': {
           controller: TaskController,
           controllerAs: 'vm',
           template: taskTemplate,
