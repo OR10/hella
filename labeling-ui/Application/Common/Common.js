@@ -124,7 +124,7 @@ class Common extends Module {
       ]);
 
     this.module.run(['$rootScope', '$state', '$location', 'loggerService', 'logGateway', 'modalService', ($rootScope, $state, $location, loggerService, logGateway, modalService) => {
-      $rootScope.$on('readOnlyError', error => {
+      $rootScope.$on('readOnlyError', () => {
         modalService.info(
           {
             title: 'Read only',
@@ -141,7 +141,7 @@ class Common extends Module {
         );
       });
 
-      $rootScope.$on('serverError', error => {
+      $rootScope.$on('serverError', () => {
         modalService.info(
           {
             title: 'Error',
@@ -158,7 +158,7 @@ class Common extends Module {
         );
       });
 
-      $rootScope.$on('revisionError', error => {
+      $rootScope.$on('revisionError', () => {
         modalService.info(
           {
             title: 'Revision Error',
@@ -175,7 +175,7 @@ class Common extends Module {
         );
       });
 
-      $rootScope.$on('httpInterrupted', error => {
+      $rootScope.$on('httpInterrupted', () => {
         modalService.info(
           {
             title: 'Http Connection Error',
