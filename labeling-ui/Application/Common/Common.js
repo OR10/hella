@@ -192,7 +192,7 @@ class Common extends Module {
         );
       });
 
-      if (!Environment.isDevelopment) {
+      if (!Environment.isDevelopment && !Environment.isTesting && !Environment.isFunctionalTesting) {
         loggerService.addLogger(new RemoteLogger(logGateway));
       }
 
