@@ -4,12 +4,13 @@ import {module, inject} from 'angular-mocks';
 
 import ApiService from 'Application/Common/Services/ApiService';
 
-describe('ApiService', () => {
+fdescribe('ApiService', () => {
   let getApiService;
 
   beforeEach(() => {
     getApiService = (configuration = {}) => {
       let service;
+      console.log(configuration);
       module($provide => {
         $provide.value('applicationConfig', {Common: configuration});
       });
@@ -177,32 +178,32 @@ describe('ApiService', () => {
       ['', ''],
       ['/', ''],
       ['', '/'],
-    ], (monitorPrefix, appPrefix) => {
+    ], (backendPrefix, monitorPrefix) => {
       it('should work with two empty prefixes', () => {
-        const service = getApiService({monitorPrefix, appPrefix});
+        const service = getApiService({backendPrefix, monitorPrefix});
         const monitorUrl = service.getMonitorUrl('/');
         expect(monitorUrl).toEqual('/');
       });
     });
 
     using([
-      ['', '/monitor'],
-      ['/', '/monitor'],
-    ], (monitorPrefix, appPrefix) => {
+      ['', '/backendPrefix'],
+      ['/', '/backendPrefix'],
+    ], (monitorPrefix, backendPrefix) => {
       it('should work with empty monitorPrefix', () => {
-        const service = getApiService({monitorPrefix, appPrefix});
-        const monitorUrl = service.getFrontendUrl('/');
-        expect(monitorUrl).toEqual('/monitor/');
+        const service = getApiService({backendPrefix, monitorPrefix});
+        const monitorUrl = service.getMonitorUrl('/');
+        expect(monitorUrl).toEqual('/backendPrefix/');
       });
     });
 
     using([
       ['/monitor', ''],
       ['/monitor', '/'],
-    ], (monitorPrefix, appPrefix) => {
+    ], (monitorPrefix, backendPrefix) => {
       it('should work with empty appPrefix', () => {
-        const service = getApiService({monitorPrefix, appPrefix});
-        const monitorUrl = service.getFrontendUrl('/');
+        const service = getApiService({backendPrefix, monitorPrefix});
+        const monitorUrl = service.getMonitorUrl('/');
         expect(monitorUrl).toEqual('/monitor/');
       });
     });
