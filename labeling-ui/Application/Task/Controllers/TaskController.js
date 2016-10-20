@@ -398,7 +398,6 @@ class TaskController {
       if (labeledThingInFrame) {
         const shape = labeledThingInFrame.paperShapes[0];
         this.selectedPaperShape = shape;
-        this.hideLabeledThingsInFrame = true;
         this.thingLayer.update();
       }
     });
