@@ -71,7 +71,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.upload', {
       url: 'upload/:projectId',
       views: {
-        '@': {
+        '@labeling': {
           controller: UploadController,
           controllerAs: 'vm',
           template: UploadView,
@@ -94,7 +94,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.projects.list', {
       url: '/',
       views: {
-        '@': {
+        '@labeling': {
           controller: ProjectsController,
           controllerAs: 'vm',
           template: ProjectsView,
@@ -105,7 +105,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.projects.create', {
       url: '/create',
       views: {
-        '@': {
+        '@labeling': {
           controller: ProjectCreateController,
           controllerAs: 'vm',
           template: ProjectCreateView,
@@ -116,7 +116,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.projects.flagged', {
       url: '/:projectId/flagged',
       views: {
-        '@': {
+        '@labeling': {
           controller: ProjectFlaggedController,
           controllerAs: 'vm',
           template: ProjectFlaggedView,
@@ -139,7 +139,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.tasks.list', {
       url: '/',
       views: {
-        '@': {
+        '@labeling': {
           controller: TasksController,
           controllerAs: 'vm',
           template: TasksView,
@@ -162,7 +162,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.users.list', {
       url: '/',
       views: {
-        '@': {
+        '@labeling': {
           controller: UsersController,
           controllerAs: 'vm',
           template: UsersView,
@@ -173,7 +173,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.users.detail', {
       url: '/{userId:[0-9a-f]{1,32}|new}',
       views: {
-        '@': {
+        '@labeling': {
           controller: UsersDetailController,
           controllerAs: 'vm',
           template: UsersDetailView,
@@ -189,7 +189,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.labeling-groups.list', {
       url: '/',
       views: {
-        '@': {
+        '@labeling': {
           controller: LabelingGroupsController,
           controllerAs: 'vm',
           template: LabelingGroupsView,
@@ -200,7 +200,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.labeling-groups.detail', {
       url: '/:groupId',
       views: {
-        '@': {
+        '@labeling': {
           controller: LabelingGroupsDetailController,
           controllerAs: 'vm',
           template: LabelingGroupsDetailView,
@@ -216,7 +216,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.task-configurations.list', {
       url: '/',
       views: {
-        '@': {
+        '@labeling': {
           controller: TaskConfigurationController,
           controllerAs: 'vm',
           template: TaskConfigurationView,
@@ -227,7 +227,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.task-configurations.upload', {
       url: '/upload',
       views: {
-        '@': {
+        '@labeling': {
           controller: TaskConfigurationUploadController,
           controllerAs: 'vm',
           template: TaskConfigurationUploadView,
@@ -243,7 +243,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.system.status', {
       url: '/status',
       views: {
-        '@': {
+        '@labeling': {
           controller: SystemStatusController,
           controllerAs: 'vm',
           template: SystemStatusView,

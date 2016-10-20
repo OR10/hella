@@ -37,7 +37,7 @@ class Reporting extends Module {
     $stateProvider.state('labeling.reporting.list', {
       url: '/:projectId',
       views: {
-        '@': {
+        '@labeling': {
           controller: ReportingListController,
           controllerAs: 'vm',
           template: ReportingListTemplate,
@@ -56,7 +56,7 @@ class Reporting extends Module {
     $stateProvider.state('labeling.reporting.show', {
       url: '/:projectId/report/:reportId',
       views: {
-        '@': {
+        '@labeling': {
           controller: ReportingController,
           controllerAs: 'vm',
           template: ReportingTemplate,
@@ -75,7 +75,7 @@ class Reporting extends Module {
     $stateProvider.state('labeling.reporting.export', {
       url: '/:projectId/export',
       views: {
-        '@': {
+        '@labeling': {
           controller: ProjectExportController,
           controllerAs: 'vm',
           template: projectExportTemplate,

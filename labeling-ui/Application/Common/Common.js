@@ -32,7 +32,6 @@ import listDialogProvider from './Services/ModalDialogs/ListDialog';
 import selectionDialogProvider from './Services/ModalDialogs/SelectionDialog';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
-import RemoteLogger from './Loggers/RemoteLogger';
 
 import hotkeysTemplate from './Views/hotkeysTemplate.html!';
 
@@ -123,7 +122,7 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$state', '$location', 'loggerService', 'logGateway', 'modalService', ($rootScope, $state, $location, loggerService, logGateway, modalService) => {
+    this.module.run(['$rootScope', '$state', '$location', 'modalService', ($rootScope, $state, $location, modalService) => {
       $rootScope.$on('readOnlyError', () => {
         modalService.info(
           {
@@ -191,10 +190,6 @@ class Common extends Module {
           }
         );
       });
-
-      if (!Environment.isDevelopment && !Environment.isTesting && !Environment.isFunctionalTesting) {
-        loggerService.addLogger(new RemoteLogger(logGateway));
-      }
 
       $rootScope.$on('unauthorized', () => {
         const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);

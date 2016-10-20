@@ -7,13 +7,20 @@ class RemoteLogger {
 
   /**
    * @param {LogGateway} logGateway
+   * @param {User} user
    */
-  constructor(logGateway) {
+  constructor(logGateway, user) {
     /**
      * @type {LogGateway}
      * @private
      */
     this._logGateway = logGateway;
+
+    /**
+     * @type {User}
+     * @private
+     */
+    this._user = user;
 
     /**
      * @type {uuid}
@@ -45,6 +52,7 @@ class RemoteLogger {
       browser: {appCodeName, appName, appVersion, language, platform, product, userAgent, vendor},
       group: this._groupId,
       data: args,
+      user: this._user,
       trace,
     };
 
