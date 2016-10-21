@@ -3,6 +3,7 @@ namespace AppBundle\Database\Facade;
 
 use AppBundle\Database\Facade\CouchDb as CouchDbBase;
 use AppBundle\Model;
+use AppBundle\Service;
 use Doctrine\ODM\CouchDB;
 use League\Flysystem;
 
@@ -19,15 +20,24 @@ class Video
     private $fileSystem;
 
     /**
+     * @var Service\FrameCdn
+     */
+    private $frameCdnService;
+
+    /**
      * @param CouchDB\DocumentManager $documentManager
+     * @param Flysystem\FileSystem    $fileSystem
+     * @param Service\FrameCdn        $frameCdnService
      * @Flysystem\FileSystem          $fileSystem
      */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
-        Flysystem\FileSystem $fileSystem
+        Flysystem\FileSystem $fileSystem,
+        Service\FrameCdn $frameCdnService
     ) {
         $this->documentManager = $documentManager;
         $this->fileSystem      = $fileSystem;
+        $this->frameCdnService = $frameCdnService;
     }
 
     public function findAll()
@@ -158,18 +168,7 @@ class Video
         $this->documentManager->flush();
 
         if ($source !== null) {
-            if (is_resource($source)) {
-                $this->fileSystem->writeStream($video->getSourceVideoPath(), $source);
-            } elseif (is_file($source)) {
-                if (($stream = fopen($source, 'r+')) === false) {
-                    throw new \RuntimeException("File '{$source}' is not readable");
-                }
-                $this->fileSystem->writeStream($video->getSourceVideoPath(), $stream);
-            } elseif (is_string($source)) {
-                $this->fileSystem->write($video->getSourceVideoPath(), $source);
-            } else {
-                throw new \RuntimeException(sprintf('Unsupported source type: %s', gettype($source)));
-            }
+            $this->frameCdnService->saveVideo($video, $source);
         }
 
         return $video;

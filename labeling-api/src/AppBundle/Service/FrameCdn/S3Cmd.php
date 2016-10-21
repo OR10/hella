@@ -148,4 +148,29 @@ class S3Cmd extends Service\FrameCdn
 
         return $tempDir;
     }
+
+    /**
+     * @param Model\Video $video
+     * @param             $source
+     *
+     * @return mixed
+     */
+    public function saveVideo(Model\Video $video, $source)
+    {
+        $this->uploader->uploadFile(
+            $source,
+            $video->getSourceVideoPath()
+        );
+    }
+
+    /**
+     * @param Model\Video $video
+     *
+     * @return mixed
+     */
+    public function getVideo(
+        Model\Video $video
+    ) {
+        return $this->uploader->getFile($video->getSourceVideoPath());
+    }
 }

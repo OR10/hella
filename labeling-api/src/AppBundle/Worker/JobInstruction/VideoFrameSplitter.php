@@ -12,6 +12,7 @@ use AppBundle\Model;
 use League\Flysystem;
 use Doctrine\ODM\CouchDB;
 use AppBundle\Model\Video\ImageType;
+use AppBundle\Service;
 
 class VideoFrameSplitter extends WorkerPool\JobInstruction
 {
@@ -41,12 +42,18 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     private $cacheDir;
 
     /**
+     * @var Service\FrameCdn
+     */
+    private $frameCdnService;
+
+    /**
      * Video constructor.
      *
      * @param VideoService\VideoFrameSplitter $videoFrameSplitter
      * @param Facade\Video                    $videoFacade
      * @param Facade\LabelingTask             $labelingTaskFacade
      * @param Flysystem\Filesystem            $fileSystem
+     * @param Service\FrameCdn                $frameCdnService
      * @param string                          $cacheDir
      */
     public function __construct(
@@ -54,6 +61,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Flysystem\Filesystem $fileSystem,
+        Service\FrameCdn $frameCdnService,
         $cacheDir
     ) {
         $this->videoFrameSplitter = $videoFrameSplitter;
@@ -61,6 +69,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->fileSystem         = $fileSystem;
         $this->cacheDir           = $cacheDir;
+        $this->frameCdnService     = $frameCdnService;
     }
 
     /**
@@ -86,7 +95,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
                 throw new \RuntimeException('Error creating temporary file for video data');
             }
 
-            if (file_put_contents($tmpFile, $this->fileSystem->readStream($video->getSourceVideoPath())) === false) {
+            if (file_put_contents($tmpFile, $this->frameCdnService->getVideo($video)) === false) {
                 throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
             }
 

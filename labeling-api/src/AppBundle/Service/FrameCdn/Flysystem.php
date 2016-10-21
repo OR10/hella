@@ -82,4 +82,39 @@ class Flysystem extends Service\FrameCdn
 
         return $urls;
     }
+
+    /**
+     * @param Model\Video $video
+     * @param             $source
+     *
+     * @return mixed
+     */
+    public function saveVideo(
+        Model\Video $video,
+        $source
+    ) {
+        if (is_resource($source)) {
+            $this->fileSystem->writeStream($video->getSourceVideoPath(), $source);
+        } elseif (is_file($source)) {
+            if (($stream = fopen($source, 'r+')) === false) {
+                throw new \RuntimeException("File '{$source}' is not readable");
+            }
+            $this->fileSystem->writeStream($video->getSourceVideoPath(), $stream);
+        } elseif (is_string($source)) {
+            $this->fileSystem->write($video->getSourceVideoPath(), $source);
+        } else {
+            throw new \RuntimeException(sprintf('Unsupported source type: %s', gettype($source)));
+        }
+    }
+
+    /**
+     * @param Model\Video $video
+     *
+     * @return mixed
+     */
+    public function getVideo(
+        Model\Video $video
+    ) {
+        return $this->fileSystem->read($video->getSourceVideoPath());
+    }
 }
