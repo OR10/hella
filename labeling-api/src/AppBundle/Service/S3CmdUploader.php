@@ -117,6 +117,93 @@ class S3CmdUploader
         }
     }
 
+    public function uploadFile($sourceFile, $targetFileOnS3)
+    {
+        $configFile = $this->generateConfigfile(
+            $this->accessKey,
+            $this->secretKey,
+            $this->hostBase,
+            $this->hostBucket
+        );
+
+        $process = $this->getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3);
+
+        try {
+            $process->mustRun();
+        } finally {
+            if (!unlink($configFile)) {
+                throw new \RuntimeException("Error removing temporary config file '{$configFile}'");
+            }
+        }
+
+        if ($process->getExitCode() !== 0) {
+            throw new \RuntimeException(
+                'Execution of extern s3cmd upload command unsuccessful: ' . $process->getErrorOutput()
+            );
+        }
+    }
+
+    public function getFile($filePath)
+    {
+        $configFile = $this->generateConfigfile(
+            $this->accessKey,
+            $this->secretKey,
+            $this->hostBase,
+            $this->hostBucket
+        );
+
+        $destinationPath = tempnam($this->cacheDirectory, 's3_download_');
+
+        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath);
+
+        try {
+            $process->mustRun();
+        } finally {
+            if (!unlink($configFile)) {
+                throw new \RuntimeException("Error removing temporary config file '{$configFile}'");
+            }
+        }
+
+        if ($process->getExitCode() !== 0) {
+            throw new \RuntimeException(
+                'Execution of extern s3cmd upload command unsuccessful: ' . $process->getErrorOutput()
+            );
+        }
+
+        $content = file_get_contents($destinationPath);
+        if (!unlink($destinationPath)) {
+            throw new \RuntimeException("Error removing temporary file '{$destinationPath}'");
+        }
+
+        return $content;
+    }
+
+    private function getFileDownloadProcess($configFile, $filePath, $destinationPath)
+    {
+        $builder = new Process\ProcessBuilder();
+        $builder
+            ->add($this->s3CmdExecutable)
+            ->add('--config')
+            ->add($configFile)
+            ->add('--acl-public')
+            ->add('--force')
+            ->add('get')
+            ->add(
+                sprintf(
+                    's3://%s/%s',
+                    $this->bucket,
+                    $filePath
+                )
+            )
+            ->add($destinationPath);
+
+        $process = $builder->getProcess();
+
+        $process->setTimeout(self::TIMEOUT);
+
+        return $process;
+    }
+
     private function getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3)
     {
         $builder = new Process\ProcessBuilder();
@@ -135,6 +222,31 @@ class S3CmdUploader
 
         $process->setWorkingDirectory($sourceDirectory);
         $process->setInput($this->getRelativeUploadFileList($sourceDirectory));
+        $process->setTimeout(self::TIMEOUT);
+
+        return $process;
+    }
+
+    private function getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3)
+    {
+        $builder = new Process\ProcessBuilder();
+        $builder
+            ->add($this->s3CmdExecutable)
+            ->add('--config')
+            ->add($configFile)
+            ->add('--acl-public')
+            ->add('put')
+            ->add($sourceFile)
+            ->add(
+                sprintf(
+                    's3://%s/%s',
+                    $this->bucket,
+                    $targetFileOnS3
+                )
+            );
+
+        $process = $builder->getProcess();
+
         $process->setTimeout(self::TIMEOUT);
 
         return $process;
