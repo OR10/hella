@@ -143,9 +143,26 @@ class Common extends Module {
       $rootScope.$on('serverError', () => {
         modalService.info(
           {
-            title: 'Error',
+            title: 'Server Error (5xx)',
             headline: 'There was an error with the application!',
-            message: 'Please reaload the page or go back to the main page.',
+            message: 'Please reload the page or go back to the main page.',
+            confirmButtonText: 'Go to main page',
+            cancelButtonText: 'Reload page',
+          },
+          () => $location.path('/'),
+          () => window.location.reload(),
+          {
+            warning: true,
+          }
+        );
+      });
+
+      $rootScope.$on('clientError', () => {
+        modalService.info(
+          {
+            title: 'Client Error (4xx)',
+            headline: 'There was an error with the application!',
+            message: 'Please reload the page or go back to the main page.',
             confirmButtonText: 'Go to main page',
             cancelButtonText: 'Reload page',
           },
@@ -160,7 +177,7 @@ class Common extends Module {
       $rootScope.$on('revisionError', () => {
         modalService.info(
           {
-            title: 'Revision Error',
+            title: 'Revision Error (409)',
             headline: 'There was an error with the application!',
             message: 'Please reload the page and contact your label coordinator about this error.',
             confirmButtonText: 'Reload Page',
