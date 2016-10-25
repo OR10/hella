@@ -131,6 +131,12 @@ oneup_flysystem:
             alias: ~
             mount: ~
             visibility: public
+        video_cdn:
+            adapter: video_cdn_dir_adapter
+            cache: ~
+            alias: ~
+            mount: ~
+            visibility: public
 
 snc_redis:
     clients:

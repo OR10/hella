@@ -24,6 +24,7 @@ parameters:
     ffprobe_executable: <%= @ffprobe_executable %>
 
     frame_cdn_dir: <%= @frame_cdn_dir %>
+    video_cdn_dir: <%= @video_cdn_dir %>
 
     <% if @frame_cdn_type == 's3' %>
     frame_cdn_s3_base_url: <%= @frame_cdn_s3_base_url %>
@@ -33,15 +34,27 @@ parameters:
     frame_cdn_s3_secret: <%= @frame_cdn_s3_secret %>
     <% end %>
 
-    <% if @frame_cdn_type == 's3-cmd' %>
+    <% if @frame_cdn_type == 's3-cmd' || @video_cdn_type == 's3-cmd'  %>
     s3cmd_executable: "<%= @s3cmd_executable %>"
     parallel_executable: "<%= @parallel_executable %>"
+    <% end %>
+
+    <% if @frame_cdn_type == 's3-cmd' %>
     frame_cdn_s3_parallel_uploads_per_worker: "<%= @frame_cdn_s3_parallel_uploads_per_worker %>"
     frame_cdn_s3_host_base: "<%= @frame_cdn_s3_host_base %>"
     frame_cdn_s3_host_bucket: "<%= @frame_cdn_s3_host_bucket %>"
     frame_cdn_s3_bucket: "<%= @frame_cdn_s3_bucket %>"
     frame_cdn_s3_key: "<%= @frame_cdn_s3_key %>"
     frame_cdn_s3_secret: "<%= @frame_cdn_s3_secret %>"
+    <% end %>
+
+    <% if @video_cdn_type == 's3-cmd' %>
+    video_cdn_s3_parallel_uploads_per_worker: "<%= @video_cdn_s3_parallel_uploads_per_worker %>"
+    video_cdn_s3_host_base: "<%= @video_cdn_s3_host_base %>"
+    video_cdn_s3_host_bucket: "<%= @video_cdn_s3_host_bucket %>"
+    video_cdn_s3_bucket: "<%= @video_cdn_s3_bucket %>"
+    video_cdn_s3_key: "<%= @video_cdn_s3_key %>"
+    video_cdn_s3_secret: "<%= @video_cdn_s3_secret %>"
     <% end %>
 
     frame_cdn_base_url: <%= @frame_cdn_base_url %>
@@ -62,23 +75,67 @@ parameters:
     redis_host: <%= @redis_host %>
     redis_port: <%= @redis_port %>
 
-<% if @frame_cdn_type == 'filesystem' %>
 oneup_flysystem:
     adapters:
+<% if @frame_cdn_type == 's3-cmd' || @frame_cdn_type == 'filesystem' %>
         frame_cdn_dir_adapter:
             local:
                 directory: %frame_cdn_dir%
+        video_cdn_dir_adapter:
+            local:
+                directory: %video_cdn_dir%
+<% end %>
+<% if @frame_cdn_type == 's3' %>
+        frame_cdn_dir_adapter:
+            awss3v3:
+                client: frame_cdn.s3_client
+                bucket: "%frame_cdn_s3_bucket%"
 <% end %>
 
-<% if @frame_cdn_type == 's3' %>
-oneup_flysystem:
-    adapters:
-            frame_cdn_dir_adapter:
-                awss3v3:
-                    client: frame_cdn.s3_client
-                    bucket: "%frame_cdn_s3_bucket%"
-
 services:
+<% if @frame_cdn_type == 's3-cmd' %>
+    annostation.labeling_api.service.s3_cmd_frame_cdn:
+        class: AppBundle\Service\S3Cmd
+        arguments:
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%frame_cdn_s3_parallel_uploads_per_worker%'
+            - '%cache_dir%'
+            - '%frame_cdn_s3_bucket%'
+            - '%frame_cdn_s3_key%'
+            - '%frame_cdn_s3_secret%'
+            - '%frame_cdn_s3_host_base%'
+            - '%frame_cdn_s3_host_bucket%'
+    annostation.labeling_api.service.frame_cdn.s3_cmd:
+        class: AppBundle\Service\FrameCdn\S3Cmd
+        arguments:
+            - '%frame_cdn_base_url%'
+            - '%cache_dir%'
+            - '@annostation.labeling_api.service.s3_cmd_frame_cdn'
+    annostation.labeling_api.service.video_cdn.selected-alias:
+            alias: annostation.labeling_api.service.video_cdn.s3_cmd
+<% end %>
+<% if @video_cdn_type == 's3-cmd' %>
+    annostation.labeling_api.service.s3_cmd_video_cdn:
+        class: AppBundle\Service\S3Cmd
+        arguments:
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%video_cdn_s3_parallel_uploads_per_worker%'
+            - '%cache_dir%'
+            - '%video_cdn_s3_bucket%'
+            - '%video_cdn_s3_key%'
+            - '%video_cdn_s3_secret%'
+            - '%video_cdn_s3_host_base%'
+            - '%video_cdn_s3_host_bucket%'
+    annostation.labeling_api.service.video_cdn.s3_cmd:
+        class: AppBundle\Service\VideoCdn\S3Cmd
+        arguments:
+                - '@annostation.labeling_api.service.s3_cmd_video_cdn'
+    annostation.labeling_api.service.video_cdn.selected-alias:
+        alias: annostation.labeling_api.service.video_cdn.s3_cmd
+<% end %>
+<% if @frame_cdn_type == 's3' %>
     frame_cdn.s3_client:
         class: Aws\S3\S3Client
         arguments:
@@ -91,36 +148,4 @@ services:
                 credentials:
                     key: "%frame_cdn_s3_key%"
                     secret: "%frame_cdn_s3_secret%"
-<% end %>
-
-<% if @frame_cdn_type == 's3-cmd' %>
-oneup_flysystem:
-    adapters:
-        frame_cdn_dir_adapter:
-            local:
-                directory: %frame_cdn_dir%
-
-services:
-    annostation.labeling_api.service.s3_cmd_uploader:
-        class: AppBundle\Service\S3CmdUploader
-        arguments:
-            - '%s3cmd_executable%'
-            - '%parallel_executable%'
-            - '%frame_cdn_s3_parallel_uploads_per_worker%'
-            - '%cache_dir%'
-            - '%frame_cdn_s3_bucket%'
-            - '%frame_cdn_s3_key%'
-            - '%frame_cdn_s3_secret%'
-            - '%frame_cdn_s3_host_base%'
-            - '%frame_cdn_s3_host_bucket%'
-
-    annostation.labeling_api.service.frame_cdn.s3_cmd:
-        class: AppBundle\Service\FrameCdn\S3Cmd
-        arguments:
-            - '%frame_cdn_base_url%'
-            - '%cache_dir%'
-            - '@annostation.labeling_api.service.s3_cmd_uploader'
-
-    annostation.labeling_api.service.frame_cdn.selected-alias:
-        alias: annostation.labeling_api.service.frame_cdn.s3_cmd
 <% end %>
