@@ -154,7 +154,7 @@ class S3Cmd
 
         $destinationPath = tempnam($this->cacheDirectory, 's3_download_');
 
-        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath, $acl);
+        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath);
 
         try {
             $process->mustRun();
