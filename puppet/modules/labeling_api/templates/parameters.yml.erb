@@ -112,8 +112,8 @@ services:
             - '%frame_cdn_base_url%'
             - '%cache_dir%'
             - '@annostation.labeling_api.service.s3_cmd_frame_cdn'
-    annostation.labeling_api.service.video_cdn.selected-alias:
-            alias: annostation.labeling_api.service.video_cdn.s3_cmd
+    annostation.labeling_api.service.frame_cdn.selected-alias:
+            alias: annostation.labeling_api.service.frame_cdn.s3_cmd
 <% end %>
 <% if @video_cdn_type == 's3-cmd' %>
     annostation.labeling_api.service.s3_cmd_video_cdn:
