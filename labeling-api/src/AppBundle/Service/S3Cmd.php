@@ -4,7 +4,7 @@ namespace AppBundle\Service;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Process;
 
-class S3CmdUploader
+class S3Cmd
 {
     /**
      * Timeout of the upload process
@@ -91,7 +91,7 @@ class S3CmdUploader
         $this->hostBucket                  = $hostBucket;
     }
 
-    public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3)
+    public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3, $acl = 'private')
     {
         $configFile = $this->generateConfigfile(
             $this->accessKey,
@@ -100,7 +100,7 @@ class S3CmdUploader
             $this->hostBucket
         );
 
-        $process = $this->getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3);
+        $process = $this->getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3, $acl);
 
         try {
             $process->mustRun();
@@ -117,7 +117,7 @@ class S3CmdUploader
         }
     }
 
-    public function uploadFile($sourceFile, $targetFileOnS3)
+    public function uploadFile($sourceFile, $targetFileOnS3, $acl = 'private')
     {
         $configFile = $this->generateConfigfile(
             $this->accessKey,
@@ -126,7 +126,7 @@ class S3CmdUploader
             $this->hostBucket
         );
 
-        $process = $this->getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3);
+        $process = $this->getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3, $acl);
 
         try {
             $process->mustRun();
@@ -154,7 +154,7 @@ class S3CmdUploader
 
         $destinationPath = tempnam($this->cacheDirectory, 's3_download_');
 
-        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath);
+        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath, $acl);
 
         try {
             $process->mustRun();
@@ -185,7 +185,6 @@ class S3CmdUploader
             ->add($this->s3CmdExecutable)
             ->add('--config')
             ->add($configFile)
-            ->add('--acl-public')
             ->add('--force')
             ->add('get')
             ->add(
@@ -204,7 +203,7 @@ class S3CmdUploader
         return $process;
     }
 
-    private function getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3)
+    private function getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3, $acl)
     {
         $builder = new Process\ProcessBuilder();
         $builder
@@ -213,7 +212,7 @@ class S3CmdUploader
             ->add($this->s3CmdExecutable)
             ->add('--config')
             ->add($configFile)
-            ->add('--acl-public')
+            ->add('--acl-' .  $acl)
             ->add('put')
             ->add('{}')
             ->add($this->getS3Uri($targetDirectoryOnS3 . '/{}'));
@@ -227,14 +226,14 @@ class S3CmdUploader
         return $process;
     }
 
-    private function getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3)
+    private function getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3, $acl)
     {
         $builder = new Process\ProcessBuilder();
         $builder
             ->add($this->s3CmdExecutable)
             ->add('--config')
             ->add($configFile)
-            ->add('--acl-public')
+            ->add('--acl-' .  $acl)
             ->add('put')
             ->add($sourceFile)
             ->add(
