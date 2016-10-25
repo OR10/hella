@@ -34,10 +34,6 @@ class S3Cmd extends Service\FrameCdn
      * @var string
      */
     private $cacheDirectory;
-    /**
-     * @var Service\S3Cmd
-     */
-    private $s3CmdVideoCdn;
 
     /**
      * FrameCdn constructor.
@@ -45,15 +41,13 @@ class S3Cmd extends Service\FrameCdn
      * @param string        $frameCdnBaseUrl
      * @param string        $cacheDirectory
      * @param Service\S3Cmd $s3CmdFrameCdn
-     * @param Service\S3Cmd $s3CmdVideoCdn
      */
-    public function __construct($frameCdnBaseUrl, $cacheDirectory, Service\S3Cmd $s3CmdFrameCdn, Service\S3Cmd $s3CmdVideoCdn)
+    public function __construct($frameCdnBaseUrl, $cacheDirectory, Service\S3Cmd $s3CmdFrameCdn)
     {
         parent::__construct();
 
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
         $this->s3CmdFrameCdn   = $s3CmdFrameCdn;
-        $this->s3CmdVideoCdn   = $s3CmdVideoCdn;
         $this->cacheDirectory  = $cacheDirectory;
 
         $this->cacheFileSystem = new Filesystem(new Adapter\Local($cacheDirectory));
