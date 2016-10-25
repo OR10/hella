@@ -56,10 +56,12 @@ class RectangleMoveTool extends Tool {
     const point = event.point;
 
     this._paperRectangle = hitShape;
-    this._offset = new paper.Point(
-      this._paperRectangle.position.x - point.x,
-      this._paperRectangle.position.y - point.y
-    );
+    if (this._paperRectangle) {
+      this._offset = new paper.Point(
+        this._paperRectangle.position.x - point.x,
+        this._paperRectangle.position.y - point.y
+      );
+    }
   }
 
   onMouseUp() {
