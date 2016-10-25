@@ -5,6 +5,7 @@ class labeling_api::cdn(
 
   $vhost_dir = $labeling_api::params::frame_cdn_dir,
   $proxy = $labeling_api::params::frame_cdn_s3_base_url,
+  $proxy_host = undef,
 
   $vhost_port = $labeling_api::params::frame_cdn_port,
 
@@ -60,7 +61,11 @@ class labeling_api::cdn(
         }
       }
       's3': {
-        $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
+        if $proxy_host {
+          $_proxyHostHeader = $proxy_host
+        } else {
+          $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
+        }
 
         annostation_base::nginx_vhost { 'labeling_api_cdn':
           proxy              => $proxy,
@@ -76,7 +81,11 @@ class labeling_api::cdn(
         }
       }
       's3-cmd': {
-        $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
+        if $proxy_host {
+          $_proxyHostHeader = $proxy_host
+        } else {
+          $_proxyHostHeader = regsubst($proxy, '^https?\:\/\/', '')
+        }
 
         annostation_base::nginx_vhost { 'labeling_api_cdn':
           proxy              => $proxy,
