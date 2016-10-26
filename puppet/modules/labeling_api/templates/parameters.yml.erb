@@ -34,6 +34,14 @@ parameters:
     frame_cdn_s3_secret: <%= @frame_cdn_s3_secret %>
     <% end %>
 
+    <% if @video_cdn_type == 's3' %>
+    video_cdn_s3_base_url: <%= @video_cdn_s3_base_url %>
+    video_cdn_s3_region: <%= @video_cdn_s3_region %>
+    video_cdn_s3_bucket: <%= @video_cdn_s3_bucket %>
+    video_cdn_s3_key: <%= @video_cdn_s3_key %>
+    video_cdn_s3_secret: <%= @video_cdn_s3_secret %>
+    <% end %>
+
     <% if @frame_cdn_type == 's3-cmd' || @video_cdn_type == 's3-cmd'  %>
     s3cmd_executable: "<%= @s3cmd_executable %>"
     parallel_executable: "<%= @parallel_executable %>"
@@ -81,6 +89,8 @@ oneup_flysystem:
         frame_cdn_dir_adapter:
             local:
                 directory: %frame_cdn_dir%
+<% end %>
+<% if @video_cdn_type == 's3-cmd' || @video_cdn_type == 'filesystem' %>
         video_cdn_dir_adapter:
             local:
                 directory: %video_cdn_dir%
@@ -90,6 +100,12 @@ oneup_flysystem:
             awss3v3:
                 client: frame_cdn.s3_client
                 bucket: "%frame_cdn_s3_bucket%"
+<% end %>
+<% if @video_cdn_type == 's3' %>
+        video_cdn_dir_adapter:
+            awss3v3:
+                client: video_cdn.s3_client
+                bucket: "%video_cdn_s3_bucket%"
 <% end %>
 
 services:
@@ -148,4 +164,18 @@ services:
                 credentials:
                     key: "%frame_cdn_s3_key%"
                     secret: "%frame_cdn_s3_secret%"
+<% end %>
+<% if @video_cdn_type == 's3' %>
+    video_cdn.s3_client:
+        class: Aws\S3\S3Client
+        arguments:
+            -
+                version: 'latest'
+                region: "%video_cdn_s3_region%"
+                endpoint: '%video_cdn_s3_base_url%'
+                validate: false
+                bucket_endpoint: true
+                credentials:
+                    key: "%video_cdn_s3_key%"
+                    secret: "%video_cdn_s3_secret%"
 <% end %>
