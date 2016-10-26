@@ -136,7 +136,7 @@ oneup_flysystem:
             cache: ~
             alias: ~
             mount: ~
-            visibility: public
+            visibility: private
 
 snc_redis:
     clients:
