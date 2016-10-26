@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <frame>
+    <class id="time" name="Time">
+      <value id="day" name="Day" />
+      <value id="night" name="Night">
+        <class id="street-lights" name="Street lights">
+          <value id="neon" name="Neon lights">
+            <class name="Lamp Color" id="lamp-color">
+              <value id="white" name="White" />
+              <value id="orange" name="Orange" />
+            </class>
+          </value>
+          <value id="halogen" name="Halogen lights">
+            <class ref="lamp-color" />
+          </value>
+          <value id="xenon" name="Xenon lights" />
+        </class>
+      </value>
+    </class>
+    <class ref="weather" />
+    <class id="rain-level" name="Rain level" if="rain">
+      <value id="low" name="Low" />
+      <value id="medium" name="Medium" />
+      <value id="high" name="High" />
+    </class>
+    <class ref="country" />
+  </frame>
+
+  <thing id="sign" shape="rectangle" name="Traffic Sign">
+    <class id="sign-type" name="Sign type">
+      <value id="u-turn" name="U-Turn" if-not="highway" />
+      <value id="speed-sign" name="Speed sign">
+        <class id="speed-limit" name="Speed limit">
+          <value id="speed-30" name="Speed Limit 30" if="city-road AND NOT highway" />
+          <value id="speed-100" name="Speed Limit 100" />
+        </class>
+        <class id="limited-by-type" name="Limited by type">
+          <value id="no-type-limit" name="No type limit" />
+          <value id="only-car" name="Only car" />
+          <value id="only-truck" name="Only truck" />
+        </class>
+      </value>
+    </class>
+  </thing>
+
+  <private>
+    <class name="Street Type" id="street-type">
+      <value id="highway" name="Highway" />
+      <value id="city-road" name="Inner city road" />
+    </class>
+
+    <class name="Weather" id="weather">
+      <value id="sunny" name="Sunny" />
+      <value id="rain" name="Raining" />
+      <value id="foggy" name="Foggy" />
+    </class>
+
+    <class name="Country" id="country">
+      <value id="germany" name="Germany" />
+      <value id="spain" name="Spain" />
+      <value id="france" name="France" />
+    </class>
+  </private>
+</requirements>

@@ -1,0 +1,44 @@
+    namespace anno = "http://weblabel.hella-aglaia.com/schema/requirements"
+
+grammar {
+    LogicCondition = attribute if {text} | attribute if-not {text}
+
+    Requirements = element anno:requirements {
+        Frame? & Thing* & Private?
+    }
+
+    Frame = element anno:frame {
+        Class+
+    }
+
+    Thing = element anno:thing {
+        attribute id {text},
+        attribute shape {text},
+        attribute name {text},
+        Class+
+    }
+
+    Class = element anno:class {
+        (
+            (
+                attribute id {text},
+                attribute name {text},
+                Value+
+            ) | attribute ref {text}
+        ),
+        LogicCondition?
+    }
+
+    Value = element anno:value {
+        attribute id {text},
+        attribute name {text},
+        LogicCondition?,
+        Class*
+    }
+
+    Private = element anno:private {
+        Class+
+    }
+
+    start = Requirements
+}

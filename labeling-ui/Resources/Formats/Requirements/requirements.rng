@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:anno="http://weblabel.hella-aglaia.com/schema/requirements" xmlns="http://relaxng.org/ns/structure/1.0">
+    <define name="LogicCondition">
+        <choice>
+            <attribute name="if"/>
+            <attribute name="if-not"/>
+        </choice>
+    </define>
+    <define name="Requirements">
+        <element name="anno:requirements">
+            <interleave>
+                <optional>
+                    <ref name="Frame"/>
+                </optional>
+                <zeroOrMore>
+                    <ref name="Thing"/>
+                </zeroOrMore>
+                <optional>
+                    <ref name="Private"/>
+                </optional>
+            </interleave>
+        </element>
+    </define>
+    <define name="Frame">
+        <element name="anno:frame">
+            <oneOrMore>
+                <ref name="Class"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="Thing">
+        <element name="anno:thing">
+            <attribute name="id"/>
+            <attribute name="shape"/>
+            <attribute name="name"/>
+            <oneOrMore>
+                <ref name="Class"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="Class">
+        <element name="anno:class">
+            <choice>
+                <group>
+                    <attribute name="id"/>
+                    <attribute name="name"/>
+                    <oneOrMore>
+                        <ref name="Value"/>
+                    </oneOrMore>
+                </group>
+                <attribute name="ref"/>
+            </choice>
+            <optional>
+                <ref name="LogicCondition"/>
+            </optional>
+        </element>
+    </define>
+    <define name="Value">
+        <element name="anno:value">
+            <attribute name="id"/>
+            <attribute name="name"/>
+            <optional>
+                <ref name="LogicCondition"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="Class"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="Private">
+        <element name="anno:private">
+            <oneOrMore>
+                <ref name="Class"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <start>
+        <ref name="Requirements"/>
+    </start>
+</grammar>
