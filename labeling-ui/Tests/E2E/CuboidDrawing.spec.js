@@ -29,6 +29,7 @@ describe('Cuboid', () => {
       assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
+      assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to4,
     ];
 
     viewer = element(by.css('.layer-container'));

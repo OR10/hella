@@ -35,6 +35,8 @@ describe('Keyboard Shape Movement', () => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.frameIndex0,
         assets.mocks.KeyboardShapeMovement.Rectangle.frameIndex0to4,
+        assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
+        assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       ]);
     });
 
@@ -224,6 +226,8 @@ describe('Keyboard Shape Movement', () => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0,
         assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0to4,
+        assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to3,
+        assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to4,
       ]);
     });
 
@@ -413,6 +417,7 @@ describe('Keyboard Shape Movement', () => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0,
         assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0to4,
+        assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to4,
       ]);
     });
 

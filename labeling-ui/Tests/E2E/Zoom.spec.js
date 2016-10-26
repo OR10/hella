@@ -31,6 +31,8 @@ describe('Zoom', () => {
       assets.mocks.Zoom.Shared.FrameLocations.Source.frameIndex0to4,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
+      assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
+      assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
     ];
 
     viewer = element(by.css('.layer-container'));

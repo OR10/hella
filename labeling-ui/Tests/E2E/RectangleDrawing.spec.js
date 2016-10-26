@@ -25,6 +25,8 @@ describe('Rectangle drawing', () => {
       assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
+      assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
+      assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
     ];
 
     viewer = element(by.css('.layer-container'));
@@ -248,6 +250,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 

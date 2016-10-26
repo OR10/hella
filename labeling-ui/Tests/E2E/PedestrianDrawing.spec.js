@@ -25,6 +25,8 @@ describe('Pedestrian drawing', () => {
       assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
+      assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to3,
+      assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to4,
     ];
 
     viewer = element(by.css('.layer-container'));
@@ -214,6 +216,7 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
