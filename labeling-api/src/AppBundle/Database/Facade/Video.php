@@ -22,22 +22,22 @@ class Video
     /**
      * @var Service\FrameCdn
      */
-    private $frameCdnService;
+    private $videoCdnService;
 
     /**
      * @param CouchDB\DocumentManager $documentManager
      * @param Flysystem\FileSystem    $fileSystem
-     * @param Service\FrameCdn        $frameCdnService
+     * @param Service\VideoCdn        $videoCdnService
      * @Flysystem\FileSystem          $fileSystem
      */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Flysystem\FileSystem $fileSystem,
-        Service\FrameCdn $frameCdnService
+        Service\VideoCdn $videoCdnService
     ) {
         $this->documentManager = $documentManager;
         $this->fileSystem      = $fileSystem;
-        $this->frameCdnService = $frameCdnService;
+        $this->videoCdnService = $videoCdnService;
     }
 
     public function findAll()
@@ -168,7 +168,7 @@ class Video
         $this->documentManager->flush();
 
         if ($source !== null) {
-            $this->frameCdnService->saveVideo($video, $source);
+            $this->videoCdnService->saveVideo($video, $source);
         }
 
         return $video;

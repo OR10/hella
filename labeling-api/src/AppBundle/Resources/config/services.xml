@@ -56,12 +56,23 @@
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem" />
         </service>
 
+        <service id="annostation.labeling_api.service.video_cdn.flysystem" class="AppBundle\Service\VideoCdn\Flysystem">
+            <argument type="service" id="oneup_flysystem.video_cdn_filesystem" />
+        </service>
+
         <!--
           - Default frame_cdn implementation is the flysystem one
           - It may be overridden through the parameters.yml for different systems
           -->
         <service id="annostation.labeling_api.service.frame_cdn.selected-alias"
                  alias="annostation.labeling_api.service.frame_cdn.flysystem"/>
+
+        <!--
+          - Default video_cdn implementation is the flysystem one
+          - It may be overridden through the parameters.yml for different systems
+          -->
+        <service id="annostation.labeling_api.service.video_cdn.selected-alias"
+                 alias="annostation.labeling_api.service.video_cdn.flysystem"/>
 
         <service id="annostation.labeling_api.service.video.video_frame_splitter" class="AppBundle\Service\Video\VideoFrameSplitter">
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias" />

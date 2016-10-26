@@ -16,9 +16,9 @@ class S3Cmd extends Service\FrameCdn
     protected $frameCdnBaseUrl;
 
     /**
-     * @var Service\S3CmdUploader
+     * @var Service\S3Cmd
      */
-    private $uploader;
+    private $s3CmdFrameCdn;
 
     /**
      * @var Filesystem
@@ -38,16 +38,16 @@ class S3Cmd extends Service\FrameCdn
     /**
      * FrameCdn constructor.
      *
-     * @param string                $frameCdnBaseUrl
-     * @param string                $cacheDirectory
-     * @param Service\S3CmdUploader $uploader
+     * @param string        $frameCdnBaseUrl
+     * @param string        $cacheDirectory
+     * @param Service\S3Cmd $s3CmdFrameCdn
      */
-    public function __construct($frameCdnBaseUrl, $cacheDirectory, Service\S3CmdUploader $uploader)
+    public function __construct($frameCdnBaseUrl, $cacheDirectory, Service\S3Cmd $s3CmdFrameCdn)
     {
         parent::__construct();
 
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
-        $this->uploader        = $uploader;
+        $this->s3CmdFrameCdn   = $s3CmdFrameCdn;
         $this->cacheDirectory  = $cacheDirectory;
 
         $this->cacheFileSystem = new Filesystem(new Adapter\Local($cacheDirectory));
@@ -96,7 +96,7 @@ class S3Cmd extends Service\FrameCdn
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
         try {
-            $this->uploader->uploadDirectory($batchDirectoryFullPath, '/');
+            $this->s3CmdFrameCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
         } finally {
             if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
                 throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
@@ -147,30 +147,5 @@ class S3Cmd extends Service\FrameCdn
         $this->cacheFileSystem->createDir($tempDir);
 
         return $tempDir;
-    }
-
-    /**
-     * @param Model\Video $video
-     * @param             $source
-     *
-     * @return mixed
-     */
-    public function saveVideo(Model\Video $video, $source)
-    {
-        $this->uploader->uploadFile(
-            $source,
-            $video->getSourceVideoPath()
-        );
-    }
-
-    /**
-     * @param Model\Video $video
-     *
-     * @return mixed
-     */
-    public function getVideo(
-        Model\Video $video
-    ) {
-        return $this->uploader->getFile($video->getSourceVideoPath());
     }
 }
