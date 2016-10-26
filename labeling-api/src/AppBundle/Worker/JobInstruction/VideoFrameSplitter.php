@@ -44,7 +44,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     /**
      * @var Service\FrameCdn
      */
-    private $frameCdnService;
+    private $videoCdnService;
 
     /**
      * Video constructor.
@@ -53,7 +53,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
      * @param Facade\Video                    $videoFacade
      * @param Facade\LabelingTask             $labelingTaskFacade
      * @param Flysystem\Filesystem            $fileSystem
-     * @param Service\FrameCdn                $frameCdnService
+     * @param Service\VideoCdn                $videoCdnService
      * @param string                          $cacheDir
      */
     public function __construct(
@@ -61,7 +61,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Flysystem\Filesystem $fileSystem,
-        Service\FrameCdn $frameCdnService,
+        Service\VideoCdn $videoCdnService,
         $cacheDir
     ) {
         $this->videoFrameSplitter = $videoFrameSplitter;
@@ -69,7 +69,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->fileSystem         = $fileSystem;
         $this->cacheDir           = $cacheDir;
-        $this->frameCdnService     = $frameCdnService;
+        $this->videoCdnService    = $videoCdnService;
     }
 
     /**
@@ -95,7 +95,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
                 throw new \RuntimeException('Error creating temporary file for video data');
             }
 
-            if (file_put_contents($tmpFile, $this->frameCdnService->getVideo($video)) === false) {
+            if (file_put_contents($tmpFile, $this->videoCdnService->getVideo($video)) === false) {
                 throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
             }
 

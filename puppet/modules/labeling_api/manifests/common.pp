@@ -11,6 +11,7 @@
 class labeling_api::common(
   $cacheDir = $labeling_api::params::cache_dir,
   $frameCdnDir = $labeling_api::params::frame_cdn_dir,
+  $videoCdnDir = $labeling_api::params::video_cdn_dir,
   $sslCert = undef,
 ) {
 
@@ -18,13 +19,24 @@ class labeling_api::common(
     if $frameCdnDir =~ /^(\/.+)\/[^\/]+/ {
       $frameCdnDirectory = [$1, $frameCdnDir]
     } else {
-      $frameCdnDirectory = $frameCdnDir
+      $frameCdnDirectory = [$frameCdnDir]
+    }
+  }
+
+  if $videoCdnDir {
+    if $videoCdnDir =~ /^(\/.+)\/[^\/]+/ {
+      $videoCdnDirectory = [$1, $videoCdnDir]
+    } else {
+      $videoCdnDirectory = [$videoCdnDir]
     }
 
-    file { $frameCdnDirectory:
-      ensure => 'directory',
-      mode   => "777",
-    }
+  }
+
+  $cdnDirectories = unique(concat($frameCdnDirectory, $videoCdnDirectory))
+
+  file { $cdnDirectories:
+    ensure => 'directory',
+    mode   => "777",
   }
 
   file { $cacheDir:

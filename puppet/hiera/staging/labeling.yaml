@@ -39,6 +39,7 @@ labeling_api::params::database_name: 'labeling_api'
 labeling_api::params::database_password: 'pEid4oShu'
 labeling_api::params::database_user: 'labeling_api'
 labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
+labeling_api::params::video_cdn_dir: '/var/www/video_cdn'
 labeling_api::params::frame_cdn_port: 81
 labeling_api::params::frame_cdn_base_url: 'https://anno.crosscan.com:81'
 labeling_api::params::frame_cdn_allowed_origin: 'https://anno.crosscan.com'

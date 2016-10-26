@@ -39,11 +39,13 @@ class labeling_api::params(
   $redis_host = '127.0.0.1',
   $redis_port = '6379',
 
-  # valid types are: filesystem, s3
+  # valid types are: filesystem, s3, s3-cmd
   $frame_cdn_type = 'filesystem',
+  $video_cdn_type = 'filesystem',
 
   # in case of using a filesystem
   $frame_cdn_dir = undef,
+  $video_cdn_dir = undef,
 
   # in case of using a s3 storage
   $frame_cdn_s3_base_url = undef,
@@ -52,12 +54,23 @@ class labeling_api::params(
   $frame_cdn_s3_key      = undef,
   $frame_cdn_s3_secret   = undef,
 
+  $video_cdn_s3_base_url = undef,
+  $video_cdn_s3_bucket   = undef,
+  $video_cdn_s3_region   = undef,
+  $video_cdn_s3_key      = undef,
+  $video_cdn_s3_secret   = undef,
+
   # additional parameters in case of using s3cmd tool
   $s3cmd_executable                         = 's3cmd',
   $parallel_executable                      = 'parallel',
+
   $frame_cdn_s3_host_base                   = undef,
   $frame_cdn_s3_host_bucket                 = undef,
   $frame_cdn_s3_parallel_uploads_per_worker = 10,
+
+  $video_cdn_s3_host_base                   = undef,
+  $video_cdn_s3_host_bucket                 = undef,
+  $video_cdn_s3_parallel_uploads_per_worker = 10,
 
   # general settings for the nginx vhost
   $frame_cdn_base_url       = undef,
