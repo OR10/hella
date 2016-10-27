@@ -1,13 +1,4 @@
 {
   "name": "root",
-  "children": [
-    {
-      "name": "type",
-      "children": [
-        {
-          "name": "ignore-vehicle"
-        }
-      ]
-    }
-  ]
+  "children": []
 }

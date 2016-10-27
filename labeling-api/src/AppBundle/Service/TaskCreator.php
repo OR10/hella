@@ -188,6 +188,9 @@ class TaskCreator
                     if ($legacyTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
                         $predefinedClasses = ['parked-car'];
                     }
+                    if ($legacyTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE) {
+                        $predefinedClasses = ['ignore-vehicle'];
+                    }
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
@@ -277,6 +280,7 @@ class TaskCreator
         switch ($instruction) {
             case Model\LabelingTask::INSTRUCTION_LANE:
             case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
+            case Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE:
                 $hideAttributeSelector = true;
                 break;
             default:
