@@ -44,15 +44,15 @@
                 <group>
                     <attribute name="id"/>
                     <attribute name="name"/>
+                    <optional>
+                        <ref name="LogicCondition"/>
+                    </optional>
                     <oneOrMore>
                         <ref name="Value"/>
                     </oneOrMore>
                 </group>
                 <attribute name="ref"/>
             </choice>
-            <optional>
-                <ref name="LogicCondition"/>
-            </optional>
         </element>
     </define>
     <define name="Value">
