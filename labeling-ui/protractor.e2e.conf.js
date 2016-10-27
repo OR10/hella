@@ -3,6 +3,7 @@ require('babel-core/register');
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
 const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
+const JasmineSpecReporter = require('jasmine-spec-reporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const path = require('path');
 
@@ -46,7 +47,15 @@ exports.config = {
           outputDir: './Logs/E2E/Images',
           browserIdentifier: browserIdentifier,
         }));
+        jasmine.getEnv().addReporter(new JasmineSpecReporter({
+          displayStacktrace: true,
+        }));
       });
+  },
+  jasmineNodeOpts: {
+    // Disable standard 'dot' output
+    print: () => {},
+    defaultTimeoutInterval: 60000,
   },
 
   specs: ['Tests/E2E/**/*.spec.js'],
