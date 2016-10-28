@@ -4,46 +4,124 @@
   <phase id="labeling" name="Labeling">
     <task id="frame" name="Frame labeling">
       <classification>
-        <class xref="time" />
-        <class xref="weather" />
-        <class xref="rain-level" />
-        <class xref="country" />
+        <frame />
       </classification>
     </task>
-    <task id="speed-sign-mapping" name="Speed signs">
+    <task after="frame" id="speed-sign-mapping" name="Speed signs">
       <description>
         Deine Aufgabe ist folgendes: Schilder labeln
       </description>
-      <mapping>
+
+      <!--
+      Syntax 1
+      -->
+      <drawing>
         <thing xref="sign" />
         <thing xref="lane" />
-      </mapping>
+      </drawing>
+
       <classification>
-        <class xref="sign-type" max-depth="1">
-          <value xref="u-turn" />
-          <value xref="prohibited" />
-        </class>
-        <class xref="color" />
+        <thing xref="sign">
+          <class xref="sign-type" max-depth="1">
+            <value xref="u-turn" />
+            <value xref="prohibited" />
+          </class>
+        </thing>
+      </classification>
+
+      <!--
+      Syntax 2
+      -->
+      <draw-shape thing="lane" />
+      <draw-shape thing="sign" />
+
+      <classify-frame />
+      <classify thing="sign">
+        <classify class="sign-type" max-depth="1">
+          <classify value="u-turn" />
+          <classify value="prohibited" />
+        </classify>
+      </classify>
+
+      <!--
+      Syntax 3
+      -->
+      <drawing>
+        <thing with-id="sign" />
+        <thing with-id="lane" />
+      </drawing>
+
+      <classification>
+        <thing with-id="sign">
+          <class with-id="sign-type" max-depth="1">
+            <value with-id="u-turn" />
+            <value with-id="prohibited" />
+          </class>
+        </thing>
+      </classification>
+
+      <!--
+      Syntax 4
+      -->
+      <draw-thing with-id="sign" />
+      <draw-thing with-id="lane" />
+
+      <classify-thing with-id="sign">
+        <classify-class with-id="sign-type" max-depth="1">
+          <classify-value with-id="u-turn" />
+          <classify-value with-id="prohibited" />
+        </classify-class>
+      </classify-thing>
+
+      <!--
+      Syntax 5
+      -->
+      <draw-thing with-id="sign" />
+      <draw-thing with-id="lane" />
+
+      <classify-thing with-id="sign">
+        <allow-class with-id="sign-type" max-depth="1">
+          <allow-value with-id="u-turn" />
+          <allow-value with-id="prohibited" />
+        </allow-class>
+      </classify-thing>
+
+      <!--
+      Syntax 6
+      -->
+      <draw thing="sign" />
+      <draw thing="lane" />
+
+      <classify thing="sign">
+        <allow class="sign-type" max-depth="1">
+          <allow value="u-turn" />
+          <allow value="prohibited" />
+        </allow>
+      </classify>
+
+    </task>
+    <!--
+     Logical expressions are evaluated against all value and class identifiers.
+     Values are true if the corresponding attribute is set.
+     Classes are true if any of its direct child values is set.
+    -->
+    <task after="speed-sign-mapping, frame"
+          id="speed-signs-on-country-road"
+          name="Speed signs on country roads"
+          thing-filter="thing:speed-sign AND frame:road:country">
+      <classification>
+        <class xref="speed-limit" />
       </classification>
     </task>
-    <parallel>
-      <!--
-       Logical expressions are evaluated against all value and class identifiers.
-       Values are true if the corresponding attribute is set.
-       Classes are true if any of its direct child values is set.
-      -->
-      <task id="speed-signs-on-country-road" name="Speed signs on country roads"
-            filter="speed-sign AND country-road">
-        <classification>
-          <class xref="speed-limit" />
-        </classification>
-      </task>
-      <task id="speed-signs-on-highway" name="Speed signs on highways" filter="speed-sign AND highway">
-        <classification>
-          <class xref="speed-limit" />
-        </classification>
-      </task>
-    </parallel>
+    <task after="speed-sign-mapping, frame"
+          id="speed-signs-on-highway"
+          name="Speed signs on highways"
+          filter="speed-sign AND highway">
+      <classification>
+        <class xref="speed-limit" />
+      </classification>
+    </task>
+
   </phase>
   <phase id="review" name="Review">
     <task ref="frame" />
