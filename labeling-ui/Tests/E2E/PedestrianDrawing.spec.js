@@ -229,6 +229,8 @@ describe('Pedestrian drawing', () => {
           .click()
           .perform();
 
+        browser.sleep(500);
+
         nextFrameButton.click();
 
         browser.sleep(1000);
