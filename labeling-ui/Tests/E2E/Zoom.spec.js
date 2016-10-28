@@ -38,8 +38,8 @@ describe('Zoom', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  describe('Background', () => {
-    it('should zoom in on center point using keyboard shortcut', done => {
+  describe('Without shapes', () => {
+    it('should zoom in on center point using keyboard shortcuts', done => {
       mock(sharedMocks.concat([
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -68,7 +68,7 @@ describe('Zoom', () => {
         });
     });
 
-    it('should pan scene using shift + mousedrag', done => {
+    it('should pan the scene using shift + mousedrag', done => {
       mock(sharedMocks.concat([
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -113,7 +113,7 @@ describe('Zoom', () => {
       [1024 - 50, 50, 'EmptyTopRightMouseWheel'],
       [1024 - 50, 620 - 50, 'EmptyBottomRightMouseWheel'],
     ], (xTarget, yTarget, fixtureName) => {
-      it('should zoom in background mousewheel', done => {
+      it('should zoom in at different positions using mousewheel', done => {
         mock(sharedMocks.concat([
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -140,7 +140,7 @@ describe('Zoom', () => {
     });
   });
 
-  describe('Annotation', () => {
+  describe('With Shapes', () => {
     using([
       [1024 / 2, 620 / 2, 'AnnotationCenterMouseWheel'],
       [50, 50, 'AnnotationTopLeftMouseWheel'],
@@ -148,7 +148,7 @@ describe('Zoom', () => {
       [1024 - 50, 50, 'AnnotationTopRightMouseWheel'],
       [1024 - 50, 620 - 50, 'AnnotationBottomRightMouseWheel'],
     ], (xTarget, yTarget, fixtureName) => {
-      it('should zoom in annotations mousewheel', done => {
+      it('should zoom in at different positions using mousewheel', done => {
         mock(sharedMocks.concat([
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0,
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
@@ -178,7 +178,7 @@ describe('Zoom', () => {
       [1024 - 50, 50, 'SelectedAnnotationTopRightMouseWheel', 612, 100],
       [1024 - 50, 620 - 50, 'SelectedAnnotationBottomRightMouseWheel', 612, 410],
     ], (xTarget, yTarget, fixtureName, selectX, selectY) => {
-      it('should zoom in selected annotations mousewheel', done => {
+      it('should select a shape and then zoom in at different positions using mousewheel', done => {
         mock(sharedMocks.concat([
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0,
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,

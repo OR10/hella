@@ -40,7 +40,7 @@ describe('Keyboard Shape Movement', () => {
       ]);
     });
 
-    it('should move small distance by arrow keys', done => {
+    it('should move shape by a small distance using arrow keys', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight,
@@ -130,7 +130,7 @@ describe('Keyboard Shape Movement', () => {
         });
     });
 
-    it('should move greater distance by shift + arrow keys', done => {
+    it('should move shape by a greater distance using arrow keys + shift', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight,
@@ -231,7 +231,7 @@ describe('Keyboard Shape Movement', () => {
       ]);
     });
 
-    it('should move small distance by arrow keys', done => {
+    it('should move shape by a small distance using arrow keys', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight,
@@ -321,7 +321,7 @@ describe('Keyboard Shape Movement', () => {
         });
     });
 
-    it('should move greater distance by shift + arrow keys', done => {
+    it('should move shape by a greater distance using arrow keys + shift', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight,
@@ -421,7 +421,7 @@ describe('Keyboard Shape Movement', () => {
       ]);
     });
 
-    it('should move small distance by arrow keys', done => {
+    it('should move shape by a small distance using arrow keys', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp,
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight,
@@ -511,7 +511,7 @@ describe('Keyboard Shape Movement', () => {
         });
     });
 
-    it('should move greater distance by shift + arrow keys', done => {
+    it('should move shape by a greater distance using arrow keys + shift', done => {
       mock(sharedMocks.concat([
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight,

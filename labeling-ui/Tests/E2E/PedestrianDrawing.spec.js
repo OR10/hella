@@ -32,7 +32,7 @@ describe('Pedestrian drawing', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should load and draw one pedestrian rectangle', done => {
+  it('should load and draw one pedestrian shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawOnePedestrian.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawOnePedestrian.LabeledThingInFrame.frameIndex0to4,
@@ -49,7 +49,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should load and draw two pedestrian rectangles', done => {
+  it('should load and draw two pedestrian shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -66,7 +66,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should select a pedestrian rectangle', done => {
+  it('should select a pedestrian shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -89,7 +89,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should select and deselect a pedestrian rectangle', done => {
+  it('should select and deselect a pedestrian shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -116,7 +116,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should deselect one and select an other paper rectangle', done => {
+  it('should select one and then select an other pedestrian shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -143,7 +143,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should correctly move a pedestrian rectangle on canvas and save the changed coordinates', done => {
+  it('should correctly move a pedestrian shape and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -176,7 +176,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should correctly resize a pedestrian rectangle on canvas and save the changed coordinates', done => {
+  it('should correctly resize a pedestrian shape and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -211,41 +211,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should keep the labeled thing selected over a frame change', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1,
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1to5,
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
-    ]));
-
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        const nextFrameButton = element(by.css('.next-frame-button'));
-
-        browser.actions()
-          .mouseMove(viewer, {x: 100, y: 150}) // initial position
-          .click()
-          .perform();
-
-        browser.sleep(500);
-
-        nextFrameButton.click();
-
-        browser.sleep(1000);
-      })
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'KeepSelectionOverFrameChange')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.KeepSelectionOverFrameChange);
-        done();
-      });
-  });
-
-  it('should correctly resize a pedestrian over the fixed handle one way', done => {
+  it('should correctly resize a pedestrian shape with flipping top-center and bottom-center and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
@@ -280,7 +246,41 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should draw a new pedestrian rectangle', done => {
+  it('should keep the pedestrian shape selected over a frame change', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1to5,
+      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
+    ]));
+
+    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        const nextFrameButton = element(by.css('.next-frame-button'));
+
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 150}) // initial position
+          .click()
+          .perform();
+
+        browser.sleep(500);
+
+        nextFrameButton.click();
+
+        browser.sleep(1000);
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'KeepSelectionOverFrameChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.KeepSelectionOverFrameChange);
+        done();
+      });
+  });
+
+  it('should draw a new pedestrian shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -312,7 +312,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should draw a new pedestrian rectangle with minimal height', done => {
+  it('should draw a new pedestrian shape from top to bottom with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -345,7 +345,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should draw a new pedestrian rectangle with minimal height in reverse', done => {
+  it('should draw a new pedestrian shape from bottom to top with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -379,7 +379,7 @@ describe('Pedestrian drawing', () => {
   });
 
 
-  it('should draw a new pedestrian rectangle with intermediary mouse movements', done => {
+  it('should draw a new pedestrian shape with intermediary mouse movements', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -437,7 +437,7 @@ describe('Pedestrian drawing', () => {
   });
 
 
-  it('should draw multiple new pedestrian rectangle', done => {
+  it('should draw multiple new pedestrian shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,

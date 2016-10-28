@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Crosshairs drawing', () => {
+describe('Mouse Crosshair', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -32,7 +32,7 @@ describe('Crosshairs drawing', () => {
     crosshairsToggleButton = element(by.css('.task-bar-right button .fa-crosshairs')).element(by.xpath('..'));
   });
 
-  it('should not draw crosshair if disabled', done => {
+  it('should not show crosshair if it is disabled', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -53,7 +53,7 @@ describe('Crosshairs drawing', () => {
       });
   });
 
-  it('should draw crosshair if enabled top left', done => {
+  it('should show crosshair if it is enabled (position top left)', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -76,7 +76,7 @@ describe('Crosshairs drawing', () => {
       });
   });
 
-  it('should draw crosshair if enabled center', done => {
+  it('should show crosshair if it is enabled (position center)', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -99,7 +99,7 @@ describe('Crosshairs drawing', () => {
       });
   });
 
-  it('should draw crosshair if enabled bottom right', done => {
+  it('should show crosshair if it is enabled (position bottom right)', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
@@ -122,7 +122,7 @@ describe('Crosshairs drawing', () => {
       });
   });
 
-  it('should not draw crosshair if enabled and mousecursor outside of viewer', done => {
+  it('should not show crosshair if it is enabled and mousecursor is outside of the viewer', done => {
     mock(sharedMocks.concat([
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
       assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,

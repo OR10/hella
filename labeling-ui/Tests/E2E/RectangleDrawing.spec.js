@@ -143,7 +143,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly move a rectangle on canvas and save the changed coordinates', done => {
+  it('should correctly move a rectangle and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -176,7 +176,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly resize a rectangle on canvas and save the changed coordinates', done => {
+  it('should correctly resize a rectangle and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
@@ -211,7 +211,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should correctly resize a while flipping bottomRight and topLeft', done => {
+  it('should correctly resize a rectangle while flipping bottomRight and topLeft', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0,
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0to4,
@@ -245,7 +245,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should keep the labeled thing selected over a frame change', done => {
+  it('should keep the rectangle selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex1,
@@ -311,7 +311,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should draw a new rectangle with minimal height', done => {
+  it('should draw a new rectangle from top-left to bottom-right with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -344,7 +344,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should draw a new rectangle with minimal height in reverse', done => {
+  it('should draw a new rectangle from bottom-right to top-left with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -478,7 +478,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should draw a new rectangle with drag motion from top-right to bottom-left', done => {
+  it('should draw a new rectangle from top-right to bottom-left', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -510,7 +510,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  it('should draw a new rectangle with drag motion from bottom-left to top-right', done => {
+  it('should draw a new rectangle from bottom-left to top-right', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
