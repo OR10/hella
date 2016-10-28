@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workflow xmlns="http://weblabel.hella-aglaia.com/schema/workflow">
+  <!-- -->
+  <phase id="labeling" name="Labeling">
+    <task id="frame" name="Frame labeling">
+      <classification>
+        <class xref="time" />
+        <class xref="weather" />
+        <class xref="rain-level" />
+        <class xref="country" />
+      </classification>
+    </task>
+    <task id="speed-sign-mapping" name="Speed signs">
+      <description>
+        Deine Aufgabe ist folgendes: Schilder labeln
+      </description>
+      <mapping>
+        <thing xref="sign" />
+        <thing xref="lane" />
+      </mapping>
+      <classification>
+        <class xref="sign-type" max-depth="1">
+          <value xref="u-turn" />
+          <value xref="prohibited" />
+        </class>
+        <class xref="color" />
+      </classification>
+    </task>
+    <parallel>
+      <!--
+       Logical expressions are evaluated against all value and class identifiers.
+       Values are true if the corresponding attribute is set.
+       Classes are true if any of its direct child values is set.
+      -->
+      <task id="speed-signs-on-country-road" name="Speed signs on country roads"
+            filter="speed-sign AND country-road">
+        <classification>
+          <class xref="speed-limit" />
+        </classification>
+      </task>
+      <task id="speed-signs-on-highway" name="Speed signs on highways" filter="speed-sign AND highway">
+        <classification>
+          <class xref="speed-limit" />
+        </classification>
+      </task>
+    </parallel>
+  </phase>
+  <phase id="review" name="Review">
+    <task ref="frame" />
+    <task ref="speed-sign-mapping" />
+    <parallel>
+      <task ref="speed-signs-on-country-road" />
+      <task ref="speed-signs-on-highway" />
+    </parallel>
+  </phase>
+</workflow>
