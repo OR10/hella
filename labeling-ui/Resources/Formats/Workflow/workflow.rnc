@@ -1,0 +1,56 @@
+namespace w = "http://weblabel.hella-aglaia.com/schema/workflow"
+
+grammar {
+    IdAndNameAttribute = attribute id {text}, attribute name {text}
+    FilterAttribute = attribute filter {text}
+    ExternalReferenceAttribute = attribute xref {text}
+    InternalReferenceAttribute = attribute ref {text}
+
+    Workflow = element w:workflow {
+        Phase+
+    }
+
+    Phase = element w:phase {
+        IdAndNameAttribute,
+        TaskOrParallel+
+    }
+
+    TaskOrParallel = Task | element w:parallel {Task+}
+
+    Task = element w:task {
+        (
+            IdAndNameAttribute,
+            FilterAttribute?,
+            Description?,
+            Operation+
+        ) | InternalReferenceAttribute
+    }
+
+    Description = element w:description {text}
+
+    Operation = Mapping | Classification
+
+    Mapping = element w:mapping {
+        ThingReference+
+    }
+
+    ThingReference = element w:thing {
+        ExternalReferenceAttribute
+    }
+
+    Classification = element w:classification {
+        ClassReference+
+    }
+
+    ClassReference = element w:class {
+        ExternalReferenceAttribute,
+        attribute max-depth {text}?,
+        ValueReference*
+    }
+
+    ValueReference = element w:value {
+        ExternalReferenceAttribute
+    }
+
+    start = Workflow
+}

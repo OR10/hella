@@ -1,4 +1,4 @@
-    namespace anno = "http://weblabel.hella-aglaia.com/schema/requirements"
+namespace anno = "http://weblabel.hella-aglaia.com/schema/requirements"
 
 grammar {
     LogicCondition = attribute if {text} | attribute if-not {text}

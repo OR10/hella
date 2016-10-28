@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:w="http://weblabel.hella-aglaia.com/schema/workflow" xmlns="http://relaxng.org/ns/structure/1.0">
+    <define name="IdAndNameAttribute">
+        <attribute name="id"/>
+        <attribute name="name"/>
+    </define>
+    <define name="FilterAttribute">
+        <attribute name="filter"/>
+    </define>
+    <define name="ExternalReferenceAttribute">
+        <attribute name="xref"/>
+    </define>
+    <define name="InternalReferenceAttribute">
+        <attribute name="ref"/>
+    </define>
+    <define name="Workflow">
+        <element name="w:workflow">
+            <oneOrMore>
+                <ref name="Phase"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="Phase">
+        <element name="w:phase">
+            <ref name="IdAndNameAttribute"/>
+            <oneOrMore>
+                <ref name="TaskOrParallel"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="TaskOrParallel">
+        <choice>
+            <ref name="Task"/>
+            <element name="w:parallel">
+                <oneOrMore>
+                    <ref name="Task"/>
+                </oneOrMore>
+            </element>
+        </choice>
+    </define>
+    <define name="Task">
+        <element name="w:task">
+            <choice>
+                <group>
+                    <ref name="IdAndNameAttribute"/>
+                    <optional>
+                        <ref name="FilterAttribute"/>
+                    </optional>
+                    <optional>
+                        <ref name="Description"/>
+                    </optional>
+                    <oneOrMore>
+                        <ref name="Operation"/>
+                    </oneOrMore>
+                </group>
+                <ref name="InternalReferenceAttribute"/>
+            </choice>
+        </element>
+    </define>
+    <define name="Description">
+        <element name="w:description">
+            <text/>
+        </element>
+    </define>
+    <define name="Operation">
+        <choice>
+            <ref name="Mapping"/>
+            <ref name="Classification"/>
+        </choice>
+    </define>
+    <define name="Mapping">
+        <element name="w:mapping">
+            <oneOrMore>
+                <ref name="ThingReference"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="ThingReference">
+        <element name="w:thing">
+            <ref name="ExternalReferenceAttribute"/>
+        </element>
+    </define>
+    <define name="Classification">
+        <element name="w:classification">
+            <oneOrMore>
+                <ref name="ClassReference"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="ClassReference">
+        <element name="w:class">
+            <ref name="ExternalReferenceAttribute"/>
+            <optional>
+                <attribute name="max-depth"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="ValueReference"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="ValueReference">
+        <element name="w:value">
+            <ref name="ExternalReferenceAttribute"/>
+        </element>
+    </define>
+    <start>
+        <ref name="Workflow"/>
+    </start>
+</grammar>
