@@ -33,10 +33,14 @@
             <choice>
                 <group>
                     <ref name="IdAndNameAttribute"/>
-                    <attribute name="after"/>
-                    <attribute name="thing-filter"/>
                     <optional>
                         <attribute name="type"/>
+                    </optional>
+                    <optional>
+                        <attribute name="after"/>
+                    </optional>
+                    <optional>
+                        <attribute name="thing-filter"/>
                     </optional>
                     <optional>
                         <ref name="Description"/>

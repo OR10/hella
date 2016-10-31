@@ -18,9 +18,9 @@ grammar {
     Task = element w:task {
         (
             IdAndNameAttribute,
-            attribute after {text},
-            attribute thing-filter {text},
             attribute type {text}?,
+            attribute after {text}?,
+            attribute thing-filter {text}?,
             Description?,
             Operation+
         ) | InternalReferenceAttribute
