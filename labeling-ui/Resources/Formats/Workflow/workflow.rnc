@@ -2,8 +2,7 @@ namespace w = "http://weblabel.hella-aglaia.com/schema/workflow"
 
 grammar {
     IdAndNameAttribute = attribute id {text}, attribute name {text}
-    ThingFilterAttribute = attribute thing-filter {text}
-    DependencyAttribute = attribute after {text}
+    DepthAttribute = attribute max-depth {text}
     ExternalReferenceAttribute = attribute xref {text}
     InternalReferenceAttribute = attribute ref {text}
 
@@ -18,9 +17,10 @@ grammar {
 
     Task = element w:task {
         (
-            DependencyAttribute,
             IdAndNameAttribute,
-            ThingFilterAttribute?,
+            attribute after {text},
+            attribute thing-filter {text},
+            attribute type {text}?,
             Description?,
             Operation+
         ) | InternalReferenceAttribute
@@ -28,28 +28,33 @@ grammar {
 
     Description = element w:description {text}
 
-    Operation = Mapping | Classification
+    Operation = Draw | Classify
 
-    Mapping = element w:mapping {
-        ThingReference+
+    Draw = element w:draw {
+        attribute thing {text}
     }
 
-    ThingReference = element w:thing {
-        ExternalReferenceAttribute
+    Classify = ClassifyThing | ClassifyFrame
+
+    ClassifyThing = element w:classify {
+        attribute thing {text},
+        DepthAttribute?,
+        AllowClass*
     }
 
-    Classification = element w:classification {
-        ClassReference+
+    ClassifyFrame = element w:classify-frame {
+        DepthAttribute?,
+        AllowClass*
     }
 
-    ClassReference = element w:class {
-        ExternalReferenceAttribute,
-        attribute max-depth {text}?,
-        ValueReference*
+    AllowClass = element w:allow {
+        attribute class {text},
+        DepthAttribute?,
+        AllowValue*
     }
 
-    ValueReference = element w:value {
-        ExternalReferenceAttribute
+    AllowValue = element w:allow {
+        attribute value {text}
     }
 
     start = Workflow

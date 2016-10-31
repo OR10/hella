@@ -4,11 +4,8 @@
         <attribute name="id"/>
         <attribute name="name"/>
     </define>
-    <define name="ThingFilterAttribute">
-        <attribute name="thing-filter"/>
-    </define>
-    <define name="DependencyAttribute">
-        <attribute name="after"/>
+    <define name="DepthAttribute">
+        <attribute name="max-depth"/>
     </define>
     <define name="ExternalReferenceAttribute">
         <attribute name="xref"/>
@@ -35,10 +32,11 @@
         <element name="w:task">
             <choice>
                 <group>
-                    <ref name="DependencyAttribute"/>
                     <ref name="IdAndNameAttribute"/>
+                    <attribute name="after"/>
+                    <attribute name="thing-filter"/>
                     <optional>
-                        <ref name="ThingFilterAttribute"/>
+                        <attribute name="type"/>
                     </optional>
                     <optional>
                         <ref name="Description"/>
@@ -58,43 +56,56 @@
     </define>
     <define name="Operation">
         <choice>
-            <ref name="Mapping"/>
-            <ref name="Classification"/>
+            <ref name="Draw"/>
+            <ref name="Classify"/>
         </choice>
     </define>
-    <define name="Mapping">
-        <element name="w:mapping">
-            <oneOrMore>
-                <ref name="ThingReference"/>
-            </oneOrMore>
+    <define name="Draw">
+        <element name="w:draw">
+            <attribute name="thing"/>
         </element>
     </define>
-    <define name="ThingReference">
-        <element name="w:thing">
-            <ref name="ExternalReferenceAttribute"/>
-        </element>
+    <define name="Classify">
+        <choice>
+            <ref name="ClassifyThing"/>
+            <ref name="ClassifyFrame"/>
+        </choice>
     </define>
-    <define name="Classification">
-        <element name="w:classification">
-            <oneOrMore>
-                <ref name="ClassReference"/>
-            </oneOrMore>
-        </element>
-    </define>
-    <define name="ClassReference">
-        <element name="w:class">
-            <ref name="ExternalReferenceAttribute"/>
+    <define name="ClassifyThing">
+        <element name="w:classify">
+            <attribute name="thing"/>
             <optional>
-                <attribute name="max-depth"/>
+                <ref name="DepthAttribute"/>
             </optional>
             <zeroOrMore>
-                <ref name="ValueReference"/>
+                <ref name="AllowClass"/>
             </zeroOrMore>
         </element>
     </define>
-    <define name="ValueReference">
-        <element name="w:value">
-            <ref name="ExternalReferenceAttribute"/>
+    <define name="ClassifyFrame">
+        <element name="w:classify-frame">
+            <optional>
+                <ref name="DepthAttribute"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="AllowClass"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="AllowClass">
+        <element name="w:allow">
+            <attribute name="class"/>
+            <optional>
+                <ref name="DepthAttribute"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="AllowValue"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="AllowValue">
+        <element name="w:allow">
+            <attribute name="value"/>
         </element>
     </define>
     <start>
