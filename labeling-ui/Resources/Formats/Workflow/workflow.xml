@@ -126,9 +126,7 @@
   <phase id="review" name="Review">
     <task ref="frame" />
     <task ref="speed-sign-mapping" />
-    <parallel>
-      <task ref="speed-signs-on-country-road" />
-      <task ref="speed-signs-on-highway" />
-    </parallel>
+    <task ref="speed-signs-on-country-road" />
+    <task ref="speed-signs-on-highway" />
   </phase>
 </workflow>
