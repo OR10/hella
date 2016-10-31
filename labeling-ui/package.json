@@ -86,6 +86,7 @@
     "selenium-webdriver": "^2.47.0",
     "send": "^0.13.0",
     "serve-static": "^1.10.0",
+    "strip-ansi-cli": "^1.0.0",
     "systemjs-builder": "^0.14.15",
     "three-math": "^0.69.0",
     "tiny-lr": "^0.2.1",
