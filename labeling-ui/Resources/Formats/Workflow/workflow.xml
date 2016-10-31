@@ -1,19 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <workflow xmlns="http://weblabel.hella-aglaia.com/schema/workflow">
-  <!-- -->
+  <!--
+    Phase: A specific labeling phase executed by specific team and label coordinator
+
+    There may exist an arbitrary amount of phases. Each phase automatically depends on the one before it.
+    Phases may only be entered once there dependecy is markes finished.
+    Phases may not be executed in parallel.
+  -->
   <phase id="labeling" name="Labeling">
+    <!--
+      Task: A specific task executed by one labeler.
+
+      Tasks may be executed in parallel by multiple labelers, depending on the tasks defined prerequisites.
+      Tasks contain a specific set of operations (classification, drawing) to be executed by the labeler.
+      Different task types exist, specifying in which way the task is executed (simple, focus-on-thing, ...).
+      Available things to be used within the task may be filtered using the `thing-filter` attribute.
+    -->
     <task id="frame" name="Frame labeling">
+      <!--
+        Frame classification: An operation classifying global (frame-based) attributes of the video.
+
+        A common set of frame based attributes may be something like: country, weather, street-type, ...
+      -->
       <classify-frame />
     </task>
+
     <task after="frame" id="speed-sign-mapping" name="Speed signs">
+      <!--
+        Tasks may provide an optional description block, specifying what the labeler should do exactly.
+      -->
       <description>
         Deine Aufgabe ist folgendes: Schilder labeln
       </description>
 
+      <!--
+        Draw Operation: Manipulation/Creation of Shapes (things).
+
+        Drawing operations include the modification as well as creation of any defined thing (see requirements).
+      -->
       <draw thing="sign" />
       <draw thing="lane" />
 
+      <!--
+        Classification Operation: Classify any defined thing
+
+        Classification operations are based on things defined in the `requirements.xml` file.
+        They may be further limited using allow-filters, which are nested within them.
+        Classification operations may specify a `max-depth` property to limit the levels of classes to be classified.
+
+        If no further `<allow>` tag is specified the operation assumes all classes should be labeled
+      -->
       <classify thing="sign">
+        <!--
+          If at least one `allow` is specified only those classes/values listed within it are allowed for
+          the defined classification. Every other attribute will not be provided for labeling.
+        -->
         <allow class="sign-type" max-depth="1">
           <allow value="u-turn" />
           <allow value="prohibited" />
@@ -21,10 +62,13 @@
       </classify>
 
     </task>
+
     <!--
      Logical expressions are evaluated against all value and class identifiers.
      Values are true if the corresponding attribute is set.
      Classes are true if any of its direct child values is set.
+
+     Logical values are prefixed with their context, either `frame:` or `thing:`.
     -->
     <task after="speed-sign-mapping, frame"
           id="speed-signs-on-country-road"
@@ -34,6 +78,7 @@
     >
       <classify thing="sign" max-depth="1" />
     </task>
+
     <task after="speed-sign-mapping, frame"
           id="speed-signs-on-highway"
           name="Speed signs on highways"
@@ -60,9 +105,15 @@
         </allow>
       </classify>
     </task>
-
   </phase>
+
   <phase id="review" name="Review">
+    <!--
+      Tasks may either be defined as seen above, or be referenced in other phases, to be reused the
+      same way as before.
+
+      No further attributes are allowed on a `task` if a reference is used.
+    -->
     <task ref="frame" />
     <task ref="speed-sign-mapping" />
     <task ref="speed-signs-on-country-road" />
