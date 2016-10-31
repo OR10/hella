@@ -346,7 +346,7 @@ gulp.task('copy-canteen', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e-run', ['webdriver-update', 'clean-e2e-logs'], next => {
+gulp.task('test-e2e-run', ['webdriver-update', 'clean-e2e-logs', 'copy-canteen'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',
@@ -361,7 +361,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-e2e-logs'], next => {
   );
 });
 
-gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-e2e-logs'], next => {
+gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-e2e-logs', 'copy-canteen'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',
@@ -378,14 +378,14 @@ gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-e2e-logs'], n
 });
 
 gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
-  run('clean', 'build', 'copy-canteen', 'optimize', 'test-e2e-run', next);
+  run('clean', 'build', 'optimize', 'test-e2e-run', next);
 });
 
 gulp.task('test-e2e-non-minified', ['webdriver-update'], next => {
-  run('clean', 'build', 'copy-canteen', 'test-e2e-non-minified-run', next);
+  run('clean', 'build', 'test-e2e-non-minified-run', next);
 });
 
-gulp.task('test-functional-run', ['webdriver-update', 'clean-functional-logs'], next => {
+gulp.task('test-functional-run', ['webdriver-update', 'clean-functional-logs', 'copy-canteen'], next => {
   runProtractor(
     {
       configFile: 'protractor.functional.conf.js',
@@ -404,7 +404,7 @@ gulp.task('test-functional-run', ['webdriver-update', 'clean-functional-logs'], 
   );
 });
 
-gulp.task('test-functional-non-minified-run', ['webdriver-update', 'clean-functional-logs'], next => {
+gulp.task('test-functional-non-minified-run', ['webdriver-update', 'clean-functional-logs', 'copy-canteen'], next => {
   runProtractor(
     {
       configFile: 'protractor.functional.conf.js',
