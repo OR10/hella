@@ -144,7 +144,8 @@ gulp.task('clean', ['clean-logs'], () => {
 });
 
 gulp.task('clean-logs', ['create-directories'], next => {
-  run([
+  run(
+    [
       'clean-e2e-logs',
       'clean-functional-logs',
     ],
@@ -154,7 +155,7 @@ gulp.task('clean-logs', ['create-directories'], next => {
 
 gulp.task('clean-e2e-logs', ['create-directories'], next => {
   del([
-    `${paths.dir.logs}/E2E/**/*`
+    `${paths.dir.logs}/E2E/**/*`,
   ])
     .then(() => next())
     .catch(() => next());
@@ -162,7 +163,7 @@ gulp.task('clean-e2e-logs', ['create-directories'], next => {
 
 gulp.task('clean-functional-logs', ['create-directories'], next => {
   del([
-    `${paths.dir.logs}/Functional/**/*`
+    `${paths.dir.logs}/Functional/**/*`,
   ])
     .then(() => next())
     .catch(() => next());
