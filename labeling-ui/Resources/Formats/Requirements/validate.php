@@ -33,12 +33,32 @@ function libxml_display_errors() {
 // Enable user error handling
 libxml_use_internal_errors(true);
 
+function validateIds($document)
+{
+    $xpath = new DOMXPath($document);
+    $idAttributes = $xpath->query('//@id');
+    $attributeList = array();
+    foreach($idAttributes as $idAttribute)
+    {
+        $attributeList[] = $idAttribute->value;
+    }
+
+    return count(array_unique($attributeList)) === count($attributeList);
+}
+
 $document = new DOMDocument();
 $document->load('requirements.xml');
 if (!$document->relaxNGValidate('requirements.rng')) {
     libxml_display_errors();
+    exit(1);
 } else {
-    echo "Requirements are VALID!\n";
+    echo "Requirements structure is VALID!\n";
 }
 
+if (!validateIds($document)) {
+    echo "Requirements Ids are INVALID!\n";
+    exit(2);
+} else {
+    echo "Requirements Ids are VALID!\n";
+}
 
