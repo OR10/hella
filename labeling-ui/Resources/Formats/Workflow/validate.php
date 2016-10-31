@@ -33,12 +33,31 @@ function libxml_display_errors() {
 // Enable user error handling
 libxml_use_internal_errors(true);
 
+function validateIds($document)
+{
+    $xpath = new DOMXPath($document);
+    $idAttributes = $xpath->query('//@id');
+    $attributeList = array();
+    foreach($idAttributes as $idAttribute)
+    {
+        $attributeList[] = $idAttribute->value;
+    }
+
+    return count(array_unique($attributeList)) === count($attributeList);
+}
+
 $document = new DOMDocument();
 $document->load('workflow.xml');
 if (!$document->relaxNGValidate('workflow.rng')) {
     libxml_display_errors();
+    exit(1);
 } else {
-    echo "Workflow is VALID!\n";
+    echo "Workflow structure is VALID!\n";
 }
 
-
+if (!validateIds($document)) {
+    echo "Workflow Ids are INVALID!\n";
+    exit(2);
+} else {
+    echo "Workflow Ids are VALID!\n";
+}
