@@ -3,92 +3,13 @@
   <!-- -->
   <phase id="labeling" name="Labeling">
     <task id="frame" name="Frame labeling">
-      <classification>
-        <frame />
-      </classification>
+      <classify-frame />
     </task>
     <task after="frame" id="speed-sign-mapping" name="Speed signs">
       <description>
         Deine Aufgabe ist folgendes: Schilder labeln
       </description>
 
-      <!--
-      Syntax 1
-      -->
-      <drawing>
-        <thing xref="sign" />
-        <thing xref="lane" />
-      </drawing>
-
-      <classification>
-        <thing xref="sign">
-          <class xref="sign-type" max-depth="1">
-            <value xref="u-turn" />
-            <value xref="prohibited" />
-          </class>
-        </thing>
-      </classification>
-
-      <!--
-      Syntax 2
-      -->
-      <draw-shape thing="lane" />
-      <draw-shape thing="sign" />
-
-      <classify-frame />
-      <classify thing="sign">
-        <classify class="sign-type" max-depth="1">
-          <classify value="u-turn" />
-          <classify value="prohibited" />
-        </classify>
-      </classify>
-
-      <!--
-      Syntax 3
-      -->
-      <drawing>
-        <thing with-id="sign" />
-        <thing with-id="lane" />
-      </drawing>
-
-      <classification>
-        <thing with-id="sign">
-          <class with-id="sign-type" max-depth="1">
-            <value with-id="u-turn" />
-            <value with-id="prohibited" />
-          </class>
-        </thing>
-      </classification>
-
-      <!--
-      Syntax 4
-      -->
-      <draw-thing with-id="sign" />
-      <draw-thing with-id="lane" />
-
-      <classify-thing with-id="sign">
-        <classify-class with-id="sign-type" max-depth="1">
-          <classify-value with-id="u-turn" />
-          <classify-value with-id="prohibited" />
-        </classify-class>
-      </classify-thing>
-
-      <!--
-      Syntax 5
-      -->
-      <draw-thing with-id="sign" />
-      <draw-thing with-id="lane" />
-
-      <classify-thing with-id="sign">
-        <allow-class with-id="sign-type" max-depth="1">
-          <allow-value with-id="u-turn" />
-          <allow-value with-id="prohibited" />
-        </allow-class>
-      </classify-thing>
-
-      <!--
-      Syntax 6
-      -->
       <draw thing="sign" />
       <draw thing="lane" />
 
@@ -108,18 +29,36 @@
     <task after="speed-sign-mapping, frame"
           id="speed-signs-on-country-road"
           name="Speed signs on country roads"
-          thing-filter="thing:speed-sign AND frame:road:country">
-      <classification>
-        <class xref="speed-limit" />
-      </classification>
+          thing-filter="thing:speed-sign AND frame:country"
+          type="focus-on-thing"
+    >
+      <classify thing="sign" max-depth="1" />
     </task>
     <task after="speed-sign-mapping, frame"
           id="speed-signs-on-highway"
           name="Speed signs on highways"
-          filter="speed-sign AND highway">
-      <classification>
-        <class xref="speed-limit" />
-      </classification>
+          thing-filter="thing:speed-sign AND frame:highway">
+      <classify thing="sign">
+        <allow class="speed-sign" />
+      </classify>
+    </task>
+
+    <task after="frame, speed-signs-on-country-road, speed-signs-on-highway"
+          id="light"
+          name="Lights"
+          thing-filter="frame:night AND thing:light-source AND (thing:direction-forward OR thing:stationary)"
+    >
+      <classify thing="light-source">
+        <allow class="light-source">
+          <allow value="street-light" />
+          <allow value="car" />
+          <allow value="advertisement" />
+        </allow>
+        <allow class="direction">
+          <allow value="front" />
+          <allow value="stationary" />
+        </allow>
+      </classify>
     </task>
 
   </phase>
@@ -128,5 +67,6 @@
     <task ref="speed-sign-mapping" />
     <task ref="speed-signs-on-country-road" />
     <task ref="speed-signs-on-highway" />
+    <task ref="light" />
   </phase>
 </workflow>

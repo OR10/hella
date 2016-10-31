@@ -19,7 +19,7 @@
       </value>
     </class>
     <class ref="weather" />
-    <class id="rain-level" name="Rain level" if="rain">
+    <class id="rain-level" name="Rain level" if="frame:rain">
       <value id="low" name="Low" />
       <value id="medium" name="Medium" />
       <value id="high" name="High" />
@@ -29,10 +29,10 @@
 
   <thing id="sign" shape="rectangle" name="Traffic Sign">
     <class id="sign-type" name="Sign type">
-      <value id="u-turn" name="U-Turn" if-not="highway" />
+      <value id="u-turn" name="U-Turn" if-not="frame:highway" />
       <value id="speed-sign" name="Speed sign">
         <class id="speed-limit" name="Speed limit">
-          <value id="speed-30" name="Speed Limit 30" if="city-road AND NOT highway" />
+          <value id="speed-30" name="Speed Limit 30" if="frame:city-road AND NOT frame:highway" />
           <value id="speed-100" name="Speed Limit 100" />
         </class>
         <class id="limited-by-type" name="Limited by type">
