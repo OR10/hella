@@ -7,6 +7,7 @@ class labeling_api(
   $tideways = false,
   $redis = false,
   $letsencrypt = false,
+  $documentation_host = false,
 ) {
   include ::labeling_api::params
 
@@ -43,5 +44,9 @@ class labeling_api(
   if $letsencrypt {
     include ::letsencrypt
     include ::annostation_letsencrypt
+  }
+
+  if $documentation_host {
+    include ::labeling_api::documentation_host
   }
 }

@@ -64,6 +64,10 @@ labeling_api::worker::user: www-data
 
 labeling_api::cdn::httpv2: true
 
+labeling_api::documentation_host::httpv2: true
+labeling_api::documentation_host::auth_basic_users:
+  labeling:    '$apr1$JLdglpHm$k2Z.g9ImFLo0eMt7k.nz31' # t2Dj2gUtscvwyKT
+
 labeling_api::mysql: true
 labeling_api::couch: true
 labeling_api::worker_queue: true
@@ -71,3 +75,4 @@ labeling_api::redis: true
 labeling_api::app: true
 labeling_api::run_composer_install: false
 labeling_api::tideways: true
+labeling_api::documentation_host: true
