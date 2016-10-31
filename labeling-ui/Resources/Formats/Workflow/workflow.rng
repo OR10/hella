@@ -4,8 +4,11 @@
         <attribute name="id"/>
         <attribute name="name"/>
     </define>
-    <define name="FilterAttribute">
-        <attribute name="filter"/>
+    <define name="ThingFilterAttribute">
+        <attribute name="thing-filter"/>
+    </define>
+    <define name="DependencyAttribute">
+        <attribute name="after"/>
     </define>
     <define name="ExternalReferenceAttribute">
         <attribute name="xref"/>
@@ -24,27 +27,18 @@
         <element name="w:phase">
             <ref name="IdAndNameAttribute"/>
             <oneOrMore>
-                <ref name="TaskOrParallel"/>
+                <ref name="Task"/>
             </oneOrMore>
         </element>
-    </define>
-    <define name="TaskOrParallel">
-        <choice>
-            <ref name="Task"/>
-            <element name="w:parallel">
-                <oneOrMore>
-                    <ref name="Task"/>
-                </oneOrMore>
-            </element>
-        </choice>
     </define>
     <define name="Task">
         <element name="w:task">
             <choice>
                 <group>
+                    <ref name="DependencyAttribute"/>
                     <ref name="IdAndNameAttribute"/>
                     <optional>
-                        <ref name="FilterAttribute"/>
+                        <ref name="ThingFilterAttribute"/>
                     </optional>
                     <optional>
                         <ref name="Description"/>

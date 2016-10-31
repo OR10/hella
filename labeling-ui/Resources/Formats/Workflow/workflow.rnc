@@ -2,7 +2,8 @@ namespace w = "http://weblabel.hella-aglaia.com/schema/workflow"
 
 grammar {
     IdAndNameAttribute = attribute id {text}, attribute name {text}
-    FilterAttribute = attribute filter {text}
+    ThingFilterAttribute = attribute thing-filter {text}
+    DependencyAttribute = attribute after {text}
     ExternalReferenceAttribute = attribute xref {text}
     InternalReferenceAttribute = attribute ref {text}
 
@@ -12,15 +13,14 @@ grammar {
 
     Phase = element w:phase {
         IdAndNameAttribute,
-        TaskOrParallel+
+        Task+
     }
-
-    TaskOrParallel = Task | element w:parallel {Task+}
 
     Task = element w:task {
         (
+            DependencyAttribute,
             IdAndNameAttribute,
-            FilterAttribute?,
+            ThingFilterAttribute?,
             Description?,
             Operation+
         ) | InternalReferenceAttribute
