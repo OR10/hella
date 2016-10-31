@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <!--
+    Frame requirements: Requirement information for frame based annotation
+
+    Requirements based on frames rather then objects/things is defined as `frame`-requirement.
+  -->
   <frame>
+    <!--
+      Each requirement block may consist of an arbitrary number of `class` tags, which define categories
+    -->
     <class id="time" name="Time">
+      <!--
+        Each `class` block may contain an arbitrary number of `value` tags, which define the attributes to be labeled
+      -->
       <value id="day" name="Day" />
       <value id="night" name="Night">
+        <!--
+          `class`es may be nested inside of `value` blocks to implicitly define dependencies
+        -->
         <class id="street-lights" name="Street lights">
           <value id="neon" name="Neon lights">
             <class name="Lamp Color" id="lamp-color">
@@ -12,6 +26,9 @@
             </class>
           </value>
           <value id="halogen" name="Halogen lights">
+            <!--
+              `class` tags may be referenced from anywhere else inside the document by their id.
+            -->
             <class ref="lamp-color" />
           </value>
           <value id="xenon" name="Xenon lights" />
@@ -19,6 +36,10 @@
       </value>
     </class>
     <class ref="weather" />
+    <!--
+      Dependencies may be defined explicitly using `if` and `if-not` tags, which contain logical expressions based on
+      other classes and values `id` attributes.
+    -->
     <class id="rain-level" name="Rain level" if="frame:rain">
       <value id="low" name="Low" />
       <value id="medium" name="Medium" />
@@ -27,6 +48,12 @@
     <class ref="country" />
   </frame>
 
+  <!--
+    Thing requirements reflect the need to label a certain area of a frame using a specific drawing
+    tool (rectangle, pedestrian, cuboid, ...)
+
+    Each thing may contain its own set of classes and values to be labeled.
+  -->
   <thing id="sign" shape="rectangle" name="Traffic Sign">
     <class id="sign-type" name="Sign type">
       <value id="u-turn" name="U-Turn" if-not="frame:highway" />
@@ -44,6 +71,10 @@
     </class>
   </thing>
 
+  <!--
+    The private block allows for classes and values to be defined, which may be referenced elsewhere in the document,
+    without being directly bound to a thing or frame.
+  -->
   <private>
     <class name="Street Type" id="street-type">
       <value id="highway" name="Highway" />
