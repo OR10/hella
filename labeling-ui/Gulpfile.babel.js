@@ -143,10 +143,29 @@ gulp.task('clean', ['clean-logs'], () => {
   ]);
 });
 
-gulp.task('clean-logs', ['create-directories'], () => {
-  return del([
-    `${paths.dir.logs}/**/*`,
-  ]);
+gulp.task('clean-logs', ['create-directories'], next => {
+  run([
+      'clean-e2e-logs',
+      'clean-functional-logs',
+    ],
+    next
+  );
+});
+
+gulp.task('clean-e2e-logs', ['create-directories'], next => {
+  del([
+    `${paths.dir.logs}/E2E/**/*`
+  ])
+    .then(() => next())
+    .catch(() => next());
+});
+
+gulp.task('clean-functional-logs', ['create-directories'], next => {
+  del([
+    `${paths.dir.logs}/Functional/**/*`
+  ])
+    .then(() => next())
+    .catch(() => next());
 });
 
 gulp.task('serve', next => { // eslint-disable-line no-unused-vars
@@ -326,7 +345,7 @@ gulp.task('copy-canteen', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], next => {
+gulp.task('test-e2e-run', ['webdriver-update', 'clean-e2e-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',
@@ -341,7 +360,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'clean-logs'], next => {
   );
 });
 
-gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-logs'], next => {
+gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'clean-e2e-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',
@@ -365,7 +384,7 @@ gulp.task('test-e2e-non-minified', ['webdriver-update'], next => {
   run('clean', 'build', 'copy-canteen', 'test-e2e-non-minified-run', next);
 });
 
-gulp.task('test-functional-run', ['webdriver-update', 'clean-logs'], next => {
+gulp.task('test-functional-run', ['webdriver-update', 'clean-functional-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.functional.conf.js',
@@ -384,7 +403,7 @@ gulp.task('test-functional-run', ['webdriver-update', 'clean-logs'], next => {
   );
 });
 
-gulp.task('test-functional-non-minified-run', ['webdriver-update', 'clean-logs'], next => {
+gulp.task('test-functional-non-minified-run', ['webdriver-update', 'clean-functional-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.functional.conf.js',
