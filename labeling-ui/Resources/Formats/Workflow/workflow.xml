@@ -40,7 +40,11 @@
       -->
       <draw thing="sign" />
       <draw thing="lane" />
+    </task>
 
+    <task after="speed-sign-mapping"
+          id="speed-sign-classification"
+          name="Classify speed signs">
       <!--
         Classification Operation: Classify any defined thing
 
@@ -98,6 +102,10 @@
     </task>
 
     <!--
+     `thing-filter` may be used to limit the process to a set of Things with specific attributes.
+     Using this feature allows the subdivision of complex tasks into smaller non dependant tasks, which
+     are easier to process, as well as solvable by different lablers in parallel.
+
      Logical expressions are evaluated against all value and class identifiers.
      Values are true if the corresponding attribute is set.
      Classes are true if any of its direct child values is set.
@@ -108,20 +116,31 @@
           id="speed-signs-on-country-road"
           name="Speed signs on country roads"
           thing-filter="thing:speed-sign AND frame:country"
-          type="focus-on-thing"
     >
       <classify thing="sign" max-depth="1" />
     </task>
 
+    <!--
+      The `type` selects a specific labeling view. For example `focus-on-thing` will somehow highlight or emphasize
+      the Thing to be processed. (UX to be discussed here: may be zooming in on each Thing).
+
+      Different types are possible in the future. Providing the `type` `simple` or the not specifying a `type` at all
+      represents the normal, currently used, free form label process based on frames.
+    -->
     <task after="speed-sign-mapping, frame"
           id="speed-signs-on-highway"
           name="Speed signs on highways"
-          thing-filter="thing:speed-sign AND frame:highway">
+          thing-filter="thing:speed-sign AND frame:highway"
+          type="focus-on-thing">
       <classify thing="sign">
         <allow class="speed-sign" />
       </classify>
     </task>
 
+    <!--
+      Multiple dependencies in `after` are treated as a combined logical AND. All of the mentioned tasks in this list
+      must be completed, before this one is allowed to be started. The list is separated by comma.
+    -->
     <task after="frame, speed-signs-on-country-road, speed-signs-on-highway"
           id="light"
           name="Lights"
