@@ -12,7 +12,19 @@ grammar {
 
     Phase = element w:phase {
         IdAndNameAttribute,
+        RestrictLabelers?,
         Task+
+    }
+
+    PhaseRestrictionAttribute = attribute from-phase {text}
+    RestrictLabelers = element w:restrict-labelers {
+        element w:not-same-label-coordinator {
+            PhaseRestrictionAttribute?
+        }? & element w:not-same-label-group {
+            PhaseRestrictionAttribute?
+        }? & element w:not-same-labeler-for-referenced-tasks {
+            PhaseRestrictionAttribute?
+        }?
     }
 
     Task = element w:task {

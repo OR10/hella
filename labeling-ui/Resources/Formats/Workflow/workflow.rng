@@ -23,9 +23,42 @@
     <define name="Phase">
         <element name="w:phase">
             <ref name="IdAndNameAttribute"/>
+            <optional>
+                <ref name="RestrictLabelers"/>
+            </optional>
             <oneOrMore>
                 <ref name="Task"/>
             </oneOrMore>
+        </element>
+    </define>
+    <define name="PhaseRestrictionAttribute">
+        <attribute name="from-phase"/>
+    </define>
+    <define name="RestrictLabelers">
+        <element name="w:restrict-labelers">
+            <interleave>
+                <optional>
+                    <element name="w:not-same-label-coordinator">
+                        <optional>
+                            <ref name="PhaseRestrictionAttribute"/>
+                        </optional>
+                    </element>
+                </optional>
+                <optional>
+                    <element name="w:not-same-label-group">
+                        <optional>
+                            <ref name="PhaseRestrictionAttribute"/>
+                        </optional>
+                    </element>
+                </optional>
+                <optional>
+                    <element name="w:not-same-labeler-for-referenced-tasks">
+                        <optional>
+                            <ref name="PhaseRestrictionAttribute"/>
+                        </optional>
+                    </element>
+                </optional>
+            </interleave>
         </element>
     </define>
     <define name="Task">
