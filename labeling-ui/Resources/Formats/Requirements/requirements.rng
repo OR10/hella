@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns:anno="http://weblabel.hella-aglaia.com/schema/requirements" xmlns="http://relaxng.org/ns/structure/1.0">
+<grammar xmlns:r="http://weblabel.hella-aglaia.com/schema/requirements" xmlns="http://relaxng.org/ns/structure/1.0">
     <define name="LogicCondition">
         <choice>
             <attribute name="if"/>
@@ -7,13 +7,16 @@
         </choice>
     </define>
     <define name="Requirements">
-        <element name="anno:requirements">
+        <element name="r:requirements">
             <interleave>
                 <optional>
                     <ref name="Frame"/>
                 </optional>
                 <zeroOrMore>
                     <ref name="Thing"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="Group"/>
                 </zeroOrMore>
                 <optional>
                     <ref name="Private"/>
@@ -22,24 +25,32 @@
         </element>
     </define>
     <define name="Frame">
-        <element name="anno:frame">
+        <element name="r:frame">
             <oneOrMore>
                 <ref name="Class"/>
             </oneOrMore>
         </element>
     </define>
+    <define name="ThingLikeStructure">
+        <attribute name="id"/>
+        <attribute name="name"/>
+        <oneOrMore>
+            <ref name="Class"/>
+        </oneOrMore>
+    </define>
     <define name="Thing">
-        <element name="anno:thing">
-            <attribute name="id"/>
+        <element name="r:thing">
             <attribute name="shape"/>
-            <attribute name="name"/>
-            <oneOrMore>
-                <ref name="Class"/>
-            </oneOrMore>
+            <ref name="ThingLikeStructure"/>
+        </element>
+    </define>
+    <define name="Group">
+        <element name="r:group">
+            <ref name="ThingLikeStructure"/>
         </element>
     </define>
     <define name="Class">
-        <element name="anno:class">
+        <element name="r:class">
             <choice>
                 <group>
                     <attribute name="id"/>
@@ -56,7 +67,7 @@
         </element>
     </define>
     <define name="Value">
-        <element name="anno:value">
+        <element name="r:value">
             <attribute name="id"/>
             <attribute name="name"/>
             <optional>
@@ -68,7 +79,7 @@
         </element>
     </define>
     <define name="Private">
-        <element name="anno:private">
+        <element name="r:private">
             <oneOrMore>
                 <ref name="Class"/>
             </oneOrMore>

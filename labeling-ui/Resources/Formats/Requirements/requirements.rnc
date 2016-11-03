@@ -1,24 +1,32 @@
-namespace anno = "http://weblabel.hella-aglaia.com/schema/requirements"
+namespace r = "http://weblabel.hella-aglaia.com/schema/requirements"
 
 grammar {
     LogicCondition = attribute if {text} | attribute if-not {text}
 
-    Requirements = element anno:requirements {
-        Frame? & Thing* & Private?
+    Requirements = element r:requirements {
+        Frame? & Thing* & Group* & Private?
     }
 
-    Frame = element anno:frame {
+    Frame = element r:frame {
         Class+
     }
 
-    Thing = element anno:thing {
+    ThingLikeStructure = (
         attribute id {text},
-        attribute shape {text},
         attribute name {text},
         Class+
+    )
+
+    Thing = element r:thing {
+        attribute shape {text},
+        ThingLikeStructure
     }
 
-    Class = element anno:class {
+    Group = element r:group {
+        ThingLikeStructure
+    }
+
+    Class = element r:class {
         (
             attribute id {text},
             attribute name {text},
@@ -27,14 +35,14 @@ grammar {
         ) | attribute ref {text}
     }
 
-    Value = element anno:value {
+    Value = element r:value {
         attribute id {text},
         attribute name {text},
         LogicCondition?,
         Class*
     }
 
-    Private = element anno:private {
+    Private = element r:private {
         Class+
     }
 
