@@ -6,8 +6,19 @@
     There may exist an arbitrary amount of phases. Each phase automatically depends on the one before it.
     Phases may only be entered once there dependecy is markes finished.
     Phases may not be executed in parallel.
+
+    Each phase may use a certain `conflict-resolution` strategy. The first implementation will only feature one version
+    of it. In the future however additional strategies may be implemented.
+
+    The initial version `flag-and-revision´ will allow the labeler to flag inconsistencies at any point. After flagging
+    flagging by a labeler he/she continues labeling. Flagged things will not be considered for the `complete` check of
+    the task. After the current labeling "branch" is completed a review/revision task will be created in which all of
+    the before labeled information may be checked and altered to be correct. After this the labeling is resumed with the
+    next available phase.
   -->
-  <phase id="labeling" name="Labeling">
+  <phase id="labeling"
+         name="Labeling"
+         conflict-resolution="flag-and-revision">
     <!--
       Task: A specific task executed by one labeler.
 

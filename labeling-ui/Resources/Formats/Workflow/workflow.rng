@@ -24,6 +24,9 @@
         <element name="w:phase">
             <ref name="IdAndNameAttribute"/>
             <optional>
+                <attribute name="conflict-resolution"/>
+            </optional>
+            <optional>
                 <ref name="RestrictLabelers"/>
             </optional>
             <oneOrMore>

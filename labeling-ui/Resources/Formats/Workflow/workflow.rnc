@@ -12,6 +12,7 @@ grammar {
 
     Phase = element w:phase {
         IdAndNameAttribute,
+        attribute conflict-resolution {text}?,
         RestrictLabelers?,
         Task+
     }
