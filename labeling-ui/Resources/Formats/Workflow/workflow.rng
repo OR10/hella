@@ -66,18 +66,24 @@
     </define>
     <define name="Draw">
         <element name="w:draw">
-            <attribute name="thing"/>
+            <choice>
+                <attribute name="thing"/>
+                <attribute name="group"/>
+            </choice>
         </element>
     </define>
     <define name="Classify">
         <choice>
-            <ref name="ClassifyThing"/>
+            <ref name="ClassifyThingLike"/>
             <ref name="ClassifyFrame"/>
         </choice>
     </define>
-    <define name="ClassifyThing">
+    <define name="ClassifyThingLike">
         <element name="w:classify">
-            <attribute name="thing"/>
+            <choice>
+                <attribute name="thing"/>
+                <attribute name="group"/>
+            </choice>
             <optional>
                 <ref name="DepthAttribute"/>
             </optional>

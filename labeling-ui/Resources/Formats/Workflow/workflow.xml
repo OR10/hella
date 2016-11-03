@@ -60,7 +60,41 @@
           <allow value="prohibited" />
         </allow>
       </classify>
+    </task>
 
+    <!--
+      The next 3 tasks describe the drawing and grouping of time range extension signs for speed signs.
+    -->
+    <task id="time-range-sign-mapping" name="Time Range Signs">
+      <description>
+        Please draw boxes around every time range sign.
+      </description>
+
+      <draw thing="time-range-sign" />
+    </task>
+
+    <task after="time-range-sign-mapping"
+          id="time-range-sign-classification"
+          name="Time Range Sign Classification"
+          thing-filter="thing:time-range-sign"
+          type="focus-on-thing">
+      <description>
+        Please classify all time range signs
+      </description>
+
+      <draw thing="time-range-sign" />
+    </task>
+
+    <task after="time-range-sign-mapping, speed-sign-mapping"
+          id="time-range-speed-sign-grouping"
+          name="Time Range Sign / Speed Sign grouping"
+          thing-filter="thing:time-range-sign OR thing:speed-sign">
+      <description>
+        Please group all time range signs with their corresponding speed-signs and classify them.
+      </description>
+
+      <draw group="extension-sign-group" />
+      <classify group="extension-sign-group" />
     </task>
 
     <!--

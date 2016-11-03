@@ -31,13 +31,13 @@ grammar {
     Operation = Draw | Classify
 
     Draw = element w:draw {
-        attribute thing {text}
+        (attribute thing {text} | attribute group {text})
     }
 
-    Classify = ClassifyThing | ClassifyFrame
+    Classify = ClassifyThingLike | ClassifyFrame
 
-    ClassifyThing = element w:classify {
-        attribute thing {text},
+    ClassifyThingLike = element w:classify {
+        (attribute thing {text} | attribute group {text}),
         DepthAttribute?,
         AllowClass*
     }
