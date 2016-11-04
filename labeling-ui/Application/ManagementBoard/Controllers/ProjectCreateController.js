@@ -155,11 +155,12 @@ class ProjectCreateController {
      * @type {Array.<Object>}
      */
     this.taskTypes = [
-      // {id: 'vehicle', name: 'Vehicle'},
+      {id: 'vehicle', name: 'Vehicle'},
       // {id: 'parked-cars', name: 'Parked Cars'},
       {id: 'person', name: 'Person'},
       {id: 'cyclist', name: 'Cyclist'},
       {id: 'ignore', name: 'Ignore'},
+      {id: 'unspecified', name: 'Unspecified'},
       // {id: 'ignore-vehicle', name: 'Ignore Vehicle'},
       // {id: 'lane', name: 'Lane'},
     ];
@@ -201,9 +202,6 @@ class ProjectCreateController {
     }
 
     this.labelingTaskTypes.push({config, type});
-    this.taskTypes = this.taskTypes.filter(item => {
-      return item.id !== taskTypeToAdd;
-    });
 
     this.taskTypeToAdd = '';
     this.taskConfigToAdd = '';
