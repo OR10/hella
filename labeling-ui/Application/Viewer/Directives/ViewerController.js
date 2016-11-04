@@ -367,6 +367,29 @@ class ViewerController {
      */
     this._layerContainer = $element.find('.layer-container');
 
+
+    /**
+     * Show a modal if the camera calibration data is missing but needed for a 3d drawing task
+     */
+    if (this.task.drawingTool === 'cuboid' && !this.video.calibration) {
+      this._modalService.info(
+        {
+          title: 'Missing calibration data',
+          headline: 'This task is missing its camera calibration data. Please contact the label coordinator for further assistance!',
+          confirmButtonText: 'Go back to project list',
+        },
+        () => {
+          this._$state.go('labeling.tasks.list', {projectId: this.task.projectId});
+        },
+        undefined,
+        {
+          warning: true,
+          abortable: false,
+        }
+      );
+      return;
+    }
+
     const {width, height} = this.video.metaData;
     this._contentWidth = width;
     this._contentHeight = height;
