@@ -106,7 +106,10 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
 
             $disabledTasks = $this->labelingTaskFacade->findAllByStatus(
                 $video,
-                Model\LabelingTask::STATUS_PREPROCESSING
+                Model\LabelingTask::STATUS_TODO,
+                null,
+                null,
+                Model\LabelingTask::PHASE_PREPROCESSING
             );
             foreach ($disabledTasks as $disabledTask) {
                 $disabledTask->setStatusIfAllImagesAreConverted($video);
@@ -114,12 +117,29 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
             }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
+            $this->setFailure($job);
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
+            $this->setFailure($job);
         } finally {
             if (!unlink($tmpFile)) {
                 throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
             }
+        }
+    }
+
+    private function setFailure(Job $job)
+    {
+        $video = $this->videoFacade->find($job->videoId);
+        $video->setImageType($job->imageType->getName(), 'converted', false);
+        $this->videoFacade->save($video);
+        $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+        foreach($tasks as $task) {
+            $task->setStatus(
+                Model\LabelingTask::PHASE_PREPROCESSING,
+                Model\LabelingTask::STATUS_FAILED
+            );
+            $this->labelingTaskFacade->save($task);
         }
     }
 

@@ -70,7 +70,7 @@ class StatusTest extends Tests\WebTestCase
 
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
-        $this->assertEquals($response->getStatusCode(), 400);
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testBeginTask()

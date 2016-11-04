@@ -116,7 +116,7 @@ class Status extends Controller\Base
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION &&
-                $task->getStatus($phase) !== Model\LabelingTask::STATUS_PREPROCESSING
+                $phase !== Model\LabelingTask::PHASE_PREPROCESSING
             ) {
                 throw new Exception\BadRequestHttpException();
             }

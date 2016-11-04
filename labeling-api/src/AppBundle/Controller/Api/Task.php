@@ -120,19 +120,6 @@ class Task extends Controller\Base
         $tasks                  = [];
         $numberOfTotalDocuments = 0;
         switch ($taskStatus) {
-            case Model\LabelingTask::STATUS_PREPROCESSING:
-                if ($this->userFacade->isLabelCoordinator() || $this->userFacade->isAdmin()) {
-                    $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_PREPROCESSING,
-                        $project,
-                        $offset,
-                        $limit,
-                        $taskPhase
-                    )->toArray();
-
-                    $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_PREPROCESSING];
-                }
-                break;
             case Model\LabelingTask::STATUS_IN_PROGRESS:
                 $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
                     Model\LabelingTask::STATUS_IN_PROGRESS,

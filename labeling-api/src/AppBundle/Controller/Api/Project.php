@@ -157,7 +157,7 @@ class Project extends Controller\Base
                     $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_PREPROCESSING)
+                'taskInPreProcessingCount' => $this->getSumOfTasksByPhaseAndStatus($project, Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_TODO)
             );
 
             if ($user->hasOneRoleOf(
@@ -357,6 +357,15 @@ class Project extends Controller\Base
         return $sumOfTasks;
     }
 
+    private function getSumOfTasksByPhaseAndStatus(Model\Project $project, $phase, $status)
+    {
+        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
+
+        $sumOfTasks = $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase][$status];
+
+        return $sumOfTasks;
+    }
+
     private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
     {
         if (!isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()])) {
@@ -443,8 +452,8 @@ class Project extends Controller\Base
 
         $sumOfPreProcessingTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
             $project,
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_PREPROCESSING
+            Model\LabelingTask::PHASE_PREPROCESSING,
+            Model\LabelingTask::STATUS_TODO
         )->toArray();
 
         if (isset($sumOfPreProcessingTasks[0]['value']) && $sumOfPreProcessingTasks[0]['value'] > 0) {

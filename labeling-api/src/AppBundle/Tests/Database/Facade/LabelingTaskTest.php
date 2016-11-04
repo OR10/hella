@@ -81,7 +81,13 @@ class LabelingTaskTest extends Tests\WebTestCase
             ));
         }
 
-        $tasks = $this->labelingTaskFacade->findAllByStatus($video, Model\LabelingTask::STATUS_PREPROCESSING);
+        $tasks = $this->labelingTaskFacade->findAllByStatus(
+            $video,
+            Model\LabelingTask::STATUS_TODO,
+            null,
+            null,
+            Model\LabelingTask::PHASE_PREPROCESSING
+        );
 
         $tasksDates = array_map(function (Model\LabelingTask $task) {
             return $task->getCreatedAt();

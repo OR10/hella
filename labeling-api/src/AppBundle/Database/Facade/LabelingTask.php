@@ -521,13 +521,13 @@ class LabelingTask
             ->toArray();
 
         $phases = array(
+            Model\LabelingTask::PHASE_PREPROCESSING,
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
             Model\LabelingTask::PHASE_REVISION,
         );
         foreach ($phases as $phase) {
             $result[$phase] = [
-                Model\LabelingTask::STATUS_PREPROCESSING            => 0,
                 Model\LabelingTask::STATUS_TODO                     => 0,
                 Model\LabelingTask::STATUS_IN_PROGRESS              => 0,
                 Model\LabelingTask::STATUS_DONE                     => 0,

@@ -116,7 +116,7 @@ class Status extends Controller\Base
                 if ($phase === Model\LabelingTask::PHASE_REVISION) {
                     continue;
                 }
-                if ($status[Model\LabelingTask::STATUS_PREPROCESSING] > 0 ||
+                if ($status[Model\LabelingTask::STATUS_TODO] > 0 ||
                     $status[Model\LabelingTask::STATUS_IN_PROGRESS] > 0 ||
                     $status[Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION] > 0
                 ) {

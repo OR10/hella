@@ -25,15 +25,16 @@ class LabelingTask
     const INSTRUCTION_LANE           = 'lane';
     const INSTRUCTION_PARKED_CARS    = 'parked-cars';
 
-    const STATUS_PREPROCESSING            = 'preprocessing';
+    const STATUS_FAILED                   = 'failed';
     const STATUS_IN_PROGRESS              = 'in_progress';
     const STATUS_TODO                     = 'todo';
     const STATUS_DONE                     = 'done';
     const STATUS_WAITING_FOR_PRECONDITION = 'waiting_for_precondition';
 
-    const PHASE_LABELING = 'labeling';
-    const PHASE_REVIEW   = 'review';
-    const PHASE_REVISION = 'revision';
+    const PHASE_PREPROCESSING = 'preprocessing';
+    const PHASE_LABELING      = 'labeling';
+    const PHASE_REVIEW        = 'review';
+    const PHASE_REVISION      = 'revision';
 
     /**
      * @var string
@@ -91,7 +92,7 @@ class LabelingTask
      * @CouchDB\Field(type="mixed")
      * @Serializer\Groups({"statistics"})
      */
-    private $status = [self::PHASE_LABELING => self::STATUS_PREPROCESSING];
+    private $status = [self::PHASE_PREPROCESSING => self::STATUS_TODO];
 
     /**
      * @var string
@@ -425,6 +426,7 @@ class LabelingTask
                 return $this;
             }
         }
+        $this->setStatus(self::PHASE_PREPROCESSING, self::STATUS_DONE);
         $this->setStatus(self::PHASE_LABELING, self::STATUS_TODO);
 
         return $this;
