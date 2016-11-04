@@ -31,9 +31,11 @@
             </oneOrMore>
         </element>
     </define>
-    <define name="ThingLikeStructure">
+    <define name="ThingLikeStructureAttributes">
         <attribute name="id"/>
         <attribute name="name"/>
+    </define>
+    <define name="ThingLikeStructure">
         <oneOrMore>
             <ref name="Class"/>
         </oneOrMore>
@@ -41,12 +43,16 @@
     <define name="Thing">
         <element name="r:thing">
             <attribute name="shape"/>
+            <ref name="ThingLikeStructureAttributes"/>
             <ref name="ThingLikeStructure"/>
         </element>
     </define>
     <define name="Group">
         <element name="r:group">
-            <ref name="ThingLikeStructure"/>
+            <ref name="ThingLikeStructureAttributes"/>
+            <optional>
+                <ref name="ThingLikeStructure"/>
+            </optional>
         </element>
     </define>
     <define name="Class">

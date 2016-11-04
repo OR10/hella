@@ -11,19 +11,24 @@ grammar {
         Class+
     }
 
-    ThingLikeStructure = (
+    ThingLikeStructureAttributes = (
         attribute id {text},
-        attribute name {text},
+        attribute name {text}
+    )
+
+    ThingLikeStructure = (
         Class+
     )
 
     Thing = element r:thing {
         attribute shape {text},
+        ThingLikeStructureAttributes,
         ThingLikeStructure
     }
 
     Group = element r:group {
-        ThingLikeStructure
+        ThingLikeStructureAttributes,
+        ThingLikeStructure?
     }
 
     Class = element r:class {
