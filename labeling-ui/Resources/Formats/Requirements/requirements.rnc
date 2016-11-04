@@ -8,27 +8,22 @@ grammar {
     }
 
     Frame = element r:frame {
-        Class+
+        Class*
     }
 
-    ThingLikeStructureAttributes = (
-        attribute id {text},
-        attribute name {text}
-    )
-
     ThingLikeStructure = (
-        Class+
+        attribute id {text},
+        attribute name {text},
+        Class*
     )
 
     Thing = element r:thing {
         attribute shape {text},
-        ThingLikeStructureAttributes,
         ThingLikeStructure
     }
 
     Group = element r:group {
-        ThingLikeStructureAttributes,
-        ThingLikeStructure?
+        ThingLikeStructure
     }
 
     Class = element r:class {
