@@ -160,7 +160,7 @@ class ProjectCreateController {
       {id: 'person', name: 'Person'},
       {id: 'cyclist', name: 'Cyclist'},
       {id: 'ignore', name: 'Ignore'},
-      {id: 'unspecified', name: 'Unspecified'},
+      {id: 'miscellaneous', name: 'Miscellaneous'},
       // {id: 'ignore-vehicle', name: 'Ignore Vehicle'},
       // {id: 'lane', name: 'Lane'},
     ];
