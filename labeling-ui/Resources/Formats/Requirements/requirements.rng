@@ -26,33 +26,27 @@
     </define>
     <define name="Frame">
         <element name="r:frame">
-            <oneOrMore>
+            <zeroOrMore>
                 <ref name="Class"/>
-            </oneOrMore>
+            </zeroOrMore>
         </element>
     </define>
-    <define name="ThingLikeStructureAttributes">
+    <define name="ThingLikeStructure">
         <attribute name="id"/>
         <attribute name="name"/>
-    </define>
-    <define name="ThingLikeStructure">
-        <oneOrMore>
+        <zeroOrMore>
             <ref name="Class"/>
-        </oneOrMore>
+        </zeroOrMore>
     </define>
     <define name="Thing">
         <element name="r:thing">
             <attribute name="shape"/>
-            <ref name="ThingLikeStructureAttributes"/>
             <ref name="ThingLikeStructure"/>
         </element>
     </define>
     <define name="Group">
         <element name="r:group">
-            <ref name="ThingLikeStructureAttributes"/>
-            <optional>
-                <ref name="ThingLikeStructure"/>
-            </optional>
+            <ref name="ThingLikeStructure"/>
         </element>
     </define>
     <define name="Class">
