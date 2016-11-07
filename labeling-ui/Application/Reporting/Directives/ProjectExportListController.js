@@ -15,7 +15,7 @@ class ProjectExportListController {
      */
     this.apiService = ApiService;
 
-    const intervalInSeconds = 10;
+    const intervalInSeconds = 2;
 
     const intervalPromise = $interval(() => {
       projectGateway.getExports(this.project.id).then(data => {

@@ -22,7 +22,7 @@ class ProjectReportListController {
      */
     this._modalService = modalService;
 
-    const intervalInSeconds = 10;
+    const intervalInSeconds = 2;
 
     const intervalPromise = $interval(() => {
       projectGateway.getExports(this.project.id).then(data => {
