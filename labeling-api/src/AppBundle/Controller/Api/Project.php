@@ -148,7 +148,16 @@ class Project extends Controller\Base
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
-            $sumOfCompletedTasksForProject = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_DONE);
+            $sumOfCompletedTasksForProject = $this->getSumOfTaskByLabelingStatus(
+                $project,
+                Model\LabelingTask::STATUS_DONE,
+                [
+                    Model\LabelingTask::PHASE_LABELING,
+                    Model\LabelingTask::PHASE_REVIEW,
+                    Model\LabelingTask::PHASE_REVISION,
+                ]
+            );
+
             $responseProject               = array(
                 'id'                 => $project->getId(),
                 'name'               => $project->getName(),
@@ -340,16 +349,18 @@ class Project extends Controller\Base
         return $sumOfTasks;
     }
 
-    private function getSumOfTaskByLabelingStatus(Model\Project $project, $status)
+    private function getSumOfTaskByLabelingStatus(Model\Project $project, $status, $phases = [])
     {
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
-        $phases = array(
-            Model\LabelingTask::PHASE_PREPROCESSING,
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION,
-        );
+        if (empty($phases)) {
+            $phases = array(
+                Model\LabelingTask::PHASE_PREPROCESSING,
+                Model\LabelingTask::PHASE_LABELING,
+                Model\LabelingTask::PHASE_REVIEW,
+                Model\LabelingTask::PHASE_REVISION,
+            );
+        }
 
         $sumOfTasks = 0;
         foreach ($phases as $phase) {
