@@ -132,6 +132,30 @@ class Video
             ->toArray();
     }
 
+    /**
+     * @return Model\Video[]
+     */
+    public function getAllFailedPreprocessingVideos()
+    {
+        return $this->documentManager
+            ->createQuery('annostation_videos_marked_as_failed', 'view')
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
+     * @return Model\Video[]
+     */
+    public function getAllUnconvertedVideos()
+    {
+        return $this->documentManager
+            ->createQuery('annostation_videos_not_converted', 'view')
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
     public function getPrelabeledFrames(Model\Video $video)
     {
         //TODO: implement
