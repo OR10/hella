@@ -104,16 +104,11 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
 
             $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
 
-            $disabledTasks = $this->labelingTaskFacade->findAllByStatus(
-                $video,
-                Model\LabelingTask::STATUS_TODO,
-                null,
-                null,
-                Model\LabelingTask::PHASE_PREPROCESSING
-            );
-            foreach ($disabledTasks as $disabledTask) {
-                $disabledTask->setStatusIfAllImagesAreConverted($video);
-                $this->labelingTaskFacade->save($disabledTask);
+            $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+
+            foreach ($tasks as $task) {
+                $task->setStatusIfAllImagesAreConverted($video);
+                $this->labelingTaskFacade->save($task);
             }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
@@ -132,6 +127,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     {
         $video = $this->videoFacade->find($job->videoId);
         $video->setImageType($job->imageType->getName(), 'converted', false);
+        $video->setImageType($job->imageType->getName(), 'failed', true);
         $this->videoFacade->save($video);
         $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
         foreach($tasks as $task) {
@@ -166,6 +162,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         try {
             $this->videoFacade->refresh($video);
             $video->setImageType($imageTypeName, 'converted', true);
+            $video->setImageType($imageTypeName, 'failed', false);
             $video->setImageType($imageTypeName, 'width', $width);
             $video->setImageType($imageTypeName, 'height', $height);
             $this->videoFacade->update();
