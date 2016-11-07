@@ -167,6 +167,7 @@ class Project extends Controller\Base
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
                 $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_IN_PROGRESS);
+                $responseProject['taskFailedCount']            = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_FAILED);
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
                 $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
                 $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
@@ -344,6 +345,7 @@ class Project extends Controller\Base
         $this->loadDataOfTasksByProjectsAndStatusToCache($project);
 
         $phases = array(
+            Model\LabelingTask::PHASE_PREPROCESSING,
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::PHASE_REVIEW,
             Model\LabelingTask::PHASE_REVISION,

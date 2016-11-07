@@ -39,6 +39,8 @@
                 <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
                    class="fa fa-spin fa-spinner" tooltip="Import in progress. {{project.taskInPreProcessingCount}} are not finished yet."></i>
                 <span ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0">({{project.taskInPreProcessingCount}})</span>
+                <i ng-if="column.property === 'taskCount' && project.taskFailedCount > 0"
+                   class="fa fa-warning" tooltip="Failed to create {{project.taskFailedCount}} tasks."></i>
             </td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
                 <button tooltip="Upload Videos"

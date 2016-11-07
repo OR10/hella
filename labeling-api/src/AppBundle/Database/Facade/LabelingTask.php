@@ -532,6 +532,7 @@ class LabelingTask
                 Model\LabelingTask::STATUS_IN_PROGRESS              => 0,
                 Model\LabelingTask::STATUS_DONE                     => 0,
                 Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION => 0,
+                Model\LabelingTask::STATUS_FAILED                   => 0,
             ];
         }
         foreach ($query as $mapping) {
