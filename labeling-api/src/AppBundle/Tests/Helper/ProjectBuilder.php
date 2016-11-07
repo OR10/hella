@@ -287,6 +287,7 @@ class ProjectBuilder
             'labeledThingInFramesCount'  => 0,
             'videosCount'                => 0,
             'dueTimestamp'               => null,
+            'taskFailedCount'            => 0,
         ];
     }
 
