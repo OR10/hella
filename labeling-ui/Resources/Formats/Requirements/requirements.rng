@@ -26,17 +26,17 @@
     </define>
     <define name="Frame">
         <element name="r:frame">
-            <oneOrMore>
+            <zeroOrMore>
                 <ref name="Class"/>
-            </oneOrMore>
+            </zeroOrMore>
         </element>
     </define>
     <define name="ThingLikeStructure">
         <attribute name="id"/>
         <attribute name="name"/>
-        <oneOrMore>
+        <zeroOrMore>
             <ref name="Class"/>
-        </oneOrMore>
+        </zeroOrMore>
     </define>
     <define name="Thing">
         <element name="r:thing">

@@ -8,13 +8,13 @@ grammar {
     }
 
     Frame = element r:frame {
-        Class+
+        Class*
     }
 
     ThingLikeStructure = (
         attribute id {text},
         attribute name {text},
-        Class+
+        Class*
     )
 
     Thing = element r:thing {
