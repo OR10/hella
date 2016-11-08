@@ -52,10 +52,10 @@ class User extends Controller\Base
         $this->isUserAllowedToAssignTo($user);
 
         $task->addAssignmentHistory(
-            $user,
             new \DateTime('now', new \DateTimeZone('UTC')),
             Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_IN_PROGRESS
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $user
         );
 
         $this->labelingTaskFacade->save($task);
@@ -79,7 +79,6 @@ class User extends Controller\Base
         }
 
         $task->addAssignmentHistory(
-            null,
             new \DateTime('now', new \DateTimeZone('UTC')),
             $phase,
             $task->getStatus($phase)

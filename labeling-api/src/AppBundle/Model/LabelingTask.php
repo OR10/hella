@@ -639,12 +639,12 @@ class LabelingTask
     }
 
     /**
-     * @param User      $user
      * @param \DateTime $date
      * @param           $phase
      * @param           $status
+     * @param User      $user
      */
-    public function addAssignmentHistory(User $user = null, \DateTime $date, $phase, $status)
+    public function addAssignmentHistory(\DateTime $date, $phase, $status, User $user = null)
     {
         $this->assignmentHistory[] = [
             'userId'     => $user instanceof User ? $user->getId() : null,

@@ -294,10 +294,10 @@ class LabeledThingTest extends Tests\WebTestCase
         );
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $task->addAssignmentHistory(
-            $this->user,
             new \DateTime,
             Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_IN_PROGRESS
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $this->user
         );
         $task->setLabelStructure(
             json_decode(

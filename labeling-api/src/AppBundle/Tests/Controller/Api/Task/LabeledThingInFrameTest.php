@@ -312,10 +312,10 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         );
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $task->addAssignmentHistory(
-            $user,
             new \DateTime,
             Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_IN_PROGRESS
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $user
         );
         $this->task = $this->labelingTaskFacade->save($task);
     }

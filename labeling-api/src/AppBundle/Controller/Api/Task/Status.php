@@ -92,10 +92,10 @@ class Status extends Controller\Base
         }
 
         $task->addAssignmentHistory(
-            $user,
             new \DateTime('now', new \DateTimeZone('UTC')),
             $phase,
-            Model\LabelingTask::STATUS_DONE
+            Model\LabelingTask::STATUS_DONE,
+            $user
         );
         $this->labelingTaskFacade->save($task);
 
@@ -122,10 +122,10 @@ class Status extends Controller\Base
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
             $task->addAssignmentHistory(
-                $user,
                 new \DateTime('now', new \DateTimeZone('UTC')),
                 $phase,
-                Model\LabelingTask::STATUS_TODO
+                Model\LabelingTask::STATUS_TODO,
+                $user
             );
             $this->labelingTaskFacade->save($task);
 
@@ -153,10 +153,10 @@ class Status extends Controller\Base
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_IN_PROGRESS);
             $task->addAssignmentHistory(
-                $user,
                 new \DateTime('now', new \DateTimeZone('UTC')),
                 $phase,
-                Model\LabelingTask::STATUS_IN_PROGRESS
+                Model\LabelingTask::STATUS_IN_PROGRESS,
+                $user
             );
             $this->labelingTaskFacade->save($task);
 
@@ -188,10 +188,10 @@ class Status extends Controller\Base
         }
         if ($task->getLatestAssignedUserIdForPhase($phase) === null) {
             $task->addAssignmentHistory(
-                $user,
                 new \DateTime('now', new \DateTimeZone('UTC')),
                 $phase,
-                $task->getStatus($phase)
+                $task->getStatus($phase),
+                $user
             );
         }
         $this->labelingTaskFacade->save($task);
@@ -215,14 +215,13 @@ class Status extends Controller\Base
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
             $task->addAssignmentHistory(
-                $user,
                 new \DateTime('now', new \DateTimeZone('UTC')),
                 $phase,
-                Model\LabelingTask::STATUS_TODO
+                Model\LabelingTask::STATUS_TODO,
+                $user
             );
             $task->setReopen($phase, true);
             $task->addAssignmentHistory(
-                null,
                 new \DateTime('now', new \DateTimeZone('UTC')),
                 $phase,
                 Model\LabelingTask::STATUS_TODO
