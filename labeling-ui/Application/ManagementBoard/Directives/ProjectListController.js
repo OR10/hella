@@ -114,6 +114,14 @@ class ProjectListController {
           return;
         }
 
+        response.result = response.result.map(project => {
+          const coordinatorId = project.coordinator;
+          if (coordinatorId !== null) {
+            project.coordinator = response.users[coordinatorId];
+          }
+          return project;
+        });
+
         this.projects = this._createViewData(response.result);
         this.columns = this._buildColumns(this.projects[0]);
 
