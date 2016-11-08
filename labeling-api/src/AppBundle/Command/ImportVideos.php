@@ -317,8 +317,11 @@ class ImportVideos extends Base
      * @throws \Exception
      *
      */
-    private function addParkedCarsInstructions(Model\Project $project, bool $isLegacy, $taskConfigurationIdParkedCars = null)
-    {
+    private function addParkedCarsInstructions(
+        Model\Project $project,
+        bool $isLegacy,
+        $taskConfigurationIdParkedCars = null
+    ) {
         if ($isLegacy) {
             $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PARKED_CARS, 'cuboid');
         } else {

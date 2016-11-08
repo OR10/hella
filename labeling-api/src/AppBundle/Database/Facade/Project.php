@@ -102,8 +102,8 @@ class Project
         }
 
         $result = array();
-        foreach($timeByTasksAndPhases as $byTask) {
-            $taskId = $byTask['key'][1];
+        foreach ($timeByTasksAndPhases as $byTask) {
+            $taskId          = $byTask['key'][1];
             $result[$taskId] = $byTask['value'];
         }
 
@@ -225,8 +225,7 @@ class Project
         Model\User $user,
         $status,
         $countOnly = false
-    )
-    {
+    ) {
         if ($user->hasRole(Model\User::ROLE_ADMIN)) {
             if ($countOnly) {
                 return $this->getSumOfProjectsByStatus($status);

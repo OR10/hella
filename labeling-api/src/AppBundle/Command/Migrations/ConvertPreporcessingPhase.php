@@ -12,7 +12,6 @@ use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console\Helper\ProgressBar;
 use AppBundle\Command;
 
-
 class ConvertPreporcessingPhase extends Command\Base
 {
     /**
@@ -44,7 +43,6 @@ class ConvertPreporcessingPhase extends Command\Base
 
         /** @var Model\LabelingTask $task */
         foreach ($tasks as $task) {
-
             if ($task->getStatus(Model\LabelingTask::PHASE_LABELING) === 'preprocessing') {
                 $task->setStatus(
                     Model\LabelingTask::PHASE_PREPROCESSING,
@@ -55,7 +53,7 @@ class ConvertPreporcessingPhase extends Command\Base
                     Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
                 );
                 $output->writeln('<comment>Todo</comment> [' . $task->getId() . ']');
-            }else {
+            } else {
                 $task->setStatus(
                     Model\LabelingTask::PHASE_PREPROCESSING,
                     Model\LabelingTask::STATUS_DONE

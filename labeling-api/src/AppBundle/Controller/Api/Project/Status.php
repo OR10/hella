@@ -111,7 +111,7 @@ class Status extends Controller\Base
 
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $sumOfTasksByPhaseForProject = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-            foreach($sumOfTasksByPhaseForProject as $phase => $status) {
+            foreach ($sumOfTasksByPhaseForProject as $phase => $status) {
                 // @TODO Remove this if the revision process is finally implemented
                 if ($phase === Model\LabelingTask::PHASE_REVISION) {
                     continue;

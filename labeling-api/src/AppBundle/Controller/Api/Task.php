@@ -141,8 +141,8 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
-                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator(
-                    ) || $this->userFacade->isAdmin()
+                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator()
+                    || $this->userFacade->isAdmin()
                 ) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_DONE,
