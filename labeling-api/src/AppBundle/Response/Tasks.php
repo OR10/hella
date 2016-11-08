@@ -79,11 +79,8 @@ class Tasks
                 'taskAttentionFlag'           => $labelingTask->isTaskAttentionFlag(),
             ];
         }
-        /** @var Model\User $user */
-        foreach ($users as $user) {
-            if (!isset($this->result['users'][$user->getId()])) {
-                $this->result['users'][$user->getId()] = $user;
-            }
-        }
+
+        $users                 = new SimpleUsers($users);
+        $this->result['users'] = $users->getResult();
     }
 }

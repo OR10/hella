@@ -222,17 +222,13 @@ class Task extends Controller\Base
             $users
         );
 
-        $userByUserIds = array();
-        /** @var Model\User $user */
-        foreach ($users as $user) {
-            $userByUserIds[$user->getId()] = $user;
-        }
+        $users = new Response\SimpleUsers($users);
 
         return View\View::create()->setData(
             [
                 'result' => [
                     'task'  => $task,
-                    'users' => $userByUserIds,
+                    'users' => $users->getResult(),
                 ],
             ]
         );
