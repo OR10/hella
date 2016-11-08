@@ -170,7 +170,11 @@ class Project extends Controller\Base
                     $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $this->getSumOfTasksByPhaseAndStatus($project, Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_TODO),
+                'taskInPreProcessingCount' => $this->getSumOfTasksByPhaseAndStatus(
+                    $project,
+                    Model\LabelingTask::PHASE_PREPROCESSING,
+                    Model\LabelingTask::STATUS_TODO
+                ),
             );
 
             if ($user->hasOneRoleOf(
@@ -179,8 +183,14 @@ class Project extends Controller\Base
             ) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
-                $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_IN_PROGRESS);
-                $responseProject['taskFailedCount']            = $this->getSumOfTaskByLabelingStatus($project, Model\LabelingTask::STATUS_FAILED);
+                $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus(
+                    $project,
+                    Model\LabelingTask::STATUS_IN_PROGRESS
+                );
+                $responseProject['taskFailedCount']            = $this->getSumOfTaskByLabelingStatus(
+                    $project,
+                    Model\LabelingTask::STATUS_FAILED
+                );
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
                 $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
                 $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
@@ -197,7 +207,12 @@ class Project extends Controller\Base
             $result[$project->getStatus()][] = $responseProject;
         }
 
-        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
+        $roleNeededForCreationTime = [
+            Model\User::ROLE_ADMIN,
+            Model\User::ROLE_LABEL_COORDINATOR,
+            Model\User::ROLE_CLIENT
+        ];
+        if (!$user->hasOneRoleOf($roleNeededForCreationTime)) {
             foreach (array_keys($result) as $status) {
                 $result[$status] = array_map(
                     function ($data) {
