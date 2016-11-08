@@ -6,10 +6,12 @@ class ProjectReportListController {
    * @param {$rootScope} $rootScope
    * @param {$interval} $interval
    * @param {$state} $state
+   * @param {$window} $window
    * @param {ModalService} modalService
    * @param {ProjectGateway} projectGateway
+   * @param {ApiService} apiService
    */
-  constructor($rootScope, $interval, $state, modalService, projectGateway) {
+  constructor($rootScope, $interval, $state, $window, modalService, projectGateway, apiService) {
     /**
      * @type {$state}
      * @private
@@ -17,10 +19,22 @@ class ProjectReportListController {
     this._$state = $state;
 
     /**
+     * @type {$window}
+     * @private
+     */
+    this._$window = $window;
+
+    /**
      * @type {ModalService}
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {ApiService}
+     * @private
+     */
+    this._apiService = apiService;
 
     const intervalInSeconds = 2;
 
@@ -82,14 +96,21 @@ class ProjectReportListController {
       }
     );
   }
+
+  showJSON(projectId, reportId) {
+    const url = this._apiService.getApiUrl(`project/${projectId}/report/${reportId}.json`);
+    this._$window.open(url);
+  }
 }
 
 ProjectReportListController.$inject = [
   '$rootScope',
   '$interval',
   '$state',
+  '$window',
   'modalService',
   'projectGateway',
+  'ApiService',
 ];
 
 export default ProjectReportListController;

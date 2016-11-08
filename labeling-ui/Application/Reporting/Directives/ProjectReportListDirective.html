@@ -6,18 +6,24 @@
             <table class="table hover">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Id</th>
                     <th>Creation Date</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-if="vm.reports.length"
                     ng-repeat="report in vm.reports track by report.id"
                     ng-click="vm.openReport(report.id)">
-                    <td ng-switch="report.reportStatus">
+                    <td>
+                        {{report.id}}
+                    </td>
+                    <td>
+                        {{report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss'}}
+                    </td>
+                    <td ng-switch="report.reportStatus" ng-click="$event.stopPropagation()">
                         <div ng-switch-when="done">
-                            <i class="fa fa-download"></i>
+                            <i class="fa fa-download" ng-click="vm.showJSON(report.projectId, report.id)" tooltip="Open JSON representation of this report"></i>
                         </div>
                         <div ng-switch-when="error">
                             <i ng-if="report.errorMessage != null" class="fa fa-warning" tooltip="{{report.errorMessage}}"></i>
@@ -26,12 +32,6 @@
                         <div ng-switch-default>
                             <i class="fa fa-spinner fa-pulse"></i>
                         </div>
-                    </td>
-                    <td>
-                        {{report.id}}
-                    </td>
-                    <td>
-                        {{report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss'}}
                     </td>
                 </tr>
                 <tr ng-if="!vm.reports.length" class="no-hover">
