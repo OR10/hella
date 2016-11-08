@@ -18,11 +18,11 @@ class SimpleUsers
         $users
     ) {
         /** @var Model\User $user */
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $this->result[$user->getId()] = [
-                'id' => $user->getId(),
+                'id'       => $user->getId(),
                 'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
+                'email'    => $user->getEmail(),
             ];
         }
     }

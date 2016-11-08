@@ -153,7 +153,8 @@ class TaskTest extends Tests\CouchDbTestCase
     /**
      * @dataProvider provideRoles
      */
-    public function testAssignedUserHasWriteAccess($role) {
+    public function testAssignedUserHasWriteAccess($role)
+    {
         $this->user->addRole($role);
 
         $this->task->addAssignmentHistory(
@@ -172,7 +173,8 @@ class TaskTest extends Tests\CouchDbTestCase
     /**
      * @dataProvider provideRoles
      */
-    public function testNotAssignedUserHasNoWriteAccess($role) {
+    public function testNotAssignedUserHasNoWriteAccess($role)
+    {
         $this->user->addRole($role);
 
         $this->assertFalse(
@@ -186,7 +188,8 @@ class TaskTest extends Tests\CouchDbTestCase
      * @param $taskAttributes
      * @param $projectAttributes
      */
-    public function testProjectVoteIsTriggeredAsPrerequisite($taskAttributes, $projectAttributes) {
+    public function testProjectVoteIsTriggeredAsPrerequisite($taskAttributes, $projectAttributes)
+    {
         $projectVoter = $this->projectVoter;
         /** @var PHPUnit_Framework_MockObject_MockObject $projectVoter */
         $projectVoter

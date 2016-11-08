@@ -4,7 +4,8 @@ namespace AppBundle\Voter\AccessCheck;
 use AppBundle\Model;
 use AppBundle\Voter;
 
-class LabelCoordinatorIsAssignedToProject extends Voter\AccessCheck {
+class LabelCoordinatorIsAssignedToProject extends Voter\AccessCheck
+{
     /**
      * @param Model\User $user
      * @param object     $object

@@ -154,7 +154,8 @@ class ProjectTest extends Tests\CouchDbTestCase
         );
     }
 
-    public function testSupportsProjectSpecificAttributes() {
+    public function testSupportsProjectSpecificAttributes()
+    {
         $this->assertTrue(
             $this->voter->supportsAttribute(AccessCheckVoter\Project::PROJECT_READ)
         );
@@ -164,7 +165,8 @@ class ProjectTest extends Tests\CouchDbTestCase
         );
     }
 
-    public function testSupportsProjectClass() {
+    public function testSupportsProjectClass()
+    {
         $this->assertTrue(
             $this->voter->supportsClass(Model\Project::class)
         );

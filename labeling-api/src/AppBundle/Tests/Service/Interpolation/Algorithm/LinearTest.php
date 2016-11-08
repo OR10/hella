@@ -401,9 +401,12 @@ class LinearTest extends Tests\KernelTestCase
                 )
             ),
             new Model\LabeledThingInFrame(
-                $thing, 3, [], $this->convertShapesToArray(
+                $thing,
+                3,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Rectangle('test-1', 7.5, 7.5, 15, 15),
+                        new Shapes\Rectangle('test-1', 7.5, 7.5, 15, 15),
                     ]
                 )
             ),
@@ -534,53 +537,62 @@ class LinearTest extends Tests\KernelTestCase
 
         $expected = [
             new Model\LabeledThingInFrame(
-                $thing, 1, [], $this->convertShapesToArray(
+                $thing,
+                1,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [16, 6.5, 1.7],
-                        [16, 4.8, 1.7],
-                        [16, 4.8, 0],
-                        [16, 6.5, 0],
-                        [20, 6.5, 1.7],
-                        [20, 4.8, 1.7],
-                        [20, 4.8, 0],
-                        [20, 6.5, 0]
-                    ),
+                        new Shapes\Cuboid3d(
+                            'test-1',
+                            [16, 6.5, 1.7],
+                            [16, 4.8, 1.7],
+                            [16, 4.8, 0],
+                            [16, 6.5, 0],
+                            [20, 6.5, 1.7],
+                            [20, 4.8, 1.7],
+                            [20, 4.8, 0],
+                            [20, 6.5, 0]
+                        ),
                     ]
                 )
             ),
             new Model\LabeledThingInFrame(
-                $thing, 2, [], $this->convertShapesToArray(
+                $thing,
+                2,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [16.5, 6.5, 1.7],
-                        [16.5, 4.8, 1.7],
-                        [16.5, 4.8, 0],
-                        [16.5, 6.5, 0],
-                        [20, 6.5, 1.7],
-                        [20, 4.8, 1.7],
-                        [20, 4.8, 1],
-                        [20, 7, 1]
-                    ),
+                        new Shapes\Cuboid3d(
+                            'test-1',
+                            [16.5, 6.5, 1.7],
+                            [16.5, 4.8, 1.7],
+                            [16.5, 4.8, 0],
+                            [16.5, 6.5, 0],
+                            [20, 6.5, 1.7],
+                            [20, 4.8, 1.7],
+                            [20, 4.8, 1],
+                            [20, 7, 1]
+                        ),
                     ]
                 )
             ),
             new Model\LabeledThingInFrame(
-                $thing, 3, [], $this->convertShapesToArray(
+                $thing,
+                3,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [17, 6.5, 1.7],
-                        [17, 4.8, 1.7],
-                        [17, 4.8, 0],
-                        [17, 6.5, 0],
-                        [20, 6.5, 1.7],
-                        [20, 4.8, 1.7],
-                        [20, 4.8, 2],
-                        [20, 7.5, 2]
-                    ),
+                        new Shapes\Cuboid3d(
+                            'test-1',
+                            [17, 6.5, 1.7],
+                            [17, 4.8, 1.7],
+                            [17, 4.8, 0],
+                            [17, 6.5, 0],
+                            [20, 6.5, 1.7],
+                            [20, 4.8, 1.7],
+                            [20, 4.8, 2],
+                            [20, 7.5, 2]
+                        ),
                     ]
                 )
             ),
@@ -640,53 +652,62 @@ class LinearTest extends Tests\KernelTestCase
 
         $expected = [
             new Model\LabeledThingInFrame(
-                $thing, 1, [], $this->convertShapesToArray(
+                $thing,
+                1,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [5, 5, 5],
-                        [10, 20, 30],
-                        [1, 20, 20],
-                        [30, 30, 30],
-                        null,
-                        null,
-                        null,
-                        null
-                    ),
+                        new Shapes\Cuboid3d(
+                            'test-1',
+                            [5, 5, 5],
+                            [10, 20, 30],
+                            [1, 20, 20],
+                            [30, 30, 30],
+                            null,
+                            null,
+                            null,
+                            null
+                        ),
                     ]
                 )
             ),
             new Model\LabeledThingInFrame(
-                $thing, 2, [], $this->convertShapesToArray(
+                $thing,
+                2,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [27.5, 27.5, 27.5],
-                        [55, 60, 65],
-                        [100.5, 110, 110],
-                        [165, 165, 165],
-                        null,
-                        null,
-                        null,
-                        null
-                    ),
+                        new Shapes\Cuboid3d(
+                            'test-1',
+                            [27.5, 27.5, 27.5],
+                            [55, 60, 65],
+                            [100.5, 110, 110],
+                            [165, 165, 165],
+                            null,
+                            null,
+                            null,
+                            null
+                        ),
                     ]
                 )
             ),
             new Model\LabeledThingInFrame(
-                $thing, 3, [], $this->convertShapesToArray(
+                $thing,
+                3,
+                [],
+                $this->convertShapesToArray(
                     [
-                    new Shapes\Cuboid3d(
-                        'test-1',
-                        [50, 50, 50],
-                        [100, 100, 100],
-                        [200, 200, 200],
-                        [300, 300, 300],
-                        null,
-                        null,
-                        null,
-                        null
-                    ),
+                        new Shapes\Cuboid3d(
+                            'test-1',
+                            [50, 50, 50],
+                            [100, 100, 100],
+                            [200, 200, 200],
+                            [300, 300, 300],
+                            null,
+                            null,
+                            null,
+                            null
+                        ),
                     ]
                 )
             ),

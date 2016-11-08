@@ -16,8 +16,7 @@ class SimpleReports
      */
     public function __construct(
         $reports
-    )
-    {
+    ) {
         $this->result = array_map(function (Model\Report $report) {
             return [
                 'id' => $report->getId(),

@@ -162,8 +162,13 @@ class LabelingTaskBuilder
     {
         $task = Model\LabelingTask::create($this->video, $this->project, $this->frameNumberMapping, $this->taskType);
 
-        foreach($this->userAssignments as $assignment) {
-            $task->addAssignmentHistory($assignment['user'], $assignment['dateTime'], $assignment['phase'], $assignment['status']);
+        foreach ($this->userAssignments as $assignment) {
+            $task->addAssignmentHistory(
+                $assignment['user'],
+                $assignment['dateTime'],
+                $assignment['phase'],
+                $assignment['status']
+            );
         }
 
         foreach ($this->status as $phase => $status) {

@@ -130,7 +130,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
         $video->setImageType($job->imageType->getName(), 'failed', true);
         $this->videoFacade->save($video);
         $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
-        foreach($tasks as $task) {
+        foreach ($tasks as $task) {
             $task->setStatus(
                 Model\LabelingTask::PHASE_PREPROCESSING,
                 Model\LabelingTask::STATUS_FAILED

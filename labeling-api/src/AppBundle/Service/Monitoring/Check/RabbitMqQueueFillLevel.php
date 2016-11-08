@@ -2,7 +2,6 @@
 
 namespace AppBundle\Service\Monitoring\Check;
 
-
 use ZendDiagnostics\Check;
 use ZendDiagnostics\Result;
 use ZendDiagnostics\Result\ResultInterface;
