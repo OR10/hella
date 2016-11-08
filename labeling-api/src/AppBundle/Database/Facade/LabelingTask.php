@@ -78,8 +78,8 @@ class LabelingTask
      * @return Model\LabelingTask[]
      */
     public function findAllByStatus(
-        Model\Video $video = null,
         string $status,
+        Model\Video $video = null,
         int $skip = null,
         int $limit = null,
         string $phase = Model\LabelingTask::PHASE_LABELING

@@ -82,8 +82,8 @@ class LabelingTaskTest extends Tests\WebTestCase
         }
 
         $tasks = $this->labelingTaskFacade->findAllByStatus(
-            $video,
             Model\LabelingTask::STATUS_TODO,
+            $video,
             null,
             null,
             Model\LabelingTask::PHASE_PREPROCESSING
