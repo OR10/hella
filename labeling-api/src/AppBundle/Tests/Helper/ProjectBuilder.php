@@ -288,6 +288,7 @@ class ProjectBuilder
             'videosCount'                => 0,
             'dueTimestamp'               => null,
             'taskFailedCount'            => 0,
+            'coordinator'                => $this->getLatestAssignedCoordinatorUserId()
         ];
     }
 
@@ -332,5 +333,29 @@ class ProjectBuilder
         }
 
         return $project;
+    }
+
+    /**
+     * @return null
+     */
+    private function getLatestAssignedCoordinatorUserId()
+    {
+        $historyEntries = $this->coordinatorAssignments;
+        if (empty($historyEntries)) {
+            return null;
+        }
+
+        usort(
+            $historyEntries,
+            function ($a, $b) {
+                if ($a['assignedAt'] === $b['assignedAt']) {
+                    return 0;
+                }
+
+                return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
+            }
+        );
+
+        return $historyEntries[0]['userId'];
     }
 }

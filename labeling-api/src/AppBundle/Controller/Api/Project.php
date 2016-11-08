@@ -13,6 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use AppBundle\Response;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -144,6 +145,9 @@ class Project extends Controller\Base
             $numberOfVideos
         );
 
+        $users = [];
+
+        /** @var Model\Project $project */
         foreach ($projects as $project) {
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
@@ -166,7 +170,7 @@ class Project extends Controller\Base
                     $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $this->getSumOfTasksByPhaseAndStatus($project, Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_TODO)
+                'taskInPreProcessingCount' => $this->getSumOfTasksByPhaseAndStatus($project, Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_TODO),
             );
 
             if ($user->hasOneRoleOf(
@@ -181,6 +185,13 @@ class Project extends Controller\Base
                 $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
                 $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
                 $responseProject['dueTimestamp']               = $project->getDueDate();
+            }
+
+            if ($user->hasRole(Model\User::ROLE_CLIENT)) {
+                $responseProject['coordinator'] = $project->getLatestAssignedCoordinatorUserId();
+                if ($project->getLatestAssignedCoordinatorUserId() !== null) {
+                    $users[] = $this->userFacade->getUserById($project->getLatestAssignedCoordinatorUserId());
+                }
             }
 
             $result[$project->getStatus()][] = $responseProject;
@@ -199,6 +210,8 @@ class Project extends Controller\Base
             }
         }
 
+        $users = new Response\SimpleUsers($users);
+
         return new View\View(
             [
                 'totalRows' => $totalRows,
@@ -208,6 +221,7 @@ class Project extends Controller\Base
                     $result[Model\Project::STATUS_DONE],
                     $result[null] //@TODO remove this later
                 ),
+                'users' => $users->getResult(),
             ]
         );
     }

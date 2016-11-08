@@ -2,7 +2,9 @@
 
 namespace AppBundle\Tests\Helper;
 
+use AppBundle\Model;
 use AppBundle\Model\Project;
+use AppBundle\Response;
 
 class ProjectListResponseBuilder
 {
@@ -10,6 +12,11 @@ class ProjectListResponseBuilder
      * @var array
      */
     private $projects = [];
+
+    /**
+     * @var Model\User[]
+     */
+    private $users = [];
 
     /**
      * We declare a private constructor to enforce usage of factory methods and fluent interface.
@@ -43,6 +50,12 @@ class ProjectListResponseBuilder
      */
     public function build()
     {
-        return ['totalRows' => count($this->projects), 'result' => $this->projects];
+        $users = new Response\SimpleUsers($this->users);
+
+        return [
+            'totalRows' => count($this->projects),
+            'result' => $this->projects,
+            'users' => $users->getResult(),
+        ];
     }
 }

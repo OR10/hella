@@ -219,7 +219,7 @@ class Project
      * @param Model\User $user
      * @param            $status
      * @param bool       $countOnly
-     * @return mixed
+     * @return Model\Project[]
      */
     public function findAllByUserAndStatus(
         Model\User $user,
