@@ -113,7 +113,7 @@ class LabelingTaskBuilder
         return $this;
     }
 
-    public function withAddedUserAssignment(Model\User $user, \DateTime $dateTime = null, $phase, $status)
+    public function withAddedUserAssignment(Model\User $user, $phase, $status, \DateTime $dateTime = null)
     {
         if ($dateTime === null) {
             $dateTime = new \DateTime();

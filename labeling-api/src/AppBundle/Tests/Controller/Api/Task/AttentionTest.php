@@ -143,7 +143,6 @@ class AttentionTest extends Tests\WebTestCase
         $task = Helper\LabelingTaskBuilder::create($project, $video)
             ->withAddedUserAssignment(
                 $labelerUser,
-                null,
                 Model\LabelingTask::PHASE_LABELING,
                 Model\LabelingTask::STATUS_IN_PROGRESS
             );
