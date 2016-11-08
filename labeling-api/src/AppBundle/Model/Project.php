@@ -201,7 +201,7 @@ class Project
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
 
         $this->setUserId($user instanceof User ? $user->getId() : null);
-        $this->addStatusHistory($user, $creationDate, self::STATUS_TODO);
+        $this->addStatusHistory($creationDate, self::STATUS_TODO, $user);
     }
 
     /**
@@ -609,11 +609,11 @@ class Project
     }
 
     /**
-     * @param User|null $user
      * @param \DateTime $date
      * @param string    $status
+     * @param User|null $user
      */
-    public function addStatusHistory(User $user = null, \DateTime $date, string $status)
+    public function addStatusHistory(\DateTime $date, string $status, User $user = null)
     {
         if (!is_array($this->status)) {
             $this->status = [];

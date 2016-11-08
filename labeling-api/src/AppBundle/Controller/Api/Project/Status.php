@@ -81,9 +81,9 @@ class Status extends Controller\Base
         $assignedGroupId = $request->request->get('assignedGroupId');
 
         $project->addStatusHistory(
-            $user,
             new \DateTime('now', new \DateTimeZone('UTC')),
-            Model\Project::STATUS_IN_PROGRESS
+            Model\Project::STATUS_IN_PROGRESS,
+            $user
         );
         $project->addCoordinatorAssignmentHistory($user);
         $project->setLabelingGroupId($assignedGroupId);
@@ -126,9 +126,9 @@ class Status extends Controller\Base
         }
 
         $project->addStatusHistory(
-            $user,
             new \DateTime('now', new \DateTimeZone('UTC')),
-            Model\Project::STATUS_DONE
+            Model\Project::STATUS_DONE,
+            $user
         );
         $this->projectFacade->save($project);
 

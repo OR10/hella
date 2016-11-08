@@ -66,7 +66,7 @@ class BatchUploadTest extends Tests\WebTestCase
     public function testUploadIsForbiddenIfProjectIsDone()
     {
         $project = $this->createProject();
-        $project->addStatusHistory($this->defaultUser, new \DateTime('+1 minute'), Model\Project::STATUS_DONE);
+        $project->addStatusHistory(new \DateTime('+1 minute'), Model\Project::STATUS_DONE, $this->defaultUser);
         $this->projectFacade->save($project);
 
         $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$project->getId()])

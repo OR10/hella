@@ -318,7 +318,7 @@ class ProjectBuilder
         }
 
         foreach ($this->statusChanges as $change) {
-            $project->addStatusHistory($change['changedBy'], $change['changedAt'], $change['status']);
+            $project->addStatusHistory($change['changedAt'], $change['status'], $change['changedBy']);
         }
 
         foreach ($this->coordinatorAssignments as $coordinatorAssignment) {
