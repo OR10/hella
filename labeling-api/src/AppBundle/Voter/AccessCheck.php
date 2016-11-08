@@ -12,5 +12,5 @@ abstract class AccessCheck
      *
      * @return bool
      */
-    public abstract function userHasAccessToObject(Model\User $user, $object): bool;
+    abstract public function userHasAccessToObject(Model\User $user, $object): bool;
 }

@@ -54,7 +54,7 @@ abstract class AbstractVoter implements VoterInterface
      *
      * @return bool
      */
-    public abstract function voteOnAttribute(TokenInterface $token, $object, array $attributes);
+    abstract public function voteOnAttribute(TokenInterface $token, $object, array $attributes);
 
     /**
      * Check whether the current user has access to the given object
