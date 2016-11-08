@@ -8,6 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
+use AppBundle\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -107,12 +108,14 @@ class LabelingGroup extends Controller\Base
             $users[$user->getId()] = $user;
         }
 
+        $users = new Response\SimpleUsers($users);
+
         return View\View::create()->setData(
             [
                 'totalRows' => $labelingGroups->getTotalRows(),
                 'result' => [
                     'labelingGroups' => $labelingGroups->toArray(),
-                    'users' => $users,
+                    'users' => $users->getResult(),
                 ]
             ]
         );
@@ -134,12 +137,14 @@ class LabelingGroup extends Controller\Base
             $users[$user->getId()] = $user;
         }
 
+        $users = new Response\SimpleUsers($users);
+
         return View\View::create()->setData(
             [
                 'totalRows' => $labelingGroups->getTotalRows(),
                 'result' => [
                     'labelingGroups' => $labelingGroups->toArray(),
-                    'users' => $users,
+                    'users' => $users->getResult(),
                     ]
             ]
         );
@@ -161,11 +166,13 @@ class LabelingGroup extends Controller\Base
             $users[$user->getId()] = $user;
         }
 
+        $users = new Response\SimpleUsers($users);
+
         return View\View::create()->setData(
             [
                 'result' => [
                     'labelingGroups' => $labelingGroup,
-                    'users' => $users,
+                    'users' => $users->getResult(),
                     ]
             ]
         );
@@ -202,11 +209,13 @@ class LabelingGroup extends Controller\Base
             $users[$user->getId()] = $user;
         }
 
+        $users = new Response\SimpleUsers($users);
+
         return View\View::create()->setData(
             [
                 'result' => [
                     'labelingGroups' => $labelingGroup,
-                    'users' => $users,
+                    'users' => $users->getResult(),
                 ]
             ]
         );
@@ -244,11 +253,13 @@ class LabelingGroup extends Controller\Base
             $users[$user->getId()] = $user;
         }
 
+        $users = new Response\SimpleUsers($users);
+
         return View\View::create()->setData(
             [
                 'result' => [
                     'labelingGroups' => $labelingGroup,
-                    'users' => $users,
+                    'users' => $users->getResult(),
                 ]
             ]
         );

@@ -20,6 +20,7 @@ class SimpleUsers
         /** @var Model\User $user */
         foreach($users as $user) {
             $this->result[$user->getId()] = [
+                'id' => $user->getId(),
                 'username' => $user->getUsername(),
                 'email' => $user->getEmail(),
             ];
