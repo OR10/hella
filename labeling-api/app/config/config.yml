@@ -106,7 +106,7 @@ fos_rest:
     format_listener:
         enabled: true
         rules:
-          - { path: '^/', priorities: ['json', 'html'], fallback_format: json, prefer_extension: false}
+          - { path: '^/', priorities: ['json', 'html'], fallback_format: json, prefer_extension: true}
     serializer:
         serialize_null: true
     routing_loader:
