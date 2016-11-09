@@ -45,6 +45,11 @@ class LabelingTaskBuilder
     private $attentionTaskFlag = false;
 
     /**
+     * @var \DateTime
+     */
+    private $creationDate;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -113,6 +118,14 @@ class LabelingTaskBuilder
         return $this;
     }
 
+    /**
+     * @param Model\User     $user
+     * @param                $phase
+     * @param                $status
+     * @param \DateTime|null $dateTime
+     *
+     * @return $this
+     */
     public function withAddedUserAssignment(Model\User $user, $phase, $status, \DateTime $dateTime = null)
     {
         if ($dateTime === null) {
@@ -148,9 +161,24 @@ class LabelingTaskBuilder
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function withAttentionTaskFlag()
     {
         $this->attentionTaskFlag = true;
+
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $dateTime
+     *
+     * @return $this
+     */
+    public function withCreationDate(\DateTime $dateTime)
+    {
+        $this->creationDate = $dateTime;
 
         return $this;
     }
@@ -160,7 +188,16 @@ class LabelingTaskBuilder
      */
     public function build()
     {
-        $task = Model\LabelingTask::create($this->video, $this->project, $this->frameNumberMapping, $this->taskType);
+        $task = Model\LabelingTask::create(
+            $this->video,
+            $this->project,
+            $this->frameNumberMapping,
+            $this->taskType,
+            null,
+            [],
+            [],
+            $this->creationDate
+        );
 
         foreach ($this->userAssignments as $assignment) {
             $task->addAssignmentHistory(

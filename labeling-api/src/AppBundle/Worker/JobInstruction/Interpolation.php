@@ -73,43 +73,36 @@ class Interpolation extends WorkerPool\JobInstruction
                 return;
             }
 
+            $this->updateStatus($status, Model\Interpolation\Status::RUNNING);
             $this->interpolationService->interpolateForRange(
                 $job->getAlgorithm(),
                 $labeledThing,
                 $job->getFrameRange(),
                 $status
             );
+            $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
         } catch (Service\Interpolation\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-            $this->markErrorStatus($logger, $status, $exception->getMessage());
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $exception->getMessage());
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-            $this->markErrorStatus($logger, $status);
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $exception->getMessage());
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
-            $this->markErrorStatus($logger, $status);
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $throwable->getMessage());
         }
     }
 
     /**
-     * @param Logger\Facade\LoggerFacade      $logger
-     * @param Model\Interpolation\Status|null $status
+     * Update the given `$status`
+     *
+     * @param Model\Interpolation\Status      $status
+     * @param string                          $newState
      * @param string                          $message
      */
-    private function markErrorStatus(
-        Logger\Facade\LoggerFacade $logger,
-        Model\Interpolation\Status $status = null,
-        string $message = null
-    ) {
-        if ($status === null) {
-            return;
-        }
-
-        try {
-            $status->setStatus(Model\Interpolation\Status::ERROR, $message);
-            $this->statusFacade->save($status);
-        } catch (\Throwable $throwable) {
-            $logger->logString('Failed setting error status', \cscntLogPayload::SEVERITY_FATAL);
-        }
+    private function updateStatus(Model\Interpolation\Status $status, string $newState, string $message = null)
+    {
+        $status->setStatus($newState, $message);
+        $this->statusFacade->save($status);
     }
 }

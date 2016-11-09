@@ -124,9 +124,6 @@ class Interpolation
         Model\FrameIndexRange $frameRange,
         Model\Interpolation\Status $status = null
     ) {
-        $this->updateStatus(Model\Interpolation\Status::RUNNING, $status);
-
-        try {
             $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getStartFrameIndex());
             $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getEndFrameIndex());
 
@@ -152,12 +149,6 @@ class Interpolation
                 $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
             }
 
-            $this->updateStatus(Model\Interpolation\Status::SUCCESS, $status);
-        } catch (Interpolation\Exception $interpolationException) {
-            $this->updateStatus(Model\Interpolation\Status::ERROR, $status, $interpolationException->getMessage());
-        } catch (\Throwable $throwable) {
-            $this->updateStatus(Model\Interpolation\Status::ERROR, $status);
-        }
     }
 
     /**
