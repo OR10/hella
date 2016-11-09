@@ -112,7 +112,7 @@ class Timer extends Controller\Base
         if (($timer = $this->labelingTaskFacade->getTimerForTaskAndUser($task, $user)) === null) {
             $timer = new Model\TaskTimer($task, $user);
         }
-        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+        $phase = $task->getCurrentPhase();
 
         $timer->setTimeInSeconds($phase, $timeInSeconds);
         $this->labelingTaskFacade->saveTimer($timer);

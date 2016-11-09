@@ -52,7 +52,7 @@ class Status extends Controller\Base
     {
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
-        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+        $phase = $task->getCurrentPhase();
 
         if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])
             && $task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()
@@ -112,7 +112,7 @@ class Status extends Controller\Base
     public function postWaitingStatusAction(Model\LabelingTask $task)
     {
         $user  = $this->tokenStorage->getToken()->getUser();
-        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+        $phase = $task->getCurrentPhase();
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION &&
@@ -145,7 +145,7 @@ class Status extends Controller\Base
     public function postInProgressStatusAction(Model\LabelingTask $task)
     {
         $user  = $this->tokenStorage->getToken()->getUser();
-        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+        $phase = $task->getCurrentPhase();
 
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_TODO) {
@@ -178,7 +178,7 @@ class Status extends Controller\Base
     {
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
-        $phase = $this->labelingTaskFacade->getCurrentPhase($task);
+        $phase = $task->getCurrentPhase();
 
         if ($task->getStatus($phase) === Model\LabelingTask::STATUS_TODO) {
             $task->setStatus(

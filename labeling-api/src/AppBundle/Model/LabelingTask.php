@@ -688,4 +688,31 @@ class LabelingTask
     {
         $this->attentionFlags['task'] = $attentionFlag;
     }
+
+    /**
+     * @return string
+     */
+    public function getCurrentPhase()
+    {
+        foreach ($this->getRawStatus() as $phase => $status) {
+            if ($phase === self::PHASE_LABELING &&
+                ($status === self::STATUS_TODO || $status == self::STATUS_IN_PROGRESS)
+            ) {
+                return self::PHASE_LABELING;
+            }
+            if ($phase === self::PHASE_REVIEW &&
+                ($status === self::STATUS_TODO || $status == self::STATUS_IN_PROGRESS)
+            ) {
+                return self::PHASE_REVIEW;
+            }
+
+            if ($phase === self::PHASE_REVISION &&
+                ($status === self::STATUS_TODO || $status == self::STATUS_IN_PROGRESS)
+            ) {
+                return self::PHASE_REVISION;
+            }
+        }
+
+        return self::PHASE_LABELING;
+    }
 }

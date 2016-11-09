@@ -41,7 +41,7 @@ class TaskReadOnlyDecider
      */
     public function isTaskReadOnlyForUser(Model\User $user, Model\LabelingTask $labelingTask)
     {
-        $phase      = $this->labelingTaskFacade->getCurrentPhase($labelingTask);
+        $phase      = $labelingTask->getCurrentPhase();
         $taskStatus = $labelingTask->getStatus($phase);
         if ($labelingTask->getLatestAssignedUserIdForPhase($phase) !== null &&
             ($taskStatus === Model\LabelingTask::STATUS_TODO || $taskStatus === Model\LabelingTask::STATUS_IN_PROGRESS)
