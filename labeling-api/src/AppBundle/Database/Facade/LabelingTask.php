@@ -581,14 +581,20 @@ class LabelingTask
     {
         $phasesByStates = $labelingTask->getRawStatus();
         foreach ($phasesByStates as $phase => $status) {
-            if ($phase === Model\LabelingTask::PHASE_LABELING && $status !== Model\LabelingTask::STATUS_DONE) {
+            if ($phase === Model\LabelingTask::PHASE_LABELING &&
+                ($status === Model\LabelingTask::STATUS_TODO || $status == Model\LabelingTask::STATUS_IN_PROGRESS)
+            ) {
                 return Model\LabelingTask::PHASE_LABELING;
             }
-            if ($phase === Model\LabelingTask::PHASE_REVIEW && $status !== Model\LabelingTask::STATUS_DONE) {
+            if ($phase === Model\LabelingTask::PHASE_REVIEW &&
+                ($status === Model\LabelingTask::STATUS_TODO || $status == Model\LabelingTask::STATUS_IN_PROGRESS)
+            ) {
                 return Model\LabelingTask::PHASE_REVIEW;
             }
 
-            if ($phase === Model\LabelingTask::PHASE_REVISION && $status !== Model\LabelingTask::STATUS_DONE) {
+            if ($phase === Model\LabelingTask::PHASE_REVISION &&
+                ($status === Model\LabelingTask::STATUS_TODO || $status == Model\LabelingTask::STATUS_IN_PROGRESS)
+            ) {
                 return Model\LabelingTask::PHASE_REVISION;
             }
         }
