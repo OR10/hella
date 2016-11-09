@@ -100,10 +100,10 @@ class InterpolateTest extends Tests\WebTestCase
         );
         $otherTask->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $otherTask->addAssignmentHistory(
-            new \DateTime,
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_IN_PROGRESS,
-            $this->user
+            $this->user,
+            new \DateTime
         );
         $this->labelingTaskFacade->save($otherTask);
 
@@ -153,10 +153,10 @@ class InterpolateTest extends Tests\WebTestCase
         );
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $task->addAssignmentHistory(
-            new \DateTime,
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_IN_PROGRESS,
-            $this->user
+            $this->user,
+            new \DateTime
         );
         $this->task         = $this->labelingTaskFacade->save($task);
         $this->labeledThing = $this->labeledThingFacade->save(Model\LabeledThing::create($this->task));

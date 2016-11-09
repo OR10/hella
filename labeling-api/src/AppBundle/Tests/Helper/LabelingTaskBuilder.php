@@ -164,10 +164,10 @@ class LabelingTaskBuilder
 
         foreach ($this->userAssignments as $assignment) {
             $task->addAssignmentHistory(
-                $assignment['dateTime'],
                 $assignment['phase'],
                 $assignment['status'],
-                $assignment['user']
+                $assignment['user'],
+                $assignment['dateTime']
             );
         }
 

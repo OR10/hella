@@ -639,13 +639,16 @@ class LabelingTask
     }
 
     /**
-     * @param \DateTime $date
      * @param           $phase
      * @param           $status
      * @param User      $user
+     * @param \DateTime $date
      */
-    public function addAssignmentHistory(\DateTime $date, $phase, $status, User $user = null)
+    public function addAssignmentHistory($phase, $status, User $user = null, \DateTime $date = null)
     {
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
         $this->assignmentHistory[] = [
             'userId'     => $user instanceof User ? $user->getId() : null,
             'assignedAt' => $date->getTimestamp(),
@@ -715,4 +718,21 @@ class LabelingTask
 
         return self::PHASE_LABELING;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasReviewPhase()
+    {
+        return array_key_exists(self::PHASE_REVIEW, $this->getRawStatus());
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasRevisionPhase()
+    {
+        return array_key_exists(self::PHASE_REVISION, $this->getRawStatus());
+    }
+
 }

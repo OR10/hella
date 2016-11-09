@@ -126,10 +126,10 @@ class TaskTest extends Tests\CouchDbTestCase
         $this->user->addRole($role);
 
         $this->task->addAssignmentHistory(
-            new \DateTime(),
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_IN_PROGRESS,
-            $this->user
+            $this->user,
+            new \DateTime()
         );
         $this->labelingTaskFacade->save($this->task);
 
@@ -158,10 +158,10 @@ class TaskTest extends Tests\CouchDbTestCase
         $this->user->addRole($role);
 
         $this->task->addAssignmentHistory(
-            new \DateTime(),
             Model\LabelingTask::PHASE_LABELING,
             Model\LabelingTask::STATUS_IN_PROGRESS,
-            $this->user
+            $this->user,
+            new \DateTime()
         );
         $this->labelingTaskFacade->save($this->task);
 

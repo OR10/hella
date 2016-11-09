@@ -51,12 +51,7 @@ class User extends Controller\Base
     {
         $this->isUserAllowedToAssignTo($user);
 
-        $task->addAssignmentHistory(
-            new \DateTime('now', new \DateTimeZone('UTC')),
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_IN_PROGRESS,
-            $user
-        );
+        $task->addAssignmentHistory(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS, $user);
 
         $this->labelingTaskFacade->save($task);
 
@@ -78,11 +73,7 @@ class User extends Controller\Base
             throw new Exception\BadRequestHttpException('You are not allowed to delete this task assignment');
         }
 
-        $task->addAssignmentHistory(
-            new \DateTime('now', new \DateTimeZone('UTC')),
-            $phase,
-            $task->getStatus($phase)
-        );
+        $task->addAssignmentHistory($phase, $task->getStatus($phase));
 
         $this->labelingTaskFacade->save($task);
 

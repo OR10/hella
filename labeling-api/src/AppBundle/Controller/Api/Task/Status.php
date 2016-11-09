@@ -83,20 +83,12 @@ class Status extends Controller\Base
         }
 
         $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
+        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_DONE, $user);
 
-        $rawStatusByPhase = $task->getRawStatus();
-        if (array_key_exists(Model\LabelingTask::PHASE_REVIEW, $rawStatusByPhase)
-            && $phase === Model\LabelingTask::PHASE_LABELING
-        ) {
+        if ($task->hasReviewPhase() && $phase === Model\LabelingTask::PHASE_LABELING) {
             $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
         }
 
-        $task->addAssignmentHistory(
-            new \DateTime('now', new \DateTimeZone('UTC')),
-            $phase,
-            Model\LabelingTask::STATUS_DONE,
-            $user
-        );
         $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
@@ -121,12 +113,8 @@ class Status extends Controller\Base
                 throw new Exception\BadRequestHttpException();
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
-            $task->addAssignmentHistory(
-                new \DateTime('now', new \DateTimeZone('UTC')),
-                $phase,
-                Model\LabelingTask::STATUS_TODO,
-                $user
-            );
+            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
+
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
@@ -152,12 +140,8 @@ class Status extends Controller\Base
                 throw new Exception\BadRequestHttpException();
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_IN_PROGRESS);
-            $task->addAssignmentHistory(
-                new \DateTime('now', new \DateTimeZone('UTC')),
-                $phase,
-                Model\LabelingTask::STATUS_IN_PROGRESS,
-                $user
-            );
+            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_IN_PROGRESS, $user);
+
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
@@ -187,12 +171,7 @@ class Status extends Controller\Base
             );
         }
         if ($task->getLatestAssignedUserIdForPhase($phase) === null) {
-            $task->addAssignmentHistory(
-                new \DateTime('now', new \DateTimeZone('UTC')),
-                $phase,
-                $task->getStatus($phase),
-                $user
-            );
+            $task->addAssignmentHistory($phase, $task->getStatus($phase), $user);
         }
         $this->labelingTaskFacade->save($task);
 
@@ -214,18 +193,9 @@ class Status extends Controller\Base
         $phase = $request->request->get('phase');
         if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
             $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
-            $task->addAssignmentHistory(
-                new \DateTime('now', new \DateTimeZone('UTC')),
-                $phase,
-                Model\LabelingTask::STATUS_TODO,
-                $user
-            );
+            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
             $task->setReopen($phase, true);
-            $task->addAssignmentHistory(
-                new \DateTime('now', new \DateTimeZone('UTC')),
-                $phase,
-                Model\LabelingTask::STATUS_TODO
-            );
+            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO);
             $this->labelingTaskFacade->save($task);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
