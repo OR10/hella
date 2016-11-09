@@ -49,12 +49,13 @@ class InterpolationTest extends Tests\KernelTestCase
         $this->interpolationService      = $this->getAnnostationService('service.interpolation');
     }
 
+    /**
+     * @expectedException AppBundle\Service\Interpolation\Exception
+     */
     public function testInterpolateSetsErrorStatusWhenUnknownAlgorithmShouldBeUsed()
     {
         $status = new Model\Interpolation\Status();
         $this->interpolationService->interpolate('foo', $this->createLabeledThing(), $status);
-
-        $this->assertEquals(Model\Interpolation\Status::ERROR, $status->getStatus());
     }
 
     public function testEmittedLabeledThingsInFrameArePersisted()
@@ -73,7 +74,6 @@ class InterpolationTest extends Tests\KernelTestCase
         $algorithm->method('interpolate')->will(
             $this->returnCallback(
                 function ($labeledThing, $frameRange, $emit) use (&$labeledThingsInFrame, $status) {
-                    $this->assertEquals(Model\Interpolation\Status::RUNNING, $status->getStatus());
                     foreach ($labeledThingsInFrame as $labeledThingInFrame) {
                         $emit($labeledThingInFrame);
                     }
@@ -87,7 +87,6 @@ class InterpolationTest extends Tests\KernelTestCase
         $result = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing, 3, 0, 2);
 
         $this->assertEquals($labeledThingsInFrame, $result);
-        $this->assertEquals(Model\Interpolation\Status::SUCCESS, $status->getStatus());
     }
 
     /**
