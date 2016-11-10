@@ -34,24 +34,41 @@ class Object
      */
     public function __toString()
     {
+        $type                = $this->getType();
+        $truncation          = -1;
+        $occlusion           = -1;
+        $alpha               = -10;
+        $leftBoundingBox     = $this->getBoundingBox()->getLeft();
+        $topBoundingBox      = $this->getBoundingBox()->getTop();
+        $rightBoundingBox    = $this->getBoundingBox()->getRight();
+        $bottomBoundingBox   = $this->getBoundingBox()->getBottom();
+        $height              = -1; //meters
+        $width               = -1; //meters
+        $length              = -1; //meters
+        $location3dX         = -1000;
+        $location3dY         = -1000;
+        $location3dZ         = -1000;
+        $rotationAroundY     = -10;
+        $detectionConfidence = 1;
+
         return sprintf(
             '%s %.2f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f',
-            $this->getType(),                     // type
-            -1,                                   // trucation
-            -1,                                   // occlusion
-            -10,                                  // alpha [-pi, pi]
-            $this->getBoundingBox()->getLeft(),   // bounding-box-left in pixels
-            $this->getBoundingBox()->getTop(),    // bounding-box-top in pixels
-            $this->getBoundingBox()->getRight(),  // bounding-box-right in pixels
-            $this->getBoundingBox()->getBottom(), // bounding-box-bottom in pixels
-            -1,                                   // height in meters
-            -1,                                   // width in meters
-            -1,                                   // length in meters
-            -1000,                                // 3d-location-x in camera coordinates (in meters)
-            -1000,                                // 3d-location-y in camera coordinates (in meters)
-            -1000,                                // 3d-location-z in camera coordinates (in meters)
-            -10,                                  // rotation around y-axis [-pi, pi]
-            1                                     // detection confidence (higher is better)
+            $type,
+            $truncation,
+            $occlusion,
+            $alpha,
+            $leftBoundingBox,
+            $topBoundingBox,
+            $rightBoundingBox,
+            $bottomBoundingBox,
+            $height,
+            $width,
+            $length,
+            $location3dX,
+            $location3dY,
+            $location3dZ,
+            $rotationAroundY,
+            $detectionConfidence
         );
     }
 
