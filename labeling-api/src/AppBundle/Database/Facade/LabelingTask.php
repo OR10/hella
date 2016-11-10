@@ -634,6 +634,7 @@ class LabelingTask
         $query = $this->documentManager
             ->createQuery('annostation_labeling_task_all_done_by_project_001', 'view')
             ->onlyDocs(true)
+            ->setReduce(false)
             ->setKey([$project->getId()]);
 
         if ($skip !== null) {
@@ -645,5 +646,27 @@ class LabelingTask
         }
 
         return $query->execute();
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return int
+     */
+    public function getSumOfAllDoneLabelingTasksForProject(Model\Project $project)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task_all_done_by_project_001', 'view')
+            ->onlyDocs(false)
+            ->setKey([$project->getId()])
+            ->setReduce(true);
+
+        $result = $query->execute()->toArray();
+
+        if (isset($result[0]) && isset($result[0]['value'])) {
+            return $result[0]['value'];
+        }
+
+        return 0;
     }
 }

@@ -7,7 +7,7 @@ function(doc) {
       }
     });
     if (allDone) {
-      emit([doc.projectId]);
+      emit([doc.projectId], 1);
     }
   }
 }

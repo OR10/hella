@@ -162,9 +162,10 @@ class Task extends Controller\Base
                         $project,
                         $offset,
                         $limit
+                    )->toArray();
+                    $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
+                        $project
                     );
-                    $numberOfTotalDocuments = $tasks->getTotalRows();
-                    $tasks = $tasks->toArray();
                 }
                 break;
         }
