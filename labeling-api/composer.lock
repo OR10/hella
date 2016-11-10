@@ -203,7 +203,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/WorkerPool.git",
-                "reference": "a2bbf7246f1f7ea54705b9d7dfde224f60d35706"
+                "reference": "08eed44e5006c495f21e8228d2883ceaf2457ac2"
             },
             "require": {
                 "arbit/phpillow": "dev-master",
@@ -238,7 +238,7 @@
                 "rabbitmq",
                 "worker"
             ],
-            "time": "2016-04-27 11:51:48"
+            "time": "2016-10-20 14:27:31"
         },
         {
             "name": "doctrine/annotations",
