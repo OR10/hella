@@ -83,13 +83,13 @@ class Interpolation extends WorkerPool\JobInstruction
             $this->updateStatus($status, Model\Interpolation\Status::SUCCESS);
         } catch (Service\Interpolation\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-            $this->updateStatus($status, Model\Interpolation\Status::ERROR, (string) $exception);
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $exception->getMessage());
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-            $this->updateStatus($status, Model\Interpolation\Status::ERROR, (string) $exception);
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $exception->getMessage());
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
-            $this->updateStatus($status, Model\Interpolation\Status::ERROR, (string) $throwable);
+            $this->updateStatus($status, Model\Interpolation\Status::ERROR, $throwable->getMessage());
         }
     }
 
