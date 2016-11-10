@@ -170,11 +170,11 @@ class LabelingTask
     /**
      * @param string             $status
      * @param Model\Project|null $project
-     * @param int                $skip
-     * @param int                $limit
+     * @param int|null           $skip
+     * @param int|null           $limit
      * @param string             $phase
      *
-     * @return array
+     * @return \Doctrine\CouchDB\View\Result
      */
     public function findAllByStatusAndProject(
         string $status,
@@ -620,5 +620,30 @@ class LabelingTask
         }
 
         return (int) $query[0]['value'];
+    }
+
+    /**
+     * @param Model\Project $project
+     * @param null          $skip
+     * @param null          $limit
+     *
+     * @return \Doctrine\CouchDB\View\Result
+     */
+    public function getAllDoneLabelingTasksForProject(Model\Project $project, $skip = null, $limit = null)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task_all_done_by_project_001', 'view')
+            ->onlyDocs(true)
+            ->setKey([$project->getId()]);
+
+        if ($skip !== null) {
+            $query->setSkip($skip);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        return $query->execute();
     }
 }

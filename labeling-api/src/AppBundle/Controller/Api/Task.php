@@ -98,7 +98,7 @@ class Task extends Controller\Base
     {
         $offset     = $request->query->has('offset') ? $request->query->getInt('offset') : null;
         $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
-        $taskPhase  = $request->query->get('phase', Model\LabelingTask::PHASE_LABELING);
+        $taskPhase  = $request->query->get('phase');
         $taskStatus = $request->query->get('taskStatus');
         $user       = $this->tokenStorage->getToken()->getUser();
 
@@ -153,6 +153,19 @@ class Task extends Controller\Base
                     )->toArray();
                 }
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
+                break;
+            case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
+                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator()
+                    || $this->userFacade->isAdmin()
+                ) {
+                    $tasks                  = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
+                        $project,
+                        $offset,
+                        $limit
+                    );
+                    $numberOfTotalDocuments = $tasks->getTotalRows();
+                    $tasks = $tasks->toArray();
+                }
                 break;
         }
 
