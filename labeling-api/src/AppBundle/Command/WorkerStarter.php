@@ -2,7 +2,9 @@
 namespace AppBundle\Command;
 
 use AppBundle\Service;
+use AppBundle\Worker\EventHandler;
 use AppBundle\Worker\JobInstructionFactory;
+use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use crosscan\WorkerPool;
@@ -23,16 +25,26 @@ class WorkerStarter extends Base
     private $loggerFacade;
 
     /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
      * WorkerStarter constructor.
      *
-     * @param Service\AMQPPoolConfig $AMQPPoolConfig
-     * @param \cscntLogger           $logger
+     * @param Service\AMQPPoolConfig  $AMQPPoolConfig
+     * @param \cscntLogger            $logger
+     * @param CouchDB\DocumentManager $documentManager
      */
-    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig, \cscntLogger $logger)
-    {
+    public function __construct(
+        Service\AMQPPoolConfig $AMQPPoolConfig,
+        \cscntLogger $logger,
+        CouchDB\DocumentManager $documentManager
+    ) {
         parent::__construct();
-        $this->AMQPPoolConfig = $AMQPPoolConfig;
-        $this->loggerFacade   = new Facade\LoggerFacade($logger, \cscntLogFacility::WORKER_POOL);
+        $this->AMQPPoolConfig  = $AMQPPoolConfig;
+        $this->loggerFacade    = new Facade\LoggerFacade($logger, \cscntLogFacility::WORKER_POOL);
+        $this->documentManager = $documentManager;
     }
 
     protected function configure()
@@ -47,6 +59,8 @@ class WorkerStarter extends Base
     /**
      * @param Input\InputInterface   $input
      * @param Output\OutputInterface $output
+     *
+     * @return int
      */
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
@@ -95,7 +109,8 @@ class WorkerStarter extends Base
             $serviceInstances,
             $this->loggerFacade,
             $rescheduleManager,
-            new NewRelic\Aggregated($newRelicWrapper)
+            new NewRelic\Aggregated($newRelicWrapper),
+            new EventHandler\DoctrineIdentityMapReset($this->documentManager)
         );
 
         try {
