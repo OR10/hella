@@ -735,5 +735,4 @@ class LabelingTask
     {
         return array_key_exists(self::PHASE_REVISION, $this->getRawStatus());
     }
-
 }

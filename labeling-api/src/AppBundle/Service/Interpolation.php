@@ -124,31 +124,30 @@ class Interpolation
         Model\FrameIndexRange $frameRange,
         Model\Interpolation\Status $status = null
     ) {
-            $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getStartFrameIndex());
-            $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getEndFrameIndex());
+        $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getStartFrameIndex());
+        $labeledThing->getFrameRange()->throwIfFrameIndexIsNotCovered($frameRange->getEndFrameIndex());
 
-            $algorithm = $this->getAlgorithm($algorithmName);
+        $algorithm = $this->getAlgorithm($algorithmName);
 
-            $labeledThingsInFrame = [];
+        $labeledThingsInFrame = [];
 
-            $algorithm->interpolate(
-                $labeledThing,
-                $frameRange,
-                function (Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
-                    $labeledThingsInFrame[] = $labeledThingInFrame;
+        $algorithm->interpolate(
+            $labeledThing,
+            $frameRange,
+            function (Model\LabeledThingInFrame $labeledThingInFrame) use (&$labeledThingsInFrame) {
+                $labeledThingsInFrame[] = $labeledThingInFrame;
 
-                    // TODO: make the number configurable
-                    if (count($labeledThingsInFrame) === $this->numberOfBulkUpdates) {
-                        $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
-                        $labeledThingsInFrame = [];
-                    }
+                // TODO: make the number configurable
+                if (count($labeledThingsInFrame) === $this->numberOfBulkUpdates) {
+                    $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
+                    $labeledThingsInFrame = [];
                 }
-            );
-
-            if (!empty($labeledThingsInFrame)) {
-                $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
             }
+        );
 
+        if (!empty($labeledThingsInFrame)) {
+            $this->labeledThingInFrameFacade->saveAll($labeledThingsInFrame);
+        }
     }
 
     /**
