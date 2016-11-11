@@ -52,11 +52,18 @@ class TaskCount extends Controller\Base
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
-        $sumLabeling = $this->labelingTask->getSumOfTasksByPhaseForProject($project);
+        $sumTasks = array_merge(
+            $this->labelingTask->getSumOfTasksByPhaseForProject($project),
+            array(
+                Model\LabelingTask::STATUS_ALL_PHASES_DONE => $this->labelingTask->getSumOfAllDoneLabelingTasksForProject(
+                    $project
+                ),
+            )
+        );
 
         return View\View::create()->setData(
             [
-                'result' => $sumLabeling,
+                'result' => $sumTasks,
             ]
         );
     }
