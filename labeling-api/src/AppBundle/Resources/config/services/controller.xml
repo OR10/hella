@@ -211,5 +211,9 @@
             <argument>%rabbitmq_user%</argument>
             <argument>%rabbitmq_password%</argument>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.task.phase" class="AppBundle\Controller\Api\Task\Phase">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
     </services>
 </container>

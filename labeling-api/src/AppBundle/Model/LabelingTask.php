@@ -735,4 +735,18 @@ class LabelingTask
     {
         return array_key_exists(self::PHASE_REVISION, $this->getRawStatus());
     }
+
+    /**
+     * @return bool
+     */
+    public function isAllPhasesDone()
+    {
+        foreach ($this->getRawStatus() as $phase => $status) {
+            if ($status !== self::STATUS_DONE) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

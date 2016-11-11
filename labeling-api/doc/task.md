@@ -345,3 +345,17 @@ Set attention flag to false
     + Attributes
         + result
             + success: `true` (boolean)
+
+## Change the Task Phase [/api/task/{taskId}/phase]
+
+Change the phase for the task
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Change the Task Phase [PUT]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean)
