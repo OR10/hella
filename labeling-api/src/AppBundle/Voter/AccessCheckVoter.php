@@ -74,11 +74,7 @@ abstract class AccessCheckVoter extends AbstractVoter
     {
         return array_reduce(
             $checks,
-            function ($checkSuccessful, $check) use ($user, $object) {
-                /**
-                 * @var bool        $checkSuccessful
-                 * @var AccessCheck $check
-                 */
+            function (bool $checkSuccessful, AccessCheck $check) use ($user, $object) {
                 if ($checkSuccessful) {
                     return $checkSuccessful;
                 } else {

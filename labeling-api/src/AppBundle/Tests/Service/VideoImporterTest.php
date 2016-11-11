@@ -28,7 +28,7 @@ class VideoImporterTest extends Tests\KernelTestCase
     private $labelingTaskFacade;
 
     /**
-     * @var Service\Interpolation
+     * @var Service\VideoImporter
      */
     private $videoImporterService;
 
@@ -209,8 +209,6 @@ class VideoImporterTest extends Tests\KernelTestCase
             'testProject',
             $this->getTestVideoPath(),
             null,
-            false,
-            $chunkSizeInSeconds,
             true,
             true,
             array(
@@ -220,6 +218,8 @@ class VideoImporterTest extends Tests\KernelTestCase
                     'taskConfiguration' => null,
                 )
             ),
+            false,
+            $chunkSizeInSeconds,
             $minimalVisibleShapeOverflow,
             $drawingToolOptions,
             $frameStepSize,

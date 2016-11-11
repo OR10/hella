@@ -24,7 +24,7 @@ class DoctrineIdentityMapReset extends EventHandler\NoOp
         $this->objectManager = $objectManager;
     }
 
-    function jobFinished(Job $job)
+    public function jobFinished(Job $job)
     {
         $this->objectManager->clear();
     }
