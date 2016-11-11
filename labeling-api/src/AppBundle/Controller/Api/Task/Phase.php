@@ -47,7 +47,7 @@ class Phase extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function postLabeledStatusAction(HttpFoundation\Request $request, Model\LabelingTask $task)
+    public function updateTaskPhaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
         $newPhase      = $request->request->get('phase');
         $currentStatus = $task->getStatus($task->getCurrentPhase());
@@ -60,14 +60,22 @@ class Phase extends Controller\Base
             throw new Exception\PreconditionFailedHttpException();
         }
 
+        if ($task->getCurrentPhase() === Model\LabelingTask::PHASE_REVISION) {
+            $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+            $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+        }
+
+        $task->setStatus($task->getCurrentPhase(), Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+
         if ($newPhase === Model\LabelingTask::STATUS_ALL_PHASES_DONE) {
-            foreach($task->getRawStatus() as $phase => $status) {
+            foreach ($task->getRawStatus() as $phase => $status) {
                 $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
             }
-        }else{
+        } else {
             $task->setStatus($newPhase, Model\LabelingTask::STATUS_TODO);
         }
 
+        $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
