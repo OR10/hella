@@ -116,6 +116,11 @@ class Report
     /**
      * @CouchDB\Field(type="integer")
      */
+    private $numberOfDoneTasksInAllPhases;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
     private $numberOfToDoReviewTasks;
 
     /**
@@ -873,5 +878,21 @@ class Report
     public function setErrorMessage($errorMessage)
     {
         $this->errorMessage = $errorMessage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfDoneTasksInAllPhases()
+    {
+        return $this->numberOfDoneTasksInAllPhases;
+    }
+
+    /**
+     * @param mixed $numberOfDoneTasksInAllPhases
+     */
+    public function setNumberOfDoneTasksInAllPhases($numberOfDoneTasksInAllPhases)
+    {
+        $this->numberOfDoneTasksInAllPhases = $numberOfDoneTasksInAllPhases;
     }
 }

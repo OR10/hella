@@ -136,6 +136,10 @@ class Report
                 $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_DONE]
             );
 
+            $report->setNumberOfDoneTasksInAllPhases(
+                $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject($project)
+            );
+
             $totalNumberOfLabeledThings = $this->getSumOfLabeledThings($project);
             $report->setNumberOfLabeledThings(
                 $totalNumberOfLabeledThings
