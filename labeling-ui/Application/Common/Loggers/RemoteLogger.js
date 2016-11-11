@@ -51,7 +51,7 @@ class RemoteLogger {
       level,
       browser: {appCodeName, appName, appVersion, language, platform, product, userAgent, vendor},
       group: this._groupId,
-      data: args,
+      data: JSON.stringify(args),
       user: this._user,
       trace,
     };
