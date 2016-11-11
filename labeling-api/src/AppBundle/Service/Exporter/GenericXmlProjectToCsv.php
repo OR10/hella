@@ -127,7 +127,10 @@ class GenericXmlProjectToCsv
             $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
             $taskConfigurations = [];
             foreach ($videoIterator as $video) {
-                $videoCalibration = $this->calibrationDataFacade->findById($video->getCalibrationId());
+                $videoCalibration = null;
+                if ($video->getCalibrationId() !== null) {
+                    $videoCalibration = $this->calibrationDataFacade->findById($video->getCalibrationId());
+                }
                 /** @var ColumnGroup\Unique $columnGroup */
                 $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
                 $columnGroup->addColumns(
