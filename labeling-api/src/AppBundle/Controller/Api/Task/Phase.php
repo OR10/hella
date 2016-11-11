@@ -60,19 +60,41 @@ class Phase extends Controller\Base
             throw new Exception\PreconditionFailedHttpException();
         }
 
-        if ($task->getCurrentPhase() === Model\LabelingTask::PHASE_REVISION) {
-            $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
-            $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
-        }
-
-        $task->setStatus($task->getCurrentPhase(), Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
-
-        if ($newPhase === Model\LabelingTask::STATUS_ALL_PHASES_DONE) {
-            foreach ($task->getRawStatus() as $phase => $status) {
-                $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
-            }
-        } else {
-            $task->setStatus($newPhase, Model\LabelingTask::STATUS_TODO);
+        switch ($newPhase) {
+            case Model\LabelingTask::PHASE_LABELING:
+                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
+                if ($task->hasReviewPhase()) {
+                    $task->setStatus(
+                        Model\LabelingTask::PHASE_REVIEW,
+                        Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+                    );
+                }
+                if ($task->hasRevisionPhase()) {
+                    $task->setStatus(
+                        Model\LabelingTask::PHASE_REVISION,
+                        Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+                    );
+                }
+                break;
+            case Model\LabelingTask::PHASE_REVIEW:
+                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+                $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
+                if ($task->hasRevisionPhase()) {
+                    $task->setStatus(
+                        Model\LabelingTask::PHASE_REVISION,
+                        Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+                    );
+                }
+                break;
+            case Model\LabelingTask::PHASE_REVISION:
+                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+                $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+                break;
+            case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
+                foreach ($task->getRawStatus() as $phase => $status) {
+                    $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
+                }
+                break;
         }
 
         $this->labelingTaskFacade->save($task);

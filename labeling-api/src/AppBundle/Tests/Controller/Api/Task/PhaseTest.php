@@ -30,10 +30,10 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testMoveLabelingInProgressTaskToRevisionTodoPhase()
     {
-        $task     = $this->createLabelingTask(
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_IN_PROGRESS
-        );
+        $task = $this->createLabelingTask();
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $this->labelingTaskFacade->save($task);
+
         $response = $this->createRequest(self::ROUTE, [$task->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::PHASE_REVISION])
@@ -45,31 +45,42 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testMoveRevisionDoneTaskToLabelingTodoPhase()
     {
-        $task = $this->createLabelingTask(
-            Model\LabelingTask::PHASE_REVISION,
-            Model\LabelingTask::STATUS_DONE
-        );
+        $task = $this->createLabelingTask();
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+        $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+        $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_DONE);
+        $this->labelingTaskFacade->save($task);
+
         $this->createRequest(self::ROUTE, [$task->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::PHASE_LABELING])
             ->execute()
             ->getResponse();
 
-        $actualTask   = $this->labelingTaskFacade->find($task->getId());
-        $actualPhase  = $actualTask->getCurrentPhase();
-        $actualStatus = $actualTask->getStatus($actualPhase);
+        $actualTask = $this->labelingTaskFacade->find($task->getId());
 
-        $this->assertEquals(Model\LabelingTask::PHASE_LABELING, $actualPhase);
-        $this->assertEquals(Model\LabelingTask::STATUS_TODO, $actualStatus);
+        $this->assertEquals(
+            Model\LabelingTask::STATUS_TODO,
+            $actualTask->getStatus(Model\LabelingTask::PHASE_LABELING)
+        );
+        $this->assertEquals(
+            Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION,
+            $actualTask->getStatus(Model\LabelingTask::PHASE_REVIEW)
+        );
+        $this->assertEquals(
+            Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION,
+            $actualTask->getStatus(Model\LabelingTask::PHASE_REVISION)
+        );
         $this->assertFalse($actualTask->isAllPhasesDone());
     }
 
-    public function testMoveTodoLabelingTaskToAllDone()
+    public function testMoveTodoReviewTaskToAllDone()
     {
-        $task = $this->createLabelingTask(
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::STATUS_TODO
-        );
+        $task = $this->createLabelingTask();
+        $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+        $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
+        $this->labelingTaskFacade->save($task);
+
         $this->createRequest(self::ROUTE, [$task->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::STATUS_ALL_PHASES_DONE])
@@ -81,7 +92,7 @@ class PhaseTest extends Tests\WebTestCase
         $this->assertTrue($actualTask->isAllPhasesDone());
     }
 
-    private function createLabelingTask($phase, $status)
+    private function createLabelingTask()
     {
         $project = $this->projectFacade->save(
             Helper\ProjectBuilder::create()->build()
@@ -90,7 +101,7 @@ class PhaseTest extends Tests\WebTestCase
             Helper\VideoBuilder::create()->build()
         );
         $task    = $this->labelingTaskFacade->save(
-            Helper\LabelingTaskBuilder::create($project, $video)->withStatus($phase, $status)->build()
+            Helper\LabelingTaskBuilder::create($project, $video)->build()
         );
 
         return $task;
