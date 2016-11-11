@@ -49,7 +49,10 @@ class TaskReadOnlyDecider
             return $user !== $this->userFacade->getUserById($labelingTask->getLatestAssignedUserIdForPhase($phase));
         }
 
-        if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT])) {
+        if ($user->hasOneRoleOf(
+            [Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT]
+        )
+        ) {
             return $taskStatus !== Model\LabelingTask::STATUS_TODO;
         }
 

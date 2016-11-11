@@ -85,7 +85,10 @@ class StatusTest extends Tests\WebTestCase
         $task = $this->labelingTaskFacade->find($this->task->getId());
 
         $this->assertEquals($task->getStatus(Model\LabelingTask::PHASE_LABELING), Model\LabelingTask::STATUS_IN_PROGRESS);
-        $this->assertEquals($task->getLatestAssignedUserIdForPhase(Model\LabelingTask::PHASE_LABELING), $this->user->getId());
+        $this->assertEquals(
+            $task->getLatestAssignedUserIdForPhase(Model\LabelingTask::PHASE_LABELING),
+            $this->user->getId()
+        );
     }
 
     protected function setUpImplementation()

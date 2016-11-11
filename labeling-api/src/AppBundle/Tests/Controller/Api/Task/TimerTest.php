@@ -109,7 +109,9 @@ class TimerTest extends Tests\WebTestCase
         );
         $this->assertEquals(
             123,
-            $this->labelingTaskFacade->getTimerForTaskAndUser($this->task, $this->user)->getTimeInSeconds(Model\LabelingTask::PHASE_LABELING)
+            $this->labelingTaskFacade->getTimerForTaskAndUser($this->task, $this->user)->getTimeInSeconds(
+                Model\LabelingTask::PHASE_LABELING
+            )
         );
     }
 
