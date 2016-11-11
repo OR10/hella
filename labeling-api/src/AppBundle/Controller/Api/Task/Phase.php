@@ -89,6 +89,7 @@ class Phase extends Controller\Base
             case Model\LabelingTask::PHASE_REVISION:
                 $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
                 $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+                $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
                 foreach ($task->getRawStatus() as $phase => $status) {
