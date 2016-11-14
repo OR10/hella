@@ -306,6 +306,19 @@ class TaskGateway {
         throw new Error(`Failed to unflag task: ${taskId}.`);
       });
   }
+
+  moveTaskToPhase(taskId, phase) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/phase`);
+
+    return this._bufferedHttp.put(url, {phase}, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to move task (${taskId}) to phase: ${phase}.`);
+      });
+  }
 }
 
 TaskGateway.$inject = [

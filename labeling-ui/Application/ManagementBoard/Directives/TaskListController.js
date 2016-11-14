@@ -7,8 +7,9 @@ class TaskListController {
    * @param {$state} $state
    * @param {TaskGateway} taskGateway injected
    * @param {ModalService} modalService
+   * @param {SelectionDialog} SelectionDialog
    */
-  constructor($scope, $state, taskGateway, modalService) {
+  constructor($scope, $state, taskGateway, modalService, SelectionDialog) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -32,6 +33,12 @@ class TaskListController {
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {SelectionDialog}
+     * @private
+     */
+    this._SelectionDialog = SelectionDialog;
 
     /**
      * @type {Object}
@@ -126,6 +133,51 @@ class TaskListController {
       .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
   }
 
+  moveTask(taskId) {
+    const selectedTask = this.tasks.find(task => task.id === taskId);
+
+    const selectionData = [
+      {id: 'labeling', name: 'Labeling'},
+      {id: 'review', name: 'Review'},
+      {id: 'revision', name: 'Revision'},
+      {id: 'all_phases_done', name: 'Done'},
+    ].filter(selection => selection.id !== selectedTask.phase);
+
+    this._modalService.show(
+      new this._SelectionDialog(
+        {
+          title: 'Move task',
+          headline: `Please select the phase that you want this task to be moved to:`,
+          confirmButtonText: 'Move task',
+          message: '',
+          data: selectionData,
+        },
+        phase => {
+          if (phase) {
+            this.loadingInProgress = true;
+            this._taskGateway.moveTaskToPhase(taskId, phase)
+              .then(() => this._triggerReloadAll());
+          } else {
+            this._modalService.info(
+              {
+                title: 'No phase selected',
+                headline: 'You need to select a phase',
+                message: 'You need to select a phase to move this task to. Without a selected phase the task can not bei moved!',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          }
+        }
+      )
+    );
+  }
+
   reopenTask(taskId, phase) {
     this._taskGateway.reopenTask(taskId, phase).then(() => this._triggerReloadAll());
   }
@@ -156,6 +208,7 @@ class TaskListController {
             range: `${task.frameNumberMapping[0]} - ${task.frameNumberMapping[task.frameNumberMapping.length - 1]}`,
             latestAssignee: assignedUser,
             status: task.getStatusForPhase(this.taskPhase),
+            phase: task.getPhase(),
             labelInstruction: task.labelInstruction,
             reopen: task.reopen,
             attentionFlag: task.taskAttentionFlag,
@@ -176,6 +229,7 @@ TaskListController.$inject = [
   '$state',
   'taskGateway',
   'modalService',
+  'SelectionDialog',
 ];
 
 export default TaskListController;

@@ -344,4 +344,21 @@ describe('TaskGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should move a task to a different phase', done => {
+    const response = {
+      result: {
+        success: true,
+      },
+    };
+
+    $httpBackend.expectPUT('/backend/api/task/TASK_ID/phase', {phase: 'review'}).respond(response);
+
+    gateway.moveTaskToPhase('TASK_ID', 'review').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });
