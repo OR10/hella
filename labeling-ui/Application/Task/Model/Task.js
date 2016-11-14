@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash.clonedeep';
+import reduce from 'lodash.reduce';
 
 /**
  * Primary Task model
@@ -219,22 +220,30 @@ class Task {
    * @returns {string}
    */
   getPhase() {
-    if (this.status.review && (this.status.review === 'todo' || this.status.review === 'in_progress')) {
-      return 'review';
+    const allDone = reduce(
+      this.status,
+      (last, current) => {
+        return last && current === 'done';
+      },
+      true
+    );
+
+    if (allDone) {
+      return 'all_phases_done';
     }
 
-    if (
-      this.status.revision
-      && (
-        this.status.revision === 'todo'
-        || this.status.revision === 'in_progress'
-        || this.status.revision === 'done'
-      )
-    ) {
-      return 'revision';
+    let phase;
+    Object.keys(this.status).forEach(statusName=> {
+      if (this.status[statusName] === 'todo' || this.status[statusName] === 'in_progress') {
+        phase = statusName;
+      }
+    });
+
+    if (phase !== undefined) {
+      return phase;
     }
 
-    return 'labeling';
+    throw new Error(`Failed to determine the tasks phase`);
   }
 
   /**
