@@ -91,6 +91,7 @@ class TasksController {
       });
 
       const defaultedTaskCount = merge({}, defaults, taskCount);
+      delete defaultedTaskCount.all_phases_done;
 
       Object.keys(defaultedTaskCount).forEach(
         type => defaultedTaskCount[type].overall = statesForOverallCalculation.reduce(
@@ -98,6 +99,7 @@ class TasksController {
           0
         )
       );
+      defaultedTaskCount.all_phases_done = taskCount.all_phases_done;
 
       this.taskCount = defaultedTaskCount;
     });

@@ -31,15 +31,6 @@
                            user="vm.user"
                            user-permissions="vm.userPermissions">
                 </task-list>
-                <h2>
-                    Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.labeling.done}})</span>
-                </h2>
-                <task-list task-phase="labeling"
-                           task-status="done"
-                           project-id="vm.projectId"
-                           user="vm.user"
-                           user-permissions="vm.userPermissions">
-                </task-list>
             </tab>
             <tab header="Review {{vm.taskCount !== null ? '(' + (vm.taskCount.review.in_progress + vm.taskCount.review.todo) + ')' : ''}}"
                  create-on-first-view="true">
@@ -61,18 +52,8 @@
                            user="vm.user"
                            user-permissions="vm.userPermissions">
                 </task-list>
-                <h2>
-                    Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.done}})</span>
-                </h2>
-                <task-list task-phase="review"
-                           task-status="done"
-                           project-id="vm.projectId"
-                           user="vm.user"
-                           user-permissions="vm.userPermissions">
-                </task-list>
             </tab>
-            <tab ng-if="vm.taskCount !== null && vm.taskCount.revision.overall !== 0"
-                 header="Revision {{vm.taskCount !== null ? '(' + vm.taskCount.revision.overall + ')' : ''}}"
+            <tab header="Revision {{vm.taskCount !== null ? '(' + (vm.taskCount.revision.in_progress + vm.taskCount.revision.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     In Progress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.in_progress}})</span>
@@ -92,11 +73,13 @@
                            user="vm.user"
                            user-permissions="vm.userPermissions">
                 </task-list>
+            </tab>
+            <tab header="Done {{vm.taskCount !== null ? '(' + vm.taskCount.all_phases_done + ')' : ''}}"
+                 create-on-first-view="true">
                 <h2>
-                    Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.revision.done}})</span>
+                    Done <span ng-hide='vm.taskCount == null'>({{vm.taskCount.all_phases_done}})</span>
                 </h2>
-                <task-list task-phase="revision"
-                           task-status="done"
+                <task-list task-status="all_phases_done"
                            project-id="vm.projectId"
                            user="vm.user"
                            user-permissions="vm.userPermissions">
