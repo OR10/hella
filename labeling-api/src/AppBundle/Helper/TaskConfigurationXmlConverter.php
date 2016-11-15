@@ -163,6 +163,11 @@ class TaskConfigurationXmlConverter
         return $xpath->evaluate("number(/*/@minimalVisibleShapeOverflow)");
     }
 
+    public function isMetaLabelingConfiguration() {
+        $xpath = new \DOMXPath($this->document);
+        return $xpath->query('/metaLabelTaskConfig')->length === 1;
+    }
+
     /**
      * Retrieve the json-like array representation of the information stored in the XML
      *
@@ -176,6 +181,7 @@ class TaskConfigurationXmlConverter
             'drawingTool' => $this->getDrawingTool(),
             'drawingToolOptions' => $this->getDrawingToolOptions(),
             'minimalVisibleShapeOverflow' => $this->getMinimalVisibleShapeOverflow(),
+            'isMetaLabelingConfiguration' => $this->isMetaLabelingConfiguration(),
         );
     }
 
