@@ -215,11 +215,23 @@ class TaskCreator
                     if ($genericXmlTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
                         $predefinedClasses = ['parked-car'];
                     }
+
+                    $taskConfigurationId = $genericXmlTaskInstruction['taskConfigurationId'];
+                    if ($taskConfigurationId !== null) {
+                        $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
+                    } else {
+                        $taskConfiguration = null;
+                    }
+
+                    $taskType = $taskConfiguration->isMetaLabelingConfiguration()
+                        ? Model\LabelingTask::TYPE_META_LABELING
+                        : Model\LabelingTask::TYPE_OBJECT_LABELING;
+
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
                         $frameNumberMapping,
-                        Model\LabelingTask::TYPE_OBJECT_LABELING,
+                        $taskType,
                         null,
                         $predefinedClasses,
                         $imageTypes,
@@ -229,7 +241,7 @@ class TaskCreator
                         $metadata,
                         $project->hasReviewValidationProcess(),
                         $project->hasRevisionValidationProcess(),
-                        $genericXmlTaskInstruction['taskConfigurationId']
+                        $taskConfiguration
                     );
                 }
             }
@@ -244,22 +256,23 @@ class TaskCreator
     /**
      * Add a LabelingTask
      *
-     * @param Model\Video      $video
-     * @param Model\Project    $project
-     * @param                  $frameNumberMapping
-     * @param string           $taskType
-     * @param string|null      $drawingTool
-     * @param string[]         $predefinedClasses
-     * @param                  $imageTypes
-     * @param                  $instruction
-     * @param int|null         $minimalVisibleShapeOverflow
-     * @param                  $drawingToolOptions
-     * @param                  $metadata
-     * @param                  $review
-     * @param                  $revision
-     * @param                  $taskConfigurationId
+     * @param Model\Video             $video
+     * @param Model\Project           $project
+     * @param                         $frameNumberMapping
+     * @param string                  $taskType
+     * @param string|null             $drawingTool
+     * @param string[]                $predefinedClasses
+     * @param                         $imageTypes
+     * @param                         $instruction
+     * @param int|null                $minimalVisibleShapeOverflow
+     * @param                         $drawingToolOptions
+     * @param                         $metadata
+     * @param                         $review
+     * @param                         $revision
+     * @param Model\TaskConfiguration $taskConfiguration
      *
      * @return Model\LabelingTask
+     *
      */
     private function addTask(
         Model\Video $video,
@@ -275,8 +288,8 @@ class TaskCreator
         $metadata,
         $review,
         $revision,
-        $taskConfigurationId
-    ) {
+        Model\TaskConfiguration $taskConfiguration = null
+    ) : Model\LabelingTask {
         switch ($instruction) {
             case Model\LabelingTask::INSTRUCTION_LANE:
             case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
@@ -287,7 +300,7 @@ class TaskCreator
                 $hideAttributeSelector = false;
         }
 
-        if ($taskConfigurationId === null) {
+        if ($taskConfiguration === null) {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
                 $taskType,
                 $instruction
@@ -297,7 +310,6 @@ class TaskCreator
                 $instruction
             );
         } else {
-            $taskConfiguration     = $this->taskConfigurationFacade->find($taskConfigurationId);
             $taskConfigurationJson = $taskConfiguration->getJson();
             $labelStructure        = $taskConfigurationJson['labelStructure'];
             $labelStructureUi      = $taskConfigurationJson['labelStructureUi'];
@@ -306,6 +318,10 @@ class TaskCreator
             $drawingToolOptions          = $taskConfigurationJson['drawingToolOptions'];
             $minimalVisibleShapeOverflow = $taskConfigurationJson['minimalVisibleShapeOverflow'];
         }
+
+        $taskConfigurationId = $taskConfiguration !== null
+            ? $taskConfiguration->getId()
+            : null;
 
         $task = new Model\LabelingTask(
             $video,
