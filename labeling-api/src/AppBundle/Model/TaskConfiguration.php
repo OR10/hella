@@ -168,4 +168,18 @@ class TaskConfiguration
 
         throw new \RuntimeException('Broken Configuration document: missing attachment');
     }
+
+    /**
+     * Quickly access information about whether this is a meta labeling configuration or not.
+     *
+     * @return bool
+     */
+    public function isMetaLabelingConfiguration() {
+        $json = $this->getJson();
+        if (!array_key_exists('isMetaLabelingConfiguration', $json)) {
+            return false;
+        }
+
+        return $json['isMetaLabelingConfiguration'];
+    }
 }
