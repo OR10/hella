@@ -136,12 +136,16 @@ class TaskListController {
   moveTask(taskId) {
     const selectedTask = this.tasks.find(task => task.id === taskId);
 
-    const selectionData = [
+    let selectionData = [
       {id: 'labeling', name: 'Labeling'},
       {id: 'review', name: 'Review'},
       {id: 'revision', name: 'Revision'},
       {id: 'all_phases_done', name: 'Done'},
     ].filter(selection => selection.id !== selectedTask.phase);
+
+    if (!selectedTask.hasReview) {
+      selectionData = selectionData.filter(selection => selection.id !== 'review');
+    }
 
     this._modalService.show(
       new this._SelectionDialog(
@@ -209,6 +213,7 @@ class TaskListController {
             latestAssignee: assignedUser,
             status: task.getStatusForPhase(this.taskPhase),
             phase: task.getPhase(),
+            hasReview: task.status.review !== undefined,
             labelInstruction: task.labelInstruction,
             reopen: task.reopen,
             attentionFlag: task.taskAttentionFlag,

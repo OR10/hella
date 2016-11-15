@@ -50,6 +50,8 @@ class TasksController {
      */
     this.taskCount = null;
 
+    this.showReviewTab = project.labelingValidationProcesses.includes('review');
+
     this._loadTaskCount(this.projectId);
 
     this._$scope.$on('task-list:dependant-tasks-changed', () => {

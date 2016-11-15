@@ -32,7 +32,8 @@
                            user-permissions="vm.userPermissions">
                 </task-list>
             </tab>
-            <tab header="Review {{vm.taskCount !== null ? '(' + (vm.taskCount.review.in_progress + vm.taskCount.review.todo) + ')' : ''}}"
+            <tab ng-if="vm.showReviewTab"
+                 header="Review {{vm.taskCount !== null ? '(' + (vm.taskCount.review.in_progress + vm.taskCount.review.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
                     In Progress <span ng-hide='vm.taskCount == null'>({{vm.taskCount.review.in_progress}})</span>
