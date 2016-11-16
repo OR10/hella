@@ -8,10 +8,10 @@ class ProjectReportListController {
    * @param {$state} $state
    * @param {$window} $window
    * @param {ModalService} modalService
-   * @param {ProjectGateway} projectGateway
+   * @param {ReportGateway} reportGateway
    * @param {ApiService} apiService
    */
-  constructor($rootScope, $interval, $state, $window, modalService, projectGateway, apiService) {
+  constructor($rootScope, $interval, $state, $window, modalService, reportGateway, apiService) {
     /**
      * @type {$state}
      * @private
@@ -39,8 +39,8 @@ class ProjectReportListController {
     const intervalInSeconds = 2;
 
     const intervalPromise = $interval(() => {
-      projectGateway.getExports(this.project.id).then(data => {
-        this.exports = data;
+      reportGateway.getReports(this.project.id).then(data => {
+        this.reports = data;
       });
     }, 1000 * intervalInSeconds);
 
@@ -109,7 +109,7 @@ ProjectReportListController.$inject = [
   '$state',
   '$window',
   'modalService',
-  'projectGateway',
+  'reportGateway',
   'ApiService',
 ];
 
