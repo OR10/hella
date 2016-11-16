@@ -114,7 +114,7 @@ class User
     }
 
     /**
-     * @return \Traversable
+     * @return Model\User[]
      */
     public function getUserList()
     {
