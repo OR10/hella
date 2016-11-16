@@ -24,6 +24,7 @@ import MediaControlsModule from './MediaControls/MediaControls';
 import ReportingModule from './Reporting/Reporting';
 
 import Environment from './Common/Support/Environment';
+import PouchDB from 'pouchdb';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -110,6 +111,7 @@ export default class Application {
         return this.buildApplicationConfig();
       }).then(config => {
         this.app.constant('applicationConfig', config);
+        this.app.constant('PouchDB', PouchDB);
       });
   }
 

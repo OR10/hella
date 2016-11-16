@@ -109,6 +109,15 @@
       "49": "#FCF8B6",
       "50": "#6EE66E"
     }
+  },
+  "storage": {
+    "local": {
+      "databaseName":"AnnoAtation"
+    },
+    "remote": {
+      "baseUrl":"http://localhost:5984/",
+      "databaseName":"AnnoAtation"
+    }
   }
 }
 
