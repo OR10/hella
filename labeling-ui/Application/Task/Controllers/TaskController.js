@@ -264,16 +264,18 @@ class TaskController {
     this._initializeLabelingStructure();
 
     if (this.task.taskType === 'meta-labeling') {
-      this.$scope.$watch('vm.framePosition.position', () => {
+      $scope.$watch('vm.framePosition.position', newPosition => {
         this.framePosition.lock.acquire();
         // Watch for changes of the Frame position to correctly update all
         // data structures for the new frame
-        this._labeledFrameBuffer.add(this._loadLabeledFrame(this.framePosition.position))
+        this._labeledFrameBuffer.add(this._loadLabeledFrame(newPosition))
+          .aborted(() => {
+            this.framePosition.lock.release();
+          })
           .then(labeledFrame => {
             this.labeledFrame = labeledFrame;
             this.framePosition.lock.release();
-          })
-          .aborted(() => this.framePosition.lock.release());
+          });
       });
     }
 
