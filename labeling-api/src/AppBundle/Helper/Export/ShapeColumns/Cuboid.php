@@ -46,6 +46,9 @@ class Cuboid extends Export\ShapeColumns
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_2D, 6, Column\Cuboid::AXIS_X),
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_2D, 6, Column\Cuboid::AXIS_Y),
 
+            new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_2D, 7, Column\Cuboid::AXIS_X),
+            new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_2D, 7, Column\Cuboid::AXIS_Y),
+
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 0, Column\Cuboid::AXIS_X),
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 0, Column\Cuboid::AXIS_Y),
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 0, Column\Cuboid::AXIS_Z),
@@ -73,6 +76,10 @@ class Cuboid extends Export\ShapeColumns
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 6, Column\Cuboid::AXIS_X),
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 6, Column\Cuboid::AXIS_Y),
             new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 6, Column\Cuboid::AXIS_Z),
+
+            new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 7, Column\Cuboid::AXIS_X),
+            new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 7, Column\Cuboid::AXIS_Y),
+            new Column\Cuboid($this->depthBuffer, Column\Cuboid::TYPE_3D, 7, Column\Cuboid::AXIS_Z),
         );
     }
 }

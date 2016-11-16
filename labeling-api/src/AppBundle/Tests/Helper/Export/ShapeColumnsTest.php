@@ -195,6 +195,9 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
                     'vertex_2d_6_x' => '742.7169',
                     'vertex_2d_6_y' => '544.7573',
 
+                    'vertex_2d_7_x' => '402.6906',
+                    'vertex_2d_7_y' => '545.0404',
+
                     'vertex_3d_0_x' => '3',
                     'vertex_3d_0_y' => '1',
                     'vertex_3d_0_z' => '1',
@@ -222,6 +225,10 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
                     'vertex_3d_6_x' => '6',
                     'vertex_3d_6_y' => '-1',
                     'vertex_3d_6_z' => '0',
+
+                    'vertex_3d_7_x' => '6',
+                    'vertex_3d_7_y' => '1',
+                    'vertex_3d_7_z' => '0',
                 ],
             ),
         );
@@ -387,6 +394,8 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->labeledThingsInFrames[$drawingTool],
             $this->calibrationData
         );
+
+        //var_dump($row->getValues(), $expectedValues);
 
         $this->assertEquals(
             $row->getValues(),
