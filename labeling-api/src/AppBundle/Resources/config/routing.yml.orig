@@ -1,0 +1,155 @@
+default:
+    resource: AppBundle\Controller\Index
+    type: annotation
+
+api_video:
+    resource: annostation.labeling_api.controller.api.video
+    type: rest
+    name_prefix: app_api_video_
+
+api_project_batch_upload:
+    resource: AppBundle\Controller\Api\Project\BatchUpload
+    type: annotation
+
+api_users:
+    resource: annostation.labeling_api.controller.api.users
+    type: rest
+    name_prefix: app_api_users_
+
+api_task:
+    resource: annostation.labeling_api.controller.api.task
+    type: rest
+    name_prefix: app_api_task_
+
+api_project:
+    resource: annostation.labeling_api.controller.api.project
+    type: rest
+    name_prefix: app_api_project_
+
+api_task_labeled_thing_in_frame:
+    resource: annostation.labeling_api.controller.api.task.labeled_thing_in_frame
+    type: rest
+    name_prefix: app_api_task_labeled_thing_in_frame_
+
+api_task_labeled_frame:
+    resource: annostation.labeling_api.controller.api.task.labeled_frame
+    type: rest
+    name_prefix: app_api_task_labeled_frame_
+
+api_task_export:
+    resource: annostation.labeling_api.controller.api.task.export
+    type: rest
+    name_prefix: app_api_task_export_
+
+api_project_export:
+    resource: annostation.labeling_api.controller.api.project.export
+    type: rest
+    name_prefix: app_api_project_export_
+
+api_labeled_thing_in_frame:
+    resource: annostation.labeling_api.controller.api.labeled_thing_in_frame
+    type: rest
+    name_prefix: app_api_labeled_thing_in_frame_
+
+api_test:
+    resource: annostation.labeling_api.controller.api.test
+    type: rest
+    name_prefix: app_api_test_
+
+api_task_labeled_thing:
+    resource: annostation.labeling_api.controller.api.task.labeled_thing
+    type: rest
+    name_prefix: app_api_task_labeled_thing_
+
+api_task_interpolate:
+    resource: annostation.labeling_api.controller.api.task.interpolate
+    type: rest
+    name_prefix: app_api_task_interpolate_
+
+api_task_timer:
+    resource: annostation.labeling_api.controller.api.task.timer
+    type: rest
+    name_prefix: app_api_task_timer_
+
+api_task_status:
+    resource: annostation.labeling_api.controller.api.task.status
+    type: rest
+    name_prefix: app_api_task_status_
+
+api_task_user:
+    resource: annostation.labeling_api.controller.api.task.user
+    type: rest
+    name_prefix: app_api_task_user_
+
+api_status:
+    resource: annostation.labeling_api.controller.api.status
+    type: rest
+    name_prefix: app_api_status_
+
+api_current_user:
+    resource: annostation.labeling_api.controller.api.current_user
+    type: rest
+    name_prefix: app_api_current_user_
+
+api_project_count:
+    resource: annostation.labeling_api.controller.api.project_count
+    type: rest
+    name_prefix: app_api_project_count_
+
+api_task_count:
+    resource: annostation.labeling_api.controller.api.task_count
+    type: rest
+    name_prefix: app_api_task_count_
+
+api_labeling_group:
+    resource: annostation.labeling_api.controller.api.labeling_group
+    type: rest
+    name_prefix: app_api_labeling_group
+
+api_project_status:
+    resource: annostation.labeling_api.controller.api.project.status
+    type: rest
+    name_prefix: app_api_project_status
+
+api_project_report:
+    resource: annostation.labeling_api.controller.api.project.report
+    type: rest
+    name_prefix: app_api_report
+
+dimension_prediction:
+    resource: annostation.labeling_api.controller.dimension_prediction
+    type: rest
+    name_prefix: app_dimension_prediction_
+
+api_task_configuration:
+    resource: annostation.labeling_api.controller.api.task_configuration
+    type: rest
+    name_prefix: app_api_task_configuration
+
+api_ui_log:
+    resource: annostation.labeling_api.controller.api.ui_log
+    type: rest
+    name_prefix: app_api_ui_log
+
+api_task_attention:
+    resource: annostation.labeling_api.controller.api.task.attention
+    type: rest
+    name_prefix: app_api_task_attention
+
+api_project_attention:
+    resource: annostation.labeling_api.controller.api.project.attention
+    type: rest
+    name_prefix: app_api_project_attention
+
+api_system:
+    resource: annostation.labeling_api.controller.api.system
+    type: rest
+    name_prefix: app_api_system
+<<<<<<< HEAD
+=======
+
+api_task_phase:
+    resource: "annostation.labeling_api.controller.api.task.phase"
+    type: rest
+    name_prefix: app_api_task_phase
+>>>>>>> upstream/master
