@@ -35,8 +35,9 @@ class Report
     {
         $query = $this->documentManager
             ->createQuery('annostation_report_by_project_id_and_date_001', 'view')
-            ->setStartKey([$project->getId(), null])
-            ->setEndKey([$project->getId(), []])
+            ->setStartKey([$project->getId(), []])
+            ->setEndKey([$project->getId(), null])
+            ->setDescending(true)
             ->onlyDocs(true);
 
         return $query->execute();
