@@ -249,6 +249,7 @@ EOF
                     ],
                 ],
                 'minimalVisibleShapeOverflow' => 16,
+                'isMetaLabelingConfiguration' => false,
             ),
             $converter->convertToJson()
         );
