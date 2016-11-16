@@ -2,7 +2,10 @@
  * Controller of the {@link TabDirective}
  */
 class TabController {
-  constructor() {
+  /**
+   * @param {$scope} $scope
+   */
+  constructor($scope) {
     /**
      * Parent {@link TabViewController}
      *
@@ -26,6 +29,19 @@ class TabController {
      * @type {boolean}
      */
     this.firstView = true;
+
+    /**
+     * Hide this tab
+     *
+     * @type {boolean}
+     */
+    this.hideTab = this.hidden !== undefined && this.hidden === 'true';
+
+    $scope.$watch('vm.hidden', (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        this.hideTab = newValue !== undefined && newValue === 'true';
+      }
+    });
   }
 
   /**
@@ -66,6 +82,6 @@ class TabController {
   }
 }
 
-TabController.$inject = [];
+TabController.$inject = ['$scope'];
 
 export default TabController;

@@ -32,7 +32,7 @@
                            user-permissions="vm.userPermissions">
                 </task-list>
             </tab>
-            <tab ng-if="vm.showReviewTab"
+            <tab hidden="{{!vm.showReviewTab}}"
                  header="Review {{vm.taskCount !== null ? '(' + (vm.taskCount.review.in_progress + vm.taskCount.review.todo) + ')' : ''}}"
                  create-on-first-view="true">
                 <h2>
