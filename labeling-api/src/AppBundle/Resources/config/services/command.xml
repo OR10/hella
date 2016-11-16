@@ -128,5 +128,11 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
+        <service id="annostation.labeling_api.command.migrations.add_prefix_to_username_and_email"
+                 class="AppBundle\Command\Migrations\AddPrefixToUsernameAndEmail"
+        >
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
