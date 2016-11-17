@@ -6,11 +6,31 @@ use AppBundle\Helper\Export\Column;
 
 class ClassColumnsFactory
 {
-    public function create($classStructure)
+    /**
+     * @param $classStructure
+     *
+     * @return array
+     */
+    public function createLabeledThingInFrameColumns($classStructure)
     {
         $columns = array();
         foreach ($classStructure as $classId => $classValues) {
-            $columns[] = new Column\ClassColumn($classId, $classValues);
+            $columns[] = new Column\LabeledThingInFrame\ClassColumn($classId, $classValues);
+        }
+
+        return $columns;
+    }
+
+    /**
+     * @param $classStructure
+     *
+     * @return array
+     */
+    public function createLabeledFrameColumns($classStructure)
+    {
+        $columns = array();
+        foreach ($classStructure as $classId => $classValues) {
+            $columns[] = new Column\LabeledFrame\ClassColumn($classId, $classValues);
         }
 
         return $columns;

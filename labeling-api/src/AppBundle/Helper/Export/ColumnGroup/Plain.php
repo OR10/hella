@@ -48,6 +48,7 @@ class Plain extends Export\ColumnGroup
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\LabeledFrame        $labeledFrame
      * @param Model\CalibrationData     $calibrationData
      *
      * @return Export\Cell[]
@@ -56,12 +57,13 @@ class Plain extends Export\ColumnGroup
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null,
         Model\CalibrationData $calibrationData = null
     ) {
         $cells = array();
         foreach ($this->columns as $column) {
-            $cells[] = $column->createCell($project, $video, $task, $labeledThingInFrame, $calibrationData);
+            $cells[] = $column->createCell($project, $video, $task, $labeledThingInFrame, $labeledFrame, $calibrationData);
         }
 
         return $cells;
@@ -74,6 +76,7 @@ class Plain extends Export\ColumnGroup
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\LabeledFrame        $labeledFrame
      * @param Model\CalibrationData     $calibrationData
      *
      * @return Export\Row
@@ -82,7 +85,8 @@ class Plain extends Export\ColumnGroup
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null,
         Model\CalibrationData $calibrationData = null
     ) {
         return new Export\Row(
@@ -91,6 +95,7 @@ class Plain extends Export\ColumnGroup
                 $video,
                 $task,
                 $labeledThingInFrame,
+                $labeledFrame,
                 $calibrationData
             )
         );

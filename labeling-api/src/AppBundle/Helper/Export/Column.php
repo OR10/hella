@@ -10,6 +10,7 @@ abstract class Column
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\LabeledFrame        $labeledFrame
      *
      * @return Cell|null
      */
@@ -17,7 +18,8 @@ abstract class Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null
     );
 
     /**

@@ -38,6 +38,7 @@ abstract class ColumnGroup
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\LabeledFrame        $labeledFrame
      *
      * @return Cell[]
      */
@@ -45,7 +46,8 @@ abstract class ColumnGroup
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null
     );
 
     /**
@@ -55,6 +57,7 @@ abstract class ColumnGroup
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\LabeledFrame        $labeledFrame
      *
      * @return Row
      */
@@ -62,6 +65,7 @@ abstract class ColumnGroup
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null
     );
 }

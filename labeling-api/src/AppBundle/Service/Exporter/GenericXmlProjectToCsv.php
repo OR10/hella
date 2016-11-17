@@ -131,50 +131,93 @@ class GenericXmlProjectToCsv
                 if ($video->getCalibrationId() !== null) {
                     $videoCalibration = $this->calibrationDataFacade->findById($video->getCalibrationId());
                 }
-                /** @var ColumnGroup\Unique $columnGroup */
-                $columnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
-                $columnGroup->addColumns(
-                    [
-                        new Column\Uuid(),
-                        new Column\FrameNumber(),
-                    ]
-                );
+                /** @var ColumnGroup\Unique $objectLabelingColumnGroup */
+                $objectLabelingColumnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
+                /** @var ColumnGroup\Unique $metaLabelingColumnGroup */
+                $metaLabelingColumnGroup = $this->columnGroupFactory->create(Service\ColumnGroupFactory::UNIQUE);
 
                 // generate columns for this Video
                 $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
                 /** @var Model\LabelingTask $task */
                 foreach ($labelingTaskIterator as $task) {
-                    $columnGroup->addColumns($this->shapeColumnsFactory->create($task->getDrawingTool()));
-
                     $xmlConfiguration                 = $this->taskConfiguration->find($task->getTaskConfigurationId());
                     $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter(
                         $xmlConfiguration->getRawData()
                     );
-                    $columnGroup->addColumns(
-                        $this->classColumnsFactory->create($configurationXmlConverterFactory->getClassStructure())
-                    );
+
+                    if ($xmlConfiguration->isMetaLabelingConfiguration()) {
+                        $metaLabelingColumnGroup->addColumns(
+                            [
+                                new Column\LabeledFrame\Uuid(),
+                                new Column\LabeledFrame\FrameNumber(),
+                            ]
+                        );
+                        $metaLabelingColumnGroup->addColumns(
+                            $this->classColumnsFactory->createLabeledFrameColumns(
+                                $configurationXmlConverterFactory->getClassStructure()
+                            )
+                        );
+                    } else {
+                        $objectLabelingColumnGroup->addColumns(
+                            [
+                                new Column\LabeledThingInFrame\Uuid(),
+                                new Column\LabeledThingInFrame\FrameNumber(),
+                            ]
+                        );
+                        $objectLabelingColumnGroup->addColumns(
+                            $this->shapeColumnsFactory->create($task->getDrawingTool())
+                        );
+                        $objectLabelingColumnGroup->addColumns(
+                            $this->classColumnsFactory->createLabeledThingInFrameColumns(
+                                $configurationXmlConverterFactory->getClassStructure()
+                            )
+                        );
+                    }
+
                     $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
                 }
 
-                $table = new Export\Table($columnGroup);
+                $objectLabelingTable = new Export\Table($objectLabelingColumnGroup);
+                $metaLabelingTable   = new Export\Table($metaLabelingColumnGroup);
                 foreach ($labelingTaskIterator as $task) {
-                    $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame(
-                        $this->labeledThingInFrameFacade,
-                        $task,
-                        $this->ghostClassesPropagation
-                    );
-                    foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
-                        $row = $columnGroup->createRow(
-                            $project,
-                            $video,
+                    $xmlConfiguration = $this->taskConfiguration->find($task->getTaskConfigurationId());
+                    if ($xmlConfiguration->isMetaLabelingConfiguration()) {
+                        $labeledFrameIterator = new Iterator\LabeledFrame(
                             $task,
-                            $labeledThingInFrame,
-                            $videoCalibration
+                            $this->labelingTaskFacade
                         );
-                        $table->addRow($row);
+                        foreach ($labeledFrameIterator as $labeledFrame) {
+                            $row = $metaLabelingColumnGroup->createRow(
+                                $project,
+                                $video,
+                                $task,
+                                null,
+                                $labeledFrame,
+                                $videoCalibration
+                            );
+                            $metaLabelingTable->addRow($row);
+                        }
+                    } else {
+                        $labeledThingInFramesIterator = new Iterator\LabeledThingInFrame(
+                            $this->labeledThingInFrameFacade,
+                            $task,
+                            $this->ghostClassesPropagation
+                        );
+                        foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
+                            $row = $objectLabelingColumnGroup->createRow(
+                                $project,
+                                $video,
+                                $task,
+                                $labeledThingInFrame,
+                                null,
+                                $videoCalibration
+                            );
+                            $objectLabelingTable->addRow($row);
+                        }
                     }
                 }
-                $zipData[$video->getName() . '.csv'] = $table->toCsv();
+                $zipData[$video->getName() . '.csv']      = $objectLabelingTable->toCsv();
+                $zipData[$video->getName() . '_meta.csv'] = $metaLabelingTable->toCsv();
             }
 
             /** @var Model\TaskConfiguration $taskConfiguration */

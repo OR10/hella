@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Helper\Export\Column;
+namespace AppBundle\Helper\Export\Column\LabeledThingInFrame;
 
 use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Cell;
@@ -11,10 +11,11 @@ class Uuid extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null,
         Model\CalibrationData $calibrationData = null
     ) {
-        return new Cell\Uuid($labeledThingInFrame);
+        return new Cell\LabeledThingInFrame\Uuid($labeledThingInFrame);
     }
 
     /**

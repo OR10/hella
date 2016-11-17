@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Helper\Export\Cell;
+namespace AppBundle\Helper\Export\Cell\LabeledThingInFrame;
 
 use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Column;
@@ -22,6 +22,7 @@ class ShapeClass extends Export\Cell
      *
      * @param $classValues
      * @param $labeledThingInFrameClasses
+     *
      * @internal param int $value
      */
     public function __construct($classValues, $labeledThingInFrameClasses)
@@ -36,6 +37,7 @@ class ShapeClass extends Export\Cell
     public function getValue()
     {
         $values = array_intersect($this->classValues, $this->labeledThingInFrameClasses);
+
         return reset($values);
     }
 }

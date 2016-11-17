@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Helper\Export\Column;
+namespace AppBundle\Helper\Export\Column\LabeledFrame;
 
 use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Cell;
@@ -33,6 +33,7 @@ class ClassColumn extends Export\Column
      * @param Model\Video               $video
      * @param Model\LabelingTask        $task
      * @param Model\LabeledThingInFrame $labeledThingInFrame
+     * @param Model\LabeledFrame        $labeledFrame
      * @param Model\CalibrationData     $calibrationData
      *
      * @return Cell|null
@@ -41,10 +42,11 @@ class ClassColumn extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null,
         Model\CalibrationData $calibrationData = null
     ) {
-        return new Cell\ShapeClass($this->classValues, $labeledThingInFrame->getClassesWithGhostClasses());
+        return new Cell\LabeledFrame\ShapeClass($this->classValues, $labeledFrame->getClasses());
     }
 
     /**

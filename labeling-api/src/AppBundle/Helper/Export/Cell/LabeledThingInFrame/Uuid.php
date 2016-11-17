@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Helper\Export\Cell;
+namespace AppBundle\Helper\Export\Cell\LabeledThingInFrame;
 
 use AppBundle\Helper\Export;
 use AppBundle\Model;

@@ -32,7 +32,8 @@ class Rectangle extends Export\Column
         Model\Project $project,
         Model\Video $video,
         Model\LabelingTask $task,
-        Model\LabeledThingInFrame $labeledThingInFrame,
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null,
         Model\CalibrationData $calibrationData = null
     ) {
         $shapes = $labeledThingInFrame->getShapes();
