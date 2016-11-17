@@ -18,7 +18,7 @@ class StorageContextFactory {
    * @param {string} taskName
    * @returns {PouchDB} configuredContext might be null of taskName parameter is not of type string
    */
-  createContextForTaskName(taskName) {
+  getContextForTaskName(taskName) {
     let configuredContext = null;
 
     if (typeof taskName === 'string') {
@@ -37,8 +37,8 @@ class StorageContextFactory {
   generateStoreIdentifierForTaskName(taskName) {
     let identifier = null;
 
-    if(typeof taskName === 'string') {
-      identifier = `${taskName}-${this.localDatabaseName}`
+    if (typeof taskName === 'string') {
+      identifier = `${taskName}-${this.localDatabaseName}`;
     }
 
     return identifier;
