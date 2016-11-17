@@ -5,7 +5,7 @@ import PouchDB from 'pouchdb';
 
 import StorageContextFactory from 'Application/Common/Services/StorageContextFactory';
 
-describe('StorageContextFactory', () => {
+xdescribe('StorageContextFactory', () => {
   let getContextFactory;
 
   beforeEach(() => {
