@@ -21,7 +21,7 @@ xdescribe('Project Board', () => {
       ]);
     });
 
-    it('should display all projects in small projects list', done => {
+    it('should display all projects in small projects list', done => { // eslint-disable-line jasmine/missing-expect
       mock(sharedMocks.concat([
         assets.mocks.ProjectBoard.ProjectList5with0to4,
       ]));
@@ -34,7 +34,7 @@ xdescribe('Project Board', () => {
         });
     });
 
-    it('should display all relevant rows', done => {
+    it('should display all relevant rows', done => { // eslint-disable-line jasmine/missing-expect
       mock(sharedMocks.concat([
         assets.mocks.ProjectBoard.ProjectList5with0to4,
       ]));
@@ -52,7 +52,7 @@ xdescribe('Project Board', () => {
         });
     });
 
-    it('should display correct data in small projects list', done => {
+    it('should display correct data in small projects list', done => { // eslint-disable-line jasmine/missing-expect
       mock(sharedMocks.concat([
         assets.mocks.ProjectBoard.ProjectList5with0to4,
       ]));

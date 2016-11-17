@@ -142,7 +142,7 @@ describe('StatusGateway', () => {
     $httpBackend.flush();
   });
 
-  it('should only wait specified maxWait while polling for jobs to be finished', done => {
+  it('should only wait specified maxWait while polling for jobs to be finished', done => { // eslint-disable-line jasmine/missing-expect
     const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
     const statusInProgress = {status: 'running'};
     const resultInProgress = {result: statusInProgress};

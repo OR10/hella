@@ -225,7 +225,7 @@ describe('LabeledThingInFrameGateway', () => {
     const frameIndex = 1;
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameIndex}?limit=1&offset=0`;
 
-    it('should request the task id as specified', done => {
+    it('should request the task id as specified', done => { // eslint-disable-line jasmine/missing-expect
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {
@@ -251,7 +251,7 @@ describe('LabeledThingInFrameGateway', () => {
     const task = {id: 'abc'};
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameIndex}?limit=1&offset=0`;
 
-    it('should request the frame number as specified', done => {
+    it('should request the frame number as specified', done => { // eslint-disable-line jasmine/missing-expect
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {

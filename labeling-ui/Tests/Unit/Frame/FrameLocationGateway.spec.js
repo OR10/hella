@@ -36,7 +36,7 @@ describe('FrameLocationGateway', () => {
     expect(gateway instanceof FrameLocationGateway).toEqual(true);
   });
 
-  it('should by default request offset 0 with 1 frame', done => {
+  it('should by default request offset 0 with 1 frame', done => { // eslint-disable-line jasmine/missing-expect
     const taskId = 'someTaskId423';
     const type = 'source';
     const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
@@ -79,7 +79,8 @@ describe('FrameLocationGateway', () => {
         {id: 'abc', frameIndex: 1, url: 'http://example.com', type: 'source'},
       ];
     });
-    it('should request frame ranges as specified', done => {
+
+    it('should request frame ranges as specified', done => { // eslint-disable-line jasmine/missing-expect
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: expectedResult});
@@ -120,7 +121,8 @@ describe('FrameLocationGateway', () => {
       const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
-    it('should request type as specified', done => {
+
+    it('should request type as specified', done => { // eslint-disable-line jasmine/missing-expect
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: []});
@@ -146,7 +148,8 @@ describe('FrameLocationGateway', () => {
       const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
-    it('should request taskId as specified', done => {
+
+    it('should request taskId as specified', done => { // eslint-disable-line jasmine/missing-expect
       $httpBackend
         .expect('GET', expectedUrl)
         .respond(200, {result: []});

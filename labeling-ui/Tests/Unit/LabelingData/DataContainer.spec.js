@@ -13,7 +13,7 @@ describe('DataContainer', () => {
     return dataContainer;
   }
 
-  it('should store given data', () => {
+  it('should store given data', () => { // eslint-disable-line jasmine/missing-expect
     const container = new DataContainer();
     container.store('some-key-here', 'some-data-here');
   });
@@ -107,7 +107,7 @@ describe('DataContainer', () => {
       container = new DataContainer();
     });
 
-    it('should allow for nested keys to be stored', () => {
+    it('should allow for nested keys to be stored', () => { // eslint-disable-line jasmine/missing-expect
       container.store('some.nested.key', 'some-data');
     });
 
