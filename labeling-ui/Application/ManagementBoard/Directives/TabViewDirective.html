@@ -3,7 +3,7 @@
          class="tab-item"
          ng-class="{'is-active': tab.active}"
          ng-click="vm.activateTab(tab)"
-         ng-if="tab.showTab"
+         ng-if="!tab.hideTab"
     >
         {{tab.header}}
     </div>

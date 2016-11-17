@@ -12,7 +12,7 @@ class TabDirective {
       createOnFirstView: '@?',
       onActivate: '&?',
       onDeactivate: '&?',
-      show: '=?',
+      hide: '=?',
     };
     this.template = tabTemplate;
     this.controller = TabController;
