@@ -137,6 +137,36 @@ describe('PackagingExecutor', () => {
       expect(spyWorkerTwo).toHaveBeenCalled();
       expect(spyWorkerThree).toHaveBeenCalled();
     });
+
+    it('Result values are returned by the provided promise in case of success', done => {
+      const {promise, resolve} = createExposedPromise();
+
+      const spyWorker = jasmine.createSpy('worker').and.returnValue(promise);
+      const testData = ['some', 'test', 'results', 42, {foo: 'bar'}];
+
+      const jobPromise = packagingExecutor.execute('test-assembly', spyWorker);
+      resolve(testData);
+
+      jobPromise.then(result => {
+        expect(result).toEqual(testData);
+        done()
+      });
+    });
+
+    it('Result values are returned by the provided promise in case of failure', done => {
+      const {promise, reject} = createExposedPromise();
+
+      const spyWorker = jasmine.createSpy('worker').and.returnValue(promise);
+      const testData = ['', 'test', 'results', 42, {foo: 'bar'}];
+
+      const jobPromise = packagingExecutor.execute('test-assembly', spyWorker);
+      reject(testData);
+
+      jobPromise.catch(reason => {
+        expect(reason).toEqual(testData);
+        done()
+      });
+    });
   });
 
   describe('Packaged Execution', () => {

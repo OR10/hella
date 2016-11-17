@@ -81,8 +81,8 @@ class AssemblyJob {
     this._state = AssemblyJob.STATE_RUNNING;
     const workPromise = this._workFn();
     workPromise
-      .then((...args) => this._isFinishedResolver(...args))
-      .catch((...args) => this._isFinishedRejector(...args));
+      .then(result => this._isFinishedResolver(result))
+      .catch(reason => this._isFinishedRejector(reason));
 
     return workPromise;
   }
