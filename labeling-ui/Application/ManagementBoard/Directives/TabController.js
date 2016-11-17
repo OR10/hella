@@ -35,11 +35,11 @@ class TabController {
      *
      * @type {boolean}
      */
-    this.hideTab = this.hidden !== undefined && this.hidden === 'true';
+    this.showTab = this.show === undefined || this.show;
 
-    $scope.$watch('vm.hidden', (newValue, oldValue) => {
+    $scope.$watch('vm.show', (newValue, oldValue) => {
       if (newValue !== oldValue) {
-        this.hideTab = newValue !== undefined && newValue === 'true';
+        this.showTab = newValue === undefined || !!newValue;
       }
     });
   }
