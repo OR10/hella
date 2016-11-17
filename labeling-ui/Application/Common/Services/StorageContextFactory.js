@@ -10,7 +10,7 @@ class StorageContextFactory {
     this.configuration = configuration;
     this.PouchDB = PouchDB;
 
-    const localConfig = this.configuration.stroage.local;
+    const localConfig = this.configuration.Common.storage.local;
     this.localDatabaseName = localConfig.databaseName;
   }
 
@@ -22,11 +22,26 @@ class StorageContextFactory {
     let configuredContext = null;
 
     if (typeof taskName === 'string') {
-      const taskDbName = `#{taskName}_#{this.localDatabaseName}`;
+      const taskDbName = this.generateStoreIdentifierForTaskName(taskName);
       configuredContext = new this.PouchDB(taskDbName);
     }
 
     return configuredContext;
+  }
+
+  /**
+   * Generates unique technical store identifier.
+   * @param taskName
+   * @returns {string}
+   */
+  generateStoreIdentifierForTaskName(taskName) {
+    let identifier = null;
+
+    if(typeof taskName === 'string') {
+      identifier = `${taskName}-${this.localDatabaseName}`
+    }
+
+    return identifier;
   }
 
 }
