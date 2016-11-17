@@ -26,6 +26,4 @@ describe('StorageContextFactory', () => {
   it('should be able to be instantiated', () => {
     expect(getContextFactory() instanceof StorageContextFactory).toEqual(true);
   });
-
-
 });
