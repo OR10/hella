@@ -392,10 +392,9 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->video,
             $this->task,
             $this->labeledThingsInFrames[$drawingTool],
+            null,
             $this->calibrationData
         );
-
-        //var_dump($row->getValues(), $expectedValues);
 
         $this->assertEquals(
             $row->getValues(),
@@ -438,6 +437,7 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->video,
             $this->task,
             $this->labeledThingsInFrames['rectangle'],
+            null,
             $this->calibrationData
         );
 
@@ -446,6 +446,7 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             $this->video,
             $this->task,
             $this->labeledThingsInFrames['pedestrian'],
+            null,
             $this->calibrationData
         );
 
