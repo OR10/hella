@@ -25,6 +25,10 @@ import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
 import DebouncerService from './Services/DebouncerService';
 
+import PackagingExecutor from './Services/PackagingExecutor';
+import ConfigurableAssemblyFactory from './Services/PackagingExecutor/ConfigurableAssemblyFactory';
+import SimpleAssemblyStrategy from './Services/PackagingExecutor/SimpleAssemblyStrategy';
+
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
 import inputDialogProvider from './Services/ModalDialogs/InputDialog';
@@ -79,6 +83,11 @@ class Common extends Module {
     this.module.service('lockService', LockService);
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
     this.module.service('debouncerService', DebouncerService);
+
+    this.module.service('packagingExecutor', PackagingExecutor);
+    this.module.service('assemblyFactory', ConfigurableAssemblyFactory);
+    this.module.service('assemblyStrategy', SimpleAssemblyStrategy);
+
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
     this.module.provider('loggerService', LoggerServiceProvider);
