@@ -26,7 +26,7 @@ class ConfigurableAssemblyFactory {
 }
 
 ConfigurableAssemblyFactory.$inject = [
-  'assemblyStrategy'
+  'assemblyStrategy',
 ];
 
 export default ConfigurableAssemblyFactory;

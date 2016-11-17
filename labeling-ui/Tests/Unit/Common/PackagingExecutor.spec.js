@@ -10,7 +10,7 @@ describe('PackagingExecutor', () => {
   function createExposedPromise() {
     let resolve = null;
     let reject = null;
-    let promise = new Promise((innerResolve, innerReject) => {
+    const promise = new Promise((innerResolve, innerReject) => {
       resolve = innerResolve;
       reject = innerReject;
     });
@@ -19,7 +19,6 @@ describe('PackagingExecutor', () => {
   }
 
   describe('Basic Linear Execution', () => {
-    let $rootScope;
     /**
      * @type {PackagingExecutor}
      */
@@ -45,12 +44,11 @@ describe('PackagingExecutor', () => {
 
       inject($injector => {
         packagingExecutor = $injector.get('packagingExecutor');
-        $rootScope = $injector.get('$rootScope');
       });
     });
 
     it('should execute first entry in queue directly', () => {
-      const {resolve, reject, promise} = createExposedPromise();
+      const {promise} = createExposedPromise();
       const spyWorker = jasmine.createSpy().and.returnValue(promise);
 
       packagingExecutor.execute('test-assembly', spyWorker);
@@ -58,8 +56,8 @@ describe('PackagingExecutor', () => {
       expect(spyWorker).toHaveBeenCalled();
     });
 
-    it('should provide promise, which is fulfilled once job is executed', done => {
-      const {resolve, reject, promise} = createExposedPromise();
+    it('should provide promise, which is fulfilled once job is executed', done => { // eslint-disable-line jasmine/missing-expect
+      const {resolve, promise} = createExposedPromise();
       const spyWorker = jasmine.createSpy().and.returnValue(promise);
 
       const jobPromise = packagingExecutor.execute('test-assembly', spyWorker);
@@ -72,7 +70,7 @@ describe('PackagingExecutor', () => {
     });
 
     it('should call strategy after job has been added', () => {
-      const {resolve, reject, promise} = createExposedPromise();
+      const {promise} = createExposedPromise();
       const spyWorker = jasmine.createSpy().and.returnValue(promise);
 
       packagingExecutor.execute('test-assembly', spyWorker);
@@ -123,17 +121,17 @@ describe('PackagingExecutor', () => {
     });
 
     it('Multiple assemblies execute in parallel', () => {
-      const {promise: promiseOne, resolve: resolveOne} = createExposedPromise();
-      const {promise: promiseTwo, resolve: resolveTwo} = createExposedPromise();
-      const {promise: promiseThree, resolve: resolveThree} = createExposedPromise();
+      const {promise: promiseOne} = createExposedPromise();
+      const {promise: promiseTwo} = createExposedPromise();
+      const {promise: promiseThree} = createExposedPromise();
 
       const spyWorkerOne = jasmine.createSpy('workerOne').and.returnValue(promiseOne);
       const spyWorkerTwo = jasmine.createSpy('workerTwo').and.returnValue(promiseTwo);
       const spyWorkerThree = jasmine.createSpy('workerThree').and.returnValue(promiseThree);
 
-      const jobPromiseOne = packagingExecutor.execute('test-assembly-one', spyWorkerOne);
-      const jobPromiseTwo = packagingExecutor.execute('test-assembly-two', spyWorkerTwo);
-      const jobPromiseThree = packagingExecutor.execute('test-assembly-three', spyWorkerThree);
+      packagingExecutor.execute('test-assembly-one', spyWorkerOne);
+      packagingExecutor.execute('test-assembly-two', spyWorkerTwo);
+      packagingExecutor.execute('test-assembly-three', spyWorkerThree);
 
       expect(spyWorkerOne).toHaveBeenCalled();
       expect(spyWorkerTwo).toHaveBeenCalled();
@@ -142,7 +140,6 @@ describe('PackagingExecutor', () => {
   });
 
   describe('Packaged Execution', () => {
-    let $rootScope;
     /**
      * @type {PackagingExecutor}
      */
@@ -168,7 +165,6 @@ describe('PackagingExecutor', () => {
 
       inject($injector => {
         packagingExecutor = $injector.get('packagingExecutor');
-        $rootScope = $injector.get('$rootScope');
       });
     });
 
@@ -186,33 +182,33 @@ describe('PackagingExecutor', () => {
     });
 
     it('should not execute third job before one is finished', () => {
-      const {promise: promiseOne, resolve: resolveOne} = createExposedPromise();
-      const {promise: promiseTwo, resolve: resolveTwo} = createExposedPromise();
-      const {promise: promiseThree, resolve: resolveThree} = createExposedPromise();
+      const {promise: promiseOne} = createExposedPromise();
+      const {promise: promiseTwo} = createExposedPromise();
+      const {promise: promiseThree} = createExposedPromise();
 
       const spyWorkerOne = jasmine.createSpy('workerOne').and.returnValue(promiseOne);
       const spyWorkerTwo = jasmine.createSpy('workerTwo').and.returnValue(promiseTwo);
       const spyWorkerThree = jasmine.createSpy('workerThree').and.returnValue(promiseThree);
 
-      const jobPromiseOne = packagingExecutor.execute('test-assembly', spyWorkerOne);
-      const jobPromiseTwo = packagingExecutor.execute('test-assembly', spyWorkerTwo);
-      const jobPromiseThree = packagingExecutor.execute('test-assembly', spyWorkerThree);
+      packagingExecutor.execute('test-assembly', spyWorkerOne);
+      packagingExecutor.execute('test-assembly', spyWorkerTwo);
+      packagingExecutor.execute('test-assembly', spyWorkerThree);
 
       expect(spyWorkerThree).not.toHaveBeenCalled();
     });
 
     it('should execute third job once first is finished', done => {
       const {promise: promiseOne, resolve: resolveOne} = createExposedPromise();
-      const {promise: promiseTwo, resolve: resolveTwo} = createExposedPromise();
-      const {promise: promiseThree, resolve: resolveThree} = createExposedPromise();
+      const {promise: promiseTwo} = createExposedPromise();
+      const {promise: promiseThree} = createExposedPromise();
 
       const spyWorkerOne = jasmine.createSpy('workerOne').and.returnValue(promiseOne);
       const spyWorkerTwo = jasmine.createSpy('workerTwo').and.returnValue(promiseTwo);
       const spyWorkerThree = jasmine.createSpy('workerThree').and.returnValue(promiseThree);
 
       const jobPromiseOne = packagingExecutor.execute('test-assembly', spyWorkerOne);
-      const jobPromiseTwo = packagingExecutor.execute('test-assembly', spyWorkerTwo);
-      const jobPromiseThree = packagingExecutor.execute('test-assembly', spyWorkerThree);
+      packagingExecutor.execute('test-assembly', spyWorkerTwo);
+      packagingExecutor.execute('test-assembly', spyWorkerThree);
 
       resolveOne();
       jobPromiseOne.then(() => {
@@ -222,17 +218,17 @@ describe('PackagingExecutor', () => {
     });
 
     it('should execute third job once second is finished', done => {
-      const {promise: promiseOne, resolve: resolveOne} = createExposedPromise();
+      const {promise: promiseOne} = createExposedPromise();
       const {promise: promiseTwo, resolve: resolveTwo} = createExposedPromise();
-      const {promise: promiseThree, resolve: resolveThree} = createExposedPromise();
+      const {promise: promiseThree} = createExposedPromise();
 
       const spyWorkerOne = jasmine.createSpy('workerOne').and.returnValue(promiseOne);
       const spyWorkerTwo = jasmine.createSpy('workerTwo').and.returnValue(promiseTwo);
       const spyWorkerThree = jasmine.createSpy('workerThree').and.returnValue(promiseThree);
 
-      const jobPromiseOne = packagingExecutor.execute('test-assembly', spyWorkerOne);
+      packagingExecutor.execute('test-assembly', spyWorkerOne);
       const jobPromiseTwo = packagingExecutor.execute('test-assembly', spyWorkerTwo);
-      const jobPromiseThree = packagingExecutor.execute('test-assembly', spyWorkerThree);
+      packagingExecutor.execute('test-assembly', spyWorkerThree);
 
       expect(spyWorkerThree).not.toHaveBeenCalled();
       resolveTwo();
@@ -244,7 +240,6 @@ describe('PackagingExecutor', () => {
   });
 
   describe('SimpleAssemblyStrategy', () => {
-    let $rootScope;
     /**
      * @type {PackagingExecutor}
      */
@@ -262,7 +257,6 @@ describe('PackagingExecutor', () => {
 
       inject($injector => {
         packagingExecutor = $injector.get('packagingExecutor');
-        $rootScope = $injector.get('$rootScope');
       });
     });
 
@@ -286,7 +280,7 @@ describe('PackagingExecutor', () => {
       const spyWorkerTwo = jasmine.createSpy('workerTwo').and.returnValue(promiseTwo);
 
       const jobPromiseOne = packagingExecutor.execute('test-assembly', spyWorkerOne);
-      const jobPromiseTwo = packagingExecutor.execute('test-assembly', spyWorkerTwo);
+      packagingExecutor.execute('test-assembly', spyWorkerTwo);
 
       resolveOne();
 
@@ -303,7 +297,7 @@ describe('PackagingExecutor', () => {
       const spyWorkerTwo = jasmine.createSpy('workerTwo').and.returnValue(promiseTwo);
 
       const jobPromiseOne = packagingExecutor.execute('test-assembly', spyWorkerOne);
-      const jobPromiseTwo = packagingExecutor.execute('test-assembly', spyWorkerTwo);
+      packagingExecutor.execute('test-assembly', spyWorkerTwo);
 
       rejectOne();
 
@@ -344,90 +338,4 @@ describe('PackagingExecutor', () => {
       });
     });
   });
-  /*
-   it('should parallelize non destructive http requests', () => {
-   bufferedHttp.get('http://foo.bar/baz');
-   bufferedHttp.get('http://foo.bar/baz');
-   bufferedHttp.get('http://foo.bar/baz');
-
-   expect($http.calls.count()).toBe(3);
-   });
-
-   it('should parallelize non destructive http requests on non default queue', () => {
-   bufferedHttp.get('http://foo.bar/baz', undefined, 'foobar');
-   bufferedHttp.get('http://foo.bar/baz', undefined, 'foobar');
-   bufferedHttp.get('http://foo.bar/baz', undefined, 'foobar');
-   $rootScope.$digest();
-
-   expect($http.calls.count()).toBe(3);
-   });
-
-   it('should serialize destructive http requests', () => {
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
-   expect($http.calls.count()).toBe(1);
-   $httpDefers[0].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(2);
-   $httpDefers[1].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(3);
-   $httpDefers[2].resolve();
-   $rootScope.$digest();
-   });
-
-   it('should serialize destructive http requests on non default queue', () => {
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
-   expect($http.calls.count()).toBe(1);
-   $httpDefers[0].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(2);
-   $httpDefers[1].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(3);
-   $httpDefers[2].resolve();
-   $rootScope.$digest();
-   });
-
-   it('should wait with non destructive operations until destructives are finished', () => {
-   bufferedHttp.get('http://foo.bar/baz');
-   bufferedHttp.get('http://foo.bar/baz');
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'});
-   bufferedHttp.get('http://foo.bar/baz');
-   bufferedHttp.get('http://foo.bar/baz');
-   expect($http.calls.count()).toBe(2);
-   $httpDefers[0].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(2);
-   $httpDefers[1].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(3);
-   $httpDefers[2].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(4);
-   $httpDefers[3].resolve();
-   $rootScope.$digest();
-   expect($http.calls.count()).toBe(6);
-   $httpDefers[4].resolve();
-   $httpDefers[5].resolve();
-   $rootScope.$digest();
-   });
-
-   it('should parallelize destructive operations on multiple queues', () => {
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blub');
-   bufferedHttp.post('http://foo.bar/baz', {foo: 'bar'}, undefined, 'blib');
-   expect($http.calls.count()).toBe(2);
-   $httpDefers[0].resolve();
-   $httpDefers[1].resolve();
-   $rootScope.$digest();
-   });
-
-   // @TODO: More tests needed here
-   // - usage of entityManager
-   // - deferred timeout injection
-   */
 });

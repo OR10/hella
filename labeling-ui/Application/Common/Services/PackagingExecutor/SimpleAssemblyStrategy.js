@@ -11,7 +11,7 @@ class SimpleAssemblyStrategy {
    *
    * @return {int}
    */
-  getPackageBoundary(action, jobs, currentBoundary)  {
+  getPackageBoundary(action, jobs, currentBoundary) { // eslint-disable-line no-unused-vars
     // New boundary is always after the first element in the assembly
     return 1;
   }

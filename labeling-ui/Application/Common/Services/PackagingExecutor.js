@@ -59,7 +59,7 @@ class PackagingExecutor {
 }
 
 PackagingExecutor.$inject = [
-  'assemblyFactory'
+  'assemblyFactory',
 ];
 
 export default PackagingExecutor;
