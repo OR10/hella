@@ -44,7 +44,7 @@ class PackagingExecutor {
    *
    * The method returns a Promise, which is fulfilled, once the workFn Promise is resolved.
    *
-   * @param {name} assemblyName
+   * @param {string} assemblyName
    * @param {Function} workFn
    *
    * @return {Promise}
@@ -54,12 +54,7 @@ class PackagingExecutor {
     const job = new AssemblyJob(workFn);
     assembly.enqueue(job);
 
-    // Clean the promise return values to not return the encapsulated job
-    return new Promise(
-      (resolve, reject) => job.getIsFinishedPromise()
-        .then((job, ...args) => resolve(...args))
-        .catch((job, ...args) => reject(...args))
-    );
+    return job.getIsFinishedPromise();
   }
 }
 

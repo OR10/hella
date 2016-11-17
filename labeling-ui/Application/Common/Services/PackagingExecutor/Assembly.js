@@ -1,3 +1,5 @@
+import AssemblyJob from './AssemblyJob';
+
 /**
  * Queue like construct, which holds all jobs to be executed in a dependant order.
  *
@@ -43,33 +45,6 @@ class Assembly {
      * @private
      */
     this._boundary = 0;
-
-    /**
-     * Subscribers registered to be informed of actions inside of the Assembly
-     *
-     * @type {Set.<Function>}
-     * @private
-     */
-    this._actionListeners = new Set();
-  }
-
-  /**
-   * Subscribe to actions happening on the assembly
-   *
-   * @param {Function} subscriberFn
-   */
-  subscribe(subscriberFn) {
-    this._actionListeners.add(subscriberFn);
-  }
-
-  /**
-   * Remove a previously added subscription
-   *
-   * @param {Function} subscriberFn
-   * @returns {boolean}
-   */
-  unsubscribe(subscriberFn) {
-    return this._actionListeners.delete(subscriberFn);
   }
 
   /**
@@ -110,17 +85,17 @@ class Assembly {
    */
   _findNextNonRunningJobBeforeBoundary() {
     let jobIndex = 0;
-    let nextNonRunningJob = null;
-
-    while(jobIndex < this._jobs.length && jobIndex < this._boundary) {
+    while (jobIndex < this._jobs.length && jobIndex < this._boundary) {
       const possibleJob = this._jobs[jobIndex];
       if (possibleJob.getState() !== AssemblyJob.STATE_WAITING) {
+        jobIndex = jobIndex + 1;
         continue;
       }
 
-      nextNonRunningJob = possibleJob;
-      break;
+      return possibleJob;
     }
+
+    return null;
   }
 
   /**
@@ -138,9 +113,9 @@ class Assembly {
       return;
     }
 
-   job.run()
-      .then(job => this._handleJobFinished(job))
-      .catch(job => this._handleJobFailed(job));
+    job.run()
+      .then(() => this._handleJobFinished(job))
+      .catch(() => this._handleJobFailed(job));
 
     this._cycle(Assembly.ACTION_STATE_CHANGE);
   }
@@ -153,7 +128,7 @@ class Assembly {
    */
   _handleJobFinished(job) {
     const jobIndex = this._jobs.findIndex(possibleJob => possibleJob === job);
-    this._jobs.splice(jobIndex);
+    this._jobs.splice(jobIndex, 1);
     this._cycle(Assembly.ACTION_JOB_REMOVED);
   }
 
@@ -165,7 +140,7 @@ class Assembly {
    */
   _handleJobFailed(job) {
     const jobIndex = this._jobs.findIndex(possibleJob => possibleJob === job);
-    this._jobs.splice(jobIndex);
+    this._jobs.splice(jobIndex, 1);
     this._cycle(Assembly.ACTION_JOB_REMOVED);
   }
 }
