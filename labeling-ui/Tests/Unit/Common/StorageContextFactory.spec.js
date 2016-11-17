@@ -34,30 +34,30 @@ describe('StorageContextFactory', () => {
     expect(StorageContextFactory).toBeDefined();
   });
 
-  describe('function createContextForTaskName', () => {
+  describe('function getContextForTaskName', () => {
     it('should be defined', () => {
-      expect(StorageContextFactory.createContextForTaskName).toBeDefined();
+      expect(StorageContextFactory.getContextForTaskName).toBeDefined();
     });
 
     it('should return an object', () => {
-      const contextA = StorageContextFactory.createContextForTaskName('first');
+      const contextA = StorageContextFactory.getContextForTaskName('first');
       expect(typeof contextA).toBe('object');
     });
 
     it('should return null if first parameter is no string', () => {
-      const contextA = StorageContextFactory.createContextForTaskName(123123);
+      const contextA = StorageContextFactory.getContextForTaskName(123123);
       expect(contextA).toBe(null);
     });
 
     it('should return an new instance for different names', () => {
-      const contextA = StorageContextFactory.createContextForTaskName('first');
-      const contextB = StorageContextFactory.createContextForTaskName('second');
+      const contextA = StorageContextFactory.getContextForTaskName('first');
+      const contextB = StorageContextFactory.getContextForTaskName('second');
       expect(contextA !== contextB).toEqual(true);
     });
 
     it('should return different instance for the same name', () => {
-      const contextA = StorageContextFactory.createContextForTaskName('first');
-      const contextB = StorageContextFactory.createContextForTaskName('first');
+      const contextA = StorageContextFactory.getContextForTaskName('first');
+      const contextB = StorageContextFactory.getContextForTaskName('first');
       expect(contextA !== contextB).toEqual(true);
     });
   });
@@ -75,7 +75,7 @@ describe('StorageContextFactory', () => {
     });
 
     it('should return null if first parameter is no string', () => {
-      const contextA = StorageContextFactory.createContextForTaskName(123123);
+      const contextA = StorageContextFactory.generateStoreIdentifierForTaskName(123123);
       expect(contextA).toBe(null);
     });
 
