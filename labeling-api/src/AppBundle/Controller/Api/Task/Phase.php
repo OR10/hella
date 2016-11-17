@@ -52,12 +52,14 @@ class Phase extends Controller\Base
         $newPhase      = $request->request->get('phase');
         $currentStatus = $task->getStatus($task->getCurrentPhase());
 
-        if ($task->getLatestAssignedUserIdForPhase($task->getCurrentPhase()) !== null) {
-            throw new Exception\PreconditionFailedHttpException();
-        }
+        if (!$task->isAllPhasesDone()) {
+            if ($task->getLatestAssignedUserIdForPhase($task->getCurrentPhase()) !== null) {
+                throw new Exception\PreconditionFailedHttpException();
+            }
 
-        if (($currentStatus !== Model\LabelingTask::STATUS_TODO && $currentStatus !== Model\LabelingTask::STATUS_DONE)) {
-            throw new Exception\PreconditionFailedHttpException();
+            if (($currentStatus !== Model\LabelingTask::STATUS_TODO && $currentStatus !== Model\LabelingTask::STATUS_DONE)) {
+                throw new Exception\PreconditionFailedHttpException();
+            }
         }
 
         switch ($newPhase) {
