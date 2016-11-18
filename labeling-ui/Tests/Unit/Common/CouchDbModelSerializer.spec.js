@@ -31,7 +31,7 @@ describe('CouchDbModelSerializer', () => {
 
   using([
     [LabeledThingFrontendModel, LabeledThingCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING],
-  ], (frontendModel, couchDbModel, type) => {
+  ], (frontendModel, couchDbModel) => {
     it('serialize model by guessing its type', () => {
       const serializedCouchDbModel = serializer.serialize(frontendModel);
       expect(serializedCouchDbModel).toEqual(couchDbModel);
