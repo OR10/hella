@@ -70,6 +70,25 @@ class RevisionManager {
   }
 
   /**
+   * Extract the Revision from a given model updating the mapping in the background
+   *
+   * The `model` needs to provide a proper `id` as well as `rev` property.
+   *
+   * @param {{id: string, rev: string}|{_id: string, _rev: string}} model
+   * @throws {Error} if `id` or `rev` is missing in the model
+   */
+  extractRevision(model) {
+    if (!this._modelHasId(model) || !this._modelHasRevision(model)) {
+      throw new Error(`Revision could not be extracted from model: ${model}`);
+    }
+
+    const id = this._getIdFromModel(model);
+    const revision = this._getRevisionFromModel(model);
+
+    this.updateRevision(id, revision);
+  }
+
+  /**
    * Determine if a model has a valid id property
    *
    * @param {object} model
@@ -147,25 +166,6 @@ class RevisionManager {
     } else {
       model._rev = revision;
     }
-  }
-
-  /**
-   * Extract the Revision from a given model updating the mapping in the background
-   *
-   * The `model` needs to provide a proper `id` as well as `rev` property.
-   *
-   * @param {{id: string, rev: string}|{_id: string, _rev: string}} model
-   * @throws {Error} if `id` or `rev` is missing in the model
-   */
-  extractRevision(model) {
-    if (!this._modelHasId(model) || !this._modelHasRevision(model)) {
-      throw new Error(`Revision could not be extracted from model: ${model}`);
-    }
-
-    const id = this._getIdFromModel(model);
-    const revision = this._getRevisionFromModel(model);
-
-    this.updateRevision(id, revision);
   }
 }
 
