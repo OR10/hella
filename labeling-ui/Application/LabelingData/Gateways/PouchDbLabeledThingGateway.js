@@ -8,8 +8,9 @@ class PouchDbLabeledThingGateway {
    * @param {StorageContextService} storageContextService
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelSerializer} couchDbModelSerializer
+   * @param {RevisionManager} revisionManager
    */
-  constructor(storageContextService, packagingExecutor, couchDbModelSerializer) {
+  constructor(storageContextService, packagingExecutor, couchDbModelSerializer, revisionManager) {
     /**
      * @type {StorageContextService}
      * @private
@@ -33,6 +34,12 @@ class PouchDbLabeledThingGateway {
      * @private
      */
     this._couchDbModelSerializer = couchDbModelSerializer;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
   }
 
   /**
@@ -40,24 +47,41 @@ class PouchDbLabeledThingGateway {
    * @returns {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing) {
+    const db = this._storageContextService.provideContextForTaskId(labeledThing.task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThing);
+    this._injectRevisionOrFailSilently(document);
+    //@TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => db.put(document)
+    ).then(response => {
+      this._revisionManager.extractRevision(response);
+      return new LabeledThing(Object.assign({}, labeledThing.toJSON(), {task: labeledThing.task}));
+    });
 
-    // Store using PackagingExecutor
-    // Return result LabeledThingModel (using CouchDbModelDeserializer?)
-    // extract revision (in deserializer?)
-    // Wo fangen wir 409er ab? können wir das damit überhaupt noch? Sollten wir bei der gelegenheit alle stellen
-    // überarbeiten und "sinnvolles" errorhandling einbauen? Eventuell zunächst ignorieren und in Schritt 2 erledigen?
-
-    const url = this._apiService.getApiUrl(`/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`);
 
     return this._bufferedHttp.put(url, labeledThing, undefined, 'labeledThing')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledThing(Object.assign({}, response.data.result, {task: labeledThing.task}));
         }
 
         throw new Error('Received malformed response when creating labeled thing.');
       });
+  }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
   }
 
   /**
@@ -124,6 +148,7 @@ PouchDbLabeledThingGateway.$inject = [
   'storageContextService',
   'packagingExecutor',
   'couchDbModelSerializer',
+  'revisionManager',
 ];
 
 export default PouchDbLabeledThingGateway;
