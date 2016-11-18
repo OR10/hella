@@ -40,7 +40,7 @@ class AssemblyJobFactory {
 
 AssemblyJobFactory.$inject = [
   '$q',
-  'abortablePromiseFactory'
+  'abortablePromiseFactory',
 ];
 
 export default AssemblyJobFactory;
