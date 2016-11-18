@@ -17,7 +17,7 @@ class CouchDbModelSerializer {
      * @private
      */
 
-    this._modelClassToDocumentTypeMapping = new WeakMap([
+    this._modelClassToDocumentTypeMapping = new Map([
       [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
     ]);
   }
