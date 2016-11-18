@@ -13,7 +13,7 @@ import LabeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThi
 import FrameRangeCouchDbModel from 'Tests/Fixtures/Models/CouchDb/FrameRange';
 import FrameRangeFrontendModel from 'Tests/Fixtures/Models/Frontend/FrameRange';
 
-fdescribe('CouchDbModelSerializer', () => {
+describe('CouchDbModelSerializer', () => {
   /**
    * @type {CouchDbModelSerializer}
    */
