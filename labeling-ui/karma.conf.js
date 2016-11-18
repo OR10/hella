@@ -57,7 +57,7 @@ module.exports = function(config) {
       ],
       serveFiles: [
         'Application/**/*.js',
-        'Tests/Fixtures/**/*.json'
+        'Tests/Fixtures/**/*'
       ],
       urlRoot: '/',
       meta: {
