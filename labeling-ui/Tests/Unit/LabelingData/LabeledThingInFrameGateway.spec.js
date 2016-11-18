@@ -103,6 +103,7 @@ describe('LabeledThingInFrameGateway', () => {
       labeledThing: new LabeledThing({
         id: 'some-labeled-thing-id',
         task: {id: 'task-xyz'},
+        projectId: 'some-project',
       }),
     });
 
@@ -122,6 +123,7 @@ describe('LabeledThingInFrameGateway', () => {
         },
         labeledThing: {
           taskId: 'task-xyz',
+          projectId: 'some-project',
           id: 'some-labeled-thing-id',
           rev: '2-abc',
           classes: [],
@@ -158,6 +160,7 @@ describe('LabeledThingInFrameGateway', () => {
       ghost: false,
       labeledThing: new LabeledThing({
         id: 'some-labeled-thing-id',
+        projectId: 'some-project',
         task: {id: 'task-xyz'},
       }),
     });
@@ -178,6 +181,7 @@ describe('LabeledThingInFrameGateway', () => {
         },
         labeledThing: {
           taskId: 'task-xyz',
+          projectId: 'some-project',
           id: 'some-labeled-thing-id',
           rev: '2-abc',
           classes: [],

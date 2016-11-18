@@ -51,6 +51,7 @@ describe('LabeledThingGateway', () => {
 
     const expectedResult = new LabeledThing({
       task,
+      projectId: 'some-project',
       id: '123',
       rev: '1-abcdef',
       frameRange: {startFrameIndex: 23, endFrameIndex: 42},
@@ -59,7 +60,7 @@ describe('LabeledThingGateway', () => {
 
     $httpBackend
       .expect('GET', expectedUrl)
-      .respond(200, {result: expectedResult});
+      .respond(200, {result: expectedResult.toJSON()});
 
     gateway.getLabeledThing(task, labeledThingId)
       .then(result => {
@@ -77,17 +78,16 @@ describe('LabeledThingGateway', () => {
 
     const labeledThing = new LabeledThing({
       task,
+      projectId: 'some-project',
       id: labeledThingId,
       rev: '1-abcdef',
       frameRange: {startFrameIndex: 23, endFrameIndex: 42},
       classes: ['foo', 'bar'],
     });
 
-    const expectedResult = {result: labeledThing};
-
     $httpBackend
       .expect('PUT', expectedUrl, labeledThing)
-      .respond(200, expectedResult);
+      .respond(200, {result: labeledThing.toJSON()});
 
     gateway.saveLabeledThing(labeledThing)
       .then(result => {
@@ -107,6 +107,7 @@ describe('LabeledThingGateway', () => {
 
     const labeledThing = new LabeledThing({
       task,
+      projectId: 'some-project',
       id: labeledThingId,
       rev: '1-xyz',
       frameRange: {startFrameIndex: 23, endFrameIndex: 42},
