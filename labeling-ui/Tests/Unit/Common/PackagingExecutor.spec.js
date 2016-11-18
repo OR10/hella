@@ -16,7 +16,7 @@ describe('PackagingExecutor', () => {
     return {
       resolve: deferred.resolve,
       reject: deferred.reject,
-      promise: deferred.promise
+      promise: deferred.promise,
     };
   }
 
