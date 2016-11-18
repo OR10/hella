@@ -1,15 +1,20 @@
-import AssemblyJob from './PackagingExecutor/AssemblyJob';
-
 class PackagingExecutor {
   /**
    * @param {AssemblyFactory} assemblyFactory
+   * @param {AssemblyJobFactory} jobFactory
    */
-  constructor(assemblyFactory) {
+  constructor(assemblyFactory, jobFactory) {
     /**
      * @type {AssemblyFactory}
      * @private
      */
     this._assemblyFactory = assemblyFactory;
+
+    /**
+     * @type {AssemblyJobFactory}
+     * @private
+     */
+    this._jobFactory = jobFactory;
 
     /**
      * Map of all registered Assemblies indexed by their name
@@ -51,7 +56,7 @@ class PackagingExecutor {
    */
   execute(assemblyName, workFn) {
     const assembly = this._findOrCreateAssembly(assemblyName);
-    const job = new AssemblyJob(workFn);
+    const job = this._jobFactory.create(workFn);
     assembly.enqueue(job);
 
     return job.getIsFinishedPromise();
@@ -60,6 +65,7 @@ class PackagingExecutor {
 
 PackagingExecutor.$inject = [
   'assemblyFactory',
+  'assemblyJobFactory',
 ];
 
 export default PackagingExecutor;

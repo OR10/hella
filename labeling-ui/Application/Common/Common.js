@@ -29,6 +29,7 @@ import CouchDbModelSerializer from './Services/CouchDbModelSerializer';
 import PackagingExecutor from './Services/PackagingExecutor';
 import ConfigurableAssemblyFactory from './Services/PackagingExecutor/ConfigurableAssemblyFactory';
 import SimpleAssemblyStrategy from './Services/PackagingExecutor/SimpleAssemblyStrategy';
+import AssemblyJobFactory from './Services/PackagingExecutor/AssemblyJobFactory';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
@@ -89,6 +90,7 @@ class Common extends Module {
     this.module.service('packagingExecutor', PackagingExecutor);
     this.module.service('assemblyFactory', ConfigurableAssemblyFactory);
     this.module.service('assemblyStrategy', SimpleAssemblyStrategy);
+    this.module.service('assemblyJobFactory', AssemblyJobFactory);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);

@@ -7,15 +7,17 @@ import ConfigurableAssemblyFactory from 'Application/Common/Services/PackagingEx
 import SimpleAssemblyStrategy from 'Application/Common/Services/PackagingExecutor/SimpleAssemblyStrategy';
 
 describe('PackagingExecutor', () => {
-  function createExposedPromise() {
-    let resolve = null;
-    let reject = null;
-    const promise = new Promise((innerResolve, innerReject) => {
-      resolve = innerResolve;
-      reject = innerReject;
-    });
+  let $q = null;
+  let $rootScope = null;
 
-    return {resolve, reject, promise};
+  function createExposedPromise() {
+    const deferred = $q.defer();
+
+    return {
+      resolve: deferred.resolve,
+      reject: deferred.reject,
+      promise: deferred.promise
+    };
   }
 
   describe('Basic Linear Execution', () => {
@@ -38,11 +40,12 @@ describe('PackagingExecutor', () => {
 
       module($provide => {
         $provide.value('assemblyStrategy', mockedAssemblyStrategy);
-
         $provide.service('assemblyFactory', ConfigurableAssemblyFactory);
       });
 
       inject($injector => {
+        $q = $injector.get('$q');
+        $rootScope = $injector.get('$rootScope');
         packagingExecutor = $injector.get('packagingExecutor');
       });
     });
@@ -67,6 +70,8 @@ describe('PackagingExecutor', () => {
       // Unfortunately there is no other way to test this, due to the encapsulated promise cycle.
       // Maybe mocking `Promise` would be a way?
       jobPromise.then(() => done());
+
+      $rootScope.$apply();
     });
 
     it('should call strategy after job has been added', () => {
@@ -118,6 +123,8 @@ describe('PackagingExecutor', () => {
         expect(mockedAssemblyStrategy.getPackageBoundary.calls.count()).toBe(9);
         done();
       });
+
+      $rootScope.$apply();
     });
 
     it('Multiple assemblies execute in parallel', () => {
@@ -151,6 +158,8 @@ describe('PackagingExecutor', () => {
         expect(result).toEqual(testData);
         done();
       });
+
+      $rootScope.$apply();
     });
 
     it('Result values are returned by the provided promise in case of failure', done => {
@@ -166,6 +175,8 @@ describe('PackagingExecutor', () => {
         expect(reason).toEqual(testData);
         done();
       });
+
+      $rootScope.$apply();
     });
   });
 
@@ -189,11 +200,12 @@ describe('PackagingExecutor', () => {
 
       module($provide => {
         $provide.value('assemblyStrategy', mockedAssemblyStrategy);
-
         $provide.service('assemblyFactory', ConfigurableAssemblyFactory);
       });
 
       inject($injector => {
+        $q = $injector.get('$q');
+        $rootScope = $injector.get('$rootScope');
         packagingExecutor = $injector.get('packagingExecutor');
       });
     });
@@ -245,6 +257,8 @@ describe('PackagingExecutor', () => {
         expect(spyWorkerThree).toHaveBeenCalled();
         done();
       });
+
+      $rootScope.$apply();
     });
 
     it('should execute third job once second is finished', done => {
@@ -266,6 +280,8 @@ describe('PackagingExecutor', () => {
         expect(spyWorkerThree).toHaveBeenCalled();
         done();
       });
+
+      $rootScope.$apply();
     });
   });
 
@@ -286,6 +302,8 @@ describe('PackagingExecutor', () => {
       });
 
       inject($injector => {
+        $q = $injector.get('$q');
+        $rootScope = $injector.get('$rootScope');
         packagingExecutor = $injector.get('packagingExecutor');
       });
     });
@@ -318,6 +336,8 @@ describe('PackagingExecutor', () => {
         expect(spyWorkerTwo).toHaveBeenCalled();
         done();
       });
+
+      $rootScope.$apply();
     });
 
     it('should execute second job even if first fails', done => {
@@ -335,6 +355,8 @@ describe('PackagingExecutor', () => {
         expect(spyWorkerTwo).toHaveBeenCalled();
         done();
       });
+
+      $rootScope.$apply();
     });
 
     it('should execute three jobs in serial', done => {
@@ -366,6 +388,8 @@ describe('PackagingExecutor', () => {
       jobPromiseThree.then(() => {
         done();
       });
+
+      $rootScope.$apply();
     });
   });
 });
