@@ -40,6 +40,16 @@ class RevisionManager {
   }
 
   /**
+   * Check if a revision is available for a specific id
+   *
+   * @param {string} id
+   * @returns {boolean}
+   */
+  hasRevision(id) {
+    return this._revisionMap.has(id);
+  }
+
+  /**
    * Inject the revision into the given model
    *
    * The model needs to have a proper `id` property.
