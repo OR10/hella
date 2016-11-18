@@ -19,17 +19,23 @@ class StorageSyncManager {
    * @param {PouchDB} context instance of a local PouchDB
    */
   startReplicationForContext(context, pausedEventHandler) {
-    const contextName = this._storageContextService.queryTaskIdForContext(context);
+    const taskId = this._storageContextService.queryTaskIdForContext(context);
 
-    if (typeof context !== 'object' || typeof pausedEventHandler !== 'function' || contextName === null) {
+    if (typeof context !== 'object' || typeof pausedEventHandler !== 'function' || taskId === null) {
       return null;
     }
 
     let syncHandler = this._syncHandlerCache.get(context);
     if (syncHandler === undefined) {
+      const syncSettings = {
+        filter: this._remoteConfig.filter,
+        query_params: {
+          taskId: taskId,
+        },
+      }
       const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
 
-      syncHandler = this._pouchDb.sync(contextName, replicationEndpointUrl);
+      syncHandler = this._pouchDb.sync(taskId, replicationEndpointUrl, syncSettings);
       syncHandler.on('paused', pausedEventHandler);
       this._syncHandlerCache.set(context, syncHandler);
     }

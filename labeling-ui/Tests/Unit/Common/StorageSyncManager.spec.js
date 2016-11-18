@@ -4,24 +4,12 @@ import {module, inject} from 'angular-mocks';
 
 import _StorageSyncManager_ from 'Application/Common/Services/StorageSyncManager';
 
-fdescribe('StorageSyncManager', () => {
-  let StorageSyncManager;
+describe('StorageSyncManager', () => {
   const MOCK_TASK_ID = 'mock-task-id';
-  let spies;
 
-  const mockConfig = {
-    Common: {
-      storage: {
-        local: {
-          databaseName: 'AnnoStation',
-        },
-        remote: {
-          baseUrl: 'http://localhost:5984/',
-          databaseName: 'AnnoStation',
-        },
-      },
-    },
-  };
+  let StorageSyncManager;
+  let spies;
+  let mockConfig;
 
   function createContextServiceMock() {
     return {
@@ -47,14 +35,33 @@ fdescribe('StorageSyncManager', () => {
 
 
   beforeEach(module($provide => {
+    spies = {
+      syncCancelSpy: () => {},
+      filterSettingSpy: () => 'designdocumentName/filterName',
+    };
+    spyOn(spies, 'syncCancelSpy');
+    spyOn(spies, 'filterSettingSpy');
+
+    mockConfig = {
+      Common: {
+        storage: {
+          local: {
+            databaseName: 'AnnoStation',
+          },
+          remote: {
+            baseUrl: 'http://localhost:5984/',
+            databaseName: 'AnnoStation',
+          },
+        },
+      },
+    };
+    Object.defineProperty(mockConfig.Common.storage.remote, 'filter', {
+      get: spies.filterSettingSpy,
+    });
+
     $provide.value('applicationConfig', mockConfig);
     $provide.value('StorageContextService', createContextServiceMock());
     $provide.value('PouchDB', createPouchDBMock());
-
-    spies = {
-      syncCancelSpy: () => {},
-    };
-    spyOn(spies, 'syncCancelSpy');
   }));
 
   beforeEach(inject($injector => {
@@ -90,6 +97,15 @@ fdescribe('StorageSyncManager', () => {
       StorageSyncManager.startReplicationForContext({}, obj.onPauseCallback);
       expect(obj.onPauseCallback).toHaveBeenCalled();
     });
+
+    it('should use filter settings from common/config', () => {
+      const obj = {
+        onPauseCallback: () => {
+        },
+      };
+      StorageSyncManager.startReplicationForContext({}, obj.onPauseCallback);
+      expect(spies.filterSettingSpy).toHaveBeenCalled();
+    });
   });
 
   describe('function stopReplicationForContext', () => {
@@ -110,7 +126,8 @@ fdescribe('StorageSyncManager', () => {
 
     it('should cancel sync if context has been sync enabled earlier', () => {
       const context = {};
-      StorageSyncManager.startReplicationForContext(context, () => {});
+      StorageSyncManager.startReplicationForContext(context, () => {
+      });
       StorageSyncManager.stopReplicationForContext(context);
       expect(spies.syncCancelSpy).toHaveBeenCalled();
     });
