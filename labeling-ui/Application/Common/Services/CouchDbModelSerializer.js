@@ -18,7 +18,7 @@ class CouchDbModelSerializer {
      */
 
     this._modelClassToDocumentTypeMapping = new WeakMap([
-      [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING]
+      [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
     ]);
   }
 
@@ -33,7 +33,7 @@ class CouchDbModelSerializer {
       throw new Error(`Tried to serialize non object into CouchDB document: ${typeof model}`);
     }
 
-    for(const [constructor, type] in this._modelClassToDocumentTypeMapping) {
+    for (const [constructor, type] in this._modelClassToDocumentTypeMapping) {
       if (model instanceof constructor) {
         return type;
       }
@@ -67,11 +67,11 @@ class CouchDbModelSerializer {
    */
   serialize(model, type = null) {
     if (type === null) {
-      type = this._guessModelType(model);
+      type = this._guessModelType(model); // eslint-disable-line no-param-reassign
     }
 
     const serializerDelegate = this._getSerializerDelegateForType(type);
-    const document = this[serializerDelegate](model);
+    return this[serializerDelegate](model);
   }
 
   /**

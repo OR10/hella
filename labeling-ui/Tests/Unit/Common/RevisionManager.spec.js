@@ -3,7 +3,7 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
-import RevisionManager from 'Application/Common/Services/RevisionManager'
+import RevisionManager from 'Application/Common/Services/RevisionManager';
 
 describe('RevisionManager', () => {
   /**

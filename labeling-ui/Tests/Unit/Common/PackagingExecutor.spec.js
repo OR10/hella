@@ -149,7 +149,7 @@ describe('PackagingExecutor', () => {
 
       jobPromise.then(result => {
         expect(result).toEqual(testData);
-        done()
+        done();
       });
     });
 
@@ -164,7 +164,7 @@ describe('PackagingExecutor', () => {
 
       jobPromise.catch(reason => {
         expect(reason).toEqual(testData);
-        done()
+        done();
       });
     });
   });
