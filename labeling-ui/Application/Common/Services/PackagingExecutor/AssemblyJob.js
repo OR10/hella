@@ -1,15 +1,22 @@
 class AssemblyJob {
   /**
    * @param {angular.$q} $q
+   * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {Function} workFn
    * @param {*} data
    */
-  constructor($q, workFn, data = null) {
+  constructor($q, abortablePromiseFactory, workFn, data = null) {
     /**
      * @type {angular.$q}
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
      * @type {Function}
@@ -38,13 +45,21 @@ class AssemblyJob {
      * @private
      */
     this._isFinishedDeferred = this._$q.defer();
+
+    /**
+     * @type {AbortablePromise}
+     * @private
+     */
+    this._isFinishedPromise = this._abortablePromiseFactory(
+      this._isFinishedDeferred.promise
+    );
   }
 
   /**
-   * @returns {Promise}
+   * @returns {AbortablePromise}
    */
   getIsFinishedPromise() {
-    return this._isFinishedDeferred.promise;
+    return this._isFinishedPromise;
   }
 
   /**
@@ -68,6 +83,11 @@ class AssemblyJob {
     this._data = newData;
   }
 
+  /**
+   * Execute the job
+   *
+   * @returns {AbortablePromise}
+   */
   run() {
     this._state = AssemblyJob.STATE_RUNNING;
     const workPromise = this._workFn();
@@ -75,7 +95,7 @@ class AssemblyJob {
       .then(result => this._isFinishedDeferred.resolve(result))
       .catch(reason => this._isFinishedDeferred.reject(reason));
 
-    return workPromise;
+    return this._isFinishedPromise;
   }
 }
 

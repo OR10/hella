@@ -16,6 +16,7 @@ class AbortablePromiseFactoryProvider {
      * @param {Promise} promise
      * @param {Deferred?} abortDeferred
      * @name AbortablePromiseFactory
+     * @type {Function}
      * @return {AbortablePromise}
      */
     return function abortable(inputPromise, abortDeferred = $q.defer()) {

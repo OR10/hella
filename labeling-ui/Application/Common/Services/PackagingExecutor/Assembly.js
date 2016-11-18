@@ -115,7 +115,8 @@ class Assembly {
 
     job.run()
       .then(() => this._handleJobFinished(job))
-      .catch(() => this._handleJobFailed(job));
+      .catch(() => this._handleJobFailed(job))
+      .aborted(() => this._handleJobAborted(job));
 
     this._cycle(Assembly.ACTION_STATE_CHANGE);
   }
@@ -143,10 +144,23 @@ class Assembly {
     this._jobs.splice(jobIndex, 1);
     this._cycle(Assembly.ACTION_JOB_REMOVED);
   }
+
+  /**
+   * Handle the needed operations once a job is aborted during processing
+   *
+   * @param {AssemblyJob} job
+   * @private
+   */
+  _handleJobAborted(job) {
+    const jobIndex = this._jobs.findIndex(possibleJob => possibleJob === job);
+    this._jobs.splice(jobIndex, 1);
+    this._cycle(Assembly.ACTION_JOB_ABORTED);
+  }
 }
 
 Assembly.ACTION_STATE_CHANGE = 'action.state.change';
 Assembly.ACTION_JOB_ADDED = 'action.job.added';
 Assembly.ACTION_JOB_REMOVED = 'action.job.removed';
+Assembly.ACTION_JOB_ABORTED = 'action.job.aborted';
 
 export default Assembly;
