@@ -9,16 +9,15 @@ class CouchDbModelDeserializer {
   /**
    * Deserialize a labeledThingInFrame to our internal model
    *
-   * @param {*} labeledThingInFrame
-   * @param {*} labeledThing
+   * @param {Object} labeledThingInFrameDocument
+   * @param {LabeledThing} labeledThingModel
    */
-  deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing) {
-    this._removePrefixFromIdAndRevision(labeledThing);
-    this._removePrefixFromIdAndRevision(labeledThingInFrame);
+  deserializeLabeledThingInFrame(labeledThingInFrameDocument, labeledThingModel) {
+    this._removePrefixFromIdAndRevision(labeledThingInFrameDocument);
 
-    labeledThingInFrame.labeledThing = labeledThing;
+    labeledThingInFrameDocument.labeledThing = labeledThingModel;
 
-    return new LabeledThingInFrame(labeledThingInFrame);
+    return new LabeledThingInFrame(labeledThingInFrameDocument);
   }
 
   /**
