@@ -9,16 +9,7 @@ import {cloneDeep} from 'lodash.clonedeep';
  * It does not implement the deserialization of CouchDB Documents into our model structure.
  */
 class CouchDbModelSerializer {
-  /**
-   * @param {RevisionManager} revisionManager
-   */
-  constructor(revisionManager) {
-    /**
-     * @type {RevisionManager}
-     * @private
-     */
-    this._revisionManager = revisionManager;
-
+  constructor() {
     /**
      * Map of model class constructors to their couchdb type identifier
      *
@@ -81,12 +72,6 @@ class CouchDbModelSerializer {
 
     const serializerDelegate = this._getSerializerDelegateForType(type);
     const document = this[serializerDelegate](model);
-
-    try {
-      document._rev = this._revisionManager.getRevision(document._id);
-    } catch(e) {
-      // Ignore non injection for now.
-    }
   }
 
   /**
@@ -131,8 +116,6 @@ class CouchDbModelSerializer {
 CouchDbModelSerializer.TYPE_LABELED_THING = 'AppBundle.Model.LabeledThing';
 CouchDbModelSerializer.TYPE_FRAME_RANGE = 'AppBundle.Model.FrameIndexRange';
 
-CouchDbModelSerializer.$inject = [
-  'revisionManager',
-];
+CouchDbModelSerializer.$inject = [];
 
 export default CouchDbModelSerializer;
