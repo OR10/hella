@@ -85,12 +85,12 @@ class CouchDbModelSerializer {
    */
   _serializeAppBundleModelLabeledThing(labeledThing) {
     const document = labeledThing.toJSON();
+    this._prefixIdAndRevision(document);
+
+    // Type annotation
     document.type = CouchDbModelSerializer.TYPE_LABELED_THING;
 
-    // Everything is complete for now
-    document.incomplete = false;
-
-    // Nested FrameRange type
+    // Nested FrameRange
     document.frameRange = this.serialize(labeledThing.frameRange, CouchDbModelSerializer.TYPE_FRAME_RANGE);
 
     return document;
@@ -110,6 +110,28 @@ class CouchDbModelSerializer {
     document.type = CouchDbModelSerializer.TYPE_FRAME_RANGE;
 
     return document;
+  }
+  /**
+   * Prefix the `id` and `rev` properties in the given document
+   *
+   * The default prefix is the *underscore*, which CouchDb needs by default.
+   *
+   * If `id` or `rev` are not present, they will be silently ignored.
+   *
+   * @param {object} document
+   * @param {string?} prefix
+   * @private
+   */
+  _prefixIdAndRevision(document, prefix = '_') {
+    if (document.id !== undefined && typeof document.id === 'string') {
+      document[`${prefix}id`] = document.id;
+      delete document.id;
+    }
+
+    if (document.rev !== undefined && typeof document.rev === 'string') {
+      document[`${prefix}rev`] = document.rev;
+      delete document.rev;
+    }
   }
 }
 
