@@ -71,7 +71,7 @@ class Assembly {
       this._boundary
     );
 
-    this._runNextNonRunningJobBeforeBoundary();
+    this._runNextWaitingJobBeforeBoundary();
   }
 
   /**
@@ -83,7 +83,7 @@ class Assembly {
    *
    * @private
    */
-  _findNextNonRunningJobBeforeBoundary() {
+  _findNextWaitingJobBeforeBoundary() {
     let jobIndex = 0;
     while (jobIndex < this._jobs.length && jobIndex < this._boundary) {
       const possibleJob = this._jobs[jobIndex];
@@ -106,8 +106,8 @@ class Assembly {
    *
    * @private
    */
-  _runNextNonRunningJobBeforeBoundary() {
-    const job = this._findNextNonRunningJobBeforeBoundary();
+  _runNextWaitingJobBeforeBoundary() {
+    const job = this._findNextWaitingJobBeforeBoundary();
 
     if (job === null) {
       return;
