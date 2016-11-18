@@ -23,38 +23,6 @@ class CouchDbModelSerializer {
   }
 
   /**
-   * Try to determine the type of the given model using the `_modelClassToDocumentTypeMapping` table.
-   *
-   * @param {*} model
-   * @private
-   */
-  _guessModelType(model) {
-    if (typeof model !== 'object') {
-      throw new Error(`Tried to serialize non object into CouchDB document: ${typeof model}`);
-    }
-
-    for (const [constructor, type] in this._modelClassToDocumentTypeMapping) {
-      if (model instanceof constructor) {
-        return type;
-      }
-    }
-
-    throw new Error(`Unknown Model constructor: Unable to determine corresponding CouchDB model type: ${JSON.stringify(model)}`);
-  }
-
-  /**
-   * Get the name of a serializer delegate method for a specific type
-   *
-   * @param type
-   * @returns {*|{all}}
-   * @private
-   */
-  _getSerializerDelegateForType(type) {
-    const cleanType = type.replace(/[^a-zA-Z]/g, '');
-    return `_serialize${cleanType}`;
-  }
-
-  /**
    * Serialize a given model object
    *
    * The method tries to automatically identify the type by looking at the instanceof type of the given model.
@@ -107,10 +75,45 @@ class CouchDbModelSerializer {
    */
   _serializeAppBundleModelFrameIndexRange(frameRange) {
     const document = cloneDeep(frameRange);
+
+    // Type annotation
     document.type = CouchDbModelSerializer.TYPE_FRAME_RANGE;
 
     return document;
   }
+
+  /**
+   * Try to determine the type of the given model using the `_modelClassToDocumentTypeMapping` table.
+   *
+   * @param {*} model
+   * @private
+   */
+  _guessModelType(model) {
+    if (typeof model !== 'object') {
+      throw new Error(`Tried to serialize non object into CouchDB document: ${typeof model}`);
+    }
+
+    for (const [constructor, type] of this._modelClassToDocumentTypeMapping) {
+      if (model instanceof constructor) {
+        return type;
+      }
+    }
+
+    throw new Error(`Unknown Model constructor: Unable to determine corresponding CouchDB model type: ${JSON.stringify(model)}`);
+  }
+
+  /**
+   * Get the name of a serializer delegate method for a specific type
+   *
+   * @param type
+   * @returns {*|{all}}
+   * @private
+   */
+  _getSerializerDelegateForType(type) {
+    const cleanType = type.replace(/[^a-zA-Z]/g, '');
+    return `_serialize${cleanType}`;
+  }
+
   /**
    * Prefix the `id` and `rev` properties in the given document
    *
