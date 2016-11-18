@@ -4,7 +4,7 @@ import {module, inject} from 'angular-mocks';
 
 import PouchDBViewHeaterService from 'Application/Common/Services/PouchDBViewHeater';
 
-fdescribe('PouchDBViewHeater', () => {
+describe('PouchDBViewHeater', () => {
   /**
    * @param {PouchDBViewHeater}
    */
