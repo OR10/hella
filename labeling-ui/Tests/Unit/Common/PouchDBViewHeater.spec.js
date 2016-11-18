@@ -75,7 +75,8 @@ fdescribe('PouchDBViewHeater', () => {
     expect(pouchDb.query).toHaveBeenCalledWith(viewNames[2]);
   });
 
-  xit('should heat all views', ()=> {
+  it('should heat all views', ()=> {
+    spyOn(pouchDBViewHeater, 'heatView');
     const taskId = 'taskId123';
     pouchDBViewHeater.heatAllViews(taskId);
 
@@ -87,7 +88,6 @@ fdescribe('PouchDBViewHeater', () => {
 
     $rootScope.$digest();
 
-    spyOn(pouchDBViewHeater, 'heatView');
 
     expect(pouchDBViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view1');
     expect(pouchDBViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view2');
