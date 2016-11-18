@@ -46,16 +46,97 @@ class RevisionManager {
    *
    * The model will be modified in place. The revision will be stored as `rev` property.
    *
-   * @param {{id: string}} model
+   * @param {{id: string}|{_id: string}} model
    * @throws {Error} if given `model` does not have an `id`
    */
   injectRevision(model) {
-    if (!model.id) {
+    if (!this._modelHasId(model)) {
       throw new Error(`Could not inject revision for model, as model does not have an id: ${model}`);
     }
+    const id = this._getIdFromModel(model);
+    const revision = this.getRevision(id);
 
-    const revision = this.getRevision(model.id);
-    model.rev = revision;
+    this._setRevisionOnModel(model, revision);
+  }
+
+  /**
+   * Determine if a model has a valid id property
+   *
+   * @param {object} model
+   * @returns {boolean}
+   * @private
+   */
+  _modelHasId(model) {
+    return (
+      (model.id !== undefined && typeof model.id === 'string') ||
+      (model._id !== undefined && typeof model._id === 'string')
+    );
+  }
+
+  /**
+   * Determine if a model has a valid revision property
+   *
+   * @param {object} model
+   * @returns {boolean}
+   * @private
+   */
+  _modelHasRevision(model) {
+    return (
+      (model.rev !== undefined && typeof model.rev === 'string') ||
+      (model._rev !== undefined && typeof model._rev === 'string')
+    );
+  }
+
+  /**
+   * Return the id of a model object or `null`, if it does not have an id
+   *
+   * @param {object} model
+   * @returns {string|null}
+   * @private
+   */
+  _getIdFromModel(model) {
+    if (model.id !== undefined) {
+      return model.id;
+    } else if (model._id !== undefined) {
+      return model._id;
+    }
+
+    return null;
+  }
+
+  /**
+   * Return the revision of a model object or `null`, if it does not have an revision
+   *
+   * @param {object} model
+   * @returns {string|null}
+   * @private
+   */
+  _getRevisionFromModel(model) {
+    if (model.rev !== undefined) {
+      return model.rev;
+    } else if (model._rev !== undefined) {
+      return model._rev;
+    }
+
+    return null;
+  }
+
+  /**
+   * Set the revision on a given model.
+   *
+   * Based on the existence of an `id` or `_id` property the revision property will be prefixed with or without an
+   * underscore automatically.
+   *
+   * @param {object} model
+   * @param {string} revision
+   * @private
+   */
+  _setRevisionOnModel(model, revision) {
+    if (model.id !== undefined) {
+      model.rev = revision;
+    } else {
+      model._rev = revision;
+    }
   }
 
   /**
@@ -63,17 +144,18 @@ class RevisionManager {
    *
    * The `model` needs to provide a proper `id` as well as `rev` property.
    *
-   * @param {{id: string, rev: string}} model
+   * @param {{id: string, rev: string}|{_id: string, _rev: string}} model
    * @throws {Error} if `id` or `rev` is missing in the model
    */
   extractRevision(model) {
-    const {id, rev} = model;
-    if (!id || !rev) {
-      throw new Error(`Revision could not be extracted from model: id: ${id}, rev: ${rev}`);
+    if (!this._modelHasId(model) || !this._modelHasRevision(model)) {
+      throw new Error(`Revision could not be extracted from model: ${model}`);
     }
 
-    this.updateRevision(id, rev);
-    delete model.rev;
+    const id = this._getIdFromModel(model);
+    const revision = this._getRevisionFromModel(model);
+
+    this.updateRevision(id, revision);
   }
 }
 
