@@ -33,7 +33,6 @@ class CouchDbModelDeserializer {
    * @private
    */
   _removePrefixFromIdAndRevision(document, prefix = '_') {
-    console.log(document[`${prefix}id`], document.id);
     if (document[`${prefix}id`] !== undefined && typeof document[`${prefix}id`] === 'string') {
       document.id = document[`${prefix}id`];
       delete document[`${prefix}id`];
