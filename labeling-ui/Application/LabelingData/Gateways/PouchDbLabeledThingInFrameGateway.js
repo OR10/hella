@@ -1,4 +1,4 @@
-import LabeledThing from '../Models/LabeledThingInFrame';
+import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 
 /**
  * Gateway for CRUD operation on {@link LabeledThing}s in a PouchDb
@@ -151,22 +151,22 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<Array.<LabeledThingInFrame>>|Error}
    */
   getNextIncomplete(task, count = 1) {
-    // const url = this._apiService.getApiUrl(
-    //   `/task/${task.id}/labeledThingInFrame`,
-    //   {
-    //     incompleteOnly: true,
-    //     limit: count,
-    //   }
-    // );
-    //
-    // return this.bufferedHttp.get(url, undefined, 'labeledThing')
-    //   .then(response => {
-    //     if (response.data && response.data.result) {
-    //       return response.data.result;
-    //     }
-    //
-    //     throw new Error('Failed loading incomplete labeled thing in frame');
-    //   });
+    const url = this._apiService.getApiUrl(
+      `/task/${task.id}/labeledThingInFrame`,
+      {
+        incompleteOnly: true,
+        limit: count,
+      }
+    );
+
+    return this.bufferedHttp.get(url, undefined, 'labeledThing')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error('Failed loading incomplete labeled thing in frame');
+      });
   }
 
   /**
@@ -177,63 +177,23 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame) {
-    // if (labeledThingInFrame.ghost === true) {
-    //   throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
-    // }
-    //
-    // const url = this._apiService.getApiUrl(
-    //   `/labeledThingInFrame/${labeledThingInFrame.id}`
-    // );
-    //
-    // if (labeledThingInFrame.ghostClasses !== null && !!labeledThingInFrame.classes) {
-    //   delete labeledThingInFrame.classes;
-    // }
-    //
-    // return this.bufferedHttp.put(url, labeledThingInFrame, undefined, 'labeledThing')
-    //   .then(response => {
-    //     if (response.data && response.data.result) {
-    //       return new LabeledThingInFrame(
-    //         Object.assign(
-    //           {},
-    //           response.data.result.labeledThingInFrame,
-    //           {
-    //             labeledThing: new LabeledThing(
-    //               Object.assign(
-    //                 {},
-    //                 response.data.result.labeledThing,
-    //                 {task: labeledThingInFrame.labeledThing.task}
-    //               )
-    //             ),
-    //           }
-    //         )
-    //       );
-    //     }
-    //
-    //     throw new Error('Failed updating LabeledThingInFrame');
-    //   });
-  }
+    if (labeledThingInFrame.ghost === true) {
+      throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
+    }
 
-  /**
-   * Associate the labeledThingsInFrame with their labeledThings
-   *
-   * After the {@link LabeledThing} is Retrieved it will be combined into a new {@link LabeledThingInFrame}
-   *
-   * @param {Task} task
-   * @param {Object} result
-   * @returns {Array.<LabeledThingInFrame>}
-   * @protected
-   */
-  _associateWithLabeledThings(task, result) {
-    // return result.labeledThingsInFrame.map(data => {
-    //   const labeledThing = result.labeledThings[data.labeledThingId];
-    //   labeledThing.task = task;
-    //
-    //   return new LabeledThingInFrame(
-    //     Object.assign({}, data, {
-    //       labeledThing: new LabeledThing(labeledThing),
-    //     })
-    //   );
-    // });
+    const db = this._storageContextService.provideContextForTaskId(labeledThingInFrame.task.id);
+    const document = this._couchDbModelSerializer.serialize(labeledThingInFrame);
+    this._injectRevisionOrFailSilently(document);
+    //@TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => db.put(document)
+    ).then(response => {
+      this._revisionManager.extractRevision(response);
+
+      return new LabeledThingInFrame(Object.assign({}, labeledThingInFrame.toJSON(), {task: labeledThingInFrame.labeledThing.task}));
+    });
   }
 }
 
