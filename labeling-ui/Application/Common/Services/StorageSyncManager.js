@@ -32,11 +32,16 @@ class StorageSyncManager {
         query_params: {
           taskId: taskId,
         },
-      }
+      };
       const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
 
       syncHandler = this._pouchDb.sync(taskId, replicationEndpointUrl, syncSettings);
-      syncHandler.on('paused', pausedEventHandler);
+      syncHandler
+        .on('paused', pausedEventHandler)
+        .on('complete', () => {
+          this._removeContextFromCache(context);
+        });
+
       this._syncHandlerCache.set(context, syncHandler);
     }
 
@@ -57,6 +62,25 @@ class StorageSyncManager {
 
     return context;
   }
+
+  /**
+   * @params {PouchDB} context to check sync state on
+   * @returns {boolean}
+   */
+  isReplicationOnContextEnabled(context) {
+    return this._syncHandlerCache.has(context);
+  }
+
+  /**
+   * @param {PouchDB} context
+   * @returns {boolean}
+   * @private
+   */
+  _removeContextFromCache(context) {
+    this._syncHandlerCache.delete(context);
+    return this.isReplicationOnContextEnabled();
+  }
+
 }
 
 StorageSyncManager.$inject = ['applicationConfig', 'StorageContextService', 'PouchDB'];

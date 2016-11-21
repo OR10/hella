@@ -23,11 +23,20 @@ describe('StorageSyncManager', () => {
     return {
       sync: () => {
         return {
-          on: (eventName, callback) => {
-            expect(eventName).toBe('paused');
-            callback();
+          _callbacks: {},
+          on: function(eventName, callback) {
+            if (eventName === 'complete') {
+              this._callbacks[eventName] = callback;
+            } else {
+              expect(eventName).toBe('paused');
+              callback();
+            }
+            return this;
           },
-          cancel: spies.syncCancelSpy,
+          cancel: function cancel() {
+            spies.syncCancelSpy();
+            this._callbacks.complete();
+          },
         };
       },
     };
@@ -130,6 +139,52 @@ describe('StorageSyncManager', () => {
       });
       StorageSyncManager.stopReplicationForContext(context);
       expect(spies.syncCancelSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('function isReplicationOnContextEnabled', () => {
+    it('should be defined', () => {
+      expect(StorageSyncManager.isReplicationOnContextEnabled).toBeDefined();
+    });
+
+    it('should return true if context is currently replicating', () => {
+      const dummyContext = {};
+      const obj = {
+        onPauseCallback: () => {
+        },
+      };
+      StorageSyncManager.startReplicationForContext(dummyContext, obj.onPauseCallback);
+      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+    });
+
+    it('should return false if context has stopped replicating', () => {
+      const dummyContext = {};
+      const obj = {
+        onPauseCallback: () => {
+        },
+      };
+      StorageSyncManager.startReplicationForContext(dummyContext, obj.onPauseCallback);
+      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      StorageSyncManager.stopReplicationForContext(dummyContext);
+      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
+    });
+  });
+
+  describe('function _removeContextFromCache', () => {
+    it('should exist', () => {
+      expect(StorageSyncManager._removeContextFromCache).toBeDefined();
+    });
+
+    it('should remove context from cache manager', () => {
+      const dummyContext = {};
+      const obj = {
+        onPauseCallback: () => {
+        },
+      };
+      StorageSyncManager.startReplicationForContext(dummyContext, obj.onPauseCallback);
+      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      StorageSyncManager._removeContextFromCache(dummyContext);
+      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
     });
   });
 });
