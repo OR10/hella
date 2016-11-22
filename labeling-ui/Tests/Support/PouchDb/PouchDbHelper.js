@@ -26,11 +26,17 @@ class PouchDbHelper {
    * @return {Promise}
    */
   initialize() {
-    this._databaseName = this._generateDatabaseName();
-    this.database = new PouchDB(this._databaseName);
-
-    // Operations may be asyncronous in the future.
-    return Promise.resolve();
+    return Promise.resolve()
+      .then(() => {
+        // Destroy old database if initialize is called twice.
+        if (this._database !== null) {
+          return this.destroy();
+        }
+      })
+      .then(() => {
+        this._databaseName = this._generateDatabaseName();
+        this.database = new PouchDB(this._databaseName);
+      });
   }
 
   /**
