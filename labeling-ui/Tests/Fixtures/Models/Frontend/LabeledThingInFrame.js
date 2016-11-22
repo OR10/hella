@@ -1,4 +1,4 @@
-import labeledThingCouchDbFixture from '../CouchDb/LabeledThing';
+import labeledThingFixture from './LabeledThing';
 
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
@@ -28,6 +28,6 @@ export default new LabeledThingInFrame({
   "taskId": "5242f8bff15774fe72586e569a05ce0c",
   "projectId": "9a8d567033f93fcd8cf50c2535008766",
   "labeledThingId": "04d2f1b2-fa17-438d-abe3-7c1db43186a0",
-  "labeledThing": labeledThingCouchDbFixture,
+  "labeledThing": labeledThingFixture,
   "incomplete": false
 });
