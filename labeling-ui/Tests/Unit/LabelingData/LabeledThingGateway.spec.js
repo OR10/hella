@@ -136,7 +136,7 @@ describe('LabeledThingGateway', () => {
 
     $httpBackend.expectGET('/backend/api/task/9a8zsdhfion/labeledThingsIncompleteCount').respond(taskResponse);
 
-    gateway.getIncompleteLabelThingCount('9a8zsdhfion').then(result => {
+    gateway.getIncompleteLabeledThingCount('9a8zsdhfion').then(result => {
       expect(result).toEqual(taskResponse.result);
       done();
     });

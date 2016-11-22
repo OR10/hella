@@ -129,7 +129,7 @@ class ViewerTitleBarController {
     this._applicationState.disableAll();
     this._applicationState.viewer.work();
 
-    this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then(result => {
+    this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
       if (result.count !== 0) {
         this.handleIncompleteState();
       } else {
@@ -226,7 +226,7 @@ class ViewerTitleBarController {
 
   refreshIncompleteCount() {
     this._$scope.$applyAsync(() => {
-      this._labeledThingGateway.getIncompleteLabelThingCount(this.task.id).then(result => {
+      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
         this.incompleteCount = result.count;
       });
     });
