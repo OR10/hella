@@ -14,6 +14,13 @@ class labeling_api::mysql(
     notify   => Exec["restart mysqld for ${database_name}"],
   }
 
+  ::mysql::db { "${database_name}_DataStation":
+    user     => $database_user,
+    password => $database_password,
+    host     => $allowed_host,
+    notify   => Exec["restart mysqld for ${database_name}"],
+  }
+
   if $prepare_test_environment {
     ::mysql::db { "${database_name}_test":
       user     => $database_user,
