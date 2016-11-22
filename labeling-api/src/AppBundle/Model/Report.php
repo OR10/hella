@@ -174,11 +174,6 @@ class Report
     private $numberOfLabeledThingClasses;
 
     /**
-     * @CouchDB\Field(type="mixed")
-     */
-    private $numberOfUniqueClassesInLabeledThingInFrameByClasses;
-
-    /**
      * @CouchDB\Field(type="integer")
      */
     private $totalTime;
@@ -734,22 +729,6 @@ class Report
     public function setNumberOfTotalClassesInLabeledThingInFrameByClasses($numberOfTotalClassesInLabeledThingInFrameByClasses)
     {
         $this->numberOfTotalClassesInLabeledThingInFrameByClasses = $numberOfTotalClassesInLabeledThingInFrameByClasses;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
-    {
-        return $this->numberOfUniqueClassesInLabeledThingInFrameByClasses;
-    }
-
-    /**
-     * @param mixed $numberOfUniqueClassesInLabeledThingInFrameByClasses
-     */
-    public function setNumberOfUniqueClassesInLabeledThingInFrameByClasses($numberOfUniqueClassesInLabeledThingInFrameByClasses)
-    {
-        $this->numberOfUniqueClassesInLabeledThingInFrameByClasses = $numberOfUniqueClassesInLabeledThingInFrameByClasses;
     }
 
     /**

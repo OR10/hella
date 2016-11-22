@@ -157,7 +157,7 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertEquals(2, $actualReport->getNumberOfDoneRevisionTasks());
 
         $this->assertEquals(300, $actualReport->getNumberOfLabeledThingInFrames());
-        $this->assertEquals(600, $actualReport->getNumberOfLabeledThingInFrameClasses());
+        $this->assertEquals(300, $actualReport->getNumberOfLabeledThingInFrameClasses());
 
         $this->assertEquals(30, $actualReport->getNumberOfLabeledThings());
         $this->assertEquals(90, $actualReport->getNumberOfLabeledThingClasses());
@@ -165,11 +165,6 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertEquals(
             ['foobar1' => 300, 'foobar2' => 300],
             $actualReport->getNumberOfTotalClassesInLabeledThingInFrameByClasses()
-        );
-
-        $this->assertEquals(
-            ['foobar1' => 30, 'foobar2' => 30],
-            $actualReport->getNumberOfUniqueClassesInLabeledThingInFrameByClasses()
         );
 
         $this->assertEquals(
@@ -247,12 +242,27 @@ class ReportTest extends Tests\KernelTestCase
                 ->build();
             $this->labelingTaskFacade->saveTimer($timer);
 
-            $labeledThing = Tests\Helper\LabeledThingBuilder::create()->withTask($task)->build();
+            $frameIndexRange = new Model\FrameIndexRange(1, 20);
+            $labeledThing = Tests\Helper\LabeledThingBuilder::create()->withTask($task)->withFrameRange(
+                $frameIndexRange
+            )->build();
             $this->labeledThingFacade->save($labeledThing);
 
-            foreach (range(0, 9) as $i2) {
+            foreach (range(1, 5) as $i2) {
                 $this->labeledThingInFrameFacade->save(
-                    Tests\Helper\LabeledThingInFrameBuilder::create()->withLabeledThing($labeledThing)->build()
+                    Tests\Helper\LabeledThingInFrameBuilder::create()
+                        ->withLabeledThing($labeledThing)
+                        ->withFrameIndex($i2)
+                        ->build()
+                );
+            }
+            foreach (range(6, 10) as $i3) {
+                $this->labeledThingInFrameFacade->save(
+                    Tests\Helper\LabeledThingInFrameBuilder::create()
+                        ->withLabeledThing($labeledThing)
+                        ->withFrameIndex($i3)
+                        ->withClasses([])
+                        ->build()
                 );
             }
         }

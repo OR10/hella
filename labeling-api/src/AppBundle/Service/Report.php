@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Model;
 use AppBundle\Database\Facade;
+use AppBundle\Service;
 
 class Report
 {
@@ -38,6 +39,11 @@ class Report
     private $reportFacade;
 
     /**
+     * @var GhostClassesPropagation
+     */
+    private $ghostClassesPropagation;
+
+    /**
      * Report constructor.
      *
      * @param Facade\Project             $projectFacade
@@ -46,6 +52,7 @@ class Report
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\Report              $reportFacade
+     * @param GhostClassesPropagation    $ghostClassesPropagation
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -53,7 +60,8 @@ class Report
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\Report $reportFacade
+        Facade\Report $reportFacade,
+        Service\GhostClassesPropagation $ghostClassesPropagation
     ) {
         $this->projectFacade             = $projectFacade;
         $this->videoFacade               = $videoFacade;
@@ -61,6 +69,7 @@ class Report
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->reportFacade              = $reportFacade;
+        $this->ghostClassesPropagation   = $ghostClassesPropagation;
     }
 
     /**
@@ -159,11 +168,7 @@ class Report
             );
 
             $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
-                $this->labeledThingInFrameFacade->getSumOfTotalClassesForProject($project)
-            );
-
-            $report->setNumberOfUniqueClassesInLabeledThingInFrameByClasses(
-                $this->labeledThingInFrameFacade->getSumOfUniqueClassesForProject($project)
+                $this->getLabeledClassesInNumbers($project)
             );
 
             $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
@@ -250,6 +255,33 @@ class Report
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
+    private function getLabeledClassesInNumbers(Model\Project $project)
+    {
+        $tasks = $this->projectFacade->getTasksByProject($project);
+        $classes = [];
+        foreach ($tasks as $task) {
+            $labeledThingInFrames = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
+            $labeledThingInFramesWithGhosts = $this->ghostClassesPropagation->propagateGhostClasses(
+                $labeledThingInFrames
+            );
+            foreach($labeledThingInFramesWithGhosts as $labeledThingInFrame) {
+                foreach($labeledThingInFrame->getClassesWithGhostClasses() as $classWithGhostClass) {
+                    if (isset($classes[$classWithGhostClass])) {
+                        $classes[$classWithGhostClass] +=1;
+                    }else{
+                        $classes[$classWithGhostClass] =1;
+                    }
+                }
+            }
+        }
+        return $classes;
     }
 
     /**
