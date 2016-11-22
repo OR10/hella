@@ -4,6 +4,7 @@ namespace AppBundle\Tests;
 use AppBundle\Database\Facade;
 use AppBundle\Service;
 use AppBundle\Model;
+use AppBundle\Model\TaskConfiguration;
 use AppBundle\Tests;
 use FOS\UserBundle\Util\UserManipulator;
 
@@ -217,7 +218,7 @@ class CouchDbTestCase extends Tests\WebTestCase
         $taskConfigurationXmlConverter = $this->taskConfigurationXmlConverterService->createConverter($binaryData);
 
         return $this->taskConfigurationFacade->save(
-            new Model\TaskConfiguration(
+            new TaskConfiguration\SimpleXml(
                 $name,
                 $filename,
                 $contentType,

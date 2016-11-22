@@ -34,11 +34,17 @@ class TaskConfiguration
 
     /**
      * @param $id
-     * @return Model\TaskConfiguration
+     * @return Model\TaskConfiguration\SimpleXml|Model\TaskConfiguration\RequirementsXml
      */
     public function find($id)
     {
-        return $this->documentManager->find(Model\TaskConfiguration::class, $id);
+        $return = $this->documentManager->find(Model\TaskConfiguration\SimpleXml::class, $id);
+
+        if ($return === null) {
+            $return = $this->documentManager->find(Model\TaskConfiguration\RequirementsXml::class, $id);
+        }
+
+        return $return;
     }
 
     /**
@@ -50,7 +56,7 @@ class TaskConfiguration
     public function getTaskConfigurationsByUser(Model\User $user)
     {
         return $this->documentManager
-            ->createQuery('annostation_task_configuration_by_userId_001', 'view')
+            ->createQuery('annostation_task_configuration_by_userId_002', 'view')
             ->setKey([$user->getId()])
             ->onlyDocs(true)
             ->execute()
@@ -66,7 +72,7 @@ class TaskConfiguration
     public function getTaskConfigurationsByUserAndName(Model\User $user, $name)
     {
         return $this->documentManager
-            ->createQuery('annostation_task_configuration_by_userId_and_name_001', 'view')
+            ->createQuery('annostation_task_configuration_by_userId_and_name_002', 'view')
             ->setKey([$user->getId(), $name])
             ->onlyDocs(true)
             ->execute()

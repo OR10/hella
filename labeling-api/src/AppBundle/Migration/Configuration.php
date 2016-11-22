@@ -19,6 +19,7 @@ class Configuration extends CouchDB\Configuration
                 new ProjectStatusHistory(),
                 new ExportStatus(),
                 new ProjectExportStatus(),
+                new TaskConfigurationToSimpleXmlConfiguration(),
             )
         );
     }
