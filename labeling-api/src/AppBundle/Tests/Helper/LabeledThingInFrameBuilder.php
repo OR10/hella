@@ -15,6 +15,11 @@ class LabeledThingInFrameBuilder
     private $classes = ['foobar1', 'foobar2'];
 
     /**
+     * @var int
+     */
+    private $frameIndex = 30;
+
+    /**
      * @var Model\LabeledThing
      */
     private $labeledThing;
@@ -53,12 +58,19 @@ class LabeledThingInFrameBuilder
         return $this;
     }
 
+    public function withFrameIndex($index)
+    {
+        $this->frameIndex = $index;
+
+        return $this;
+    }
+
     /**
      * @return Model\LabeledThingInFrame
      */
     public function build()
     {
-        $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, 30, $this->classes);
+        $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, $this->frameIndex, $this->classes);
 
         return $labeledThingInFrame;
     }
