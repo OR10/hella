@@ -161,6 +161,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
+            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
         </service>
 
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger">
