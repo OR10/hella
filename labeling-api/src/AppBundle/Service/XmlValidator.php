@@ -31,6 +31,19 @@ class XmlValidator
     }
 
     /**
+     * @param \DOMDocument $xmlDocument
+     * @return null|string
+     */
+    public function validateRelaxNg(\DOMDocument $xmlDocument)
+    {
+        libxml_use_internal_errors(true);
+        if (!$xmlDocument->relaxNGValidate($this->schema->getSchemaFileName())) {
+            return $this->libxmlDisplayErrors();
+        }
+        return null;
+    }
+
+    /**
      * Check if the XML Document is valid
      *
      * @param \DOMDocument $xmlDocument

@@ -3,6 +3,7 @@ namespace AppBundle\Model\TaskConfiguration;
 
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @CouchDB\Document
@@ -52,7 +53,36 @@ class RequirementsXml implements TaskConfiguration
 
     public function __construct($name, $filename, $contentType, $binaryData, $userId, $json, $date = null)
     {
+        if (!is_string($filename) || empty($filename)) {
+            throw new \InvalidArgumentException('Invalid filename');
+        }
 
+        if (!is_string($contentType) || empty($contentType)) {
+            throw new \InvalidArgumentException('Invalid content type');
+        }
+
+        if (!is_string($binaryData)) {
+            throw new \InvalidArgumentException('Expecting binary data as string');
+        }
+
+        if (empty($binaryData)) {
+            throw new Exception\EmptyData();
+        }
+
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        $this->name      = $name;
+        $this->filename  = $filename;
+        $this->timestamp = $date->getTimestamp();
+        $this->userId    = $userId;
+        $this->json      = $json;
+
+        $this->file[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
+            $binaryData,
+            $contentType
+        );
     }
 
     public function getRawData()

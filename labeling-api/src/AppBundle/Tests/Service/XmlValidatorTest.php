@@ -30,6 +30,6 @@ class XmlValidator extends Tests\KernelTestCase
 
     public function setUpImplementation()
     {
-        $this->xmlValidatorService = $this->getAnnostationService('service.xml_validator');
+        $this->xmlValidatorService = $this->getAnnostationService('service.simple_xml_validator');
     }
 }

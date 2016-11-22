@@ -148,7 +148,8 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
             <argument type="service" id="security.token_storage" />
-            <argument type="service" id="annostation.labeling_api.service.xml_validator" />
+            <argument type="service" id="annostation.labeling_api.service.simple_xml_validator" />
+            <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator" />
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory" />
         </service>
         <service id="annostation.labeling_api.controller.api.labeling_group" class="AppBundle\Controller\Api\LabelingGroup">
