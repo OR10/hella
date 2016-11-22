@@ -20,6 +20,11 @@ class LabeledThingBuilder
     private $classes = ['foobar1', 'foobar2', 'foobar3'];
 
     /**
+     * @var Model\FrameIndexRange
+     */
+    private $frameIndexRange;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -59,12 +64,27 @@ class LabeledThingBuilder
     }
 
     /**
+     * @param Model\FrameIndexRange $frameIndexRange
+     *
+     * @return $this
+     */
+    public function withFrameRange(Model\FrameIndexRange $frameIndexRange)
+    {
+        $this->frameIndexRange = $frameIndexRange;
+
+        return $this;
+    }
+
+    /**
      * @return Model\LabeledThing
      */
     public function build()
     {
         $labeledThing = Model\LabeledThing::create($this->labelingTask);
         $labeledThing->setClasses($this->classes);
+        if ($this->frameIndexRange instanceof Model\FrameIndexRange) {
+            $labeledThing->setFrameRange($this->frameIndexRange);
+        }
 
         return $labeledThing;
     }
