@@ -8,6 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Service;
 use AppBundle\Service\Authentication;
 use AppBundle\View;
+use AppBundle\Model\TaskConfiguration as TaskConfigurationModel;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use \AppBundle\Model;
@@ -127,7 +128,7 @@ class TaskConfiguration extends Controller\Base
 
         $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
 
-        $taskConfiguration = new Model\TaskConfiguration(
+        $taskConfiguration = new TaskConfigurationModel\SimpleXml(
             $name,
             $file->getClientOriginalName(),
             $file->getMimeType(),
