@@ -8,9 +8,10 @@ class PouchDbLabeledThingGateway {
    * @param {StorageContextService} storageContextService
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelSerializer} couchDbModelSerializer
+   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    */
-  constructor(storageContextService, packagingExecutor, couchDbModelSerializer, revisionManager) {
+  constructor(storageContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager) {
     /**
      * @type {StorageContextService}
      * @private
@@ -36,6 +37,12 @@ class PouchDbLabeledThingGateway {
     this._couchDbModelSerializer = couchDbModelSerializer;
 
     /**
+     * @type {CouchDbModelDeserializer}
+     * @private
+     */
+    this._couchDbModelDeserializer = couchDbModelDeserializer;
+
+    /**
      * @type {RevisionManager}
      * @private
      */
@@ -44,30 +51,25 @@ class PouchDbLabeledThingGateway {
 
   /**
    * @param {LabeledThing} labeledThing
-   * @returns {AbortablePromise.<LabeledThing|Error>}
+   * @return {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing) {
-    const db = this._storageContextService.provideContextForTaskId(labeledThing.task.id);
+    const task = labeledThing.task;
+    const db = this._storageContextService.provideContextForTaskId(task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThing);
-    this._injectRevisionOrFailSilently(document);
+
     //@TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
-      () => db.put(document)
+      () => {
+        this._injectRevisionOrFailSilently(document);
+        return db.put(document);
+      }
     ).then(response => {
       this._revisionManager.extractRevision(response);
-      return new LabeledThing(Object.assign({}, labeledThing.toJSON(), {task: labeledThing.task}));
+      return this._couchDbModelDeserializer.deserializeLabeledThing(document, task);
     });
-
-
-    return this._bufferedHttp.put(url, labeledThing, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data && response.data.result) {
-        }
-
-        throw new Error('Received malformed response when creating labeled thing.');
-      });
   }
 
   /**
@@ -87,60 +89,70 @@ class PouchDbLabeledThingGateway {
   /**
    * @param {Task} task
    * @param {string} labeledThingId
-   * @returns {AbortablePromise.<LabeledThing|Error>}
+   * @return {AbortablePromise.<LabeledThing|Error>}
    */
   getLabeledThing(task, labeledThingId) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThing/${labeledThingId}`);
+    const db = this._storageContextService.provideContextForTaskId(task.id);
 
-    return this._bufferedHttp.get(url, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return new LabeledThing(Object.assign({}, response.data.result, {task}));
-        }
-
-        throw new Error('Received malformed response when requesting labeled thing.');
-      });
+    //@TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => db.get(labeledThingId)
+    ).then(document => {
+      this._revisionManager.extractRevision(document);
+      return this._couchDbModelDeserializer.deserializeLabeledThing(document, task);
+    });
   }
 
   /**
    * Delete a {@link LabeledThing} and all its descending {@link LabeledThingInFrame} objects
    *
    * @param {LabeledThing} labeledThing
-   * @returns {AbortablePromise}
+   * @return {AbortablePromise}
    */
   deleteLabeledThing(labeledThing) {
-    const url = this._apiService.getApiUrl(
-      `/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`,
-      {
-        rev: this._revisionManager.getRevision(labeledThing.id),
+    const task = labeledThing.task;
+    const db = this._storageContextService.provideContextForTaskId(task.id);
+    const document = this._couchDbModelSerializer.serialize(labeledThing);
+
+    //@TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => {
+        this._injectRevisionOrFailSilently(document);
+        return db.remove(document);
       }
-    );
-
-    return this._bufferedHttp.delete(url, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data && response.data.success === true) {
-          return true;
-        }
-
-        throw new Error('Received malformed response when deleting labeled thing.');
-      });
+    ).then(response => {
+      this._revisionManager.extractRevision(response);
+      return true;
+    });
   }
 
   /**
-   * @param {Task} task
-   * @returns {AbortablePromise.<LabeledThing|Error>}
+   * @param {string} taskId
+   * @return {AbortablePromise.<{count: int}|Error>}
    */
-  getIncompleteLabelThingCount(taskId) {
-    const url = this._apiService.getApiUrl(`/task/${taskId}/labeledThingsIncompleteCount`);
-
-    return this._bufferedHttp.get(url, undefined, 'task')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
-        }
-
-        throw new Error('Received malformed response when requesting incomplete labeled thing count.');
-      });
+  getIncompleteLabeledThingCount(taskId) {
+    /**
+     * @TODO: To fully work with local pouchdb replicate the incomplete flag needs to be updated during storage
+     *        of LabeledThingsInFrame correctly.
+     */
+    const db = this._storageContextService.provideContextForTaskId(taskId);
+    //@TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => db.query('annostation_labeled_thing/incomplete', {
+        include_docs: false,
+        key: [taskId, true],
+      })
+    ).then(response => {
+      return {
+        count: response.rows.length,
+      }
+    });
   }
 }
 
@@ -148,6 +160,7 @@ PouchDbLabeledThingGateway.$inject = [
   'storageContextService',
   'packagingExecutor',
   'couchDbModelSerializer',
+  'couchDbModelDeserializer',
   'revisionManager',
 ];
 
