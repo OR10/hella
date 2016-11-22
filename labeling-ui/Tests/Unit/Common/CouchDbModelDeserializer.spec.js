@@ -16,7 +16,7 @@ import LabeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThi
 import LabeledThingInFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThingInFrame';
 import LabeledThingInFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThingInFrame';
 
-fdescribe('CouchDbModelDeserializer', () => {
+describe('CouchDbModelDeserializer', () => {
   /**
    * @type {CouchDbModelDeserializer}
    */
