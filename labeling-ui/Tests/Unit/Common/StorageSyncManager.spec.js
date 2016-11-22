@@ -21,6 +21,20 @@ describe('StorageSyncManager', () => {
 
   function createPouchDBMock() {
     return {
+      replicate: {
+        from: () => {
+          return {
+            on: function(eventName, callback) {
+              expect(eventName).toBe('complete');
+              callback();
+              return this;
+            },
+            cancel: function cancel() {
+              spies.syncCancelSpy();
+            },
+          };
+        },
+      },
       sync: () => {
         return {
           _callbacks: {},
@@ -81,38 +95,39 @@ describe('StorageSyncManager', () => {
     expect(StorageSyncManager).toBeDefined();
   });
 
-  describe('function startReplicationForContext', () => {
+  describe('function startContinousReplicationForContext', () => {
     it('should be defined', () => {
-      expect(StorageSyncManager.startReplicationForContext).toBeDefined();
+      expect(StorageSyncManager.startContinousReplicationForContext).toBeDefined();
     });
 
     it('should return null if no context was given', () => {
-      const result = StorageSyncManager.startReplicationForContext(123, 123);
+      const result = StorageSyncManager.startContinousReplicationForContext(123, 123);
       expect(result).toBe(null);
     });
 
     it('should return null if no callback was given', () => {
-      const result = StorageSyncManager.startReplicationForContext(123);
+      const result = StorageSyncManager.startContinousReplicationForContext(123);
       expect(result).toBe(null);
     });
 
     it('should bind callback parameter to onchange event', () => {
       const obj = {
-        onPauseCallback: () => {
+        onCompleteCallback: () => {
         },
       };
 
       spyOn(obj, 'onPauseCallback');
-      StorageSyncManager.startReplicationForContext({}, obj.onPauseCallback);
-      expect(obj.onPauseCallback).toHaveBeenCalled();
+      StorageSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
+      expect(obj.onCompleteCallback).toHaveBeenCalled();
     });
+
 
     it('should use filter settings from common/config', () => {
       const obj = {
-        onPauseCallback: () => {
+        onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startReplicationForContext({}, obj.onPauseCallback);
+      StorageSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
       expect(spies.filterSettingSpy).toHaveBeenCalled();
     });
   });
@@ -135,7 +150,7 @@ describe('StorageSyncManager', () => {
 
     it('should cancel sync if context has been sync enabled earlier', () => {
       const context = {};
-      StorageSyncManager.startReplicationForContext(context, () => {
+      StorageSyncManager.startContinousReplicationForContext(context, () => {
       });
       StorageSyncManager.stopReplicationForContext(context);
       expect(spies.syncCancelSpy).toHaveBeenCalled();
@@ -150,20 +165,20 @@ describe('StorageSyncManager', () => {
     it('should return true if context is currently replicating', () => {
       const dummyContext = {};
       const obj = {
-        onPauseCallback: () => {
+        onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startReplicationForContext(dummyContext, obj.onPauseCallback);
+      StorageSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
       expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
     });
 
     it('should return false if context has stopped replicating', () => {
       const dummyContext = {};
       const obj = {
-        onPauseCallback: () => {
+        onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startReplicationForContext(dummyContext, obj.onPauseCallback);
+      StorageSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
       expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
       StorageSyncManager.stopReplicationForContext(dummyContext);
       expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
@@ -178,13 +193,52 @@ describe('StorageSyncManager', () => {
     it('should remove context from cache manager', () => {
       const dummyContext = {};
       const obj = {
-        onPauseCallback: () => {
+        onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startReplicationForContext(dummyContext, obj.onPauseCallback);
+      StorageSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
       expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
       StorageSyncManager._removeContextFromCache(dummyContext);
       expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
+    });
+  });
+
+  describe('function pullUpdatesForContext', () => {
+    it('should exist', () => {
+      expect(StorageSyncManager.pullUpdatesForContext).toBeDefined();
+    });
+
+    it('should start filtered read replication and wait for completeness', () => {
+      const dummyContext = createPouchDBMock();
+      const obj = {
+        onCompleteCallback: () => {
+        },
+      };
+
+      spyOn(obj, 'onCompleteCallback');
+      StorageSyncManager.pullUpdatesForContext(dummyContext, obj.onCompleteCallback);
+      // expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      expect(obj.onCompleteCallback).toHaveBeenCalled();
+    });
+
+    it('should return null if no context was given', () => {
+      const result = StorageSyncManager.pullUpdatesForContext(123, 123);
+      expect(result).toBe(null);
+    });
+
+    it('should return null if no callback was given', () => {
+      const result = StorageSyncManager.pullUpdatesForContext(123);
+      expect(result).toBe(null);
+    });
+
+    it('should use filter settings from common/config', () => {
+      const dummyContext = createPouchDBMock();
+      const obj = {
+        onCompleteCallback: () => {
+        },
+      };
+      StorageSyncManager.pullUpdatesForContext(dummyContext, obj.onCompleteCallback);
+      expect(spies.filterSettingSpy).toHaveBeenCalled();
     });
   });
 });
