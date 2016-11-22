@@ -31,8 +31,30 @@ class TaskConfigurationGateway {
    * @return {AbortablePromise<TaskConfiguration|Error>}
    */
   uploadTaskConfiguration(name, file) {
-    const url = this._apiService.getApiUrl('/taskConfiguration');
+    const url = this._apiService.getApiUrl('/taskConfiguration/simple');
+    return this._uploadConfiguration(url, name, file);
+  }
 
+  /**
+   * Upload and create new TaskConfiguration
+   *
+   * @return {AbortablePromise<RequirementsConfiguration|Error>}
+   */
+  uploadRequirementsConfiguration(name, file) {
+    const url = this._apiService.getApiUrl('/taskConfiguration/requirements');
+    return this._uploadConfiguration(url, name, file);
+  }
+
+  /**
+   * Upload and create new Configuration file
+   *
+   * @param {string} url
+   * @param {string} name
+   * @param {File} file
+   * @return {AbortablePromise}
+   * @private
+   */
+  _uploadConfiguration(url, name, file) {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('file', file);
