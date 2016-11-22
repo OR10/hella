@@ -46,7 +46,7 @@ class ErrorInterceptor {
     } else if (rejection.status >= 500 && rejection.status <= 599) {
       this._logger.warn('http:servererror', 'A server error (5xx) occured upon a request', rejection);
       this._$rootScope.$broadcast('serverError', rejection.data.error);
-    } else if (rejection.status >= 400 && rejection.status <= 499 && rejection.status !== 409) {
+    } else if (rejection.status >= 400 && rejection.status <= 499 && rejection.status !== 409 && rejection.status !== 406) {
       this._logger.warn('http:clienterror', 'A client error (4xx) occured upon a request', rejection);
       this._$rootScope.$broadcast('clientError', rejection.data.error);
     } else if (rejection.status === 409) {
