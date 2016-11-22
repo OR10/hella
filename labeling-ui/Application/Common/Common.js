@@ -25,6 +25,7 @@ import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
 import DebouncerService from './Services/DebouncerService';
 import CouchDbModelSerializer from './Services/CouchDbModelSerializer';
+import CouchDbModelDeserializer from './Services/CouchDbModelDeserializer';
 
 import PackagingExecutor from './Services/PackagingExecutor';
 import ConfigurableAssemblyFactory from './Services/PackagingExecutor/ConfigurableAssemblyFactory';
@@ -86,6 +87,7 @@ class Common extends Module {
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
     this.module.service('debouncerService', DebouncerService);
     this.module.service('couchDbModelSerializer', CouchDbModelSerializer);
+    this.module.service('couchDbModelDeserializer', CouchDbModelDeserializer);
 
     this.module.service('packagingExecutor', PackagingExecutor);
     this.module.service('assemblyFactory', ConfigurableAssemblyFactory);
