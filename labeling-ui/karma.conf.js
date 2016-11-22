@@ -20,7 +20,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['junit', 'jasmine-diff', 'progress', 'verbose', 'coverage'],
+    reporters: ['junit', 'coverage', 'mocha'],
     junitReporter: {
       outputDir: 'Logs/Unit',
       outputFile: 'test-unit-results.xml'
