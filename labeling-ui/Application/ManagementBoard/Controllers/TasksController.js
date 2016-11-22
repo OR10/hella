@@ -50,7 +50,7 @@ class TasksController {
      */
     this.taskCount = null;
 
-    this.showReviewTab = project.labelingValidationProcesses.includes('review');
+    this.showReviewTab = project.labelingValidationProcesses.indexOf('review') !== -1;
 
     this._loadTaskCount(this.projectId);
 
