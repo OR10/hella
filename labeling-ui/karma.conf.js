@@ -42,7 +42,8 @@ module.exports = function (config) {
         served: true,
       },
       'Tests/Support/Jasmine/DataProvider.js',
-      {pattern: 'Tests/Support/Jasmine/Matchers/**/*.js', included: false, served: true, watched: true}
+      {pattern: 'Tests/Support/Jasmine/Matchers/**/*.js', included: false, served: true, watched: true},
+      {pattern: 'Tests/Support/PouchDb/**/*', included: false, served: true, watched: true},
       //'.workaround/jquery.js',
       //'.workaround/angular.js',
       //'tests/fixtures/**/*',
