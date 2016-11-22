@@ -1,7 +1,7 @@
 // Karma configuration
 var ip = require('ip');
 
-module.exports = function(config) {
+module.exports = function (config) {
   var newConfig = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -20,7 +20,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['junit', 'coverage', 'mocha'],
+    reporters: ['junit', 'coverage', 'jasmine-diff', 'mocha'],
     junitReporter: {
       outputDir: 'Logs/Unit',
       outputFile: 'test-unit-results.xml'
@@ -107,6 +107,14 @@ module.exports = function(config) {
     coverageReporter: {
       type: 'html',
       dir: 'Logs/Coverage'
+    },
+
+    mochaReporter: {
+      output: 'autowatch',
+    },
+
+    jasmineDiff: {
+      pretty: 'true',
     }
   };
 
