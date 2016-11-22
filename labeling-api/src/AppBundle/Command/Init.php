@@ -5,6 +5,7 @@ namespace AppBundle\Command;
 use AppBundle\Service;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use AppBundle\Model\TaskConfiguration;
 use Doctrine\CouchDB;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -380,7 +381,7 @@ class Init extends Base
 
         $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
 
-        $config = new Model\TaskConfiguration(
+        $config = new TaskConfiguration\SimpleXml(
             'Sample Configuration',
             'example.xml',
             'application/xml',
