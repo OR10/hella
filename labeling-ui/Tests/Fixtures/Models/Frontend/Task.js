@@ -1,10 +1,12 @@
 import Task from 'Application/Task/Model/Task';
+import videoFixture from './Video';
 
 export default new Task(
   {
     "id": "5242f8bff15774fe72586e569a05ce0c",
     "userId": null,
     "videoId": "5242f8bff15774fe72586e569a04fa96",
+    "video": videoFixture,
     "projectId": "5242f8bff15774fe72586e569a0469e0",
     "descriptionTitle": "Identify the person",
     "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
