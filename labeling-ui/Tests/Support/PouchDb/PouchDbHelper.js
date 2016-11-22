@@ -69,3 +69,5 @@ class PouchDbHelper {
     return `__annostation_unit_test__${uuid.v4()}`;
   }
 }
+
+export default PouchDbHelper;
