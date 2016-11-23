@@ -106,7 +106,7 @@ class TaskConfiguration extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $taskConfiguration->getUserId()) {
-            Throw new BadRequestHttpException();
+            throw new BadRequestHttpException();
         }
 
         return new View\View(
@@ -128,7 +128,7 @@ class TaskConfiguration extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $taskConfiguration->getUserId()) {
-            Throw new BadRequestHttpException();
+            throw new BadRequestHttpException();
         }
         
         return new HttpFoundation\Response(

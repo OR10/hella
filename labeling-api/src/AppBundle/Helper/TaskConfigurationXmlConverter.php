@@ -163,7 +163,8 @@ class TaskConfigurationXmlConverter
         return $xpath->evaluate("number(/*/@minimalVisibleShapeOverflow)");
     }
 
-    public function isMetaLabelingConfiguration() {
+    public function isMetaLabelingConfiguration()
+    {
         $xpath = new \DOMXPath($this->document);
         return $xpath->query('/metaLabelTaskConfig')->length === 1;
     }

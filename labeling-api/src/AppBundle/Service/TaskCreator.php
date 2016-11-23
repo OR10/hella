@@ -308,7 +308,8 @@ class TaskCreator
         $minimalVisibleShapeOverflow = null,
         $drawingToolOptions = [],
         Model\TaskConfiguration $taskConfiguration = null
-    ) : Model\LabelingTask {
+    ) : Model\LabelingTask
+    {
         switch ($instruction) {
             case Model\LabelingTask::INSTRUCTION_LANE:
             case Model\LabelingTask::INSTRUCTION_PARKED_CARS:

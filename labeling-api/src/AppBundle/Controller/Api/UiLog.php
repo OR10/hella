@@ -53,7 +53,7 @@ class UiLog extends Controller\Base
         foreach ($logMessages as $logMessage) {
             try {
                 $message = json_encode($logMessage);
-            }catch (\Exception $exception) {
+            } catch (\Exception $exception) {
                 $message = $logMessage;
             }
             $this->loggerFacade->logString($message, $this->convertSeverity($logMessage['level']));

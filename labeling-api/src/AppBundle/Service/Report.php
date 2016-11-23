@@ -267,16 +267,16 @@ class Report
         $tasks = $this->projectFacade->getTasksByProject($project);
         $classes = [];
         foreach ($tasks as $task) {
-            $labeledThingInFrames = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
+            $labeledThingInFrames           = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
             $labeledThingInFramesWithGhosts = $this->ghostClassesPropagation->propagateGhostClasses(
                 $labeledThingInFrames
             );
-            foreach($labeledThingInFramesWithGhosts as $labeledThingInFrame) {
-                foreach($labeledThingInFrame->getClassesWithGhostClasses() as $classWithGhostClass) {
+            foreach ($labeledThingInFramesWithGhosts as $labeledThingInFrame) {
+                foreach ($labeledThingInFrame->getClassesWithGhostClasses() as $classWithGhostClass) {
                     if (isset($classes[$classWithGhostClass])) {
-                        $classes[$classWithGhostClass] +=1;
-                    }else{
-                        $classes[$classWithGhostClass] =1;
+                        $classes[$classWithGhostClass] += 1;
+                    } else {
+                        $classes[$classWithGhostClass] = 1;
                     }
                 }
             }
