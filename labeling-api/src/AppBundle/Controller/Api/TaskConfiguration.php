@@ -13,6 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use \AppBundle\Model;
 use \AppBundle\Database\Facade;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
@@ -89,7 +90,53 @@ class TaskConfiguration extends Controller\Base
         $taskConfigurations = $this->taskConfigurationFacade->getTaskConfigurationsByUser($user);
 
         return new View\View(
-            new Response\SimpleTaskConfiguration($taskConfigurations)
+            new Response\SimpleTaskConfigurationList($taskConfigurations)
+        );
+    }
+
+    /**
+     * @Rest\Get("/{taskConfiguration}")
+     *
+     * @param TaskConfigurationModel $taskConfiguration
+     *
+     * @return View\View
+     */
+    public function getTaskConfigurationAction(Model\TaskConfiguration $taskConfiguration)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->getId() !== $taskConfiguration->getUserId()) {
+            Throw new BadRequestHttpException();
+        }
+
+        return new View\View(
+            new Response\SimpleTaskConfiguration($taskConfiguration)
+        );
+    }
+
+
+
+    /**
+     * @Rest\Get("/file/{taskConfiguration}")
+     *
+     * @param TaskConfigurationModel $taskConfiguration
+     *
+     * @return HttpFoundation\Response
+     */
+    public function getTaskConfigurationFileAction(Model\TaskConfiguration $taskConfiguration)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->getId() !== $taskConfiguration->getUserId()) {
+            Throw new BadRequestHttpException();
+        }
+        
+        return new HttpFoundation\Response(
+            $taskConfiguration->getRawData(),
+            HttpFoundation\Response::HTTP_OK,
+            [
+                'Content-Type' => $taskConfiguration->getContentType(),
+            ]
         );
     }
 
