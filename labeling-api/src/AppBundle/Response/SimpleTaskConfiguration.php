@@ -18,9 +18,16 @@ class SimpleTaskConfiguration
         $taskConfigurations
     ) {
         $this->result = array_map(function(Model\TaskConfiguration $taskConfiguration) {
+            $prefix = '';
+            if ($taskConfiguration instanceof Model\TaskConfiguration\SimpleXml) {
+                $prefix = 'SimpleXml';
+            }
+            if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
+                $prefix = 'RequirementsXml';
+            }
             return [
                 'id' => $taskConfiguration->getId(),
-                'name' => $taskConfiguration->getName(),
+                'name' => sprintf('%s (%s)', $taskConfiguration->getName(), $prefix),
             ];
         }, $taskConfigurations);
     }
