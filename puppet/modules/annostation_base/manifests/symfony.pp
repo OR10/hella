@@ -1,5 +1,5 @@
 define annostation_base::symfony(
-  $app_path,
+  $www_root,
   $configure_nginx = false,
   $app_main_script = 'app.php',
   $client_max_body_size = '512M',
@@ -43,7 +43,7 @@ define annostation_base::symfony(
     }
 
     annostation_base::nginx_vhost { $name:
-      vhostDir          => "${app_path}/web",
+      vhostDir          => $www_root,
       vhostPort         => $_vhostPort,
       httpv2            => $httpv2,
       sslCertFile       => $_sslCertFile,
@@ -61,7 +61,7 @@ define annostation_base::symfony(
       ssl                 => $httpv2,
       ssl_only            => $httpv2,
       ensure              => present,
-      www_root            => "${app_path}/web",
+      www_root            => $www_root,
       vhost               => $name,
       index_files         => [$app_main_script],
       try_files           => ['$uri', $not_found_redirect],
