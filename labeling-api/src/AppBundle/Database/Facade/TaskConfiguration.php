@@ -40,7 +40,7 @@ class TaskConfiguration
     {
         try {
             $return = $this->documentManager->find(Model\TaskConfiguration\SimpleXml::class, $id);
-        }catch (CouchDB\InvalidDocumentTypeException $exception) {
+        } catch (CouchDB\InvalidDocumentTypeException $exception) {
             $return = $this->documentManager->find(Model\TaskConfiguration\RequirementsXml::class, $id);
         }
 
