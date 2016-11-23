@@ -765,6 +765,157 @@ describe('Cuboid', () => {
             done();
           });
       });
+
+      it('should add to width of loaded cuboid by keyboard', done => {
+        const keySequences = ['44444444444444444444'];
+
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
+          .then(() => {
+            const actions = browser.actions();
+            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
+            actions.perform();
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardAdd')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardAdd);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame);
+            done();
+          });
+      });
+
+      it('should substract from width of loaded cuboid by keyboard', done => {
+        const keySequences = ['66666666666666666666'];
+
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
+          .then(() => {
+            const actions = browser.actions();
+            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
+            actions.perform();
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstract')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardSubstract);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame);
+            done();
+          });
+      });
+
+      it('should add to width of loaded cuboid by keyboard in fast mode', done => {
+        const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.SHIFT];
+
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
+          .then(() => {
+            const actions = browser.actions();
+            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
+            actions.perform();
+
+            // Currently I have no idea why this is needed.
+            return browser.sleep(3000);
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardAddFast')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardAddFast);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame);
+            done();
+          });
+      });
+
+      it('should substract from width of loaded cuboid by keyboard in fast mode', done => {
+        const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.SHIFT];
+
+        mock(sharedMocks.concat([
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
+          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame,
+        ]));
+
+        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+          .then(() => {
+            browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
+          .then(() => {
+            const actions = browser.actions();
+            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
+            actions.perform();
+          })
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstractFast')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardSubstractFast);
+            browser.sleep(1000);
+          })
+          // .then(() => dumpAllRequestsMade(mock))
+          .then(() => getMockRequestsMade(mock))
+          .then(requests => {
+            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame);
+            done();
+          });
+      });
     });
 
     describe('Depth', () => {
