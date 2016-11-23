@@ -591,7 +591,7 @@ class PaperCuboid extends PaperShape {
     const allowedHandleNames = [
       CuboidInteractionResolver.DEPTH,
       CuboidInteractionResolver.HEIGHT,
-      CuboidInteractionResolver.WIDTH
+      CuboidInteractionResolver.WIDTH,
     ];
 
     if (!allowedHandleNames.includes(handleName)) {
