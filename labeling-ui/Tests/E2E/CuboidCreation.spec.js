@@ -215,7 +215,7 @@ describe('Cuboid creation', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('2')
+            .sendKeys('x')
             .perform();
         })
         .then(
@@ -287,7 +287,7 @@ describe('Cuboid creation', () => {
         })
         .then(() => {
           browser.actions()
-            .sendKeys('2')
+            .sendKeys('x')
             .perform();
         })
         .then(
