@@ -10,6 +10,7 @@ define annostation_base::symfony(
   $authBasicFile = undef,
   $sslCertFile = undef,
   $sslKeyFile = undef,
+  $listenIp = '*',
 ) {
   include ::php
   include ::nginx
@@ -52,6 +53,7 @@ define annostation_base::symfony(
       clientMaxBodySize => $client_max_body_size,
       authBasic         => $authBasic,
       authBasicFile     => $authBasicFile,
+      listenIp          => $listenIp,
     }
 
     nginx::resource::location { "${name}_php":

@@ -10,6 +10,7 @@ class labeling_api::app(
   $httpv2 = false,
   $sslCertFile = undef,
   $sslKeyFile = undef,
+  $listenIp = '*',
 ) {
   include ::labeling_api::common
 
@@ -27,6 +28,7 @@ class labeling_api::app(
     sslCertFile => $sslCertFile,
     sslKeyFile => $sslKeyFile,
     not_found_redirect => '/labeling/index.html',
+    listenIp => $listenIp,
   }
 
   if $configure_nginx {
