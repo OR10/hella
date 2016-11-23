@@ -117,7 +117,7 @@ class TaskConfiguration extends Controller\Base
 
 
     /**
-     * @Rest\Get("/file/{taskConfiguration}")
+     * @Rest\Get("/{taskConfiguration}/file")
      *
      * @param TaskConfigurationModel $taskConfiguration
      *
