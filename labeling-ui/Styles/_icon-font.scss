@@ -29,8 +29,8 @@
 .icon-area-city-big:before,
 .icon-area-residential:before,
 .icon-area-residential2:before,
-.icon-area-siburban-big:before,
 .icon-area-suburban:before,
+.icon-area-suburban-big:before,
 .icon-bookmark:before,
 .icon-check:before,
 .icon-control-backwards:before,
@@ -67,6 +67,9 @@
 .icon-selection-on:before,
 .icon-selection-start:before,
 .icon-selection-view:before,
+.icon-tool-cuboid:before,
+.icon-tool-pedestrian:before,
+.icon-tool-rectangle:before,
 .icon-traffic-moderate:before,
 .icon-up:before,
 .icon-view-brightness:before,
@@ -94,103 +97,109 @@
 .icon-area-city-big:before { content: "\f101"; }
 .icon-area-residential:before { content: "\f102"; }
 .icon-area-residential2:before { content: "\f103"; }
-.icon-area-siburban-big:before { content: "\f104"; }
 .icon-area-suburban:before { content: "\f105"; }
+.icon-area-suburban-big:before { content: "\f136"; }
 .icon-bookmark:before { content: "\f106"; }
-.icon-check:before { content: "\f132"; }
-.icon-control-backwards:before { content: "\f107"; }
-.icon-control-forwards:before { content: "\f108"; }
-.icon-control-next:before { content: "\f109"; }
-.icon-control-pause:before { content: "\f10a"; }
-.icon-control-play:before { content: "\f10b"; }
-.icon-control-play-steps:before { content: "\f10c"; }
-.icon-control-previous:before { content: "\f10d"; }
-.icon-down:before { content: "\f10e"; }
-.icon-general-chat:before { content: "\f10f"; }
-.icon-general-faq:before { content: "\f110"; }
-.icon-general-loggedin:before { content: "\f111"; }
-.icon-general-loggedout:before { content: "\f112"; }
-.icon-general-settings:before { content: "\f113"; }
-.icon-general-timer:before { content: "\f114"; }
-.icon-help:before { content: "\f115"; }
-.icon-left:before { content: "\f116"; }
-.icon-next:before { content: "\f117"; }
-.icon-ok:before { content: "\f118"; }
-.icon-precipitation-norain:before { content: "\f119"; }
-.icon-precipitation-rain:before { content: "\f11a"; }
-.icon-previous:before { content: "\f11b"; }
-.icon-right:before { content: "\f11c"; }
-.icon-selection-add:before { content: "\f11d"; }
-.icon-selection-delete:before { content: "\f11e"; }
-.icon-selection-end:before { content: "\f11f"; }
-.icon-selection-forwards:before { content: "\f120"; }
-.icon-selection-generate:before { content: "\f121"; }
-.icon-selection-goend:before { content: "\f122"; }
-.icon-selection-gostart:before { content: "\f123"; }
-.icon-selection-off:before { content: "\f124"; }
-.icon-selection-off2:before { content: "\f125"; }
-.icon-selection-on:before { content: "\f126"; }
-.icon-selection-start:before { content: "\f127"; }
-.icon-selection-view:before { content: "\f128"; }
-.icon-traffic-moderate:before { content: "\f129"; }
-.icon-up:before { content: "\f12a"; }
-.icon-view-brightness:before { content: "\f12b"; }
-.icon-view-fullscreen:before { content: "\f12c"; }
-.icon-view-zoom:before { content: "\f12d"; }
-.icon-view-zoom-in:before { content: "\f12e"; }
-.icon-view-zoom-out:before { content: "\f12f"; }
-.icon-view-zoom-resize:before { content: "\f130"; }
-.icon-weather-sunny:before { content: "\f131"; }
+.icon-check:before { content: "\f107"; }
+.icon-control-backwards:before { content: "\f108"; }
+.icon-control-forwards:before { content: "\f109"; }
+.icon-control-next:before { content: "\f10a"; }
+.icon-control-pause:before { content: "\f10b"; }
+.icon-control-play:before { content: "\f10c"; }
+.icon-control-play-steps:before { content: "\f10d"; }
+.icon-control-previous:before { content: "\f10e"; }
+.icon-down:before { content: "\f10f"; }
+.icon-general-chat:before { content: "\f110"; }
+.icon-general-faq:before { content: "\f111"; }
+.icon-general-loggedin:before { content: "\f112"; }
+.icon-general-loggedout:before { content: "\f113"; }
+.icon-general-settings:before { content: "\f114"; }
+.icon-general-timer:before { content: "\f115"; }
+.icon-help:before { content: "\f116"; }
+.icon-left:before { content: "\f117"; }
+.icon-next:before { content: "\f118"; }
+.icon-ok:before { content: "\f119"; }
+.icon-precipitation-norain:before { content: "\f11a"; }
+.icon-precipitation-rain:before { content: "\f11b"; }
+.icon-previous:before { content: "\f11c"; }
+.icon-right:before { content: "\f11d"; }
+.icon-selection-add:before { content: "\f11e"; }
+.icon-selection-delete:before { content: "\f11f"; }
+.icon-selection-end:before { content: "\f120"; }
+.icon-selection-forwards:before { content: "\f121"; }
+.icon-selection-generate:before { content: "\f122"; }
+.icon-selection-goend:before { content: "\f123"; }
+.icon-selection-gostart:before { content: "\f124"; }
+.icon-selection-off:before { content: "\f125"; }
+.icon-selection-off2:before { content: "\f126"; }
+.icon-selection-on:before { content: "\f127"; }
+.icon-selection-start:before { content: "\f128"; }
+.icon-selection-view:before { content: "\f129"; }
+.icon-tool-cuboid:before { content: "\f12a"; }
+.icon-tool-pedestrian:before { content: "\f12b"; }
+.icon-tool-rectangle:before { content: "\f12c"; }
+.icon-traffic-moderate:before { content: "\f12d"; }
+.icon-up:before { content: "\f12e"; }
+.icon-view-brightness:before { content: "\f12f"; }
+.icon-view-fullscreen:before { content: "\f130"; }
+.icon-view-zoom:before { content: "\f131"; }
+.icon-view-zoom-in:before { content: "\f132"; }
+.icon-view-zoom-out:before { content: "\f133"; }
+.icon-view-zoom-resize:before { content: "\f134"; }
+.icon-weather-sunny:before { content: "\f135"; }
 
 
 $font-icon-font-area-city: "\f100"; 
 $font-icon-font-area-city-big: "\f101"; 
 $font-icon-font-area-residential: "\f102"; 
 $font-icon-font-area-residential2: "\f103"; 
-$font-icon-font-area-siburban-big: "\f104"; 
 $font-icon-font-area-suburban: "\f105"; 
+$font-icon-font-area-suburban-big: "\f136"; 
 $font-icon-font-bookmark: "\f106"; 
-$font-icon-font-check: "\f132"; 
-$font-icon-font-control-backwards: "\f107"; 
-$font-icon-font-control-forwards: "\f108"; 
-$font-icon-font-control-next: "\f109"; 
-$font-icon-font-control-pause: "\f10a"; 
-$font-icon-font-control-play: "\f10b"; 
-$font-icon-font-control-play-steps: "\f10c"; 
-$font-icon-font-control-previous: "\f10d"; 
-$font-icon-font-down: "\f10e"; 
-$font-icon-font-general-chat: "\f10f"; 
-$font-icon-font-general-faq: "\f110"; 
-$font-icon-font-general-loggedin: "\f111"; 
-$font-icon-font-general-loggedout: "\f112"; 
-$font-icon-font-general-settings: "\f113"; 
-$font-icon-font-general-timer: "\f114"; 
-$font-icon-font-help: "\f115"; 
-$font-icon-font-left: "\f116"; 
-$font-icon-font-next: "\f117"; 
-$font-icon-font-ok: "\f118"; 
-$font-icon-font-precipitation-norain: "\f119"; 
-$font-icon-font-precipitation-rain: "\f11a"; 
-$font-icon-font-previous: "\f11b"; 
-$font-icon-font-right: "\f11c"; 
-$font-icon-font-selection-add: "\f11d"; 
-$font-icon-font-selection-delete: "\f11e"; 
-$font-icon-font-selection-end: "\f11f"; 
-$font-icon-font-selection-forwards: "\f120"; 
-$font-icon-font-selection-generate: "\f121"; 
-$font-icon-font-selection-goend: "\f122"; 
-$font-icon-font-selection-gostart: "\f123"; 
-$font-icon-font-selection-off: "\f124"; 
-$font-icon-font-selection-off2: "\f125"; 
-$font-icon-font-selection-on: "\f126"; 
-$font-icon-font-selection-start: "\f127"; 
-$font-icon-font-selection-view: "\f128"; 
-$font-icon-font-traffic-moderate: "\f129"; 
-$font-icon-font-up: "\f12a"; 
-$font-icon-font-view-brightness: "\f12b"; 
-$font-icon-font-view-fullscreen: "\f12c"; 
-$font-icon-font-view-zoom: "\f12d"; 
-$font-icon-font-view-zoom-in: "\f12e"; 
-$font-icon-font-view-zoom-out: "\f12f"; 
-$font-icon-font-view-zoom-resize: "\f130"; 
-$font-icon-font-weather-sunny: "\f131"; 
+$font-icon-font-check: "\f107"; 
+$font-icon-font-control-backwards: "\f108"; 
+$font-icon-font-control-forwards: "\f109"; 
+$font-icon-font-control-next: "\f10a"; 
+$font-icon-font-control-pause: "\f10b"; 
+$font-icon-font-control-play: "\f10c"; 
+$font-icon-font-control-play-steps: "\f10d"; 
+$font-icon-font-control-previous: "\f10e"; 
+$font-icon-font-down: "\f10f"; 
+$font-icon-font-general-chat: "\f110"; 
+$font-icon-font-general-faq: "\f111"; 
+$font-icon-font-general-loggedin: "\f112"; 
+$font-icon-font-general-loggedout: "\f113"; 
+$font-icon-font-general-settings: "\f114"; 
+$font-icon-font-general-timer: "\f115"; 
+$font-icon-font-help: "\f116"; 
+$font-icon-font-left: "\f117"; 
+$font-icon-font-next: "\f118"; 
+$font-icon-font-ok: "\f119"; 
+$font-icon-font-precipitation-norain: "\f11a"; 
+$font-icon-font-precipitation-rain: "\f11b"; 
+$font-icon-font-previous: "\f11c"; 
+$font-icon-font-right: "\f11d"; 
+$font-icon-font-selection-add: "\f11e"; 
+$font-icon-font-selection-delete: "\f11f"; 
+$font-icon-font-selection-end: "\f120"; 
+$font-icon-font-selection-forwards: "\f121"; 
+$font-icon-font-selection-generate: "\f122"; 
+$font-icon-font-selection-goend: "\f123"; 
+$font-icon-font-selection-gostart: "\f124"; 
+$font-icon-font-selection-off: "\f125"; 
+$font-icon-font-selection-off2: "\f126"; 
+$font-icon-font-selection-on: "\f127"; 
+$font-icon-font-selection-start: "\f128"; 
+$font-icon-font-selection-view: "\f129"; 
+$font-icon-font-tool-cuboid: "\f12a"; 
+$font-icon-font-tool-pedestrian: "\f12b"; 
+$font-icon-font-tool-rectangle: "\f12c"; 
+$font-icon-font-traffic-moderate: "\f12d"; 
+$font-icon-font-up: "\f12e"; 
+$font-icon-font-view-brightness: "\f12f"; 
+$font-icon-font-view-fullscreen: "\f130"; 
+$font-icon-font-view-zoom: "\f131"; 
+$font-icon-font-view-zoom-in: "\f132"; 
+$font-icon-font-view-zoom-out: "\f133"; 
+$font-icon-font-view-zoom-resize: "\f134"; 
+$font-icon-font-weather-sunny: "\f135"; 
