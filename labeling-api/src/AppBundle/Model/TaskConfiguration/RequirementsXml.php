@@ -87,7 +87,24 @@ class RequirementsXml implements TaskConfiguration
 
     public function getRawData()
     {
-        // TODO: Implement getRawData() method.
+        $filename = $this->getFilename();
+
+        if (isset($this->file[$filename])) {
+            return $this->file[$filename]->getRawData();
+        }
+
+        throw new \RuntimeException('Broken Configuration document: missing attachment');
+    }
+
+    public function getContentType()
+    {
+        $filename = $this->getFilename();
+
+        if (isset($this->file[$filename])) {
+            return $this->file[$filename]->getContentType();
+        }
+
+        throw new \RuntimeException('Broken Configuration document: missing attachment');
     }
 
     /**
@@ -149,5 +166,10 @@ class RequirementsXml implements TaskConfiguration
     public function isMetaLabelingConfiguration()
     {
         // TODO: Implement isMetaLabelingConfiguration() method.
+    }
+
+    public function getType()
+    {
+        return 'requirements_xml';
     }
 }

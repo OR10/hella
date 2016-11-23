@@ -168,6 +168,19 @@ class SimpleXml implements TaskConfiguration
         throw new \RuntimeException('Broken Configuration document: missing attachment');
     }
 
+
+
+    public function getContentType()
+    {
+        $filename = $this->getFilename();
+
+        if (isset($this->file[$filename])) {
+            return $this->file[$filename]->getContentType();
+        }
+
+        throw new \RuntimeException('Broken Configuration document: missing attachment');
+    }
+
     /**
      * Quickly access information about whether this is a meta labeling configuration or not.
      *
@@ -181,5 +194,10 @@ class SimpleXml implements TaskConfiguration
         }
 
         return $json['isMetaLabelingConfiguration'];
+    }
+
+    public function getType()
+    {
+        return 'simple_xml';
     }
 }
