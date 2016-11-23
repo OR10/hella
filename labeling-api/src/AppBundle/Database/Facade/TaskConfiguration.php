@@ -38,9 +38,9 @@ class TaskConfiguration
      */
     public function find($id)
     {
-        $return = $this->documentManager->find(Model\TaskConfiguration\SimpleXml::class, $id);
-
-        if ($return === null) {
+        try {
+            $return = $this->documentManager->find(Model\TaskConfiguration\SimpleXml::class, $id);
+        }catch (CouchDB\InvalidDocumentTypeException $exception) {
             $return = $this->documentManager->find(Model\TaskConfiguration\RequirementsXml::class, $id);
         }
 

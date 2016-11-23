@@ -191,56 +191,75 @@ class TaskCreator
                     if ($legacyTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE) {
                         $predefinedClasses = ['ignore-vehicle'];
                     }
+
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
                         $frameNumberMapping,
-                        Model\LabelingTask::TYPE_OBJECT_LABELING,
-                        $legacyTaskInstruction['drawingTool'],
-                        $predefinedClasses,
                         $imageTypes,
-                        $legacyTaskInstruction['instruction'],
-                        $minimalVisibleShapeOverflow,
-                        $drawingToolOptions,
                         $metadata,
                         $project->hasReviewValidationProcess(),
                         $project->hasRevisionValidationProcess(),
+                        Model\LabelingTask::TYPE_OBJECT_LABELING,
+                        $legacyTaskInstruction['drawingTool'],
+                        $predefinedClasses,
+                        $legacyTaskInstruction['instruction'],
+                        $minimalVisibleShapeOverflow,
+                        $drawingToolOptions,
                         null
                     );
                 }
 
                 foreach ($project->getGenericXmlTaskInstructions() as $genericXmlTaskInstruction) {
-                    $this->checkGenericXmlTaskInstructionPermissions($genericXmlTaskInstruction, $user);
-                    $predefinedClasses = [];
-                    if ($genericXmlTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
-                        $predefinedClasses = ['parked-car'];
-                    }
-
+                    $predefinedClasses   = [];
+                    $taskType            = null;
+                    $instruction         = null;
                     $taskConfigurationId = $genericXmlTaskInstruction['taskConfigurationId'];
+
                     if ($taskConfigurationId !== null) {
                         $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
                     } else {
                         $taskConfiguration = null;
                     }
 
-                    $taskType = $taskConfiguration->isMetaLabelingConfiguration()
-                        ? Model\LabelingTask::TYPE_META_LABELING
-                        : Model\LabelingTask::TYPE_OBJECT_LABELING;
+                    $this->checkGenericXmlTaskInstructionPermissions($genericXmlTaskInstruction, $user);
+
+                    /**
+                     * Temporary skip requirement xml configuration
+                     * This is still in development phase
+                     *
+                     * @TODO REMOVE THIS CHECK LATER
+                     */
+                    if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
+                        continue;
+                    }
+
+                    if ($taskConfiguration instanceof Model\TaskConfiguration\SimpleXml) {
+                        if ($genericXmlTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
+                            $predefinedClasses = ['parked-car'];
+                        }
+
+                        $taskType = $taskConfiguration->isMetaLabelingConfiguration()
+                            ? Model\LabelingTask::TYPE_META_LABELING
+                            : Model\LabelingTask::TYPE_OBJECT_LABELING;
+                    }
+
+                    $instruction = $genericXmlTaskInstruction['instruction'];
 
                     $tasks[] = $this->addTask(
                         $video,
                         $project,
                         $frameNumberMapping,
-                        $taskType,
-                        null,
-                        $predefinedClasses,
                         $imageTypes,
-                        $genericXmlTaskInstruction['instruction'],
-                        $minimalVisibleShapeOverflow,
-                        $drawingToolOptions,
                         $metadata,
                         $project->hasReviewValidationProcess(),
                         $project->hasRevisionValidationProcess(),
+                        $taskType,
+                        null,
+                        $predefinedClasses,
+                        $instruction,
+                        $minimalVisibleShapeOverflow,
+                        $drawingToolOptions,
                         $taskConfiguration
                     );
                 }
@@ -278,16 +297,16 @@ class TaskCreator
         Model\Video $video,
         Model\Project $project,
         $frameNumberMapping,
-        $taskType,
-        $drawingTool,
-        $predefinedClasses,
         $imageTypes,
-        $instruction,
-        $minimalVisibleShapeOverflow,
-        $drawingToolOptions,
         $metadata,
         $review,
         $revision,
+        $taskType = null,
+        $drawingTool = null,
+        $predefinedClasses = [],
+        $instruction = null,
+        $minimalVisibleShapeOverflow = null,
+        $drawingToolOptions = [],
         Model\TaskConfiguration $taskConfiguration = null
     ) : Model\LabelingTask {
         switch ($instruction) {
@@ -300,7 +319,19 @@ class TaskCreator
                 $hideAttributeSelector = false;
         }
 
-        if ($taskConfiguration === null) {
+        $labelStructure   = null;
+        $labelStructureUi = null;
+        if ($taskConfiguration instanceof Model\TaskConfiguration\SimpleXml) {
+            $taskConfigurationJson = $taskConfiguration->getJson();
+            $labelStructure        = $taskConfigurationJson['labelStructure'];
+            $labelStructureUi      = $taskConfigurationJson['labelStructureUi'];
+            // Replacing the drawingTool with the given drawingTool from the task configuration
+            $drawingTool                 = $taskConfigurationJson['drawingTool'];
+            $drawingToolOptions          = $taskConfigurationJson['drawingToolOptions'];
+            $minimalVisibleShapeOverflow = $taskConfigurationJson['minimalVisibleShapeOverflow'];
+        } elseif ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
+            $taskType = Model\LabelingTask::TYPE_OBJECT_LABELING;
+        } else {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
                 $taskType,
                 $instruction
@@ -309,14 +340,6 @@ class TaskCreator
                 $taskType,
                 $instruction
             );
-        } else {
-            $taskConfigurationJson = $taskConfiguration->getJson();
-            $labelStructure        = $taskConfigurationJson['labelStructure'];
-            $labelStructureUi      = $taskConfigurationJson['labelStructureUi'];
-            // Replacing the drawingTool with the given drawingTool from the task configuration
-            $drawingTool                 = $taskConfigurationJson['drawingTool'];
-            $drawingToolOptions          = $taskConfigurationJson['drawingToolOptions'];
-            $minimalVisibleShapeOverflow = $taskConfigurationJson['minimalVisibleShapeOverflow'];
         }
 
         $taskConfigurationId = $taskConfiguration !== null
@@ -342,9 +365,15 @@ class TaskCreator
             'Which side does one see from the person and from which side is the person entering the screen?'
         );
 
-        $task->setLabelStructure($labelStructure);
-        $task->setLabelStructureUi($labelStructureUi);
-        $task->setLabelInstruction($instruction);
+        if ($labelStructure !== null) {
+            $task->setLabelStructure($labelStructure);
+        }
+        if ($labelStructureUi !== null) {
+            $task->setLabelStructureUi($labelStructureUi);
+        }
+        if ($instruction !== null) {
+            $task->setLabelInstruction($instruction);
+        }
 
         $task->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
         $task->setDrawingToolOptions($drawingToolOptions);
