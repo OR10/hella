@@ -10,6 +10,7 @@
             <argument type="service" id="templating"/>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument>%redirectAfterLogin%</argument>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.video"
