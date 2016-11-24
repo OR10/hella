@@ -7,7 +7,6 @@ describe('LabeledObject', () => {
   using([
    [{
      id: '123',
-     rev: '456',
      classes: ['foo', 'bar'],
      incomplete: true,
    }],
@@ -29,7 +28,6 @@ describe('LabeledObject', () => {
   it('should ensure classes are unique', () => {
     const labeledObject = new LabeledObject({
       id: '123',
-      rev: '456',
       classes: ['foo', 'bar'],
       incomplete: true,
     });
@@ -42,7 +40,6 @@ describe('LabeledObject', () => {
   it('should allow classes to be added', () => {
     const labeledObject = new LabeledObject({
       id: '123',
-      rev: '456',
       classes: ['foo', 'bar'],
       incomplete: true,
     });

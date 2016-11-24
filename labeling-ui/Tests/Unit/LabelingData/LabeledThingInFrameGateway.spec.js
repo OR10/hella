@@ -58,8 +58,8 @@ describe('LabeledThingInFrameGateway', () => {
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingInFrame/${frameIndex}?limit=1&offset=0`;
     const response = {
       labeledThingsInFrame: [
-        {id: 'abc', rev: 'bcd', shapes: [{type: 'rectangle'}], labeledThingId: 'uvw'},
-        {id: 'cde', rev: 'def', shapes: [{type: 'circle'}], labeledThingId: 'xyz'},
+        {id: 'abc', shapes: [{type: 'rectangle'}], labeledThingId: 'uvw'},
+        {id: 'cde', shapes: [{type: 'circle'}], labeledThingId: 'xyz'},
       ],
       labeledThings: {
         uvw: {task, id: 'uvw'},
@@ -93,7 +93,6 @@ describe('LabeledThingInFrameGateway', () => {
   it('should save a labeled thing in frame without classes', done => {
     const labeledThingInFrame = new LabeledThingInFrame({
       id: 'abc',
-      rev: 'bcd',
       shapes: [{type: 'rectangle'}],
       classes: [],
       incomplete: true,
@@ -112,7 +111,6 @@ describe('LabeledThingInFrameGateway', () => {
       result: {
         labeledThingInFrame: {
           id: 'abc',
-          rev: 'bcd',
           shapes: [{type: 'rectangle'}],
           incomplete: true,
           frameIndex: 23,
@@ -125,7 +123,6 @@ describe('LabeledThingInFrameGateway', () => {
           taskId: 'task-xyz',
           projectId: 'some-project',
           id: 'some-labeled-thing-id',
-          rev: '2-abc',
           classes: [],
           incomplete: false,
           frameRange: undefined,
@@ -151,7 +148,6 @@ describe('LabeledThingInFrameGateway', () => {
   it('should save a labeled thing in frame with classes', done => {
     const labeledThingInFrame = new LabeledThingInFrame({
       id: 'abc',
-      rev: 'bcd',
       shapes: [{type: 'rectangle'}],
       classes: ['a', 'b'],
       ghostClasses: null,
@@ -170,7 +166,6 @@ describe('LabeledThingInFrameGateway', () => {
       result: {
         labeledThingInFrame: {
           id: 'abc',
-          rev: 'bcd',
           shapes: [{type: 'rectangle'}],
           classes: ['a', 'b'],
           ghostClasses: null,
@@ -183,7 +178,6 @@ describe('LabeledThingInFrameGateway', () => {
           taskId: 'task-xyz',
           projectId: 'some-project',
           id: 'some-labeled-thing-id',
-          rev: '2-abc',
           classes: [],
           incomplete: false,
           frameRange: undefined,
@@ -209,7 +203,6 @@ describe('LabeledThingInFrameGateway', () => {
   it('should error if trying to save a Ghosted LabeledThingInFrame', () => {
     const labeledThinIngFrame = new LabeledThingInFrame({
       id: 'abc',
-      rev: 'bcd',
       shapes: [{type: 'rectangle'}],
       ghost: true,
     });
