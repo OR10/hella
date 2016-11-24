@@ -1,0 +1,6 @@
+_main:
+    resource: "../../config/routing.yml"
+
+app:
+    resource: "@AnnoStationBundle/Resources/config/routing.yml"
+    type: rest

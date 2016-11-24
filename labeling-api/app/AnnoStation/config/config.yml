@@ -1,0 +1,7 @@
+imports:
+  - resource: parameters.yml
+  - resource: services.yml
+  - resource: security.yml
+
+parameters:
+  redirectAfterLogin: /labeling
