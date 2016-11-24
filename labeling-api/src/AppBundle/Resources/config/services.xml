@@ -169,7 +169,7 @@
             <factory service="annostation.labeling_api.service.logger_factory" method="createLogger"/>
             <argument>%kernel.logs_dir%/labeling_api_%kernel.environment%.log</argument>
             <argument>null</argument>
-            <argument>30</argument><!-- log severity -->
+            <argument>0</argument><!-- log severity -->
         </service>
 
         <service id="annostation.labeling_api.ui_logger" class="cscntLogger">
