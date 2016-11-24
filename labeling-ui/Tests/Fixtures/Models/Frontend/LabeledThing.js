@@ -4,7 +4,6 @@ import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 
 export default new LabeledThing({
   "id": "04d2f1b2-fa17-438d-abe3-7c1db43186a0",
-  "rev": "1-abcdef",
   "frameRange": {
     "startFrameIndex": 0,
     "endFrameIndex": 3

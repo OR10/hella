@@ -4,7 +4,6 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 
 export default new LabeledThingInFrame({
   "id": "d07235d9-92df-414d-a38a-694580ac7d6e",
-  "rev": "1-asdfasdf123",
   "type": "AppBundle.Model.LabeledThingInFrame",
   "frameIndex": 0,
   "classes": [

@@ -40,6 +40,7 @@ class CouchDbModelDeserializer {
     }
 
     // Remove video attributes, which should not be in frontend model
+    // Attributes are already prefix free!
     [
       'type',
       'rev'

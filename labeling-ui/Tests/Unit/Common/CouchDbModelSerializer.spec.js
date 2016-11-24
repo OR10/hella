@@ -33,8 +33,11 @@ describe('CouchDbModelSerializer', () => {
     [LabeledThingFrontendModel, LabeledThingCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING],
   ], (frontendModel, couchDbModel) => {
     it('serialize model by guessing its type', () => {
+      const couchDbModelWithoutRevision = angular.copy(couchDbModel);
+      delete couchDbModelWithoutRevision._rev;
+
       const serializedCouchDbModel = serializer.serialize(frontendModel);
-      expect(serializedCouchDbModel).toEqual(couchDbModel);
+      expect(serializedCouchDbModel).toEqual(couchDbModelWithoutRevision);
     });
   });
 
@@ -43,8 +46,11 @@ describe('CouchDbModelSerializer', () => {
     [FrameRangeFrontendModel, FrameRangeCouchDbModel, CouchDbModelSerializer.TYPE_FRAME_RANGE],
   ], (frontendModel, couchDbModel, type) => {
     it('serialize model by specifying its type', () => {
+      const couchDbModelWithoutRevision = angular.copy(couchDbModel);
+      delete couchDbModelWithoutRevision._rev;
+
       const serializedCouchDbModel = serializer.serialize(frontendModel, type);
-      expect(serializedCouchDbModel).toEqual(couchDbModel);
+      expect(serializedCouchDbModel).toEqual(couchDbModelWithoutRevision);
     });
   });
 });
