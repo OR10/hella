@@ -1,5 +1,5 @@
 class labeling_api::app(
-  $root_dir,
+  $www_root,
   $cache_dir = $labeling_api::params::cache_dir,
   $configure_nginx = $labeling_api::params::configure_nginx,
   $app_main_script = 'app.php',
@@ -10,6 +10,7 @@ class labeling_api::app(
   $httpv2 = false,
   $sslCertFile = undef,
   $sslKeyFile = undef,
+  $listenIp = '*',
 ) {
   include ::labeling_api::common
 
@@ -18,7 +19,7 @@ class labeling_api::app(
   }
 
   ::annostation_base::symfony { 'labeling_api':
-    app_path => $root_dir,
+    www_root => $www_root,
     configure_nginx => $configure_nginx,
     app_main_script => $app_main_script,
     client_max_body_size => $client_max_body_size,
@@ -27,6 +28,7 @@ class labeling_api::app(
     sslCertFile => $sslCertFile,
     sslKeyFile => $sslKeyFile,
     not_found_redirect => '/labeling/index.html',
+    listenIp => $listenIp,
   }
 
   if $configure_nginx {

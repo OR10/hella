@@ -82,13 +82,22 @@ class QueueMaintainer extends Base
      */
     private $facadeAMQP;
 
-    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig, AMQP\FacadeAMQP $facadeAMQP)
-    {
+    /**
+     * @var string
+     */
+    private $queuePrefix;
+
+    public function __construct(
+        Service\AMQPPoolConfig $AMQPPoolConfig,
+        AMQP\FacadeAMQP $facadeAMQP,
+        string $queuePrefix
+    ) {
         parent::__construct();
+
         $this->AMQPPoolConfig = $AMQPPoolConfig;
         $this->facadeAMQP     = $facadeAMQP;
+        $this->queuePrefix    = $queuePrefix;
     }
-
 
     protected function configure()
     {
@@ -172,7 +181,7 @@ class QueueMaintainer extends Base
             0
         );
         $this->unregisterConsumer();
-        $this->queue = $this->garbageQueues[$gc];
+        $this->queue = $this->queuePrefix . $this->garbageQueues[$gc];
         $this->registerConsumer();
 
         return 2;
