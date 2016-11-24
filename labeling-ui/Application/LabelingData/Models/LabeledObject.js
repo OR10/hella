@@ -23,15 +23,6 @@ class LabeledObject {
      */
     this.classes = clone(labeledObject.classes);
 
-    // Optional properties
-    if (labeledObject.rev) {
-      /**
-       * Revision of this specific `labeledObject`
-       * @type {string}
-       */
-      this.rev = labeledObject.rev;
-    }
-
     /**
      * Incomplete state of this `LabeledObject`
      *
@@ -72,10 +63,9 @@ class LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {id, classes, rev, incomplete} = this;
+    const {id, classes, incomplete} = this;
     return {
       id,
-      rev,
       incomplete,
       classes: clone(classes),
     };
