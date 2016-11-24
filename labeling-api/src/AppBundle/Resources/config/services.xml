@@ -191,6 +191,13 @@
             <argument>%rabbitmq_password%</argument>
             <argument>%rabbitmq_use_dead_letter_exchange%</argument>
             <argument>%rabbitmq_use_alternate_exchange%</argument>
+            <property name="workerAlternateExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
+            <property name="workerDeadLetterExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
+            <property name="rescheduleQueue">%worker_pool.queue_prefix%worker.reschedule</property>
+            <property name="workerMainExchange">%worker_pool.queue_prefix%worker.main.exchange</property>
+            <property name="workerHighPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.high_prio</property>
+            <property name="workerNormalPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.normal_prio</property>
+            <property name="workerLowPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.low_prio</property>
         </service>
 
         <service id="annostation.labeling_api.service.interpolation" class="AppBundle\Service\Interpolation">
