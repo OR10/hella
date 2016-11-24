@@ -170,6 +170,6 @@ class RequirementsXml implements TaskConfiguration
 
     public function getType()
     {
-        return 'requirements_xml';
+        return 'requirements';
     }
 }

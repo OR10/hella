@@ -198,6 +198,6 @@ class SimpleXml implements TaskConfiguration
 
     public function getType()
     {
-        return 'simple_xml';
+        return 'simple';
     }
 }
