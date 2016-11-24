@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.helper.decoder.json" class="AppBundle\Helper\Decoder\Json">
+            <argument type="service" id="annostation.labeling_api.vendor.logger"/>
+        </service>
+    </services>
+</container>

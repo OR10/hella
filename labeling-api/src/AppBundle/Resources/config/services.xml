@@ -14,6 +14,7 @@
         <import resource="services/voters.xml"/>
         <import resource="services/worker.xml"/>
         <import resource="services/monitoring.xml"/>
+        <import resource="services/helper.xml"/>
     </imports>
 
     <parameters>

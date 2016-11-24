@@ -103,6 +103,10 @@ doctrine_couch_db:
                         dir: "Model"
 
 fos_rest:
+    body_listener:
+        decoders:
+            json: annostation.labeling_api.helper.decoder.json
+            xml: fos_rest.decoder.xml
     format_listener:
         enabled: true
         rules:
