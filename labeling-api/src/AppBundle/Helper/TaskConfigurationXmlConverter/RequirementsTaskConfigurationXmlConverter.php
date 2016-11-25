@@ -50,4 +50,27 @@ class RequirementsTaskConfigurationXmlConverter extends TaskConfigurationXmlConv
 
         return $rootStructure;
     }
+
+    /**
+     * @return string[][]
+     */
+    public function getClassStructure()
+    {
+        $classes = array();
+        $xpath   = new \DOMXPath($this->document);
+
+        $xpath->registerNamespace('x', 'http://weblabel.hella-aglaia.com/schema/requirements');
+
+        foreach ($xpath->query('//x:requirements/x:thing') as $thing) {
+            foreach ($xpath->query('x:class', $thing) as $classNode) {
+                $values = array();
+                foreach ($xpath->query('x:value', $classNode) as $valueNode) {
+                    $values[] = $valueNode->getAttribute('id');
+                }
+                $classes[$classNode->getAttribute('id')] = $values;
+            }
+        }
+
+        return $classes;
+    }
 }
