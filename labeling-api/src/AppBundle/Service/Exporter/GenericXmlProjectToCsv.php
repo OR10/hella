@@ -142,7 +142,8 @@ class GenericXmlProjectToCsv
                 foreach ($labelingTaskIterator as $task) {
                     $xmlConfiguration                 = $this->taskConfiguration->find($task->getTaskConfigurationId());
                     $configurationXmlConverterFactory = $this->configurationXmlConverterFactory->createConverter(
-                        $xmlConfiguration->getRawData()
+                        $xmlConfiguration->getRawData(),
+                        $xmlConfiguration->getType()
                     );
 
                     if ($xmlConfiguration->isMetaLabelingConfiguration()) {

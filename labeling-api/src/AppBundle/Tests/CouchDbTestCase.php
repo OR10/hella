@@ -215,7 +215,10 @@ class CouchDbTestCase extends Tests\WebTestCase
         $filename = 'testconfig.xml',
         $contentType = 'application/xml'
     ) {
-        $taskConfigurationXmlConverter = $this->taskConfigurationXmlConverterService->createConverter($binaryData);
+        $taskConfigurationXmlConverter = $this->taskConfigurationXmlConverterService->createConverter(
+            $binaryData,
+            Model\TaskConfiguration\SimpleXml::TYPE
+        );
 
         return $this->taskConfigurationFacade->save(
             new TaskConfiguration\SimpleXml(

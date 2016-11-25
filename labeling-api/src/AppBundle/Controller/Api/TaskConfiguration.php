@@ -236,7 +236,10 @@ class TaskConfiguration extends Controller\Base
         $xmlData = file_get_contents($file->getPathName());
         $user    = $this->tokenStorage->getToken()->getUser();
 
-        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
+        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter(
+            $xmlData,
+            Model\TaskConfiguration\SimpleXml::TYPE
+        );
 
         $taskConfiguration = new TaskConfigurationModel\SimpleXml(
             $name,

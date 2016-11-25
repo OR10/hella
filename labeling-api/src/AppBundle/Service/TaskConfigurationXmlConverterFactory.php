@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Helper;
+use AppBundle\Model;
 
 class TaskConfigurationXmlConverterFactory
 {
@@ -16,12 +17,18 @@ class TaskConfigurationXmlConverterFactory
     /**
      * Create a converter for a specific XML string
      *
-     * @param string $xml
+     * @param                         $xml
+     * @param                         $type
      *
-     * @return Helper\TaskConfigurationXmlConverter
+     * @return Helper\TaskConfigurationXmlConverter\RequirementsTaskConfigurationXmlConverter|Helper\TaskConfigurationXmlConverter\SimpleTaskConfigurationXmlConverter
      */
-    public function createConverter($xml)
+    public function createConverter($xml, $type)
     {
-        return new Helper\TaskConfigurationXmlConverter($xml);
+        if ($type === Model\TaskConfiguration\SimpleXml::TYPE) {
+            return new Helper\TaskConfigurationXmlConverter\SimpleTaskConfigurationXmlConverter($xml);
+        }
+        if ($type === Model\TaskConfiguration\RequirementsXml::TYPE) {
+            return new Helper\TaskConfigurationXmlConverter\RequirementsTaskConfigurationXmlConverter($xml);
+        }
     }
 }

@@ -217,6 +217,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
+            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory" />
         </service>
 
         <service id="annostation.labeling_api.service.ghost_classes_propagation" class="AppBundle\Service\GhostClassesPropagation">
