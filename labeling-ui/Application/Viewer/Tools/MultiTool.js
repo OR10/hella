@@ -86,8 +86,12 @@ export default class MultiTool extends Tool {
       this._activeTool.onKeyPress(event.keyCode);
     };
 
-    this._setDrawingTool();
-    this._registerEventHandler();
+    this._$scope.$watch('vm.selectedDrawingTool', (newTool, oldTool) => {
+      if (oldTool !== newTool && newTool !== null) {
+        this._setDrawingTool(newTool);
+        this._registerEventHandler();
+      }
+    });
 
     if (!this._readOnly) {
       // Register Keyboard shortcuts
@@ -95,8 +99,8 @@ export default class MultiTool extends Tool {
     }
   }
 
-  _setDrawingTool() {
-    switch (this._$scope.vm.task.drawingTool) {
+  _setDrawingTool(tool) {
+    switch (tool) {
       case 'rectangle':
         this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperRectangle.getClass());
         break;
