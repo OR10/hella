@@ -131,6 +131,7 @@ class LabeledThingInFrame
         $copy->shapes         = $this->shapes;
         $copy->incomplete     = $this->incomplete;
         $copy->ghost          = $this->ghost;
+        $copy->identifierName = $this->identifierName;
 
         if ($toFrameIndex === null) {
             $copy->frameIndex = $this->frameIndex;
