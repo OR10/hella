@@ -108,6 +108,7 @@ class LabeledThingInFrame extends Controller\Base
         $frameIndex     = $request->request->get('frameIndex');
         $classes        = $request->request->get('classes', []);
         $shapes         = $request->request->get('shapes', []);
+        $identifierName = $request->request->get('identifierName');
 
         if ($labeledThingId === null || $frameIndex === null || !is_array($classes) || !is_array($shapes)) {
             throw new Exception\BadRequestHttpException('Missing labeledThingId, frameIndex, classes or shapes');
@@ -171,6 +172,7 @@ class LabeledThingInFrame extends Controller\Base
                 $task->getPredefinedClasses()
             )
         );
+        $labeledThingInFrame->setIdentifierName($identifierName);
 
         // Check if the shapes are valid
         try {
