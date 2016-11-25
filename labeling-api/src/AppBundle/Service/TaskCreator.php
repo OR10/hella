@@ -224,16 +224,6 @@ class TaskCreator
 
                     $this->checkGenericXmlTaskInstructionPermissions($genericXmlTaskInstruction, $user);
 
-                    /**
-                     * Temporary skip requirement xml configuration
-                     * This is still in development phase
-                     *
-                     * @TODO REMOVE THIS CHECK LATER
-                     */
-                    if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
-                        continue;
-                    }
-
                     if ($taskConfiguration instanceof Model\TaskConfiguration\SimpleXml) {
                         if ($genericXmlTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
                             $predefinedClasses = ['parked-car'];
