@@ -63,6 +63,11 @@ class LabeledThingInFrame
     private $incomplete = true;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $identifierName;
+
+    /**
      * @var bool
      */
     private $ghost = false;
@@ -358,5 +363,21 @@ class LabeledThingInFrame
             return $this->getClasses();
         }
         return array_merge($this->getClasses(), $this->getGhostClasses());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdentifierName()
+    {
+        return $this->identifierName;
+    }
+
+    /**
+     * @param mixed $identifierName
+     */
+    public function setIdentifierName($identifierName)
+    {
+        $this->identifierName = $identifierName;
     }
 }
