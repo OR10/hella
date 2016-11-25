@@ -10,6 +10,8 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class SimpleXml implements TaskConfiguration
 {
+    CONST TYPE = 'simple';
+
     /**
      * @CouchDB\Id
      */
@@ -198,6 +200,6 @@ class SimpleXml implements TaskConfiguration
 
     public function getType()
     {
-        return 'simple';
+        return self::TYPE;
     }
 }

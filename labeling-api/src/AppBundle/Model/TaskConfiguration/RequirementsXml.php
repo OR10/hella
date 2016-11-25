@@ -10,6 +10,8 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class RequirementsXml implements TaskConfiguration
 {
+    CONST TYPE = 'requirements';
+
     /**
      * @CouchDB\Id
      */
@@ -170,6 +172,6 @@ class RequirementsXml implements TaskConfiguration
 
     public function getType()
     {
-        return 'requirements';
+        return self::TYPE;
     }
 }
