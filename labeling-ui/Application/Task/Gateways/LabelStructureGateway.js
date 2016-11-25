@@ -19,21 +19,57 @@ class LabelStructureGateway {
   }
 
   /**
-   * Retrieves the {@link Task} identified by the given `id`
+   * Retrieves the task structure information for the given id of a {@link Task}
    *
-   * @param {string} id
+   * @param {string} taskConfigurationId
    *
-   * @return {AbortablePromise.<Task|Error>}
+   * @return {AbortablePromise}
    */
-  getLabelStructureData(id) {
-    const url = this._apiService.getApiUrl(`/task/${id}/labelStructure`);
-    return this._bufferedHttp.get(url, undefined, 'task')
+  getTaskStructureData(taskConfigurationId) {
+    const url = this._apiService.getApiUrl(`/taskConfiguration/${taskConfigurationId}`);
+    return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;
         }
 
-        throw new Error(`Failed loading task with id ${id}`);
+        throw new Error(`Failed loading the task structure data with id: ${taskConfigurationId}`);
+      });
+  }
+
+  /**
+   * Retrieves the requirements file for the given id of a {@link Task}
+   *
+   * @param {string} taskConfigurationId
+   */
+  getRequirementsFile(taskConfigurationId) {
+    const url = this._apiService.getApiUrl(`/taskConfiguration/${taskConfigurationId}/file`);
+    return this._bufferedHttp.get(url, undefined, 'label-structure')
+      .then(response => {
+        if (response) {
+          return response;
+        }
+
+        throw new Error(`Failed loading requirements file for task configuration id: ${taskConfigurationId}`);
+      });
+  }
+
+  /**
+   * Retrieves the {@link Task} identified by the given `id`
+   *
+   * @param {string} taskId
+   *
+   * @return {AbortablePromise.<Task|Error>}
+   */
+  getLabelStructureData(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/labelStructure`);
+    return this._bufferedHttp.get(url, undefined, 'label-structure')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed loading task with id ${taskId}`);
       });
   }
 }
