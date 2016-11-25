@@ -145,6 +145,9 @@ export default class LabelSelectorController {
 
     // Update our Wizard View if the classes list changes
     $scope.$watchCollection('vm.labeledObject.classes', newClasses => {
+      if (!this.annotation || !this.structure) {
+        return;
+      }
       if (newClasses) {
         this._updatePagesAndChoices();
       }
