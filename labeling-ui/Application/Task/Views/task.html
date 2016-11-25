@@ -41,6 +41,11 @@
         <!--</div>&ndash;&gt;-->
         <!--&lt;!&ndash;<div class="grid-block vertical noscrollbars"></div>&ndash;&gt;-->
     <!--</div>-->
+    <tool-selector ng-if="vm.task.taskType !== 'meta-labeling'"
+                   drawable-things="vm.drawableThings"
+                   selected-thing="vm.selectedThing"
+                   class="grid-block"
+    ></tool-selector>
 
     <popup-panel ng-show="vm.popupPanelOpen"
                  popup-panel-open="vm.popupPanelOpen"
@@ -63,6 +68,7 @@
     <viewer class="grid-block align-center noscroll no-select"
             labeled-things-in-frame="vm.labeledThingsInFrame"
             selected-paper-shape="vm.selectedPaperShape"
+            selected-thing="vm.selectedThing"
             active-tool="vm.activeTool"
             selected-drawing-tool="vm.selectedDrawingTool"
             task="vm.task"
