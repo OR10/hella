@@ -77,10 +77,10 @@ class PouchDbLabeledThingInFrameGateway {
   listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
     const startkey = frameIndex + offset;
     const endkey = frameIndex + offset + limit - 1;
-
+    
     const db = this._storageContextService.provideContextForTaskId(task.id);
 
-    this._packagingExecutor.execute('labeledThingInFrame', () => {
+    const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_taskId_frameIndex', {
         startkey,
         endkey,
@@ -93,21 +93,21 @@ class PouchDbLabeledThingInFrameGateway {
         result.rows.forEach(row => {
           if (row.doc) {
             const labeledThingInFrame = row.doc;
-            //TODO: Fix getting the labeledThing instead of the promise here
-            throw new Error('Need to load labeledThing here');
             const labeledThing = this._pouchLabeledThingGateway.getLabeledThing(labeledThingInFrame);
-
-            docs.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
+            const deserializedThingInFrame = this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing);
+            docs.push(deserializedThingInFrame);
+          } else {
+            throw new Error('Row does not contain a document');
           }
-
-          throw new Error('Row does not contain a document');
         });
 
         return docs;
       }
 
-      throw new Error('Failed loading labeled thing in frame list');
+      // throw new Error('Failed loading labeled thing in frame list');
     });
+
+    return executorPromise;
   }
 
 
