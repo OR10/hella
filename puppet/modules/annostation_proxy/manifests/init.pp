@@ -1,7 +1,42 @@
 class annostation_proxy(
-  $hosts = []
+  $hosts = [],
+  $defaultSslCert,
+  $defaultSslKey,
 ) {
   include ::nginx
+
+  file { ['/var/www', '/var/www/default']:
+    ensure => directory,
+  }
+
+  file { '/var/www/default/index.html':
+    ensure  => present,
+    mode    => '0644',
+    content => 'Nothing here',
+    require => File['/var/www/default'],
+  }
+
+  ::nginx::resource::vhost { 'default':
+    server_name        => ['_'],
+    listen_port        => 443,
+    listen_options     => 'default',
+    ssl                => true,
+    ssl_port           => 443,
+    ssl_cert           => $defaultSslCert,
+    ssl_key            => $defaultSslKey,
+    require            => File['/var/www/default/index.html'],
+    www_root           => '/var/www/default',
+  }
+
+  nginx::resource::vhost { "default-redirect":
+    ensure               => present,
+    server_name          => ['_'],
+    listen_options     => 'default',
+    location_custom_cfg  => {
+      'return' => 'https://$host$request_uri',
+    },
+    require => File['/var/www/default/index.html'],
+  }
 
   $hosts.each |$host| {
     if !has_key($host, 'domain') {
@@ -63,7 +98,8 @@ class annostation_proxy(
     if $_useSsl {
       nginx::resource::vhost { "${_domain}-redirect":
         ensure               => present,
-        location_custom_cfg => {
+        server_name          => [$_domain],
+        location_custom_cfg  => {
           'return' => 'https://$host$request_uri',
         },
       }
