@@ -6,11 +6,11 @@ class ToolSelectorController {
   }
 
   /**
-   * @param {{id, shape, tool}} thing
+   * @param {{id, shape, name}} thing
    */
   setCurrentThing(thing) {
-    this.selectedDrawingTool = thing.shape;
     this.selectedThing = thing;
+    this.selectedDrawingTool = thing.shape;
   }
 }
 

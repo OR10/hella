@@ -111,7 +111,7 @@ export default class MultiTool extends Tool {
         this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperCuboid.getClass());
         break;
       default:
-        throw new Error(`Cannot instantiate tool of unknown type ${this._$scope.vm.task.drawingTool}.`);
+        throw new Error(`Cannot instantiate tool of unknown type ${tool}.`);
     }
   }
 
@@ -470,7 +470,7 @@ export default class MultiTool extends Tool {
         }
       } else {
         this._toolWorking = true;
-        this._setDrawingTool();
+        this._setDrawingTool(this._$scope.vm.selectedDrawingTool);
         this._activeTool.onMouseDown(event);
       }
     });

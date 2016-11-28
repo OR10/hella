@@ -290,7 +290,7 @@ class TaskController {
       if (newShape !== oldShape && newShape !== null) {
         this._labelStructureService.getThingByThingIdentifier(this.task.taskConfigurationId, newShape.labeledThingInFrame.identifierName).then(thing => {
           this.selectedThing = thing;
-          this.selectedDrawingTool = thing.tool;
+          this.selectedDrawingTool = thing.shape;
         });
         this._labelStructureService.getLabelStructure(this.task, newShape.labeledThingInFrame.identifierName).then(labelStructureData => {
           this.labelingStructure = labelStructureData.structure;

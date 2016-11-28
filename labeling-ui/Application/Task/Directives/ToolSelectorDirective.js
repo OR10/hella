@@ -9,6 +9,7 @@ class ToolSelectorDirective {
     this.scope = {
       drawableThings: '=',
       selectedThing: '=',
+      selectedDrawingTool: '=',
     };
 
     this.template = toolSelectorTemplate;
