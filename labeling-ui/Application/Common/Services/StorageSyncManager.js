@@ -20,8 +20,9 @@ class StorageSyncManager {
    */
   startContinousReplicationForContext(context, pausedEventHandler) {
     const taskId = this._storageContextService.queryTaskIdForContext(context);
+    const noValidParameters = typeof context !== 'object' || typeof pausedEventHandler !== 'function' || taskId === null;
 
-    if (typeof context !== 'object' || typeof pausedEventHandler !== 'function' || taskId === null) {
+    if (noValidParameters) {
       return null;
     }
 
@@ -100,7 +101,7 @@ class StorageSyncManager {
 
       syncHandler = context.replicate.from(replicationEndpointUrl, syncSettings);
       syncHandler
-        .on('complete', (evnt) => {
+        .on('complete', evnt => {
           this._removeContextFromCache(context);
           onCompleteCallback(evnt);
         });
@@ -109,6 +110,65 @@ class StorageSyncManager {
     }
 
     return context;
+  }
+
+  pushUpdatesForContext(context, onCompleteCallback, onChangeCallback) {
+    const taskId = this._storageContextService.queryTaskIdForContext(context);
+
+    if (typeof context !== 'object' || typeof onCompleteCallback !== 'function' || taskId === null) {
+      return null;
+    }
+
+    let syncHandler = this._syncHandlerCache.get(context);
+    if (syncHandler === undefined) {
+      const syncSettings = {
+      };
+      const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
+
+      syncHandler = context.replicate.to(replicationEndpointUrl, syncSettings);
+      syncHandler
+        .on('complete', evnt => {
+          this._removeContextFromCache(context);
+          onCompleteCallback(evnt);
+        })
+        .on('change', evnt => {
+          if (onChangeCallback) {
+            onChangeCallback(evnt);
+          }
+        });
+
+      this._syncHandlerCache.set(context, syncHandler);
+    }
+
+    return context;
+  }
+
+  waitForRemoteToConfirm(context, document, millisTillCancelation) {
+    let result = null;
+    const isValidDocument = document !== null && typeof document === 'object' && typeof document._id === 'string';
+    const useTimeoutOption = typeof millisTillCancelation === 'number' && millisTillCancelation > -1;
+
+    if (isValidDocument) {
+      const confirmationPromise = new Promise((resolve, reject) => {
+        if (useTimeoutOption) {
+          setTimeout(() => {
+            const error = new Error('Replication timeout has been reached. Could not confirm replication to remote.');
+            reject(error);
+          }, millisTillCancelation);
+        }
+
+        this.pushUpdatesForContext(context, resolve, event => {
+          const hasReceivedDocument = event.docs.filter(doc => doc._id === document._id).length > 0;
+          if (hasReceivedDocument) {
+            resolve(document);
+          }
+        });
+      });
+
+      result = confirmationPromise;
+    }
+
+    return result;
   }
 
 }

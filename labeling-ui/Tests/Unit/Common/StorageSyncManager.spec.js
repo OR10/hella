@@ -241,4 +241,60 @@ describe('StorageSyncManager', () => {
       expect(spies.filterSettingSpy).toHaveBeenCalled();
     });
   });
+
+  fdescribe('function pushUpdatesForContext', () => {
+    it('should exist', () => {
+      expect(StorageSyncManager.pushUpdatesForContext).toBeDefined();
+    });
+  });
+
+  fdescribe('function waitForRemoteToConfirm(document)', () => {
+    const MOCK_DOCUMENT = {_id: 'asdasdasd'};
+    const MOCK_CONTEXT = {};
+
+    it('should exist', () => {
+      expect(StorageSyncManager.waitForRemoteToConfirm).toBeDefined();
+    });
+
+    it('should return a promise', () => {
+      const result = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
+      expect(typeof result.then).toBe('function');
+    });
+
+    it('should return null when document is empty', () => {
+      const result = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, null);
+      expect(result).toBe(null);
+    });
+
+    it('should return null when document has no id', () => {
+      const result = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, {});
+      expect(result).toBe(null);
+    });
+
+    it('should resolve the promise when remote replication has confirmed arrival of the document', (done) => {
+      const confirmationPromise = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
+      confirmationPromise.then(response => {
+        expect(response._id).toBe(MOCK_DOCUMENT._id);
+        done();
+      });
+    });
+
+    it('should resolve with error, when replication exceeds X seconds', (done) => {
+      const confirmationPromise = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT, 1);
+      let callbacks = {
+        onSuccess: () => {
+          expect(callbacks.onTimeout).toHaveBeenCalled();
+          done();
+        },
+        onTimeout: () => {
+          expect(callbacks.onSuccess).not.toHaveBeenCalled();
+          done();
+        },
+      };
+      spyOn(callbacks, 'onSuccess').and.callThrough();
+      spyOn(callbacks, 'onTimeout').and.callThrough();
+
+      confirmationPromise.then(callbacks.onSuccess, callbacks.onTimeout);
+    });
+  });
 });
