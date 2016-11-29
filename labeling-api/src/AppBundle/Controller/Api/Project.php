@@ -178,7 +178,12 @@ class Project extends Controller\Base
             );
 
             if ($user->hasOneRoleOf(
-                [Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT]
+                [
+                    Model\User::ROLE_ADMIN,
+                    Model\User::ROLE_LABEL_COORDINATOR,
+                    Model\User::ROLE_CLIENT,
+                    Model\User::ROLE_OBSERVER,
+                ]
             )
             ) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
