@@ -26,6 +26,19 @@ class TimerGateway {
    * @return {AbortablePromise<int|Error>}
    */
   getTime(taskId, userId) {
+    // @TODO: Port PHP Logic
+    //
+    // if ($user !== $this->tokenStorage->getToken()->getUser()) {
+    //    throw new Exception\AccessDeniedHttpException('Its not allowed to access the timer for other users');
+    // }
+    //
+    // $result = $this->documentManager
+    //     ->createQuery('annostation_task_timer', 'by_taskId_userId')
+    //     ->setKey([$task->getId(), $user->getId()])
+    //     ->setLimit(1)
+    //     ->onlyDocs(true)
+    //     ->execute()
+    //     ->toArray();
     const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
     return this._bufferedHttp.get(url, undefined, 'timer')
       .then(response => {
@@ -37,7 +50,8 @@ class TimerGateway {
       });
   }
 
-  /**
+
+/**
    * Starts export for the given {@link Task} and export type
    *
    * @param {string} taskId
@@ -46,7 +60,22 @@ class TimerGateway {
    * @returns {AbortablePromise<string|Error>}
    */
   updateTime(taskId, userId, time) {
-    const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
+  // @TODO: Port PHP Logic
+  //    // if ($user !== $this->tokenStorage->getToken()->getUser()) {
+  //    throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
+  //   }
+  // if (($timeInSeconds = $request->request->get('time')) === null) {
+  //   throw new Exception\BadRequestHttpException('Missing time');
+  // }
+  //
+  // if (!is_int($timeInSeconds)) {
+  //   throw new Exception\BadRequestHttpException('Time must be an integer');
+  // }
+  //
+  // $this->documentManager->persist($taskTimer);
+  // $this->documentManager->flush();
+
+  const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
     return this._bufferedHttp.put(url, {time}, undefined, 'timer')
       .then(response => {
         if (response.data && response.data.result) {
