@@ -116,7 +116,7 @@ describe('StorageSyncManager', () => {
         },
       };
 
-      spyOn(obj, 'onPauseCallback');
+      spyOn(obj, 'onCompleteCallback');
       StorageSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
       expect(obj.onCompleteCallback).toHaveBeenCalled();
     });
