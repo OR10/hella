@@ -115,6 +115,76 @@ class TimerTest extends Tests\WebTestCase
         );
     }
 
+    public function testUpdateTimerForDifferentPhases()
+    {
+        $requestInLabeling = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['time' => 100])
+            ->execute();
+        $this->assertEquals(["result" => ["time" => 100,]], $requestInLabeling->getJsonResponseBody());
+
+        $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+        $this->task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $this->task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+        $this->task->addAssignmentHistory(
+            Model\LabelingTask::PHASE_REVIEW,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $this->user
+        );
+        $this->labelingTaskFacade->save($this->task);
+
+        $requestInReview = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['time' => 200])
+            ->execute();
+        $this->assertEquals(["result" => ["time" => 200,]], $requestInReview->getJsonResponseBody());
+
+        $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
+        $this->task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+        $this->task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $this->task->addAssignmentHistory(
+            Model\LabelingTask::PHASE_REVISION,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $this->user
+        );
+        $this->labelingTaskFacade->save($this->task);
+
+        $requestInRevision = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['time' => 300])
+            ->execute();
+        $this->assertEquals(["result" => ["time" => 300,]], $requestInRevision->getJsonResponseBody());
+
+        $this->assertEquals(
+            100,
+            $this->labelingTaskFacade->getTimerForTaskAndUser($this->task, $this->user)->getTimeInSeconds(
+                Model\LabelingTask::PHASE_LABELING
+            )
+        );
+        $this->assertEquals(
+            200,
+            $this->labelingTaskFacade->getTimerForTaskAndUser($this->task, $this->user)->getTimeInSeconds(
+                Model\LabelingTask::PHASE_REVIEW
+            )
+        );
+        $this->assertEquals(
+            300,
+            $this->labelingTaskFacade->getTimerForTaskAndUser($this->task, $this->user)->getTimeInSeconds(
+                Model\LabelingTask::PHASE_REVISION
+            )
+        );
+
+        $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $this->task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+        $this->task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
+        $this->task->addAssignmentHistory(
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $this->user
+        );
+        $this->labelingTaskFacade->save($this->task);
+    }
+
     public function testUpdateTimerWithInvalidTimeRespondsWithBadRequest()
     {
         $response = $this->createRequest(self::ROUTE, [$this->task->getId(), $this->user->getId()])
