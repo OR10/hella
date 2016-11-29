@@ -61,9 +61,7 @@ describe('PouchDbLabeledThingGateway', () => {
         /**
          * @type {StorageContextService}
          */
-        const storageContextServiceMock = jasmine.createSpyObj('storageContextService', [
-          'provideContextForTaskId'
-        ]);
+        const storageContextServiceMock = jasmine.createSpyObj('storageContextService', ['provideContextForTaskId']);
         storageContextServiceMock.provideContextForTaskId
           .and.returnValue(pouchDbHelper.database);
 
@@ -93,12 +91,11 @@ describe('PouchDbLabeledThingGateway', () => {
     // Prepare document in database
       .then(() => db.put(labeledThingCouchDbModel))
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.getLabeledThing(taskFrontendModel, labeledThingId)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.getLabeledThing(taskFrontendModel, labeledThingId)
+        );
+      })
       .then(retrievedLabeledThingDocument => {
         expect(retrievedLabeledThingDocument).toEqual(labeledThingFrontendModel);
       })
