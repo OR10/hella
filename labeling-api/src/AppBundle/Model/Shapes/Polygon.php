@@ -78,4 +78,12 @@ class Polygon extends Model\Shape
             'points' => $this->points,
         ];
     }
+
+    /**
+     * @return array
+     */
+    public function getPoints(): array
+    {
+        return $this->points;
+    }
 }
