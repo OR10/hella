@@ -87,7 +87,7 @@ class TaskListController {
     }
 
     // If it is not the users tasks check if assignment is possible
-    if (!this._rawTasksById[taskId] || this._rawTasksById[taskId].isUserAllowedToAssign(this.user)) {
+    if (this.userPermissions.canBeginTask && (!this._rawTasksById[taskId] || this._rawTasksById[taskId].isUserAllowedToAssign(this.user))) {
       this.loadingInProgress = true;
       this._taskGateway.assignAndMarkAsInProgress(taskId).then(() => {
         this.goToTask(taskId, this.taskPhase);
@@ -95,9 +95,9 @@ class TaskListController {
     } else {
       this._modalService.info(
         {
-          title: 'Task already assigned',
-          headline: 'This task is already assigned to someone else',
-          message: 'This task is already assigned to someone else. You are only allowed to open it in real only mode',
+          title: 'Task is read-only',
+          headline: 'This task is already assigned to someone else or you are not allowed to edit this task.',
+          message: 'You are only allowed to open it in real only mode',
           confirmButtonText: 'Open read only',
         }, () => this.goToTask(taskId, this.taskPhase)
       );

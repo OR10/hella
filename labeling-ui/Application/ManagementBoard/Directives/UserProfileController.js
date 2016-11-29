@@ -212,6 +212,9 @@ class UserProfileController {
       case 'ROLE_CLIENT_COORDINATOR':
         this.user.roles = ['ROLE_CLIENT', 'ROLE_LABEL_COORDINATOR'];
         break;
+      case 'ROLE_OBSERVER':
+        this.user.roles = ['ROLE_OBSERVER'];
+        break;
       default:
         throw new Error(`Unknown role: ${this.singleRole}`);
     }
@@ -261,7 +264,7 @@ class UserProfileController {
       this.validation.email = valid = false;
     }
 
-    if (['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR'].indexOf(this.singleRole) === -1) {
+    if (['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR', 'ROLE_OBSERVER'].indexOf(this.singleRole) === -1) {
       this.validation.role = valid = false;
     }
 

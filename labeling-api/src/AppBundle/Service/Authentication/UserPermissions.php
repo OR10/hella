@@ -45,6 +45,7 @@ class UserPermissions
         'canFlagLabelingTask'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
         'canUnflagLabelingTask'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canMoveTaskInOtherPhase'        => [                                                 Model\User::ROLE_LABEL_COORDINATOR                          ],
+        'canBeginTask'                   => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
 
         // User management
         'canEditLabelingGroups'          => [Model\User::ROLE_ADMIN                                                                                       ],
