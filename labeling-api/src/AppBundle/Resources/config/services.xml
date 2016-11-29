@@ -113,6 +113,9 @@
         </service>
 
         <service id="annostation.labeling_api.authentication_handler" class="AppBundle\AuthenticationHandler">
+            <argument>targetUrl</argument>
+            <argument>/labeling</argument>
+            <argument>/login</argument>
         </service>
 
         <service id="annostation.labeling_api.service.task_exporter.kitti" class="AppBundle\Service\TaskExporter\Kitti">

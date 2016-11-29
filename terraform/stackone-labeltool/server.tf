@@ -27,7 +27,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
     }
 
     provisioner "local-exec" {
-        command = "cd ../../labeling-api/ && CAP_DEPLOY_IP=${openstack_compute_floatingip_v2.labeltool.address} cap multi-staging-machine deploy"
+        command = "cd ../../labeling-api/ && CAP_DEPLOY_IP=${openstack_compute_floatingip_v2.labeltool.address} cap labeling-api deploy"
         connection {
             host = "${openstack_compute_floatingip_v2.labeltool.address}"
         }

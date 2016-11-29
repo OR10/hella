@@ -408,7 +408,7 @@ class LabelingTask
      * @param Model\LabelingTask $task
      * @param Model\User         $user
      *
-     * @return array|null
+     * @return Model\TaskTimer|null
      */
     public function getTimerForTaskAndUser(Model\LabelingTask $task, Model\User $user)
     {

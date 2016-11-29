@@ -726,8 +726,9 @@ class Report
     /**
      * @param mixed $numberOfTotalClassesInLabeledThingInFrameByClasses
      */
-    public function setNumberOfTotalClassesInLabeledThingInFrameByClasses($numberOfTotalClassesInLabeledThingInFrameByClasses)
-    {
+    public function setNumberOfTotalClassesInLabeledThingInFrameByClasses(
+        $numberOfTotalClassesInLabeledThingInFrameByClasses
+    ) {
         $this->numberOfTotalClassesInLabeledThingInFrameByClasses = $numberOfTotalClassesInLabeledThingInFrameByClasses;
     }
 

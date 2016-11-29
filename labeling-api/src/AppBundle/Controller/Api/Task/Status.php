@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Api\Task;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
+use AppBundle\Service;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -32,13 +33,31 @@ class Status extends Controller\Base
     private $tokenStorage;
 
     /**
-     * @param Facade\LabelingTask  $labelingTaskFacade
-     * @param Storage\TokenStorage $tokenStorage
+     * @var Facade\Project
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade, Storage\TokenStorage $tokenStorage)
-    {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->tokenStorage       = $tokenStorage;
+    private $projectFacade;
+
+    /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @param Facade\LabelingTask   $labelingTaskFacade
+     * @param Storage\TokenStorage  $tokenStorage
+     * @param Facade\Project        $projectFacade
+     * @param Service\Authorization $authorizationService
+     */
+    public function __construct(
+        Facade\LabelingTask $labelingTaskFacade,
+        Storage\TokenStorage $tokenStorage,
+        Facade\Project $projectFacade,
+        Service\Authorization $authorizationService
+    ) {
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->projectFacade        = $projectFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -50,9 +69,12 @@ class Status extends Controller\Base
      */
     public function postLabeledStatusAction(Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         /** @var Model\User $user */
-        $user  = $this->tokenStorage->getToken()->getUser();
-        $phase = $task->getCurrentPhase();
+        $user    = $this->tokenStorage->getToken()->getUser();
+        $phase   = $task->getCurrentPhase();
 
         if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])
             && $task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()
@@ -103,6 +125,9 @@ class Status extends Controller\Base
      */
     public function postWaitingStatusAction(Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $task->getCurrentPhase();
 
@@ -132,6 +157,9 @@ class Status extends Controller\Base
      */
     public function postInProgressStatusAction(Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $task->getCurrentPhase();
 
@@ -160,6 +188,9 @@ class Status extends Controller\Base
      */
     public function beginTaskAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $task->getCurrentPhase();
@@ -188,6 +219,9 @@ class Status extends Controller\Base
      */
     public function reopenTaskAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $request->request->get('phase');

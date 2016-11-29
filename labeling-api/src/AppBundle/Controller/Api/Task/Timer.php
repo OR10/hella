@@ -62,6 +62,10 @@ class Timer extends Controller\Base
 
     /**
      * @Rest\Get("/{task}/timer/{user}")
+     * @param Model\LabelingTask $task
+     * @param Model\User         $user
+     *
+     * @return \FOS\RestBundle\View\View
      */
     public function getTimerAction(Model\LabelingTask $task, Model\User $user)
     {
@@ -75,7 +79,7 @@ class Timer extends Controller\Base
 
         return View\View::create()->setData([
             'result' => [
-                'time' => $timer === null ? 0 : $timer->getTimeInSeconds(Model\LabelingTask::PHASE_LABELING),
+                'time' => $timer === null ? 0 : $timer->getTimeInSeconds($task->getCurrentPhase()),
             ],
         ]);
     }
