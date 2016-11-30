@@ -99,9 +99,7 @@
                       class="no-select"
         ></loading-mask>
         <label-selector class="grid-block no-select"
-                        labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
-                        structure="vm.labelingStructure"
-                        annotation="vm.labelingAnnotation"
+                        label-structure-data="vm.labelStructureData"
                         task="vm.task"
                         frame-position="vm.framePosition"
                         labeling-instructions="vm.currentLabelingInstructions"

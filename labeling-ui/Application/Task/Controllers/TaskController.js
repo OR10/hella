@@ -277,6 +277,11 @@ class TaskController {
      */
     this.thingLayer = null;
 
+    /**
+     * @type {{annotation: null, structure: null, labeledObject: null}}
+     */
+    this.labelStructureData = null;
+
     keyboardShortcutService.pushContext('labeling-task');
 
     $scope.$on('$destroy', () => {
@@ -287,14 +292,18 @@ class TaskController {
     this._setDrawingTool();
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+      this.labelStructureData = null;
       if (newShape !== oldShape && newShape !== null) {
         this._labelStructureService.getThingByThingIdentifier(this.task.taskConfigurationId, newShape.labeledThingInFrame.identifierName).then(thing => {
           this.selectedThing = thing;
           this.selectedDrawingTool = thing.shape;
         });
         this._labelStructureService.getLabelStructure(this.task, newShape.labeledThingInFrame.identifierName).then(labelStructureData => {
-          this.labelingStructure = labelStructureData.structure;
-          this.labelingAnnotation = labelStructureData.annotation;
+          this.labelStructureData = {
+            structure: labelStructureData.structure,
+            annotation: labelStructureData.annotation,
+            labeledObject: this.task.taskType === 'meta-labeling' ? this.labeledFrame : this.selectedPaperShape.labeledThingInFrame,
+          };
         });
       }
     });
@@ -384,8 +393,23 @@ class TaskController {
       case 'object-labeling':
       case 'meta-labeling':
         this._labelStructureService.getLabelStructure(this.task).then(labelStructureData => {
-          this.labelingStructure = labelStructureData.structure;
-          this.labelingAnnotation = labelStructureData.annotation;
+          let labeledObject = null;
+
+          switch (this.task.type) {
+            case 'meta-labeling':
+              labeledObject = this.labeledFrame;
+              break;
+            default:
+              if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
+                labeledObject = this.selectedPaperShape.labeledThingInFrame;
+              }
+          }
+
+          this.labelStructureData = {
+            structure: labelStructureData.structure,
+            annotation: labelStructureData.annotation,
+            labeledObject,
+          };
         });
         this._labelStructureService.getDrawableThings(this.task).then(drawableThings => {
           this.drawableThings = drawableThings;
