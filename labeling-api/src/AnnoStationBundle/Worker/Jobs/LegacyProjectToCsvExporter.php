@@ -1,10 +1,11 @@
 <?php
-namespace AppBundle\Worker\Jobs;
+
+namespace AnnoStationBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
 use AppBundle\Model;
 
-class GenericXmlProjectToCsvExporter extends WorkerPool\Job
+class LegacyProjectToCsvExporter extends WorkerPool\Job
 {
     /**
      * @var Model\Export
@@ -12,8 +13,6 @@ class GenericXmlProjectToCsvExporter extends WorkerPool\Job
     private $export;
 
     /**
-     * GenericXmlProjectToCsvExporter constructor.
-     *
      * @param Model\Export $export
      */
     public function __construct(Model\Export $export)
@@ -24,7 +23,7 @@ class GenericXmlProjectToCsvExporter extends WorkerPool\Job
     /**
      * @return Model\Export
      */
-    public function getExport()
+    public function getExport(): Model\Export
     {
         return $this->export;
     }

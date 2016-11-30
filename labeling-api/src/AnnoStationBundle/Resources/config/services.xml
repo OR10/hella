@@ -6,6 +6,7 @@
     <imports>
         <import resource="services/commands.xml"/>
         <import resource="services/interpolation_algorithms.xml"/>
+        <import resource="services/job_instructions.xml"/>
         <import resource="services/monitoring.xml"/>
     </imports>
 

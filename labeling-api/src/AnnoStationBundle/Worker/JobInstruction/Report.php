@@ -1,14 +1,16 @@
 <?php
-namespace AppBundle\Worker\JobInstruction;
+
+namespace AnnoStationBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
 use AnnoStationBundle\Service;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
+use Hagl\WorkerPoolBundle;
 
-class Report extends WorkerPool\JobInstruction
+class Report extends WorkerPoolBundle\JobInstruction
 {
     /**
      * @var Service\Report
@@ -56,5 +58,15 @@ class Report extends WorkerPool\JobInstruction
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
         }
+    }
+
+    /**
+     * @param WorkerPool\Job $job
+     *
+     * @return bool
+     */
+    public function supports(WorkerPool\Job $job)
+    {
+        return $job instanceof Jobs\Report;
     }
 }

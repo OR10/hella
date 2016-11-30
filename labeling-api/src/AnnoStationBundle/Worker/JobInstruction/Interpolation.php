@@ -1,16 +1,17 @@
 <?php
-namespace AppBundle\Worker\JobInstruction;
+
+namespace AnnoStationBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
+use Hagl\WorkerPoolBundle;
 
-class Interpolation extends WorkerPool\JobInstruction
+class Interpolation extends WorkerPoolBundle\JobInstruction
 {
     /**
      * @var Service\Interpolation
@@ -104,5 +105,15 @@ class Interpolation extends WorkerPool\JobInstruction
     {
         $status->setStatus($newState, $message);
         $this->statusFacade->save($status);
+    }
+
+    /**
+     * @param WorkerPool\Job $job
+     *
+     * @return bool
+     */
+    public function supports(WorkerPool\Job $job)
+    {
+        return $job instanceof Jobs\Interpolation;
     }
 }
