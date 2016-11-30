@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.command.rabbit_mq" class="AnnoStationBundle\Command\WorkerPool\Setup">
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.worker_starter" class="AnnoStationBundle\Command\WorkerPool\Starter">
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.queue_maintainer" class="AnnoStationBundle\Command\WorkerPool\Maintainer">
+            <tag name="console.command"/>
+        </service>
+    </services>
+</container>
+

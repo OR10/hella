@@ -4,9 +4,11 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <imports>
+        <import resource="services/commands.xml"/>
         <import resource="services/interpolation_algorithms.xml"/>
         <import resource="services/monitoring.xml"/>
     </imports>
+
     <services>
         <service id="annostation.labeling_api.service.frame_cdn.flysystem"
                  class="AnnoStationBundle\Service\FrameCdn\Flysystem">

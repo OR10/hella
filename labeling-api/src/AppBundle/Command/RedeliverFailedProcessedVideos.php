@@ -27,15 +27,15 @@ class RedeliverFailedProcessedVideos extends Base
 
     /**
      * @param Facade\Video      $videoFacade
-     * @param WorkerPool\Facade $facadeAMQP
+     * @param WorkerPool\Facade $workerPoolFacade
      */
     public function __construct(
         Facade\Video $videoFacade,
-        WorkerPool\Facade $facadeAMQP
+        WorkerPool\Facade $workerPoolFacade
     ) {
         parent::__construct();
         $this->videoFacade = $videoFacade;
-        $this->facadeAMQP  = $facadeAMQP;
+        $this->facadeAMQP  = $workerPoolFacade;
     }
 
     protected function configure()
