@@ -5,7 +5,7 @@ namespace AppBundle\Helper\Export\Column;
 use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Cell;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class Cuboid extends Export\Column
 {

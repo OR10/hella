@@ -4,7 +4,7 @@ namespace AppBundle\Helper\Export\ShapeColumns;
 
 use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Column;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class Cuboid extends Export\ShapeColumns
 {

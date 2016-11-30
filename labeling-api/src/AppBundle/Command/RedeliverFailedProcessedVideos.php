@@ -4,7 +4,6 @@ namespace AppBundle\Command;
 
 use AppBundle\Model;
 use AppBundle\Database\Facade;
-use AppBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Doctrine\ORM;

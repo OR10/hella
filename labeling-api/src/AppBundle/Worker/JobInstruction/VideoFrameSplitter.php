@@ -5,14 +5,14 @@ use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
-use AppBundle\Service\Video as VideoService;
+use AnnoStationBundle\Service\Video as VideoService;
 use AppBundle\Worker\Jobs;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use League\Flysystem;
 use Doctrine\ODM\CouchDB;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class VideoFrameSplitter extends WorkerPool\JobInstruction
 {

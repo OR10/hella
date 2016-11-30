@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Service\VideoCdn;
+namespace AnnoStationBundle\Service\VideoCdn;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use League;
 
