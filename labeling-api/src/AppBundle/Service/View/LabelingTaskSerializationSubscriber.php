@@ -5,7 +5,7 @@ use JMS\Serializer;
 use JMS\Serializer\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class LabelingTaskSerializationSubscriber implements EventDispatcher\EventSubscriberInterface
 {
