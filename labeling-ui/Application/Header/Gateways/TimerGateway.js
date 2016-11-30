@@ -3,10 +3,23 @@
  */
 class TimerGateway {
   /**
+   * @param {StorageContextService} storageContextService
+   * @param {PackagingExecutor} packagingExecutor
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(storageContextService, packagingExecutor, apiService, bufferedHttp) {
+    /**
+     * @type {StorageContextService}
+     * @private
+     */
+    this._storageContextService = storageContextService;
+
+    /**
+     * @type {PackagingExecutorService}
+     */
+    this._packagingExecutor = packagingExecutor;
+
     /**
      * @type {BufferedHttp}
      */
@@ -26,27 +39,21 @@ class TimerGateway {
    * @return {AbortablePromise<int|Error>}
    */
   getTime(taskId, userId) {
-    // @TODO: Port PHP Logic
-    //
-    // if ($user !== $this->tokenStorage->getToken()->getUser()) {
-    //    throw new Exception\AccessDeniedHttpException('Its not allowed to access the timer for other users');
-    // }
-    //
-    // $result = $this->documentManager
-    //     ->createQuery('annostation_task_timer', 'by_taskId_userId')
-    //     ->setKey([$task->getId(), $user->getId()])
-    //     ->setLimit(1)
-    //     ->onlyDocs(true)
-    //     ->execute()
-    //     ->toArray();
-    const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
-    return this._bufferedHttp.get(url, undefined, 'timer')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
-        }
+    const queueIdentifier = 'timer';
+    const viewIdentifier = 'annostation_task_timer/by_taskId_userId';
+    const db = this._storageContextService.provideContextForTaskId(taskId);
 
-        throw new Error('Failed loading time');
+    return this._packagingExecutor.execute(
+      queueIdentifier,
+      () => db.query(viewIdentifier, {
+        include_docs: true,
+        key: [taskId, userId],
+      }))
+      .then(response => response.rows[0])
+      .then(timeDocument => {
+        if (typeof timeDocument !== 'object') {
+          throw new Error('Failed loading time');
+        }
       });
   }
 
@@ -75,7 +82,7 @@ class TimerGateway {
   // $this->documentManager->persist($taskTimer);
   // $this->documentManager->flush();
 
-  const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
     return this._bufferedHttp.put(url, {time}, undefined, 'timer')
       .then(response => {
         if (response.data && response.data.result) {
