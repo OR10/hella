@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Worker\EventHandler;
 use AppBundle\Worker\JobInstructionFactory;
 use Doctrine\ODM\CouchDB;
