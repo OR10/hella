@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Service\Interpolation\Algorithm;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 
 class LinearTest extends Tests\KernelTestCase
@@ -63,7 +63,7 @@ class LinearTest extends Tests\KernelTestCase
     }
 
     /**
-     * @expectedException AppBundle\Service\Interpolation\Exception
+     * @expectedException AnnoStationBundle\Service\Interpolation\Exception
      */
     public function testInterpolationWithoutAnyLabeledThingInFrameThrowsException()
     {

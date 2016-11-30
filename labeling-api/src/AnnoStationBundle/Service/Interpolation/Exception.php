@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Interpolation;
+namespace AnnoStationBundle\Service\Interpolation;
 
 class Exception extends \AppBundle\Exception
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AnnoStationBundle\Service;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service\Interpolation;
+use AnnoStationBundle\Service\Interpolation;
 
 /**
  * Service to interpolate the shapes of a `LabeledThing` for a given frame range.

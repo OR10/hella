@@ -4,7 +4,7 @@ namespace AppBundle\Tests\Service;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 
 class InterpolationTest extends Tests\KernelTestCase
@@ -50,7 +50,7 @@ class InterpolationTest extends Tests\KernelTestCase
     }
 
     /**
-     * @expectedException AppBundle\Service\Interpolation\Exception
+     * @expectedException AnnoStationBundle\Service\Interpolation\Exception
      */
     public function testInterpolateSetsErrorStatusWhenUnknownAlgorithmShouldBeUsed()
     {
