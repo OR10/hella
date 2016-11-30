@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
@@ -14,7 +14,7 @@ use crosscan\WorkerPool\AMQP;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Controller\Api\Project\Exception as ProjectException;
+use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
 
 /**
  * @Rest\Prefix("/api/project")

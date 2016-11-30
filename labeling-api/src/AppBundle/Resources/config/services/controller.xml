@@ -54,14 +54,6 @@
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
         <service
-                id="annostation.labeling_api.controller.api.project.export"
-                class="AppBundle\Controller\Api\Project\Export">
-            <argument type="service" id="annostation.labeling_api.database.facade.project_export"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
-        </service>
-        <service
                 id="annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
                 class="AppBundle\Controller\Api\Task\LabeledThingInFrame">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
@@ -160,38 +152,13 @@
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
             <argument type="service" id="security.token_storage" />
         </service>
-        <service id="annostation.labeling_api.controller.api.project.status" class="AppBundle\Controller\Api\Project\Status">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="security.token_storage" />
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
-        </service>
-        <service id="annostation.labeling_api.controller.api.project.report" class="AppBundle\Controller\Api\Project\Report">
-            <argument type="service" id="annostation.labeling_api.database.facade.report" />
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-        </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AppBundle\Controller\CustomException">
             <argument type="service" id="twig"/>
             <argument>%kernel.debug%</argument>
         </service>
-        <service id="annostation.labeling_api.controller.dimension_prediction" class="AppBundle\Controller\Api\DimensionPrediction">
-        </service>
 
-        <service id="annostation.labeling_api.controller.api.project.batch_upload" class="AppBundle\Controller\Api\Project\BatchUpload">
-            <argument type="service" id="security.token_storage" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
-            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
-            <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
-            <argument type="service" id="annostation.labeling_api.vendor.logger"/>
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+        <service id="annostation.labeling_api.controller.dimension_prediction" class="AppBundle\Controller\Api\DimensionPrediction">
         </service>
 
         <service id="annostation.labeling_api.controller.api.ui_log" class="AppBundle\Controller\Api\UiLog">
@@ -203,12 +170,7 @@
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="security.token_storage"/>
         </service>
-        <service id="annostation.labeling_api.controller.api.project.attention" class="AppBundle\Controller\Api\Project\Attention">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-        </service>
+
         <service id="annostation.labeling_api.controller.api.system" class="AppBundle\Controller\Api\System">
             <argument>%rabbitmq_host%</argument>
             <argument>%rabbitmq_management_port%</argument>

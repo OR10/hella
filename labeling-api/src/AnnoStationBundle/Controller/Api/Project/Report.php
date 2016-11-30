@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
