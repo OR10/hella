@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use crosscan\WorkerPool;
