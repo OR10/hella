@@ -23,6 +23,11 @@ import FileModelDirective from './Directives/FileModelDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
+
+import PouchDbContextService from './Services/PouchDbContextService';
+import PouchDbSyncManager from './Services/PouchDbSyncManager';
+import PouchDbViewHeater from './Services/PouchDbViewHeater';
+
 import DebouncerService from './Services/DebouncerService';
 import CouchDbModelSerializer from './Services/CouchDbModelSerializer';
 import CouchDbModelDeserializer from './Services/CouchDbModelDeserializer';
@@ -86,6 +91,13 @@ class Common extends Module {
     this.module.service('releaseConfigService', ReleaseConfigService);
     this.module.service('lockService', LockService);
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
+
+    if (featureFlags.pouchdb === true) {
+      this.module.service('pouchDbContextService', PouchDbContextService);
+      this.module.service('pouchDbSyncManager', PouchDbSyncManager);
+      this.module.service('pouchDbViewHeater', PouchDbViewHeater);
+    }
+
     this.module.service('debouncerService', DebouncerService);
     this.module.service('couchDbModelSerializer', CouchDbModelSerializer);
     this.module.service('couchDbModelDeserializer', CouchDbModelDeserializer);
