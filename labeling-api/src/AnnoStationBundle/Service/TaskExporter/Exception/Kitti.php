@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\TaskExporter\Exception;
+namespace AnnoStationBundle\Service\TaskExporter\Exception;
 
 use AppBundle\Exception;
 

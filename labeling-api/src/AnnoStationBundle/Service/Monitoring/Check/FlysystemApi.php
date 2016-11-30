@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Monitoring\Check;
+namespace AnnoStationBundle\Service\Monitoring\Check;
 
 use ZendDiagnostics\Check;
 use ZendDiagnostics\Result;

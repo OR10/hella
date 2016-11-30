@@ -12,7 +12,6 @@
         <import resource="services/param_converters.xml"/>
         <import resource="services/voters.xml"/>
         <import resource="services/worker.xml"/>
-        <import resource="services/monitoring.xml"/>
         <import resource="services/helper.xml"/>
     </imports>
 
@@ -71,13 +70,6 @@
             <argument>/login</argument>
         </service>
 
-        <service id="annostation.labeling_api.service.task_exporter.kitti" class="AppBundle\Service\TaskExporter\Kitti">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
-        </service>
-
         <service id="annostation.labeling_api.service.report" class="AppBundle\Service\Report">
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="annostation.labeling_api.database.facade.video" />
@@ -107,23 +99,6 @@
             <argument type="service" id="annostation.labeling_api.vendor.logger" />
         </service>
 
-        <service id="annostation.labeling_api.service.amqp_pool_config" class="AppBundle\Service\AmqpPoolConfig">
-            <argument>%rabbitmq_host%</argument>
-            <argument>%rabbitmq_port%</argument>
-            <argument>%rabbitmq_vhost%</argument>
-            <argument>%rabbitmq_user%</argument>
-            <argument>%rabbitmq_password%</argument>
-            <argument>%rabbitmq_use_dead_letter_exchange%</argument>
-            <argument>%rabbitmq_use_alternate_exchange%</argument>
-            <property name="workerAlternateExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
-            <property name="workerDeadLetterExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
-            <property name="rescheduleQueue">%worker_pool.queue_prefix%worker.reschedule</property>
-            <property name="workerMainExchange">%worker_pool.queue_prefix%worker.main.exchange</property>
-            <property name="workerHighPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.high_prio</property>
-            <property name="workerNormalPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.normal_prio</property>
-            <property name="workerLowPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.low_prio</property>
-        </service>
-
         <service id="annostation.labeling_api.view.serialization_listener"
                  class="AppBundle\Service\View\LabelingTaskSerializationSubscriber">
             <tag name="jms_serializer.event_subscriber"/>
@@ -140,10 +115,6 @@
 
         <service id="annostation.labeling_api.security.user_provider" class="AppBundle\Security\UserProvider" public="true">
             <argument type="service" id="fos_user.user_manager" />
-        </service>
-
-        <service id="annostation.labeling_api.service.authentication.user_permissions" class="AppBundle\Service\Authentication\UserPermissions">
-            <argument type="service" id="security.token_storage" />
         </service>
 
         <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"

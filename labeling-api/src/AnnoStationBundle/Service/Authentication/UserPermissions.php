@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Authentication;
+namespace AnnoStationBundle\Service\Authentication;
 
 use AppBundle\Model;
 use FOS\UserBundle\Model\UserInterface;

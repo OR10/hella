@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Service\TaskExporter;
+namespace AnnoStationBundle\Service\TaskExporter;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\TaskExporter;
-use AppBundle\Service;
-use AppBundle\Service\TaskExporter\Exception;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\TaskExporter\Exception;
 
 /**
  * Service to export a task for the K.I.T.T.I. Object Detection Benchmark

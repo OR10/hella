@@ -6,7 +6,7 @@ use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Response;
 use AppBundle\Controller;
 use AnnoStationBundle\Service;
-use AppBundle\Service\Authentication;
+use AnnoStationBundle\Service\Authentication;
 use AppBundle\View;
 use AppBundle\Model\TaskConfiguration as TaskConfigurationModel;
 use FOS\RestBundle\Controller\Annotations as Rest;

@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <imports>
         <import resource="services/interpolation_algorithms.xml"/>
+        <import resource="services/monitoring.xml"/>
     </imports>
     <services>
         <service id="annostation.labeling_api.service.frame_cdn.flysystem"
@@ -172,6 +173,35 @@
         <service id="annostation.labeling_api.service.interpolation" class="AnnoStationBundle\Service\Interpolation">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.status" />
+        </service>
+
+        <service id="annostation.labeling_api.service.amqp_pool_config" class="AnnoStationBundle\Service\AmqpPoolConfig">
+            <argument>%rabbitmq_host%</argument>
+            <argument>%rabbitmq_port%</argument>
+            <argument>%rabbitmq_vhost%</argument>
+            <argument>%rabbitmq_user%</argument>
+            <argument>%rabbitmq_password%</argument>
+            <argument>%rabbitmq_use_dead_letter_exchange%</argument>
+            <argument>%rabbitmq_use_alternate_exchange%</argument>
+            <property name="workerAlternateExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
+            <property name="workerDeadLetterExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
+            <property name="rescheduleQueue">%worker_pool.queue_prefix%worker.reschedule</property>
+            <property name="workerMainExchange">%worker_pool.queue_prefix%worker.main.exchange</property>
+            <property name="workerHighPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.high_prio</property>
+            <property name="workerNormalPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.normal_prio</property>
+            <property name="workerLowPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.low_prio</property>
+        </service>
+
+        <service id="annostation.labeling_api.service.authentication.user_permissions"
+                 class="AnnoStationBundle\Service\Authentication\UserPermissions">
+            <argument type="service" id="security.token_storage"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.task_exporter.kitti" class="AnnoStationBundle\Service\TaskExporter\Kitti">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
         </service>
     </services>
 </container>
