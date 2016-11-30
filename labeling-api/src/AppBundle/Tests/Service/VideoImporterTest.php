@@ -38,16 +38,6 @@ class VideoImporterTest extends Tests\KernelTestCase
     private $workerPoolFacade;
 
     /**
-     * @var Service\Video\MetaDataReader
-     */
-    private $metaDataReader;
-
-    /**
-     * @var Service\Video\VideoFrameSplitter
-     */
-    private $videoFrameSplitter;
-
-    /**
      * @var JobInstruction\VideoFrameSplitter
      */
     private $videoFrameSplitterInstruction;
