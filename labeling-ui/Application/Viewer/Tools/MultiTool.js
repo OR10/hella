@@ -394,7 +394,10 @@ export default class MultiTool extends Tool {
     if (!this._toolWorking) {
       this._handleMouseMoveCursor(event.point);
     }
-    this._activeTool.onMouseMove(event);
+
+    if (this._activeTool) {
+      this._activeTool.onMouseMove(event);
+    }
   }
 
   /**
