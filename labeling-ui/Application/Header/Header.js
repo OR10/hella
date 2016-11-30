@@ -6,6 +6,7 @@ import BadgeDirective from './Directives/BadgeDirective';
 import UserNameDirective from './Directives/UserNameDirective';
 import LogoutButtonDirective from './Directives/LogoutButtonDirective';
 import TimerGateway from './Gateways/TimerGateway';
+import PouchDbTimerGateway from './Gateways/PouchDbTimerGateway';
 
 /**
  * Module containing all functionality related to the header bar
@@ -16,7 +17,7 @@ class Header extends Module {
   /**
    * @inheritDoc
    */
-  registerWithAngular(angular) {
+  registerWithAngular(angular, featureFlags) {
     this.module = angular.module('AnnoStation.Header', []);
 
     this.registerDirective('viewerTitleBar', ViewerTitleBarDirective);
@@ -27,6 +28,10 @@ class Header extends Module {
     this.registerDirective('logoutButton', LogoutButtonDirective);
 
     this.module.service('timerGateway', TimerGateway);
+
+    if (featureFlags.pouchdb === true) {
+      // this.module.service('timerGateway', PouchDbTimerGateway);
+    }
   }
 }
 

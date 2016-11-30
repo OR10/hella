@@ -8,6 +8,9 @@ import LinearBackendInterpolation from './Interpolations/LinearBackendInterpolat
 import CacheService from './Services/CacheService';
 import CacheHeaterService from './Services/CacheHeaterService';
 
+import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
+import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
+
 /**
  * Module containing all functionality related to Labels and its Data
  *
@@ -17,7 +20,7 @@ class LabelingData extends Module {
   /**
    * @inheritDoc
    */
-  registerWithAngular(angular) {
+  registerWithAngular(angular, featureFlags) {
     this.module = angular.module('AnnoStation.LabelingData', []);
 
     this.module.service('labeledThingInFrameGateway', CacheHeatingLabeledThingInFrameGateway);
@@ -30,6 +33,11 @@ class LabelingData extends Module {
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);
+
+    if (featureFlags.pouchdb === true) {
+      // this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingFrameGateway);
+      this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
+    }
   }
 }
 
