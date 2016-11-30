@@ -8,7 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -178,7 +178,12 @@ class Project extends Controller\Base
             );
 
             if ($user->hasOneRoleOf(
-                [Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_CLIENT]
+                [
+                    Model\User::ROLE_ADMIN,
+                    Model\User::ROLE_LABEL_COORDINATOR,
+                    Model\User::ROLE_CLIENT,
+                    Model\User::ROLE_OBSERVER,
+                ]
             )
             ) {
                 $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);

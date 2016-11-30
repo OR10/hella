@@ -7,7 +7,7 @@ use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\View;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use Doctrine\ODM\CouchDB;

@@ -41,12 +41,22 @@ class TaskConfigurationUploadController {
     /**
      * @type {string}
      */
-    this.configurationName = '';
+    this.taskConfigurationName = '';
 
     /**
      * @type {null|File}
      */
-    this.configurationFile = null;
+    this.taskConfigurationFile = null;
+
+    /**
+     * @type {string}
+     */
+    this.requirementsConfigurationName = '';
+
+    /**
+     * @type {null|File}
+     */
+    this.requirementsConfigurationFile = null;
 
     /**
      * @type {number}
@@ -56,19 +66,68 @@ class TaskConfigurationUploadController {
     /**
      * @type {{file: boolean, name: boolean}}
      */
-    this.validation = {
+    this.taskConfigurationValidation = {
+      file: true,
+      name: true,
+    };
+
+    /**
+     * @type {{file: boolean, name: boolean}}
+     */
+    this.requirementsConfigurationValidation = {
       file: true,
       name: true,
     };
   }
 
-  uploadConfiguration() {
-    if (!this._validate()) {
+  uploadRequirementsConfiguration() {
+    if (!this._validateRequirementsConfiguration()) {
       return;
     }
 
     ++this.loadingInProgress;
-    this._taskConfigurationGateway.uploadTaskConfiguration(this.configurationName, this.configurationFile)
+    this._taskConfigurationGateway.uploadRequirementsConfiguration(this.requirementsConfigurationName, this.requirementsConfigurationFile)
+      .then(() => {
+        --this.loadingInProgress;
+        this._$state.go('labeling.task-configurations.list');
+      })
+      .catch(error => {
+        --this.loadingInProgress;
+        let headline = null;
+        switch (error.code) {
+          case 406:
+            headline = 'Malformed XML Configuration.';
+            break;
+          case 409:
+            headline = 'Duplicate configuration.';
+            break;
+          default:
+            headline = 'XML Task Configuration Upload failed.';
+        }
+        this._modalService.info(
+          {
+            title: 'Error uploading Requirements Configuration',
+            headline,
+            message: error.message,
+            confirmButtonText: 'Understood',
+          },
+          undefined,
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      });
+  }
+
+  uploadTaskConfiguration() {
+    if (!this._validateTaskConfiguration()) {
+      return;
+    }
+
+    ++this.loadingInProgress;
+    this._taskConfigurationGateway.uploadTaskConfiguration(this.taskConfigurationName, this.taskConfigurationFile)
       .then(() => {
         --this.loadingInProgress;
         this._$state.go('labeling.task-configurations.list');
@@ -103,12 +162,20 @@ class TaskConfigurationUploadController {
       });
   }
 
-  _validate() {
-    this.validation.file = this.configurationFile !== null;
-    this.validation.name = this.configurationName !== '';
+  _validateTaskConfiguration() {
+    this.taskConfigurationValidation.file = this.taskConfigurationFile !== null;
+    this.taskConfigurationValidation.name = this.taskConfigurationName !== '';
 
-    return Object.keys(this.validation)
-      .reduce((valid, key) => valid && this.validation[key], true);
+    return Object.keys(this.taskConfigurationValidation)
+      .reduce((valid, key) => valid && this.taskConfigurationValidation[key], true);
+  }
+
+  _validateRequirementsConfiguration() {
+    this.requirementsConfigurationValidation.file = this.requirementsConfigurationFile !== null;
+    this.requirementsConfigurationValidation.name = this.requirementsConfigurationName !== '';
+
+    return Object.keys(this.requirementsConfigurationValidation)
+      .reduce((valid, key) => valid && this.requirementsConfigurationValidation[key], true);
   }
 }
 

@@ -256,7 +256,7 @@ class LabelingTask
         Video $video,
         Project $project,
         array $frameNumberMapping,
-        string $taskType,
+        string $taskType = null,
         string $drawingTool = null,
         array $predefinedClasses = array(),
         array $requiredImageTypes = array(),

@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Worker\EventHandler;
 use AppBundle\Worker\JobInstructionFactory;
 use Doctrine\ODM\CouchDB;
@@ -30,21 +30,30 @@ class WorkerStarter extends Base
     private $documentManager;
 
     /**
+     * @var string
+     */
+    private $queuePrefix;
+
+    /**
      * WorkerStarter constructor.
      *
      * @param Service\AMQPPoolConfig  $AMQPPoolConfig
      * @param \cscntLogger            $logger
      * @param CouchDB\DocumentManager $documentManager
+     * @param string                  $queuePrefix
      */
     public function __construct(
         Service\AMQPPoolConfig $AMQPPoolConfig,
         \cscntLogger $logger,
-        CouchDB\DocumentManager $documentManager
+        CouchDB\DocumentManager $documentManager,
+        string $queuePrefix
     ) {
         parent::__construct();
+
         $this->AMQPPoolConfig  = $AMQPPoolConfig;
         $this->loggerFacade    = new Facade\LoggerFacade($logger, \cscntLogFacility::WORKER_POOL);
         $this->documentManager = $documentManager;
+        $this->queuePrefix     = $queuePrefix;
     }
 
     protected function configure()
@@ -133,15 +142,15 @@ class WorkerStarter extends Base
     private function getQueue($marker)
     {
         if (preg_match('(^high$)i', $marker)) {
-            return 'worker.queue.high_prio';
+            return $this->queuePrefix . 'worker.queue.high_prio';
         }
 
         if (preg_match('(^normal$)i', $marker)) {
-            return 'worker.queue.normal_prio';
+            return $this->queuePrefix . 'worker.queue.normal_prio';
         }
 
         if (preg_match('(^low$)i', $marker)) {
-            return 'worker.queue.low_prio';
+            return $this->queuePrefix . 'worker.queue.low_prio';
         }
 
         return null;

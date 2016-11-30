@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use crosscan\WorkerPool;
@@ -17,10 +17,17 @@ class RabbitMq extends Base
      */
     private $AMQPPoolConfig;
 
-    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig)
+    /**
+     * @var string
+     */
+    private $queuePrefix;
+
+    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig, string $queuePrefix)
     {
         parent::__construct();
+
         $this->AMQPPoolConfig = $AMQPPoolConfig;
+        $this->queuePrefix    = $queuePrefix;
     }
 
     protected function configure()
@@ -84,26 +91,26 @@ class RabbitMq extends Base
     {
         if ($checkOnly) {
             return $this->exchangeExists(
-                'worker.garbage-collection',
+                $this->getQueueName('worker.garbage-collection'),
                 'fanout',
                 $channel
             )
             && $this->exchangeExists(
-                'worker.main.exchange',
+                $this->getQueueName('worker.main.exchange'),
                 'topic',
                 $channel
             );
         }
 
         $channel->exchange_declare(
-            'worker.garbage-collection',
+            $this->getQueueName('worker.garbage-collection'),
             'fanout',
             false,
             true,
             false
         );
         $channel->exchange_declare(
-            'worker.main.exchange',
+            $this->getQueueName('worker.main.exchange'),
             'topic',
             false,
             true,
@@ -111,6 +118,16 @@ class RabbitMq extends Base
         );
 
         return true;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    private function getQueueName(string $name): string
+    {
+        return sprintf('%s%s', $this->queuePrefix, $name);
     }
 
     /**
@@ -122,43 +139,43 @@ class RabbitMq extends Base
     {
         if ($checkOnly) {
             return $this->exchangeExists(
-                'notification.garbage-collection',
+                $this->getQueueName('notification.garbage-collection'),
                 'fanout',
                 $channel
             )
             && $this->exchangeExists(
-                'notification.reschedule',
+                $this->getQueueName('notification.reschedule'),
                 'fanout',
                 $channel
             )
             && $this->exchangeExists(
-                'notification.main.exchange',
+                $this->getQueueName('notification.main.exchange'),
                 'topic',
                 $channel
             )
             && $this->exchangeExists(
-                'notification.publish.exchange',
+                $this->getQueueName('notification.publish.exchange'),
                 'fanout',
                 $channel
             );
         }
 
         $channel->exchange_declare(
-            'notification.garbage-collection',
+            $this->getQueueName('notification.garbage-collection'),
             'fanout',
             false,
             true,
             false
         );
         $channel->exchange_declare(
-            'notification.reschedule',
+            $this->getQueueName('notification.reschedule'),
             'fanout',
             false,
             true,
             false
         );
         $channel->exchange_declare(
-            'notification.publish.exchange',
+            $this->getQueueName('notification.publish.exchange'),
             'fanout',
             false,
             true,
@@ -166,10 +183,10 @@ class RabbitMq extends Base
         );
 
         $args                           = array();
-        $args['alternate-exchange']     = array('S', 'notification.garbage-collection');
-        $args['x-dead-letter-exchange'] = array('S', 'notification.reschedule');
+        $args['alternate-exchange']     = array('S', $this->getQueueName('notification.garbage-collection'));
+        $args['x-dead-letter-exchange'] = array('S', $this->getQueueName('notification.reschedule'));
         $channel->exchange_declare(
-            'notification.main.exchange',
+            $this->getQueueName('notification.main.exchange'),
             'topic',
             false,
             true,
@@ -180,8 +197,8 @@ class RabbitMq extends Base
         );
 
         $channel->exchange_bind(
-            'notification.main.exchange',
-            'notification.publish.exchange'
+            $this->getQueueName('notification.main.exchange'),
+            $this->getQueueName('notification.publish.exchange')
         );
 
         return true;
@@ -196,62 +213,62 @@ class RabbitMq extends Base
     {
         if ($checkOnly) {
             return $this->queueExists(
-                'worker.reschedule.30s',
+                $this->getQueueName('worker.reschedule.30s'),
                 $channel
             )
             && $this->queueExists(
-                'worker.reschedule.60s',
+                $this->getQueueName('worker.reschedule.60s'),
                 $channel
             )
             && $this->queueExists(
-                'worker.reschedule.300s',
+                $this->getQueueName('worker.reschedule.300s'),
                 $channel
             )
             && $this->queueExists(
-                'worker.reschedule.900s',
+                $this->getQueueName('worker.reschedule.900s'),
                 $channel
             )
             && $this->queueExists(
-                'worker.queue.high_prio',
+                $this->getQueueName('worker.queue.high_prio'),
                 $channel
             )
             && $this->queueExists(
-                'worker.queue.low_prio',
+                $this->getQueueName('worker.queue.low_prio'),
                 $channel
             )
             && $this->queueExists(
-                'worker.queue.normal_prio',
+                $this->getQueueName('worker.queue.normal_prio'),
                 $channel
             )
             && $this->queueExists(
-                'worker.garbage-collection',
+                $this->getQueueName('worker.garbage-collection'),
                 $channel
             );
         }
 
         $channel->queue_declare(
-            'worker.reschedule.30s',
+            $this->getQueueName('worker.reschedule.30s'),
             false,
             true,
             false,
             false
         );
         $channel->queue_declare(
-            'worker.reschedule.60s',
+            $this->getQueueName('worker.reschedule.60s'),
             false,
             true,
             false,
             false
         );
         $channel->queue_declare(
-            'worker.reschedule.300s',
+            $this->getQueueName('worker.reschedule.300s'),
             false,
             true,
             false,
             false
         );
         $channel->queue_declare(
-            'worker.reschedule.900s',
+            $this->getQueueName('worker.reschedule.900s'),
             false,
             true,
             false,
@@ -259,52 +276,52 @@ class RabbitMq extends Base
         );
 
         $channel->queue_declare(
-            'worker.queue.high_prio',
+            $this->getQueueName('worker.queue.high_prio'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'worker.queue.high_prio',
-            'worker.main.exchange',
-            'worker.queue.high_prio.#'
+            $this->getQueueName('worker.queue.high_prio'),
+            $this->getQueueName('worker.main.exchange'),
+            $this->getQueueName('worker.queue.high_prio.#')
         );
         $channel->queue_declare(
-            'worker.queue.low_prio',
+            $this->getQueueName('worker.queue.low_prio'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'worker.queue.low_prio',
-            'worker.main.exchange',
-            'worker.queue.low_prio.#'
+            $this->getQueueName('worker.queue.low_prio'),
+            $this->getQueueName('worker.main.exchange'),
+            $this->getQueueName('worker.queue.low_prio.#')
         );
         $channel->queue_declare(
-            'worker.queue.normal_prio',
+            $this->getQueueName('worker.queue.normal_prio'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'worker.queue.normal_prio',
-            'worker.main.exchange',
-            'worker.queue.normal_prio.#'
+            $this->getQueueName('worker.queue.normal_prio'),
+            $this->getQueueName('worker.main.exchange'),
+            $this->getQueueName('worker.queue.normal_prio.#')
         );
 
         $channel->queue_declare(
-            'worker.garbage-collection',
+            $this->getQueueName('worker.garbage-collection'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'worker.garbage-collection',
-            'worker.garbage-collection'
+            $this->getQueueName('worker.garbage-collection'),
+            $this->getQueueName('worker.garbage-collection')
         );
 
         return true;
@@ -319,53 +336,53 @@ class RabbitMq extends Base
     {
         if ($checkOnly) {
             return $this->queueExists(
-                'notification.reschedule',
+                $this->getQueueName('notification.reschedule'),
                 $channel
             )
             && $this->queueExists(
-                'notification.garbage-collection',
+                $this->getQueueName('notification.garbage-collection'),
                 $channel
             )
             && $this->queueExists(
-                'catch ALL the notifications o/',
+                $this->getQueueName('catch ALL the notifications o/'),
                 $channel
             );
         }
 
         $channel->queue_declare(
-            'notification.reschedule',
+            $this->getQueueName('notification.reschedule'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'notification.reschedule',
-            'notification.reschedule'
+            $this->getQueueName('notification.reschedule'),
+            $this->getQueueName('notification.reschedule')
         );
 
         $channel->queue_declare(
-            'notification.garbage-collection',
+            $this->getQueueName('notification.garbage-collection'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'notification.garbage-collection',
-            'notification.garbage-collection'
+            $this->getQueueName('notification.garbage-collection'),
+            $this->getQueueName('notification.garbage-collection')
         );
 
         $channel->queue_declare(
-            'catch ALL the notifications o/',
+            $this->getQueueName('catch ALL the notifications o/'),
             false,
             true,
             false,
             false
         );
         $channel->queue_bind(
-            'catch ALL the notifications o/',
-            'notification.publish.exchange',
+            $this->getQueueName('catch ALL the notifications o/'),
+            $this->getQueueName('notification.publish.exchange'),
             '#'
         );
 
@@ -412,7 +429,7 @@ class RabbitMq extends Base
             );
             $channel->queue_bind(
                 $queue,
-                'notification.main.exchange',
+                $this->getQueueName('notification.main.exchange'),
                 $routingKey
             );
         }

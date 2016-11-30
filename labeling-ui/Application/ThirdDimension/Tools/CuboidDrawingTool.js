@@ -91,8 +91,11 @@ class CuboidDrawingTool extends DrawingTool {
   }
 
   onKeyPress(keyCode) {
+    /**
+     * Check for 'x' (keycode 120) to switch to pseudo3d mode.
+     */
     if (
-      keyCode === 50
+      keyCode === 120
       && this._startCreation
       && this._topPoint
       && this._bottomPoint

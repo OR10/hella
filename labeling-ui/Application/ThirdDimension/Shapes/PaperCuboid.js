@@ -578,6 +578,95 @@ class PaperCuboid extends PaperShape {
     this._drawCuboid();
   }
 
+  /**
+   * Resize the cuboid given a specific handle name (height, depth, width) and a distance value
+   *
+   * The distance may be negative to express a reduction of the given value.
+   *
+   * @param {string} handleName
+   * @param {int} distance
+   * @param {int} minimalHeight
+   */
+  resizeByDistance(handleName, distance, minimalHeight) {
+    const allowedHandleNames = [
+      CuboidInteractionResolver.DEPTH,
+      CuboidInteractionResolver.HEIGHT,
+      CuboidInteractionResolver.WIDTH,
+    ];
+
+    if (!allowedHandleNames.includes(handleName)) {
+      throw new Error(`The given handleName (${handleName}) is not allowed for a resizeByDistance operation.`);
+    }
+
+    const handleVertexIndex = this._cuboidInteractionResolver.getVertexIndexFromHandleName(handleName);
+    const interaction = this._cuboidInteractionResolver.resolveInteractionForVertex(handleVertexIndex);
+
+    const cuboid2d = this._projection2d.projectCuboidTo2d(this._cuboid3d);
+    const primaryVertex2d = cuboid2d.vertices[this._cuboidInteractionResolver.getPrimaryCornerIndex()];
+    const handleVertex2d = cuboid2d.vertices[handleVertexIndex];
+
+    const primaryVertexToHandleVertexVector2d = handleVertex2d.clone().sub(primaryVertex2d);
+
+    const targetVector = handleVertex2d.clone().add(
+      primaryVertexToHandleVertexVector2d.clone().normalize().multiplyScalar(distance)
+    );
+
+    // Depending on whether we are shortening or enlarging the cube and the position of the handle relative to the
+    // primary vertex, we need to round differently, to ensure we always have a value change, even for small values.
+    let roundingOperationForX = null;
+    let roundingOperationForY = null;
+
+    const handleLeftOfPrimary = handleVertex2d.x < primaryVertex2d.x;
+    const handleRightOfPrimary = handleVertex2d.x >= primaryVertex2d.x;
+    const handleAbovePrimary = handleVertex2d.y < primaryVertex2d.y;
+    const handleBelowPrimary = handleVertex2d.y >= primaryVertex2d.y;
+    const positiveDistance = distance >= 0;
+    const negativeDistance = distance < 0;
+
+    if (positiveDistance) {
+      if (handleLeftOfPrimary) {
+        roundingOperationForX = 'floor';
+      } else if (handleRightOfPrimary) {
+        roundingOperationForX = 'ceil';
+      }
+
+      if (handleAbovePrimary) {
+        roundingOperationForY = 'floor';
+      } else if (handleBelowPrimary) {
+        roundingOperationForY = 'ceil';
+      }
+    } else if (negativeDistance) {
+      if (handleLeftOfPrimary) {
+        roundingOperationForX = 'ceil';
+      } else if (handleRightOfPrimary) {
+        roundingOperationForX = 'floor';
+      }
+
+      if (handleAbovePrimary) {
+        roundingOperationForY = 'ceil';
+      } else if (handleBelowPrimary) {
+        roundingOperationForY = 'floor';
+      }
+    }
+
+    const targetPoint = new paper.Point(
+      Math[roundingOperationForX](targetVector.x),
+      Math[roundingOperationForY](targetVector.y)
+    );
+
+    if (interaction[CuboidInteractionResolver.HEIGHT]) {
+      this._changeHeight(targetPoint, handleVertexIndex, minimalHeight);
+    }
+    if (interaction[CuboidInteractionResolver.DEPTH]) {
+      this._changeHorizontal(targetPoint, handleVertexIndex, CuboidInteractionResolver.DEPTH);
+    }
+    if (interaction[CuboidInteractionResolver.WIDTH]) {
+      this._changeHorizontal(targetPoint, handleVertexIndex, CuboidInteractionResolver.WIDTH);
+    }
+
+    this._drawCuboid();
+  }
+
   rotateFaces(clockwise = true) {
     const faceMapping = this._getFaceRotationMapping(clockwise);
     const vertices = this._cuboid3d.vertices;

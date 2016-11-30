@@ -2,7 +2,7 @@
 
 namespace AppBundle\Tests\Service;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 
 class XmlValidator extends Tests\KernelTestCase
@@ -30,6 +30,6 @@ class XmlValidator extends Tests\KernelTestCase
 
     public function setUpImplementation()
     {
-        $this->xmlValidatorService = $this->getAnnostationService('service.xml_validator');
+        $this->xmlValidatorService = $this->getAnnostationService('service.simple_xml_validator');
     }
 }

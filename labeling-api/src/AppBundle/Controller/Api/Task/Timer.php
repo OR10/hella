@@ -8,7 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -62,6 +62,10 @@ class Timer extends Controller\Base
 
     /**
      * @Rest\Get("/{task}/timer/{user}")
+     * @param Model\LabelingTask $task
+     * @param Model\User         $user
+     *
+     * @return \FOS\RestBundle\View\View
      */
     public function getTimerAction(Model\LabelingTask $task, Model\User $user)
     {
@@ -75,7 +79,7 @@ class Timer extends Controller\Base
 
         return View\View::create()->setData([
             'result' => [
-                'time' => $timer === null ? 0 : $timer->getTimeInSeconds(Model\LabelingTask::PHASE_LABELING),
+                'time' => $timer === null ? 0 : $timer->getTimeInSeconds($task->getCurrentPhase()),
             ],
         ]);
     }

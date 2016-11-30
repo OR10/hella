@@ -51,7 +51,12 @@
 
         <service id="annostation.labeling_api.request.param_converter.report" class="AppBundle\Request\ParamConverter\Report">
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
-            <tag name="request.param_converter" converter="annostation.labeling_group" priority="10" />
+            <tag name="request.param_converter" converter="annostation.report" priority="10" />
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.task_configuration" class="AppBundle\Request\ParamConverter\TaskConfiguration">
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
+            <tag name="request.param_converter" converter="annostation.task_configuration" priority="10" />
         </service>
     </services>
 </container>

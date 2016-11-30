@@ -20,4 +20,8 @@ interface TaskConfiguration
     public function getRawData();
 
     public function isMetaLabelingConfiguration();
+
+    public function getType();
+
+    public function getContentType();
 }

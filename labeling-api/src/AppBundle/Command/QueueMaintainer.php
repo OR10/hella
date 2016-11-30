@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use PhpAmqpLib\Channel;
@@ -82,13 +82,22 @@ class QueueMaintainer extends Base
      */
     private $facadeAMQP;
 
-    public function __construct(Service\AMQPPoolConfig $AMQPPoolConfig, AMQP\FacadeAMQP $facadeAMQP)
-    {
+    /**
+     * @var string
+     */
+    private $queuePrefix;
+
+    public function __construct(
+        Service\AMQPPoolConfig $AMQPPoolConfig,
+        AMQP\FacadeAMQP $facadeAMQP,
+        string $queuePrefix
+    ) {
         parent::__construct();
+
         $this->AMQPPoolConfig = $AMQPPoolConfig;
         $this->facadeAMQP     = $facadeAMQP;
+        $this->queuePrefix    = $queuePrefix;
     }
-
 
     protected function configure()
     {
@@ -172,7 +181,7 @@ class QueueMaintainer extends Base
             0
         );
         $this->unregisterConsumer();
-        $this->queue = $this->garbageQueues[$gc];
+        $this->queue = $this->queuePrefix . $this->garbageQueues[$gc];
         $this->registerConsumer();
 
         return 2;

@@ -46,7 +46,10 @@ class ClassColumn extends Export\Column
         Model\LabeledFrame $labeledFrame = null,
         Model\CalibrationData $calibrationData = null
     ) {
-        return new Cell\LabeledThingInFrame\ShapeClass($this->classValues, $labeledThingInFrame->getClassesWithGhostClasses());
+        return new Cell\LabeledThingInFrame\ShapeClass(
+            $this->classValues,
+            $labeledThingInFrame->getClassesWithGhostClasses()
+        );
     }
 
     /**

@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Service;
 use AppBundle\Tests\KernelTestCase;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class GhostClassesPropagationTest extends KernelTestCase
 {

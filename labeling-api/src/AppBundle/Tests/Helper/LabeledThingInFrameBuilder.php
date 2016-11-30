@@ -25,6 +25,11 @@ class LabeledThingInFrameBuilder
     private $labeledThing;
 
     /**
+     * @var string
+     */
+    private $identifierName;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -66,11 +71,28 @@ class LabeledThingInFrameBuilder
     }
 
     /**
+     * @param $name
+     *
+     * @return $this
+     */
+    public function withIdentifierName($name)
+    {
+        $this->identifierName = $name;
+
+        return $this;
+    }
+
+    /**
      * @return Model\LabeledThingInFrame
      */
     public function build()
     {
-        $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, $this->frameIndex, $this->classes);
+        $labeledThingInFrame = Model\LabeledThingInFrame::create(
+            $this->labeledThing,
+            $this->frameIndex,
+            $this->classes
+        );
+        $labeledThingInFrame->setIdentifierName($this->identifierName);
 
         return $labeledThingInFrame;
     }

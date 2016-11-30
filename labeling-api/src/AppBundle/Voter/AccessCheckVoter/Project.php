@@ -33,6 +33,7 @@ class Project extends AccessCheckVoter
                 new AccessCheck\LabelCoordinatorIsAssignedToProject(),
                 new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
                 new AccessCheck\HasAdminRole(),
+                new AccessCheck\HasObserverRole(),
             ],
             self::PROJECT_WRITE => [
                 new AccessCheck\ClientIsProjectCreator(),

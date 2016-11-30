@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Service\Interpolation\Algorithm;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 
 class LinearTest extends Tests\KernelTestCase
@@ -63,7 +63,7 @@ class LinearTest extends Tests\KernelTestCase
     }
 
     /**
-     * @expectedException AppBundle\Service\Interpolation\Exception
+     * @expectedException AnnoStationBundle\Service\Interpolation\Exception
      */
     public function testInterpolationWithoutAnyLabeledThingInFrameThrowsException()
     {
@@ -253,6 +253,7 @@ class LinearTest extends Tests\KernelTestCase
                     new Shapes\Rectangle('test-1', 5, 5, 10, 10),
                     new Shapes\Rectangle('test-2', 100, 100, 200, 200),
                     new Shapes\Ellipse('test-3', 100, 100, 200, 200),
+                    new Shapes\Polygon('test-4', [['x' => 100, 'y' => 75], ['x' => 120, 'y' => 160]])
                 ]
             ),
             $this->createLabeledThingInFrame(
@@ -262,6 +263,7 @@ class LinearTest extends Tests\KernelTestCase
                     new Shapes\Rectangle('test-1', 8, 8, 20, 20),
                     new Shapes\Rectangle('test-2', 200, 200, 100, 100),
                     new Shapes\Ellipse('test-3', 200, 200, 100, 100),
+                    new Shapes\Polygon('test-4', [['x' => 170, 'y' => 200], ['x' => 320, 'y' => 380]])
                 ]
             ),
         ];
@@ -286,6 +288,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Rectangle('test-1', 5, 5, 10, 10),
                         new Shapes\Rectangle('test-2', 100, 100, 200, 200),
                         new Shapes\Ellipse('test-3', 100, 100, 200, 200),
+                        new Shapes\Polygon('test-4', [['x' => 100, 'y' => 75], ['x' => 120, 'y' => 160]])
                     ]
                 )
             ),
@@ -298,6 +301,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Rectangle('test-1', 5.75, 5.75, 12.5, 12.5),
                         new Shapes\Rectangle('test-2', 125, 125, 175, 175),
                         new Shapes\Ellipse('test-3', 125, 125, 175, 175),
+                        new Shapes\Polygon('test-4', [['x' => 117.5, 'y' => 106.25], ['x' => 170, 'y' => 215]]),
                     ]
                 )
             ),
@@ -310,6 +314,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Rectangle('test-1', 6.5, 6.5, 15, 15),
                         new Shapes\Rectangle('test-2', 150, 150, 150, 150),
                         new Shapes\Ellipse('test-3', 150, 150, 150, 150),
+                        new Shapes\Polygon('test-4', [['x' => 135, 'y' => 137.5], ['x' => 220, 'y' => 270]]),
                     ]
                 )
             ),
@@ -322,6 +327,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Rectangle('test-1', 7.25, 7.25, 17.5, 17.5),
                         new Shapes\Rectangle('test-2', 175, 175, 125, 125),
                         new Shapes\Ellipse('test-3', 175, 175, 125, 125),
+                        new Shapes\Polygon('test-4', [['x' => 152.5, 'y' => 168.75], ['x' => 270, 'y' => 325]]),
                     ]
                 )
             ),
@@ -334,6 +340,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Rectangle('test-1', 8, 8, 20, 20),
                         new Shapes\Rectangle('test-2', 200, 200, 100, 100),
                         new Shapes\Ellipse('test-3', 200, 200, 100, 100),
+                        new Shapes\Polygon('test-4', [['x' => 170, 'y' => 200], ['x' => 320, 'y' => 380]])
                     ]
                 )
             ),

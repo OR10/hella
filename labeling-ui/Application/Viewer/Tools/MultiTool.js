@@ -3,6 +3,7 @@ import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
 
 /**
@@ -176,25 +177,30 @@ export default class MultiTool extends Tool {
   }
 
   _registerCuboidShortcuts() {
+    const rotationDegrees = 2;
+    const fastRotationDegrees = 10;
+    const scaleDistance = 1;
+    const fastScaleDistance = 6;
+
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'o',
-      description: 'Rotate cuboid counter clockwise by 2°',
-      callback: () => this._rotateCuboid(this._deg2rad(2)),
+      description: `Rotate cuboid counter clockwise by ${rotationDegrees}°`,
+      callback: () => this._rotateCuboid(this._deg2rad(rotationDegrees)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'p',
-      description: 'Rotate cuboid clockwise by 2°',
-      callback: () => this._rotateCuboid(this._deg2rad(-2)),
+      description: `Rotate cuboid clockwise by ${rotationDegrees}°`,
+      callback: () => this._rotateCuboid(this._deg2rad(rotationDegrees * -1)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'shift+o',
-      description: 'Rotate cuboid counter clockwise by 10°',
-      callback: () => this._rotateCuboid(this._deg2rad(10)),
+      description: `Rotate cuboid counter clockwise by ${fastRotationDegrees}°`,
+      callback: () => this._rotateCuboid(this._deg2rad(fastRotationDegrees)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'shift+p',
-      description: 'Rotate cuboid clockwise by 10°',
-      callback: () => this._rotateCuboid(this._deg2rad(-10)),
+      description: `Rotate cuboid clockwise by ${fastRotationDegrees}°`,
+      callback: () => this._rotateCuboid(this._deg2rad(fastRotationDegrees * -1)),
     });
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 'i',
@@ -205,6 +211,90 @@ export default class MultiTool extends Tool {
       combo: 'u',
       description: 'Change cuboid faces clockwise',
       callback: () => this._rotateCuboidFaces(true),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '8',
+      description: `Add approx. ${scaleDistance}px to cuboid height`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '2',
+      description: `Substract approx. ${scaleDistance}px from cuboid height`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance * -1),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+8',
+      description: `Add approx. ${fastScaleDistance}px to cuboid height`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+2',
+      description: `Substract approx. ${fastScaleDistance}px from cuboid height`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance * -1),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '4',
+      description: `Add approx. ${scaleDistance}px to cuboid width`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '6',
+      description: `Substract approx. ${scaleDistance}px from cuboid width`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance * -1),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+4',
+      description: `Add approx. ${fastScaleDistance}px to cuboid width`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+6',
+      description: `Substract approx. ${fastScaleDistance}px from cuboid width`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance * -1),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '9',
+      description: `Add approx. ${scaleDistance}px to cuboid depth`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: '3',
+      description: `Substract approx. ${scaleDistance}px from cuboid depth`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance * -1),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+9',
+      description: `Add approx. ${fastScaleDistance}px to cuboid depth`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance),
+    });
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: 'shift+3',
+      description: `Substract approx. ${fastScaleDistance}px from cuboid depth`,
+      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance * -1),
+    });
+  }
+
+  _resizeCuboidByDistance(handleName, distance) {
+    /**
+     * @type {PaperCuboid}
+     */
+    const cuboid = this._$scope.vm.selectedPaperShape;
+    if (!(cuboid instanceof PaperCuboid)) {
+      return;
+    }
+
+    const minimalHeight = (
+      this._$scope.vm.task.drawingToolOptions.cuboid &&
+      this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight &&
+      this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight > 0
+    )
+      ? this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight
+      : 1;
+
+    this._context.withScope(scope => {
+      cuboid.resizeByDistance(handleName, distance, minimalHeight);
+      scope.view.update();
+      this.emit('shape:update', cuboid);
     });
   }
 

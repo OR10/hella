@@ -4,7 +4,7 @@ namespace AppBundle\Tests\Controller\Api\Task;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use Symfony\Component\HttpFoundation;

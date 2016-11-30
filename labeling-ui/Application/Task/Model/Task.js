@@ -303,29 +303,31 @@ class Task {
    * @returns {boolean}
    */
   isUserAllowedToAssign(user) {
-    if (this.status.labeling && this.status.labeling === 'todo') {
+    if (this.status.labeling && this.status.labeling === 'todo' || !this.getLatestAssignedUserForPhase('labeling')) {
       const assignment = this.getLatestAssignedUserForPhase('labeling');
 
       return !assignment || assignment.id !== user.id;
     }
 
-    if (this.status.review && this.status.review === 'todo') {
+    if (this.status.review && this.status.review === 'todo' || !this.getLatestAssignedUserForPhase('review')) {
+      const assignment = this.getLatestAssignedUserForPhase('review');
+
+      return !assignment || assignment.id !== user.id;
+    }
+
+    if (this.status.revision && this.status.revision === 'todo' || !this.getLatestAssignedUserForPhase('revision')) {
       const assignment = this.getLatestAssignedUserForPhase('review');
 
       return !assignment || assignment.id !== user.id;
     }
 
     // If no user is assigned, assignment is always allowed
+    // TODO: This is no longer necessary is it?
     if (
       !this.getLatestAssignedUserForPhase('labeling')
       && !this.getLatestAssignedUserForPhase('review')
       && !this.getLatestAssignedUserForPhase('revision')
     ) {
-      return true;
-    }
-
-    // TODO: check if this is the wanted behaviour
-    if (this.status.revision === 'todo') {
       return true;
     }
 

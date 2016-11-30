@@ -40,6 +40,18 @@ class AuthenticationHandler implements
     private $failurePath = '/login';
 
     /**
+     * @param string $targetUrlParameter
+     * @param string $defaultSuccessPath
+     * @param string $failurePath
+     */
+    public function __construct(string $targetUrlParameter, string $defaultSuccessPath, string $failurePath)
+    {
+        $this->targetUrlParameter = $targetUrlParameter;
+        $this->defaultSuccessPath = $defaultSuccessPath;
+        $this->failurePath        = $failurePath;
+    }
+
+    /**
      * Gets called whenever an authentication cycle is started.
      *
      * Returns a 401 response in case of a xhr request, otherwise saves the

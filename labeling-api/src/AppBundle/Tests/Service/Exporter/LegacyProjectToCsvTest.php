@@ -5,8 +5,8 @@ namespace AppBundle\Tests\Service\Exporter;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
-use AppBundle\Service;
-use AppBundle\Service\Exporter;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Exporter;
 use AppBundle\Tests;
 
 class LegacyProjectToCsvTest extends Tests\KernelTestCase

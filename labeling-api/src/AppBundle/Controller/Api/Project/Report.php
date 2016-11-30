@@ -8,7 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use crosscan\WorkerPool\AMQP;
 use AppBundle\Worker\Jobs;
@@ -166,7 +166,7 @@ class Report extends Controller\Base
      */
     public function createNewReportForProjectAction(Model\Project $project)
     {
-        $this->authorizationService->denyIfProjectIsNotWritable($project);
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $report = Model\Report::create($project);
         $this->reportFacade->save($report);

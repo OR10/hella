@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Bridge\Twig;
 use Symfony\Component\HttpFoundation;
@@ -36,18 +36,26 @@ class Index extends Base
     private $projectFacade;
 
     /**
+     * @var string
+     */
+    private $redirectAfterLogin;
+
+    /**
      * @param Twig\TwigEngine       $twigEngine
      * @param Service\VideoImporter $videoImporterService
      * @param Facade\Project        $projectFacade
+     * @param string                $redirectAfterLogin
      */
     public function __construct(
         Twig\TwigEngine $twigEngine,
         Service\VideoImporter $videoImporterService,
-        Facade\Project $projectFacade
+        Facade\Project $projectFacade,
+        string $redirectAfterLogin
     ) {
         $this->twigEngine           = $twigEngine;
         $this->videoImporterService = $videoImporterService;
         $this->projectFacade        = $projectFacade;
+        $this->redirectAfterLogin   = $redirectAfterLogin;
     }
 
     /**
@@ -55,6 +63,6 @@ class Index extends Base
      */
     public function indexAction()
     {
-        return new RedirectResponse('/labeling');
+        return new RedirectResponse($this->redirectAfterLogin);
     }
 }

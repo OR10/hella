@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
@@ -379,8 +379,10 @@ class Init extends Base
                 </class>
                 </labelTaskConfig>';
 
-        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter($xmlData);
-
+        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter(
+            $xmlData,
+            Model\TaskConfiguration\SimpleXml::TYPE
+        );
         $config = new TaskConfiguration\SimpleXml(
             'Sample Configuration',
             'example.xml',

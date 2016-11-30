@@ -254,6 +254,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'incomplete'     => true,
                         'ghost'          => true,
                         'ghostClasses'   => null,
+                        'identifierName' => null,
                     ),
                     array(
                         'id'             => $labeledThingInFrameIndex10->getId(),
@@ -265,6 +266,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'incomplete'     => true,
                         'ghost'          => false,
                         'ghostClasses'   => null,
+                        'identifierName' => null,
                     ),
                     array(
                         'id'             => $labeledThingInFrameIndex11->getId(),
@@ -276,6 +278,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'incomplete'     => true,
                         'ghost'          => false,
                         'ghostClasses'   => null,
+                        'identifierName' => null,
                     ),
                 ),
             ),

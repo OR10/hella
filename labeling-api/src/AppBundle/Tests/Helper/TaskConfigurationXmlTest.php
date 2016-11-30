@@ -168,7 +168,7 @@ EOF
 
     private function createConverter($xml)
     {
-        return new Helper\TaskConfigurationXmlConverter($xml);
+        return new Helper\TaskConfigurationXmlConverter\SimpleTaskConfigurationXmlConverter($xml);
     }
 
     public function setUpImplementation()

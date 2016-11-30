@@ -1,0 +1,3 @@
+annostation_hello_world:
+    resource: "@AnnoStationBundle/Controller/"
+    type: annotation

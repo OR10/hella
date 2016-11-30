@@ -2,7 +2,6 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Service;
 use AppBundle\Model;
 use Doctrine\CouchDB;
 use Symfony\Component\Console\Input;

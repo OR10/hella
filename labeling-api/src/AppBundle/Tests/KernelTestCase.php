@@ -57,6 +57,13 @@ class KernelTestCase extends Test\KernelTestCase
      */
     protected $defaultUser;
 
+    protected static function getKernelClass()
+    {
+        require __DIR__ . '/../../../app/AnnoStation/AnnoStationKernel.php';
+
+        return \AnnoStationKernel::class;
+    }
+
     /**
      * Setup test case.
      *

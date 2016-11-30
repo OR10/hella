@@ -12,16 +12,16 @@ class SimpleTaskConfiguration
     private $result = [];
 
     /**
-     * @param Model\TaskConfiguration $taskConfigurations[]
+     * @param Model\TaskConfiguration $taskConfiguration
      */
-    public function __construct(
-        $taskConfigurations
-    ) {
-        $this->result = array_map(function(Model\TaskConfiguration $taskConfiguration) {
-            return [
-                'id' => $taskConfiguration->getId(),
-                'name' => $taskConfiguration->getName(),
-            ];
-        }, $taskConfigurations);
+    public function __construct(Model\TaskConfiguration $taskConfiguration)
+    {
+        $this->result = [
+            'id'       => $taskConfiguration->getId(),
+            'name'     => $taskConfiguration->getName(),
+            'filename' => $taskConfiguration->getFilename(),
+            'userId'   => $taskConfiguration->getUserId(),
+            'type'     => $taskConfiguration->getType(),
+        ];
     }
 }

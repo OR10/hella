@@ -15,8 +15,11 @@ define annostation_base::nginx_vhost(
   $authBasicFile = undef,
   $useDefaultLocation = true,
   $proxy = undef,
-  $proxyHeaders = []
+  $proxyHeaders = [],
+  $listenIp = '*',
 ) {
+  include ::nginx
+
   if $proxy {
     $_vhostDir = undef
   } else {
@@ -29,6 +32,7 @@ define annostation_base::nginx_vhost(
       www_root             => $_vhostDir,
       listen_port          => $vhostPort,
       listen_options       => 'http2',
+      listen_ip            => $listenIp,
       ssl                  => true,
       ssl_cert             => $sslCertFile,
       ssl_key              => $sslKeyFile,
@@ -49,6 +53,7 @@ define annostation_base::nginx_vhost(
 
     nginx::resource::vhost { "${name}-redirect":
       ensure               => present,
+      server_name          => [$name],
       location_custom_cfg => {
         'return' => 'https://$host$request_uri',
       },
@@ -58,6 +63,7 @@ define annostation_base::nginx_vhost(
       ensure               => present,
       www_root             => $_vhostDir,
       listen_port          => $vhostPort,
+      listen_ip            => $listenIp,
       index_files          => $indexFiles,
       try_files            => $tryFiles,
       location_raw_prepend => $locationRawPrepend,

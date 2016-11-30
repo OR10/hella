@@ -2,7 +2,7 @@
 namespace AppBundle\Tests;
 
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use AppBundle\Tests;
@@ -215,7 +215,10 @@ class CouchDbTestCase extends Tests\WebTestCase
         $filename = 'testconfig.xml',
         $contentType = 'application/xml'
     ) {
-        $taskConfigurationXmlConverter = $this->taskConfigurationXmlConverterService->createConverter($binaryData);
+        $taskConfigurationXmlConverter = $this->taskConfigurationXmlConverterService->createConverter(
+            $binaryData,
+            Model\TaskConfiguration\SimpleXml::TYPE
+        );
 
         return $this->taskConfigurationFacade->save(
             new TaskConfiguration\SimpleXml(

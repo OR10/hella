@@ -50,6 +50,16 @@ class LabelingTaskBuilder
     private $creationDate;
 
     /**
+     * @var array
+     */
+    private $labelStructure;
+
+    /**
+     * @var Model\TaskConfiguration
+     */
+    private $taskConfiguration;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -184,10 +194,38 @@ class LabelingTaskBuilder
     }
 
     /**
+     * @param $labelStructure
+     *
+     * @return $this
+     */
+    public function withLabelStructure(array $labelStructure)
+    {
+        $this->labelStructure = $labelStructure;
+
+        return $this;
+    }
+
+    /**
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return $this
+     */
+    public function withTaskConfiguration(Model\TaskConfiguration $taskConfiguration)
+    {
+        $this->taskConfiguration = $taskConfiguration;
+
+        return $this;
+    }
+
+    /**
      * @return Model\LabelingTask
      */
     public function build()
     {
+        $taskConfigurationId = null;
+        if ($this->taskConfiguration instanceof Model\TaskConfiguration) {
+            $taskConfigurationId = $this->taskConfiguration->getId();
+        }
         $task = Model\LabelingTask::create(
             $this->video,
             $this->project,
@@ -196,7 +234,9 @@ class LabelingTaskBuilder
             null,
             [],
             [],
-            $this->creationDate
+            $this->creationDate,
+            false,
+            $taskConfigurationId
         );
 
         foreach ($this->userAssignments as $assignment) {
@@ -213,6 +253,7 @@ class LabelingTaskBuilder
         }
 
         $task->setTaskAttentionFlag($this->attentionTaskFlag);
+        $task->setLabelStructure($this->labelStructure);
 
         return $task;
     }

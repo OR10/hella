@@ -1,5 +1,4 @@
 imports:
-    - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
 
@@ -9,6 +8,8 @@ parameters:
     locale: en
     jms_serializer.cache_naming_strategy.class: AppBundle\Serializer\IdenticalUnlessSpecifiedPropertyNamingStrategy
     doctrine_couchdb.odm.configuration.class: AppBundle\Migration\Configuration
+    redirectAfterLogin: /labeling
+    worker_pool.queue_prefix: ''
 
 framework:
     #esi:             ~
@@ -103,6 +104,10 @@ doctrine_couch_db:
                         dir: "Model"
 
 fos_rest:
+    body_listener:
+        decoders:
+            json: annostation.labeling_api.helper.decoder.json
+            xml: fos_rest.decoder.xml
     format_listener:
         enabled: true
         rules:

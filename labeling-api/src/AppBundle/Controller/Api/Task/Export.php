@@ -6,7 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\View;
 use AppBundle\Worker\Jobs;

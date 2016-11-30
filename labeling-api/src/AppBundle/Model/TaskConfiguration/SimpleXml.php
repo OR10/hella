@@ -2,7 +2,6 @@
 namespace AppBundle\Model\TaskConfiguration;
 
 use AppBundle\Model\TaskConfiguration;
-use AppBundle\Model\TaskExport\Exception;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -11,6 +10,8 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class SimpleXml implements TaskConfiguration
 {
+    const TYPE = 'simple';
+
     /**
      * @CouchDB\Id
      */
@@ -169,6 +170,19 @@ class SimpleXml implements TaskConfiguration
         throw new \RuntimeException('Broken Configuration document: missing attachment');
     }
 
+
+
+    public function getContentType()
+    {
+        $filename = $this->getFilename();
+
+        if (isset($this->file[$filename])) {
+            return $this->file[$filename]->getContentType();
+        }
+
+        throw new \RuntimeException('Broken Configuration document: missing attachment');
+    }
+
     /**
      * Quickly access information about whether this is a meta labeling configuration or not.
      *
@@ -182,5 +196,10 @@ class SimpleXml implements TaskConfiguration
         }
 
         return $json['isMetaLabelingConfiguration'];
+    }
+
+    public function getType()
+    {
+        return self::TYPE;
     }
 }
