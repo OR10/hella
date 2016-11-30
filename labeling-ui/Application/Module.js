@@ -91,8 +91,9 @@ class Module {
    * This is where all your components (modules, directives, controllers, services, etc.) should be set up.
    *
    * @param {angular} angular
+   * @param {object} featureFlags
    */
-  registerWithAngular(angular) { // eslint-disable-line no-unused-vars
+  registerWithAngular(angular, featureFlags) { // eslint-disable-line no-unused-vars
   }
 
   /**
