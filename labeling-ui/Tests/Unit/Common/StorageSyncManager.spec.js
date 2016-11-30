@@ -242,13 +242,13 @@ describe('StorageSyncManager', () => {
     });
   });
 
-  fdescribe('function pushUpdatesForContext', () => {
+  describe('function pushUpdatesForContext', () => {
     it('should exist', () => {
       expect(StorageSyncManager.pushUpdatesForContext).toBeDefined();
     });
   });
 
-  fdescribe('function waitForRemoteToConfirm(document)', () => {
+  describe('function waitForRemoteToConfirm(document)', () => {
     const MOCK_DOCUMENT = {_id: 'asdasdasd'};
     const MOCK_CONTEXT = {};
 
