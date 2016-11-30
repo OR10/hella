@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class SimpleXml implements TaskConfiguration
 {
-    CONST TYPE = 'simple';
+    const TYPE = 'simple';
 
     /**
      * @CouchDB\Id

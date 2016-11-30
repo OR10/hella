@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception;
 
 /**
- * @property string redirectAfterLogin
  * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
  *
  * @CloseSession
@@ -45,6 +44,7 @@ class Index extends Base
      * @param Twig\TwigEngine       $twigEngine
      * @param Service\VideoImporter $videoImporterService
      * @param Facade\Project        $projectFacade
+     * @param string                $redirectAfterLogin
      */
     public function __construct(
         Twig\TwigEngine $twigEngine,

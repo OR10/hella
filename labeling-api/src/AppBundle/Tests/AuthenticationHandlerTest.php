@@ -31,7 +31,7 @@ class AuthenticationHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->authenticationHandler = new AppBundle\AuthenticationHandler();
+        $this->authenticationHandler = new AppBundle\AuthenticationHandler('targetUrl', '/labeling', '/login');
         $this->request = $this->getMockBuilder(HttpFoundation\Request::class)->getMock();
         $this->session = $this->getMockBuilder(HttpFoundation\Session\SessionInterface::class)->getMock();
         $this->token = $this->getMockBuilder(Token\TokenInterface::class)->getMock();

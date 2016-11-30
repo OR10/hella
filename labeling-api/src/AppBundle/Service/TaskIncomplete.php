@@ -119,15 +119,15 @@ class TaskIncomplete
         }
 
         if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
-            $xmlData = $taskConfiguration->getRawData();
+            $xmlData                       = $taskConfiguration->getRawData();
             $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter(
                 $xmlData,
                 Model\TaskConfiguration\RequirementsXml::TYPE
             );
-            $rootStructure = $taskConfigurationXmlConverter->getLabelStructure(
+            $rootStructure                 = $taskConfigurationXmlConverter->getLabelStructure(
                 $labeledThingInFrame->getIdentifierName()
             );
-        }else{
+        } else {
             $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
         }
 

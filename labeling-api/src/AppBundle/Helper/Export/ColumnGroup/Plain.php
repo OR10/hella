@@ -63,7 +63,14 @@ class Plain extends Export\ColumnGroup
     ) {
         $cells = array();
         foreach ($this->columns as $column) {
-            $cells[] = $column->createCell($project, $video, $task, $labeledThingInFrame, $labeledFrame, $calibrationData);
+            $cells[] = $column->createCell(
+                $project,
+                $video,
+                $task,
+                $labeledThingInFrame,
+                $labeledFrame,
+                $calibrationData
+            );
         }
 
         return $cells;

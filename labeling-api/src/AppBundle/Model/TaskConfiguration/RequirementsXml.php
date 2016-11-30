@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class RequirementsXml implements TaskConfiguration
 {
-    CONST TYPE = 'requirements';
+    const TYPE = 'requirements';
 
     /**
      * @CouchDB\Id

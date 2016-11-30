@@ -208,6 +208,8 @@ class Linear implements Interpolation\Algorithm
                 return $this->interpolatePedestrian($current, $end, $steps);
             case Shapes\Cuboid3d::class:
                 return $this->interpolateCuboid3d($current, $end, $steps);
+            case Shapes\Polygon::class:
+                return $this->interpolatePolygon($current, $end, $steps);
         }
 
         throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
@@ -264,6 +266,36 @@ class Linear implements Interpolation\Algorithm
             $current->getTopCenterY() + ($end->getTopCenterY() - $current->getTopCenterY()) / $steps,
             $current->getBottomCenterX() + ($end->getBottomCenterX() - $current->getBottomCenterX()) / $steps,
             $current->getBottomCenterY() + ($end->getBottomCenterY() - $current->getBottomCenterY()) / $steps
+        );
+    }
+
+    /**
+     * @param Shapes\Polygon $current
+     * @param Shapes\Polygon $end
+     * @param                $steps
+     *
+     * @return Shapes\Polygon
+     */
+    private function interpolatePolygon(Shapes\Polygon $current, Shapes\Polygon $end, $steps)
+    {
+        $currentPoints = $current->getPoints();
+        $endPoints     = $end->getPoints();
+
+        if (count($currentPoints) !== count($endPoints)) {
+            throw new \RuntimeException('Failed to interpolate polygon with different points.');
+        }
+
+        $points = [];
+        foreach ($currentPoints as $index => $currentPoint) {
+            $points[] = [
+                'x' => $currentPoint['x'] + ($endPoints[$index]['x'] - $currentPoint['x']) / $steps,
+                'y' => $currentPoint['y'] + ($endPoints[$index]['y'] - $currentPoint['y']) / $steps,
+            ];
+        }
+
+        return new Shapes\Polygon(
+            $current->getId(),
+            $points
         );
     }
 

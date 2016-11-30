@@ -166,7 +166,7 @@ class Report extends Controller\Base
      */
     public function createNewReportForProjectAction(Model\Project $project)
     {
-        $this->authorizationService->denyIfProjectIsNotWritable($project);
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $report = Model\Report::create($project);
         $this->reportFacade->save($report);

@@ -264,7 +264,7 @@ class User
             return true;
         }
 
-        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER])) {
+        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER])) {
             return true;
         }
 

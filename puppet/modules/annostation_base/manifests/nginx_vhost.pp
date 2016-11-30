@@ -18,6 +18,8 @@ define annostation_base::nginx_vhost(
   $proxyHeaders = [],
   $listenIp = '*',
 ) {
+  include ::nginx
+
   if $proxy {
     $_vhostDir = undef
   } else {
@@ -51,6 +53,7 @@ define annostation_base::nginx_vhost(
 
     nginx::resource::vhost { "${name}-redirect":
       ensure               => present,
+      server_name          => [$name],
       location_custom_cfg => {
         'return' => 'https://$host$request_uri',
       },
