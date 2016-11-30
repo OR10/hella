@@ -6,8 +6,8 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AppBundle\Tests;
-use AppBundle\Worker\JobInstruction;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\JobInstruction;
+use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
 
 class VideoImporterTest extends Tests\KernelTestCase

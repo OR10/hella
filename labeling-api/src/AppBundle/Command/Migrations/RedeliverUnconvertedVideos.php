@@ -10,7 +10,7 @@ use Doctrine\ORM;
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console\Helper\ProgressBar;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
 use AppBundle\Command;
 

@@ -9,7 +9,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool\AMQP;
 use crosscan\WorkerPool;
 use FOS\RestBundle\Controller\Annotations as Rest;

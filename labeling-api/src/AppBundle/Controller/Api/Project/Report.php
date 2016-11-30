@@ -11,7 +11,7 @@ use AppBundle\View;
 use AnnoStationBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use crosscan\WorkerPool\AMQP;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
