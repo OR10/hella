@@ -3,7 +3,7 @@ namespace AppBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Worker\Jobs;
 
 class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction

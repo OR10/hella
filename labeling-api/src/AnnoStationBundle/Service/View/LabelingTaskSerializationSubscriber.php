@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Service\View;
+namespace AnnoStationBundle\Service\View;
 
 use JMS\Serializer;
 use JMS\Serializer\EventDispatcher;

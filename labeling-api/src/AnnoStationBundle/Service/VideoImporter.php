@@ -6,7 +6,6 @@ use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use AppBundle\Database\Facade;
 use AnnoStationBundle\Service;
-use AppBundle\Service as AppBundleService;
 use AppBundle\Worker\Jobs;
 use crosscan\WorkerPool;
 use Doctrine\ODM\CouchDB;
@@ -34,7 +33,7 @@ class VideoImporter
     private $metaDataReader;
 
     /**
-     * @var AppBundleService\Video\VideoFrameSplitter
+     * @var Service\Video\VideoFrameSplitter
      */
     private $frameCdnSplitter;
 
@@ -69,7 +68,7 @@ class VideoImporter
      * @param Facade\CalibrationData                    $calibrationDataFacade
      * @param Facade\LabelingTask                       $labelingTaskFacade
      * @param Video\MetaDataReader                      $metaDataReader
-     * @param AppBundleService\Video\VideoFrameSplitter $frameCdnSplitter
+     * @param Service\Video\VideoFrameSplitter          $frameCdnSplitter
      * @param LabelStructure                            $labelStructureService
      * @param WorkerPool\Facade                         $facadeAMQP
      * @param CalibrationFileConverter                  $calibrationFileConverter
@@ -81,7 +80,7 @@ class VideoImporter
         Facade\CalibrationData $calibrationDataFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\Video\MetaDataReader $metaDataReader,
-        AppBundleService\Video\VideoFrameSplitter $frameCdnSplitter,
+        Service\Video\VideoFrameSplitter $frameCdnSplitter,
         Service\LabelStructure $labelStructureService,
         WorkerPool\Facade $facadeAMQP,
         Service\CalibrationFileConverter $calibrationFileConverter,

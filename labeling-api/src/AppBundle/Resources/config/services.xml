@@ -46,10 +46,6 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
-        <service id="annostation.labeling_api.service.video_cdn.flysystem" class="AppBundle\Service\VideoCdn\Flysystem">
-            <argument type="service" id="oneup_flysystem.video_cdn_filesystem" />
-        </service>
-
         <!--
           - Default frame_cdn implementation is the flysystem one
           - It may be overridden through the parameters.yml for different systems
@@ -70,16 +66,6 @@
             <argument>/login</argument>
         </service>
 
-        <service id="annostation.labeling_api.service.report" class="AppBundle\Service\Report">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.report" />
-            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
-        </service>
-
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger">
             <factory service="annostation.labeling_api.service.logger_factory" method="createLogger"/>
             <argument>%kernel.logs_dir%/labeling_api_%kernel.environment%.log</argument>
@@ -97,13 +83,6 @@
         <service id="annostation.labeling_api.vendor.worker_pool.amqp" class="crosscan\WorkerPool\AMQP\FacadeAMQP">
             <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
             <argument type="service" id="annostation.labeling_api.vendor.logger" />
-        </service>
-
-        <service id="annostation.labeling_api.view.serialization_listener"
-                 class="AppBundle\Service\View\LabelingTaskSerializationSubscriber">
-            <tag name="jms_serializer.event_subscriber"/>
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="annostation.labeling_api.service.task_read_only_decider"/>
         </service>
 
         <service id="annostation.labeling_api.security.api_key_user_provider" class="AppBundle\Security\ApiKeyUserProvider">
@@ -131,13 +110,6 @@
                  class="AppBundle\Helper\Export\ShapeColumns\Cuboid"
                  public="false">
             <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
-        </service>
-
-        <service id="annostation.labeling_api.service.video.video_frame_splitter"
-                 class="AppBundle\Service\Video\VideoFrameSplitter">
-            <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias"/>
-            <argument>%ffmpeg_executable%</argument>
-            <argument type="service" id="oneup_flysystem.cache_filesystem"/>
         </service>
     </services>
 </container>

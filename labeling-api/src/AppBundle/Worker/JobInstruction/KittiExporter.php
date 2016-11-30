@@ -7,7 +7,7 @@ use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use League\Flysystem;
 use Doctrine\ODM\CouchDB;
 use AppBundle\Model\Video\ImageType;

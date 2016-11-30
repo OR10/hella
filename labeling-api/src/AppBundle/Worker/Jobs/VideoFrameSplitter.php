@@ -3,7 +3,7 @@ namespace AppBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Service\Video as VideoService;
+use AnnoStationBundle\Service\Video as VideoService;
 use AppBundle\Database\Facade;
 
 class VideoFrameSplitter extends WorkerPool\Job

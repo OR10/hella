@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Service\Video;
+namespace AnnoStationBundle\Service\Video;
 
 use Symfony\Component\Process\Process;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AnnoStationBundle\Service as AnnoStationService;
 use AppBundle\Model;
 use League\Flysystem;

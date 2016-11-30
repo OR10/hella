@@ -2,7 +2,7 @@
 namespace AppBundle\Tests;
 
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use AppBundle\Tests;

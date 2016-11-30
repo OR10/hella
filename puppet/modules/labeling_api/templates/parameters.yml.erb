@@ -111,7 +111,7 @@ oneup_flysystem:
 services:
 <% if @frame_cdn_type == 's3-cmd' %>
     annostation.labeling_api.service.s3_cmd_frame_cdn:
-        class: AppBundle\Service\S3Cmd
+        class: AnnoStationBundle\Service\S3Cmd
         arguments:
             - '%s3cmd_executable%'
             - '%parallel_executable%'
@@ -123,7 +123,7 @@ services:
             - '%frame_cdn_s3_host_base%'
             - '%frame_cdn_s3_host_bucket%'
     annostation.labeling_api.service.frame_cdn.s3_cmd:
-        class: AppBundle\Service\FrameCdn\S3Cmd
+        class: AnnoStationBundle\Service\FrameCdn\S3Cmd
         arguments:
             - '%frame_cdn_base_url%'
             - '%cache_dir%'
@@ -133,7 +133,7 @@ services:
 <% end %>
 <% if @video_cdn_type == 's3-cmd' %>
     annostation.labeling_api.service.s3_cmd_video_cdn:
-        class: AppBundle\Service\S3Cmd
+        class: AnnoStationBundle\Service\S3Cmd
         arguments:
             - '%s3cmd_executable%'
             - '%parallel_executable%'
@@ -145,7 +145,7 @@ services:
             - '%video_cdn_s3_host_base%'
             - '%video_cdn_s3_host_bucket%'
     annostation.labeling_api.service.video_cdn.s3_cmd:
-        class: AppBundle\Service\VideoCdn\S3Cmd
+        class: AnnoStationBundle\Service\VideoCdn\S3Cmd
         arguments:
                 - '@annostation.labeling_api.service.s3_cmd_video_cdn'
     annostation.labeling_api.service.video_cdn.selected-alias:

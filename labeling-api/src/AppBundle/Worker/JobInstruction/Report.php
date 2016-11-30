@@ -5,7 +5,7 @@ use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Worker\Jobs;
 
 class Report extends WorkerPool\JobInstruction
