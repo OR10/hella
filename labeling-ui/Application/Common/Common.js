@@ -62,8 +62,9 @@ class Common extends Module {
    * Register this {@link Module} with the angular service container system
    *
    * @param {angular} angular
+   * @param {object} featureFlags
    */
-  registerWithAngular(angular) {
+  registerWithAngular(angular, featureFlags) {
     this.module = angular.module('AnnoStation.Common', [
       'foundation.common',
       'foundation.modal',

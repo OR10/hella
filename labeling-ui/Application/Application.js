@@ -30,6 +30,7 @@ import PouchDB from 'pouchdb';
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
 import commonModuleConfig from './Common/config.json!';
 import viewerModuleConfig from './Viewer/config.json!';
+import featureFlags from './features.json!';
 
 /**
  * The Main Application class
@@ -73,11 +74,17 @@ export default class Application {
     this.modules.push(new ReportingModule());
   }
 
-  buildApplicationConfig() {
+  _getApplicationConfig() {
     return Promise.resolve({
       Common: commonModuleConfig,
       Viewer: viewerModuleConfig,
     });
+  }
+
+  _getFeatureFlags() {
+    return Promise.resolve(
+      featureFlags
+    );
   }
 
   /**
@@ -87,8 +94,9 @@ export default class Application {
     this.registerModules();
 
     return Promise.resolve()
-      .then(() => {
-        this.modules.forEach(module => module.registerWithAngular(angular));
+      .then(() => this._getFeatureFlags())
+      .then(featureFlags => {
+        this.modules.forEach(module => module.registerWithAngular(angular, featureFlags));
 
         this.app = angular.module(this.moduleName, [
           'ui.router',
@@ -97,6 +105,7 @@ export default class Application {
           'vAccordion',
           ...this.modules.map(mod => mod.module.name),
         ]);
+        this.app.constant('featureFlags', featureFlags);
 
         if (!Environment.isFunctionalTesting) {
           /* *****************************************************************
@@ -107,10 +116,11 @@ export default class Application {
 
         // Allow each module to configure its angular module
         this.modules.forEach(module => module.module.config(module.config));
-
-        return this.buildApplicationConfig();
-      }).then(config => {
-        this.app.constant('applicationConfig', config);
+        return this._getApplicationConfig();
+      })
+      .then(() => this._getApplicationConfig())
+      .then(applicationConfig => {
+        this.app.constant('applicationConfig', applicationConfig);
         this.app.constant('PouchDB', PouchDB);
       });
   }
