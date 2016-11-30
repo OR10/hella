@@ -1,5 +1,4 @@
 import 'jquery';
-import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import _PouchDbLabeledThingInFrameGateway_ from 'Application/LabelingData/Gateways/PouchDbLabeledThingInFrameGateway';
 
@@ -11,13 +10,64 @@ import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 describe('PouchDbLabeledThingInFrameGateway', () => {
-
   let packagingExecutorMock;
   let storageContextMock;
   let pouchLabeledThingGatewayMock;
   let dbMock;
   let PouchDbLabeledThingInFrameGateway;
   let couchDbModelDeserializer;
+
+  function createDbMock() {
+    return {
+      query: viewName => {
+        if (viewName === 'annostation_labeled_thing_in_frame/by_taskId_frameIndex') {
+          return;
+        }
+      },
+    };
+  }
+
+  function createStorageContextMock() {
+    return {
+      provideContextForTaskId: () => {
+        return dbMock;
+      },
+    };
+  }
+
+  function revisionManagerMock() {
+    return {};
+  }
+
+  function createPackagingExecutorMock() {
+    return {
+      execute: () => {
+        return new Promise(function foo(resolve) {
+          const mockQuery = {
+            rows: [{doc: labeledThingInFrameModel}],
+          };
+          resolve(JSON.parse(JSON.stringify(mockQuery)));
+        });
+      },
+    };
+  }
+
+  function createDeserializerMock() {
+    return {
+      deserializeLabeledThingInFrame: (document, labeledThing) => {
+        return new LabeledThingInFrame(Object.assign({}, document, {labeledThing}));
+      },
+    };
+  }
+
+  function createLabeledThingGateWayMock() {
+    return {
+      getLabeledThing: task => {
+        const rawThing = JSON.parse(JSON.stringify(labeledThingModel));
+        return new LabeledThing(Object.assign({}, rawThing, {task}));
+      },
+    };
+  }
 
   beforeEach(module($provide => {
     dbMock = createDbMock();
@@ -44,13 +94,11 @@ describe('PouchDbLabeledThingInFrameGateway', () => {
     PouchDbLabeledThingInFrameGateway = $injector.instantiate(_PouchDbLabeledThingInFrameGateway_);
   }));
 
-
   it('should be able to be instantiated', () => {
     expect(PouchDbLabeledThingInFrameGateway).toBeDefined();
   });
 
   describe('function listLabeledThingInFrame', () => {
-
     it('should be defined', () => {
       expect(PouchDbLabeledThingInFrameGateway.listLabeledThingInFrame).toBeDefined();
     });
@@ -58,7 +106,7 @@ describe('PouchDbLabeledThingInFrameGateway', () => {
     it('should utilize external services', () => {
       const task = taskModel;
       const gatewayPromise = PouchDbLabeledThingInFrameGateway.listLabeledThingInFrame(task, 0);
-      gatewayPromise.then((result) => {
+      gatewayPromise.then(result => {
         expect(packagingExecutorMock.execute).toHaveBeenCalled();
         expect(pouchLabeledThingGatewayMock.getLabeledThing).toHaveBeenCalled();
         expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalled();
@@ -86,58 +134,4 @@ describe('PouchDbLabeledThingInFrameGateway', () => {
       expect(PouchDbLabeledThingInFrameGateway.saveLabeledThingInFrame).toBeDefined();
     });
   });
-
-  function createDbMock() {
-    return {
-      query: (viewName) => {
-        if (viewName === 'annostation_labeled_thing_in_frame/by_taskId_frameIndex') {
-          return;
-        }
-      },
-    };
-  }
-
-  function createStorageContextMock() {
-    return {
-      provideContextForTaskId: () => {
-        return dbMock;
-      },
-    };
-  }
-
-  function revisionManagerMock() {
-    return {};
-  }
-
-  function createPackagingExecutorMock() {
-    return {
-      execute: () => {
-        return new Promise(function foo(resolve) {
-          let mockQuery = {
-            rows: [
-              {doc: labeledThingInFrameModel}
-            ],
-          };
-          resolve(JSON.parse(JSON.stringify(mockQuery)));
-        });
-      },
-    };
-  }
-
-  function createDeserializerMock() {
-    return {
-      deserializeLabeledThingInFrame: (document, labeledThing) => {
-        return new LabeledThingInFrame(Object.assign({}, document, {labeledThing}));
-      },
-    };
-  }
-
-  function createLabeledThingGateWayMock() {
-    return {
-      getLabeledThing: (task) => {
-        const rawThing = JSON.parse(JSON.stringify(labeledThingModel));
-        return new LabeledThing(Object.assign({}, rawThing, {task}));
-      },
-    };
-  }
 });

@@ -77,7 +77,6 @@ class PouchDbLabeledThingInFrameGateway {
   listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
     const startkey = frameIndex + offset;
     const endkey = frameIndex + offset + limit - 1;
-    
     const db = this._storageContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
@@ -88,7 +87,7 @@ class PouchDbLabeledThingInFrameGateway {
       });
     }).then(result => {
       if (result.rows) {
-        //TODO: generate ghost ltifs
+        // TODO: generate ghost ltifs
         const docs = [];
         result.rows.forEach(row => {
           if (row.doc) {
@@ -186,7 +185,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._storageContextService.provideContextForTaskId(labeledThingInFrame.task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThingInFrame);
     this._injectRevisionOrFailSilently(document);
-    //@TODO: What about error handling here? No global handling is possible this easily?
+    // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
