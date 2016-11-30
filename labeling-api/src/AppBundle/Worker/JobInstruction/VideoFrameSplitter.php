@@ -42,7 +42,7 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
     private $cacheDir;
 
     /**
-     * @var Service\FrameCdn
+     * @var Service\VideoCdn
      */
     private $videoCdnService;
 

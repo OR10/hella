@@ -4,7 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Model;
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class Report
 {

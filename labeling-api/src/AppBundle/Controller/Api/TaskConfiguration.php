@@ -5,7 +5,7 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Response;
 use AppBundle\Controller;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Service\Authentication;
 use AppBundle\View;
 use AppBundle\Model\TaskConfiguration as TaskConfigurationModel;

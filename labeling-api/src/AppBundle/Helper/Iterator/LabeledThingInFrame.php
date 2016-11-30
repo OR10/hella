@@ -4,7 +4,7 @@ namespace AppBundle\Helper\Iterator;
 use Traversable;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class LabeledThingInFrame implements \IteratorAggregate
 {

@@ -8,7 +8,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use AppBundle\Response;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;

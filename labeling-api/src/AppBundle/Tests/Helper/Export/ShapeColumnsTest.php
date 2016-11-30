@@ -2,7 +2,7 @@
 
 namespace AppBundle\Tests\Helper\Export;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 use AppBundle\Helper;
 use AppBundle\Model;

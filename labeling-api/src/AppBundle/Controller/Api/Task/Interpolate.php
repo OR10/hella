@@ -8,7 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Worker\Jobs;
 use crosscan\WorkerPool\AMQP;
 use crosscan\WorkerPool;

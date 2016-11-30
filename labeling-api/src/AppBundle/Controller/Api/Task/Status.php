@@ -5,7 +5,7 @@ namespace AppBundle\Controller\Api\Task;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Controller;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;

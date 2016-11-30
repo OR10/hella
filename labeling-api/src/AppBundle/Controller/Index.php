@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
 use AppBundle\Database\Facade;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Bridge\Twig;
 use Symfony\Component\HttpFoundation;

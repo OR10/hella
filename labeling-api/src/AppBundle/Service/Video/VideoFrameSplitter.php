@@ -5,6 +5,7 @@ namespace AppBundle\Service\Video;
 use Symfony\Component\Process\Process;
 use AppBundle\Model\Video\ImageType;
 use AppBundle\Service;
+use AnnoStationBundle\Service as AnnoStationService;
 use AppBundle\Model;
 use League\Flysystem;
 
@@ -43,12 +44,12 @@ class VideoFrameSplitter
     /**
      * FrameCdnSplitter constructor.
      *
-     * @param Service\FrameCdn     $frameCdn
-     * @param string               $ffmpegExecutable
-     * @param Flysystem\Filesystem $fileSystem
+     * @param AnnoStationService\FrameCdn $frameCdn
+     * @param string                      $ffmpegExecutable
+     * @param Flysystem\Filesystem        $fileSystem
      */
     public function __construct(
-        Service\FrameCdn $frameCdn,
+        AnnoStationService\FrameCdn $frameCdn,
         $ffmpegExecutable,
         Flysystem\Filesystem $fileSystem
     ) {

@@ -8,7 +8,7 @@ use AppBundle\Controller;
 use AppBundle\Controller\Api\Project\Exception as ProjectException;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\View;
 use crosscan\Logger\Facade\LoggerFacade;
 use Flow;
