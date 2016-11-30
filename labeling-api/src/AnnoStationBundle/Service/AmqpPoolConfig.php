@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AnnoStationBundle\Service;
 
 use crosscan\WorkerPool\AMQP;
 use AppBundle\Worker\Jobs;

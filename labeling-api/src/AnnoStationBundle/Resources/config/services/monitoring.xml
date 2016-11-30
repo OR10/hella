@@ -12,7 +12,7 @@
 
     <services>
         <service id="annostation.labeling_api.monitoring.check.rabbitmq_queue_fill_level_worker_garbage_queue"
-                 class="AppBundle\Service\Monitoring\Check\RabbitMqQueueFillLevel">
+                 class="AnnoStationBundle\Service\Monitoring\Check\RabbitMqQueueFillLevel">
             <argument>%rabbitmq_host%</argument>
             <argument>%rabbitmq_management_port%</argument>
             <argument>%rabbitmq_vhost%</argument>
@@ -23,7 +23,7 @@
             <tag name="liip_monitor.check" alias="worker_garbage_queue_fill_level" group="default"/>
         </service>
         <service id="annostation.labeling_api.monitoring.check.flysystem_api"
-                 class="AppBundle\Service\Monitoring\Check\FlysystemApi">
+                 class="AnnoStationBundle\Service\Monitoring\Check\FlysystemApi">
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem"/>
             <tag name="liip_monitor.check" alias="flysystem_api" group="default"/>
         </service>

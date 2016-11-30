@@ -6,8 +6,8 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
-use AppBundle\Service\Authentication;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Authentication;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
@@ -46,10 +46,10 @@ class CurrentUser extends Controller\Base
     /**
      * CurrentUser constructor.
      *
-     * @param Storage\TokenStorage    $tokenStorage
-     * @param Encoder\EncoderFactory  $encoderFactory
-     * @param Facade\User             $userFacade
-     * @param Service\UserPermissions $currentUserPermissions
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param Encoder\EncoderFactory         $encoderFactory
+     * @param Facade\User                    $userFacade
+     * @param Authentication\UserPermissions $currentUserPermissions
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
