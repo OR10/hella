@@ -1,11 +1,11 @@
 <?php
 
-namespace AppBundle\Service\Interpolation\Algorithm;
+namespace AnnoStationBundle\Service\Interpolation\Algorithm;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
-use AppBundle\Service\Interpolation;
+use AnnoStationBundle\Service\Interpolation;
 use AnnoStationBundle\Service;
 
 class Linear implements Interpolation\Algorithm
