@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5cfd149ab3a037ada7e718525cbc7427",
-    "content-hash": "e4552dace888dee09d469910970b9a37",
+    "hash": "7c56635571d3e447fd81cfd78afed4aa",
+    "content-hash": "4d04ac51b8786cda50be7d8463bdfa3f",
     "packages": [
         {
             "name": "arbit/phpillow",
@@ -203,7 +203,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/WorkerPool.git",
-                "reference": "08eed44e5006c495f21e8228d2883ceaf2457ac2"
+                "reference": "5348461282e60a6d6754e932a17bf0467aacfa76"
             },
             "require": {
                 "arbit/phpillow": "dev-master",
@@ -218,11 +218,11 @@
             "require-dev": {
                 "pdepend/pdepend": "2.0.4",
                 "phpmd/phpmd": "~2.2",
-                "phpunit/phpunit": "~4",
                 "sebastian/phpcpd": "*",
                 "toolphar/phpab": "1.14.2",
                 "toolphar/phpcs": "2.0.0RC1",
-                "toolphar/phploc": "*"
+                "toolphar/phploc": "*",
+                "toolphar/phpunit": "~5"
             },
             "type": "application",
             "autoload": {
@@ -238,7 +238,7 @@
                 "rabbitmq",
                 "worker"
             ],
-            "time": "2016-10-20 14:27:31"
+            "time": "2016-11-30 08:53:00"
         },
         {
             "name": "doctrine/annotations",

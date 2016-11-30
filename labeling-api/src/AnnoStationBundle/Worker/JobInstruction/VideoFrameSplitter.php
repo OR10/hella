@@ -1,20 +1,21 @@
 <?php
-namespace AppBundle\Worker\JobInstruction;
+
+namespace AnnoStationBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AnnoStationBundle\Service\Video as VideoService;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
+use Hagl\WorkerPoolBundle\JobInstruction;
 use League\Flysystem;
 use Doctrine\ODM\CouchDB;
 use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Service;
 
-class VideoFrameSplitter extends WorkerPool\JobInstruction
+class VideoFrameSplitter extends JobInstruction
 {
     /**
      * @var VideoService\VideoFrameSplitter
@@ -172,5 +173,15 @@ class VideoFrameSplitter extends WorkerPool\JobInstruction
             }
             $this->updateDocument($video, $retryCount + 1, $width, $height);
         }
+    }
+
+    /**
+     * @param WorkerPool\Job $job
+     *
+     * @return bool
+     */
+    public function supports(WorkerPool\Job $job)
+    {
+        return $job instanceof Jobs\VideoFrameSplitter;
     }
 }
