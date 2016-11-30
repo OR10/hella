@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;

@@ -6,7 +6,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AppBundle\Service\Interpolation;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 
 class Linear implements Interpolation\Algorithm
 {
