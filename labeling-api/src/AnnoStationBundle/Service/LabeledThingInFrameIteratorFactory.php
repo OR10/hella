@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Service;
+namespace AnnoStationBundle\Service;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
