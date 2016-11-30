@@ -5,18 +5,18 @@ import LabeledThing from '../Models/LabeledThing';
  */
 class PouchDbLabeledThingGateway {
   /**
-   * @param {StorageContextService} storageContextService
+   * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    */
-  constructor(storageContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, storageSyncManager) {
+  constructor(pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbSyncManager) {
     /**
-     * @type {StorageContextService}
+     * @type {PouchDbContextService}
      * @private
      */
-    this._storageContextService = storageContextService;
+    this._pouchDbContextService = pouchDbContextService;
 
     /**
      * @type {RevisionManager}
@@ -49,10 +49,10 @@ class PouchDbLabeledThingGateway {
     this._revisionManager = revisionManager;
 
     /**
-     * @type {StorageSyncManager}
+     * @type {PouchDbSyncManager}
      * @private
      */
-    this._storageSyncManager = storageSyncManager;
+    this._pouchDbSyncManager = pouchDbSyncManager;
   }
 
   /**
@@ -61,7 +61,7 @@ class PouchDbLabeledThingGateway {
    */
   saveLabeledThing(labeledThing) {
     const task = labeledThing.task;
-    const dbContext = this._storageContextService.provideContextForTaskId(task.id);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThing);
     let dbResponse;
 
@@ -71,7 +71,7 @@ class PouchDbLabeledThingGateway {
       this._injectRevisionOrFailSilently(document);
       return dbContext.put(document);
     })
-    .then(dbDocument => this._storageSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
+    .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
     .then(dbDocument => {
       this._revisionManager.extractRevision(response);
       return this._couchDbModelDeserializer.deserializeLabeledThing(dbDocument, task);
@@ -99,7 +99,7 @@ class PouchDbLabeledThingGateway {
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
   getLabeledThing(task, labeledThingId) {
-    const dbContext = this._storageContextService.provideContextForTaskId(task.id);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
@@ -121,7 +121,7 @@ class PouchDbLabeledThingGateway {
    */
   deleteLabeledThing(labeledThing) {
     const task = labeledThing.task;
-    const dbContext = this._storageContextService.provideContextForTaskId(task.id);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThing);
 
     // @TODO: What about error handling here? No global handling is possible this easily?
@@ -130,7 +130,7 @@ class PouchDbLabeledThingGateway {
         this._injectRevisionOrFailSilently(document);
         return dbContext.remove(document);
     })
-    .then(dbDocument => this._storageSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
+    .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
     .then(response => {
       this._revisionManager.extractRevision(response);
       return true;
@@ -148,7 +148,7 @@ class PouchDbLabeledThingGateway {
      * @TODO: To fully work with local pouchdb replicate the incomplete flag needs to be updated during storage
      *        of LabeledThingsInFrame correctly.
      */
-    const db = this._storageContextService.provideContextForTaskId(taskId);
+    const db = this._pouchDbContextService.provideContextForTaskId(taskId);
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
@@ -166,7 +166,7 @@ class PouchDbLabeledThingGateway {
 }
 
 PouchDbLabeledThingGateway.$inject = [
-  'storageContextService',
+  'pouchDbContextService',
   'packagingExecutor',
   'couchDbModelSerializer',
   'couchDbModelDeserializer',

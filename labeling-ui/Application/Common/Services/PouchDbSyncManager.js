@@ -2,14 +2,14 @@
 /**
  * Service to configure and manage syncrhonization related subjects.
  */
-class StorageSyncManager {
+class PouchDbSyncManager {
 
   /**
    * @param {Object} configuration injected
    */
-  constructor(configuration, storageContextService, pouchDb) {
+  constructor(configuration, pouchDbContextService, pouchDb) {
     this._configuration = configuration;
-    this._storageContextService = storageContextService;
+    this._pouchDbContextService = pouchDbContextService;
     this._remoteConfig = this._configuration.Common.storage.remote;
     this._syncHandlerCache = new WeakMap();
     this._pouchDb = pouchDb;
@@ -19,7 +19,7 @@ class StorageSyncManager {
    * @param {PouchDB} context instance of a local PouchDB
    */
   startContinousReplicationForContext(context, pausedEventHandler) {
-    const taskId = this._storageContextService.queryTaskIdForContext(context);
+    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
     const noValidParameters = typeof context !== 'object' || typeof pausedEventHandler !== 'function' || taskId === null;
 
     if (noValidParameters) {
@@ -83,7 +83,7 @@ class StorageSyncManager {
   }
 
   pullUpdatesForContext(context, onCompleteCallback) {
-    const taskId = this._storageContextService.queryTaskIdForContext(context);
+    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
     if (typeof context !== 'object' || typeof onCompleteCallback !== 'function' || taskId === null) {
       return null;
@@ -113,7 +113,7 @@ class StorageSyncManager {
   }
 
   pushUpdatesForContext(context, onCompleteCallback, onChangeCallback) {
-    const taskId = this._storageContextService.queryTaskIdForContext(context);
+    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
     if (typeof context !== 'object' || typeof onCompleteCallback !== 'function' || taskId === null) {
       return null;
@@ -173,6 +173,6 @@ class StorageSyncManager {
 
 }
 
-StorageSyncManager.$inject = ['applicationConfig', 'StorageContextService', 'PouchDB'];
+PouchDbSyncManager.$inject = ['applicationConfig', 'PouchDbContextService', 'PouchDB'];
 
-export default StorageSyncManager;
+export default PouchDbSyncManager;

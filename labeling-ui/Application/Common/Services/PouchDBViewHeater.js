@@ -1,10 +1,10 @@
 /**
  * This service handles the heating of database views
  */
-class PouchDBViewHeater {
+class PouchDbViewHeater {
   /**
    * @param {$q} $q
-   * @param {StorageContextFactory} storageContextFactory
+   * @param {PouchDbContextService} storageContextFactory
    */
   constructor($q, storageContextFactory) {
     /**
@@ -72,6 +72,6 @@ class PouchDBViewHeater {
   }
 }
 
-PouchDBViewHeater.$inject = ['$q', 'storageContextFactory'];
+PouchDbViewHeater.$inject = ['$q', 'storageContextFactory'];
 
-export default PouchDBViewHeater;
+export default PouchDbViewHeater;

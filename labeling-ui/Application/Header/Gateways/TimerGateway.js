@@ -3,17 +3,17 @@
  */
 class TimerGateway {
   /**
-   * @param {StorageContextService} storageContextService
+   * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(storageContextService, packagingExecutor, apiService, bufferedHttp) {
+  constructor(pouchDbContextService, packagingExecutor, apiService, bufferedHttp) {
     /**
-     * @type {StorageContextService}
+     * @type {PouchDBContextService}
      * @private
      */
-    this._storageContextService = storageContextService;
+    this._pouchDbContextService = pouchDbContextService;
 
     /**
      * @type {PackagingExecutorService}
@@ -41,7 +41,7 @@ class TimerGateway {
   getTime(taskId, userId) {
     const queueIdentifier = 'timer';
     const viewIdentifier = 'annostation_task_timer/by_taskId_userId';
-    const db = this._storageContextService.provideContextForTaskId(taskId);
+    const db = this._pouchDbContextService.provideContextForTaskId(taskId);
 
     return this._packagingExecutor.execute(
       queueIdentifier,

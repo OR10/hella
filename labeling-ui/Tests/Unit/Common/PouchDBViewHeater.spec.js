@@ -2,13 +2,13 @@ import 'jquery';
 import 'angular';
 import {module, inject} from 'angular-mocks';
 
-import PouchDBViewHeaterService from 'Application/Common/Services/PouchDBViewHeater';
+import PouchDbViewHeaterService from 'Application/Common/Services/PouchDbViewHeater';
 
-describe('PouchDBViewHeater', () => {
+describe('PouchDbViewHeater', () => {
   /**
-   * @param {PouchDBViewHeater}
+   * @param {PouchDbViewHeater}
    */
-  let pouchDBViewHeater;
+  let pouchDbViewHeater;
   let pouchDb;
   let $rootScope;
   const mockConfig = {
@@ -38,7 +38,7 @@ describe('PouchDBViewHeater', () => {
   }));
 
   beforeEach(inject(($injector, $q) => {
-    pouchDBViewHeater = $injector.instantiate(PouchDBViewHeaterService);
+    pouchDbViewHeater = $injector.instantiate(PouchDbViewHeaterService);
 
     $rootScope = $injector.get('$rootScope');
 
@@ -54,13 +54,13 @@ describe('PouchDBViewHeater', () => {
   }));
 
   it('should be able to be instantiated', () => {
-    expect(pouchDBViewHeater).toBeDefined();
+    expect(pouchDbViewHeater).toBeDefined();
   });
 
   it('should heat a single view', ()=> {
     const taskId = 'taskId123';
     const viewName = 'viewName123';
-    pouchDBViewHeater.heatView(taskId, viewName);
+    pouchDbViewHeater.heatView(taskId, viewName);
 
     expect(pouchDb.query).toHaveBeenCalledWith(viewName);
   });
@@ -68,7 +68,7 @@ describe('PouchDBViewHeater', () => {
   it('should heat a multiple views', ()=> {
     const taskId = 'taskId123';
     const viewNames = ['viewName1', 'viewName2', 'viewName3'];
-    pouchDBViewHeater.heatViews(taskId, viewNames);
+    pouchDbViewHeater.heatViews(taskId, viewNames);
 
     expect(pouchDb.query).toHaveBeenCalledWith(viewNames[0]);
     expect(pouchDb.query).toHaveBeenCalledWith(viewNames[1]);
@@ -76,9 +76,9 @@ describe('PouchDBViewHeater', () => {
   });
 
   it('should heat all views', ()=> {
-    spyOn(pouchDBViewHeater, 'heatView');
+    spyOn(pouchDbViewHeater, 'heatView');
     const taskId = 'taskId123';
-    pouchDBViewHeater.heatAllViews(taskId);
+    pouchDbViewHeater.heatAllViews(taskId);
 
     expect(pouchDb.allDocs).toHaveBeenCalledWith({
       include_docs: true,
@@ -89,8 +89,8 @@ describe('PouchDBViewHeater', () => {
     $rootScope.$digest();
 
 
-    expect(pouchDBViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view1');
-    expect(pouchDBViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view2');
-    expect(pouchDBViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view3');
+    expect(pouchDbViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view1');
+    expect(pouchDbViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view2');
+    expect(pouchDbViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view3');
   });
 });

@@ -2,12 +2,12 @@ import 'jquery';
 import 'angular';
 import {module, inject} from 'angular-mocks';
 
-import _StorageSyncManager_ from 'Application/Common/Services/StorageSyncManager';
+import _PouchDbSyncManager_ from 'Application/Common/Services/PouchDbSyncManager';
 
-describe('StorageSyncManager', () => {
+describe('pouchDbSyncManager', () => {
   const MOCK_TASK_ID = 'mock-task-id';
 
-  let StorageSyncManager;
+  let PouchDbSyncManager;
   let spies;
   let mockConfig;
 
@@ -83,30 +83,30 @@ describe('StorageSyncManager', () => {
     });
 
     $provide.value('applicationConfig', mockConfig);
-    $provide.value('StorageContextService', createContextServiceMock());
+    $provide.value('pouchDbContextService', createContextServiceMock());
     $provide.value('PouchDB', createPouchDBMock());
   }));
 
   beforeEach(inject($injector => {
-    StorageSyncManager = $injector.instantiate(_StorageSyncManager_);
+    PouchDbSyncManager = $injector.instantiate(_PouchDbSyncManager_);
   }));
 
   it('should be able to be instantiated', () => {
-    expect(StorageSyncManager).toBeDefined();
+    expect(PouchDbSyncManager).toBeDefined();
   });
 
   describe('function startContinousReplicationForContext', () => {
     it('should be defined', () => {
-      expect(StorageSyncManager.startContinousReplicationForContext).toBeDefined();
+      expect(PouchDbSyncManager.startContinousReplicationForContext).toBeDefined();
     });
 
     it('should return null if no context was given', () => {
-      const result = StorageSyncManager.startContinousReplicationForContext(123, 123);
+      const result = PouchDbSyncManager.startContinousReplicationForContext(123, 123);
       expect(result).toBe(null);
     });
 
     it('should return null if no callback was given', () => {
-      const result = StorageSyncManager.startContinousReplicationForContext(123);
+      const result = PouchDbSyncManager.startContinousReplicationForContext(123);
       expect(result).toBe(null);
     });
 
@@ -117,7 +117,7 @@ describe('StorageSyncManager', () => {
       };
 
       spyOn(obj, 'onCompleteCallback');
-      StorageSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
+      PouchDbSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
       expect(obj.onCompleteCallback).toHaveBeenCalled();
     });
 
@@ -127,39 +127,39 @@ describe('StorageSyncManager', () => {
         onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
+      PouchDbSyncManager.startContinousReplicationForContext({}, obj.onCompleteCallback);
       expect(spies.filterSettingSpy).toHaveBeenCalled();
     });
   });
 
   describe('function stopReplicationForContext', () => {
     it('should be defined', () => {
-      expect(StorageSyncManager.stopReplicationForContext).toBeDefined();
+      expect(PouchDbSyncManager.stopReplicationForContext).toBeDefined();
     });
 
     it('should return null of context is no instance of object', () => {
-      const result = StorageSyncManager.stopReplicationForContext('no valid context object');
+      const result = PouchDbSyncManager.stopReplicationForContext('no valid context object');
       expect(result).toBe(null);
     });
 
     it('should return null if context has not been sync enabled earlier', () => {
       const noSyncEnabledContext = {};
-      const result = StorageSyncManager.stopReplicationForContext(noSyncEnabledContext);
+      const result = PouchDbSyncManager.stopReplicationForContext(noSyncEnabledContext);
       expect(result).toBe(null);
     });
 
     it('should cancel sync if context has been sync enabled earlier', () => {
       const context = {};
-      StorageSyncManager.startContinousReplicationForContext(context, () => {
+      PouchDbSyncManager.startContinousReplicationForContext(context, () => {
       });
-      StorageSyncManager.stopReplicationForContext(context);
+      PouchDbSyncManager.stopReplicationForContext(context);
       expect(spies.syncCancelSpy).toHaveBeenCalled();
     });
   });
 
   describe('function isReplicationOnContextEnabled', () => {
     it('should be defined', () => {
-      expect(StorageSyncManager.isReplicationOnContextEnabled).toBeDefined();
+      expect(PouchDbSyncManager.isReplicationOnContextEnabled).toBeDefined();
     });
 
     it('should return true if context is currently replicating', () => {
@@ -168,8 +168,8 @@ describe('StorageSyncManager', () => {
         onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
-      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      PouchDbSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
+      expect(PouchDbSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
     });
 
     it('should return false if context has stopped replicating', () => {
@@ -178,16 +178,16 @@ describe('StorageSyncManager', () => {
         onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
-      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
-      StorageSyncManager.stopReplicationForContext(dummyContext);
-      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
+      PouchDbSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
+      expect(PouchDbSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      PouchDbSyncManager.stopReplicationForContext(dummyContext);
+      expect(PouchDbSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
     });
   });
 
   describe('function _removeContextFromCache', () => {
     it('should exist', () => {
-      expect(StorageSyncManager._removeContextFromCache).toBeDefined();
+      expect(PouchDbSyncManager._removeContextFromCache).toBeDefined();
     });
 
     it('should remove context from cache manager', () => {
@@ -196,16 +196,16 @@ describe('StorageSyncManager', () => {
         onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
-      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
-      StorageSyncManager._removeContextFromCache(dummyContext);
-      expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
+      PouchDbSyncManager.startContinousReplicationForContext(dummyContext, obj.onCompleteCallback);
+      expect(PouchDbSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      PouchDbSyncManager._removeContextFromCache(dummyContext);
+      expect(PouchDbSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(false);
     });
   });
 
   describe('function pullUpdatesForContext', () => {
     it('should exist', () => {
-      expect(StorageSyncManager.pullUpdatesForContext).toBeDefined();
+      expect(PouchDbSyncManager.pullUpdatesForContext).toBeDefined();
     });
 
     it('should start filtered read replication and wait for completeness', () => {
@@ -216,18 +216,17 @@ describe('StorageSyncManager', () => {
       };
 
       spyOn(obj, 'onCompleteCallback');
-      StorageSyncManager.pullUpdatesForContext(dummyContext, obj.onCompleteCallback);
-      // expect(StorageSyncManager.isReplicationOnContextEnabled(dummyContext)).toBe(true);
+      PouchDbSyncManager.pullUpdatesForContext(dummyContext, obj.onCompleteCallback);
       expect(obj.onCompleteCallback).toHaveBeenCalled();
     });
 
     it('should return null if no context was given', () => {
-      const result = StorageSyncManager.pullUpdatesForContext(123, 123);
+      const result = PouchDbSyncManager.pullUpdatesForContext(123, 123);
       expect(result).toBe(null);
     });
 
     it('should return null if no callback was given', () => {
-      const result = StorageSyncManager.pullUpdatesForContext(123);
+      const result = PouchDbSyncManager.pullUpdatesForContext(123);
       expect(result).toBe(null);
     });
 
@@ -237,14 +236,14 @@ describe('StorageSyncManager', () => {
         onCompleteCallback: () => {
         },
       };
-      StorageSyncManager.pullUpdatesForContext(dummyContext, obj.onCompleteCallback);
+      PouchDbSyncManager.pullUpdatesForContext(dummyContext, obj.onCompleteCallback);
       expect(spies.filterSettingSpy).toHaveBeenCalled();
     });
   });
 
   describe('function pushUpdatesForContext', () => {
     it('should exist', () => {
-      expect(StorageSyncManager.pushUpdatesForContext).toBeDefined();
+      expect(PouchDbSyncManager.pushUpdatesForContext).toBeDefined();
     });
   });
 
@@ -253,26 +252,26 @@ describe('StorageSyncManager', () => {
     const MOCK_CONTEXT = {};
 
     it('should exist', () => {
-      expect(StorageSyncManager.waitForRemoteToConfirm).toBeDefined();
+      expect(PouchDbSyncManager.waitForRemoteToConfirm).toBeDefined();
     });
 
     it('should return a promise', () => {
-      const result = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
+      const result = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
       expect(typeof result.then).toBe('function');
     });
 
     it('should return null when document is empty', () => {
-      const result = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, null);
+      const result = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, null);
       expect(result).toBe(null);
     });
 
     it('should return null when document has no id', () => {
-      const result = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, {});
+      const result = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, {});
       expect(result).toBe(null);
     });
 
     it('should resolve the promise when remote replication has confirmed arrival of the document', (done) => {
-      const confirmationPromise = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
+      const confirmationPromise = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
       confirmationPromise.then(response => {
         expect(response._id).toBe(MOCK_DOCUMENT._id);
         done();
@@ -280,7 +279,7 @@ describe('StorageSyncManager', () => {
     });
 
     it('should resolve with error, when replication exceeds X seconds', (done) => {
-      const confirmationPromise = StorageSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT, 1);
+      const confirmationPromise = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT, 1);
       let callbacks = {
         onSuccess: () => {
           expect(callbacks.onTimeout).toHaveBeenCalled();

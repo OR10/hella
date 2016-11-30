@@ -59,14 +59,14 @@ describe('PouchDbLabeledThingGateway', () => {
       })
       .then(() => {
         /**
-         * @type {StorageContextService}
+         * @type {PouchDBContextService}
          */
-        const storageContextServiceMock = jasmine.createSpyObj('storageContextService', ['provideContextForTaskId']);
-        storageContextServiceMock.provideContextForTaskId
+        const pouchDbContextServiceMock = jasmine.createSpyObj('storageContextService', ['provideContextForTaskId']);
+        pouchDbContextServiceMock.provideContextForTaskId
           .and.returnValue(pouchDbHelper.database);
 
         module($provide => {
-          $provide.value('storageContextService', storageContextServiceMock);
+          $provide.value('pouchDbContextService', pouchDbContextServiceMock);
         });
 
         // Clean model fixtures

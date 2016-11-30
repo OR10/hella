@@ -6,7 +6,7 @@ import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 class PouchDbLabeledThingInFrameGateway {
   /**
    * @param {$q} $q
-   * @param {StorageContextService} storageContextService
+   * @param {PouchDbContextService} pouchDbContextService
    * @param {RevisionManager} revisionManager
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelSerializer} couchDbModelSerializer
@@ -14,7 +14,7 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {PouchDbLabeledThingGateway} pouchLabeledThingGateway
    * @param {AbortablePromise} abortablePromise
    */
-  constructor($q, storageContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, pouchLabeledThingGateway, abortablePromise) {
+  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, pouchLabeledThingGateway, abortablePromise) {
     /**
      * @type {$q}
      * @private
@@ -22,10 +22,10 @@ class PouchDbLabeledThingInFrameGateway {
     this._$q = $q;
 
     /**
-     * @type {StorageContextService}
+     * @type {PouchDbContextService}
      * @private
      */
-    this._storageContextService = storageContextService;
+    this._pouchDbContextService = pouchDbContextService;
 
     /**
      * @type {RevisionManager}
@@ -77,7 +77,7 @@ class PouchDbLabeledThingInFrameGateway {
   listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
     const startkey = frameIndex + offset;
     const endkey = frameIndex + offset + limit - 1;
-    const db = this._storageContextService.provideContextForTaskId(task.id);
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_taskId_frameIndex', {
@@ -129,7 +129,7 @@ class PouchDbLabeledThingInFrameGateway {
     const startkey = [labeledThing.id, frameIndex + offset];
     const endkey = [labeledThing.id, frameIndex + offset + limit - 1];
 
-    const db = this._storageContextService.provideContextForTaskId(task.id);
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
@@ -182,7 +182,7 @@ class PouchDbLabeledThingInFrameGateway {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
 
-    const db = this._storageContextService.provideContextForTaskId(labeledThingInFrame.task.id);
+    const db = this._pouchDbContextService.provideContextForTaskId(labeledThingInFrame.task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThingInFrame);
     this._injectRevisionOrFailSilently(document);
     // @TODO: What about error handling here? No global handling is possible this easily?
@@ -200,7 +200,7 @@ class PouchDbLabeledThingInFrameGateway {
 
 PouchDbLabeledThingInFrameGateway.$inject = [
   '$q',
-  'storageContextService',
+  'pouchDbContextService',
   'revisionManager',
   'packagingExecutor',
   'couchDbModelSerializer',

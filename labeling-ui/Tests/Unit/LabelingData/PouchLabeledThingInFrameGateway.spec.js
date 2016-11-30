@@ -82,7 +82,7 @@ describe('PouchDbLabeledThingInFrameGateway', () => {
     spyOn(pouchLabeledThingGatewayMock, 'getLabeledThing').and.callThrough();
 
     $provide.value('packagingExecutor', packagingExecutorMock);
-    $provide.value('storageContextService', storageContextMock);
+    $provide.value('pouchDbContextService', storageContextMock);
     $provide.value('revisionManager', revisionManagerMock());
     $provide.value('couchDbModelSerializer', {});
     $provide.value('couchDbModelDeserializer', couchDbModelDeserializer);
