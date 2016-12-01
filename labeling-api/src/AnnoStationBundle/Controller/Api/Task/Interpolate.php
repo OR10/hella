@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller\Api\Task;
+namespace AnnoStationBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\ForbidReadonlyTasks;
