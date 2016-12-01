@@ -94,12 +94,6 @@ export default class MultiTool extends Tool {
       this._activeTool.onKeyPress(event.keyCode);
     };
 
-    this._$scope.$watch('vm.selectedDrawingTool', (newTool, oldTool) => {
-      if (oldTool !== newTool && newTool !== null) {
-        this._setDrawingTool(newTool);
-      }
-    });
-
     if (!this._readOnly) {
       // Register Keyboard shortcuts
       this._registerShortcuts();
