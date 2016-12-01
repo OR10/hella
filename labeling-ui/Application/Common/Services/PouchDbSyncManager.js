@@ -1,4 +1,3 @@
-
 /**
  * Service to configure and manage syncrhonization related subjects.
  */
@@ -6,60 +5,88 @@ class PouchDbSyncManager {
 
   /**
    * @param {Object} configuration injected
+   * @param {angular.$q} $q
+   * @param {PouchDbContextService} pouchDbContextService
+   * @param {PouchDB} pouchDb
    */
-  constructor(configuration, pouchDbContextService, pouchDb) {
+  constructor(configuration, $q, pouchDbContextService, pouchDb) {
+    /**
+     * @type {Object}
+     * @private
+     */
     this._configuration = configuration;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
     this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {object}
+     * @private
+     */
     this._remoteConfig = this._configuration.Common.storage.remote;
-    this._syncHandlerCache = new WeakMap();
+
+    /**
+     * @type {Map.<object, Map>}
+     * @private
+     */
+    this._syncHandlerCacheByContext = new Map();
+
+    /**
+     * @type {PouchDB}
+     * @private
+     */
     this._pouchDb = pouchDb;
   }
 
   /**
    * @param {PouchDB} context instance of a local PouchDB
    */
-  startContinousReplicationForContext(context, pausedEventHandler) {
+  startLiveReplicationForContext(context) {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
-    const noValidParameters = typeof context !== 'object' || typeof pausedEventHandler !== 'function' || taskId === null;
 
-    if (noValidParameters) {
-      return null;
-    }
+    const replicationPromises = [];
+    this._remoteConfig.filters.forEach(filter => {
+      [
+        PouchDbSyncManager.SYNC_DIRECTION_FROM,
+        PouchDbSyncManager.SYNC_DIRECTION_TO
+      ].forEach(direction => {
+        const hasSyncHandler = this._hasSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+        if (!hasSyncHandler) {
+          replicationPromises.push(
+            this._replicateForContextWithDirectionAndFilterAndTaskId(
+              context,
+              direction,
+              filter,
+              taskId,
+              true
+            )
+          );
+        }
+      });
+    });
 
-    let syncHandler = this._syncHandlerCache.get(context);
-    if (syncHandler === undefined) {
-      const syncSettings = {
-        filter: this._remoteConfig.filter,
-        query_params: {
-          taskId: taskId,
-        },
-      };
-      const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
-
-      syncHandler = this._pouchDb.sync(taskId, replicationEndpointUrl, syncSettings);
-      syncHandler
-        .on('paused', pausedEventHandler)
-        .on('complete', () => {
-          this._removeContextFromCache(context);
-        });
-
-      this._syncHandlerCache.set(context, syncHandler);
-    }
-
-    return context;
+    return this._$q.all(replicationPromises);
   }
 
   /**
    * @param {PouchDB} context instance of a local PouchDB
    */
-  stopReplicationForContext(context) {
-    const syncHandler = this._syncHandlerCache.get(context);
-
-    if (typeof context !== 'object' || syncHandler === undefined) {
-      return null;
+  stopReplicationsForContext(context) {
+    const filtersInContextMap = this._syncHandlerCacheByContext.get(context);
+    for (const [filter, directionsInFilterMap] of filtersInContextMap) {
+      for (const [direction, syncHandler] of directionsInFilterMap) {
+        syncHandler.cancel();
+      }
     }
-
-    syncHandler.cancel();
 
     return context;
   }
@@ -68,8 +95,8 @@ class PouchDbSyncManager {
    * @params {PouchDB} context to check sync state on
    * @returns {boolean}
    */
-  isReplicationOnContextEnabled(context) {
-    return this._syncHandlerCache.has(context);
+  isAnyReplicationOnContextEnabled(context) {
+    return this._syncHandlerCacheByContext.has(context);
   }
 
   /**
@@ -78,69 +105,91 @@ class PouchDbSyncManager {
    * @private
    */
   _removeContextFromCache(context) {
-    this._syncHandlerCache.delete(context);
+    this._syncHandlerCacheByContext.delete(context);
     return this.isReplicationOnContextEnabled();
   }
 
-  pullUpdatesForContext(context, onCompleteCallback) {
+  pullUpdatesForContext(context) {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
-    if (typeof context !== 'object' || typeof onCompleteCallback !== 'function' || taskId === null) {
-      return null;
-    }
+    const replicationPromises = [];
+    this._remoteConfig.filters.forEach(filter => {
+      const hasSyncHandler = this._hasSyncHandlerByContextAndFilterAndDirection(context, filter, PouchDbSyncManager.SYNC_DIRECTION_FROM);
+      if (!hasSyncHandler) {
+        replicationPromises.push(
+          this._replicateForContextWithDirectionAndFilterAndTaskId(
+            context,
+            PouchDbSyncManager.SYNC_DIRECTION_FROM,
+            filter,
+            taskId
+          )
+        );
+      }
+    });
 
-    let syncHandler = this._syncHandlerCache.get(context);
-    if (syncHandler === undefined) {
-      const syncSettings = {
-        filter: this._remoteConfig.filter,
-        query_params: {
-          taskId: taskId,
-        },
-      };
-      const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
-
-      syncHandler = context.replicate.from(replicationEndpointUrl, syncSettings);
-      syncHandler
-        .on('complete', evnt => {
-          this._removeContextFromCache(context);
-          onCompleteCallback(evnt);
-        });
-
-      this._syncHandlerCache.set(context, syncHandler);
-    }
-
-    return context;
+    return this._$q.all(replicationPromises);
   }
 
-  pushUpdatesForContext(context, onCompleteCallback, onChangeCallback) {
+  /**
+   * @param {object} context
+   * @param {"to"|"from"} direction
+   * @param {string} filter
+   * @param {string} taskId
+   * @param {boolean?} live
+   * @returns {Promise}
+   * @private
+   */
+  _replicateForContextWithDirectionAndFilterAndTaskId(context, direction, filter, taskId, live = false) {
+    const syncSettings = {
+      filter,
+      live,
+      query_params: {
+        taskId: taskId,
+      },
+      retry: true,
+    };
+
+    const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
+    const deferred = this._$q.defer();
+    const replicationFunction = context.replicate[direction];
+    const syncHandler = replicationFunction(replicationEndpointUrl, syncSettings);
+
+    syncHandler
+      .on('complete', event => {
+        this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+        deferred.resolve(event);
+      });
+
+    syncHandler
+      .on('error', error => {
+        this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+        deferred.reject(error);
+      });
+
+    this._setSyncHandlerByContextAndFilterAndDirection(context, filter, direction, syncHandler);
+
+    return deferred.promise;
+  }
+
+  pushUpdatesForContext(context) {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
-    if (typeof context !== 'object' || typeof onCompleteCallback !== 'function' || taskId === null) {
-      return null;
-    }
+    const replicationPromises = [];
+    this._remoteConfig.filters.forEach(filter => {
+      const hasSyncHandler = this._hasSyncHandlerByContextAndFilterAndDirection(context, filter, PouchDbSyncManager.SYNC_DIRECTION_TO);
+      if (!hasSyncHandler) {
+        replicationPromises.push(
+          this._replicateForContextWithDirectionAndFilterAndTaskId(
+            context,
+            PouchDbSyncManager.SYNC_DIRECTION_TO,
+            filter,
+            taskId
+          )
+        );
+      }
+    });
 
-    let syncHandler = this._syncHandlerCache.get(context);
-    if (syncHandler === undefined) {
-      const syncSettings = {
-      };
-      const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
-
-      syncHandler = context.replicate.to(replicationEndpointUrl, syncSettings);
-      syncHandler
-        .on('complete', evnt => {
-          this._removeContextFromCache(context);
-          onCompleteCallback(evnt);
-        })
-        .on('change', evnt => {
-          if (onChangeCallback) {
-            onChangeCallback(evnt);
-          }
-        });
-
-      this._syncHandlerCache.set(context, syncHandler);
-    }
-
-    return context;
+    return this._$q.all(replicationPromises);
   }
 
   waitForRemoteToConfirm(context, document, millisTillCancelation) {
@@ -149,7 +198,7 @@ class PouchDbSyncManager {
     const useTimeoutOption = typeof millisTillCancelation === 'number' && millisTillCancelation > -1;
 
     if (isValidDocument) {
-      const confirmationPromise = new Promise((resolve, reject) => {
+      const confirmationPromise = new this._$q((resolve, reject) => {
         if (useTimeoutOption) {
           setTimeout(() => {
             const error = new Error('Replication timeout has been reached. Could not confirm replication to remote.');
@@ -157,11 +206,13 @@ class PouchDbSyncManager {
           }, millisTillCancelation);
         }
 
-        this.pushUpdatesForContext(context, resolve, event => {
-          const hasReceivedDocument = event.docs.filter(doc => doc._id === document._id).length > 0;
-          if (hasReceivedDocument) {
-            resolve(document);
-          }
+        this.pushUpdatesForContext(context).then(events => {
+          events.forEach(event => {
+            const hasReceivedDocument = event.docs.filter(doc => doc._id === document._id).length > 0;
+            if (hasReceivedDocument) {
+              resolve(document);
+            }
+          });
         });
       });
 
@@ -171,8 +222,96 @@ class PouchDbSyncManager {
     return result;
   }
 
+  /**
+   * Check if certain context and filter are currently running as a replication
+   *
+   * @param {object} context
+   * @param {string} filter
+   * @param {string} direction
+   * @returns {boolean}
+   * @private
+   */
+  _hasSyncHandlerByContextAndFilterAndDirection(context, filter, direction) {
+    const hasContext = this._syncHandlerCacheByContext.has(context);
+    if (!hasContext) {
+      return false;
+    }
+
+    const filtersInContextMap = this._syncHandlerCacheByContext.get(context);
+    const hasFilterInContext = filtersInContextMap.has(filter);
+
+    if (!hasFilterInContext) {
+      return false;
+    }
+
+    const directionInFilterMap = filtersInContextMap.get(filter);
+    const hasDirectionInFilter = directionInFilterMap.has(direction);
+
+    return hasDirectionInFilter;
+  }
+
+  /**
+   * Remove a sync handler for a replication based on context and filter
+   *
+   * The return value indicates if the syncHandler could be located or if none existed in the first place.
+   *
+   * @param {object} context
+   * @param {string} filter
+   * @param {string} direction
+   * @returns {boolean}
+   * @private
+   */
+  _removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction) {
+    const filtersInContextMap = this._syncHandlerCacheByContext.get(context);
+    if (filtersInContextMap === undefined) {
+      return false;
+    }
+
+    const directionsInFilterMap = filtersInContextMap.get(filter);
+
+    if (directionsInFilterMap === undefined) {
+      return false;
+    }
+
+    return directionsInFilterMap.delete(direction);
+  }
+
+  /**
+   * @param {object} context
+   * @param {string} filter
+   * @param {string} direction
+   * @param {object} syncHandler
+   * @private
+   */
+  _setSyncHandlerByContextAndFilterAndDirection(context, filter, direction, syncHandler) {
+    let filtersInContextMap = this._syncHandlerCacheByContext.get(context);
+    if (filtersInContextMap === undefined) {
+      // Initialize new inner map if none was present for the given context before.
+      filtersInContextMap = new Map();
+      this._syncHandlerCacheByContext.set(context, filtersInContextMap);
+    }
+
+    let directionsInFilterMap = filtersInContextMap.get(filter);
+
+    if (directionsInFilterMap === undefined) {
+      // Initialize new inner map if none was present for the given filter before.
+      directionsInFilterMap = new Map();
+      filtersInContextMap.set(filter, directionsInFilterMap);
+    }
+
+    directionsInFilterMap.set(direction, syncHandler);
+  }
 }
 
-PouchDbSyncManager.$inject = ['applicationConfig', 'PouchDbContextService', 'PouchDB'];
+PouchDbSyncManager.SYNC_DIRECTION_FROM = 'from';
+PouchDbSyncManager.SYNC_DIRECTION_TO = 'to';
+
+PouchDbSyncManager.$inject = [
+  'applicationConfig',
+  '$q',
+  'PouchDbContextService',
+  'PouchDB',
+];
+
 
 export default PouchDbSyncManager;
