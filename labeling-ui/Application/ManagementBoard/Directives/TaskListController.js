@@ -3,13 +3,24 @@
  */
 class TaskListController {
   /**
+   * @param {object} featureFlags
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
+   * @param {angular.$q} $q
    * @param {TaskGateway} taskGateway injected
    * @param {ModalService} modalService
    * @param {SelectionDialog} SelectionDialog
+   * @param {PouchDbContextService} pouchDbContextService
+   * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {PouchDbViewHeater} pouchDbViewHeater
    */
-  constructor($scope, $state, taskGateway, modalService, SelectionDialog) {
+  constructor(featureFlags, $scope, $state, $q, taskGateway, modalService, SelectionDialog, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater) {
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._featureFlags = featureFlags;
+
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -21,6 +32,12 @@ class TaskListController {
      * @private
      */
     this._$state = $state;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {TaskGateway}
@@ -39,6 +56,27 @@ class TaskListController {
      * @private
      */
     this._SelectionDialog = SelectionDialog;
+
+    /**
+     *
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     *
+     * @type {PouchDbSyncManager}
+     * @private
+     */
+    this._pouchDbSyncManager = pouchDbSyncManager;
+
+    /**
+     *
+     * @type {PouchDbViewHeater}
+     * @private
+     */
+    this._pouchDbViewHeater = pouchDbViewHeater;
 
     /**
      * @type {Object}
@@ -82,7 +120,7 @@ class TaskListController {
   openTask(taskId) {
     // If this is the users task open it
     if (this._rawTasksById[taskId].isUsersTask(this.user)) {
-      this.goToTask(taskId, this.taskPhase);
+      this._gotoTask(taskId, this.taskPhase);
       return;
     }
 
@@ -90,7 +128,7 @@ class TaskListController {
     if (this.userPermissions.canBeginTask && (!this._rawTasksById[taskId] || this._rawTasksById[taskId].isUserAllowedToAssign(this.user))) {
       this.loadingInProgress = true;
       this._taskGateway.assignAndMarkAsInProgress(taskId).then(() => {
-        this.goToTask(taskId, this.taskPhase);
+        this._gotoTask(taskId, this.taskPhase);
       });
     } else {
       this._modalService.info(
@@ -99,13 +137,32 @@ class TaskListController {
           headline: 'This task is already assigned to someone else or you are not allowed to edit this task.',
           message: 'You are only allowed to open it in real only mode',
           confirmButtonText: 'Open read only',
-        }, () => this.goToTask(taskId, this.taskPhase)
+        }, () => this._gotoTask(taskId, this.taskPhase)
       );
     }
   }
 
-  goToTask(taskId, phase) {
+  _gotoTask(taskId, phase) {
     this._$state.go('labeling.tasks.detail', {taskId, phase});
+  }
+
+  /**
+   * @param taskId
+   * @private
+   * @return {Promise}
+   */
+  _checkoutTaskFromRemote(taskId) {
+    let dbContext;
+
+    return this._$q.resolve()
+      .then(() => this._pouchDbContextService.provideContextForTaskId(taskId));
+      .then((_dbContext) => {
+        dbContext = _dbContext;
+        this._pouchDbSyncManager.
+      });
+    // sync designviews and taskdocuments in parallel
+    // wait for sync complete
+    // heat views when data complete and redirect to labeling.tasks.detail in parallel
   }
 
   unassignTask(taskId, assigneeId) {
@@ -230,11 +287,16 @@ class TaskListController {
 }
 
 TaskListController.$inject = [
+  'featureFlags',
   '$scope',
   '$state',
+  '$q',
   'taskGateway',
   'modalService',
   'SelectionDialog',
+  'pouchDbContextService',
+  'pouchDbSyncManager',
+  'pouchDbViewHeater',
 ];
 
 export default TaskListController;
