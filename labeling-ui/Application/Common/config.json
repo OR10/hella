@@ -112,11 +112,11 @@
   },
   "storage": {
     "local": {
-      "databaseName":"AnnoAtation"
+      "databaseName":"AnnoStation"
     },
     "remote": {
-      "baseUrl":"http://localhost:5984/",
-      "databaseName":"AnnoAtation",
+      "baseUrl":"http://192.168.222.20:5984/",
+      "databaseName":"labeling_api",
       "filters": [
         "annostation_related_documents/by_taskId",
         "annostation_related_views/all"
