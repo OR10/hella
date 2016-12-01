@@ -22,21 +22,6 @@ api_project:
     type: rest
     name_prefix: app_api_project_
 
-api_task_labeled_thing_in_frame:
-    resource: "annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
-    type: rest
-    name_prefix: app_api_task_labeled_thing_in_frame_
-
-api_task_labeled_frame:
-    resource: "annostation.labeling_api.controller.api.task.labeled_frame"
-    type: rest
-    name_prefix: app_api_task_labeled_frame_
-
-api_task_export:
-    resource: "annostation.labeling_api.controller.api.task.export"
-    type: rest
-    name_prefix: app_api_task_export_
-
 api_labeled_thing_in_frame:
     resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
     type: rest
@@ -46,31 +31,6 @@ api_test:
     resource: "annostation.labeling_api.controller.api.test"
     type: rest
     name_prefix: app_api_test_
-
-api_task_labeled_thing:
-    resource: "annostation.labeling_api.controller.api.task.labeled_thing"
-    type: rest
-    name_prefix: app_api_task_labeled_thing_
-
-api_task_interpolate:
-    resource: "annostation.labeling_api.controller.api.task.interpolate"
-    type: rest
-    name_prefix: app_api_task_interpolate_
-
-api_task_timer:
-    resource: "annostation.labeling_api.controller.api.task.timer"
-    type: rest
-    name_prefix: app_api_task_timer_
-
-api_task_status:
-    resource: "annostation.labeling_api.controller.api.task.status"
-    type: rest
-    name_prefix: app_api_task_status_
-
-api_task_user:
-    resource: "annostation.labeling_api.controller.api.task.user"
-    type: rest
-    name_prefix: app_api_task_user_
 
 api_status:
     resource: "annostation.labeling_api.controller.api.status"
@@ -112,17 +72,7 @@ api_ui_log:
     type: rest
     name_prefix: app_api_ui_log
 
-api_task_attention:
-    resource: "annostation.labeling_api.controller.api.task.attention"
-    type: rest
-    name_prefix: app_api_task_attention
-
 api_system:
     resource: "annostation.labeling_api.controller.api.system"
     type: rest
     name_prefix: app_api_system
-
-api_task_phase:
-    resource: "annostation.labeling_api.controller.api.task.phase"
-    type: rest
-    name_prefix: app_api_task_phase
