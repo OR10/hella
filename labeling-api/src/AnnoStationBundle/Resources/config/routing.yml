@@ -1,3 +1,27 @@
 annostation_hello_world:
     resource: "@AnnoStationBundle/Controller/"
     type: annotation
+
+api_project_batch_upload:
+    resource: "annostation.labeling_api.controller.api.project.batch_upload"
+    type: rest
+
+api_project_status:
+    resource: "annostation.labeling_api.controller.api.project.status"
+    type: rest
+    name_prefix: app_api_project_status
+
+api_project_report:
+    resource: "annostation.labeling_api.controller.api.project.report"
+    type: rest
+    name_prefix: app_api_report
+
+api_project_attention:
+    resource: "annostation.labeling_api.controller.api.project.attention"
+    type: rest
+    name_prefix: app_api_project_attention
+
+api_project_export:
+    resource: "annostation.labeling_api.controller.api.project.export"
+    type: rest
+    name_prefix: app_api_project_export_

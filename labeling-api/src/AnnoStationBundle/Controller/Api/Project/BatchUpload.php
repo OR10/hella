@@ -1,11 +1,11 @@
 <?php
 
-namespace AppBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Controller;
-use AppBundle\Controller\Api\Project\Exception as ProjectException;
+use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
