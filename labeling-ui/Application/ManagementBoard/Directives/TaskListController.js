@@ -7,6 +7,7 @@ class TaskListController {
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {angular.$q} $q
+   * @param {LoggerService} loggerService
    * @param {TaskGateway} taskGateway injected
    * @param {ModalService} modalService
    * @param {SelectionDialog} SelectionDialog
@@ -14,7 +15,7 @@ class TaskListController {
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbViewHeater} pouchDbViewHeater
    */
-  constructor(featureFlags, $scope, $state, $q, taskGateway, modalService, SelectionDialog, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater) {
+  constructor(featureFlags, $scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater) {
     /**
      * @type {Object}
      * @private
@@ -38,6 +39,12 @@ class TaskListController {
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {Logger}
+     * @private
+     */
+    this._logger = loggerService;
 
     /**
      * @type {TaskGateway}
@@ -120,16 +127,15 @@ class TaskListController {
   openTask(taskId) {
     // If this is the users task open it
     if (this._rawTasksById[taskId].isUsersTask(this.user)) {
-      this._gotoTask(taskId, this.taskPhase);
-      return;
+      return this._gotoTask(taskId, this.taskPhase);
     }
 
     // If it is not the users tasks check if assignment is possible
     if (this.userPermissions.canBeginTask && (!this._rawTasksById[taskId] || this._rawTasksById[taskId].isUserAllowedToAssign(this.user))) {
       this.loadingInProgress = true;
-      this._taskGateway.assignAndMarkAsInProgress(taskId).then(() => {
-        this._gotoTask(taskId, this.taskPhase);
-      });
+      this._taskGateway.assignAndMarkAsInProgress(taskId).then(
+        () => this._gotoTask(taskId, this.taskPhase)
+      );
     } else {
       this._modalService.info(
         {
@@ -143,7 +149,17 @@ class TaskListController {
   }
 
   _gotoTask(taskId, phase) {
-    this._$state.go('labeling.tasks.detail', {taskId, phase});
+    let promise = this._$q.resolve();
+
+    if (this._featureFlags.pouchdb) {
+      promise = promise
+        .then(() => this._checkoutTaskFromRemote(taskId));
+    }
+
+    promise = promise.then(
+      () => this._$state.go('labeling.tasks.detail', {taskId, phase}));
+
+    return promise;
   }
 
   /**
@@ -152,17 +168,17 @@ class TaskListController {
    * @return {Promise}
    */
   _checkoutTaskFromRemote(taskId) {
-    let dbContext;
+    const loggerContext = 'pouchDb:taskSynchronization';
+    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
+    const context = this._pouchDbContextService.provideContextForTaskId(taskId);
 
     return this._$q.resolve()
-      .then(() => this._pouchDbContextService.provideContextForTaskId(taskId));
-      .then((_dbContext) => {
-        dbContext = _dbContext;
-        this._pouchDbSyncManager.
-      });
-    // sync designviews and taskdocuments in parallel
-    // wait for sync complete
-    // heat views when data complete and redirect to labeling.tasks.detail in parallel
+      .then(() => this._logger.log(loggerContext, 'Pulling task updates from server'))
+      .then(() => this._pouchDbSyncManager.pullUpdatesForContext(context))
+      .then(() => this._pouchDbViewHeater.heatAllViews(context, 'annostation_'))
+      .then(() => this._logger.log(loggerContext, 'Synchronizaton complete'))
+      .then(() => this._logger.groupEnd('pouchDb:taskSynchronization'))
+      .catch(error => console.error(error));
   }
 
   unassignTask(taskId, assigneeId) {
@@ -291,6 +307,7 @@ TaskListController.$inject = [
   '$scope',
   '$state',
   '$q',
+  'loggerService',
   'taskGateway',
   'modalService',
   'SelectionDialog',
