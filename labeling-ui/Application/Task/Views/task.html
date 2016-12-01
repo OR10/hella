@@ -41,7 +41,7 @@
         <!--</div>&ndash;&gt;-->
         <!--&lt;!&ndash;<div class="grid-block vertical noscrollbars"></div>&ndash;&gt;-->
     <!--</div>-->
-    <tool-selector ng-if="vm.task.taskType !== 'meta-labeling'"
+    <tool-selector ng-if="vm.task.taskType !== 'meta-labeling' && vm.drawableThings.length > 1"
                    drawable-things="vm.drawableThings"
                    selected-thing="vm.selectedThing"
                    selected-drawing-tool="vm.selectedDrawingTool"
