@@ -117,7 +117,10 @@
     "remote": {
       "baseUrl":"http://localhost:5984/",
       "databaseName":"AnnoAtation",
-      "filter": "designdocumentName/filterName"
+      "filters": [
+        "annostation_related_documents/by_taskId",
+        "annostation_related_views/all"
+      ]
     }
   }
 }
