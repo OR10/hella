@@ -1,9 +1,9 @@
 <?php
 
-namespace AppBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Controller;
+use AnnoStationBundle\Controller;
 use AppBundle\View;
 use crosscan\Logger;
 use FOS\RestBundle\Controller\Annotations as Rest;

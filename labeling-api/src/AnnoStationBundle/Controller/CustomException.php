@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Controller;
+namespace AnnoStationBundle\Controller;
 
 use Symfony\Bundle\TwigBundle\Controller\ExceptionController;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;

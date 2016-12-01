@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api;
 
 use GuzzleHttp;
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Controller;
+use AnnoStationBundle\Controller;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\ForbidReadonlyTasks;
-use AppBundle\Controller;
+use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;

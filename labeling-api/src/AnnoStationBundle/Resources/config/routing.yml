@@ -1,3 +1,7 @@
+default:
+    resource: "AnnoStationBundle\Controller\Index"
+    type: annotation
+
 api_project_batch_upload:
     resource: "AnnoStationBundle\Controller\Api\\Project\BatchUpload"
     type: annotation
@@ -76,3 +80,73 @@ api_labeled_thing_in_frame:
     resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
     type: rest
     name_prefix: app_api_labeled_thing_in_frame_
+
+api_video:
+    resource: "annostation.labeling_api.controller.api.video"
+    type: rest
+    name_prefix: app_api_video_
+
+api_users:
+    resource: "annostation.labeling_api.controller.api.users"
+    type: rest
+    name_prefix: app_api_users_
+
+api_task:
+    resource: "annostation.labeling_api.controller.api.task"
+    type: rest
+    name_prefix: app_api_task_
+
+api_project:
+    resource: "annostation.labeling_api.controller.api.project"
+    type: rest
+    name_prefix: app_api_project_
+
+api_test:
+    resource: "annostation.labeling_api.controller.api.test"
+    type: rest
+    name_prefix: app_api_test_
+
+api_status:
+    resource: "annostation.labeling_api.controller.api.status"
+    type: rest
+    name_prefix: app_api_status_
+
+api_current_user:
+    resource: "annostation.labeling_api.controller.api.current_user"
+    type: rest
+    name_prefix: app_api_current_user_
+
+api_project_count:
+    resource: "annostation.labeling_api.controller.api.project_count"
+    type: rest
+    name_prefix: app_api_project_count_
+
+api_task_count:
+    resource: "annostation.labeling_api.controller.api.task_count"
+    type: rest
+    name_prefix: app_api_task_count_
+
+api_labeling_group:
+    resource: "annostation.labeling_api.controller.api.labeling_group"
+    type: rest
+    name_prefix: app_api_labeling_group
+
+api_task_configuration:
+    resource: "annostation.labeling_api.controller.api.task_configuration"
+    type: rest
+    name_prefix: app_api_task_configuration
+
+api_ui_log:
+    resource: "annostation.labeling_api.controller.api.ui_log"
+    type: rest
+    name_prefix: app_api_ui_log
+
+api_system:
+    resource: "annostation.labeling_api.controller.api.system"
+    type: rest
+    name_prefix: app_api_system
+
+dimension_prediction:
+    resource: "annostation.labeling_api.controller.dimension_prediction"
+    type: rest
+    name_prefix: app_dimension_prediction_

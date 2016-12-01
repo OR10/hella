@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Component\HttpFoundation;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use AppBundle\Controller;
+use AnnoStationBundle\Controller;
 use AppBundle\View;
 
 /**
