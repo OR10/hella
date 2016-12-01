@@ -1,6 +1,6 @@
 api_project_batch_upload:
-    resource: "annostation.labeling_api.controller.api.project.batch_upload"
-    type: rest
+    resource: "AnnoStationBundle\Controller\Api\\Project\BatchUpload"
+    type: annotation
 
 api_project_status:
     resource: "annostation.labeling_api.controller.api.project.status"
