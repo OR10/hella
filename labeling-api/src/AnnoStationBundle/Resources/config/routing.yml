@@ -75,3 +75,8 @@ api_task_phase:
     resource: "annostation.labeling_api.controller.api.task.phase"
     type: rest
     name_prefix: app_api_task_phase
+
+api_labeled_thing_in_frame:
+    resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
+    type: rest
+    name_prefix: app_api_labeled_thing_in_frame_

@@ -22,11 +22,6 @@ api_project:
     type: rest
     name_prefix: app_api_project_
 
-api_labeled_thing_in_frame:
-    resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
-    type: rest
-    name_prefix: app_api_labeled_thing_in_frame_
-
 api_test:
     resource: "annostation.labeling_api.controller.api.test"
     type: rest
