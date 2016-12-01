@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Command;
 
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;

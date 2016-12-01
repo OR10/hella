@@ -7,7 +7,7 @@ use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
 use AnnoStationBundle\Service\Video as VideoService;
 use AnnoStationBundle\Worker\Jobs;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use Hagl\WorkerPoolBundle\JobInstruction;
 use League\Flysystem;

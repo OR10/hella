@@ -5,10 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
-        <import resource="services/command.xml"/>
         <import resource="services/event_listeners.xml"/>
-        <import resource="services/controller.xml"/>
-        <import resource="services/database_facades.xml"/>
         <import resource="services/param_converters.xml"/>
         <import resource="services/voters.xml"/>
         <import resource="services/helper.xml"/>

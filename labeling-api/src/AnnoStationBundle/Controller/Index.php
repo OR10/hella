@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Controller;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Symfony\Bridge\Twig;

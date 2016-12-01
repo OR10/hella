@@ -3,7 +3,7 @@
 namespace AppBundle\Response;
 
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 
 class Videos
 {

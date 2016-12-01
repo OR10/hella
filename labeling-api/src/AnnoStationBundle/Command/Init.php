@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Command;
 
 use AnnoStationBundle\Service;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\CouchDB;

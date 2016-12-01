@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Database\Facade;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Tests\Helper;
 use Symfony\Component\HttpFoundation;
 
