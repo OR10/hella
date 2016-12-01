@@ -1,7 +1,7 @@
 /**
  * Service to provide preconfigured PouchDB contexts
  */
-class PouchDBContextService {
+class PouchDbContextService {
   /**
    * @param {Object} configuration injected
    * @param {PouchDB} PouchDB injected
@@ -68,6 +68,6 @@ class PouchDBContextService {
   }
 }
 
-PouchDBContextService.$inject = ['applicationConfig', 'PouchDB'];
+PouchDbContextService.$inject = ['applicationConfig', 'PouchDB'];
 
-export default PouchDBContextService;
+export default PouchDbContextService;

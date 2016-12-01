@@ -4,9 +4,9 @@
 class PouchDbViewHeater {
   /**
    * @param {$q} $q
-   * @param {PouchDbContextService} storageContextFactory
+   * @param {PouchDbContextService} pouchDbContextService
    */
-  constructor($q, storageContextFactory) {
+  constructor($q, pouchDbContextService) {
     /**
      * @type {$q}
      * @private
@@ -14,10 +14,10 @@ class PouchDbViewHeater {
     this._$q = $q;
 
     /**
-     * @type {StorageContextFactory}
+     * @type {PouchDbContextService}
      * @private
      */
-    this._storageContextFactory = storageContextFactory;
+    this._storageContextFactory = pouchDbContextService;
   }
 
   /**
