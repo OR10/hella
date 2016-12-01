@@ -95,7 +95,7 @@ System.config({
     "lodash.clone": "npm:lodash.clone@4.3.2",
     "lodash.clonedeep": "npm:lodash.clonedeep@4.3.2",
     "lodash.debounce": "npm:lodash.debounce@3.1.1",
-    "lodash.foreach": "npm:lodash.foreach@4.3.0",
+    "lodash.foreach": "npm:lodash.foreach@4.5.0",
     "lodash.isequal": "npm:lodash.isequal@4.2.0",
     "lodash.merge": "npm:lodash.merge@4.4.0",
     "lodash.reduce": "npm:lodash.reduce@4.6.0",
@@ -624,17 +624,6 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:lodash._baseiteratee@4.7.0": {
-      "lodash._stringtopath": "npm:lodash._stringtopath@4.8.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash._basetostring@4.12.0": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash._stringtopath@4.8.0": {
-      "lodash._basetostring": "npm:lodash._basetostring@4.12.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
     "npm:lodash.clone@4.3.2": {
       "lodash._baseclone": "npm:lodash._baseclone@4.5.6"
     },
@@ -643,10 +632,6 @@ System.config({
     },
     "npm:lodash.debounce@3.1.1": {
       "lodash._getnative": "npm:lodash._getnative@3.9.1"
-    },
-    "npm:lodash.foreach@4.3.0": {
-      "lodash._baseeach": "npm:lodash._baseeach@4.1.3",
-      "lodash._baseiteratee": "npm:lodash._baseiteratee@4.7.0"
     },
     "npm:lodash.isequal@4.2.0": {
       "lodash._root": "npm:lodash._root@3.0.1",
