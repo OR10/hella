@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AnnoStationBundle\Command;
 
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console;

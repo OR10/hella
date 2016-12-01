@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Command\Project;
+namespace AnnoStationBundle\Command\Project;
 
-use AppBundle\Command\Base;
+use AnnoStationBundle\Command\Base;
 use SplFileInfo;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
