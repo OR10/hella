@@ -1,17 +1,26 @@
+import forEach from 'lodash.foreach';
+
 /**
  * This service handles the heating of database views
  */
 class PouchDbViewHeater {
   /**
    * @param {$q} $q
+   * @param {LoggerService} loggerService
    * @param {PouchDbContextService} pouchDbContextService
    */
-  constructor($q, pouchDbContextService) {
+  constructor($q, loggerService, pouchDbContextService) {
     /**
      * @type {$q}
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = loggerService;
 
     /**
      * @type {PouchDbContextService}
@@ -53,31 +62,70 @@ class PouchDbViewHeater {
     return this._$q.all(promises);
   }
 
+  heatAllViewsForDesignDocument(context, designDocument) {
+    const promises = [];
+    const viewNames = this._getViewNamesFromDesignDocument(designDocument);
+    viewNames.forEach(
+      viewName => promises.push(this.heatView(context, viewName))
+    );
+
+    return this._$q.all(promises);
+  }
+
   /**
    * Heats all views in the database
    *
+   * If a prefix is given only views beginning with this prefix will be heated.
+   *
    * @param {object} context
+   * @param {string?} prefix
    */
-  heatAllViews(context) {
+  heatAllViews(context, prefix = '') {
+    this._logger.groupStart('pouchdb:viewHeater', 'Heating all views');
     // Get all view documents
     return context.allDocs({
       include_docs: true,
       startkey: '_design/',
       endkey: '_design0',
-    }).then(documents => {
+    }).then(response => {
       const promises = [];
 
-      documents.forEach(document => {
-        promises.push(this.heatView(context, document.key));
+      response.rows.forEach(row => {
+        const documentName = row.key.replace(/^_design\//, '');
+        if (documentName.indexOf(prefix) !== 0) {
+          return;
+        }
+        const document = row.doc;
+        promises.push(this.heatAllViewsForDesignDocument(context, document));
       });
 
-      return this._$q.all(promises);
+      return this._$q.all(promises)
+        .then(() => this._logger.groupEnd('pouchdb:viewHeater'));
     });
+  }
+
+  _getViewNamesFromDesignDocument(designDocument) {
+    const viewNames = [];
+    if (typeof designDocument.views !== 'object') {
+      return viewNames;
+    }
+
+    forEach(
+      designDocument.views,
+      (view, viewName) => {
+        const documentName = designDocument._id.replace(/^_design\//, '');
+        const fullyQualifiedViewName = `${documentName}/${viewName}`;
+        viewNames.push(fullyQualifiedViewName);
+      }
+    );
+
+    return viewNames;
   }
 }
 
 PouchDbViewHeater.$inject = [
   '$q',
+  'loggerService',
   'pouchDbContextService'
 ];
 
