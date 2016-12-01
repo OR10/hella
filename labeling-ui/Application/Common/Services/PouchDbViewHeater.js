@@ -17,31 +17,31 @@ class PouchDbViewHeater {
      * @type {PouchDbContextService}
      * @private
      */
-    this._storageContextFactory = pouchDbContextService;
+    this._pouchDbContextService = pouchDbContextService;
   }
 
   /**
    * Heats a single view in the pouchDB
    *
-   * @param {string} taskId
+   * @param {object} context
    * @param {String} viewName
+   * @return {Promise}
    */
-  heatView(taskId, viewName) {
-    const db = this._storageContextFactory.getContextForTaskName(taskId);
-
-    return db.query(viewName);
+  heatView(context, viewName) {
+    // @TODO: Maybe optimize by not transfering all documents into js space
+    return context.query(viewName);
   }
 
   /**
    * Heats multiple views in the database
    *
-   * @param {string} taskId
+   * @param {object} context
    * @param {Array} viewNames
    */
-  heatViews(taskId, viewNames) {
+  heatViews(context, viewNames) {
     const promises = [];
     viewNames.forEach(viewName => {
-      promises.push(this.heatView(taskId, viewName));
+      promises.push(this.heatView(context, viewName));
     });
 
     return this._$q.all(promises);
@@ -50,13 +50,11 @@ class PouchDbViewHeater {
   /**
    * Heats all views in the database
    *
-   * @param {string} taskId
+   * @param {object} context
    */
-  heatAllViews(taskId) {
-    const db = this._storageContextFactory.getContextForTaskName(taskId);
-
+  heatAllViews(context) {
     // Get all view documents
-    return db.allDocs({
+    return context.allDocs({
       include_docs: true,
       startkey: '_design/',
       endkey: '_design0',
@@ -64,7 +62,7 @@ class PouchDbViewHeater {
       const promises = [];
 
       documents.forEach(document => {
-        promises.push(this.heatView(taskId, document.key));
+        promises.push(this.heatView(context, document.key));
       });
 
       return this._$q.all(promises);
@@ -72,6 +70,9 @@ class PouchDbViewHeater {
   }
 }
 
-PouchDbViewHeater.$inject = ['$q', 'storageContextFactory'];
+PouchDbViewHeater.$inject = [
+  '$q',
+  'pouchDbContextService'
+];
 
 export default PouchDbViewHeater;
