@@ -1,10 +1,10 @@
 <?php
-namespace AppBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AppBundle\Response;
-use AppBundle\Controller;
+use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
 use AppBundle\View;

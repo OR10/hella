@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Controller;
+namespace AnnoStationBundle\Controller;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;

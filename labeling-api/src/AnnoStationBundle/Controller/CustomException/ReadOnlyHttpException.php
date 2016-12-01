@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Controller\CustomException;
+namespace AnnoStationBundle\Controller\CustomException;
 
 use Symfony\Component\HttpKernel\Exception;
 

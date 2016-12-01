@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception;
 use AppBundle\Annotations;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
-use AppBundle\Controller\CustomException;
+use AnnoStationBundle\Controller\CustomException;
 
 class ForbidReadonlyTasks
 {
