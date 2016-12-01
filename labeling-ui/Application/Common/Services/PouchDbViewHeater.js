@@ -28,8 +28,14 @@ class PouchDbViewHeater {
    * @return {Promise}
    */
   heatView(context, viewName) {
-    // @TODO: Maybe optimize by not transfering all documents into js space
-    return context.query(viewName);
+    this._logger.log('pouchdb:viewHeater', 'Heating view %s', viewName);
+    return context.query(
+      viewName,
+      {
+        include_docs: false,
+        limit: 1,
+      }
+    );
   }
 
   /**
