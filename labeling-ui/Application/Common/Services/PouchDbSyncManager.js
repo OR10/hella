@@ -309,7 +309,7 @@ PouchDbSyncManager.SYNC_DIRECTION_TO = 'to';
 PouchDbSyncManager.$inject = [
   'applicationConfig',
   '$q',
-  'PouchDbContextService',
+  'pouchDbContextService',
   'PouchDB',
 ];
 
