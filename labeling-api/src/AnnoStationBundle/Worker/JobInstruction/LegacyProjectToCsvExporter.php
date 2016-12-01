@@ -1,12 +1,14 @@
 <?php
-namespace AppBundle\Worker\JobInstruction;
+
+namespace AnnoStationBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
 use AnnoStationBundle\Service;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
+use Hagl\WorkerPoolBundle;
 
-class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction
+class LegacyProjectToCsvExporter extends WorkerPoolBundle\JobInstruction
 {
     /**
      * @var Service\Exporter\LegacyProjectToCsv
@@ -35,5 +37,15 @@ class LegacyProjectToCsvExporter extends WorkerPool\JobInstruction
         } catch (\Throwable $throwable) {
             $logger->logString((string) $throwable, \cscntLogPayload::SEVERITY_FATAL);
         }
+    }
+
+    /**
+     * @param WorkerPool\Job $job
+     *
+     * @return bool
+     */
+    public function supports(WorkerPool\Job $job)
+    {
+        return $job instanceof Jobs\LegacyProjectToCsvExporter;
     }
 }

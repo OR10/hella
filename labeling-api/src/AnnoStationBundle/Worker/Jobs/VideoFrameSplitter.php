@@ -1,5 +1,6 @@
 <?php
-namespace AppBundle\Worker\Jobs;
+
+namespace AnnoStationBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
 use AppBundle\Model\Video\ImageType;

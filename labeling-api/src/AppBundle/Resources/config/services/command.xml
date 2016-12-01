@@ -34,24 +34,6 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="annostation.labeling_api.command.worker_starter" class="AppBundle\Command\WorkerStarter">
-            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config"/>
-            <argument type="service" id="annostation.labeling_api.vendor.logger"/>
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
-            <argument>%worker_pool.queue_prefix%</argument>
-            <tag name="console.command"/>
-        </service>
-        <service id="annostation.labeling_api.command.rabbit_mq" class="AppBundle\Command\RabbitMq">
-            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config"/>
-            <argument>%worker_pool.queue_prefix%</argument>
-            <tag name="console.command"/>
-        </service>
-        <service id="annostation.labeling_api.command.queue_maintainer" class="AppBundle\Command\QueueMaintainer">
-            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <argument>%worker_pool.queue_prefix%</argument>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.project_to_project_task_mover" class="AppBundle\Command\ProjectToProjectTaskMover">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.labeling_api.database.facade.project" />

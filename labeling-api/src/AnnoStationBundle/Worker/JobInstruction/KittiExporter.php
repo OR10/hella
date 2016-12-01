@@ -1,18 +1,16 @@
 <?php
-namespace AppBundle\Worker\JobInstruction;
+
+namespace AnnoStationBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Exception;
 use crosscan\WorkerPool\Job;
 use AppBundle\Database\Facade;
-use AppBundle\Model;
 use AnnoStationBundle\Service;
-use League\Flysystem;
-use Doctrine\ODM\CouchDB;
-use AppBundle\Model\Video\ImageType;
+use AnnoStationBundle\Worker\Jobs;
+use Hagl\WorkerPoolBundle;
 
-class KittiExporter extends WorkerPool\JobInstruction
+class KittiExporter extends WorkerPoolBundle\JobInstruction
 {
     /**
      * @var Service\TaskExporter\Kitti
@@ -42,6 +40,7 @@ class KittiExporter extends WorkerPool\JobInstruction
      */
     public function run(Job $job, Logger\Facade\LoggerFacade $logger)
     {
+        /** @var Jobs\KittiExporter $job */
         $task = $this->labelingTaskFacade->find($job->getTaskId());
         if ($task === null) {
             // @todo log task-not-found
@@ -49,5 +48,15 @@ class KittiExporter extends WorkerPool\JobInstruction
         }
 
         $this->kittiExporter->exportLabelingTask($task);
+    }
+
+    /**
+     * @param WorkerPool\Job $job
+     *
+     * @return bool
+     */
+    public function supports(WorkerPool\Job $job)
+    {
+        return $job instanceof Jobs\KittiExporter;
     }
 }
