@@ -20,7 +20,7 @@ class LabelStructureDataService {
      * @type {Map}
      * @private
      */
-    this._taskStructureMapping = new Map();
+    this._taskStructureTypeMapping = new Map();
 
     /**
      * @type {Map}
@@ -40,15 +40,23 @@ class LabelStructureDataService {
    * @return {AbortablePromise<string>}
    */
   getTaskStructureType(taskConfigurationId) {
-    if (this._taskStructureMapping.has(taskConfigurationId)) {
+    if (this._taskStructureTypeMapping.has(taskConfigurationId)) {
       const deferred = this._$q.defer();
-      deferred.resolve(this._taskStructureMapping.get(taskConfigurationId).type);
+      deferred.resolve(this._taskStructureTypeMapping.get(taskConfigurationId));
+
+      return deferred.promise;
+    }
+
+    if (taskConfigurationId === null) {
+      const deferred = this._$q.defer();
+      this._taskStructureTypeMapping.set(taskConfigurationId, 'legacy');
+      deferred.resolve('legacy');
 
       return deferred.promise;
     }
 
     return this._labelStructureGateway.getTaskStructureData(taskConfigurationId).then(taskStructureData => {
-      this._taskStructureMapping.set(taskConfigurationId, taskStructureData);
+      this._taskStructureTypeMapping.set(taskConfigurationId, taskStructureData.type);
 
       return taskStructureData.type;
     });

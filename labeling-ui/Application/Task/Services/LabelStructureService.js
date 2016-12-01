@@ -54,6 +54,7 @@ class LabelStructureService {
             return this._getLabelStructureFromRequirementsFile(file, thingIdentifier);
           });
         case 'simple':
+        case 'legacy':
           return this._labelStructureDataService.getLabelStructure(task.id).then(structure => {
             this._labelStructureMapping.set(task.id, structure);
             return structure;
@@ -86,15 +87,16 @@ class LabelStructureService {
             return drawableThings;
           });
         case 'simple':
+        case 'legacy':
           const drawableThing = {
             id: task.drawingTool,
             name: task.drawingTool,
-            tool: task.drawingTool,
+            shape: task.drawingTool,
           };
           this._drawableThingsMapping.set(task.id, [drawableThing]);
-          return;
+          return [drawableThing];
         default:
-          throw new Error(`Unknow task structure type ${type}`);
+          throw new Error(`Unknown task structure type ${type}`);
       }
     });
   }
@@ -111,23 +113,34 @@ class LabelStructureService {
   }
 
   /**
-   * @param {string} taskConfigurationId
+   * @param {string} task
    * @param {string} thingId
    * @return {AbortablePromise<{id, shape, tool}>}
    */
-  getThingByThingIdentifier(taskConfigurationId, thingId) {
-    if (this._thingIdentifierMapping.has(`${taskConfigurationId}-${thingId}`)) {
+  getThingByThingIdentifier(task, thingId) {
+    if (this._thingIdentifierMapping.has(`${task}-${thingId}`)) {
       const deferred = this._$q.defer();
-      deferred.resolve(this._thingIdentifierMapping.get(`${taskConfigurationId}-${thingId}`));
+      deferred.resolve(this._thingIdentifierMapping.get(`${task}-${thingId}`));
 
       return deferred.promise;
     }
 
-    return this._labelStructureDataService.getRequirementsFile(taskConfigurationId).then(file => {
-      const thing = this._getThingByThingIdentifier(file, thingId);
-      this._thingIdentifierMapping.set(`${taskConfigurationId}-${thingId}`, thing);
+    return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId).then(type => {
+      switch (type) {
+        case 'requirements':
+          return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId).then(file => {
+            const thing = this._getThingByThingIdentifier(file, thingId);
+            this._thingIdentifierMapping.set(`${task.id}-${thingId}`, thing);
 
-      return thing;
+            return thing;
+          });
+        case 'simple':
+        case 'legacy':
+          return this.getDrawableThings(task).then(drawableThings => {
+            return drawableThings[0];
+          });
+      }
+
     });
   }
 

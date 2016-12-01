@@ -294,7 +294,7 @@ class TaskController {
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
       this.labelStructureData = null;
       if (newShape !== oldShape && newShape !== null) {
-        this._labelStructureService.getThingByThingIdentifier(this.task.taskConfigurationId, newShape.labeledThingInFrame.identifierName).then(thing => {
+        this._labelStructureService.getThingByThingIdentifier(this.task, newShape.labeledThingInFrame.identifierName).then(thing => {
           this.selectedThing = thing;
           this.selectedDrawingTool = thing.shape;
         });
@@ -430,7 +430,6 @@ class TaskController {
       }
     });
   }
-
 
   /**
    * Load the {@link LabeledFrame} structure for the given frame
