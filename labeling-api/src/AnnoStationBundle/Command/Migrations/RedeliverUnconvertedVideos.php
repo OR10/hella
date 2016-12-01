@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command\Migrations;
+namespace AnnoStationBundle\Command\Migrations;
 
 use AppBundle\Model;
 use AppBundle\Database\Facade;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
-use AppBundle\Command;
+use AnnoStationBundle\Command;
 
 class RedeliverUnconvertedVideos extends Command\Base
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AnnoStationBundle\Command;
 
 use AppBundle\Model;
 use Doctrine\CouchDB;

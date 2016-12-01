@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Command\Migrations;
+namespace AnnoStationBundle\Command\Migrations;
 
-use AppBundle\Command;
+use AnnoStationBundle\Command;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use Symfony\Component\Console;

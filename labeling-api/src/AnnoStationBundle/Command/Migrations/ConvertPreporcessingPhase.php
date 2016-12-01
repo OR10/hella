@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command\Migrations;
+namespace AnnoStationBundle\Command\Migrations;
 
 use AppBundle\Model;
 use AppBundle\Database\Facade;
@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output;
 use Doctrine\ORM;
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console\Helper\ProgressBar;
-use AppBundle\Command;
+use AnnoStationBundle\Command;
 
 class ConvertPreporcessingPhase extends Command\Base
 {

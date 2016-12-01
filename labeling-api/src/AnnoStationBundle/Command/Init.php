@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AnnoStationBundle\Command;
 
 use AnnoStationBundle\Service;
 use AppBundle\Database\Facade;
