@@ -6,7 +6,7 @@ use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AppBundle\Model\TaskExporter\Kitti;
-use AppBundle\Service\TaskExporter;
+use AnnoStationBundle\Service\TaskExporter;
 use AppBundle\Tests;
 
 class KittiTest extends Tests\KernelTestCase

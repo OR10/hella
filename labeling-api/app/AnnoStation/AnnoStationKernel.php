@@ -14,9 +14,7 @@ class AnnoStationKernel extends Kernel
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new AppBundle\AppBundle(),
-            new AnnoStationBundle\AnnoStationBundle(),
-            new \FOS\UserBundle\FOSUserBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Doctrine\Bundle\CouchDBBundle\DoctrineCouchDBBundle(),
             new FOS\RestBundle\FOSRestBundle(),
@@ -24,6 +22,10 @@ class AnnoStationKernel extends Kernel
             new Oneup\FlysystemBundle\OneupFlysystemBundle(),
             new Snc\RedisBundle\SncRedisBundle(),
             new Liip\MonitorBundle\LiipMonitorBundle(),
+
+            new AppBundle\AppBundle(),
+            new Hagl\WorkerPoolBundle\HaglWorkerPoolBundle(),
+            new AnnoStationBundle\AnnoStationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

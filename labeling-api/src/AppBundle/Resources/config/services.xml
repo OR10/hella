@@ -9,11 +9,8 @@
         <import resource="services/event_listeners.xml"/>
         <import resource="services/controller.xml"/>
         <import resource="services/database_facades.xml"/>
-        <import resource="services/interpolation_algorithms.xml"/>
         <import resource="services/param_converters.xml"/>
         <import resource="services/voters.xml"/>
-        <import resource="services/worker.xml"/>
-        <import resource="services/monitoring.xml"/>
         <import resource="services/helper.xml"/>
     </imports>
 
@@ -48,19 +45,6 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
-        <service id="annostation.labeling_api.service.video.meta_data_reader" class="AppBundle\Service\Video\MetaDataReader">
-            <argument>%ffprobe_executable%</argument>
-        </service>
-
-        <service id="annostation.labeling_api.service.frame_cdn.flysystem" class="AppBundle\Service\FrameCdn\Flysystem">
-            <argument>%frame_cdn_base_url%</argument>
-            <argument type="service" id="oneup_flysystem.frame_cdn_filesystem" />
-        </service>
-
-        <service id="annostation.labeling_api.service.video_cdn.flysystem" class="AppBundle\Service\VideoCdn\Flysystem">
-            <argument type="service" id="oneup_flysystem.video_cdn_filesystem" />
-        </service>
-
         <!--
           - Default frame_cdn implementation is the flysystem one
           - It may be overridden through the parameters.yml for different systems
@@ -75,97 +59,10 @@
         <service id="annostation.labeling_api.service.video_cdn.selected-alias"
                  alias="annostation.labeling_api.service.video_cdn.flysystem"/>
 
-        <service id="annostation.labeling_api.service.video.video_frame_splitter" class="AppBundle\Service\Video\VideoFrameSplitter">
-            <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias" />
-            <argument>%ffmpeg_executable%</argument>
-            <argument type="service" id="oneup_flysystem.cache_filesystem"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.task_read_only_decider" class="AppBundle\Service\TaskReadOnlyDecider">
-            <argument type="service" id="annostation.labeling_api.database.facade.user" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-        </service>
-
-        <service id="annostation.labeling_api.service.video_importer" class="AppBundle\Service\VideoImporter">
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader"/>
-            <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter"/>
-            <argument type="service" id="annostation.labeling_api.service.label_structure"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <argument type="service" id="annostation.labeling_api.service.calibration_file_converter"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.calibration_file_converter" class="AppBundle\Service\CalibrationFileConverter">
-        </service>
-
-        <service id="annostation.labeling_api.service.matrix_projection" class="AppBundle\Service\MatrixProjection">
-        </service>
-
-        <service id="annostation.labeling_api.service.depth_buffer" class="AppBundle\Service\DepthBuffer">
-            <argument type="service" id="annostation.labeling_api.service.matrix_projection" />
-        </service>
-
-        <service id="annostation.labeling_api.service.label_structure" class="AppBundle\Service\LabelStructure">
-        </service>
-
         <service id="annostation.labeling_api.authentication_handler" class="AppBundle\AuthenticationHandler">
             <argument>targetUrl</argument>
             <argument>/labeling</argument>
             <argument>/login</argument>
-        </service>
-
-        <service id="annostation.labeling_api.service.task_exporter.kitti" class="AppBundle\Service\TaskExporter\Kitti">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
-        </service>
-
-        <service id="annostation.labeling_api.service.exporter.legacy_project_to_csv" class="AppBundle\Service\Exporter\LegacyProjectToCsv">
-            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
-            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data" />
-            <argument type="service" id="annostation.labeling_api.database.facade.exporter" />
-        </service>
-
-        <service id="annostation.labeling_api.service.exporter.generic_xml_project_to_csv" class="AppBundle\Service\Exporter\GenericXmlProjectToCsv">
-            <argument type="service" id="annostation.labeling_api.database.facade.exporter" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.service.column_group_factory" />
-            <argument type="service" id="annostation.labeling_api.service.shape_columns_factory" />
-            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory" />
-            <argument type="service" id="annostation.labeling_api.service.class_columns_factory" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
-            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
-            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data" />
-        </service>
-
-        <service id="annostation.labeling_api.service.label_importer.csv" class="AppBundle\Service\LabelImporter\Csv">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.service.task_incomplete" />
-        </service>
-
-        <service id="annostation.labeling_api.service.report" class="AppBundle\Service\Report">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <argument type="service" id="annostation.labeling_api.database.facade.video" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.report" />
-            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation" />
         </service>
 
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger">
@@ -187,47 +84,6 @@
             <argument type="service" id="annostation.labeling_api.vendor.logger" />
         </service>
 
-        <service id="annostation.labeling_api.service.amqp_pool_config" class="AppBundle\Service\AmqpPoolConfig">
-            <argument>%rabbitmq_host%</argument>
-            <argument>%rabbitmq_port%</argument>
-            <argument>%rabbitmq_vhost%</argument>
-            <argument>%rabbitmq_user%</argument>
-            <argument>%rabbitmq_password%</argument>
-            <argument>%rabbitmq_use_dead_letter_exchange%</argument>
-            <argument>%rabbitmq_use_alternate_exchange%</argument>
-            <property name="workerAlternateExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
-            <property name="workerDeadLetterExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
-            <property name="rescheduleQueue">%worker_pool.queue_prefix%worker.reschedule</property>
-            <property name="workerMainExchange">%worker_pool.queue_prefix%worker.main.exchange</property>
-            <property name="workerHighPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.high_prio</property>
-            <property name="workerNormalPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.normal_prio</property>
-            <property name="workerLowPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.low_prio</property>
-        </service>
-
-        <service id="annostation.labeling_api.service.interpolation" class="AppBundle\Service\Interpolation">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.status" />
-        </service>
-
-        <service id="annostation.labeling_api.view.serialization_listener"
-                 class="AppBundle\Service\View\LabelingTaskSerializationSubscriber">
-            <tag name="jms_serializer.event_subscriber"/>
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="annostation.labeling_api.service.task_read_only_decider"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.task_incomplete" class="AppBundle\Service\TaskIncomplete">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration" />
-            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory" />
-        </service>
-
-        <service id="annostation.labeling_api.service.ghost_classes_propagation" class="AppBundle\Service\GhostClassesPropagation">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-        </service>
-
         <service id="annostation.labeling_api.security.api_key_user_provider" class="AppBundle\Security\ApiKeyUserProvider">
             <argument type="service" id="annostation.labeling_api.database.facade.user" />
         </service>
@@ -237,45 +93,6 @@
 
         <service id="annostation.labeling_api.security.user_provider" class="AppBundle\Security\UserProvider" public="true">
             <argument type="service" id="fos_user.user_manager" />
-        </service>
-
-        <service id="annostation.labeling_api.service.authentication.user_permissions" class="AppBundle\Service\Authentication\UserPermissions">
-            <argument type="service" id="security.token_storage" />
-        </service>
-
-        <service id="annostation.labeling_api.service.authorization"
-                 class="AppBundle\Service\Authorization">
-            <argument type="service" id="security.authorization_checker"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.xml_validator.schema.simple_xml_label_config" class="AppBundle\Service\XmlValidator\Schema\SimpleXmlLabelConfig">
-        </service>
-        <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_label_config" class="AppBundle\Service\XmlValidator\Schema\RequirementsXmlLabelConfig">
-        </service>
-
-        <service id="annostation.labeling_api.service.simple_xml_validator" class="AppBundle\Service\XmlValidator">
-            <argument type="service" id="annostation.labeling_api.service.xml_validator.schema.simple_xml_label_config" />
-        </service>
-        <service id="annostation.labeling_api.service.requirements_xml_validator" class="AppBundle\Service\XmlValidator">
-            <argument type="service" id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_label_config" />
-        </service>
-
-        <service id="annostation.labeling_api.service.task_configuration_xml_converter_factory"
-                 class="AppBundle\Service\TaskConfigurationXmlConverterFactory">
-        </service>
-
-        <service id="annostation.labeling_api.service.labeling_task_iterator_factory"
-                 class="AppBundle\Service\LabelingTaskIteratorFactory">
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-        </service>
-
-        <service id="annostation.labeling_api.service.labeled_thing_in_frame_iterator_factory"
-                 class="AppBundle\Service\LabeledThingInFrameIteratorFactory">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-        </service>
-
-        <service id="annostation.labeling_api.service.column_group_factory"
-                 class="AppBundle\Service\ColumnGroupFactory">
         </service>
 
         <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"
@@ -292,41 +109,6 @@
                  class="AppBundle\Helper\Export\ShapeColumns\Cuboid"
                  public="false">
             <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
-        </service>
-
-        <service id="annostation.labeling_api.service.shape_columns_factory"
-                 class="AppBundle\Service\ShapeColumnsFactory">
-            <argument type="collection">
-                <argument type="service"
-                          key="rectangle"
-                          id="annostation.labeling_api.helper.export.shape_columns.rectangle"/>
-                <argument type="service"
-                          key="pedestrian"
-                          id="annostation.labeling_api.helper.export.shape_columns.pedestrian"/>
-                <argument type="service"
-                          key="cuboid"
-                          id="annostation.labeling_api.helper.export.shape_columns.cuboid"/>
-            </argument>
-        </service>
-
-        <service id="annostation.labeling_api.service.class_columns_factory"
-                 class="AppBundle\Service\ClassColumnsFactory">
-        </service>
-
-        <service id="annostation.labeling_api.service.task_creator" class="AppBundle\Service\TaskCreator">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.service.label_structure"/>
-            <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
-            <argument type="service" id="annostation.labeling_api.vendor.logger"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.couch_db_update_conflict_retry" class="AppBundle\Service\CouchDbUpdateConflictRetry">
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
-        </service>
-        <service id="annostation.labeling_api.service.logger_factory" class="AppBundle\Service\LoggerFactory">
         </service>
     </services>
 </container>

@@ -4,7 +4,7 @@ namespace AppBundle\Tests\Service;
 
 use AppBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 use FOS\UserBundle\Util;
 
