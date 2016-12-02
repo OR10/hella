@@ -1,14 +1,22 @@
 class LabelStructureService {
   /**
    * @param {$q} $q
+   * @param {AbortablePromiseFactory} abortablePromise
    * @param {LabelStructureDataService} labelStructureDataService
    */
-  constructor($q, labelStructureDataService) {
+  constructor($q, abortablePromise, labelStructureDataService) {
     /**
      * @type {$q}
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromise = abortablePromise;
+
     /**
      * @type {LabelStructureDataService}
      * @private
@@ -40,11 +48,11 @@ class LabelStructureService {
    * @return {AbortablePromise<{structure, annotation}>}
    */
   getLabelStructure(task, thingIdentifier = null) {
-    if (this._labelStructureMapping.has(`${task.id}-${thingIdentifier}`)) {
-      const deferred = this._$q.defer();
-      deferred.resolve(this._labelStructureMapping.get(`${task.id}-${thingIdentifier}`));
+    const cacheKey = `${task.id}-${thingIdentifier}`;
 
-      return deferred.promise;
+    if (this._labelStructureMapping.has(cacheKey)) {
+      const labelStructure = this._labelStructureMapping.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(labelStructure));
     }
 
     return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId).then(type => {
@@ -71,11 +79,10 @@ class LabelStructureService {
    * @return {AbortablePromise<[{id, tool, name}]>}
    */
   getDrawableThings(task) {
-    if (this._drawableThingsMapping.has(task.id)) {
-      const deferred = this._$q.defer();
-      deferred.resolve(this._drawableThingsMapping.get(task.id));
-
-      return deferred.promise;
+    const cacheKey = task.id;
+    if (this._drawableThingsMapping.has(cacheKey)) {
+      const drawableThings = this._drawableThingsMapping.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(drawableThings));
     }
 
     return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId).then(type => {
@@ -114,15 +121,14 @@ class LabelStructureService {
 
   /**
    * @param {string} task
-   * @param {string} thingId
+   * @param {string} thingIdentifier
    * @return {AbortablePromise<{id, shape, tool}>}
    */
-  getThingByThingIdentifier(task, thingId) {
-    if (this._thingIdentifierMapping.has(`${task}-${thingId}`)) {
-      const deferred = this._$q.defer();
-      deferred.resolve(this._thingIdentifierMapping.get(`${task}-${thingId}`));
-
-      return deferred.promise;
+  getThingByThingIdentifier(task, thingIdentifier) {
+    const cacheKey = `${task}-${thingIdentifier}`;
+    if (this._thingIdentifierMapping.has(cacheKey)) {
+      const thing = this._thingIdentifierMapping.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(thing));
     }
 
     return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId).then(type => {
@@ -204,6 +210,10 @@ class LabelStructureService {
   }
 }
 
-LabelStructureService.$inject = ['$q', 'labelStructureDataService'];
+LabelStructureService.$inject = [
+  '$q',
+  'abortablePromiseFactory',
+  'labelStructureDataService'
+];
 
 export default LabelStructureService;
