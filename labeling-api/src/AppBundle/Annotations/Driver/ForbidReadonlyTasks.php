@@ -9,8 +9,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\HttpKernel\Exception;
 use AppBundle\Annotations;
 use AppBundle\Model;
-use AppBundle\Service;
-use AppBundle\Controller\CustomException;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Controller\CustomException;
 
 class ForbidReadonlyTasks
 {

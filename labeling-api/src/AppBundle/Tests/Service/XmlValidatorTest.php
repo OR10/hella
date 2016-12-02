@@ -2,7 +2,7 @@
 
 namespace AppBundle\Tests\Service;
 
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use AppBundle\Tests;
 
 class XmlValidator extends Tests\KernelTestCase

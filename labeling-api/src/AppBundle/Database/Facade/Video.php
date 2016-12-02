@@ -3,7 +3,7 @@ namespace AppBundle\Database\Facade;
 
 use AppBundle\Database\Facade\CouchDb as CouchDbBase;
 use AppBundle\Model;
-use AppBundle\Service;
+use AnnoStationBundle\Service;
 use Doctrine\ODM\CouchDB;
 use League\Flysystem;
 

@@ -3,7 +3,7 @@
 namespace AppBundle\Annotations\Driver;
 
 use AppBundle\Annotations;
-use AppBundle\Service\Authentication\UserPermissions;
+use AnnoStationBundle\Service\Authentication\UserPermissions;
 use Symfony\Component\HttpKernel\Event;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

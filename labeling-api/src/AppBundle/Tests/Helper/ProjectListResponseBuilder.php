@@ -4,7 +4,7 @@ namespace AppBundle\Tests\Helper;
 
 use AppBundle\Model;
 use AppBundle\Model\Project;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 
 class ProjectListResponseBuilder
 {

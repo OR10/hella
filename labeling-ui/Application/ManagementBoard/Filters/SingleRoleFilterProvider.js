@@ -11,6 +11,8 @@ function SingleRoleFilterProvider() {
         return 'ROLE_LABELER';
       case roles.indexOf('ROLE_CLIENT') !== -1:
         return 'ROLE_CLIENT';
+      case roles.indexOf('ROLE_OBSERVER') !== -1:
+        return 'ROLE_OBSERVER';
       default:
         throw new Error(`Unknown Role setup for user: ${roles.toString()}`);
     }
