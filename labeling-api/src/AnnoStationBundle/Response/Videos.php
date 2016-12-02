@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Response;
+namespace AnnoStationBundle\Response;
 
 use AppBundle\Model;
 use AppBundle\Database\Facade;

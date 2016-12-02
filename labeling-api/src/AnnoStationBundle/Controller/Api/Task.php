@@ -7,7 +7,7 @@ use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 use AnnoStationBundle\Service;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
