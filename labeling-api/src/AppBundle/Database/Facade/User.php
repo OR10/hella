@@ -1,5 +1,5 @@
 <?php
-namespace AnnoStationBundle\Database\Facade;
+namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
 use Doctrine\ORM;

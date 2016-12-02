@@ -3,6 +3,7 @@
 namespace AppBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
@@ -108,7 +109,7 @@ class AttentionTest extends Tests\WebTestCase
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
         /** @var Facade\LabelingGroup $labelingGroup */
         $labelingGroup = $this->getAnnostationService('database.facade.labeling_group');
-        /** @var Facade\User $userFacade */
+        /** @var AppFacade\User $userFacade */
         $userFacade = $this->getAnnostationService('database.facade.user');
 
         $labelerUser        = $userFacade->updateUser(Helper\UserBuilder::createDefaultLabeler()->build());

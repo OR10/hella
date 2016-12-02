@@ -2,7 +2,7 @@
 
 namespace AppBundle\Request\ParamConverter;
 
-use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade;
 use AppBundle\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 

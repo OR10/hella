@@ -6,6 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
@@ -28,7 +29,7 @@ class Timer extends Controller\Base
     private $labelingTaskFacade;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -44,13 +45,13 @@ class Timer extends Controller\Base
 
     /**
      * @param Facade\LabelingTask           $labelingTaskFacade
-     * @param Facade\User                   $userFacade
+     * @param AppFacade\User                $userFacade
      * @param Storage\TokenStorageInterface $tokenStorage
      * @param Service\Authorization         $authorizationService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Storage\TokenStorageInterface $tokenStorage,
         Service\Authorization $authorizationService
     ) {

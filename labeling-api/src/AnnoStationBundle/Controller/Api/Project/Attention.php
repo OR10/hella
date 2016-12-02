@@ -7,6 +7,7 @@ use AppBundle\Annotations\ForbidReadonlyTasks;
 use AppBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -33,7 +34,7 @@ class Attention extends Controller\Base
     private $videoFacade;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -45,7 +46,7 @@ class Attention extends Controller\Base
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade
     ) {
         $this->labelingTaskFacade = $labelingTaskFacade;

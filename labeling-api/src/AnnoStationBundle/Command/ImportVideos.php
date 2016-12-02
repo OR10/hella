@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Command;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AnnoStationBundle\Service;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
@@ -16,7 +17,7 @@ class ImportVideos extends Base
     private $videoImporterService;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -34,13 +35,13 @@ class ImportVideos extends Base
      * @param Facade\Project        $projectFacade
      * @param Service\VideoImporter $videoImporterService
      * @param Service\TaskCreator   $taskCreator
-     * @param Facade\User           $userFacade
+     * @param AppFacade\User        $userFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
         Service\VideoImporter $videoImporterService,
         Service\TaskCreator $taskCreator,
-        Facade\User $userFacade
+        AppFacade\User $userFacade
     ) {
         parent::__construct();
         $this->videoImporterService = $videoImporterService;

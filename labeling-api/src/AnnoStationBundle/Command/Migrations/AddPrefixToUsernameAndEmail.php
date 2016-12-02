@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Command\Migrations;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Doctrine\ORM;

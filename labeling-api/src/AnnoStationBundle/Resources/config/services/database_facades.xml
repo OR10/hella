@@ -4,12 +4,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="annostation.labeling_api.database.facade.user" class="AnnoStationBundle\Database\Facade\User">
-            <argument type="service" id="fos_user.user_manager" />
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
-            <argument type="service" id="security.token_storage" />
-        </service>
-
         <service id="annostation.labeling_api.database.facade.video" class="AnnoStationBundle\Database\Facade\Video">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <argument type="service" id="oneup_flysystem.cache_filesystem" />

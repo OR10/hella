@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Command;
 
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\CouchDB;
@@ -39,7 +40,7 @@ class Init extends Base
     private $userPassword;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -75,7 +76,7 @@ class Init extends Base
      * @param                                              $userPassword
      * @param                                              $cacheDir
      * @param                                              $frameCdnDir
-     * @param Facade\User                                  $userFacade
+     * @param AppFacade\User                               $userFacade
      * @param Facade\Project                               $projectFacade
      * @param Facade\LabelingGroup                         $labelingGroupFacade
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
@@ -89,7 +90,7 @@ class Init extends Base
         $userPassword,
         $cacheDir,
         $frameCdnDir,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,

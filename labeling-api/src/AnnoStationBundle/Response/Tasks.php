@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Response;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 
 class Tasks
 {
@@ -23,14 +24,14 @@ class Tasks
     /**
      * @param Model\LabelingTask[] $labelingTasks
      * @param Facade\Video         $videoFacade
-     * @param Facade\User          $userFacade
+     * @param AppFacade\User       $userFacade
      * @param Facade\Project       $projectFacade
      * @param                      $numberOfTotalDocuments
      */
     public function __construct(
         $labelingTasks,
         Facade\Video $videoFacade,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         $numberOfTotalDocuments
     ) {

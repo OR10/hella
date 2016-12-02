@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Command;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -17,15 +18,15 @@ class AddDefaultProjectUserId extends Base
     private $projectFacade;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
     /**
      * @param Facade\Project $projectFacade
-     * @param Facade\User    $userFacade
+     * @param AppFacade\User $userFacade
      */
-    public function __construct(Facade\Project $projectFacade, Facade\User $userFacade)
+    public function __construct(Facade\Project $projectFacade, AppFacade\User $userFacade)
     {
         parent::__construct();
         $this->projectFacade = $projectFacade;

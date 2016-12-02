@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 
 /**
  * This service is used by the read only precondition annotation.
@@ -13,7 +14,7 @@ use AnnoStationBundle\Database\Facade;
 class TaskReadOnlyDecider
 {
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
     /**
@@ -24,10 +25,10 @@ class TaskReadOnlyDecider
     /**
      * TaskReadOnlyDecider constructor.
      *
-     * @param Facade\User         $userFacade
+     * @param AppFacade\User      $userFacade
      * @param Facade\LabelingTask $labelingTaskFacade
      */
-    public function __construct(Facade\User $userFacade, Facade\LabelingTask $labelingTaskFacade)
+    public function __construct(AppFacade\User $userFacade, Facade\LabelingTask $labelingTaskFacade)
     {
         $this->userFacade         = $userFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;

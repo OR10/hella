@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Controller\Api;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Response;
@@ -39,7 +40,7 @@ class Task extends Controller\Base
     private $frameCdn;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -62,7 +63,7 @@ class Task extends Controller\Base
      * @param Facade\Video          $videoFacade
      * @param Facade\LabelingTask   $labelingTaskFacade
      * @param Service\FrameCdn      $frameCdn
-     * @param Facade\User           $userFacade
+     * @param AppFacade\User        $userFacade
      * @param Facade\Project        $projectFacade
      * @param Storage\TokenStorage  $tokenStorage
      * @param Service\Authorization $authorizationService
@@ -71,7 +72,7 @@ class Task extends Controller\Base
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\FrameCdn $frameCdn,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService
