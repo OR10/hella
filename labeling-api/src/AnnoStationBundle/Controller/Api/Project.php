@@ -13,7 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 
 /**
  * @Rest\Prefix("/api/project")
