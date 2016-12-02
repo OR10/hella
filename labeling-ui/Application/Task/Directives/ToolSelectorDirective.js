@@ -10,6 +10,7 @@ class ToolSelectorDirective {
       drawableThings: '=',
       selectedThing: '=',
       selectedDrawingTool: '=',
+      selectedPaperShape: '=',
     };
 
     this.template = toolSelectorTemplate;
