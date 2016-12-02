@@ -61,7 +61,7 @@ class LabelStructureService {
           case 'requirements':
             return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId)
               .then(requirementsFile => {
-                const structure = this._getLabelStructureByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier);
+                const structure = this._getLabelStructureAndAnnotationByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier);
                 this._labelStructureMapping.set(cacheKey, structure);
                 return structure;
               });
@@ -129,7 +129,7 @@ class LabelStructureService {
   }
 
   /**
-   * @param {string} task
+   * @param {Task} task
    * @param {string} thingIdentifier
    * @return {AbortablePromise<{id, shape, tool}>}
    */
@@ -161,6 +161,12 @@ class LabelStructureService {
       });
   }
 
+  /**
+   * @param {{data: string}} requirementsFile
+   * @param {string} thingIdentifier
+   * @returns {{id: *, shape: *, name: *}}
+   * @private
+   */
   _getThingByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(requirementsFile.data, 'application/xml');
@@ -178,7 +184,7 @@ class LabelStructureService {
   }
 
   /**
-   * @param {File} requirementsFile
+   * @param {{data:string}} requirementsFile
    * @private
    */
   _getDrawableThingsFromRequirementsFile(requirementsFile) {
@@ -196,7 +202,13 @@ class LabelStructureService {
     });
   }
 
-  _getLabelStructureByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier) {
+  /**
+   * @param {{data: string}}requirementsFile
+   * @param {string} thingIdentifier
+   * @returns {{structure: {name: string, children: Array}, annotation: {}}}
+   * @private
+   */
+  _getLabelStructureAndAnnotationByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(requirementsFile.data, 'application/xml');
 
