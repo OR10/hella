@@ -12,7 +12,7 @@ use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 
 /**
  * @Rest\Prefix("/api/project")
