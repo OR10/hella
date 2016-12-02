@@ -55,22 +55,27 @@ class LabelStructureService {
       return this._abortablePromise(this._$q.resolve(labelStructure));
     }
 
-    return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId).then(type => {
-      switch (type) {
-        case 'requirements':
-          return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId).then(file => {
-            return this._getLabelStructureFromRequirementsFile(file, thingIdentifier);
-          });
-        case 'simple':
-        case 'legacy':
-          return this._labelStructureDataService.getLabelStructure(task.id).then(structure => {
-            this._labelStructureMapping.set(task.id, structure);
-            return structure;
-          });
-        default:
-          throw new Error(`Unknown task structure type "${type}"`);
-      }
-    });
+    return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId)
+      .then(type => {
+        switch (type) {
+          case 'requirements':
+            return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId)
+              .then(requirementsFile => {
+                const structure = this._getLabelStructureByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier);
+                this._labelStructureMapping.set(cacheKey, structure);
+                return structure;
+              });
+          case 'simple':
+          case 'legacy':
+            return this._labelStructureDataService.getLabelStructure(task.id)
+              .then(structure => {
+                this._labelStructureMapping.set(cacheKey, structure);
+                return structure;
+              });
+          default:
+            throw new Error(`Unknown task structure type "${type}"`);
+        }
+      });
   }
 
 
