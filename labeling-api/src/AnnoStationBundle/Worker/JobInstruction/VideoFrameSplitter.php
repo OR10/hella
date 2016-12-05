@@ -79,7 +79,7 @@ class VideoFrameSplitter extends JobInstruction
      *
      * @todo throw better exceptions
      */
-    public function run(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
+    protected function runJob(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
         $tmpFile = tempnam($this->cacheDir, 'source_video');
 
