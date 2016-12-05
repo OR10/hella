@@ -38,7 +38,7 @@ class KittiExporter extends WorkerPoolBundle\JobInstruction
      * @param Job                        $job
      * @param Logger\Facade\LoggerFacade $logger
      */
-    public function run(Job $job, Logger\Facade\LoggerFacade $logger)
+    protected function runJob(Job $job, Logger\Facade\LoggerFacade $logger)
     {
         /** @var Jobs\KittiExporter $job */
         $task = $this->labelingTaskFacade->find($job->getTaskId());
