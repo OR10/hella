@@ -4,7 +4,8 @@ namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -23,7 +24,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 class Users extends Controller\Base
 {
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -34,10 +35,10 @@ class Users extends Controller\Base
 
     /**
      * Users constructor.
-     * @param Facade\User $userFacade
+     * @param AppFacade\User $userFacade
      * @param Storage\TokenStorage $tokenStorage
      */
-    public function __construct(Facade\User $userFacade, Storage\TokenStorage $tokenStorage)
+    public function __construct(AppFacade\User $userFacade, Storage\TokenStorage $tokenStorage)
     {
         $this->userFacade   = $userFacade;
         $this->tokenStorage = $tokenStorage;
