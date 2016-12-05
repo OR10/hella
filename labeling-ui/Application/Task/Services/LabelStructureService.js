@@ -157,6 +157,8 @@ class LabelStructureService {
                 const legacyThing = drawableThings[0];
                 return legacyThing;
               });
+          default:
+            throw new Error(`Unknown Task structure type: ${type}.`);
         }
       });
   }
@@ -200,6 +202,8 @@ class LabelStructureService {
         name: thingElement.attributes.name.value,
       };
     });
+
+    return drawableThings;
   }
 
   /**
@@ -247,7 +251,7 @@ class LabelStructureService {
 LabelStructureService.$inject = [
   '$q',
   'abortablePromiseFactory',
-  'labelStructureDataService'
+  'labelStructureDataService',
 ];
 
 export default LabelStructureService;

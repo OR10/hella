@@ -57,7 +57,7 @@ class LabelStructureDataService {
     if (taskConfigurationId === null) {
       const type = 'legacy';
       this._taskStructureTypeMapping.set(taskConfigurationId, type);
-      return this._abortablePromise(this._$q.resolve(type))
+      return this._abortablePromise(this._$q.resolve(type));
     }
 
     return this._labelStructureGateway.getTaskStructureData(taskConfigurationId)
@@ -108,7 +108,7 @@ class LabelStructureDataService {
 LabelStructureDataService.$inject = [
   '$q',
   'abortablePromiseFactory',
-  'labelStructureGateway'
+  'labelStructureGateway',
 ];
 
 export default LabelStructureDataService;
