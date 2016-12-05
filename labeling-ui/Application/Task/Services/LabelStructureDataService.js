@@ -2,14 +2,22 @@ class LabelStructureDataService {
 
   /**
    * @param {$q} $q
+   * @param {AbortablePromiseFactory} abortablePromise
    * @param {LabelStructureGateway} labelStructureGateway
    */
-  constructor($q, labelStructureGateway) {
+  constructor($q, abortablePromise, labelStructureGateway) {
     /**
      * @type {$q}
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromise = abortablePromise;
+
     /**
      * @type {LabelStructureGateway}
      * @private
@@ -40,26 +48,24 @@ class LabelStructureDataService {
    * @return {AbortablePromise<string>}
    */
   getTaskStructureType(taskConfigurationId) {
-    if (this._taskStructureTypeMapping.has(taskConfigurationId)) {
-      const deferred = this._$q.defer();
-      deferred.resolve(this._taskStructureTypeMapping.get(taskConfigurationId));
-
-      return deferred.promise;
+    const cacheKey = taskConfigurationId;
+    if (this._taskStructureTypeMapping.has(cacheKey)) {
+      const type = this._taskStructureTypeMapping.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(type));
     }
 
     if (taskConfigurationId === null) {
-      const deferred = this._$q.defer();
-      this._taskStructureTypeMapping.set(taskConfigurationId, 'legacy');
-      deferred.resolve('legacy');
-
-      return deferred.promise;
+      const type = 'legacy';
+      this._taskStructureTypeMapping.set(taskConfigurationId, type);
+      return this._abortablePromise(this._$q.resolve(type));
     }
 
-    return this._labelStructureGateway.getTaskStructureData(taskConfigurationId).then(taskStructureData => {
-      this._taskStructureTypeMapping.set(taskConfigurationId, taskStructureData.type);
-
-      return taskStructureData.type;
-    });
+    return this._labelStructureGateway.getTaskStructureData(taskConfigurationId)
+      .then(taskStructureData => {
+        const type = taskStructureData.type;
+        this._taskStructureTypeMapping.set(cacheKey, type);
+        return type;
+      });
   }
 
   /**
@@ -67,40 +73,42 @@ class LabelStructureDataService {
    * @return {AbortablePromise<{structure, annotation}>}
    */
   getLabelStructure(taskId) {
-    if (this._labelStructureDataMapping.has(taskId)) {
-      const deferred = this._$q.defer();
-      deferred.resolve(this._labelStructureDataMapping.get(taskId));
-
-      return deferred.promise;
+    const cacheKey = taskId;
+    if (this._labelStructureDataMapping.has(cacheKey)) {
+      const labelStructure = this._labelStructureDataMapping.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(labelStructure));
     }
 
-    return this._labelStructureGateway.getLabelStructureData(taskId).then(labelStructureData => {
-      this._labelStructureDataMapping.set(taskId, labelStructureData);
-
-      return labelStructureData;
-    });
+    return this._labelStructureGateway.getLabelStructureData(taskId)
+      .then(labelStructureData => {
+        this._labelStructureDataMapping.set(cacheKey, labelStructureData);
+        return labelStructureData;
+      });
   }
 
   /**
-   * @param {string }taskConfigurationId
+   * @param {string} taskConfigurationId
    * @return {File}
    */
   getRequirementsFile(taskConfigurationId) {
-    if (this._requirementsFileMapping.has(taskConfigurationId)) {
-      const deferred = this._$q.defer();
-      deferred.resolve(this._requirementsFileMapping.get(taskConfigurationId));
-
-      return deferred.promise;
+    const cacheKey = taskConfigurationId;
+    if (this._requirementsFileMapping.has(cacheKey)) {
+      const requirementsFile = this._requirementsFileMapping.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(requirementsFile));
     }
 
-    return this._labelStructureGateway.getRequirementsFile(taskConfigurationId).then(file => {
-      this._requirementsFileMapping.set(taskConfigurationId, file);
-
-      return file;
-    });
+    return this._labelStructureGateway.getRequirementsFile(taskConfigurationId)
+      .then(requirementsFile => {
+        this._requirementsFileMapping.set(cacheKey, requirementsFile);
+        return requirementsFile;
+      });
   }
 }
 
-LabelStructureDataService.$inject = ['$q', 'labelStructureGateway'];
+LabelStructureDataService.$inject = [
+  '$q',
+  'abortablePromiseFactory',
+  'labelStructureGateway',
+];
 
 export default LabelStructureDataService;
