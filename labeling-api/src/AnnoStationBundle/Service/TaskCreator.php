@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Controller\Api\Project\Exception\Missing3dVideoCalibrationData;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use crosscan\Logger\Facade\LoggerFacade;

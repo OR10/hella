@@ -2,7 +2,7 @@
 
 namespace AppBundle\Tests\Controller\Api\Task;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;

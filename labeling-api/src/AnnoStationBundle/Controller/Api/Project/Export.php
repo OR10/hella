@@ -5,7 +5,7 @@ namespace AnnoStationBundle\Controller\Api\Project;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\View;

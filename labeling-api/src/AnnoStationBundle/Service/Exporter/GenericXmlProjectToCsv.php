@@ -3,7 +3,7 @@ namespace AnnoStationBundle\Service\Exporter;
 
 use AppBundle\Model;
 use AppBundle\Helper\Iterator;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Helper\Export;
 use AppBundle\Helper\Export\Column;
 use AnnoStationBundle\Service;

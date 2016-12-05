@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service\TaskExporter;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\TaskExporter;
 use AnnoStationBundle\Service;

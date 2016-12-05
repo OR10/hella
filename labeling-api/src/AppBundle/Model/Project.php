@@ -374,6 +374,16 @@ class Project
     }
 
     /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isLatestAssignedCoordinator(User $user)
+    {
+        return $this->getLatestAssignedCoordinatorUserId() === $user->getId();
+    }
+
+    /**
      * @param mixed $creationDate
      */
     public function setCreationDate($creationDate)
@@ -659,5 +669,27 @@ class Project
     public function isDeleted()
     {
         return $this->deleted;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(User $user)
+    {
+        if ($user->hasRole(User::ROLE_CLIENT) && $this->userId === $user->getId()) {
+            return true;
+        }
+
+        if ($user->hasRole(User::ROLE_LABEL_COORDINATOR) && $this->isLatestAssignedCoordinator($user)) {
+            return true;
+        }
+
+        if ($user->hasOneRoleOf([User::ROLE_ADMIN, User::ROLE_LABELER, User::ROLE_OBSERVER])) {
+            return true;
+        }
+
+        return false;
     }
 }

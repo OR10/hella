@@ -5,7 +5,8 @@ namespace AnnoStationBundle\Controller\Api;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Response;
@@ -28,7 +29,7 @@ class LabelingGroup extends Controller\Base
     private $labelingGroupFacade;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -40,12 +41,12 @@ class LabelingGroup extends Controller\Base
     /**
      * LabelingGroup constructor.
      * @param Facade\LabelingGroup $labelingGroupFacade
-     * @param Facade\User          $userFacade
+     * @param AppFacade\User       $userFacade
      * @param Storage\TokenStorage $tokenStorage
      */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Storage\TokenStorage $tokenStorage
     ) {
         $this->labelingGroupFacade = $labelingGroupFacade;

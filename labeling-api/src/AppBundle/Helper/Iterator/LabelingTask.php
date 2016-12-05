@@ -2,7 +2,7 @@
 namespace AppBundle\Helper\Iterator;
 
 use Traversable;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 
 class LabelingTask implements \IteratorAggregate
