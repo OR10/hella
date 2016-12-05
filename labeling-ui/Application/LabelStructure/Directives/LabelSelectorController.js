@@ -5,7 +5,7 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 /**
  * @property {string} labeledObjectType
  * @property {LabeledObject} labeledObject
- * @property {LabelStructure} structure
+ * @property {LegacyLabelStructureInterface} structure
  * @property {Object} annotation
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
  * @property {Task} task

@@ -3,19 +3,19 @@
  *
  * LabelStructure objects recursively define the hierarchy ans structure ob labels and label classes
  *
- * @interface LabelStructure
+ * @interface LegacyLabelStructureInterface
  **/
 
 /**
  * Uniquely identifying name of the Label
  *
- * @interface LabelStructure
+ * @interface LegacyLabelStructureInterface
  * @property {string} name
  **/
 
 /**
  * Optional array of children this Label provides
  *
- * @interface LabelStructure
+ * @interface LegacyLabelStructureInterface
  * @property {Array<LabelStructure>|undefined} children
  **/
