@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Service;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Helper;
 
 class TaskIncomplete
 {
@@ -56,6 +57,10 @@ class TaskIncomplete
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
     }
 
+    /**
+     * @param Model\LabeledThing        $labeledThing
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     */
     public function revalideLabeledThingInFrameIncompleteStatus(
         Model\LabeledThing $labeledThing,
         Model\LabeledThingInFrame $labeledThingInFrame
@@ -88,6 +93,11 @@ class TaskIncomplete
         $this->labeledThingInFrameFacade->saveAll($updatedLabeledThingInFrame);
     }
 
+    /**
+     * @param Model\LabeledThing $labeledThing
+     *
+     * @return bool
+     */
     public function isLabeledThingIncomplete(Model\LabeledThing $labeledThing)
     {
         $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
@@ -110,30 +120,8 @@ class TaskIncomplete
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThing  = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
-        $task          = $this->labelingTaskFacade->find($labeledThing->getTaskId());
-
-        $taskConfiguration = null;
-        if ($task->getTaskConfigurationId() !== null) {
-            $taskConfiguration = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
-        }
-
-        if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
-            $xmlData                       = $taskConfiguration->getRawData();
-            $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter(
-                $xmlData,
-                Model\TaskConfiguration\RequirementsXml::TYPE
-            );
-            $rootStructure                 = $taskConfigurationXmlConverter->getLabelStructure(
-                $labeledThingInFrame->getIdentifierName()
-            );
-        } else {
-            $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
-        }
-
-        if (empty($rootStructure['children'])) {
-            return false;
-        }
+        $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
+        $task         = $this->labelingTaskFacade->find($labeledThing->getTaskId());
 
         if (empty($labeledThingInFrame->getClasses())) {
             $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
@@ -144,10 +132,27 @@ class TaskIncomplete
             }
         }
 
-        $classes = $labeledThingInFrame->getClasses();
+        $taskConfiguration = null;
+        if ($task->getTaskConfigurationId() === null) {
+            $helper = new Helper\IncompleteClassesChecker\Legacy($this->labelingTaskFacade->getLabelStructure($task));
+        } else {
+            $taskConfiguration = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+            switch ($taskConfiguration->getType()) {
+                case Model\TaskConfiguration\SimpleXml::TYPE:
+                    $helper = new Helper\IncompleteClassesChecker\SimpleXml($taskConfiguration->getRawData());
+                    break;
+                case Model\TaskConfiguration\RequirementsXml::TYPE:
+                    $helper = new Helper\IncompleteClassesChecker\RequirementsXml($taskConfiguration->getRawData());
+                    break;
+                default:
+                    $helper = new Helper\IncompleteClassesChecker\Legacy(
+                        $this->labelingTaskFacade->getLabelStructure($task)
+                    );
+            }
+        }
 
-        foreach ($rootStructure['children'] as $child) {
-            if (!$this->searchStructureForClasses($classes, $child)) {
+        foreach ($helper->getStructure($labeledThingInFrame) as $child) {
+            if (!$this->searchStructureForClasses($labeledThingInFrame->getClasses(), $child)) {
                 return true;
             }
         }
@@ -167,7 +172,7 @@ class TaskIncomplete
         $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
 
         foreach ($rootStructure['children'] as $child) {
-            if (!$this->searchStructureForClasses($classes, $child)) {
+            if (!$this->searchStructureForClasses($classes, [$child])) {
                 return true;
             }
         }
@@ -176,25 +181,26 @@ class TaskIncomplete
     }
 
     /**
-     * @param     $classes
-     * @param     $structure
-     * @param int $level
+     * @param $classes
+     * @param $structure
      *
      * @return bool
      */
-    private function searchStructureForClasses($classes, $structure, $level = 0)
+    private function searchStructureForClasses($classes, $structure)
     {
-        if ($level === 0 || in_array($structure['name'], $classes)) {
-            if (isset($structure['children'])) {
-                foreach ($structure['children'] as $child) {
-                    if ($this->searchStructureForClasses($classes, $child, $level + 1)) {
-                        return true;
+        foreach($structure as $value) {
+            if (in_array($value['name'], $classes)) {
+                if (isset($value['children'])) {
+                    foreach ($value['children'] as $child) {
+                        if ($this->searchStructureForClasses($classes, $child)) {
+                            return true;
+                        }
                     }
-                }
 
-                return false;
-            } else {
-                return true;
+                    return false;
+                } else {
+                    return true;
+                }
             }
         }
 
