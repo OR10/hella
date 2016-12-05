@@ -11,7 +11,7 @@ export default class LinearLabelStructureVisitor {
    *
    * @param {LegacyLabelStructureInterface} node
    * @param {Object<string,string>|Array<string>} context
-   * @returns {AnnotatedLabelStructure}
+   * @returns {LegacyLabelStructureInterface}
    */
   visit(node, context) {
     let contextArray;
