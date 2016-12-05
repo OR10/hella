@@ -11,7 +11,7 @@ import SelectedLabelObjectLabelStructureVisitor from './Services/SelectedLabelOb
  *
  * @extends Module
  */
-class LabelStructure extends Module {
+class LabelStructureModule extends Module {
   /**
    * @inheritDoc
    */
@@ -28,4 +28,4 @@ class LabelStructure extends Module {
   }
 }
 
-export default LabelStructure;
+export default LabelStructureModule;
