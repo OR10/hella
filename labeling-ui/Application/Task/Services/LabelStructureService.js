@@ -139,8 +139,9 @@ class LabelStructureService {
           return this.getDrawableThings(task).then(drawableThings => {
             return drawableThings[0];
           });
+        default:
+          throw new Error(`Unknown task type: ${type}`);
       }
-
     });
   }
 
