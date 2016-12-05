@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Service;

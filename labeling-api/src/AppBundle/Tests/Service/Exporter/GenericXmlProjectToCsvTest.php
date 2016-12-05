@@ -3,7 +3,7 @@
 namespace AppBundle\Tests\Helper\Export;
 
 use AnnoStationBundle\Service;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Tests;
 use AppBundle\Model;
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.database.facade.video" class="AnnoStationBundle\Database\Facade\Video">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+            <argument type="service" id="oneup_flysystem.cache_filesystem" />
+            <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.prelabeled_frame" class="AnnoStationBundle\Database\Facade\PrelabeledFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.project" class="AnnoStationBundle\Database\Facade\Project">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeling_task" class="AnnoStationBundle\Database\Facade\LabelingTask">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_thing_in_frame" class="AnnoStationBundle\Database\Facade\LabeledThingInFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_thing" class="AnnoStationBundle\Database\Facade\LabeledThing">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_frame" class="AnnoStationBundle\Database\Facade\LabeledFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.task_export" class="AnnoStationBundle\Database\Facade\TaskExport">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.project_export" class="AnnoStationBundle\Database\Facade\ProjectExport">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.status" class="AnnoStationBundle\Database\Facade\Status">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeling_group" class="AnnoStationBundle\Database\Facade\LabelingGroup">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.report" class="AnnoStationBundle\Database\Facade\Report">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.task_configuration" class="AnnoStationBundle\Database\Facade\TaskConfiguration">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.exporter" class="AnnoStationBundle\Database\Facade\Exporter">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.calibration_data" class="AnnoStationBundle\Database\Facade\CalibrationData">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+    </services>
+</container>

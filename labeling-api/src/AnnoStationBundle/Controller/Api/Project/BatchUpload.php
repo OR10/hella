@@ -6,7 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AppBundle\View;

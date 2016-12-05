@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Controller\Api\Task;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use Doctrine\ODM\CouchDB;
 use JMS\Serializer;
 use Symfony\Component\HttpFoundation;

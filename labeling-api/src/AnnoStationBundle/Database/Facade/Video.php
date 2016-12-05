@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Database\Facade;
+namespace AnnoStationBundle\Database\Facade;
 
 use AppBundle\Database\Facade\CouchDb as CouchDbBase;
 use AppBundle\Model;

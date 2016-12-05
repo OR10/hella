@@ -68,7 +68,7 @@ class LabelStructureService {
 
   /**
    * @param {Task} task
-   * @return {AbortablePromise<[{id, tool, name}]>}
+   * @return {AbortablePromise<Array.<{id, tool, name}>>}
    */
   getDrawableThings(task) {
     if (this._drawableThingsMapping.has(task.id)) {
@@ -139,8 +139,9 @@ class LabelStructureService {
           return this.getDrawableThings(task).then(drawableThings => {
             return drawableThings[0];
           });
+        default:
+          throw new Error(`Unknown task type: ${type}`);
       }
-
     });
   }
 

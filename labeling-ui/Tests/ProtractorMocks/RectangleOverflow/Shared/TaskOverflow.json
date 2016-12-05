@@ -182,6 +182,7 @@
             "labeling": "in_progress"
           },
           "taskType": "object-labeling",
+          "taskConfigurationId": null,
           "userId": null,
           "videoId": "VIDEOID-VIDEOID"
         },

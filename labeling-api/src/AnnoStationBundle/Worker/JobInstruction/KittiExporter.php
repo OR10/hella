@@ -5,7 +5,7 @@ namespace AnnoStationBundle\Worker\JobInstruction;
 use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;

@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Command;
 
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Helper\ProgressIndicator;
 use Symfony\Component\Console\Input;

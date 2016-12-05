@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Tests\Helper\Iterator;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Helper\Iterator;
 use AppBundle\Model;
 use AppBundle\Tests;

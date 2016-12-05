@@ -11,6 +11,10 @@ class ToolSelectorController {
   setCurrentThing(thing) {
     this.selectedThing = thing;
     this.selectedDrawingTool = thing.shape;
+
+    if (this.selectedPaperShape.labeledThingInFrame.identifierName !== this.selectedThing.id) {
+      this.selectedPaperShape = null;
+    }
   }
 }
 
