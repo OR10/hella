@@ -101,13 +101,14 @@ class Task extends Controller\Base
         $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
         $taskPhase  = $request->query->get('phase');
         $taskStatus = $request->query->get('taskStatus');
+        /** @var Model\User $user */
         $user       = $this->tokenStorage->getToken()->getUser();
 
         $project = null;
         if ($request->query->has('project')) {
             $project = $this->projectFacade->find($request->query->get('project'));
 
-            if (!$this->userFacade->hasPermissionForProject($user, $project)) {
+            if (!$project->isAccessibleBy($user)) {
                 throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
             }
         }
@@ -142,9 +143,7 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
-                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator()
-                    || $this->userFacade->isAdmin()
-                ) {
+                if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN])) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_DONE,
                         $project,
@@ -156,14 +155,13 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
-                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator()
-                    || $this->userFacade->isAdmin()
-                ) {
+                if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN])) {
                     $tasks                  = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
                         $project,
                         $offset,
                         $limit
                     )->toArray();
+
                     $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
                         $project
                     );
@@ -212,7 +210,7 @@ class Task extends Controller\Base
 
         $project = $this->projectFacade->find($task->getProjectId());
         $user    = $this->tokenStorage->getToken()->getUser();
-        if (!$this->userFacade->hasPermissionForProject($user, $project)) {
+        if (!$project->isAccessibleBy($user)) {
             throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
         }
 
