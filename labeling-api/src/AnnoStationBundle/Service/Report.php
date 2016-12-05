@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 
 class Report

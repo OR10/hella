@@ -2,12 +2,12 @@
 
 namespace AppBundle\Tests\Service;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AppBundle\Tests;
-use AppBundle\Worker\JobInstruction;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\JobInstruction;
+use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
 
 class VideoImporterTest extends Tests\KernelTestCase
@@ -36,16 +36,6 @@ class VideoImporterTest extends Tests\KernelTestCase
      * @var WorkerPool\Facade
      */
     private $workerPoolFacade;
-
-    /**
-     * @var Service\Video\MetaDataReader
-     */
-    private $metaDataReader;
-
-    /**
-     * @var Service\Video\VideoFrameSplitter
-     */
-    private $videoFrameSplitter;
 
     /**
      * @var JobInstruction\VideoFrameSplitter

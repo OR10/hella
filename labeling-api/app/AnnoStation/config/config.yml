@@ -5,3 +5,8 @@ imports:
 
 parameters:
   redirectAfterLogin: /labeling
+
+hagl_worker_pool:
+   logger: annostation.labeling_api.vendor.logger
+   config: annostation.labeling_api.service.amqp_pool_config
+   facade: annostation.labeling_api.vendor.worker_pool.amqp

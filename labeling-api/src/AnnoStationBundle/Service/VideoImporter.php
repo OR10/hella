@@ -4,9 +4,9 @@ namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
 use Doctrine\ODM\CouchDB;
 

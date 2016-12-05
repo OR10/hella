@@ -20,6 +20,10 @@ class annostation_base(
       include ::annostation_base::jenkins_slave
     }
 
+    exec { 'locale-gen de_DE.UTF-8':
+      path => ['/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+    }
+
     file { "/etc/apt/apt.conf.d/99auth":
       owner     => root,
       group     => root,

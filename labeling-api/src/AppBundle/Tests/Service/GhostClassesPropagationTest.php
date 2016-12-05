@@ -3,7 +3,7 @@
 namespace AppBundle\Tests\Service;
 
 use AppBundle\Tests\KernelTestCase;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 
@@ -58,7 +58,7 @@ class GhostClassesPropagationTest extends KernelTestCase
 
         $container = $this->getContainer();
 
-        $this->labeledThingInFrameFacadeMock = $this->getMockBuilder('AppBundle\Database\Facade\LabeledThingInFrame')
+        $this->labeledThingInFrameFacadeMock = $this->getMockBuilder('AnnoStationBundle\Database\Facade\LabeledThingInFrame')
             ->disableOriginalConstructor()
             ->getMock();
 

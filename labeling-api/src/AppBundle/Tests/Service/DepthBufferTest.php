@@ -2,7 +2,7 @@
 
 namespace AppBundle\Tests\Service;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AnnoStationBundle\Service;

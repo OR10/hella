@@ -2,12 +2,12 @@
 
 namespace AppBundle\Tests\Service;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AppBundle\Tests;
 use AppBundle\Worker\JobInstruction;
-use AppBundle\Worker\Jobs;
+use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
 
 class CalibrationFileConverterTest extends Tests\KernelTestCase

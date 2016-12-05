@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Tests;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;

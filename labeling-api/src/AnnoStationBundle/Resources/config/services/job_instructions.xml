@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.worker.job_instruction.video" class="AnnoStationBundle\Worker\JobInstruction\VideoFrameSplitter">
+            <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter" />
+            <argument type="service" id="annostation.labeling_api.database.facade.video" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="oneup_flysystem.cache_filesystem" />
+            <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />
+            <argument>%cache_dir%</argument>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.kitti_exporter" class="AnnoStationBundle\Worker\JobInstruction\KittiExporter">
+            <argument type="service" id="annostation.labeling_api.service.task_exporter.kitti" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.interpolation" class="AnnoStationBundle\Worker\JobInstruction\Interpolation">
+            <argument type="service" id="annostation.labeling_api.service.interpolation" />
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.labeling_api.database.facade.status" />
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.report" class="AnnoStationBundle\Worker\JobInstruction\Report">
+            <argument type="service" id="annostation.labeling_api.service.report" />
+            <argument type="service" id="annostation.labeling_api.database.facade.report" />
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.legacy_project_to_csv_exporter" class="AnnoStationBundle\Worker\JobInstruction\LegacyProjectToCsvExporter">
+            <argument type="service" id="annostation.labeling_api.service.exporter.legacy_project_to_csv" />
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.generic_xml_project_to_csv_exporter" class="AnnoStationBundle\Worker\JobInstruction\GenericXmlProjectToCsvExporter">
+            <argument type="service" id="annostation.labeling_api.service.exporter.generic_xml_project_to_csv" />
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+    </services>
+</container>
