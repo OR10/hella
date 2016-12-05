@@ -42,9 +42,11 @@ class User
     }
 
     /**
-     * @param $username
-     * @param $email
-     * @param $password
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @param bool   $enabled
+     * @param bool   $locked
      *
      * @return FosUserModel\UserInterface
      */
@@ -214,60 +216,5 @@ class User
         $image = reset($userProfileImage);
 
         return $image->getRawData();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLabeler()
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        return $user->hasRole(Model\User::ROLE_LABELER);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLabelCoordinator()
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        return $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAdmin()
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        return $user->hasRole(Model\User::ROLE_ADMIN);
-    }
-
-    /**
-     * @param Model\User    $user
-     * @param Model\Project $project
-     *
-     * @return bool
-     */
-    public function hasPermissionForProject(Model\User $user, Model\Project $project)
-    {
-        if ($user->hasRole(Model\User::ROLE_CLIENT) && $project->getUserId() === $user->getId()) {
-            return true;
-        }
-
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)
-            && $project->getLatestAssignedCoordinatorUserId() === $user->getId()
-        ) {
-            return true;
-        }
-
-        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER])) {
-            return true;
-        }
-
-        return false;
     }
 }

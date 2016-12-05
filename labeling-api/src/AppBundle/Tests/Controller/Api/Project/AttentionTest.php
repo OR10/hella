@@ -2,7 +2,8 @@
 
 namespace AppBundle\Tests\Controller\Api\Project;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
@@ -68,7 +69,7 @@ class AttentionTest extends Tests\WebTestCase
         $videoFacade = $this->getAnnostationService('database.facade.video');
         /** @var Facade\Project $projectFacade */
         $projectFacade = $this->getAnnostationService('database.facade.project');
-        /** @var Facade\User $userFacade */
+        /** @var AppFacade\User $userFacade */
         $userFacade               = $this->getAnnostationService('database.facade.user');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
 

@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\View;
 use AppBundle\Model;
 use FOS\RestBundle\Controller\Annotations as Rest;

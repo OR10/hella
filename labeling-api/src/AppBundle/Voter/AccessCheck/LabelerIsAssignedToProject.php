@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Voter\AccessCheck;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Voter;
 

@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Controller\Api\Project;
 use AppBundle\Tests;
 use AppBundle\Tests\Controller;
 use AppBundle\Model;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
 use FOS\UserBundle\Util;
 

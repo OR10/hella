@@ -5,7 +5,8 @@ namespace AnnoStationBundle\Controller\Api;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
@@ -49,7 +50,7 @@ class Project extends Controller\Base
     private $tokenStorage;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -63,7 +64,7 @@ class Project extends Controller\Base
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Storage\TokenStorage       $tokenStorage
-     * @param Facade\User                $userFacade
+     * @param AppFacade\User             $userFacade
      * @param Service\Authorization      $authorizationService
      */
     public function __construct(
@@ -71,7 +72,7 @@ class Project extends Controller\Base
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Service\Authorization $authorizationService
     ) {
         $this->projectFacade             = $projectFacade;
