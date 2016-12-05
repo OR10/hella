@@ -68,7 +68,7 @@ class LabelStructureService {
 
   /**
    * @param {Task} task
-   * @return {AbortablePromise<[{id, tool, name}]>}
+   * @return {AbortablePromise<Array.<{id, tool, name}>>}
    */
   getDrawableThings(task) {
     if (this._drawableThingsMapping.has(task.id)) {
