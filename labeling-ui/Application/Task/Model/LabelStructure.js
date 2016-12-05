@@ -42,7 +42,7 @@ class LabelStructure {
   getThingById(identifier) {
     const things = this.getThings();
     if (!things.has(identifier)) {
-      throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`)
+      throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`);
     }
 
     return things.get(identifier);
