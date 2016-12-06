@@ -1,12 +1,13 @@
 <?php
 
-namespace AppBundle\Request\ParamConverter;
+namespace AnnoStationBundle\Request\ParamConverter;
 
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
+use AppBundle\Request\ParamConverter;
 
-class ProjectExport extends LookupBase
+class ProjectExport extends ParamConverter\LookupBase
 {
     /**
      * @var Facade\Project
