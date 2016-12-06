@@ -122,7 +122,8 @@ class TaskIncompleteTest extends Tests\KernelTestCase
 
         $labeledThingInFrame->setClasses(
             [
-                'u-turn',
+                'speed-sign',
+                '30',
             ]
         );
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
