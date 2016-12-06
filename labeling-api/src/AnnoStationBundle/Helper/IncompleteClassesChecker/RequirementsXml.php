@@ -64,14 +64,15 @@ class RequirementsXml extends Helper\ClassesStructure
     {
         $values = [];
         foreach ($children as $value) {
-            if ($xpath->query('x:class', $value)->length > 0) {
-                $values[] = [
-                    'name' => $value->getAttribute('id'),
-                    'children' => $this->getChildrenStructure($xpath, $xpath->query('x:class', $value))
-                ];
-
-            }else{
-                $values[] = ['name' => $value->getAttribute('id')];
+            foreach ($xpath->query('x:value', $value) as $valueNode) {
+                if ($xpath->query('x:class', $valueNode)->length > 0) {
+                    $values[] = [
+                        'name'     => $valueNode->getAttribute('id'),
+                        'children' => $this->getChildrenStructure($xpath, $xpath->query('x:class', $valueNode))
+                    ];
+                } else {
+                    $values[] = ['name' => $valueNode->getAttribute('id')];
+                }
             }
         }
 
