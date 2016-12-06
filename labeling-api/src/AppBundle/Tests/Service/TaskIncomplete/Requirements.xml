@@ -9,7 +9,15 @@
     <thing id="sign" shape="rectangle" name="Traffic Sign">
         <class id="sign-type" name="Sign type">
             <value id="u-turn" name="U-Turn"/>
-            <value id="speed-sign" name="Speed sign" />
+            <value id="speed-sign" name="Speed sign">
+                <class id="speed" name="Speed">
+                    <value id="10" name="10" />
+                    <value id="20" name="20" />
+                    <value id="30" name="30" />
+                    <value id="40" name="40" />
+                    <value id="50" name="50" />
+                </class>
+            </value>
         </class>
     </thing>
 
