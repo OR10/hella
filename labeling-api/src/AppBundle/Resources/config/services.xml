@@ -93,20 +93,5 @@
             <argument type="service" id="fos_user.user_manager" />
         </service>
 
-        <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"
-                 class="AppBundle\Helper\Export\ShapeColumns\Pedestrian"
-                 public="false">
-        </service>
-
-        <service id="annostation.labeling_api.helper.export.shape_columns.rectangle"
-                 class="AppBundle\Helper\Export\ShapeColumns\Rectangle"
-                 public="false">
-        </service>
-
-        <service id="annostation.labeling_api.helper.export.shape_columns.cuboid"
-                 class="AppBundle\Helper\Export\ShapeColumns\Cuboid"
-                 public="false">
-            <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
-        </service>
     </services>
 </container>

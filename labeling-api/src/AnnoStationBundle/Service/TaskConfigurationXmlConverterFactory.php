@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Helper;
+use AnnoStationBundle\Helper;
 use AppBundle\Model;
 
 class TaskConfigurationXmlConverterFactory
