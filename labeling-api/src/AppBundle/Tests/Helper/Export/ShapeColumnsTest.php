@@ -6,8 +6,8 @@ use AnnoStationBundle\Service;
 use AppBundle\Tests;
 use AppBundle\Helper;
 use AppBundle\Model;
-use AppBundle\Helper\Export;
-use AppBundle\Helper\Export\Column;
+use AnnoStationBundle\Helper\Export;
+use AnnoStationBundle\Helper\Export\Column;
 
 class ShapeColumnsTest extends Tests\CouchDbTestCase
 {

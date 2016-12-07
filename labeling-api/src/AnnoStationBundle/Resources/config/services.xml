@@ -7,9 +7,11 @@
         <import resource="services/controller.xml"/>
         <import resource="services/commands.xml"/>
         <import resource="services/database_facades.xml"/>
+        <import resource="services/helper.xml"/>
         <import resource="services/interpolation_algorithms.xml"/>
         <import resource="services/job_instructions.xml"/>
         <import resource="services/monitoring.xml"/>
+        <import resource="services/param_converters.xml"/>
     </imports>
 
     <services>
