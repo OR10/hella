@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Helper\Export\Column;
+use AnnoStationBundle\Helper\Export\Column;
 
 class ClassColumnsFactory
 {

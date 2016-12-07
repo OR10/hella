@@ -3,7 +3,7 @@ namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Helper\Iterator;
+use AnnoStationBundle\Helper\Iterator;
 
 class LabeledThingInFrameIteratorFactory
 {

@@ -2,7 +2,7 @@
 namespace AppBundle\Tests\Helper\Iterator;
 
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Helper\Iterator;
+use AnnoStationBundle\Helper\Iterator;
 use AppBundle\Model;
 use AppBundle\Tests;
 use FOS\UserBundle\Util\UserManipulator;
