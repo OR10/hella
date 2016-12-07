@@ -103,11 +103,13 @@ class TaskConfiguration extends Controller\Base
      */
     public function getTaskConfigurationAction(Model\TaskConfiguration $taskConfiguration)
     {
+        /**
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $taskConfiguration->getUserId()) {
             throw new BadRequestHttpException();
         }
+        */
 
         return new View\View(
             new Response\SimpleTaskConfiguration($taskConfiguration)
