@@ -3,7 +3,7 @@ namespace AppBundle\Tests\Voter\AccessCheckVoter;
 
 use AppBundle\Model;
 use AppBundle\Tests;
-use AppBundle\Voter\AccessCheckVoter;
+use AnnoStationBundle\Voter\AccessCheckVoter;
 use FOS\UserBundle\Util\UserManipulator;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

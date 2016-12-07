@@ -4,12 +4,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="annostation.labeling_api.voter.access_check.project"
-                 class="AppBundle\Voter\AccessCheckVoter\Project">
+                 class="AnnoStationBundle\Voter\AccessCheckVoter\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group" />
             <tag name="security.voter"/>
         </service>
         <service id="annostation.labeling_api.voter.access_check.task"
-                 class="AppBundle\Voter\AccessCheckVoter\Task">
+                 class="AnnoStationBundle\Voter\AccessCheckVoter\Task">
             <argument type="service" id="annostation.labeling_api.voter.access_check.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <tag name="security.voter"/>

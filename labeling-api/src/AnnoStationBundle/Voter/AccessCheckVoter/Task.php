@@ -1,9 +1,10 @@
 <?php
-namespace AppBundle\Voter\AccessCheckVoter;
+namespace AnnoStationBundle\Voter\AccessCheckVoter;
 
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Voter\AccessCheck;
-use AppBundle\Voter\AccessCheckVoter;
+use AnnoStationBundle\Voter\AccessCheck;
+use AnnoStationBundle\Voter\AccessCheckVoter;
+use AppBundle\Voter;
 use AppBundle\Model;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  * Therefore it should always be combined with a check regarding the corresponding project.
  * That is what AppBundle\Voter\AccessCheckVoter is for.
  */
-class Task extends AccessCheckVoter
+class Task extends Voter\AccessCheckVoter
 {
     const TASK_READ  = 'task.read';
     const TASK_WRITE = 'task.write';

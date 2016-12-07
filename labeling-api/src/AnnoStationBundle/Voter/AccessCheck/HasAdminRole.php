@@ -1,10 +1,10 @@
 <?php
-namespace AppBundle\Voter\AccessCheck;
+namespace AnnoStationBundle\Voter\AccessCheck;
 
 use AppBundle\Model;
 use AppBundle\Voter;
 
-class HasObserverRole extends Voter\AccessCheck
+class HasAdminRole extends Voter\AccessCheck
 {
     /**
      * @param Model\User $user
@@ -18,6 +18,6 @@ class HasObserverRole extends Voter\AccessCheck
             return false;
         }
 
-        return $user->hasRole(Model\User::ROLE_OBSERVER);
+        return $user->hasRole(Model\User::ROLE_ADMIN);
     }
 }
