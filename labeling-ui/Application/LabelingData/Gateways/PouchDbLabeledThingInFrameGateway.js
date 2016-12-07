@@ -12,9 +12,8 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {PouchDbLabeledThingGateway} pouchLabeledThingGateway
-   * @param {AbortablePromise} abortablePromise
    */
-  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, pouchLabeledThingGateway, abortablePromise) {
+  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway) {
     /**
      * @type {$q}
      * @private
@@ -55,13 +54,7 @@ class PouchDbLabeledThingInFrameGateway {
      * @type {PouchDbLabeledThingGateway}
      * @private
      */
-    this._pouchLabeledThingGateway = pouchLabeledThingGateway;
-
-    /**
-     * @type {AbortablePromise}
-     * @private
-     */
-    this._abortablePromise = abortablePromise;
+    this._labeledThingGateway = labeledThingGateway;
   }
 
   /**
@@ -131,7 +124,7 @@ class PouchDbLabeledThingInFrameGateway {
 
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    this._packagingExecutor.execute('labeledThingInFrame', () => {
+    return this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
         startkey,
         endkey,
@@ -167,24 +160,25 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<Array.<LabeledThingInFrame>>|Error}
    */
   getNextIncomplete(task, count = 1) { // eslint-disable-line no-unused-vars
-    return this._abortablePromise(this._$q.resolve([]));
+    return this._$q.resolve([]);
   }
 
   /**
    * Update the {@link LabeledThingInFrame} with the given `id`.
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {string} taskId
    *
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
-  saveLabeledThingInFrame(labeledThingInFrame) {
+  saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
     if (labeledThingInFrame.ghost === true) {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
 
-    const db = this._pouchDbContextService.provideContextForTaskId(labeledThingInFrame.task.id);
-    const document = this._couchDbModelSerializer.serialize(labeledThingInFrame);
-    this._injectRevisionOrFailSilently(document);
+    const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+    // const document = this._couchDbModelSerializer.serialize(labeledThingInFrame);
+    // this._injectRevisionOrFailSilently(document);
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
@@ -192,7 +186,6 @@ class PouchDbLabeledThingInFrameGateway {
       () => db.put(document)
     ).then(response => {
       this._revisionManager.extractRevision(response);
-
       return new LabeledThingInFrame(Object.assign({}, labeledThingInFrame.toJSON(), {task: labeledThingInFrame.labeledThing.task}));
     });
   }
@@ -205,8 +198,7 @@ PouchDbLabeledThingInFrameGateway.$inject = [
   'packagingExecutor',
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
-  'pouchLabeledThingGateway',
-  'abortablePromise',
+  'labeledThingGateway',
 ];
 
 export default PouchDbLabeledThingInFrameGateway;

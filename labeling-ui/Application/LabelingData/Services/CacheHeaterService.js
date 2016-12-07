@@ -7,7 +7,7 @@ class CacheHeaterService {
    * @param {Logger} logger
    * @param {FrameIndexService} frameIndexService
    */
-  constructor(labeledThingInFrameGateway,
+  constructor(featureFlags, labeledThingInFrameGateway,
               logger,
               frameIndexService) {
     /**
@@ -33,6 +33,12 @@ class CacheHeaterService {
      * @private
      */
     this._nextHeaters = new Map();
+
+    /**
+     * @type {object}
+     * @private
+     */
+    this._featureFlags = featureFlags;
   }
 
   /**
@@ -45,6 +51,10 @@ class CacheHeaterService {
    * @param {number} endIndex
    */
   heatLabeledThingInFrame(labeledThingInFrame, startIndex = null, endIndex = null) {
+    if (this._featureFlags.pouchdb === true) {
+      return;
+    }
+
     const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
     const {labeledThing, labeledThing: {task}} = labeledThingInFrame;
     const start = startIndex === null ? frameIndexLimits.lowerLimit : startIndex;
@@ -55,7 +65,7 @@ class CacheHeaterService {
     this._setHeater('labeledThingInFrame', labeledThingInFrame.labeledThing.id, () => {
       this._chunkRequests('labeledThingInFrame', start, end, (chunkedStart, chunkedEnd) =>
         this._labeledThingInFrameGateway.getLabeledThingInFrame(task, chunkedStart, labeledThing, 0, chunkedEnd - chunkedStart + 1)
-          .then(results => results.length)
+        .then(results => results.length)
       );
     });
   }
@@ -66,6 +76,10 @@ class CacheHeaterService {
    * @param {LabeledThing} labeledThing
    */
   stopHeatingLabeledThing(labeledThing) {
+    if (this._featureFlags.pouchdb === true) {
+      return;
+    }
+
     const heater = this._nextHeaters.get('labeledThingInFrame');
     if (heater && heater.id === labeledThing.id) {
       this._nextHeaters.delete('labeledThingInFrame');
@@ -87,6 +101,10 @@ class CacheHeaterService {
    * @param {number} endIndex
    */
   heatFrames(task, startIndex = null, endIndex = null) {
+    if (this._featureFlags.pouchdb === true) {
+      return;
+    }
+
     const frameIndexLimits = this._frameIndexService.getFrameIndexLimits();
     const start = startIndex === null ? frameIndexLimits.lowerLimit : startIndex;
     const end = endIndex === null ? frameIndexLimits.upperLimit : endIndex;
@@ -96,8 +114,8 @@ class CacheHeaterService {
     this._setHeater('frames', null, () => {
       this._chunkRequests('frames', start, end, (chunkedStart, chunkedEnd) =>
         this._labeledThingInFrameGateway.listLabeledThingInFrame(task, chunkedStart, 0, chunkedEnd - chunkedStart + 1)
-          // Always return the full frame number range, as their might be frame chunks without labeledThingsInFrame
-          .then(() => chunkedEnd - chunkedStart + 1)
+        // Always return the full frame number range, as their might be frame chunks without labeledThingsInFrame
+        .then(() => chunkedEnd - chunkedStart + 1)
       );
     });
   }
@@ -138,25 +156,25 @@ class CacheHeaterService {
       this._logger.log(`${CacheHeaterService.LOG_FACILITY}:chunk`, 'Heating cache chunk (%s): %d - %d (%d)', group, currentStart, currentEnd, currentEnd - currentStart + 1);
 
       chunkFn(currentStart, currentEnd)
-        .then(fetchedResults => {
-          if (fetchedResults === CacheHeaterService.CHUNK_SIZE && currentEnd < end) {
-            // Next chunk needed
-            currentStart += CacheHeaterService.CHUNK_SIZE;
-            requestAnimationFrame(() => {
-              const heater = this._nextHeaters.get(group);
-              if (!!heater && !!heater.heaterFn) {
-                heater.heaterFn();
-              }
-            });
-          } else {
-            this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Cache is warm %s (%d - %d) (%d)', group, start, end, end - start + 1);
-            this._nextHeaters.delete(group);
-          }
-        })
-        .catch(error => {
-          console.error(error); // eslint-disable-line no-console
+      .then(fetchedResults => {
+        if (fetchedResults === CacheHeaterService.CHUNK_SIZE && currentEnd < end) {
+          // Next chunk needed
+          currentStart += CacheHeaterService.CHUNK_SIZE;
+          requestAnimationFrame(() => {
+            const heater = this._nextHeaters.get(group);
+            if (!!heater && !!heater.heaterFn) {
+              heater.heaterFn();
+            }
+          });
+        } else {
+          this._logger.log(`${CacheHeaterService.LOG_FACILITY}:heat`, 'Cache is warm %s (%d - %d) (%d)', group, start, end, end - start + 1);
           this._nextHeaters.delete(group);
-        });
+        }
+      })
+      .catch(error => {
+        console.error(error); // eslint-disable-line no-console
+        this._nextHeaters.delete(group);
+      });
     };
 
     const heater = this._nextHeaters.get(group);
@@ -170,6 +188,7 @@ CacheHeaterService.LOG_FACILITY = 'cacheHeater';
 CacheHeaterService.CHUNK_SIZE = 60;
 
 CacheHeaterService.$inject = [
+  'featureFlags',
   'cachingLabeledThingInFrameGateway',
   'loggerService',
   'frameIndexService',

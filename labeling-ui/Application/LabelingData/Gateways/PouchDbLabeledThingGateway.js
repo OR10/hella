@@ -64,6 +64,7 @@ class PouchDbLabeledThingGateway {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const document = this._couchDbModelSerializer.serialize(labeledThing);
     let dbResponse;
+    let documentId;
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
@@ -71,9 +72,13 @@ class PouchDbLabeledThingGateway {
       this._injectRevisionOrFailSilently(document);
       return dbContext.put(document);
     })
-    .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
+    .then(dbResponse => {
+      documentId = dbResponse.id;
+      return this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext);
+    })
+    .then(() => dbContext.get(documentId))
     .then(dbDocument => {
-      this._revisionManager.extractRevision(response);
+      this._revisionManager.extractRevision(dbDocument);
       return this._couchDbModelDeserializer.deserializeLabeledThing(dbDocument, task);
     });
     return synchronizedDbPromise;
@@ -171,6 +176,7 @@ PouchDbLabeledThingGateway.$inject = [
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
   'revisionManager',
+  'pouchDbSyncManager',
 ];
 
 export default PouchDbLabeledThingGateway;

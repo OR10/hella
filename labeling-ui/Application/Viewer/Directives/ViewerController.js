@@ -1016,7 +1016,9 @@ class ViewerController {
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
-      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame))
+      .then((storedLabeledThing) => {
+        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame, storedLabeledThing.task.id);
+      })
       .catch(() => {
         this._modalService.info(
           {

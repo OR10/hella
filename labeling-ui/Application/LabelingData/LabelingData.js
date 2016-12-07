@@ -35,7 +35,7 @@ class LabelingData extends Module {
     this.module.service('cacheHeaterService', CacheHeaterService);
 
     if (featureFlags.pouchdb === true) {
-      // this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingFrameGateway);
+      this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
       this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
     }
   }
