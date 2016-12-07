@@ -1,18 +1,19 @@
 <?php
-namespace AppBundle\Voter\AccessCheckVoter;
+namespace AnnoStationBundle\Voter\AccessCheckVoter;
 
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Voter\AccessCheck;
+use AnnoStationBundle\Voter\AccessCheck;
+use AppBundle\Voter;
 use AppBundle\Voter\AccessCheckVoter;
 use AppBundle\Model;
 
-class Project extends AccessCheckVoter
+class Project extends Voter\AccessCheckVoter
 {
     const PROJECT_READ  = 'project.read';
     const PROJECT_WRITE = 'project.write';
 
     /**
-     * @var AccessCheck[]
+     * @var Voter\AccessCheck[]
      */
     private $checks;
 

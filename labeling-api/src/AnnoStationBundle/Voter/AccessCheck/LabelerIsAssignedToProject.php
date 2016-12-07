@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Voter\AccessCheck;
+namespace AnnoStationBundle\Voter\AccessCheck;
 
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
