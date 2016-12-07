@@ -3,7 +3,7 @@
 namespace AppBundle\Tests\Helper;
 
 use AppBundle\Tests;
-use AppBundle\Helper;
+use AnnoStationBundle\Helper;
 
 class TaskConfigurationXmlConverterTest extends Tests\KernelTestCase
 {
