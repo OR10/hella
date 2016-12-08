@@ -1,17 +1,17 @@
 <?php
 
-namespace AppBundle\Annotations;
+namespace AnnoStationBundle\Annotations;
 
 /**
  * @Annotation
  * @Target({"METHOD"})
  */
-class ForbidReadonlyTasks
+class CheckPermissions
 {
     /**
-     * @var string
+     * @var array
      */
-    private $taskPropertyName = 'task';
+    private $permissions = [];
 
     /**
      * @param $options
@@ -19,15 +19,15 @@ class ForbidReadonlyTasks
     public function __construct($options)
     {
         if (isset($options['value'])) {
-            $this->taskPropertyName = $options['value'];
+            $this->permissions = $options['value'];
         }
     }
 
     /**
      * @return string
      */
-    public function getTaskPropertyName()
+    public function getPermissions()
     {
-        return $this->taskPropertyName;
+        return $this->permissions;
     }
 }

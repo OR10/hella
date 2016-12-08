@@ -2,7 +2,7 @@
 namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Response;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;

@@ -28,20 +28,6 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
-        <service id="annostation.labeling_api.annotations.driver.forbid_readonly_tasks" class="AppBundle\Annotations\Driver\ForbidReadonlyTasks">
-            <argument type="service" id="annotation_reader" />
-            <argument type="service" id="session" />
-            <argument type="service" id="security.token_storage" />
-            <argument type="service" id="annostation.labeling_api.service.task_read_only_decider" />
-            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" priority="-256"/>
-        </service>
-
-        <service id="annostation.labeling_api.annotations.driver.check_permissions" class="AppBundle\Annotations\Driver\CheckPermissions">
-            <argument type="service" id="annotation_reader" />
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
-            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
-        </service>
-
         <!--
           - Default frame_cdn implementation is the flysystem one
           - It may be overridden through the parameters.yml for different systems
