@@ -30,7 +30,7 @@ class Header extends Module {
     this.module.service('timerGateway', TimerGateway);
 
     if (featureFlags.pouchdb === true) {
-      // this.module.service('timerGateway', PouchDbTimerGateway);
+      this.module.service('timerGateway', PouchDbTimerGateway);
     }
   }
 }

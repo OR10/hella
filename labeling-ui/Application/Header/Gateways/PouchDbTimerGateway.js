@@ -37,16 +37,22 @@ class PouchDbTimerGateway {
         include_docs: true,
         key: [taskId, userId],
       }))
-      .then(response => response.rows[0])
-      .then(timeDocument => {
-        if (typeof timeDocument !== 'object') {
-          throw new Error('Failed loading time');
-        }
-      });
+    .then((response) => {
+        debugger;
+        return response.rows[0];
+      },
+      (error) => {
+        debugger;
+      })
+    .then(timeDocument => {
+      if (typeof timeDocument !== 'object') {
+        throw new Error('Failed loading time');
+      }
+    });
   }
 
 
-/**
+  /**
    * Starts export for the given {@link Task} and export type
    *
    * @param {string} taskId
@@ -55,20 +61,17 @@ class PouchDbTimerGateway {
    * @returns {AbortablePromise<string|Error>}
    */
   updateTime(taskId, userId, time) {
-  // @TODO: Port PHP Logic
-  //    // if ($user !== $this->tokenStorage->getToken()->getUser()) {
-  //    throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
-  //   }
-  // if (($timeInSeconds = $request->request->get('time')) === null) {
-  //   throw new Exception\BadRequestHttpException('Missing time');
-  // }
-  //
-  // if (!is_int($timeInSeconds)) {
-  //   throw new Exception\BadRequestHttpException('Time must be an integer');
-  // }
-  //
-  // $this->documentManager->persist($taskTimer);
-  // $this->documentManager->flush();
+    const queueIdentifier = 'timer';
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this.getTime(taskId, userId)
+      .then(dbDocument => {
+        dbDocument.timeInSeconds.labeling = time;
+        return this._packagingExecutor.execute(queueIdentifier, () => {
+          this._injectRevisionOrFailSilently(dbDocument);
+          return dbContext.put(dbDocument);
+        });
+      });
   }
 }
 
