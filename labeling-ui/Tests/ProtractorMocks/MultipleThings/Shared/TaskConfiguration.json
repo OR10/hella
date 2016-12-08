@@ -1,0 +1,17 @@
+{
+  "request": {
+    "path": "/api/taskConfiguration/TASKCONFIGURATIONID-TASKCONFIGURATIONID",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "id": "TASKCONFIGURATIONID-TASKCONFIGURATIONID",
+        "name": "Test Taskconfiguration",
+        "filename": "requirements_test.xml",
+        "userId": "user-id-1",
+        "type": "requirements"
+      }
+    }
+  }
+}

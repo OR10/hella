@@ -32,4 +32,3 @@ class Starter extends Command
         return $command->run($input, $output);
     }
 }
-

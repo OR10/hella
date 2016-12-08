@@ -1,0 +1,41 @@
+<?php
+namespace AnnoStationBundle\Helper\Export\Column\LabeledFrame;
+
+use AnnoStationBundle\Helper\Export;
+use AnnoStationBundle\Helper\Export\Cell;
+use AppBundle\Model;
+
+class Uuid extends Export\Column
+{
+    public function createCell(
+        Model\Project $project,
+        Model\Video $video,
+        Model\LabelingTask $task,
+        Model\LabeledThingInFrame $labeledThingInFrame = null,
+        Model\LabeledFrame $labeledFrame = null,
+        Model\CalibrationData $calibrationData = null
+    ) {
+        return new Cell\LabeledFrame\Uuid($labeledFrame);
+    }
+
+    /**
+     * Return a string representation of the Header this column should have in an export
+     *
+     * @return string
+     */
+    public function getHeader()
+    {
+        return 'UUID';
+    }
+
+    /**
+     * Provide the default value which should be used for this column if a cell is unable to provide a value for the
+     * given data
+     *
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return '';
+    }
+}

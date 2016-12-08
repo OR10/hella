@@ -12,7 +12,7 @@ class ToolSelectorController {
     this.selectedThing = thing;
     this.selectedDrawingTool = thing.shape;
 
-    if (this.selectedPaperShape.labeledThingInFrame.identifierName !== this.selectedThing.id) {
+    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame.identifierName !== this.selectedThing.id) {
       this.selectedPaperShape = null;
     }
   }

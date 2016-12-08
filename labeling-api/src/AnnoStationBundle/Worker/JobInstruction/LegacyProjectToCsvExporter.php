@@ -27,7 +27,7 @@ class LegacyProjectToCsvExporter extends WorkerPoolBundle\JobInstruction
      * @param WorkerPool\Job             $job
      * @param Logger\Facade\LoggerFacade $logger
      */
-    public function run(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
+    protected function runJob(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
     {
         try {
             /** @var Jobs\LegacyProjectToCsvExporter $job */

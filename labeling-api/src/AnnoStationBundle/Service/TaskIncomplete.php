@@ -188,7 +188,7 @@ class TaskIncomplete
      */
     private function searchStructureForClasses($classes, $structure)
     {
-        foreach($structure as $value) {
+        foreach ($structure as $value) {
             if (in_array($value['name'], $classes)) {
                 if (isset($value['children'])) {
                     foreach ($value['children'] as $child) {

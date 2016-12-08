@@ -1,0 +1,144 @@
+{
+  "request": {
+    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
+    "namedParams": true,
+    "method": "PUT",
+    "data": {
+      "identifierName": "sign2",
+      "frameIndex": 0,
+      "incomplete": true,
+      "labeledThingId": "{{:labeledThingId}}",
+      "shapes": [
+        {
+          "id": "{{:shapeId}}",
+          "type": "cuboid3d",
+          "vehicleCoordinates": [
+            [
+              5.6887606010606,
+              2.7269280140474,
+              0.29140978843504
+            ],
+            [
+              6.5023310333566,
+              2.8699063570691,
+              0.29140978843504
+            ],
+            [
+              6.5023310333566,
+              2.8699063570691,
+              0
+            ],
+            [
+              5.6887606010606,
+              2.7269280140474,
+              0
+            ],
+            [
+              5.6663949873768,
+              2.8708123061909,
+              0.29140978843504
+            ],
+            [
+              6.4799654196728,
+              3.0137906492126,
+              0.29140978843504
+            ],
+            [
+              6.4799654196728,
+              3.0137906492126,
+              0
+            ],
+            [
+              5.6663949873768,
+              2.8708123061909,
+              0
+            ]
+          ],
+          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+        }
+      ],
+      "classes": [],
+      "id": "{{:labeledThingInFrameDataId}}",
+      "ghostClasses": null
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThing": {
+          "id": "{{labeledThingId}}",
+          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+          "frameRange": {
+            "startFrameNumber": 1,
+            "endFrameNumber": 1
+          },
+          "classes": [
+            "pedestrian"
+          ],
+          "taskId": "TASKID-TASKID",
+          "incomplete": true,
+          "lineColor": "6"
+        },
+        "labeledThingInFrame": {
+          "id": "{{labeledThingInFrameId}}",
+          "rev": "2-b65227715b51dadd97f8521646e88a22",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "{{shapeId}}",
+              "type": "cuboid3d",
+              "vehicleCoordinates": [
+                [
+                  5.6887606010606,
+                  2.7269280140474,
+                  0.29140978843504
+                ],
+                [
+                  6.5023310333566,
+                  2.8699063570691,
+                  0.29140978843504
+                ],
+                [
+                  6.5023310333566,
+                  2.8699063570691,
+                  0
+                ],
+                [
+                  5.6887606010606,
+                  2.7269280140474,
+                  0
+                ],
+                [
+                  5.6663949873768,
+                  2.8708123061909,
+                  0.29140978843504
+                ],
+                [
+                  6.4799654196728,
+                  3.0137906492126,
+                  0.29140978843504
+                ],
+                [
+                  6.4799654196728,
+                  3.0137906492126,
+                  0
+                ],
+                [
+                  5.6663949873768,
+                  2.8708123061909,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": false
+        }
+      }
+    }
+  }
+}

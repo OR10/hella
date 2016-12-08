@@ -187,6 +187,7 @@
           "status": {
             "labeling": "in_progress"
           },
+          "taskConfigurationId": null,
           "taskType": "object-labeling",
           "userId": null,
           "videoId": "VIDEOID-VIDEOID"

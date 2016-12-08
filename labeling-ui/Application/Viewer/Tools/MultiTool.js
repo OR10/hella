@@ -509,14 +509,15 @@ export default class MultiTool extends Tool {
     if (event.shiftkey) {
       return;
     }
-
     if (!this._enabled) {
       return;
     }
     if (!this._toolWorking) {
       this._handleMouseUpCursor(event.point);
     }
-    this._activeTool.onMouseUp(event);
+    if (this._activeTool) {
+      this._activeTool.onMouseUp(event);
+    }
   }
 
   /**

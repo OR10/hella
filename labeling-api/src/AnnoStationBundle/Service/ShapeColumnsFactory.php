@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Helper\Export;
+use AnnoStationBundle\Helper\Export;
 
 class ShapeColumnsFactory
 {

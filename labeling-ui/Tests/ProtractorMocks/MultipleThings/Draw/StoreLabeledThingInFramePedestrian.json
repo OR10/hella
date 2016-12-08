@@ -1,0 +1,74 @@
+{
+  "request": {
+    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
+    "namedParams": true,
+    "method": "PUT",
+    "data": {
+      "frameIndex": 0,
+      "incomplete": true,
+      "identifierName": "sign1",
+      "labeledThingId": "{{:labeledThingId}}",
+      "shapes": [
+        {
+          "id": "{{:shapeId}}",
+          "topCenter": {
+            "x": 100,
+            "y": 10
+          },
+          "type": "pedestrian",
+          "bottomCenter": {
+            "x": 100,
+            "y": 40
+          },
+          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+        }
+      ],
+      "classes": [],
+      "id": "{{:labeledThingInFrameDataId}}",
+      "ghostClasses": null
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThing": {
+          "id": "{{labeledThingId}}",
+          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+          "frameRange": {
+            "startFrameNumber": 1,
+            "endFrameNumber": 1
+          },
+          "classes": [],
+          "taskId": "TASKID-TASKID",
+          "incomplete": true,
+          "lineColor": "6"
+        },
+        "labeledThingInFrame": {
+          "id": "{{labeledThingInFrameId}}",
+          "rev": "2-b65227715b51dadd97f8521646e88a22",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "{{:shapeId}}",
+              "topCenter": {
+                "x": 100,
+                "y": 10
+              },
+              "type": "pedestrian",
+              "bottomCenter": {
+                "x": 100,
+                "y": 40
+              },
+              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": false
+        }
+      }
+    }
+  }
+}
