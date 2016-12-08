@@ -235,6 +235,6 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     private function getTestVideoPath()
     {
-        return $this->getBundlePath() . '/Resources/SampleVideo_320x180.mp4';
+        return __DIR__ . '/../../Resources/SampleVideo_320x180.mp4';
     }
 }
