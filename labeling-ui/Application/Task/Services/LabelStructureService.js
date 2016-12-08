@@ -70,7 +70,6 @@ class LabelStructureService {
             return this._getLabelStructureOfTypeLegacy(task);
           case 'legacy':
             return this._getLabelStructureOfTypeLegacy(task);
-            break;
           default:
             throw new Error(`Unknown LabelStructure type '${type}' for task '${task.id}.`);
         }
