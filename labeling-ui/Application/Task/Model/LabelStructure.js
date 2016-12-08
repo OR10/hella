@@ -41,12 +41,23 @@ class LabelStructure {
    * @returns {LabelStructureThing}
    */
   getThingById(identifier) {
-    const things = this.getThings();
-    if (!things.has(identifier)) {
-      throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`)
+    if (!this.isThingDefinedById(identifier)) {
+      throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`);
     }
 
+    const things = this.getThings();
     return things.get(identifier);
+  }
+
+  /**
+   * Retrieve information about whether a thing with a specific id is defined inside this {@link LabelStructure}
+   *
+   * @param {string} identifier
+   * @returns {boolean}
+   */
+  isThingDefinedById(identifier) {
+    const things = this.getThings();
+    return things.has(identifier);
   }
 }
 
