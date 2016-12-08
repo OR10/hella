@@ -90,9 +90,10 @@ class LabelStructureService {
    * @private
    */
   _getLabelStructureOfTypeLegacy(task) {
-    return this._labelStructureDataService.getLegacyLabelStructure(task.id)
-      .then(legacyStructure => {
-        return this._createLegacyLabelStructure(task.drawingTool, legacyStructure);
+    return this._labelStructureDataService.getLegacyLabelStructureAndAnnotation(task.id)
+      .then(legacyStructureAndAnnotation => {
+        const {structure, annotation} = legacyStructureAndAnnotation;
+        return this._createLegacyLabelStructure(task.drawingTool, structure, annotation);
       });
   }
 
@@ -117,15 +118,17 @@ class LabelStructureService {
    *
    * @param {string} drawingTool
    * @param {LegacyLabelStructureInterface} legacyStructure
+   * @param {object} legacyAnnotation
    * @returns {LegacyLabelStructure}
    * @private
    */
-  _createLegacyLabelStructure(drawingTool, legacyStructure) {
+  _createLegacyLabelStructure(drawingTool, legacyStructure, legacyAnnotation) {
     return new LegacyLabelStructure(
       this._linearLabelStructureVisitor,
       this._annotationLabelStructureVisitor,
       drawingTool,
-      legacyStructure
+      legacyStructure,
+      legacyAnnotation
     );
   }
 
@@ -139,47 +142,6 @@ class LabelStructureService {
   _createRequirementsLabelStructure(requirementsData) {
     return new RequirementsLabelStructure(requirementsData);
   }
-
-  // /**
-  //  * @param {{data: string}}requirementsFile
-  //  * @param {string} thingIdentifier
-  //  * @returns {{structure: {name: string, children: Array}, annotation: {}}}
-  //  * @private
-  //  */
-  // _getLabelStructureAndAnnotationByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier) {
-  //   const parser = new DOMParser();
-  //   const doc = parser.parseFromString(requirementsFile.data, 'application/xml');
-  //
-  //   const structure = {name: 'root', children: []};
-  //   const annotation = {};
-  //
-  //   if (thingIdentifier === null) {
-  //     // Return empty structure if no thingIdentifier is available
-  //     return {structure, annotation};
-  //   }
-  //
-  //   const thingElement = doc.getElementById(thingIdentifier);
-  //   const classElements = Array.from(thingElement.children);
-  //
-  //   classElements.forEach(classElement => {
-  //     annotation[classElement.attributes.id.value] = {challenge: classElement.attributes.name.value};
-  //
-  //     const labelStructureChildren = [];
-  //     const valueElements = Array.from(classElement.children);
-  //
-  //     valueElements.forEach(valueElement => {
-  //       annotation[valueElement.attributes.id.value] = {response: valueElement.attributes.name.value};
-  //       labelStructureChildren.push({name: valueElement.attributes.id.value});
-  //     });
-  //
-  //     structure.children.push({
-  //       name: classElement.attributes.id.value,
-  //       children: labelStructureChildren,
-  //     });
-  //   });
-  //
-  //   return {structure, annotation};
-  // }
 }
 
 LabelStructureService.$inject = [
