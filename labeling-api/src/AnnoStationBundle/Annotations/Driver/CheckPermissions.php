@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Annotations\Driver;
+namespace AnnoStationBundle\Annotations\Driver;
 
 use AppBundle\Annotations;
 use AnnoStationBundle\Service\Authentication\UserPermissions;

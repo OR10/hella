@@ -1,13 +1,13 @@
 <?php
 
-namespace AppBundle\Annotations\Driver;
+namespace AnnoStationBundle\Annotations\Driver;
 
 use Doctrine\Common\Annotations as CommonAnnotations;
 use Symfony\Component\HttpFoundation\Session;
 use Symfony\Component\HttpKernel\Event;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Annotations;
+use AnnoStationBundle\Annotations;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Controller\CustomException;

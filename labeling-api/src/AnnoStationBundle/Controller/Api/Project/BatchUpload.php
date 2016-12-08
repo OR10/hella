@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
 use AnnoStationBundle\Database\Facade;
