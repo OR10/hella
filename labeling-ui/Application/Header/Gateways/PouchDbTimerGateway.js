@@ -44,14 +44,10 @@ class PouchDbTimerGateway {
         include_docs: true,
         key: [taskId, userId],
       }))
-    .then((response) => {
-        debugger;
+    .then(response => {
         // @TODO wrap in clientside TimerModel?
         return response.rows[0].doc;
-      },
-      (error) => {
-        debugger;
-      })
+    })
     .then(timeDocument => {
       if (typeof timeDocument !== 'object') {
         throw new Error('Failed loading time');

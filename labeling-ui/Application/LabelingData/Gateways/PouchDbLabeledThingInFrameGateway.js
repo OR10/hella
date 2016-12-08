@@ -67,36 +67,24 @@ class PouchDbLabeledThingInFrameGateway {
    *
    * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
-  listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
-    const startkey = frameIndex + offset;
-    const endkey = frameIndex + offset + limit - 1;
+  listLabeledThingInFrame(task, frameIndex, offset = 0) {
+    const key = [task.id, frameIndex + offset];
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_taskId_frameIndex', {
-        startkey,
-        endkey,
+        key,
         include_docs: true,
       });
     }).then(result => {
-      if (result.rows) {
-        // TODO: generate ghost ltifs
-        const docs = [];
-        result.rows.forEach(row => {
-          if (row.doc) {
-            const labeledThingInFrame = row.doc;
-            const labeledThing = this._pouchLabeledThingGateway.getLabeledThing(labeledThingInFrame);
-            const deserializedThingInFrame = this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing);
-            docs.push(deserializedThingInFrame);
-          } else {
-            throw new Error('Row does not contain a document');
-          }
-        });
-
-        return docs;
-      }
-
-      // throw new Error('Failed loading labeled thing in frame list');
+      const promises = result.rows.map(row => {
+        const labeledThingInFrame = row.doc;
+        return this._labeledThingGateway.getLabeledThing(task, labeledThingInFrame.labeledThingId)
+          .then(labeledThing => {
+            return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing);
+          });
+      });
+      return this._$q.all(promises);
     });
 
     return executorPromise;
