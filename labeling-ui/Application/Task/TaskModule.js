@@ -8,6 +8,7 @@ import taskTemplate from './Views/task.html!';
 
 import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
 import PopupPanelDirective from './Directives/PopupPanelDirective';
+import InitialDataResolver from './Resolvers/InitialDataResolver';
 
 /**
  * Module containing all functionality associated with a {@link Task}
@@ -43,18 +44,7 @@ class TaskModule extends Module {
         },
       },
       resolve: {
-        initialData: [
-          '$stateParams',
-          'taskGateway',
-          'videoGateway',
-          ($stateParams, taskGateway, videoGateway) => {
-            return taskGateway.getTask($stateParams.taskId)
-              .then(
-                task => videoGateway.getVideo(task.videoId)
-                  .then(video => ({task, video}))
-              );
-          },
-        ],
+        initialData: InitialDataResolver,
       },
     });
   }

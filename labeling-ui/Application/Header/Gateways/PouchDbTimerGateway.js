@@ -5,8 +5,9 @@ class PouchDbTimerGateway {
   /**
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
+   * @param {RevisionManager} revisionManager
    */
-  constructor(pouchDbContextService, packagingExecutor) {
+  constructor(pouchDbContextService, packagingExecutor, revisionManager) {
     /**
      * @type {PouchDBContextService}
      * @private
@@ -17,6 +18,12 @@ class PouchDbTimerGateway {
      * @type {PackagingExecutorService}
      */
     this._packagingExecutor = packagingExecutor;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
   }
 
   /**
@@ -39,7 +46,8 @@ class PouchDbTimerGateway {
       }))
     .then((response) => {
         debugger;
-        return response.rows[0];
+        // @TODO wrap in clientside TimerModel?
+        return response.rows[0].doc;
       },
       (error) => {
         debugger;
@@ -48,6 +56,8 @@ class PouchDbTimerGateway {
       if (typeof timeDocument !== 'object') {
         throw new Error('Failed loading time');
       }
+
+      return timeDocument;
     });
   }
 
@@ -73,11 +83,26 @@ class PouchDbTimerGateway {
         });
       });
   }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
+  }
 }
 
 PouchDbTimerGateway.$inject = [
   'pouchDbContextService',
   'packagingExecutor',
+  'revisionManager',
 ];
 
 export default PouchDbTimerGateway;

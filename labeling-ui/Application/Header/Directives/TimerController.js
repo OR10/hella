@@ -78,7 +78,7 @@ class TimerController {
   }
 
   init(timer) {
-    this.elapsedTime = timer.time;
+    this.elapsedTime = timer.timeInSeconds.labeling;
     this.calculateTime();
     if (!this.readOnly) {
       this._intervalHandle = this.$interval(this.saveTime.bind(this), this.saveFrequency * 1000);

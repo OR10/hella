@@ -3,7 +3,6 @@
  */
 class TaskListController {
   /**
-   * @param {object} featureFlags
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {angular.$q} $q
@@ -11,17 +10,8 @@ class TaskListController {
    * @param {TaskGateway} taskGateway injected
    * @param {ModalService} modalService
    * @param {SelectionDialog} SelectionDialog
-   * @param {PouchDbContextService} pouchDbContextService
-   * @param {PouchDbSyncManager} pouchDbSyncManager
-   * @param {PouchDbViewHeater} pouchDbViewHeater
    */
-  constructor(featureFlags, $scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater) {
-    /**
-     * @type {Object}
-     * @private
-     */
-    this._featureFlags = featureFlags;
-
+  constructor($scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -63,27 +53,6 @@ class TaskListController {
      * @private
      */
     this._SelectionDialog = SelectionDialog;
-
-    /**
-     *
-     * @type {PouchDbContextService}
-     * @private
-     */
-    this._pouchDbContextService = pouchDbContextService;
-
-    /**
-     *
-     * @type {PouchDbSyncManager}
-     * @private
-     */
-    this._pouchDbSyncManager = pouchDbSyncManager;
-
-    /**
-     *
-     * @type {PouchDbViewHeater}
-     * @private
-     */
-    this._pouchDbViewHeater = pouchDbViewHeater;
 
     /**
      * @type {Object}
@@ -149,36 +118,7 @@ class TaskListController {
   }
 
   _gotoTask(taskId, phase) {
-    let promise = this._$q.resolve();
-
-    if (this._featureFlags.pouchdb) {
-      promise = promise
-        .then(() => this._checkoutTaskFromRemote(taskId));
-    }
-
-    promise = promise.then(
-      () => this._$state.go('labeling.tasks.detail', {taskId, phase}));
-
-    return promise;
-  }
-
-  /**
-   * @param taskId
-   * @private
-   * @return {Promise}
-   */
-  _checkoutTaskFromRemote(taskId) {
-    const loggerContext = 'pouchDb:taskSynchronization';
-    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
-    const context = this._pouchDbContextService.provideContextForTaskId(taskId);
-
-    return this._$q.resolve()
-      .then(() => this._logger.log(loggerContext, 'Pulling task updates from server'))
-      .then(() => this._pouchDbSyncManager.pullUpdatesForContext(context))
-      .then(() => this._pouchDbViewHeater.heatAllViews(context, 'annostation_'))
-      .then(() => this._logger.log(loggerContext, 'Synchronizaton complete'))
-      .then(() => this._logger.groupEnd('pouchDb:taskSynchronization'))
-      .catch(error => console.error(error));
+    return this._$state.go('labeling.tasks.detail', {taskId, phase});
   }
 
   unassignTask(taskId, assigneeId) {
@@ -303,7 +243,6 @@ class TaskListController {
 }
 
 TaskListController.$inject = [
-  'featureFlags',
   '$scope',
   '$state',
   '$q',
@@ -311,9 +250,6 @@ TaskListController.$inject = [
   'taskGateway',
   'modalService',
   'SelectionDialog',
-  'pouchDbContextService',
-  'pouchDbSyncManager',
-  'pouchDbViewHeater',
 ];
 
 export default TaskListController;
