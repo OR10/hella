@@ -13,8 +13,11 @@ class LegacyLabelStructure extends LabelStructure {
    * @param {AnnotationLabelStructureVisitor} annotationStructureVisitor
    * @param {string} drawingTool
    * @param {LegacyLabelStructureInterface} legacyStructure
+   * @param {object} legacyAnnotation
    */
-  constructor(linearLabelStructureVisitor, annotationStructureVisitor, drawingTool, legacyStructure) {
+  constructor(linearLabelStructureVisitor, annotationStructureVisitor, drawingTool, legacyStructure, legacyAnnotation) {
+    super();
+
     /**
      * @type {LinearLabelStructureVisitor}
      * @private
@@ -38,6 +41,12 @@ class LegacyLabelStructure extends LabelStructure {
      * @private
      */
     this._legacyStructure = legacyStructure;
+
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._legacyAnnotation = legacyAnnotation;
   }
 
   /**
@@ -59,10 +68,10 @@ class LegacyLabelStructure extends LabelStructure {
 
     // @TODO: taken from: LabelSelectorController.js:219
     //        remove code there!
-     const linearStructure = this._linearLabelStructureVisitor.visit(this._legacyStructure, classList);
-     const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this.annotation);
+    const linearStructure = this._linearLabelStructureVisitor.visit(this._legacyStructure, classList);
+    const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this._legacyAnnotation);
 
-     return annotatedStructure.children;
+    return annotatedStructure.children;
   }
 
   /**
@@ -75,7 +84,7 @@ class LegacyLabelStructure extends LabelStructure {
     const thingMap = new Map();
     thingMap.set(
       'legacy',
-      new LabelStructureThing('legacy', this.drawingTool, this.drawingTool)
+      new LabelStructureThing('legacy', this._drawingTool, this._drawingTool)
     );
 
     return thingMap;
