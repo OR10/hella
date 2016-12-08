@@ -8,16 +8,20 @@ import signTypeSpeedSignClassListThingClasses from 'Tests/Fixtures/LabelStructur
 import signTypeSpeedSignSpeed30ClassListThingClasses from 'Tests/Fixtures/LabelStructure/requirements/signType/speed-sign-speed-30.json!';
 
 describe('RequirementsLabelStructure', () => {
-  beforeEach(() => {
+  /**
+   * @type {RequirementsLabelStructure}
+   */
+  let structure;
+
+  beforeEach(()=> {
+    structure = new RequirementsLabelStructure(requirementsXmlData);
   });
 
   it('should be instantiable with valid requirements xml', () => {
-    const structure = new RequirementsLabelStructure(requirementsXmlData);
     expect(structure instanceof RequirementsLabelStructure).toBeTruthy();
   });
 
   it('should list things defined in requirements xml', () => {
-    const structure = new RequirementsLabelStructure(requirementsXmlData);
     const things = structure.getThings();
 
     const expectedThings = new Map();
@@ -33,7 +37,6 @@ describe('RequirementsLabelStructure', () => {
   });
 
   it('should provide thing with specific id correctly', () => {
-    const structure = new RequirementsLabelStructure(requirementsXmlData);
     const signThing = structure.getThingById('sign');
     const expectedThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle');
 
@@ -41,7 +44,6 @@ describe('RequirementsLabelStructure', () => {
   });
 
   it('should throw if thing with non existent id is requested', () => {
-    const structure = new RequirementsLabelStructure(requirementsXmlData);
     expect(
       () => structure.getThingById('nonExistentThing')
     ).toThrow();
@@ -56,14 +58,6 @@ describe('RequirementsLabelStructure', () => {
   });
 
   describe('getEnabledThingClassesForThingAndClassList', () => {
-    /**
-     * @type {RequirementsLabelStructure}
-     */
-    let structure;
-    beforeEach(()=> {
-      structure = new RequirementsLabelStructure(requirementsXmlData);
-    });
-
     it('should throw if non existent thing is provided', () => {
       const nonExistentThing = new LabelStructureThing('some-non-existent-id', 'Foobar', 'rectangle');
       expect(
