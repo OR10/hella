@@ -70,9 +70,9 @@ class LabelStructureDataService {
 
   /**
    * @param taskId
-   * @return {AbortablePromise<{structure, annotation}>}
+   * @return {AbortablePromise<{structure: LegacyLabelStructureInterface, annotation: object}>}
    */
-  getLegacyLabelStructure(taskId) {
+  getLegacyLabelStructureAndAnnotation(taskId) {
     const cacheKey = taskId;
     if (this._labelStructureDataMapping.has(cacheKey)) {
       const labelStructure = this._labelStructureDataMapping.get(cacheKey);
