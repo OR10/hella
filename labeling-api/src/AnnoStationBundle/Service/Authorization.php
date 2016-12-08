@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
-use AppBundle\Voter\AccessCheckVoter;
+use AnnoStationBundle\Voter\AccessCheckVoter;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 

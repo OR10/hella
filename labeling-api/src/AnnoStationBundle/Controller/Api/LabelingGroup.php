@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;

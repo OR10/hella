@@ -39,11 +39,10 @@ class RequirementsXml extends Helper\ClassesStructure
                 foreach ($xpath->query('x:value', $classNode) as $valueNode) {
                     if ($xpath->query('x:class', $valueNode)->length > 0) {
                         $values[] = [
-                            'name' => $valueNode->getAttribute('id'),
-                            'children' => $this->getChildrenStructure($xpath, $xpath->query('x:class', $valueNode))
+                            'name'     => $valueNode->getAttribute('id'),
+                            'children' => $this->getChildrenStructure($xpath, $xpath->query('x:class', $valueNode)),
                         ];
-
-                    }else{
+                    } else {
                         $values[] = ['name' => $valueNode->getAttribute('id')];
                     }
                 }

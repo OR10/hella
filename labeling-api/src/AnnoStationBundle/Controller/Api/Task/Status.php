@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
