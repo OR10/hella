@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Multiple Things', () => {
+describe('Multiple Things', () => {
   let assets;
   let sharedMocks;
   let viewer;
