@@ -153,7 +153,7 @@ export default class LabelSelectorController {
           this.pages = null;
           this.activePageIndex = null;
           this.labelingInstructions = null;
-          this.choices = {};
+          this.choices = null;
           return;
         }
 
@@ -162,9 +162,9 @@ export default class LabelSelectorController {
       });
 
     // Store and process choices made by the user
-    $scope.$watch('vm.choices', () => {
+    $scope.$watch('vm.choices', newChoices => {
       const labeledObject = this.selectedLabeledObject;
-      if (!labeledObject) {
+      if (!labeledObject || newChoices === null) {
         return;
       }
 

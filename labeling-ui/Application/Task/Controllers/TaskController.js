@@ -284,16 +284,24 @@ class TaskController {
     this._labelStructurePromise = this._initializeLabelStructure();
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
-      this.selectedLabeledObject = this._getSelectedLabeledObject();
-      if (newShape !== oldShape && newShape !== null) {
-        this._labelStructurePromise
-          .then(labelStructure => {
-            const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-            const labelStructureThing = labelStructure.getThingById(thingIdentifier);
+      if (newShape !== oldShape) {
+        this.selectedLabelStructureThing = null;
+        this.selectedDrawingTool = null;
+        this.selectedLabeledObject = null;
 
-            this.selectedLabelStructureThing = labelStructureThing;
-            this.selectedDrawingTool = labelStructureThing.shape;
-          });
+        if (newShape !== null) {
+          this._labelStructurePromise
+            .then(labelStructure => {
+              const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+              const labelStructureThing = labelStructure.getThingById(thingIdentifier);
+
+              this.selectedLabelStructureThing = labelStructureThing;
+              this.selectedDrawingTool = labelStructureThing.shape;
+              // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
+              // updating its structure against the wrong LabelStructureThing.
+              this.selectedLabeledObject = this._getSelectedLabeledObject();
+            });
+        }
       }
     });
 
