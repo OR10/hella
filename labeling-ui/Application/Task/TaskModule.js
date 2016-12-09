@@ -12,6 +12,7 @@ import LabelStructureDataService from './Services/LabelStructureDataService';
 import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
 import PopupPanelDirective from './Directives/PopupPanelDirective';
 import ToolSelectorDirective from './Directives/ToolSelectorDirective';
+import InitialDataResolver from './Resolvers/InitialDataResolver';
 
 /**
  * Module containing all functionality associated with a {@link Task}
