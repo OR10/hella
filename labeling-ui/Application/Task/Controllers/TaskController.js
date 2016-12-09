@@ -425,7 +425,7 @@ class TaskController {
 
     const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
       .then(labelStructure => {
-        const labelStructureThingArray = Array.from(labelStructure.getThings());
+        const labelStructureThingArray = Array.from(labelStructure.getThings().values());
         const labelStructureThing = labelStructureThingArray[0];
 
         this.labelStructure = labelStructure;
