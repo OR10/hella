@@ -283,27 +283,29 @@ class TaskController {
 
     this._labelStructurePromise = this._initializeLabelStructure();
 
-    $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
-      if (newShape !== oldShape) {
-        this.selectedLabelStructureThing = null;
-        this.selectedDrawingTool = null;
-        this.selectedLabeledObject = null;
+    if (this.task.taskType === 'object-labeling') {
+      $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+        if (newShape !== oldShape) {
+          this.selectedLabelStructureThing = null;
+          this.selectedDrawingTool = null;
+          this.selectedLabeledObject = null;
 
-        if (newShape !== null) {
-          this._labelStructurePromise
-            .then(labelStructure => {
-              const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-              const labelStructureThing = labelStructure.getThingById(thingIdentifier);
+          if (newShape !== null) {
+            this._labelStructurePromise
+              .then(labelStructure => {
+                const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                const labelStructureThing = labelStructure.getThingById(thingIdentifier);
 
-              this.selectedLabelStructureThing = labelStructureThing;
-              this.selectedDrawingTool = labelStructureThing.shape;
-              // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
-              // updating its structure against the wrong LabelStructureThing.
-              this.selectedLabeledObject = this._getSelectedLabeledObject();
-            });
+                this.selectedLabelStructureThing = labelStructureThing;
+                this.selectedDrawingTool = labelStructureThing.shape;
+                // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
+                // updating its structure against the wrong LabelStructureThing.
+                this.selectedLabeledObject = this._getSelectedLabeledObject();
+              });
+          }
         }
-      }
-    });
+      });
+    }
 
     if (this.task.taskType === 'meta-labeling') {
       $scope.$watch('vm.framePosition.position', newPosition => {
@@ -397,7 +399,7 @@ class TaskController {
    * @private
    */
   _getSelectedLabeledObject() {
-    if (this.task.type === 'meta-labeling') {
+    if (this.task.taskType === 'meta-labeling') {
       return this.labeledFrame;
     } else if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
       return this.selectedPaperShape.labeledThingInFrame;
