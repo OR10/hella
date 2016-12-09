@@ -286,11 +286,11 @@ class TaskController {
     if (this.task.taskType === 'object-labeling') {
       $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
         if (newShape !== oldShape) {
-          this.selectedLabelStructureThing = null;
-          this.selectedDrawingTool = null;
           this.selectedLabeledObject = null;
 
           if (newShape !== null) {
+            this.selectedDrawingTool = null;
+            this.selectedLabelStructureThing = null;
             this._labelStructurePromise
               .then(labelStructure => {
                 const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
