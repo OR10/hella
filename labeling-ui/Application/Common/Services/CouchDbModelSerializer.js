@@ -1,4 +1,5 @@
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 import cloneDeep from 'lodash.clonedeep';
 
@@ -19,6 +20,7 @@ class CouchDbModelSerializer {
 
     this._modelClassToDocumentTypeMapping = new Map([
       [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
+      [LabeledThingInFrame, CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME],
     ]);
   }
 
@@ -64,6 +66,27 @@ class CouchDbModelSerializer {
     return document;
   }
 
+  /**
+   * Serialize a LabeledThingInFrame Model
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   *
+   * @return {object}
+   *
+   * @private
+   */
+  _serializeAppBundleModelLabeledThingInFrame(labeledThingInFrame) {
+    const document = labeledThingInFrame.toJSON();
+    this._prefixIdAndRevision(document);
+
+    // Type annotation
+    document.type = CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME;
+
+    // Nested FrameRange
+    document.labeledThingId = labeledThingInFrame._labeledThing.id;
+
+    return document;
+  }
   /**
    * Serialize a FrameRange Model
    *
@@ -139,6 +162,7 @@ class CouchDbModelSerializer {
 }
 
 CouchDbModelSerializer.TYPE_LABELED_THING = 'AppBundle.Model.LabeledThing';
+CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME = 'AppBundle.Model.LabeledThingInFrame';
 CouchDbModelSerializer.TYPE_FRAME_RANGE = 'AppBundle.Model.FrameIndexRange';
 
 CouchDbModelSerializer.$inject = [];

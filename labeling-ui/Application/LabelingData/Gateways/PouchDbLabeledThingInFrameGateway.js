@@ -6,6 +6,7 @@ import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 class PouchDbLabeledThingInFrameGateway {
   /**
    * @param {$q} $q
+   * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
    * @param {RevisionManager} revisionManager
    * @param {PackagingExecutor} packagingExecutor
@@ -13,12 +14,18 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {PouchDbLabeledThingGateway} pouchLabeledThingGateway
    */
-  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway) {
+  constructor($q, pouchDbSyncManager, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway) {
     /**
      * @type {$q}
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbSyncManager = pouchDbSyncManager;
 
     /**
      * @type {PouchDbContextService}
@@ -55,6 +62,12 @@ class PouchDbLabeledThingInFrameGateway {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {PouchDbSyncManager}
+     * @private
+     */
+    this._pouchDbSyncManager = pouchDbSyncManager;
   }
 
   /**
@@ -124,11 +137,10 @@ class PouchDbLabeledThingInFrameGateway {
         result.rows.forEach(row => {
           if (row.doc) {
             const labeledThingInFrame = row.doc;
-
             docs.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
+          } else {
+            throw new Error('Row does not contain a document');
           }
-
-          throw new Error('Row does not contain a document');
         });
 
         return docs;
@@ -164,23 +176,29 @@ class PouchDbLabeledThingInFrameGateway {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
 
-    const db = this._pouchDbContextService.provideContextForTaskId(taskId);
-    // const document = this._couchDbModelSerializer.serialize(labeledThingInFrame);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(labeledThingInFrame);
+    let storedLabeledThingInFrameId;
+
     // this._injectRevisionOrFailSilently(document);
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
-      () => db.put(document)
-    ).then(response => {
-      this._revisionManager.extractRevision(response);
-      return new LabeledThingInFrame(Object.assign({}, labeledThingInFrame.toJSON(), {task: labeledThingInFrame.labeledThing.task}));
-    });
+      () => {
+        return dbContext.put(serializedLabeledThingInFrame);
+      }).then(response => {
+        return dbContext.get(response.id);
+      }).then(readDocument => {
+        this._revisionManager.extractRevision(readDocument);
+        return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
+      });
   }
 }
 
 PouchDbLabeledThingInFrameGateway.$inject = [
   '$q',
+  'pouchDbSyncManager',
   'pouchDbContextService',
   'revisionManager',
   'packagingExecutor',
