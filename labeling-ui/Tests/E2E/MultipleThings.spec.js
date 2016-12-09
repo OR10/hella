@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Multiple Things', () => {
+fdescribe('Multiple Things', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -40,11 +40,11 @@ describe('Multiple Things', () => {
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DrawMultipleDifferentThings')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DisplayMultipleDifferentThings')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.DrawMultipleDifferentThings);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.DisplayMultipleDifferentThings);
         done();
       });
   });
