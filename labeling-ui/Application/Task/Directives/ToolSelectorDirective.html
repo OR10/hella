@@ -1,6 +1,6 @@
 <div class="tool-selector grid-block vertical">
     <button class="tool-button tool-{{$index}}"
-            ng-class="{'active': thing.id === vm.selectedThing.id}"
+            ng-class="{'active': thing.id === vm.selectedLabelStructureThing.id}"
             ng-click="vm.setCurrentThing(thing)"
             ng-repeat="thing in vm.drawableThings"
             tooltip="{{thing.name}}"

@@ -43,7 +43,7 @@
     <!--</div>-->
     <tool-selector ng-if="vm.task.taskType !== 'meta-labeling' && vm.drawableThings.length > 1"
                    drawable-things="vm.drawableThings"
-                   selected-thing="vm.selectedThing"
+                   selected-label-structure-thing="vm.selectedLabelStructureThing"
                    selected-drawing-tool="vm.selectedDrawingTool"
                    selected-paper-shape="vm.selectedPaperShape"
                    class="grid-block"
@@ -70,7 +70,7 @@
     <viewer class="grid-block align-center noscroll no-select"
             labeled-things-in-frame="vm.labeledThingsInFrame"
             selected-paper-shape="vm.selectedPaperShape"
-            selected-thing="vm.selectedThing"
+            selected-label-structure-thing="vm.selectedLabelStructureThing"
             active-tool="vm.activeTool"
             selected-drawing-tool="vm.selectedDrawingTool"
             task="vm.task"

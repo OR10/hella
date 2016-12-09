@@ -250,7 +250,7 @@ class TaskController {
     /**
      * @type {{id, shape, name}|null}
      */
-    this.selectedThing = null;
+    this.selectedLabelStructureThing = null;
 
     /**
      * @type {LabeledFrameGateway}
