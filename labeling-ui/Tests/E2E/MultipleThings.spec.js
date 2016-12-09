@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, dumpAllRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -40,11 +40,11 @@ describe('Multiple Things', () => {
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DrawMultipleDifferentThings')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DisplayMultipleDifferentThings')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.DrawMultipleDifferentThings);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.DisplayMultipleDifferentThings);
         done();
       });
   });
@@ -126,7 +126,7 @@ describe('Multiple Things', () => {
       });
   });
 
-  fit('it should draw multiple different things', done => {
+  it('it should draw multiple different things', done => {
     const toolButton0 = element(by.css('button.tool-button.tool-0'));
     const toolButton1 = element(by.css('button.tool-button.tool-1'));
     const toolButton2 = element(by.css('button.tool-button.tool-2'));
