@@ -6,6 +6,17 @@ imports:
 parameters:
   redirectAfterLogin: /labeling
 
+doctrine_couch_db: &doctrine_couch_db
+    odm:
+        document_managers:
+            default:
+                mappings:
+                    AnnoStationBundle:
+                        type: annotation
+                        is_bundle: true
+                        mapping: true
+                        prefix: "AnnoStationBundle\\Model"
+                        dir: "Model"
 hagl_worker_pool:
    logger: annostation.labeling_api.vendor.logger
    config: annostation.labeling_api.service.amqp_pool_config

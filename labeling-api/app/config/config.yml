@@ -102,12 +102,6 @@ doctrine_couch_db:
                         mapping: true
                         prefix: "AppBundle\\Model"
                         dir: "Model"
-                    AnnoStationBundle:
-                        type: annotation
-                        is_bundle: true
-                        mapping: true
-                        prefix: "AnnoStationBundle\\Model"
-                        dir: "Model"
 
 fos_rest:
     body_listener:
