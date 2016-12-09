@@ -148,6 +148,8 @@ LabelStructureService.$inject = [
   '$q',
   'abortablePromiseFactory',
   'labelStructureDataService',
+  'linearLabelStructureVisitor',
+  'annotationLabelStructureVisitor',
 ];
 
 export default LabelStructureService;
