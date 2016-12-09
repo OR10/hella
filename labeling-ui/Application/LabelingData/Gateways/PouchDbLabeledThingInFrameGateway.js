@@ -92,6 +92,8 @@ class PouchDbLabeledThingInFrameGateway {
     }).then(result => {
       const promises = result.rows.map(row => {
         const labeledThingInFrame = row.doc;
+        this._revisionManager.extractRevision(labeledThingInFrame);
+
         return this._labeledThingGateway.getLabeledThing(task, labeledThingInFrame.labeledThingId)
           .then(labeledThing => {
             return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing);
@@ -137,6 +139,7 @@ class PouchDbLabeledThingInFrameGateway {
         result.rows.forEach(row => {
           if (row.doc) {
             const labeledThingInFrame = row.doc;
+            this._revisionManager.extractRevision(labeledThingInFrame);
             docs.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
           } else {
             throw new Error('Row does not contain a document');
@@ -172,6 +175,8 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
+    taskId = labeledThingInFrame.labeledThing.task.id;
+
     if (labeledThingInFrame.ghost === true) {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
@@ -180,12 +185,12 @@ class PouchDbLabeledThingInFrameGateway {
     const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(labeledThingInFrame);
     let storedLabeledThingInFrameId;
 
-    // this._injectRevisionOrFailSilently(document);
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
       () => {
+        this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
         return dbContext.put(serializedLabeledThingInFrame);
       }).then(response => {
         return dbContext.get(response.id);
@@ -194,6 +199,21 @@ class PouchDbLabeledThingInFrameGateway {
         return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
       });
   }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
+  }
+
 }
 
 PouchDbLabeledThingInFrameGateway.$inject = [

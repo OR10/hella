@@ -69,23 +69,25 @@ class CouchDbModelSerializer {
   /**
    * Serialize a LabeledThingInFrame Model
    *
-   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {LabeledThingInFrame} labeledThingInFrameModel
    *
    * @return {object}
    *
    * @private
    */
-  _serializeAppBundleModelLabeledThingInFrame(labeledThingInFrame) {
-    const document = labeledThingInFrame.toJSON();
-    this._prefixIdAndRevision(document);
+  _serializeAppBundleModelLabeledThingInFrame(labeledThingInFrameModel) {
+    const documentJson = labeledThingInFrameModel.toJSON();
+    this._prefixIdAndRevision(documentJson);
 
     // Type annotation
-    document.type = CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME;
+    documentJson.type = CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME;
 
     // Nested FrameRange
-    document.labeledThingId = labeledThingInFrame._labeledThing.id;
+    documentJson.labeledThingId = labeledThingInFrameModel._labeledThing.id;
+    documentJson.taskId = labeledThingInFrameModel.labeledThing.task.id;
+    documentJson.projectId = labeledThingInFrameModel.labeledThing.task.projectId;
 
-    return document;
+    return documentJson;
   }
   /**
    * Serialize a FrameRange Model
