@@ -1,10 +1,10 @@
 import {inject} from 'angular-mocks';
+import angular from 'angular';
 
 import TaskModule from 'Application/Task/TaskModule';
 import CommonModule from 'Application/Common/Common';
 
 import LabelStructureService from 'Application/Task/Services/LabelStructureService';
-import LabelStructureDataService from 'Application/Task/Services/LabelStructureDataService';
 import LegacyLabelStructure from 'Application/Task/Model/LabelStructure/LegacyLabelStructure';
 import RequirementsLabelStructure from 'Application/Task/Model/LabelStructure/RequirementsLabelStructure';
 
@@ -13,7 +13,7 @@ import annotationDictionaryFixture from 'Tests/Fixtures/LabelStructure/meta-labe
 import requirementsXmlData from 'Tests/Fixtures/LabelStructure/requirements.xml!text';
 import taskFixture from 'Tests/Fixtures/Models/Frontend/Task';
 
-fdescribe('LabelStructureService', () => {
+describe('LabelStructureService', () => {
   /**
    * @type {LabelStructureService}
    */
@@ -72,7 +72,7 @@ fdescribe('LabelStructureService', () => {
       })));
 
       labelStructureDataServiceMock.getRequirementsFile.and.returnValue(abortablePromiseFactory($q.resolve({
-        data: requirementsXmlData
+        data: requirementsXmlData,
       })));
 
       service = $injector.instantiate(LabelStructureService);

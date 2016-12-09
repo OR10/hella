@@ -50,7 +50,6 @@ describe('RequirementsLabelStructure', () => {
   });
 
   it('should provide same Map of things for multiple invocations', () => {
-    const structure = new RequirementsLabelStructure(requirementsXmlData);
     const firstThings = structure.getThings();
     const secondThings = structure.getThings();
 
