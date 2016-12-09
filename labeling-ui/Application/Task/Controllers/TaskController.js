@@ -113,7 +113,7 @@ class TaskController {
     this.contrastSliderValue = 0;
 
     /**
-     * Flag indicating whether all {@link LabeledThingsInFrame}, which are not selected should be hidden or not
+     * Flag indicating whether all {@link LabeledThingInFrame}, which are not selected should be hidden or not
      *
      * @type {boolean}
      */
@@ -192,16 +192,6 @@ class TaskController {
     this._labeledFrameGateway = labeledFrameGateway;
 
     /**
-     * @type {Object|null}
-     */
-    this.labelingStructure = null;
-
-    /**
-     * @type {Object|null}
-     */
-    this.labelingAnnotation = null;
-
-    /**
      * @TODO Move into LabelSelector when refactoring for different task types
      * @type {AbortablePromiseRingBuffer}
      */
@@ -231,14 +221,17 @@ class TaskController {
     this.drawableThings = [];
 
     /**
-     * @type {Object|null}
+     * @type {LabelStructure|null}
      */
-    this.labelingStructure = null;
+    this.labelStructure = null;
 
     /**
-     * @type {Object|null}
+     * Promise resolved once the initial load of the labelstructure has been completed
+     *
+     * @type {Promise}
+     * @private
      */
-    this.labelingAnnotation = null;
+    this._labelStructurePromise = null;
 
     /**
      * Due to an action selected DrawingTool, which should be activated when appropriate.
@@ -251,6 +244,11 @@ class TaskController {
      * @type {{id, shape, name}|null}
      */
     this.selectedLabelStructureThing = null;
+
+    /**
+     * @type {LabeledObject|null}
+     */
+    this.selectedLabeledObject = null;
 
     /**
      * @type {LabeledFrameGateway}
@@ -277,34 +275,25 @@ class TaskController {
      */
     this.thingLayer = null;
 
-    /**
-     * @type {{annotation: null, structure: null, labeledObject: null}}
-     */
-    this.labelStructureData = null;
-
     keyboardShortcutService.pushContext('labeling-task');
 
     $scope.$on('$destroy', () => {
       keyboardShortcutService.clearContext('labeling-task');
     });
 
-    this._initializeLabelingStructure();
-    this._setDrawingTool();
+    this._labelStructurePromise = this._initializeLabelStructure();
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
-      this.labelStructureData = null;
+      this.selectedLabeledObject = this._getSelectedLabeledObject();
       if (newShape !== oldShape && newShape !== null) {
-        this._labelStructureService.getThingByThingIdentifier(this.task, newShape.labeledThingInFrame.identifierName).then(thing => {
-          this.selectedThing = thing;
-          this.selectedDrawingTool = thing.shape;
-        });
-        this._labelStructureService.getLabelStructure(this.task, newShape.labeledThingInFrame.identifierName).then(labelStructureData => {
-          this.labelStructureData = {
-            structure: labelStructureData.structure,
-            annotation: labelStructureData.annotation,
-            labeledObject: this.task.taskType === 'meta-labeling' ? this.labeledFrame : this.selectedPaperShape.labeledThingInFrame,
-          };
-        });
+        this._labelStructurePromise
+          .then(labelStructure => {
+            const thingIdentifier = newShape.labeledThingInFrame.identifierName;
+            const labelStructureThing = labelStructure.getThingById(thingIdentifier);
+
+            this.selectedLabelStructureThing = labelStructureThing;
+            this.selectedDrawingTool = labelStructureThing.shape;
+          });
       }
     });
 
@@ -319,6 +308,7 @@ class TaskController {
           })
           .then(labeledFrame => {
             this.labeledFrame = labeledFrame;
+            this.selectedLabeledObject = this._getSelectedLabeledObject();
             this.framePosition.lock.release();
           });
       });
@@ -388,47 +378,67 @@ class TaskController {
     applicationState.$watch('sidebarRight.isInFrameChange', inFrameChange => this.rightSidebarShowBackdrop = !inFrameChange);
   }
 
-  _initializeLabelingStructure() {
-    switch (this.task.taskType) {
-      case 'object-labeling':
-      case 'meta-labeling':
-        this._labelStructureService.getLabelStructure(this.task).then(labelStructureData => {
-          let labeledObject = null;
-
-          switch (this.task.type) {
-            case 'meta-labeling':
-              labeledObject = this.labeledFrame;
-              break;
-            default:
-              if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
-                labeledObject = this.selectedPaperShape.labeledThingInFrame;
-              }
-          }
-
-          this.labelStructureData = {
-            structure: labelStructureData.structure,
-            annotation: labelStructureData.annotation,
-            labeledObject,
-          };
-        });
-        this._labelStructureService.getDrawableThings(this.task).then(drawableThings => {
-          this.drawableThings = drawableThings;
-        });
-        break;
-      default:
-        throw new Error(`Unknown task type ${this.task.taskType}.`);
+  /**
+   * Retrieve the currently active `labeledObject`.
+   *
+   * The {@link LabeledObject} is determined based on the `labeledFrame` or the `selectedPaperShape`. It is not taken
+   * from the `selectedLabeledObject` property. Actually this method is most likely to be used to update the
+   * `selectedLabeledObject` property.
+   *
+   * @returns {LabeledObject|null}
+   * @private
+   */
+  _getSelectedLabeledObject() {
+    if (this.task.type === 'meta-labeling') {
+      return this.labeledFrame;
+    } else if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
+      return this.selectedPaperShape.labeledThingInFrame;
     }
+
+    return null;
   }
 
-  _setDrawingTool() {
-    this._labelStructureService.getDrawableThings(this.task).then(drawableThings => {
-      if (drawableThings.length > 0) {
-        this.selectedThing = drawableThings[0];
-        this.selectedDrawingTool = drawableThings[0].shape;
-      } else {
-        throw new Error('No drawing tools available');
-      }
-    });
+  /**
+   * Initialize the `labelStructure` property as well as all the dependant values.
+   *
+   * Dependant values are:
+   *
+   * - `selectedLabelStructureThing`
+   * - `selectedDrawingTool`
+   * - `selectedLabeledObject`
+   * - `drawableThings`
+   *
+   * All of these values will be *nulled* before the update and filled as soon as the needed {@link LabelStructure}
+   * was retrieved.
+   *
+   * The operation is asynchronous!
+   *
+   * @return {Promise.<LabelStructure>}
+   * @private
+   */
+  _initializeLabelStructure() {
+    this.labelStructure = null;
+    this.selectedLabeledStructureThing = null;
+    this.selectedLabeledObject = null;
+    this.selectedDrawingTool = null;
+    this.drawableThings = [];
+
+    const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
+      .then(labelStructure => {
+        const labelStructureThingArray = Array.from(labelStructure.getThings());
+        const labelStructureThing = labelStructureThingArray[0];
+
+        this.labelStructure = labelStructure;
+        this.selectedLabelStructureThing = labelStructureThing;
+        this.selectedDrawingTool = labelStructureThing.shape;
+        this.selectedLabeledObject = this._getSelectedLabeledObject();
+        this.drawableThings = labelStructureThingArray;
+
+        // Pipe labelStructure to next chain function
+        return labelStructure;
+      });
+
+    return labelStructurePromise;
   }
 
   /**

@@ -27,7 +27,18 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    */
-  constructor($scope, $rootScope, $location, linearLabelStructureVisitor, annotationStructureVisitor, labeledFrameGateway, labeledThingGateway, labeledThingInFrameGateway, entityIdService, modalService, applicationState, taskGateway) {
+  constructor($scope,
+              $rootScope,
+              $location,
+              linearLabelStructureVisitor,
+              annotationStructureVisitor,
+              labeledFrameGateway,
+              labeledThingGateway,
+              labeledThingInFrameGateway,
+              entityIdService,
+              modalService,
+              applicationState,
+              taskGateway) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -127,34 +138,32 @@ export default class LabelSelectorController {
      */
     this.accordionControl = {};
 
-    this.structure = null;
+    $scope.$watchGroup(
+      [
+        'vm.labelStructure',
+        'vm.selectedLabelStructureThing',
+        'vm.selectedLabeledObject',
+      ],
+      ([
+        newLabelStructure,
+        newSelectedLabelStructureThing,
+        newSelectedLabeledObject,
+      ])=> {
+        if (newLabelStructure === null || newSelectedLabelStructureThing === null || newSelectedLabeledObject === null) {
+          this.pages = null;
+          this.activePageIndex = null;
+          this.labelingInstructions = null;
+          this.choices = {};
+          return;
+        }
 
-    this.annotation = null;
-
-    this.labeledObject = null;
-
-    $scope.$watch('vm.labelStructureData', newLabelDataStructure => {
-      if (!newLabelDataStructure || !newLabelDataStructure.structure || !newLabelDataStructure.annotation || !newLabelDataStructure.labeledObject) {
-        this.pages = null;
         this.activePageIndex = null;
-        this.labelingInstructions = null;
-        this.choices = {};
-        this.structure = null;
-        this.annotation = null;
-        this.labeledObject = null;
-        return;
-      }
-
-      this.activePageIndex = null;
-      this.structure = newLabelDataStructure.structure;
-      this.annotation = newLabelDataStructure.annotation;
-      this.labeledObject = newLabelDataStructure.labeledObject;
-      this._updatePagesAndChoices();
-    });
+        this._updatePagesAndChoices();
+      });
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', () => {
-      const labeledObject = this.labeledObject;
+      const labeledObject = this.selectedLabeledObject;
       if (!labeledObject) {
         return;
       }
@@ -212,23 +221,22 @@ export default class LabelSelectorController {
   }
 
   /**
-   * Generate a new linearized List using the `labeledObject` as well as `structure` and `annotation`
-   * @returns {Array}
+   * Extract a classList of a given {@link LabeledObject}
+   *
+   * @param {LabeledObject} labeledObject
+   * @returns {Array.<string>}
    * @private
    */
-  _generateLinearList() {
-    const labels = this._getViewClasses(this.labeledObject);
-    const linearStructure = this._linearLabelStructureVisitor.visit(this.structure, labels);
-    const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this.annotation);
-
-    return annotatedStructure.children;
-  }
-
-  _getViewClasses() {
-    if (this.labeledObject.ghostClasses !== null) {
-      return this.labeledObject.ghostClasses;
+  _extractClassList(labeledObject) {
+    if (!labeledObject) {
+      return [];
     }
-    return this.labeledObject.classes;
+
+    if (labeledObject.ghostClasses !== null) {
+      return labeledObject.ghostClasses;
+    }
+
+    return labeledObject.classes;
   }
 
   /**
@@ -239,7 +247,11 @@ export default class LabelSelectorController {
    * @private
    */
   _updatePagesAndChoices() {
-    const list = this._generateLinearList();
+    const classList = this._extractClassList(this.selectedLabeledObject);
+    const list = this.labelStructure.getEnabledThingClassesForThingAndClassList(
+      this.selectedLabelStructureThing,
+      classList
+    );
     const newChoices = {};
     const newPages = [];
     const seenPages = {};
@@ -267,8 +279,8 @@ export default class LabelSelectorController {
         }
         if (this.choices[id] !== null) {
           // Remove the chosen value from the labelsObject
-          this.labeledObject.setClasses(
-            this.labeledObject.classes.filter(
+          this.selectedLabeledObject.setClasses(
+            this.selectedLabeledObject.classes.filter(
               label => label !== this.choices[id]
             )
           );
@@ -291,13 +303,13 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledObject() {
     switch (true) {
-      case this.labeledObject instanceof LabeledThingInFrame:
-        this._storeUpdatedLabeledThingInFrame(this.labeledObject)
-          .then(() => this._$rootScope.$emit('shape:class-update:after', this.labeledObject.classes));
+      case this.selectedLabeledObject instanceof LabeledThingInFrame:
+        this._storeUpdatedLabeledThingInFrame(this.selectedLabeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', this.selectedLabeledObject.classes));
         break;
-      case this.labeledObject instanceof LabeledFrame:
-        this._storeUpdatedLabeledFrame(this.labeledObject)
-          .then(() => this._$rootScope.$emit('shape:class-update:after', this.labeledObject.classes));
+      case this.selectedLabeledObject instanceof LabeledFrame:
+        this._storeUpdatedLabeledFrame(this.selectedLabeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', this.selectedLabeledObject.classes));
         break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
