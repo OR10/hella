@@ -28,4 +28,3 @@ class Maintainer extends Command
         return $command->run($input, $output);
     }
 }
-

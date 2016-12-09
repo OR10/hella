@@ -28,12 +28,13 @@ class Legacy extends Helper\ClassesStructure
         $classes = [];
         foreach ($this->labelStructure['children'] as $child) {
             $values = [];
-            foreach($child['children'] as $value) {
+            foreach ($child['children'] as $value) {
                 if (isset($value['children'])) {
-                    $values[] = ['name'     => $value['name'],
-                                 'children' => $this->getChildrenStructure($value['children']),
+                    $values[] = [
+                        'name'     => $value['name'],
+                        'children' => $this->getChildrenStructure($value['children']),
                     ];
-                }else {
+                } else {
                     $values[] = ['name' => $value['name']];
                 }
             }

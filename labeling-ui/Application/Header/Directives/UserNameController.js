@@ -22,6 +22,9 @@ class UserNameController {
         case 'ROLE_LABELER':
           this.readableRoles.push('Labeler');
           break;
+        case 'ROLE_OBSERVER':
+          this.readableRoles.push('Observer');
+          break;
         // Ignore the USER role
         case 'ROLE_USER':
         default:

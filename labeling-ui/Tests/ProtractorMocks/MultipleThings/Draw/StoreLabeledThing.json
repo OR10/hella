@@ -1,0 +1,34 @@
+{
+  "request": {
+    "method": "PUT",
+    "namedParams": true,
+    "path": "/api/task/TASKID-TASKID/labeledThing/:labeledThingId",
+    "data": {
+      "frameRange": {
+        "startFrameIndex": 0,
+        "endFrameIndex": 0
+      },
+      "incomplete": true,
+      "lineColor": "{{:lineColor}}",
+      "id": "{{:labeledThingDataId}}",
+      "taskId": "TASKID-TASKID",
+      "classes": []
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "id": "{{labeledThingId}}",
+        "rev": "1-2f9137804f4da62e1e2f08a8b7f66b5d",
+        "frameRange": {
+          "startFrameIndex": 0,
+          "endFrameIndex": 0
+        },
+        "classes": [],
+        "taskId": "TASKID-TASKID",
+        "incomplete": true,
+        "lineColor": "{{lineColor}}"
+      }
+    }
+  }
+}

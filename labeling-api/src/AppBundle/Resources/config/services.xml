@@ -8,7 +8,6 @@
         <import resource="services/database_facades.xml"/>
         <import resource="services/event_listeners.xml"/>
         <import resource="services/param_converters.xml"/>
-        <import resource="services/voters.xml"/>
         <import resource="services/helper.xml"/>
     </imports>
 
@@ -26,20 +25,6 @@
         <service id="annostation.labeling_api.annotations.driver.close_session" class="AppBundle\Annotations\Driver\CloseSession">
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="session" />
-            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
-        </service>
-
-        <service id="annostation.labeling_api.annotations.driver.forbid_readonly_tasks" class="AppBundle\Annotations\Driver\ForbidReadonlyTasks">
-            <argument type="service" id="annotation_reader" />
-            <argument type="service" id="session" />
-            <argument type="service" id="security.token_storage" />
-            <argument type="service" id="annostation.labeling_api.service.task_read_only_decider" />
-            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" priority="-256"/>
-        </service>
-
-        <service id="annostation.labeling_api.annotations.driver.check_permissions" class="AppBundle\Annotations\Driver\CheckPermissions">
-            <argument type="service" id="annotation_reader" />
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
@@ -93,20 +78,5 @@
             <argument type="service" id="fos_user.user_manager" />
         </service>
 
-        <service id="annostation.labeling_api.helper.export.shape_columns.pedestrian"
-                 class="AppBundle\Helper\Export\ShapeColumns\Pedestrian"
-                 public="false">
-        </service>
-
-        <service id="annostation.labeling_api.helper.export.shape_columns.rectangle"
-                 class="AppBundle\Helper\Export\ShapeColumns\Rectangle"
-                 public="false">
-        </service>
-
-        <service id="annostation.labeling_api.helper.export.shape_columns.cuboid"
-                 class="AppBundle\Helper\Export\ShapeColumns\Cuboid"
-                 public="false">
-            <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
-        </service>
     </services>
 </container>

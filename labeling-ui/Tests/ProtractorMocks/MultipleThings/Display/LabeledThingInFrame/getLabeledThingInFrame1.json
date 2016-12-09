@@ -1,0 +1,147 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0/LABELED-THING-ID-1",
+    "method": "GET",
+    "queryString": {
+      "limit": "5",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "LABELED-THING-IN-FRAME-ID-1",
+          "rev": "1-bdde389e428006d1413c2950c79604c4",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "pedestrian",
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 354,
+                "y": 304
+              },
+              "bottomCenter": {
+                "x": 354,
+                "y": 453
+              },
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "identifierName": "sign1",
+          "ghost": false
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 1,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "pedestrian",
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 354,
+                "y": 304
+              },
+              "bottomCenter": {
+                "x": 354,
+                "y": 453
+              },
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "identifierName": "sign1",
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 2,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "pedestrian",
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 354,
+                "y": 304
+              },
+              "bottomCenter": {
+                "x": 354,
+                "y": 453
+              },
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "identifierName": "sign1",
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 3,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "pedestrian",
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 354,
+                "y": 304
+              },
+              "bottomCenter": {
+                "x": 354,
+                "y": 453
+              },
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "identifierName": "sign1",
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 4,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "pedestrian",
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 354,
+                "y": 304
+              },
+              "bottomCenter": {
+                "x": 354,
+                "y": 453
+              },
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "identifierName": "sign1",
+          "ghost": true
+        }
+      ]
+    }
+  }
+}
+

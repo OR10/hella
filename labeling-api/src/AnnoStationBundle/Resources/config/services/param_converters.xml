@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.request.param_converter.video"
+                 class="AnnoStationBundle\Request\ParamConverter\Video">
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <tag name="request.param_converter" converter="annostation.video" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.labeling_task"
+                 class="AnnoStationBundle\Request\ParamConverter\LabelingTask">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <tag name="request.param_converter" converter="annostation.labeling_task" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.labeled_thing"
+                 class="AnnoStationBundle\Request\ParamConverter\LabeledThing">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <tag name="request.param_converter" converter="annostation.labeled_thing" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.labeled_thing_in_frame"
+                 class="AnnoStationBundle\Request\ParamConverter\LabeledThingInFrame">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+            <tag name="request.param_converter" converter="annostation.labeled_thing_in_frame" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.task_export"
+                 class="AnnoStationBundle\Request\ParamConverter\TaskExport">
+            <argument type="service" id="annostation.labeling_api.database.facade.task_export"/>
+            <tag name="request.param_converter" converter="annostation.task_export" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.project"
+                 class="AnnoStationBundle\Request\ParamConverter\Project">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <tag name="request.param_converter" converter="annostation.project" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.project_export"
+                 class="AnnoStationBundle\Request\ParamConverter\ProjectExport">
+            <argument type="service" id="annostation.labeling_api.database.facade.project_export"/>
+            <tag name="request.param_converter" converter="annostation.project_export" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.labeling_group"
+                 class="AnnoStationBundle\Request\ParamConverter\LabelingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <tag name="request.param_converter" converter="annostation.labeling_group" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.report"
+                 class="AnnoStationBundle\Request\ParamConverter\Report">
+            <argument type="service" id="annostation.labeling_api.database.facade.report"/>
+            <tag name="request.param_converter" converter="annostation.report" priority="10"/>
+        </service>
+
+        <service id="annostation.labeling_api.request.param_converter.task_configuration"
+                 class="AnnoStationBundle\Request\ParamConverter\TaskConfiguration">
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <tag name="request.param_converter" converter="annostation.task_configuration" priority="10"/>
+        </service>
+    </services>
+</container>

@@ -68,16 +68,24 @@ export default class MultiTool extends Tool {
      */
     this._toolWorking = false;
 
-    /**
-     * @type {Map}
-     * @private
-     */
-    this._toolEventHandles = new Map();
-
+    // Bind tool events to controller actions
     this._tool.onMouseDown = this._mouseDown.bind(this);
     this._tool.onMouseUp = this._mouseUp.bind(this);
     this._tool.onMouseDrag = this._mouseDrag.bind(this);
     this._tool.onMouseMove = event => $scope.$evalAsync(() => this._mouseMove(event));
+
+    // Create event callbacks
+    this._onShapeCreate = shape => {
+      this.emit('shape:create', shape);
+    };
+
+    this._onShapeUpdate = shape => {
+      this.emit('shape:update', shape);
+    };
+
+    this._onToolFinished = () => {
+      this._toolWorking = false;
+    };
 
     /**
      * @param event
@@ -86,43 +94,26 @@ export default class MultiTool extends Tool {
       this._activeTool.onKeyPress(event.keyCode);
     };
 
-    this._setDrawingTool();
-    this._registerEventHandler();
-
     if (!this._readOnly) {
       // Register Keyboard shortcuts
       this._registerShortcuts();
     }
   }
 
-  _setDrawingTool() {
-    switch (this._$scope.vm.task.drawingTool) {
+  _setDrawingTool(tool) {
+    switch (tool) {
       case 'rectangle':
-        this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperRectangle.getClass());
+        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperRectangle.getClass()));
         break;
       case 'pedestrian':
-        this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperPedestrian.getClass());
+        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperPedestrian.getClass()));
         break;
       case 'cuboid':
-        this._activeTool = this._toolService.getTool(this._$scope, this._context, PaperCuboid.getClass());
+        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperCuboid.getClass()));
         break;
       default:
-        throw new Error(`Cannot instantiate tool of unknown type ${this._$scope.vm.task.drawingTool}.`);
+        throw new Error(`Cannot instantiate tool of unknown type ${tool}.`);
     }
-  }
-
-  _registerEventHandler() {
-    this._activeTool.on('shape:create', shape => {
-      this.emit('shape:create', shape);
-    });
-
-    this._activeTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
-    });
-
-    this._activeTool.on('tool:finished', () => {
-      this._toolWorking = false;
-    });
   }
 
   _registerShortcuts() {
@@ -397,7 +388,10 @@ export default class MultiTool extends Tool {
     if (!this._toolWorking) {
       this._handleMouseMoveCursor(event.point);
     }
-    this._activeTool.onMouseMove(event);
+
+    if (this._activeTool) {
+      this._activeTool.onMouseMove(event);
+    }
   }
 
   /**
@@ -458,18 +452,30 @@ export default class MultiTool extends Tool {
         const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
 
         this._toolWorking = true;
-        this._activeTool = this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier);
+        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier));
         this._activeTool.onMouseDown(event, hitShape, hitHandle);
-
-        if (!this._toolEventHandles.has(`${hitShape.getClass}-${actionIdentifier}`)) {
-          this._registerEventHandler();
-        }
       } else {
         this._toolWorking = true;
-        this._setDrawingTool();
+        this._setDrawingTool(this._$scope.vm.selectedDrawingTool);
         this._activeTool.onMouseDown(event);
       }
     });
+  }
+
+  _setActiveToolAndRegisterEvents(tool) {
+    if (this._activeTool) {
+      // Unregister event listeners
+      this._activeTool.removeListener('shape:create', this._onShapeCreate);
+      this._activeTool.removeListener('shape:update', this._onShapeUpdate);
+      this._activeTool.removeListener('tool:finished', this._onToolFinished);
+    }
+
+    this._activeTool = tool;
+
+    // Register new event listeners
+    this._activeTool.on('shape:create', this._onShapeCreate);
+    this._activeTool.on('shape:update', this._onShapeUpdate);
+    this._activeTool.on('tool:finished', this._onToolFinished);
   }
 
   /**
@@ -503,14 +509,15 @@ export default class MultiTool extends Tool {
     if (event.shiftkey) {
       return;
     }
-
     if (!this._enabled) {
       return;
     }
     if (!this._toolWorking) {
       this._handleMouseUpCursor(event.point);
     }
-    this._activeTool.onMouseUp(event);
+    if (this._activeTool) {
+      this._activeTool.onMouseUp(event);
+    }
   }
 
   /**
@@ -560,7 +567,7 @@ export default class MultiTool extends Tool {
   }
 
   createNewDefaultShape() {
-    this._setDrawingTool();
+    this._setDrawingTool(this._$scope.vm.selectedThing.shape);
     this._activeTool.createNewDefaultShape();
   }
 }

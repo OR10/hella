@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Helper\Export\ColumnGroup;
+use AnnoStationBundle\Helper\Export\ColumnGroup;
 
 class ColumnGroupFactory
 {

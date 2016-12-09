@@ -127,27 +127,29 @@ export default class LabelSelectorController {
      */
     this.accordionControl = {};
 
-    // Handle changes of `labeledObject`s
-    $scope.$watch('vm.labeledObject', (newLabeledObject, oldLabeledObject) => {
-      if (!newLabeledObject) {
+    this.structure = null;
+
+    this.annotation = null;
+
+    this.labeledObject = null;
+
+    $scope.$watch('vm.labelStructureData', newLabelDataStructure => {
+      if (!newLabelDataStructure || !newLabelDataStructure.structure || !newLabelDataStructure.annotation || !newLabelDataStructure.labeledObject) {
         this.pages = null;
         this.activePageIndex = null;
         this.labelingInstructions = null;
         this.choices = {};
-      } else {
-        if (oldLabeledObject && oldLabeledObject.id === newLabeledObject.id) {
-          return;
-        }
-        this.activePageIndex = null;
-        this._updatePagesAndChoices();
+        this.structure = null;
+        this.annotation = null;
+        this.labeledObject = null;
+        return;
       }
-    });
 
-    // Update our Wizard View if the classes list changes
-    $scope.$watchCollection('vm.labeledObject.classes', newClasses => {
-      if (newClasses) {
-        this._updatePagesAndChoices();
-      }
+      this.activePageIndex = null;
+      this.structure = newLabelDataStructure.structure;
+      this.annotation = newLabelDataStructure.annotation;
+      this.labeledObject = newLabelDataStructure.labeledObject;
+      this._updatePagesAndChoices();
     });
 
     // Store and process choices made by the user

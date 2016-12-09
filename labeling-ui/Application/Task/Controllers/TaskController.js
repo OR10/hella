@@ -14,14 +14,13 @@ class TaskController {
    * @param {User} user
    * @param {Object} userPermissions
    * @param {LabeledFrameGateway} labeledFrameGateway
-   * @param {LabelStructureGateway} labelStructureGateway
-   * @param {TaskGateway} taskGateway
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {FrameIndexService} frameIndexService
    * @param {LockService} lockService
+   * @param {LabelStructureService} labelStructureService
    */
   constructor($scope,
               $q,
@@ -30,14 +29,13 @@ class TaskController {
               user,
               userPermissions,
               labeledFrameGateway,
-              labelStructureGateway,
-              taskGateway,
               $location,
               applicationState,
               $timeout,
               keyboardShortcutService,
               frameIndexService,
-              lockService) {
+              lockService,
+              labelStructureService) {
     // Ensure the FrameIndexService knows the currently active Task
     frameIndexService.setTask(initialData.task);
 
@@ -57,6 +55,12 @@ class TaskController {
      * @private
      */
     this._$timeout = $timeout;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
 
     /**
      * @type {string}
@@ -188,16 +192,14 @@ class TaskController {
     this._labeledFrameGateway = labeledFrameGateway;
 
     /**
-     * @type {LabelStructureGateway}
-     * @private
+     * @type {Object|null}
      */
-    this._labelStructureGateway = labelStructureGateway;
+    this.labelingStructure = null;
 
     /**
-     * @type {TaskGateway}
-     * @private
+     * @type {Object|null}
      */
-    this._taskGateway = taskGateway;
+    this.labelingAnnotation = null;
 
     /**
      * @TODO Move into LabelSelector when refactoring for different task types
@@ -224,11 +226,31 @@ class TaskController {
     this.selectedPaperShape = null;
 
     /**
+     * @type {Object[]}
+     */
+    this.drawableThings = [];
+
+    /**
+     * @type {Object|null}
+     */
+    this.labelingStructure = null;
+
+    /**
+     * @type {Object|null}
+     */
+    this.labelingAnnotation = null;
+
+    /**
      * Due to an action selected DrawingTool, which should be activated when appropriate.
      *
      * @type {string}
      */
     this.selectedDrawingTool = null;
+
+    /**
+     * @type {{id, shape, name}|null}
+     */
+    this.selectedThing = null;
 
     /**
      * @type {LabeledFrameGateway}
@@ -255,6 +277,11 @@ class TaskController {
      */
     this.thingLayer = null;
 
+    /**
+     * @type {{annotation: null, structure: null, labeledObject: null}}
+     */
+    this.labelStructureData = null;
+
     keyboardShortcutService.pushContext('labeling-task');
 
     $scope.$on('$destroy', () => {
@@ -262,6 +289,24 @@ class TaskController {
     });
 
     this._initializeLabelingStructure();
+    this._setDrawingTool();
+
+    $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+      this.labelStructureData = null;
+      if (newShape !== oldShape && newShape !== null) {
+        this._labelStructureService.getThingByThingIdentifier(this.task, newShape.labeledThingInFrame.identifierName).then(thing => {
+          this.selectedThing = thing;
+          this.selectedDrawingTool = thing.shape;
+        });
+        this._labelStructureService.getLabelStructure(this.task, newShape.labeledThingInFrame.identifierName).then(labelStructureData => {
+          this.labelStructureData = {
+            structure: labelStructureData.structure,
+            annotation: labelStructureData.annotation,
+            labeledObject: this.task.taskType === 'meta-labeling' ? this.labeledFrame : this.selectedPaperShape.labeledThingInFrame,
+          };
+        });
+      }
+    });
 
     if (this.task.taskType === 'meta-labeling') {
       $scope.$watch('vm.framePosition.position', newPosition => {
@@ -347,14 +392,43 @@ class TaskController {
     switch (this.task.taskType) {
       case 'object-labeling':
       case 'meta-labeling':
-        this._labelStructureGateway.getLabelStructureData(this.task.id).then(labelStructureData => {
-          this.labelingStructure = labelStructureData.structure;
-          this.labelingAnnotation = labelStructureData.annotation;
+        this._labelStructureService.getLabelStructure(this.task).then(labelStructureData => {
+          let labeledObject = null;
+
+          switch (this.task.type) {
+            case 'meta-labeling':
+              labeledObject = this.labeledFrame;
+              break;
+            default:
+              if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
+                labeledObject = this.selectedPaperShape.labeledThingInFrame;
+              }
+          }
+
+          this.labelStructureData = {
+            structure: labelStructureData.structure,
+            annotation: labelStructureData.annotation,
+            labeledObject,
+          };
+        });
+        this._labelStructureService.getDrawableThings(this.task).then(drawableThings => {
+          this.drawableThings = drawableThings;
         });
         break;
       default:
         throw new Error(`Unknown task type ${this.task.taskType}.`);
     }
+  }
+
+  _setDrawingTool() {
+    this._labelStructureService.getDrawableThings(this.task).then(drawableThings => {
+      if (drawableThings.length > 0) {
+        this.selectedThing = drawableThings[0];
+        this.selectedDrawingTool = drawableThings[0].shape;
+      } else {
+        throw new Error('No drawing tools available');
+      }
+    });
   }
 
   /**
@@ -437,14 +511,13 @@ TaskController.$inject = [
   'user',
   'userPermissions',
   'labeledFrameGateway',
-  'labelStructureGateway',
-  'taskGateway',
   '$location',
   'applicationState',
   '$timeout',
   'keyboardShortcutService',
   'frameIndexService',
   'lockService',
+  'labelStructureService',
 ];
 
 export default TaskController;

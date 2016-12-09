@@ -38,7 +38,7 @@ class Report extends WorkerPoolBundle\JobInstruction
      * @param Job                        $job
      * @param Logger\Facade\LoggerFacade $logger
      */
-    public function run(Job $job, Logger\Facade\LoggerFacade $logger)
+    protected function runJob(Job $job, Logger\Facade\LoggerFacade $logger)
     {
         /** @var Jobs\Report $job */
         $report = $this->reportFacade->find($job->getReportId());

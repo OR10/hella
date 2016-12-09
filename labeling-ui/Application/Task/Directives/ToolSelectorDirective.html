@@ -1,0 +1,10 @@
+<div class="tool-selector grid-block vertical">
+    <button class="tool-button tool-{{$index}}"
+            ng-class="{'active': thing.id === vm.selectedThing.id}"
+            ng-click="vm.setCurrentThing(thing)"
+            ng-repeat="thing in vm.drawableThings"
+            tooltip="{{thing.name}}"
+    >
+        <i class="icon icon-tool-{{thing.shape}}"></i>
+    </button>
+</div>

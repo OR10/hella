@@ -1,0 +1,317 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0/LABELED-THING-ID-4",
+    "method": "GET",
+    "queryString": {
+      "limit": "5",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "LABELED-THING-IN-FRAME-ID-4",
+          "rev": "1-3d594b9ace310cff33de98c4c8a4afbb",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "cuboid3d",
+              "id": "SHAPE-ID-4",
+              "vehicleCoordinates": [
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  0
+                ],
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-4",
+          "incomplete": true,
+          "identifierName": "sign2",
+          "ghost": false
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 1,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "cuboid3d",
+              "id": "SHAPE-ID-4",
+              "vehicleCoordinates": [
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  0
+                ],
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-4",
+          "incomplete": true,
+          "identifierName": "sign2",
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 2,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "cuboid3d",
+              "id": "SHAPE-ID-4",
+              "vehicleCoordinates": [
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  0
+                ],
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-4",
+          "incomplete": true,
+          "identifierName": "sign2",
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 3,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "cuboid3d",
+              "id": "SHAPE-ID-4",
+              "vehicleCoordinates": [
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  0
+                ],
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-4",
+          "incomplete": true,
+          "identifierName": "sign2",
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 4,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "cuboid3d",
+              "id": "SHAPE-ID-4",
+              "vehicleCoordinates": [
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  1.4374186936247
+                ],
+                [
+                  8.6399620027072,
+                  -1.4381892717154,
+                  0
+                ],
+                [
+                  10.81505644649,
+                  0.4156515816514,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  1.4374186936247
+                ],
+                [
+                  9.4767449652384,
+                  -2.4237226993948,
+                  0
+                ],
+                [
+                  11.651839409021,
+                  -0.56988184602795,
+                  0
+                ]
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-4",
+          "incomplete": true,
+          "identifierName": "sign2",
+          "ghost": true
+        }
+      ]
+    }
+  }
+}
+
