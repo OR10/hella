@@ -288,7 +288,7 @@ class TaskController {
       if (newShape !== oldShape && newShape !== null) {
         this._labelStructurePromise
           .then(labelStructure => {
-            const thingIdentifier = newShape.labeledThingInFrame.identifierName;
+            const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
             const labelStructureThing = labelStructure.getThingById(thingIdentifier);
 
             this.selectedLabelStructureThing = labelStructureThing;
