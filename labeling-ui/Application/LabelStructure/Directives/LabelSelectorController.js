@@ -211,6 +211,7 @@ export default class LabelSelectorController {
       }
 
       this._storeUpdatedLabeledObject();
+      this._updatePagesAndChoices();
     }, true);
 
     $scope.$watch('vm.activePageIndex', newPageIndex => {
@@ -302,14 +303,17 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledObject() {
+    // Store reference in case it is changed while being stored.
+    const selectedLabeledObject = this.selectedLabeledObject;
+
     switch (true) {
-      case this.selectedLabeledObject instanceof LabeledThingInFrame:
-        this._storeUpdatedLabeledThingInFrame(this.selectedLabeledObject)
-          .then(() => this._$rootScope.$emit('shape:class-update:after', this.selectedLabeledObject.classes));
+      case selectedLabeledObject instanceof LabeledThingInFrame:
+        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
-      case this.selectedLabeledObject instanceof LabeledFrame:
-        this._storeUpdatedLabeledFrame(this.selectedLabeledObject)
-          .then(() => this._$rootScope.$emit('shape:class-update:after', this.selectedLabeledObject.classes));
+      case selectedLabeledObject instanceof LabeledFrame:
+        this._storeUpdatedLabeledFrame(selectedLabeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
