@@ -2,12 +2,12 @@
 namespace AnnoStationBundle\Service\Exporter;
 
 use AppBundle\Model;
-use AppBundle\Helper\Iterator;
-use AppBundle\Database\Facade;
-use AppBundle\Helper\Export;
-use AppBundle\Helper\Export\Column;
+use AnnoStationBundle\Helper\Iterator;
+use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Helper\Export;
+use AnnoStationBundle\Helper\Export\Column;
 use AnnoStationBundle\Service;
-use AppBundle\Helper\Export\ColumnGroup;
+use AnnoStationBundle\Helper\Export\ColumnGroup;
 
 class GenericXmlProjectToCsv
 {

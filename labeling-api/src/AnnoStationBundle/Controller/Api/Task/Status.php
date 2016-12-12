@@ -3,10 +3,10 @@
 namespace AnnoStationBundle\Controller\Api\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;

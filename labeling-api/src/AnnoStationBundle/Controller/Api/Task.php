@@ -4,10 +4,11 @@ namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 use AnnoStationBundle\Service;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -39,7 +40,7 @@ class Task extends Controller\Base
     private $frameCdn;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -62,7 +63,7 @@ class Task extends Controller\Base
      * @param Facade\Video          $videoFacade
      * @param Facade\LabelingTask   $labelingTaskFacade
      * @param Service\FrameCdn      $frameCdn
-     * @param Facade\User           $userFacade
+     * @param AppFacade\User        $userFacade
      * @param Facade\Project        $projectFacade
      * @param Storage\TokenStorage  $tokenStorage
      * @param Service\Authorization $authorizationService
@@ -71,7 +72,7 @@ class Task extends Controller\Base
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Service\FrameCdn $frameCdn,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService
@@ -100,13 +101,14 @@ class Task extends Controller\Base
         $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
         $taskPhase  = $request->query->get('phase');
         $taskStatus = $request->query->get('taskStatus');
+        /** @var Model\User $user */
         $user       = $this->tokenStorage->getToken()->getUser();
 
         $project = null;
         if ($request->query->has('project')) {
             $project = $this->projectFacade->find($request->query->get('project'));
 
-            if (!$this->userFacade->hasPermissionForProject($user, $project)) {
+            if (!$project->isAccessibleBy($user)) {
                 throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
             }
         }
@@ -141,9 +143,7 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
-                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator()
-                    || $this->userFacade->isAdmin()
-                ) {
+                if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN])) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_DONE,
                         $project,
@@ -155,14 +155,13 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
-                if ($this->userFacade->isLabeler() || $this->userFacade->isLabelCoordinator()
-                    || $this->userFacade->isAdmin()
-                ) {
+                if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN])) {
                     $tasks                  = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
                         $project,
                         $offset,
                         $limit
                     )->toArray();
+
                     $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
                         $project
                     );
@@ -211,7 +210,7 @@ class Task extends Controller\Base
 
         $project = $this->projectFacade->find($task->getProjectId());
         $user    = $this->tokenStorage->getToken()->getUser();
-        if (!$this->userFacade->hasPermissionForProject($user, $project)) {
+        if (!$project->isAccessibleBy($user)) {
             throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
         }
 

@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service\Exporter;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shape;
 use AnnoStationBundle\Service;

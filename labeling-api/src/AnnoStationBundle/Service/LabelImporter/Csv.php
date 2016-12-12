@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service\LabelImporter;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Helper\ProgressIndicator;
 use AppBundle\Model;
 use AnnoStationBundle\Service;

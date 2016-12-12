@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Controller\Api\Project\Exception\Missing3dVideoCalibrationData;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use crosscan\Logger\Facade\LoggerFacade;
@@ -223,16 +223,6 @@ class TaskCreator
                     }
 
                     $this->checkGenericXmlTaskInstructionPermissions($genericXmlTaskInstruction, $user);
-
-                    /**
-                     * Temporary skip requirement xml configuration
-                     * This is still in development phase
-                     *
-                     * @TODO REMOVE THIS CHECK LATER
-                     */
-                    if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
-                        continue;
-                    }
 
                     if ($taskConfiguration instanceof Model\TaskConfiguration\SimpleXml) {
                         if ($genericXmlTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {

@@ -7,10 +7,129 @@
         <service id="annostation.labeling_api.command.rabbit_mq" class="AnnoStationBundle\Command\WorkerPool\Setup">
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.worker_starter" class="AnnoStationBundle\Command\WorkerPool\Starter">
+        <service id="annostation.labeling_api.command.worker_starter"
+                 class="AnnoStationBundle\Command\WorkerPool\Starter">
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.queue_maintainer" class="AnnoStationBundle\Command\WorkerPool\Maintainer">
+        <service id="annostation.labeling_api.command.queue_maintainer"
+                 class="AnnoStationBundle\Command\WorkerPool\Maintainer">
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.init" class="AnnoStationBundle\Command\Init">
+            <argument type="service" id="doctrine_couchdb.client.default_connection"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
+            <argument>%database_name%</argument>
+            <argument>%user_password%</argument>
+            <argument>%cache_dir%</argument>
+            <argument>%frame_cdn_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.import_video_command" class="AnnoStationBundle\Command\ImportVideo">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.import_videos_command" class="AnnoStationBundle\Command\ImportVideos">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.project_to_project_task_mover"
+                 class="AnnoStationBundle\Command\ProjectToProjectTaskMover">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.create_label_structure"
+                 class="AnnoStationBundle\Command\CreateLabelStructure">
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.video_calibration_to_calibration_doc"
+                 class="AnnoStationBundle\Command\VideoCalibrationToCalibrationDoc">
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.import_labeling_csv_file"
+                 class="AnnoStationBundle\Command\ImportLabelingCsvFile">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.label_structure"/>
+            <argument type="service" id="annostation.labeling_api.service.label_importer.csv"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.labeling_task_remove_predefined_classes"
+                 class="AnnoStationBundle\Command\LabelingTaskRemovePredefinedClasses">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.add_default_project_user_id"
+                 class="AnnoStationBundle\Command\AddDefaultProjectUserId">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.assign_default_labeling_group"
+                 class="AnnoStationBundle\Command\AssignDefaultLabelingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.project.cleanup_batch_upload_directory"
+                 class="AnnoStationBundle\Command\Project\CleanupBatchUploadDirectory">
+            <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.warmup_couchdb_views"
+                 class="AnnoStationBundle\Command\WarmUpCouchDbViews">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.migrations.set_missing_label_instructions_in_projects"
+                 class="AnnoStationBundle\Command\Migrations\SetMissingLabelInstructionsInProjects"
+        >
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.migrations.convert_preporcessing_phase"
+                 class="AnnoStationBundle\Command\Migrations\ConvertPreporcessingPhase"
+        >
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.redeliver_failed_processed_videos"
+                 class="AnnoStationBundle\Command\RedeliverFailedProcessedVideos"
+        >
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.migrations.redeliver_unconverted_videos"
+                 class="AnnoStationBundle\Command\Migrations\RedeliverUnconvertedVideos"
+        >
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="annostation.labeling_api.command.migrations.add_prefix_to_username_and_email"
+                 class="AnnoStationBundle\Command\Migrations\AddPrefixToUsernameAndEmail"
+        >
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <tag name="console.command"/>
         </service>
     </services>

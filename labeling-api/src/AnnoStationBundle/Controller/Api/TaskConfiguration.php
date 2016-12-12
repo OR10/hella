@@ -2,8 +2,8 @@
 namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\CheckPermissions;
-use AppBundle\Response;
+use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Response;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
@@ -11,8 +11,8 @@ use AppBundle\View;
 use AppBundle\Model\TaskConfiguration as TaskConfigurationModel;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
-use \AppBundle\Model;
-use \AppBundle\Database\Facade;
+use AppBundle\Model;
+use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
@@ -103,11 +103,13 @@ class TaskConfiguration extends Controller\Base
      */
     public function getTaskConfigurationAction(Model\TaskConfiguration $taskConfiguration)
     {
+        /**
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $taskConfiguration->getUserId()) {
             throw new BadRequestHttpException();
         }
+        */
 
         return new View\View(
             new Response\SimpleTaskConfiguration($taskConfiguration)
@@ -125,11 +127,13 @@ class TaskConfiguration extends Controller\Base
      */
     public function getTaskConfigurationFileAction(Model\TaskConfiguration $taskConfiguration)
     {
+        /*
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $taskConfiguration->getUserId()) {
             throw new BadRequestHttpException();
         }
+        */
         
         return new HttpFoundation\Response(
             $taskConfiguration->getRawData(),

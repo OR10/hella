@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 
 /**

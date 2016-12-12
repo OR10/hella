@@ -1,9 +1,9 @@
 <?php
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
-use AppBundle\Helper\Iterator;
+use AnnoStationBundle\Helper\Iterator;
 
 class LabelingTaskIteratorFactory
 {

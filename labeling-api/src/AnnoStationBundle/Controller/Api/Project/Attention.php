@@ -3,16 +3,17 @@
 namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ForbidReadonlyTasks;
-use AppBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -33,7 +34,7 @@ class Attention extends Controller\Base
     private $videoFacade;
 
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -45,7 +46,7 @@ class Attention extends Controller\Base
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade
     ) {
         $this->labelingTaskFacade = $labelingTaskFacade;

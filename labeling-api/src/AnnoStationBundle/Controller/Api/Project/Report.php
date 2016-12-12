@@ -3,9 +3,10 @@
 namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
+use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
@@ -15,7 +16,7 @@ use AnnoStationBundle\Worker\Jobs;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -39,7 +40,7 @@ class Report extends Controller\Base
      */
     private $authorizationService;
     /**
-     * @var Facade\User
+     * @var AppFacade\User
      */
     private $userFacade;
 
@@ -59,7 +60,7 @@ class Report extends Controller\Base
      * @param Facade\Report         $reportFacade
      * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Service\Authorization $authorizationService
-     * @param Facade\User           $userFacade
+     * @param AppFacade\User        $userFacade
      * @param Facade\Project        $projectFacade
      * @param Facade\Video          $videoFacade
      */
@@ -67,7 +68,7 @@ class Report extends Controller\Base
         Facade\Report $reportFacade,
         AMQP\FacadeAMQP $amqpFacade,
         Service\Authorization $authorizationService,
-        Facade\User $userFacade,
+        AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade
     ) {

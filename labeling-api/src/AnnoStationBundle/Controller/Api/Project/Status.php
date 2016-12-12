@@ -3,10 +3,10 @@
 namespace AnnoStationBundle\Controller\Api\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AppBundle\Annotations\ForbidReadonlyTasks;
-use AppBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;

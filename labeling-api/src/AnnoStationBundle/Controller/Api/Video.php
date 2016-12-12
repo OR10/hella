@@ -4,13 +4,13 @@ namespace AnnoStationBundle\Controller\Api;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Response;
+use AnnoStationBundle\Response;
 
 /**
  * @Rest\Prefix("/api/video")

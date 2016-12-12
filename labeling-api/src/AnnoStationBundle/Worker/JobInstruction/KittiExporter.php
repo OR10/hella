@@ -5,7 +5,7 @@ namespace AnnoStationBundle\Worker\JobInstruction;
 use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
-use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;
@@ -38,7 +38,7 @@ class KittiExporter extends WorkerPoolBundle\JobInstruction
      * @param Job                        $job
      * @param Logger\Facade\LoggerFacade $logger
      */
-    public function run(Job $job, Logger\Facade\LoggerFacade $logger)
+    protected function runJob(Job $job, Logger\Facade\LoggerFacade $logger)
     {
         /** @var Jobs\KittiExporter $job */
         $task = $this->labelingTaskFacade->find($job->getTaskId());
