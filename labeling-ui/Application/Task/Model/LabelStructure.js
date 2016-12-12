@@ -14,10 +14,11 @@ class LabelStructure {
    * defined by the utilized {@link LabelStructure}.
    *
    * @abstract
+   * @param {LabelStructureThing} thing
    * @param {Array.<string>} classList
    * @return {Array.<object>}
    */
-  getEnabledThingClassesForClassList(classList) { // eslint-disable-line no-unused-vars
+  getEnabledThingClassesForThingAndClassList(thing, classList) { // eslint-disable-line no-unused-vars
     throw new Error('Abstract method must be implemented in child class');
   }
 
@@ -25,7 +26,7 @@ class LabelStructure {
    * Retrieve a `Map` of all `Things` defined inside the {@link LabelStructure}.
    *
    * @abstract
-   * @return {Map.<string, {id: string, name: string, tool: string}>}
+   * @return {Map.<string, LabelStructureThing>}
    */
   getThings() {
     throw new Error('Abstract method must be implemented in child class');
@@ -37,15 +38,26 @@ class LabelStructure {
    * In case an invalid (not defined) `identifier` is specified an exception is thrown.
    *
    * @param {string} identifier
-   * @returns {{id: string, name: string, tool: string}}
+   * @returns {LabelStructureThing}
    */
   getThingById(identifier) {
-    const things = this.getThings();
-    if (!things.has(identifier)) {
+    if (!this.isThingDefinedById(identifier)) {
       throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`);
     }
 
+    const things = this.getThings();
     return things.get(identifier);
+  }
+
+  /**
+   * Retrieve information about whether a thing with a specific id is defined inside this {@link LabelStructure}
+   *
+   * @param {string} identifier
+   * @returns {boolean}
+   */
+  isThingDefinedById(identifier) {
+    const things = this.getThings();
+    return things.has(identifier);
   }
 }
 

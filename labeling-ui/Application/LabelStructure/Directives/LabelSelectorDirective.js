@@ -7,7 +7,9 @@ import LabelSelectorController from './LabelSelectorController';
 export default class LabelSelectorDirective {
   constructor() {
     this.scope = {
-      labelStructureData: '=',
+      labelStructure: '=',
+      selectedLabeledObject: '=',
+      selectedLabelStructureThing: '=',
       task: '=',
       framePosition: '=',
       isCompleted: '=?',

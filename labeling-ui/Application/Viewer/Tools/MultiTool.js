@@ -567,7 +567,7 @@ export default class MultiTool extends Tool {
   }
 
   createNewDefaultShape() {
-    this._setDrawingTool(this._$scope.vm.selectedThing.shape);
+    this._setDrawingTool(this._$scope.vm.selectedLabelStructureThing.shape);
     this._activeTool.createNewDefaultShape();
   }
 }
