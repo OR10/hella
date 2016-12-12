@@ -87,9 +87,11 @@ class PolygonDrawingTool extends DrawingTool {
 
     if (this._polygon) {
       this._polygon.addPoint(point);
+      return;
     }
 
     this._startPosition = point;
+    this.emit('tool:finished');
   }
 
   _getHandleCountRestrictions() {
