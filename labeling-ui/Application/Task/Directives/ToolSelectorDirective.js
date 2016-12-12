@@ -8,7 +8,7 @@ class ToolSelectorDirective {
   constructor() {
     this.scope = {
       drawableThings: '=',
-      selectedThing: '=',
+      selectedLabelStructureThing: '=',
       selectedDrawingTool: '=',
       selectedPaperShape: '=',
     };

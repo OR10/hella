@@ -1,10 +1,15 @@
+import LegacyLabelStructure from '../Model/LabelStructure/LegacyLabelStructure';
+import RequirementsLabelStructure from '../Model/LabelStructure/RequirementsLabelStructure';
+
 class LabelStructureService {
   /**
    * @param {$q} $q
    * @param {AbortablePromiseFactory} abortablePromise
    * @param {LabelStructureDataService} labelStructureDataService
+   * @param {LinearLabelStructureVisitor} linearLabelStructureVisitor
+   * @param {AnnotationLabelStructureVisitor} annotationLabelStructureVisitor
    */
-  constructor($q, abortablePromise, labelStructureDataService) {
+  constructor($q, abortablePromise, labelStructureDataService, linearLabelStructureVisitor, annotationLabelStructureVisitor) {
     /**
      * @type {$q}
      * @private
@@ -24,227 +29,118 @@ class LabelStructureService {
     this._labelStructureDataService = labelStructureDataService;
 
     /**
-     * @type {Map}
+     * @type {LinearLabelStructureVisitor}
      * @private
      */
-    this._labelStructureMapping = new Map();
+    this._linearLabelStructureVisitor = linearLabelStructureVisitor;
+
+    /**
+     * @type {AnnotationLabelStructureVisitor}
+     * @private
+     */
+    this._annotationLabelStructureVisitor = annotationLabelStructureVisitor;
 
     /**
      * @type {Map}
      * @private
      */
-    this._drawableThingsMapping = new Map();
-
-    /**
-     * @type {Map}
-     * @private
-     */
-    this._thingIdentifierMapping = new Map();
+    this._labelStructureCache = new Map();
   }
 
   /**
+   * Retrieve a {@link LabelStructure} object for the given {@link Task}
+   *
    * @param {Task} task
-   * @param {LabeledThingInFrame} thingIdentifier
-   * @return {AbortablePromise<{structure, annotation}>}
+   * @return {AbortablePromise<LabelStructure>}
    */
-  getLabelStructure(task, thingIdentifier = null) {
-    const cacheKey = `${task.id}-${thingIdentifier}`;
+  getLabelStructure(task) {
+    const cacheKey = `${task.id}`;
 
-    if (this._labelStructureMapping.has(cacheKey)) {
-      const labelStructure = this._labelStructureMapping.get(cacheKey);
+    if (this._labelStructureCache.has(cacheKey)) {
+      const labelStructure = this._labelStructureCache.get(cacheKey);
       return this._abortablePromise(this._$q.resolve(labelStructure));
     }
 
-    return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId)
+    return this._labelStructureDataService.getLabelStructureTypeForTask(task.taskConfigurationId)
       .then(type => {
         switch (type) {
           case 'requirements':
-            return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId)
-              .then(requirementsFile => {
-                const structure = this._getLabelStructureAndAnnotationByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier);
-                this._labelStructureMapping.set(cacheKey, structure);
-                return structure;
-              });
+            return this._getLabelStructureOfTypeRequirements(task);
           case 'simple':
+            return this._getLabelStructureOfTypeLegacy(task);
           case 'legacy':
-            return this._labelStructureDataService.getLabelStructure(task.id)
-              .then(structure => {
-                this._labelStructureMapping.set(cacheKey, structure);
-                return structure;
-              });
+            return this._getLabelStructureOfTypeLegacy(task);
           default:
-            throw new Error(`Unknown task structure type "${type}"`);
+            throw new Error(`Unknown LabelStructure type '${type}' for task '${task.id}.`);
         }
+      })
+      .then(labelStructure => {
+        this._labelStructureCache.set(cacheKey, labelStructure);
+        return labelStructure;
       });
   }
 
-
   /**
+   * Retrieve and return a {@link LegacyLabelStructure}
+   *
+   * The method assumes the given task is one with a legacy type label structure
+   *
    * @param {Task} task
-   * @return {AbortablePromise<Array.<{id, tool, name}>>}
+   * @returns {AbortablePromise.<LegacyLabelStructure>}
+   * @private
    */
-  getDrawableThings(task) {
-    const cacheKey = task.id;
-    if (this._drawableThingsMapping.has(cacheKey)) {
-      const drawableThings = this._drawableThingsMapping.get(cacheKey);
-      return this._abortablePromise(this._$q.resolve(drawableThings));
-    }
-
-    return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId)
-      .then(type => {
-        switch (type) {
-          case 'requirements':
-            return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId)
-              .then(requirementsFile => {
-                const drawableThings = this._getDrawableThingsFromRequirementsFile(requirementsFile);
-                this._drawableThingsMapping.set(cacheKey, drawableThings);
-                return drawableThings;
-              });
-          case 'simple':
-          case 'legacy':
-            const legacyThing = {
-              id: task.drawingTool,
-              name: task.drawingTool,
-              shape: task.drawingTool,
-            };
-            const drawableThings = [legacyThing];
-            this._drawableThingsMapping.set(cacheKey, drawableThings);
-            return drawableThings;
-          default:
-            throw new Error(`Unknown task structure type ${type}`);
-        }
+  _getLabelStructureOfTypeLegacy(task) {
+    return this._labelStructureDataService.getLegacyLabelStructureAndAnnotation(task.id)
+      .then(legacyStructureAndAnnotation => {
+        const {structure, annotation} = legacyStructureAndAnnotation;
+        return this._createLegacyLabelStructure(task.drawingTool, structure, annotation);
       });
   }
 
   /**
-   * @param {string} taskConfigurationId
-   * @param {string} thingIdentifier
-   * @return {AbortablePromise<string>}
-   */
-  getToolByThingIdentifier(taskConfigurationId, thingIdentifier) {
-    return this.getThingByThingIdentifier(taskConfigurationId, thingIdentifier)
-      .then(thing => {
-        return thing.tool;
-      });
-  }
-
-  /**
+   * Retrieve and return a {@link RequirementsLabelStructure}
+   *
+   * The method assumes the given task is one with a requirements type label structure
+   *
    * @param {Task} task
-   * @param {string} thingIdentifier
-   * @return {AbortablePromise<{id, shape, tool}>}
+   * @returns {AbortablePromise.<RequirementsLabelStructure>}
+   * @private
    */
-  getThingByThingIdentifier(task, thingIdentifier) {
-    const cacheKey = `${task}-${thingIdentifier}`;
-    if (this._thingIdentifierMapping.has(cacheKey)) {
-      const thing = this._thingIdentifierMapping.get(cacheKey);
-      return this._abortablePromise(this._$q.resolve(thing));
-    }
-
-    return this._labelStructureDataService.getTaskStructureType(task.taskConfigurationId)
-      .then(type => {
-        switch (type) {
-          case 'requirements':
-            return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId)
-              .then(file => {
-                const thing = this._getThingByThingIdentifierFromRequirementsFile(file, thingIdentifier);
-                this._thingIdentifierMapping.set(cacheKey, thing);
-                return thing;
-              });
-          case 'simple':
-          case 'legacy':
-            return this.getDrawableThings(task)
-              .then(drawableThings => {
-                const legacyThing = drawableThings[0];
-                return legacyThing;
-              });
-          default:
-            throw new Error(`Unknown Task structure type: ${type}.`);
-        }
+  _getLabelStructureOfTypeRequirements(task) {
+    return this._labelStructureDataService.getRequirementsFile(task.taskConfigurationId)
+      .then(requirementsFile => {
+        return this._createRequirementsLabelStructure(requirementsFile.data);
       });
   }
 
   /**
-   * @param {{data: string}} requirementsFile
-   * @param {string} thingIdentifier
-   * @returns {{id: *, shape: *, name: *}}
+   * Create and return a new {@link LegacyLabelStructure}
+   *
+   * @param {string} drawingTool
+   * @param {LegacyLabelStructureInterface} legacyStructure
+   * @param {object} legacyAnnotation
+   * @returns {LegacyLabelStructure}
    * @private
    */
-  _getThingByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(requirementsFile.data, 'application/xml');
-    const thing = doc.getElementById(thingIdentifier);
-
-    if (!thing) {
-      throw new Error(`No thing with the given id ${thingIdentifier}`);
-    }
-
-    return {
-      id: thing.attributes.id.value,
-      shape: thing.attributes.shape.value,
-      name: thing.attributes.name.value,
-    };
+  _createLegacyLabelStructure(drawingTool, legacyStructure, legacyAnnotation) {
+    return new LegacyLabelStructure(
+      this._linearLabelStructureVisitor,
+      this._annotationLabelStructureVisitor,
+      drawingTool,
+      legacyStructure,
+      legacyAnnotation
+    );
   }
 
   /**
-   * @param {{data:string}} requirementsFile
+   * Create and return a new {@link RequirementsLabelStructure}
+   *
+   * @param {string} requirementsData
+   * @returns {RequirementsLabelStructure}
    * @private
    */
-  _getDrawableThingsFromRequirementsFile(requirementsFile) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(requirementsFile.data, 'application/xml');
-
-    const thingElements = Array.from(doc.getElementsByTagName('thing'));
-
-    const drawableThings = thingElements.map(thingElement => {
-      return {
-        id: thingElement.attributes.id.value,
-        shape: thingElement.attributes.shape.value,
-        name: thingElement.attributes.name.value,
-      };
-    });
-
-    return drawableThings;
-  }
-
-  /**
-   * @param {{data: string}}requirementsFile
-   * @param {string} thingIdentifier
-   * @returns {{structure: {name: string, children: Array}, annotation: {}}}
-   * @private
-   */
-  _getLabelStructureAndAnnotationByThingIdentifierFromRequirementsFile(requirementsFile, thingIdentifier) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(requirementsFile.data, 'application/xml');
-
-    const structure = {name: 'root', children: []};
-    const annotation = {};
-
-    if (thingIdentifier === null) {
-      // Return empty structure if no thingIdentifier is available
-      return {structure, annotation};
-    }
-
-    const thingElement = doc.getElementById(thingIdentifier);
-    const classElements = Array.from(thingElement.children);
-
-    classElements.forEach(classElement => {
-      annotation[classElement.attributes.id.value] = {challenge: classElement.attributes.name.value};
-
-      const labelStructureChildren = [];
-      const valueElements = Array.from(classElement.children);
-
-      valueElements.forEach(valueElement => {
-        annotation[valueElement.attributes.id.value] = {response: valueElement.attributes.name.value};
-        labelStructureChildren.push({name: valueElement.attributes.id.value});
-      });
-
-      structure.children.push({
-        name: classElement.attributes.id.value,
-        children: labelStructureChildren,
-      });
-    });
-
-    return {structure, annotation};
+  _createRequirementsLabelStructure(requirementsData) {
+    return new RequirementsLabelStructure(requirementsData);
   }
 }
 
@@ -252,6 +148,8 @@ LabelStructureService.$inject = [
   '$q',
   'abortablePromiseFactory',
   'labelStructureDataService',
+  'linearLabelStructureVisitor',
+  'annotationLabelStructureVisitor',
 ];
 
 export default LabelStructureService;

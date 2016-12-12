@@ -1,0 +1,71 @@
+[
+  {
+    "name": "sign-type",
+    "metadata": {
+      "challenge": "Sign type",
+      "value": "speed-sign"
+    },
+    "children": [
+      {
+        "name": "u-turn",
+        "metadata": {
+          "response": "U-Turn"
+        }
+      },
+      {
+        "name": "speed-sign",
+        "metadata": {
+          "response": "Speed sign"
+        }
+      }
+    ]
+  },
+  {
+    "name": "speed-limit",
+    "metadata": {
+      "challenge": "Speed limit",
+      "value": null
+    },
+    "children": [
+      {
+        "name": "speed-30",
+        "metadata": {
+          "response": "Speed Limit 30"
+        }
+      },
+      {
+        "name": "speed-100",
+        "metadata": {
+          "response": "Speed Limit 100"
+        }
+      }
+    ]
+  },
+  {
+    "name": "limited-by-type",
+    "metadata": {
+      "challenge": "Limited by type",
+      "value": null
+    },
+    "children": [
+      {
+        "name": "no-type-limit",
+        "metadata": {
+          "response": "No type limit"
+        }
+      },
+      {
+        "name": "only-car",
+        "metadata": {
+          "response": "Only car"
+        }
+      },
+      {
+        "name": "only-truck",
+        "metadata": {
+          "response": "Only truck"
+        }
+      }
+    ]
+  }
+]

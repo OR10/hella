@@ -9,10 +9,10 @@ class ToolSelectorController {
    * @param {{id, shape, name}} thing
    */
   setCurrentThing(thing) {
-    this.selectedThing = thing;
+    this.selectedLabelStructureThing = thing;
     this.selectedDrawingTool = thing.shape;
 
-    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame.identifierName !== this.selectedThing.id) {
+    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame.identifierName !== this.selectedLabelStructureThing.id) {
       this.selectedPaperShape = null;
     }
   }

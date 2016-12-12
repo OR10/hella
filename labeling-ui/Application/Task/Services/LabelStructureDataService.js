@@ -47,7 +47,7 @@ class LabelStructureDataService {
    * @param {string} taskConfigurationId
    * @return {AbortablePromise<string>}
    */
-  getTaskStructureType(taskConfigurationId) {
+  getLabelStructureTypeForTask(taskConfigurationId) {
     const cacheKey = taskConfigurationId;
     if (this._taskStructureTypeMapping.has(cacheKey)) {
       const type = this._taskStructureTypeMapping.get(cacheKey);
@@ -70,9 +70,9 @@ class LabelStructureDataService {
 
   /**
    * @param taskId
-   * @return {AbortablePromise<{structure, annotation}>}
+   * @return {AbortablePromise<{structure: LegacyLabelStructureInterface, annotation: object}>}
    */
-  getLabelStructure(taskId) {
+  getLegacyLabelStructureAndAnnotation(taskId) {
     const cacheKey = taskId;
     if (this._labelStructureDataMapping.has(cacheKey)) {
       const labelStructure = this._labelStructureDataMapping.get(cacheKey);

@@ -13,7 +13,7 @@ export default class ViewerDirective {
       selectedPaperShape: '=',
       activeTool: '=',
       selectedDrawingTool: '=',
-      selectedThing: '=',
+      selectedLabelStructureThing: '=',
       task: '=',
       taskPhase: '@',
       video: '=',
