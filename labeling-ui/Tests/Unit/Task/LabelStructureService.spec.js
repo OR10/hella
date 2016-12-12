@@ -1,6 +1,7 @@
 import {inject} from 'angular-mocks';
 import angular from 'angular';
 
+import LabelStructureModule from 'Application/LabelStructure/LabelStructure';
 import TaskModule from 'Application/Task/TaskModule';
 import CommonModule from 'Application/Common/Common';
 
@@ -56,6 +57,10 @@ describe('LabelStructureService', () => {
     const taskModule = new TaskModule();
     taskModule.registerWithAngular(angular);
     module('AnnoStation.Task');
+
+    const labelStructureModule = new LabelStructureModule();
+    labelStructureModule.registerWithAngular(angular);
+    module('AnnoStation.LabelStructure');
 
     module($provide => {
       $provide.value('labelStructureDataService', labelStructureDataServiceMock);
