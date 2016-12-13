@@ -4,7 +4,7 @@
     "namedParams": true,
     "method": "PUT",
     "data": {
-      "identifierName": "cuboid",
+      "identifierName": "legacy",
       "frameIndex": 0,
       "incomplete": true,
       "labeledThingId": "{{:labeledThingId}}",
