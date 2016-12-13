@@ -23,32 +23,11 @@ abstract class TaskConfigurationXmlConverter
      */
     private function loadXmlDocument($xml)
     {
-        /**
-         * Inline Error handler, which would otherwise be a public method on the class
-         *
-         * @param $errno
-         * @param $errstr
-         * @param $errfile
-         * @param $errline
-         *
-         * @return bool
-         * @throws \DOMException
-         */
-        $errorHandler = function ($errno, $errstr, $errfile, $errline) {
-            if (
-                $errno === E_WARNING &&
-                strpos($errstr, "DOMDocument::loadXML()") != -1
-            ) {
-                throw new \DOMException($errstr);
-            }
-
-            return false;
-        };
-
-        set_error_handler($errorHandler);
         $document = new \DOMDocument();
-        $document->loadXML($xml, LIBXML_COMPACT | LIBXML_NONET);
-        restore_error_handler();
+        if (!$document->loadXML($xml, LIBXML_COMPACT | LIBXML_NONET)) {
+            $error = libxml_get_last_error();
+            throw new \DOMException($error->message);
+        }
 
         return $document;
     }
