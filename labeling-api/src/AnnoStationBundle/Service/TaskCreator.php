@@ -116,6 +116,10 @@ class TaskCreator
                 'cuboid'     => [
                     'minimalHeight' => 15,
                 ],
+                'polygon'     => [
+                    'minHandles' => 3,
+                    'maxHandles' => 15,
+                ],
             ];
 
             $taskVideoSettings   = $project->getTaskVideoSettings();

@@ -181,6 +181,12 @@ class TaskConfiguration extends Controller\Base
                 ->setStatusCode(406);
         }
 
+        if (!$this->hasXmlUniqueIds($xml)) {
+            return View\View::create()
+                ->setData(['error' => 'Found duplicate IDs in XML file.'])
+                ->setStatusCode(406);
+        }
+
         $file    = $request->files->get('file');
         $xmlData = file_get_contents($file->getPathName());
         $user    = $this->tokenStorage->getToken()->getUser();
@@ -197,6 +203,58 @@ class TaskConfiguration extends Controller\Base
         $this->taskConfigurationFacade->save($taskConfiguration);
 
         return View\View::create()->setData(['result' => $taskConfiguration]);
+    }
+
+    /**
+     * @param \DOMDocument $xml
+     *
+     * @return bool
+     */
+    private function hasXmlUniqueIds(\DOMDocument $xml)
+    {
+        $xpath = new \DOMXPath($xml);
+        $xpath->registerNamespace('x', 'http://weblabel.hella-aglaia.com/schema/requirements');
+
+        $ids = [];
+        foreach ($xpath->query('//x:requirements/x:thing') as $thing) {
+            $ids[] = $thing->getAttribute('id');
+            foreach ($xpath->query('x:class', $thing) as $classNode) {
+                $ids[] = $classNode->getAttribute('id');
+                foreach ($xpath->query('x:value', $classNode) as $valueNode) {
+                    $ids[] = $valueNode->getAttribute('id');
+                    if ($xpath->query('x:class', $valueNode)->length > 0) {
+                        $ids = array_merge(
+                            $ids,
+                            $this->getChildrenIds($xpath, $xpath->query('x:class', $valueNode))
+                        );
+                    }
+                }
+            }
+        }
+
+        return !(count(array_unique(array_diff_assoc($ids, array_unique($ids)))) > 0);
+    }
+
+    /**
+     * @param $xpath
+     * @param $children
+     *
+     * @return array
+     */
+    private function getChildrenIds($xpath, $children)
+    {
+        $ids = [];
+        foreach ($children as $value) {
+            $ids[] = $value->getAttribute('id');
+            foreach ($xpath->query('x:value', $value) as $valueNode) {
+                $ids[] = $valueNode->getAttribute('id');
+                if ($xpath->query('x:class', $valueNode)->length > 0) {
+                    $ids = array_merge($ids, $this->getChildrenIds($xpath, $xpath->query('x:class', $valueNode)));
+                }
+            }
+        }
+
+        return $ids;
     }
 
     /**
