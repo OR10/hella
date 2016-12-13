@@ -16,6 +16,7 @@ class LabelingTask
     const DRAWING_TOOL_RECTANGLE  = 'rectangle';
     const DRAWING_TOOL_PEDESTRIAN = 'pedestrian';
     const DRAWING_TOOL_CUBOID     = 'cuboid';
+    const DRAWING_TOOL_POLYGON    = 'polygon';
 
     const INSTRUCTION_VEHICLE        = 'vehicle';
     const INSTRUCTION_PERSON         = 'person';

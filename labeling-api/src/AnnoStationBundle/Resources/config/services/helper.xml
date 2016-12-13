@@ -18,7 +18,12 @@
         <service id="annostation.labeling_api.helper.export.shape_columns.cuboid"
                  class="AnnoStationBundle\Helper\Export\ShapeColumns\Cuboid"
                  public="false">
-            <argument type="service" id="annostation.labeling_api.service.depth_buffer" />
+            <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
+        </service>
+
+        <service id="annostation.labeling_api.helper.export.shape_columns.polygon"
+                 class="AnnoStationBundle\Helper\Export\ShapeColumns\Polygon"
+                 public="false">
         </service>
     </services>
 </container>
