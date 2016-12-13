@@ -11,9 +11,14 @@
     <a:documentation/>
     <define name="Requirements">
         <element name="r:requirements">
-            <zeroOrMore>
-                <ref name="Thing"/>
-            </zeroOrMore>
+            <interleave>
+                <zeroOrMore>
+                    <ref name="Thing"/>
+                </zeroOrMore>
+                <optional>
+                    <ref name="Private"/>
+                </optional>
+            </interleave>
         </element>
     </define>
     <define name="ThingLikeStructure">
@@ -31,11 +36,16 @@
     </define>
     <define name="Class">
         <element name="r:class">
-            <attribute name="id"/>
-            <attribute name="name"/>
-            <oneOrMore>
-                <ref name="Value"/>
-            </oneOrMore>
+            <choice>
+                <group>
+                    <attribute name="id"/>
+                    <attribute name="name"/>
+                    <oneOrMore>
+                        <ref name="Value"/>
+                    </oneOrMore>
+                </group>
+                <attribute name="ref"/>
+            </choice>
         </element>
     </define>
     <define name="Value">
@@ -45,6 +55,13 @@
             <zeroOrMore>
                 <ref name="Class"/>
             </zeroOrMore>
+        </element>
+    </define>
+    <define name="Private">
+        <element name="r:private">
+            <oneOrMore>
+                <ref name="Class"/>
+            </oneOrMore>
         </element>
     </define>
     <start>
