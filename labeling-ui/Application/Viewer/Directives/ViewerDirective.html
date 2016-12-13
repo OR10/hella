@@ -1,5 +1,6 @@
 <div class="viewer-inner grid-block noscroll shrink vertical align-center">
-    <div class="layer-container grid-content noscroll shrink cursor-{{vm.actionMouseCursor}}">
+    <!-- TODO: Do not add event listener here !!!! --->
+    <div class="layer-container grid-content noscroll shrink cursor-{{vm.actionMouseCursor}}" oncontextmenu="return false">
         <canvas class="background-layer"></canvas>
         <canvas class="annotation-layer"></canvas>
         <canvas class="crosshairs-layer"></canvas>

@@ -3,6 +3,7 @@ import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
 
@@ -110,6 +111,9 @@ export default class MultiTool extends Tool {
         break;
       case 'cuboid':
         this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperCuboid.getClass()));
+        break;
+      case 'polygon':
+        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperPolygon.getClass()));
         break;
       default:
         throw new Error(`Cannot instantiate tool of unknown type ${tool}.`);

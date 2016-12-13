@@ -2,12 +2,7 @@ import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
-import PaperEllipse from './PaperEllipse';
-import PaperCircle from './PaperCircle';
-import PaperPoint from './PaperPoint';
-import PaperPath from './PaperPath';
 import PaperPolygon from './PaperPolygon';
-import PaperLine from './PaperLine';
 
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
 import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
@@ -73,66 +68,11 @@ class PaperShapeFactory {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
    * @param {String} color
-   * @returns {PaperEllipse}
-   * @private
-   */
-  _createEllipse(labeledThingInFrame, shape, color) {
-    return new PaperEllipse(labeledThingInFrame, shape.id, shape.point, shape.size, color);
-  }
-
-  /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Object} shape
-   * @param {String} color
-   * @returns {PaperCircle}
-   * @private
-   */
-  _createCircle(labeledThingInFrame, shape, color) {
-    return new PaperCircle(labeledThingInFrame, shape.id, shape.point, shape.size.width / 2, color);
-  }
-
-  /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Object} shape
-   * @param {String} color
-   * @returns {PaperPoint}
-   * @private
-   */
-  _createPoint(labeledThingInFrame, shape, color) {
-    return new PaperPoint(labeledThingInFrame, shape.id, shape.point, color);
-  }
-
-  /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Object} shape
-   * @param {String} color
-   * @returns {PaperPath}
-   * @private
-   */
-  _createPath(labeledThingInFrame, shape, color) {
-    return new PaperPath(labeledThingInFrame, shape.id, shape.points, color);
-  }
-
-  /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Object} shape
-   * @param {String} color
    * @returns {PaperPolygon}
    * @private
    */
   _createPolygon(labeledThingInFrame, shape, color) {
     return new PaperPolygon(labeledThingInFrame, shape.id, shape.points, color);
-  }
-
-  /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Object} shape
-   * @param {String} color
-   * @returns {PaperLine}
-   * @private
-   */
-  _createLine(labeledThingInFrame, shape, color) {
-    return new PaperLine(labeledThingInFrame, shape.id, shape.points, color);
   }
 
   /**
@@ -153,6 +93,9 @@ class PaperShapeFactory {
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);
+        break;
+      case 'polygon':
+        result = this._createPolygon(labeledThingInFrame, shape, color.primary, video);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
