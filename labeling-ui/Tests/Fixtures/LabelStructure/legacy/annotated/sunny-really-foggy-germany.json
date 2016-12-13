@@ -1,0 +1,63 @@
+[
+  {
+    "metadata": {
+      "value": "sunny",
+      "challenge": "Wie ist das Wetter?"
+    },
+    "name": "weather",
+    "children": [
+      {
+        "metadata": {
+          "response": "Sonnig! :)"
+        },
+        "name": "sunny"
+      },
+      {
+        "metadata": {
+          "response": "Regen und so..."
+        },
+        "name": "rainy-day"
+      },
+      {
+        "metadata": {
+          "challenge": "Wie nebelig ist es denn so?",
+          "response": "Nebel!!1111elf!"
+        },
+        "name": "foggy"
+      },
+      {
+        "metadata": {
+          "response": "Alter! Totale Sonnenfinsternis!"
+        },
+        "name": "solar-eclipse"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "value": "germany",
+      "challenge": "In welchem Land befinden wir uns?"
+    },
+    "name": "country",
+    "children": [
+      {
+        "metadata": {
+          "response": "Deutschland"
+        },
+        "name": "germany"
+      },
+      {
+        "metadata": {
+          "response": "England"
+        },
+        "name": "england"
+      },
+      {
+        "metadata": {
+          "response": "Das Land der Baguettes"
+        },
+        "name": "france"
+      }
+    ]
+  }
+]

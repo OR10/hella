@@ -41,6 +41,13 @@
         <!--</div>&ndash;&gt;-->
         <!--&lt;!&ndash;<div class="grid-block vertical noscrollbars"></div>&ndash;&gt;-->
     <!--</div>-->
+    <tool-selector ng-if="vm.task.taskType !== 'meta-labeling' && vm.drawableThings.length > 1"
+                   drawable-things="vm.drawableThings"
+                   selected-label-structure-thing="vm.selectedLabelStructureThing"
+                   selected-drawing-tool="vm.selectedDrawingTool"
+                   selected-paper-shape="vm.selectedPaperShape"
+                   class="grid-block"
+    ></tool-selector>
 
     <popup-panel ng-show="vm.popupPanelOpen"
                  popup-panel-open="vm.popupPanelOpen"
@@ -63,6 +70,7 @@
     <viewer class="grid-block align-center noscroll no-select"
             labeled-things-in-frame="vm.labeledThingsInFrame"
             selected-paper-shape="vm.selectedPaperShape"
+            selected-label-structure-thing="vm.selectedLabelStructureThing"
             active-tool="vm.activeTool"
             selected-drawing-tool="vm.selectedDrawingTool"
             task="vm.task"
@@ -92,9 +100,9 @@
                       class="no-select"
         ></loading-mask>
         <label-selector class="grid-block no-select"
-                        labeled-object="vm.task.taskType === 'meta-labeling' ? vm.labeledFrame : vm.selectedPaperShape.labeledThingInFrame"
-                        structure="vm.labelingStructure"
-                        annotation="vm.labelingAnnotation"
+                        label-structure="vm.labelStructure"
+                        selected-label-structure-thing="vm.selectedLabelStructureThing"
+                        selected-labeled-object="vm.selectedLabeledObject"
                         task="vm.task"
                         frame-position="vm.framePosition"
                         labeling-instructions="vm.currentLabelingInstructions"

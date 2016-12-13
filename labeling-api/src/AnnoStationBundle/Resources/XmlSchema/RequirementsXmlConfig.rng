@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns:r="http://weblabel.hella-aglaia.com/schema/requirements" xmlns="http://relaxng.org/ns/structure/1.0">
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:r="http://weblabel.hella-aglaia.com/schema/requirements" xmlns="http://relaxng.org/ns/structure/1.0">
+    <a:documentation/>
+    <!--
+        This version is a restriction of the requirements.rnc, which does only allow the following:
+        - Things (no frames)
+        - Values with children (dependent classes)
+        
+        It explicitly disallows logical expressions as well as dependent classes
+    -->
+    <a:documentation/>
     <define name="Requirements">
         <element name="r:requirements">
             <zeroOrMore>
@@ -33,6 +42,9 @@
         <element name="r:value">
             <attribute name="id"/>
             <attribute name="name"/>
+            <zeroOrMore>
+                <ref name="Class"/>
+            </zeroOrMore>
         </element>
     </define>
     <start>

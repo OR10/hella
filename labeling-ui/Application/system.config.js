@@ -105,6 +105,7 @@ System.config({
     "pouchdb": "github:pouchdb/pouchdb@6.0.7",
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
+    "text": "github:systemjs/plugin-text@0.0.9",
     "three-math": "npm:three-math@0.69.0",
     "uuid": "npm:uuid@2.0.1",
     "v-accordion": "npm:v-accordion@1.4.1",

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "sign-type",
+    "metadata": {
+      "value": null,
+      "challenge": "Sign type"
+    },
+    "children": [
+      {
+        "name": "u-turn",
+        "metadata": {
+          "response": "U-Turn"
+        }
+      },
+      {
+        "name": "speed-sign",
+        "metadata": {
+          "response": "Speed sign"
+        }
+      }
+    ]
+  }
+]

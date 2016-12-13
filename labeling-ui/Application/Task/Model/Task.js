@@ -152,6 +152,11 @@ class Task {
      * @type {Boolean}
      */
     this.taskAttentionFlag = task.taskAttentionFlag;
+
+    /**
+     * @type {string}
+     */
+    this.taskConfigurationId = task.taskConfigurationId;
   }
 
   /**

@@ -6,6 +6,7 @@
     "data": {
       "frameIndex": 0,
       "incomplete": true,
+      "identifierName": "legacy",
       "labeledThingId": "{{:labeledThingId}}",
       "shapes": [
         {

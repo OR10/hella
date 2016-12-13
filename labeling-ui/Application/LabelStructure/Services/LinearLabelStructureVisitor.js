@@ -9,9 +9,9 @@ export default class LinearLabelStructureVisitor {
   /**
    * Visit the given LabelStructure and output a linearized list based on the given context
    *
-   * @param {LabelStructure} node
+   * @param {LegacyLabelStructureInterface} node
    * @param {Object<string,string>|Array<string>} context
-   * @returns {AnnotatedLabelStructure}
+   * @returns {LegacyLabelStructureInterface}
    */
   visit(node, context) {
     let contextArray;
@@ -28,9 +28,9 @@ export default class LinearLabelStructureVisitor {
   }
 
   /**
-   * Visit an array of {@link LabelStructure}s returning a list representation of their contents
+   * Visit an array of {@link LegacyLabelStructureInterface}s returning a list representation of their contents
    *
-   * @param {Array<LabelStructure>} nodes
+   * @param {Array<LegacyLabelStructureInterface>} nodes
    * @param {Array<string>} context
    * @returns {Array<{name: string, value: string|null}>}
    * @private
@@ -48,7 +48,7 @@ export default class LinearLabelStructureVisitor {
    *
    * This method joins the context with the given node to determine the next path to take.
    *
-   * @param {LabelStructure} node
+   * @param {LegacyLabelStructureInterface} node
    * @param {Array<string>} context
    * @returns {Array<AnnotatedLabelStructure>}
    * @private
@@ -80,7 +80,7 @@ export default class LinearLabelStructureVisitor {
    * The value is based on the context as well as the children of the given node,
    * which determine what value the current node has
    *
-   * @param {LabelStructure} node
+   * @param {LegacyLabelStructureInterface} node
    * @param {Array<string>} context
    * @returns {LabelStructure|null}
    * @private

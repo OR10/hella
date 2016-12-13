@@ -12,7 +12,7 @@ export default class AnnotationLabelStructureVisitor {
    * The AnnotationDictionary is a simple Object<string, *> structure, which maps from {@link LabelStructure#name}
    * properties to the respective metadata to be attached.
    *
-   * @param {LabelStructure} node
+   * @param {LegacyLabelStructureInterface} node
    * @param {Object<string,*>} annotation
    */
   visit(node, annotation) {
@@ -22,7 +22,7 @@ export default class AnnotationLabelStructureVisitor {
   /**
    * Visit a single node annotating it with the corresponding information
    *
-   * @param {LabelStructure} node
+   * @param {LegacyLabelStructureInterface} node
    * @param {Object<string,*>} annotation
    * @returns {AnnotatedLabelStructure}
    * @private

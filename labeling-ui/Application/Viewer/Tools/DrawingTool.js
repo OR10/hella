@@ -82,6 +82,7 @@ class DrawingTool extends Tool {
       incomplete: true,
       frameIndex: framePosition.position,
       labeledThing: newLabeledThing,
+      identifierName: this._$scope.vm.selectedLabelStructureThing.id,
       shapes: [],
     });
 

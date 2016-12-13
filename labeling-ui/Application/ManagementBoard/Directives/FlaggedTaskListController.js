@@ -115,7 +115,7 @@ class TaskListController {
         });
 
         /**
-         * @type {Task} task
+         * @type {Array.<Task>}
          */
         this.tasks = result.tasks.map(task => {
           const assignedUser = task.getLatestAssignedUserForPhase(task.getPhase());

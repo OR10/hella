@@ -1,0 +1,30 @@
+tool-selector {
+  flex: 0 0 35px !important;
+  border-right: 1px solid $element-inline-divider;
+  background-color: $element-background;
+
+  .tool-selector {
+
+    button.tool-button {
+      padding: 12px 5px;
+      text-align: center;
+      display: inline-flex;
+      cursor: pointer;
+      border-bottom: 1px solid $element-inline-divider;
+      align-items: center;
+      justify-content: center;
+
+      &:hover, &.active {
+        background-color: darken($element-background, 10);
+        .icon{
+          color: $icon-hover;
+        }
+      }
+
+      .icon {
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+  }
+}

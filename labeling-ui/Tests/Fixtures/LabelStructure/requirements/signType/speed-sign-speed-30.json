@@ -1,0 +1,92 @@
+[
+  {
+    "name": "sign-type",
+    "metadata": {
+      "challenge": "Sign type",
+      "value": "speed-sign"
+    },
+    "children": [
+      {
+        "name": "u-turn",
+        "metadata": {
+          "response": "U-Turn"
+        }
+      },
+      {
+        "name": "speed-sign",
+        "metadata": {
+          "response": "Speed sign"
+        }
+      }
+    ]
+  },
+  {
+    "name": "speed-limit",
+    "metadata": {
+      "challenge": "Speed limit",
+      "value": "speed-30"
+    },
+    "children": [
+      {
+        "name": "speed-30",
+        "metadata": {
+          "response": "Speed Limit 30"
+        }
+      },
+      {
+        "name": "speed-100",
+        "metadata": {
+          "response": "Speed Limit 100"
+        }
+      }
+    ]
+  },
+  {
+    "name": "inside-city",
+    "metadata": {
+      "challenge": "Inside City Limits",
+      "value": null
+    },
+    "children": [
+      {
+        "name": "inside-city-yes",
+        "metadata": {
+          "response": "Yes"
+        }
+      },
+      {
+        "name": "inside-city-no",
+        "metadata": {
+          "response": "No"
+        }
+      }
+    ]
+  },
+  {
+    "name": "limited-by-type",
+    "metadata": {
+      "challenge": "Limited by type",
+      "value": null
+    },
+    "children": [
+      {
+        "name": "no-type-limit",
+        "metadata": {
+          "response": "No type limit"
+        }
+      },
+      {
+        "name": "only-car",
+        "metadata": {
+          "response": "Only car"
+        }
+      },
+      {
+        "name": "only-truck",
+        "metadata": {
+          "response": "Only truck"
+        }
+      }
+    ]
+  }
+]

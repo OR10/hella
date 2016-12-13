@@ -1,0 +1,41 @@
+namespace r = "http://weblabel.hella-aglaia.com/schema/requirements"
+
+###
+# This version is a restriction of the requirements.rnc, which does only allow the following:
+# - Things (no frames)
+# - Values with children (dependent classes)
+#
+# It explicitly disallows logical expressions as well as dependent classes
+###
+grammar {
+    Requirements = element r:requirements {
+        Thing*
+    }
+
+    ThingLikeStructure = (
+        attribute id {text},
+        attribute name {text},
+        Class*
+    )
+
+    Thing = element r:thing {
+        attribute shape {text},
+        ThingLikeStructure
+    }
+
+    Class = element r:class {
+        (
+            attribute id {text},
+            attribute name {text},
+            Value+
+        )
+    }
+
+    Value = element r:value {
+        attribute id {text},
+        attribute name {text},
+        Class*
+    }
+
+    start = Requirements
+}

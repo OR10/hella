@@ -60,6 +60,13 @@ class LabeledThingInFrame extends LabeledObject {
      * @type {Array.<String>|null}
      */
     this.ghostClasses = clone(labeledThingInFrame.ghostClasses);
+
+    /**
+     * String representing the id of the corresponding "thing" in the requirements file
+     *
+     * @type {string|null}
+     */
+    this.identifierName = labeledThingInFrame.identifierName;
   }
 
   /**
@@ -160,10 +167,11 @@ class LabeledThingInFrame extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {frameIndex, labeledThing, shapes, ghost, ghostClasses} = this;
+    const {frameIndex, labeledThing, shapes, ghost, ghostClasses, identifierName} = this;
     return Object.assign(super.toJSON(), {
       frameIndex,
       ghost,
+      identifierName,
       shapes: cloneDeep(shapes),
       ghostClasses: clone(ghostClasses),
       labeledThingId: labeledThing.id,

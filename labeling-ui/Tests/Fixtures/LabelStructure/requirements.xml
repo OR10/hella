@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <!--
+    Frame requirements: Requirement information for frame based annotation
+
+    Requirements based on frames rather then objects/things is defined as `frame`-requirement.
+  -->
+  <frame>
+    <!--
+      Each requirement block may consist of an arbitrary number of `class` tags, which define categories
+    -->
+    <class id="time" name="Time">
+      <!--
+        Each `class` block may contain an arbitrary number of `value` tags, which define the attributes to be labeled
+      -->
+      <value id="day" name="Day" />
+      <value id="night" name="Night">
+        <!--
+          `class`es may be nested inside of `value` blocks to implicitly define dependencies
+        -->
+        <class id="street-lights" name="Street lights">
+          <value id="neon" name="Neon lights">
+            <class name="Lamp Color" id="lamp-color">
+              <value id="white" name="White" />
+              <value id="orange" name="Orange" />
+            </class>
+          </value>
+          <value id="halogen" name="Halogen lights">
+            <!--
+              `class` tags may be referenced from anywhere else inside the document by their id.
+            -->
+            <class ref="lamp-color" />
+          </value>
+          <value id="xenon" name="Xenon lights" />
+        </class>
+      </value>
+    </class>
+    <class ref="weather" />
+    <!--
+      Dependencies may be defined explicitly using `if` and `if-not` tags, which contain logical expressions based on
+      other classes and values `id` attributes.
+    -->
+    <class id="rain-level" name="Rain level" if="frame:rain">
+      <value id="low" name="Low" />
+      <value id="medium" name="Medium" />
+      <value id="high" name="High" />
+    </class>
+    <class ref="country" />
+  </frame>
+
+  <!--
+    Thing requirements reflect the need to label a certain area of a frame using a specific drawing
+    tool (rectangle, pedestrian, cuboid, ...)
+
+    Each thing may contain its own set of classes and values to be labeled.
+  -->
+  <thing id="sign" shape="rectangle" name="Traffic Sign">
+    <class id="sign-type" name="Sign type">
+      <value id="u-turn" name="U-Turn" if-not="frame:highway" />
+      <value id="speed-sign" name="Speed sign">
+        <class id="speed-limit" name="Speed limit">
+          <value id="speed-30" name="Speed Limit 30" if="frame:city-road AND NOT frame:highway">
+              <class id="inside-city" name="Inside City Limits">
+                <value id="inside-city-yes" name="Yes"/>
+                <value id="inside-city-no" name="No"/>
+              </class>
+          </value>
+          <value id="speed-100" name="Speed Limit 100" />
+        </class>
+        <class id="limited-by-type" name="Limited by type">
+          <value id="no-type-limit" name="No type limit" />
+          <value id="only-car" name="Only car" />
+          <value id="only-truck" name="Only truck" />
+        </class>
+      </value>
+    </class>
+  </thing>
+
+  <!--
+    Extension signs are configured as completely normal things, as we are not implementing any restrictions regarding grouping.
+    In the future there might be additions providing further information regarding this relationship.
+    The extension signs may even be part of the more general `sign` thing just specialized using a specific `value` (type).
+  -->
+  <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
+    <class id="time-limit-start" name="Start of time limit">
+      <value id="time-limit-start-0" name="0" />
+      <value id="time-limit-start-1" name="1" />
+      <value id="time-limit-start-2" name="2" />
+      <value id="time-limit-start-3" name="3" />
+      <value id="time-limit-start-4" name="4" />
+      <value id="time-limit-start-5" name="5" />
+      <value id="time-limit-start-6" name="6" />
+      <value id="time-limit-start-7" name="7" />
+      <value id="time-limit-start-8" name="8" />
+      <value id="time-limit-start-9" name="9" />
+      <value id="time-limit-start-10" name="10" />
+      <value id="time-limit-start-11" name="11" />
+      <value id="time-limit-start-12" name="12" />
+      <value id="time-limit-start-13" name="13" />
+      <value id="time-limit-start-14" name="14" />
+      <value id="time-limit-start-15" name="15" />
+      <value id="time-limit-start-16" name="16" />
+      <value id="time-limit-start-17" name="17" />
+      <value id="time-limit-start-18" name="18" />
+      <value id="time-limit-start-19" name="19" />
+      <value id="time-limit-start-20" name="20" />
+      <value id="time-limit-start-21" name="21" />
+      <value id="time-limit-start-22" name="22" />
+      <value id="time-limit-start-23" name="23" />
+    </class>
+    <class id="time-limit-end" name="End of time limit">
+      <value id="time-limit-end-0" name="0" />
+      <value id="time-limit-end-1" name="1" />
+      <value id="time-limit-end-2" name="2" />
+      <value id="time-limit-end-3" name="3" />
+      <value id="time-limit-end-4" name="4" />
+      <value id="time-limit-end-5" name="5" />
+      <value id="time-limit-end-6" name="6" />
+      <value id="time-limit-end-7" name="7" />
+      <value id="time-limit-end-8" name="8" />
+      <value id="time-limit-end-9" name="9" />
+      <value id="time-limit-end-10" name="10" />
+      <value id="time-limit-end-11" name="11" />
+      <value id="time-limit-end-12" name="12" />
+      <value id="time-limit-end-13" name="13" />
+      <value id="time-limit-end-14" name="14" />
+      <value id="time-limit-end-15" name="15" />
+      <value id="time-limit-end-16" name="16" />
+      <value id="time-limit-end-17" name="17" />
+      <value id="time-limit-end-18" name="18" />
+      <value id="time-limit-end-19" name="19" />
+      <value id="time-limit-end-20" name="20" />
+      <value id="time-limit-end-21" name="21" />
+      <value id="time-limit-end-22" name="22" />
+      <value id="time-limit-end-23" name="23" />
+    </class>
+  </thing>
+
+  <!--
+    As groups may be classified as well as "normal" things, they need to be defined as well.
+    Even if they are not classified groups need to be defined in order to allow for further reference by the workflow.
+
+    Groups have exactly the same structure of children as any `thing` element.
+  -->
+  <group id="extension-sign-group" name="Sign with extension">
+    <class id="extension-position" name="Position of the extension sign">
+      <value id="position-below" name="Below" />
+      <value id="position-above" name="Above" />
+    </class>
+  </group>
+
+  <!--
+    The private block allows for classes and values to be defined, which may be referenced elsewhere in the document,
+    without being directly bound to a thing or frame.
+  -->
+  <private>
+    <class name="Street Type" id="street-type">
+      <value id="highway" name="Highway" />
+      <value id="city-road" name="Inner city road" />
+    </class>
+
+    <class name="Weather" id="weather">
+      <value id="sunny" name="Sunny" />
+      <value id="rain" name="Raining" />
+      <value id="foggy" name="Foggy" />
+    </class>
+
+    <class name="Country" id="country">
+      <value id="germany" name="Germany" />
+      <value id="spain" name="Spain" />
+      <value id="france" name="France" />
+    </class>
+  </private>
+</requirements>
