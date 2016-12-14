@@ -257,7 +257,7 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
         .then(() => browser.sleep(250))
         .then(() => getMockRequestsMade(mock))
-        .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviourLabeledThingInFrame.putWithClassesTruck))
+        .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck))
         .then(() => done());
     });
 
