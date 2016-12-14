@@ -2,7 +2,7 @@ import mock from 'protractor-http-mock';
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
-  dumpAllRequestsMade,
+  // dumpAllRequestsMade,
   initApplication,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
@@ -26,12 +26,12 @@ describe('LabelSelector (right sidebar)', () => {
       .perform();
   }
 
-  function deselectAllShapes() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 1, y: 1})
-      .click()
-      .perform();
-  }
+  // function deselectAllShapes() {
+  //   return browser.actions()
+  //     .mouseMove(viewer, {x: 1, y: 1})
+  //     .click()
+  //     .perform();
+  // }
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -236,7 +236,7 @@ describe('LabelSelector (right sidebar)', () => {
             '2 wheeler vehicle': false,
             'Bus': false,
             'Misc vehicle': false,
-            'Ignore vehicle': false
+            'Ignore vehicle': false,
           }
         ))
         .then(() => done());
@@ -303,7 +303,7 @@ describe('LabelSelector (right sidebar)', () => {
             '2 wheeler vehicle': false,
             'Bus': false,
             'Misc vehicle': false,
-            'Ignore vehicle': false
+            'Ignore vehicle': false,
           }
         ))
         .then(() => done());
@@ -394,23 +394,23 @@ describe('LabelSelector (right sidebar)', () => {
               '2 wheeler vehicle',
               'Bus',
               'Misc vehicle',
-              'Ignore vehicle'
+              'Ignore vehicle',
             ],
             'Direction': [
               'Right',
               'Left',
               'Front',
-              'Back'
+              'Back',
             ],
             'Occlusion': [
               '< 20%',
               '20% - 80%',
-              '> 80%'
+              '> 80%',
             ],
             'Truncation': [
               '< 20%',
               '20% - 80%',
-              '> 80%'
+              '> 80%',
             ],
           }))
         .then(() => done());
