@@ -74,3 +74,14 @@ export function getTextContentFromElementFinder(elementFinder) {
   return elementFinder.getAttribute('textContent')
     .then(textContent => textContent.trim());
 }
+
+/**
+ * Check if certain {@link ElementFinder} has got certain class set.
+ *
+ * @returns {webdriver.promise.Promise}
+ */
+export function hasClassByElementFinder(elementFinder, className) {
+    return elementFinder.getAttribute('class').then(
+      classString => classString.split(' ').includes(className)
+    );
+}
