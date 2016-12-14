@@ -3,7 +3,21 @@ import {
   hasClassByElementFinder,
 } from './Helpers';
 
+/**
+ * Protractor Helper to properly test the `LabelSelector` directive rendered on the
+ * right side of the Userinterface
+ *
+ * Currently only the pane based view of the `LabelSelector` is handled properly. The wizzard like interface is
+ * not matched yet.
+ */
 class LabelSelectorHelper {
+  /**
+   * Construct a new helper for a specific `LabelSelector` directive.
+   *
+   * The base {@link ElementFinder} to the directives root element needs to be provided for construction.
+   *
+   * @param {ElementFinder} labelSelector
+   */
   constructor(labelSelector) {
     /**
      * @type {ElementFinder}
@@ -12,6 +26,11 @@ class LabelSelectorHelper {
   }
 
   /**
+   * Switch the `LabelSelector` into "single selection mode"
+   *
+   * The mode change is no dependent of the mode the selector was in. Therefore multiple calls to this method
+   * do no harm.
+   *
    * @returns {webdriver.promise.Promise}
    */
   switchToSingleSelectMode() {
@@ -25,6 +44,11 @@ class LabelSelectorHelper {
   }
 
   /**
+   * Switch the `LabelSelector` into "multi selection mode"
+   *
+   * The mode change is no dependent of the mode the selector was in. Therefore multiple calls to this method
+   * do no harm.
+   *
    * @returns {webdriver.promise.Promise}
    */
   switchToMultiSelectMode() {
@@ -38,7 +62,13 @@ class LabelSelectorHelper {
   }
 
   /**
-   * @returns {webdriver.promise.Promise}
+   * Get an array of all the Titles currently visible in the `LabelSelector`.
+   *
+   * `Titles` are the description label of the different panes visible in the selector.
+   *
+   * The `titles` are returned as strings.
+   *
+   * @returns {webdriver.promise.Promise.<Array.<string>>}
    */
   getTitleTexts() {
     const panes = this._getPanesFinderArray();
@@ -48,14 +78,37 @@ class LabelSelectorHelper {
   }
 
   /**
-   * @returns {webdriver.promise.Promise}
+   * Get the number currently available panes.
+   *
+   * @returns {webdriver.promise.Promise.<int>}
    */
   getNumberOfPanes() {
     return this._getPanesFinderArray().count();
   }
 
   /**
-   * @returns {webdriver.promise.Promise}
+   * Get an object containing all the `values` as well as `titles` of the `LabelSelector`.
+   *
+   * The returned object has a key for each title (pane) associated with an array of strings representing its
+   * entries:
+   *
+   * ```
+   * {
+   *  "Occlusion": [
+   *    "20%",
+   *    "30%",
+   *    ...
+   *  ],
+   *  "Truncation": [
+   *    "20%",
+   *    "30%",
+   *    ...
+   *  ],
+   *  ...
+   * }
+   * ```
+   *
+   * @returns {webdriver.promise.Promise.<object>}
    */
   getAllEntryTexts() {
     return this.getTitleTexts()
@@ -71,6 +124,10 @@ class LabelSelectorHelper {
   }
 
   /**
+   * Get the click target for a specific entry (to enable/disable it) using the title of the pane and the entry value.
+   *
+   * @param {string} titleText
+   * @param {string} entryText
    * @returns {ElementFinder}
    */
   getEntryClickTargetFinderByTitleTextAndEntryText(titleText, entryText) {
@@ -80,6 +137,9 @@ class LabelSelectorHelper {
   }
 
   /**
+   * Get the click target for a specific pane (to open/close) it using its title.
+   *
+   * @param {string} titleText
    * @returns {ElementFinder}
    */
   getTitleClickTargetFinderByTitleText(titleText) {
@@ -89,6 +149,22 @@ class LabelSelectorHelper {
   }
 
   /**
+   * Get information about selected entries (classes) inside a certain pane identified by its title
+   *
+   * The returned value will be an object containing a mapping of the entries text to its selection state as boolean:
+   *
+   * ```
+   * {
+   *  "20%": false,
+   *  "30%": true,
+   *  ...
+   * }
+   * ```
+   *
+   * Even though technically only ONE entry (class) should be selected at a time. We need to be able to ensure the UI
+   * does not display something wrong here. Therefore all selection states are reported.
+   *
+   * @param {string} titleText
    * @returns {webdriver.promise.Promise}
    */
   getEntrySelectionStatesByTitleText(titleText) {
@@ -109,16 +185,31 @@ class LabelSelectorHelper {
       });
   }
 
-  /**
-   * @returns {webdriver.promise.Promise}
+   /**
+   * Determine if a certain pane identified by its title is open or closes
+   *
+   * @param {string} titleText
+   * @returns {webdriver.promise.Promise.<boolean>}
    */
   getOpenStateByTitleText(titleText) {
     const pane = this._getPaneFinderByTitleText(titleText);
     return hasClassByElementFinder(pane, 'is-expanded');
   }
 
-  /**
-   * @returns {webdriver.promise.Promise}
+   /**
+   * Get information about all opened panes
+   *
+   * The returned value will be an object containing a mapping of the pane title texts to their open/closes state as boolean:
+   *
+   * ```
+   * {
+   *  "Truncation": false,
+   *  "Occlusion": true,
+   *  ...
+   * }
+   * ```
+   *
+   * @returns {webdriver.promise.Promise.<object>}
    */
   getAllOpenStates() {
     return this.getTitleTexts()
@@ -140,7 +231,26 @@ class LabelSelectorHelper {
   }
 
   /**
-   * @returns {webdriver.promise.Promise}
+   * Get information about all opened panes and selected entries in one structure
+   *
+   * The returned value will be a combination of open/closed and entrySelection states
+   *
+   * ```
+   * {
+   *  "Truncation": {
+   *    open: false,
+   *    entrySelectionStates: {
+   *      '20%': false,
+   *      '30%': true,
+   *      ...
+   *    },
+   *  }
+   *  "Occlusion": {...},
+   *  ...
+   * }
+   * ```
+   *
+   * @returns {webdriver.promise.Promise.<object>}
    */
   getAllStates() {
     return this.getTitleTexts()
@@ -167,7 +277,10 @@ class LabelSelectorHelper {
   }
 
   /**
-   * @returns {webdriver.promise.Promise}
+   * Get a an array of all the entries text representations from a certain pane identified by its title text
+   *
+   * @param {string} titleText
+   * @returns {webdriver.promise.Promise.<Array.<string>>}
    */
   getEntriesTextByTitleText(titleText) {
     const pane = this._getPaneFinderByTitleText(titleText);
@@ -177,6 +290,7 @@ class LabelSelectorHelper {
 
   /**
    * @returns {webdriver.promise.Promise}
+   * @private
    */
   _getEntriesTextFromPane(pane) {
     const content = pane.element(by.css('v-pane-content'));
@@ -186,6 +300,7 @@ class LabelSelectorHelper {
 
   /**
    * @returns {ElementFinder}
+   * @private
    */
   _getPaneFinderByTitleText(titleText) {
     const panes = this._getPanesFinderArray();
