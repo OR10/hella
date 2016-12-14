@@ -62,3 +62,15 @@ export function expectAllModalsToBeClosed() {
   const modalElements = element(by.css('.modal-overlay.is-active'));
   expect(modalElements.isPresent()).toBe(false, 'No open modal Dialog expected.');
 }
+
+/**
+ * Retrieve the `textContent` of a certain ElementFinder.
+ *
+ * This content will be filled even if the element ist not visible. In contrast to protractors `getText`.
+ *
+ * @returns {webdriver.promise.Promise}
+ */
+export function getTextContentFromElementFinder(elementFinder) {
+  return elementFinder.getAttribute('textContent')
+    .then(textContent => textContent.trim());
+}
