@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
-    <!--
-      Thing requirements reflect the need to label a certain area of a frame using a specific drawing
-      tool (rectangle, pedestrian, cuboid, ...)
-
-      Each thing may contain its own set of classes and values to be labeled.
-    -->
     <thing id="sign" shape="rectangle" name="Traffic Sign">
         <class id="sign-type" name="Sign type">
             <value id="u-turn" name="U-Turn"/>
             <value id="speed-sign" name="Speed sign">
-                <class id="speed" name="Speed">
-                    <value id="10" name="10" />
-                    <value id="20" name="20" />
-                    <value id="30" name="30" />
-                    <value id="40" name="40" />
-                    <value id="50" name="50" />
+                <class ref="speed" />
+            </value>
+        </class>
+        <class ref="country" />
+    </thing>
+    <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
+        <class id="irgendwas1" name="irgendwas1">
+            <value id="abc" name="abc">
+                <class id="irgendwas2" name="irgendwas2">
+                    <value id="abc2" name="abc2">
+                        <class id="irgendwas3" name="irgendwas3">
+                            <value id="abc3" name="abc3">
+                                <class id="speed" name="Speed">
+                                    <value id="10" name="10" />
+                                    <value id="20" name="20" />
+                                    <value id="30" name="30" />
+                                    <value id="40" name="40" />
+                                    <value id="50" name="50" />
+                                </class>
+                            </value>
+                        </class>
+                    </value>
                 </class>
             </value>
         </class>
-    </thing>
-
-    <!--
-      Extension signs are configured as completely normal things, as we are not implementing any restrictions regarding grouping.
-      In the future there might be additions providing further information regarding this relationship.
-      The extension signs may even be part of the more general `sign` thing just specialized using a specific `value` (type).
-    -->
-    <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
         <class id="time-limit-start" name="Start of time limit">
             <value id="time-limit-start-0" name="0" />
             <value id="time-limit-start-1" name="1" />
@@ -80,4 +82,11 @@
             <value id="time-limit-end-23" name="23" />
         </class>
     </thing>
+    <private>
+        <class name="Country" id="country">
+            <value id="germany" name="Germany" />
+            <value id="spain" name="Spain" />
+            <value id="france" name="France" />
+        </class>
+    </private>
 </requirements>

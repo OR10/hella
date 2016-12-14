@@ -125,6 +125,7 @@ class TaskIncompleteTest extends Tests\KernelTestCase
             [
                 'speed-sign',
                 '30',
+                'spain',
             ]
         );
         $this->labeledThingInFrameFacade->save($labeledThingInFrame);
