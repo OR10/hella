@@ -172,7 +172,7 @@ class LabelSelectorHelper {
     return this._getEntriesTextFromPane(pane)
       .then(entryTexts => {
         const selectionPromises = entryTexts.map(entryText => {
-          const clickTargetFinder = this._getEntryClickTargetFinderByPaneFinderAndEntryText(pane, entryText);
+          const clickTargetFinder = this._getEntryCheckboxFinderByPaneFinderAndEntryText(pane, entryText);
           return clickTargetFinder.isSelected();
         });
 
@@ -334,7 +334,7 @@ class LabelSelectorHelper {
    * @returns {ElementFinder}
    * @private
    */
-  _getEntryClickTargetFinderByPaneFinderAndEntryText(pane, entryText) {
+  _getHtmlListEntryFinderByPaneFinderAndEntryText(pane, entryText) {
     const content = pane.element(by.css('v-pane-content'));
     const listEntries = content.all(by.css('li'));
     const targetListEntry = listEntries.filter(listEntry => {
@@ -343,7 +343,25 @@ class LabelSelectorHelper {
         .then(possibleEntryText => possibleEntryText === entryText);
     }).first();
 
-    return targetListEntry.element(by.css('input'));
+    return targetListEntry;
+  }
+
+  /**
+   * @returns {ElementFinder}
+   * @private
+   */
+  _getEntryClickTargetFinderByPaneFinderAndEntryText(pane, entryText) {
+    const listEntryFinder = this._getHtmlListEntryFinderByPaneFinderAndEntryText(pane, entryText);
+    return listEntryFinder.element(by.css('label'));
+  }
+
+  /**
+   * @returns {ElementFinder}
+   * @private
+   */
+  _getEntryCheckboxFinderByPaneFinderAndEntryText(pane, entryText) {
+    const listEntryFinder = this._getHtmlListEntryFinderByPaneFinderAndEntryText(pane, entryText);
+    return listEntryFinder.element(by.css('input'));
   }
 
   /**
@@ -353,6 +371,7 @@ class LabelSelectorHelper {
   _getModeSelectCheckboxFinder() {
     return this._labelSelector.element(by.model('vm.multiSelection'));
   }
+
 }
 
 export default LabelSelectorHelper;
