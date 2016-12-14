@@ -215,6 +215,121 @@ fdescribe('LabelSelector (right sidebar)', () => {
           }))
         .then(() => done());
     });
+
+    it('should set entry upon click', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
+          {
+            'Car': false,
+            'Truck': true,
+            '2 wheeler vehicle': false,
+            'Bus': false,
+            'Misc vehicle': false,
+            'Ignore vehicle': false
+          }
+        ))
+        .then(() => done());
+    });
+
+    it('should send LTIF storage request once entry is set', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => browser.sleep(250))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviourLabeledThingInFrame.putWithClassesTruck))
+        .then(() => done());
+    });
+
+    it('should send LTIF storage request once entry is set', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => browser.sleep(250))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck))
+        .then(() => done());
+    });
+
+    it('should change entry upon click', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
+        .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
+          {
+            'Car': true,
+            'Truck': false,
+            '2 wheeler vehicle': false,
+            'Bus': false,
+            'Misc vehicle': false,
+            'Ignore vehicle': false
+          }
+        ))
+        .then(() => done());
+    });
+
+    it('should send LTIF storage request once entry is changed', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
+        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
+        .then(() => browser.sleep(250))
+        .then(() => getMockRequestsMade(mock))
+        .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar))
+        .then(() => done());
+    });
   });
 
   describe('Legacy LabelStructure', () => {
