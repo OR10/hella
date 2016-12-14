@@ -219,6 +219,9 @@ class TaskConfiguration extends Controller\Base
         foreach ($xpath->query('//x:requirements/x:thing') as $thing) {
             $ids[] = $thing->getAttribute('id');
             foreach ($xpath->query('x:class', $thing) as $classNode) {
+                if ($thing->hasAttribute('ref')) {
+                    continue;
+                }
                 $ids[] = $classNode->getAttribute('id');
                 foreach ($xpath->query('x:value', $classNode) as $valueNode) {
                     $ids[] = $valueNode->getAttribute('id');
@@ -245,6 +248,9 @@ class TaskConfiguration extends Controller\Base
     {
         $ids = [];
         foreach ($children as $value) {
+            if ($value->hasAttribute('ref')) {
+                continue;
+            }
             $ids[] = $value->getAttribute('id');
             foreach ($xpath->query('x:value', $value) as $valueNode) {
                 $ids[] = $valueNode->getAttribute('id');
