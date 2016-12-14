@@ -8,7 +8,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-fdescribe('LabelSelector (right sidebar)', () => {
+describe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
