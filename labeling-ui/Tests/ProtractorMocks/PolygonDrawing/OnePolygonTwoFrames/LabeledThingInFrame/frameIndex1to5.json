@@ -1,0 +1,150 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/1",
+    "method": "GET",
+    "queryString": {
+      "limit": "5",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThings": {
+          "LABELED-THING-ID-1": {
+            "id": "LABELED-THING-ID-1",
+            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 2
+            },
+            "classes": [
+              "pedestrian"
+            ],
+            "taskId": "TASKID-TASKID",
+            "incomplete": true,
+            "lineColor": "6"
+          }
+        },
+        "labeledThingsInFrame": [
+          {
+            "id": "LABELED-THING-IN-FRAME-ID-2",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
+            "frameIndex": 1,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "points": [
+                  {"x": 250, "y": 100},
+                  {"x": 350, "y": 200},
+                  {"x": 250, "y": 300},
+                  {"x": 150, "y": 200}
+                ],
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "polygon"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": false
+          },
+          {
+            "id": null,
+            "rev": null,
+            "frameIndex": 2,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "points": [
+                  {"x": 250, "y": 100},
+                  {"x": 350, "y": 200},
+                  {"x": 250, "y": 300},
+                  {"x": 150, "y": 200}
+                ],
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "polygon"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": true
+          },
+          {
+            "id": null,
+            "rev": null,
+            "frameIndex": 3,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "points": [
+                  {"x": 250, "y": 100},
+                  {"x": 350, "y": 200},
+                  {"x": 250, "y": 300},
+                  {"x": 150, "y": 200}
+                ],
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "polygon"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": true
+          },
+          {
+            "id": null,
+            "rev": null,
+            "frameIndex": 4,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "points": [
+                  {"x": 250, "y": 100},
+                  {"x": 350, "y": 200},
+                  {"x": 250, "y": 300},
+                  {"x": 150, "y": 200}
+                ],
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "polygon"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": true
+          },
+          {
+            "id": null,
+            "rev": null,
+            "frameIndex": 5,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "points": [
+                  {"x": 250, "y": 100},
+                  {"x": 350, "y": 200},
+                  {"x": 250, "y": 300},
+                  {"x": 150, "y": 200}
+                ],
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "polygon"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": true
+          }
+        ]
+      }
+    }
+  }
+}
+

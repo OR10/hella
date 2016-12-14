@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <thing id="sign" shape="polygon" name="Polygon">
+    <class id="sign-type" name="Sign type">
+      <value id="u-turn" name="U-Turn" />
+      <value id="speed-sign" name="Speed sign" />
+    </class>
+  </thing>
+</requirements>

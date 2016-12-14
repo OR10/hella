@@ -63,6 +63,11 @@ export function expectAllModalsToBeClosed() {
   expect(modalElements.isPresent()).toBe(false, 'No open modal Dialog expected.');
 }
 
+export function expectModalToBeOpen() {
+  const modalElements = element(by.css('.modal-overlay.is-active'));
+  expect(modalElements.isPresent()).toBe(true, 'Open modal Dialog expected.');
+}
+
 /**
  * Retrieve the `textContent` of a certain ElementFinder.
  *
