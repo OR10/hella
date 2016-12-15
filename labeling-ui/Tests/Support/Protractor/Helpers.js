@@ -63,7 +63,7 @@ export function expectAllModalsToBeClosed() {
   expect(modalElements.isPresent()).toBe(false, 'No open modal Dialog expected.');
 }
 
-export function expectModalToBeOpen() {
+export function expectModalToBePresent() {
   const modalElements = element(by.css('.modal-overlay.is-active'));
   expect(modalElements.isPresent()).toBe(true, 'Open modal Dialog expected.');
 }
