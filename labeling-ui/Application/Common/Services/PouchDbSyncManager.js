@@ -5,16 +5,23 @@ class PouchDbSyncManager {
 
   /**
    * @param {Object} configuration injected
+   * @param {LoggerService} loggerService
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PouchDB} pouchDb
    */
-  constructor(configuration, $q, pouchDbContextService, pouchDb) {
+  constructor(configuration, loggerService, $q, pouchDbContextService, pouchDb) {
     /**
      * @type {Object}
      * @private
      */
     this._configuration = configuration;
+
+    /**
+     * @type {Logger}
+     * @private
+     */
+    this._logger = loggerService;
 
     /**
      * @type {angular.$q}
@@ -130,6 +137,36 @@ class PouchDbSyncManager {
     return this._$q.all(replicationPromises);
   }
 
+  startDuplexLiveReplication(context) {
+    const loggerContext = 'DuplexLiveReplication';
+    this._logger.log(loggerContext, 'enter startDuplexLiveReplication');
+
+    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
+    const duplexConfig = [
+      PouchDbSyncManager.SYNC_DIRECTION_TO,
+      PouchDbSyncManager.SYNC_DIRECTION_FROM,
+    ];
+
+    const promises = duplexConfig.map(direction => {
+      const isCached = false;
+      let promise;
+
+      // @TODO: search cache for existing live replication handlers
+      if(isCached) {
+        this._logger.log(loggerContext, `live replication for ${taskId} already running`);
+        promise = this._$q.resolve();
+      }
+      else {
+        this._logger.log(loggerContext, `requesting live replication for ${taskId}`);
+        promise = this._replicateForContextWithDirectionAndFilterAndTaskId(context, direction, undefined, taskId, true);
+      }
+      return promise;
+    });
+    this._logger.log(loggerContext, 'exit startDuplexLiveReplication');
+
+    return this._$q.all(promises);
+  }
+
   /**
    * @param {object} context
    * @param {"to"|"from"} direction
@@ -154,17 +191,46 @@ class PouchDbSyncManager {
     const replicationFunction = context.replicate[direction];
     const syncHandler = replicationFunction(replicationEndpointUrl, syncSettings);
 
-    syncHandler
-      .on('complete', event => {
-        this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
-        deferred.resolve(event);
-      });
+    if(!live) {
+      syncHandler
+        .on('complete', event => {
+          this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+          if(!live) {
+            deferred.resolve(event);
+          }
+        })
+        .on('error', error => {
+          this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+          deferred.reject(error);
+        });
+    }
 
-    syncHandler
-      .on('error', error => {
+    if(live) {
+      const translation = ({
+        from:'from_server',
+        to:'to_server',
+      })[direction];
+
+      const loggerContext = `LiveReplication:${translation}`;
+      syncHandler.on('complete', event => {
+        this._logger.log(loggerContext, `[:complete]`, event);
+        this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+      }).on('error', error => {
+        this._logger.log(loggerContext, `[:error]`, error);
         this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
         deferred.reject(error);
+      }).on('change', info => {
+        this._logger.log(loggerContext, `[:change]`, info);
+      }).on('paused', error => {
+        this._logger.log(loggerContext, `[:paused]`, error);
+        deferred.resolve(event);
+      }).on('active', event => {
+        this._logger.log(loggerContext, `[:active]`, event);
+        deferred.resolve();
+      }).on('denied', error => {
+        this._logger.log(loggerContext, `[:denied]`, error);
       });
+    }
 
     this._setSyncHandlerByContextAndFilterAndDirection(context, filter, direction, syncHandler);
 
@@ -308,6 +374,7 @@ PouchDbSyncManager.SYNC_DIRECTION_TO = 'to';
 
 PouchDbSyncManager.$inject = [
   'applicationConfig',
+  'loggerService',
   '$q',
   'pouchDbContextService',
   'PouchDB',

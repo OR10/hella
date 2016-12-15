@@ -383,6 +383,9 @@ class TaskGateway {
         return this._pouchDbViewHeater.heatAllViews(context, 'annostation_');
       })
       .then(() => {
+        return this._pouchDbSyncManager.startDuplexLiveReplication(context);
+      })
+      .then(() => {
         return this._logger.log(loggerContext, 'Synchronizaton complete');
       })
       .then(() => {
