@@ -2,13 +2,12 @@ import mock from 'protractor-http-mock';
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
-  dumpAllRequestsMade,
   initApplication,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-fdescribe('LabelSelector (right sidebar)', () => {
+describe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
@@ -642,7 +641,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
         .then(() => expect(
           labelSelectorHelper.getTitleTexts()
         ).toEqual([
-          'Sign type'
+          'Sign type',
         ]))
         .then(() => done());
     });
@@ -662,8 +661,8 @@ fdescribe('LabelSelector (right sidebar)', () => {
           {
             'Sign type': [
               'U-Turn',
-              'Speed sign'
-            ]
+              'Speed sign',
+            ],
           }))
         .then(() => done());
     });
@@ -720,7 +719,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
               'Low',
               'Medium',
               'High',
-            ]
+            ],
           }))
         .then(() => done());
     });
@@ -752,7 +751,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
               'Low',
               'Medium',
               'High',
-            ]
+            ],
           }))
         .then(() => done());
     });
@@ -788,7 +787,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
               'Low',
               'Medium',
               'High',
-            ]
+            ],
           }))
         .then(() => done());
     });
@@ -830,7 +829,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
               'Low',
               'Medium',
               'High',
-            ]
+            ],
           }))
         .then(() => done());
     });
@@ -870,7 +869,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
               'Low',
               'Medium',
               'High',
-            ]
+            ],
           }))
         .then(() => done());
     });
@@ -905,7 +904,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
               'Low',
               'Medium',
               'High',
-            ]
+            ],
           }))
         .then(() => done());
     });
@@ -934,19 +933,18 @@ fdescribe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    //@TODO: Tests für <class ref='foo'>
-    //       - Reference aus dem <private> Block
-    //       - Reference irgendwo inline
-    //         - Aus dem gleichen <thing>
-    //         - Aus anderem Thing
-    //       - Unique ids (references) deterministische ordnung
-    //         - Beispiel, dass durch hinzukommende dependencies seine ordnung ändern würde (darf dies nicht).
-    //         - a
-    //           - b
-    //             - c
-    //         - z
-    //         - c
-
+    // @TODO: Tests für <class ref='foo'>
+    //        - Reference aus dem <private> Block
+    //        - Reference irgendwo inline
+    //          - Aus dem gleichen <thing>
+    //          - Aus anderem Thing
+    //        - Unique ids (references) deterministische ordnung
+    //          - Beispiel, dass durch hinzukommende dependencies seine ordnung ändern würde (darf dies nicht).
+    //          - a
+    //            - b
+    //              - c
+    //          - z
+    //          - c
   });
 
   afterEach(() => {
