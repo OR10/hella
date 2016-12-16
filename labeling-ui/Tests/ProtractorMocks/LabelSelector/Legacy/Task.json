@@ -8,7 +8,12 @@
       "result": {
         "task": {
           "assignmentHistory": [
-            {"userId": "user-id-1", "assignedAt": "1470132376", "phase": "labeling", "status": "in_progress"}
+            {
+              "userId": "user-id-1",
+              "assignedAt": "1470132376",
+              "phase": "labeling",
+              "status": "in_progress"
+            }
           ],
           "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
           "descriptionTitle": "Identify the person",
@@ -45,7 +50,23 @@
                     "name": "misc-vehicle"
                   },
                   {
-                    "name": "ignore-vehicle"
+                    "name": "ignore-vehicle",
+                    "children": [
+                      {
+                        "name": "ignore-group",
+                        "children": [
+                          {
+                            "name": "large-group"
+                          },
+                          {
+                            "name": "small-group"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "ignore-single"
+                      }
+                    ]
                   }
                 ]
               },
@@ -116,7 +137,21 @@
               "response": "Misc vehicle"
             },
             "ignore-vehicle": {
+              "challenge": "Art des Ignore",
               "response": "Ignore vehicle"
+            },
+            "ignore-group": {
+              "challenge": "Gruppengröße",
+              "response":  "Gruppe"
+            },
+            "ignore-single": {
+              "response": "Einzelperson"
+            },
+            "large-group": {
+              "response": "große Gruppe"
+            },
+            "small-group": {
+              "response": "kleine Gruppe"
             },
             "direction": {
               "challenge": "Direction"

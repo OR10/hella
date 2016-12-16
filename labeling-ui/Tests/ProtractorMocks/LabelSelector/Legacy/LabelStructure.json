@@ -1,0 +1,177 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labelStructure",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "structure": {
+          "name": "root",
+          "children": [
+            {
+              "name": "vehicle-type",
+              "children": [
+                {
+                  "name": "car"
+                },
+                {
+                  "name": "truck"
+                },
+                {
+                  "name": "2-wheeler-vehicle"
+                },
+                {
+                  "name": "bus"
+                },
+                {
+                  "name": "misc-vehicle"
+                },
+                {
+                  "name": "ignore-vehicle",
+                  "children": [
+                    {
+                      "name": "ignore-group",
+                      "children": [
+                        {
+                          "name": "large-group"
+                        },
+                        {
+                          "name": "small-group"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "ignore-single"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "direction",
+              "children": [
+                {
+                  "name": "direction-right"
+                },
+                {
+                  "name": "direction-left"
+                },
+                {
+                  "name": "direction-front"
+                },
+                {
+                  "name": "direction-back"
+                }
+              ]
+            },
+            {
+              "name": "occlusion",
+              "children": [
+                {
+                  "name": "occlusion-20"
+                },
+                {
+                  "name": "occlusion-20-80"
+                },
+                {
+                  "name": "occlusion-80"
+                }
+              ]
+            },
+            {
+              "name": "truncation",
+              "children": [
+                {
+                  "name": "truncation-20"
+                },
+                {
+                  "name": "truncation-20-80"
+                },
+                {
+                  "name": "truncation-80"
+                }
+              ]
+            }
+          ]
+        },
+        "annotation": {
+          "vehicle-type": {
+            "challenge": "Vehicle Type"
+          },
+          "car": {
+            "response": "Car"
+          },
+          "truck": {
+            "response": "Truck"
+          },
+          "2-wheeler-vehicle": {
+            "response": "2 wheeler vehicle"
+          },
+          "bus": {
+            "response": "Bus"
+          },
+          "misc-vehicle": {
+            "response": "Misc vehicle"
+          },
+          "ignore-vehicle": {
+            "challenge": "Art des Ignore",
+            "response": "Ignore vehicle"
+          },
+          "ignore-group": {
+            "challenge": "Gruppengröße",
+            "response": "Gruppe"
+          },
+          "ignore-single": {
+            "response": "Einzelperson"
+          },
+          "large-group": {
+            "response": "große Gruppe"
+          },
+          "small-group": {
+            "response": "kleine Gruppe"
+          },
+          "direction": {
+            "challenge": "Direction"
+          },
+          "direction-right": {
+            "response": "Right"
+          },
+          "direction-left": {
+            "response": "Left"
+          },
+          "direction-front": {
+            "response": "Front"
+          },
+          "direction-back": {
+            "response": "Back"
+          },
+          "occlusion": {
+            "challenge": "Occlusion"
+          },
+          "occlusion-20": {
+            "response": "< 20%"
+          },
+          "occlusion-20-80": {
+            "response": "20% - 80%"
+          },
+          "occlusion-80": {
+            "response": "> 80%"
+          },
+          "truncation": {
+            "challenge": "Truncation"
+          },
+          "truncation-20": {
+            "response": "< 20%"
+          },
+          "truncation-20-80": {
+            "response": "20% - 80%"
+          },
+          "truncation-80": {
+            "response": "> 80%"
+          }
+        }
+      }
+    }
+  }
+}
