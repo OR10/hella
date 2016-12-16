@@ -64,6 +64,7 @@ describe('RequirementsLabelStructure', () => {
       ).toThrow();
     });
 
+    // @TODO: Erweitern um tests mit references.
     using([
       [[], signTypeEmptyClassListThingClasses],
       [['u-turn'], signTypeUTurnClassListThingClasses],
