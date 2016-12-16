@@ -66,8 +66,6 @@ class LegacyLabelStructure extends LabelStructure {
       throw new Error(`LegacyLabelStructures only know the 'legacy' thing. ${thing.id} was given!`);
     }
 
-    // @TODO: taken from: LabelSelectorController.js:219
-    //        remove code there!
     const linearStructure = this._linearLabelStructureVisitor.visit(this._legacyStructure, classList);
     const annotatedStructure = this._annotationStructureVisitor.visit(linearStructure, this._legacyAnnotation);
 

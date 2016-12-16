@@ -1,0 +1,212 @@
+{
+  "request": {
+    "method": "GET",
+    "namedParams": true,
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/:frame/:labeledThingId",
+    "queryString": {
+      "limit": "5",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "LABELED-THING-IN-FRAME-THUMBNAIL-NEW",
+          "rev": "2-abcdefghijklmno",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "polygon",
+              "id": "SHAPE-ID-NEW",
+              "points": [
+                {
+                  "x": 431,
+                  "y": 133
+                },
+                {
+                  "x": 804,
+                  "y": 111
+                },
+                {
+                  "x": 803,
+                  "y": 362
+                },
+                {
+                  "x": 378,
+                  "y": 432
+                },
+                {
+                  "x": 270,
+                  "y": 269
+                }
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": false
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 1,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "polygon",
+              "id": "SHAPE-ID-NEW",
+              "points": [
+                {
+                  "x": 431,
+                  "y": 133
+                },
+                {
+                  "x": 804,
+                  "y": 111
+                },
+                {
+                  "x": 803,
+                  "y": 362
+                },
+                {
+                  "x": 378,
+                  "y": 432
+                },
+                {
+                  "x": 270,
+                  "y": 269
+                }
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 2,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "polygon",
+              "id": "SHAPE-ID-NEW",
+              "points": [
+                {
+                  "x": 431,
+                  "y": 133
+                },
+                {
+                  "x": 804,
+                  "y": 111
+                },
+                {
+                  "x": 803,
+                  "y": 362
+                },
+                {
+                  "x": 378,
+                  "y": 432
+                },
+                {
+                  "x": 270,
+                  "y": 269
+                }
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 3,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "polygon",
+              "id": "SHAPE-ID-NEW",
+              "points": [
+                {
+                  "x": 431,
+                  "y": 133
+                },
+                {
+                  "x": 804,
+                  "y": 111
+                },
+                {
+                  "x": 803,
+                  "y": 362
+                },
+                {
+                  "x": 378,
+                  "y": 432
+                },
+                {
+                  "x": 270,
+                  "y": 269
+                }
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
+        },
+        {
+          "id": null,
+          "rev": null,
+          "frameIndex": 4,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "type": "polygon",
+              "id": "SHAPE-ID-NEW",
+              "points": [
+                {
+                  "x": 431,
+                  "y": 133
+                },
+                {
+                  "x": 804,
+                  "y": 111
+                },
+                {
+                  "x": 803,
+                  "y": 362
+                },
+                {
+                  "x": 378,
+                  "y": 432
+                },
+                {
+                  "x": 270,
+                  "y": 269
+                }
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
+        }
+      ]
+    }
+  }
+}

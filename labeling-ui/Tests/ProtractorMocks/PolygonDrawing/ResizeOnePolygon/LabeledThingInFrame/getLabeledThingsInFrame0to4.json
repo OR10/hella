@@ -1,0 +1,136 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0/LABELED-THING-ID-1",
+    "method": "GET",
+    "queryString": {
+      "limit": "5",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "LABELED-THING-IN-FRAME-1",
+          "identifierName": "sign",
+          "rev": "1-ab23bcc8b4dcddeff545d7d91eb3a622",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "points": [
+                {"x": 200, "y": 100},
+                {"x": 300, "y": 200},
+                {"x": 200, "y": 400},
+                {"x": 50, "y": 200}
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "polygon"
+            }
+          ],
+          "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
+          "incomplete": true,
+          "ghost": false
+        },
+        {
+          "id": null,
+          "identifierName": "sign",
+          "rev": null,
+          "frameIndex": 1,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "points": [
+                {"x": 200, "y": 100},
+                {"x": 300, "y": 200},
+                {"x": 200, "y": 400},
+                {"x": 50, "y": 200}
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "polygon"
+            }
+          ],
+          "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
+          "incomplete": true,
+          "ghost": true
+        },
+        {
+          "id": null,
+          "identifierName": "sign",
+          "rev": null,
+          "frameIndex": 2,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "points": [
+                {"x": 200, "y": 100},
+                {"x": 300, "y": 200},
+                {"x": 200, "y": 400},
+                {"x": 50, "y": 200}
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "polygon"
+            }
+          ],
+          "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
+          "incomplete": true,
+          "ghost": true
+        },
+        {
+          "id": null,
+          "identifierName": "sign",
+          "rev": null,
+          "frameIndex": 3,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "points": [
+                {"x": 200, "y": 100},
+                {"x": 300, "y": 200},
+                {"x": 200, "y": 400},
+                {"x": 50, "y": 200}
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "polygon"
+            }
+          ],
+          "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
+          "incomplete": true,
+          "ghost": true
+        },
+        {
+          "id": null,
+          "identifierName": "sign",
+          "rev": null,
+          "frameIndex": 4,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "points": [
+                {"x": 200, "y": 100},
+                {"x": 300, "y": 200},
+                {"x": 200, "y": 400},
+                {"x": 50, "y": 200}
+              ],
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "polygon"
+            }
+          ],
+          "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
+          "incomplete": true,
+          "ghost": true
+        }
+      ]
+    }
+  }
+}

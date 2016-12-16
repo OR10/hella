@@ -6,7 +6,7 @@
     "data": {
       "frameIndex": 0,
       "incomplete": true,
-      "identifierName": "rectangle",
+      "identifierName": "legacy",
       "labeledThingId": "{{:labeledThingId}}",
       "shapes": [
         {

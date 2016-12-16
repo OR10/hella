@@ -180,6 +180,7 @@ export default class LabelSelectorController {
 
       labeledObject.setClasses(labels);
 
+      let labeledThingNeedsUpdate = false;
       if (labeledObject instanceof LabeledThingInFrame) {
         const labeledThingInFrame = labeledObject;
         const {labeledThing} = labeledThingInFrame;
@@ -190,28 +191,21 @@ export default class LabelSelectorController {
 
           labeledThingInFrame.ghostBust(ltifId, labeledThingInFrame.frameIndex);
 
-          let frameRangeUpdated = false;
-
           if (frameIndex > labeledThing.frameRange.endFrameIndex) {
             labeledThing.frameRange.endFrameIndex = frameIndex;
-            frameRangeUpdated = true;
+            labeledThingNeedsUpdate = true;
           }
 
           if (frameIndex < labeledThing.frameRange.startFrameIndex) {
             labeledThing.frameRange.startFrameIndex = frameIndex;
-            frameRangeUpdated = true;
+            labeledThingNeedsUpdate = true;
           }
 
-          if (frameRangeUpdated) {
-            this._labeledThingGateway.saveLabeledThing(labeledThing)
-              .then(() => this._storeUpdatedLabeledObject());
-            return;
-          }
         }
       }
 
-      this._storeUpdatedLabeledObject();
       this._updatePagesAndChoices();
+      this._storeUpdatedLabeledObject(labeledThingNeedsUpdate);
     }, true);
 
     $scope.$watch('vm.activePageIndex', newPageIndex => {
@@ -300,15 +294,16 @@ export default class LabelSelectorController {
   /**
    * Send the updated labeledObject to the backend
    *
+   * @param {boolean?} updateAssociatedLabeledThing
    * @private
    */
-  _storeUpdatedLabeledObject() {
+  _storeUpdatedLabeledObject(updateAssociatedLabeledThing = false) {
     // Store reference in case it is changed while being stored.
     const selectedLabeledObject = this.selectedLabeledObject;
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
-        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject)
+        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject, updateAssociatedLabeledThing)
           .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       case selectedLabeledObject instanceof LabeledFrame:
@@ -324,12 +319,22 @@ export default class LabelSelectorController {
    * Store the updates to a LabeledThingInFrame to the backend
    *
    * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {boolean} updateAssociatedLabeledThing
    * @private
    */
-  _storeUpdatedLabeledThingInFrame(labeledThingInFrame) {
+  _storeUpdatedLabeledThingInFrame(labeledThingInFrame, updateAssociatedLabeledThing) {
     labeledThingInFrame.incomplete = !this.isCompleted;
 
-    return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+    let storagePromise = Promise.resolve();
+    if (updateAssociatedLabeledThing) {
+      const {labeledThing} = labeledThingInFrame;
+      storagePromise = storagePromise
+        .then(() => this._labeledThingGateway.saveLabeledThing(labeledThing));
+    }
+    storagePromise = storagePromise
+      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame));
+
+    return storagePromise;
   }
 
   /**

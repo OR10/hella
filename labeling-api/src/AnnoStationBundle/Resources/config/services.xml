@@ -161,6 +161,9 @@
                 <argument type="service"
                           key="cuboid"
                           id="annostation.labeling_api.helper.export.shape_columns.cuboid"/>
+                <argument type="service"
+                          key="polygon"
+                          id="annostation.labeling_api.helper.export.shape_columns.polygon"/>
             </argument>
         </service>
 

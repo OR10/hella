@@ -74,8 +74,71 @@ class GenericXmlProjectToCsvTest extends Tests\CouchDbTestCase
                     ],
                 ],
                 file_get_contents(__DIR__ . '/Expected/Rectangle.csv'),
-            ],
-            [
+            ],[
+                [
+                    'taskConfiguration'    => 'Polygon.xml',
+                    'drawingTool'          => Model\LabelingTask::DRAWING_TOOL_POLYGON,
+                    'labeledThingInFrames' => [
+                        [
+                            'uuid'       => 'c5c0ec245bf7c953c721fbba6025085a',
+                            'frameIndex' => 22,
+                            'shapes'     => [
+                                [
+                                    'type'   => 'polygon',
+                                    'points' => [
+                                        [
+                                            'x' => 148,
+                                            'y' => 144,
+                                        ],
+                                        [
+                                            'x' => 248,
+                                            'y' => 244,
+                                        ],
+                                        [
+                                            'x' => 348,
+                                            'y' => 344,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'classes'    => [
+                                'occlusion-0',
+                                'truncation-0',
+                                'direction-back',
+                            ],
+                        ],
+                        [
+                            'uuid'       => '0735702d52300b44aea6a35ad00573f0',
+                            'frameIndex' => 44,
+                            'shapes'     => [
+                                [
+                                    'type'   => 'polygon',
+                                    'points' => [
+                                        [
+                                            'x' => 448,
+                                            'y' => 444,
+                                        ],
+                                        [
+                                            'x' => 548,
+                                            'y' => 544,
+                                        ],
+                                        [
+                                            'x' => 648,
+                                            'y' => 644,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'classes'    => [
+                                'occlusion-0',
+                                'truncation-0',
+                                'direction-back',
+                            ],
+                        ],
+                    ],
+                ],
+                file_get_contents(__DIR__ . '/Expected/Polygon.csv'),
+            ], [
                 [
                     'taskConfiguration'    => 'Cuboid.xml',
                     'drawingTool'          => Model\LabelingTask::DRAWING_TOOL_CUBOID,

@@ -62,3 +62,31 @@ export function expectAllModalsToBeClosed() {
   const modalElements = element(by.css('.modal-overlay.is-active'));
   expect(modalElements.isPresent()).toBe(false, 'No open modal Dialog expected.');
 }
+
+export function expectModalToBePresent() {
+  const modalElements = element(by.css('.modal-overlay.is-active'));
+  expect(modalElements.isPresent()).toBe(true, 'Open modal Dialog expected.');
+}
+
+/**
+ * Retrieve the `textContent` of a certain ElementFinder.
+ *
+ * This content will be filled even if the element ist not visible. In contrast to protractors `getText`.
+ *
+ * @returns {webdriver.promise.Promise}
+ */
+export function getTextContentFromElementFinder(elementFinder) {
+  return elementFinder.getAttribute('textContent')
+    .then(textContent => textContent.trim());
+}
+
+/**
+ * Check if certain {@link ElementFinder} has got certain class set.
+ *
+ * @returns {webdriver.promise.Promise}
+ */
+export function hasClassByElementFinder(elementFinder, className) {
+    return elementFinder.getAttribute('class').then(
+      classString => classString.split(' ').includes(className)
+    );
+}

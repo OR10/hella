@@ -6,7 +6,7 @@
     "data": {
       "frameIndex": 0,
       "incomplete": true,
-      "identifierName": "pedestrian",
+      "identifierName": "legacy",
       "labeledThingId": "{{:labeledThingId}}",
       "shapes": [
         {
