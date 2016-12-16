@@ -86,6 +86,7 @@ class CouchDbModelSerializer {
     documentJson.labeledThingId = labeledThingInFrameModel._labeledThing.id;
     documentJson.taskId = labeledThingInFrameModel.labeledThing.task.id;
     documentJson.projectId = labeledThingInFrameModel.labeledThing.task.projectId;
+    documentJson.classes = JSON.parse(JSON.stringify(labeledThingInFrameModel.classes));
 
     return documentJson;
   }

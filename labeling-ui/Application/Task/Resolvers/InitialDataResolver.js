@@ -10,6 +10,7 @@ export default [
 
     if (featureFlags.pouchdb === true) {
       promise = taskGateway.checkoutTaskFromRemote($stateParams.taskId);
+      // @TODO: stop continuous replication right after leaving route
     }
 
     return promise

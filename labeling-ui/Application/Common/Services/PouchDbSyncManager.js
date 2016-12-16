@@ -52,6 +52,12 @@ class PouchDbSyncManager {
      * @private
      */
     this._pouchDb = pouchDb;
+
+    /**
+     * @type {object}
+     * @private
+     */
+    this._eventListeners = {};
   }
 
   /**
@@ -64,7 +70,7 @@ class PouchDbSyncManager {
     this._remoteConfig.filters.forEach(filter => {
       [
         PouchDbSyncManager.SYNC_DIRECTION_FROM,
-        PouchDbSyncManager.SYNC_DIRECTION_TO
+        PouchDbSyncManager.SYNC_DIRECTION_TO,
       ].forEach(direction => {
         const hasSyncHandler = this._hasSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
         if (!hasSyncHandler) {
@@ -191,13 +197,13 @@ class PouchDbSyncManager {
     const replicationFunction = context.replicate[direction];
     const syncHandler = replicationFunction(replicationEndpointUrl, syncSettings);
 
-    if(!live) {
+    if (live) {
+      this._startLiveReplicationWithDirectionAndFilter(direction, syncHandler, context, filter, deferred);
+    } else {
       syncHandler
         .on('complete', event => {
           this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
-          if(!live) {
-            deferred.resolve(event);
-          }
+          deferred.resolve(event);
         })
         .on('error', error => {
           this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
@@ -205,36 +211,80 @@ class PouchDbSyncManager {
         });
     }
 
-    if(live) {
-      const translation = ({
-        from:'from_server',
-        to:'to_server',
-      })[direction];
-
-      const loggerContext = `LiveReplication:${translation}`;
-      syncHandler.on('complete', event => {
-        this._logger.log(loggerContext, `[:complete]`, event);
-        this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
-      }).on('error', error => {
-        this._logger.log(loggerContext, `[:error]`, error);
-        this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
-        deferred.reject(error);
-      }).on('change', info => {
-        this._logger.log(loggerContext, `[:change]`, info);
-      }).on('paused', error => {
-        this._logger.log(loggerContext, `[:paused]`, error);
-        deferred.resolve(event);
-      }).on('active', event => {
-        this._logger.log(loggerContext, `[:active]`, event);
-        deferred.resolve();
-      }).on('denied', error => {
-        this._logger.log(loggerContext, `[:denied]`, error);
-      });
-    }
-
     this._setSyncHandlerByContextAndFilterAndDirection(context, filter, direction, syncHandler);
 
     return deferred.promise;
+  }
+
+  /**
+   * @param direction
+   * @param syncHandler
+   * @param context
+   * @param filter
+   * @param deferred
+   * @private
+   */
+  _startLiveReplicationWithDirectionAndFilter(direction, syncHandler, context, filter, deferred) {
+    const translation = ({
+      from: 'from_server',
+      to: 'to_server',
+    })[direction];
+
+    const loggerContext = `LiveReplication:${translation}`;
+    syncHandler.on('complete', event => {
+      this._logger.log(loggerContext, `[:complete]`, event);
+      this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+    }).on('error', error => {
+      this._logger.log(loggerContext, `[:error]`, error);
+      this._removeSyncHandlerByContextAndFilterAndDirection(context, filter, direction);
+      deferred.reject(error);
+      this._broadcastOffline();
+    }).on('change', info => {
+      this._logger.log(loggerContext, `[:change]`, info);
+      this._broadcastTransfer();
+    }).on('paused', event => {
+      this._logger.log(loggerContext, `[:paused]`, event);
+      if (event && event.status === 0) {
+        this._broadcastOffline();
+      } else {
+        this._broadcastAlive();
+      }
+      deferred.resolve(event);
+    }).on('active', event => {
+      this._logger.log(loggerContext, `[:active]`, event);
+      this._broadcastTransfer();
+      deferred.resolve();
+    }).on('denied', error => {
+      this._logger.log(loggerContext, `[:denied]`, error);
+      this._broadcastOffline();
+    });
+  }
+
+  /**
+   * @private
+   */
+  _broadcastAlive() {
+    if(this._eventListeners.alive) {
+      this._eventListeners.alive();
+    }
+  }
+
+  /**
+   * @private
+   */
+  _broadcastTransfer() {
+    if(this._eventListeners.transfer) {
+      this._eventListeners.transfer();
+    }
+  }
+
+  /**
+   * @private
+   */
+  _broadcastOffline() {
+    if(this._eventListeners.offline) {
+      this._eventListeners.offline();
+    }
   }
 
   pushUpdatesForContext(context) {
@@ -286,6 +336,10 @@ class PouchDbSyncManager {
     }
 
     return result;
+  }
+
+  on(eventName, eventCallback) {
+    this._eventListeners[eventName] = eventCallback;
   }
 
   /**

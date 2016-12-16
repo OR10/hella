@@ -7,6 +7,7 @@ import UserNameDirective from './Directives/UserNameDirective';
 import LogoutButtonDirective from './Directives/LogoutButtonDirective';
 import TimerGateway from './Gateways/TimerGateway';
 import PouchDbTimerGateway from './Gateways/PouchDbTimerGateway';
+import LiveSyncIndicatorDirective from './Directives/LiveSyncIndicatorDirective';
 
 /**
  * Module containing all functionality related to the header bar
@@ -26,6 +27,7 @@ class Header extends Module {
     this.registerDirective('taskTitle', TaskTitleDirective);
     this.registerDirective('userName', UserNameDirective);
     this.registerDirective('logoutButton', LogoutButtonDirective);
+    this.registerDirective('liveSyncIndicator', LiveSyncIndicatorDirective);
 
     this.module.service('timerGateway', TimerGateway);
 

@@ -167,14 +167,15 @@ class LabeledThingInFrame extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {frameIndex, labeledThing, shapes, ghost, ghostClasses, identifierName} = this;
+    const {frameIndex, labeledThing, shapes, ghost, ghostClasses, identifierName, classes} = this;
     return Object.assign(super.toJSON(), {
       frameIndex,
       ghost,
       identifierName,
       shapes: cloneDeep(shapes),
       ghostClasses: clone(ghostClasses),
-      labeledThingId: labeledThing.id,
+      labeledThingId: clone(labeledThing),
+      classes: clone(classes),
     });
   }
 }
