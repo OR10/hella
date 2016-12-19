@@ -200,7 +200,6 @@ export default class LabelSelectorController {
             labeledThing.frameRange.startFrameIndex = frameIndex;
             labeledThingNeedsUpdate = true;
           }
-
         }
       }
 

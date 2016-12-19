@@ -460,6 +460,9 @@ export default class MultiTool extends Tool {
         this._activeTool.onMouseDown(event, hitShape, hitHandle);
       } else {
         this._toolWorking = true;
+        if (this._$scope.vm.selectedDrawingTool === null) {
+          return;
+        }
         this._setDrawingTool(this._$scope.vm.selectedDrawingTool);
         this._activeTool.onMouseDown(event);
       }
