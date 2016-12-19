@@ -3,6 +3,7 @@
  */
 class TaskListController {
   /**
+   * @param {object} featureFlags
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {angular.$q} $q
@@ -10,8 +11,16 @@ class TaskListController {
    * @param {TaskGateway} taskGateway injected
    * @param {ModalService} modalService
    * @param {SelectionDialog} SelectionDialog
+   * @param {ReplicationStateService} replicationStateService
    */
-  constructor($scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog) {
+  constructor(featureFlags, $scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog, replicationStateService) {
+
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._featureFlags = featureFlags;
+
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -87,6 +96,12 @@ class TaskListController {
      */
     this._currentItemsPerPage = 0;
 
+    /**
+     * @type {ReplicationStateService}
+     * @private
+     */
+    this._replicationStateService = replicationStateService;
+
     // Reload upon request
     this._$scope.$on('task-list:reload-requested', () => {
       this.updatePage(this._currentPage, this._currentItemsPerPage);
@@ -118,6 +133,9 @@ class TaskListController {
   }
 
   _gotoTask(taskId, phase) {
+    if(this._featureFlags.pouchdb === true) {
+      this._replicationStateService.setIsReplicating(true);
+    }
     return this._$state.go('labeling.tasks.detail', {taskId, phase});
   }
 
@@ -243,6 +261,7 @@ class TaskListController {
 }
 
 TaskListController.$inject = [
+  'featureFlags',
   '$scope',
   '$state',
   '$q',
@@ -250,6 +269,7 @@ TaskListController.$inject = [
   'taskGateway',
   'modalService',
   'SelectionDialog',
+  'replicationStateService',
 ];
 
 export default TaskListController;

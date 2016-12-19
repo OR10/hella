@@ -16,6 +16,7 @@ import EntityColorService from './Services/EntityColorService';
 import ModalService from './Services/ModalService';
 import ReleaseConfigService from './Services/ReleaseConfigService';
 import LoadingMaskDirective from './Directives/LoadingMaskDirective';
+import IdleIndicatorDirective from './Directives/IdleIndicatorDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
 import RightClickDirective from './Directives/RightClickDirective';
 import TooltipDirective from './Directives/TooltipDirective';
@@ -36,6 +37,7 @@ import PackagingExecutor from './Services/PackagingExecutor';
 import ConfigurableAssemblyFactory from './Services/PackagingExecutor/ConfigurableAssemblyFactory';
 import SimpleAssemblyStrategy from './Services/PackagingExecutor/SimpleAssemblyStrategy';
 import AssemblyJobFactory from './Services/PackagingExecutor/AssemblyJobFactory';
+import ReplicationStateService from './Services/ReplicationStateService';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
@@ -106,6 +108,7 @@ class Common extends Module {
     this.module.service('assemblyFactory', ConfigurableAssemblyFactory);
     this.module.service('assemblyStrategy', SimpleAssemblyStrategy);
     this.module.service('assemblyJobFactory', AssemblyJobFactory);
+    this.module.service('replicationStateService', ReplicationStateService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
@@ -119,6 +122,7 @@ class Common extends Module {
     this.module.factory('SelectionDialog', selectionDialogProvider);
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
+    this.registerDirective('idleIndicator', IdleIndicatorDirective);
     this.registerDirective('splitView', SplitViewDirective);
     this.registerDirective('asRightClick', RightClickDirective);
     this.registerDirective('tooltip', TooltipDirective);

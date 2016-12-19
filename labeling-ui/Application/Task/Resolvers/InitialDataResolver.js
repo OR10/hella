@@ -1,10 +1,12 @@
 export default [
   'featureFlags',
   '$q',
+  '$rootScope',
   '$stateParams',
   'taskGateway',
   'videoGateway',
-  (featureFlags, $q, $stateParams, taskGateway, videoGateway) => {
+  'replicationStateService',
+  (featureFlags, $q, $rootScope, $stateParams, taskGateway, videoGateway, replicationStateService) => {
     let promise = $q.resolve();
     let task;
 
@@ -15,6 +17,7 @@ export default [
 
     return promise
     .then(() => {
+      replicationStateService.setIsReplicating(true);
       return taskGateway.getTask($stateParams.taskId);
     })
     .then(_task => {
@@ -22,7 +25,9 @@ export default [
       return videoGateway.getVideo(task.videoId);
     })
     .then(video => {
+      replicationStateService.setIsReplicating(false);
       return {task, video};
     });
+
   },
 ];
