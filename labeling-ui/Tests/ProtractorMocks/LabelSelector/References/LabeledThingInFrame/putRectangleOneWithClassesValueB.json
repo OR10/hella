@@ -1,0 +1,81 @@
+{
+  "request": {
+    "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
+    "method": "PUT",
+    "data": {
+      "identifierName": "thing-one",
+      "frameIndex": 0,
+      "incomplete": true,
+      "rev": "2-b65227715b51dadd97f8521646e88a22",
+      "ghost": false,
+      "labeledThingId": "LABELED-THING-ID-1",
+      "shapes": [
+        {
+          "id": "SHAPE-ID-1",
+          "type": "rectangle",
+          "bottomRight": {
+            "x": 200,
+            "y": 200
+          },
+          "topLeft": {
+            "x": 100,
+            "y": 100
+          },
+          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+        }
+      ],
+      "classes": [
+        "value-b"
+      ],
+      "id": "LABELED-THING-IN-FRAME-ID-1",
+      "ghostClasses": null
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThing": {
+          "id": "LABELED-THING-ID-2",
+          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+          "frameRange": {
+            "startFrameNumber": 1,
+            "endFrameNumber": 1
+          },
+          "classes": [
+          ],
+          "taskId": "TASKID-TASKID",
+          "incomplete": true,
+          "lineColor": "16"
+        },
+        "labeledThingInFrame": {
+          "id": "LABELED-THING-IN-FRAME-ID-1",
+          "rev": "2-b65227715b51dadd97f8521646e88a22",
+          "frameIndex": 0,
+          "classes": [
+            "value-b"
+          ],
+          "ghostClasses": null,
+          "identifierName": "thing-one",
+          "shapes": [
+            {
+              "topLeft": {
+                "x": 100,
+                "y": 100
+              },
+              "bottomRight": {
+                "x": 200,
+                "y": 200
+              },
+              "id": "SHAPE-ID-1",
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "rectangle"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "ghost": false
+        }
+      }
+    }
+  }
+}

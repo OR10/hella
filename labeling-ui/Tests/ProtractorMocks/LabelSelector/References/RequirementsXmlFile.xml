@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  THIS FILE NEEDS TO BE EMBEDDED INTO `RequirementsFileXml.json` IN ORDER TO BE RECOGNIZED BY THE TESTS.
+  IT WILL **NOT** BE SOURCED ON ITS OWN
+  IT IS ONLY STORED HERE FOR EDITING AND READABILITY PURPOSES
+
+  USE THE FOLLOWING COMMAND TO CREATE THE NEEDED STRING:
+  cat RequirementsXmlFile.xml|sed -e 's@"@\\"@g'|sed -e ':a' -e 'N' -e '$!ba' -e 's@\n@\\n@g'
+-->
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <thing id="thing-one" shape="rectangle" name="Thing One">
+    <class id="class-a" name="Class A">
+      <value id="value-a" name="Value A">
+        <class ref="class-priv-a" />
+      </value>
+      <value id="value-b" name="Value B">
+        <class id="class-b" name="Class B">
+          <value id="value-c" name="Value C">
+            <class id="class-c" name="Class C">
+              <value id="value-d" name="Value D" />
+              <value id="value-e" name="Value E">
+                <class ref="lamp-color" />
+              </value>
+            </class>
+          </value>
+          <value id="value-f" name="Value F">
+            <class ref="class-e" />
+          </value>
+        </class>
+        <class id="class-d" name="Class D">
+          <value id="value-g" name="Value G" />
+          <value id="value-h" name="Value H" />
+          <value id="value-i" name="Value I">
+            <class id="class-e" name="Class E">
+              <value id="value-j" name="Value J" />
+              <value id="value-k" name="Value K" />
+            </class>
+          </value>
+        </class>
+        <class ref="lamp-color" />
+      </value>
+    </class>
+  </thing>
+
+  <thing id="thing-two" shape="rectangle" name="Thing Two">
+    <class id="time=" name="Time">
+      <value id="day" name="Day" />
+      <value id="night" name="Night">
+        <class id="class-" name="Class ">>
+          <value id="neon" name="Neon lights">
+            <class name="Lamp Color" id="lamp-color">
+              <value id="white" name="White" />
+              <value id="orange" name="Orange" />
+            </class>
+          </value>
+          <value id="halogen" name="Halogen lights" />
+          <value id="xenon" name="Xenon lights" />
+        </class>
+      </value>
+    </class>
+  </thing>
+
+  <private>
+    <class id="class-priv-a" name="Class Private A">
+      <value id="value-priv-a" name="Value Private A" />
+      <value id="value-priv-b" name="Value Private B" />
+      <value id="value-priv-c" name="Value Private C" />
+    </class>
+  </private>
+</requirements>
