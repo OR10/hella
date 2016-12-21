@@ -1115,7 +1115,7 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    it('should keep the label selector open after a frame change (TTANNO-1165)', done => {
+    xit('should keep the label selector open after a frame change (TTANNO-1165)', done => {
       mock(sharedMocks.concat([
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
         assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame1,
