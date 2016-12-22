@@ -129,15 +129,11 @@ class PouchDbLabeledThingGateway {
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
-        this._injectRevisionOrFailSilently(document);
-        return dbContext.remove(document);
     const synchronizedPromise = this._packagingExecutor.execute('labeledThing', () => {
+      this._injectRevisionOrFailSilently(document);
+      return dbContext.remove(document);
     })
-    .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
-    .then(response => {
-      this._revisionManager.extractRevision(response);
-      return true;
-    });
+    .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument));
 
     return synchronizedPromise;
   }
