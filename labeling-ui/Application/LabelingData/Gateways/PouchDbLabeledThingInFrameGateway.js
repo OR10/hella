@@ -12,9 +12,10 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
-   * @param {PouchDbLabeledThingGateway} pouchLabeledThingGateway
+   * @param {LabeledThingGateway} labeledThingGateway
+   * @param {GhostingService} ghostingService
    */
-  constructor($q, pouchDbSyncManager, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway) {
+  constructor($q, pouchDbSyncManager, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway, ghostingService) {
     /**
      * @type {$q}
      * @private
@@ -62,6 +63,12 @@ class PouchDbLabeledThingInFrameGateway {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {GhostingService}
+     * @private
+     */
+    this._ghostingService = ghostingService;
 
     /**
      * @type {PouchDbSyncManager}
@@ -122,8 +129,8 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {int?} limit
    */
   getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
-    const startkey = [labeledThing.id, frameIndex + offset];
-    const endkey = [labeledThing.id, frameIndex + offset + limit - 1];
+    const startkey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
+    const endkey = [labeledThing.id, labeledThing.frameRange.endFrameIndex];
 
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
@@ -135,18 +142,19 @@ class PouchDbLabeledThingInFrameGateway {
       });
     }).then(result => {
       if (result.rows) {
-        const docs = [];
+        const allLabeledThingsInFrameOfLabeledThing = [];
         result.rows.forEach(row => {
           if (row.doc) {
             const labeledThingInFrame = row.doc;
             this._revisionManager.extractRevision(labeledThingInFrame);
-            docs.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
+            allLabeledThingsInFrameOfLabeledThing.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
           } else {
             throw new Error('Row does not contain a document');
           }
         });
 
-        return docs;
+        const res = this._ghostingService.calculateGhostsForLabeledThingInFrames(frameIndex, offset, limit, allLabeledThingsInFrameOfLabeledThing);
+        return res;
       }
 
       throw new Error(`Failed loading labeled thing in frame for the given labeledThing: ${labeledThing.id}`);
@@ -225,6 +233,7 @@ PouchDbLabeledThingInFrameGateway.$inject = [
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
   'labeledThingGateway',
+  'ghostingService',
 ];
 
 export default PouchDbLabeledThingInFrameGateway;
