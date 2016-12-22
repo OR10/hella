@@ -132,6 +132,7 @@ class PouchDbLabeledThingGateway {
     const synchronizedPromise = this._packagingExecutor.execute('labeledThing', () => {
       this._injectRevisionOrFailSilently(document);
       return dbContext.remove(document);
+      // TODO: delete labeledThingsInFrame
     })
     .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument));
 
