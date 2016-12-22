@@ -43,7 +43,7 @@ class CouchDbModelDeserializer {
     // Attributes are already prefix free!
     [
       'type',
-      'rev'
+      'rev',
     ].forEach(property => {
       if (video[property] !== undefined) {
         delete video[property];
@@ -142,7 +142,7 @@ class CouchDbModelDeserializer {
    */
   _cloneDocument(document) {
     // Replace with framework agnostic version in case of usage outside of angular.
-    return angular.copy(document)
+    return angular.copy(document);
   }
 }
 
