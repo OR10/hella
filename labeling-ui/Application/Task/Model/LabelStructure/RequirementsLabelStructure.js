@@ -2,6 +2,7 @@ import cloneDeep from 'lodash.clonedeep';
 
 import LabelStructure from '../LabelStructure';
 import LabelStructureThing from '../LabelStructureThing';
+import XMLClassElement from '../XMLClassElement';
 
 /**
  * LabelStructure used for RequirementsXML based structures
@@ -151,35 +152,93 @@ class RequirementsLabelStructure extends LabelStructure {
   }
 
   /**
-   * Retrieve a list of enabled DOMElements based on a starting point in the DOM and a classList
+   * Retrieve a list of enabled XMLClassElements based on a starting point in the DOM and a classList
    *
    * @param {Node} rootElement
    * @param {Array.<string>} classList
+   * @param {int} depth
    * @private
    */
-  _getEnabledElementsByStartingElementAndClassList(rootElement, classList) {
+  _getEnabledElementsByStartingElementAndClassList(rootElement, classList, depth = 1) {
     const classElementsPath = `./r:class`;
     const classElementsSnapshot = this._evaluateXPath(classElementsPath, rootElement, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
     if (classElementsPath.snapshotLength === 0) {
       return [];
     }
 
-    let classElements = [];
+    let xmlClassElements = [];
     for (let index = 0; index < classElementsSnapshot.snapshotLength; index++) {
-      const classElement = classElementsSnapshot.snapshotItem(index);
-      if (!this._isClassElementEnabled(classElement, classList)) {
+      let xmlClass = new XMLClassElement(classElementsSnapshot.snapshotItem(index), depth);
+
+      if (!this._isClassElementEnabled(xmlClass, classList)) {
         continue;
       }
-      classElements.push(classElement);
 
-      const valueElements = this._getValueElementsFromClassElement(classElement);
+      // If classElement is a reference node, replace with the referenced class node
+      if (this._isRefElement(xmlClass)) {
+        xmlClass = this._getReferencedClassElement(xmlClass);
+      }
+
+      xmlClassElements.push(xmlClass);
+
+      const valueElements = this._getValueElementsFromClassElement(xmlClass);
       valueElements.forEach(valueElement => { // eslint-disable-line no-loop-func
-        const enabledChildClasses = this._getEnabledElementsByStartingElementAndClassList(valueElement, classList);
-        classElements = [...classElements, ...enabledChildClasses];
+        // Recursive search for further nodes in the tree below every value element
+        const enabledChildXMLClasses = this._getEnabledElementsByStartingElementAndClassList(valueElement, classList, depth + 1);
+        xmlClassElements = [...xmlClassElements, ...enabledChildXMLClasses];
       });
     }
 
-    return classElements;
+    // Filter through all found elements and only keep unique ids with the lowest depth
+    const uniqueMap = new Map();
+    xmlClassElements.forEach(xmlClass => {
+      if (!uniqueMap.has(xmlClass.element.attributes.id)) {
+        uniqueMap.set(xmlClass.element.attributes.id, xmlClass);
+        return;
+      }
+      if (xmlClass.depth < uniqueMap.get(xmlClass.element.attributes.id).depth) {
+        uniqueMap.delete(xmlClass.element.attributes.id);
+        uniqueMap.set(xmlClass.element.attributes.id, xmlClass);
+      }
+    });
+
+    return [...uniqueMap.values()];
+  }
+
+  /**
+   * Check if a specific `<class>` element is a class reference.
+   *
+   * A class reference element has the `ref` attribute to reference an other class by id.
+   *
+   * @param {XMLClassElement} xmlClass
+   * @return {boolean}
+   * @private
+   */
+  _isRefElement(xmlClass) {
+    return xmlClass.element.attributes.ref !== undefined;
+  }
+
+  /**
+   * Takes a class reference node and returns the referenced class node.
+   *
+   * If either the id is not set or no class with the given ref id could be found an error will be thrown.
+   *
+   * @param {XMLClassElement} xmlClass
+   * @return {XMLClassElement}
+   * @private
+   */
+  _getReferencedClassElement(xmlClass) {
+    const referencedClassId = xmlClass.element.attributes.ref.value;
+    if (!referencedClassId) {
+      throw new Error('The class reference need to be an id of an other class');
+    }
+
+    const referencedClassElement = this._getClassElementById(referencedClassId);
+    if (!referencedClassElement) {
+      throw new Error(`No class with id "${referencedClassId}" could be found in the document.`);
+    }
+
+    return new XMLClassElement(referencedClassElement, xmlClass.depth);
   }
 
   /**
@@ -188,12 +247,12 @@ class RequirementsLabelStructure extends LabelStructure {
    * An element is considered enabled, if it does not have a value as parent or if the `<value>` parent is part of the
    * `classList`.
    *
-   * @param {Node} classElement
+   * @param {XMLClassElement} xmlClass
    * @param {Array.<string>} classList
    * @private
    */
-  _isClassElementEnabled(classElement, classList) {
-    const parentElement = classElement.parentNode;
+  _isClassElementEnabled(xmlClass, classList) {
+    const parentElement = xmlClass.element.parentNode;
 
     if (parentElement.tagName !== 'value') {
       return true;
@@ -205,13 +264,13 @@ class RequirementsLabelStructure extends LabelStructure {
   /**
    * Retrieve all <value> elements, which are direct children of a given classElement.
    *
-   * @param {Node} classElement
+   * @param {XMLClassElement} xmlClass
    * @return {Array.<Node>}
    * @private
    */
-  _getValueElementsFromClassElement(classElement) {
+  _getValueElementsFromClassElement(xmlClass) {
     const valueElementsPath = `./r:value`;
-    const valueElementsSnapshot = this._evaluateXPath(valueElementsPath, classElement, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    const valueElementsSnapshot = this._evaluateXPath(valueElementsPath, xmlClass.element, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
     const valueElements = [];
     for (let index = 0; index < valueElementsSnapshot.snapshotLength; index++) {
@@ -243,19 +302,40 @@ class RequirementsLabelStructure extends LabelStructure {
   }
 
   /**
+   * Get the Class DOMElement of class with a specific identifier
+   *
+   * If a node with the given identifier could not be found an exception will be thrown
+   *
+   * @param {string} identifier
+   * @return {Node}
+   * @private
+   */
+  _getClassElementById(identifier) {
+    const searchNodePath = `//r:class[@id="${identifier}"]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    if (searchSnapshot.snapshotLength !== 1) {
+      throw new Error(`Expected to find one thing node with a specific id, but found ${searchSnapshot.snapshotLength}.`);
+    }
+
+    const thingElement = searchSnapshot.snapshotItem(0);
+    return thingElement;
+  }
+
+  /**
    * Convert a `<class>` Element into the json structure used for internal representation inside the view
    *
    * The conversion is flat. Nested `<class>` elements will be ignored.
    *
-   * @param {Node} classElement
+   * @param {XMLClassElement} xmlClass
    * @private
    */
-  _convertClassElementToClassJson(classElement) {
-    const valueElements = this._getValueElementsFromClassElement(classElement);
+  _convertClassElementToClassJson(xmlClass) {
+    const valueElements = this._getValueElementsFromClassElement(xmlClass);
     const classJson = {
-      name: classElement.attributes.id.value,
+      name: xmlClass.element.attributes.id.value,
       metadata: {
-        challenge: classElement.attributes.name.value,
+        challenge: xmlClass.element.attributes.name.value,
       },
       children: [],
     };

@@ -933,18 +933,254 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    // @TODO: Tests für <class ref='foo'>
-    //        - Reference aus dem <private> Block
-    //        - Reference irgendwo inline
-    //          - Aus dem gleichen <thing>
-    //          - Aus anderem Thing
-    //        - Unique ids (references) deterministische ordnung
-    //          - Beispiel, dass durch hinzukommende dependencies seine ordnung ändern würde (darf dies nicht).
-    //          - a
-    //            - b
-    //              - c
-    //          - z
-    //          - c
+    afterEach(() => {
+      expectAllModalsToBeClosed();
+      mock.teardown();
+    });
+  });
+
+
+  describe('Basic Behaviour', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.LabelSelector.RequirementsXml.Task,
+        assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
+        assets.mocks.LabelSelector.References.RequirementsXmlFile,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
+      ]);
+    });
+
+    it('should resolve a reference from the private block', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueA,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A').click())
+        .then(() => expect(
+          labelSelectorHelper.getAllEntryTexts()
+        ).toEqual(
+          {
+            'Class A': [
+              'Value A',
+              'Value B',
+            ],
+            'Class Private A': [
+              'Value Private A',
+              'Value Private B',
+              'Value Private C',
+            ],
+          }))
+        .then(() => done());
+    });
+
+    it('should resolve a reference from another thing', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => expect(
+          labelSelectorHelper.getAllEntryTexts()
+        ).toEqual(
+          {
+            'Class A': [
+              'Value A',
+              'Value B',
+            ],
+            'Class B': [
+              'Value C',
+              'Value F',
+            ],
+            'Class D': [
+              'Value G',
+              'Value H',
+              'Value I',
+            ],
+            'Lamp Color': [
+              'White',
+              'Orange',
+            ],
+          }))
+        .then(() => done());
+    });
+
+    it('should resolve a reference from the same thing', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBF,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class B', 'Value F').click())
+        .then(() => expect(
+          labelSelectorHelper.getAllEntryTexts()
+        ).toEqual(
+          {
+            'Class A': [
+              'Value A',
+              'Value B',
+            ],
+            'Class B': [
+              'Value C',
+              'Value F',
+            ],
+            'Class E': [
+              'Value J',
+              'Value K',
+            ],
+            'Class D': [
+              'Value G',
+              'Value H',
+              'Value I',
+            ],
+            'Lamp Color': [
+              'White',
+              'Orange',
+            ],
+          }))
+        .then(() => done());
+    });
+
+    it('should keep a deterministic order if two of the same classes are referenced', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBC,
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBCE,
+      ]));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class B', 'Value C').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class C', 'Value E').click())
+        .then(() => expect(
+          labelSelectorHelper.getAllEntryTexts()
+        ).toEqual(
+          {
+            'Class A': [
+              'Value A',
+              'Value B',
+            ],
+            'Class B': [
+              'Value C',
+              'Value F',
+            ],
+            'Class C': [
+              'Value D',
+              'Value E',
+            ],
+            'Class D': [
+              'Value G',
+              'Value H',
+              'Value I',
+            ],
+            'Lamp Color': [
+              'White',
+              'Orange',
+            ],
+          }))
+        .then(() => done());
+    });
+
+    it('should keep the label selector open after a frame change (TTANNO-1165)', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex1,
+        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame1,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame1Frame1to5,
+      ]));
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => expect(
+          labelSelectorHelper.getAllEntryTexts()
+        ).toEqual(
+          {
+            'Class A': [
+              'Value A',
+              'Value B',
+            ],
+            'Class B': [
+              'Value C',
+              'Value F',
+            ],
+            'Class D': [
+              'Value G',
+              'Value H',
+              'Value I',
+            ],
+            'Lamp Color': [
+              'White',
+              'Orange',
+            ],
+          }))
+        .then(() => nextFrameButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => expect(
+          labelSelectorHelper.getAllEntryTexts()
+        ).toEqual(
+          {
+            'Class A': [
+              'Value A',
+              'Value B',
+            ],
+            'Class B': [
+              'Value C',
+              'Value F',
+            ],
+            'Class D': [
+              'Value G',
+              'Value H',
+              'Value I',
+            ],
+            'Lamp Color': [
+              'White',
+              'Orange',
+            ],
+          }))
+        .then(() => done());
+    });
   });
 
   afterEach(() => {
