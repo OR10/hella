@@ -1,5 +1,3 @@
-import LabeledThing from '../Models/LabeledThing';
-
 /**
  * Gateway for CRUD operation on {@link LabeledThing}s in a PouchDb
  */
@@ -108,7 +106,7 @@ class PouchDbLabeledThingGateway {
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
-    let synchronizedDbPromize = this._packagingExecutor.execute('labeledThing', () => {
+    const synchronizedDbPromize = this._packagingExecutor.execute('labeledThing', () => {
       return dbContext.get(labeledThingId);
     })
     .then(dbDocument => {
@@ -131,9 +129,9 @@ class PouchDbLabeledThingGateway {
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
-    let synchronizedPromise = this._packagingExecutor.execute('labeledThing', () => {
         this._injectRevisionOrFailSilently(document);
         return dbContext.remove(document);
+    const synchronizedPromise = this._packagingExecutor.execute('labeledThing', () => {
     })
     .then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument))
     .then(response => {
