@@ -97,13 +97,6 @@ class CouchDbModelDeserializer {
   deserializeLabeledThingInFrame(labeledThingInFrameDocument, labeledThing) {
     const model = this._cloneDocument(labeledThingInFrameDocument);
     this._removePrefixFromIdAndRevision(model);
-    model.ghost = false;
-    // @TODO: dont overwrite classes.
-    model.ghostClasses = [];
-    model.classes = labeledThingInFrameDocument.classes;
-    model.identifierName = null;
-    model.taskId = labeledThingInFrameDocument.taskId;
-    model.projectId = labeledThingInFrameDocument.projectId;
 
     return new LabeledThingInFrame(
       Object.assign({}, model, {labeledThing})
