@@ -13,6 +13,7 @@ class ViewerTitleBarController {
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {FrameIndexService} frameIndexService
+   * @param {ReplicationService} replicationService
    */
   constructor($timeout,
               $scope,
@@ -23,7 +24,9 @@ class ViewerTitleBarController {
               taskGateway,
               labeledThingGateway,
               labeledThingInFrameGateway,
-              frameIndexService) {
+              frameIndexService,
+              replicationService
+  ) {
     this._$timeout = $timeout;
     /**
      * @param {angular.$scope} $scope
@@ -89,6 +92,12 @@ class ViewerTitleBarController {
      */
     this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
 
+    /**
+     * @type {ReplicationService}
+     * @private
+     */
+    this._replicationService = replicationService;
+
     this.refreshIncompleteCount();
     this._registerOnEvents();
 
@@ -126,10 +135,18 @@ class ViewerTitleBarController {
   }
 
   finishLabelingTask() {
+    let promise;
     this._applicationState.disableAll();
     this._applicationState.viewer.work();
 
-    this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
+    if (this._featureFlags.pouchdb === true) {
+      // this._replicationStateService.setIsReplicating(true);
+      promise = this._$q.resolve();
+    } else {
+      promise = this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id)
+    }
+
+    promise.then(result => {
       if (result.count !== 0) {
         this.handleIncompleteState();
       } else {
@@ -244,6 +261,7 @@ ViewerTitleBarController.$inject = [
   'labeledThingGateway',
   'labeledThingInFrameGateway',
   'frameIndexService',
+  'replicationStateService',
 ];
 
 export default ViewerTitleBarController;

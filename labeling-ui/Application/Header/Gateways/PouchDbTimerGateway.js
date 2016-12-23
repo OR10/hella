@@ -26,12 +26,44 @@ class PouchDbTimerGateway {
     this._revisionManager = revisionManager;
   }
 
+  createTimerDocument(projectId, taskId, userId) {
+    const queueIdentifier = 'timer';
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const timerDocument = {
+      type: 'AppBundle.Model.TaskTimer',
+      taskId: taskId,
+      projectId: projectId,
+      userId: userId,
+      timeInSeconds: {
+        labeling: 0,
+      },
+    };
+
+    return this._packagingExecutor.execute(queueIdentifier, () => {
+      return dbContext.post(timerDocument);
+    });
+  }
+
+  /**
+   * @param projectId
+   * @param taskId
+   * @param userId
+   * @returns {Promise<timerDocument>}
+   */
+  readOrCreateTimerIfMissingWithIdentification(projectId, taskId, userId) {
+    return this.getTime(taskId, userId)
+      .then(
+        timerDocument => timerDocument,
+        () => this.createTimerDocument(projectId, taskId, userId)
+      );
+  }
+
   /**
    * Gets the time for the given {@link Task}
    *
    * @param {string} taskId
    * @param {string} userId
-   * @return {AbortablePromise<int|Error>}
+   * @return {AbortablePromise<Object|Error>}
    */
   getTime(taskId, userId) {
     const queueIdentifier = 'timer';
@@ -45,11 +77,15 @@ class PouchDbTimerGateway {
         key: [taskId, userId],
       }))
     .then(response => {
-        // @TODO wrap in clientside TimerModel?
-        return response.rows[0].doc;
+      // @TODO wrap in clientside TimerModel?
+      let result = null;
+      if (response.rows[0]) {
+        result = response.rows[0].doc;
+      }
+      return result;
     })
     .then(timeDocument => {
-      if (typeof timeDocument !== 'object') {
+      if (timeDocument === null || typeof timeDocument !== 'object') {
         throw new Error('Failed loading time');
       }
 
@@ -71,13 +107,13 @@ class PouchDbTimerGateway {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
 
     return this.getTime(taskId, userId)
-      .then(dbDocument => {
-        dbDocument.timeInSeconds.labeling = time;
-        return this._packagingExecutor.execute(queueIdentifier, () => {
-          this._injectRevisionOrFailSilently(dbDocument);
-          return dbContext.put(dbDocument);
-        });
+    .then(dbDocument => {
+      dbDocument.timeInSeconds.labeling = time;
+      return this._packagingExecutor.execute(queueIdentifier, () => {
+        this._injectRevisionOrFailSilently(dbDocument);
+        return dbContext.put(dbDocument);
       });
+    });
   }
 
   /**
