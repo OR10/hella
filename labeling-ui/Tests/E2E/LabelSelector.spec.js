@@ -940,7 +940,7 @@ describe('LabelSelector (right sidebar)', () => {
   });
 
 
-  describe('Basic Behaviour', () => {
+  describe('References', () => {
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.RequirementsXml.Task,
