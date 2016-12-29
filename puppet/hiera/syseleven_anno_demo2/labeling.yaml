@@ -72,6 +72,7 @@ labeling_api::worker::user: www-data
 
 labeling_api::cdn::httpv2: true
 
+labeling_api::params: true
 labeling_api::mysql: false
 labeling_api::couch: true
 labeling_api::worker_queue: true
