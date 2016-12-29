@@ -24,7 +24,8 @@ php::extensions:
   zip: {}
 
 letsencrypt::email: chh@crosscan.com
-annostation_letsencrypt::domain: weblabel-demo.hella-aglaia.com
+annostation_letsencrypt::domains:
+    - weblabel-demo.hella-aglaia.com
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem'
 labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/privkey.pem'
 labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem'
