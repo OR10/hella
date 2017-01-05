@@ -60,6 +60,11 @@ class LabelingTaskBuilder
     private $taskConfiguration;
 
     /**
+     * @var string
+     */
+    private $drawingTool;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -218,6 +223,18 @@ class LabelingTaskBuilder
     }
 
     /**
+     * @param string $drawingTool
+     *
+     * @return $this
+     */
+    public function withDrawingTool($drawingTool)
+    {
+        $this->drawingTool = $drawingTool;
+
+        return $this;
+    }
+
+    /**
      * @return Model\LabelingTask
      */
     public function build()
@@ -231,7 +248,7 @@ class LabelingTaskBuilder
             $this->project,
             $this->frameNumberMapping,
             $this->taskType,
-            null,
+            $this->drawingTool,
             [],
             [],
             $this->creationDate,
