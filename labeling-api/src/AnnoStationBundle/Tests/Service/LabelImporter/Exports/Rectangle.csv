@@ -1,0 +1,7 @@
+"UUID","FrameNumber","position_x","position_y","width","height","occlusion","truncation","direction"
+"7dd79394-62fb-4295-931f-6b49d0035203","22","377","320","170","75","occlusion-0","truncation-0","direction-right"
+"0bc3866b-41ca-47ea-95a2-85811a2c6eef","22","619","326","113","66","occlusion-3","truncation-3","direction-front-left"
+"0bc3866b-41ca-47ea-95a2-85811a2c6eef","44","642","334","66","55","occlusion-3","truncation-3","direction-front-left"
+"7dd79394-62fb-4295-931f-6b49d0035203","44","502","328","170","75","occlusion-0","truncation-0","direction-right"
+"7dd79394-62fb-4295-931f-6b49d0035203","66","591","333","135","64","occlusion-0","truncation-0","direction-right"
+"7dd79394-62fb-4295-931f-6b49d0035203","88","632","333","77","61","occlusion-0","truncation-0","direction-right"
