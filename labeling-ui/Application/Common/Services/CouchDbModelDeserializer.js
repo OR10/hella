@@ -100,10 +100,6 @@ class CouchDbModelDeserializer {
     model.ghost = false;
     // @TODO: dont overwrite classes.
     model.ghostClasses = null;
-    model.classes = labeledThingInFrameDocument.classes;
-    model.identifierName = null;
-    model.taskId = labeledThingInFrameDocument.taskId;
-    model.projectId = labeledThingInFrameDocument.projectId;
 
     return new LabeledThingInFrame(
       Object.assign({}, model, {labeledThing})

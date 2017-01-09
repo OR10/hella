@@ -183,7 +183,7 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
-    taskId = labeledThingInFrame.labeledThing.task.id;
+    taskId = taskId ? taskId : labeledThingInFrame.labeledThing.task.id;
 
     if (labeledThingInFrame.ghost === true) {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
@@ -191,7 +191,6 @@ class PouchDbLabeledThingInFrameGateway {
 
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
     const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(labeledThingInFrame);
-    let storedLabeledThingInFrameId;
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
