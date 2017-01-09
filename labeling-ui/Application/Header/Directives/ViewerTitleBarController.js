@@ -7,25 +7,29 @@ class ViewerTitleBarController {
    * @param {$rootScope.$scope} $scope
    * @param {$rootScope.$rootScope} $rootScope
    * @param {angular.$state} $state
+   * @param {$q} $q
+   * @param {Object} featureFlags
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {FrameIndexService} frameIndexService
-   * @param {ReplicationService} replicationService
+   * @param {ReplicationStateService} replicationStateService
    */
   constructor($timeout,
               $scope,
               $rootScope,
               $state,
+              $q,
+              featureFlags,
               modalService,
               applicationState,
               taskGateway,
               labeledThingGateway,
               labeledThingInFrameGateway,
               frameIndexService,
-              replicationService
+              replicationStateService
   ) {
     this._$timeout = $timeout;
     /**
@@ -45,6 +49,18 @@ class ViewerTitleBarController {
      * @private
      */
     this._$state = $state;
+
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
+
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._featureFlags = featureFlags;
 
     /**
      * @type {ModalService}
@@ -93,10 +109,10 @@ class ViewerTitleBarController {
     this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
 
     /**
-     * @type {ReplicationService}
+     * @type {ReplicationStateService}
      * @private
      */
-    this._replicationService = replicationService;
+    this._replicationStateService = replicationStateService;
 
     this.refreshIncompleteCount();
     this._registerOnEvents();
@@ -140,10 +156,10 @@ class ViewerTitleBarController {
     this._applicationState.viewer.work();
 
     if (this._featureFlags.pouchdb === true) {
-      // this._replicationStateService.setIsReplicating(true);
-      promise = this._$q.resolve();
+      this._replicationStateService.setIsReplicating(true);
+      promise = this._$q.resolve({});
     } else {
-      promise = this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id)
+      promise = this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id);
     }
 
     promise.then(result => {
@@ -255,6 +271,8 @@ ViewerTitleBarController.$inject = [
   '$scope',
   '$rootScope',
   '$state',
+  '$q',
+  'featureFlags',
   'modalService',
   'applicationState',
   'taskGateway',

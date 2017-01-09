@@ -3,19 +3,33 @@
  */
 class ReplicationStateService {
   /**
-   * @param {Object} configuration injected
+   * @param {Object} configuration
+   * @param {$rootScope} $rootScope
    */
   constructor(configuration, $rootScope) {
-    const that = this;
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
+    /**
+     * @type {Object}
+     */
     this.configuration = configuration;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this._isReplicating = false;
   }
 
   setIsReplicating(state) {
-    this._isReplicating = state === true;
+    this._isReplicating = !!state;
     try {
-      $rootScope.$digest()
-    } catch(err) {
+      this._$rootScope.$digest();
+    } catch (err) {
       // digestion possibly running.
     }
   }
