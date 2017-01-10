@@ -87,7 +87,7 @@ grammar {
   Video = element e:video {
     NameAndIdAttributes,
     FrameLabeling*,
-    Thing*
+    (Group | Thing)*
   }
 # </video>
 
@@ -165,6 +165,14 @@ grammar {
     Value+
   }
 # </frame-labeling>
+
+# <group>
+  Group = element e:group {
+    attribute id {text},
+    FrameRangeAttributes,
+    Thing+
+  }
+# </group>
 
   Root = element e:export {
     Metadata,
