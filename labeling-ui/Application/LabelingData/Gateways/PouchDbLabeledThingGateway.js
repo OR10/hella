@@ -81,13 +81,6 @@ class PouchDbLabeledThingGateway {
         storedLabeledThingId = dbResponse.id;
         return this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext);
       })
-      .then(() => {
-        return dbContext.get(storedLabeledThingId);
-      })
-      .then(readLabeledThing => {
-        this._revisionManager.extractRevision(readLabeledThing);
-        return this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThing, task);
-      })
       .then(() => this._getAssociatedLabeledThingsInFrames(task, labeledThing))
       .then(documents => {
         return documents.rows.filter(document => {
@@ -105,6 +98,13 @@ class PouchDbLabeledThingGateway {
 
         // Bulk update as deleted marked documents
         return dbContext.bulkDocs(docs);
+      })
+      .then(() => {
+        return dbContext.get(storedLabeledThingId);
+      })
+      .then(readLabeledThing => {
+        this._revisionManager.extractRevision(readLabeledThing);
+        return this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThing, task);
       });
   }
 

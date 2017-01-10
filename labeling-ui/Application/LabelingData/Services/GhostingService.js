@@ -5,7 +5,6 @@ import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 
 class GhostingService {
   constructor() {
-
   }
 
   /**
@@ -15,9 +14,12 @@ class GhostingService {
    * @param {int} limit
    * @param {Array.<LabeledThingInFrame>} labeledThingsInFrames
    */
-  calculateGhostsForLabeledThingInFrames(frameIndex, offset, limit, labeledThingsInFrames) {
-    const startkey = frameIndex + offset;
-    const endkey = frameIndex + offset + limit;
+  calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, labeledThingsInFrames) {
+    if (labeledThingsInFrames.length === 0) {
+      return labeledThingsInFrames;
+    }
+    const startKey = frameIndex + offset;
+    const endKey = frameIndex + offset + limit;
 
     const labeledThingInFrameLookUpTable = new Map();
     labeledThingsInFrames.forEach(ltif => labeledThingInFrameLookUpTable.set(ltif.frameIndex, ltif));
@@ -25,7 +27,7 @@ class GhostingService {
     let foundLtif = null;
     let result = [];
     let counter = 0;
-    for (let index = endkey; index >= 0; index--, counter++) {
+    for (let index = endKey; index >= 0; index--, counter++) {
       if (labeledThingInFrameLookUpTable.has(index) || index === 0) {
         foundLtif = labeledThingInFrameLookUpTable.get(index);
         let partialLabeledThingInFrameSequence = new Array(counter).fill(foundLtif);
@@ -34,7 +36,29 @@ class GhostingService {
         counter = 0;
       }
     }
-    return result.slice(startkey, endkey);
+    return result.slice(startKey, endKey);
+  }
+
+  /**
+   * @param {Array.<LabeledThingInFrame>} labeledThingsInFrames
+   */
+  calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrames) {
+    const result = cloneDeep(labeledThingsInFrames);
+    let counter = 0;
+
+    for (let globalIndex = labeledThingsInFrames.length - 1; globalIndex >= 0; globalIndex--, counter++) {
+      const currentLtif = labeledThingsInFrames[globalIndex];
+      // Check if the ltif at the current index has classes
+      if (currentLtif.ghostClasses === null && currentLtif.classes !== []) {
+        // set the classes of the current ltif as ghost classes of the following ltifs
+        for (let localIndex = globalIndex + 1; localIndex < globalIndex + counter; localIndex++) {
+          result[localIndex].ghostClasses = clone(currentLtif.classes);
+        }
+        counter = 0;
+      }
+    }
+
+    return result;
   }
 
   /**

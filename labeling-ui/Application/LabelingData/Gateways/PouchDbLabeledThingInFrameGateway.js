@@ -127,15 +127,15 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {int?} limit
    */
   getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
-    const startkey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
-    const endkey = [labeledThing.id, labeledThing.frameRange.endFrameIndex];
+    const startKey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
+    const endKey = [labeledThing.id, labeledThing.frameRange.endFrameIndex];
 
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
-        startkey,
-        endkey,
+        startKey,
+        endKey,
         include_docs: true,
       });
     }).then(result => {
@@ -151,7 +151,11 @@ class PouchDbLabeledThingInFrameGateway {
           }
         });
 
-        const res = this._ghostingService.calculateGhostsForLabeledThingInFrames(frameIndex, offset, limit, allLabeledThingsInFrameOfLabeledThing);
+        let res = this._ghostingService.calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, allLabeledThingsInFrameOfLabeledThing);
+        res = this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(res);
+
+        console.log(res);
+
         return res;
       }
 
