@@ -8,7 +8,6 @@ import CouchDbModelDeserializer from 'Application/Common/Services/CouchDbModelDe
 
 // Test fixture assets
 import VideoCouchDbModel from 'Tests/Fixtures/Models/CouchDb/Video';
-import VideoFrontendModel from 'Tests/Fixtures/Models/Frontend/Video';
 import TaskCouchDbModel from 'Tests/Fixtures/Models/CouchDb/Task';
 import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 import LabeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing';

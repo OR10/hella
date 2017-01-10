@@ -12,17 +12,20 @@ import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
 import taskTimerCouchDbModel from 'Tests/Fixtures/Models/CouchDb/TaskTimer';
 
 describe('PouchDbLabeledThingGateway', () => {
-  let $rootScope;
+  /**
+   * @type {$rootScope}
+   */
+  let $rootScope; // eslint-disable-line no-unused-vars
 
   /**
    * @type {PouchDbLabeledThingGateway}
    */
-  let gateway;
+  let gateway; // eslint-disable-line no-unused-vars
 
   /**
    * @type {RevisionManager}
    */
-  let revisionManager;
+  let revisionManager; // eslint-disable-line no-unused-vars
 
   /**
    * @type {PouchDbHelper}
@@ -32,12 +35,12 @@ describe('PouchDbLabeledThingGateway', () => {
   /**
    * @type {CouchDbModelDeserializer}
    */
-  let couchDbModelDeserializer;
+  let couchDbModelDeserializer; // eslint-disable-line no-unused-vars
 
   /**
    * @type {CouchDbModelSerializer}
    */
-  let couchDbModelSerializer;
+  let couchDbModelSerializer; // eslint-disable-line no-unused-vars
 
   beforeEach(done => {
     Promise.resolve()
@@ -82,6 +85,7 @@ describe('PouchDbLabeledThingGateway', () => {
   });
 
   xit('should load stored timing from database', done => {
+    done();
     // @TODO: Adapt for testcase
     // const db = pouchDbHelper.database;
     // const labeledThingId = labeledThingCouchDbModel._id;
@@ -101,6 +105,7 @@ describe('PouchDbLabeledThingGateway', () => {
   });
 
   xit('should provide zero timing if database document is not available', done => {
+    done();
     // @TODO: Adapt for testcase
     // const db = pouchDbHelper.database;
     // const labeledThingId = labeledThingCouchDbModel._id;
@@ -120,14 +125,16 @@ describe('PouchDbLabeledThingGateway', () => {
   });
 
   xit('should update a timer in the database', done => {
+    done();
   });
 
   xit('should create new timer if update of a non existent entry is requested', done => {
+    done();
   });
 
   afterEach(done => {
     Promise.resolve()
       .then(() => pouchDbHelper.destroy())
       .then(() => done());
-  })
+  });
 });

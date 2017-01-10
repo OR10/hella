@@ -95,8 +95,8 @@ class PouchDbSyncManager {
    */
   stopReplicationsForContext(context) {
     const filtersInContextMap = this._syncHandlerCacheByContext.get(context);
-    for (const [filter, directionsInFilterMap] of filtersInContextMap) {
-      for (const [direction, syncHandler] of directionsInFilterMap) {
+    for (const directionsInFilterMap of filtersInContextMap) {
+      for (const syncHandler of directionsInFilterMap) {
         syncHandler.cancel();
       }
     }
@@ -158,11 +158,10 @@ class PouchDbSyncManager {
       let promise;
 
       // @TODO: search cache for existing live replication handlers
-      if(isCached) {
+      if (isCached) {
         this._logger.log(loggerContext, `live replication for ${taskId} already running`);
         promise = this._$q.resolve();
-      }
-      else {
+      } else {
         this._logger.log(loggerContext, `requesting live replication for ${taskId}`);
         promise = this._replicateForContextWithDirectionAndFilterAndTaskId(context, direction, undefined, taskId, true);
       }
@@ -264,7 +263,7 @@ class PouchDbSyncManager {
    * @private
    */
   _broadcastAlive() {
-    if(this._eventListeners.alive) {
+    if (this._eventListeners.alive) {
       this._eventListeners.alive();
     }
   }
@@ -273,7 +272,7 @@ class PouchDbSyncManager {
    * @private
    */
   _broadcastTransfer() {
-    if(this._eventListeners.transfer) {
+    if (this._eventListeners.transfer) {
       this._eventListeners.transfer();
     }
   }
@@ -282,7 +281,7 @@ class PouchDbSyncManager {
    * @private
    */
   _broadcastOffline() {
-    if(this._eventListeners.offline) {
+    if (this._eventListeners.offline) {
       this._eventListeners.offline();
     }
   }

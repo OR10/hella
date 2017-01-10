@@ -14,7 +14,6 @@ class TaskListController {
    * @param {ReplicationStateService} replicationStateService
    */
   constructor(featureFlags, $scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog, replicationStateService) {
-
     /**
      * @type {Object}
      * @private
@@ -133,7 +132,7 @@ class TaskListController {
   }
 
   _gotoTask(taskId, phase) {
-    if(this._featureFlags.pouchdb === true) {
+    if (this._featureFlags.pouchdb === true) {
       this._replicationStateService.setIsReplicating(true);
     }
     return this._$state.go('labeling.tasks.detail', {taskId, phase});

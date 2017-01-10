@@ -24,7 +24,7 @@ describe('pouchDbSyncManager', () => {
       replicate: {
         from: () => {
           return {
-            on: function(eventName, callback) {
+            on: (eventName, callback) => {
               expect(eventName).toBe('complete');
               callback();
               return this;
@@ -38,7 +38,7 @@ describe('pouchDbSyncManager', () => {
       sync: () => {
         return {
           _callbacks: {},
-          on: function(eventName, callback) {
+          on: (eventName, callback) => {
             if (eventName === 'complete') {
               this._callbacks[eventName] = callback;
             } else {
@@ -59,7 +59,8 @@ describe('pouchDbSyncManager', () => {
 
   beforeEach(module($provide => {
     spies = {
-      syncCancelSpy: () => {},
+      syncCancelSpy: () => {
+      },
       filterSettingSpy: () => 'designdocumentName/filterName',
     };
     spyOn(spies, 'syncCancelSpy');
@@ -270,7 +271,7 @@ describe('pouchDbSyncManager', () => {
       expect(result).toBe(null);
     });
 
-    it('should resolve the promise when remote replication has confirmed arrival of the document', (done) => {
+    it('should resolve the promise when remote replication has confirmed arrival of the document', done => {
       const confirmationPromise = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT);
       confirmationPromise.then(response => {
         expect(response._id).toBe(MOCK_DOCUMENT._id);
@@ -278,9 +279,9 @@ describe('pouchDbSyncManager', () => {
       });
     });
 
-    it('should resolve with error, when replication exceeds X seconds', (done) => {
+    it('should resolve with error, when replication exceeds X seconds', done => {
       const confirmationPromise = PouchDbSyncManager.waitForRemoteToConfirm(MOCK_CONTEXT, MOCK_DOCUMENT, 1);
-      let callbacks = {
+      const callbacks = {
         onSuccess: () => {
           expect(callbacks.onTimeout).toHaveBeenCalled();
           done();

@@ -30,7 +30,7 @@ import PouchDB from 'pouchdb';
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
 import commonModuleConfig from './Common/config.json!';
 import viewerModuleConfig from './Viewer/config.json!';
-import featureFlags from './features.json!';
+import FeatureFlags from './features.json!';
 
 /**
  * The Main Application class
@@ -83,7 +83,7 @@ export default class Application {
 
   _getFeatureFlags() {
     return Promise.resolve(
-      featureFlags
+      FeatureFlags
     );
   }
 

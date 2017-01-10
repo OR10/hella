@@ -1,5 +1,3 @@
-import LabeledThingInFrame from '../Models/LabeledThingInFrame';
-
 /**
  * Gateway for CRUD operation on {@link LabeledThing}s in a PouchDb
  */
@@ -183,7 +181,7 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
-    taskId = taskId ? taskId : labeledThingInFrame.labeledThing.task.id;
+    taskId = taskId ? taskId : labeledThingInFrame.labeledThing.task.id; // eslint-disable-line no-param-reassign
 
     if (labeledThingInFrame.ghost === true) {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');

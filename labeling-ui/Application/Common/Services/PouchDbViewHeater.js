@@ -126,7 +126,7 @@ class PouchDbViewHeater {
 PouchDbViewHeater.$inject = [
   '$q',
   'loggerService',
-  'pouchDbContextService'
+  'pouchDbContextService',
 ];
 
 export default PouchDbViewHeater;

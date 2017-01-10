@@ -8,7 +8,6 @@ import LabelingData from 'Application/LabelingData/LabelingData';
 import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
 
 import PouchDbLabeledThingGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGateway';
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 
 import labeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing';
 import labeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
@@ -103,16 +102,14 @@ describe('PouchDbLabeledThingGateway', () => {
   });
 
   it('should fail if a requested labeledThing is not available by id', done => {
-    const db = pouchDbHelper.database;
     const labeledThingId = 'some-non-existent-labeled-thing-id';
     Promise.resolve()
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.getLabeledThing(taskFrontendModel, labeledThingId)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.getLabeledThing(taskFrontendModel, labeledThingId)
+        );
+      })
       .catch(error => {
         expect(error.status).toBeDefined();
         expect(error.status).toBe(404);
@@ -124,18 +121,17 @@ describe('PouchDbLabeledThingGateway', () => {
     const db = pouchDbHelper.database;
     Promise.resolve()
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.saveLabeledThing(labeledThingFrontendModel)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.saveLabeledThing(labeledThingFrontendModel)
+        );
+      })
       .then(storedLabeledThing => {
         expect(storedLabeledThing).toEqual(labeledThingFrontendModel);
       })
       .then(() => {
         // Check if document is really stored correctly in the db.
-        return db.get(labeledThingCouchDbModel._id)
+        return db.get(labeledThingCouchDbModel._id);
       })
       .then(loadedLabeledThingDocument => {
         delete loadedLabeledThingDocument._rev;
@@ -152,11 +148,10 @@ describe('PouchDbLabeledThingGateway', () => {
       {
         frameRange: {
           startFrameIndex: 0,
-          endFrameIndex: 100
+          endFrameIndex: 100,
         },
-        lineColor: "42"
-      }
-    );
+        lineColor: '42',
+      });
     const changedLabeledThingFrontendModel = couchDbModelDeserializer.deserializeLabeledThing(
       changedLabeledThingCouchDbModel,
       taskFrontendModel
@@ -167,12 +162,11 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => db.put(labeledThingCouchDbModel))
       .then(response => revisionManager.extractRevision(response))
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.saveLabeledThing(changedLabeledThingFrontendModel)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.saveLabeledThing(changedLabeledThingFrontendModel)
+        );
+      })
       .then(storedLabeledThing => {
         expect(storedLabeledThing).toEqual(changedLabeledThingFrontendModel);
       })
@@ -192,15 +186,14 @@ describe('PouchDbLabeledThingGateway', () => {
         expect(() => revisionManager.getRevision(labeledThingCouchDbModel._id)).toThrow();
       })
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.saveLabeledThing(labeledThingFrontendModel)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.saveLabeledThing(labeledThingFrontendModel)
+        );
+      })
       .then(() => {
         // Check if document is really stored correctly in the db.
-        return db.get(labeledThingCouchDbModel._id)
+        return db.get(labeledThingCouchDbModel._id);
       })
       .then(loadedLabeledThingDocument => {
         expect(revisionManager.getRevision(labeledThingCouchDbModel._id)).toEqual(loadedLabeledThingDocument._rev);
@@ -216,9 +209,9 @@ describe('PouchDbLabeledThingGateway', () => {
       {
         frameRange: {
           startFrameIndex: 0,
-          endFrameIndex: 100
+          endFrameIndex: 100,
         },
-        lineColor: "42"
+        lineColor: '42',
       }
     );
     const changedLabeledThingFrontendModel = couchDbModelDeserializer.deserializeLabeledThing(
@@ -231,12 +224,11 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => db.put(labeledThingCouchDbModel))
       .then(response => revisionManager.extractRevision(response))
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.saveLabeledThing(changedLabeledThingFrontendModel)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.saveLabeledThing(changedLabeledThingFrontendModel)
+        );
+      })
       .then(() => db.get(changedLabeledThingCouchDbModel._id))
       .then(loadedLabeledThingDocument => {
         expect(revisionManager.getRevision(changedLabeledThingCouchDbModel._id)).toEqual(loadedLabeledThingDocument._rev);
@@ -252,12 +244,11 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => db.put(labeledThingCouchDbModel))
       .then(response => revisionManager.extractRevision(response))
       .then(() => {
-          return pouchDbHelper.waitForPouchDb(
-            $rootScope,
-            gateway.deleteLabeledThing(labeledThingFrontendModel)
-          );
-        }
-      )
+        return pouchDbHelper.waitForPouchDb(
+          $rootScope,
+          gateway.deleteLabeledThing(labeledThingFrontendModel)
+        );
+      })
       .then(status => {
         expect(status).toBeTruthy();
       })
@@ -271,11 +262,12 @@ describe('PouchDbLabeledThingGateway', () => {
   });
 
   xit('should receive the labeled thing incomplete count', done => {
+    done();
   });
 
   afterEach(done => {
     Promise.resolve()
       .then(() => pouchDbHelper.destroy())
       .then(() => done());
-  })
+  });
 });
