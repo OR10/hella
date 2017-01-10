@@ -9,6 +9,11 @@ grammar {
       element e:sha256 {text}
     )
 
+    NameAndIdAttributes = (
+      attribute id {text},
+      attribute name {text}
+    )
+
     Metadata = element e:metadata {
       AnnoStation &
       Requirements &
@@ -18,36 +23,51 @@ grammar {
     }
 
     AnnoStation = element e:annostation {
-      element e:hostname {text} &
+      element e:hostname {text},
       element e:build {text}
     }
 
     Requirements = element e:requirements {
-      attribute id {text},
+      NameAndIdAttributes,
       Checksums
     }
 
     Workflow = element e:workflow {
-      attribute id {text},
+      NameAndIdAttributes,
       Checksums
     }
 
+    UserInterface = (
+      attribute username {text},
+      attribute email {text}
+    )
+
     CreationInformation = (
-      element e:creation-date {text} &
+      element e:creation-date {text},
       element e:created-by-user {
-        attribute username {text},
-        attribute email {text}
+        UserInterface
       }
     )
 
     Project = element e:project {
-      attribute id {text},
-      CreationInformation
+      NameAndIdAttributes,
+      element e:phase {text},
+      CreationInformation,
+      element e:due-date {text},
+      element e:frame-skip {text},
+      element e:start-frame-number {text},
+      element e:split-each {text}
     }
 
     Export = element e:export {
       attribute id {text},
       CreationInformation
+    }
+
+    LabelingGroup = element e:labeling-group {
+      NameAndIdAttributes,
+      element e:coordinator {UserInterface}+,
+      element e:labeler {UserInterface}+
     }
 
     start = Root
