@@ -34,7 +34,10 @@ grammar {
 
     CreationInformation = (
       element e:creation-date {text} &
-      element e:created-by-user {text}
+      element e:created-by-user {
+        attribute username {text},
+        attribute email {text}
+      }
     )
 
     Project = element e:project {
