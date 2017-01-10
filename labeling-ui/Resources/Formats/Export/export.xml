@@ -51,25 +51,29 @@
             <!-- ... -->
         </frame-labeling>
         <!-- ... -->
-        <thing id="b177fd9beccd9fbc2f85307aa5bb4efc" start="22" end="66" line-color="15" incomplete="true">
-            <task id="02b531ffe2c35ee965e4b339a6038354">
-                <workflow-phase>revision-1</workflow-phase>
-                <workflow-id>time-range-sign-mapping</workflow-id>
-            </task>
-            <!-- sorted by start frame -->
-            <shape id="16d7f335-3f2a-48c4-ad29-93fe0d3c3877" start="22" end="44">
-                <rectangle>
-                    <top-left x="558" y="302" />
-                    <bottom-right x="637" y="375" />
-                </rectangle>
-            </shape>
-            <!-- ... -->
-            <!-- #27 -->
-            <value id="direction-left" start="22" end="44" />
-            <value id="occlusion-0" start="22" end="44" />
-            <value id="has-hat" start="22" end="44" />
-            <!-- ... -->
-        </thing>
+        <!-- #31 -->
+        <group id="0906b0b1-24a7-446d-aa34-b3e23a58cb9a" start="22" end="66" incomplete="true">
+            <thing id="b177fd9beccd9fbc2f85307aa5bb4efc" start="22" end="66" line-color="15" incomplete="true">
+                <!-- Eventuell Task als Gruppierung auf höhere ebene ziehen -->
+                <task id="02b531ffe2c35ee965e4b339a6038354">
+                    <workflow-phase>revision-1</workflow-phase>
+                    <workflow-id>time-range-sign-mapping</workflow-id>
+                </task>
+                <!-- sorted by start frame -->
+                <shape id="16d7f335-3f2a-48c4-ad29-93fe0d3c3877" start="22" end="44">
+                    <rectangle>
+                        <top-left x="558" y="302" />
+                        <bottom-right x="637" y="375" />
+                    </rectangle>
+                </shape>
+                <!-- ... -->
+                <!-- #27 -->
+                <value id="direction-left" start="22" end="44" />
+                <value id="occlusion-0" start="22" end="44" />
+                <value id="has-hat" start="22" end="44" />
+                <!-- ... -->
+            </thing>
+        </group>
         <thing id="e54ad7e1-95e3-434e-867c-02fe2625f610" start="66" end="66" line-color="25">
             <task id="02b531ffe2c35ee965e4b339a6038354">
                 <workflow-phase>revision-1</workflow-phase>
