@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <export xmlns="http://weblabel.hella-aglaia.com/schema/export">
+    <metadata>
+        <annostation>
+            <hostname>anno.crosscan.com</hostname>
+            <build>1381</build>
+        </annostation>
+        <requirements id="000073f8-1a06-4322-b4f9-9a60b3a75222">
+            <sha256>b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c</sha256>
+        </requirements>
+        <workflow id="000073f8-1a06-4322-b4f9-9a60b3a75222">
+            <sha256>b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c</sha256>
+        </workflow>
+        <project id="ee7921e2503c67339e5efb6c19b9d7d6">
+            <creation-date>2016-01-10T12:14:25+00:00</creation-date>
+            <created-by-user username="client" email="client@example.org" />
+        </project>
+        <export id="409b7ee70f688e48c9196c5cbe301e07">
+            <creation-date>2017-01-10T12:14:25+00:00</creation-date>
+            <created-by-user username="admin" email="admin@example.org" />
+        </export>
+    </metadata>
 </export>
