@@ -15,7 +15,7 @@
             <created-by-user username="client" email="client@example.org" />
             <due-date>2016-01-20T12:14:25+00:00</due-date>
             <frame-skip>22</frame-skip>
-            <start-frame-number>22</start-frame-number>
+            <start-frame>22</start-frame>
             <split-each>0</split-each>
         </project>
         <export id="409b7ee70f688e48c9196c5cbe301e07">
