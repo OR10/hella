@@ -87,7 +87,7 @@ grammar {
   Video = element e:video {
     NameAndIdAttributes,
     FrameLabeling*,
-    Thing+
+    Thing*
   }
 # </video>
 
