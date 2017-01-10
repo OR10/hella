@@ -87,6 +87,24 @@ class PouchDbLabeledThingGateway {
       .then(readLabeledThing => {
         this._revisionManager.extractRevision(readLabeledThing);
         return this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThing, task);
+      })
+      .then(() => this._getAssociatedLabeledThingsInFrames(task, labeledThing))
+      .then(documents => {
+        return documents.rows.filter(document => {
+          return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
+          document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+        });
+      })
+      .then(toBeDeletedDocuments => {
+        // Mark filtered documents as deleted
+        const docs = toBeDeletedDocuments.map(document => {
+          const doc = document.doc;
+          doc._deleted = true;
+          return doc;
+        });
+
+        // Bulk update as deleted marked documents
+        return dbContext.bulkDocs(docs);
       });
   }
 
@@ -142,12 +160,7 @@ class PouchDbLabeledThingGateway {
 
       const ltPromise = dbContext.remove(labeledThingDocument);
 
-      const ltifPromise = dbContext.query((dbDocument, emit) => {
-        // Find all associated document to this labeledThing
-        if (dbDocument.type === 'AppBundle.Model.LabeledThingInFrame' && dbDocument.labeledThingId === labeledThing.id) {
-          emit(dbDocument);
-        }
-      }, {include_docs: true}).then(documents => {
+      const ltifPromise = this._getAssociatedLabeledThingsInFrames(task, labeledThing).then(documents => {
         // Mark found documents as deleted
         const docs = documents.rows.map(document => {
           const doc = document.doc;
@@ -189,6 +202,22 @@ class PouchDbLabeledThingGateway {
         count: response.rows.length,
       };
     });
+  }
+
+  /**
+   * @param {Task} task
+   * @param {LabeledThing} labeledThing
+   * @private
+   */
+  _getAssociatedLabeledThingsInFrames(task, labeledThing) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return dbContext.query((dbDocument, emit) => {
+      // Find all associated document to this labeledThing
+      if (dbDocument.type === 'AppBundle.Model.LabeledThingInFrame' && dbDocument.labeledThingId === labeledThing.id) {
+        emit(dbDocument);
+      }
+    }, {include_docs: true});
   }
 }
 
