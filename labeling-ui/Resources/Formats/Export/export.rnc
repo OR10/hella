@@ -1,0 +1,7 @@
+namespace e = "http://weblabel.hella-aglaia.com/schema/export"
+
+grammar {
+    Export = element e:export
+
+    start = Export
+}
