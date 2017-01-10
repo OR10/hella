@@ -170,6 +170,7 @@ grammar {
   Group = element e:group {
     attribute id {text},
     FrameRangeAttributes,
+    attribute incomplete {text}?,
     Thing+
   }
 # </group>
