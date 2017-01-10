@@ -15,7 +15,7 @@
             <created-by-user username="client" email="client@example.org" />
             <due-date>2016-01-20T12:14:25+00:00</due-date>
             <frame-skip>22</frame-skip>
-            <start-frame-number>22</start-frame-number>
+            <start-frame>22</start-frame>
             <split-each>0</split-each>
         </project>
         <export id="409b7ee70f688e48c9196c5cbe301e07">
@@ -40,9 +40,6 @@
         </tags>
     </metadata>
     <video id="b177fd9beccd9fbc2f85307aa5bb4efc" name="foobar.avi">
-        <frames>
-
-        </frames>
         <things>
             <thing id="b177fd9beccd9fbc2f85307aa5bb4efc" line-color="15" incomplete="true">
                 <task id="02b531ffe2c35ee965e4b339a6038354">
