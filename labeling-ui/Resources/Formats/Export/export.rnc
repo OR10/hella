@@ -10,9 +10,9 @@ grammar {
     attribute name {text}
   )
 
-  FrameRangeElements = (
-    element e:start-frame {text},
-    element e:end-frame {text}
+  FrameRangeAttributes = (
+    attribute e:start {text},
+    attribute e:end {text}
   )
 
 # <metadata>
@@ -86,23 +86,20 @@ grammar {
 # <video>
   Video = element e:video {
     NameAndIdAttributes,
-    Things
+    FrameLabeling*,
+    Thing+
   }
 # </video>
 
-# <things>
-  Things = element e:things {
-    Thing+
-  }
-
+# <thing>
   Thing = element e:thing {
     attribute id {text},
     attribute line-color {text}?,
     attribute incomplete {text}?,
+    FrameRangeAttributes,
     Task,
-    FrameRangeElements,
-    Shapes,
-    Values
+    Shape+,
+    Value*
   }
 
   Task = element e:task {
@@ -113,13 +110,9 @@ grammar {
     element e:workflow-id {text}?
   }
 
-  Shapes = element e:shapes {
-    Shape+
-  }
-
   Shape = element e:shape {
     attribute id {text},
-    FrameRangeElements,
+    FrameRangeAttributes,
     ShapeType
   }
 
@@ -159,15 +152,19 @@ grammar {
     element e:bottom-left-back {XYZCoordinateAttributes}
   }
 
-  Values = element e:values {
-    Value*
-  }
-
   Value = element e:value {
     attribute id {text},
-    FrameRangeElements
+    FrameRangeAttributes
   }
-# </things>
+# </thing>
+
+# <frame-labeling>
+  FrameLabeling = element e:frame-labeling {
+    attribute incomplete {text}?,
+    Task,
+    Value+
+  }
+# </frame-labeling>
 
   Root = element e:export {
     Metadata,
