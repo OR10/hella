@@ -79,6 +79,10 @@ class TaskTimer
      */
     public function getTimeInSeconds($phase)
     {
+        if (!isset($this->timeInSeconds[$phase])) {
+            return 0;
+        }
+
         return $this->timeInSeconds[$phase];
     }
 

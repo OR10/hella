@@ -245,5 +245,19 @@
             <argument type="service" id="annostation.labeling_api.database.facade.report"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
         </service>
+
+        <service id="annostation.labeling_api.service.label_importer.simple_xml_2d"
+                 class="AnnoStationBundle\Service\LabelImporter\Importer\SimpleXml2d">
+            <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.label_importer.simple_xml_3d"
+                 class="AnnoStationBundle\Service\LabelImporter\Importer\SimpleXml3d">
+            <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+        </service>
     </services>
 </container>

@@ -28,9 +28,14 @@ class annostation_proxy(
     www_root           => '/var/www/default',
   }
 
+  $_domains = $hosts.reduce([]) |$domains, $host| {
+    $tmp_domains = $domains + $host['domain']
+    $tmp_domains
+  }
+
   nginx::resource::vhost { "default-redirect":
     ensure               => present,
-    server_name          => ['_'],
+    server_name          => $_domains,
     listen_options     => 'default',
     location_custom_cfg  => {
       'return' => 'https://$host$request_uri',
@@ -93,16 +98,6 @@ class annostation_proxy(
       proxy              => $_target,
       proxy_set_header   => ["Host ${_domain}"],
       proxy_read_timeout => $_proxyReadTimeout,
-    }
-
-    if $_useSsl {
-      nginx::resource::vhost { "${_domain}-redirect":
-        ensure               => present,
-        server_name          => [$_domain],
-        location_custom_cfg  => {
-          'return' => 'https://$host$request_uri',
-        },
-      }
     }
   }
 }

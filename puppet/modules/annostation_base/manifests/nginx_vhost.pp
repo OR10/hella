@@ -17,6 +17,7 @@ define annostation_base::nginx_vhost(
   $proxy = undef,
   $proxyHeaders = [],
   $listenIp = '*',
+  $serverNames = undef,
 ) {
   include ::nginx
 
@@ -26,9 +27,16 @@ define annostation_base::nginx_vhost(
     $_vhostDir = $vhostDir
   }
 
+  if !$serverNames {
+    $_serverNames = [$name]
+  } else {
+    $_serverNames = $serverNames
+  }
+
   if $httpv2 {
     nginx::resource::vhost { $name:
       ensure               => present,
+      server_name          => $_serverNames,
       www_root             => $_vhostDir,
       listen_port          => $vhostPort,
       listen_options       => 'http2',
@@ -53,7 +61,7 @@ define annostation_base::nginx_vhost(
 
     nginx::resource::vhost { "${name}-redirect":
       ensure               => present,
-      server_name          => [$name],
+      server_name          => $_serverNames,
       location_custom_cfg => {
         'return' => 'https://$host$request_uri',
       },
@@ -61,6 +69,7 @@ define annostation_base::nginx_vhost(
   } else {
     nginx::resource::vhost { $name:
       ensure               => present,
+      server_name          => $_serverNames,
       www_root             => $_vhostDir,
       listen_port          => $vhostPort,
       listen_ip            => $listenIp,

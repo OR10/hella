@@ -1,4 +1,5 @@
 class labeling_api(
+  $params = false,
   $mysql = false,
   $couch = false,
   $worker_queue = false,
@@ -9,7 +10,9 @@ class labeling_api(
   $letsencrypt = false,
   $documentation_host = false,
 ) {
-  include ::labeling_api::params
+  if $params {
+    include ::labeling_api::params
+  }
 
   if $mysql {
     include ::labeling_api::mysql

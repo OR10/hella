@@ -1,3 +1,4 @@
+labeling_api::params: true
 labeling_api::mysql: false
 labeling_api::couch: false
 labeling_api::worker_queue: true

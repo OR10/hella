@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/1/LABELED-THING-ID-1",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0/LABELED-THING-ID-1",
     "method": "GET",
     "queryString": {
       "limit": "5",
@@ -13,7 +13,7 @@
         {
           "id": "LABELED-THING-IN-FRAME-ID-1",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 1,
+          "frameIndex": 0,
           "classes": [],
           "ghostClasses": null,
           "identifierName": "thing-one",
@@ -39,6 +39,34 @@
         {
           "id": "LABELED-THING-IN-FRAME-ID-1",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
+          "frameIndex": 1,
+          "classes": [
+            "value-b"
+          ],
+          "ghostClasses": null,
+          "identifierName": "thing-one",
+          "shapes": [
+            {
+              "type": "rectangle",
+              "id": "SHAPE-ID-1",
+              "topLeft": {
+                "x": 110,
+                "y": 100
+              },
+              "bottomRight": {
+                "x": 210,
+                "y": 200
+              },
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "ghost": false
+        },
+        {
+          "id": null,
+          "rev": null,
           "frameIndex": 2,
           "classes": [],
           "ghostClasses": null,
@@ -60,7 +88,7 @@
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
-          "ghost": false
+          "ghost": true
         },
         {
           "id": null,
@@ -92,32 +120,6 @@
           "id": null,
           "rev": null,
           "frameIndex": 4,
-          "classes": [],
-          "ghostClasses": null,
-          "identifierName": "thing-one",
-          "shapes": [
-            {
-              "type": "rectangle",
-              "id": "SHAPE-ID-1",
-              "topLeft": {
-                "x": 110,
-                "y": 100
-              },
-              "bottomRight": {
-                "x": 210,
-                "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
-            }
-          ],
-          "labeledThingId": "LABELED-THING-ID-1",
-          "incomplete": true,
-          "ghost": true
-        },
-        {
-          "id": null,
-          "rev": null,
-          "frameIndex": 5,
           "classes": [],
           "ghostClasses": null,
           "identifierName": "thing-one",

@@ -123,15 +123,6 @@ class TaskIncomplete
         $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
         $task         = $this->labelingTaskFacade->find($labeledThing->getTaskId());
 
-        if (empty($labeledThingInFrame->getClasses())) {
-            $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
-                $labeledThingInFrame
-            );
-            if ($labeledThingInFrame === null) {
-                return true;
-            }
-        }
-
         $taskConfiguration = null;
         if ($task->getTaskConfigurationId() === null) {
             $helper = new Helper\IncompleteClassesChecker\Legacy($this->labelingTaskFacade->getLabelStructure($task));
@@ -148,6 +139,19 @@ class TaskIncomplete
                     $helper = new Helper\IncompleteClassesChecker\Legacy(
                         $this->labelingTaskFacade->getLabelStructure($task)
                     );
+            }
+        }
+
+        if (empty($helper->getStructure($labeledThingInFrame))) {
+            return false;
+        }
+
+        if (empty($labeledThingInFrame->getClasses())) {
+            $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+                $labeledThingInFrame
+            );
+            if ($labeledThingInFrame === null) {
+                return true;
             }
         }
 

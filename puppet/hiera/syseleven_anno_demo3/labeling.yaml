@@ -24,7 +24,8 @@ php::extensions:
   zip: {}
 
 letsencrypt::email: chh@crosscan.com
-annostation_letsencrypt::domain: annostation-playground.hella-aglaia.com
+annostation_letsencrypt::domains:
+    - annostation-playground.hella-aglaia.com
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/fullchain.pem'
 labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/privkey.pem'
 labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/fullchain.pem'
@@ -72,6 +73,7 @@ labeling_api::worker::user: www-data
 
 labeling_api::cdn::httpv2: true
 
+labeling_api::params: true
 labeling_api::mysql: false
 labeling_api::couch: true
 labeling_api::worker_queue: true

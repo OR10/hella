@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<labelTaskConfig shape="cuboid" minimalVisibleShapeOverflow="16" minimalHeight="0">
+    <class id="occlusion" name="Occlusion">
+        <value id="occlusion-0" name="0%"/>
+        <value id="occlusion-1" name="&lt; 25%"/>
+        <value id="occlusion-2" name="25% - 50%"/>
+        <value id="occlusion-3" name="&gt; 50%"/>
+    </class>
+    <class id="truncation" name="Truncation">
+        <value id="truncation-0" name="0%"/>
+        <value id="truncation-1" name="&lt; 25%"/>
+        <value id="truncation-2" name="25% - 50%"/>
+        <value id="truncation-3" name="&gt; 50%"/>
+    </class>
+    <class id="direction" name="direction">
+        <value id="direction-back" name="Back"/>
+        <value id="direction-back-right" name="Back Right"/>
+        <value id="direction-back-left" name="Back Left"/>
+        <value id="direction-right" name="Right"/>
+        <value id="direction-front" name="Front"/>
+        <value id="direction-front-right" name="Front Right"/>
+        <value id="direction-front-left" name="Front Left"/>
+        <value id="direction-left" name="Left"/>
+    </class>
+</labelTaskConfig>
