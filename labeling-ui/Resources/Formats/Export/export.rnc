@@ -2,7 +2,7 @@ namespace e = "http://weblabel.hella-aglaia.com/schema/export"
 
 grammar {
     Root = element e:export {
-      Metdata
+      Metadata
     }
 
     Checksums = (
@@ -23,12 +23,12 @@ grammar {
     }
 
     Requirements = element e:requirements {
-      attribute id,
+      attribute id {text},
       Checksums
     }
 
     Workflow = element e:workflow {
-      attribute id,
+      attribute id {text},
       Checksums
     }
 
@@ -38,12 +38,12 @@ grammar {
     )
 
     Project = element e:project {
-      attribute id,
+      attribute id {text},
       CreationInformation
     }
 
     Export = element e:export {
-      attribute id,
+      attribute id {text},
       CreationInformation
     }
 
