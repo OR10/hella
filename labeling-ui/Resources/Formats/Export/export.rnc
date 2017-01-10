@@ -19,7 +19,9 @@ grammar {
       Requirements &
       Workflow &
       Project &
-      Export
+      Export &
+      LabelingGroup &
+      Tags
     }
 
     AnnoStation = element e:annostation {
@@ -52,6 +54,7 @@ grammar {
     Project = element e:project {
       NameAndIdAttributes,
       element e:phase {text},
+      element e:description {text},
       CreationInformation,
       element e:due-date {text},
       element e:frame-skip {text},
@@ -68,6 +71,13 @@ grammar {
       NameAndIdAttributes,
       element e:coordinator {UserInterface}+,
       element e:labeler {UserInterface}+
+    }
+
+    Tags = element e:tags {
+      element e:tag {
+        attribute key {text},
+        text
+      }*
     }
 
     start = Root
