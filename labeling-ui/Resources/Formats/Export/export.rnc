@@ -1,84 +1,178 @@
 namespace e = "http://weblabel.hella-aglaia.com/schema/export"
 
 grammar {
-    Root = element e:export {
-      Metadata
+  Checksums = (
+    element e:sha256 {text}
+  )
+
+  NameAndIdAttributes = (
+    attribute id {text},
+    attribute name {text}
+  )
+
+  FrameRangeElements = (
+    element e:start-frame {text},
+    element e:end-frame {text}
+  )
+
+# <metadata>
+  Metadata = element e:metadata {
+    AnnoStation &
+    Requirements &
+    Workflow &
+    Project &
+    Export &
+    LabelingGroup &
+    Tags
+  }
+
+  AnnoStation = element e:annostation {
+    element e:hostname {text},
+    element e:build {text}
+  }
+
+  Requirements = element e:requirements {
+    NameAndIdAttributes,
+    Checksums
+  }
+
+  Workflow = element e:workflow {
+    NameAndIdAttributes,
+    Checksums
+  }
+
+  UserInterface = (
+    attribute username {text},
+    attribute email {text}
+  )
+
+  CreationInformation = (
+    element e:creation-date {text},
+    element e:created-by-user {
+      UserInterface
     }
+  )
 
-    Checksums = (
-      element e:sha256 {text}
-    )
+  Project = element e:project {
+    NameAndIdAttributes,
+    element e:phase {text},
+    element e:description {text},
+    CreationInformation,
+    element e:due-date {text},
+    element e:frame-skip {text},
+    element e:start-frame {text},
+    element e:split-each {text}
+  }
 
-    NameAndIdAttributes = (
-      attribute id {text},
-      attribute name {text}
-    )
+  Export = element e:export {
+    attribute id {text},
+    CreationInformation
+  }
 
-    Metadata = element e:metadata {
-      AnnoStation &
-      Requirements &
-      Workflow &
-      Project &
-      Export &
-      LabelingGroup &
-      Tags
-    }
+  LabelingGroup = element e:labeling-group {
+    NameAndIdAttributes,
+    element e:coordinator {UserInterface}+,
+    element e:labeler {UserInterface}+
+  }
 
-    AnnoStation = element e:annostation {
-      element e:hostname {text},
-      element e:build {text}
-    }
+  Tags = element e:tags {
+    element e:tag {
+      attribute key {text},
+      text
+    }*
+  }
+# </metadata>
 
-    Requirements = element e:requirements {
-      NameAndIdAttributes,
-      Checksums
-    }
+# <video>
+  Video = element e:video {
+    NameAndIdAttributes,
+    Things
+  }
+# </video>
 
-    Workflow = element e:workflow {
-      NameAndIdAttributes,
-      Checksums
-    }
+# <things>
+  Things = element e:things {
+    Thing+
+  }
 
-    UserInterface = (
-      attribute username {text},
-      attribute email {text}
-    )
+  Thing = element e:thing {
+    attribute id {text},
+    attribute line-color {text}?,
+    attribute incomplete {text}?,
+    Task,
+    FrameRangeElements,
+    Shapes,
+    Values
+  }
 
-    CreationInformation = (
-      element e:creation-date {text},
-      element e:created-by-user {
-        UserInterface
-      }
-    )
+  Task = element e:task {
+    attribute id {text},
+    # optional workflow mapping.
+    # will be mandatory as soon as workflow.xml has been implemented
+    element e:workflow-phase {text}?,
+    element e:workflow-id {text}?
+  }
 
-    Project = element e:project {
-      NameAndIdAttributes,
-      element e:phase {text},
-      element e:description {text},
-      CreationInformation,
-      element e:due-date {text},
-      element e:frame-skip {text},
-      element e:start-frame-number {text},
-      element e:split-each {text}
-    }
+  Shapes = element e:shapes {
+    Shape+
+  }
 
-    Export = element e:export {
-      attribute id {text},
-      CreationInformation
-    }
+  Shape = element e:shape {
+    attribute id {text},
+    FrameRangeElements,
+    ShapeType
+  }
 
-    LabelingGroup = element e:labeling-group {
-      NameAndIdAttributes,
-      element e:coordinator {UserInterface}+,
-      element e:labeler {UserInterface}+
-    }
+  XYCoordinateAttributes = (
+    attribute x {text},
+    attribute y {text}
+  )
 
-    Tags = element e:tags {
-      element e:tag {
-        attribute key {text},
-        text
-      }*
-    }
+  ZCoordinateAttributes = (
+    attribute z {text}
+  )
 
-    start = Root
+  XYZCoordinateAttributes = (
+    XYCoordinateAttributes,
+    ZCoordinateAttributes
+  )
+
+  ShapeType = (
+    RectangleShape |
+    CuboidShape
+    # ...
+  )
+
+  RectangleShape = element e:rectangle {
+    element e:top-left {XYCoordinateAttributes},
+    element e:bottom-right {XYCoordinateAttributes}
+  }
+
+  CuboidShape = element e:cuboid {
+    element e:top-left-front {XYZCoordinateAttributes},
+    element e:top-right-front {XYZCoordinateAttributes},
+    element e:bottom-right-front {XYZCoordinateAttributes},
+    element e:bottom-left-front {XYZCoordinateAttributes},
+    element e:top-left-back {XYZCoordinateAttributes},
+    element e:top-right-back {XYZCoordinateAttributes},
+    element e:bottom-right-back {XYZCoordinateAttributes},
+    element e:bottom-left-back {XYZCoordinateAttributes}
+  }
+
+  Values = element e:values {
+    Value*
+  }
+
+  Value = element e:value {
+    attribute id {text},
+    FrameRangeElements
+  }
+# </things>
+
+  Root = element e:export {
+    Metadata,
+    Video+
+  }
+
+  start = Root
 }
