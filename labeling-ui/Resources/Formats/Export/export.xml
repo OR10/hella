@@ -39,4 +39,71 @@
             <tag key="bazz">blub</tag>
         </tags>
     </metadata>
+    <video id="b177fd9beccd9fbc2f85307aa5bb4efc" name="foobar.avi">
+        <frames>
+
+        </frames>
+        <things>
+            <thing id="b177fd9beccd9fbc2f85307aa5bb4efc" line-color="15" incomplete="true">
+                <task id="02b531ffe2c35ee965e4b339a6038354">
+                    <workflow-phase>revision-1</workflow-phase>
+                    <workflow-id>time-range-sign-mapping</workflow-id>
+                </task>
+                <start-frame>22</start-frame>
+                <end-frame>66</end-frame>
+                <shapes>
+                    <!-- sorted by start frame -->
+                    <shape id="16d7f335-3f2a-48c4-ad29-93fe0d3c3877">
+                        <start-frame>22</start-frame>
+                        <end-frame>44</end-frame>
+                        <rectangle>
+                            <top-left x="558" y="302" />
+                            <bottom-right x="637" y="375" />
+                        </rectangle>
+                    </shape>
+                    <!-- ... -->
+                </shapes>
+                <values>
+                    <value id="direction-left">
+                        <start-frame>22</start-frame>
+                        <end-frame>44</end-frame>
+                    </value>
+                    <!-- ... -->
+                </values>
+            </thing>
+            <thing id="e54ad7e1-95e3-434e-867c-02fe2625f610" line-color="25">
+                <task id="02b531ffe2c35ee965e4b339a6038354">
+                    <workflow-phase>revision-1</workflow-phase>
+                    <workflow-id>time-range-sign-mapping</workflow-id>
+                </task>
+                <start-frame>66</start-frame>
+                <end-frame>66</end-frame>
+                <shapes>
+                    <!-- sorted by start frame -->
+                    <shape id="66993d42-f7db-4290-921a-e0d8f98c044e">
+                        <start-frame>66</start-frame>
+                        <end-frame>66</end-frame>
+                        <cuboid>
+                            <top-left-front x="5" y="3" z="1" />
+                            <top-right-front x="5" y="1" z="1" />
+                            <bottom-right-front x="5" y="1" z="0" />
+                            <bottom-left-front x="5" y="3" z="0" />
+                            <top-left-back x="7" y="3" z="1" />
+                            <top-right-back x="7" y="1" z="1" />
+                            <bottom-right-back x="7" y="1" z="0" />
+                            <bottom-left-back x="7" y="3" z="0" />
+                        </cuboid>
+                    </shape>
+                    <!-- ... -->
+                </shapes>
+                <values>
+                    <value id="direction-back">
+                        <start-frame>66</start-frame>
+                        <end-frame>66</end-frame>
+                    </value>
+                    <!-- ... -->
+                </values>
+            </thing>
+        </things>
+    </video>
 </export>
