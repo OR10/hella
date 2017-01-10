@@ -40,9 +40,6 @@
         </tags>
     </metadata>
     <video id="b177fd9beccd9fbc2f85307aa5bb4efc" name="foobar.avi">
-        <frames>
-
-        </frames>
         <things>
             <thing id="b177fd9beccd9fbc2f85307aa5bb4efc" line-color="15" incomplete="true">
                 <task id="02b531ffe2c35ee965e4b339a6038354">
