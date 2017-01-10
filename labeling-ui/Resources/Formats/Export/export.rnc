@@ -19,7 +19,8 @@ grammar {
       Requirements &
       Workflow &
       Project &
-      Export
+      Export &
+      LabelingGroup
     }
 
     AnnoStation = element e:annostation {
