@@ -154,8 +154,6 @@ class PouchDbLabeledThingInFrameGateway {
         let res = this._ghostingService.calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, allLabeledThingsInFrameOfLabeledThing);
         res = this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(res);
 
-        console.log(res);
-
         return res;
       }
 
