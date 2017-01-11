@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 class User
 {
     /**
-     * @var FosUserModel\UserManager
+     * @var FosUserModel\UserManagerInterface
      */
     private $userManager;
 
@@ -20,21 +20,21 @@ class User
     private $documentManager;
 
     /**
-     * @var Storage\TokenStorage
+     * @var Storage\TokenStorageInterface
      */
     private $tokenStorage;
 
     /**
      * User constructor.
      *
-     * @param FosUserModel\UserManager $userManager
-     * @param CouchDB\DocumentManager  $documentManager
-     * @param Storage\TokenStorage     $tokenStorage
+     * @param FosUserModel\UserManagerInterface $userManager
+     * @param CouchDB\DocumentManager           $documentManager
+     * @param Storage\TokenStorageInterface     $tokenStorage
      */
     public function __construct(
-        FosUserModel\UserManager $userManager,
+        FosUserModel\UserManagerInterface $userManager,
         CouchDB\DocumentManager $documentManager,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorageInterface $tokenStorage
     ) {
         $this->userManager     = $userManager;
         $this->documentManager = $documentManager;
