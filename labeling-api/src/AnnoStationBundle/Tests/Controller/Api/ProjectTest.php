@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Tests\Controller\Api;
 
+use AnnoStationBundle\Controller\Api\Test;
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
 use AppBundle\Model;
@@ -28,33 +29,107 @@ class ProjectTest extends Tests\WebTestCase
     private $labelCoordinator;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $taskFacade;
+
+    /**
      * @return array
      */
     public function projectsDataProvider()
     {
-        $inProgressBuilder = Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_IN_PROGRESS);
-        $todoBuilder       = Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_TODO);
-        $doneBuilder       = Tests\Helper\ProjectBuilder::create()->withStatusChange(Model\Project::STATUS_DONE);
-
         return [
             'projects in progress' => [
                 'status'           => Model\Project::STATUS_IN_PROGRESS,
                 'expectedProjects' => [
-                    $inProgressBuilder->withName('Test Project in progress')->buildArray(),
+                    [
+                        'name'                       => 'Test Project in progress',
+                        'status'                     => Model\LabelingTask::STATUS_IN_PROGRESS,
+                        'finishedPercentage'         => 0,
+                        'creationTimestamp'          => 1468319400,
+                        'taskInPreProcessingCount'   => 0,
+                        'taskCount'                  => 1,
+                        'taskFinishedCount'          => 0,
+                        'taskInProgressCount'        => 1,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount'  => 0,
+                        'videosCount'                => 1,
+                        'dueTimestamp'               => null,
+                        'taskFailedCount'            => 0,
+                        'coordinator'                => null,
+                    ],
                 ],
             ],
             'projects in todo'     => [
                 'status'           => Model\Project::STATUS_TODO,
                 'expectedProjects' => [
-                    $todoBuilder->withName('Test Project 3')->buildArray(),
-                    $todoBuilder->withName('Test Project 1')->buildArray(),
-                    $todoBuilder->withName('Test Project 2')->buildArray(),
+                    [
+                        'name'                       => 'Test Project 3',
+                        'status'                     => Model\LabelingTask::STATUS_TODO,
+                        'finishedPercentage'         => 0,
+                        'creationTimestamp'          => 1468324800,
+                        'taskInPreProcessingCount'   => 0,
+                        'taskCount'                  => 1,
+                        'taskFinishedCount'          => 0,
+                        'taskInProgressCount'        => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount'  => 0,
+                        'videosCount'                => 1,
+                        'dueTimestamp'               => null,
+                        'taskFailedCount'            => 0,
+                        'coordinator'                => null,
+                    ],[
+                        'name'                       => 'Test Project 1',
+                        'status'                     => Model\LabelingTask::STATUS_TODO,
+                        'finishedPercentage'         => 0,
+                        'creationTimestamp'          => 1468321200,
+                        'taskInPreProcessingCount'   => 0,
+                        'taskCount'                  => 1,
+                        'taskFinishedCount'          => 0,
+                        'taskInProgressCount'        => 1,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount'  => 0,
+                        'videosCount'                => 1,
+                        'dueTimestamp'               => null,
+                        'taskFailedCount'            => 0,
+                        'coordinator'                => null,
+                    ],[
+                        'name'                       => 'Test Project 2',
+                        'status'                     => Model\LabelingTask::STATUS_TODO,
+                        'finishedPercentage'         => 0,
+                        'creationTimestamp'          => 1468317600,
+                        'taskInPreProcessingCount'   => 0,
+                        'taskCount'                  => 1,
+                        'taskFinishedCount'          => 0,
+                        'taskInProgressCount'        => 1,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount'  => 0,
+                        'videosCount'                => 1,
+                        'dueTimestamp'               => null,
+                        'taskFailedCount'            => 0,
+                        'coordinator'                => null,
+                    ],
                 ],
             ],
             'projects done'        => [
                 'status'           => Model\Project::STATUS_DONE,
                 'expectedProjects' => [
-                    $doneBuilder->withName('Test Project done')->buildArray(),
+                    [
+                        'name'                       => 'Test Project done',
+                        'status'                     => Model\LabelingTask::STATUS_DONE,
+                        'finishedPercentage'         => 100,
+                        'creationTimestamp'          => 1468323000,
+                        'taskInPreProcessingCount'   => 0,
+                        'taskCount'                  => 1,
+                        'taskFinishedCount'          => 1,
+                        'taskInProgressCount'        => 0,
+                        'totalLabelingTimeInSeconds' => 0,
+                        'labeledThingInFramesCount'  => 0,
+                        'videosCount'                => 1,
+                        'dueTimestamp'               => null,
+                        'taskFailedCount'            => 0,
+                        'coordinator'                => null,
+                    ],
                 ],
             ],
         ];
@@ -76,8 +151,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $data = array_map(
             function ($project) {
-                $project['id']                = null;
-                $project['creationTimestamp'] = 0;
+                unset($project['id']);
 
                 return $project;
             },
@@ -92,43 +166,76 @@ class ProjectTest extends Tests\WebTestCase
      */
     private function createProjectsForProjectListTest()
     {
+        $video = Tests\Helper\VideoBuilder::create()->build();
+
         $projectBuilder = Tests\Helper\ProjectBuilder::create()
             ->withProjectOwnedByUserId($this->client->getId());
 
-        $this->projectFacade->save(
+        $testProject1 = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project 1')
                 ->withCreationDate(new \DateTime('2016-07-12T11:00:00+00:00'))
                 ->build()
         );
+        $this->taskFacade->save(
+            Tests\Helper\LabelingTaskBuilder::create($testProject1, $video)
+                ->withStatus(Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_DONE)
+                ->withStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS)
+                ->build()
+        );
 
-        $this->projectFacade->save(
+        $testProject2 = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project 2')
                 ->withCreationDate(new \DateTime('2016-07-12T10:00:00+00:00'))
                 ->build()
         );
+        $this->taskFacade->save(
+            Tests\Helper\LabelingTaskBuilder::create($testProject2, $video)
+                ->withStatus(Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_DONE)
+                ->withStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE)
+                ->withStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_IN_PROGRESS)
+                ->build()
+        );
 
-        $this->projectFacade->save(
+        $testProject3 = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project 3')
                 ->withCreationDate(new \DateTime('2016-07-12T12:00:00+00:00'))
                 ->build()
         );
+        $this->taskFacade->save(
+            Tests\Helper\LabelingTaskBuilder::create($testProject3, $video)
+                ->withStatus(Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_DONE)
+                ->withStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO)
+                ->build()
+        );
 
-        $this->projectFacade->save(
+        $inProgressProject = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project in progress')
                 ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
                 ->withCreationDate(new \DateTime('2016-07-12T10:30:00+00:00'))
                 ->build()
         );
+        $this->taskFacade->save(
+            Tests\Helper\LabelingTaskBuilder::create($inProgressProject, $video)
+                ->withStatus(Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_DONE)
+                ->withStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS)
+                ->build()
+        );
 
-        $this->projectFacade->save(
+        $projectAllDone = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project done')
                 ->withStatusChange(Model\Project::STATUS_DONE)
                 ->withCreationDate(new \DateTime('2016-07-12T11:30:00+00:00'))
+                ->build()
+        );
+        $this->taskFacade->save(
+            Tests\Helper\LabelingTaskBuilder::create($projectAllDone, $video)
+                ->withStatus(Model\LabelingTask::PHASE_PREPROCESSING, Model\LabelingTask::STATUS_DONE)
+                ->withStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE)
                 ->build()
         );
     }
@@ -439,6 +546,7 @@ class ProjectTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->projectFacade    = $this->getAnnostationService('database.facade.project');
+        $this->taskFacade       = $this->getAnnostationService('database.facade.labeling_task');
         $this->client           = $this->createClientUser();
         $this->labelCoordinator = $this->createLabelCoordinatorUser();
     }

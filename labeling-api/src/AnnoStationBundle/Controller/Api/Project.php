@@ -153,15 +153,13 @@ class Project extends Controller\Base
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
-            $sumOfCompletedTasksForProject = $this->getSumOfTaskByLabelingStatus(
-                $project,
-                Model\LabelingTask::STATUS_DONE,
-                [
-                    Model\LabelingTask::PHASE_LABELING,
-                    Model\LabelingTask::PHASE_REVIEW,
-                    Model\LabelingTask::PHASE_REVISION,
-                ]
-            );
+            $sumOfCompletedTasksForProject = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject($project);
+            $sumOfTasksByPhaseForProject   = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+
+            $sumOfFailedTasks = 0;
+            foreach($sumOfTasksByPhaseForProject as $phase => $states) {
+                $sumOfFailedTasks += $states[Model\LabelingTask::STATUS_FAILED];
+            }
 
             $responseProject               = array(
                 'id'                 => $project->getId(),
@@ -171,11 +169,7 @@ class Project extends Controller\Base
                     $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $this->getSumOfTasksByPhaseAndStatus(
-                    $project,
-                    Model\LabelingTask::PHASE_PREPROCESSING,
-                    Model\LabelingTask::STATUS_TODO
-                ),
+                'taskInPreProcessingCount' => $sumOfFailedTasks,
             );
 
             if ($user->hasOneRoleOf(
@@ -187,16 +181,19 @@ class Project extends Controller\Base
                 ]
             )
             ) {
-                $responseProject['taskCount']                  = $this->getSumOfTasksForProject($project);
+                $taskInProgressCount = 0;
+                $taskFailedCount     = 0;
+
+                foreach($sumOfTasksByPhaseForProject as $phase => $states) {
+                    $taskInProgressCount += $states[Model\LabelingTask::STATUS_IN_PROGRESS];
+                    $taskFailedCount     += $states[Model\LabelingTask::STATUS_FAILED];
+                }
+
+
+                $responseProject['taskCount']                  = $sumOfTasksForProject;
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
-                $responseProject['taskInProgressCount']        = $this->getSumOfTaskByLabelingStatus(
-                    $project,
-                    Model\LabelingTask::STATUS_IN_PROGRESS
-                );
-                $responseProject['taskFailedCount']            = $this->getSumOfTaskByLabelingStatus(
-                    $project,
-                    Model\LabelingTask::STATUS_FAILED
-                );
+                $responseProject['taskInProgressCount']        = $taskInProgressCount;
+                $responseProject['taskFailedCount']            = $taskFailedCount;
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
                 $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
                 $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
@@ -368,60 +365,9 @@ class Project extends Controller\Base
      */
     private function getSumOfTasksForProject(Model\Project $project)
     {
-        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
+        $tasks = $this->labelingTaskFacade->findAllByProject($project);
 
-        $phases = array(
-            Model\LabelingTask::PHASE_LABELING,
-            Model\LabelingTask::PHASE_REVIEW,
-            Model\LabelingTask::PHASE_REVISION,
-        );
-
-        $sumOfTasks = 0;
-        foreach ($phases as $phase) {
-            $sumOfTasks += array_sum($this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase]);
-        }
-
-        return $sumOfTasks;
-    }
-
-    private function getSumOfTaskByLabelingStatus(Model\Project $project, $status, $phases = [])
-    {
-        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
-
-        if (empty($phases)) {
-            $phases = array(
-                Model\LabelingTask::PHASE_PREPROCESSING,
-                Model\LabelingTask::PHASE_LABELING,
-                Model\LabelingTask::PHASE_REVIEW,
-                Model\LabelingTask::PHASE_REVISION,
-            );
-        }
-
-        $sumOfTasks = 0;
-        foreach ($phases as $phase) {
-            $sumOfTasks += $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase][$status];
-        }
-
-        return $sumOfTasks;
-    }
-
-    private function getSumOfTasksByPhaseAndStatus(Model\Project $project, $phase, $status)
-    {
-        $this->loadDataOfTasksByProjectsAndStatusToCache($project);
-
-        $sumOfTasks = $this->sumOfTasksByProjectsAndStatusCache[$project->getId()][$phase][$status];
-
-        return $sumOfTasks;
-    }
-
-    private function loadDataOfTasksByProjectsAndStatusToCache(Model\Project $project)
-    {
-        if (!isset($this->sumOfTasksByProjectsAndStatusCache[$project->getId()])) {
-            $this->sumOfTasksByProjectsAndStatusCache = array_merge(
-                $this->sumOfTasksByProjectsAndStatusCache,
-                array($project->getId() => $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project))
-            );
-        }
+        return count($tasks);
     }
 
     /**
@@ -502,9 +448,9 @@ class Project extends Controller\Base
             $project,
             Model\LabelingTask::PHASE_PREPROCESSING,
             Model\LabelingTask::STATUS_TODO
-        )->toArray();
+        );
 
-        if (isset($sumOfPreProcessingTasks[0]['value']) && $sumOfPreProcessingTasks[0]['value'] > 0) {
+        if ($sumOfPreProcessingTasks > 0) {
             throw new Exception\PreconditionFailedHttpException(
                 'You can\'t assign this project until all videos are imported'
             );

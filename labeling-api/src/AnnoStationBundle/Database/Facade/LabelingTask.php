@@ -138,7 +138,7 @@ class LabelingTask
     {
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
-            ->onlyDocs(true)
+            ->onlyDocs(false)
             ->setKey($project->getId())
             ->execute()
             ->toArray();
@@ -560,16 +560,23 @@ class LabelingTask
      * @param               $phase
      * @param               $status
      *
-     * @return \Doctrine\CouchDB\View\Result
+     * @return int
      */
     public function getSumOfTasksByProjectAndStatus(Model\Project $project, $phase, $status)
     {
-        return $this->documentManager
+        $sumOfPreProcessingTasks = $this->documentManager
             ->createQuery('annostation_labeling_task_sum_of_tasks_by_project_phase_and_status_001', 'view')
             ->setKey([$project->getId(), $phase, $status])
             ->setGroup(true)
             ->setReduce(true)
-            ->execute();
+            ->execute()
+            ->toArray();
+
+        if (!isset($sumOfPreProcessingTasks[0]['value'])) {
+            return 0;
+        }
+
+        return $sumOfPreProcessingTasks[0]['value'];
     }
 
     /**
