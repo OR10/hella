@@ -79,6 +79,9 @@ class Phase extends Controller\Base
                 }
                 break;
             case Model\LabelingTask::PHASE_REVIEW:
+                if (!$task->hasReviewPhase()) {
+                    throw new Exception\BadRequestHttpException();
+                }
                 $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
                 $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
                 if ($task->hasRevisionPhase()) {
@@ -90,7 +93,9 @@ class Phase extends Controller\Base
                 break;
             case Model\LabelingTask::PHASE_REVISION:
                 $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
-                $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+                if ($task->hasReviewPhase()) {
+                    $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
+                }
                 $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
