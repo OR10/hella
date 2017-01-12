@@ -5,7 +5,7 @@ class TaskReplicationService {
   /**
    * @param {UserGateway} userGateway
    * @param {TaskGateway} taskGateway
-   * @param {ReplicationStateService} replicationStateSerivce
+   * @param {ReplicationStateService} replicationStateService
    * @param {TimerGateway} timerGateway
    */
   constructor(userGateway, taskGateway, replicationStateService, timerGateway) {
