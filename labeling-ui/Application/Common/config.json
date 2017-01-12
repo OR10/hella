@@ -115,7 +115,7 @@
       "databaseName":"AnnoStation"
     },
     "remote": {
-      "baseUrl":"http://192.168.222.20:5984/",
+      "baseUrl":"http://labeltool.crosscan.com:5984/",
       "databaseName":"labeling_api",
       "filters": [
         "annostation_related_documents/by_taskId",
