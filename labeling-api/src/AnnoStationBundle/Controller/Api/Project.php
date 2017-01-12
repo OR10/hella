@@ -256,7 +256,7 @@ class Project extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function addProjectAction(HttpFoundation\Request $request)
     {
@@ -431,7 +431,7 @@ class Project extends Controller\Base
      *
      * @param $project
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function getProjectAction(Model\Project $project)
     {
@@ -448,7 +448,7 @@ class Project extends Controller\Base
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function deleteProjectAction(HttpFoundation\Request $request, Model\Project $project)
     {
@@ -491,7 +491,7 @@ class Project extends Controller\Base
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      * @throws \Exception
      */
     public function assignProjectToUserAction(HttpFoundation\Request $request, Model\Project $project)
