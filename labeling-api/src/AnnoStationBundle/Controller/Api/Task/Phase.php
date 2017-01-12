@@ -45,7 +45,7 @@ class Phase extends Controller\Base
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function updateTaskPhaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
