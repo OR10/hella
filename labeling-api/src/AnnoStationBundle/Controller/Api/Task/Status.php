@@ -108,6 +108,7 @@ class Status extends Controller\Base
         $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_DONE, $user);
 
         if ($task->hasReviewPhase() && $phase === Model\LabelingTask::PHASE_LABELING) {
+            $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
             $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
         }
 
