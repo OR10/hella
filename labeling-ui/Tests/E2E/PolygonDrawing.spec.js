@@ -465,7 +465,7 @@ describe('Polygon drawing', () => {
   });
 });
 
-describe('Polygon drawing', () => {
+describe('Polygon handle/point limiting', () => {
   let assets;
   let sharedMocks;
   let viewer;

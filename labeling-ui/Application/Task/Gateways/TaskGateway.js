@@ -6,7 +6,6 @@ import User from 'Application/ManagementBoard/Models/User';
  */
 class TaskGateway {
   /**
-   * @param {object} featureFlags
    * @param {angular.$q} $q
    * @param {LoggerService} loggerService
    * @param {PouchDbContextService} pouchDbContextService
@@ -15,13 +14,7 @@ class TaskGateway {
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(featureFlags, $q, loggerService, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater, apiService, bufferedHttp) {
-    /**
-     * @type {object}
-     * @private
-     */
-    this._featureFlags = featureFlags;
-
+  constructor($q, loggerService, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater, apiService, bufferedHttp) {
     /**
      * @type {angular.$q}
      * @private
@@ -373,6 +366,8 @@ class TaskGateway {
    * @return {Promise}
    */
   checkoutTaskFromRemote(taskId) {
+    // @TODO: Should be moved to own `PouchDBTaskGateway`
+    // @TODO: There currently is no unit-test for this method!
     const loggerContext = 'pouchDb:taskSynchronization';
     this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
     const context = this._pouchDbContextService.provideContextForTaskId(taskId);
@@ -399,7 +394,6 @@ class TaskGateway {
 }
 
 TaskGateway.$inject = [
-  'featureFlags',
   '$q',
   'loggerService',
   'pouchDbContextService',

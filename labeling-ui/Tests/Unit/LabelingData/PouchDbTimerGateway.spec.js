@@ -11,7 +11,8 @@ import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
 
 import taskTimerCouchDbModel from 'Tests/Fixtures/Models/CouchDb/TaskTimer';
 
-describe('PouchDbLabeledThingGateway', () => {
+// @TODO: needs to be implemented
+xdescribe('PouchDbTimerGateway', () => {
   /**
    * @type {$rootScope}
    */
@@ -43,14 +44,18 @@ describe('PouchDbLabeledThingGateway', () => {
   let couchDbModelSerializer; // eslint-disable-line no-unused-vars
 
   beforeEach(done => {
+    const featureFlags = {
+      pouchdb: true,
+    };
+
     Promise.resolve()
       .then(() => {
         const commonModule = new Common();
-        commonModule.registerWithAngular(angular);
+        commonModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.Common');
 
         const labelingDataModule = new LabelingData();
-        labelingDataModule.registerWithAngular(angular);
+        labelingDataModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.LabelingData');
       })
       .then(() => {
@@ -84,7 +89,7 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => done());
   });
 
-  xit('should load stored timing from database', done => {
+  it('should load stored timing from database', done => {
     done();
     // @TODO: Adapt for testcase
     // const db = pouchDbHelper.database;
@@ -104,7 +109,7 @@ describe('PouchDbLabeledThingGateway', () => {
     //   .then(() => done());
   });
 
-  xit('should provide zero timing if database document is not available', done => {
+  it('should provide zero timing if database document is not available', done => {
     done();
     // @TODO: Adapt for testcase
     // const db = pouchDbHelper.database;
@@ -124,11 +129,11 @@ describe('PouchDbLabeledThingGateway', () => {
     //   .then(() => done());
   });
 
-  xit('should update a timer in the database', done => {
+  it('should update a timer in the database', done => {
     done();
   });
 
-  xit('should create new timer if update of a non existent entry is requested', done => {
+  it('should create new timer if update of a non existent entry is requested', done => {
     done();
   });
 

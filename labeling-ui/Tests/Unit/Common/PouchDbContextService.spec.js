@@ -44,6 +44,7 @@ describe('PouchDbContextService', () => {
       expect(typeof contextA).toBe('object');
     });
 
+    // @TODO: Shouldn't it throw an Exception here?
     it('should return null if the taskId parameter is no string', () => {
       const contextA = PouchDbContextService.provideContextForTaskId(123123);
       expect(contextA).toBe(null);
@@ -62,6 +63,7 @@ describe('PouchDbContextService', () => {
     });
   });
 
+  // @TODO: Why is method public?
   describe('function generateStoreIdentifierForTaskId', () => {
     const testTaskId = 'pedestrians-123';
 

@@ -50,16 +50,20 @@ describe('LabelStructureService', () => {
       ]
     );
 
+    const featureFlags = {
+      pouchdb: false,
+    };
+
     const commonModule = new CommonModule();
-    commonModule.registerWithAngular(angular);
+    commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
     const taskModule = new TaskModule();
-    taskModule.registerWithAngular(angular);
+    taskModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Task');
 
     const labelStructureModule = new LabelStructureModule();
-    labelStructureModule.registerWithAngular(angular);
+    labelStructureModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.LabelStructure');
 
     module($provide => {

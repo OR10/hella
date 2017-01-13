@@ -9,9 +9,8 @@ class PouchDbLabeledThingGateway {
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
-   * @param {PouchDbSyncManager} pouchDbSyncManager
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbSyncManager) {
+  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager) {
     /**
      * @type {angular.$q}
      * @private
@@ -53,12 +52,6 @@ class PouchDbLabeledThingGateway {
      * @private
      */
     this._revisionManager = revisionManager;
-
-    /**
-     * @type {PouchDbSyncManager}
-     * @private
-     */
-    this._pouchDbSyncManager = pouchDbSyncManager;
   }
 
   /**
@@ -79,7 +72,6 @@ class PouchDbLabeledThingGateway {
     })
       .then(dbResponse => {
         storedLabeledThingId = dbResponse.id;
-        return this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext);
       })
       .then(() => this._getAssociatedLabeledThingsInFrames(task, labeledThing))
       .then(documents => {
@@ -174,8 +166,9 @@ class PouchDbLabeledThingGateway {
 
       // Return promise of the deletion of lt and associated ltifs
       return this._$q.all(ltPromise, ltifPromise);
-    }).then(dbDocument => this._pouchDbSyncManager.waitForRemoteToConfirm(dbContext, dbDocument));
+    });
 
+    // @TODO: is the return value (couchdb-document) correct for the implemented interface here?
     return synchronizedPromise;
   }
 
@@ -212,6 +205,7 @@ class PouchDbLabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
+    // @TODO: Refactor to use precomputed view
     return dbContext.query((dbDocument, emit) => {
       // Find all associated document to this labeledThing
       if (dbDocument.type === 'AppBundle.Model.LabeledThingInFrame' && dbDocument.labeledThingId === labeledThing.id) {
@@ -228,7 +222,6 @@ PouchDbLabeledThingGateway.$inject = [
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
   'revisionManager',
-  'pouchDbSyncManager',
 ];
 
 export default PouchDbLabeledThingGateway;

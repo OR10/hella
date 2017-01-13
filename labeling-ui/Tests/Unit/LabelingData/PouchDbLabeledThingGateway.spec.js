@@ -42,14 +42,18 @@ describe('PouchDbLabeledThingGateway', () => {
   let couchDbModelSerializer;
 
   beforeEach(done => {
+    const featureFlags = {
+      pouchdb: true,
+    };
+
     Promise.resolve()
       .then(() => {
         const commonModule = new Common();
-        commonModule.registerWithAngular(angular);
+        commonModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.Common');
 
         const labelingDataModule = new LabelingData();
-        labelingDataModule.registerWithAngular(angular);
+        labelingDataModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.LabelingData');
       })
       .then(() => {
@@ -261,6 +265,8 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => done());
   });
 
+  // @TODO: Needs to be implemented as soon as incomplete calculation was moved to the frontend.
+  // Currently the incomplete information is not calculated at all.
   xit('should receive the labeled thing incomplete count', done => {
     done();
   });

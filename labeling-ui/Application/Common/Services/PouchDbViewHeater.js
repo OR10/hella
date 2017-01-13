@@ -7,9 +7,8 @@ class PouchDbViewHeater {
   /**
    * @param {$q} $q
    * @param {LoggerService} loggerService
-   * @param {PouchDbContextService} pouchDbContextService
    */
-  constructor($q, loggerService, pouchDbContextService) {
+  constructor($q, loggerService) {
     /**
      * @type {$q}
      * @private
@@ -21,12 +20,6 @@ class PouchDbViewHeater {
      * @private
      */
     this._logger = loggerService;
-
-    /**
-     * @type {PouchDbContextService}
-     * @private
-     */
-    this._pouchDbContextService = pouchDbContextService;
   }
 
   /**
@@ -126,7 +119,6 @@ class PouchDbViewHeater {
 PouchDbViewHeater.$inject = [
   '$q',
   'loggerService',
-  'pouchDbContextService',
 ];
 
 export default PouchDbViewHeater;

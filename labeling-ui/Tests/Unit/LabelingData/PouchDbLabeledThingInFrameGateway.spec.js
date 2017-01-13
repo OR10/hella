@@ -9,7 +9,7 @@ import labeledThingModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
-describe('PouchDbLabeledThingInFrameGateway', () => {
+xdescribe('PouchDbLabeledThingInFrameGateway', () => {
   let packagingExecutorMock;
   let storageContextMock;
   let pouchLabeledThingGatewayMock;

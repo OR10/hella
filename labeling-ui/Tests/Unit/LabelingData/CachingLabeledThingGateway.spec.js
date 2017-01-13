@@ -36,16 +36,20 @@ describe('CachingLabeledThingGateway', () => {
       classes: ['foo', 'bar'],
     });
 
+    const featureFlags = {
+      pouchdb: false,
+    };
+
     const commonModule = new Common();
-    commonModule.registerWithAngular(angular);
+    commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
     const labelingDataModule = new LabelingData();
-    labelingDataModule.registerWithAngular(angular);
+    labelingDataModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.LabelingData');
 
     const taskModule = new TaskModule();
-    taskModule.registerWithAngular(angular);
+    taskModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Task');
 
     module($provide => {
