@@ -265,6 +265,8 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => done());
   });
 
+  // @TODO: Needs to be implemented as soon as incomplete calculation was moved to the frontend.
+  // Currently the incomplete information is not calculated at all.
   xit('should receive the labeled thing incomplete count', done => {
     done();
   });
