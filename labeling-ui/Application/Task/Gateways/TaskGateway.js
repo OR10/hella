@@ -366,6 +366,8 @@ class TaskGateway {
    * @return {Promise}
    */
   checkoutTaskFromRemote(taskId) {
+    // @TODO: Should be moved to own `PouchDBTaskGateway`
+    // @TODO: There currently is no unit-test for this method!
     const loggerContext = 'pouchDb:taskSynchronization';
     this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
     const context = this._pouchDbContextService.provideContextForTaskId(taskId);
