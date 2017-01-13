@@ -2,6 +2,7 @@ import 'jquery';
 import 'angular';
 import {module, inject} from 'angular-mocks';
 
+import Common from 'Application/Common/Common';
 import PouchDbViewHeaterService from 'Application/Common/Services/PouchDbViewHeater';
 
 xdescribe('PouchDbViewHeater', () => {
@@ -9,78 +10,122 @@ xdescribe('PouchDbViewHeater', () => {
    * @param {PouchDbViewHeater}
    */
   let pouchDbViewHeater;
-  let pouchDb;
+  let pouchDbContext;
   let $rootScope;
-  const mockConfig = {
-    Common: {
-      storage: {
-        local: {
-          databaseName: 'AnnoStation',
+  let expectedSingleDocumentConfig;
+  let allDesignDocsResponse;
+
+  beforeEach(() => {
+    allDesignDocsResponse = {
+      total_rows: 258,
+      offset: 149,
+      rows: [
+        {
+          id: '_design/ddoc1',
+          key: '_design/ddoc1',
+          value: {'rev': '1-a4cd71ecc53136676a3afaf1b7acf9c3'},
+          doc: {
+            _id: '_design/ddoc1',
+            _rev: '1-a4cd71ecc53136676a3afaf1b7acf9c3',
+            views: {view1: {map: 'function(doc) {}'}},
+            language: 'javascript'
+          }
         },
-        remote: {
-          baseUrl: 'http://localhost:5984/',
-          databaseName: 'AnnoStation',
+        {
+          id: '_design/ddoc2',
+          key: '_design/ddoc2',
+          value: {'rev': '1-a4cd71ecc53136676a3afaf1b7acf9c3'},
+          doc: {
+            _id: '_design/ddoc2',
+            _rev: '1-a4cd71ecc53136676a3afaf1b7acf9c3',
+            views: {
+              view1: {map: 'function(doc) {}'},
+              view2: {map: 'function(doc) {}'},
+            },
+            language: 'javascript'
+          }
         },
-      },
-    },
-  };
-
-  const storageContextFactory = {
-    getContextForTaskName: () => {
-      return pouchDb;
-    },
-  };
-
-  beforeEach(module($provide => {
-    $provide.value('applicationConfig', mockConfig);
-    $provide.value('PouchDB', pouchDb);
-    $provide.value('storageContextFactory', storageContextFactory);
-  }));
-
-  beforeEach(inject(($injector, $q) => {
-    pouchDbViewHeater = $injector.instantiate(PouchDbViewHeaterService);
-
-    $rootScope = $injector.get('$rootScope');
-
-    pouchDb = {
-      query: jasmine.createSpy().and.callFake(() => {
-      }),
-      allDocs: jasmine.createSpy().and.callFake(() => {
-        const deferred = $q.defer();
-        deferred.resolve([{key: 'view1'}, {key: 'view2'}, {key: 'view3'}]);
-        return deferred.promise;
-      }),
+        {
+          id: '_design/ddoc3',
+          key: '_design/ddoc3',
+          value: {'rev': '1-a4cd71ecc53136676a3afaf1b7acf9c3'},
+          doc: {
+            _id: '_design/ddoc3',
+            _rev: '1-a4cd71ecc53136676a3afaf1b7acf9c3',
+            views: {
+              view1: {map: 'function(doc) {}'},
+              view2: {map: 'function(doc) {}'},
+              view3: {map: 'function(doc) {}'},
+            },
+            language: 'javascript'
+          }
+        },
+      ]
     };
-  }));
+
+    const featureFlags = {
+      pouchdb: true,
+    };
+
+    const commonModule = new Common();
+    commonModule.registerWithAngular(angular, featureFlags);
+    module('AnnoStation.Common');
+
+    inject(($injector, $q) => {
+      pouchDbViewHeater = $injector.instantiate(PouchDbViewHeaterService);
+
+      $rootScope = $injector.get('$rootScope');
+
+      pouchDbContext = {
+        query: jasmine.createSpy().and.callFake(() => {
+        }),
+        allDocs: jasmine.createSpy().and.callFake(() => {
+          const deferred = $q.defer();
+          deferred.resolve(allDesignDocsResponse);
+          return deferred.promise;
+        }),
+      };
+
+      expectedSingleDocumentConfig = {
+        include_docs: false,
+        limit: 1,
+      }
+    })
+  })
+  ;
 
   it('should be able to be instantiated', () => {
     expect(pouchDbViewHeater).toBeDefined();
   });
 
   it('should heat a single view', ()=> {
-    const taskId = 'taskId123';
     const viewName = 'viewName123';
-    pouchDbViewHeater.heatView(taskId, viewName);
+    pouchDbViewHeater.heatView(pouchDbContext, viewName);
 
-    expect(pouchDb.query).toHaveBeenCalledWith(viewName);
+    expect(pouchDbContext.query).toHaveBeenCalledWith(viewName, expectedSingleDocumentConfig);
   });
 
   it('should heat a multiple views', ()=> {
-    const taskId = 'taskId123';
     const viewNames = ['viewName1', 'viewName2', 'viewName3'];
-    pouchDbViewHeater.heatViews(taskId, viewNames);
+    pouchDbViewHeater.heatViews(pouchDbContext, viewNames);
 
-    expect(pouchDb.query).toHaveBeenCalledWith(viewNames[0]);
-    expect(pouchDb.query).toHaveBeenCalledWith(viewNames[1]);
-    expect(pouchDb.query).toHaveBeenCalledWith(viewNames[2]);
+    expect(pouchDbContext.query).toHaveBeenCalledWith(viewNames[0], expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith(viewNames[1], expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith(viewNames[2], expectedSingleDocumentConfig);
+  });
+
+  it('should heat all views of a specific design document', ()=> {
+    const taskId = 'taskId123';
+    pouchDbViewHeater.heatAllViewsForDesignDocument(pouchDbContext, allDesignDocsResponse.rows[1].doc);
+
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view1', expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view2', expectedSingleDocumentConfig);
   });
 
   it('should heat all views', ()=> {
-    spyOn(pouchDbViewHeater, 'heatView');
-    const taskId = 'taskId123';
-    pouchDbViewHeater.heatAllViews(taskId);
+    pouchDbViewHeater.heatAllViews(pouchDbContext);
 
-    expect(pouchDb.allDocs).toHaveBeenCalledWith({
+    expect(pouchDbContext.allDocs).toHaveBeenCalledWith({
       include_docs: true,
       startkey: '_design/',
       endkey: '_design0',
@@ -88,9 +133,11 @@ xdescribe('PouchDbViewHeater', () => {
 
     $rootScope.$digest();
 
-
-    expect(pouchDbViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view1');
-    expect(pouchDbViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view2');
-    expect(pouchDbViewHeater.heatView).toHaveBeenCalledWith(taskId, 'view3');
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc1/view1', expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view1', expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view2', expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc3/view1', expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc3/view2', expectedSingleDocumentConfig);
+    expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc3/view3', expectedSingleDocumentConfig);
   });
 });
