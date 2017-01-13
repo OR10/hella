@@ -23,12 +23,16 @@ describe('CachingFrameLocationGateway', () => {
       {frameIndex: 1, url: 'http://example.com/2'},
     ]));
 
+    const featureFlags = {
+      pouchdb: true,
+    };
+
     const commonModule = new Common();
-    commonModule.registerWithAngular(angular);
+    commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
     const labelingDataModule = new LabelingData();
-    labelingDataModule.registerWithAngular(angular);
+    labelingDataModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.LabelingData');
 
     module($provide => {
