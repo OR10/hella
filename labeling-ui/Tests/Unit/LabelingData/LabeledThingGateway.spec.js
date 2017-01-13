@@ -14,12 +14,16 @@ describe('LabeledThingGateway', () => {
   let revisionManager;
 
   beforeEach(() => {
+    const featureFlags = {
+      pouchdb: false,
+    };
+
     const commonModule = new Common();
-    commonModule.registerWithAngular(angular);
+    commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
     const labelingDataModule = new LabelingData();
-    labelingDataModule.registerWithAngular(angular);
+    labelingDataModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.LabelingData');
 
     module(($provide, bufferedHttpProvider) => {
