@@ -28,8 +28,12 @@ describe('PackagingExecutor', () => {
     let mockedAssemblyStrategy;
 
     beforeEach(() => {
+      const featureFlags = {
+        pouchdb: false,
+      };
+
       const commonModule = new Common();
-      commonModule.registerWithAngular(angular);
+      commonModule.registerWithAngular(angular, featureFlags);
       module('AnnoStation.Common');
 
       mockedAssemblyStrategy = {
@@ -180,8 +184,12 @@ describe('PackagingExecutor', () => {
     let mockedAssemblyStrategy;
 
     beforeEach(() => {
+      const featureFlags = {
+        pouchdb: false,
+      };
+
       const commonModule = new Common();
-      commonModule.registerWithAngular(angular);
+      commonModule.registerWithAngular(angular, featureFlags);
       module('AnnoStation.Common');
 
       mockedAssemblyStrategy = {
@@ -279,8 +287,12 @@ describe('PackagingExecutor', () => {
     let packagingExecutor;
 
     beforeEach(() => {
+      const featureFlags = {
+        pouchdb: false,
+      };
+
       const commonModule = new Common();
-      commonModule.registerWithAngular(angular);
+      commonModule.registerWithAngular(angular, featureFlags);
       module('AnnoStation.Common');
 
       module($provide => {
