@@ -28,6 +28,11 @@ describe('TaskGateway', () => {
         },
       });
 
+      // @TODO: Insert mock here once `PouchDB` related methods of TaskGateway are tested here!
+      // @TODO: Move `PouchDB` related methods of TaskGateway to own class
+      $provide.value('pouchDbContextService', {});
+      $provide.value('pouchDbSyncManager', {});
+
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
