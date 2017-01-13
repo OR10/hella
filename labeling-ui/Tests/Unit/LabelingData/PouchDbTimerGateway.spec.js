@@ -43,14 +43,18 @@ describe('PouchDbLabeledThingGateway', () => {
   let couchDbModelSerializer; // eslint-disable-line no-unused-vars
 
   beforeEach(done => {
+    const featureFlags = {
+      pouchdb: true,
+    };
+
     Promise.resolve()
       .then(() => {
         const commonModule = new Common();
-        commonModule.registerWithAngular(angular);
+        commonModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.Common');
 
         const labelingDataModule = new LabelingData();
-        labelingDataModule.registerWithAngular(angular);
+        labelingDataModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.LabelingData');
       })
       .then(() => {
