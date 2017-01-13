@@ -156,9 +156,13 @@ class Project extends Controller\Base
             $sumOfCompletedTasksForProject = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject($project);
             $sumOfTasksByPhaseForProject   = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
 
-            $sumOfFailedTasks = 0;
+            $sumOfFailedTasks        = 0;
+            $sumOfPreProcessingTasks = 0;
             foreach($sumOfTasksByPhaseForProject as $phase => $states) {
-                $sumOfFailedTasks += $states[Model\LabelingTask::STATUS_FAILED];
+                $sumOfFailedTasks        += $states[Model\LabelingTask::STATUS_FAILED];
+                if ($phase === Model\LabelingTask::PHASE_PREPROCESSING) {
+                    $sumOfPreProcessingTasks += $states[Model\LabelingTask::STATUS_TODO];
+                }
             }
 
             $responseProject               = array(
@@ -169,7 +173,7 @@ class Project extends Controller\Base
                     $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $sumOfFailedTasks,
+                'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
             );
 
             if ($user->hasOneRoleOf(
