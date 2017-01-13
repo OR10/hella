@@ -9,6 +9,8 @@ export default new LabeledThingInFrame({
   "classes": [
     "ignore-vehicle"
   ],
+  "ghostClasses": null,
+  "ghost": false,
   "shapes": [
     {
       "type": "rectangle",
