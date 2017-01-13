@@ -29,7 +29,7 @@ describe('PouchDbViewHeater', () => {
             _rev: '1-a4cd71ecc53136676a3afaf1b7acf9c3',
             views: {view1: {map: 'function(doc) {}'}},
             language: 'javascript',
-          }
+          },
         },
         {
           id: '_design/ddoc2',
@@ -43,7 +43,7 @@ describe('PouchDbViewHeater', () => {
               view2: {map: 'function(doc) {}'},
             },
             language: 'javascript',
-          }
+          },
         },
         {
           id: '_design/ddoc3',
