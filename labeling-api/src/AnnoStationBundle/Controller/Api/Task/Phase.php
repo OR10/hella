@@ -65,6 +65,7 @@ class Phase extends Controller\Base
         switch ($newPhase) {
             case Model\LabelingTask::PHASE_LABELING:
                 $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
+                $task->addAssignmentHistory(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
                 if ($task->hasReviewPhase()) {
                     $task->setStatus(
                         Model\LabelingTask::PHASE_REVIEW,
@@ -84,6 +85,7 @@ class Phase extends Controller\Base
                 }
                 $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
                 $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
+                $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
                 if ($task->hasRevisionPhase()) {
                     $task->setStatus(
                         Model\LabelingTask::PHASE_REVISION,
@@ -97,6 +99,7 @@ class Phase extends Controller\Base
                     $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
                 }
                 $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
+                $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
                 foreach ($task->getRawStatus() as $phase => $status) {
