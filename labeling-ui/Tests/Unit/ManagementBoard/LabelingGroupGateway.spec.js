@@ -11,8 +11,12 @@ describe('LabelingGroup', () => {
   let gateway;
 
   beforeEach(() => {
+    const featureFlags = {
+      pouchdb: false,
+    };
+
     const commonModule = new Common();
-    commonModule.registerWithAngular(angular);
+    commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
     module(($provide, bufferedHttpProvider) => {
