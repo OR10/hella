@@ -5,7 +5,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 import PouchDbViewHeaterService from 'Application/Common/Services/PouchDbViewHeater';
 
-xdescribe('PouchDbViewHeater', () => {
+describe('PouchDbViewHeater', () => {
   /**
    * @param {PouchDbViewHeater}
    */
