@@ -11,7 +11,7 @@ import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
 
 import taskTimerCouchDbModel from 'Tests/Fixtures/Models/CouchDb/TaskTimer';
 
-describe('PouchDbLabeledThingGateway', () => {
+xdescribe('PouchDbLabeledThingGateway', () => {
   /**
    * @type {$rootScope}
    */

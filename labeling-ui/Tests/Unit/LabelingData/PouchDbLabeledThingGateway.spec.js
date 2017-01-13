@@ -13,7 +13,7 @@ import labeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing
 import labeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
 import taskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 
-describe('PouchDbLabeledThingGateway', () => {
+xdescribe('PouchDbLabeledThingGateway', () => {
   let $rootScope;
 
   /**

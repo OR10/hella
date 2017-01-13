@@ -5,7 +5,7 @@ import PouchDB from 'pouchdb';
 
 import _PouchDbContextService_ from 'Application/Common/Services/PouchDbContextService';
 
-describe('PouchDbContextService', () => {
+xdescribe('PouchDbContextService', () => {
   let PouchDbContextService;
   const mockConfig = {
     Common: {

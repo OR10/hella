@@ -4,7 +4,7 @@ import {module, inject} from 'angular-mocks';
 
 import _PouchDbSyncManager_ from 'Application/Common/Services/PouchDbSyncManager';
 
-describe('pouchDbSyncManager', () => {
+xdescribe('pouchDbSyncManager', () => {
   const MOCK_TASK_ID = 'mock-task-id';
 
   let PouchDbSyncManager;
