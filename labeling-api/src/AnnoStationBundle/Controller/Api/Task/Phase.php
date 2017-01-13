@@ -75,7 +75,7 @@ class Phase extends Controller\Base
                 if ($task->hasRevisionPhase()) {
                     $task->setStatus(
                         Model\LabelingTask::PHASE_REVISION,
-                        Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+                        Model\LabelingTask::STATUS_DONE
                     );
                 }
                 break;
@@ -89,7 +89,7 @@ class Phase extends Controller\Base
                 if ($task->hasRevisionPhase()) {
                     $task->setStatus(
                         Model\LabelingTask::PHASE_REVISION,
-                        Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
+                        Model\LabelingTask::STATUS_DONE
                     );
                 }
                 break;
