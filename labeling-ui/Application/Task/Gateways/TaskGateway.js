@@ -6,7 +6,6 @@ import User from 'Application/ManagementBoard/Models/User';
  */
 class TaskGateway {
   /**
-   * @param {object} featureFlags
    * @param {angular.$q} $q
    * @param {LoggerService} loggerService
    * @param {PouchDbContextService} pouchDbContextService
@@ -15,13 +14,7 @@ class TaskGateway {
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
    */
-  constructor(featureFlags, $q, loggerService, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater, apiService, bufferedHttp) {
-    /**
-     * @type {object}
-     * @private
-     */
-    this._featureFlags = featureFlags;
-
+  constructor($q, loggerService, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater, apiService, bufferedHttp) {
     /**
      * @type {angular.$q}
      * @private
@@ -399,7 +392,6 @@ class TaskGateway {
 }
 
 TaskGateway.$inject = [
-  'featureFlags',
   '$q',
   'loggerService',
   'pouchDbContextService',
