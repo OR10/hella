@@ -5,7 +5,7 @@ import PouchDB from 'pouchdb';
 
 import _PouchDbContextService_ from 'Application/Common/Services/PouchDbContextService';
 
-xdescribe('PouchDbContextService', () => {
+describe('PouchDbContextService', () => {
   let PouchDbContextService;
   const mockConfig = {
     Common: {
@@ -44,6 +44,7 @@ xdescribe('PouchDbContextService', () => {
       expect(typeof contextA).toBe('object');
     });
 
+    // @TODO: Shouldn't it throw an Exception here?
     it('should return null if the taskId parameter is no string', () => {
       const contextA = PouchDbContextService.provideContextForTaskId(123123);
       expect(contextA).toBe(null);
@@ -62,6 +63,7 @@ xdescribe('PouchDbContextService', () => {
     });
   });
 
+  // @TODO: Why is method public?
   describe('function generateStoreIdentifierForTaskId', () => {
     const testTaskId = 'pedestrians-123';
 
