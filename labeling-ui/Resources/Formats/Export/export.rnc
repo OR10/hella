@@ -1,0 +1,184 @@
+namespace e = "http://weblabel.hella-aglaia.com/schema/export"
+
+grammar {
+  Checksums = (
+    element e:sha256 {text}
+  )
+
+  NameAndIdAttributes = (
+    attribute id {text},
+    attribute name {text}
+  )
+
+  FrameRangeAttributes = (
+    attribute start {text},
+    attribute end {text}
+  )
+
+# <metadata>
+  Metadata = element e:metadata {
+    AnnoStation &
+    Requirements &
+    Workflow &
+    Project &
+    Export &
+    LabelingGroup &
+    Tags
+  }
+
+  AnnoStation = element e:annostation {
+    element e:hostname {text},
+    element e:build {text}
+  }
+
+  Requirements = element e:requirements {
+    NameAndIdAttributes,
+    Checksums
+  }
+
+  Workflow = element e:workflow {
+    NameAndIdAttributes,
+    Checksums
+  }
+
+  UserInterface = (
+    attribute username {text},
+    attribute email {text}
+  )
+
+  CreationInformation = (
+    element e:creation-date {text},
+    element e:created-by-user {
+      UserInterface
+    }
+  )
+
+  Project = element e:project {
+    NameAndIdAttributes,
+    element e:phase {text},
+    element e:description {text},
+    CreationInformation,
+    element e:due-date {text},
+    element e:frame-skip {text},
+    element e:start-frame {text},
+    element e:split-each {text}
+  }
+
+  Export = element e:export {
+    attribute id {text},
+    CreationInformation
+  }
+
+  LabelingGroup = element e:labeling-group {
+    NameAndIdAttributes,
+    element e:coordinator {UserInterface}+,
+    element e:labeler {UserInterface}+
+  }
+
+  Tags = element e:tags {
+    element e:tag {
+      attribute key {text},
+      text
+    }*
+  }
+# </metadata>
+
+# <video>
+  Video = element e:video {
+    NameAndIdAttributes,
+    FrameLabeling*,
+    (Group | Thing)*
+  }
+# </video>
+
+# <thing>
+  Thing = element e:thing {
+    attribute id {text},
+    attribute line-color {text}?,
+    attribute incomplete {text}?,
+    FrameRangeAttributes,
+    Task,
+    Shape+,
+    Value*
+  }
+
+  Task = element e:task {
+    attribute id {text},
+    # optional workflow mapping.
+    # will be mandatory as soon as workflow.xml has been implemented
+    element e:workflow-phase {text}?,
+    element e:workflow-id {text}?
+  }
+
+  Shape = element e:shape {
+    attribute id {text},
+    FrameRangeAttributes,
+    ShapeType
+  }
+
+  XYCoordinateAttributes = (
+    attribute x {text},
+    attribute y {text}
+  )
+
+  ZCoordinateAttributes = (
+    attribute z {text}
+  )
+
+  XYZCoordinateAttributes = (
+    XYCoordinateAttributes,
+    ZCoordinateAttributes
+  )
+
+  ShapeType = (
+    RectangleShape |
+    CuboidShape
+    # ...
+  )
+
+  RectangleShape = element e:rectangle {
+    element e:top-left {XYCoordinateAttributes},
+    element e:bottom-right {XYCoordinateAttributes}
+  }
+
+  CuboidShape = element e:cuboid {
+    element e:top-left-front {XYZCoordinateAttributes},
+    element e:top-right-front {XYZCoordinateAttributes},
+    element e:bottom-right-front {XYZCoordinateAttributes},
+    element e:bottom-left-front {XYZCoordinateAttributes},
+    element e:top-left-back {XYZCoordinateAttributes},
+    element e:top-right-back {XYZCoordinateAttributes},
+    element e:bottom-right-back {XYZCoordinateAttributes},
+    element e:bottom-left-back {XYZCoordinateAttributes}
+  }
+
+  Value = element e:value {
+    attribute id {text},
+    FrameRangeAttributes
+  }
+# </thing>
+
+# <frame-labeling>
+  FrameLabeling = element e:frame-labeling {
+    attribute incomplete {text}?,
+    Task,
+    Value+
+  }
+# </frame-labeling>
+
+# <group>
+  Group = element e:group {
+    attribute id {text},
+    FrameRangeAttributes,
+    attribute incomplete {text}?,
+    Thing+
+  }
+# </group>
+
+  Root = element e:export {
+    Metadata,
+    Video+
+  }
+
+  start = Root
+}

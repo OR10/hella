@@ -130,7 +130,12 @@ class TaskCreator
             $calibrationData     = null;
             $imageTypes          = array_keys($video->getImageTypes());
             $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
-            $videoFrameMapping   = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
+            $videoFrameMapping   = [];
+            if ($video->getMetaData()->numberOfFrames >= ($startFrameNumber + $frameSkip)) {
+                $videoFrameMapping = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
+            }elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber){
+                $videoFrameMapping = [$startFrameNumber];
+            }
             $frameMappingChunks  = [];
 
             $legacyDrawingTools     = array_map(

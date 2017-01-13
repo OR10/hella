@@ -68,7 +68,7 @@ class PhaseTest extends Tests\WebTestCase
             $actualTask->getStatus(Model\LabelingTask::PHASE_REVIEW)
         );
         $this->assertEquals(
-            Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION,
+            Model\LabelingTask::STATUS_DONE,
             $actualTask->getStatus(Model\LabelingTask::PHASE_REVISION)
         );
         $this->assertFalse($actualTask->isAllPhasesDone());
