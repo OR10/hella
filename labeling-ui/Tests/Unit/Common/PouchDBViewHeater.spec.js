@@ -1,5 +1,5 @@
 import 'jquery';
-import 'angular';
+import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
@@ -28,7 +28,7 @@ describe('PouchDbViewHeater', () => {
             _id: '_design/ddoc1',
             _rev: '1-a4cd71ecc53136676a3afaf1b7acf9c3',
             views: {view1: {map: 'function(doc) {}'}},
-            language: 'javascript'
+            language: 'javascript',
           }
         },
         {
@@ -42,7 +42,7 @@ describe('PouchDbViewHeater', () => {
               view1: {map: 'function(doc) {}'},
               view2: {map: 'function(doc) {}'},
             },
-            language: 'javascript'
+            language: 'javascript',
           }
         },
         {
@@ -57,10 +57,10 @@ describe('PouchDbViewHeater', () => {
               view2: {map: 'function(doc) {}'},
               view3: {map: 'function(doc) {}'},
             },
-            language: 'javascript'
-          }
+            language: 'javascript',
+          },
         },
-      ]
+      ],
     };
 
     const featureFlags = {
@@ -89,10 +89,9 @@ describe('PouchDbViewHeater', () => {
       expectedSingleDocumentConfig = {
         include_docs: false,
         limit: 1,
-      }
-    })
-  })
-  ;
+      };
+    });
+  });
 
   it('should be able to be instantiated', () => {
     expect(pouchDbViewHeater).toBeDefined();
@@ -115,7 +114,6 @@ describe('PouchDbViewHeater', () => {
   });
 
   it('should heat all views of a specific design document', ()=> {
-    const taskId = 'taskId123';
     pouchDbViewHeater.heatAllViewsForDesignDocument(pouchDbContext, allDesignDocsResponse.rows[1].doc);
 
     expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view1', expectedSingleDocumentConfig);
