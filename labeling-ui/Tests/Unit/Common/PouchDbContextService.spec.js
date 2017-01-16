@@ -6,7 +6,10 @@ import PouchDB from 'pouchdb';
 import _PouchDbContextService_ from 'Application/Common/Services/PouchDbContextService';
 
 describe('PouchDbContextService', () => {
+  let toBeCleanedContexts;
+
   let PouchDbContextService;
+
   const mockConfig = {
     Common: {
       storage: {
@@ -21,14 +24,18 @@ describe('PouchDbContextService', () => {
     },
   };
 
-  beforeEach(module($provide => {
-    $provide.value('PouchDB', PouchDB);
-    $provide.value('applicationConfig', mockConfig);
-  }));
+  beforeEach(() => {
+    toBeCleanedContexts = [];
 
-  beforeEach(inject($injector => {
-    PouchDbContextService = $injector.instantiate(_PouchDbContextService_);
-  }));
+    module($provide => {
+      $provide.value('PouchDB', PouchDB);
+      $provide.value('applicationConfig', mockConfig);
+    });
+
+    inject($injector => {
+      PouchDbContextService = $injector.instantiate(_PouchDbContextService_);
+    });
+  });
 
   it('should be able to be instantiated', () => {
     expect(PouchDbContextService).toBeDefined();
@@ -41,7 +48,10 @@ describe('PouchDbContextService', () => {
 
     it('should return an object', () => {
       const contextA = PouchDbContextService.provideContextForTaskId('a-new-context-please');
+
       expect(typeof contextA).toBe('object');
+
+      toBeCleanedContexts.push(contextA);
     });
 
     // @TODO: Shouldn't it throw an Exception here?
@@ -53,12 +63,19 @@ describe('PouchDbContextService', () => {
     it('should return an new instance for different taskId', () => {
       const contextA = PouchDbContextService.provideContextForTaskId('first');
       const contextB = PouchDbContextService.provideContextForTaskId('second');
+
+      toBeCleanedContexts.push(contextA);
+      toBeCleanedContexts.push(contextB);
+
       expect(contextA !== contextB).toEqual(true);
     });
 
     it('should return the same instance for the same taskId', () => {
       const contextA = PouchDbContextService.provideContextForTaskId('same');
       const contextB = PouchDbContextService.provideContextForTaskId('same');
+
+      toBeCleanedContexts.push(contextA);
+
       expect(contextA === contextB).toEqual(true);
     });
   });
@@ -96,7 +113,11 @@ describe('PouchDbContextService', () => {
     it('should lookup the taskName for a previously provided context', () => {
       const randomTaskId = `random-task-id-${Date.now()}`;
       const origContext = PouchDbContextService.provideContextForTaskId(randomTaskId);
+
+      toBeCleanedContexts.push(origContext);
+
       const resolvedTaskId = PouchDbContextService.queryTaskIdForContext(origContext);
+
       expect(resolvedTaskId).toBeDefined(randomTaskId);
     });
 
@@ -105,5 +126,12 @@ describe('PouchDbContextService', () => {
       const taskId = PouchDbContextService.queryTaskIdForContext(invalidContext);
       expect(taskId).toBe(null);
     });
+  });
+
+  afterEach(done => {
+    Promise.all(
+      toBeCleanedContexts.map(context => context.destroy())
+    )
+      .then(() => done());
   });
 });
