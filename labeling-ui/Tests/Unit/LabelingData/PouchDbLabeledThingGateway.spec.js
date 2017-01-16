@@ -60,6 +60,7 @@ describe('PouchDbLabeledThingGateway', () => {
         pouchDbHelper = new PouchDbHelper();
         return pouchDbHelper.initialize();
       })
+      .then(() => pouchDbHelper.installViews())
       .then(() => {
         /**
          * @type {PouchDBContextService}
