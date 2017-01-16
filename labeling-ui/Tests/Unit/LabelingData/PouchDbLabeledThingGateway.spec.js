@@ -261,6 +261,8 @@ describe('PouchDbLabeledThingGateway', () => {
       .catch(error => {
         expect(error.status).toBeDefined();
         expect(error.status).toEqual(404);
+        expect(error.reason).toBeDefined();
+        expect(error.reason).toEqual("deleted");
       })
       .then(() => done());
   });
