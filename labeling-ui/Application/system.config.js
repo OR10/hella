@@ -98,6 +98,7 @@ System.config({
     "lodash.foreach": "npm:lodash.foreach@4.5.0",
     "lodash.isequal": "npm:lodash.isequal@4.2.0",
     "lodash.merge": "npm:lodash.merge@4.4.0",
+    "lodash.pickby": "npm:lodash.pickby@4.6.0",
     "lodash.reduce": "npm:lodash.reduce@4.6.0",
     "moment": "npm:moment@2.14.1",
     "ng-flow": "github:flowjs/ng-flow@2.7.4",
@@ -645,6 +646,9 @@ System.config({
       "lodash.isplainobject": "npm:lodash.isplainobject@4.0.4",
       "lodash.keysin": "npm:lodash.keysin@4.1.4",
       "lodash.rest": "npm:lodash.rest@4.0.3",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:lodash.pickby@4.6.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:lodash.reduce@4.6.0": {

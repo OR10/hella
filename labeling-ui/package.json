@@ -124,6 +124,7 @@
       "lodash.foreach": "npm:lodash.foreach@^4.5.0",
       "lodash.isequal": "npm:lodash.isequal@^4.2.0",
       "lodash.merge": "npm:lodash.merge@^4.4.0",
+      "lodash.pickby": "npm:lodash.pickby@^4.6.0",
       "lodash.reduce": "npm:lodash.reduce@^4.6.0",
       "moment": "npm:moment@^2.14.1",
       "ng-flow": "github:flowjs/ng-flow@^2.7.4",
