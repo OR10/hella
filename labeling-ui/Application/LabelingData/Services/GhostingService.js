@@ -12,11 +12,12 @@ class GhostingService {
    * @param {int} frameIndex
    * @param {int} offset
    * @param {int} limit
+   * @param {Object<{startFrameIndex, endFrameIndex}>} frameRange
    * @param {Array.<LabeledThingInFrame>} labeledThingsInFrames
    */
-  calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, labeledThingsInFrames) {
+  calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, frameRange, labeledThingsInFrames) {
     if (labeledThingsInFrames.length === 0) {
-      return labeledThingsInFrames;
+      throw new Error(`Can not calculate ghosts if no LabeledThingsInFrame are given`);
     }
     const startKey = frameIndex + offset;
     const endKey = frameIndex + offset + limit;
@@ -29,11 +30,17 @@ class GhostingService {
     let result = [];
     let counter = 0;
 
+    const endIndex = Math.max(frameRange.endFrameIndex, endKey);
+
     // Walk through all frame indices in reverse order
-    for (let index = endKey; index >= 0; index--, counter++) {
+    for (let index = endIndex; index >= 0; index--, counter++) {
+      const hasLtifForCurrentIndex = labeledThingInFrameLookUpTable.has(index);
       // If there is a ltif for the current frame index start ghost creation
-      if (labeledThingInFrameLookUpTable.has(index) || index === 0) {
-        foundLtif = labeledThingInFrameLookUpTable.get(index);
+      if (hasLtifForCurrentIndex || index === 0) {
+        // in case index == 0 we need to check if there is a ltif for this case
+        if (hasLtifForCurrentIndex) {
+          foundLtif = labeledThingInFrameLookUpTable.get(index);
+        }
         // Create clones of found ltif from current frameindex up to the last found/end
         let partialLabeledThingInFrameSequence = new Array(counter).fill(foundLtif);
         // Update frame indices for ghost ltifs and concat to result ltif array
@@ -42,6 +49,14 @@ class GhostingService {
         counter = 0;
       }
     }
+    // Replace ghosts with real ltifs
+    result.map(ltifGhost => {
+      if (labeledThingInFrameLookUpTable.has(ltifGhost.frameIndex)) {
+        return labeledThingInFrameLookUpTable.get(ltifGhost.frameIndex);
+      }
+      return ltifGhost;
+    });
+
     return result.slice(startKey, endKey);
   }
 
@@ -74,10 +89,6 @@ class GhostingService {
    * @private
    */
   _createGhostLabeledThingInFrameForPartialSequence(ltif, localGhostIndex) {
-    if (localGhostIndex === 0) {
-      return ltif;
-    }
-
     return new LabeledThingInFrame({
       id: null,
       classes: [],

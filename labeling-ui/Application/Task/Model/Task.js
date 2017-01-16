@@ -321,7 +321,7 @@ class Task {
     }
 
     if (this.status.revision && this.status.revision === 'todo' || !this.getLatestAssignedUserForPhase('revision')) {
-      const assignment = this.getLatestAssignedUserForPhase('review');
+      const assignment = this.getLatestAssignedUserForPhase('revision');
 
       return !assignment || assignment.id !== user.id;
     }

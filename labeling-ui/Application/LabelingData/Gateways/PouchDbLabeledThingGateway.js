@@ -62,7 +62,7 @@ class PouchDbLabeledThingGateway {
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
-    let storedLabeledThingId;
+    let readLabeledThing = null;
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
@@ -71,9 +71,15 @@ class PouchDbLabeledThingGateway {
       return dbContext.put(serializedLabeledThing);
     })
       .then(dbResponse => {
-        storedLabeledThingId = dbResponse.id;
+        return dbContext.get(dbResponse.id);
       })
-      .then(() => this._getAssociatedLabeledThingsInFrames(task, labeledThing))
+      .then(readLabeledThingDocument => {
+        this._revisionManager.extractRevision(readLabeledThingDocument);
+        readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
+      })
+      .then(() => {
+        return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
+      })
       .then(documents => {
         return documents.rows.filter(document => {
           return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
@@ -89,14 +95,10 @@ class PouchDbLabeledThingGateway {
         });
 
         // Bulk update as deleted marked documents
-        return dbContext.bulkDocs(docs);
+        dbContext.bulkDocs(docs);
       })
       .then(() => {
-        return dbContext.get(storedLabeledThingId);
-      })
-      .then(readLabeledThing => {
-        this._revisionManager.extractRevision(readLabeledThing);
-        return this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThing, task);
+        return readLabeledThing;
       });
   }
 
@@ -205,13 +207,11 @@ class PouchDbLabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    // @TODO: Refactor to use precomputed view
-    return dbContext.query((dbDocument, emit) => {
-      // Find all associated document to this labeledThing
-      if (dbDocument.type === 'AppBundle.Model.LabeledThingInFrame' && dbDocument.labeledThingId === labeledThing.id) {
-        emit(dbDocument);
-      }
-    }, {include_docs: true});
+    return dbContext.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
+      include_docs: true,
+      startkey: [labeledThing.id, 0],
+      endkey: [labeledThing.id, {}],
+    });
   }
 }
 
