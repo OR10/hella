@@ -127,15 +127,15 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {int?} limit
    */
   getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
-    const startKey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
-    const endKey = [labeledThing.id, labeledThing.frameRange.endFrameIndex];
+    const startkey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
+    const endkey = [labeledThing.id, labeledThing.frameRange.endFrameIndex];
 
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
-        startKey,
-        endKey,
+        startkey,
+        endkey,
         include_docs: true,
       });
     }).then(result => {

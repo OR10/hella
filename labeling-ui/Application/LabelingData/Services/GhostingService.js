@@ -50,7 +50,7 @@ class GhostingService {
       }
     }
     // Replace ghosts with real ltifs
-    result.map(ltifGhost => {
+    result = result.map(ltifGhost => {
       if (labeledThingInFrameLookUpTable.has(ltifGhost.frameIndex)) {
         return labeledThingInFrameLookUpTable.get(ltifGhost.frameIndex);
       }
