@@ -252,17 +252,18 @@ class ThumbnailReelController {
     }
 
     return this._lockService.acquire(newPaperShape.labeledThingInFrame.labeledThing.id, release => {
-      release();
       this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(this.framePosition))
         .then(labeledThingsInFrame => {
           labeledThingsInFrame.forEach(
             (labeledThingInFrame, index) => {
               const thumbnail = this.thumbnails[index];
+              // TODO: Sometimes thumbnail is undefined
               const location = thumbnail.location;
               this.thumbnails[index] = {location, labeledThingInFrame};
             }
           );
         });
+      release();
     });
   }
 
