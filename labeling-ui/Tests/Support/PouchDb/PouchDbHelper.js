@@ -53,7 +53,14 @@ class PouchDbHelper {
    */
   destroy() {
     if (this.database !== null) {
-      return this.database.destroy();
+      return Promise.resolve()
+        // @HACK to fix this bug: https://github.com/pouchdb/pouchdb/issues/3415
+        .then(() => new Promise(resolve => setTimeout(resolve, 100)))
+        .then(() => this.database.destroy())
+        .then(() => {
+          this.database = null;
+          this._databaseName = null;
+        });
     }
 
     return Promise.resolve();
