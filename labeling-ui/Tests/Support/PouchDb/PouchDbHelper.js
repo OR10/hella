@@ -29,7 +29,7 @@ class PouchDbHelper {
     return Promise.resolve()
       .then(() => {
         // Destroy old database if initialize is called twice.
-        if (this._database !== null) {
+        if (this.database !== null) {
           return this.destroy();
         }
       })
