@@ -49,6 +49,7 @@ module.exports = function (config) {
       'Tests/Support/Jasmine/DataProvider.js',
       {pattern: 'Tests/Support/Jasmine/Matchers/**/*.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/PouchDb/**/*', included: false, served: true, watched: true},
+      'Tests/Fixtures/CouchDb/Views/**/*.js',
       //'.workaround/jquery.js',
       //'.workaround/angular.js',
       //'tests/fixtures/**/*',
@@ -97,7 +98,8 @@ module.exports = function (config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'Tests/Unit/**/*.spec.js': ['babel', 'coverage'],
-      'Tests/Support/**/*.js': ['babel_umd']
+      'Tests/Support/**/*.js': ['babel_umd'],
+      'Tests/Fixtures/CouchDb/Views/**/*.js': ['js2js']
     },
 
     customPreprocessors: {

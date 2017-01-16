@@ -1,5 +1,7 @@
 import PouchDB from 'pouchdb';
 import uuid from 'uuid';
+import forEach from 'lodash.foreach';
+import pickBy from 'lodash.pickby';
 
 class PouchDbHelper {
   constructor() {
@@ -40,6 +42,62 @@ class PouchDbHelper {
   }
 
   /**
+   * Install the couchdb view fixtures into the database
+   *
+   * The fixtures are loaded using the js2js-preprocessor.
+   * They are loaded from the following path: `Tests/Fixtures/CouchDb/Views/`
+   *
+   * @return {Promise}
+   */
+  installViews() {
+    const prefix = 'Tests/Fixtures/CouchDb/Views/';
+    const keyMatcher = new RegExp(`^${prefix}([a-zA-Z0-9_-]+)/views/([a-zA-Z0-9_-]+)/(map|reduce)\\.js\$`);
+
+    if (window.__fixtures__ === undefined) {
+      throw new Error('Can not install couchdb views, because they are not loaded. Check karma.conf.js and the corresponding fixtures directory');
+    }
+
+    const views = pickBy(
+      window.__fixtures__,
+      (content, key) => key.match(keyMatcher) !== null
+    );
+
+    // Collect and cluster by design document
+    const designDocuments = new Map();
+    forEach(
+      views,
+      (content, key) => {
+        const [, designDocName, viewName, functionType] = keyMatcher.exec(key);
+
+        if (!designDocuments.has(designDocName)) {
+          designDocuments.set(designDocName, {});
+        }
+
+        const viewsInDesignDoc = designDocuments.get(designDocName);
+
+        if (viewsInDesignDoc[viewName] === undefined) {
+          viewsInDesignDoc[viewName] = {};
+        }
+
+        viewsInDesignDoc[viewName][functionType] = content;
+      }
+    );
+
+    // Write all the design documents to the database
+    const promises = [];
+    for (const [designDocName, viewsInDesignDoc] of designDocuments.entries()) {
+      promises.push(
+        this.database.put({
+          '_id': `_design/${designDocName}`,
+          'views': viewsInDesignDoc
+        })
+      );
+    }
+
+    return Promise.all(promises);
+  }
+
+  /**
    * Destroy the Helper
    *
    * This method needs be called in a `afterEach` function of the test suite
@@ -54,7 +112,7 @@ class PouchDbHelper {
   destroy() {
     if (this.database !== null) {
       return Promise.resolve()
-        // @HACK to fix this bug: https://github.com/pouchdb/pouchdb/issues/3415
+      // @HACK to fix this bug: https://github.com/pouchdb/pouchdb/issues/3415
         .then(() => new Promise(resolve => setTimeout(resolve, 100)))
         .then(() => this.database.destroy())
         .then(() => {
