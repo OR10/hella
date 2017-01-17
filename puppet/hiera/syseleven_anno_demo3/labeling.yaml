@@ -24,6 +24,7 @@ php::extensions:
   zip: {}
 
 letsencrypt::email: chh@crosscan.com
+annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
 annostation_letsencrypt::domains:
     - annostation-playground.hella-aglaia.com
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/fullchain.pem'

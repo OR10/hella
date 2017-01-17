@@ -23,7 +23,7 @@ class annostation_letsencrypt(
         $_vhost = $existingVhost
     }
 
-    nginx::resource::location { '/.well-known/acme-challenge/(.*)':
+    nginx::resource::location { '~ /.well-known/acme-challenge/(.*)':
         vhost               => $_vhost,
         www_root            => $webroot,
         location_cfg_append => {
