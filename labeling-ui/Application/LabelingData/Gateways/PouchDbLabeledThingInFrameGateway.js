@@ -176,6 +176,9 @@ class PouchDbLabeledThingInFrameGateway {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
 
+    // TODO: Remove when incomplete calculation is moved to the frontend
+    labeledThingInFrame.incomplete = false;
+
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
     const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(labeledThingInFrame);
 

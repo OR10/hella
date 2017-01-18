@@ -15,7 +15,8 @@ class ViewerTitleBarController {
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {FrameIndexService} frameIndexService
-   * @param {ReplicationStateService} replicationStateService
+   * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {PouchDbContextService} pouchDbContextService
    */
   constructor($timeout,
               $scope,
@@ -29,8 +30,8 @@ class ViewerTitleBarController {
               labeledThingGateway,
               labeledThingInFrameGateway,
               frameIndexService,
-              replicationStateService
-  ) {
+              pouchDbSyncManager,
+              pouchDbContextService) {
     this._$timeout = $timeout;
     /**
      * @param {angular.$scope} $scope
@@ -109,10 +110,16 @@ class ViewerTitleBarController {
     this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
 
     /**
-     * @type {ReplicationStateService}
+     * @type {PouchDbSyncManager}
      * @private
      */
-    this._replicationStateService = replicationStateService;
+    this._pouchDbSyncManager = pouchDbSyncManager;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
 
     this.refreshIncompleteCount();
     this._registerOnEvents();
@@ -136,6 +143,20 @@ class ViewerTitleBarController {
         this.shapeBounds = null;
       }
     });
+
+    if (this._featureFlags.pouchdb === true) {
+      this.canFinishTask = false;
+
+      this._pouchDbSyncManager.on('offline', () => {
+        this.canFinishTask = false;
+      });
+      this._pouchDbSyncManager.on('alive', () => {
+        this.canFinishTask = true;
+      });
+      this._pouchDbSyncManager.on('transfer', () => {
+        this.canFinishTask = false;
+      });
+    }
   }
 
   _registerOnEvents() {
@@ -151,18 +172,28 @@ class ViewerTitleBarController {
   }
 
   finishLabelingTask() {
-    let promise;
+    if (this._featureFlags.pouchdb === true && !this.canFinishTask) {
+      this._modalService.info(
+        {
+          title: 'Database sync in progress',
+          headline: 'There is still data synced to the server!',
+          message: 'Please wait until all data is synced befor finishing the task. Syncstatus can be seen by the icon left of the timer.',
+          confirmButtonText: 'Understood',
+        },
+        undefined,
+        undefined,
+        {
+          warning: true,
+          abortable: false,
+        }
+      );
+      return;
+    }
+
     this._applicationState.disableAll();
     this._applicationState.viewer.work();
 
-    if (this._featureFlags.pouchdb === true) {
-      this._replicationStateService.setIsReplicating(true);
-      promise = this._$q.resolve({});
-    } else {
-      promise = this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id);
-    }
-
-    promise.then(result => {
+    this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
       if (result.count !== 0) {
         this.handleIncompleteState();
       } else {
@@ -182,6 +213,7 @@ class ViewerTitleBarController {
         confirmButtonText: 'Finish',
       },
       () => {
+        this._pouchDbSyncManager.stopReplicationsForContext(this._pouchDbContextService.provideContextForTaskId(this.task.id));
         this._taskGateway.markTaskAsDone(this.task.id)
           .then(() => {
             this._$state.go('labeling.tasks.list', {projectId: this.task.projectId});
@@ -264,6 +296,32 @@ class ViewerTitleBarController {
       });
     });
   }
+
+  goBackToTasksList() {
+    if (this._featureFlags.pouchdb === true) {
+      if (!this.canFinishTask) {
+        this._modalService.info(
+          {
+            title: 'Database sync in progress',
+            headline: 'There is still data synced to the server!',
+            message: 'Please wait until all data is synced befor finishing the task. Syncstatus can be seen by the icon left of the timer.',
+            confirmButtonText: 'Understood',
+          },
+          undefined,
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+        return;
+      }
+
+      this._pouchDbSyncManager.stopReplicationsForContext(this._pouchDbContextService.provideContextForTaskId(this.task.id));
+    }
+
+    this._$state.go('labeling.tasks.list', {project: this.task.projectId});
+  }
 }
 
 ViewerTitleBarController.$inject = [
@@ -279,7 +337,8 @@ ViewerTitleBarController.$inject = [
   'labeledThingGateway',
   'labeledThingInFrameGateway',
   'frameIndexService',
-  'replicationStateService',
+  'pouchDbSyncManager',
+  'pouchDbContextService',
 ];
 
 export default ViewerTitleBarController;

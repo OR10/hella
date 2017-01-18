@@ -66,33 +66,6 @@ class PouchDbSyncManager {
     this._eventListeners = {};
   }
 
-  /**
-   * @private
-   */
-  _broadcastAlive() {
-    if (this._eventListeners.alive) {
-      this._eventListeners.alive();
-    }
-  }
-
-  /**
-   * @private
-   */
-  _broadcastTransfer() {
-    if (this._eventListeners.transfer) {
-      this._eventListeners.transfer();
-    }
-  }
-
-  /**
-   * @private
-   */
-  _broadcastOffline() {
-    if (this._eventListeners.offline) {
-      this._eventListeners.offline();
-    }
-  }
-
 
   /**
    * @param {PouchDB} context instance of a local PouchDB
@@ -128,7 +101,11 @@ class PouchDbSyncManager {
    * @param {PouchDB} context instance of a local PouchDB
    */
   stopReplicationsForContext(context) {
-    for (const [, syncHandler] of this._syncHandlerCache.entries()) {
+    if (!this._syncHandlerCache.has(context)) {
+      return false;
+    }
+
+    for (const [, syncHandler] of DeepMap.iterateMapRecursive(this._syncHandlerCache.get(context))) {
       syncHandler.cancel();
     }
 
@@ -268,27 +245,27 @@ class PouchDbSyncManager {
       this._logger.log(loggerContext, `[:error]`, error);
       this._syncHandlerCache.delete(context, filter, direction, true);
       deferred.reject(error);
-      this._broadcastOffline();
+      this._emit('offline');
     }).on('change', info => {
       this._logger.log(loggerContext, `[:change]`, info);
-      this._broadcastTransfer();
+      this._emit('transfer');
     }).on('paused', event => {
       this._logger.log(loggerContext, `[:paused]`, event);
       if (event && event.status === 0) {
-        this._broadcastOffline();
+        this._emit('offline');
       } else {
-        this._broadcastAlive();
+        this._emit('alive');
       }
       // @TODO: Check if this is correct here!
       deferred.resolve(event);
     }).on('active', event => {
       this._logger.log(loggerContext, `[:active]`, event);
-      this._broadcastTransfer();
+      this._emit('transfer');
       // @TODO: Check if this is correct here!
       deferred.resolve();
     }).on('denied', error => {
       this._logger.log(loggerContext, `[:denied]`, error);
-      this._broadcastOffline();
+      this._emit('offline');
     });
   }
 
@@ -344,7 +321,18 @@ class PouchDbSyncManager {
   }
 
   on(eventName, eventCallback) {
-    this._eventListeners[eventName] = eventCallback;
+    if (this._eventListeners[eventName] === undefined) {
+      this._eventListeners[eventName] = [];
+    }
+    this._eventListeners[eventName].push(eventCallback);
+  }
+
+  _emit(eventName, data = []) {
+    if (this._eventListeners[eventName] === undefined) {
+      return;
+    }
+
+    this._eventListeners[eventName].forEach(fn => fn(...data));
   }
 }
 

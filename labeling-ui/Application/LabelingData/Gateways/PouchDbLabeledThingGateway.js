@@ -59,6 +59,9 @@ class PouchDbLabeledThingGateway {
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing) {
+    // TODO: Remove when incomplete calculation is moved to the frontend
+    labeledThing.incomplete = false;
+
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);

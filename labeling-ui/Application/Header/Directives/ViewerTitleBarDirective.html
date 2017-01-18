@@ -1,8 +1,8 @@
 <div class="header header-left grid-block noscroll">
     <div class="grid-content small-1 text-center noscroll">
-        <a ui-sref="labeling.tasks.list({project: vm.task.projectId})"
-           tooltip="Back to task overview"
+        <a tooltip="Back to task overview"
            class="dropdown-button"
+           ng-click="vm.goBackToTasksList()"
         >
             <i class="icon icon-previous"></i>
         </a>
