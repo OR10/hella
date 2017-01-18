@@ -119,7 +119,7 @@
       "databaseName":"labeling_api",
       "filters": [
         "annostation_related_documents/by_taskId",
-        "annostation_related_views/all"
+        "annostation_related_documents/all_views"
       ]
     }
   }
