@@ -21,16 +21,17 @@ php::extensions:
   gd: {}
   mbstring: {}
   mysql: {}
+  xml: {}
   zip: {}
 
 letsencrypt::email: chh@crosscan.com
-annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
 annostation_letsencrypt::domains:
-    - annostation-playground.hella-aglaia.com
-labeling_api::app::sslCertFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/fullchain.pem'
-labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/privkey.pem'
-labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/fullchain.pem'
-labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/annostation-playground.hella-aglaia.com/privkey.pem'
+    - annostation-playground2.hella-aglaia.com
+annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+labeling_api::app::sslCertFile: '/etc/letsencrypt/live/annostation-playground2.hella-aglaia.com/fullchain.pem'
+labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/annostation-playground2.hella-aglaia.com/privkey.pem'
+labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/annostation-playground2.hella-aglaia.com/fullchain.pem'
+labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/annostation-playground2.hella-aglaia.com/privkey.pem'
 
 rabbitmq::version: present
 
@@ -51,12 +52,12 @@ labeling_api::params::frame_cdn_type: 'filesystem'
 labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
 labeling_api::params::video_cdn_dir: '/var/www/video_cdn'
 labeling_api::params::frame_cdn_port: 81
-labeling_api::params::frame_cdn_base_url: 'https://annostation-playground.hella-aglaia.com:81'
-labeling_api::params::frame_cdn_allowed_origin: 'https://annostation-playground.hella-aglaia.com'
+labeling_api::params::frame_cdn_base_url: 'https://annostation-playground2.hella-aglaia.com:81'
+labeling_api::params::frame_cdn_allowed_origin: 'https://annostation-playground2.hella-aglaia.com'
 labeling_api::params::frame_cdn_expires: '1d'
 labeling_api::params::prepare_test_environment: true
-labeling_api::params::secret: 'gksasakwfjajfkasfsafkasfasdklfsdalf'
-labeling_api::params::user_password: 'M9nPOWWbdMONmfIJAYUb'
+labeling_api::params::secret: 'klsafklhsdklhhksakaklsaklsaklsdahklsaklsa'
+labeling_api::params::user_password: 'umRIlfpAXSnCLCa0wK0g'
 labeling_api::params::create_parameter_files: true
 
 labeling_api::app::httpv2: true
@@ -64,7 +65,7 @@ labeling_api::app::www_root: '/var/www/labeling-api/current/web/AnnoStation'
 
 labeling_api::mysql::database_name: 'labeling_api'
 labeling_api::mysql::database_user: 'labeling_api'
-labeling_api::mysql::database_password: '6mVGKyn7xUO9ljmSEvUm'
+labeling_api::mysql::database_password: 'KcjDmV21OuetSGW5jd01'
 
 labeling_api::couch::database_name: 'labeling_api'
 labeling_api::couch::prepare_test_environment: true
