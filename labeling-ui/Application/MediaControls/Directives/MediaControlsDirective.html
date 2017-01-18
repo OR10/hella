@@ -148,7 +148,7 @@
                 ></i>
             </button>
         </div>
-        <div class="grid-content noscroll">
+        <div class="grid-content noscroll" ng-if="!vm.featureFlags.pouchdb">
             <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
                     ng-click="vm.handleInterpolation()"
                     tooltip="Interpolate shape between its start and end frames">

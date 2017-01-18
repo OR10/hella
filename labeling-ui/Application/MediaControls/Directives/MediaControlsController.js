@@ -25,6 +25,7 @@ class MediaControlsController {
    * @param {Object} applicationState
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param featureFlags
    */
   constructor($scope,
               $rootScope,
@@ -36,7 +37,9 @@ class MediaControlsController {
               $q,
               applicationState,
               modalService,
-              keyboardShortcutService) {
+              keyboardShortcutService,
+              featureFlags
+  ) {
     /**
      * @type {angular.$rootScope}
      */
@@ -100,6 +103,8 @@ class MediaControlsController {
      * @private
      */
     this._keyboardShortcutService = keyboardShortcutService;
+
+    this.featureFlags = featureFlags;
 
     /**
      * @type {string}
@@ -452,6 +457,7 @@ MediaControlsController.$inject = [
   'applicationState',
   'modalService',
   'keyboardShortcutService',
+  'featureFlags',
 ];
 
 export default MediaControlsController;
