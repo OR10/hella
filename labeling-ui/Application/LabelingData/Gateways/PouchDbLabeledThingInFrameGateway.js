@@ -4,7 +4,6 @@
 class PouchDbLabeledThingInFrameGateway {
   /**
    * @param {$q} $q
-   * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
    * @param {RevisionManager} revisionManager
    * @param {PackagingExecutor} packagingExecutor
@@ -13,18 +12,12 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {GhostingService} ghostingService
    */
-  constructor($q, pouchDbSyncManager, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway, ghostingService) {
+  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway, ghostingService) {
     /**
      * @type {$q}
      * @private
      */
     this._$q = $q;
-
-    /**
-     * @type {PouchDbContextService}
-     * @private
-     */
-    this._pouchDbSyncManager = pouchDbSyncManager;
 
     /**
      * @type {PouchDbContextService}
@@ -67,12 +60,6 @@ class PouchDbLabeledThingInFrameGateway {
      * @private
      */
     this._ghostingService = ghostingService;
-
-    /**
-     * @type {PouchDbSyncManager}
-     * @private
-     */
-    this._pouchDbSyncManager = pouchDbSyncManager;
   }
 
   /**
@@ -225,7 +212,6 @@ class PouchDbLabeledThingInFrameGateway {
 
 PouchDbLabeledThingInFrameGateway.$inject = [
   '$q',
-  'pouchDbSyncManager',
   'pouchDbContextService',
   'revisionManager',
   'packagingExecutor',
