@@ -99,14 +99,14 @@ class DeepMap {
   }
 
   entries() {
-    return this._iterateMapRecursive(this._baseMap);
+    return DeepMap.iterateMapRecursive(this._baseMap);
   }
 
-  *_iterateMapRecursive(iterationMap, fullKey = []) {
+  static *iterateMapRecursive(iterationMap, fullKey = []) {
     for (const [key, value] of iterationMap) {
       const newFullKey = fullKey.concat([key]);
       if (value !== undefined && value instanceof Map) {
-        yield *this._iterateMapRecursive(value, newFullKey);
+        yield *DeepMap.iterateMapRecursive(value, newFullKey);
       } else {
         yield [newFullKey, value];
       }
