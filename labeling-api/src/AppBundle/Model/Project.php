@@ -246,6 +246,18 @@ class Project
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getCreationDateAsObject()
+    {
+        if ($this->creationDate instanceof \DateTime) {
+            return $this->creationDate;
+        }
+
+        return null;
+    }
+
+    /**
      * @return mixed
      */
     public function getStatus()
