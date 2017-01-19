@@ -158,6 +158,9 @@ class Export extends Controller\Base
                 case 'genericXml':
                     $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($export));
                     break;
+                case 'requirementsXml':
+                    $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export));
+                    break;
             }
         }
 
