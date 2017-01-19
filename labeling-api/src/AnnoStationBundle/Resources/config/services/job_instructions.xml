@@ -44,5 +44,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.requirements_project_to_xml" class="AnnoStationBundle\Worker\JobInstruction\RequirementsProjectToXml">
+            <argument type="service" id="annostation.labeling_api.service.exporter.requirements_project_to_xml" />
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>

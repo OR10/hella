@@ -141,6 +141,19 @@
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
         </service>
 
+        <service id="annostation.labeling_api.service.exporter.requirements_project_to_xml"
+                 class="AnnoStationBundle\Service\Exporter\RequirementsProjectToXml">
+            <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+        </service>
+
         <service id="annostation.labeling_api.service.class_columns_factory"
                  class="AnnoStationBundle\Service\ClassColumnsFactory">
         </service>

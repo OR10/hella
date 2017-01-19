@@ -351,6 +351,24 @@ class Project extends Controller\Base
                     );
                 }
                 break;
+            case 'requirementsXml':
+                $taskTypeConfigurations = $request->request->get('taskTypeConfigurations');
+
+                if (empty($taskTypeConfigurations)) {
+                    throw new Exception\BadRequestHttpException('Missing task type configuration');
+                }
+
+                if (count($taskTypeConfigurations) > 1) {
+                    throw new Exception\BadRequestHttpException('Only a single requirementsXML is allowed for a project.');
+                }
+
+                foreach ($taskTypeConfigurations as $taskTypeConfiguration) {
+                    $project->addRequirementsXmlTaskInstruction(
+                        $taskTypeConfiguration['type'],
+                        $taskTypeConfiguration['taskConfigurationId']
+                    );
+                }
+                break;
         }
 
         $project = $this->projectFacade->save($project);
