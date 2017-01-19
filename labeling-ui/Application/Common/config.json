@@ -115,7 +115,7 @@
       "databaseName":"AnnoStation"
     },
     "remote": {
-      "baseUrl":"https://labeltool.crosscan.com/couchdb/",
+      "baseUrl":"https://pouch:3,udvezdxp}2Rh.UNmuZ@labeltool.crosscan.com/couchdb/",
       "databaseName":"labeling_api",
       "filters": [
         "annostation_related_documents/by_taskId",
