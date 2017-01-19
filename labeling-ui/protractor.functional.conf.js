@@ -47,7 +47,15 @@ exports.config = {
           outputDir: './Logs/Functional/Images',
           browserIdentifier: browserIdentifier,
         }));
+        jasmine.getEnv().addReporter(new JasmineSpecReporter({
+          displayStacktrace: true,
+        }));
       });
+  },
+  jasmineNodeOpts: {
+    // Disable standard 'dot' output
+    print: () => {},
+    defaultTimeoutInterval: 60000,
   },
 
   specs: ['Tests/Functional/**/*.spec.js'],
