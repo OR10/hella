@@ -17,7 +17,9 @@
         <span class="align-self-center">{{vm.shapeBounds}}</span>
     </div>
     <div class="grid-block header-right shrink noscroll">
-        <live-sync-indicator class="grid-content"></live-sync-indicator>
+        <live-sync-indicator ng-if="vm.featureFlags.pouchdb === true"
+                             class="grid-content">
+        </live-sync-indicator>
         <timer class="grid-block text-right header-timer shrink noscroll"
                task="vm.task"
                user="vm.user"

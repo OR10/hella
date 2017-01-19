@@ -59,9 +59,8 @@ class ViewerTitleBarController {
 
     /**
      * @type {Object}
-     * @private
      */
-    this._featureFlags = featureFlags;
+    this.featureFlags = featureFlags;
 
     /**
      * @type {ModalService}
@@ -144,7 +143,7 @@ class ViewerTitleBarController {
       }
     });
 
-    if (this._featureFlags.pouchdb === true) {
+    if (this.featureFlags.pouchdb === true) {
       this.canFinishTask = false;
 
       this._pouchDbSyncManager.on('offline', () => {
@@ -172,7 +171,7 @@ class ViewerTitleBarController {
   }
 
   finishLabelingTask() {
-    if (this._featureFlags.pouchdb === true && !this.canFinishTask) {
+    if (this.featureFlags.pouchdb === true && !this.canFinishTask) {
       this._modalService.info(
         {
           title: 'Database sync in progress',
@@ -298,7 +297,7 @@ class ViewerTitleBarController {
   }
 
   goBackToTasksList() {
-    if (this._featureFlags.pouchdb === true) {
+    if (this.featureFlags.pouchdb === true) {
       if (!this.canFinishTask) {
         this._modalService.info(
           {
