@@ -4,6 +4,7 @@ require('babel-core/register');
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
 const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
+const JasmineSpecReporter = require('jasmine-spec-reporter');
 const path = require('path');
 
 exports.config = {
@@ -46,7 +47,15 @@ exports.config = {
           outputDir: './Logs/Functional/Images',
           browserIdentifier: browserIdentifier,
         }));
+        jasmine.getEnv().addReporter(new JasmineSpecReporter({
+          displayStacktrace: true,
+        }));
       });
+  },
+  jasmineNodeOpts: {
+    // Disable standard 'dot' output
+    print: () => {},
+    defaultTimeoutInterval: 60000,
   },
 
   specs: ['Tests/Functional/**/*.spec.js'],

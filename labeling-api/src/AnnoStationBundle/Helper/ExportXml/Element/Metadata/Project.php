@@ -36,7 +36,7 @@ class Project extends ExportXml\Element
         $project->setAttribute('name', $this->project->getName());
 
         $state        = $document->createElement('phase', $this->project->getStatus());
-        $description  = $document->createElement('description', 'foobar');
+        $description  = $document->createElement('description', $this->project->getDescription());
         $creationDate = $document->createElement('creation-date', $this->project->getCreationDateAsObject()->format('c'));
         $creationUser = $document->createElement('created-by-user');
         $creationUser->setAttribute(

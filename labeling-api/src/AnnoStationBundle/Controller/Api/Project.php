@@ -266,6 +266,7 @@ class Project extends Controller\Base
         $frameSkip        = $request->request->get('frameSkip');
         $startFrameNumber = $request->request->get('startFrameNumber');
         $splitEach        = $request->request->get('splitEach');
+        $description      = $request->request->get('description');
         $projectType      = $request->request->get('projectType');
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
@@ -284,7 +285,8 @@ class Project extends Controller\Base
                 $labelingValidationProcesses,
                 $frameSkip,
                 $startFrameNumber,
-                $splitEach
+                $splitEach,
+                $description
             );
 
             $project->setAvailableExports([$projectType]);
