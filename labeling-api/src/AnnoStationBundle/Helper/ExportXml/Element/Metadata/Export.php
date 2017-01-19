@@ -17,21 +17,31 @@ class Export extends ExportXml\Element
      */
     private $userFacade;
 
-    public function __construct(Model\Export $export, Facade\User $userFacade)
+    /**
+     * @var
+     */
+    private $namespace;
+
+    public function __construct(Model\Export $export, Facade\User $userFacade, $namespace)
     {
         $this->export     = $export;
         $this->userFacade = $userFacade;
+        $this->namespace  = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $export = $document->createElement('export');
+        $export = $document->createElementNS($this->namespace, 'export');
         $export->setAttribute('id', $this->export->getId());
 
-        $creationDate = $document->createElement('creation-date', $this->export->getDate()->format('c'));
+        $creationDate = $document->createElementNS(
+            $this->namespace,
+            'creation-date',
+            $this->export->getDate()->format('c')
+        );
 
         $user          = $this->userFacade->getUserById($this->export->getUserId());
-        $createdByUser = $document->createElement('created-by-user');
+        $createdByUser = $document->createElementNS($this->namespace, 'created-by-user');
         $createdByUser->setAttribute('username', $user->getUsername());
         $createdByUser->setAttribute('email', $user->getEmail());
 

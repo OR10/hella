@@ -11,70 +11,92 @@ class Cuboid3d extends ExportXml\Element
      */
     private $cuboid3d;
 
-    public function __construct(Shapes\Cuboid3d $cuboid3d)
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function __construct(Shapes\Cuboid3d $cuboid3d, $namespace)
     {
-        $this->cuboid3d = $cuboid3d;
+        $this->cuboid3d  = $cuboid3d;
+        $this->namespace = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $cuboid = $document->createElement('cuboid');
+        $cuboid = $document->createElementNS($this->namespace, 'cuboid');
 
         $topLeftFrontPoints = $this->cuboid3d->getFrontTopLeft();
-        $topLeftFront       = $document->createElement('top-left-front');
-        $topLeftFront->setAttribute('x', $topLeftFrontPoints[0]);
-        $topLeftFront->setAttribute('y', $topLeftFrontPoints[1]);
-        $topLeftFront->setAttribute('z', $topLeftFrontPoints[2]);
-        $cuboid->appendChild($topLeftFront);
+        if ($topLeftFrontPoints !== null) {
+            $topLeftFront = $document->createElementNS($this->namespace, 'top-left-front');
+            $topLeftFront->setAttribute('x', round($topLeftFrontPoints[0], 4));
+            $topLeftFront->setAttribute('y', round($topLeftFrontPoints[1], 4));
+            $topLeftFront->setAttribute('z', round($topLeftFrontPoints[2], 4));
+            $cuboid->appendChild($topLeftFront);
+        }
 
         $topRightFrontPoints = $this->cuboid3d->getFrontTopRight();
-        $topRightFront       = $document->createElement('top-right-front');
-        $topRightFront->setAttribute('x', $topRightFrontPoints[0]);
-        $topRightFront->setAttribute('y', $topRightFrontPoints[1]);
-        $topRightFront->setAttribute('z', $topRightFrontPoints[2]);
-        $cuboid->appendChild($topRightFront);
+        if ($topRightFrontPoints !== null) {
+            $topRightFront = $document->createElementNS($this->namespace, 'top-right-front');
+            $topRightFront->setAttribute('x', round($topRightFrontPoints[0], 4));
+            $topRightFront->setAttribute('y', round($topRightFrontPoints[1], 4));
+            $topRightFront->setAttribute('z', round($topRightFrontPoints[2], 4));
+            $cuboid->appendChild($topRightFront);
+        }
 
         $bottomRightFrontPoints = $this->cuboid3d->getFrontBottomRight();
-        $bottomRightFront       = $document->createElement('bottom-right-front');
-        $bottomRightFront->setAttribute('x', $bottomRightFrontPoints[0]);
-        $bottomRightFront->setAttribute('y', $bottomRightFrontPoints[1]);
-        $bottomRightFront->setAttribute('z', $bottomRightFrontPoints[2]);
-        $cuboid->appendChild($bottomRightFront);
+        if ($bottomRightFrontPoints !== null) {
+            $bottomRightFront = $document->createElementNS($this->namespace, 'bottom-right-front');
+            $bottomRightFront->setAttribute('x', round($bottomRightFrontPoints[0], 4));
+            $bottomRightFront->setAttribute('y', round($bottomRightFrontPoints[1], 4));
+            $bottomRightFront->setAttribute('z', round($bottomRightFrontPoints[2], 4));
+            $cuboid->appendChild($bottomRightFront);
+        }
 
         $bottomLeftFrontPoints = $this->cuboid3d->getFrontBottomLeft();
-        $bottomLeftFront       = $document->createElement('bottom-left-front');
-        $bottomLeftFront->setAttribute('x', $bottomLeftFrontPoints[0]);
-        $bottomLeftFront->setAttribute('y', $bottomLeftFrontPoints[1]);
-        $bottomLeftFront->setAttribute('z', $bottomLeftFrontPoints[2]);
-        $cuboid->appendChild($bottomLeftFront);
+        if ($bottomLeftFrontPoints !== null) {
+            $bottomLeftFront = $document->createElementNS($this->namespace, 'bottom-left-front');
+            $bottomLeftFront->setAttribute('x', round($bottomLeftFrontPoints[0], 4));
+            $bottomLeftFront->setAttribute('y', round($bottomLeftFrontPoints[1], 4));
+            $bottomLeftFront->setAttribute('z', round($bottomLeftFrontPoints[2], 4));
+            $cuboid->appendChild($bottomLeftFront);
+        }
 
         $topLeftBackPoints = $this->cuboid3d->getBackTopLeft();
-        $topLeftBack       = $document->createElement('top-left-back');
-        $topLeftBack->setAttribute('x', $topLeftBackPoints[0]);
-        $topLeftBack->setAttribute('y', $topLeftBackPoints[1]);
-        $topLeftBack->setAttribute('z', $topLeftBackPoints[2]);
-        $cuboid->appendChild($topLeftBack);
+        if ($topLeftBackPoints !== null) {
+            $topLeftBack = $document->createElementNS($this->namespace, 'top-left-back');
+            $topLeftBack->setAttribute('x', round($topLeftBackPoints[0], 4));
+            $topLeftBack->setAttribute('y', round($topLeftBackPoints[1], 4));
+            $topLeftBack->setAttribute('z', round($topLeftBackPoints[2], 4));
+            $cuboid->appendChild($topLeftBack);
+        }
 
         $topRightBackPoints = $this->cuboid3d->getBackTopRight();
-        $topRightBack       = $document->createElement('top-right-back');
-        $topRightBack->setAttribute('x', $topRightBackPoints[0]);
-        $topRightBack->setAttribute('y', $topRightBackPoints[1]);
-        $topRightBack->setAttribute('z', $topRightBackPoints[2]);
-        $cuboid->appendChild($topRightBack);
+        if ($topRightBackPoints !== null) {
+            $topRightBack = $document->createElementNS($this->namespace, 'top-right-back');
+            $topRightBack->setAttribute('x', round($topRightBackPoints[0], 4));
+            $topRightBack->setAttribute('y', round($topRightBackPoints[1], 4));
+            $topRightBack->setAttribute('z', round($topRightBackPoints[2], 4));
+            $cuboid->appendChild($topRightBack);
+        }
 
         $bottomRightBackPoints = $this->cuboid3d->getBackBottomRight();
-        $bottomRightBack       = $document->createElement('bottom-right-back');
-        $bottomRightBack->setAttribute('x', $bottomRightBackPoints[0]);
-        $bottomRightBack->setAttribute('y', $bottomRightBackPoints[1]);
-        $bottomRightBack->setAttribute('z', $bottomRightBackPoints[2]);
-        $cuboid->appendChild($bottomRightBack);
+        if ($bottomRightBackPoints !== null) {
+            $bottomRightBack = $document->createElementNS($this->namespace, 'bottom-right-back');
+            $bottomRightBack->setAttribute('x', round($bottomRightBackPoints[0], 4));
+            $bottomRightBack->setAttribute('y', round($bottomRightBackPoints[1], 4));
+            $bottomRightBack->setAttribute('z', round($bottomRightBackPoints[2], 4));
+            $cuboid->appendChild($bottomRightBack);
+        }
 
         $bottomLeftBackPoints = $this->cuboid3d->getBackBottomLeft();
-        $bottomLeftBack       = $document->createElement('bottom-left-back');
-        $bottomLeftBack->setAttribute('x', $bottomLeftBackPoints[0]);
-        $bottomLeftBack->setAttribute('y', $bottomLeftBackPoints[1]);
-        $bottomLeftBack->setAttribute('z', $bottomLeftBackPoints[2]);
-        $cuboid->appendChild($bottomLeftBack);
+        if ($bottomLeftBackPoints !== null) {
+            $bottomLeftBack = $document->createElementNS($this->namespace, 'bottom-left-back');
+            $bottomLeftBack->setAttribute('x', round($bottomLeftBackPoints[0], 4));
+            $bottomLeftBack->setAttribute('y', round($bottomLeftBackPoints[1], 4));
+            $bottomLeftBack->setAttribute('z', round($bottomLeftBackPoints[2], 4));
+            $cuboid->appendChild($bottomLeftBack);
+        }
 
         return $cuboid;
     }

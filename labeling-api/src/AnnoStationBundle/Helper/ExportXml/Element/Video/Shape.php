@@ -22,32 +22,38 @@ class Shape extends ExportXml\Element
      */
     private $end;
 
-    public function __construct(Model\Shape $shape, $start, $end)
+    /**
+     * @var
+     */
+    private $namespace;
+
+    public function __construct(Model\Shape $shape, $start, $end, $namespace)
     {
-        $this->shape = $shape;
-        $this->start = $start;
-        $this->end   = $end;
+        $this->shape     = $shape;
+        $this->start     = $start;
+        $this->end       = $end;
+        $this->namespace = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $shape = $document->createElement('shape');
+        $shape = $document->createElementNS($this->namespace, 'shape');
         $shape->setAttribute('id', $this->shape->getId());
         $shape->setAttribute('start', $this->start);
         $shape->setAttribute('end', $this->end);
 
         switch (true) {
             case $this->shape instanceof Model\Shapes\Rectangle:
-                $shapeElement = new Shape\Rectangle($this->shape);
+                $shapeElement = new Shape\Rectangle($this->shape, $this->namespace);
                 break;
             case $this->shape instanceof Model\Shapes\Cuboid3d:
-                $shapeElement = new Shape\Cuboid3d($this->shape);
+                $shapeElement = new Shape\Cuboid3d($this->shape, $this->namespace);
                 break;
             case $this->shape instanceof Model\Shapes\Polygon:
-                $shapeElement = new Shape\Polygon($this->shape);
+                $shapeElement = new Shape\Polygon($this->shape, $this->namespace);
                 break;
             case $this->shape instanceof Model\Shapes\Pedestrian:
-                $shapeElement = new Shape\Pedestrian($this->shape);
+                $shapeElement = new Shape\Pedestrian($this->shape, $this->namespace);
                 break;
         }
 

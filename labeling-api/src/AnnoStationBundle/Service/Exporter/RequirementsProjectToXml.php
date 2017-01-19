@@ -10,6 +10,8 @@ use AnnoStationBundle\Helper\ExportXml;
 
 class RequirementsProjectToXml
 {
+    const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
+
     /**
      * @var Facade\Exporter
      */
@@ -43,10 +45,12 @@ class RequirementsProjectToXml
      * @var AppBundleFacade\User
      */
     private $userFacade;
+
     /**
      * @var Facade\LabelingGroup
      */
     private $labelingGroupFacade;
+
     /**
      * @var Facade\LabeledThing
      */
@@ -110,16 +114,17 @@ class RequirementsProjectToXml
                     $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
                 }
 
-                $xml      = new ExportXml\Xml();
+                $xml      = new ExportXml\Xml(self::XML_NAMESPACE);
                 $metadata = new ExportXml\Element\Metadata(
                     $this->userFacade,
                     $project,
                     $export,
                     $this->labelingGroupFacade,
-                    $taskConfigurations
+                    $taskConfigurations,
+                    self::XML_NAMESPACE
                 );
                 $xml->appendChild($metadata->getElement($xml->getDocument()));
-                $xmlVideo = new ExportXml\Element\Video($video);
+                $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
                     $frameMapping = $task->getFrameNumberMapping();
@@ -127,7 +132,7 @@ class RequirementsProjectToXml
                     $labeledThingIterator = new Iterator\LabeledThing($task, $this->labelingTaskFacade);
 
                     foreach ($labeledThingIterator as $labeledThing) {
-                        $thing                              = new ExportXml\Element\Video\Thing($task, $labeledThing);
+                        $thing                              = new ExportXml\Element\Video\Thing($task, $labeledThing, self::XML_NAMESPACE);
                         $labeledThingInFrameForLabeledThing = new Iterator\LabeledThingInFrameForLabeledThing(
                             $this->labeledThingFacade,
                             $labeledThing,
@@ -143,7 +148,8 @@ class RequirementsProjectToXml
                             $shape               = new ExportXml\Element\Video\Shape(
                                 $labeledThingInFrame->getShapesAsObjects()[0],
                                 $frameMapping[$labeledThingInFramesInRange['start']],
-                                $frameMapping[$labeledThingInFramesInRange['end']]
+                                $frameMapping[$labeledThingInFramesInRange['end']],
+                                self::XML_NAMESPACE
                             );
                             $thing->addShape($shape);
                         }

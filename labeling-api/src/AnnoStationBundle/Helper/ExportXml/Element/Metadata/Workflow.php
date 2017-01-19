@@ -5,9 +5,19 @@ use AnnoStationBundle\Helper\ExportXml;
 
 class Workflow extends ExportXml\Element
 {
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function __construct($namespace)
+    {
+        $this->namespace = $namespace;
+    }
+
     public function getElement(\DOMDocument $document)
     {
-        $workflow = $document->createElement('workflow');
+        $workflow = $document->createElementNS($this->namespace, 'workflow');
 
         return $workflow;
     }
