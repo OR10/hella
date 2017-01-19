@@ -62,6 +62,11 @@ class ProjectCreateController {
     this.name = null;
 
     /**
+     * @type {null}
+     */
+    this.description = null;
+
+    /**
      * @type {boolean}
      */
     this.review = true;
@@ -238,6 +243,7 @@ class ProjectCreateController {
     });
     const data = {
       name: this.name,
+      description: this.description,
       review: this.review,
       frameSkip: this.frameSkip,
       startFrameNumber: this.startFrameNumber,
@@ -263,12 +269,15 @@ class ProjectCreateController {
   saveRequirementsXml() {
     ++this.loadingInProgress;
 
-    const taskTypeConfigurations = [{
+    const taskTypeConfigurations = [
+      {
         type: this.taskTypeToAdd,
         taskConfigurationId: this.taskConfigToAdd,
-    }];
+      },
+    ];
     const data = {
       name: this.name,
+      description: this.description,
       review: this.review,
       frameSkip: this.frameSkip,
       startFrameNumber: this.startFrameNumber,
@@ -315,6 +324,7 @@ class ProjectCreateController {
 
     const data = {
       name: this.name,
+      description: this.description,
       review: this.review,
       frameSkip: this.frameSkip,
       startFrameNumber: this.startFrameNumber,

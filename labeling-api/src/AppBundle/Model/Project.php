@@ -129,6 +129,12 @@ class Project
     private $deletedReason;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $description;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
@@ -140,6 +146,7 @@ class Project
      * @param int    $frameSkip
      * @param int    $startFrameNumber
      * @param int    $splitEach
+     * @param null   $description
      *
      * @return static
      */
@@ -151,7 +158,8 @@ class Project
         $labelingValidationProcesses = [],
         $frameSkip = 1,
         $startFrameNumber = 0,
-        $splitEach = 0
+        $splitEach = 0,
+        $description = null
     ) {
         return new static(
             $name,
@@ -161,7 +169,8 @@ class Project
             $labelingValidationProcesses,
             $frameSkip,
             $startFrameNumber,
-            $splitEach
+            $splitEach,
+            $description
         );
     }
 
@@ -174,6 +183,7 @@ class Project
      * @param int    $frameSkip
      * @param int    $startFrameNumber
      * @param int    $splitEach
+     * @param null   $description
      */
     public function __construct(
         $name,
@@ -183,7 +193,8 @@ class Project
         $labelingValidationProcesses = [],
         $frameSkip = 1,
         $startFrameNumber = 0,
-        $splitEach = 0
+        $splitEach = 0,
+        $description = null
     ) {
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
@@ -200,6 +211,7 @@ class Project
         $this->taskVideoSettings['frameSkip']        = (int) $frameSkip;
         $this->taskVideoSettings['startFrameNumber'] = (int) $startFrameNumber;
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
+        $this->description                           = $description;
 
         $this->setUserId($user instanceof User ? $user->getId() : null);
         $this->addStatusHistory($creationDate, self::STATUS_TODO, $user);
