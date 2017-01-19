@@ -72,7 +72,7 @@ class Common extends Module {
    * @param {angular} angular
    * @param {object} featureFlags
    */
-  registerWithAngular(angular, featureFlags) {
+  registerWithAngular(angular, featureFlags) { // eslint-disable-line no-unused-vars
     this.module = angular.module('AnnoStation.Common', [
       'foundation.common',
       'foundation.modal',

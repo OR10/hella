@@ -91,8 +91,8 @@ class PouchDbTimerGateway {
       }
 
       const timerDocument = response.rows[0].doc;
-      this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase())
-    })
+      this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
+    });
   }
 
 
