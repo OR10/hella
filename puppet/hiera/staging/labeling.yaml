@@ -20,6 +20,7 @@ php::extensions:
   gd: {}
   mbstring: {}
   mysql: {}
+  xml: {}
   zip: {}
 
 tideways::php7: true
@@ -68,6 +69,7 @@ labeling_api::documentation_host::httpv2: true
 labeling_api::documentation_host::auth_basic_users:
   labeling:    '$apr1$JLdglpHm$k2Z.g9ImFLo0eMt7k.nz31' # t2Dj2gUtscvwyKT
 
+labeling_api::params: true
 labeling_api::mysql: true
 labeling_api::couch: true
 labeling_api::worker_queue: true
