@@ -80,7 +80,7 @@
     "pouchdb": "^5.3.1",
     "powerline-statusbar": "^1.0.4",
     "protractor": "^2.5.1",
-    "protractor-http-mock": "git+ssh://git@github.crosscan.com:crosscan/protractor-http-mock.git",
+    "protractor-http-mock": "git+ssh://git@github.crosscan.com/crosscan/protractor-http-mock.git",
     "proxy-middleware": "^0.14.0",
     "request-promise": "^2.0.1",
     "run-sequence": "^1.1.4",
