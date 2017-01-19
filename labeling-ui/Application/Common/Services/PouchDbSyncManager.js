@@ -44,11 +44,10 @@ class PouchDbSyncManager {
     this._remoteConfig = this._configuration.Common.storage.remote;
 
     /**
-     * @type {DeepMap}
-     *
      * The cache is structured with nested Maps in the following way:
      * Context -> Filter(name) -> Direction (FROM/TO) -> {live: bool, syncHandler: Replication object}*
      *
+     * @type {DeepMap}
      * @private
      */
     this._syncHandlerCache = new DeepMap();
