@@ -738,4 +738,12 @@ class Project
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 }
