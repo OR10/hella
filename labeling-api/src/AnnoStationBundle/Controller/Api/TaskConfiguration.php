@@ -109,7 +109,7 @@ class TaskConfiguration extends Controller\Base
         }
 
         return new View\View(
-            new Response\SimpleTaskConfigurationList($taskConfigurations)
+            new Response\SimpleTaskConfigurationList(array_values($taskConfigurations))
         );
     }
 
