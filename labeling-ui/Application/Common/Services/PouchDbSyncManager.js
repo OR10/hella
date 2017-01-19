@@ -38,12 +38,6 @@ class PouchDbSyncManager {
     this._pouchDbContextService = pouchDbContextService;
 
     /**
-     * @type {object}
-     * @private
-     */
-    this._remoteConfig = this._configuration.Common.storage.remote;
-
-    /**
      * The cache is structured with nested Maps in the following way:
      * Context -> Filter(name) -> Direction (FROM/TO) -> {live: bool, syncHandler: Replication object}*
      *
@@ -65,6 +59,23 @@ class PouchDbSyncManager {
     this._eventListeners = {};
   }
 
+  /**
+   * Get the remote configuration object. The object contains the following information:
+   *
+   * - baseUrl: Base url to access the remote database
+   * - databaseName: database name storing the needed information
+   * - filters: array of filter functions to be replicated
+   *
+   * @private
+   * @return {Object}
+   */
+  getRemoteConfiguration() {
+    if (this._configuration.Common.storage === undefined || this._configuration.Common.storage.remote === undefined) {
+      throw new Error('No pouchdb remote configuration found in Common/config.json.');
+    }
+
+    return this._configuration.Common.storage.remote;
+  }
 
   /**
    * @param {PouchDB} context instance of a local PouchDB
@@ -73,7 +84,7 @@ class PouchDbSyncManager {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
     const replicationPromises = [];
-    this._remoteConfig.filters.forEach(filter => {
+    this.getRemoteConfiguration().filters.forEach(filter => {
       [
         PouchDbSyncManager.SYNC_DIRECTION_FROM,
         PouchDbSyncManager.SYNC_DIRECTION_TO,
@@ -133,7 +144,7 @@ class PouchDbSyncManager {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
     const replicationPromises = [];
-    this._remoteConfig.filters.forEach(filter => {
+    this.getRemoteConfiguration().filters.forEach(filter => {
       const hasSyncHandler = this._syncHandlerCache.has(context, filter, PouchDbSyncManager.SYNC_DIRECTION_FROM, false);
       if (!hasSyncHandler) {
         replicationPromises.push(
@@ -198,7 +209,7 @@ class PouchDbSyncManager {
       retry: true,
     };
 
-    const replicationEndpointUrl = `${this._remoteConfig.baseUrl}/${this._remoteConfig.databaseName}`;
+    const replicationEndpointUrl = `${this.getRemoteConfiguration().baseUrl}/${this.getRemoteConfiguration().databaseName}`;
     const deferred = this._$q.defer();
     const replicationFunction = context.replicate[direction];
     const syncHandler = replicationFunction(replicationEndpointUrl, syncSettings);
@@ -272,7 +283,7 @@ class PouchDbSyncManager {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
 
     const replicationPromises = [];
-    this._remoteConfig.filters.forEach(filter => {
+    this.getRemoteConfiguration().filters.forEach(filter => {
       const hasSyncHandler = this._syncHandlerCache.has(context, filter, PouchDbSyncManager.SYNC_DIRECTION_TO, false);
       if (!hasSyncHandler) {
         replicationPromises.push(
