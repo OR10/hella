@@ -12,4 +12,6 @@ labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/labeltool.crosscan.com/pri
 labeling_api::params::user_password: 'X5VaJPA0URmlRQhyNs14'
 labeling_api::params::frame_cdn_base_url: 'https://labeltool.crosscan.com:81'
 labeling_api::params::frame_cdn_allowed_origin: 'https://labeltool.crosscan.com'
+labeling_api::params::couchdb_user: 'pouch'
+labeling_api::params::couchdb_password: '3,udvezdxp}2Rh.UNmuZ'
 labeling_api::letsencrypt: true
