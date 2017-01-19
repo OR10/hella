@@ -269,10 +269,12 @@ class ProjectCreateController {
   saveRequirementsXml() {
     ++this.loadingInProgress;
 
-    const taskTypeConfigurations = [{
+    const taskTypeConfigurations = [
+      {
         type: this.taskTypeToAdd,
         taskConfigurationId: this.taskConfigToAdd,
-    }];
+      },
+    ];
     const data = {
       name: this.name,
       description: this.description,
