@@ -15,6 +15,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -45,21 +46,29 @@ class Export extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Storage\TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * @param Facade\ProjectExport  $projectExportFacade
      * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Facade\Exporter       $exporterFacade
      * @param Service\Authorization $authorizationService
+     * @param Storage\TokenStorage  $tokenStorage
      */
     public function __construct(
         Facade\ProjectExport $projectExportFacade,
         AMQP\FacadeAMQP $amqpFacade,
         Facade\Exporter $exporterFacade,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Storage\TokenStorage $tokenStorage
     ) {
         $this->amqpFacade           = $amqpFacade;
         $this->projectExportFacade  = $projectExportFacade;
         $this->exporterFacade       = $exporterFacade;
         $this->authorizationService = $authorizationService;
+        $this->tokenStorage         = $tokenStorage;
     }
 
     /**
@@ -147,8 +156,9 @@ class Export extends Controller\Base
     public function postCsvExportAction(Model\Project $project)
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
+        $user = $this->tokenStorage->getToken()->getUser();
 
-        $export = new Model\Export($project);
+        $export = new Model\Export($project, $user);
         $this->exporterFacade->save($export);
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {

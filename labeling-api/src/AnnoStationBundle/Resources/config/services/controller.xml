@@ -50,6 +50,7 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="security.token_storage"/>
         </service>
 
         <service

@@ -55,16 +55,26 @@ class Export
     private $errorMessage;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $userId;
+
+    /**
      * @param Project   $project
+     * @param User      $user
      * @param \DateTime $date
      */
-    public function __construct(Project $project, \DateTime $date = null)
+    public function __construct(Project $project, User $user = null, \DateTime $date = null)
     {
         $this->projectId = $project->getId();
         if ($date === null) {
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
         $this->date = $date;
+        if ($user instanceof User) {
+            $this->userId = $user->getId();
+        }
     }
 
     /**
@@ -144,5 +154,13 @@ class Export
     public function setErrorMessage(string $errorMessage)
     {
         $this->errorMessage = $errorMessage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
     }
 }
