@@ -78,12 +78,13 @@ class Metadata extends ExportXml\Element
             $metadata->appendChild($requirements->getElement($document));
         }
 
+        /*
         $workflow = new Element\Metadata\Workflow();
         $metadata->appendChild($workflow->getElement($document));
 
         $tags = new Element\Metadata\Tags();
         $metadata->appendChild($tags->getElement($document));
-
+        */
 
         return $metadata;
     }
