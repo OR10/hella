@@ -5,19 +5,26 @@ class PouchDbTimerGateway {
   /**
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
+   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    */
-  constructor(pouchDbContextService, packagingExecutor, revisionManager) {
+  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager) {
     /**
-     * @type {PouchDBContextService}
+     * @type {PouchDbContextService}
      * @private
      */
     this._pouchDbContextService = pouchDbContextService;
 
     /**
-     * @type {PackagingExecutorService}
+     * @type {PackagingExecutor}
      */
     this._packagingExecutor = packagingExecutor;
+
+    /**
+     * @type {CouchDbModelDeserializer}
+     * @private
+     */
+    this._couchDbModelDeserializer = couchDbModelDeserializer;
 
     /**
      * @type {RevisionManager}
@@ -61,36 +68,31 @@ class PouchDbTimerGateway {
   /**
    * Gets the time for the given {@link Task}
    *
-   * @param {string} taskId
-   * @param {string} userId
+   * @param {Task} task
+   * @param {User} user
    * @return {AbortablePromise<Object|Error>}
    */
-  getTime(taskId, userId) {
+  getTime(task, user) {
     const queueIdentifier = 'timer';
     const viewIdentifier = 'annostation_task_timer/by_taskId_userId';
-    const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute(
       queueIdentifier,
       () => db.query(viewIdentifier, {
         include_docs: true,
-        key: [taskId, userId],
+        key: [task.id, user.id],
       }))
     .then(response => {
-      // @TODO wrap in clientside TimerModel?
-      let result = null;
-      if (response.rows[0]) {
-        result = response.rows[0].doc;
-      }
-      return result;
-    })
-    .then(timeDocument => {
-      if (timeDocument === null || typeof timeDocument !== 'object') {
-        throw new Error('Failed loading time');
+      if (response.rows[0] === undefined) {
+        // Currently no time logged for this task.
+        // Return empty default value.
+        return {time: 0};
       }
 
-      return timeDocument;
-    });
+      const timerDocument = response.rows[0].doc;
+      this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase())
+    })
   }
 
 
@@ -134,6 +136,7 @@ class PouchDbTimerGateway {
 PouchDbTimerGateway.$inject = [
   'pouchDbContextService',
   'packagingExecutor',
+  'couchDbModelDeserializer',
   'revisionManager',
 ];
 

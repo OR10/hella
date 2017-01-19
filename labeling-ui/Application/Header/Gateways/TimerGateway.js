@@ -21,12 +21,12 @@ class TimerGateway {
   /**
    * Gets the time for the given {@link Task}
    *
-   * @param {string} taskId
-   * @param {string} userId
+   * @param {Task} task
+   * @param {User} user
    * @return {AbortablePromise<int|Error>}
    */
-  getTime(taskId, userId) {
-    const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
+  getTime(task, user) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/timer/${user.id}`);
     return this._bufferedHttp.get(url, undefined, 'timer')
       .then(response => {
         if (response.data && response.data.result) {

@@ -66,7 +66,7 @@ class TimerController {
       this.triggerAction();
     });
 
-    this.timerGateway.getTime(this.task.id, this.user.id).then(this.init.bind(this));
+    this.timerGateway.getTime(this.task, this.user).then(this.init.bind(this));
   }
 
   triggerAction() {
@@ -77,8 +77,8 @@ class TimerController {
     }
   }
 
-  init(timer) {
-    this.elapsedTime = timer.timeInSeconds.labeling;
+  init(timerModel) {
+    this.elapsedTime = timerModel.time;
     this.calculateTime();
     if (!this.readOnly) {
       this._intervalHandle = this.$interval(this.saveTime.bind(this), this.saveFrequency * 1000);
