@@ -4,6 +4,7 @@ require('babel-core/register');
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
 const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
+const JasmineSpecReporter = require('jasmine-spec-reporter');
 const path = require('path');
 
 exports.config = {
