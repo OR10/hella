@@ -59,7 +59,6 @@ class Metadata extends ExportXml\Element
     {
         $metadata = $document->createElementNS($this->namespace, 'metadata');
 
-        $labelingGroup = $this->labelingGroupFacade->find($this->project->getLabelingGroupId());
 
         $annostation = new Element\Metadata\AnnoStation(gethostname(), '0', $this->namespace);
         $metadata->appendChild($annostation->getElement($document));
@@ -70,8 +69,15 @@ class Metadata extends ExportXml\Element
         $export = new Element\Metadata\Export($this->export, $this->userFacade, $this->namespace);
         $metadata->appendChild($export->getElement($document));
 
-        $labelingGroup = new Element\Metadata\LabelingGroup($labelingGroup, $this->userFacade, $this->namespace);
-        $metadata->appendChild($labelingGroup->getElement($document));
+        if ($this->project->getLabelingGroupId() !== null) {
+            $labelingGroup = $this->labelingGroupFacade->find($this->project->getLabelingGroupId());
+            if ($labelingGroup !== null) {
+                $labelingGroup = new Element\Metadata\LabelingGroup(
+                    $labelingGroup, $this->userFacade, $this->namespace
+                );
+                $metadata->appendChild($labelingGroup->getElement($document));
+            }
+        }
 
         foreach ($this->taskConfigurations as $taskConfiguration) {
             $requirements = new Element\Metadata\Requirements($taskConfiguration, $this->namespace);
