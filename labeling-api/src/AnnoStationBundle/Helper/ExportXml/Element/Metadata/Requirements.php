@@ -11,19 +11,26 @@ class Requirements extends ExportXml\Element
      */
     private $taskConfiguration;
 
-    public function __construct(Model\TaskConfiguration $taskConfiguration)
+    /**
+     * @var
+     */
+    private $namespace;
+
+    public function __construct(Model\TaskConfiguration $taskConfiguration, $namespace)
     {
         $this->taskConfiguration = $taskConfiguration;
+        $this->namespace         = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $requirements = $document->createElement('requirements');
+        $requirements = $document->createElementNS($this->namespace, 'requirements');
 
         $requirements->setAttribute('id', $this->taskConfiguration->getId());
         $requirements->setAttribute('name', $this->taskConfiguration->getName());
 
-        $sha256 = $document->createElement(
+        $sha256 = $document->createElementNS(
+            $this->namespace,
             'sha256',
             hash('sha256', $this->taskConfiguration->getRawData())
         );

@@ -17,22 +17,28 @@ class LabelingGroup extends ExportXml\Element
      */
     private $userFacade;
 
-    public function __construct(Model\LabelingGroup $labelingGroup, Facade\User $userFacade)
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function __construct(Model\LabelingGroup $labelingGroup, Facade\User $userFacade, $namespace)
     {
         $this->labelingGroup = $labelingGroup;
         $this->userFacade    = $userFacade;
+        $this->namespace     = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $labelingGroup = $document->createElement('labeling-group');
+        $labelingGroup = $document->createElementNS($this->namespace, 'labeling-group');
 
         $labelingGroup->setAttribute('id', $this->labelingGroup->getId());
         $labelingGroup->setAttribute('name', $this->labelingGroup->getName());
 
         foreach ($this->labelingGroup->getCoordinators() as $coordinatorId) {
             $user        = $this->userFacade->getUserById($coordinatorId);
-            $coordinator = $document->createElement('coordinator');
+            $coordinator = $document->createElementNS($this->namespace, 'coordinator');
             $coordinator->setAttribute('username', $user->getUsername());
             $coordinator->setAttribute('email', $user->getEmail());
 
@@ -41,7 +47,7 @@ class LabelingGroup extends ExportXml\Element
 
         foreach ($this->labelingGroup->getLabeler() as $labelerId) {
             $user    = $this->userFacade->getUserById($labelerId);
-            $labeler = $document->createElement('labeler');
+            $labeler = $document->createElementNS($this->namespace, 'labeler');
             $labeler->setAttribute('username', $user->getUsername());
             $labeler->setAttribute('email', $user->getEmail());
 

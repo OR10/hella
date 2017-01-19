@@ -17,9 +17,15 @@ class Video extends ExportXml\Element
      */
     private $things = [];
 
-    public function __construct(Model\Video $video)
+    /**
+     * @var
+     */
+    private $namespace;
+
+    public function __construct(Model\Video $video, $namespace)
     {
-        $this->video = $video;
+        $this->video     = $video;
+        $this->namespace = $namespace;
     }
 
     /**
@@ -29,7 +35,7 @@ class Video extends ExportXml\Element
      */
     public function getElement(\DOMDocument $document)
     {
-        $video = $document->createElement('video');
+        $video = $document->createElementNS($this->namespace, 'video');
 
         $video->setAttribute('id', $this->video->getId());
         $video->setAttribute('name', $this->video->getName());

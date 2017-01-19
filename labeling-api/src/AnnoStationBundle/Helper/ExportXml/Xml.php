@@ -14,10 +14,10 @@ class Xml
      */
     private $export;
 
-    public function __construct()
+    public function __construct($namespace)
     {
         $this->document = new \DOMDocument('1.0', "UTF-8");
-        $this->export   = $this->document->createElementNS('http://weblabel.hella-aglaia.com/schema/export', 'export');
+        $this->export   = $this->document->createElementNS($namespace, 'export');
     }
 
     /**

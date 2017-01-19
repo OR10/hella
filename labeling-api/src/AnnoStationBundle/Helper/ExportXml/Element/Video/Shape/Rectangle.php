@@ -11,21 +11,27 @@ class Rectangle extends ExportXml\Element
      */
     private $rectangle;
 
-    public function __construct(Shapes\Rectangle $rectangle)
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function __construct(Shapes\Rectangle $rectangle, $namespace)
     {
         $this->rectangle = $rectangle;
+        $this->namespace = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $rectangle = $document->createElement('rectangle');
+        $rectangle = $document->createElementNS($this->namespace, 'rectangle');
 
-        $topLeft = $document->createElement('top-left');
+        $topLeft = $document->createElementNS($this->namespace, 'top-left');
         $topLeft->setAttribute('x', $this->rectangle->getLeft());
         $topLeft->setAttribute('y', $this->rectangle->getTop());
         $rectangle->appendChild($topLeft);
 
-        $bottomRight = $document->createElement('bottom_right');
+        $bottomRight = $document->createElementNS($this->namespace, 'bottom_right');
         $bottomRight->setAttribute('x', $this->rectangle->getRight());
         $bottomRight->setAttribute('y', $this->rectangle->getBottom());
         $rectangle->appendChild($bottomRight);

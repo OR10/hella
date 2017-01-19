@@ -11,25 +11,31 @@ class Pedestrian extends ExportXml\Element
      */
     private $pedestrian;
 
-    public function __construct(Shapes\Pedestrian $pedestrian)
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function __construct(Shapes\Pedestrian $pedestrian, $namespace)
     {
         $this->pedestrian = $pedestrian;
+        $this->namespace = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $pedestrian = $document->createElement('pedestrian');
+        $pedestrian = $document->createElementNS($this->namespace, 'pedestrian');
 
         $heightHalf = ($this->pedestrian->getBottomCenterY() - $this->pedestrian->getTopCenterY()) / 2;
         $widthHalf  = $heightHalf * 0.41;
 
-        $topLeft = $document->createElement('top-center');
+        $topLeft = $document->createElementNS($this->namespace, 'top-center');
         $topLeft->setAttribute('x', $this->pedestrian->getTopCenterX());
         $topLeft->setAttribute('y', $this->pedestrian->getTopCenterY());
         $topLeft->setAttribute('aspect-ratio', 0.41);
         $pedestrian->appendChild($topLeft);
 
-        $bottomRight = $document->createElement('bottom-center');
+        $bottomRight = $document->createElementNS($this->namespace, 'bottom-center');
         $bottomRight->setAttribute('x', $this->pedestrian->getBottomCenterX());
         $bottomRight->setAttribute('y', $this->pedestrian->getBottomCenterY());
         $bottomRight->setAttribute('aspect-ratio', 0.41);

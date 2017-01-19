@@ -25,17 +25,24 @@ class Thing extends ExportXml\Element
      */
     private $shapes = [];
 
+    /**
+     * @var
+     */
+    private $namespace;
+
     public function __construct(
         Model\LabelingTask $labelingTask,
-        Model\LabeledThing $labeledThing
+        Model\LabeledThing $labeledThing,
+        $namespace
     ) {
         $this->labeledThing        = $labeledThing;
         $this->labelingTask        = $labelingTask;
+        $this->namespace           = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $thing = $document->createElement('thing');
+        $thing = $document->createElementNS($this->namespace, 'thing');
 
         $thing->setAttribute('id', $this->labeledThing->getId());
 
@@ -49,7 +56,7 @@ class Thing extends ExportXml\Element
             $thing->setAttribute('incomplete', 'true');
         }
 
-        $task = new Task($this->labelingTask);
+        $task = new Task($this->labelingTask, $this->namespace);
         $thing->appendChild($task->getElement($document));
 
         foreach($this->shapes as $shape) {
@@ -57,7 +64,7 @@ class Thing extends ExportXml\Element
         }
 
         foreach($this->values as $value) {
-            $valueElement = $document->createElement('value');
+            $valueElement = $document->createElementNS($this->namespace, 'value');
             $valueElement->setAttribute('id', $value['value']);
             $valueElement->setAttribute('start', $value['start']);
             $valueElement->setAttribute('end', $value['end']);

@@ -15,18 +15,24 @@ class AnnoStation extends ExportXml\Element
      */
     private $build;
 
-    public function __construct($hostname = 'unknown', $build = 0)
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function __construct($hostname = 'unknown', $build = 0, $namespace)
     {
-        $this->hostname = $hostname;
-        $this->build    = $build;
+        $this->hostname  = $hostname;
+        $this->build     = $build;
+        $this->namespace = $namespace;
     }
 
     public function getElement(\DOMDocument $document)
     {
-        $annostation = $document->createElement('annostation');
+        $annostation = $document->createElementNS($this->namespace, 'annostation');
 
-        $hostname = $document->createElement('hostname', $this->hostname);
-        $build    = $document->createElement('build', $this->build);
+        $hostname = $document->createElementNS($this->namespace, 'hostname', $this->hostname);
+        $build    = $document->createElementNS($this->namespace, 'build', $this->build);
 
         $annostation->appendChild($hostname);
         $annostation->appendChild($build);
