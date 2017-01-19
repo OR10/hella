@@ -95,11 +95,10 @@ class Common extends Module {
     this.module.service('lockService', LockService);
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
 
-    if (featureFlags.pouchdb === true) {
-      this.module.service('pouchDbContextService', PouchDbContextService);
-      this.module.service('pouchDbSyncManager', PouchDbSyncManager);
-      this.module.service('pouchDbViewHeater', PouchDbViewHeater);
-    }
+    // Without feature flag, as those services do not override others.
+    this.module.service('pouchDbContextService', PouchDbContextService);
+    this.module.service('pouchDbSyncManager', PouchDbSyncManager);
+    this.module.service('pouchDbViewHeater', PouchDbViewHeater);
 
     this.module.service('debouncerService', DebouncerService);
     this.module.service('couchDbModelSerializer', CouchDbModelSerializer);
