@@ -54,10 +54,10 @@ describe('PouchDbContextService', () => {
       toBeCleanedContexts.push(contextA);
     });
 
-    // @TODO: Shouldn't it throw an Exception here?
-    it('should return null if the taskId parameter is no string', () => {
-      const contextA = PouchDbContextService.provideContextForTaskId(123123);
-      expect(contextA).toBe(null);
+    it('should throw exception if the taskId parameter is no string', () => {
+      expect(
+        () => PouchDbContextService.provideContextForTaskId(123123)
+      ).toThrow();
     });
 
     it('should return an new instance for different taskId', () => {
@@ -93,9 +93,10 @@ describe('PouchDbContextService', () => {
       expect(typeof storeIdentifier).toBe('string');
     });
 
-    it('should return null if first parameter is no string', () => {
-      const contextA = PouchDbContextService.generateStoreIdentifierForTaskId(123123);
-      expect(contextA).toBe(null);
+    it('should throw if first parameter is no string', () => {
+      expect(
+        () => PouchDbContextService.generateStoreIdentifierForTaskId(123123)
+      ).toThrow();
     });
 
     it('should generate a well formed store identifier', () => {

@@ -28,20 +28,16 @@ class PouchDbContextService {
 
   /**
    * @param {string} taskId
-   * @returns {PouchDB} configuredContext might be null of taskId parameter is not of type string
+   * @returns {PouchDB} configuredContext
    */
   provideContextForTaskId(taskId) {
-    let configuredContext = null;
-
-    if (typeof taskId === 'string') {
-      const taskDbName = this.generateStoreIdentifierForTaskId(taskId);
-      configuredContext = this._contextCache[taskId];
-
-      if (configuredContext === undefined) {
-        configuredContext = new this._PouchDB(taskDbName);
-        this._contextCache[taskId] = configuredContext;
-      }
+    if (this._contextCache[taskId] !== undefined) {
+      return this._contextCache[taskId];
     }
+
+    const taskDbName = this.generateStoreIdentifierForTaskId(taskId);
+    const configuredContext = new this._PouchDB(taskDbName);
+    this._contextCache[taskId] = configuredContext;
 
     return configuredContext;
   }
