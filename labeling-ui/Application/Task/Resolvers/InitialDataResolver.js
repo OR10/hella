@@ -11,7 +11,8 @@ export default [
     let task;
 
     if (featureFlags.pouchdb === true) {
-      promise = taskReplicationService.replicateTaskDataToLocalMachine($stateParams.projectId, $stateParams.taskId);
+      promise = promise
+        .then(() => taskReplicationService.replicateTaskDataToLocalMachine($stateParams.projectId, $stateParams.taskId));
     }
 
     return promise
