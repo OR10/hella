@@ -3,7 +3,7 @@ namespace AnnoStationBundle\Helper\ExportXml\Element\Metadata;
 
 use AnnoStationBundle\Helper\ExportXml;
 use AppBundle\Model;
-use AppBundle\Database\Facade as AppBundleFacade;
+use AppBundle\Database\Facade;
 
 class Export extends ExportXml\Element
 {
@@ -13,11 +13,11 @@ class Export extends ExportXml\Element
     private $export;
 
     /**
-     * @var AppBundleFacade\User
+     * @var Facade\User
      */
     private $userFacade;
 
-    public function __construct(Model\Export $export, AppBundleFacade\User $userFacade)
+    public function __construct(Model\Export $export, Facade\User $userFacade)
     {
         $this->export     = $export;
         $this->userFacade = $userFacade;
@@ -26,13 +26,14 @@ class Export extends ExportXml\Element
     public function getElement(\DOMDocument $document)
     {
         $export = $document->createElement('export');
-
         $export->setAttribute('id', $this->export->getId());
 
-        $creationDate            = $document->createElement('creation-date', $this->export->getDate()->format('c'));
-        $createdByUser           = $document->createElement('created-by-user');
-        $createdByUser->setAttribute('username', 'Not implemented yet!');
-        $createdByUser->setAttribute('email', 'Not implemented yet!');
+        $creationDate = $document->createElement('creation-date', $this->export->getDate()->format('c'));
+
+        $user          = $this->userFacade->getUserById($this->export->getUserId());
+        $createdByUser = $document->createElement('created-by-user');
+        $createdByUser->setAttribute('username', $user->getUsername());
+        $createdByUser->setAttribute('email', $user->getEmail());
 
         $export->appendChild($creationDate);
         $export->appendChild($createdByUser);
