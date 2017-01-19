@@ -81,13 +81,32 @@ class TaskConfiguration extends Controller\Base
     /**
      * @Rest\Get("")
      *
+     * @param HttpFoundation\Request $request
+     *
      * @return View\View
      */
-    public function listConfigurationsAction()
+    public function listConfigurationsAction(HttpFoundation\Request $request)
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
+        $type = $request->query->get('type', null);
+
         $taskConfigurations = $this->taskConfigurationFacade->getTaskConfigurationsByUser($user);
+        if ($type !== null) {
+            $taskConfigurations = array_filter(
+                $taskConfigurations,
+                function (Model\TaskConfiguration $taskConfiguration) use ($type) {
+                    switch ($type) {
+                        case 'simpleXml':
+                            return $taskConfiguration instanceof Model\TaskConfiguration\SimpleXml;
+                        case 'requirementsXml':
+                            return $taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml;
+                    }
+
+                    return false;
+                }
+            );
+        }
 
         return new View\View(
             new Response\SimpleTaskConfigurationList($taskConfigurations)

@@ -173,7 +173,12 @@ class ProjectCreateController {
     /**
      * @type {Array.<Object>}
      */
-    this.taskConfigurations = [];
+    this.simpleXmlTaskConfigurations = [];
+
+    /**
+     * @type {Array.<Object>}
+     */
+    this.requirementsXmlTaskConfigurations = [];
 
     /**
      * @type {string}
@@ -185,8 +190,12 @@ class ProjectCreateController {
      */
     this.labelingTaskTypes = [];
 
-    this._taskConfigurationGateway.getConfigurations().then(configurations => {
-      this.taskConfigurations = configurations;
+    this._taskConfigurationGateway.getSimpleXmlConfigurations().then(configurations => {
+      this.simpleXmlTaskConfigurations = configurations;
+    });
+
+    this._taskConfigurationGateway.getRequirementsXmlConfigurations().then(configurations => {
+      this.requirementsXmlTaskConfigurations = configurations;
     });
   }
 
@@ -196,7 +205,7 @@ class ProjectCreateController {
    */
   addTaskType(taskTypeToAdd, taskConfigToAdd) {
     const type = this.taskTypes.find(item => item.id === taskTypeToAdd);
-    const config = this.taskConfigurations.find(item => item.id === taskConfigToAdd);
+    const config = this.simpleXmlTaskConfigurations.find(item => item.id === taskConfigToAdd);
     if (!type || !config) {
       return;
     }
@@ -240,6 +249,39 @@ class ProjectCreateController {
     this._projectGateway.createProject(data)
       .then(() => {
         --this.loadingInProgress;
+        this.goBack();
+      })
+      .catch(error => {
+        --this.loadingInProgress;
+        this._handleCreationError(error);
+      });
+  }
+
+  /**
+   * Save a project with genericXml export
+   */
+  saveRequirementsXml() {
+    ++this.loadingInProgress;
+
+    const taskTypeConfigurations = [{
+        type: this.taskTypeToAdd,
+        taskConfigurationId: this.taskConfigToAdd,
+    }];
+    const data = {
+      name: this.name,
+      review: this.review,
+      frameSkip: this.frameSkip,
+      startFrameNumber: this.startFrameNumber,
+      splitEach: this.splitEach,
+      projectType: 'requirementsXml',
+      taskTypeConfigurations,
+    };
+
+    this._projectGateway.createProject(data)
+      .then(() => {
+        --this.loadingInProgress;
+        this.taskTypeToAdd = '';
+        this.taskConfigToAdd = '';
         this.goBack();
       })
       .catch(error => {

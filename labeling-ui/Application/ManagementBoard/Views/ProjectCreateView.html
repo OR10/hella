@@ -63,7 +63,41 @@
                 <fieldset>
                     <legend>Label Instruction</legend>
                     <tab-view>
-                        <tab header="XML">
+                        <tab header="RequirementsXML">
+                            <div class="grid-block horizontal">
+                                <div class="grid-content">
+                                    <select id="requirementsTaskType" ng-model="vm.taskTypeToAdd">
+                                        <option value="" disabled selected>Select task type</option>
+                                        <option ng-repeat="taskType in vm.taskTypes"
+                                                value="{{taskType.id}}">
+                                            {{taskType.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="grid-content">
+                                    <select id="requirementsTaskConfig" ng-model="vm.taskConfigToAdd">
+                                        <option value="" disabled selected>Select task configuration</option>
+                                        <option ng-repeat="taskConfig in vm.requirementsXmlTaskConfigurations"
+                                                value="{{taskConfig.id}}">
+                                            {{taskConfig.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="button-area">
+                                <button class="pull-right"
+                                        ng-click="vm.saveRequirementsXml()"
+                                >
+                                    Create
+                                </button>
+                                <button class="pull-right divider"
+                                        ng-click="vm.goBack()"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </tab>
+                        <tab header="SimpleXML">
 
                             <fieldset>
                                 <legend>Labeling Tasks</legend>
@@ -102,7 +136,7 @@
                                     <div class="grid-content">
                                         <select id="taskConfig" ng-model="vm.taskConfigToAdd">
                                             <option value="" disabled selected>Select task configuration</option>
-                                            <option ng-repeat="taskConfig in vm.taskConfigurations"
+                                            <option ng-repeat="taskConfig in vm.simpleXmlTaskConfigurations"
                                                     value="{{taskConfig.id}}">
                                                 {{taskConfig.name}}
                                             </option>

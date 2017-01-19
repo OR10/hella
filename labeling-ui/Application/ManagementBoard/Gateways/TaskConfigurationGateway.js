@@ -88,13 +88,30 @@ class TaskConfigurationGateway {
       });
   }
 
+
   /**
    * Get all configurations the current users has created
    *
    * @returns {AbortablePromise}
    */
-  getConfigurations() {
-    const url = this._apiService.getApiUrl('/taskConfiguration');
+  getSimpleXmlConfigurations() {
+    const url = this._apiService.getApiUrl('/taskConfiguration?type=simpleXml');
+
+    return this._bufferedHttp.get(url, undefined, 'task-configuration').then(response => {
+      if (response.data && response.data.result) {
+        // return new TaskConfiguration(response.data.result);
+        return response.data.result;
+      }
+    });
+  }
+
+  /**
+   * Get all configurations the current users has created
+   *
+   * @returns {AbortablePromise}
+   */
+  getRequirementsXmlConfigurations() {
+    const url = this._apiService.getApiUrl('/taskConfiguration?type=requirementsXml');
 
     return this._bufferedHttp.get(url, undefined, 'task-configuration').then(response => {
       if (response.data && response.data.result) {
