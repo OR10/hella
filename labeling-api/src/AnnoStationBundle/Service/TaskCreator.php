@@ -262,6 +262,40 @@ class TaskCreator
                         $taskConfiguration
                     );
                 }
+
+                foreach ($project->getRequirementsXmlTaskInstructions() as $requirementsXmlTaskInstruction) {
+                    $predefinedClasses   = [];
+                    $taskType            = null;
+                    $instruction         = null;
+                    $taskConfigurationId = $requirementsXmlTaskInstruction['taskConfigurationId'];
+
+                    if ($taskConfigurationId !== null) {
+                        $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
+                    } else {
+                        $taskConfiguration = null;
+                    }
+
+                    $this->checkGenericXmlTaskInstructionPermissions($requirementsXmlTaskInstruction, $user);
+
+                    $instruction = $requirementsXmlTaskInstruction['instruction'];
+
+                    $tasks[] = $this->addTask(
+                        $video,
+                        $project,
+                        $frameNumberMapping,
+                        $imageTypes,
+                        $metadata,
+                        $project->hasReviewValidationProcess(),
+                        $project->hasRevisionValidationProcess(),
+                        $taskType,
+                        null,
+                        $predefinedClasses,
+                        $instruction,
+                        $minimalVisibleShapeOverflow,
+                        $drawingToolOptions,
+                        $taskConfiguration
+                    );
+                }
             }
         } catch (\Exception $exception) {
             $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);

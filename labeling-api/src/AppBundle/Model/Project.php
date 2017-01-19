@@ -76,8 +76,9 @@ class Project
      * @CouchDB\Field(type="mixed")
      */
     private $taskInstructions = [
-        'legacy'     => [],
-        'genericXml' => [],
+        'legacy'          => [],
+        'genericXml'      => [],
+        'requirementsXml' => [],
     ];
 
     /**
@@ -486,6 +487,14 @@ class Project
     }
 
     /**
+     * @return mixed
+     */
+    public function getRequirementsXmlTaskInstructions()
+    {
+        return $this->taskInstructions['requirementsXml'];
+    }
+
+    /**
      * @param $instruction
      * @param $drawingTool
      */
@@ -506,6 +515,19 @@ class Project
     {
         $this->checkTaskInstructionProperty();
         $this->taskInstructions['genericXml'][] = [
+            'instruction'         => $instruction,
+            'taskConfigurationId' => $taskConfigurationId,
+        ];
+    }
+
+    /**
+     * @param $instruction
+     * @param $taskConfigurationId
+     */
+    public function addRequirementsXmlTaskInstruction($instruction, $taskConfigurationId)
+    {
+        $this->checkTaskInstructionProperty();
+        $this->taskInstructions['requirementsXml'][] = [
             'instruction'         => $instruction,
             'taskConfigurationId' => $taskConfigurationId,
         ];
