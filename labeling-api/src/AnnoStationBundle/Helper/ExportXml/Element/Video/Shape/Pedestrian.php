@@ -26,20 +26,18 @@ class Pedestrian extends ExportXml\Element
     {
         $pedestrian = $document->createElementNS($this->namespace, 'pedestrian');
 
-        $heightHalf = ($this->pedestrian->getBottomCenterY() - $this->pedestrian->getTopCenterY()) / 2;
-        $widthHalf  = $heightHalf * 0.41;
-
         $topLeft = $document->createElementNS($this->namespace, 'top-center');
         $topLeft->setAttribute('x', $this->pedestrian->getTopCenterX());
         $topLeft->setAttribute('y', $this->pedestrian->getTopCenterY());
-        $topLeft->setAttribute('aspect-ratio', 0.41);
         $pedestrian->appendChild($topLeft);
 
         $bottomRight = $document->createElementNS($this->namespace, 'bottom-center');
         $bottomRight->setAttribute('x', $this->pedestrian->getBottomCenterX());
         $bottomRight->setAttribute('y', $this->pedestrian->getBottomCenterY());
-        $bottomRight->setAttribute('aspect-ratio', 0.41);
         $pedestrian->appendChild($bottomRight);
+
+        $aspectRatio = $document->createElementNS($this->namespace, 'aspect-ratio', 0.41);
+        $pedestrian->appendChild($aspectRatio);
 
         return $pedestrian;
     }
