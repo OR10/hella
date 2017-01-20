@@ -86,7 +86,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocument()
     {
-        $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, 15);
+        $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, 4);
         $response            = $this->createRequest(self::ROUTE, ['foooobar-foooobar-foooobar-foooobar'])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
@@ -108,7 +108,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         )
                     ),
                     'classes'        => array('class' => 1),
-                    'frameIndex'     => 15,
+                    'frameIndex'     => 4,
                 ]
             )
             ->execute()
@@ -293,7 +293,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labeledThing = $this->labelingThingFacade->save(Model\LabeledThing::create($this->task));
     }
 
-    private function createLabeledThingInFrame($frameIndex = 15)
+    private function createLabeledThingInFrame($frameIndex = 4)
     {
         return $this->labelingThingInFrameFacade->save(
             Model\LabeledThingInFrame::create($this->labeledThing, $frameIndex)
