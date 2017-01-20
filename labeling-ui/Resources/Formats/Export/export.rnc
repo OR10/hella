@@ -132,7 +132,9 @@ grammar {
 
   ShapeType = (
     RectangleShape |
-    CuboidShape
+    CuboidShape |
+    PolygonShape |
+    PedestrianShape
     # ...
   )
 
@@ -150,6 +152,16 @@ grammar {
     element e:top-right-back {XYZCoordinateAttributes},
     element e:bottom-right-back {XYZCoordinateAttributes},
     element e:bottom-left-back {XYZCoordinateAttributes}
+  }
+
+  PolygonShape = element e:polygon {
+    element e:point {XYCoordinateAttributes}+
+  }
+
+  PedestrianShape = element e:pedestrian {
+    element e:top-center {XYCoordinateAttributes},
+    element e:bottom-center {XYCoordinateAttributes},
+    element e:aspect-ratio {text}
   }
 
   Value = element e:value {
