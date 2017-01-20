@@ -2,3 +2,7 @@ imports:
   - resource: "../../config/config_test.yml"
   - resource: config.yml
   - resource: parameters_test.yml
+
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: plaintext
