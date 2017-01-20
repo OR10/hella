@@ -37,6 +37,11 @@ class LabeledThing extends LabeledObject {
      * @private
      */
     this._projectId = labeledThing.projectId;
+
+    /**
+     * @type {Array.<string>}
+     */
+    this.groupIds = labeledThing.groupIds;
   }
 
   /**
