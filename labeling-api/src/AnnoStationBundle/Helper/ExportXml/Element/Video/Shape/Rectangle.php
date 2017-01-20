@@ -31,7 +31,7 @@ class Rectangle extends ExportXml\Element
         $topLeft->setAttribute('y', $this->rectangle->getTop());
         $rectangle->appendChild($topLeft);
 
-        $bottomRight = $document->createElementNS($this->namespace, 'bottom_right');
+        $bottomRight = $document->createElementNS($this->namespace, 'bottom-right');
         $bottomRight->setAttribute('x', $this->rectangle->getRight());
         $bottomRight->setAttribute('y', $this->rectangle->getBottom());
         $rectangle->appendChild($bottomRight);
