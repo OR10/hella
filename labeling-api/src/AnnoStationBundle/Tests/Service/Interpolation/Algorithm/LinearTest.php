@@ -355,21 +355,21 @@ class LinearTest extends Tests\KernelTestCase
         $thingsInFrame = [
             $this->createLabeledThingInFrame(
                 $thing,
-                1,
+                0,
                 [
                     new Shapes\Rectangle('test-1', 5, 5, 10, 10),
                 ]
             ),
             $this->createLabeledThingInFrame(
                 $thing,
-                5,
+                4,
                 [
                     new Shapes\Rectangle('test-1', 10, 10, 20, 20),
                 ]
             ),
             $this->createLabeledThingInFrame(
                 $thing,
-                10,
+                9,
                 [
                     new Shapes\Rectangle('test-1', 5, 5, 30, 30),
                 ]
@@ -380,7 +380,7 @@ class LinearTest extends Tests\KernelTestCase
 
         $this->algorithm->interpolate(
             $thing,
-            new Model\FrameIndexRange(1, 10),
+            new Model\FrameIndexRange(0, 9),
             function (Model\LabeledThingInFrame $emittedLabeledThingInFrame) use (&$emitted) {
                 $emitted[] = $emittedLabeledThingInFrame;
             }
@@ -389,7 +389,7 @@ class LinearTest extends Tests\KernelTestCase
         $expected = [
             new Model\LabeledThingInFrame(
                 $thing,
-                1,
+                0,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -399,7 +399,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                2,
+                1,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -409,7 +409,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                3,
+                2,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -419,7 +419,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                4,
+                3,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -429,7 +429,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                5,
+                4,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -439,7 +439,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                6,
+                5,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -449,7 +449,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                7,
+                6,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -459,7 +459,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                8,
+                7,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -469,7 +469,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                9,
+                8,
                 [],
                 $this->convertShapesToArray(
                     [
@@ -479,7 +479,7 @@ class LinearTest extends Tests\KernelTestCase
             ),
             new Model\LabeledThingInFrame(
                 $thing,
-                10,
+                9,
                 [],
                 $this->convertShapesToArray(
                     [

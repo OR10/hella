@@ -133,9 +133,9 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $task                           = $this->createLabelingTask(9, 11);
         $labeledThing                   = $this->createLabeledThing($task);
-        $labeledThingInFrameBeforeRange = $this->createLabeledThingInFrame($labeledThing, 9);
-        $labeledThingInFrameInRange     = $this->createLabeledThingInFrame($labeledThing, 10);
-        $labeledThingInFrameAfterRange  = $this->createLabeledThingInFrame($labeledThing, 11);
+        $labeledThingInFrameBeforeRange = $this->createLabeledThingInFrame($labeledThing, 0);
+        $labeledThingInFrameInRange     = $this->createLabeledThingInFrame($labeledThing, 1);
+        $labeledThingInFrameAfterRange  = $this->createLabeledThingInFrame($labeledThing, 2);
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -145,8 +145,8 @@ class LabeledThingTest extends Tests\WebTestCase
                     'classes'    => array('class1' => 'test'),
                     'incomplete' => true,
                     'frameRange' => array(
-                        'startFrameIndex' => 10,
-                        'endFrameIndex'   => 10,
+                        'startFrameIndex' => 1,
+                        'endFrameIndex'   => 1,
                     ),
                     'lineColor'  => 'blue',
                 ]
@@ -167,7 +167,7 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
-        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 10);
+        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 1);
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -177,8 +177,8 @@ class LabeledThingTest extends Tests\WebTestCase
                     'classes'    => array('class1' => 'test'),
                     'incomplete' => true,
                     'frameRange' => array(
-                        'startFrameIndex' => 10,
-                        'endFrameIndex'   => 10,
+                        'startFrameIndex' => 1,
+                        'endFrameIndex'   => 1,
                     ),
                     'lineColor'  => 'blue',
                 ]
@@ -199,7 +199,7 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
-        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 11);
+        $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 2);
 
         $response = $this->createRequest(self::ITEM_ROUTE, [$task->getId(), $labeledThing->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -209,8 +209,8 @@ class LabeledThingTest extends Tests\WebTestCase
                     'classes'    => array('class1' => 'test'),
                     'incomplete' => true,
                     'frameRange' => array(
-                        'startFrameIndex' => 10,
-                        'endFrameIndex'   => 10,
+                        'startFrameIndex' => 1,
+                        'endFrameIndex'   => 1,
                     ),
                     'lineColor'  => 'blue',
                 ]

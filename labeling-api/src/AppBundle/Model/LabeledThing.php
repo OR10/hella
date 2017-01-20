@@ -69,8 +69,8 @@ class LabeledThing
         $this->taskId     = $task->getId();
         $this->projectId  = $task->getProjectId();
         $this->frameRange = new FrameIndexRange(
-            min($task->getFrameNumberMapping()),
-            max($task->getFrameNumberMapping())
+            min(array_keys($task->getFrameNumberMapping())),
+            max(array_keys($task->getFrameNumberMapping()))
         );
         $this->lineColor  = $lineColor;
     }

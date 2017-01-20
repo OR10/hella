@@ -181,19 +181,19 @@ class GhostClassesPropagationTest extends KernelTestCase
         $this->labeledThingTwo = Model\LabeledThing::create($this->task)->setId('labeled-thing-two');
 
         $this->labeledThingsInFrame = array(
-            Model\LabeledThingInFrame::create($this->labeledThingOne, 1, array('some', 'classes')),
-            Model\LabeledThingInFrame::create($this->labeledThingOne, 4, array())->setGhost(true),
-            Model\LabeledThingInFrame::create($this->labeledThingOne, 5, array()),
-            Model\LabeledThingInFrame::create($this->labeledThingOne, 10, array('some', 'other', 'classes')),
-            Model\LabeledThingInFrame::create($this->labeledThingOne, 15, array()),
-            Model\LabeledThingInFrame::create($this->labeledThingOne, 20, array('completely', 'different')),
+            Model\LabeledThingInFrame::create($this->labeledThingOne, 0, array('some', 'classes')),
+            Model\LabeledThingInFrame::create($this->labeledThingOne, 3, array())->setGhost(true),
+            Model\LabeledThingInFrame::create($this->labeledThingOne, 4, array()),
+            Model\LabeledThingInFrame::create($this->labeledThingOne, 9, array('some', 'other', 'classes')),
+            Model\LabeledThingInFrame::create($this->labeledThingOne, 14, array()),
+            Model\LabeledThingInFrame::create($this->labeledThingOne, 19, array('completely', 'different')),
 
             // The following LabeledThingsInFrame are out of order to test correct cache handling
-            Model\LabeledThingInFrame::create($this->labeledThingTwo, 190, array('a class')),
-            Model\LabeledThingInFrame::create($this->labeledThingTwo, 100, array()),
-            Model\LabeledThingInFrame::create($this->labeledThingTwo, 195, array()),
-            Model\LabeledThingInFrame::create($this->labeledThingTwo, 200, array('foo', 'bar')),
-            Model\LabeledThingInFrame::create($this->labeledThingTwo, 130, array()),
+            Model\LabeledThingInFrame::create($this->labeledThingTwo, 189, array('a class')),
+            Model\LabeledThingInFrame::create($this->labeledThingTwo, 99, array()),
+            Model\LabeledThingInFrame::create($this->labeledThingTwo, 194, array()),
+            Model\LabeledThingInFrame::create($this->labeledThingTwo, 199, array('foo', 'bar')),
+            Model\LabeledThingInFrame::create($this->labeledThingTwo, 129, array()),
         );
     }
 }

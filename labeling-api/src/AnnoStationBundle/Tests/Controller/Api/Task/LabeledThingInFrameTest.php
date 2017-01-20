@@ -102,11 +102,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testGetLabeledThingsInFrameForMultipleFramesWithSomeLabeledThingsInFrame()
     {
         $aLabeledThing              = $this->createLabeledThingDocument($this->task);
-        $aLabeledThingInFrame       = $this->createLabeledInFrameDocument($aLabeledThing, 11);
+        $aLabeledThingInFrame       = $this->createLabeledInFrameDocument($aLabeledThing, 9);
         $anotherLabeledThing        = $this->createLabeledThingDocument($this->task);
-        $anotherLabeledThingInFrame = $this->createLabeledInFrameDocument($anotherLabeledThing, 12);
+        $anotherLabeledThingInFrame = $this->createLabeledInFrameDocument($anotherLabeledThing, 10);
 
-        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 10])
+        $request = $this->createRequest(self::ROUTE, [$this->task->getId(), 9])
             ->setParameters(
                 [
                     'labeledThings' => true,
@@ -228,10 +228,10 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
     public function testGetGhostedLabeledThingInFrames()
     {
         $labeledThing               = $this->createLabeledThingDocument($this->task);
-        $labeledThingInFrameIndex10 = $this->createLabeledInFrameDocument($labeledThing, 10);
-        $labeledThingInFrameIndex11 = $this->createLabeledInFrameDocument($labeledThing, 11);
+        $labeledThingInFrameIndex10 = $this->createLabeledInFrameDocument($labeledThing, 8);
+        $labeledThingInFrameIndex11 = $this->createLabeledInFrameDocument($labeledThing, 9);
 
-        $request = $this->createRequest(self::GHOSTS_ROUTE, [$this->task->getId(), 11, $labeledThing->getId()])
+        $request = $this->createRequest(self::GHOSTS_ROUTE, [$this->task->getId(), 9, $labeledThing->getId()])
             ->setParameters(
                 [
                     'offset' => -2,
@@ -247,7 +247,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                     array(
                         'id'             => null,
                         'rev'            => null,
-                        'frameIndex'     => 9,
+                        'frameIndex'     => 7,
                         'classes'        => array(),
                         'shapes'         => array(),
                         'labeledThingId' => $labeledThingInFrameIndex10->getLabeledThingId(),
@@ -259,7 +259,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                     array(
                         'id'             => $labeledThingInFrameIndex10->getId(),
                         'rev'            => $labeledThingInFrameIndex10->getRev(),
-                        'frameIndex'     => 10,
+                        'frameIndex'     => 8,
                         'classes'        => array(),
                         'shapes'         => array(),
                         'labeledThingId' => $labeledThingInFrameIndex10->getLabeledThingId(),
@@ -271,7 +271,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                     array(
                         'id'             => $labeledThingInFrameIndex11->getId(),
                         'rev'            => $labeledThingInFrameIndex11->getRev(),
-                        'frameIndex'     => 11,
+                        'frameIndex'     => 9,
                         'classes'        => array(),
                         'shapes'         => array(),
                         'labeledThingId' => $labeledThingInFrameIndex11->getLabeledThingId(),
