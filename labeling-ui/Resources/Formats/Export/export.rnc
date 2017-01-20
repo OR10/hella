@@ -19,7 +19,7 @@ grammar {
   Metadata = element e:metadata {
     AnnoStation &
     Requirements &
-    Workflow &
+    Workflow? &
     Project &
     Export &
     LabelingGroup &
