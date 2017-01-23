@@ -22,6 +22,11 @@ class UserBuilder
     private $roles = [Model\User::ROLE_DEFAULT];
 
     /**
+     * @var string
+     */
+    private $email;
+
+    /**
      * Declare private constructor to enforce usage of fluent interface.
      */
     private function __construct()
@@ -38,6 +43,7 @@ class UserBuilder
         return self::create()
             ->withUsername('client')
             ->withPlainPassword('client')
+            ->withEmail('client@client.com')
             ->withRoles([Model\User::ROLE_CLIENT]);
     }
 
@@ -104,6 +110,18 @@ class UserBuilder
     }
 
     /**
+     * @param string $email
+     *
+     * @return UserBuilder
+     */
+    public function withEmail(string $email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
      * @return UserBuilder
      */
     public static function create()
@@ -121,6 +139,7 @@ class UserBuilder
         $user->setUsername($this->username);
         $user->setPlainPassword($this->plainPassword);
         $user->setRoles($this->roles);
+        $user->setEmail($this->email);
         $user->setEnabled(true);
 
         return $user;
