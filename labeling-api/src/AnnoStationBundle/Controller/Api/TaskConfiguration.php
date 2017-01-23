@@ -235,7 +235,7 @@ class TaskConfiguration extends Controller\Base
         $xpath->registerNamespace('x', 'http://weblabel.hella-aglaia.com/schema/requirements');
 
         $ids = [];
-        foreach ($xpath->query('//x:requirements/x:thing') as $thing) {
+        foreach ($xpath->query('//x:requirements/x:thing|//x:requirements/x:group') as $thing) {
             $ids[] = $thing->getAttribute('id');
             foreach ($xpath->query('x:class', $thing) as $classNode) {
                 if ($thing->hasAttribute('ref')) {
