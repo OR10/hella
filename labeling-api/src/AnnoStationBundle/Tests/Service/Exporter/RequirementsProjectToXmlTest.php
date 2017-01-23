@@ -59,6 +59,8 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
         $xpath = new \DOMXPath($document);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
+        $hostname = $xpath->query('/x:export/x:metadata/x:annostation/x:hostname');
+        $hostname->item(0)->nodeValue = '';
         $projectId = $xpath->query('/x:export/x:metadata/x:project[@id]');
         $projectId->item(0)->setAttribute('id', '');
         $exportId = $xpath->query('/x:export/x:metadata/x:export[@id]');

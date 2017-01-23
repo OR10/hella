@@ -2,7 +2,7 @@
 <export xmlns="http://weblabel.hella-aglaia.com/schema/export">
   <metadata>
     <annostation>
-      <hostname>vagrant</hostname>
+      <hostname></hostname>
       <build>0</build>
     </annostation>
     <project id="" name="project-id-1">
