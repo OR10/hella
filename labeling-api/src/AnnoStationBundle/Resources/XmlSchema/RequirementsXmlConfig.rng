@@ -15,6 +15,9 @@
                 <zeroOrMore>
                     <ref name="Thing"/>
                 </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="Group"/>
+                </zeroOrMore>
                 <optional>
                     <ref name="Private"/>
                 </optional>
@@ -31,6 +34,11 @@
     <define name="Thing">
         <element name="r:thing">
             <attribute name="shape"/>
+            <ref name="ThingLikeStructure"/>
+        </element>
+    </define>
+    <define name="Group">
+        <element name="r:group">
             <ref name="ThingLikeStructure"/>
         </element>
     </define>
