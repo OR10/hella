@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+    <thing id="sign" shape="cuboid" name="Traffic Sign">
+        <class id="sign-type" name="Sign type">
+            <value id="u-turn" name="U-Turn"/>
+            <value id="speed-sign" name="Speed sign">
+                <class ref="speed" />
+            </value>
+        </class>
+        <class ref="country" />
+    </thing>
+    <thing id="person" shape="pedestrian" name="Person">
+        <class id="has-hat" name="Hat">
+            <value id="hat-yes" name="yes"/>
+            <value id="hat-no" name="no" />
+        </class>
+    </thing>
+    <thing id="lane" shape="polygon" name="Lane">
+        <class id="is-lane" name="Lane">
+            <value id="lane-yes" name="yes"/>
+            <value id="lane-no" name="no" />
+        </class>
+    </thing>
+    <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
+        <class id="irgendwas1" name="irgendwas1">
+            <value id="abc" name="abc">
+                <class id="irgendwas2" name="irgendwas2">
+                    <value id="abc2" name="abc2">
+                        <class id="irgendwas3" name="irgendwas3">
+                            <value id="abc3" name="abc3">
+                                <class id="speed" name="Speed">
+                                    <value id="10" name="10" />
+                                    <value id="20" name="20" />
+                                    <value id="30" name="30" />
+                                    <value id="40" name="40" />
+                                    <value id="50" name="50" />
+                                </class>
+                            </value>
+                        </class>
+                    </value>
+                </class>
+            </value>
+        </class>
+        <class id="time-limit-start" name="Start of time limit">
+            <value id="time-limit-start-0" name="0" />
+            <value id="time-limit-start-1" name="1" />
+            <value id="time-limit-start-2" name="2" />
+            <value id="time-limit-start-3" name="3" />
+            <value id="time-limit-start-4" name="4" />
+            <value id="time-limit-start-5" name="5" />
+            <value id="time-limit-start-6" name="6" />
+            <value id="time-limit-start-7" name="7" />
+            <value id="time-limit-start-8" name="8" />
+            <value id="time-limit-start-9" name="9" />
+            <value id="time-limit-start-10" name="10" />
+            <value id="time-limit-start-11" name="11" />
+            <value id="time-limit-start-12" name="12" />
+            <value id="time-limit-start-13" name="13" />
+            <value id="time-limit-start-14" name="14" />
+            <value id="time-limit-start-15" name="15" />
+            <value id="time-limit-start-16" name="16" />
+            <value id="time-limit-start-17" name="17" />
+            <value id="time-limit-start-18" name="18" />
+            <value id="time-limit-start-19" name="19" />
+            <value id="time-limit-start-20" name="20" />
+            <value id="time-limit-start-21" name="21" />
+            <value id="time-limit-start-22" name="22" />
+            <value id="time-limit-start-23" name="23" />
+        </class>
+        <class id="time-limit-end" name="End of time limit">
+            <value id="time-limit-end-0" name="0" />
+            <value id="time-limit-end-1" name="1" />
+            <value id="time-limit-end-2" name="2" />
+            <value id="time-limit-end-3" name="3" />
+            <value id="time-limit-end-4" name="4" />
+            <value id="time-limit-end-5" name="5" />
+            <value id="time-limit-end-6" name="6" />
+            <value id="time-limit-end-7" name="7" />
+            <value id="time-limit-end-8" name="8" />
+            <value id="time-limit-end-9" name="9" />
+            <value id="time-limit-end-10" name="10" />
+            <value id="time-limit-end-11" name="11" />
+            <value id="time-limit-end-12" name="12" />
+            <value id="time-limit-end-13" name="13" />
+            <value id="time-limit-end-14" name="14" />
+            <value id="time-limit-end-15" name="15" />
+            <value id="time-limit-end-16" name="16" />
+            <value id="time-limit-end-17" name="17" />
+            <value id="time-limit-end-18" name="18" />
+            <value id="time-limit-end-19" name="19" />
+            <value id="time-limit-end-20" name="20" />
+            <value id="time-limit-end-21" name="21" />
+            <value id="time-limit-end-22" name="22" />
+            <value id="time-limit-end-23" name="23" />
+        </class>
+    </thing>
+    <private>
+        <class name="Country" id="country">
+            <value id="germany" name="Germany" />
+            <value id="spain" name="Spain" />
+            <value id="france" name="France" />
+        </class>
+    </private>
+</requirements>

@@ -167,10 +167,10 @@ class CouchDbTestCase extends Tests\WebTestCase
         return $calibrationData;
     }
 
-    protected function createProject($name)
+    protected function createProject($name, Model\User $user = null, \DateTime $dateTime = null)
     {
         return $this->projectFacade->save(
-            Model\Project::create($name)
+            Model\Project::create($name, $user, $dateTime)
         );
     }
 
