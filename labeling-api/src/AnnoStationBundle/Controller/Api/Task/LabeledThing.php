@@ -231,6 +231,7 @@ class LabeledThing extends Controller\Base
 
         $labeledThing->setClasses($classes);
         $labeledThing->setFrameRange($frameRange);
+        $labeledThing->setGroupIds($request->request->get('groupIds', []));
         $labeledThing->setIncomplete(
             $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
         );

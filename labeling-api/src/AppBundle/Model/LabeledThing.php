@@ -50,6 +50,11 @@ class LabeledThing
     private $lineColor;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $groupIds;
+
+    /**
      * @param LabelingTask $task
      * @param $lineColor
      *
@@ -201,5 +206,13 @@ class LabeledThing
     public function getProjectId()
     {
         return $this->projectId;
+    }
+
+    /**
+     * @param mixed $groupIds
+     */
+    public function setGroupIds($groupIds)
+    {
+        $this->groupIds = $groupIds;
     }
 }

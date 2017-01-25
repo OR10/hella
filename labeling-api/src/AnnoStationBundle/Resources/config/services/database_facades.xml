@@ -66,5 +66,9 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.labeled_thing_group" class="AnnoStationBundle\Database\Facade\LabeledThingGroup">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
     </services>
 </container>

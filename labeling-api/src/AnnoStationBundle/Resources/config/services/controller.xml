@@ -256,5 +256,9 @@
             <argument>%rabbitmq_user%</argument>
             <argument>%rabbitmq_password%</argument>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.task.labeled_thing_group" class="AnnoStationBundle\Controller\Api\Task\LabeledThingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
+        </service>
     </services>
 </container>

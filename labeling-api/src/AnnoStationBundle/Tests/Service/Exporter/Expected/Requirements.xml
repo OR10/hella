@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export xmlns="http://weblabel.hella-aglaia.com/schema/export">
+  <metadata>
+    <annostation>
+      <hostname></hostname>
+      <build>0</build>
+    </annostation>
+    <project id="" name="project-id-1">
+      <phase>todo</phase>
+      <description/>
+      <creation-date>2017-01-20T16:00:00+00:00</creation-date>
+      <created-by-user username="client" email="client@client.com"/>
+      <due-date/>
+      <frame-skip>1</frame-skip>
+      <start-frame>0</start-frame>
+      <split-each>0</split-each>
+    </project>
+    <export id="">
+      <creation-date>2017-01-20T16:00:00+00:00</creation-date>
+      <created-by-user username="client" email="client@client.com"/>
+    </export>
+    <requirements id="" name="testconfig">
+      <sha256>c2f50888d3e2db6d8ba1c97328979e1abe3e442e29a95123dd384a6a44ab49c4</sha256>
+    </requirements>
+  </metadata>
+  <video id="" name="video-id-1">
+    <thing id="" start="1" end="100" line-color="1" incomplete="true">
+      <task id=""/>
+      <shape id="" start="2" end="5">
+        <cuboid>
+          <top-left-front x="10" y="1" z="1"/>
+          <top-right-front x="10" y="-1" z="1"/>
+          <bottom-right-front x="10" y="-1" z="0"/>
+          <bottom-left-front x="10" y="1" z="0"/>
+          <top-left-back x="11" y="1" z="1"/>
+          <top-right-back x="11" y="-1" z="1"/>
+          <bottom-right-back x="11" y="-1" z="0"/>
+          <bottom-left-back x="11" y="1" z="0"/>
+        </cuboid>
+      </shape>
+      <shape id="" start="6" end="6">
+        <cuboid>
+          <top-left-front x="11.0342" y="1.071" z="1"/>
+          <top-right-front x="11.0342" y="-0.929" z="1"/>
+          <bottom-right-front x="11.0342" y="-0.929" z="0"/>
+          <bottom-left-front x="11.0342" y="1.071" z="0"/>
+          <top-left-back x="12.0342" y="1.071" z="1"/>
+          <top-right-back x="12.0342" y="-0.929" z="1"/>
+          <bottom-right-back x="12.0342" y="-0.929" z="0"/>
+          <bottom-left-back x="12.0342" y="1.071" z="0"/>
+        </cuboid>
+      </shape>
+      <value id="u-turn" start="2" end="6"/>
+      <value id="germany" start="2" end="3"/>
+      <value id="spain" start="4" end="6"/>
+    </thing>
+  </video>
+</export>
