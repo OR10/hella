@@ -27,3 +27,4 @@ broken a 400 status code should be returned.
 <!-- include(labelingGroup.md) -->
 <!-- include(taskConfiguration.md) -->
 <!-- include(system.md) -->
+<!-- include(LabeledThingGroup.md) -->

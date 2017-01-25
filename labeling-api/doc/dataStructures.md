@@ -186,3 +186,15 @@
 + name: `Some Name` (string) - Name of this configuration file
 + timestamp: `234523523` (number) - Creation Date for this config
 + userId : `583c0838ea5f72671b1b21605c3d6b47` (string) - Creators UserId
+
+# LabeledThingGroup
++ id: `36047d429d50548893be41c6880632fd` (string) - LabeledThingGroup ID
++ rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the LabeledThingGroup
++ groupType: `some-group-id` (string) - the type of the group (id)
++ groupIds: `[]` (array) - Parent group ids
+
+# LabeledThingGroupInFrame
++ id: `36047d429d50548893be41c6880632fd` (string) - LabeledThingGroup ID
++ rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the LabeledThingGroup
++ frameIndex: `frame index` (string) - Frame Index
++ classes: `[]` (array) - Labeled classes
