@@ -3,7 +3,8 @@
 namespace AnnoStationBundle\Tests\Service\Exporter;
 
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Model;
+use AnnoStationBundle\Model;
+use AppBundle\Model as AppBundleModel;
 use AppBundle\Model\Shapes;
 use AnnoStationBundle\Service\Exporter;
 use AnnoStationBundle\Tests;
@@ -32,13 +33,13 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             $video,
             $this->createTaskConfiguration($xmlTaskConfiguration, $clientUser),
             null,
-            Model\LabelingTask::TYPE_OBJECT_LABELING
+            AppBundleModel\LabelingTask::TYPE_OBJECT_LABELING
         );
 
         $this->createCuboids($task);
 
         $export = $this->exporterFacade->save(
-            new Model\Export($project, $clientUser, $date)
+            new AppBundleModel\Export($project, $clientUser, $date)
         );
 
         $this->exporter->export($export);
@@ -67,12 +68,26 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $exportId->item(0)->setAttribute('id', '');
         $requirementsId = $xpath->query('/x:export/x:metadata/x:requirements[@id]');
         $requirementsId->item(0)->setAttribute('id', '');
-        $videoId = $xpath->query('/x:export/x:video[@id]');
-        $videoId->item(0)->setAttribute('id', '');
-        $thingId = $xpath->query('/x:export/x:video/x:thing[@id]');
-        $thingId->item(0)->setAttribute('id', '');
-        $taskId = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
-        $taskId->item(0)->setAttribute('id', '');
+        $videoIds = $xpath->query('/x:export/x:video[@id]');
+        foreach($videoIds as $videoId) {
+            $videoId->setAttribute('id', '');
+        }
+        $groupIds = $xpath->query('/x:export/x:video/x:group[@id]');
+        foreach($groupIds as $groupId) {
+            $groupId->setAttribute('id', '');
+        }
+        $thingIds = $xpath->query('/x:export/x:video/x:thing[@id]');
+        foreach($thingIds as $thingId) {
+            $thingId->setAttribute('id', '');
+        }
+        $taskIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
+        foreach($taskIds as $taskId) {
+            $taskId->setAttribute('id', '');
+        }
+        $groupIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:group[@ref]');
+        foreach($groupIds as $groupId) {
+            $groupId->setAttribute('ref', '');
+        }
         $shapeIds = $xpath->query('/x:export/x:video/x:thing/x:shape[@id]');
         foreach($shapeIds as $shapeId) {
             $shapeId->setAttribute('id', '');
@@ -82,7 +97,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     }
 
-    private function createCuboids(Model\LabelingTask $task)
+    private function createCuboids(AppBundleModel\LabelingTask $task)
     {
         $labeledThing = $this->createLabeledThing($task);
         $cuboid1      = new Shapes\Cuboid3d(
@@ -145,6 +160,21 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             [12.034211898729, 1.0709619782734, 0]
         );
         $this->createLabeledThingInFrame($labeledThing, 5, [$cuboid5->toArray()], ['u-turn', 'spain']);
+
+        $labeledThingGroup = new Model\LabeledThingGroup();
+        $this->labeledThingGroupFacade->save($labeledThingGroup);
+
+        $labeledThingWithGroup1 = $this->createLabeledThing($task);
+        $labeledThingWithGroup1->setFrameRange(new AppBundleModel\FrameIndexRange(0, 0));
+        $labeledThingWithGroup1->setGroupIds([$labeledThingGroup->getId()]);
+        $rectangle1 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
+        $this->createLabeledThingInFrame($labeledThingWithGroup1, 0, [$rectangle1->toArray()], ['u-turn', 'spain']);
+
+        $labeledThingWithGroup2 = $this->createLabeledThing($task);
+        $labeledThingWithGroup2->setFrameRange(new AppBundleModel\FrameIndexRange(0, 1));
+        $labeledThingWithGroup2->setGroupIds([$labeledThingGroup->getId()]);
+        $rectangle2 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
+        $this->createLabeledThingInFrame($labeledThingWithGroup2, 1, [$rectangle2->toArray()], ['u-turn', 'spain']);
     }
 
     private function getContentFromZip($data, $filename)
@@ -164,11 +194,9 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     protected function setUpImplementation()
     {
-        $this->exporter       = $this->getAnnostationService('service.exporter.requirements_project_to_xml');
-        $this->exporterFacade = $this->getAnnostationService('database.facade.exporter');
+        $this->exporter                = $this->getAnnostationService('service.exporter.requirements_project_to_xml');
+        $this->exporterFacade          = $this->getAnnostationService('database.facade.exporter');
 
         parent::setUpImplementation();
-
-
     }
 }
