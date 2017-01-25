@@ -66,6 +66,11 @@ class CouchDbTestCase extends Tests\WebTestCase
     private $taskConfigurationXmlConverterService;
 
     /**
+     * @var Facade\LabeledThingGroup
+     */
+    protected $labeledThingGroupFacade;
+
+    /**
      * @param Model\Project           $project
      * @param Model\Video             $video
      * @param Model\TaskConfiguration $taskConfiguration
@@ -249,6 +254,9 @@ class CouchDbTestCase extends Tests\WebTestCase
         );
         $this->taskConfigurationXmlConverterService = $this->getAnnostationService(
             'service.task_configuration_xml_converter_factory'
+        );
+        $this->labeledThingGroupFacade              = $this->getAnnostationService(
+            'database.facade.labeled_thing_group'
         );
 
         $this->userManipulator = $this->getService('fos_user.util.user_manipulator');
