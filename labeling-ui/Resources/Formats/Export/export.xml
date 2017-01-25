@@ -47,7 +47,7 @@
                     <workflow-phase>revision-1</workflow-phase>
                     <workflow-id>time-range-sign-mapping</workflow-id>
                 </task>
-            /<references>
+            </references>
             <!-- #15 -->
             <value id="raining" start="22" end="444" />
             <!-- ... -->
