@@ -4,6 +4,8 @@
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task.
+    + groupType: `some-group-id` (string, required) - groupId.
+    + groupIds: `[]` (array) - array of parent group ids.
 
 ### Add [POST]
 
