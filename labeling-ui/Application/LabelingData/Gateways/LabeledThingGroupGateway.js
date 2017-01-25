@@ -46,16 +46,14 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Requests labeled thing groups for the given frame index.
+   * Requests labeled thing groups for the given task and frame index.
    *
-   * Response looks like:
-   * `{labeledThingGroups, labeledThingInFrameGroups}`
-   *
+   * @param {Task} task
    * @param {int} frameIndex
    * @return {AbortablePromise}
    */
-  getLabeledThingGroupsInGrameForFrameIndex(frameIndex) {
-    const url = this._apiService.getApiUrl(`/labeledThingGroupInFrame/${frameIndex}`);
+  getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroupInFrame/frame/${frameIndex}`);
 
     return this._bufferedHttp.get(url, undefined, 'LabeledThingGroup')
       .then(response => {
@@ -68,13 +66,14 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Deletes a labeld thing group with the given id.
+   * Deletes a labeled thing group with the given id.
    *
-   * @param {string} groupId
+   * @param {Task} task
+   * @param {string} labeledThingGroupId
    * @return {AbortablePromise}
    */
-  deleteLabeledThingGroupById(groupId) {
-    const url = this._apiService.getApiUrl(`/labeledThingGroup/${groupId}`);
+  deleteLabeledThingGroupById(task, labeledThingGroupId) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroupId}`);
 
     return this._bufferedHttp.delete(url, undefined, 'LabeledThingGroup')
       .then(response => {
@@ -89,11 +88,13 @@ class LabeledThingGroupGateway {
   /**
    * Create a labeled thing group of the given type.
    *
+   * @param {Task} task
    * @param {string} type
+   * @return {AbortablePromise}
    */
-  createLabeledThingGroupOfType(type) {
-    const url = this._apiService.getApiUrl(`/labeledThingGroup`);
-    const body = {type};
+  createLabeledThingGroupOfType(task, type) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup`);
+    const body = {groupType: type};
 
     return this._bufferedHttp.post(url, body, 'LabeledThingGroup')
       .then(response => {
@@ -101,7 +102,7 @@ class LabeledThingGroupGateway {
           return response.data.result;
         }
 
-        throw new Error(`Received malformed response when createing labeled thing group of type "${type}"`);
+        throw new Error(`Received malformed response when creating labeled thing group of type "${type}"`);
       });
   }
 
@@ -128,11 +129,12 @@ class LabeledThingGroupGateway {
   /**
    * Creates a group of the given type and assigns the given labeled things to this group.
    *
+   * @param {Task} task
    * @param {string} type
    * @param {Array.<LabeledThing>}labeledThings
    */
-  createGroupOfTypeWithLabeledThings(type, labeledThings) {
-    return this.createLabeledThingGroupOfType(type).then(group => {
+  createGroupOfTypeWithLabeledThings(task, type, labeledThings) {
+    return this.createLabeledThingGroupOfType(task, type).then(group => {
       return this.assignLabeledThingsToLabeledThingGroup(labeledThings, group);
     });
   }
