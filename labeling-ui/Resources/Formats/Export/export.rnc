@@ -97,7 +97,7 @@ grammar {
     attribute line-color {text}?,
     attribute incomplete {text}?,
     FrameRangeAttributes,
-    Task,
+    References,
     Shape+,
     Value*
   }
@@ -173,7 +173,7 @@ grammar {
 # <frame-labeling>
   FrameLabeling = element e:frame-labeling {
     attribute incomplete {text}?,
-    Task,
+    References,
     Value+
   }
 # </frame-labeling>
@@ -183,9 +183,18 @@ grammar {
     attribute id {text},
     FrameRangeAttributes,
     attribute incomplete {text}?,
-    Thing+
+    Value+
   }
 # </group>
+
+# <references>
+  References = element e:references {
+    Task,
+    element e:group {
+      attribute ref {text}
+    }*
+  }
+# </references>
 
   Root = element e:export {
     Metadata,
