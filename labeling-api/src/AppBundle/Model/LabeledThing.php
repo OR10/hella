@@ -215,4 +215,16 @@ class LabeledThing
     {
         $this->groupIds = $groupIds;
     }
+
+    /**
+     * @return array
+     */
+    public function getGroupIds()
+    {
+        if ($this->groupIds === null) {
+            return [];
+        }
+
+        return $this->groupIds;
+    }
 }
