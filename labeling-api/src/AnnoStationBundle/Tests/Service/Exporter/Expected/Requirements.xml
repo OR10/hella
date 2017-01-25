@@ -25,7 +25,9 @@
   </metadata>
   <video id="" name="video-id-1">
     <thing id="" start="1" end="100" line-color="1" incomplete="true">
-      <task id=""/>
+      <references>
+        <task id=""/>
+      </references>
       <shape id="" start="2" end="5">
         <cuboid>
           <top-left-front x="10" y="1" z="1"/>

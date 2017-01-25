@@ -71,7 +71,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $videoId->item(0)->setAttribute('id', '');
         $thingId = $xpath->query('/x:export/x:video/x:thing[@id]');
         $thingId->item(0)->setAttribute('id', '');
-        $taskId = $xpath->query('/x:export/x:video/x:thing/x:task[@id]');
+        $taskId = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
         $taskId->item(0)->setAttribute('id', '');
         $shapeIds = $xpath->query('/x:export/x:video/x:thing/x:shape[@id]');
         foreach($shapeIds as $shapeId) {

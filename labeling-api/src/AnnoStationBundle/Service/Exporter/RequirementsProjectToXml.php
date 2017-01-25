@@ -57,6 +57,11 @@ class RequirementsProjectToXml
     private $labeledThingFacade;
 
     /**
+     * @var Facade\LabeledThingGroup
+     */
+    private $labeledThingGroupFacade;
+
+    /**
      * @param Facade\Exporter                 $exporterFacade
      * @param Facade\Project                  $projectFacade
      * @param Facade\Video                    $videoFacade
@@ -66,6 +71,7 @@ class RequirementsProjectToXml
      * @param AppBundleFacade\User            $userFacade
      * @param Facade\LabelingGroup            $labelingGroupFacade
      * @param Facade\LabeledThing             $labeledThingFacade
+     * @param Facade\LabeledThingGroup        $labeledThingGroupFacade
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -76,7 +82,8 @@ class RequirementsProjectToXml
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
-        Facade\LabeledThing $labeledThingFacade
+        Facade\LabeledThing $labeledThingFacade,
+        Facade\LabeledThingGroup $labeledThingGroupFacade
     ) {
         $this->exporterFacade          = $exporterFacade;
         $this->projectFacade           = $projectFacade;
@@ -87,6 +94,7 @@ class RequirementsProjectToXml
         $this->userFacade              = $userFacade;
         $this->labelingGroupFacade     = $labelingGroupFacade;
         $this->labeledThingFacade      = $labeledThingFacade;
+        $this->labeledThingGroupFacade = $labeledThingGroupFacade;
     }
 
     /**
@@ -131,8 +139,35 @@ class RequirementsProjectToXml
 
                     $labeledThingIterator = new Iterator\LabeledThing($task, $this->labelingTaskFacade);
 
+                    /** @var Model\LabeledThing $labeledThing */
                     foreach ($labeledThingIterator as $labeledThing) {
-                        $thing                              = new ExportXml\Element\Video\Thing($task, $labeledThing, self::XML_NAMESPACE);
+                        $references = new ExportXml\Element\Video\References(
+                            new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
+                            self::XML_NAMESPACE
+                        );
+                        foreach($labeledThing->getGroupIds() as $groupId) {
+                            $group = $this->labeledThingGroupFacade->find($groupId);
+                            if ($group !== null) {
+                                $groupFrameRange = $this->labeledThingGroupFacade->getLabeledThingGroupFrameRange($group);
+                                $xmlVideo->addGroup(
+                                    new ExportXml\Element\Video\Group(
+                                        $group,
+                                        $frameMapping[$groupFrameRange['min']],
+                                        $frameMapping[$groupFrameRange['max']],
+                                        $this->labeledThingGroupFacade->isLabeledThingGroupIncomplete($group),
+                                        self::XML_NAMESPACE
+                                    )
+                                );
+                                $references->addGroup($groupId);
+                            }
+                        }
+
+                        $thing = new ExportXml\Element\Video\Thing(
+                            $frameMapping,
+                            $labeledThing,
+                            $references,
+                            self::XML_NAMESPACE
+                        );
                         $labeledThingInFrameForLabeledThing = new Iterator\LabeledThingInFrameForLabeledThing(
                             $this->labeledThingFacade,
                             $labeledThing,

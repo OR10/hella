@@ -152,6 +152,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
         </service>
 
         <service id="annostation.labeling_api.service.class_columns_factory"
