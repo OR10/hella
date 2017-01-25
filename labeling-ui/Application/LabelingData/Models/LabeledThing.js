@@ -41,7 +41,7 @@ class LabeledThing extends LabeledObject {
     /**
      * @type {Array.<string>}
      */
-    this.groupIds = labeledThing.groupIds;
+    this.groupIds = labeledThing.groupIds || [];
   }
 
   /**

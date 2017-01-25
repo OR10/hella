@@ -1,3 +1,6 @@
+import LabeledThingGroup from '../Models/LabeledThingGroup';
+import LabeledThingGroupInFrame from '../Models/LabeledThingGroupInFrame';
+
 class LabeledThingGroupGateway {
   /**
    * @param {$q} $q
@@ -58,7 +61,9 @@ class LabeledThingGroupGateway {
     return this._bufferedHttp.get(url, undefined, 'LabeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return response.data.result.map(ltgifDocument => {
+            return new LabeledThingGroupInFrame(ltgifDocument);
+          });
         }
 
         throw new Error('Received malformed response when requesting labeled thing groups in frame.');
@@ -96,10 +101,10 @@ class LabeledThingGroupGateway {
     const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup`);
     const body = {groupType: type};
 
-    return this._bufferedHttp.post(url, body, 'LabeledThingGroup')
+    return this._bufferedHttp.post(url, body, undefined, 'labeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result;
+          return new LabeledThingGroup(response.data.result);
         }
 
         throw new Error(`Received malformed response when creating labeled thing group of type "${type}"`);
@@ -142,7 +147,7 @@ class LabeledThingGroupGateway {
 
 LabeledThingGroupGateway.$inject = [
   '$q',
-  'apiService',
+  'ApiService',
   'revisionManager',
   'bufferedHttp',
   'labeledThingGateway',
