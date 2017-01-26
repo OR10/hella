@@ -2,8 +2,8 @@ resource "openstack_compute_floatingip_v2" "anno-demo" {
     pool = "ext-net"
 }
 
-resource "openstack_compute_instance_v2" "anno-demo" {
-    name = "anno-demo"
+resource "openstack_compute_instance_v2" "playground-proxy" {
+    name = "playground-proxy"
     image_name = "Ubuntu 14.04 sys11-cloudimg amd64"
     flavor_name = "m1.micro"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
@@ -30,7 +30,7 @@ resource "openstack_compute_instance_v2" "anno-demo" {
     }
 
     provisioner "remote-exec" {
-        script = "provision.sh"
+        script = "provision-proxy.sh"
 
         connection {
             host = "${openstack_compute_floatingip_v2.anno-demo.address}"

@@ -1,0 +1,17 @@
+annostation_base::authorized_keys: true
+
+letsencrypt::email: chh@crosscan.com
+annostation_letsencrypt::existingVhost: 'default-redirect'
+annostation_letsencrypt::domains:
+    - weblabel-demo.hella-aglaia.com
+
+annostation_proxy::defaultSslCert: /etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem
+annostation_proxy::defaultSslKey:  /etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/privkey.pem
+annostation_proxy::hosts:
+
+  - domain: weblabel-demo.hella-aglaia.com
+    target: https://192.168.35.5
+    http2: true
+    ssl_cert: /etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem
+    ssl_key: /etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/privkey.pem
+    read_timeout: '1800'
