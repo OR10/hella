@@ -5,9 +5,23 @@ else
   server ENV['CAP_DEPLOY_IP'], user: 'root', roles: %w{app db web worker}
 end
 
-set :ssh_options, {
-  forward_agent: true
-}
+if ENV['BASTION_HOST']
+  require 'net/ssh/proxy/command'
+
+  bastion_host = ENV['BASTION_HOST']
+  bastion_user = ENV['BASTION_USER'] || ENV['USER']
+
+  ssh_command = "ssh #{bastion_user}@#{bastion_host} -W %h:%p"
+
+  set :ssh_options, {
+    forward_agent: true,
+    proxy: Net::SSH::Proxy::Command.new(ssh_command)
+  }
+else
+  set :ssh_options, {
+    forward_agent: true
+  }
+end
 
 # config valid only for current version of Capistrano
 #lock '3.4.0'
