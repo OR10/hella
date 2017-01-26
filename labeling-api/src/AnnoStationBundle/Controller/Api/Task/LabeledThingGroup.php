@@ -67,12 +67,11 @@ class LabeledThingGroup extends Controller\Base
         );
 
         $labeledThingInFrames= [];
-        foreach($groupsInFrame as $groupInFrame) {
+        foreach ($groupsInFrame as $groupInFrame) {
             $labeledThingGroupInFrame = new Model\LabeledThingGroupInFrame($frameIndex);
             $labeledThingGroupInFrame->setId('11111111-0000-0000-0000-111111111111');
 
             $labeledThingInFrames[] = $labeledThingGroupInFrame;
-
         }
 
         return View\View::create()->setData(['result' => $labeledThingInFrames]);

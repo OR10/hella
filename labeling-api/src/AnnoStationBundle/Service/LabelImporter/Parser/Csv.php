@@ -67,14 +67,7 @@ class Csv extends Base
         }
 
         // this will fail if there is newlines in enclosures
-        foreach (
-            preg_split(
-                "(\r\n|\r|\n)",
-                $content,
-                -1,
-                PREG_SPLIT_NO_EMPTY
-            ) as $line
-        ) {
+        foreach (preg_split("(\r\n|\r|\n)", $content, -1, PREG_SPLIT_NO_EMPTY) as $line) {
             if (empty($line)) {
                 continue;
             }

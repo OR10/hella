@@ -69,27 +69,27 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $requirementsId = $xpath->query('/x:export/x:metadata/x:requirements[@id]');
         $requirementsId->item(0)->setAttribute('id', '');
         $videoIds = $xpath->query('/x:export/x:video[@id]');
-        foreach($videoIds as $videoId) {
+        foreach ($videoIds as $videoId) {
             $videoId->setAttribute('id', '');
         }
         $groupIds = $xpath->query('/x:export/x:video/x:group[@id]');
-        foreach($groupIds as $groupId) {
+        foreach ($groupIds as $groupId) {
             $groupId->setAttribute('id', '');
         }
         $thingIds = $xpath->query('/x:export/x:video/x:thing[@id]');
-        foreach($thingIds as $thingId) {
+        foreach ($thingIds as $thingId) {
             $thingId->setAttribute('id', '');
         }
         $taskIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
-        foreach($taskIds as $taskId) {
+        foreach ($taskIds as $taskId) {
             $taskId->setAttribute('id', '');
         }
         $groupIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:group[@ref]');
-        foreach($groupIds as $groupId) {
+        foreach ($groupIds as $groupId) {
             $groupId->setAttribute('ref', '');
         }
         $shapeIds = $xpath->query('/x:export/x:video/x:thing/x:shape[@id]');
-        foreach($shapeIds as $shapeId) {
+        foreach ($shapeIds as $shapeId) {
             $shapeId->setAttribute('id', '');
         }
 

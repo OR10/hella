@@ -43,5 +43,4 @@ class LabeledThingGroup
     {
         return $this->id;
     }
-
 }

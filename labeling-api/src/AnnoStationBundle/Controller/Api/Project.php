@@ -158,8 +158,8 @@ class Project extends Controller\Base
 
             $sumOfFailedTasks        = 0;
             $sumOfPreProcessingTasks = 0;
-            foreach($sumOfTasksByPhaseForProject as $phase => $states) {
-                $sumOfFailedTasks        += $states[Model\LabelingTask::STATUS_FAILED];
+            foreach ($sumOfTasksByPhaseForProject as $phase => $states) {
+                $sumOfFailedTasks += $states[Model\LabelingTask::STATUS_FAILED];
                 if ($phase === Model\LabelingTask::PHASE_PREPROCESSING) {
                     $sumOfPreProcessingTasks += $states[Model\LabelingTask::STATUS_TODO];
                 }
@@ -188,9 +188,9 @@ class Project extends Controller\Base
                 $taskInProgressCount = 0;
                 $taskFailedCount     = 0;
 
-                foreach($sumOfTasksByPhaseForProject as $phase => $states) {
+                foreach ($sumOfTasksByPhaseForProject as $phase => $states) {
                     $taskInProgressCount += $states[Model\LabelingTask::STATUS_IN_PROGRESS];
-                    $taskFailedCount     += $states[Model\LabelingTask::STATUS_FAILED];
+                    $taskFailedCount += $states[Model\LabelingTask::STATUS_FAILED];
                 }
 
 

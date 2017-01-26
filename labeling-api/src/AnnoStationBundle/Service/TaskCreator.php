@@ -133,7 +133,7 @@ class TaskCreator
             $videoFrameMapping   = [];
             if ($video->getMetaData()->numberOfFrames >= ($startFrameNumber + $frameSkip)) {
                 $videoFrameMapping = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
-            }elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber){
+            } elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber) {
                 $videoFrameMapping = [$startFrameNumber];
             }
             $frameMappingChunks  = [];

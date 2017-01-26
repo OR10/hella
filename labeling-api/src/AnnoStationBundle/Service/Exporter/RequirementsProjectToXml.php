@@ -145,10 +145,12 @@ class RequirementsProjectToXml
                             new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
                             self::XML_NAMESPACE
                         );
-                        foreach($labeledThing->getGroupIds() as $groupId) {
+                        foreach ($labeledThing->getGroupIds() as $groupId) {
                             $group = $this->labeledThingGroupFacade->find($groupId);
                             if ($group !== null) {
-                                $groupFrameRange = $this->labeledThingGroupFacade->getLabeledThingGroupFrameRange($group);
+                                $groupFrameRange = $this->labeledThingGroupFacade->getLabeledThingGroupFrameRange(
+                                    $group
+                                );
                                 $xmlVideo->addGroup(
                                     new ExportXml\Element\Video\Group(
                                         $group,

@@ -20,7 +20,7 @@ class AnnoStation extends ExportXml\Element
      */
     private $namespace;
 
-    public function __construct($hostname = 'unknown', $build = 0, $namespace)
+    public function __construct($namespace, $hostname = 'unknown', $build = 0)
     {
         $this->hostname  = $hostname;
         $this->build     = $build;
