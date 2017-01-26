@@ -5,6 +5,17 @@ tool-selector {
 
   .tool-selector {
 
+    h1{
+      border-bottom: 2px solid $element-inline-divider;
+      padding: 8px 5px;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: $icon-hover;
+      font-size: 20px;
+    }
+
     button.tool-button {
       padding: 12px 5px;
       text-align: center;

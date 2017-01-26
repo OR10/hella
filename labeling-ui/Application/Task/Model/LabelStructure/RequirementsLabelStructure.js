@@ -2,6 +2,7 @@ import cloneDeep from 'lodash.clonedeep';
 
 import LabelStructure from '../LabelStructure';
 import LabelStructureThing from '../LabelStructureThing';
+import LabelStructureGroupThing from '../LabelStructureGroupThing';
 import XMLClassElement from '../XMLClassElement';
 
 /**
@@ -43,10 +44,21 @@ class RequirementsLabelStructure extends LabelStructure {
      * Map containing all {@link LabelStructureThing} objects of this {@link LabelStructure} stored by their `id`.
      *
      * Will be lazily filled once, requested.
+     *
      * @type {Map|null}
      * @private
      */
     this._thingMap = null;
+
+    /**
+     * Map containing all {@link LabelStructureGroupThing} onject of this {@link LabelStructure} stored by their `id`.
+     *
+     * Will be lazily filled once, requested.
+     *
+     * @type {Map|null}
+     * @private
+     */
+    this._groupMap = null;
   }
 
   /**
@@ -106,6 +118,34 @@ class RequirementsLabelStructure extends LabelStructure {
     }
 
     return this._thingMap;
+  }
+
+  /**
+   * Retrieve a `Map` of all `Groups` defined inside the {@link LabelStructure}
+   *
+   * @return {Map.<string, LabelStructureGroupThing>}
+   */
+  getGroups() {
+    if (this._groupMap === null) {
+      const groupMap = new Map();
+
+      const groupsSnapshot = this._evaluateXPath('/r:requirements/r:group', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+      for (let index = 0; index < groupsSnapshot.snapshotLength; index++) {
+        const groupElement = groupsSnapshot.snapshotItem(index);
+        const identifier = groupElement.attributes.id.value;
+        const name = groupElement.attributes.name.value;
+
+        groupMap.set(
+          identifier,
+          new LabelStructureGroupThing(identifier, name)
+        );
+      }
+
+      this._groupMap = groupMap;
+    }
+
+    return this._groupMap;
   }
 
   /**

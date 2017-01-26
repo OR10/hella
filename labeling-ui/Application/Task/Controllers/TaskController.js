@@ -434,13 +434,14 @@ class TaskController {
     const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
       .then(labelStructure => {
         const labelStructureThingArray = Array.from(labelStructure.getThings().values());
+        const labelStructureGroupThingArray = Array.from(labelStructure.getGroups().values());
         const labelStructureThing = labelStructureThingArray[0];
 
         this.labelStructure = labelStructure;
         this.selectedLabelStructureThing = labelStructureThing;
         this.selectedDrawingTool = labelStructureThing.shape;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
-        this.drawableThings = labelStructureThingArray;
+        this.drawableThings = labelStructureThingArray.concat(labelStructureGroupThingArray);
 
         // Pipe labelStructure to next chain function
         return labelStructure;
