@@ -143,7 +143,10 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
-                if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN])) {
+                if ($user->hasOneRoleOf(
+                    [Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN]
+                )
+                ) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
                         Model\LabelingTask::STATUS_DONE,
                         $project,
@@ -155,8 +158,11 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
-                if ($user->hasOneRoleOf([Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN])) {
-                    $tasks                  = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
+                if ($user->hasOneRoleOf(
+                    [Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN]
+                )
+                ) {
+                    $tasks = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
                         $project,
                         $offset,
                         $limit

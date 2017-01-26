@@ -153,7 +153,9 @@ class Project extends Controller\Base
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
-            $sumOfCompletedTasksForProject = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject($project);
+            $sumOfCompletedTasksForProject = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
+                $project
+            );
             $sumOfTasksByPhaseForProject   = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
 
             $sumOfFailedTasks        = 0;
@@ -193,14 +195,17 @@ class Project extends Controller\Base
                     $taskFailedCount += $states[Model\LabelingTask::STATUS_FAILED];
                 }
 
-
                 $responseProject['taskCount']                  = $sumOfTasksForProject;
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
-                $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject($project);
-                $responseProject['videosCount']                = isset($numberOfVideos[$project->getId()]) ? $numberOfVideos[$project->getId()] : 0;
+                $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
+                    $project
+                );
+                $responseProject['videosCount']                = isset(
+                    $numberOfVideos[$project->getId()]
+                ) ? $numberOfVideos[$project->getId()] : 0;
                 $responseProject['dueTimestamp']               = $project->getDueDate();
             }
 
@@ -361,7 +366,9 @@ class Project extends Controller\Base
                 }
 
                 if (count($taskTypeConfigurations) > 1) {
-                    throw new Exception\BadRequestHttpException('Only a single requirementsXML is allowed for a project.');
+                    throw new Exception\BadRequestHttpException(
+                        'Only a single requirementsXML is allowed for a project.'
+                    );
                 }
 
                 foreach ($taskTypeConfigurations as $taskTypeConfiguration) {

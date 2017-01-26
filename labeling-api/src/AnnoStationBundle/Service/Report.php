@@ -112,37 +112,41 @@ class Report
             }
             $report->setNumberOfTasksInProject($sumOfTasks);
 
+            $numberOfLabelingTasks = $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING];
+            $numberOfReviewTasks   = $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW];
+            $numberOfRevisionTasks = $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION];
+
             /** Number of Labeling Tasks */
             $report->setNumberOfToDoTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_TODO]
+                $numberOfLabelingTasks[Model\LabelingTask::STATUS_TODO]
             );
             $report->setNumberOfInProgressTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_IN_PROGRESS]
+                $numberOfLabelingTasks[Model\LabelingTask::STATUS_IN_PROGRESS]
             );
             $report->setNumberOfDoneTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_LABELING][Model\LabelingTask::STATUS_DONE]
+                $numberOfLabelingTasks[Model\LabelingTask::STATUS_DONE]
             );
 
             /** Number of Review Tasks by Status */
             $report->setNumberOfToDoReviewTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_TODO]
+                $numberOfReviewTasks[Model\LabelingTask::STATUS_TODO]
             );
             $report->setNumberOfInProgressReviewTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_IN_PROGRESS]
+                $numberOfReviewTasks[Model\LabelingTask::STATUS_IN_PROGRESS]
             );
             $report->setNumberOfDoneReviewTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVIEW][Model\LabelingTask::STATUS_DONE]
+                $numberOfReviewTasks[Model\LabelingTask::STATUS_DONE]
             );
 
             /** Number of Revision Tasks by Status */
             $report->setNumberOfToDoRevisionTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_TODO]
+                $numberOfRevisionTasks[Model\LabelingTask::STATUS_TODO]
             );
             $report->setNumberOfInProgressRevisionTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_IN_PROGRESS]
+                $numberOfRevisionTasks[Model\LabelingTask::STATUS_IN_PROGRESS]
             );
             $report->setNumberOfDoneRevisionTasks(
-                $numberOfTaskByPhaseAndStatus[Model\LabelingTask::PHASE_REVISION][Model\LabelingTask::STATUS_DONE]
+                $numberOfRevisionTasks[Model\LabelingTask::STATUS_DONE]
             );
 
             $report->setNumberOfDoneTasksInAllPhases(

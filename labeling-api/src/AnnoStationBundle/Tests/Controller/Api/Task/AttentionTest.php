@@ -120,7 +120,9 @@ class AttentionTest extends Tests\WebTestCase
             ->withRoles([Model\User::ROLE_LABELER])
             ->build();
         $this->userFacade->updateUser($anotherLabelerUser);
-        $coordinatorUser        = $userFacade->updateUser(AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build());
+        $coordinatorUser = $userFacade->updateUser(
+            AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build()
+        );
         $anotherCoordinatorUser = AppBundleHelper\UserBuilder::create()
             ->withUsername('label_coordinator_2')
             ->withPlainPassword('label_coordinator_2')

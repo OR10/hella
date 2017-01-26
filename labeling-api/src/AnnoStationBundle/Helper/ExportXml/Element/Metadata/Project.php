@@ -43,7 +43,11 @@ class Project extends ExportXml\Element
 
         $state        = $document->createElementNS($this->namespace, 'phase', $this->project->getStatus());
         $description  = $document->createElementNS($this->namespace, 'description', $this->project->getDescription());
-        $creationDate = $document->createElementNS($this->namespace, 'creation-date', $this->project->getCreationDateAsObject()->format('c'));
+        $creationDate = $document->createElementNS(
+            $this->namespace,
+            'creation-date',
+            $this->project->getCreationDateAsObject()->format('c')
+        );
         $creationUser = $document->createElementNS($this->namespace, 'created-by-user');
         $creationUser->setAttribute(
             'username',
@@ -51,13 +55,21 @@ class Project extends ExportXml\Element
         );
         $creationUser->setAttribute('email', $this->userFacade->getUserById($this->project->getUserId())->getEmail());
         $dueDate          = $document->createElementNS($this->namespace, 'due-date', $this->project->getDueDate());
-        $frameSkip        = $document->createElementNS($this->namespace, 'frame-skip', $this->project->getTaskVideoSettings()['frameSkip']);
+        $frameSkip = $document->createElementNS(
+            $this->namespace,
+            'frame-skip',
+            $this->project->getTaskVideoSettings()['frameSkip']
+        );
         $startFrameNumber = $document->createElementNS(
             $this->namespace,
             'start-frame',
             $this->project->getTaskVideoSettings()['startFrameNumber']
         );
-        $splitEach        = $document->createElementNS($this->namespace, 'split-each', $this->project->getTaskVideoSettings()['splitEach']);
+        $splitEach = $document->createElementNS(
+            $this->namespace,
+            'split-each',
+            $this->project->getTaskVideoSettings()['splitEach']
+        );
 
         $project->appendChild($state);
         $project->appendChild($description);

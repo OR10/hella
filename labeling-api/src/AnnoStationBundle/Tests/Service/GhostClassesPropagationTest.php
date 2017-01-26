@@ -58,7 +58,9 @@ class GhostClassesPropagationTest extends KernelTestCase
 
         $container = $this->getContainer();
 
-        $this->labeledThingInFrameFacadeMock = $this->getMockBuilder('AnnoStationBundle\Database\Facade\LabeledThingInFrame')
+        $this->labeledThingInFrameFacadeMock = $this->getMockBuilder(
+            'AnnoStationBundle\Database\Facade\LabeledThingInFrame'
+        )
             ->disableOriginalConstructor()
             ->getMock();
 

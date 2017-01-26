@@ -74,7 +74,9 @@ class AttentionTest extends Tests\WebTestCase
         $userFacade               = $this->getAnnostationService('database.facade.user');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
 
-        $coordinatorUser = $userFacade->updateUser(AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build());
+        $coordinatorUser = $userFacade->updateUser(
+            AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build()
+        );
 
         $project       = Helper\ProjectBuilder::create()
             ->withAddedCoordinatorAssignment($coordinatorUser);

@@ -177,7 +177,9 @@ abstract class Importer
                 $backBottomRight  = null;
                 $backBottomLeft   = null;
 
-                if (!empty($entity[self::VERTEX_3D_0_X]) || !empty($entity[self::VERTEX_3D_0_Y]) || !empty($entity[self::VERTEX_3D_0_Z])) {
+                if (!empty($entity[self::VERTEX_3D_0_X]) || !empty($entity[self::VERTEX_3D_0_Y]) ||
+                    !empty($entity[self::VERTEX_3D_0_Z])
+                ) {
                     $frontTopLeft = [
                         (float) $entity[self::VERTEX_3D_0_X],
                         (float) $entity[self::VERTEX_3D_0_Y],
@@ -185,7 +187,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_1_X]) || !empty($entity[self::VERTEX_3D_1_Y]) || !empty($entity[self::VERTEX_3D_1_Z])) {
+                if (!empty($entity[self::VERTEX_3D_1_X]) || !empty($entity[self::VERTEX_3D_1_Y]) ||
+                    !empty($entity[self::VERTEX_3D_1_Z])
+                ) {
                     $frontTopRight = [
                         (float) $entity[self::VERTEX_3D_1_X],
                         (float) $entity[self::VERTEX_3D_1_Y],
@@ -193,7 +197,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_2_X]) || !empty($entity[self::VERTEX_3D_2_Y]) || !empty($entity[self::VERTEX_3D_2_Z])) {
+                if (!empty($entity[self::VERTEX_3D_2_X]) || !empty($entity[self::VERTEX_3D_2_Y]) ||
+                    !empty($entity[self::VERTEX_3D_2_Z])
+                ) {
                     $frontBottomRight = [
                         (float) $entity[self::VERTEX_3D_2_X],
                         (float) $entity[self::VERTEX_3D_2_Y],
@@ -201,7 +207,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_3_X]) || !empty($entity[self::VERTEX_3D_3_Y]) || !empty($entity[self::VERTEX_3D_3_Z])) {
+                if (!empty($entity[self::VERTEX_3D_3_X]) || !empty($entity[self::VERTEX_3D_3_Y]) ||
+                    !empty($entity[self::VERTEX_3D_3_Z])
+                ) {
                     $frontBottomLeft = [
                         (float) $entity[self::VERTEX_3D_3_X],
                         (float) $entity[self::VERTEX_3D_3_Y],
@@ -209,7 +217,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_4_X]) || !empty($entity[self::VERTEX_3D_4_Y]) || !empty($entity[self::VERTEX_3D_4_Z])) {
+                if (!empty($entity[self::VERTEX_3D_4_X]) || !empty($entity[self::VERTEX_3D_4_Y]) ||
+                    !empty($entity[self::VERTEX_3D_4_Z])
+                ) {
                     $backTopLeft = [
                         (float) $entity[self::VERTEX_3D_4_X],
                         (float) $entity[self::VERTEX_3D_4_Y],
@@ -217,7 +227,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_5_X]) || !empty($entity[self::VERTEX_3D_5_Y]) || !empty($entity[self::VERTEX_3D_5_Z])) {
+                if (!empty($entity[self::VERTEX_3D_5_X]) || !empty($entity[self::VERTEX_3D_5_Y]) ||
+                    !empty($entity[self::VERTEX_3D_5_Z])
+                ) {
                     $backTopRight = [
                         (float) $entity[self::VERTEX_3D_5_X],
                         (float) $entity[self::VERTEX_3D_5_Y],
@@ -225,7 +237,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_6_X]) || !empty($entity[self::VERTEX_3D_6_Y]) || !empty($entity[self::VERTEX_3D_6_Z])) {
+                if (!empty($entity[self::VERTEX_3D_6_X]) || !empty($entity[self::VERTEX_3D_6_Y]) ||
+                    !empty($entity[self::VERTEX_3D_6_Z])
+                ) {
                     $backBottomRight = [
                         (float) $entity[self::VERTEX_3D_6_X],
                         (float) $entity[self::VERTEX_3D_6_Y],
@@ -233,7 +247,9 @@ abstract class Importer
                     ];
                 }
 
-                if (!empty($entity[self::VERTEX_3D_7_X]) || !empty($entity[self::VERTEX_3D_7_Y]) || !empty($entity[self::VERTEX_3D_7_Z])) {
+                if (!empty($entity[self::VERTEX_3D_7_X]) || !empty($entity[self::VERTEX_3D_7_Y]) ||
+                    !empty($entity[self::VERTEX_3D_7_Z])
+                ) {
                     $backBottomLeft = [
                         (float) $entity[self::VERTEX_3D_7_X],
                         (float) $entity[self::VERTEX_3D_7_Y],
