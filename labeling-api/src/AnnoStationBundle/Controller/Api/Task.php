@@ -118,6 +118,7 @@ class Task extends Controller\Base
         }
 
         $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+        $numberOfTotalDocumentsByStatus = $numberOfTotalDocumentsByStatus[$taskPhase];
 
         $tasks                  = [];
         $numberOfTotalDocuments = 0;
@@ -130,7 +131,7 @@ class Task extends Controller\Base
                     $limit,
                     $taskPhase
                 )->toArray();
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_IN_PROGRESS];
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_IN_PROGRESS];
                 break;
             case Model\LabelingTask::STATUS_TODO:
                 $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
@@ -140,7 +141,7 @@ class Task extends Controller\Base
                     $limit,
                     $taskPhase
                 )->toArray();
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_TODO];
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
                 if ($user->hasOneRoleOf(
@@ -155,7 +156,7 @@ class Task extends Controller\Base
                         $taskPhase
                     )->toArray();
                 }
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[$taskPhase][Model\LabelingTask::STATUS_DONE];
+                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_DONE];
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
                 if ($user->hasOneRoleOf(
@@ -279,7 +280,7 @@ class Task extends Controller\Base
      * Get the frame locations for the given task id and type
      *
      * TODO: Maybe it's better to place nested routes into an own controller,
-     *       see http://symfony.com/doc/current/bundles/FOSRestBundle/6-automatic-route-generation_multiple-restful-controllers.html
+     *       see https://goo.gl/IVs9CF
      *       for details.
      *
      * @Rest\Get("/{task}/frameLocations/{type}")

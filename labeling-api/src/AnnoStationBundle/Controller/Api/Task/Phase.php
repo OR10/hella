@@ -57,7 +57,9 @@ class Phase extends Controller\Base
                 throw new Exception\PreconditionFailedHttpException();
             }
 
-            if (($currentStatus !== Model\LabelingTask::STATUS_TODO && $currentStatus !== Model\LabelingTask::STATUS_DONE)) {
+            if ($currentStatus !== Model\LabelingTask::STATUS_TODO &&
+                $currentStatus !== Model\LabelingTask::STATUS_DONE
+            ) {
                 throw new Exception\PreconditionFailedHttpException();
             }
         }

@@ -3,6 +3,8 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Helper;
+use AnnoStationBundle\Helper\TaskConfigurationXmlConverter\RequirementsTaskConfigurationXmlConverter;
+use AnnoStationBundle\Helper\TaskConfigurationXmlConverter\SimpleTaskConfigurationXmlConverter;
 use AppBundle\Model;
 
 class TaskConfigurationXmlConverterFactory
@@ -20,7 +22,7 @@ class TaskConfigurationXmlConverterFactory
      * @param                         $xml
      * @param                         $type
      *
-     * @return Helper\TaskConfigurationXmlConverter\RequirementsTaskConfigurationXmlConverter|Helper\TaskConfigurationXmlConverter\SimpleTaskConfigurationXmlConverter
+     * @return RequirementsTaskConfigurationXmlConverter|SimpleTaskConfigurationXmlConverter
      */
     public function createConverter($xml, $type)
     {

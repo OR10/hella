@@ -45,6 +45,7 @@ class TaskCount extends Controller\Base
      * @Rest\Get("/{project}")
      *
      * @param HttpFoundation\Request $request
+     * @param Model\Project          $project
      *
      * @return \FOS\RestBundle\View\View
      */
@@ -52,12 +53,14 @@ class TaskCount extends Controller\Base
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
+        $sumOfAllDoneTasks = $this->labelingTask->getSumOfAllDoneLabelingTasksForProject(
+            $project
+        );
+
         $sumTasks = array_merge(
             $this->labelingTask->getSumOfTasksByPhaseForProject($project),
             array(
-                Model\LabelingTask::STATUS_ALL_PHASES_DONE => $this->labelingTask->getSumOfAllDoneLabelingTasksForProject(
-                    $project
-                ),
+                Model\LabelingTask::STATUS_ALL_PHASES_DONE => $sumOfAllDoneTasks,
             )
         );
 
