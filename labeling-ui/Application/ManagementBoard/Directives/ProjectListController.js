@@ -248,7 +248,7 @@ class ProjectListController {
       }
 
       if (taskInPreProcessingCount > 0) {
-        this.showPreProcessingVideoInfoModal();
+        this._showPreProcessingVideoInfoModal();
         return;
       }
 
@@ -314,7 +314,7 @@ class ProjectListController {
       }
 
       if (taskInPreProcessingCount > 0) {
-        this.showPreProcessingVideoInfoModal();
+        this._showPreProcessingVideoInfoModal();
         return;
       }
 
@@ -354,7 +354,7 @@ class ProjectListController {
     });
   }
 
-  showPreProcessingVideoInfoModal()
+  _showPreProcessingVideoInfoModal()
   {
     this._modalService.info(
       {
