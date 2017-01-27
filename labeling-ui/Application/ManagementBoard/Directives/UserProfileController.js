@@ -186,7 +186,7 @@ class UserProfileController {
       () => {
         this.loadingInProgress = true;
         this._userGateway.deleteUser(user.id)
-          .then(() => this._$location.path('/users'));
+          .then(() => this._$state.go('labeling.users.list'));
       },
       undefined,
       {

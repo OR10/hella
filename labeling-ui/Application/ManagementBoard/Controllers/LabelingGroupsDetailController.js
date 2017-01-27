@@ -126,7 +126,8 @@ class LabelingGroupsDetailController {
 
   removeLabeler(id) {
     this.groupLabelers.splice(
-      this.groupLabelers.findIndex(user => user.id === id)
+      this.groupLabelers.findIndex(user => user.id === id),
+      1
     );
   }
 
