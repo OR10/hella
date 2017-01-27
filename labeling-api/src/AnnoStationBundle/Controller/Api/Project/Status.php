@@ -78,6 +78,13 @@ class Status extends Controller\Base
 
         $user = $this->tokenStorage->getToken()->getUser();
 
+        $sumOfTaskByPhase = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+        if ($sumOfTaskByPhase[Model\LabelingTask::PHASE_PREPROCESSING][Model\LabelingTask::STATUS_TODO] > 0) {
+            throw new Exception\PreconditionFailedHttpException(
+                'Videos are already in pre-processing and not ready for labeling.'
+            );
+        }
+
         $assignedGroupId = $request->request->get('assignedGroupId');
 
         $project->addStatusHistory(
