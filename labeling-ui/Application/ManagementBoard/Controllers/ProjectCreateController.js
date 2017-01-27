@@ -191,6 +191,16 @@ class ProjectCreateController {
     this.taskConfigToAdd = '';
 
     /**
+     * @type {{username: boolean}}
+     */
+    this.validation = {
+      name: true,
+      frameSkip: true,
+      startFrameNumber: true,
+      splitEach: true,
+    };
+
+    /**
      * @type {Array}
      */
     this.labelingTaskTypes = [];
@@ -233,6 +243,9 @@ class ProjectCreateController {
    * Save a project with genericXml export
    */
   saveGeneric() {
+    if (!this._validateProjectNameAndSettings()) {
+      return;
+    }
     ++this.loadingInProgress;
 
     const taskTypeConfigurations = this.labelingTaskTypes.map(taskType => {
@@ -267,6 +280,9 @@ class ProjectCreateController {
    * Save a project with genericXml export
    */
   saveRequirementsXml() {
+    if (!this._validateProjectNameAndSettings()) {
+      return;
+    }
     ++this.loadingInProgress;
 
     const taskTypeConfigurations = [
@@ -320,6 +336,9 @@ class ProjectCreateController {
    * Save a project with legacy export
    */
   saveLegacy() {
+    if (!this._validateProjectNameAndSettings()) {
+      return;
+    }
     ++this.loadingInProgress;
 
     const data = {
@@ -362,6 +381,35 @@ class ProjectCreateController {
    */
   goBack() {
     this._$state.go('labeling.projects.list');
+  }
+
+  /**
+   * Validates the user
+   *
+   * @private
+   */
+  _validateProjectNameAndSettings() {
+    let valid = true;
+
+    this.validation.name = true;
+
+    if (this.name === null || this.name === '') {
+      this.validation.name = valid = false;
+    }
+
+    if (this.frameSkip === undefined) {
+      this.validation.frameSkip = valid = false;
+    }
+
+    if (this.startFrameNumber === undefined) {
+      this.validation.startFrameNumber = valid = false;
+    }
+
+    if (this.splitEach === undefined) {
+      this.validation.splitEach = valid = false;
+    }
+
+    return valid;
   }
 
 }

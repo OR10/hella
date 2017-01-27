@@ -19,7 +19,8 @@
                     <legend>Project</legend>
                     <input type="text"
                            placeholder="Name"
-                           ng-model="vm.name">
+                           ng-model="vm.name"
+                           ng-class="{error: !vm.validation.name}">
                     <input type="text"
                            placeholder="Description"
                            ng-model="vm.description">
@@ -41,7 +42,8 @@
                            value="22"
                            min="1"
                            step="1"
-                           ng-model="vm.frameSkip"/>
+                           ng-model="vm.frameSkip"
+                           ng-class="{error: !vm.validation.frameSkip}"/>
 
                     <label for="startFrameNumber">
                         Start Frame Number
@@ -51,7 +53,8 @@
                            value="22"
                            min="1"
                            step="1"
-                           ng-model="vm.startFrameNumber"/>
+                           ng-model="vm.startFrameNumber"
+                           ng-class="{error: !vm.validation.startFrameNumber}"/>
 
                     <label for="splitEach">
                         Split Video
@@ -61,7 +64,8 @@
                            value="0"
                            min="0"
                            step="1"
-                           ng-model="vm.splitEach"/>
+                           ng-model="vm.splitEach"
+                           ng-class="{error: !vm.validation.splitEach}"/>
                 </fieldset>
                 <fieldset>
                     <legend>Label Instruction</legend>
