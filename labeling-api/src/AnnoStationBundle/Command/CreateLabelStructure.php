@@ -66,43 +66,9 @@ class CreateLabelStructure extends Base
             ),
         );
 
-        $truncations = array(
-            array(
-                'name' => 'truncation-0',
-                'response' => '0%',
-            ),
-            array(
-                'name' => 'truncation-25',
-                'response' => '< 25%',
-            ),
-            array(
-                'name' => 'truncation-25-50',
-                'response' => '25% - 50%',
-            ),
-            array(
-                'name' => 'truncation-50',
-                'response' => '> 50%',
-            ),
-        );
+        $truncations = $this->getTruncations();
 
-        $occlusions = array(
-            array(
-                'name' => 'occlusion-0',
-                'response' => '0%',
-            ),
-            array(
-                'name' => 'occlusion-25',
-                'response' => '< 25%',
-            ),
-            array(
-                'name' => 'occlusion-25-50',
-                'response' => '25% - 50%',
-            ),
-            array(
-                'name' => 'occlusion-50',
-                'response' => '> 50%',
-            ),
-        );
+        $occlusions = $this->getOcclusions();
 
         $data = array(
             array(
@@ -169,43 +135,9 @@ class CreateLabelStructure extends Base
             ),
         );
 
-        $truncations = array(
-            array(
-                'name' => 'truncation-0',
-                'response' => '0%',
-            ),
-            array(
-                'name' => 'truncation-25',
-                'response' => '< 25%',
-            ),
-            array(
-                'name' => 'truncation-25-50',
-                'response' => '25% - 50%',
-            ),
-            array(
-                'name' => 'truncation-50',
-                'response' => '> 50%',
-            ),
-        );
+        $truncations = $this->getTruncations();
 
-        $occlusions = array(
-            array(
-                'name' => 'occlusion-0',
-                'response' => '0%',
-            ),
-            array(
-                'name' => 'occlusion-25',
-                'response' => '< 25%',
-            ),
-            array(
-                'name' => 'occlusion-25-50',
-                'response' => '25% - 50%',
-            ),
-            array(
-                'name' => 'occlusion-50',
-                'response' => '> 50%',
-            ),
-        );
+        $occlusions = $this->getOcclusions();
 
         $data = array(
             array(
@@ -232,6 +164,56 @@ class CreateLabelStructure extends Base
         file_put_contents(
             sprintf('%s/../Resources/LabelStructures/%s', __DIR__, 'object-labeling-person-ui.json'),
             json_encode($this->buildFrontendLabelStructure($data))
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getTruncations()
+    {
+        return array(
+            array(
+                'name'     => 'truncation-0',
+                'response' => '0%',
+            ),
+            array(
+                'name'     => 'truncation-25',
+                'response' => '< 25%',
+            ),
+            array(
+                'name'     => 'truncation-25-50',
+                'response' => '25% - 50%',
+            ),
+            array(
+                'name'     => 'truncation-50',
+                'response' => '> 50%',
+            ),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getOcclusions()
+    {
+        return array(
+            array(
+                'name' => 'occlusion-0',
+                'response' => '0%',
+            ),
+            array(
+                'name' => 'occlusion-25',
+                'response' => '< 25%',
+            ),
+            array(
+                'name' => 'occlusion-25-50',
+                'response' => '25% - 50%',
+            ),
+            array(
+                'name' => 'occlusion-50',
+                'response' => '> 50%',
+            ),
         );
     }
 
