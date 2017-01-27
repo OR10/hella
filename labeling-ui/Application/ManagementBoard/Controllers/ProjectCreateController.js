@@ -392,6 +392,9 @@ class ProjectCreateController {
     let valid = true;
 
     this.validation.name = true;
+    this.validation.frameSkip = true;
+    this.validation.startFrameNumber = true;
+    this.validation.splitEach = true;
 
     if (this.name === null || this.name === '') {
       this.validation.name = valid = false;
