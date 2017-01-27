@@ -273,5 +273,12 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
         </service>
+
+        <service id="annostation.labeling_api.service.label_importer.simple_xml"
+                 class="AnnoStationBundle\Service\LabelImporter\SimpleXml">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.label_importer.simple_xml_2d"/>
+            <argument type="service" id="annostation.labeling_api.service.label_importer.simple_xml_3d"/>
+        </service>
     </services>
 </container>
