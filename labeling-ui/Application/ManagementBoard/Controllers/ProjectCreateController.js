@@ -191,7 +191,7 @@ class ProjectCreateController {
     this.taskConfigToAdd = '';
 
     /**
-     * @type {{username: boolean}}
+     * @type {{username: boolean, frameSkip: boolean, startFrameNumber: boolean, splitEach: boolean}}
      */
     this.validation = {
       name: true,
