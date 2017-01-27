@@ -354,8 +354,7 @@ class ProjectListController {
     });
   }
 
-  _showPreProcessingVideoInfoModal()
-  {
+  _showPreProcessingVideoInfoModal() {
     this._modalService.info(
       {
         title: 'PreProcessing Videos',
