@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle;
 
 /**
  * Common base class for test cases that require a symfony client.
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 class WebTestCase extends KernelTestCase
 {
