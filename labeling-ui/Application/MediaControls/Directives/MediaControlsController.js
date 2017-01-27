@@ -273,6 +273,9 @@ class MediaControlsController {
   }
 
   handleDeleteSelectionClicked() {
+    if (this.selectedPaperShape === null) {
+      return;
+    }
     this._modalService.info(
       {
         title: 'Remove shape',
