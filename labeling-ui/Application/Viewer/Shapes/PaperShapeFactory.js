@@ -78,6 +78,7 @@ class PaperShapeFactory {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
+   * @param {Video} video
    * @returns {PaperShape}
    */
   createPaperShape(labeledThingInFrame, shape, video = null) {
