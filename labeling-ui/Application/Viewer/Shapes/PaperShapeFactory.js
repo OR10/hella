@@ -95,7 +95,7 @@ class PaperShapeFactory {
         result = this._createCuboid(labeledThingInFrame, shape, color, video);
         break;
       case 'polygon':
-        result = this._createPolygon(labeledThingInFrame, shape, color.primary, video);
+        result = this._createPolygon(labeledThingInFrame, shape, color.primary);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
