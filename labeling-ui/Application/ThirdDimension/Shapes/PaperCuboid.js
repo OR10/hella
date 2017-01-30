@@ -410,6 +410,9 @@ class PaperCuboid extends PaperShape {
     return {
       width: maxX - minX,
       height: maxY - minY,
+      x: minX,
+      y: minY,
+      point: new paper.Point(minX, minY),
     };
   }
 

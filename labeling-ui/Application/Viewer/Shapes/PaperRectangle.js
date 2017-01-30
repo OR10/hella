@@ -45,6 +45,9 @@ class PaperRectangle extends PaperShape {
     return {
       width: this._bottomRight.x - this._topLeft.x,
       height: this._bottomRight.y - this._topLeft.y,
+      x: this._topLeft.x,
+      y: this._topLeft.y,
+      point: this._topLeft,
     };
   }
 

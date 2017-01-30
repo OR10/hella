@@ -42,6 +42,9 @@ class PaperPolygon extends PaperShape {
     return {
       width: rightPoint.x - leftPoint.x,
       height: bottomPoint.y - topPoint.y,
+      x: leftPoint,
+      y: topPoint,
+      point: new paper.Point(leftPoint, topPoint),
     };
   }
 
