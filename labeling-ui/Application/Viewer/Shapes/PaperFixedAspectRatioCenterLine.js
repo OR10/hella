@@ -5,7 +5,7 @@ import RectangleHandle from './Handles/Rectangle';
 /**
  * @extends PaperShape
  */
-class PaperPedestrian extends PaperShape {
+class PaperFixedAspectRatioCenterLine extends PaperShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
@@ -74,7 +74,7 @@ class PaperPedestrian extends PaperShape {
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,
-      dashArray: PaperPedestrian.CENTER_DASH,
+      dashArray: PaperFixedAspectRatioCenterLine.CENTER_DASH,
     });
   }
 
@@ -88,7 +88,7 @@ class PaperPedestrian extends PaperShape {
    */
   _createAspectRectangle() {
     const heightHalf = (this._bottomCenter.y - this._topCenter.y) / 2;
-    const widthHalf = heightHalf * PaperPedestrian.ASPECT_RATIO;
+    const widthHalf = heightHalf * PaperFixedAspectRatioCenterLine.ASPECT_RATIO;
 
     return new paper.Path.Rectangle({
       strokeColor: this._color,
@@ -168,15 +168,23 @@ class PaperPedestrian extends PaperShape {
    */
   get bounds() {
     const height = Math.abs(this._bottomCenter.y - this._topCenter.y);
-    const width = height * PaperPedestrian.ASPECT_RATIO;
-    return {width, height};
+    const width = height * PaperFixedAspectRatioCenterLine.ASPECT_RATIO;
+    const x = this._topCenter.x - width / 2;
+    const y = this._topCenter.y;
+    return {
+      width,
+      height,
+      x,
+      y,
+      point: new paper.Point(x, y),
+    };
   }
 
   /**
    * @returns {string}
    */
   getClass() {
-    return PaperPedestrian.getClass();
+    return PaperFixedAspectRatioCenterLine.getClass();
   }
 
   /**
@@ -307,11 +315,11 @@ class PaperPedestrian extends PaperShape {
 /**
  * @returns {string}
  */
-PaperPedestrian.getClass = () => {
+PaperFixedAspectRatioCenterLine.getClass = () => {
   return 'pedestrian';
 };
 
-PaperPedestrian.ASPECT_RATIO = 0.41;
-PaperPedestrian.CENTER_DASH = [2, 2];
+PaperFixedAspectRatioCenterLine.ASPECT_RATIO = 0.41;
+PaperFixedAspectRatioCenterLine.CENTER_DASH = [2, 2];
 
-export default PaperPedestrian;
+export default PaperFixedAspectRatioCenterLine;

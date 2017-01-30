@@ -1,6 +1,6 @@
 import paper from 'paper';
 import DrawingTool from '../DrawingTool';
-import PaperPedestrian from '../../Shapes/PaperPedestrian';
+import PaperFixedAspectRatioCenterLine from '../../Shapes/PaperFixedAspectRatioCenterLine';
 import Handle from '../../Shapes/Handles/Handle';
 
 /**
@@ -23,7 +23,7 @@ class PedestrianDrawingTool extends DrawingTool {
     super($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task);
 
     /**
-     * @type {PaperPedestrian|null}
+     * @type {PaperFixedAspectRatioCenterLine|null}
      * @private
      */
     this._pedestrian = null;
@@ -65,7 +65,7 @@ class PedestrianDrawingTool extends DrawingTool {
     }
 
     this._context.withScope(() => {
-      this._pedestrian = new PaperPedestrian(
+      this._pedestrian = new PaperFixedAspectRatioCenterLine(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         topCenter,
@@ -162,7 +162,7 @@ class PedestrianDrawingTool extends DrawingTool {
     const labeledThingInFrame = this._createLabeledThingHierarchy();
 
     this._context.withScope(() => {
-      this._pedestrian = new PaperPedestrian(
+      this._pedestrian = new PaperFixedAspectRatioCenterLine(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         from,
