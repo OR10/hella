@@ -428,6 +428,28 @@ class LabelingTask
     }
 
     /**
+     * @param Model\LabelingTask $task
+     *
+     * @return Model\TaskTimer|null
+     */
+    public function getTimeInSecondsForTask(Model\LabelingTask $task)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_task_timer_sum_by_taskId_001', 'view')
+            ->setKey($task->getId())
+            ->setLimit(1)
+            ->setReduce(true)
+            ->execute()
+            ->toArray();
+
+        if (empty($result)) {
+            return [];
+        }
+
+        return $result[0]['value'];
+    }
+
+    /**
      * @param Model\TaskTimer $taskTimer
      */
     public function saveTimer(Model\TaskTimer $taskTimer)

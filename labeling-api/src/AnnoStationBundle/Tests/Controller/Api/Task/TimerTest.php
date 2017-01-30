@@ -66,6 +66,7 @@ class TimerTest extends Tests\WebTestCase
             [
                 "result" => [
                     "time" => 0,
+                    "overall" => 0,
                 ]
             ],
             $request->getJsonResponseBody()
@@ -83,6 +84,7 @@ class TimerTest extends Tests\WebTestCase
             [
                 "result" => [
                     "time" => 23,
+                    "overall" => 23,
                 ]
             ],
             $request->getJsonResponseBody()
