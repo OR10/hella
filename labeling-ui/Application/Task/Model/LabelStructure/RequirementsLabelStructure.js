@@ -2,7 +2,6 @@ import cloneDeep from 'lodash.clonedeep';
 
 import LabelStructure from '../LabelStructure';
 import LabelStructureThing from '../LabelStructureThing';
-import LabelStructureGroupThing from '../LabelStructureGroupThing';
 import XMLClassElement from '../XMLClassElement';
 
 /**
@@ -49,16 +48,6 @@ class RequirementsLabelStructure extends LabelStructure {
      * @private
      */
     this._thingMap = null;
-
-    /**
-     * Map containing all {@link LabelStructureGroupThing} onject of this {@link LabelStructure} stored by their `id`.
-     *
-     * Will be lazily filled once, requested.
-     *
-     * @type {Map|null}
-     * @private
-     */
-    this._groupMap = null;
   }
 
   /**
@@ -79,8 +68,8 @@ class RequirementsLabelStructure extends LabelStructure {
       throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`);
     }
 
-    const thingElement = this._getThingElementById(identifier);
-    const enabledElements = this._getEnabledElementsByStartingElementAndClassList(thingElement, classList);
+    const element = this._getThingElementById(identifier);
+    const enabledElements = this._getEnabledElementsByStartingElementAndClassList(element, classList);
     const enabledThingClasses = enabledElements.map(
       enabledElement => this._annotateClassJsonWithActiveValue(
         this._convertClassElementToClassJson(enabledElement),
@@ -99,53 +88,63 @@ class RequirementsLabelStructure extends LabelStructure {
    */
   getThings() {
     if (this._thingMap === null) {
-      const thingMap = new Map();
-      const thingsSnapshot = this._evaluateXPath('/r:requirements/r:thing', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+      let things = new Map();
+      things = this._extractThings(things);
+      things = this._extractGroups(things);
 
-      for (let index = 0; index < thingsSnapshot.snapshotLength; index++) {
-        const thingElement = thingsSnapshot.snapshotItem(index);
-        const identifier = thingElement.attributes.id.value;
-        const name = thingElement.attributes.name.value;
-        const shape = thingElement.attributes.shape.value;
-
-        thingMap.set(
-          identifier,
-          new LabelStructureThing(identifier, name, shape)
-        );
-      }
-
-      this._thingMap = thingMap;
+      this._thingMap = things;
     }
 
     return this._thingMap;
   }
 
   /**
-   * Retrieve a `Map` of all `Groups` defined inside the {@link LabelStructure}
+   * Extracts all things from the {@link LabelStructure} and returns them in a Map.
    *
-   * @return {Map.<string, LabelStructureGroupThing>}
+   * @param {Map} thingMap
+   * @returns {Map}
+   * @private
    */
-  getGroups() {
-    if (this._groupMap === null) {
-      const groupMap = new Map();
+  _extractThings(thingMap) {
+    const thingsSnapshot = this._evaluateXPath('/r:requirements/r:thing', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
-      const groupsSnapshot = this._evaluateXPath('/r:requirements/r:group', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    for (let index = 0; index < thingsSnapshot.snapshotLength; index++) {
+      const thingElement = thingsSnapshot.snapshotItem(index);
+      const identifier = thingElement.attributes.id.value;
+      const name = thingElement.attributes.name.value;
+      const shape = thingElement.attributes.shape.value;
 
-      for (let index = 0; index < groupsSnapshot.snapshotLength; index++) {
-        const groupElement = groupsSnapshot.snapshotItem(index);
-        const identifier = groupElement.attributes.id.value;
-        const name = groupElement.attributes.name.value;
-
-        groupMap.set(
-          identifier,
-          new LabelStructureGroupThing(identifier, name)
-        );
-      }
-
-      this._groupMap = groupMap;
+      thingMap.set(
+        identifier,
+        new LabelStructureThing(identifier, name, shape)
+      );
     }
 
-    return this._groupMap;
+    return thingMap;
+  }
+
+  /**
+   * Extracts all groups from the {@link LabelStructure} and returns them in a Map.
+   *
+   * @param {Map} thingMap
+   * @returns {Map}
+   * @private
+   */
+  _extractGroups(thingMap) {
+    const groupsSnapshot = this._evaluateXPath('/r:requirements/r:group', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    for (let index = 0; index < groupsSnapshot.snapshotLength; index++) {
+      const groupElement = groupsSnapshot.snapshotItem(index);
+      const identifier = groupElement.attributes.id.value;
+      const name = groupElement.attributes.name.value;
+
+      thingMap.set(
+        identifier,
+        new LabelStructureThing(identifier, name, 'group-rectangle', 'group')
+      );
+    }
+
+    return thingMap;
   }
 
   /**
@@ -320,6 +319,28 @@ class RequirementsLabelStructure extends LabelStructure {
     return valueElements;
   }
 
+
+  /**
+   * Get DOMElement for the given identifier from a subset of relevant nodes of the {@link LabelStructure}.
+   *
+   * Currently searched DOMElements are:
+   * - Thing
+   * - Group
+   *
+   * @param identifier
+   * @private
+   */
+  _getThingElementById(identifier) {
+    const thing = this._extractThingDOMElementById(identifier);
+    const group = this._extractGroupDOMElementById(identifier);
+
+    if (!thing && !group) {
+      throw new Error(`Expected to find one thing node with a specific id, but found none.`);
+    }
+
+    return thing || group;
+  }
+
   /**
    * Get the Thing DOMElement of thing with a specific identifier
    *
@@ -329,16 +350,29 @@ class RequirementsLabelStructure extends LabelStructure {
    * @returns {Node}
    * @private
    */
-  _getThingElementById(identifier) {
+  _extractThingDOMElementById(identifier) {
     const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
-    if (searchSnapshot.snapshotLength !== 1) {
-      throw new Error(`Expected to find one thing node with a specific id, but found ${searchSnapshot.snapshotLength}.`);
-    }
-
     const thingElement = searchSnapshot.snapshotItem(0);
     return thingElement;
+  }
+
+  /**
+   * Get the group DOMElement of thing with a specific identifier
+   *
+   * If a node with the given identifier could not be found an exception will be thrown.
+   *
+   * @param {string} identifier
+   * @returns {Node}
+   * @private
+   */
+  _extractGroupDOMElementById(identifier) {
+    const searchNodePath = `/r:requirements/r:group[@id="${identifier}"]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    const groupElement = searchSnapshot.snapshotItem(0);
+    return groupElement;
   }
 
   /**

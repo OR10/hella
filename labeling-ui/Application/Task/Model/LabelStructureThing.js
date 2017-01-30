@@ -3,8 +3,9 @@ class LabelStructureThing {
    * @param {string} id
    * @param {string} name
    * @param {string} shape
+   * @param {string} thingType
    */
-  constructor(id, name, shape) {
+  constructor(id, name, shape, thingType = 'thing') {
     /**
      * @type {string}
      */
@@ -19,6 +20,15 @@ class LabelStructureThing {
      * @type {string}
      */
     this.shape = shape;
+
+    /**
+     * @type {string}
+     */
+    this.thingType = thingType;
+  }
+
+  get type() {
+    return this.id;
   }
 }
 

@@ -1,6 +1,3 @@
-import LabelStructureThing from '../Model/LabelStructureThing';
-import LabelStructureGroupThing from '../Model/LabelStructureGroupThing';
-
 /**
  * Controller of the {@link PopupPanelDirective}
  */
@@ -17,11 +14,11 @@ class ToolSelectorController {
     this.groups = [];
 
     this.drawableThings.forEach(drawableThing => {
-      if (drawableThing instanceof LabelStructureGroupThing) {
+      if (drawableThing.thingType === 'group') {
         this.groups.push(drawableThing);
         return;
       }
-      if (drawableThing instanceof LabelStructureThing) {
+      if (drawableThing.thingType === 'thing') {
         this.things.push(drawableThing);
         return;
       }
