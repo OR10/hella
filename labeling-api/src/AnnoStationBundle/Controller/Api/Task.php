@@ -117,8 +117,10 @@ class Task extends Controller\Base
             throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
 
-        $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-        $numberOfTotalDocumentsByStatus = $numberOfTotalDocumentsByStatus[$taskPhase];
+        if (isset($taskPhase)) {
+            $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+            $numberOfTotalDocumentsByStatus = $numberOfTotalDocumentsByStatus[$taskPhase];
+        }
 
         $tasks                  = [];
         $numberOfTotalDocuments = 0;
