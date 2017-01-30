@@ -73,7 +73,7 @@ class Timer extends Controller\Base
         $this->authorizationService->denyIfTaskIsNotReadable($task);
 
         if ($user !== $this->tokenStorage->getToken()->getUser()) {
-            throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
+            throw new Exception\AccessDeniedHttpException('Its not allowed to get the timer for other users');
         }
 
         $timer = $this->labelingTaskFacade->getTimerForTaskAndUser($task, $user);
