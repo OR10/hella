@@ -381,4 +381,20 @@ class LabeledThingInFrame
     {
         $this->identifierName = $identifierName;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * @param mixed $projectId
+     */
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
 }

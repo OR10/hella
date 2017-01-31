@@ -227,4 +227,12 @@ class LabeledThing
 
         return $this->groupIds;
     }
+
+    /**
+     * @param mixed $projectId
+     */
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
 }
