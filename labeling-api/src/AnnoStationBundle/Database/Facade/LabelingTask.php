@@ -430,7 +430,7 @@ class LabelingTask
     /**
      * @param Model\LabelingTask $task
      *
-     * @return Model\TaskTimer|null
+     * @return Model\TaskTimer|array
      */
     public function getTimeInSecondsForTask(Model\LabelingTask $task)
     {
