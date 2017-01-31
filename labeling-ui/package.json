@@ -112,7 +112,7 @@
       "css-element-queries": "npm:css-element-queries@^0.3.2",
       "event-emitter": "github:Olical/EventEmitter@^4.3.0",
       "flowjs": "github:flowjs/flow.js@^2.11.2",
-      "font-awesome": "npm:font-awesome@^4.4.0",
+      "font-awesome": "npm:font-awesome@^4.7.0",
       "foundation-apps": "npm:foundation-apps@^1.2.0",
       "foundation-sites": "npm:foundation-sites@^6.1.1",
       "jquery": "github:components/jquery@2.1.4",
