@@ -30,6 +30,8 @@
             <badge class="grid-block noscroll" label="vm.incompleteCount">
                 <button ng-hide="vm.task.getStatusForPhase(vm.taskPhase) === 'labeled'"
                         ng-click="vm.finishLabelingTask()"
+                        ng-disabled="vm.readOnly"
+                        ng-class="{'disabled': vm.readOnly}"
                         tooltip="Finish the active task"
                         style="margin-left: -.7rem;"
                 >
