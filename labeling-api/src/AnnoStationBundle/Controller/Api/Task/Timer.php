@@ -76,21 +76,20 @@ class Timer extends Controller\Base
             throw new Exception\AccessDeniedHttpException('Its not allowed to get the timer for other users');
         }
 
+        $phase = $task->getCurrentPhase();
+
         $timer = $this->labelingTaskFacade->getTimerForTaskAndUser($task, $user);
 
-        $timerByPhases = $this->labelingTaskFacade->getTimeInSecondsForTask($task);
+        $overallTimer = $this->labelingTaskFacade->getTimeInSecondsForTask($task);
 
-        $overallSeconds = 0;
-        foreach($timerByPhases as $timerByPhase) {
-            $overallSeconds += $timerByPhase;
-        }
-
-        return View\View::create()->setData([
-            'result' => [
-                'time' => $timer === null ? 0 : $timer->getTimeInSeconds($task->getCurrentPhase()),
-                'overall' => $timer === null ? 0 : $overallSeconds,
-            ],
-        ]);
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'time'    => $timer === null ? 0 : $timer->getTimeInSeconds($phase),
+                    'overall' => !isset($overallTimer[$phase]) ? 0 : $overallTimer[$phase],
+                ],
+            ]
+        );
     }
 
     /**
