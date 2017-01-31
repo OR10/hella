@@ -19,6 +19,14 @@ button {
     border-right: 2px solid $element-inline-divider;
   }
 
+  &.disabled i {
+    color: darken($icon, 30%);
+
+    &:hover{
+      color: darken($icon, 30%) !important;
+    }
+  }
+
   //&:focus {
   //  outline: none;
   //  border: 1px solid $icon-hover;
