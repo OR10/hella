@@ -76,7 +76,7 @@ class SetMissingProjectIdsToLabeledThingInFrames extends Command\Base
                 }
 
                 $labeledThing = $this->labeledThing->find($labeledThingInFrame->getLabeledThingId());
-                if ($labeledThing->getProjectId() === null) {
+                if ($labeledThing instanceOf Model\LabeledThing && $labeledThing->getProjectId() === null) {
                     $this->writeInfo(
                         $output,
                         sprintf('[LT] [%s]: %s', $labeledThing->getId(), $projectId)
