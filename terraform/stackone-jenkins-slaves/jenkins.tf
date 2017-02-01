@@ -26,6 +26,13 @@ resource "openstack_compute_secgroup_v2" "jenkins-slaves" {
     ip_protocol = "tcp"
     cidr = "0.0.0.0/0"
   }
+
+  rule {
+    from_port = 54346
+    to_port = 54346
+    ip_protocol = "tcp"
+    cidr = "0.0.0.0/0"
+  }
 }
 
 resource "openstack_compute_floatingip_v2" "jenkins-slave" {
