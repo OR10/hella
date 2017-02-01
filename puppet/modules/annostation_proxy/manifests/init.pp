@@ -88,7 +88,8 @@ class annostation_proxy(
     $_listenPort       = pick($host['port'], $_defaultPort)
     $_proxyReadTimeout = pick($host['read_timeout'], 90)
 
-    ::nginx::resource::vhost { $_domain:
+    ::nginx::resource::vhost { "${_domain}:${_listenPort}":
+      server_name        => [$_domain],
       listen_port        => $_listenPort,
       listen_options     => $_listenOptions,
       ssl                => $_useSsl,
