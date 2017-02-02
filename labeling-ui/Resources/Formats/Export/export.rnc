@@ -33,11 +33,13 @@ grammar {
 
   Requirements = element e:requirements {
     NameAndIdAttributes,
+    attribute filename {text},
     Checksums
   }
 
   Workflow = element e:workflow {
     NameAndIdAttributes,
+    attribute filename {text},
     Checksums
   }
 
@@ -85,7 +87,8 @@ grammar {
 
 # <video>
   Video = element e:video {
-    NameAndIdAttributes,
+    attribute id {text},
+    attribute filename {text},
     FrameLabeling*,
     (Group | Thing)*
   }
@@ -96,6 +99,7 @@ grammar {
     attribute id {text},
     attribute line-color {text}?,
     attribute incomplete {text}?,
+    attribute type {text},
     FrameRangeAttributes,
     References,
     Shape+,
