@@ -19,11 +19,11 @@
       <creation-date>2017-01-20T16:00:00+00:00</creation-date>
       <created-by-user username="client" email="client@client.com"/>
     </export>
-    <requirements id="" name="testconfig">
+    <requirements id="" name="testconfig" filename="testconfig.xml">
       <sha256>c2f50888d3e2db6d8ba1c97328979e1abe3e442e29a95123dd384a6a44ab49c4</sha256>
     </requirements>
   </metadata>
-  <video id="" name="video-id-1">
+  <video id="" filename="video-id-1">
     <group id="" start="1" end="2" incomplete="true"/>
     <thing id="" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
       <references>

@@ -28,6 +28,7 @@ class Requirements extends ExportXml\Element
 
         $requirements->setAttribute('id', $this->taskConfiguration->getId());
         $requirements->setAttribute('name', $this->taskConfiguration->getName());
+        $requirements->setAttribute('filename', $this->taskConfiguration->getFilename());
 
         $sha256 = $document->createElementNS(
             $this->namespace,
