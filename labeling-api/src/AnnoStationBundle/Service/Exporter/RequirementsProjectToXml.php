@@ -209,12 +209,7 @@ class RequirementsProjectToXml
 
             /** @var Model\TaskConfiguration $taskConfiguration */
             foreach ($taskConfigurations as $taskConfiguration) {
-                $filename           = sprintf(
-                    '%s_%s',
-                    $taskConfiguration->getName(),
-                    $taskConfiguration->getFilename()
-                );
-                $zipData[$filename] = $taskConfiguration->getRawData();
+                $zipData[$taskConfiguration->getFilename()] = $taskConfiguration->getRawData();
             }
 
             $zipContent = $this->compressData($zipData);
