@@ -66,23 +66,30 @@ class Timer extends Controller\Base
      * @param Model\LabelingTask $task
      * @param Model\User         $user
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
-    public function getTimerAction(Model\LabelingTask $task, Model\User $user)
+    public function getTimerForUserAction(Model\LabelingTask $task, Model\User $user)
     {
         $this->authorizationService->denyIfTaskIsNotReadable($task);
 
         if ($user !== $this->tokenStorage->getToken()->getUser()) {
-            throw new Exception\AccessDeniedHttpException('Its not allowed to set the timer for other users');
+            throw new Exception\AccessDeniedHttpException('Its not allowed to get the timer for other users');
         }
+
+        $phase = $task->getCurrentPhase();
 
         $timer = $this->labelingTaskFacade->getTimerForTaskAndUser($task, $user);
 
-        return View\View::create()->setData([
-            'result' => [
-                'time' => $timer === null ? 0 : $timer->getTimeInSeconds($task->getCurrentPhase()),
-            ],
-        ]);
+        $overallTimer = $this->labelingTaskFacade->getTimeInSecondsForTask($task);
+
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'time'    => $timer === null ? 0 : $timer->getTimeInSeconds($phase),
+                    'overall' => !isset($overallTimer[$phase]) ? 0 : $overallTimer[$phase],
+                ],
+            ]
+        );
     }
 
     /**

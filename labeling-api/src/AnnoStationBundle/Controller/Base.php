@@ -5,6 +5,9 @@ use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
 use Symfony\Component\HttpFoundation\Session;
 
+/**
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ */
 abstract class Base
 {
     /**

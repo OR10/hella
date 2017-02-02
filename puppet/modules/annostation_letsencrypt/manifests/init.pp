@@ -32,11 +32,13 @@ class annostation_letsencrypt(
         require             => File[$webroot],
     }
 
-    ::letsencrypt::certonly { 'letsencrypt-certs':
-        domains => $domains,
-        plugin => 'webroot',
-        webroot_paths => [$webroot],
-        manage_cron => true,
-        cron_success_command => '/usr/sbin/service nginx reload',
+    $domains.each |$domain| {
+        ::letsencrypt::certonly { $domain:
+            domains => [$domain],
+            plugin => 'webroot',
+            webroot_paths => [$webroot],
+            manage_cron => true,
+            cron_success_command => '/usr/sbin/service nginx reload',
+        }
     }
 }

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+PUPPET_ENVIRONMENT="${1}"
+
 sudo apt-get update
 
 if [ ! -e "puppetlabs-release-pc1-trusty.deb" ]; then
@@ -24,7 +26,7 @@ sudo \
     --modulepath /home/ubuntu/puppet/modules:/home/ubuntu/puppet/vendor:/etc/puppet/modules \
     --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml \
     --environmentpath /home/ubuntu/puppet/environments/ \
-    --environment syseleven_anno_demo2 \
+    --environment "${PUPPET_ENVIRONMENT}" \
     --debug \
     --verbose \
-    /home/ubuntu/puppet/environments/syseleven_anno_demo2/manifests/site.pp
+    "/home/ubuntu/puppet/environments/${PUPPET_ENVIRONMENT}/manifests/site.pp"

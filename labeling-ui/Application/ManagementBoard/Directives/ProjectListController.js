@@ -221,7 +221,7 @@ class ProjectListController {
     // @TODO: Implement
   }
 
-  acceptProject(projectId, projectName) {
+  acceptProject(projectId, projectName, taskInPreProcessingCount) {
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
@@ -244,6 +244,11 @@ class ProjectListController {
           }
         );
         this.showLoadingMask = false;
+        return;
+      }
+
+      if (taskInPreProcessingCount > 0) {
+        this._showPreProcessingVideoInfoModal();
         return;
       }
 
@@ -309,21 +314,7 @@ class ProjectListController {
       }
 
       if (taskInPreProcessingCount > 0) {
-        this._modalService.info(
-          {
-            title: 'PreProcessing Videos',
-            headline: 'We are still importing videos please wait...',
-            message: 'You can\'t assign this project until all videos are imported',
-            confirmButtonText: 'Understood',
-          },
-          undefined,
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
-        this.showLoadingMask = false;
+        this._showPreProcessingVideoInfoModal();
         return;
       }
 
@@ -361,6 +352,24 @@ class ProjectListController {
       );
       this.showLoadingMask = false;
     });
+  }
+
+  _showPreProcessingVideoInfoModal() {
+    this._modalService.info(
+      {
+        title: 'PreProcessing Videos',
+        headline: 'We are still importing videos please wait...',
+        message: 'You can\'t assign this project until all videos are processed',
+        confirmButtonText: 'Understood',
+      },
+      undefined,
+      undefined,
+      {
+        warning: true,
+        abortable: false,
+      }
+    );
+    this.showLoadingMask = false;
   }
 
   /**

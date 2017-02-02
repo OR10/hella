@@ -29,8 +29,21 @@ resource "openstack_compute_instance_v2" "anno-demo2" {
         }
     }
 
+    provisioner "file" {
+        source = "provision.sh"
+        destination = "/home/ubuntu/provision.sh"
+
+        connection {
+            host = "${openstack_compute_floatingip_v2.anno-demo2.address}"
+            user = "ubuntu"
+        }
+    }
+
     provisioner "remote-exec" {
-        script = "provision.sh"
+        inline = [
+            "chmod +x /home/ubuntu/provision.sh",
+            "/home/ubuntu/provision.sh syseleven_anno_demo2"
+        ]
 
         connection {
             host = "${openstack_compute_floatingip_v2.anno-demo2.address}"

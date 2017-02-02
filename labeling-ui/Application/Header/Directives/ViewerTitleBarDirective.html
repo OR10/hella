@@ -24,12 +24,15 @@
                task="vm.task"
                user="vm.user"
                read-only="{{vm.readOnly}}"
+               ng-hide="true"
         ></timer>
 
         <div class="grid-content text-left shrink noscroll">
             <badge class="grid-block noscroll" label="vm.incompleteCount">
                 <button ng-hide="vm.task.getStatusForPhase(vm.taskPhase) === 'labeled'"
                         ng-click="vm.finishLabelingTask()"
+                        ng-disabled="vm.readOnly"
+                        ng-class="{'disabled': vm.readOnly}"
                         tooltip="Finish the active task"
                         style="margin-left: -.7rem;"
                 >

@@ -238,7 +238,7 @@ class TaskConfiguration extends Controller\Base
         foreach ($xpath->query('//x:requirements/x:thing|//x:requirements/x:group') as $thing) {
             $ids[] = $thing->getAttribute('id');
             foreach ($xpath->query('x:class', $thing) as $classNode) {
-                if ($thing->hasAttribute('ref')) {
+                if ($classNode->hasAttribute('ref')) {
                     continue;
                 }
                 $ids[] = $classNode->getAttribute('id');

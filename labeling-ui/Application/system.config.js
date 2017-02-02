@@ -79,11 +79,11 @@ System.config({
     "canteen": "github:effem/Canteen@master",
     "clean-css": "npm:clean-css@3.4.9",
     "core-js": "npm:core-js@1.2.6",
-    "css": "github:systemjs/plugin-css@0.1.19",
+    "css": "github:systemjs/plugin-css@0.1.32",
     "css-element-queries": "npm:css-element-queries@0.3.2",
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
     "flowjs": "github:flowjs/flow.js@2.11.2",
-    "font-awesome": "npm:font-awesome@4.4.0",
+    "font-awesome": "npm:font-awesome@4.7.0",
     "foundation-apps": "npm:foundation-apps@1.2.0",
     "foundation-sites": "npm:foundation-sites@6.1.1",
     "html": "github:systemjs/plugin-text@0.0.2",
@@ -502,8 +502,8 @@ System.config({
       "create-hash": "npm:create-hash@1.1.2",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0"
     },
-    "npm:font-awesome@4.4.0": {
-      "css": "github:systemjs/plugin-css@0.1.19"
+    "npm:font-awesome@4.7.0": {
+      "css": "github:systemjs/plugin-css@0.1.32"
     },
     "npm:forever-agent@0.5.2": {
       "http": "github:jspm/nodelibs-http@1.7.1",

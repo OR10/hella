@@ -2,6 +2,9 @@
 
 namespace AnnoStationBundle\Helper\ExportXml;
 
+/**
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ */
 abstract class Element
 {
     /**
