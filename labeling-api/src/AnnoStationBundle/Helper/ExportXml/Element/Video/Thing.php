@@ -27,6 +27,11 @@ class Thing extends ExportXml\Element
     private $namespace;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * @var References
      */
     private $references;
@@ -64,6 +69,8 @@ class Thing extends ExportXml\Element
         );
         $thing->setAttribute('line-color', $this->labeledThing->getLineColor());
 
+        $thing->setAttribute('type', $this->type);
+
         if ($this->labeledThing->getIncomplete()) {
             $thing->setAttribute('incomplete', 'true');
         }
@@ -97,5 +104,13 @@ class Thing extends ExportXml\Element
             'start' => $start,
             'end'   => $end,
         ];
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

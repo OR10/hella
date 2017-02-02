@@ -189,6 +189,7 @@ class RequirementsProjectToXml
                                 self::XML_NAMESPACE
                             );
                             $thing->addShape($shape);
+                            $thing->setType($labeledThingInFrame->getIdentifierName());
                         }
 
                         $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing);

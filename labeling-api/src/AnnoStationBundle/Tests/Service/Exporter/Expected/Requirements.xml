@@ -25,7 +25,7 @@
   </metadata>
   <video id="" name="video-id-1">
     <group id="" start="1" end="2" incomplete="true"/>
-    <thing id="" start="1" end="100" line-color="1" incomplete="true">
+    <thing id="" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
       </references>
@@ -57,7 +57,7 @@
       <value id="germany" start="2" end="3"/>
       <value id="spain" start="4" end="6"/>
     </thing>
-    <thing id="" start="1" end="1" line-color="1" incomplete="true">
+    <thing id="" start="1" end="1" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
         <group ref=""/>
@@ -71,7 +71,7 @@
       <value id="u-turn" start="1" end="1"/>
       <value id="spain" start="1" end="1"/>
     </thing>
-    <thing id="" start="1" end="2" line-color="1" incomplete="true">
+    <thing id="" start="1" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
         <group ref=""/>

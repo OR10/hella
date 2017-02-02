@@ -127,6 +127,7 @@ class CouchDbTestCase extends Tests\WebTestCase
             $classes,
             $shapes
         );
+        $labeledThingInFrame->setIdentifierName('fooobar');
 
         if ($id !== null) {
             $labeledThingInFrame->setId($id);
