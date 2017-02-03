@@ -43,7 +43,7 @@ class ViewerMouseCursorService extends EventEmitter {
   }
 
   /**
-   * @param {string} cursor
+   * @param {string|null} cursor
    */
   setMouseCursor(cursor) {
     this._cursor = cursor;
