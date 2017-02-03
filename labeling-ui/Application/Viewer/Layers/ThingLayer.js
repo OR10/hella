@@ -181,12 +181,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     const struct = new MultiToolActionStruct(options, viewport, video, task, this._framePosition, this._selectedLabelStructureThing.id, this._selectedLabelStructureThing.shape);
     this._multiTool.invoke(struct).then(({paperShape, actionIdentifier}) => {
-      // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
-      // Ensure the parent/child structure is intact
-      const labeledThingInFrame = paperShape.labeledThingInFrame;
-      labeledThingInFrame.shapes.push(paperShape.toJSON());
-
       if (actionIdentifier === 'creation') {
+        // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
+        // Ensure the parent/child structure is intact
+        const labeledThingInFrame = paperShape.labeledThingInFrame;
+        labeledThingInFrame.shapes.push(paperShape.toJSON());
         this._onCreateShape(paperShape);
       } else {
         this.emit('shape:update', paperShape);
