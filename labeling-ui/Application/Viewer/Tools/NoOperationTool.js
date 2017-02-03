@@ -1,14 +1,14 @@
 import Tool from './NewTool';
-import NoOperationError from './Errors/NoOperationError';
+import NotModifiedError from './Errors/NotModifiedError';
 
 class NoOperationTool extends Tool {
   constructor(drawingContext, $scope, $q, loggerService) {
     super(drawingContext, $scope, $q, loggerService);
   }
 
-  _invokeAndRejectWithNoOperation(toolActionStruct) {
+  _invokeAndRejectWithNotModified(toolActionStruct) {
     const promise = this._invoke(toolActionStruct);
-    this._reject(new NoOperationError('No operation executed'));
+    this._reject(new NotModifiedError('NoOperationTool did not modify anything'));
 
     return promise;
   }
@@ -22,7 +22,7 @@ class NoOperationTool extends Tool {
    * @returns {Promise}
    */
   invokeShapeScaling(toolActionStruct) {
-    return this._invokeAndRejectWithNoOperation(toolActionStruct);
+    return this._invokeAndRejectWithNotModified(toolActionStruct);
   }
 
   /**
@@ -34,7 +34,7 @@ class NoOperationTool extends Tool {
    * @returns {Promise}
    */
   invokeShapeMoving(toolActionStruct) {
-    return this._invokeAndRejectWithNoOperation(toolActionStruct);
+    return this._invokeAndRejectWithNotModified(toolActionStruct);
   }
 
   /**
@@ -46,7 +46,7 @@ class NoOperationTool extends Tool {
    * @returns {Promise}
    */
   invokeShapeCreation(toolActionStruct) {
-    return this._invokeAndRejectWithNoOperation(toolActionStruct);
+    return this._invokeAndRejectWithNotModified(toolActionStruct);
   }
 
   /**
@@ -58,7 +58,7 @@ class NoOperationTool extends Tool {
    * @param {CreationToolActionStruct} toolActionStruct
    */
   invokeDefaultShapeCreation(toolActionStruct) {
-    return this._invokeAndRejectWithNoOperation(toolActionStruct);
+    return this._invokeAndRejectWithNotModified(toolActionStruct);
   }
 }
 

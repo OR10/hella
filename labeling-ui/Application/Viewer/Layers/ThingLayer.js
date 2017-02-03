@@ -6,7 +6,7 @@ import MultiToolActionStruct from '../Tools/ToolActionStructs/MultiToolActionStr
 import MultiTool from '../Tools/MultiTool';
 
 import ToolAbortedError from '../Tools/Errors/ToolAbortedError';
-import NoOperationError from '../Tools/Errors/NoOperationError';
+import NotModifiedError from '../Tools/Errors/NotModifiedError';
 
 import PaperShape from '../Shapes/PaperShape';
 import hitResolver from '../Support/HitResolver';
@@ -194,8 +194,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         case reason instanceof ToolAbortedError:
           this._logger.log('tool:error', 'Tool aborted', reason);
           break;
-        case reason instanceof NoOperationError:
-          this._logger.log('tool:error', 'No operation performed', reason);
+        case reason instanceof NotModifiedError:
+          this._logger.log('tool:error', 'No modification executed', reason);
           break;
         default:
           this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
