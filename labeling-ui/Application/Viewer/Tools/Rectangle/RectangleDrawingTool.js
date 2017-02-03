@@ -37,15 +37,9 @@ class RectangleDrawingTool extends CreationTool {
     const point = event.point;
 
     if (this._rect) {
-      this._$rootScope.$apply(
-        () => {
-          this._rect.resize(this._creationHandle, point, {width: 1, height: this._getMinimalHeight()});
-        }
-      );
+      this._rect.resize(this._creationHandle, point, {width: 1, height: this._getMinimalHeight()});
     } else {
-      this._$rootScope.$apply(
-        () => this._startShape(this._startPosition, point)
-      );
+      this._startShape(this._startPosition, point)
     }
   }
 
