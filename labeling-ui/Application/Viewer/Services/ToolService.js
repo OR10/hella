@@ -57,7 +57,7 @@ class ToolService {
      * @private
      */
     this._classes = {
-      'rectangle-move': NoOperationTool,
+      'rectangle-move': RectangleMoveTool,
       'rectangle-scale': NoOperationTool,
       'rectangle-creation': RectangleDrawingTool,
       'pedestrian-move': PedestrianMoveTool,

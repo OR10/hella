@@ -1,35 +1,21 @@
 import paper from 'paper';
-import Tool from '../Tool';
+import MovingTool from '../MovingTool';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
- * A Tool for moving annotation shapes
+ * A Tool for moving rectangle shapes
  *
- * @extends Tool
- * @implements ToolEvents
+ * @extends MovingTool
  */
-class RectangleMoveTool extends Tool {
+class RectangleMoveTool extends MovingTool {
   /**
-   * @param {$rootScope.$scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param $rootScope
+   * @param $q
    * @param {LoggerService} loggerService
-   * @param {Object} [options]
    */
-  constructor($scope, drawingContext, loggerService, options) {
-    super(drawingContext, loggerService, options);
-
-    /**
-     * @type {$rootScope.Scope}
-     * @private
-     */
-    this._$scope = $scope;
-
-    /**
-     * Currently active shape
-     *
-     * @type {paper.Shape|null}
-     * @private
-     */
-    this._paperRectangle = null;
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * Mouse to center offset for moving a shape
@@ -49,45 +35,52 @@ class RectangleMoveTool extends Tool {
   }
 
   /**
-   * @param {Object} event
-   * @param {PaperShape} hitShape
+   * @param {MovingToolActionStruct} toolActionStruct
+   * @returns {Promise}
    */
-  onMouseDown(event, hitShape) {
-    const point = event.point;
-
-    this._paperRectangle = hitShape;
-    if (this._paperRectangle) {
-      this._offset = new paper.Point(
-        this._paperRectangle.position.x - point.x,
-        this._paperRectangle.position.y - point.y
-      );
-    }
-  }
-
-  onMouseUp() {
-    this.emit('tool:finished');
-    if (this._paperRectangle) {
-      if (this._modified) {
-        this._modified = false;
-
-        this.emit('shape:update', this._paperRectangle);
-      }
-    }
-
+  invokeShapeMoving(toolActionStruct) {
     this._offset = null;
+    this._modified = false;
+
+    return super.invokeShapeMoving(toolActionStruct);
   }
 
   /**
-   * @param event
+   * @param {paper.Event} event
    */
-  onMouseDrag(event) {
-    if (!this._paperRectangle) {
+  onMouseDown(event) {
+    const point = event.point;
+    const {shape} = this._toolActionStruct;
+
+    this._offset = new paper.Point(
+      shape.position.x - point.x,
+      shape.position.y - point.y
+    );
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseUp(event) {
+    if (this._modified !== true) {
+      this._reject(new NotModifiedError('Rectangle wasn\'t moved in any way'));
       return;
     }
-    const point = event.point;
 
+    const {shape} = this._toolActionStruct;
+    this._complete(shape);
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseDrag(event) {
+    const point = event.point;
+    const {shape} = this._toolActionStruct;
+
+    console.warn('drag event', event);
     this._modified = true;
-    this._moveTo(this._paperRectangle, point.add(this._offset));
+    this._moveTo(shape, point.add(this._offset));
   }
 
   /**
@@ -99,9 +92,14 @@ class RectangleMoveTool extends Tool {
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
-
-    this.emit('shape:update', shape);
   }
 }
+
+RectangleMoveTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+];
 
 export default RectangleMoveTool;
