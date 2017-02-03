@@ -181,7 +181,7 @@ class MultiTool extends Tool {
    */
   _invokeToolDelegation(tool, actionIdentifier, shape, handle) {
     this._toolDelegationInvoked = true;
-    const {viewport, video, task, framePosition, requirementsThingOrGroupId, options} = this._toolActionStruct;
+    const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions} = this._toolActionStruct;
     let promise = null;
     let struct = null;
 
@@ -189,7 +189,7 @@ class MultiTool extends Tool {
     switch (actionIdentifier) {
       case 'creation':
         struct = new CreationToolActionStruct(
-          options,
+          delegatedOptions,
           viewport,
           video,
           task,
@@ -200,7 +200,7 @@ class MultiTool extends Tool {
         break;
       case 'scale':
         struct = new ScalingToolActionStruct(
-          options,
+          delegatedOptions,
           viewport,
           shape,
           handle
@@ -209,7 +209,7 @@ class MultiTool extends Tool {
         break;
       case 'move':
         struct = new MovingToolActionStruct(
-          options,
+          delegatedOptions,
           viewport,
           shape
         );
@@ -239,13 +239,12 @@ class MultiTool extends Tool {
       return;
     }
 
-    if (!this._toolDelegationInvoked) {
-      this._handleMouseMoveCursor(event.point);
-    } else {
-      if (this._activeTool) {
-        this._activeTool.onMouseMove(event);
-      }
+    if (this._toolDelegationInvoked) {
+      this._activeTool.onMouseMove(event);
+      return;
     }
+
+    this._handleMouseMoveCursor(event.point);
   }
 
   /**
@@ -306,13 +305,12 @@ class MultiTool extends Tool {
       return;
     }
 
-    if (!this._toolDelegationInvoked) {
-      this._handleMouseUpCursor(event.point);
-    } else {
-      if (this._activeTool) {
-        this._activeTool.onMouseUp(event);
-      }
+    if (this._toolDelegationInvoked) {
+      this._activeTool.onMouseUp(event);
+      return;
     }
+
+    this._handleMouseUpCursor(event.point);
   }
 
   /**

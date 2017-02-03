@@ -4,14 +4,20 @@ class MultiToolActionStruct extends ToolActionStruct {
   /**
    * @param {Object} options
    * @param {Viewport} viewport
+   * @param {Object} delegatedOptions
    * @param {Video} video
    * @param {Task} task
    * @param {FramePosition} framePosition
    * @param {string} requirementsThingOrGroupId
    * @param {string} requirementsShape
    */
-  constructor(options, viewport, video, task, framePosition, requirementsThingOrGroupId, requirementsShape) {
+  constructor(options, viewport, delegatedOptions, video, task, framePosition, requirementsThingOrGroupId, requirementsShape) {
     super(options, viewport);
+
+    /**
+     * @type {Object}
+     */
+    this.delegatedOptions = delegatedOptions;
 
     /**
      * @type {Video}

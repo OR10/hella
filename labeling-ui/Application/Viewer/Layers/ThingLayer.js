@@ -170,42 +170,58 @@ class ThingLayer extends PanAndZoomPaperLayer {
       return;
     }
 
+    const multiToolOptions = {
+      initialDragDistance: 1,
+      minDragDistance: 1,
+      hitTestTolerance: 8,
+    };
+
     // @TODO: move with other drawint tool options to labelStructureThing
-    const options = {
+    const delegatedOptions = {
       initialDragDistance: 8,
       minDragDistance: 1,
-      hitTestTolerance: 8
     };
 
     const {viewport, video, task} = this._$scope.vm;
 
-    const struct = new MultiToolActionStruct(options, viewport, video, task, this._framePosition, this._selectedLabelStructureThing.id, this._selectedLabelStructureThing.shape);
-    this._multiTool.invoke(struct).then(({paperShape, actionIdentifier}) => {
-      if (actionIdentifier === 'creation') {
-        // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
-        // Ensure the parent/child structure is intact
-        const labeledThingInFrame = paperShape.labeledThingInFrame;
-        labeledThingInFrame.shapes.push(paperShape.toJSON());
-        this._onCreateShape(paperShape);
-      } else {
-        this.emit('shape:update', paperShape);
-      }
+    const struct = new MultiToolActionStruct(
+      multiToolOptions,
+      viewport,
+      delegatedOptions,
+      video,
+      task,
+      this._framePosition,
+      this._selectedLabelStructureThing.id,
+      this._selectedLabelStructureThing.shape
+    );
+    this._multiTool.invoke(struct)
+      .then(({paperShape, actionIdentifier}) => {
+        if (actionIdentifier === 'creation') {
+          // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
+          // Ensure the parent/child structure is intact
+          const labeledThingInFrame = paperShape.labeledThingInFrame;
+          labeledThingInFrame.shapes.push(paperShape.toJSON());
+          this._onCreateShape(paperShape);
+        } else {
+          this.emit('shape:update', paperShape);
+        }
 
-      this._invokeMultiTool();
-    }).catch(reason => {
-      switch (true) {
-        case reason instanceof ToolAbortedError:
-          this._logger.log('tool:error', 'Tool aborted', reason);
-          break;
-        case reason instanceof NotModifiedError:
-          this._logger.log('tool:error', 'No modification executed', reason);
-          break;
-        default:
-          this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
-      }
+        this._invokeMultiTool();
+      })
+      .catch(reason => {
+        switch (true) {
+          case reason instanceof ToolAbortedError:
+            this._logger.log('tool:error', 'Tool aborted', reason);
+            break;
+          case reason instanceof NotModifiedError:
+            this._logger.log('tool:error', 'No modification executed', reason);
+            break;
+          default:
+            this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
+        }
 
-      this._invokeMultiTool();
-    });
+        this._invokeMultiTool();
+      });
   }
 
   /**
