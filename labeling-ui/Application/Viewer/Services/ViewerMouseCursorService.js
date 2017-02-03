@@ -16,7 +16,7 @@ class ViewerMouseCursorService extends EventEmitter {
      * @type {string}
      * @private
      */
-    this._defaultCursor = 'pointer';
+    this._defaultCursor = 'default';
 
     /**
      * @type {string|null}
