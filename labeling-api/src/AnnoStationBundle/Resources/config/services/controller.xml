@@ -260,5 +260,13 @@
         <service id="annostation.labeling_api.controller.api.task.labeled_thing_group" class="AnnoStationBundle\Controller\Api\Task\LabeledThingGroup">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.project_importer" class="AnnoStationBundle\Controller\Api\ProjectImporter">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.import"/>
+            <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.vendor.logger"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+        </service>
     </services>
 </container>
