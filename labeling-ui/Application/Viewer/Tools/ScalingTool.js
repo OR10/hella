@@ -1,8 +1,8 @@
 import Tool from './NewTool';
 
 class ScalingTool extends Tool {
-  constructor(drawingContext, $scope, $q, loggerService) {
-    super(drawingContext, $scope, $q, loggerService);
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
   }
 
   /**
@@ -20,7 +20,7 @@ class ScalingTool extends Tool {
 
 ScalingTool.$inject = [
   'drawingContext',
-  '$scope',
+  '$rootScope',
   '$q',
   'loggerService',
 ];
