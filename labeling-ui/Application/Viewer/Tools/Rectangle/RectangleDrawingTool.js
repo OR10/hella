@@ -2,6 +2,7 @@ import paper from 'paper';
 import CreationTool from '../CreationTool';
 import PaperRectangle from '../../Shapes/PaperRectangle';
 import Handle from '../../Shapes/Handles/Handle';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
@@ -52,13 +53,16 @@ class RectangleDrawingTool extends CreationTool {
    * @param {paper.Event} event
    */
   onMouseUp(event) {
-    if (this._rect) {
-      // Fix bottom-right and top-left orientation
-      this._rect.fixOrientation();
-
-      this._rect.remove();
-      this._complete(this._rect);
+    if (this._rect === null) {
+      this._reject(new NotModifiedError('No Rectangle was created/dragged.'));
+      return;
     }
+
+    // Fix bottom-right and top-left orientation
+    this._rect.fixOrientation();
+
+    this._rect.remove();
+    this._complete(this._rect);
   }
 
   /**
