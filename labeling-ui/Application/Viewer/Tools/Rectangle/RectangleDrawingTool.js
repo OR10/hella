@@ -1,5 +1,5 @@
 import paper from 'paper';
-import DrawingTool from '../DrawingTool';
+import CreationTool from '../CreationTool';
 import PaperRectangle from '../../Shapes/PaperRectangle';
 import Handle from '../../Shapes/Handles/Handle';
 
@@ -9,57 +9,17 @@ import Handle from '../../Shapes/Handles/Handle';
  * @extends DrawingTool
  * @implements ToolEvents
  */
-class RectangleDrawingTool extends DrawingTool {
+class RectangleDrawingTool extends CreationTool {
   /**
-   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param {$rootScope.Scope} $scope
+   * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {Video} video
-   * @param {Task} task
    */
-  constructor($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task) {
-    super($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task);
-
-    /**
-     * @type {PaperRectangle}
-     * @private
-     */
-    this._rect = null;
-
-    /**
-     * @type {Point|null}
-     * @private
-     */
-    this._startPosition = null;
-
-    /**
-     * @type {Handle|null}
-     * @private
-     */
-    this._creationHandle = null;
-  }
-
-  startShape(from, to) {
-    if (from.getDistance(to) < 5) {
-      // Do nothing if no "real" dragging operation took place.
-      return;
-    }
-    const labeledThingInFrame = this._createLabeledThingHierarchy();
-
-    this._context.withScope(() => {
-      this._rect = new PaperRectangle(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        from,
-        from,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
-        true
-      );
-      this._creationHandle = this._getScaleAnchor(from);
-      this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
-    });
+  constructor(drawingContext, $scope, $q, loggerService, entityIdService, entityColorService) {
+    super(drawingContext, $scope, $q, loggerService, entityIdService, entityColorService);
   }
 
   onMouseDown(event) {
@@ -77,30 +37,52 @@ class RectangleDrawingTool extends DrawingTool {
       );
     } else {
       this._$scope.$apply(
-        () => this.startShape(this._startPosition, point)
+        () => this._startShape(this._startPosition, point)
       );
     }
   }
 
   onMouseUp() {
-    this.emit('tool:finished');
     if (this._rect) {
       // Fix bottom-right and top-left orientation
       this._rect.fixOrientation();
 
-      this._$scope.$apply(
-        () => this.completeShape()
-      );
+      this._rect.remove();
+      this._complete(this._rect);
     }
   }
 
-  completeShape() {
-    // Ensure the parent/child structure is intact
-    const labeledThingInFrame = this._rect.labeledThingInFrame;
-    labeledThingInFrame.shapes.push(this._rect.toJSON());
-
-    this.emit('shape:create', this._rect);
+  /**
+   * @param toolActionStruct
+   * @return {Promise}
+   */
+  invokeShapeCreation(toolActionStruct) {
     this._rect = null;
+    this._startPosition = null;
+    this._creationHandle = null;
+
+    return super.invokeShapeCreation(toolActionStruct);
+  }
+
+  _startShape(from, to) {
+    if (from.getDistance(to) < 5) {
+      // Do nothing if no "real" dragging operation took place.
+      return;
+    }
+    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+
+    this._context.withScope(() => {
+      this._rect = new PaperRectangle(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        from,
+        from,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        true
+      );
+      this._creationHandle = this._getScaleAnchor(from);
+      this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
+    });
   }
 
   /**
@@ -108,10 +90,9 @@ class RectangleDrawingTool extends DrawingTool {
    * @private
    */
   _getMinimalHeight() {
-    const drawingToolOptions = this._options.rectangle;
-    return (drawingToolOptions && drawingToolOptions.minimalHeight && drawingToolOptions.minimalHeight > 0)
-      ? drawingToolOptions.minimalHeight
-      : 1;
+    const {minimalHeight} = this._toolActionStruct;
+
+    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
   }
 
   _getScaleAnchor(point) {
@@ -130,21 +111,28 @@ class RectangleDrawingTool extends DrawingTool {
     return new Handle('top-right', point);
   }
 
-  createNewDefaultShape() {
+  /**
+   * @param {CreationToolActionStruct} toolActionStruct
+   */
+  invokeDefaultShapeCreation(toolActionStruct) {
+    super.invokeDefaultShapeCreation(toolActionStruct);
+    const {video} = toolActionStruct;
+
     const width = 100;
     const height = 100;
     const from = new paper.Point(
-      (this.video.metaData.width / 2) - (width / 2),
-      (this.video.metaData.height / 2) - (height / 2)
+      (video.metaData.width / 2) - (width / 2),
+      (video.metaData.height / 2) - (height / 2)
     );
     const to = new paper.Point(
-      (this.video.metaData.width / 2) + (width / 2),
-      (this.video.metaData.height / 2) + (height / 2)
+      (video.metaData.width / 2) + (width / 2),
+      (video.metaData.height / 2) + (height / 2)
     );
-    const labeledThingInFrame = this._createLabeledThingHierarchy();
+    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
 
+    let rect;
     this._context.withScope(() => {
-      this._rect = new PaperRectangle(
+      rect = new PaperRectangle(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         from,
@@ -154,8 +142,17 @@ class RectangleDrawingTool extends DrawingTool {
       );
     });
 
-    this.completeShape();
+    this._complete(rect);
   }
 }
+
+RectangleDrawingTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+  'entityIdService',
+  'entityColorService',
+];
 
 export default RectangleDrawingTool;
