@@ -171,7 +171,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
     }
 
     // @TODO: move with other drawint tool options to labelStructureThing
-    const options = {minDistance: 8, hitTestTolerance: 8};
+    const options = {
+      initialDragDistance: 8,
+      minDragDistance: 1,
+      hitTestTolerance: 8
+    };
 
     const {viewport, video, task} = this._$scope.vm;
 

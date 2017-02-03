@@ -60,10 +60,10 @@ class Tool {
      * Paperjs fires a drag event without adhering to minDistance as soon as the first mouseDown is registered.
      * We do not want this, as a drag should only occur once the mouse is really dragged the minDistance.
      *
-     * @type {boolean}
+     * @type {int}
      * @private
      */
-    this._firstDragEvent = true;
+    this._dragEventCount = 0;
 
     this._initializePaperToolAndEvents();
   }
@@ -80,9 +80,15 @@ class Tool {
         this._$rootScope.$evalAsync(() => this[delegationTarget](event));
         break;
       case 'drag':
-        if (this._firstDragEvent === true) {
-          this._firstDragEvent = false;
+        this._dragEventCount = this._dragEventCount + 1;
+        if (this._dragEventCount === 1) {
+          // Do not propagate first drag event, as it is fired directly after the first mouse down not adhering to min distance
           return;
+        }
+        if (this._dragEventCount === 2) {
+          // The first delegated drag event has been fired, therefore the minDistance needs to be reduced to the real value
+          // instead of the initial one.
+          this._tool.minDistance = this._toolActionStruct.options.minDragDistance;
         }
         this[delegationTarget](event);
         break;
@@ -168,8 +174,10 @@ class Tool {
   _invoke(toolActionStruct) {
     this._logger.log('tool', 'Invoked', toolActionStruct);
 
-    this._firstDragEvent = true;
-    this._tool.minDistance = toolActionStruct.options.minDistance;
+    this._dragEventCount = 0;
+
+    // Set initialDragDistance for first Drag event
+    this._tool.minDistance = toolActionStruct.options.initialDragDistance;
 
     this._context.withScope(() => {
       this._tool.activate();
