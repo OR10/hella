@@ -22,10 +22,16 @@ class RectangleDrawingTool extends CreationTool {
     super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
   }
 
+  /**
+   * @param {paper.Event} event
+   */
   onMouseDown(event) {
     this._startPosition = event.point;
   }
 
+  /**
+   * @param {paper.Event} event
+   */
   onMouseDrag(event) {
     const point = event.point;
 
@@ -42,7 +48,10 @@ class RectangleDrawingTool extends CreationTool {
     }
   }
 
-  onMouseUp() {
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseUp(event) {
     if (this._rect) {
       // Fix bottom-right and top-left orientation
       this._rect.fixOrientation();
@@ -53,7 +62,7 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   /**
-   * @param toolActionStruct
+   * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
   invokeShapeCreation(toolActionStruct) {
