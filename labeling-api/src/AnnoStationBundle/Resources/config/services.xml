@@ -280,5 +280,39 @@
             <argument type="service" id="annostation.labeling_api.service.label_importer.simple_xml_2d"/>
             <argument type="service" id="annostation.labeling_api.service.label_importer.simple_xml_3d"/>
         </service>
+
+        <service id="annostation.labeling_api.service.project_importer.import"
+                 class="AnnoStationBundle\Service\ProjectImporter\Import">
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.requirements_xml"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.project" class="AnnoStationBundle\Service\ProjectImporter\Facade\Project">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.requirements_xml" class="AnnoStationBundle\Service\ProjectImporter\Facade\RequirementsXml">
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThing">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.labeling_task" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabelingTask">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing_in_frame" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThingInFrame">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.video" class="AnnoStationBundle\Service\ProjectImporter\Facade\Video">
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+        </service>
     </services>
 </container>

@@ -50,5 +50,13 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.thing_importer" class="AnnoStationBundle\Worker\JobInstruction\ThingImporter">
+            <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.project"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
