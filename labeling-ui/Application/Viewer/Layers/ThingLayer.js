@@ -2,7 +2,11 @@ import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import ZoomTool from '../Tools/ZoomTool';
+import MultiToolActionStruct from '../Tools/ToolActionStructs/MultiToolActionStruct';
 import MultiTool from '../Tools/MultiTool';
+
+import ToolAbortedError from '../Tools/Errors/ToolAbortedError';
+import NoOperationError from '../Tools/Errors/NoOperationError';
 
 import PaperShape from '../Shapes/PaperShape';
 import hitResolver from '../Support/HitResolver';
@@ -17,12 +21,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {int} width
    * @param {int} height
    * @param {$rootScope.Scope} $scope
+   * @param {$injector} $injector
    * @param {DrawingContextService} drawingContextService
-   * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
-   * @param {EntityColorService} entityColorService
-   * @param {KeyboardShortcutService} keyboardShortcutService
-   * @param {ToolService} toolService
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
@@ -31,12 +32,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
   constructor(width,
               height,
               $scope,
+              $injector,
               drawingContextService,
-              entityIdService,
               paperShapeFactory,
-              entityColorService,
-              keyboardShortcutService,
-              toolService,
               logger,
               $timeout,
               framePosition,
@@ -62,16 +60,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._$timeout = $timeout;
 
     /**
-     * @type {EntityIdService}
+     * @type {FramePosition}
      * @private
      */
-    this._entityIdService = entityIdService;
-
-    /**
-     * @type {EntityColorService}
-     * @private
-     */
-    this._entityColorService = entityColorService;
+    this._framePosition = framePosition;
 
     /**
      * Tool for moving shapes
@@ -79,7 +71,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {MultiTool}
      * @private
      */
-    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context, this._$scope.vm.readOnly === 'true');
+    this._multiTool = $injector.instantiate(MultiTool, {drawingContext: this._context});
     this._$scope.vm.multiTool = this._multiTool;
 
     /**
@@ -99,6 +91,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
+
+    /**
+     * @type {LabelStructureThing|null}
+     * @private
+     */
+    this._selectedLabelStructureThing = null;
 
     $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
       const oldSet = new Set(oldLabeledThingsInFrame);
@@ -147,26 +145,63 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
-    this._multiTool.on('shape:create', this._onCreateShape.bind(this));
-    this._multiTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
+    this._framePosition.beforeFrameChangeAlways('disableTools', () => {
+      this._multiTool.abort();
     });
-
-    framePosition.beforeFrameChangeAlways('disableTools', () => {
-      this._multiTool.disable();
-    });
-    framePosition.afterFrameChangeAlways('disableTools', () => {
-      this._multiTool.enable();
+    this._framePosition.afterFrameChangeAlways('disableTools', () => {
+      this._invokeMultiTool();
     });
   }
 
   dispatchDOMEvent(event) {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
-        this._multiTool.onMouseLeave(event);
+        this._multiTool.abort();
+        this._invokeMultiTool();
       } else {
         this._element.dispatchEvent(event);
       }
+    });
+  }
+
+  _invokeMultiTool() {
+    // selectedLabelStructure not yet initialized
+    if (this._selectedLabelStructureThing === null) {
+      return;
+    }
+
+    // @TODO: move with other drawint tool options to labelStructureThing
+    const options = {minDistance: 8, hitTestTolerance: 8};
+
+    const {viewport, video, task} = this._$scope.vm;
+
+    const struct = new MultiToolActionStruct(options, viewport, video, task, this._framePosition, this._selectedLabelStructureThing.id, this._selectedLabelStructureThing.shape);
+    this._multiTool.invoke(struct).then(({paperShape, actionIdentifier}) => {
+      // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
+      // Ensure the parent/child structure is intact
+      const labeledThingInFrame = paperShape.labeledThingInFrame;
+      labeledThingInFrame.shapes.push(paperShape.toJSON());
+
+      if (actionIdentifier === 'creation') {
+        this._onCreateShape(paperShape);
+      } else {
+        this.emit('shape:update', paperShape);
+      }
+
+      this._invokeMultiTool();
+    }).catch(reason => {
+      switch (true) {
+        case reason instanceof ToolAbortedError:
+          this._logger.log('tool:error', 'Tool aborted', reason);
+          break;
+        case reason instanceof NoOperationError:
+          this._logger.log('tool:error', 'No operation performed', reason);
+          break;
+        default:
+          this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
+      }
+
+      this._invokeMultiTool();
     });
   }
 
@@ -247,8 +282,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * Activates the tool identified by the given name
    *
    * @param {String} toolName
+   * @param {LabelStructureThing|null} selectedLabelStructureThing
    */
-  activateTool(toolName) {
+  activateTool(toolName, selectedLabelStructureThing) {
+    this._multiTool.abort();
+    // @TODO can be removed when zoomtools are refactored
+    this._context.withScope(scope => {
+      scope.tool = null;
+    });
+    this._selectedLabelStructureThing = selectedLabelStructureThing;
+
     // Reset possible mouse cursor left-overs from the last tool
     this._viewerMouseCursorService.setMouseCursor(null);
 
@@ -264,10 +307,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         break;
       case 'multi':
         if (!this._$scope.vm.readOnly) {
-          this._multiTool.activate();
+          this._invokeMultiTool();
           this._logger.log('thinglayer:tool', this._multiTool);
         } else {
-          this._context.withScope(scope => scope.tool = null);
           this._logger.log('thinglayer:tool', 'Disabled all tools due to readonly task');
         }
         break;

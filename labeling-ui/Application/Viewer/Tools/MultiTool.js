@@ -1,39 +1,35 @@
-import Tool from './Tool';
+import Tool from './NewTool';
 import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
-import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
-import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
-import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
+// import PaperFixedAspectRatioCenterLine from '../../Viewer/Shapes/PaperFixedAspectRatioCenterLine';
+// import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+// import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
 
+import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
+import MovingToolActionStruct from './ToolActionStructs/MovingToolActionStruct';
+import ScalingToolActionStruct from './ToolActionStructs/ScalingToolActionStruct';
+
 /**
  * A multi tool for handling multiple functionalities
+ * Extends Tool and not Mutation- or CreationTool as it implements both interfaces which can't be interfaces due to lack
+ * of javascript capabilities.
  *
  * @extends Tool
  */
-export default class MultiTool extends Tool {
+class MultiTool extends Tool {
   /**
+   * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $scope
-   * @param {Boolean} readOnly
+   * @param {$q} $q
+   * @param {LoggerService} loggerService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ToolService} toolService
-   * @param {DrawingContext} drawingContext
-   * @param {Object} [options]
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
-  constructor($scope, keyboardShortcutService, toolService, drawingContext, readOnly, options) {
-    super(drawingContext, options);
-
-    /**
-     * @type {$rootScope.Scope}
-     * @private
-     */
-    this._$scope = $scope;
-
-    /**
-     * @type {Boolean}
-     */
-    this._readOnly = readOnly;
+  constructor(drawingContext, $scope, $q, loggerService, keyboardShortcutService, toolService, viewerMouseCursorService) {
+    super(drawingContext, $scope, $q, loggerService);
 
     /**
      * @type {KeyboardShortcutService}
@@ -48,6 +44,12 @@ export default class MultiTool extends Tool {
     this._toolService = toolService;
 
     /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
+
+    /**
      * The currently active tool
      *
      * @type {Tool}
@@ -56,345 +58,193 @@ export default class MultiTool extends Tool {
     this._activeTool = null;
 
     /**
-     * State if the multi tool ist currently enabled
-     *
      * @type {boolean}
      * @private
      */
-    this._enabled = true;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this._toolWorking = false;
-
-    // Bind tool events to controller actions
-    this._tool.onMouseDown = this._mouseDown.bind(this);
-    this._tool.onMouseUp = this._mouseUp.bind(this);
-    this._tool.onMouseDrag = this._mouseDrag.bind(this);
-    this._tool.onMouseMove = event => $scope.$evalAsync(() => this._mouseMove(event));
-
-    // Create event callbacks
-    this._onShapeCreate = shape => {
-      this.emit('shape:create', shape);
-    };
-
-    this._onShapeUpdate = shape => {
-      this.emit('shape:update', shape);
-    };
-
-    this._onToolFinished = () => {
-      this._toolWorking = false;
-    };
-
-    /**
-     * @param event
-     */
-    document.onkeypress = event => {
-      this._activeTool.onKeyPress(event.keyCode);
-    };
-
-    if (!this._readOnly) {
-      // Register Keyboard shortcuts
-      this._registerShortcuts();
-    }
+    this._toolDelegationInvoked = false;
   }
 
-  _setDrawingTool(tool) {
-    switch (tool) {
+  /**
+   * @param {MultiToolActionStruct} toolActionStruct
+   * @return {Promise}
+   */
+  invoke(toolActionStruct) {
+    const promise = this._invoke(toolActionStruct);
+    // if (!this._readOnly) {
+    //   // Register Keyboard shortcuts
+    //   this._registerShortcuts();
+    // }
+    // this._initializeOptions(options);
+
+    return promise;
+  }
+
+  abort() {
+    if (this._toolDelegationInvoked) {
+      this._activeTool.abort();
+    }
+
+    super.abort();
+  }
+
+  // /**
+  //  * @param {Object} options
+  //  * @private
+  //  */
+  // _initializeOptions(options) {
+  //   const defaultOptions = {
+  //     minDistance: 1,
+  //     hitTestTolerance: 8,
+  //   };
+  //   this._options = Object.assign({}, defaultOptions, options);
+  // }
+
+  /**
+   * @param {string} requirementsShape
+   * @private
+   */
+  _invokeCreationToolDelegation(requirementsShape) {
+    console.log('requirementsShape', requirementsShape);
+    const tool = this._getToolForRequirementsShape(requirementsShape);
+    this._invokeToolDelegation(tool, 'creation', null, null);
+  }
+
+  /**
+   * @param {string} requirementsShape
+   * @return {Tool}
+   * @private
+   */
+  _getToolForRequirementsShape(requirementsShape) {
+    switch (requirementsShape) {
       case 'rectangle':
-        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperRectangle.getClass()));
-        break;
+        return this._toolService.getTool(this._context, PaperRectangle.getClass());
       case 'pedestrian':
-        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperPedestrian.getClass()));
-        break;
+        return this._toolService.getTool(this._context, PaperFixedAspectRatioCenterLine.getClass());
       case 'cuboid':
-        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperCuboid.getClass()));
-        break;
+        return this._toolService.getTool(this._context, PaperCuboid.getClass());
       case 'polygon':
-        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, PaperPolygon.getClass()));
-        break;
+        return this._toolService.getTool(this._context, PaperPolygon.getClass());
       default:
-        throw new Error(`Cannot instantiate tool of unknown type ${tool}.`);
+        throw new Error(`Cannot create tool of unknown type: ${requirementsShape}.`);
     }
-  }
-
-  _registerShortcuts() {
-    const keyboardMoveDistance = 1;
-    const keyboardFastMoveDistance = 10;
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'up',
-      description: 'Move selected shape up',
-      callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+up',
-      description: 'Move selected shape up (fast)',
-      callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1),
-    });
-
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'down',
-      description: 'Move selected shape down',
-      callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+down',
-      description: 'Move selected shape down (fast)',
-      callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance),
-    });
-
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'left',
-      description: 'Move selected shape left',
-      callback: () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+left',
-      description: 'Move selected shape left (fast)',
-      callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0),
-    });
-
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'right',
-      description: 'Move selected shape right',
-      callback: () => this._moveSelectedShapeBy(keyboardMoveDistance, 0),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+right',
-      description: 'Move selected shape right (fast)',
-      callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
-    });
-
-    // @TODO: Only register if we are really working with a cuboid;
-    this._registerCuboidShortcuts();
-  }
-
-  _registerCuboidShortcuts() {
-    const rotationDegrees = 2;
-    const fastRotationDegrees = 10;
-    const scaleDistance = 1;
-    const fastScaleDistance = 6;
-
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'o',
-      description: `Rotate cuboid counter clockwise by ${rotationDegrees}°`,
-      callback: () => this._rotateCuboid(this._deg2rad(rotationDegrees)),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'p',
-      description: `Rotate cuboid clockwise by ${rotationDegrees}°`,
-      callback: () => this._rotateCuboid(this._deg2rad(rotationDegrees * -1)),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+o',
-      description: `Rotate cuboid counter clockwise by ${fastRotationDegrees}°`,
-      callback: () => this._rotateCuboid(this._deg2rad(fastRotationDegrees)),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+p',
-      description: `Rotate cuboid clockwise by ${fastRotationDegrees}°`,
-      callback: () => this._rotateCuboid(this._deg2rad(fastRotationDegrees * -1)),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'i',
-      description: 'Change cuboid faces counter clockwise',
-      callback: () => this._rotateCuboidFaces(false),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'u',
-      description: 'Change cuboid faces clockwise',
-      callback: () => this._rotateCuboidFaces(true),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '8',
-      description: `Add approx. ${scaleDistance}px to cuboid height`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '2',
-      description: `Substract approx. ${scaleDistance}px from cuboid height`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance * -1),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+8',
-      description: `Add approx. ${fastScaleDistance}px to cuboid height`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+2',
-      description: `Substract approx. ${fastScaleDistance}px from cuboid height`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance * -1),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '4',
-      description: `Add approx. ${scaleDistance}px to cuboid width`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '6',
-      description: `Substract approx. ${scaleDistance}px from cuboid width`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance * -1),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+4',
-      description: `Add approx. ${fastScaleDistance}px to cuboid width`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+6',
-      description: `Substract approx. ${fastScaleDistance}px from cuboid width`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance * -1),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '9',
-      description: `Add approx. ${scaleDistance}px to cuboid depth`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: '3',
-      description: `Substract approx. ${scaleDistance}px from cuboid depth`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance * -1),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+9',
-      description: `Add approx. ${fastScaleDistance}px to cuboid depth`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance),
-    });
-    this._keyboardShortcutService.addHotkey('labeling-task', {
-      combo: 'shift+3',
-      description: `Substract approx. ${fastScaleDistance}px from cuboid depth`,
-      callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance * -1),
-    });
-  }
-
-  _resizeCuboidByDistance(handleName, distance) {
-    /**
-     * @type {PaperCuboid}
-     */
-    const cuboid = this._$scope.vm.selectedPaperShape;
-    if (!(cuboid instanceof PaperCuboid)) {
-      return;
-    }
-
-    const minimalHeight = (
-      this._$scope.vm.task.drawingToolOptions.cuboid &&
-      this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight &&
-      this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight > 0
-    )
-      ? this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight
-      : 1;
-
-    this._context.withScope(scope => {
-      cuboid.resizeByDistance(handleName, distance, minimalHeight);
-      scope.view.update();
-      this.emit('shape:update', cuboid);
-    });
-  }
-
-  /**
-   * Converts degree to radiant
-   *
-   * @param degree
-   * @returns {number}
-   * @private
-   */
-  _deg2rad(degree) {
-    return 2 * Math.PI / 360 * degree;
-  }
-
-  enable() {
-    this._enabled = true;
-    this._keyboardShortcutService.enable();
-  }
-
-  disable() {
-    this._enabled = false;
-    this._keyboardShortcutService.disable();
-  }
-
-  /**
-   * @param {number} degree
-   * @private
-   */
-  _rotateCuboid(degree) {
-    // TODO: refactor this into a separate cuboid-rotate tool !!!
-    const shape = this._$scope.vm.selectedPaperShape;
-    if (shape instanceof PaperCuboid) {
-      this._context.withScope(scope => {
-        shape.rotateAroundCenter(degree);
-        shape.updatePrimaryCorner();
-        scope.view.update();
-        this.emit('shape:update', shape);
-      });
-    }
-  }
-
-  /**
-   * @param {boolean} clockwise
-   * @private
-   */
-  _rotateCuboidFaces(clockwise) {
-    // TODO: refactor this into a separate cuboid-rotate tool !!!
-    const shape = this._$scope.vm.selectedPaperShape;
-    if (shape instanceof PaperCuboid) {
-      this._context.withScope(scope => {
-        shape.rotateFaces(clockwise);
-        shape.updatePrimaryCorner();
-        scope.view.update();
-        this.emit('shape:update', shape);
-      });
-    }
-  }
-
-  /**
-   * @param {Number} deltaX
-   * @param {Number} deltaY
-   * @private
-   */
-  _moveSelectedShapeBy(deltaX, deltaY) {
-    if (!this._enabled) {
-      return;
-    }
-
-    const paperShape = this._$scope.vm.selectedPaperShape;
-    if (!paperShape) {
-      return;
-    }
-
-    this._context.withScope(scope => {
-      paperShape.moveTo(
-        new paper.Point(
-          paperShape.position.x + deltaX,
-          paperShape.position.y + deltaY
-        ),
-        this._options
-      );
-      scope.view.update();
-      this.emit('shape:update', paperShape);
-    });
   }
 
   /**
    * @param {paper.Event} event
    * @private
    */
-  _mouseMove(event) {
+  onMouseDown(event) {
+    // Shift is only used for zoom panning
     if (event.event.shiftKey) {
       return;
     }
 
-    if (!this._enabled) {
+    const point = event.point;
+
+    if (this._toolDelegationInvoked) {
+      this._activeTool.onMouseDown(event);
       return;
     }
 
-    if (!this._toolWorking) {
-      this._handleMouseMoveCursor(event.point);
+    this._handleMouseDownCursor(point);
+
+    this._context.withScope(scope => {
+      const hitResult = scope.project.hitTest(point, {
+        fill: true,
+        bounds: false,
+        tolerance: this._toolActionStruct.options.hitTestTolerance,
+      });
+
+      // Hit nothing
+      if (!hitResult) {
+        this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
+        this._activeTool.onMouseDown(event);
+        return;
+      }
+
+      // Hit something
+      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
+
+      // Invoke mutation tool
+      this._invokeToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
+      this._activeTool.onMouseDown(event);
+    });
+  }
+
+  /**
+   * @param {Tool} tool
+   * @param {string} actionIdentifier
+   * @param {PaperShape} shape
+   * @param {Handle} handle
+   * @private
+   */
+  _invokeToolDelegation(tool, actionIdentifier, shape, handle) {
+    this._toolDelegationInvoked = true;
+    const {viewport, video, task, framePosition, requirementsThingOrGroupId, options} = this._toolActionStruct;
+    let promise = null;
+    let struct = null;
+
+    // @TODO: Add tool class check
+    switch (actionIdentifier) {
+      case 'creation':
+        struct = new CreationToolActionStruct(
+          options,
+          viewport,
+          video,
+          task,
+          framePosition,
+          requirementsThingOrGroupId,
+        );
+        promise = tool.invokeShapeCreation(struct);
+        break;
+      case 'scale':
+        struct = new ScalingToolActionStruct(
+          options,
+          viewport,
+          shape,
+          handle
+        );
+        promise = tool.invokeShapeScaling(struct);
+        break;
+      case 'move':
+        struct = new MovingToolActionStruct(
+          options,
+          viewport,
+          shape
+        );
+        promise = tool.invokeShapeMoving(struct);
+        break;
+      default:
+        throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
     }
 
-    if (this._activeTool) {
-      this._activeTool.onMouseMove(event);
+    this._activeTool = tool;
+
+    promise.then(paperShape => {
+      this._toolDelegationInvoked = false;
+      this._complete({actionIdentifier, paperShape});
+    }).catch(reason => {
+      this._toolDelegationInvoked = false;
+      this._reject(reason);
+    });
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseMove(event) {
+    // Shift is used for zoom panning
+    if (event.event.shiftKey) {
+      return;
+    }
+
+    if (!this._toolDelegationInvoked) {
+      this._handleMouseMoveCursor(event.point);
+    } else {
+      if (this._activeTool) {
+        this._activeTool.onMouseMove(event);
+      }
     }
   }
 
@@ -407,82 +257,20 @@ export default class MultiTool extends Tool {
       const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: false,
-        tolerance: this._options.hitTestTolerance,
+        tolerance: this._toolActionStruct.options.hitTestTolerance,
       });
 
       if (!hitResult) {
-        if (this._$scope.vm.showCrosshairs === true) {
-          this._$scope.vm.actionMouseCursor = 'none';
+        if (this._viewerMouseCursorService.isCrosshairShowing()) {
+          this._viewerMouseCursorService.setMouseCursor('none');
         } else {
-          this._$scope.vm.actionMouseCursor = null;
+          this._viewerMouseCursorService.setMouseCursor(null);
         }
       } else {
         const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle);
+        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle));
       }
     });
-  }
-
-  /**
-   * @param {paper.Event} event
-   * @private
-   */
-  _mouseDown(event) {
-    if (event.event.shiftKey) {
-      return;
-    }
-
-    if (!this._enabled) {
-      return;
-    }
-    const point = event.point;
-
-    if (this._toolWorking) {
-      this._activeTool.onMouseDown(event);
-      return;
-    }
-    this._handleMouseDownCursor(point);
-
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: this._options.hitTestTolerance,
-      });
-
-
-      if (hitResult) {
-        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
-
-        this._toolWorking = true;
-        this._setActiveToolAndRegisterEvents(this._toolService.getTool(this._$scope, this._context, hitShape.getClass(), actionIdentifier));
-        this._activeTool.onMouseDown(event, hitShape, hitHandle);
-      } else {
-        this._toolWorking = true;
-        if (this._$scope.vm.selectedDrawingTool === null) {
-          return;
-        }
-        this._setDrawingTool(this._$scope.vm.selectedDrawingTool);
-        this._activeTool.onMouseDown(event);
-      }
-    });
-  }
-
-  _setActiveToolAndRegisterEvents(tool) {
-    if (this._activeTool) {
-      // Unregister event listeners
-      this._activeTool.removeListener('shape:create', this._onShapeCreate);
-      this._activeTool.removeListener('shape:update', this._onShapeUpdate);
-      this._activeTool.removeListener('tool:finished', this._onToolFinished);
-    }
-
-    this._activeTool = tool;
-
-    // Register new event listeners
-    this._activeTool.on('shape:create', this._onShapeCreate);
-    this._activeTool.on('shape:update', this._onShapeUpdate);
-    this._activeTool.on('tool:finished', this._onToolFinished);
   }
 
   /**
@@ -490,19 +278,19 @@ export default class MultiTool extends Tool {
    * @private
    */
   _handleMouseDownCursor(point) {
-    if (this._$scope.vm.showCrosshairs === true) {
-      this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = 'none');
+    if (this._viewerMouseCursorService.isCrosshairShowing()) {
+      this._viewerMouseCursorService.setMouseCursor('none');
     } else {
       this._context.withScope(scope => {
         const hitResult = scope.project.hitTest(point, {
           fill: true,
           bounds: false,
-          tolerance: this._options.hitTestTolerance,
+          tolerance: this._toolActionStruct.options.hitTestTolerance,
         });
 
         if (hitResult) {
           const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-          this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, true));
+          this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true));
         }
       });
     }
@@ -512,18 +300,18 @@ export default class MultiTool extends Tool {
    * @param {MouseEvent} event
    * @private
    */
-  _mouseUp(event) {
+  onMouseUp(event) {
+    // Shift is only used for zoom panning
     if (event.shiftkey) {
       return;
     }
-    if (!this._enabled) {
-      return;
-    }
-    if (!this._toolWorking) {
+
+    if (!this._toolDelegationInvoked) {
       this._handleMouseUpCursor(event.point);
-    }
-    if (this._activeTool) {
-      this._activeTool.onMouseUp(event);
+    } else {
+      if (this._activeTool) {
+        this._activeTool.onMouseUp(event);
+      }
     }
   }
 
@@ -536,11 +324,11 @@ export default class MultiTool extends Tool {
       const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: false,
-        tolerance: this._options.hitTestTolerance,
+        tolerance: this._toolActionStruct.options.hitTestTolerance,
       });
       if (hitResult) {
         const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._$scope.$apply(() => this._$scope.vm.actionMouseCursor = hitShape.getCursor(hitHandle, false));
+        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false));
       }
     });
   }
@@ -549,32 +337,300 @@ export default class MultiTool extends Tool {
    * @param {paper.Event} event
    * @private
    */
-  _mouseDrag(event) {
+  onMouseDrag(event) {
+    // Shift is used for zoom panning
     if (event.event.shiftKey) {
       return;
     }
 
-    if (!this._enabled) {
-      return;
+    if (this._toolDelegationInvoked) {
+      this._activeTool.onMouseDrag(event);
     }
-
-    this._toolWorking = true;
-    this._activeTool.onMouseDrag(event);
   }
 
   /**
-   * @param {paper.Event} event
+   * @param {CreationToolActionStruct} toolActionStruct
    */
-  onMouseLeave(event) {
-    if (!this._enabled) {
-      return;
-    }
+  invokeDefaultShapeCreation(toolActionStruct) {
+    this._getToolForRequirementsShape(toolActionStruct.requirementsShape);
+    const {viewport, video, task, framePosition, requirementsThingOrGroupId} = this._toolActionStruct;
+    const struct = new CreationToolActionStruct(
+      viewport,
+      video,
+      task,
+      framePosition,
+      requirementsThingOrGroupId
+    );
 
-    this._mouseUp(event);
+    return this._activeTool.invokeDefaultShapeCreation(struct);
   }
 
-  createNewDefaultShape() {
-    this._setDrawingTool(this._$scope.vm.selectedLabelStructureThing.shape);
-    this._activeTool.createNewDefaultShape();
-  }
+
+  // _registerShortcuts() {
+  //   const keyboardMoveDistance = 1;
+  //   const keyboardFastMoveDistance = 10;
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'up',
+  //     description: 'Move selected shape up',
+  //     callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+up',
+  //     description: 'Move selected shape up (fast)',
+  //     callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1),
+  //   });
+  //
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'down',
+  //     description: 'Move selected shape down',
+  //     callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+down',
+  //     description: 'Move selected shape down (fast)',
+  //     callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance),
+  //   });
+  //
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'left',
+  //     description: 'Move selected shape left',
+  //     callback: () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+left',
+  //     description: 'Move selected shape left (fast)',
+  //     callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0),
+  //   });
+  //
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'right',
+  //     description: 'Move selected shape right',
+  //     callback: () => this._moveSelectedShapeBy(keyboardMoveDistance, 0),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+right',
+  //     description: 'Move selected shape right (fast)',
+  //     callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
+  //   });
+  //
+  //   // @TODO: Only register if we are really working with a cuboid;
+  //   this._registerCuboidShortcuts();
+  // }
+  //
+  // _registerCuboidShortcuts() {
+  //   const rotationDegrees = 2;
+  //   const fastRotationDegrees = 10;
+  //   const scaleDistance = 1;
+  //   const fastScaleDistance = 6;
+  //
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'o',
+  //     description: `Rotate cuboid counter clockwise by ${rotationDegrees}°`,
+  //     callback: () => this._rotateCuboid(this._deg2rad(rotationDegrees)),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'p',
+  //     description: `Rotate cuboid clockwise by ${rotationDegrees}°`,
+  //     callback: () => this._rotateCuboid(this._deg2rad(rotationDegrees * -1)),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+o',
+  //     description: `Rotate cuboid counter clockwise by ${fastRotationDegrees}°`,
+  //     callback: () => this._rotateCuboid(this._deg2rad(fastRotationDegrees)),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+p',
+  //     description: `Rotate cuboid clockwise by ${fastRotationDegrees}°`,
+  //     callback: () => this._rotateCuboid(this._deg2rad(fastRotationDegrees * -1)),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'i',
+  //     description: 'Change cuboid faces counter clockwise',
+  //     callback: () => this._rotateCuboidFaces(false),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'u',
+  //     description: 'Change cuboid faces clockwise',
+  //     callback: () => this._rotateCuboidFaces(true),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: '8',
+  //     description: `Add approx. ${scaleDistance}px to cuboid height`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: '2',
+  //     description: `Substract approx. ${scaleDistance}px from cuboid height`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance * -1),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+8',
+  //     description: `Add approx. ${fastScaleDistance}px to cuboid height`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+2',
+  //     description: `Substract approx. ${fastScaleDistance}px from cuboid height`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance * -1),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: '4',
+  //     description: `Add approx. ${scaleDistance}px to cuboid width`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: '6',
+  //     description: `Substract approx. ${scaleDistance}px from cuboid width`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance * -1),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+4',
+  //     description: `Add approx. ${fastScaleDistance}px to cuboid width`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+6',
+  //     description: `Substract approx. ${fastScaleDistance}px from cuboid width`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance * -1),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: '9',
+  //     description: `Add approx. ${scaleDistance}px to cuboid depth`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: '3',
+  //     description: `Substract approx. ${scaleDistance}px from cuboid depth`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance * -1),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+9',
+  //     description: `Add approx. ${fastScaleDistance}px to cuboid depth`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance),
+  //   });
+  //   this._keyboardShortcutService.addHotkey('labeling-task', {
+  //     combo: 'shift+3',
+  //     description: `Substract approx. ${fastScaleDistance}px from cuboid depth`,
+  //     callback: () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance * -1),
+  //   });
+  // }
+
+  // _resizeCuboidByDistance(handleName, distance) {
+  //   /**
+  //    * @type {PaperCuboid}
+  //    */
+  //   const cuboid = this._toolActionStruct.shape;
+  //   if (!(cuboid instanceof PaperCuboid)) {
+  //     return;
+  //   }
+  //
+  //   const minimalHeight = (
+  //     this._$scope.vm.task.drawingToolOptions.cuboid &&
+  //     this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight &&
+  //     this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight > 0
+  //   )
+  //     ? this._$scope.vm.task.drawingToolOptions.cuboid.minimalHeight
+  //     : 1;
+  //
+  //   this._context.withScope(scope => {
+  //     cuboid.resizeByDistance(handleName, distance, minimalHeight);
+  //     scope.view.update();
+  //     this.emit('shape:update', cuboid);
+  //   });
+  // }
+  //
+  // /**
+  //  * Converts degree to radiant
+  //  *
+  //  * @param degree
+  //  * @returns {number}
+  //  * @private
+  //  */
+  // _deg2rad(degree) {
+  //   return 2 * Math.PI / 360 * degree;
+  // }
+  //
+  // // enable() {
+  // //   this._enabled = true;
+  // //   this._keyboardShortcutService.enable();
+  // // }
+  //
+  // // disable() {
+  // //   this._enabled = false;
+  // //   this._keyboardShortcutService.disable();
+  // // }
+  //
+  // /**
+  //  * @param {number} degree
+  //  * @private
+  //  */
+  // _rotateCuboid(degree) {
+  //   // TODO: refactor this into a separate cuboid-rotate tool !!!
+  //   const shape = this._toolActionStruct.shape;
+  //   if (shape instanceof PaperCuboid) {
+  //     this._context.withScope(scope => {
+  //       shape.rotateAroundCenter(degree);
+  //       shape.updatePrimaryCorner();
+  //       scope.view.update();
+  //       // this.emit('shape:update', shape);
+  //     });
+  //   }
+  // }
+  //
+  // /**
+  //  * @param {boolean} clockwise
+  //  * @private
+  //  */
+  // _rotateCuboidFaces(clockwise) {
+  //   // TODO: refactor this into a separate cuboid-rotate tool !!!
+  //   const shape = this._$scope.vm.selectedPaperShape;
+  //   if (shape instanceof PaperCuboid) {
+  //     this._context.withScope(scope => {
+  //       shape.rotateFaces(clockwise);
+  //       shape.updatePrimaryCorner();
+  //       scope.view.update();
+  //       this.emit('shape:update', shape);
+  //     });
+  //   }
+  // }
+  //
+  // /**
+  //  * @param {Number} deltaX
+  //  * @param {Number} deltaY
+  //  * @private
+  //  */
+  // _moveSelectedShapeBy(deltaX, deltaY) {
+  //   if (!this._enabled) {
+  //     return;
+  //   }
+  //
+  //   const paperShape = this._$scope.vm.selectedPaperShape;
+  //   if (!paperShape) {
+  //     return;
+  //   }
+  //
+  //   this._context.withScope(scope => {
+  //     paperShape.moveTo(
+  //       new paper.Point(
+  //         paperShape.position.x + deltaX,
+  //         paperShape.position.y + deltaY
+  //       ),
+  //       this._options
+  //     );
+  //     scope.view.update();
+  //     this.emit('shape:update', paperShape);
+  //   });
+  // }
 }
+
+MultiTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+  'keyboardShortcutService',
+  'toolService',
+  'viewerMouseCursorService',
+];
+
+export default MultiTool;

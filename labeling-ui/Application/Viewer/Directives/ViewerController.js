@@ -36,10 +36,12 @@ class ViewerController {
    * @param {angular.$rootScope} $rootScope
    * @param {angular.element} $element
    * @param {angular.window} $window
+   * @param {$injector} $injector
    * @param {DrawingContextService} drawingContextService
    * @param {FrameLocationGateway} frameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {CacheHeaterService} cacheHeater
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
@@ -66,10 +68,12 @@ class ViewerController {
               $rootScope,
               $element,
               $window,
+              $injector,
               drawingContextService,
               frameLocationGateway,
               frameGateway,
               labeledThingInFrameGateway,
+              labeledThingGroupGateway,
               cacheHeater,
               entityIdService,
               paperShapeFactory,
@@ -123,6 +127,12 @@ class ViewerController {
     this._$timeout = $timeout;
 
     /**
+     * @type {$injector}
+     * @private
+     */
+    this._$injector = $injector;
+
+    /**
      * List of supported image types for this component
      *
      * @type {string[]}
@@ -165,6 +175,12 @@ class ViewerController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
 
     /**
      * @type {CacheHeaterService}
@@ -673,12 +689,9 @@ class ViewerController {
       this._contentWidth,
       this._contentHeight,
       this._$scope.$new(),
+      this._$injector,
       this._drawingContextService,
-      this._entityIdService,
       this._paperShapeFactory,
-      this._entityColorService,
-      this._keyboardShortcutService,
-      this._toolService,
       this._logger,
       this._$timeout,
       this.framePosition,
@@ -1271,10 +1284,12 @@ ViewerController.$inject = [
   '$rootScope',
   '$element',
   '$window',
+  '$injector',
   'drawingContextService',
   'frameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
+  'labeledThingGroupGateway',
   'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
