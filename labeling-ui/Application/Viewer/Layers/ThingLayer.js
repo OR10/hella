@@ -180,6 +180,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     const delegatedOptions = {
       initialDragDistance: 8,
       minDragDistance: 1,
+      minimalHeight: 1,
     };
 
     const {viewport, video, task} = this._$scope.vm;

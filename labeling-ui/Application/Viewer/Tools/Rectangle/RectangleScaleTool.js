@@ -1,24 +1,20 @@
-import Tool from '../Tool';
+import ScalingTool from '../ScalingTool';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
- * A Tool for scaling annotation shapes
+ * A Tool for scaling rectangle shapes
  *
  * @implements ToolEvents
  */
-class RectangleScaleTool extends Tool {
+class RectangleScaleTool extends ScalingTool {
   /**
-   * @param $scope
+   * @param {$rootScope} $rootScope
    * @param {DrawingContext} drawingContext
+   * @param {angular.$q} $q
    * @param {LoggerService} loggerService
-   * @param {Object} [options]
    */
-  constructor($scope, drawingContext, loggerService, options) {
-    super(drawingContext, loggerService, options);
-    /**
-     * @type {angular.$scope}
-     * @private
-     */
-    this._$scope = $scope;
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * Variable that holds the modified state of the current rectangle
@@ -27,59 +23,54 @@ class RectangleScaleTool extends Tool {
      * @private
      */
     this._modified = false;
-
-    /**
-     * Variable that holds the drag handle
-     *
-     * @type {Handle|null}
-     * @private
-     */
-    this._activeHandle = null;
-
-    /**
-     * Position of the initial mouse down of one certain scaling operation
-     *
-     * @type {paper.Point|null}
-     * @private
-     */
-    this._startPoint = null;
   }
 
-  onMouseDown(event, hitShape, hitHandle) {
-    this._paperRectangle = hitShape;
-    this._activeHandle = hitHandle;
+  /**
+   * @param {ScalingToolActionStruct} toolActionStruct
+   * @returns {Promise}
+   */
+  invokeShapeScaling(toolActionStruct) {
+    this._modified = null;
+
+    return super.invokeShapeScaling(toolActionStruct);
   }
 
-  onMouseUp() {
-    this.emit('tool:finished');
-    if (this._paperRectangle && this._modified) {
-      this._modified = false;
-      this._paperRectangle.fixOrientation();
-      this.emit('shape:update', this._paperRectangle);
-    }
-
-    this._activeHandle = null;
-    this._paperRectangle = null;
-  }
-
-  onMouseDrag(event) {
-    if (!this._paperRectangle || this._activeHandle === null) {
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseUp(event) {
+    const {shape} = this._toolActionStruct;
+    if (this._modified !== true) {
+      this._reject(new NotModifiedError('Rectangle not scaled.'));
       return;
     }
+
+    shape.fixOrientation();
+    this._complete(shape);
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseDrag(event) {
     const point = event.point;
+    const {shape, handle} = this._toolActionStruct;
     this._modified = true;
 
-    const drawingToolOptions = this._options.rectangle;
-    const minimalSize = (drawingToolOptions && drawingToolOptions.minimalHeight)
-      ? {width: 1, height: drawingToolOptions.minimalHeight}
-      : {width: 1, height: 1};
+    const {options: {minimalHeight}} = this._toolActionStruct;
+    const minimalSize = {width: 1, height: minimalHeight};
 
-    this._$scope.$apply(() => {
-      this._context.withScope(() => {
-        this._paperRectangle.resize(this._activeHandle, point, minimalSize);
-      });
+    this._context.withScope(() => {
+      shape.resize(handle, point, minimalSize);
     });
   }
 }
+
+RectangleScaleTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+];
 
 export default RectangleScaleTool;
