@@ -8,7 +8,6 @@ import PaginationControlsDirective from './Directives/PaginationControlsDirectiv
 
 import TitleBarDirective from './Directives/TitleBarDirective';
 
-import UploadController from './Controllers/UploadController';
 import UploadView from './Views/UploadView.html!';
 
 import ProjectsController from './Controllers/ProjectsController';
@@ -24,6 +23,9 @@ import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
 import TaskListDirective from './Directives/TaskListDirective';
 import FlaggedTaskListDirective from './Directives/FlaggedTaskListDirective';
+import UploadGateway from './Gateways/UploadGateway';
+import UploadController from './Controllers/UploadController';
+import UploadFormDirective from './Directives/UploadFormDirective';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -263,6 +265,7 @@ class ManagementBoard extends Module {
     this.module.service('taskConfigurationGateway', TaskConfigurationGateway);
     this.module.service('projectGateway', ProjectGateway);
     this.module.service('systemGateway', SystemGateway);
+    this.module.service('uploadGateway', UploadGateway);
 
     this.registerDirective('titleBar', TitleBarDirective);
     this.registerDirective('tabView', TabViewDirective);
@@ -275,6 +278,7 @@ class ManagementBoard extends Module {
     this.registerDirective('userProfile', UserProfileDirective);
     this.registerDirective('labelingGroupList', LabelingGroupListDirective);
     this.registerDirective('flaggedTaskList', FlaggedTaskListDirective);
+    this.registerDirective('uploadForm', UploadFormDirective);
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
