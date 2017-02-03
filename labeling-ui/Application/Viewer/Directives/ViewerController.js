@@ -307,11 +307,6 @@ class ViewerController {
     this._frameLocations = this._loadFrameLocations();
 
     /**
-     * @type {Tool|null}
-     */
-    this.activeTool = null;
-
-    /**
      * Due to an action selected DrawingTool, which should be activated when appropriate.
      *
      * @type {string}
@@ -695,9 +690,21 @@ class ViewerController {
 
     this._layerManager.addLayer('annotations', this.thingLayer);
 
-    this._$scope.$watch(
-      'vm.activeTool', newActiveTool => {
-        this.thingLayer.activateTool(newActiveTool);
+    this._$scope.$watchGroup(
+      ['vm.activeTool', 'vm.selectedLabelStructureThing'],
+      ([newActiveTool, newSelectedLabelStructureThings]) => {
+        /* @TODO: Refactor (into service?!) to not have zoomPanel switch to 'multi'
+         * while labelStructureThings are not loaded yet
+         */
+        if (newActiveTool === 'multi' && newSelectedLabelStructureThings === null) {
+          return;
+        }
+        // Only called if all tools are initialized
+        if (newActiveTool === null) {
+          return;
+        }
+
+        this.thingLayer.activateTool(newActiveTool, newSelectedLabelStructureThings);
       }
     );
   }
@@ -1039,8 +1046,6 @@ class ViewerController {
         shape.publish();
         this._$rootScope.$emit('shape:add:after', shape);
       });
-
-    this.activeTool = null;
 
     this.bookmarkedFrameIndex = this.framePosition.position;
   }

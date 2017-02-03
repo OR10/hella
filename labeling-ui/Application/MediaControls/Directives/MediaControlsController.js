@@ -123,7 +123,7 @@ class MediaControlsController {
       ['vm.popupPanelState', 'vm.popupPanelOpen'], ([newState, newOpen], [oldState]) => {
         if ((oldState === 'zoom' && newState !== 'zoom') || newOpen === false) {
           if (typeof this.activeTool === 'string' && this.activeTool.indexOf('zoom') === 0) {
-            this.activeTool = null;
+            this.activeTool = 'multi';
           }
         }
       }

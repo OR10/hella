@@ -206,7 +206,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _onLayerClick(event) {
-    if (this._$scope.vm.activeTool !== null) {
+    if (this._$scope.vm.activeTool !== 'multi') {
       return;
     }
 
@@ -254,7 +254,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._zoomOutTool.activate();
         this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
-      default:
+      case 'multi':
         if (!this._$scope.vm.readOnly) {
           this._multiTool.activate();
           this._logger.log('thinglayer:tool', this._multiTool);
@@ -263,6 +263,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
           this._$scope.vm.actionMouseCursor = null;
           this._logger.log('thinglayer:tool', 'Disabled all tools due to readonly task');
         }
+        break;
+      default:
+        throw new Error(`Unknown tool with name: ${toolName}`);
     }
     this._logger.groupEnd('thinglayer:tool');
   }

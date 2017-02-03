@@ -441,6 +441,7 @@ class TaskController {
         this.selectedDrawingTool = labelStructureThing.shape;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
+        this.activeTool = 'multi';
 
         // Pipe labelStructure to next chain function
         return labelStructure;
