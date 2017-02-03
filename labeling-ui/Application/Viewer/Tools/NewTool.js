@@ -7,11 +7,11 @@ import ToolAbortedError from './Errors/ToolAbortedError';
 class Tool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {$scope} $scope
+   * @param {$scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
    */
-  constructor(drawingContext, $scope, $q, loggerService) {
+  constructor(drawingContext, $rootScope, $q, loggerService) {
     /**
      * @type {DrawingContext}
      * @protected
@@ -22,7 +22,7 @@ class Tool {
      * @type {$scope}
      * @protected
      */
-    this._$scope = $scope;
+    this._$rootScope = $rootScope;
 
     /**
      * @type {$q}
@@ -67,7 +67,7 @@ class Tool {
 
     this._tool.onMouseDown = this.onMouseDown.bind(this);
     this._tool.onMouseDrag = this.onMouseDrag.bind(this);
-    this._tool.onMouseMove = event => this._$scope.$evalAsync(() => this.onMouseMove(event));
+    this._tool.onMouseMove = event => this._$rootScope.$evalAsync(() => this.onMouseMove(event));
     // Delegates to mouse up and mouse click event
     this._tool.onMouseUp = this._delegatedMouseUpEvent.bind(this);
   }

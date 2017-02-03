@@ -5,14 +5,14 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 class CreationTool extends Tool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {$rootScope.Scope} $scope
+   * @param {$rootScope.Scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    */
-  constructor(drawingContext, $scope, $q, loggerService, entityIdService, entityColorService) {
-    super(drawingContext, $scope, $q, loggerService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * @type {EntityIdService}

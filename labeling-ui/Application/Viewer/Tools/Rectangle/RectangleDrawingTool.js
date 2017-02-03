@@ -12,14 +12,14 @@ import Handle from '../../Shapes/Handles/Handle';
 class RectangleDrawingTool extends CreationTool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {$rootScope.Scope} $scope
+   * @param {$rootScope.Scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    */
-  constructor(drawingContext, $scope, $q, loggerService, entityIdService, entityColorService) {
-    super(drawingContext, $scope, $q, loggerService, entityIdService, entityColorService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
+    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
   }
 
   onMouseDown(event) {
@@ -30,13 +30,13 @@ class RectangleDrawingTool extends CreationTool {
     const point = event.point;
 
     if (this._rect) {
-      this._$scope.$apply(
+      this._$rootScope.$apply(
         () => {
           this._rect.resize(this._creationHandle, point, {width: 1, height: this._getMinimalHeight()});
         }
       );
     } else {
-      this._$scope.$apply(
+      this._$rootScope.$apply(
         () => this._startShape(this._startPosition, point)
       );
     }

@@ -1,8 +1,8 @@
 import Tool from './NewTool';
 
 class MovingTool extends Tool {
-  constructor($scope, $q, loggerService) {
-    super($scope, $q, loggerService);
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
   }
 
   /**
@@ -19,7 +19,8 @@ class MovingTool extends Tool {
 }
 
 MovingTool.$inject = [
-  '$scope',
+  'drawingContext',
+  '$rootScope',
   '$q',
   'loggerService',
 ];
