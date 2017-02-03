@@ -78,7 +78,6 @@ class RectangleMoveTool extends MovingTool {
     const point = event.point;
     const {shape} = this._toolActionStruct;
 
-    console.warn('drag event', event);
     this._modified = true;
     this._moveTo(shape, point.add(this._offset));
   }
