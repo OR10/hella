@@ -207,7 +207,7 @@ class Tool {
    * @param {PaperShape} shape
    * @param {paper.Point} point
    * @returns {paper.Point}
-   * @private
+   * @protected
    */
   _restrictToViewport(shape, point, minimalVisibleShapeOverflowX = shape.bounds.width, minimalVisibleShapeOverflowY = shape.bounds.height) {
     const {viewport} = this._toolActionStruct;
