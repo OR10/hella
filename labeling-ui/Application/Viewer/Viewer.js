@@ -5,6 +5,8 @@ import ViewerDirective from './Directives/ViewerDirective';
 import PaperShapeFactory from './Shapes/PaperShapeFactory';
 import ToolService from './Services/ToolService';
 
+import ViewerMouseCursorService from './Services/ViewerMouseCursorService';
+
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
 import 'jquery-mousewheel';
@@ -20,6 +22,7 @@ export default class Viewer extends Module {
 
     this.module.service('paperShapeFactory', PaperShapeFactory);
     this.module.service('toolService', ToolService);
+    this.module.service('viewerMouseCursorService', ViewerMouseCursorService);
 
     this.module.provider('drawingContextService', DrawingContextServiceProvider);
   }

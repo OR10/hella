@@ -60,6 +60,7 @@ class ViewerController {
    * @param {FrameIndexService} frameIndexService
    * @param {ModalService} modalService
    * @param {$state} $state
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
   constructor($scope,
               $rootScope,
@@ -88,14 +89,8 @@ class ViewerController {
               debouncerService,
               frameIndexService,
               modalService,
-              $state) {
-    /**
-     * Mouse cursor used, while hovering the viewer
-     *
-     * @type {string}
-     */
-    this.activeMouseCursor = null;
-
+              $state,
+              viewerMouseCursorService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -278,6 +273,16 @@ class ViewerController {
      * @private
      */
     this._layerManager = new LayerManager();
+
+    /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
+
+    this._viewerMouseCursorService.on('cursor:updated', cursor => {
+      this.actionMouseCursor = cursor;
+    });
 
     /**
      * @type {Debouncer}
@@ -654,7 +659,7 @@ class ViewerController {
     this._crosshairsLayer = new CrosshairsLayer(
       this._contentHeight,
       this._contentHeight,
-      this._$scope.$new(),
+      this._viewerMouseCursorService,
       '#bedb31', // $icon-hover (green)
       2
     );
@@ -676,7 +681,8 @@ class ViewerController {
       this._toolService,
       this._logger,
       this._$timeout,
-      this.framePosition
+      this.framePosition,
+      this._viewerMouseCursorService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1289,6 +1295,7 @@ ViewerController.$inject = [
   'frameIndexService',
   'modalService',
   '$state',
+  'viewerMouseCursorService',
 ];
 
 export default ViewerController;

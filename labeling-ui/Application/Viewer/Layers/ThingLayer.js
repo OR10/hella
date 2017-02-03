@@ -26,6 +26,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
   constructor(width,
               height,
@@ -38,7 +39,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
               toolService,
               logger,
               $timeout,
-              framePosition) {
+              framePosition,
+              viewerMouseCursorService) {
     super(width, height, $scope, drawingContextService);
 
     /**
@@ -79,6 +81,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context, this._$scope.vm.readOnly === 'true');
     this._$scope.vm.multiTool = this._multiTool;
+
+    /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
 
     /**
      * @type {null}
@@ -242,7 +250,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   activateTool(toolName) {
     // Reset possible mouse cursor left-overs from the last tool
-    this._$scope._actionMouseCursor = null;
+    this._viewerMouseCursorService.setMouseCursor(null);
 
     this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}`);
     switch (toolName) {
@@ -260,7 +268,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
           this._logger.log('thinglayer:tool', this._multiTool);
         } else {
           this._context.withScope(scope => scope.tool = null);
-          this._$scope.vm.actionMouseCursor = null;
           this._logger.log('thinglayer:tool', 'Disabled all tools due to readonly task');
         }
         break;
