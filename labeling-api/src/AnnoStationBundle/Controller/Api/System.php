@@ -71,7 +71,7 @@ class System extends Controller\Base
 
         $queuedMessages = [];
         foreach ($queues as $queue) {
-            if ($queue['vhost'] === '/annostation') {
+            if ($queue['vhost'] === '' || $queue['vhost'] === '/annostation') {
                 $queuedMessages[$queue['name']] = $queue['messages'];
             }
         }
