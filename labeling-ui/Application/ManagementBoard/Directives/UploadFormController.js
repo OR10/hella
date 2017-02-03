@@ -13,7 +13,6 @@ class UploadFormController {
    * @param {ListDialog.constructor} ListDialog
    */
   constructor($rootScope, $scope, $state, uploadGateway, modalService, ListDialog) {
-
     /**
      * @type {$rootScope}
      * @private
@@ -83,23 +82,25 @@ class UploadFormController {
   }
 
   _installNavigationInterceptions() {
-    this._unregisterUiRouterInterception = this._$rootScope.$on('$stateChangeStart', event => {
-      event.preventDefault();
-      this._modalService.info(
-        {
-          title: 'Upload in progress',
-          headline: 'The page can not be left, while upload is in progress.',
-          message: 'While an upload is running you can not leave the upload page. You may however open a second browser window, while the upload is running.',
-          confirmButtonText: 'Understood',
-        },
-        undefined,
-        undefined,
-        {
-          abortable: false,
-          warning: true,
-        }
-      );
-    });
+    this._unregisterUiRouterInterception = this._$rootScope.$on(
+      '$stateChangeStart', event => {
+        event.preventDefault();
+        this._modalService.info(
+          {
+            title: 'Upload in progress',
+            headline: 'The page can not be left, while upload is in progress.',
+            message: 'While an upload is running you can not leave the upload page. You may however open a second browser window, while the upload is running.',
+            confirmButtonText: 'Understood',
+          },
+          undefined,
+          undefined,
+          {
+            abortable: false,
+            warning: true,
+          }
+        );
+      }
+    );
 
     window.addEventListener('beforeunload', this._windowBeforeUnload);
   }
@@ -115,20 +116,24 @@ class UploadFormController {
 
   _uploadComplete() {
     this._uploadGateway.markUploadAsFinished(this.uploadCompletePath)
-      .then(result => {
-        this.uploadInProgress = false;
-        this._uninstallNavigationInterceptions();
-        if (this._hasFilesWithError()) {
-          this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
-        } else {
-          this._showCompletedModal(result.missing3dVideoCalibrationData);
+      .then(
+        result => {
+          this.uploadInProgress = false;
+          this._uninstallNavigationInterceptions();
+          if (this._hasFilesWithError()) {
+            this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
+          } else {
+            this._showCompletedModal(result.missing3dVideoCalibrationData);
+          }
         }
-      })
-      .catch(() => {
-        this.uploadInProgress = false;
-        this._uninstallNavigationInterceptions();
-        this._showCompletedWithErrorsModal();
-      });
+      )
+      .catch(
+        () => {
+          this.uploadInProgress = false;
+          this._uninstallNavigationInterceptions();
+          this._showCompletedWithErrorsModal();
+        }
+      );
   }
 
   _hasFilesWithError() {
