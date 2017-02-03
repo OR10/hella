@@ -54,7 +54,42 @@ class Tool {
      */
     this._tool = null;
 
+    /**
+     * Information about whether the fired drag event is the first one received
+     *
+     * Paperjs fires a drag event without adhering to minDistance as soon as the first mouseDown is registered.
+     * We do not want this, as a drag should only occur once the mouse is really dragged the minDistance.
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._firstDragEvent = true;
+
     this._initializePaperToolAndEvents();
+  }
+
+  _delegateMouseEvent(type, event) {
+    const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
+
+    switch (type) {
+      case 'up':
+        this[delegationTarget](event);
+        this.onMouseClick(event);
+        break;
+      case 'move':
+        this._$rootScope.$evalAsync(() => this[delegationTarget](event));
+        break;
+      case 'drag':
+        if (this._firstDragEvent === true) {
+          this._firstDragEvent = false;
+          return;
+        }
+        this[delegationTarget](event);
+        break;
+      default:
+        this[delegationTarget](event);
+    }
+    // this._context.withScope(scope => scope.view.update());
   }
 
   /**
@@ -65,11 +100,10 @@ class Tool {
       this._tool = new paper.Tool();
     });
 
-    this._tool.onMouseDown = this.onMouseDown.bind(this);
-    this._tool.onMouseDrag = this.onMouseDrag.bind(this);
-    this._tool.onMouseMove = event => this._$rootScope.$evalAsync(() => this.onMouseMove(event));
-    // Delegates to mouse up and mouse click event
-    this._tool.onMouseUp = this._delegatedMouseUpEvent.bind(this);
+    this._tool.onMouseDown = event => this._delegateMouseEvent('down', event);
+    this._tool.onMouseUp = event => this._delegateMouseEvent('up', event);
+    this._tool.onMouseDrag = event => this._delegateMouseEvent('drag', event);
+    this._tool.onMouseMove = event => this._delegateMouseEvent('move', event);
   }
 
   /**
@@ -133,10 +167,8 @@ class Tool {
    */
   _invoke(toolActionStruct) {
     this._logger.log('tool', 'Invoked', toolActionStruct);
-    if (!this._tool || !this._context) {
-      throw new Error('PaperTool or PaperContext not set, initializeForTool was not called!');
-    }
 
+    this._firstDragEvent = true;
     this._tool.minDistance = toolActionStruct.options.minDistance;
 
     this._context.withScope(() => {
@@ -188,15 +220,6 @@ class Tool {
     this._context.withScope(scope => {
       scope.tool = null;
     });
-  }
-
-  /**
-   * @param {paper.Event} event
-   * @private
-   */
-  _delegatedMouseUpEvent(event) {
-    this.onMouseUp(event);
-    this.onMouseClick(event);
   }
 
   /**
