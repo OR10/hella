@@ -71,7 +71,9 @@ class System extends Controller\Base
 
         $queuedMessages = [];
         foreach ($queues as $queue) {
-            $queuedMessages[$queue['name']] = $queue['messages'];
+            if ($queue['vhost'] === '/annostation') {
+                $queuedMessages[$queue['name']] = $queue['messages'];
+            }
         }
 
         return View\View::create()->setData(['result' => $queuedMessages]);
