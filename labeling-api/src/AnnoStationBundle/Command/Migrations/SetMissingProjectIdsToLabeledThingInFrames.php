@@ -86,7 +86,8 @@ class SetMissingProjectIdsToLabeledThingInFrames extends Command\Base
 
             $documentsWithoutProject = $documentManager->execute()->toArray();
 
-            if (count($documentManager) === 0) {
+            if (count($documentsWithoutProject) === 0) {
+                $this->writeInfo($output, 'Done!');
                 break;
             }
 
