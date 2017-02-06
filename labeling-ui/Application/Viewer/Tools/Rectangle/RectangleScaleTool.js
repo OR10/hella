@@ -30,7 +30,7 @@ class RectangleScaleTool extends ScalingTool {
    * @returns {Promise}
    */
   invokeShapeScaling(toolActionStruct) {
-    this._modified = null;
+    this._modified = false;
 
     return super.invokeShapeScaling(toolActionStruct);
   }
