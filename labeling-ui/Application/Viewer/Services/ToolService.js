@@ -60,15 +60,15 @@ class ToolService {
       'rectangle-move': RectangleMoveTool,
       'rectangle-scale': RectangleScaleTool,
       'rectangle-creation': RectangleDrawingTool,
-      'cuboid-move': CuboidMoveTool,
-      'cuboid-scale': CuboidScaleTool,
-      'cuboid-drawing': CuboidDrawingTool,
-      'polygon-drawing': PolygonDrawingTool,
-      'polygon-scale': PolygonScaleTool,
-      'polygon-move': PolygonMoveTool,
       'pedestrian-move': NoOperationTool,
       'pedestrian-scale': NoOperationTool,
       'pedestrian-creation': PedestrianDrawingTool,
+      'cuboid-move': NoOperationTool,
+      'cuboid-scale': NoOperationTool,
+      'cuboid-creation': NoOperationTool,
+      'polygon-creation': NoOperationTool,
+      'polygon-scale': NoOperationTool,
+      'polygon-move': NoOperationTool,
     };
   }
 
