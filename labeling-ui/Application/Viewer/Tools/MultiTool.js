@@ -1,6 +1,7 @@
 import Tool from './NewTool';
 import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
+import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
@@ -104,7 +105,6 @@ class MultiTool extends Tool {
    * @private
    */
   _invokeCreationToolDelegation(requirementsShape) {
-    console.log('requirementsShape', requirementsShape);
     const tool = this._getToolForRequirementsShape(requirementsShape);
     this._invokeToolDelegation(tool, 'creation', null, null);
   }
@@ -124,6 +124,8 @@ class MultiTool extends Tool {
         return this._toolService.getTool(this._context, PaperCuboid.getClass());
       case 'polygon':
         return this._toolService.getTool(this._context, PaperPolygon.getClass());
+      case 'group-rectangle':
+        return this._toolService.getTool(this._context, PaperGroupRectangle.getClass());
       default:
         throw new Error(`Cannot create tool of unknown type: ${requirementsShape}.`);
     }
