@@ -155,14 +155,21 @@ class ProjectImporter extends Controller\Base
         $user                 = $this->tokenStorage->getToken()->getUser();
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
 
+        $tasks = [];
         foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
-            $this->projectImporter->importXml($filePath, $user);
+            $tasks = array_merge($this->projectImporter->importXml($filePath, $user), $tasks);
         }
 
         return new View\View(
             [
                 'result' => [
-                    'success' => true
+                    'taskIds' => array_map(
+                        function (Model\LabelingTask $task) {
+                            return $task->getId();
+                        },
+                        $tasks
+                    ),
+                    'missing3dVideoCalibrationData' => [],
                 ],
             ]
         );
