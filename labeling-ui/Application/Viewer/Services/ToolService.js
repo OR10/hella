@@ -66,9 +66,9 @@ class ToolService {
       'cuboid-move': NoOperationTool,
       'cuboid-scale': NoOperationTool,
       'cuboid-creation': NoOperationTool,
-      'polygon-creation': NoOperationTool,
       'polygon-scale': NoOperationTool,
       'polygon-move': NoOperationTool,
+      'polygon-creation': PolygonDrawingTool,
     };
   }
 
