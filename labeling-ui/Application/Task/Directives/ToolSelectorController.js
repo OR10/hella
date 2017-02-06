@@ -3,28 +3,6 @@
  */
 class ToolSelectorController {
   constructor() {
-    /**
-     * @type {Array.<LabelStructureThing>}
-     */
-    this.things = [];
-
-    /**
-     * @type {Array.<LabelStructureThing>}
-     */
-    this.groups = [];
-
-    this.drawableThings.forEach(drawableThing => {
-      if (drawableThing.thingType === 'group') {
-        this.groups.push(drawableThing);
-        return;
-      }
-      if (drawableThing.thingType === 'thing') {
-        this.things.push(drawableThing);
-        return;
-      }
-
-      throw new Error('Unsupported thing type for tool selector');
-    });
   }
 
   /**
