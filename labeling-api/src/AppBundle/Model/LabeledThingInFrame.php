@@ -397,4 +397,12 @@ class LabeledThingInFrame
     {
         $this->projectId = $projectId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTaskId()
+    {
+        return $this->taskId;
+    }
 }
