@@ -1,24 +1,19 @@
-import Tool from '../Tool';
+import ScalingTool from '../ScalingTool';
 
 /**
  * A Tool for scaling annotation shapes
  *
  * @implements ToolEvents
  */
-class PolygonScaleTool extends Tool {
+class PolygonScaleTool extends ScalingTool {
   /**
-   * @param $scope
+   * @param {$rootScope} $rootScope
    * @param {DrawingContext} drawingContext
+   * @param {angular.$q} $q
    * @param {LoggerService} loggerService
-   * @param {Object} [options]
    */
-  constructor($scope, drawingContext, loggerService, options) {
-    super(drawingContext, loggerService, options);
-    /**
-     * @type {angular.$scope}
-     * @private
-     */
-    this._$scope = $scope;
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * Variable that holds the modified state of the current rectangle
@@ -27,45 +22,58 @@ class PolygonScaleTool extends Tool {
      * @private
      */
     this._modified = false;
-
-    /**
-     * Variable that holds the drag handle
-     *
-     * @type {Handle|null}
-     * @private
-     */
-    this._activeHandle = null;
   }
 
-  onMouseDown(event, hitShape, hitHandle) {
-    this._paperPolygon = hitShape;
-    this._activeHandle = hitHandle;
+  /**
+   * @param {ScalingToolActionStruct} toolActionStruct
+   * @returns {Promise}
+   */
+  invokeShapeScaling(toolActionStruct) {
+    this._modified = false;
+
+    return super.invokeShapeScaling(toolActionStruct);
+  }
+
+  /**
+   * Request tool abortion
+   */
+  abort() {
+    if (this._modified === false) {
+      super.abort();
+      return;
+    }
+
+    // If the shape was modified we simply resolve, what we have so far.
+    const {shape} = this._toolActionStruct;
+    this._complete(shape);
   }
 
   onMouseUp() {
-    this.emit('tool:finished');
-    if (this._paperPolygon && this._modified) {
-      this._modified = false;
-      this.emit('shape:update', this._paperPolygon);
+    const {shape} = this._toolActionStruct;
+    if (this._modified !== true) {
+      this._reject(new NotModifiedError('Polygon not scaled.'));
+      return;
     }
 
-    this._activeHandle = null;
-    this._paperPolygon = null;
+    this._complete(shape);
   }
 
   onMouseDrag(event) {
-    if (!this._paperPolygon || this._activeHandle === null) {
-      return;
-    }
     const point = event.point;
+    const {shape, handle} = this._toolActionStruct;
     this._modified = true;
 
-    this._$scope.$apply(() => {
-      this._context.withScope(() => {
-        this._paperPolygon.resize(this._activeHandle, point);
-      });
+    this._context.withScope(() => {
+      shape.resize(handle, point);
     });
   }
 }
+
+PolygonScaleTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+];
 
 export default PolygonScaleTool;
