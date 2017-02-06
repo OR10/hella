@@ -2,7 +2,7 @@ import Tool from './NewTool';
 import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
-// import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
