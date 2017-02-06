@@ -1,11 +1,12 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
 /**
- * @extends PaperShape
+ * @extends PaperThingShape
  */
-class PaperPolygon extends PaperShape {
+class PaperPolygon extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {string} shapeId

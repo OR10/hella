@@ -1,13 +1,14 @@
 import paper from 'paper';
 import {Vector3} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
 import Cuboid3d from '../Models/Cuboid3d';
 import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
 import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
-class PaperCuboid extends PaperShape {
+class PaperCuboid extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId

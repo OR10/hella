@@ -1,5 +1,6 @@
 import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
+import PaperGroupRectangle from './PaperRectangle';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
@@ -31,6 +32,20 @@ class PaperShapeFactory {
     const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
 
     return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @param {String} color
+   * @returns {PaperGroupRectangle}
+   * @private
+   */
+  _createGroupRectangle(labeledThingInFrame, shape, color) {
+    const topLeft = new paper.Point(shape.topLeft.x, shape.topLeft.y);
+    const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
+
+    return new PaperGroupRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color);
   }
 
   /**
@@ -97,6 +112,9 @@ class PaperShapeFactory {
         break;
       case 'polygon':
         result = this._createPolygon(labeledThingInFrame, shape, color);
+        break;
+      case 'group-rectangle':
+        result = this._createGroupRectangle(labeledThingInFrame, shape, color);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);

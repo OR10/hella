@@ -8,12 +8,11 @@ import paper from 'paper';
  */
 class PaperShape extends paper.Group {
   /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {{primary: string, secondary: string}} color
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, color, draft = false) {
+  constructor(shapeId, color, draft = false) {
     super();
 
     // This needs to be called due to how PaperJS does inheritance
@@ -39,14 +38,6 @@ class PaperShape extends paper.Group {
      * @protected
      */
     this._shape = null;
-
-    /**
-     * {@link LabeledThingInFrame} associated with this `PaperShape`
-     *
-     * @type {LabeledThingInFrame}
-     * @private
-     */
-    this._labeledThingInFrame = labeledThingInFrame;
 
     /**
      * The color object representing the shape color.
@@ -138,15 +129,6 @@ class PaperShape extends paper.Group {
     }
 
     this._draft = false;
-  }
-
-  /**
-   * {@link LabeledThingInFrame} associated with this `PaperShape`
-   *
-   * @returns {LabeledThingInFrame}
-   */
-  get labeledThingInFrame() {
-    return this._labeledThingInFrame;
   }
 
   /**

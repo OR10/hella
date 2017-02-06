@@ -1,11 +1,12 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
 /**
- * @extends PaperShape
+ * @extends PaperThingShape
  */
-class PaperPedestrian extends PaperShape {
+class PaperPedestrian extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
@@ -163,7 +164,14 @@ class PaperPedestrian extends PaperShape {
   get bounds() {
     const height = Math.abs(this._bottomCenter.y - this._topCenter.y);
     const width = height * PaperPedestrian.ASPECT_RATIO;
-    return {width, height};
+    const x = this._topCenter.x - width / 2;
+    return {
+      width,
+      height,
+      x,
+      y: this._topCenter.y,
+      point: new paper.Point(x, this._topCenter.y),
+    };
   }
 
   /**
