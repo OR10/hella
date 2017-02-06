@@ -90,10 +90,6 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   _startShape(from, to) {
-    if (from.getDistance(to) < 5) {
-      // Do nothing if no "real" dragging operation took place.
-      return;
-    }
     const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
 
     this._context.withScope(() => {
