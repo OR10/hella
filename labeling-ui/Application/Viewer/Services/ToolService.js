@@ -5,9 +5,9 @@ import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
 import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
-import CuboidMoveTool from '../../ThirdDimension/Tools/CuboidMoveTool';
-import CuboidScaleTool from '../../ThirdDimension/Tools/CuboidScaleTool';
 import CuboidDrawingTool from '../Tools/Cuboid/CuboidDrawingTool';
+import CuboidScaleTool from '../Tools/Cuboid/CuboidScaleTool';
+import CuboidMoveTool from '../Tools/Cuboid/CuboidMoveTool';
 import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
 import PolygonMoveTool from '../Tools/Polygon/PolygonMoveTool';
 import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
@@ -63,8 +63,8 @@ class ToolService {
       'pedestrian-move': PedestrianMoveTool,
       'pedestrian-scale': PedestrianScaleTool,
       'pedestrian-creation': PedestrianDrawingTool,
-      'cuboid-move': NoOperationTool,
-      'cuboid-scale': NoOperationTool,
+      'cuboid-move': CuboidMoveTool,
+      'cuboid-scale': CuboidScaleTool,
       'cuboid-creation': CuboidDrawingTool,
       'polygon-creation': PolygonDrawingTool,
       'polygon-scale': PolygonScaleTool,
