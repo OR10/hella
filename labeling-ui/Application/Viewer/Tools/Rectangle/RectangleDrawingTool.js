@@ -156,8 +156,7 @@ class RectangleDrawingTool extends CreationTool {
    * @private
    */
   _getMinimalHeight() {
-    const {minimalHeight} = this._toolActionStruct;
-
+    const {minimalHeight} = this._toolActionStruct.options;
     return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
   }
 
