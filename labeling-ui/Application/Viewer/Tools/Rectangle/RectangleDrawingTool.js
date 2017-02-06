@@ -21,6 +21,24 @@ class RectangleDrawingTool extends CreationTool {
    */
   constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
     super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
+
+    /**
+     * @type {PaperRectangle|null}
+     * @private
+     */
+    this._rect = null;
+
+    /**
+     * @type {paper.Point|null}
+     * @private
+     */
+    this._startPosition = null;
+
+    /**
+     * @type {Handle|null}
+     * @private
+     */
+    this._creationHandle = null;
   }
 
   /**
