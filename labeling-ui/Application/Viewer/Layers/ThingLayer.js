@@ -1,6 +1,7 @@
 import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
+import ZoomToolActionStruct from '../Tools/ToolActionStructs/ZoomToolActionStruct';
 import ZoomTool from '../Tools/ZoomTool';
 import MultiToolActionStruct from '../Tools/ToolActionStructs/MultiToolActionStruct';
 import MultiTool from '../Tools/MultiTool';
@@ -42,6 +43,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
     super(width, height, $scope, drawingContextService);
 
     /**
+     * @type {Tool|null}
+     * @private
+     */
+    this._activeTool = null;
+
+    /**
      * @type {PaperShapeFactory}
      * @private
      */
@@ -81,16 +88,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._viewerMouseCursorService = viewerMouseCursorService;
 
     /**
-     * @type {null}
+     * @type {ZoomTool}
      * @private
      */
-    this._zoomInTool = new ZoomTool(ZoomTool.ZOOM_IN, $scope.$new(), this._context);
+    this._zoomInTool = $injector.instantiate(ZoomTool, {drawingContext: this._context});
 
     /**
-     * @type {null}
+     * @type {ZoomTool}
      * @private
      */
-    this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
+    this._zoomOutTool = $injector.instantiate(ZoomTool, {drawingContext: this._context});
 
     /**
      * @type {LabelStructureThing|null}
@@ -146,22 +153,64 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     this._framePosition.beforeFrameChangeAlways('disableTools', () => {
-      this._multiTool.abort();
+      this._abortActiveTool();
     });
     this._framePosition.afterFrameChangeAlways('disableTools', () => {
-      this._invokeMultiTool();
+      this._invokeActiveTool();
     });
   }
 
   dispatchDOMEvent(event) {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
-        this._multiTool.abort();
-        this._invokeMultiTool();
+        this._abortActiveTool()
+      } else if (event.type === 'mouseenter') {
+        this._invokeActiveTool();
       } else {
         this._element.dispatchEvent(event);
       }
     });
+  }
+
+  _invokeActiveTool() {
+    if (this._activeTool === null) {
+      return;
+    }
+
+    switch (true) {
+      case this._activeTool instanceof MultiTool:
+        this._invokeMultiTool();
+        break;
+      case this._activeTool instanceof ZoomTool:
+        this._invokeZoomTool();
+        break;
+      default:
+        throw new Error(`Unknown active tool. Can not invoke: ${this._activeTool}`);
+    }
+  }
+
+  _invokeZoomTool() {
+    const {viewport} = this._$scope.vm;
+    let zoomToolActionStruct;
+    if (this._activeTool === this._zoomOutTool) {
+      zoomToolActionStruct = new ZoomToolActionStruct(
+        {},
+        viewport,
+        'zoom-out',
+        (focalPoint, zoomFactor) => this._$scope.vm.zoomOut(focalPoint, zoomFactor)
+      );
+    } else {
+      zoomToolActionStruct = new ZoomToolActionStruct(
+        {},
+        viewport,
+        'zoom-in',
+        (focalPoint, zoomFactor) => this._$scope.vm.zoomIn(focalPoint, zoomFactor)
+      );
+    }
+
+    this._activeTool
+      .invoke(zoomToolActionStruct)
+      .then(() => this._invokeActiveTool());
   }
 
   _invokeMultiTool() {
@@ -195,7 +244,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._selectedLabelStructureThing.id,
       this._selectedLabelStructureThing.shape
     );
-    this._multiTool.invoke(struct)
+    this._activeTool.invoke(struct)
       .then(({paperShape, actionIdentifier}) => {
         if (actionIdentifier === 'creation') {
           // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
@@ -207,7 +256,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
           this.emit('shape:update', paperShape);
         }
 
-        this._invokeMultiTool();
+        this._invokeActiveTool();
       })
       .catch(reason => {
         switch (true) {
@@ -216,12 +265,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
             break;
           case reason instanceof NotModifiedError:
             this._logger.log('tool:error', 'No modification executed', reason);
+            this._invokeActiveTool();
             break;
           default:
             this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
         }
-
-        this._invokeMultiTool();
       });
   }
 
@@ -299,13 +347,22 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
+   * @private
+   */
+  _abortActiveTool() {
+    if (this._activeTool !== null) {
+      this._activeTool.abort();
+    }
+  }
+
+  /**
    * Activates the tool identified by the given name
    *
    * @param {String} toolName
    * @param {LabelStructureThing|null} selectedLabelStructureThing
    */
   activateTool(toolName, selectedLabelStructureThing) {
-    this._multiTool.abort();
+    this._abortActiveTool();
     // @TODO can be removed when zoomtools are refactored
     this._context.withScope(scope => {
       scope.tool = null;
@@ -318,24 +375,21 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}`);
     switch (toolName) {
       case 'zoomIn':
-        this._zoomInTool.activate();
+        this._activeTool = this._zoomInTool;
         this._logger.log('thinglayer:tool', this._zoomInTool);
         break;
       case 'zoomOut':
-        this._zoomOutTool.activate();
+        this._activeTool = this._zoomOutTool;
         this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
       case 'multi':
-        if (!this._$scope.vm.readOnly) {
-          this._invokeMultiTool();
-          this._logger.log('thinglayer:tool', this._multiTool);
-        } else {
-          this._logger.log('thinglayer:tool', 'Disabled all tools due to readonly task');
-        }
+        this._activeTool = this._multiTool;
+        this._logger.log('thinglayer:tool', this._multiTool);
         break;
       default:
         throw new Error(`Unknown tool with name: ${toolName}`);
     }
+    this._invokeActiveTool();
     this._logger.groupEnd('thinglayer:tool');
   }
 
@@ -401,10 +455,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @private
    */
   _onCreateShape(shape) {
-    // The newly created shape was only temporary as it is rerendered by insertion into
-    // the labeledThingsInFrame
-    shape.remove();
-
     this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
 
     // Process the next steps after the rerendering took place in the next digest cycle

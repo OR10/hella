@@ -1,5 +1,5 @@
 import paper from 'paper';
-import Tool from './Tool';
+import Tool from './NewTool';
 
 /**
  * A Tool for Zooming in and out
@@ -8,48 +8,64 @@ import Tool from './Tool';
  */
 class ZoomTool extends Tool {
   /**
-   * @param {string} zoomFn
-   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
-   * @param {Object} [options]
+   * @param {$scope} $rootScope
+   * @param {$q} $q
+   * @param {LoggerService} loggerService
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
-  constructor(zoomFn, $scope, drawingContext, options) {
-    super(drawingContext, options);
+  constructor(drawingContext, $rootScope, $q, loggerService, viewerMouseCursorService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
-    this._zoomFn = zoomFn;
-    this._$scope = $scope;
-
-    this._tool.onMouseUp = event => this._$scope.$evalAsync(this._mouseUp.bind(this, event));
+    /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
   }
 
-  _mouseUp(event) {
+  /**
+   * @param {ZoomToolActionStruct} zoomToolActionStruct
+   */
+  invoke(zoomToolActionStruct) {
+    const {mouseCursor} = zoomToolActionStruct;
+    this._viewerMouseCursorService.setMouseCursor(mouseCursor);
+    return this._invoke(zoomToolActionStruct);
+  }
+
+  abort() {
+    this._viewerMouseCursorService.setMouseCursor(null);
+    super.abort();
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseClick(event) {
     const nativeEvent = event.event;
     if (nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.ctrlKey || nativeEvent.metaKey) {
       return;
     }
 
-    this._$scope.vm[this._zoomFn](
+    this._toolActionStruct.zoomFunction(
       new paper.Point(
         nativeEvent.offsetX,
         nativeEvent.offsetY
       ),
       1.5
     );
-  }
 
-  activate() {
-    super.activate();
-
-    const mouseCursor = {
-      [ZoomTool.ZOOM_IN]: 'zoom-in',
-      [ZoomTool.ZOOM_OUT]: 'zoom-out',
-    };
-
-    this._$scope.$evalAsync(() => this._$scope.vm.actionMouseCursor = mouseCursor[this._zoomFn]);
+    this._viewerMouseCursorService.setMouseCursor(null);
+    this._complete(true);
   }
 }
 
-ZoomTool.ZOOM_IN = 'zoomIn';
-ZoomTool.ZOOM_OUT = 'zoomOut';
+ZoomTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+  'viewerMouseCursorService',
+];
 
 export default ZoomTool;
