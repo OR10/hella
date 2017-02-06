@@ -221,6 +221,11 @@ class TaskController {
     this.drawableThings = [];
 
     /**
+     * @type {Object[]}
+     */
+    this.drawableGroups = [];
+
+    /**
      * @type {LabelStructure|null}
      */
     this.labelStructure = null;
@@ -434,6 +439,7 @@ class TaskController {
     const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
       .then(labelStructure => {
         const labelStructureThingArray = Array.from(labelStructure.getThings().values());
+        const labelStructureGroupArray = Array.from(labelStructure.getGroups().values());
         const labelStructureThing = labelStructureThingArray[0];
 
         this.labelStructure = labelStructure;
@@ -441,6 +447,7 @@ class TaskController {
         this.selectedDrawingTool = labelStructureThing.shape;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
+        this.drawableGroups = labelStructureGroupArray;
         this.activeTool = 'multi';
 
         // Pipe labelStructure to next chain function

@@ -2,6 +2,7 @@ import cloneDeep from 'lodash.clonedeep';
 
 import LabelStructure from '../LabelStructure';
 import LabelStructureThing from '../LabelStructureThing';
+import LabelStructureGroup from '../LabelStructureGroup';
 import XMLClassElement from '../XMLClassElement';
 
 /**
@@ -48,6 +49,16 @@ class RequirementsLabelStructure extends LabelStructure {
      * @private
      */
     this._thingMap = null;
+
+    /**
+     * Map containing all {@link LabelStructureGroup} objects of this {@link LabelStructure} stored by their `id`.
+     *
+     * Will be lazily filled once, requested.
+     *
+     * @type {Map|null}
+     * @private
+     */
+    this._groupMap = null;
   }
 
   /**
@@ -83,29 +94,37 @@ class RequirementsLabelStructure extends LabelStructure {
   /**
    * Retrieve a `Map` of all `Things` defined inside the {@link LabelStructure}.
    *
-   * @abstract
    * @return {Map.<string, LabelStructureThing>}
    */
   getThings() {
     if (this._thingMap === null) {
-      let things = new Map();
-      things = this._extractThings(things);
-      things = this._extractGroups(things);
-
-      this._thingMap = things;
+      this._thingMap = this._extractThings();
     }
 
     return this._thingMap;
   }
 
   /**
+   * Retrieve a `Map` of all `Things` defined inside the {@link LabelStructure}
+   *
+   * @return {Map.<string, LabelStructureGroup>}
+   */
+  getGroups() {
+    if (this._groupMap === null) {
+      this._groupMap = this._extractGroups();
+    }
+
+    return this._groupMap;
+  }
+
+  /**
    * Extracts all things from the {@link LabelStructure} and returns them in a Map.
    *
-   * @param {Map} thingMap
    * @returns {Map}
    * @private
    */
-  _extractThings(thingMap) {
+  _extractThings() {
+    const thingMap = new Map();
     const thingsSnapshot = this._evaluateXPath('/r:requirements/r:thing', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
     for (let index = 0; index < thingsSnapshot.snapshotLength; index++) {
@@ -126,11 +145,11 @@ class RequirementsLabelStructure extends LabelStructure {
   /**
    * Extracts all groups from the {@link LabelStructure} and returns them in a Map.
    *
-   * @param {Map} thingMap
    * @returns {Map}
    * @private
    */
-  _extractGroups(thingMap) {
+  _extractGroups() {
+    const groupMap = new Map();
     const groupsSnapshot = this._evaluateXPath('/r:requirements/r:group', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
     for (let index = 0; index < groupsSnapshot.snapshotLength; index++) {
@@ -138,13 +157,13 @@ class RequirementsLabelStructure extends LabelStructure {
       const identifier = groupElement.attributes.id.value;
       const name = groupElement.attributes.name.value;
 
-      thingMap.set(
+      groupMap.set(
         identifier,
-        new LabelStructureThing(identifier, name, 'group-rectangle', 'group')
+        new LabelStructureGroup(identifier, name, 'group-rectangle')
       );
     }
 
-    return thingMap;
+    return groupMap;
   }
 
   /**
