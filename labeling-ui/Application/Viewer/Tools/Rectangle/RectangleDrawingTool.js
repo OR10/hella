@@ -57,7 +57,7 @@ class RectangleDrawingTool extends CreationTool {
     if (this._rect) {
       this._rect.resize(this._creationHandle, point, {width: 1, height: this._getMinimalHeight()});
     } else {
-      this._startShape(this._startPosition, point)
+      this._startShape(this._startPosition, point);
     }
   }
 
