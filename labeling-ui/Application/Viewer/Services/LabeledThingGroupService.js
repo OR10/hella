@@ -23,17 +23,19 @@ class LabeledThingGroupService {
    * @return {{x: number, y: number, width: number, height: number, point: paper.Point}}
    */
   getBoundsForShapes(shapes) {
-    const minX = shapes.reduce((prev, current) => {
-      return prev.bounds.x < current.bounds.x ? prev.bounds.x : current.bounds.x;
+    const bounds = shapes.map(shape => shape.bounds);
+
+    const minX = bounds.reduce((prev, current) => {
+      return prev.x < current.x ? prev.x : current.x;
     });
-    const minY = shapes.reduce((prev, current) => {
-      return prev.bounds.y < current.bounds.y ? prev.bounds.y : current.bounds.y;
+    const minY = bounds.reduce((prev, current) => {
+      return prev.y < current.y ? prev.y : current.y;
     });
-    const maxX = shapes.reduce((prev, current) => {
-      return prev.bounds.x > current.bounds.x ? prev.bounds.x : current.bounds.x;
+    const maxX = bounds.reduce((prev, current) => {
+      return prev.x > current.x ? prev.x : current.x;
     });
-    const maxY = shapes.reduce((prev, current) => {
-      return prev.bounds.y > current.bounds.y ? prev.bounds.y : current.bounds.y;
+    const maxY = bounds.reduce((prev, current) => {
+      return prev.y > current.y ? prev.y : current.y;
     });
 
     return {
@@ -46,7 +48,6 @@ class LabeledThingGroupService {
   }
 
   getLabeledThingsInFrameForShapes(shapes) {
-
   }
 }
 
