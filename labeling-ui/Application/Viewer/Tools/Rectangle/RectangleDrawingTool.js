@@ -93,32 +93,6 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   /**
-   * @return {number}
-   * @private
-   */
-  _getMinimalHeight() {
-    const {minimalHeight} = this._toolActionStruct;
-
-    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
-  }
-
-  _getScaleAnchor(point) {
-    if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
-      return new Handle('bottom-right', point);
-    }
-
-    if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
-      return new Handle('bottom-left', point);
-    }
-
-    if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
-      return new Handle('top-left', point);
-    }
-
-    return new Handle('top-right', point);
-  }
-
-  /**
    * @param {CreationToolActionStruct} toolActionStruct
    */
   invokeDefaultShapeCreation(toolActionStruct) {
@@ -151,6 +125,44 @@ class RectangleDrawingTool extends CreationTool {
 
     this._complete(rect);
   }
+
+  /**
+   * Abort the tool invocation.
+   */
+  abort() {
+    if (this._rect !== null) {
+      this._rect.remove();
+    }
+
+    return super.abort();
+  }
+
+  /**
+   * @return {number}
+   * @private
+   */
+  _getMinimalHeight() {
+    const {minimalHeight} = this._toolActionStruct;
+
+    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
+  }
+
+  _getScaleAnchor(point) {
+    if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
+      return new Handle('bottom-right', point);
+    }
+
+    if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
+      return new Handle('bottom-left', point);
+    }
+
+    if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
+      return new Handle('top-left', point);
+    }
+
+    return new Handle('top-right', point);
+  }
+
 }
 
 RectangleDrawingTool.$inject = [
