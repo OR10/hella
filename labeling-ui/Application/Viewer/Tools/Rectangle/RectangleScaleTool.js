@@ -30,9 +30,23 @@ class RectangleScaleTool extends ScalingTool {
    * @returns {Promise}
    */
   invokeShapeScaling(toolActionStruct) {
-    this._modified = null;
+    this._modified = false;
 
     return super.invokeShapeScaling(toolActionStruct);
+  }
+
+  /**
+   * Request tool abortion
+   */
+  abort() {
+    if (this._modified === false) {
+      super.abort();
+      return;
+    }
+
+    // If the shape was modified we simply resolve, what we have so far.
+    const {shape} = this._toolActionStruct;
+    this._complete(shape);
   }
 
   /**

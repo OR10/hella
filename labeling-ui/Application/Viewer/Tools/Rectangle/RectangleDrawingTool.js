@@ -21,6 +21,24 @@ class RectangleDrawingTool extends CreationTool {
    */
   constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
     super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
+
+    /**
+     * @type {PaperRectangle|null}
+     * @private
+     */
+    this._rect = null;
+
+    /**
+     * @type {paper.Point|null}
+     * @private
+     */
+    this._startPosition = null;
+
+    /**
+     * @type {Handle|null}
+     * @private
+     */
+    this._creationHandle = null;
   }
 
   /**
@@ -72,10 +90,6 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   _startShape(from, to) {
-    if (from.getDistance(to) < 5) {
-      // Do nothing if no "real" dragging operation took place.
-      return;
-    }
     const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
 
     this._context.withScope(() => {
@@ -90,32 +104,6 @@ class RectangleDrawingTool extends CreationTool {
       this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
     });
-  }
-
-  /**
-   * @return {number}
-   * @private
-   */
-  _getMinimalHeight() {
-    const {minimalHeight} = this._toolActionStruct;
-
-    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
-  }
-
-  _getScaleAnchor(point) {
-    if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
-      return new Handle('bottom-right', point);
-    }
-
-    if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
-      return new Handle('bottom-left', point);
-    }
-
-    if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
-      return new Handle('top-left', point);
-    }
-
-    return new Handle('top-right', point);
   }
 
   /**
@@ -151,6 +139,43 @@ class RectangleDrawingTool extends CreationTool {
 
     this._complete(rect);
   }
+
+  /**
+   * Abort the tool invocation.
+   */
+  abort() {
+    if (this._rect !== null) {
+      this._rect.remove();
+    }
+
+    return super.abort();
+  }
+
+  /**
+   * @return {number}
+   * @private
+   */
+  _getMinimalHeight() {
+    const {minimalHeight} = this._toolActionStruct.options;
+    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
+  }
+
+  _getScaleAnchor(point) {
+    if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
+      return new Handle('bottom-right', point);
+    }
+
+    if (point.x <= this._startPosition.x && point.y > this._startPosition.y) {
+      return new Handle('bottom-left', point);
+    }
+
+    if (point.x <= this._startPosition.x && point.y <= this._startPosition.y) {
+      return new Handle('top-left', point);
+    }
+
+    return new Handle('top-right', point);
+  }
+
 }
 
 RectangleDrawingTool.$inject = [

@@ -3,9 +3,9 @@ import MovingTool from '../MovingTool';
 import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
- * A Tool for moving annotation shapes
+ * A Tool for moving cuboids in pseudo 3d space
  */
-class PedestrianMoveTool extends MovingTool {
+class CuboidMoveTool extends MovingTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param $rootScope
@@ -44,11 +44,26 @@ class PedestrianMoveTool extends MovingTool {
   }
 
   /**
+   * Request tool abortion
+   */
+  abort() {
+    if (this._modified === false) {
+      super.abort();
+      return;
+    }
+
+    // If the shape was modified we simply resolve, what we have so far.
+    const {shape} = this._toolActionStruct;
+    this._complete(shape);
+  }
+
+  /**
    * @param {paper.Event} event
    */
   onMouseDown(event) {
     const point = event.point;
     const {shape} = this._toolActionStruct;
+    shape.updatePrimaryCorner();
 
     this._offset = new paper.Point(
       shape.position.x - point.x,
@@ -56,21 +71,19 @@ class PedestrianMoveTool extends MovingTool {
     );
   }
 
-  /**
-   * @param {paper.Event} event
-   */
-  onMouseUp(event) {
+  onMouseUp() {
     if (this._modified !== true) {
-      this._reject(new NotModifiedError('Fixed Aspect Rectangle wasn\'t moved in any way'));
+      this._reject(new NotModifiedError('Cuboid wasn\'t moved in any way'));
       return;
     }
 
     const {shape} = this._toolActionStruct;
+    shape.updatePrimaryCorner();
     this._complete(shape);
   }
 
   /**
-   * @param {paper.Event} event
+   * @param event
    */
   onMouseDrag(event) {
     const point = event.point;
@@ -81,22 +94,31 @@ class PedestrianMoveTool extends MovingTool {
   }
 
   /**
-   * @param {PaperShape} shape
+   * @returns {number}
+   * @private
+   */
+  _getMinimalHeight() {
+    const {minimalHeight} = this._toolActionStruct.options;
+    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
+  }
+
+  /**
+   * @param {PaperCuboid} shape
    * @param {paper.Point} point
    * @private
    */
   _moveTo(shape, point) {
     this._context.withScope(() => {
-      shape.moveTo(this._restrictToViewport(shape, point));
+      shape.moveTo(this._restrictToViewport(shape, point), this._getMinimalHeight());
     });
   }
 }
 
-PedestrianMoveTool.$inject = [
+CuboidMoveTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
   'loggerService',
 ];
 
-export default PedestrianMoveTool;
+export default CuboidMoveTool;

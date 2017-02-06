@@ -1,9 +1,9 @@
 import Tool from './NewTool';
 import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
-// import PaperFixedAspectRatioCenterLine from '../../Viewer/Shapes/PaperFixedAspectRatioCenterLine';
-// import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
-// import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
+import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
+import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
+import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
 
@@ -119,7 +119,7 @@ class MultiTool extends Tool {
       case 'rectangle':
         return this._toolService.getTool(this._context, PaperRectangle.getClass());
       case 'pedestrian':
-        return this._toolService.getTool(this._context, PaperFixedAspectRatioCenterLine.getClass());
+        return this._toolService.getTool(this._context, PaperPedestrian.getClass());
       case 'cuboid':
         return this._toolService.getTool(this._context, PaperCuboid.getClass());
       case 'polygon':

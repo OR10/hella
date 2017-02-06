@@ -1,27 +1,18 @@
-import paper from 'paper';
-import MovingTool from '../MovingTool';
+import ScalingTool from '../ScalingTool';
 import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
- * A Tool for moving polygon shapes
+ * A Tool for scaling cuboids in pseudo 3d space
  */
-class PolygonMoveTool extends MovingTool {
+class CuboidScaleTool extends ScalingTool {
   /**
+   * @param {$rootScope} $rootScope
    * @param {DrawingContext} drawingContext
-   * @param $rootScope
-   * @param $q
+   * @param {angular.$q} $q
    * @param {LoggerService} loggerService
    */
   constructor(drawingContext, $rootScope, $q, loggerService) {
     super(drawingContext, $rootScope, $q, loggerService);
-
-    /**
-     * Mouse to center offset for moving a shape
-     *
-     * @type {Point}
-     * @private
-     */
-    this._offset = null;
 
     /**
      * Variable that holds the modified state of the current rectangle
@@ -33,14 +24,13 @@ class PolygonMoveTool extends MovingTool {
   }
 
   /**
-   * @param {MovingToolActionStruct} toolActionStruct
+   * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
-  invokeShapeMoving(toolActionStruct) {
-    this._offset = null;
+  invokeShapeScaling(toolActionStruct) {
     this._modified = false;
 
-    return super.invokeShapeMoving(toolActionStruct);
+    return super.invokeShapeScaling(toolActionStruct);
   }
 
   /**
@@ -61,13 +51,8 @@ class PolygonMoveTool extends MovingTool {
    * @param {paper.Event} event
    */
   onMouseDown(event) {
-    const point = event.point;
     const {shape} = this._toolActionStruct;
-
-    this._offset = new paper.Point(
-      shape.position.x - point.x,
-      shape.position.y - point.y
-    );
+    shape.updatePrimaryCorner();
   }
 
   /**
@@ -75,11 +60,13 @@ class PolygonMoveTool extends MovingTool {
    */
   onMouseUp(event) {
     if (this._modified !== true) {
-      this._reject(new NotModifiedError('Polygon wasn\'t moved in any way'));
+      this._reject(new NotModifiedError('Cuboid wasn\'t resized in any way'));
       return;
     }
 
     const {shape} = this._toolActionStruct;
+    shape.reduceToPseudo3dIfPossible();
+    shape.updatePrimaryCorner();
     this._complete(shape);
   }
 
@@ -88,29 +75,23 @@ class PolygonMoveTool extends MovingTool {
    */
   onMouseDrag(event) {
     const point = event.point;
-    const {shape} = this._toolActionStruct;
+    const {shape, handle} = this._toolActionStruct;
 
     this._modified = true;
-    this._moveTo(shape, point.add(this._offset));
+
+    this._context.withScope(() => {
+      shape.resize(handle, point, this._getMinimalHeight());
+    });
   }
 
   /**
-   * @param {PaperShape} shape
-   * @param {paper.Point} point
+   * @returns {number}
    * @private
    */
-  _moveTo(shape, point) {
-    this._context.withScope(() => {
-      shape.moveTo(this._restrictToViewport(shape, point));
-    });
+  _getMinimalHeight() {
+    const {minimalHeight} = this._toolActionStruct.options;
+    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
   }
 }
 
-PolygonMoveTool.$inject = [
-  'drawingContext',
-  '$rootScope',
-  '$q',
-  'loggerService',
-];
-
-export default PolygonMoveTool;
+export default CuboidScaleTool;

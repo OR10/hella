@@ -1,85 +1,87 @@
-import Tool from '../Tool';
+import ScalingTool from '../ScalingTool';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A Tool for scaling annotation shapes
- *
- * @implements ToolEvents
  */
-class PedestrianScaleTool extends Tool {
+class PedestrianScaleTool extends ScalingTool {
   /**
-   * @param $scope
+   * @param {$rootScope} $rootScope
    * @param {DrawingContext} drawingContext
+   * @param {angular.$q} $q
    * @param {LoggerService} loggerService
-   * @param {Object} [options]
    */
-  constructor($scope, drawingContext, loggerService, options) {
-    super(drawingContext, loggerService, options);
-    /**
-     * @type {angular.$scope}
-     * @private
-     */
-    this._$scope = $scope;
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
-     * Variable that holds the modified state of the current rectangle
+     * Variable that holds the modified state of the current fixed aspect rectangle
      *
      * @type {boolean}
      * @private
      */
     this._modified = false;
-
-    /**
-     * Variable that holds the drag handle
-     *
-     * @type {Handle|null}
-     * @private
-     */
-    this._activeHandle = null;
-
-    /**
-     * Position of the initial mouse down of one certain scaling operation
-     *
-     * @type {paper.Point|null}
-     * @private
-     */
-    this._startPoint = null;
   }
 
-  onMouseDown(event, hitShape, hitHandle) {
-    this._paperPedestrian = hitShape;
-    this._activeHandle = hitHandle;
+  /**
+   * @param {ScalingToolActionStruct} toolActionStruct
+   * @returns {Promise}
+   */
+  invokeShapeScaling(toolActionStruct) {
+    this._modified = false;
+
+    return super.invokeShapeScaling(toolActionStruct);
   }
 
-  onMouseUp() {
-    this.emit('tool:finished');
-    if (this._paperPedestrian && this._modified) {
-      this._modified = false;
-      this._paperPedestrian.fixOrientation();
-      this.emit('shape:update', this._paperPedestrian);
-    }
-
-    this._activeHandle = null;
-    this._paperPedestrian = null;
-  }
-
-  onMouseDrag(event) {
-    if (!this._paperPedestrian || this._activeHandle === null) {
+  /**
+   * Request tool abortion
+   */
+  abort() {
+    if (this._modified === false) {
+      super.abort();
       return;
     }
+
+    // If the shape was modified we simply resolve, what we have so far.
+    const {shape} = this._toolActionStruct;
+    this._complete(shape);
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseUp(event) {
+    const {shape} = this._toolActionStruct;
+    if (this._modified !== true) {
+      this._reject(new NotModifiedError('Fixed Aspect Rectangle not scaled.'));
+      return;
+    }
+
+    shape.fixOrientation();
+    this._complete(shape);
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseDrag(event) {
     const point = event.point;
+    const {shape, handle} = this._toolActionStruct;
     this._modified = true;
 
-    const drawingToolOptions = this._options.pedestrian;
-    const minimalHeight = (drawingToolOptions && drawingToolOptions.minimalHeight)
-      ? drawingToolOptions.minimalHeight
-      : 1;
+    const {options: {minimalHeight}} = this._toolActionStruct;
 
-    this._$scope.$apply(() => {
-      this._context.withScope(() => {
-        this._paperPedestrian.resize(this._activeHandle, point, minimalHeight);
-      });
+    this._context.withScope(() => {
+      shape.resize(handle, point, minimalHeight);
     });
   }
 }
+
+PedestrianScaleTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+];
 
 export default PedestrianScaleTool;
