@@ -1,5 +1,6 @@
-import MovingTool from '../MovingTool';
 import paper from 'paper';
+import MovingTool from '../MovingTool';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A Tool for moving cuboids in pseudo 3d space
