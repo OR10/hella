@@ -456,6 +456,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   _onCreateShape(shape) {
     this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
+    // The newly created shape was only temporary as it is rerendered by insertion into
+    // the labeledThingsInFrame
+    shape.remove();
 
     // Process the next steps after the rerendering took place in the next digest cycle
     this._$timeout(() => {
