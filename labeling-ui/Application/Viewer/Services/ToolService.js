@@ -12,6 +12,7 @@ import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
 import PolygonMoveTool from '../Tools/Polygon/PolygonMoveTool';
 import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
 import NoOperationTool from '../Tools/NoOperationTool';
+import GroupCreationTool from '../Tools/Group/GroupCreationTool';
 
 class ToolService {
   /**
@@ -69,6 +70,9 @@ class ToolService {
       'polygon-creation': PolygonDrawingTool,
       'polygon-scale': PolygonScaleTool,
       'polygon-move': PolygonMoveTool,
+      'group-rectangle-creation': GroupCreationTool,
+      'group-rectangle-scaling': NoOperationTool,
+      'group-rectangle-moving': NoOperationTool,
     };
   }
 
