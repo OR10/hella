@@ -1,35 +1,19 @@
 import paper from 'paper';
-import Tool from '../Tool';
+import MovingTool from '../MovingTool';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A Tool for moving annotation shapes
- *
- * @extends Tool
- * @implements ToolEvents
  */
-class PedestrianMoveTool extends Tool {
+class PedestrianMoveTool extends MovingTool {
   /**
-   * @param {$rootScope.$scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param $rootScope
+   * @param $q
    * @param {LoggerService} loggerService
-   * @param {Object} [options]
    */
-  constructor($scope, drawingContext, loggerService, options) {
-    super(drawingContext, loggerService, options);
-
-    /**
-     * @type {$rootScope.Scope}
-     * @private
-     */
-    this._$scope = $scope;
-
-    /**
-     * Currently active shape
-     *
-     * @type {paper.Shape|null}
-     * @private
-     */
-    this._paperPedestrian = null;
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * Mouse to center offset for moving a shape
@@ -49,43 +33,51 @@ class PedestrianMoveTool extends Tool {
   }
 
   /**
-   * @param {Object} event
-   * @param {PaperShape} hitShape
+   * @param {MovingToolActionStruct} toolActionStruct
+   * @returns {Promise}
    */
-  onMouseDown(event, hitShape) {
-    const point = event.point;
-
-    this._paperPedestrian = hitShape;
-    this._offset = new paper.Point(
-      this._paperPedestrian.position.x - point.x,
-      this._paperPedestrian.position.y - point.y
-    );
-  }
-
-  onMouseUp() {
-    this.emit('tool:finished');
-    if (this._paperPedestrian) {
-      if (this._modified) {
-        this._modified = false;
-
-        this.emit('shape:update', this._paperPedestrian);
-      }
-    }
-
+  invokeShapeMoving(toolActionStruct) {
     this._offset = null;
+    this._modified = false;
+
+    return super.invokeShapeMoving(toolActionStruct);
   }
 
   /**
-   * @param event
+   * @param {paper.Event} event
    */
-  onMouseDrag(event) {
-    if (!this._paperPedestrian) {
+  onMouseDown(event) {
+    const point = event.point;
+    const {shape} = this._toolActionStruct;
+
+    this._offset = new paper.Point(
+      shape.position.x - point.x,
+      shape.position.y - point.y
+    );
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseUp(event) {
+    if (this._modified !== true) {
+      this._reject(new NotModifiedError('Fixed Aspect Rectangle wasn\'t moved in any way'));
       return;
     }
+
+    const {shape} = this._toolActionStruct;
+    this._complete(shape);
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseDrag(event) {
     const point = event.point;
+    const {shape} = this._toolActionStruct;
 
     this._modified = true;
-    this._moveTo(this._paperPedestrian, point.add(this._offset));
+    this._moveTo(shape, point.add(this._offset));
   }
 
   /**
@@ -97,9 +89,14 @@ class PedestrianMoveTool extends Tool {
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point));
     });
-
-    this.emit('shape:update', shape);
   }
 }
+
+PedestrianMoveTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+];
 
 export default PedestrianMoveTool;
