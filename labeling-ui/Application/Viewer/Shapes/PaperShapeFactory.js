@@ -87,16 +87,16 @@ class PaperShapeFactory {
 
     switch (shape.type) {
       case 'rectangle':
-        result = this._createRectangle(labeledThingInFrame, shape, color.primary);
+        result = this._createRectangle(labeledThingInFrame, shape, color);
         break;
       case 'pedestrian':
-        result = this._createPedestrian(labeledThingInFrame, shape, color.primary);
+        result = this._createPedestrian(labeledThingInFrame, shape, color);
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);
         break;
       case 'polygon':
-        result = this._createPolygon(labeledThingInFrame, shape, color.primary);
+        result = this._createPolygon(labeledThingInFrame, shape, color);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);

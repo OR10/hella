@@ -84,7 +84,7 @@ class RectangleDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         from,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
       this._creationHandle = this._getScaleAnchor(from);
@@ -144,7 +144,7 @@ class RectangleDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         to,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });

@@ -12,11 +12,11 @@ class PaperRectangle extends PaperShape {
    * @param {string} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
-   * @param {string} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
   constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, draft = false) {
-    super(labeledThingInFrame, shapeId, draft);
+    super(labeledThingInFrame, shapeId, color, draft);
     /**
      * @type {Point}
      * @private
@@ -28,12 +28,6 @@ class PaperRectangle extends PaperShape {
      * @private
      */
     this._bottomRight = bottomRight;
-
-    /**
-     * @type {string}
-     * @private
-     */
-    this._color = color;
 
     this._drawShape();
   }
@@ -73,7 +67,7 @@ class PaperRectangle extends PaperShape {
    */
   _createShape() {
     return new paper.Path.Rectangle({
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,

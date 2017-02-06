@@ -46,7 +46,7 @@ class PolygonDrawingTool extends DrawingTool {
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         [from, to],
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });
@@ -151,7 +151,7 @@ class PolygonDrawingTool extends DrawingTool {
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         points,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
     });

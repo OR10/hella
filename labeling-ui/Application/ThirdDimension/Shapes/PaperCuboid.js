@@ -14,17 +14,11 @@ class PaperCuboid extends PaperShape {
    * @param {Projection2d} projection2d
    * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
-   * @param {{primary, secondary}} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean?} draft
    */
   constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, draft) {
-    super(labeledThingInFrame, shapeId, draft);
-
-    /**
-     * @type {String}
-     * @private
-     */
-    this._color = color;
+    super(labeledThingInFrame, shapeId, color, draft);
 
     /**
      * @type {boolean}

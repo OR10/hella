@@ -10,10 +10,12 @@ class PaperShape extends paper.Group {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, draft = false) {
+  constructor(labeledThingInFrame, shapeId, color, draft = false) {
     super();
+
     // This needs to be called due to how PaperJS does inheritance
     super.initialize();
 
@@ -45,6 +47,14 @@ class PaperShape extends paper.Group {
      * @private
      */
     this._labeledThingInFrame = labeledThingInFrame;
+
+    /**
+     * The color object representing the shape color.
+     *
+     * @type {{primary: string, secondary: string}}
+     * @private
+     */
+    this._color = color;
 
     /**
      * If this shape is a draft it means it has not been stored to the database. This implies, that its hierarchy may
@@ -93,6 +103,15 @@ class PaperShape extends paper.Group {
    */
   get selected() {
     return this._isSelected;
+  }
+
+  /**
+   * Get the shapes color object
+   *
+   * @return {{primary: string, secondary: string}}
+   */
+  get color() {
+    return this._color;
   }
 
   /**

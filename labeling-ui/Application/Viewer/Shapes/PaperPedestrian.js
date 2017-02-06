@@ -11,17 +11,11 @@ class PaperPedestrian extends PaperShape {
    * @param {String} shapeId
    * @param {Point} topCenter
    * @param {Point} bottomCenter
-   * @param {String} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
   constructor(labeledThingInFrame, shapeId, topCenter, bottomCenter, color, draft = false) {
-    super(labeledThingInFrame, shapeId, draft);
-
-    /**
-     * @type {String}
-     * @private
-     */
-    this._color = color;
+    super(labeledThingInFrame, shapeId, color, draft);
 
     /**
      * @type {boolean}
@@ -70,7 +64,7 @@ class PaperPedestrian extends PaperShape {
     return new paper.Path.Line({
       from: this._topCenter,
       to: this._bottomCenter,
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,
@@ -91,7 +85,7 @@ class PaperPedestrian extends PaperShape {
     const widthHalf = heightHalf * PaperPedestrian.ASPECT_RATIO;
 
     return new paper.Path.Rectangle({
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
