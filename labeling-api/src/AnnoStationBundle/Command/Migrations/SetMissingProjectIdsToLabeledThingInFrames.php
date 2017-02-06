@@ -107,7 +107,7 @@ class SetMissingProjectIdsToLabeledThingInFrames extends Command\Base
 
                 if (!$dryRun) {
                     $documentWithoutProject->setProjectId($projectId);
-                    $this->addDocumentToUpdateToBatch($documentWithoutProject);
+                    $this->addDocumentToUpdateToBatch($documentWithoutProject, count($documentsWithoutProject));
                 }
 
                 $progress->advance();
@@ -116,11 +116,11 @@ class SetMissingProjectIdsToLabeledThingInFrames extends Command\Base
         }
     }
 
-    private function addDocumentToUpdateToBatch($labeledThingInFrame)
+    private function addDocumentToUpdateToBatch($labeledThingInFrame, $max)
     {
         $this->documentsToUpdate[] = $labeledThingInFrame;
 
-        if (count($this->documentsToUpdate) >= 1000) {
+        if (count($this->documentsToUpdate) >= 1000 || $max <= 1000) {
 
             foreach($this->documentsToUpdate as $document) {
                 $this->documentManager->persist($document);
