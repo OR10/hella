@@ -53,6 +53,11 @@ class RequirementsXml implements TaskConfiguration
      */
     private $json;
 
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $hashes;
+
     public function __construct($name, $filename, $contentType, $binaryData, $userId, $json, $date = null)
     {
         if (!is_string($filename) || empty($filename)) {
@@ -75,11 +80,12 @@ class RequirementsXml implements TaskConfiguration
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
 
-        $this->name      = $name;
-        $this->filename  = $filename;
-        $this->timestamp = $date->getTimestamp();
-        $this->userId    = $userId;
-        $this->json      = $json;
+        $this->name                    = $name;
+        $this->filename                = $filename;
+        $this->timestamp               = $date->getTimestamp();
+        $this->userId                  = $userId;
+        $this->json                    = $json;
+        $this->hashes[$this->filename] = hash('sha256', $binaryData);
 
         $this->file[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
             $binaryData,
@@ -173,5 +179,17 @@ class RequirementsXml implements TaskConfiguration
     public function getType()
     {
         return self::TYPE;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHashes($filename)
+    {
+        if (!isset($this->hashes[$filename])) {
+            return null;
+        }
+
+        return $this->hashes[$filename];
     }
 }

@@ -6,38 +6,53 @@ use AnnoStationBundle\Command;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use Symfony\Component\Console;
+use Doctrine\ODM\CouchDB;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class SetMissingProjectIdsToLabeledThingInFrames extends Command\Base
 {
     /**
      * @var Facade\LabeledThingInFrame
      */
-    private $labeledThingInFrame;
+    private $labeledThingInFrameFacade;
 
     /**
      * @var Facade\LabelingTask
      */
-    private $labelingTask;
+    private $labelingTaskFacade;
 
     /**
      * @var Facade\LabeledThing
      */
-    private $labeledThing;
+    private $labeledThingFacade;
 
     /**
-     * @param Facade\LabelingTask        $labelingTask
-     * @param Facade\LabeledThingInFrame $labeledThingInFrame
-     * @param Facade\LabeledThing        $labeledThing
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
+     * @var array
+     */
+    private $documentsToUpdate = [];
+
+    /**
+     * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\LabeledThing        $labeledThingFacade
+     * @param CouchDB\DocumentManager    $documentManager
      */
     public function __construct(
-        Facade\LabelingTask $labelingTask,
-        Facade\LabeledThingInFrame $labeledThingInFrame,
-        Facade\LabeledThing $labeledThing
+        Facade\LabelingTask $labelingTaskFacade,
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\LabeledThing $labeledThingFacade,
+        CouchDB\DocumentManager $documentManager
     ) {
         parent::__construct();
-        $this->labeledThingInFrame = $labeledThingInFrame;
-        $this->labelingTask        = $labelingTask;
-        $this->labeledThing        = $labeledThing;
+        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->labeledThingFacade        = $labeledThingFacade;
+        $this->documentManager           = $documentManager;
     }
 
     protected function configure()
@@ -48,46 +63,71 @@ class SetMissingProjectIdsToLabeledThingInFrames extends Command\Base
 
     protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
     {
-        $this->writeSection($output, 'Set missing projectId to all LabeledThingInFrames');
+        $this->writeSection($output, 'Set missing projectId to all LabeledThingInFrames and LabeledThings');
         $dryRun = $input->getOption('dry-run');
 
         if ($dryRun) {
             $this->writeInfo($output, 'This is a dry run');
         }
 
-        $tasks = $this->labelingTask->findAll();
-
+        $this->writeInfo($output, 'Getting task -> Project cache');
+        $tasks          = $this->labelingTaskFacade->findAll();
+        $projectByTasks = [];
         foreach ($tasks as $task) {
-            $projectId = $task->getProjectId();
-            $labeledThingInFrames = $this->labeledThingInFrame->getLabeledThingsInFrame($task);
+            $projectByTasks[$task->getId()] = $task->getProjectId();
+        }
 
+        while(true) {
+            $this->writeInfo($output, 'Getting next document batch');
+            $documentManager = $this->documentManager
+                ->createQuery('tmp_annostation_labeled_thing_in_frame_or_labeled_thing_without_project', 'view')
+                ->setLimit(20000)
+                ->onlyDocs(true);
 
-            $labeledThingInFramesToUpdate = [];
-            foreach ($labeledThingInFrames as $labeledThingInFrame) {
-                if ($labeledThingInFrame->getProjectId() === null) {
-                    $this->writeInfo(
-                        $output,
-                        sprintf('[LTIF] [%s]: %s', $labeledThingInFrame->getId(), $projectId)
-                    );
-                    if (!$dryRun) {
-                        $labeledThingInFrame->setProjectId($projectId);
-                        $labeledThingInFramesToUpdate[] = $labeledThingInFrame;
-                    }
-                }
+            $documentsWithoutProject = $documentManager->execute()->toArray();
 
-                $labeledThing = $this->labeledThing->find($labeledThingInFrame->getLabeledThingId());
-                if ($labeledThing instanceOf Model\LabeledThing && $labeledThing->getProjectId() === null) {
-                    $this->writeInfo(
-                        $output,
-                        sprintf('[LT] [%s]: %s', $labeledThing->getId(), $projectId)
-                    );
-                    if (!$dryRun) {
-                        $labeledThing->setProjectId($projectId);
-                        $this->labeledThing->save($labeledThing);
-                    }
-                }
+            if (count($documentsWithoutProject) === 0) {
+                $this->writeInfo($output, 'Done!');
+                break;
             }
-            $this->labeledThingInFrame->saveAll($labeledThingInFramesToUpdate);
+
+            $progress = new ProgressBar($output, count($documentsWithoutProject));
+
+            foreach ($documentsWithoutProject as $documentWithoutProject) {
+                if (!isset($projectByTasks[$documentWithoutProject->getTaskId()])) {
+                    continue;
+                }
+                $projectId = $projectByTasks[$documentWithoutProject->getTaskId()];
+
+                /*
+                $this->writeInfo(
+                    $output,
+                    sprintf('[%s]: %s', $documentWithoutProject->getId(), $projectId)
+                );
+                */
+
+                if (!$dryRun) {
+                    $documentWithoutProject->setProjectId($projectId);
+                    $this->addDocumentToUpdateToBatch($documentWithoutProject, count($documentsWithoutProject));
+                }
+
+                $progress->advance();
+            }
+            $progress->finish();
+        }
+    }
+
+    private function addDocumentToUpdateToBatch($labeledThingInFrame, $max)
+    {
+        $this->documentsToUpdate[] = $labeledThingInFrame;
+
+        if (count($this->documentsToUpdate) >= 1000 || $max <= 1000) {
+
+            foreach($this->documentsToUpdate as $document) {
+                $this->documentManager->persist($document);
+            }
+            $this->documentManager->flush();
+            $this->documentsToUpdate = [];
         }
     }
 }

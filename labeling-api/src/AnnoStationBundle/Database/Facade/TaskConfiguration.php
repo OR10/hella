@@ -78,4 +78,22 @@ class TaskConfiguration
             ->execute()
             ->toArray();
     }
+
+    /**
+     * @param Model\User $user
+     * @param            $name
+     * @param            $filename
+     * @param            $md5Hash
+     *
+     * @return mixed
+     */
+    public function getTaskConfigurationByUserAndMd5Hash(Model\User $user, $name, $filename, $md5Hash)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_task_configuration_by_user_filename_and_md5_001', 'view')
+            ->setKey([$user->getId(), $name, $filename, $md5Hash])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
 }
