@@ -33,6 +33,11 @@ class User extends BaseUser
      */
     protected $lockHistory = [];
 
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $settings = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -48,6 +53,7 @@ class User extends BaseUser
 
     /**
      * @param array $roles
+     *
      * @return bool
      */
     public function hasOneRoleOf(array $roles)
@@ -84,8 +90,24 @@ class User extends BaseUser
     public function addLockHistoryEntry(User $user, \DateTime $dateTime)
     {
         $this->lockHistory[] = [
-            'userId' => $user->getId(),
-            'dateTime' => $dateTime->getTimestamp()
+            'userId'   => $user->getId(),
+            'dateTime' => $dateTime->getTimestamp(),
         ];
+    }
+
+    /**
+     * @param array $settings
+     */
+    public function setSettings(array $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSettings()
+    {
+        return $this->settings;
     }
 }
