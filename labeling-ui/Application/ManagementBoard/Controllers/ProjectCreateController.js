@@ -1,3 +1,5 @@
+import uuid from 'uuid';
+
 /**
  * Controller for the initial entrypoint route into the application
  */
@@ -155,6 +157,11 @@ class ProjectCreateController {
      * @type {string}
      */
     this.drawingToolParkedCars = 'cuboid';
+
+    /**
+     * @type {string}
+     */
+    this.uploadUuid = uuid.v4();
 
     /**
      * @type {Array.<Object>}
@@ -381,6 +388,15 @@ class ProjectCreateController {
    */
   goBack() {
     this._$state.go('labeling.projects.list');
+  }
+
+  /**
+   * Each upload got its own identifier
+   *
+   * @returns {string}
+   */
+  getUuid() {
+    return this.uploadUuid;
   }
 
   /**
