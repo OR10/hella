@@ -68,6 +68,11 @@ class Tool {
     this._initializePaperToolAndEvents();
   }
 
+  /**
+   * @param {string} type
+   * @param {paper.Event} event
+   * @private
+   */
   _delegateMouseEvent(type, event) {
     const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
 
@@ -99,6 +104,20 @@ class Tool {
   }
 
   /**
+   * @param {string} type
+   * @param {paper.Event} event
+   * @private
+   */
+  _delegateKeyboardEvent(type, event) {
+    const delegationTarget = `onKey${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
+
+    switch (type) {
+      default:
+        this[delegationTarget](event);
+    }
+  }
+
+  /**
    * @private
    */
   _initializePaperToolAndEvents() {
@@ -110,6 +129,9 @@ class Tool {
     this._tool.onMouseUp = event => this._delegateMouseEvent('up', event);
     this._tool.onMouseDrag = event => this._delegateMouseEvent('drag', event);
     this._tool.onMouseMove = event => this._delegateMouseEvent('move', event);
+
+    this._tool.onKeyDown = event => this._delegateKeyboardEvent('down', event);
+    this._tool.onKeyUp = event => this._delegateKeyboardEvent('up', event);
   }
 
   /**
@@ -159,6 +181,26 @@ class Tool {
    * @param {paper.Event} event
    */
   onMouseClick(event) { // eslint-disable-line no-unused-vars
+
+  }
+
+  /**
+   * Handler for a keyboard up event.
+   * Expects a {@link paper.Event} as only parameter.
+   *
+   * @param {paper.Event} event
+   */
+  onKeyUp(event) { // eslint-disable-line no-unused-vars
+
+  }
+
+  /**
+   * Handler for a keyboard down event.
+   * Expects a {@link paper.Event} as only parameter.
+   *
+   * @param {paper.Event} event
+   */
+  onKeyDown(event) { // eslint-disable-line no-unused-vars
 
   }
 
