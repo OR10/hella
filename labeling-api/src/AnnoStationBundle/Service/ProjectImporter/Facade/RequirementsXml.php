@@ -29,4 +29,17 @@ class RequirementsXml
     {
         return $this->taskConfigurationFacade->save($taskConfiguration);
     }
+
+    /**
+     * @param Model\User $user
+     * @param            $name
+     * @param            $filename
+     * @param            $md5Hash
+     *
+     * @return mixed
+     */
+    public function getTaskConfigurationByUserAndMd5Hash(Model\User $user, $name, $filename, $md5Hash)
+    {
+        return $this->taskConfigurationFacade->getTaskConfigurationByUserAndMd5Hash($user, $name, $filename, $md5Hash);
+    }
 }

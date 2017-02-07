@@ -182,6 +182,19 @@ class Import
             throw new \Exception('Invalid sha256 hash');
         }
 
+        $requirements = $this->requirementsXmlFacade->getTaskConfigurationByUserAndMd5Hash(
+            $user,
+            $requirementsElement->item(0)->getAttribute('name'),
+            sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
+            $expectedHash
+        );
+
+        $requirements = reset($requirements);
+
+        if ($requirements instanceof Model\TaskConfiguration\RequirementsXml) {
+            return $requirements;
+        }
+
         $requirements = new Model\TaskConfiguration\RequirementsXml(
             $requirementsElement->item(0)->getAttribute('name'),
             sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
