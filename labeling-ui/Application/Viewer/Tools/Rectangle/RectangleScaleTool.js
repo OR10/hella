@@ -26,6 +26,22 @@ class RectangleScaleTool extends ScalingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'rectangle';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'scale',
+    ];
+  }
+
+  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

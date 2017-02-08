@@ -85,6 +85,22 @@ class CuboidDrawingTool extends CreationTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'cuboid';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+    ];
+  }
+
+  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */

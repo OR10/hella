@@ -33,6 +33,22 @@ class CuboidMoveTool extends MovingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'cuboid';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'move',
+    ];
+  }
+
+  /**
    * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

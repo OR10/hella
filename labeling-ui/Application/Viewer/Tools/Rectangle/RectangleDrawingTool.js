@@ -42,6 +42,22 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'rectangle';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+    ];
+  }
+
+  /**
    * @param {paper.Event} event
    */
   onMouseDown(event) {

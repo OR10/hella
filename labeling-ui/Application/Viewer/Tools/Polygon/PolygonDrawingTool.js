@@ -35,6 +35,22 @@ class PolygonDrawingTool extends CreationTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'polygon';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+    ];
+  }
+
+  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */

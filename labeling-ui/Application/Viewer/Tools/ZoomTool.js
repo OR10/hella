@@ -25,6 +25,23 @@ class ZoomTool extends Tool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'zoom';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'in',
+      'out',
+    ];
+  }
+
+  /**
    * @param {ZoomToolActionStruct} zoomToolActionStruct
    */
   invoke(zoomToolActionStruct) {

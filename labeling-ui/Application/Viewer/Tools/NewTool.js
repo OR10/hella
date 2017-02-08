@@ -69,6 +69,50 @@ class Tool {
   }
 
   /**
+   * Get the name of the Tool.
+   *
+   * The name specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+   *
+   * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+   * `rectangle` and `scale`, ...)
+   *
+   * @return {string}
+   * @public
+   * @abstract
+   */
+  getToolName() {
+    throw new Error('Abstract method _getToolName: Every tool needs to implement this method.');
+  }
+
+  /**
+   * Retrieve a list of actions this tool is used for.
+   *
+   * Currently supported actions are:
+   * - `creating`
+   * - `scale`
+   * - `move`
+   *
+   * @return {Array.<string>}
+   * @public
+   * @abstract
+   */
+  getActionIdentifiers() {
+    throw new Error('Abstract method _getActionIdentifiers: Every tool needs to implement this method.');
+  }
+
+  /**
+   * @returns {Array.<string>}
+   * @public
+   */
+  getFullyQualifiedToolIdentifiers() {
+    const name = this.getToolName();
+    const actions = this.getActionIdentifiers();
+    const fqdnIdentifiers = actions.map(action => `${name}-${action}`);
+
+    return fqdnIdentifiers;
+  }
+
+  /**
    * @param {string} type
    * @param {paper.Event} event
    * @private

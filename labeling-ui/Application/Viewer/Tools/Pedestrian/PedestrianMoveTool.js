@@ -33,6 +33,22 @@ class PedestrianMoveTool extends MovingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'pedestrian';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'move',
+    ];
+  }
+
+  /**
    * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

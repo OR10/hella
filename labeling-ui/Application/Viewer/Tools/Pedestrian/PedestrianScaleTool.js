@@ -24,6 +24,22 @@ class PedestrianScaleTool extends ScalingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'pedestrian';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'scale',
+    ];
+  }
+
+  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

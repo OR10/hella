@@ -24,6 +24,22 @@ class CuboidScaleTool extends ScalingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'cuboid';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'scale',
+    ];
+  }
+
+  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
