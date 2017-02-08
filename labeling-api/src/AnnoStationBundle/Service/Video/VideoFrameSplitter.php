@@ -44,12 +44,12 @@ class VideoFrameSplitter
     /**
      * FrameCdnSplitter constructor.
      *
-     * @param AnnoStationService\FrameCdn $frameCdn
+     * @param Service\FrameCdn $frameCdn
      * @param string                      $ffmpegExecutable
      * @param Flysystem\Filesystem        $fileSystem
      */
     public function __construct(
-        AnnoStationService\FrameCdn $frameCdn,
+        Service\FrameCdn $frameCdn,
         $ffmpegExecutable,
         Flysystem\Filesystem $fileSystem
     ) {
