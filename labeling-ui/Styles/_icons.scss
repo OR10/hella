@@ -14,6 +14,10 @@
     font-size: 16px;
   }
 
+  &.icon-medium {
+    font-size: 20px;
+  }
+
   &.disabled {
     color: darken($icon, 30%);
 
