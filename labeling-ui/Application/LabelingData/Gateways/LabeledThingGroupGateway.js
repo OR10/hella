@@ -120,6 +120,7 @@ class LabeledThingGroupGateway {
   assignLabeledThingsToLabeledThingGroup(labeledThings, group) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
       labeledThing.groupIds.push(group.id);
+      return labeledThing;
     });
 
     const promises = [];
