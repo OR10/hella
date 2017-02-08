@@ -161,7 +161,7 @@ class TaskConfiguration extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function uploadSimpleRequirementsFileAction(HttpFoundation\Request $request)
+    public function uploadRequirementsXmlFileAction(HttpFoundation\Request $request)
     {
         if (!$request->files->has('file') || !$request->get('name')) {
             return View\View::create()

@@ -31,7 +31,14 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $task                 = $this->createTask(
             $project,
             $video,
-            $this->createTaskConfiguration($xmlTaskConfiguration, $clientUser),
+            $this->createTaskConfiguration(
+                $xmlTaskConfiguration,
+                $clientUser,
+                'testconfig',
+                'testconfig.xml',
+                'application/xml',
+                'requirementsXml'
+            ),
             null,
             AppBundleModel\LabelingTask::TYPE_OBJECT_LABELING
         );

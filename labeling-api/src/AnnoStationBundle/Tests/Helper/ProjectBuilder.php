@@ -288,7 +288,8 @@ class ProjectBuilder
             'videosCount'                => 0,
             'dueTimestamp'               => null,
             'taskFailedCount'            => 0,
-            'coordinator'                => $this->getLatestAssignedCoordinatorUserId()
+            'coordinator'                => $this->getLatestAssignedCoordinatorUserId(),
+            'taskInstructionType'        => 'legacy',
         ];
     }
 
