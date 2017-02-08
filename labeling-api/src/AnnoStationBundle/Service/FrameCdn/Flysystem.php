@@ -39,8 +39,7 @@ class Flysystem extends Service\FrameCdn
      * @param int            $frameIndex
      * @param string         $imageData
      *
-     * @return void
-     * @throws \Exception
+     * @return string
      */
     public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, int $frameIndex, string $imageData)
     {
@@ -51,6 +50,8 @@ class Flysystem extends Service\FrameCdn
             $this->fileSystem->createDir($cdnPath);
         }
         $this->fileSystem->put($filePath, $imageData);
+
+        return $filePath;
     }
 
     /**

@@ -67,8 +67,7 @@ class S3Cmd extends Service\FrameCdn
      * @param int            $frameIndex
      * @param string         $imageData
      *
-     * @return void
-     * @throws \Exception
+     * @return string
      */
     public function save(Model\Video $video, Model\Video\ImageType\Base $imageType, int $frameIndex, string $imageData)
     {
@@ -89,6 +88,8 @@ class S3Cmd extends Service\FrameCdn
             $this->cacheFileSystem->createDir($cdnPath);
         }
         $this->cacheFileSystem->put($filePath, $imageData);
+
+        return $filePath;
     }
 
     public function commit()
