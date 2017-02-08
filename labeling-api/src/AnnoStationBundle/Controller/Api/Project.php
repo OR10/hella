@@ -207,6 +207,13 @@ class Project extends Controller\Base
                     $numberOfVideos[$project->getId()]
                 ) ? $numberOfVideos[$project->getId()] : 0;
                 $responseProject['dueTimestamp']               = $project->getDueDate();
+                if (!empty($project->getGenericXmlTaskInstructions())) {
+                    $responseProject['taskInstructionType'] = 'genericXml';
+                }elseif (!empty($project->getRequirementsXmlTaskInstructions())) {
+                    $responseProject['taskInstructionType'] = 'requirementsXml';
+                }else{
+                    $responseProject['taskInstructionType'] = 'legacy';
+                }
             }
 
             if ($user->hasRole(Model\User::ROLE_CLIENT)) {
