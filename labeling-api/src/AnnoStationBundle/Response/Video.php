@@ -20,12 +20,18 @@ class Video
         Model\Video $video,
         Facade\CalibrationData $calibrationDataFacade
     ) {
+        $imageTypes = array_map(function($type) {
+            unset($type['sizeInBytes']);
+
+            return $type;
+        }, $video->getImageTypes());
+
         $result = [
             'id' => $video->getId(),
             'rev' => $video->getRev(),
             'name' => $video->getName(),
             'metaData' => $video->getMetaData(),
-            'imageTypes' => $video->getImageTypes(),
+            'imageTypes' => $imageTypes,
             'rawCalibration' => null,
             'calibration' => null,
         ];
