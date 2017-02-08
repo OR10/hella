@@ -261,10 +261,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       .catch(reason => {
         switch (true) {
           case reason instanceof ToolAbortedError:
-            this._logger.log('tool:error', 'Tool aborted', reason);
+            // No further processing needed.
             break;
           case reason instanceof NotModifiedError:
-            this._logger.log('tool:error', 'No modification executed', reason);
             this._invokeActiveTool();
             break;
           default:

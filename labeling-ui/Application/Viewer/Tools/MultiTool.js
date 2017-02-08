@@ -122,7 +122,6 @@ class MultiTool extends Tool {
    * @private
    */
   _invokeCreationToolDelegation(requirementsShape) {
-    console.log('requirementsShape', requirementsShape);
     const tool = this._getToolForRequirementsShape(requirementsShape);
     this._invokeToolDelegation(tool, 'creation', null, null);
   }

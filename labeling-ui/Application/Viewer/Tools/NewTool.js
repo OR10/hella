@@ -258,7 +258,7 @@ class Tool {
    * @protected
    */
   _invoke(toolActionStruct) {
-    this._logger.log('tool', 'Invoked', toolActionStruct);
+    this._logger.groupStart('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')}`, toolActionStruct);
 
     this._dragEventCount = 0;
 
@@ -280,7 +280,6 @@ class Tool {
    */
   abort() {
     this._reject(new ToolAbortedError('Tool was aborted!'));
-    this._logger.log('tool', 'Aborted');
   }
 
   /**
@@ -290,6 +289,9 @@ class Tool {
    * @protected
    */
   _reject(reason) {
+    this._logger.log('tool:invocation', `Rejected ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, reason);
+    this._logger.groupEnd('tool:invocation');
+
     this._disableInternalPaperTool();
     if (this._deferred !== null) {
       this._deferred.reject(reason);
@@ -304,10 +306,12 @@ class Tool {
    * @protected
    */
   _complete(result) {
+    this._logger.log('tool:invocation', `Resolved ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, result);
+    this._logger.groupEnd('tool:invocation');
+
     this._disableInternalPaperTool();
     this._deferred.resolve(result);
     this._deferred = null;
-    this._logger.log('tool', 'Resolved', result);
   }
 
   _disableInternalPaperTool() {
