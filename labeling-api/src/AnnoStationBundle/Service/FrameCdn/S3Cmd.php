@@ -89,7 +89,13 @@ class S3Cmd extends Service\FrameCdn
         }
         $this->cacheFileSystem->put($filePath, $imageData);
 
-        return $filePath;
+        return $filePath = sprintf(
+            '%s/%s/%s.%s',
+            $video->getId(),
+            $imageType->getName(),
+            $frameIndex,
+            $imageType->getExtension()
+        );
     }
 
     public function commit()
