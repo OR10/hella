@@ -35,7 +35,12 @@
         <tr>
         <tr ng-repeat="project in vm.projects track by project.id" ng-click="vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">
+                <i class="icon icon-medium icon-legacy" ng-if="column.property === 'name' && project.taskInstructionType === 'legacy'"></i>
+                <i class="icon icon-medium icon-requirements-xml" ng-if="column.property === 'name' && project.taskInstructionType === 'requirementsXml'"></i>
+                <i class="icon icon-medium icon-simple-xml" ng-if="column.property === 'name' && project.taskInstructionType === 'genericXml'"></i>
+
                 {{project[column.property]}}
+
                 <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
                    class="fa fa-spin fa-spinner" tooltip="Import in progress. {{project.taskInPreProcessingCount}} are not finished yet."></i>
                 <span ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0">({{project.taskInPreProcessingCount}})</span>
