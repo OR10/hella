@@ -49,11 +49,13 @@
 .icon-general-timer:before,
 .icon-help:before,
 .icon-left:before,
+.icon-legacy:before,
 .icon-next:before,
 .icon-ok:before,
 .icon-precipitation-norain:before,
 .icon-precipitation-rain:before,
 .icon-previous:before,
+.icon-requirements-xml:before,
 .icon-right:before,
 .icon-selection-add:before,
 .icon-selection-delete:before,
@@ -67,6 +69,7 @@
 .icon-selection-on:before,
 .icon-selection-start:before,
 .icon-selection-view:before,
+.icon-simple-xml:before,
 .icon-tool-cuboid:before,
 .icon-tool-pedestrian:before,
 .icon-tool-polygon:before,
@@ -118,11 +121,13 @@
 .icon-general-timer:before { content: "\f115"; }
 .icon-help:before { content: "\f116"; }
 .icon-left:before { content: "\f117"; }
+.icon-legacy:before { content: "\f138"; }
 .icon-next:before { content: "\f118"; }
 .icon-ok:before { content: "\f119"; }
 .icon-precipitation-norain:before { content: "\f11a"; }
 .icon-precipitation-rain:before { content: "\f11b"; }
 .icon-previous:before { content: "\f11c"; }
+.icon-requirements-xml:before { content: "\f139"; }
 .icon-right:before { content: "\f11d"; }
 .icon-selection-add:before { content: "\f11e"; }
 .icon-selection-delete:before { content: "\f11f"; }
@@ -136,6 +141,7 @@
 .icon-selection-on:before { content: "\f127"; }
 .icon-selection-start:before { content: "\f128"; }
 .icon-selection-view:before { content: "\f129"; }
+.icon-simple-xml:before { content: "\f13a"; }
 .icon-tool-cuboid:before { content: "\f12a"; }
 .icon-tool-pedestrian:before { content: "\f12b"; }
 .icon-tool-polygon:before { content: "\f137"; }
@@ -175,11 +181,13 @@ $font-icon-font-general-settings: "\f114";
 $font-icon-font-general-timer: "\f115"; 
 $font-icon-font-help: "\f116"; 
 $font-icon-font-left: "\f117"; 
+$font-icon-font-legacy: "\f138"; 
 $font-icon-font-next: "\f118"; 
 $font-icon-font-ok: "\f119"; 
 $font-icon-font-precipitation-norain: "\f11a"; 
 $font-icon-font-precipitation-rain: "\f11b"; 
 $font-icon-font-previous: "\f11c"; 
+$font-icon-font-requirements-xml: "\f139"; 
 $font-icon-font-right: "\f11d"; 
 $font-icon-font-selection-add: "\f11e"; 
 $font-icon-font-selection-delete: "\f11f"; 
@@ -193,6 +201,7 @@ $font-icon-font-selection-off2: "\f126";
 $font-icon-font-selection-on: "\f127"; 
 $font-icon-font-selection-start: "\f128"; 
 $font-icon-font-selection-view: "\f129"; 
+$font-icon-font-simple-xml: "\f13a"; 
 $font-icon-font-tool-cuboid: "\f12a"; 
 $font-icon-font-tool-pedestrian: "\f12b"; 
 $font-icon-font-tool-polygon: "\f137"; 
