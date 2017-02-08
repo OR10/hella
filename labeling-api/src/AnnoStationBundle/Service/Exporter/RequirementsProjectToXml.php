@@ -204,7 +204,9 @@ class RequirementsProjectToXml
                     }
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
-                $zipData[$video->getName() . '.xml'] = $xml->getDocument()->saveXML();
+                $taskConfiguration = reset($taskConfigurations);
+                $postfix = $this->getPostfixFromRequirementsXml($taskConfiguration);
+                $zipData[$video->getName() . $postfix . '.xml'] = $xml->getDocument()->saveXML();
             }
 
             /** @var Model\TaskConfiguration $taskConfiguration */
@@ -229,6 +231,31 @@ class RequirementsProjectToXml
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param Model\TaskConfiguration\RequirementsXml $requirementsXml
+     *
+     * @return string
+     */
+    private function getPostfixFromRequirementsXml(Model\TaskConfiguration\RequirementsXml $requirementsXml)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->loadXML($requirementsXml->getRawData());
+
+        $xpath = new \DOMXPath($xmlImport);
+        $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        $requirementsElement = $xpath->query('/x:requirements/x:metadata/x:export-postfix');
+
+        if ($requirementsElement->length === 0) {
+            return '';
+        }
+
+        return sprintf(
+            '_%s',
+            $requirementsElement->item(0)->nodeValue
+        );
     }
 
     /**

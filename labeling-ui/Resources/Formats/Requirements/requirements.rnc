@@ -4,11 +4,15 @@ grammar {
     LogicCondition = attribute if {text} | attribute if-not {text}
 
     Requirements = element r:requirements {
-        Frame? & Thing* & Group* & Private?
+        Metadata & Frame? & Thing* & Group* & Private?
     }
 
     Frame = element r:frame {
         Class*
+    }
+
+    Metadata = element r:metadata {
+        element r:export-postfix {text}
     }
 
     ThingLikeStructure = (
