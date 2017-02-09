@@ -386,8 +386,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       default:
         throw new Error(`Unknown tool with name: ${toolName}`);
     }
-    this._invokeActiveTool();
     this._logger.groupEnd('thinglayer:tool');
+    this._invokeActiveTool();
   }
 
   /**
