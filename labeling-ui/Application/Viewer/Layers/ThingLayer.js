@@ -531,6 +531,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   attachToDom(element) {
+    // The event registration needs to be done before paper is initialized in the base class. This is needed for the
+    // Layer to handle events, before tools are informed about them.
+    angular.element(element).on(
+      'mousedown',
+      event => this._onMouseDown(event)
+    );
+
     super.attachToDom(element);
 
     // Make selection color transparent
@@ -538,14 +545,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       scope.project.activeLayer.selectedColor = new scope.Color(0, 0, 0, 0);
       scope.settings.handleSize = 8;
     });
-
-    // Use `angular.element` here, to normalize the event properties.
-    angular.element(element).on(
-      'mousedown',
-      event => this._$scope.$evalAsync(
-        this._onLayerClick.bind(this, event)
-      )
-    );
   }
 }
 
