@@ -163,9 +163,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   dispatchDOMEvent(event) {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
-        this._abortActiveTool()
-      } else if (event.type === 'mouseenter') {
-        this._invokeActiveTool();
+        this._abortActiveTool();
       } else {
         this._element.dispatchEvent(event);
       }
