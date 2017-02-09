@@ -143,13 +143,6 @@ class TaskController {
     this.bookmarkedFrameIndex = null;
 
     /**
-     * Drawing Tool used for initializing new empty shapes
-     *
-     * @type {Tool}
-     */
-    this.multiTool = null;
-
-    /**
      * @type {boolean}
      */
     this.leftSideDisabled = false;

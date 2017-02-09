@@ -24,7 +24,6 @@ export default class ViewerDirective {
       playbackDirection: '=',
       viewport: '=',
       hideLabeledThingsInFrame: '=',
-      multiTool: '=',
       bookmarkedFrameIndex: '=',
       fps: '=',
       frameSkip: '=',

@@ -1,3 +1,5 @@
+import CreationToolActionStruct from '../../Viewer/Tools/ToolActionStructs/CreationToolActionStruct';
+
 /**
  * Controller handling the control elements below the viewer frame
  *
@@ -9,7 +11,6 @@
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
- * @property {Tool} multiTool
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -228,7 +229,7 @@ class MediaControlsController {
    * Handle the creation of new rectangle
    */
   handleNewLabeledThingClicked() {
-    this.multiTool.createNewDefaultShape();
+    this._$rootScope.$emit('action:create-new-default-shape');
   }
 
   /**
