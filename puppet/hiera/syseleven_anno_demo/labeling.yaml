@@ -18,9 +18,11 @@ php::cli::settings:
 
 php::extensions:
   bcmath: {}
+  curl: {}
   gd: {}
   mbstring: {}
   mysql: {}
+  xml: {}
   zip: {}
 
 rabbitmq::version: present
