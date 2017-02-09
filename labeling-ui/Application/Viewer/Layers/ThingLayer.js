@@ -316,8 +316,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 
-  _onLayerClick(event) {
-    if (this._$scope.vm.activeTool !== 'multi') {
+  _onMouseDown(event) {
+    if (this._activeTool !== this._multiTool) {
       return;
     }
 
