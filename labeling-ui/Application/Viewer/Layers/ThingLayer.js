@@ -164,6 +164,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
         this._abortActiveTool();
+      } else if (event.type === 'mouseenter' &&
+        this._$scope.vm.selectedPaperShape !== null &&
+        this._$scope.vm.selectedLabeledStructureThing !== null) {
+        this._invokeActiveTool();
       } else {
         this._element.dispatchEvent(event);
       }
@@ -174,6 +178,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
     if (this._activeTool === null) {
       return;
     }
+
+    // Insure no parallel double invocation is possible.
+    this._activeTool.abort();
 
     switch (true) {
       case this._activeTool instanceof MultiTool:
