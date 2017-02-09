@@ -205,6 +205,7 @@ class MultiTool extends Tool {
     // @TODO: Add tool class check
     switch (actionIdentifier) {
       case 'creation':
+        /** @var {CreationTool} tool */
         struct = new CreationToolActionStruct(
           delegatedOptions,
           viewport,
@@ -216,6 +217,7 @@ class MultiTool extends Tool {
         promise = tool.invokeShapeCreation(struct);
         break;
       case 'scale':
+        /** @var {ScalingTool} tool */
         struct = new ScalingToolActionStruct(
           delegatedOptions,
           viewport,
@@ -225,6 +227,7 @@ class MultiTool extends Tool {
         promise = tool.invokeShapeScaling(struct);
         break;
       case 'move':
+        /** @var {MovingTool} tool */
         struct = new MovingToolActionStruct(
           delegatedOptions,
           viewport,
