@@ -212,6 +212,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _invokeMultiTool() {
+    // Ensure the multitool is not currently "invoked" before reinvocation
+    this._multiTool.abort();
+
     // selectedLabelStructure not yet initialized
     if (this._selectedLabelStructureThing === null) {
       return;
