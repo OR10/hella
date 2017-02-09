@@ -95,7 +95,7 @@ class RectangleDrawingTool extends CreationTool {
 
   /**
    * @param {CreationToolActionStruct} toolActionStruct
-   * @return {Promise}
+   * @return {Promise.<PaperShape>}
    */
   invokeShapeCreation(toolActionStruct) {
     this._rect = null;
@@ -124,6 +124,7 @@ class RectangleDrawingTool extends CreationTool {
 
   /**
    * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise.<PaperShape>}
    */
   invokeDefaultShapeCreation(toolActionStruct) {
     super.invokeDefaultShapeCreation(toolActionStruct);
@@ -151,9 +152,10 @@ class RectangleDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
+      rect.remove();
     });
 
-    this._complete(rect);
+    return this._complete(rect);
   }
 
   /**

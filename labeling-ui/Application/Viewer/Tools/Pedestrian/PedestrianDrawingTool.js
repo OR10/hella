@@ -70,6 +70,7 @@ class PedestrianDrawingTool extends CreationTool {
 
   /**
    * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise.<PaperShape>}
    */
   invokeDefaultShapeCreation(toolActionStruct) {
     super.invokeDefaultShapeCreation(toolActionStruct);
@@ -97,9 +98,10 @@ class PedestrianDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
         true
       );
+      pedestrian.remove();
     });
 
-    this._complete(pedestrian);
+    return this._complete(pedestrian);
   }
 
   /**
