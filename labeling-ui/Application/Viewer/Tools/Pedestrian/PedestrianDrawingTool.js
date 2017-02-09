@@ -83,10 +83,10 @@ class PedestrianDrawingTool extends CreationTool {
       (video.metaData.height / 2) - (height / 2)
     );
     const to = new paper.Point(
-      this.video.metaData.width / 2,
-      (this.video.metaData.height / 2) + (height / 2)
+      video.metaData.width / 2,
+      (video.metaData.height / 2) + (height / 2)
     );
-    const labeledThingInFrame = this._createLabeledThingHierarchy();
+    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
 
     let pedestrian = null;
     this._context.withScope(() => {
