@@ -303,6 +303,7 @@ class Tool {
    * Internal function that is called after the tool workflow has finished
    *
    * @param {*} result
+   * @return {Promise}
    * @protected
    */
   _complete(result) {
@@ -311,7 +312,10 @@ class Tool {
 
     this._disableInternalPaperTool();
     this._deferred.resolve(result);
+    const promise = this._deferred.promise;
     this._deferred = null;
+
+    return promise;
   }
 
   _disableInternalPaperTool() {
