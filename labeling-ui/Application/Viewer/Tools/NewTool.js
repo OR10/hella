@@ -258,7 +258,7 @@ class Tool {
    * @protected
    */
   _invoke(toolActionStruct) {
-    this._logger.groupStart('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')}`, toolActionStruct);
+    this._logger.groupStartOpened('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, toolActionStruct);
 
     this._dragEventCount = 0;
 
