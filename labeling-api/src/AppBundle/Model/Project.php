@@ -515,6 +515,10 @@ class Project
      */
     public function getRequirementsXmlTaskInstructions()
     {
+        if (!isset($this->taskInstructions['requirementsXml'])) {
+            return [];
+        }
+
         return $this->taskInstructions['requirementsXml'];
     }
 
