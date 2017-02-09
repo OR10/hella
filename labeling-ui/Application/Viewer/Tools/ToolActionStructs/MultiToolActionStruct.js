@@ -10,8 +10,9 @@ class MultiToolActionStruct extends ToolActionStruct {
    * @param {FramePosition} framePosition
    * @param {string} requirementsThingOrGroupId
    * @param {string} requirementsShape
+   * @param {PaperShape|null} selectedPaperShape
    */
-  constructor(options, viewport, delegatedOptions, video, task, framePosition, requirementsThingOrGroupId, requirementsShape) {
+  constructor(options, viewport, delegatedOptions, video, task, framePosition, requirementsThingOrGroupId, requirementsShape, selectedPaperShape) {
     super(options, viewport);
 
     /**
@@ -43,6 +44,11 @@ class MultiToolActionStruct extends ToolActionStruct {
      * @type {string}
      */
     this.requirementsShape = requirementsShape;
+
+    /**
+     * @type {PaperShape|null}
+     */
+    this.selectedPaperShape = selectedPaperShape;
   }
 }
 

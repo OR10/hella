@@ -233,7 +233,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       minimalHeight: 1,
     };
 
-    const {viewport, video, task} = this._$scope.vm;
+    const {viewport, video, task, selectedPaperShape} = this._$scope.vm;
 
     const struct = new MultiToolActionStruct(
       multiToolOptions,
@@ -243,7 +243,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       task,
       this._framePosition,
       this._selectedLabelStructureThing.id,
-      this._selectedLabelStructureThing.shape
+      this._selectedLabelStructureThing.shape,
+      selectedPaperShape
     );
     this._activeTool.invoke(struct)
       .then(({paperShape, actionIdentifier}) => {
@@ -343,6 +344,24 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._logger.log('thinglayer:selection', 'Nothing hit. Deselecting');
         this._$scope.vm.selectedPaperShape = null;
       }
+
+      this._abortActiveTool();
+
+      // Wait until the angular $digest is complete, before dispatching the event.
+      // This is needed for the selectedLabeledStructureThing to settle.
+      this._$timeout(() => {
+        // Create paper MouseEvent
+        const paperEvent = new paper.MouseEvent(
+          'mousedown',
+          event,
+          projectPoint,
+          this,
+          0
+        );
+
+        this._invokeMultiTool();
+        this._multiTool.onMouseDown(paperEvent);
+      });
     });
   }
 
