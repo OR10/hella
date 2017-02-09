@@ -185,11 +185,6 @@ class ProjectCreateController {
     /**
      * @type {Array.<Object>}
      */
-    this.simpleXmlTaskConfigurations = [];
-
-    /**
-     * @type {Array.<Object>}
-     */
     this.requirementsXmlTaskConfigurations = [];
 
     /**
@@ -212,30 +207,9 @@ class ProjectCreateController {
      */
     this.labelingTaskTypes = [];
 
-    this._taskConfigurationGateway.getSimpleXmlConfigurations().then(configurations => {
-      this.simpleXmlTaskConfigurations = configurations;
-    });
-
     this._taskConfigurationGateway.getRequirementsXmlConfigurations().then(configurations => {
       this.requirementsXmlTaskConfigurations = configurations;
     });
-  }
-
-  /**
-   * @param taskTypeToAdd
-   * @param taskConfigToAdd
-   */
-  addTaskType(taskTypeToAdd, taskConfigToAdd) {
-    const type = this.taskTypes.find(item => item.id === taskTypeToAdd);
-    const config = this.simpleXmlTaskConfigurations.find(item => item.id === taskConfigToAdd);
-    if (!type || !config) {
-      return;
-    }
-
-    this.labelingTaskTypes.push({config, type});
-
-    this.taskTypeToAdd = '';
-    this.taskConfigToAdd = '';
   }
 
   /**
