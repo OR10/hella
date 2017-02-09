@@ -142,19 +142,19 @@ class CalculateImageDiskUsage extends Command\Base
 
     private function initCurl()
     {
-        $curlHandle = curl_init();
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlHandle, CURLOPT_CONNECTTIMEOUT, 20);
-        curl_setopt($curlHandle, CURLOPT_USERAGENT, 'php/' . PHP_VERSION);
+        $curlHandle = \curl_init();
+        \curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        \curl_setopt($curlHandle, CURLOPT_CONNECTTIMEOUT, 20);
+        \curl_setopt($curlHandle, CURLOPT_USERAGENT, 'php/' . PHP_VERSION);
 
         // Only calling the head
-        curl_setopt($curlHandle, CURLOPT_HEADER, true);
-        curl_setopt($curlHandle, CURLOPT_CUSTOMREQUEST, 'HEAD');
-        curl_setopt($curlHandle, CURLOPT_NOBODY, true);
+        \curl_setopt($curlHandle, CURLOPT_HEADER, true);
+        \curl_setopt($curlHandle, CURLOPT_CUSTOMREQUEST, 'HEAD');
+        \curl_setopt($curlHandle, CURLOPT_NOBODY, true);
 
         if ($this->kernelEnvironment === 'dev') {
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
+            \curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 0);
+            \curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
         }
 
         return $curlHandle;
@@ -162,13 +162,13 @@ class CalculateImageDiskUsage extends Command\Base
 
     private function closeCurl($curlHandle)
     {
-        curl_close($curlHandle);
+        \curl_close($curlHandle);
     }
 
     private function requestHead($curlHandle, $url)
     {
-        curl_setopt($curlHandle, CURLOPT_URL, $url);
-        $content = curl_exec($curlHandle);
+        \curl_setopt($curlHandle, CURLOPT_URL, $url);
+        $content = \curl_exec($curlHandle);
 
         return $this->getHeaderFromCurlResponse($content);
     }
