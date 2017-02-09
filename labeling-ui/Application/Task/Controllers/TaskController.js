@@ -287,6 +287,7 @@ class TaskController {
       $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
         if (newShape !== oldShape) {
           if (newShape !== null) {
+            // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
             this._labelStructurePromise
               .then(labelStructure => {
                 const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
