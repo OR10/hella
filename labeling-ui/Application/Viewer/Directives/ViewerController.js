@@ -690,6 +690,7 @@ class ViewerController {
       this._$scope.$new(),
       this._$injector,
       this._drawingContextService,
+      this._toolService,
       this._paperShapeFactory,
       this._logger,
       this._$timeout,
