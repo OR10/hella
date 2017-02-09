@@ -68,6 +68,55 @@ class Tool {
     this._initializePaperToolAndEvents();
   }
 
+  /**
+   * Get the name of the Tool.
+   *
+   * The name specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+   *
+   * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+   * `rectangle` and `scale`, ...)
+   *
+   * @return {string}
+   * @public
+   * @abstract
+   */
+  getToolName() {
+    throw new Error('Abstract method _getToolName: Every tool needs to implement this method.');
+  }
+
+  /**
+   * Retrieve a list of actions this tool is used for.
+   *
+   * Currently supported actions are:
+   * - `creating`
+   * - `scale`
+   * - `move`
+   *
+   * @return {Array.<string>}
+   * @public
+   * @abstract
+   */
+  getActionIdentifiers() {
+    throw new Error('Abstract method _getActionIdentifiers: Every tool needs to implement this method.');
+  }
+
+  /**
+   * @returns {Array.<string>}
+   * @public
+   */
+  getFullyQualifiedToolIdentifiers() {
+    const name = this.getToolName();
+    const actions = this.getActionIdentifiers();
+    const fqdnIdentifiers = actions.map(action => `${name}-${action}`);
+
+    return fqdnIdentifiers;
+  }
+
+  /**
+   * @param {string} type
+   * @param {paper.Event} event
+   * @private
+   */
   _delegateMouseEvent(type, event) {
     const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
 
@@ -99,6 +148,20 @@ class Tool {
   }
 
   /**
+   * @param {string} type
+   * @param {paper.Event} event
+   * @private
+   */
+  _delegateKeyboardEvent(type, event) {
+    const delegationTarget = `onKey${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
+
+    switch (type) {
+      default:
+        this[delegationTarget](event);
+    }
+  }
+
+  /**
    * @private
    */
   _initializePaperToolAndEvents() {
@@ -110,6 +173,9 @@ class Tool {
     this._tool.onMouseUp = event => this._delegateMouseEvent('up', event);
     this._tool.onMouseDrag = event => this._delegateMouseEvent('drag', event);
     this._tool.onMouseMove = event => this._delegateMouseEvent('move', event);
+
+    this._tool.onKeyDown = event => this._delegateKeyboardEvent('down', event);
+    this._tool.onKeyUp = event => this._delegateKeyboardEvent('up', event);
   }
 
   /**
@@ -163,6 +229,26 @@ class Tool {
   }
 
   /**
+   * Handler for a keyboard up event.
+   * Expects a {@link paper.Event} as only parameter.
+   *
+   * @param {paper.Event} event
+   */
+  onKeyUp(event) { // eslint-disable-line no-unused-vars
+
+  }
+
+  /**
+   * Handler for a keyboard down event.
+   * Expects a {@link paper.Event} as only parameter.
+   *
+   * @param {paper.Event} event
+   */
+  onKeyDown(event) { // eslint-disable-line no-unused-vars
+
+  }
+
+  /**
    * Invoke the tool to start its workflow.
    * The returning promise is resolved after the
    * tool workflow is finished.
@@ -172,7 +258,7 @@ class Tool {
    * @protected
    */
   _invoke(toolActionStruct) {
-    this._logger.log('tool', 'Invoked', toolActionStruct);
+    this._logger.groupStart('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')}`, toolActionStruct);
 
     this._dragEventCount = 0;
 
@@ -194,7 +280,6 @@ class Tool {
    */
   abort() {
     this._reject(new ToolAbortedError('Tool was aborted!'));
-    this._logger.log('tool', 'Aborted');
   }
 
   /**
@@ -204,6 +289,9 @@ class Tool {
    * @protected
    */
   _reject(reason) {
+    this._logger.log('tool:invocation', `Rejected ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, reason);
+    this._logger.groupEnd('tool:invocation');
+
     this._disableInternalPaperTool();
     if (this._deferred !== null) {
       this._deferred.reject(reason);
@@ -218,10 +306,12 @@ class Tool {
    * @protected
    */
   _complete(result) {
+    this._logger.log('tool:invocation', `Resolved ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, result);
+    this._logger.groupEnd('tool:invocation');
+
     this._disableInternalPaperTool();
     this._deferred.resolve(result);
     this._deferred = null;
-    this._logger.log('tool', 'Resolved', result);
   }
 
   _disableInternalPaperTool() {

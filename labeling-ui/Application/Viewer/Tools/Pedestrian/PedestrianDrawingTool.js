@@ -41,6 +41,22 @@ class PedestrianDrawingTool extends CreationTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'pedestrian';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+    ];
+  }
+
+  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */

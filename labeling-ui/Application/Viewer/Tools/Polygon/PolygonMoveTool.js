@@ -33,6 +33,22 @@ class PolygonMoveTool extends MovingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'polygon';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'move',
+    ];
+  }
+
+  /**
    * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

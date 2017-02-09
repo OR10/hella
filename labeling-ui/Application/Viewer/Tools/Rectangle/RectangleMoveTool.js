@@ -35,6 +35,22 @@ class RectangleMoveTool extends MovingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'rectangle';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'move',
+    ];
+  }
+
+  /**
    * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

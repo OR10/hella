@@ -66,6 +66,24 @@ class MultiTool extends Tool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'multi';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+      'move',
+      'scale',
+    ];
+  }
+
+  /**
    * @param {MultiToolActionStruct} toolActionStruct
    * @return {Promise}
    */

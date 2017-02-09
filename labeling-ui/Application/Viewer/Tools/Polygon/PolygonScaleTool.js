@@ -25,6 +25,22 @@ class PolygonScaleTool extends ScalingTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'polygon';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'scale',
+    ];
+  }
+
+  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */

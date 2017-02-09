@@ -36,7 +36,6 @@ class CreationTool extends Tool {
    * @returns {Promise}
    */
   invokeShapeCreation(toolActionStruct) {
-    this._logger.log('tool:creation', 'Invoked', toolActionStruct);
     return this._invoke(toolActionStruct);
   }
 

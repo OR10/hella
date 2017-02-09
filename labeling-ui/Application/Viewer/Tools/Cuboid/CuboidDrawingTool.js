@@ -85,6 +85,22 @@ class CuboidDrawingTool extends CreationTool {
   }
 
   /**
+   * @returns {string}
+   */
+  getToolName() {
+    return 'cuboid';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+    ];
+  }
+
+  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
@@ -180,57 +196,61 @@ class CuboidDrawingTool extends CreationTool {
     return super.abort();
   }
 
-  // onKeyPress(keyCode) {
-  //   /**
-  //    * Check for 'x' (keycode 120) to switch to pseudo3d mode.
-  //    */
-  //   if (
-  //     keyCode === 120
-  //     && this._startCreation
-  //     && this._topPoint
-  //     && this._bottomPoint
-  //     && this._sidePoint
-  //     && this._cuboid
-  //   ) {
-  //     const bottom = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._bottomPoint.x, this._bottomPoint.y, 1));
-  //     const top = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._topPoint.x, this._topPoint.y, 1), bottom);
-  //     const side = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._sidePoint.x, this._bottomPoint.y, 1));
-  //     const sideTop = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._sidePoint.x, this._topPoint.y, 1), side);
-  //
-  //     let points;
-  //     if (this._bottomPoint.x > this._sidePoint.x) {
-  //       points = [
-  //         [sideTop.x, sideTop.y, sideTop.z],
-  //         [top.x, top.y, top.z],
-  //         [bottom.x, bottom.y, bottom.z],
-  //         [side.x, side.y, side.z],
-  //         null,
-  //         null,
-  //         null,
-  //         null,
-  //       ];
-  //     } else {
-  //       points = [
-  //         [top.x, top.y, top.z],
-  //         [sideTop.x, sideTop.y, sideTop.z],
-  //         [side.x, side.y, side.z],
-  //         [bottom.x, bottom.y, bottom.z],
-  //         null,
-  //         null,
-  //         null,
-  //         null,
-  //       ];
-  //     }
-  //
-  //     this._context.withScope(scope => {
-  //       this._cuboid.setVertices(points);
-  //       scope.view.update();
-  //     });
-  //
-  //     this.completeShape();
-  //     this._cleanUp();
-  //   }
-  // }
+  /**
+   * @param {paper.Event} event
+   */
+  onKeyUp(event) {
+    /*
+     * The x key stops the creation after only two dimensions have been specified.
+     */
+    if (
+      event.key !== 'x'
+      || !this._startCreation
+      || !this._topPoint
+      || !this._bottomPoint
+      || !this._sidePoint
+      || !this._cuboid
+    ) {
+      return;
+    }
+    const bottom = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._bottomPoint.x, this._bottomPoint.y, 1));
+    const top = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._topPoint.x, this._topPoint.y, 1), bottom);
+    const side = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._sidePoint.x, this._bottomPoint.y, 1));
+    const sideTop = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._sidePoint.x, this._topPoint.y, 1), side);
+
+    let points;
+    if (this._bottomPoint.x > this._sidePoint.x) {
+      points = [
+        [sideTop.x, sideTop.y, sideTop.z],
+        [top.x, top.y, top.z],
+        [bottom.x, bottom.y, bottom.z],
+        [side.x, side.y, side.z],
+        null,
+        null,
+        null,
+        null,
+      ];
+    } else {
+      points = [
+        [top.x, top.y, top.z],
+        [sideTop.x, sideTop.y, sideTop.z],
+        [side.x, side.y, side.z],
+        [bottom.x, bottom.y, bottom.z],
+        null,
+        null,
+        null,
+        null,
+      ];
+    }
+
+    this._context.withScope(scope => {
+      this._cuboid.setVertices(points);
+      // scope.view.update();
+    });
+
+    this._cleanUp();
+    this._complete(this._cuboid);
+  }
 
   /**
    * @param {paper.Event} event
