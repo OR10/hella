@@ -4,6 +4,7 @@ import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
 import ZoomToolActionStruct from '../Tools/ToolActionStructs/ZoomToolActionStruct';
 import ZoomTool from '../Tools/ZoomTool';
 import MultiToolActionStruct from '../Tools/ToolActionStructs/MultiToolActionStruct';
+import CreationToolActionStruct from '../Tools/ToolActionStructs/CreationToolActionStruct';
 import MultiTool from '../Tools/MultiTool';
 
 import ToolAbortedError from '../Tools/Errors/ToolAbortedError';
@@ -24,6 +25,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {$rootScope.Scope} $scope
    * @param {$injector} $injector
    * @param {DrawingContextService} drawingContextService
+   * @param {ToolService} toolService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
@@ -35,6 +37,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               $scope,
               $injector,
               drawingContextService,
+              toolService,
               paperShapeFactory,
               logger,
               $timeout,
@@ -43,10 +46,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     super(width, height, $scope, drawingContextService);
 
     /**
-     * @type {Tool|null}
+     * @type {ToolService}
      * @private
      */
-    this._activeTool = null;
+    this._toolService = toolService;
 
     /**
      * @type {PaperShapeFactory}
@@ -73,19 +76,24 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._framePosition = framePosition;
 
     /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
+
+    /**
+     * @type {Tool|null}
+     * @private
+     */
+    this._activeTool = null;
+
+    /**
      * Tool for moving shapes
      *
      * @type {MultiTool}
      * @private
      */
     this._multiTool = $injector.instantiate(MultiTool, {drawingContext: this._context});
-    this._$scope.vm.multiTool = this._multiTool;
-
-    /**
-     * @type {ViewerMouseCursorService}
-     * @private
-     */
-    this._viewerMouseCursorService = viewerMouseCursorService;
 
     /**
      * @type {ZoomTool}
@@ -158,6 +166,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._framePosition.afterFrameChangeAlways('disableTools', () => {
       this._invokeActiveTool();
     });
+
+    $scope.$root.$on('action:create-new-default-shape', () => {
+      if (this._selectedLabelStructureThing === null) {
+        return;
+      }
+
+      this._invokeDefaultShapeCreation();
+    });
   }
 
   dispatchDOMEvent(event) {
@@ -216,6 +232,45 @@ class ThingLayer extends PanAndZoomPaperLayer {
       .then(() => this._invokeActiveTool());
   }
 
+  /**
+   * @private
+   */
+  _invokeDefaultShapeCreation() {
+    // @TODO: move with other drawint tool options to labelStructureThing
+    const toolOptions = {
+      initialDragDistance: 8,
+      minDragDistance: 1,
+      minimalHeight: 1,
+    };
+
+    const {viewport, video, task, framePosition} = this._$scope.vm;
+
+    /** @type {CreationTool} */
+    const tool = this._toolService.getTool(this._context, this._selectedLabelStructureThing.shape, 'creation');
+    const creationToolStruct = new CreationToolActionStruct(
+      toolOptions,
+      viewport,
+      video,
+      task,
+      framePosition,
+      this._selectedLabelStructureThing.id
+    );
+    tool.invokeDefaultShapeCreation(creationToolStruct)
+      .then(paperShape => {
+        // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
+        // Ensure the parent/child structure is intact
+        const labeledThingInFrame = paperShape.labeledThingInFrame;
+        labeledThingInFrame.shapes.push(paperShape.toJSON());
+        this._onCreateShape(paperShape);
+      })
+      .catch(reason => {
+        this._logger.warn('tool:error', 'Default creation Tool aborted', reason);
+      });
+  }
+
+  /**
+   * @private
+   */
   _invokeMultiTool() {
     // Ensure the multitool is not currently "invoked" before reinvocation
     this._multiTool.abort();
