@@ -73,6 +73,10 @@ class CalculateImageDiskUsage extends Command\Base
         foreach ($videos as $video) {
             $frameRange = range(1, $video->getMetaData()->numberOfFrames);
 
+            if ($video->getImageTypes() === null) {
+                continue;
+            }
+
             foreach ($video->getImageTypes() as $type => $data) {
                 switch ($type) {
                     case 'source':
