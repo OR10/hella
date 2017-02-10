@@ -42,4 +42,6 @@ GGet all LabeledThingGroupInFrame for a given frameIndex
 
 + Response 200 (application/json)
     + Attributes
-        + result (array[LabeledThingGroupInFrame])
+        + result
+            + labeledThingGroupsInFrame (array[LabeledThingGroupInFrame])
+            + labeledThingGroups (array[LabeledThingGroup])

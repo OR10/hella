@@ -59,6 +59,8 @@ class LabeledThingGroup
     /**
      * @param AppBundleModel\LabelingTask $labelingTask
      * @param                             $frameIndex
+     *
+     * @return array
      */
     public function getLabeledThingGroupByTaskAndFrameIndex(AppBundleModel\LabelingTask $labelingTask, $frameIndex)
     {
@@ -67,7 +69,11 @@ class LabeledThingGroup
             ->onlyDocs(false)
             ->setKey([$labelingTask->getId(), (int) $frameIndex]);
 
-        return $documentManager->execute()->toArray();
+        $tasksByLabeledThingGroups = $documentManager->execute()->toArray();
+
+        return array_map(function($taskByLabeledThingGroup) {
+            return $taskByLabeledThingGroup['value'];
+        }, $tasksByLabeledThingGroups);
     }
 
     /**
